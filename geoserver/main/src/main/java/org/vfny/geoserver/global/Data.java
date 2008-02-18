@@ -1363,6 +1363,23 @@ SCHEMA:
 
         return null;
     }
+    
+    /**
+     * Returns the map layer info for the specified layer, or null if the layer
+     * is not known
+     * @param layerName
+     * @return
+     */
+    public MapLayerInfo getMapLayerInfo(String layerName) {
+        Integer layerType = getLayerType(layerName);
+        if(layerType == TYPE_VECTOR)
+            return new MapLayerInfo(getFeatureTypeInfo(layerName));
+        else if(layerType == TYPE_RASTER)
+            return new MapLayerInfo(getCoverageInfo(layerName));
+        else
+            return null;
+    }
+    
 
     /**
      * Retrieve map of FeatureTypeInfo by prefix:typeName.

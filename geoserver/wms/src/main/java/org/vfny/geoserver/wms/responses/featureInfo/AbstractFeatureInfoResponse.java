@@ -13,24 +13,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geotools.coverage.GridSampleDimension;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.feature.SchemaException;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.filter.IllegalFilterException;
+import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.opengis.coverage.PointOutsideCoverageException;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.geometry.DirectPosition;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -167,7 +180,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @throws WmsException For any problems.
      */
-    protected void execute(FeatureTypeInfo[] requestedLayers, Filter[] filters, int x, int y)
+    protected void execute(MapLayerInfo[] requestedLayers, Filter[] filters, int x, int y)
         throws WmsException {
         GetFeatureInfoRequest request = getRequest();
         this.format = request.getInfoFormat();
@@ -180,6 +193,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         Envelope bbox = getMapReq.getBbox();
 
         Coordinate upperLeft = pixelToWorld(x - 2, y - 2, bbox, width, height);
+        Coordinate middle = pixelToWorld(x, y, bbox, width, height);
         Coordinate lowerRight = pixelToWorld(x + 2, y + 2, bbox, width, height);
 
         Coordinate[] coords = new Coordinate[5];
@@ -189,90 +203,106 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         coords[3] = new Coordinate(upperLeft.x, lowerRight.y);
         coords[4] = coords[0];
 
-        //DJB: 
-        //TODO: this should probably put a max features restriction on the query
-        //      unforunately, this queryies by filter not by query, so this is a slightly more difficult problem
-        //      Its not a big deal not to do this because the writer will ensure that the correct # of items
-        //      are actually printed out.
-        //DJB: DONE - see "q", below
-        // NOTE: you can ask for results from multiple layers at once.  So, if max features is 2 (after you add max features query to above) and you
-        //       query 10 layers, you could still get 20 features being sent on.
-        //       Thats why max features is handled at the query portion!
         GeometryFactory geomFac = new GeometryFactory();
-
         LinearRing boundary = geomFac.createLinearRing(coords); // this needs to be done with each FT so it can be reprojected
-
-        Polygon pixelRect = geomFac.createPolygon(boundary, null);
-
         FilterFactory2 filterFac = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
-        Filter getFInfoFilter = null;
-
-        int layerCount = requestedLayers.length;
+        final int layerCount = requestedLayers.length;
         results = new ArrayList(layerCount);
         metas = new ArrayList(layerCount);
-
+        
         try {
             for (int i = 0; i < layerCount; i++) {
-                FeatureTypeInfo finfo = requestedLayers[i];
-
-                CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getDefaultGeometry()
+                if (requestedLayers[i].getType() == org.vfny.geoserver.global.Data.TYPE_VECTOR.intValue()) {
+                    FeatureTypeInfo finfo = requestedLayers[i].getFeature();
+                    CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getDefaultGeometry()
                                                          .getCRS();
 
-                // reproject the bounding box
-                if ((requestedCRS != null) && !CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {
+                    // reproject the bounding box
+                    Polygon pixelRect = geomFac.createPolygon(boundary, null);
+                    if ((requestedCRS != null) && !CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {
+                        try {
+                            MathTransform transform = CRS.findMathTransform(requestedCRS, dataCRS, true);
+                            pixelRect = (Polygon) JTS.transform(pixelRect, transform); // reprojected
+                        } catch (MismatchedDimensionException e) {
+                            LOGGER.severe(e.getLocalizedMessage());
+                        } catch (TransformException e) {
+                            LOGGER.severe(e.getLocalizedMessage());
+                        } catch (FactoryException e) {
+                            LOGGER.severe(e.getLocalizedMessage());
+                        }
+                    }
+
+                    Filter getFInfoFilter = null;
                     try {
-                        MathTransform transform = CRS.findMathTransform(requestedCRS, dataCRS, true);
-                        pixelRect = (Polygon) JTS.transform(pixelRect, transform); // reprojected
-                    } catch (MismatchedDimensionException e) {
-                        LOGGER.severe(e.getLocalizedMessage());
-                    } catch (TransformException e) {
-                        LOGGER.severe(e.getLocalizedMessage());
-                    } catch (FactoryException e) {
-                        LOGGER.severe(e.getLocalizedMessage());
+                        getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getDefaultGeometry().getLocalName()), filterFac.literal(pixelRect));
+                    } catch (IllegalFilterException e) {
+                        e.printStackTrace();
+                        throw new WmsException(null, "Internal error : " + e.getMessage());
+                    }
+
+                    // include the eventual layer definition filter
+                    if (filters[i] != null) {
+                        getFInfoFilter = filterFac.and(getFInfoFilter, filters[i]);
+                    }
+
+                    Query q = new DefaultQuery(finfo.getTypeName(), null, getFInfoFilter, request.getFeatureCount(), Query.ALL_NAMES, null);
+                    FeatureCollection match = finfo.getFeatureSource().getFeatures(q);
+
+                    //this was crashing Gml2FeatureResponseDelegate due to not setting
+                    //the featureresults, thus not being able of querying the SRS
+                    //if (match.getCount() > 0) {
+                    results.add(match);
+                    metas.add(requestedLayers[i]);
+
+                    //}
+                } else {
+                    CoverageInfo cinfo = requestedLayers[i].getCoverage();
+                    GridCoverage2D coverage = ((GridCoverage2D) cinfo.getCoverage()).geophysics(true);
+//                    MathTransform mathTrans = coverage.getGridGeometry().getGridToCRS().inverse();
+//                    DirectPosition position = mathTrans.transform(new DirectPosition2D(middle.x, middle.y), null);
+                    DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
+                    try {
+                        double[] pixelValues = coverage.evaluate(position, (double[]) null);
+                        FeatureCollection pixel = wrapPixelInFeatureCollection(coverage, pixelValues, cinfo.getName());
+                        metas.add(requestedLayers[i]);
+                        results.add(pixel);
+                    } catch(PointOutsideCoverageException e) {
+                        // it's fine, users might legitimately query point outside, we just don't return anything
                     }
                 }
-
-                try {
-                    getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getDefaultGeometry()
-                            .getLocalName()), filterFac.literal(pixelRect));
-//                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-//                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
-//                        .createLiteralExpression(pixelRect));
-//
-//                    if (finfo.getFeatureType().getDefaultGeometry() != null) {
-//                        ((GeometryFilter) getFInfoFilter).addRightGeometry(filterFac
-//                            .createAttributeExpression());
-//                    } else {
-//                        LOGGER.warning("GetFeatureInfo for feature type with no default geometry.");
-//                    }
-//                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
-//                        .createLiteralExpression(pixelRect));
-                } catch (IllegalFilterException e) {
-                    e.printStackTrace();
-                    throw new WmsException(null, "Internal error : " + e.getMessage());
-                }
-
-                // include the eventual layer definition filter
-                if (filters[i] != null) {
-                    getFInfoFilter = filterFac.and(getFInfoFilter, filters[i]);
-                }
-
-                Query q = new DefaultQuery(finfo.getTypeName(), null, getFInfoFilter,
-                        request.getFeatureCount(), Query.ALL_NAMES, null);
-                FeatureCollection match = finfo.getFeatureSource().getFeatures(q);
-
-                //this was crashing Gml2FeatureResponseDelegate due to not setting
-                //the featureresults, thus not being able of querying the SRS
-                //if (match.getCount() > 0) {
-                results.add(match);
-                metas.add(finfo);
-
-                //}
             }
-        } catch (IOException ioe) {
-            throw new WmsException(null, "Internal error : " + ioe.getMessage());
+        } catch (Exception e) {
+            throw new WmsException(null, "Internal error occurred", e);
+        } 
+    }
+
+    private FeatureCollection wrapPixelInFeatureCollection(
+            GridCoverage2D coverage, double[] pixelValues, String coverageName) throws SchemaException, IllegalAttributeException {
+        GridSampleDimension[] sampleDimensions = coverage.getSampleDimensions();
+        SimpleFeatureType gridType;
+        try {
+            SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+            builder.setName(coverageName);
+            for (int i = 0; i < sampleDimensions.length; i++) {
+                builder.add(sampleDimensions[i].getDescription().toString(), Double.class);
+            }
+            gridType = builder.buildFeatureType();
+        } catch(Exception e) {
+            // sometimes a grid coverage format does not assign unique descriptions to coverages
+            SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+            builder.setName(coverageName);
+            for (int i = 0; i < sampleDimensions.length; i++) {
+                builder.add("Band " + (i + 1), Double.class);
+            }
+            gridType = builder.buildFeatureType();
         }
+        
+        Double[] values = new Double[pixelValues.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = new Double(pixelValues[i]);
+        }
+        return DataUtilities.collection(SimpleFeatureBuilder.build(gridType, values, ""));
     }
 
     /**

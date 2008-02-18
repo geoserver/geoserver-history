@@ -625,9 +625,17 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                         LOGGER.log( Level.WARNING, msg, e );
                 }
                 
+                // snippet (only used by OWS5 prototype at the moment)
+                try {
+                    encodePlacemarkSnippet(feature, styles);
+                } catch (Exception e) {
+                        String msg = "Error occured processing 'description' template.";
+                        LOGGER.log( Level.WARNING, msg, e );
+                }
+                
                 //description
                 try {
-                    encodePlacemarkDescription(feature);
+                    encodePlacemarkDescription(feature, styles);
                 } catch (Exception e) {
                         String msg = "Error occured processing 'description' template.";
                         LOGGER.log( Level.WARNING, msg, e );
@@ -639,7 +647,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             
             //time
             try {
-                encodePlacemarkTime(feature);
+                encodePlacemarkTime(feature, styles);
             } catch (Exception e) {
                 String msg = "Error occured processing 'time' template: " +  e.getMessage();
                 LOGGER.log( Level.WARNING, msg );
@@ -653,7 +661,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             encodeExtendedData(feature);
 
             //geometry
-            encodePlacemarkGeometry(geometry, centroid);
+            encodePlacemarkGeometry(geometry, centroid, styles);
 
             end("Placemark");
         }
@@ -692,7 +700,9 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                                 for ( int k = 0; k < syms.length; k++) {
                                         if ( syms[k] instanceof TextSymbolizer ) {
                                                 Expression e = SLD.textLabel((TextSymbolizer) syms[k]);
-                        Object object = e.evaluate(feature);
+                        Object object = null;
+                        if(e != null)
+                            object = e.evaluate(feature);
                         String value = null;
 
                         if (object instanceof String) {
@@ -729,10 +739,9 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         }
         
         /**
-         * Encodes a KML Placemark description from a feature by processing a
-         * template.
+         * Encodes a KML Placemark description from a feature 
          */
-        protected void encodePlacemarkDescription(SimpleFeature feature)
+        protected void encodePlacemarkDescription(SimpleFeature feature, FeatureTypeStyle[] styles)
             throws IOException {
         
            String description = template.description( feature );
@@ -742,6 +751,15 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 cdata(description);
                 end("description");
             }
+        }
+        
+        /**
+         * Encodes the Snipped element
+         * @param feature
+         * @param styles
+         */
+        protected void encodePlacemarkSnippet(SimpleFeature feature, FeatureTypeStyle[] styles) {
+            // does nothing at the moment
         }
 
         /**
@@ -762,7 +780,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML TimePrimitive geometry from a feature.
          */
-        protected void encodePlacemarkTime(SimpleFeature feature) throws IOException {
+        protected void encodePlacemarkTime(SimpleFeature feature, FeatureTypeStyle[] styles) throws IOException {
             try {
                 String[] time = new FeatureTimeTemplate(template).execute(feature);
                 if ( time.length == 0 ) {
@@ -770,30 +788,10 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 }
                 
                 if ( time.length == 1 ) {
-                    String datetime = encodeDateTime(time[0]);
-                    if ( datetime != null ) {
-                        //timestamp case
-                        start("TimeStamp");
-                        element("when", datetime );
-                        end("TimeStamp");    
-                    }
+                    encodeKmlTimeStamp(parseDateTime(time[0]));
                     
-                }
-                else {
-                    //timespan case
-                    String begin = encodeDateTime(time[0]);
-                    String end = encodeDateTime(time[1]);
-                    
-                    if (!(begin == null && end == null)) {
-                        start("TimeSpan");    
-                        if ( begin != null ) {
-                            element("begin", begin);
-                        }
-                        if ( end != null ) {
-                            element("end", end);
-                        }    
-                        end("TimeSpan");
-                    }
+                } else {
+                    encodeKmlTimeSpan(parseDateTime(time[0]), parseDateTime(time[1]));
                 }
             } catch (Exception e) {
                 throw (IOException) new IOException().initCause(e);
@@ -801,9 +799,59 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         }
 
         /**
+         * Encodes the time pairs into a kml TimeSpan (from and to will be parsed
+         * into the official kml date/time representation)
+         * @param from
+         * @param to
+         * @throws Exception
+         */
+        protected void encodeKmlTimeSpan(Date from, Date to) throws Exception {
+            //timespan case
+            String begin = encodeDateTime(from);
+            String end = encodeDateTime(to);
+            
+            if (!(begin == null && end == null)) {
+                start("TimeSpan");    
+                if ( begin != null ) {
+                    element("begin", begin);
+                }
+                if ( end != null ) {
+                    element("end", end);
+                }    
+                end("TimeSpan");
+            }
+        }
+
+        /**
+         * Encodes a kml Timestamp element with provided time (which will be parsed into
+         * the standard kml representation)
+         * @param time
+         * @throws Exception
+         */
+        protected void encodeKmlTimeStamp(Date time) throws Exception {
+            String datetime = encodeDateTime(time);
+            if ( datetime != null ) {
+                //timestamp case
+                start("TimeStamp");
+                element("when", datetime );
+                end("TimeStamp");    
+            }
+        }
+        
+        protected String encodeDateTime(Date date) {
+            if(date != null) {
+                Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                return new XSDateTimeBinding().encode(  c , null );
+            } else {
+                return null;
+            }
+        }
+
+        /**
          * Encodes a date as an xs:dateTime.
          */
-        protected String encodeDateTime( String date ) throws Exception {
+        protected Date parseDateTime( String date ) throws Exception {
             
             //first try as date time
             Date d = parseDate( dtformats, date );
@@ -832,9 +880,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             }
            
             if ( d != null ) {
-                Calendar c = Calendar.getInstance();
-                c.setTime(d);
-                return new XSDateTimeBinding().encode(  c , null );
+                return d;
             }
             
             LOGGER.warning("Could not parse date: " + date);
@@ -861,13 +907,14 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         }
         /**
          * Encodes a KML Placemark geometry from a geometry + centroid.
+         * @param styles 
          */
-        protected void encodePlacemarkGeometry(Geometry geometry, Coordinate centroid) {
+        protected void encodePlacemarkGeometry(Geometry geometry, Coordinate centroid, FeatureTypeStyle[] styles) {
             //if point, just encode a single point, otherwise encode the geometry
             // + centroid
             if ( geometry instanceof Point || 
                     (geometry instanceof MultiPoint) && ((MultiPoint)geometry).getNumPoints() == 1 ) {
-                encodeGeometry( geometry );
+                encodeGeometry( geometry, styles );
             }
             else {
                 start("MultiGeometry");
@@ -884,7 +931,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 end("Point");
 
                 //the actual geometry
-                encodeGeometry(geometry);
+                encodeGeometry(geometry, styles);
 
                 end("MultiGeometry");
             }
@@ -893,14 +940,15 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
         /**
          * Encodes a KML geometry.
+         * @param styles 
          */
-        protected void encodeGeometry(Geometry geometry) {
+        protected void encodeGeometry(Geometry geometry, FeatureTypeStyle[] styles) {
             if (geometry instanceof GeometryCollection) {
                 //unwrap the collection
                 GeometryCollection collection = (GeometryCollection) geometry;
 
                 for (int i = 0; i < collection.getNumGeometries(); i++) {
-                    encodeGeometry(collection.getGeometryN(i));
+                    encodeGeometry(collection.getGeometryN(i), styles);
                 }
             } else {
                 geometryTranslator.encode(geometry);
@@ -1197,4 +1245,6 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             return (Rule[]) filtered.toArray(new Rule[filtered.size()]);
         }
     }
+
+    
 }
