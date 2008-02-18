@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.servlets.WMService;
 
 
@@ -35,7 +35,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
      * List of FeatureTypeInfo's parsed from the <code>QUERY_LAYERS</code>
      * mandatory parameter.
      */
-    private FeatureTypeInfo[] queryLayers;
+    private MapLayerInfo[] queryLayers;
 
     /**
      * Holder for the <code>INFO_FORMAT</code> optional parameter
@@ -131,14 +131,14 @@ public class GetFeatureInfoRequest extends WMSRequest {
     /**
      * @return Returns the queryLayers.
      */
-    public FeatureTypeInfo[] getQueryLayers() {
+    public MapLayerInfo[] getQueryLayers() {
         return queryLayers;
     }
 
     /**
      * @param queryLayers The queryLayers to set.
      */
-    public void setQueryLayers(FeatureTypeInfo[] queryLayers) {
+    public void setQueryLayers(MapLayerInfo[] queryLayers) {
         this.queryLayers = queryLayers;
     }
 

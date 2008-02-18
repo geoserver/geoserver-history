@@ -20,7 +20,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
 
-import org.apache.commons.collections.comparators.ReverseComparator;
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
@@ -857,7 +856,7 @@ public class WMSCapsTransformer extends TransformerBase {
             // HACK: by now all our layers are queryable, since they reference
             // only featuretypes managed by this server
             AttributesImpl qatts = new AttributesImpl();
-            qatts.addAttribute("", "queryable", "queryable", "", "0");
+            qatts.addAttribute("", "queryable", "queryable", "", "1");
             // qatts.addAttribute("", "opaque", "opaque", "", "1");
             // qatts.addAttribute("", "cascaded", "cascaded", "", "1");
             start("Layer", qatts);
@@ -962,7 +961,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
             end("Layer");
         }
-
+        
         protected void handleLayerGroups(Map baseMapLayers, Map baseMapStyles, Map baseMapEnvelopes)
             throws FactoryException, TransformException {
             if (baseMapLayers == null) {

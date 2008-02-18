@@ -10,7 +10,7 @@ import org.opengis.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
@@ -105,7 +105,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         this.request = request;
 
         //use the layer of the QUERY_LAYERS parameter, not the LAYERS one
-        FeatureTypeInfo[] layers = request.getQueryLayers();
+        MapLayerInfo[] layers = request.getQueryLayers();
 
         List filterList = request.getGetMapRequest().getFilter();
         Filter[] filters;
@@ -143,7 +143,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws WmsException For any problems executing.
      */
-    protected abstract void execute(FeatureTypeInfo[] requestedLayers, Filter[] filters, int x,
+    protected abstract void execute(MapLayerInfo[] requestedLayers, Filter[] filters, int x,
         int y) throws WmsException;
 
     
