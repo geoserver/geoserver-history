@@ -106,11 +106,7 @@ public class WMSTestSupport extends GeoServerTestSupport {
             FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeInfo(layerNames[i]);
             styles.add(ftInfo.getDefaultStyle());
 
-            try {
-                layers[i] = new MapLayerInfo((FeatureTypeInfoDTO) ftInfo.toDTO(), getCatalog());
-            } catch (ConfigurationException e) {
-                throw new RuntimeException(e);
-            }
+            layers[i] = new MapLayerInfo(ftInfo);
         }
 
         request.setLayers(layers);

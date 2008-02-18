@@ -8,17 +8,17 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
+import org.vfny.geoserver.global.CoverageInfo;
 
 
 /**
@@ -80,7 +80,7 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
         GetMapRequest getMapPart = (GetMapRequest) getMapReader.getRequest(httpRequest);
         request.setGetMapRequest(getMapPart);
 
-        FeatureTypeInfo[] layers = parseLayers(wms);
+        MapLayerInfo[] layers = parseLayers(wms);
         request.setQueryLayers(layers);
 
         String format = getValue("INFO_FORMAT");
@@ -129,7 +129,7 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
      * @throws WmsException if the parameter <code>QUERY_LAYERS</code> does not
      * exists, has no layer names, or has at least an invalid layer name.
      */
-    private FeatureTypeInfo[] parseLayers(WMS wms) throws WmsException {
+    private MapLayerInfo[] parseLayers(WMS wms) throws WmsException {
         List layers = readFlat(getValue("QUERY_LAYERS"), INNER_DELIMETER);
         
         // expand base layers, if there is any
@@ -146,34 +146,22 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
         
         // remove coverage layers, we cannot query them
         Data catalog = request.getWMS().getData();
-        for (Iterator it = layers.iterator(); it.hasNext();) {
+        /*for (Iterator it = layers.iterator(); it.hasNext();) {
             String layerName = (String) it.next();
             if(catalog.getLayerType(layerName) != Data.TYPE_VECTOR)
                 it.remove();
-        }
-        
-        
+        }*/        
         int layerCount = layers.size();
         if (layerCount == 0) {
             throw new WmsException("No QUERY_LAYERS has been requested, or no queriable layer in the request anyways", getClass().getName());
         }
-        FeatureTypeInfo[] featureTypes = new FeatureTypeInfo[layerCount];
-        
-
+        MapLayerInfo[] layerInfos = new MapLayerInfo[layerCount];
         String layerName = null;
-        FeatureTypeInfo ftype = null;
-
-        try {
-            for (int i = 0; i < layerCount; i++) {
-                layerName = (String) layers.get(i);
-                ftype = catalog.getFeatureTypeInfo(layerName);
-                featureTypes[i] = ftype;
-            }
-        } catch (NoSuchElementException ex) {
-            throw new WmsException(ex, layerName + ": no such layer on this server",
-                getClass().getName());
+        for (int i = 0; i < layerCount; i++) {
+            layerName = (String) layers.get(i); 
+            layerInfos[i] = catalog.getMapLayerInfo(layerName);
         }
 
-        return featureTypes;
+        return layerInfos;
     }
 }

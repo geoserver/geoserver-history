@@ -8,7 +8,6 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
-import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
@@ -101,26 +100,24 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         type = -1;
     }
 
-    public MapLayerInfo(CoverageInfoDTO dto, Data data)
-        throws ConfigurationException {
-        name = dto.getName();
-        label = dto.getLabel();
-        description = dto.getDescription();
-        dirName = dto.getDirName();
+    public MapLayerInfo(CoverageInfo info) {
+        name = info.getName();
+        label = info.getLabel();
+        description = info.getDescription();
+        dirName = info.getDirName();
 
-        coverage = new CoverageInfo(dto, data);
+        coverage = info;
         feature = null;
         type = TYPE_RASTER;
     }
 
-    public MapLayerInfo(FeatureTypeInfoDTO dto, Data data)
-        throws ConfigurationException {
-        name = dto.getName();
-        label = dto.getTitle();
-        description = dto.getAbstract();
-        dirName = dto.getDirName();
+    public MapLayerInfo(FeatureTypeInfo info) {
+        name = info.getName();
+        label = info.getTitle();
+        description = info.getAbstract();
+        dirName = info.getDirName();
 
-        feature = new FeatureTypeInfo(dto, data);
+        feature = info;
         coverage = null;
         type = TYPE_VECTOR;
     }

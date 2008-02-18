@@ -4,14 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import com.vividsolutions.jts.geom.Geometry;
-import org.geotools.data.FeatureReader;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -19,6 +11,14 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.logging.Level;
+
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.FeatureType;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
