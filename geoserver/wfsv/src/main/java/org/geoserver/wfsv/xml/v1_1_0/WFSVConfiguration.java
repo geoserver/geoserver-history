@@ -31,6 +31,10 @@ public class WFSVConfiguration extends Configuration {
         this.catalog = catalog;
         addDependency(wfsConfiguration);
     }
+    
+    public Data getCatalog() {
+        return catalog;
+    }
 
     protected void registerBindings(MutablePicoContainer container) {
         //Types
