@@ -36,6 +36,16 @@ public class WfsvXmlReader extends XmlRequestReader {
         if(wfs.getCiteConformanceHacks())
             parser.setValidating(true);
 
+        //"inject" namespace mappings
+        NameSpaceInfo[] namespaces = configuration.getCatalog().getNameSpaces();
+        for ( int i = 0; i < namespaces.length; i++) {
+            if ( namespaces[i].isDefault() ) 
+                continue;
+            
+            parser.getNamespaces().declarePrefix( 
+                namespaces[i].getPrefix(), namespaces[i].getURI());
+        }
+        
         // set the input source with the correct encoding
         InputSource source = new InputSource(reader);
         source.setEncoding(wfs.getCharSet().name());
