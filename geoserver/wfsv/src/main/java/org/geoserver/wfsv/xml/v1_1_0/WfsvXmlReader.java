@@ -9,6 +9,7 @@ import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.InputSource;
 import java.io.Reader;
 import java.util.Iterator;
@@ -16,7 +17,11 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-
+/**
+ * (JD) TODO: This class shares too much code with the normal wfs xml reader. We
+ * need to find a way to factor out the common code, be it through subclassing 
+ * or through a utl
+ */
 public class WfsvXmlReader extends XmlRequestReader {
     private WFS wfs;
     private WFSVConfiguration configuration;
