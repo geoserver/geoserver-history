@@ -23,7 +23,11 @@ public class OWS5MapProducerFactory implements GetMapProducerFactorySpi {
     /** Official KML mime type
      * @TODO add KMZ support
      */
-    public static final String MIME_TYPE = "application/kml+xml";
+    public static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
+    
+    /** Format name
+     */
+    public static final String FORMAT = "application/kml";
 
     /** Set of supported mime types for the producers made by this Factory
      */
