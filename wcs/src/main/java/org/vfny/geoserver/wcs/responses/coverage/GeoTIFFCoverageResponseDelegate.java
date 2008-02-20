@@ -57,8 +57,11 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
         this.sourceCoverage = coverage;
     }
     
-    public Set getSupportedFormats() {
-        return FORMATS;
+    public String getMimeFormatFor(String outputFormat) {
+        if(canProduce(outputFormat))
+            return "image/geotiff";
+        else
+            return null;
     }
 
     public String getContentType(GeoServer gs) {

@@ -42,10 +42,9 @@ public interface CoverageResponseDelegate {
     void encode(OutputStream output) throws ServiceException, IOException;
     
     /**
-     * The set of formatas this delegate supports (include only those that are
-     * matching the MIME type pattern, the others are there but should
-     * not be advertised).
+     * Returns the MIME type matching the specified format, or null if the
+     * specified format is not supported
      * @return
      */
-    public Set<String> getSupportedFormats();
+    public String getMimeFormatFor(String format);
 }

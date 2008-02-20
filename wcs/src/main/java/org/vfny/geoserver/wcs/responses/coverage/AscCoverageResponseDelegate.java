@@ -51,8 +51,15 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
             FORMATS.contains(outputFormat.toLowerCase()));
     }
     
-    public Set<String> getSupportedFormats() {
-        return FORMATS;
+    public String getMimeFormatFor(String outputFormat) {
+        if("ArcGrid".equalsIgnoreCase(outputFormat))
+            return "application/arcgrid";
+        else if("ArcGrid-GZIP".equalsIgnoreCase(outputFormat))
+            return "application/arcgrid;zipped=\"true\"";
+        else if(FORMATS.contains(outputFormat))
+            return outputFormat;
+        else
+            return null;
     }
 
     public void prepare(String outputFormat, GridCoverage2D coverage)

@@ -28,7 +28,7 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 public class DebugCoverageResponseDelegate implements CoverageResponseDelegate {
     
     private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
-            "image/debug"));
+            "text/debug"));
     private GridCoverage2D coverage;
 
     public boolean canProduce(String outputFormat) {
@@ -48,8 +48,11 @@ public class DebugCoverageResponseDelegate implements CoverageResponseDelegate {
         return "text/plain";
     }
 
-    public Set<String> getSupportedFormats() {
-        return FORMATS;
+    public String getMimeFormatFor(String outputFormat) {
+        if(canProduce(outputFormat))
+            return "text/debug";
+        else
+            return null;
     }
 
     public void prepare(String outputFormat, GridCoverage2D coverage) throws IOException {

@@ -49,8 +49,11 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
                || FORMATS.contains(outputFormat.toLowerCase()));
     }
     
-    public Set<String> getSupportedFormats() {
-        return FORMATS;
+    public String getMimeFormatFor(String outputFormat) {
+        if(canProduce(outputFormat))
+            return "application/gtopo30";
+        else
+            return null;
     }
 
     /*

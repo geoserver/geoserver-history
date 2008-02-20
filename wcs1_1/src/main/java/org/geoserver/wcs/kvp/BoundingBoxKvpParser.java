@@ -4,7 +4,7 @@
  */
 package org.geoserver.wcs.kvp;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -64,28 +64,31 @@ public class BoundingBoxKvpParser extends KvpParser {
             }
         }
 
-        for (int i = 0; i < lower.length; i++) {
-            if (lower[i] >= upper[i])
-                throw new WcsException("illegal bbox, min of dimension " + (i + 1) + ": " + lower[i]
-                        + " is " + "greater than max of same dimesion: " + upper[i],
-                        WcsExceptionCode.InvalidParameterValue, "BoundingBox");
-        }
-
         // check for crs
         String crsName = null;
+        CoordinateReferenceSystem crs = null;
         if (unparsed.size() % 2 == 1) {
             crsName = (String) unparsed.get(unparsed.size() - 1);
             try {
-                CoordinateReferenceSystem crs = CRS.decode(crsName);
-                if (crs.getCoordinateSystem().getDimension() != lower.length)
-                    throw new WcsException("CRS specified has dimension "
+                if("urn:ogc:def:crs:OGC:1.3:CRS84".equals(crsName)) {
+                    crsName = "EPSG:4326";
+                } else {
+                    crs = CRS.decode(crsName);
+                    if (crs.getCoordinateSystem().getDimension() != lower.length)
+                        throw new WcsException("CRS specified has dimension "
                             + crs.getCoordinateSystem().getDimension() + " but bbox specified has "
                             + lower.length, InvalidParameterValue, "BoundingBox");
+                }
             } catch (Exception e) {
                 throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,
                         "BoundingBox");
             }
         }
+        
+        // we do not check that lower <= higher because in the case of geographic
+        // bbox we have to accept the case where the lower coordinate is higher
+        // than the high one and handle it as antimeridian crossing, better do that once
+        // in the code that handles GetCoverage (the same check must be performed for xml requests)
 
         BoundingBoxType bbt = Ows11Factory.eINSTANCE.createBoundingBoxType();
         bbt.setCrs(crsName);

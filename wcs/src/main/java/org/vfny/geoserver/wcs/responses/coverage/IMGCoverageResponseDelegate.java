@@ -52,8 +52,17 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
                 FORMATS.contains("image/" + outputFormat.toLowerCase()));
     }
     
-    public Set<String> getSupportedFormats() {
-        return FORMATS;
+    public String getMimeFormatFor(String outputFormat) {
+        if(!canProduce(outputFormat))
+            return null;
+        
+        if(FORMATS.contains(outputFormat.toLowerCase()))
+            return outputFormat;
+        String mime = "image/" + outputFormat.toLowerCase();
+        if(FORMATS.contains(mime))
+            return mime;
+        
+        return null;
     }
 
     public void prepare(String outputFormat, GridCoverage2D coverage)
