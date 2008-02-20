@@ -1,6 +1,6 @@
 package org.geoserver.wcs;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import javax.media.jai.Interpolation;
 import net.opengis.ows.v1_1_0.BoundingBoxType;
 import net.opengis.wcs.v1_1_1.AxisSubsetType;
 import net.opengis.wcs.v1_1_1.DescribeCoverageType;
+import net.opengis.wcs.v1_1_1.DomainSubsetType;
 import net.opengis.wcs.v1_1_1.FieldSubsetType;
 import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
 import net.opengis.wcs.v1_1_1.GetCoverageType;
@@ -31,7 +32,6 @@ import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.kvp.GridCS;
 import org.geoserver.wcs.kvp.GridType;
-import org.geoserver.wcs.response.CoverageDelegateHandler;
 import org.geoserver.wcs.response.DescribeCoverageTransformer;
 import org.geoserver.wcs.response.WCSCapsTransformer;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -41,6 +41,7 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.OverviewPolicy;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
@@ -48,9 +49,15 @@ import org.geotools.referencing.operation.transform.IdentityTransform;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
+import org.opengis.geometry.Envelope;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.GeographicCRS;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystemAxis;
 import org.opengis.referencing.datum.PixelInCell;
+import org.opengis.referencing.operation.CoordinateOperation;
+import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -121,6 +128,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             meta = catalog.getCoverageInfo(request.getIdentifier().getValue());
 
             // first let's run some sanity checks on the inputs
+            checkDomainSubset(meta, request.getDomainSubset());
             checkRangeSubset(meta, request.getRangeSubset());
             checkOutput(meta, request.getOutput());
 
@@ -252,13 +260,14 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                 FieldSubsetType field = (FieldSubsetType) request.getRangeSubset().getFieldSubset()
                         .get(0);
                 interpolationType = field.getInterpolationType();
-                
+
                 // handle axis subset
                 if (field.getAxisSubset().size() > 1) {
                     throw new WcsException("Multi axis coverages are not supported yet");
                 }
-                if(field.getAxisSubset().size() == 1) {
-                    // prepare a support structure to quickly get the band index of a
+                if (field.getAxisSubset().size() == 1) {
+                    // prepare a support structure to quickly get the band index
+                    // of a
                     // key
                     CoverageDimension[] dimensions = meta.getDimensions();
                     Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
@@ -266,7 +275,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                         String keyName = dimensions[i].getName().replace(' ', '_');
                         dimensionMap.put(keyName, i);
                     }
-    
+
                     // extract the band indexes
                     AxisSubsetType axisSubset = (AxisSubsetType) field.getAxisSubset().get(0);
                     List keys = axisSubset.getKey();
@@ -280,10 +289,11 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                                     + axisSubset.getIdentifier() + "/" + key);
                         bands[j] = index;
                     }
-    
+
                     // finally execute the band select
                     try {
-                        bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
+                        bandSelectedCoverage = (GridCoverage2D) WCSUtils
+                                .bandSelect(coverage, bands);
                     } catch (WcsException e) {
                         throw new WcsException(e.getLocalizedMessage());
                     }
@@ -333,6 +343,68 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
     }
 
+    private void checkDomainSubset(CoverageInfo meta, DomainSubsetType domainSubset)
+            throws Exception {
+        BoundingBoxType bbox = domainSubset.getBoundingBox();
+        
+        // workaround for http://jira.codehaus.org/browse/GEOT-1710
+        if("urn:ogc:def:crs:OGC:1.3:CRS84".equals(bbox.getCrs()))
+            bbox.setCrs("EPSG:4326");
+        
+        CoordinateReferenceSystem bboxCRs = CRS.decode(bbox.getCrs());
+        Envelope gridEnvelope = meta.getCoverage().getEnvelope();
+        GeneralEnvelope gridEnvelopeBboxCRS = null;
+        if (bboxCRs instanceof GeographicCRS) {
+            try {
+                CoordinateOperationFactory cof = CRS.getCoordinateOperationFactory(true);
+
+                final CoordinateOperation operation = cof.createOperation(gridEnvelope
+                        .getCoordinateReferenceSystem(), bboxCRs);
+                gridEnvelopeBboxCRS = CRS.transform(operation, gridEnvelope);
+            } catch (Exception e) {
+                // this may happen, there is nothing we can do about it, we just
+                // use the back transformed envelope to be more lenient about
+                // which coordinate coorections to make on the longitude axis
+                // should the antimeridian style be used
+            }
+        }
+
+        // check the coordinates, but make sure the case 175,-175 is handled
+        // as valid for the longitude axis in a geographic coordinate system
+        // see section 7.6.2 of the WCS 1.1.1 spec)
+        List<Double> lower = bbox.getLowerCorner();
+        List<Double> upper = bbox.getUpperCorner();
+        for (int i = 0; i < lower.size(); i++) {
+            if (lower.get(i) > upper.get(i)) {
+                final CoordinateSystemAxis axis = bboxCRs.getCoordinateSystem().getAxis(i);
+                // see if the coordinates can be fixed
+                if (bboxCRs instanceof GeographicCRS && axis.getDirection() == AxisDirection.EAST) {
+
+                    if (gridEnvelopeBboxCRS != null) {
+                        // try to guess which one needs to be fixed
+                        final double envMax = gridEnvelopeBboxCRS.getMaximum(i);
+                        if (envMax >= lower.get(i))
+                            upper.set(i, upper.get(i) + (axis.getMaximumValue() - axis.getMinimumValue()));
+                        else
+                            lower.set(i, lower.get(i) - (axis.getMaximumValue() - axis.getMinimumValue()));
+                            
+                    } else {
+                        // just fix the upper and hope...
+                        upper.set(i, upper.get(i) + (axis.getMaximumValue() - axis.getMinimumValue()));
+                    }
+                }
+
+                // if even after the fix we're in the wrong situation, complain
+                if (lower.get(i) > upper.get(i)) {
+                    throw new WcsException("illegal bbox, min of dimension " + (i + 1) + ": "
+                            + lower.get(i) + " is " + "greater than max of same dimension: "
+                            + upper.get(i), WcsExceptionCode.InvalidParameterValue, "BoundingBox");
+                }
+            }
+
+        }
+    }
+
     /**
      * Checks that the elements of the Output part of the request do make sense
      * by comparing them to the coverage metadata
@@ -341,24 +413,26 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
      * @param rangeSubset
      */
     private void checkOutput(CoverageInfo meta, OutputType output) {
-        if(output == null)
+        if (output == null)
             return;
-        
+
         String format = output.getFormat();
         String declaredFormat = getDeclaredFormat(meta.getSupportedFormats(), format);
         if (declaredFormat == null)
             throw new WcsException("format " + format + " is not supported for this coverage",
                     InvalidParameterValue, "format");
-        
+
         final GridCrsType gridCRS = output.getGridCRS();
-        if(gridCRS != null) {
+        if (gridCRS != null) {
             // check grid base crs is valid, and eventually default it out
             String gridBaseCrs = gridCRS.getGridBaseCRS();
             if (gridBaseCrs != null) {
-                // make sure the requested is among the supported ones, by making a
+                // make sure the requested is among the supported ones, by
+                // making a
                 // code level
                 // comparison (to avoid assuming epsg:xxxx and
-                // http://www.opengis.net/gml/srs/epsg.xml#xxx are different ones.
+                // http://www.opengis.net/gml/srs/epsg.xml#xxx are different
+                // ones.
                 // We'll also consider the urn one comparable, allowing eventual
                 // axis flip on the
                 // geographic crs
@@ -380,7 +454,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                 String code = GML2EncodingUtils.epsgCode(meta.getCrs());
                 gridCRS.setGridBaseCRS("urn:x-ogc:def:crs:EPSG:" + code);
             }
-    
+
             // check grid type makes sense and apply default otherwise
             String gridTypeValue = gridCRS.getGridType();
             GridType type = GridType.GT2dGridIn2dCrs;
@@ -391,14 +465,14 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                         type = gt;
                 }
                 if (type == null)
-                    throw new WcsException("Unknown grid type " + gridTypeValue, InvalidParameterValue,
-                            "GridType");
+                    throw new WcsException("Unknown grid type " + gridTypeValue,
+                            InvalidParameterValue, "GridType");
                 else if (type == GridType.GT2dGridIn3dCrs)
                     throw new WcsException("Unsupported grid type " + gridTypeValue,
                             InvalidParameterValue, "GridType");
             }
             gridCRS.setGridType(type.getXmlConstant());
-    
+
             // check gridcs and apply only value we know about
             String gridCS = gridCRS.getGridCS();
             if (gridCS != null) {
@@ -407,25 +481,27 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                             "GridCS");
             }
             gridCRS.setGridCS(GridCS.GCSGrid2dSquare.getXmlConstant());
-    
+
             // check the grid origin and set defaults
             CoordinateReferenceSystem crs = null;
             try {
                 crs = CRS.decode(gridCRS.getGridBaseCRS());
             } catch (Exception e) {
-                throw new WcsException("Could not understand crs "
-                        + gridCRS.getGridBaseCRS(), WcsExceptionCode.InvalidParameterValue,
-                        "GridBaseCRS");
+                throw new WcsException("Could not understand crs " + gridCRS.getGridBaseCRS(),
+                        WcsExceptionCode.InvalidParameterValue, "GridBaseCRS");
             }
-            if(!gridCRS.isSetGridOrigin() || gridCRS.getGridOrigin() == null) {
-                // if not set, we have a default of "0 0" as a string, since I cannot
-                // find a way to make it default to new Double[] {0 0} I'll fix it here
+            if (!gridCRS.isSetGridOrigin() || gridCRS.getGridOrigin() == null) {
+                // if not set, we have a default of "0 0" as a string, since I
+                // cannot
+                // find a way to make it default to new Double[] {0 0} I'll fix
+                // it here
                 Double[] origin = new Double[type.getOriginArrayLength()];
                 Arrays.fill(origin, 0.0);
                 gridCRS.setGridOrigin(origin);
             } else {
                 Double[] gridOrigin = (Double[]) gridCRS.getGridOrigin();
-                // make sure the origin dimension matches the output crs dimension
+                // make sure the origin dimension matches the output crs
+                // dimension
                 if (gridOrigin.length != type.getOriginArrayLength())
                     throw new WcsException("Grid origin size (" + gridOrigin.length
                             + ") inconsistent with grid type " + type.getXmlConstant()
@@ -433,15 +509,15 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                             WcsExceptionCode.InvalidParameterValue, "GridOrigin");
                 gridCRS.setGridOrigin(gridOrigin);
             }
-    
+
             // perform same checks on the offsets
             Double[] gridOffsets = (Double[]) gridCRS.getGridOffsets();
             if (gridOffsets != null) {
                 // make sure the origin dimension matches the grid type
                 if (type.getOffsetArrayLength() != gridOffsets.length)
-                    throw new WcsException("Invalid offsets lenght, grid type " + type.getXmlConstant()
-                            + " requires " + type.getOffsetArrayLength(), InvalidParameterValue,
-                            "GridOffsets");
+                    throw new WcsException("Invalid offsets lenght, grid type "
+                            + type.getXmlConstant() + " requires " + type.getOffsetArrayLength(),
+                            InvalidParameterValue, "GridOffsets");
             } else {
                 gridCRS.setGridOffsets(null);
             }
@@ -477,7 +553,8 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
      * @return
      */
     private String getDeclaredFormat(List supportedFormats, String format) {
-        // supported formats may be setup using old style formats, first scan the
+        // supported formats may be setup using old style formats, first scan
+        // the
         // configured list
         for (Iterator it = supportedFormats.iterator(); it.hasNext();) {
             String sf = (String) it.next();
@@ -485,7 +562,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                 return sf;
             } else {
                 CoverageResponseDelegate delegate = CoverageResponseDelegateFactory.encoderFor(sf);
-                if(delegate != null && delegate.canProduce(format))
+                if (delegate != null && delegate.canProduce(format))
                     return sf;
             }
         }

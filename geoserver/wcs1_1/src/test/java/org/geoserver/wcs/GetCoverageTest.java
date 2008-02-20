@@ -66,6 +66,52 @@ public class GetCoverageTest extends WCSTestSupport {
         assertEquals(CRS.decode("urn:ogc:def:crs:EPSG:6.6:4326"), coverage.getEnvelope()
                 .getCoordinateReferenceSystem());
     }
+    
+    public void testAntimeridianWorld() throws Exception {
+        // for the moment, just make sure we don't die and return something, see 
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.WORLD);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("BoundingBox", "175,10,-175,20,urn:ogc:def:crs:OGC:1.3:CRS84");
+        raw.put("store", "false");
+//        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
+
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        assertEquals(1, coverages.length);
+        GridCoverage2D coverage = (GridCoverage2D) coverages[0];
+        assertEquals(CRS.decode("urn:ogc:def:crs:EPSG:6.6:4326"), coverage.getEnvelope()
+                .getCoordinateReferenceSystem());
+    }
+    
+    public void testAntimeridianTaz() throws Exception {
+        // for the moment, just make sure we don't die and return something, see 
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("store", "false");
+
+        // complete coverage from left side of request bbox
+        raw.put("BoundingBox", "145,-80,-175,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+        executeGetCoverageKvp(raw);
+        
+        // partial coverage from left side of request bbox
+        raw.put("BoundingBox", "147,-80,-175,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+        executeGetCoverageKvp(raw);
+        
+        // partial coverage from both left and right side
+        raw.put("BoundingBox", "147.2,-80,147,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+        executeGetCoverageKvp(raw);
+        
+        // partial coverage from right side
+        raw.put("BoundingBox", "175,-80,147,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+        executeGetCoverageKvp(raw);
+        
+        // full coverage from right side
+        raw.put("BoundingBox", "175,-80,150,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+        executeGetCoverageKvp(raw);
+    }
 
     public void testWrongFormatParams() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();

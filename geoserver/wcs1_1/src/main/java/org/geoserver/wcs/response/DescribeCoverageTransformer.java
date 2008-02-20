@@ -374,7 +374,9 @@ public class DescribeCoverageTransformer extends TransformerBase {
                 try  {
                     CoverageResponseDelegate delegate = CoverageResponseDelegateFactory
                             .encoderFor(format);
-                    formats.addAll(delegate.getSupportedFormats());
+                    String formatMime = delegate.getMimeFormatFor(format);
+                    if(formatMime != null)
+                        formats.add(formatMime);
                 } catch(Exception e) {
                     // no problem, we just want to avoid people writing HALLABALOOLA in the
                     // supported formats section of the coverage config and then break the

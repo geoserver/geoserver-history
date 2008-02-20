@@ -45,6 +45,8 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
     
     public static QName ROTATED_CAD = new QName(WCS_URI, "RotatedCad", WCS_PREFIX);
     
+    public static QName WORLD = new QName(WCS_URI, "World", WCS_PREFIX);
+    
     protected XpathEngine xpath;
     
     protected static final Schema WCS11_SCHEMA;
@@ -83,8 +85,9 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
                 TIFF, null);
         dataDirectory.addCoverage(TASMANIA_BM, WCSTestSupport.class.getResource("tazbm.tiff"),
                 TIFF, null);
-        // hum, the tiff reader does not seem to be able to load this one
         dataDirectory.addCoverage(ROTATED_CAD, WCSTestSupport.class.getResource("rotated.tiff"),
+                TIFF, null);
+        dataDirectory.addCoverage(WORLD, WCSTestSupport.class.getResource("world.tiff"),
                 TIFF, null);
     }
     
