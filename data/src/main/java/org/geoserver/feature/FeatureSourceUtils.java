@@ -4,11 +4,15 @@
  */
 package org.geoserver.feature;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.data.FeatureSource;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geotools.data.FeatureSource;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -35,7 +39,7 @@ public class FeatureSourceUtils {
      *
      * @throws IOException Execption calculating bounds on feature source.
      */
-    public static Envelope getBoundingBoxEnvelope(FeatureSource fs)
+    public static Envelope getBoundingBoxEnvelope(FeatureSource<SimpleFeatureType, SimpleFeature> fs)
         throws IOException {
         Envelope ev = fs.getBounds();
 

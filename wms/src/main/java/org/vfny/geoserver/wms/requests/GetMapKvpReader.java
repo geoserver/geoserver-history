@@ -47,6 +47,7 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -788,8 +789,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 			SimpleFeatureType currFt = ul.getInlineFeatureType();
 			Query q = new DefaultQuery(currFt.getTypeName(), Filter.INCLUDE);
-			FeatureReader ilReader = ul.getInlineFeatureDatastore()
-					.getFeatureReader(q, Transaction.AUTO_COMMIT);
+			FeatureReader<SimpleFeatureType, SimpleFeature> ilReader;
+            ilReader = ul.getInlineFeatureDatastore().getFeatureReader(q, Transaction.AUTO_COMMIT);
 			CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null) ? DefaultGeographicCRS.WGS84
 					: getMapRequest.getCrs();
 			MemoryDataStore reTypedDS = new MemoryDataStore(

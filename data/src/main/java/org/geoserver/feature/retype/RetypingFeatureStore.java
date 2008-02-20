@@ -6,30 +6,32 @@ package org.geoserver.feature.retype;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geoserver.feature.RetypingFeatureCollection.RetypingFeatureReader;
-import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 
 /**
  * Renaming wrapper for a {@link FeatureStore} instance, to be used along with {@link RetypingDataStore} 
  */
-public class RetypingFeatureStore extends RetypingFeatureSource implements FeatureStore {
+public class RetypingFeatureStore extends RetypingFeatureSource implements
+        FeatureStore<SimpleFeatureType, SimpleFeature> {
 
-    public RetypingFeatureStore(RetypingDataStore ds, FeatureStore wrapped, FeatureTypeMap typeMap) {
+    public RetypingFeatureStore(RetypingDataStore ds,
+            FeatureStore<SimpleFeatureType, SimpleFeature> wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
 
-    protected FeatureStore featureStore() {
-        return (FeatureStore) wrapped;
+    protected FeatureStore<SimpleFeatureType, SimpleFeature> featureStore() {
+        return (FeatureStore<SimpleFeatureType, SimpleFeature>) wrapped;
     }
 
     public Transaction getTransaction() {
@@ -53,12 +55,14 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements Featu
         featureStore().modifyFeatures(type, value, store.retypeFilter(filter, typeMap));
     }
 
-    public void setFeatures(FeatureReader reader) throws IOException {
-        featureStore().setFeatures(
-                new RetypingFeatureReader(reader, typeMap.getOriginalFeatureType()));
+    public void setFeatures(FeatureReader<SimpleFeatureType, SimpleFeature> reader)
+            throws IOException {
+        RetypingFeatureReader retypingFeatureReader;
+        retypingFeatureReader = new RetypingFeatureReader(reader, typeMap.getOriginalFeatureType());
+        featureStore().setFeatures(retypingFeatureReader);
     }
 
-    public Set addFeatures(FeatureCollection collection) throws IOException {
+    public Set<String> addFeatures(FeatureCollection<SimpleFeatureType, SimpleFeature> collection) throws IOException {
         Set<String> ids = featureStore().addFeatures(
                 new RetypingFeatureCollection(collection, typeMap.getOriginalFeatureType()));
         Set<String> retyped = new HashSet<String>();

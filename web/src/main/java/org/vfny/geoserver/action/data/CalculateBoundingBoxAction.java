@@ -6,12 +6,18 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
@@ -19,10 +25,6 @@ import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -62,7 +64,8 @@ public final class CalculateBoundingBoxAction extends ConfigAction {
         try {
             dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
             SimpleFeatureType featureType = dataStore.getSchema(ftConfig.getName());
-            FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+            FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+            fs = dataStore.getFeatureSource(featureType.getTypeName());
     
             ftConfig.setLatLongBBox(DataStoreUtils.getBoundingBoxEnvelope(fs));
             request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);

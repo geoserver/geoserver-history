@@ -17,6 +17,7 @@ import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
 
@@ -165,6 +166,7 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
      *
      * @generated modifiable
      */
+    @SuppressWarnings("unchecked")
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         InsertElementType insertElement = wfsfactory.createInsertElementType();
@@ -176,7 +178,8 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         //   &lt;/xsd:sequence&gt;
         //&lt;/xsd:choice&gt;
         if (node.hasChild(FeatureCollection.class)) {
-            FeatureCollection fc = (FeatureCollection) node.getChildValue(FeatureCollection.class);
+            FeatureCollection<SimpleFeatureType, SimpleFeature> fc;
+            fc = (FeatureCollection) node.getChildValue(FeatureCollection.class);
             insertElement.getFeature().addAll(fc);
         } else if (node.hasChild(SimpleFeature.class)) {
             insertElement.getFeature().addAll(node.getChildValues(SimpleFeature.class));

@@ -51,12 +51,14 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         return "GEOJSON";
     }
     
+    @SuppressWarnings("unchecked")
     protected String getContentDisposition(
             FeatureCollectionType featureCollection) {
         
         StringBuffer sb = new StringBuffer();
         for ( Iterator f = featureCollection.getFeature().iterator(); f.hasNext(); ) {
-            FeatureCollection fc = (FeatureCollection) f.next();
+            FeatureCollection<SimpleFeatureType, SimpleFeature> fc;
+            fc = (FeatureCollection<SimpleFeatureType, SimpleFeature>) f.next();
             sb.append(fc.getSchema().getTypeName() + "_");
         }
         sb.setLength(sb.length()-1);
@@ -64,6 +66,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         
     }
 
+    @SuppressWarnings("unchecked")
     protected void write(FeatureCollectionType featureCollection,
             OutputStream output, Operation getFeature) throws IOException,
             ServiceException {
@@ -78,9 +81,10 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         // including the lockID
         //
         // execute should also fail if all of the locks could not be aquired
-        List resultsList = featureCollection.getFeature();
+        List<FeatureCollection<SimpleFeatureType, SimpleFeature>> resultsList;
+        resultsList = featureCollection.getFeature();
 
-        //FeatureResults[] featureResults = (FeatureResults[]) resultsList
+        // FeatureResults[] featureResults = (FeatureResults[]) resultsList
         //    .toArray(new FeatureResults[resultsList.size()]);
         LOGGER.info("about to encode JSON");
 
@@ -95,8 +99,8 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
             
             CoordinateReferenceSystem crs = null;            
             for (int i = 0; i < resultsList.size(); i++) {
-                FeatureCollection  collection = (FeatureCollection) resultsList.get(i);
-                FeatureIterator iterator = collection.features();
+                FeatureCollection<SimpleFeatureType, SimpleFeature> collection = resultsList.get(i);
+                FeatureIterator <SimpleFeature> iterator = collection.features();
 
                 try {
                     SimpleFeatureType fType;

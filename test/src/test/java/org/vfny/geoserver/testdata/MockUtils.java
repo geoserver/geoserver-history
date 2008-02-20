@@ -520,7 +520,7 @@ public class MockUtils {
 
         /*
          * public FeatureReader getFeatureReader(Query query, Transaction
-         * transaction) throws IOException { FeatureReader reader =
+         * transaction) throws IOException { FeatureReader<SimpleFeatureType, SimpleFeature> reader =
          * super.getFeatureReader(query, transaction); try { return new
          * ForceCoordinateSystemFeatureReader(reader,
          * AbstractCiteDataTest.FORCED_WGS84); } catch (SchemaException e) {

@@ -22,6 +22,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.xml.GML2OutputFormat;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -56,7 +57,7 @@ public class GetLogGML2OutputFormat extends GML2OutputFormat {
      */
     private GetFeatureType toGetFeatureType(FeatureCollectionType featureCollection,
             GetLogType request) {
-        FeatureCollection features = (FeatureCollection) featureCollection.getFeature().get(0);
+        FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) featureCollection.getFeature().get(0);
         SimpleFeatureType featureType = features.getSchema();
         GetFeatureType ftRequest = WfsFactory.eINSTANCE.createGetFeatureType();
         QueryType query = WfsFactory.eINSTANCE.createQueryType();

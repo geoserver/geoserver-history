@@ -7,9 +7,9 @@ Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: net.opengis.wcs.v1_1._1,
- net.opengis.wcs.v1_1._1.impl,
- net.opengis.wcs.v1_1._1.util
+Export-Package: net.opengis.wcs.v1_1_1,
+ net.opengis.wcs.v1_1_1.impl,
+ net.opengis.wcs.v1_1_1.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  net.opengis.ows.v1_1;visibility:=reexport

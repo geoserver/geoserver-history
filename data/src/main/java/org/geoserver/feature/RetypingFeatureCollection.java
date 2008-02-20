@@ -22,17 +22,17 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-
 /**
  * FeatureCollection with "casts" features from on feature type to another.
- *
+ * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
+ * 
  */
 public class RetypingFeatureCollection extends DecoratingFeatureCollection {
-   SimpleFeatureType target;
+    SimpleFeatureType target;
 
-    public RetypingFeatureCollection(FeatureCollection delegate, SimpleFeatureType target) {
+    public RetypingFeatureCollection(FeatureCollection<SimpleFeatureType, SimpleFeature> delegate,
+            SimpleFeatureType target) {
         super(delegate);
         this.target = target;
     }
@@ -41,26 +41,26 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
         return target;
     }
 
-    public Iterator iterator() {
+    public Iterator<SimpleFeature> iterator() {
         return new RetypingIterator(delegate.iterator(), target);
     }
 
-    public void close(Iterator iterator) {
+    public void close(Iterator<SimpleFeature> iterator) {
         RetypingIterator retyping = (RetypingIterator) iterator;
         delegate.close(retyping.delegate);
     }
 
-    public FeatureIterator features() {
-        return new DelegateFeatureIterator(this, iterator());
+    public FeatureIterator<SimpleFeature> features() {
+        return new DelegateFeatureIterator<SimpleFeature>(this, iterator());
     }
 
-    public void close(FeatureIterator iterator) {
-        DelegateFeatureIterator delegate = (DelegateFeatureIterator) iterator;
+    public void close(FeatureIterator<SimpleFeature> iterator) {
+        DelegateFeatureIterator<SimpleFeature> delegate = (DelegateFeatureIterator<SimpleFeature>) iterator;
         delegate.close();
     }
 
     static SimpleFeature retype(SimpleFeature source, SimpleFeatureType target)
-        throws IllegalAttributeException {
+            throws IllegalAttributeException {
         Object[] attributes = new Object[target.getAttributeCount()];
 
         for (int i = 0; i < target.getAttributeCount(); i++) {
@@ -74,38 +74,40 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             attributes[i] = value;
         }
 
-        
-        String id = reTypeId(source.getID(), source.getFeatureType(), target);    
+        String id = reTypeId(source.getID(), source.getFeatureType(), target);
         return SimpleFeatureBuilder.build(target, attributes, id);
     }
-    
+
     /**
-     * Given a feature id following the <typename>.<internalId> convention, the original 
-     * type and the destination type, this converts the id from <original>.<internalid>
-     * to <target>.<internalid>
+     * Given a feature id following the <typename>.<internalId> convention, the
+     * original type and the destination type, this converts the id from
+     * <original>.<internalid> to <target>.<internalid>
+     * 
      * @param id
      * @param original
      * @param target
      * @return
      */
-    public static String reTypeId(String sourceId, SimpleFeatureType original, SimpleFeatureType target) {
+    public static String reTypeId(String sourceId, SimpleFeatureType original,
+            SimpleFeatureType target) {
         final String originalTypeName = original.getName().getLocalPart();
         final String destTypeName = target.getName().getLocalPart();
-        if(destTypeName.equals(originalTypeName))
+        if (destTypeName.equals(originalTypeName))
             return sourceId;
-        
+
         final String prefix = originalTypeName + ".";
-        if(sourceId.startsWith(prefix)) {
+        if (sourceId.startsWith(prefix)) {
             return destTypeName + "." + sourceId.substring(prefix.length());
         } else
             return sourceId;
     }
 
-    public static class RetypingIterator implements Iterator {
+    public static class RetypingIterator implements Iterator<SimpleFeature> {
         SimpleFeatureType target;
-        Iterator delegate;
 
-        public RetypingIterator(Iterator delegate, SimpleFeatureType target) {
+        Iterator<SimpleFeature> delegate;
+
+        public RetypingIterator(Iterator<SimpleFeature> delegate, SimpleFeatureType target) {
             this.delegate = delegate;
             this.target = target;
         }
@@ -114,9 +116,9 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             return delegate.hasNext();
         }
 
-        public Object next() {
+        public SimpleFeature next() {
             try {
-                return RetypingFeatureCollection.retype((SimpleFeature) delegate.next(), target);
+                return RetypingFeatureCollection.retype(delegate.next(), target);
             } catch (IllegalAttributeException e) {
                 throw new RuntimeException(e);
             }
@@ -127,11 +129,14 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
         }
     }
 
-    public static class RetypingFeatureReader implements FeatureReader {
-        FeatureReader delegate;
+    public static class RetypingFeatureReader implements
+            FeatureReader<SimpleFeatureType, SimpleFeature> {
+        FeatureReader<SimpleFeatureType, SimpleFeature> delegate;
+
         SimpleFeatureType target;
 
-        public RetypingFeatureReader(FeatureReader delegate, SimpleFeatureType target) {
+        public RetypingFeatureReader(FeatureReader<SimpleFeatureType, SimpleFeature> delegate,
+                SimpleFeatureType target) {
             this.delegate = delegate;
             this.target = target;
         }
@@ -150,18 +155,24 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             return delegate.hasNext();
         }
 
-        public SimpleFeature next() throws IOException, IllegalAttributeException, NoSuchElementException {
+        public SimpleFeature next() throws IOException, IllegalAttributeException,
+                NoSuchElementException {
             return RetypingFeatureCollection.retype(delegate.next(), target);
         }
     }
-    
-    public static class RetypingFeatureWriter implements FeatureWriter {
-        FeatureWriter delegate;
+
+    public static class RetypingFeatureWriter implements
+            FeatureWriter<SimpleFeatureType, SimpleFeature> {
+        FeatureWriter<SimpleFeatureType, SimpleFeature> delegate;
+
         SimpleFeatureType target;
+
         private SimpleFeature current;
+
         private SimpleFeature retyped;
 
-        public RetypingFeatureWriter(FeatureWriter delegate, SimpleFeatureType target) {
+        public RetypingFeatureWriter(FeatureWriter<SimpleFeatureType, SimpleFeature> delegate,
+                SimpleFeatureType target) {
             this.delegate = delegate;
             this.target = target;
         }
@@ -186,7 +197,8 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
                 retyped = RetypingFeatureCollection.retype(current, target);
                 return retyped;
             } catch (IllegalAttributeException e) {
-                throw (IOException) new IOException("Error occurred while retyping feature").initCause(e);
+                throw (IOException) new IOException("Error occurred while retyping feature")
+                        .initCause(e);
             }
         }
 
@@ -202,8 +214,9 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
                     current.setAttribute(at.getLocalName(), value);
                 }
                 delegate.write();
-            } catch(IllegalAttributeException e) {
-                throw (IOException) new IOException("Error occurred while retyping feature").initCause(e);
+            } catch (IllegalAttributeException e) {
+                throw (IOException) new IOException("Error occurred while retyping feature")
+                        .initCause(e);
             }
         }
     }

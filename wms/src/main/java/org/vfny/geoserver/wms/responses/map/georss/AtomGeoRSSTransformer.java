@@ -14,6 +14,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -63,8 +64,8 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
         void encodeEntries(WMSMapContext map) throws IOException{
             List featureCollections = loadFeatureCollections(map);
             for (Iterator f = featureCollections.iterator(); f.hasNext();) {
-                FeatureCollection features = (FeatureCollection) f.next();
-                FeatureIterator iterator = null;
+                FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) f.next();
+                FeatureIterator <SimpleFeature> iterator = null;
 
                 try {
                     iterator = features.features();

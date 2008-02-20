@@ -233,7 +233,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 		if (this.mapContext.getLayer(0) != null) {
 			try {
 				String title = this.mapContext.getLayer(0).getFeatureSource()
-						.getSchema().getTypeName();
+						.getSchema().getName().getLocalPart();
 
 				if ((title != null) && !title.equals("")) {
 					return "attachment; filename=" + title + ".pdf";

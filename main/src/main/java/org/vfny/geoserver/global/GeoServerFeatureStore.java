@@ -9,6 +9,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
@@ -35,7 +36,8 @@ import java.util.Set;
  * @author Gabriel Rold?n
  * @version $Id$
  */
-public class GeoServerFeatureStore extends GeoServerFeatureSource implements FeatureStore {
+public class GeoServerFeatureStore extends GeoServerFeatureSource implements
+        FeatureStore<SimpleFeatureType, SimpleFeature> {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *
@@ -45,8 +47,9 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @param declaredCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      * @param srsHandling
      */
-    GeoServerFeatureStore(FeatureStore store, SimpleFeatureType schema, Filter definitionQuery,
-        CoordinateReferenceSystem declaredCRS, int srsHandling) {
+    GeoServerFeatureStore(FeatureStore<SimpleFeatureType, SimpleFeature> store,
+            SimpleFeatureType schema, Filter definitionQuery,
+            CoordinateReferenceSystem declaredCRS, int srsHandling) {
         super(store, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
@@ -55,8 +58,8 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      *
      * @return DOCUMENT ME!
      */
-    FeatureStore store() {
-        return (FeatureStore) source;
+    FeatureStore<SimpleFeatureType, SimpleFeature> store() {
+        return (FeatureStore<SimpleFeatureType, SimpleFeature>) source;
     }
 
     /**
@@ -65,8 +68,8 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @return
      * @throws IOException
      */
-    public Set addFeatures(FeatureCollection fc) throws IOException {
-        FeatureStore store = store();
+    public Set addFeatures(FeatureCollection<SimpleFeatureType, SimpleFeature> fc) throws IOException {
+        FeatureStore<SimpleFeatureType, SimpleFeature> store = store();
 
         //check if the feature collection needs to be retyped
         if (!store.getSchema().equals(fc.getSchema())) {
@@ -131,8 +134,8 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void setFeatures(FeatureReader reader) throws IOException {
-        FeatureStore store = store();
+    public void setFeatures(FeatureReader<SimpleFeatureType, SimpleFeature> reader) throws IOException {
+        FeatureStore<SimpleFeatureType, SimpleFeature> store = store();
 
         //check if the feature reader needs to be retyped
         if (!store.getSchema().equals(reader.getFeatureType())) {

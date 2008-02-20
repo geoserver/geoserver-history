@@ -37,6 +37,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -163,7 +164,7 @@ public class GetFeature {
                     //TODO: a join is taking place
                 }
 
-                FeatureSource source = meta.getFeatureSource();
+                FeatureSource<SimpleFeatureType, SimpleFeature> source = meta.getFeatureSource();
 
                 List atts = meta.getAttributes();
                 List attNames = meta.getAttributeNames();
@@ -348,7 +349,7 @@ public class GetFeature {
                 
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
-                FeatureCollection features = getFeatures(request, source, gtQuery);
+                FeatureCollection<SimpleFeatureType, SimpleFeature> features = getFeatures(request, source, gtQuery);
                 count += features.size();
                 
                 // we may need to shave off geometries we did load only to make bounds
@@ -434,8 +435,10 @@ public class GetFeature {
      * @return
      * @throws IOException
      */
-    protected FeatureCollection getFeatures(GetFeatureType request, FeatureSource source,
-            org.geotools.data.Query gtQuery) throws IOException {
+    protected FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(
+            GetFeatureType request, FeatureSource<SimpleFeatureType, SimpleFeature> source,
+            org.geotools.data.Query gtQuery)
+            throws IOException {
         return source.getFeatures(gtQuery);
     }
 
@@ -458,7 +461,7 @@ public class GetFeature {
      *
      */
     public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures,
-        FeatureSource source, GetFeatureType request) throws WFSException {
+        FeatureSource<SimpleFeatureType, SimpleFeature> source, GetFeatureType request) throws WFSException {
         
         String wfsVersion = request.getVersion();
         

@@ -65,7 +65,7 @@ public class LockFeatureTypeResponse extends Response {
         //TODO: get rid of this hardcoding, and make a common utility to get all
         //these namespace imports, as everyone is using them, and changes should
         //go through to all the operations.
-        writer.write("<?xml version=\"1.0\" encoding=\"" + wfs.getCharSet().displayName() + "\"?>");
+        writer.write("<?xml version=\"1.0\" encoding=\"" + wfs.getCharSet().name() + "\"?>");
         writer.write("<WFS_LockFeatureResponse " + "\n");
         writer.write(indent + "xmlns=\"http://www.opengis.net/wfs\" " + "\n");
         writer.write(indent + "xmlns:ogc=\"http://www.opengis.net/ogc\" " + "\n");

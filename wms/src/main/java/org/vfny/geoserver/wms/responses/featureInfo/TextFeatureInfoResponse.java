@@ -80,11 +80,11 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                                                           // if not specified
                                                           // in the request
 
-        FeatureIterator reader = null;
+        FeatureIterator<SimpleFeature> reader = null;
 
         try {
             final int size = results.size();
-            FeatureCollection fr;
+            FeatureCollection<SimpleFeatureType, SimpleFeature> fr;
             SimpleFeature f;
 
             SimpleFeatureType schema;
@@ -92,7 +92,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
             for (int i = 0; i < size; i++) // for each layer queried
              {
-                fr = (FeatureCollection) results.get(i);
+                fr = (FeatureCollection<SimpleFeatureType, SimpleFeature>) results.get(i);
                 reader = fr.features();
 
                 if (reader.hasNext() && (featuresPrinted < maxfeatures)) // if this layer has a hit and we're going to print it

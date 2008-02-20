@@ -8,6 +8,8 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
@@ -40,7 +42,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     /**
      * The feature source for the remote WFS layer (see REMOVE_OWS_TYPE/URL in the SLD spec)
      */
-    private FeatureSource remoteFeatureSource;
+    private FeatureSource<SimpleFeatureType, SimpleFeature> remoteFeatureSource;
 
     /**
      *
@@ -122,7 +124,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         type = TYPE_VECTOR;
     }
 
-    public MapLayerInfo(FeatureSource remoteSource) {
+    public MapLayerInfo(FeatureSource<SimpleFeatureType, SimpleFeature> remoteSource) {
         name = remoteSource.getSchema().getTypeName();
         label = name;
         description = "Remote WFS";
@@ -158,7 +160,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
             try {
                 return feature.getBoundingBox();
             } catch (IllegalArgumentException e) {
-                FeatureSource realSource = feature.getFeatureSource();
+                FeatureSource<SimpleFeatureType, SimpleFeature> realSource = feature.getFeatureSource();
 
                 return DataStoreUtils.getBoundingBoxEnvelope(realSource);
             }
@@ -184,7 +186,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
             try {
                 return feature.getLatLongBoundingBox();
             } catch (IllegalArgumentException e) {
-                FeatureSource realSource = feature.getFeatureSource();
+                FeatureSource<SimpleFeatureType, SimpleFeature> realSource = feature.getFeatureSource();
 
                 return DataStoreUtils.getBoundingBoxEnvelope(realSource);
             }
@@ -371,11 +373,12 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
      * Returns the remote feature source in case this layer is a remote WFS layer
      * @return
      */
-    public FeatureSource getRemoteFeatureSource() {
+    public FeatureSource<SimpleFeatureType, SimpleFeature> getRemoteFeatureSource() {
         return remoteFeatureSource;
     }
 
-    public void setRemoteFeatureSource(FeatureSource remoteFeatureSource) {
+    public void setRemoteFeatureSource(
+            FeatureSource<SimpleFeatureType, SimpleFeature> remoteFeatureSource) {
         this.remoteFeatureSource = remoteFeatureSource;
     }
 

@@ -303,7 +303,7 @@ public class SVGWriter extends OutputStreamWriter {
         super.write('\n');
     }
 
-    public void writeFeatures(SimpleFeatureType featureType, FeatureIterator reader, String style)
+    public void writeFeatures(SimpleFeatureType featureType, FeatureIterator<SimpleFeature> reader, String style)
         throws IOException, AbortedException {
         SimpleFeature ft;
 

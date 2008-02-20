@@ -18,6 +18,8 @@ import org.geotools.data.FeatureWriter;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.FilterFactory2;
@@ -80,7 +82,8 @@ public class DeleteElementHandler implements TransactionElementHandler {
         String handle = delete.getHandle();
         long deleted = response.getTransactionSummary().getTotalDeleted().longValue();
 
-        FeatureStore store = (FeatureStore) featureStores.get(elementName);
+        FeatureStore<SimpleFeatureType, SimpleFeature> store;
+        store = (FeatureStore<SimpleFeatureType, SimpleFeature>) featureStores.get(elementName);
 
         if (store == null) {
             throw new WFSException("Could not locate FeatureStore for '" + elementName + "'");
@@ -112,7 +115,8 @@ public class DeleteElementHandler implements TransactionElementHandler {
 
             if ((request.getLockId() != null) && store instanceof FeatureLocking
                     && (request.getReleaseAction() == AllSomeType.SOME_LITERAL)) {
-                FeatureLocking locking = (FeatureLocking) store;
+                FeatureLocking<SimpleFeatureType, SimpleFeature> locking;
+                locking = (FeatureLocking<SimpleFeatureType, SimpleFeature>) store;
 
                 // TODO: Revisit Lock/Delete interaction in gt2
                 if (false) {
@@ -142,9 +146,9 @@ public class DeleteElementHandler implements TransactionElementHandler {
                     // While that sounds like a good idea, it
                     // would be extra work when doing release mode ALL.
                     // 
-                    DataStore data = store.getDataStore();
+                    DataStore data = (DataStore) store.getDataStore();
                     FilterFactory factory = CommonFactoryFinder.getFilterFactory(null);
-                    FeatureWriter writer;
+                    FeatureWriter<SimpleFeatureType, SimpleFeature> writer;
                     writer = data.getFeatureWriter(typeName, filter, store.getTransaction());
 
                     try {

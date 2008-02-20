@@ -39,6 +39,7 @@ import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -261,6 +262,7 @@ public class EncodeKML {
      * @throws AbortedException
      *
      */
+    @SuppressWarnings("unchecked")
     private void writeLayers(final boolean kmz, ArrayList layerRenderList)
         throws IOException, AbortedException {
         MapLayer[] layers = mapContext.getLayers();
@@ -282,7 +284,8 @@ public class EncodeKML {
             writer.startDocument(layer.getTitle(), null);
 
             //FeatureReader featureReader = null;
-            FeatureSource fSource = layer.getFeatureSource();
+            FeatureSource<SimpleFeatureType, SimpleFeature> fSource;
+            fSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
             SimpleFeatureType schema = fSource.getSchema();
 
             //GeometryAttributeType geometryAttribute = schema.getDefaultGeometry();
@@ -358,7 +361,7 @@ public class EncodeKML {
                 q.setCoordinateSystem(layer.getFeatureSource().getSchema().getDefaultGeometry()
                                            .getCRS());
 
-                FeatureCollection fc = fSource.getFeatures(q);
+                FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fSource.getFeatures(q);
 
                 int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
                 boolean useVector = useVectorOutput(kmscore, fc.size()); // kmscore = render vector/raster

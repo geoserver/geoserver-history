@@ -4,8 +4,16 @@
  */
 package org.geoserver.wfsv;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetDiffType;
+
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.data.FeatureSource;
@@ -14,6 +22,7 @@ import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -21,11 +30,6 @@ import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -110,7 +114,7 @@ public class GetDiff {
             for (int i = 0; (i < queries.size()); i++) {
                 DifferenceQueryType query = (DifferenceQueryType) queries.get(i);
                 FeatureTypeInfo meta = featureTypeInfo((QName) query.getTypeName());
-                FeatureSource source = meta.getFeatureSource();
+                FeatureSource<SimpleFeatureType, SimpleFeature> source = meta.getFeatureSource();
 
                 if (!(source instanceof VersioningFeatureSource)) {
                     throw new WFSException("Feature type" + query.getTypeName()

@@ -4,11 +4,11 @@
  */
 package org.vfny.geoserver.wms.responses.map.svg;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
+
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureIterator;
@@ -18,12 +18,14 @@ import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.vfny.geoserver.wms.WMSMapContext;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 
 
 /**
@@ -171,6 +173,7 @@ public class EncodeSVG {
      *
      * @task TODO: respect layer filtering given by their Styles
      */
+    @SuppressWarnings("unchecked")
     private void writeLayers() throws IOException, AbortedException {
         MapLayer[] layers = mapContext.getLayers();
         int nLayers = layers.length;
@@ -182,8 +185,9 @@ public class EncodeSVG {
 
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
-            FeatureIterator featureReader = null;
-            FeatureSource fSource = layer.getFeatureSource();
+            FeatureIterator<SimpleFeature> featureReader = null;
+            FeatureSource<SimpleFeatureType, SimpleFeature> fSource;
+            fSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
             SimpleFeatureType schema = fSource.getSchema();
 
             try {

@@ -16,6 +16,9 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -61,7 +64,7 @@ public class GetLogHtmlOutputFormat extends Response {
     public void write(Object value, OutputStream output, Operation operation)
         throws IOException, ServiceException {
         FeatureCollectionType fct = (FeatureCollectionType) value;
-        FeatureCollection fc = (FeatureCollection) fct.getFeature().get(0);
+        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = (FeatureCollection) fct.getFeature().get(0);
 
         // setup template subsystem
         GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());

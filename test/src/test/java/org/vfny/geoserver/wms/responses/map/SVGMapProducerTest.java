@@ -51,7 +51,7 @@ public class SVGMapProducerTest extends AbstractCiteDataTest {
         ds.createSchema(type);
         ds.addFeatures(new SimpleFeature[] { f1, f2, f3 });
 
-        FeatureSource fs = ds.getFeatureSource("test");
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs = ds.getFeatureSource("test");
 
         final WMSMapContext map = new WMSMapContext();
         map.setAreaOfInterest(new Envelope(-250, 250, -250, 250));

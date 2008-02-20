@@ -4,11 +4,13 @@
  */
 package org.geoserver.feature;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.factory.Hints;
-
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureTypes;
@@ -27,26 +29,24 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.OperationNotFoundException;
 import org.opengis.referencing.operation.TransformException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * Decorating feature collection which reprojects feature geometries to a particular coordinate
- * reference system on the fly.
+ * Decorating feature collection which reprojects feature geometries to a particular coordinate reference system on the fly.
  * <p>
  * The coordinate reference system of feature geometries is looked up using
  * {@link com.vividsolutions.jts.geom.Geometry#getUserData()}.
  * </p>
  * <p>
- * The {@link #defaultSource} attribute can be set to specify a coordinate refernence system
- * to transform from when one is not specified by teh geometry itself. Leaving the property
- * null specifies that the geometry will not be transformed.
+ * The {@link #defaultSource} attribute can be set to specify a coordinate
+ * refernence system to transform from when one is not specified by teh geometry
+ * itself. Leaving the property null specifies that the geometry will not be
+ * transformed.
  * </p>
+ * 
  * @author Justin Deoliveira, The Open Planning Project
- *
+ * 
  */
 public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
     /**
@@ -60,46 +60,46 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
     CoordinateReferenceSystem target;
 
     /**
-     * Coordinate reference system to use when one is not
-     * specified on an encountered geometry.
+     * Coordinate reference system to use when one is not specified on an
+     * encountered geometry.
      */
     CoordinateReferenceSystem defaultSource;
 
     /**
      * MathTransform cache, keyed by source CRS
      */
-    HashMap /*<CoordinateReferenceSystem,GeometryCoordinateSequenceTransformer>*/ transformers;
+    HashMap /* <CoordinateReferenceSystem,GeometryCoordinateSequenceTransformer> */transformers;
 
     /**
      * Transformation hints
      */
     Hints hints = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
 
-    public ReprojectingFeatureCollection(FeatureCollection delegate,
-        CoordinateReferenceSystem target)
-        throws SchemaException, OperationNotFoundException, FactoryRegistryException,
-            FactoryException {
+    public ReprojectingFeatureCollection(
+            FeatureCollection<SimpleFeatureType, SimpleFeature> delegate,
+            CoordinateReferenceSystem target) throws SchemaException, OperationNotFoundException,
+            FactoryRegistryException, FactoryException {
         super(delegate);
 
         this.target = target;
         this.schema = FeatureTypes.transform(delegate.getSchema(), target);
 
-        //create transform cache
+        // create transform cache
         transformers = new HashMap();
 
-        //cache "default" transform
+        // cache "default" transform
         CoordinateReferenceSystem source = delegate.getSchema().getCRS();
-            
+
         if (source != null) {
-            MathTransform2D tx = (MathTransform2D) ReferencingFactoryFinder.getCoordinateOperationFactory(hints)
-                                                                           .createOperation(source,
-                    target).getMathTransform();
+            MathTransform2D tx = (MathTransform2D) ReferencingFactoryFinder
+                    .getCoordinateOperationFactory(hints).createOperation(source, target)
+                    .getMathTransform();
 
             GeometryCoordinateSequenceTransformer transformer = new GeometryCoordinateSequenceTransformer();
             transformer.setMathTransform(tx);
             transformers.put(source, transformer);
         } else {
-            //throw exception?
+            // throw exception?
         }
     }
 
@@ -107,7 +107,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         this.defaultSource = defaultSource;
     }
 
-    public FeatureIterator features() {
+    public FeatureIterator<SimpleFeature> features() {
         return new ReprojectingFeatureIterator(delegate.features());
     }
 
@@ -115,7 +115,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         return new ReprojectingIterator(delegate.iterator());
     }
 
-    public void close(FeatureIterator iterator) {
+    public void close(FeatureIterator<SimpleFeature> iterator) {
         if (iterator instanceof ReprojectingFeatureIterator) {
             delegate.close(((ReprojectingFeatureIterator) iterator).getDelegate());
         }
@@ -137,8 +137,8 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         return schema;
     }
 
-    public FeatureCollection subCollection(Filter filter) {
-        FeatureCollection sub = delegate.subCollection(filter);
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> subCollection(Filter filter) {
+        FeatureCollection<SimpleFeatureType, SimpleFeature> sub = delegate.subCollection(filter);
 
         if (sub != null) {
             try {
@@ -191,7 +191,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
             if (!i.hasNext()) {
                 bounds = new ReferencedEnvelope();
                 bounds.setToNull();
-                
+
             } else {
                 SimpleFeature first = (SimpleFeature) i.next();
                 bounds = new ReferencedEnvelope(first.getBounds());
@@ -201,14 +201,14 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
                 SimpleFeature f = (SimpleFeature) i.next();
                 bounds.include(f.getBounds());
             }
-            
+
             return bounds;
         } finally {
             close(i);
         }
     }
 
-    public FeatureCollection collection() throws IOException {
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> collection() throws IOException {
         return this;
     }
 
@@ -220,7 +220,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
             Object object = feature.getAttribute(type.getName());
 
             if (object instanceof Geometry) {
-                //check for crs
+                // check for crs
                 Geometry geometry = (Geometry) object;
                 CoordinateReferenceSystem crs = (CoordinateReferenceSystem) geometry.getUserData();
 
@@ -232,10 +232,10 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
                 }
 
                 if (crs != null) {
-                    //if equal, nothing to do
+                    // if equal, nothing to do
                     if (!crs.equals(target)) {
                         GeometryCoordinateSequenceTransformer transformer = (GeometryCoordinateSequenceTransformer) transformers
-                            .get(crs);
+                                .get(crs);
 
                         if (transformer == null) {
                             transformer = new GeometryCoordinateSequenceTransformer();
@@ -243,9 +243,9 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
                             MathTransform2D tx;
 
                             try {
-                                tx = (MathTransform2D) ReferencingFactoryFinder.getCoordinateOperationFactory(hints)
-                                                                               .createOperation(crs,
-                                        target).getMathTransform();
+                                tx = (MathTransform2D) ReferencingFactoryFinder
+                                        .getCoordinateOperationFactory(hints).createOperation(crs,
+                                                target).getMathTransform();
                             } catch (Exception e) {
                                 String msg = "Could not transform for crs: " + crs;
                                 throw (IOException) new IOException(msg).initCause(e);
@@ -255,7 +255,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
                             transformers.put(crs, transformer);
                         }
 
-                        //do the transformation
+                        // do the transformation
                         try {
                             object = transformer.transform(geometry);
                         } catch (TransformException e) {
@@ -277,14 +277,14 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         }
     }
 
-    class ReprojectingFeatureIterator implements FeatureIterator {
-        FeatureIterator delegate;
+    class ReprojectingFeatureIterator implements FeatureIterator<SimpleFeature> {
+        FeatureIterator<SimpleFeature> delegate;
 
-        public ReprojectingFeatureIterator(FeatureIterator delegate) {
+        public ReprojectingFeatureIterator(FeatureIterator<SimpleFeature> delegate) {
             this.delegate = delegate;
         }
 
-        public FeatureIterator getDelegate() {
+        public FeatureIterator<SimpleFeature> getDelegate() {
             return delegate;
         }
 
@@ -307,14 +307,14 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         }
     }
 
-    class ReprojectingIterator implements Iterator {
-        Iterator delegate;
+    class ReprojectingIterator implements Iterator<SimpleFeature> {
+        Iterator<SimpleFeature> delegate;
 
-        public ReprojectingIterator(Iterator delegate) {
+        public ReprojectingIterator(Iterator<SimpleFeature> delegate) {
             this.delegate = delegate;
         }
 
-        public Iterator getDelegate() {
+        public Iterator<SimpleFeature> getDelegate() {
             return delegate;
         }
 
@@ -326,7 +326,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
             return delegate.hasNext();
         }
 
-        public Object next() {
+        public SimpleFeature next() {
             SimpleFeature feature = (SimpleFeature) delegate.next();
 
             try {

@@ -19,6 +19,8 @@ import org.geotools.filter.IllegalFilterException;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
@@ -101,8 +103,8 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 		final String mapFormat = "image/gif";
 
 		final DataStore ds = getCiteDataStore();
-		final FeatureSource basicPolygons = ds
-				.getFeatureSource(BASIC_POLYGONS_TYPE);
+		final FeatureSource<SimpleFeatureType, SimpleFeature> basicPolygons;
+        basicPolygons = ds.getFeatureSource(BASIC_POLYGONS_TYPE);
 		final Envelope env = basicPolygons.getBounds();
 
 		LOGGER.info("about to create map ctx for BasicPolygons with bounds "
@@ -136,7 +138,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 		final DataStore ds = getCiteDataStore();
 		final String[] typeNames = ds.getTypeNames();
 
-		FeatureSource fSource;
+		FeatureSource<SimpleFeatureType, SimpleFeature> fSource;
 
 		for (int i = 0; i < typeNames.length; i++) {
 			fSource = ds.getFeatureSource(typeNames[i]);
@@ -227,7 +229,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 	 * @throws Exception
 	 *             DOCUMENT ME!
 	 */
-	private void testDefaultStyle(FeatureSource fSource) throws Exception {
+	private void testDefaultStyle(FeatureSource<SimpleFeatureType, SimpleFeature> fSource) throws Exception {
 		Style style = getStyle("default.sld");
 
 		Envelope env = getBlueLakeBounds();

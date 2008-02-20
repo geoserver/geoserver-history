@@ -4,6 +4,14 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -11,6 +19,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.metadata.Identifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -20,12 +29,6 @@ import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesNewForm;
 import org.vfny.geoserver.global.UserContainer;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -125,7 +128,8 @@ public class DataFeatureTypesNewAction extends ConfigAction {
                 e.printStackTrace(); // not a big deal - we'll default to 0.
             }
 
-            FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+            FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+            fs = dataStore.getFeatureSource(featureType.getTypeName());
 
             // TODO translate to lat long, pending
             //This should not be done by default, as it is an expensive operation.

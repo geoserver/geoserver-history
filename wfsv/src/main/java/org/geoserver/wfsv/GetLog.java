@@ -18,6 +18,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -116,7 +117,7 @@ public class GetLog {
             for (int i = 0; i < queries.size() && residual > 0; i++) {
                 DifferenceQueryType query = (DifferenceQueryType) queries.get(i);
                 FeatureTypeInfo meta = featureTypeInfo((QName) query.getTypeName());
-                FeatureSource source = meta.getFeatureSource();
+                FeatureSource<SimpleFeatureType, SimpleFeature> source = meta.getFeatureSource();
 
                 if (!(source instanceof VersioningFeatureSource)) {
                     throw new WFSException("Feature type" + query.getTypeName()
@@ -147,8 +148,9 @@ public class GetLog {
 
                 // extract collection
                 VersioningFeatureSource store = (VersioningFeatureSource) source;
-                FeatureCollection logs = store.getLog(query.getFromFeatureVersion(),
-                        query.getToFeatureVersion(), filter, null, residual);
+                FeatureCollection<SimpleFeatureType, SimpleFeature> logs = store.getLog(query
+                        .getFromFeatureVersion(), query.getToFeatureVersion(), filter, null,
+                        residual);
                 residual -= logs.size();
 
                 // TODO: handle logs reprojection in another CRS

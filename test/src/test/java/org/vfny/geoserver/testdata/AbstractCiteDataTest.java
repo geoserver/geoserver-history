@@ -434,7 +434,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
         /*
            public FeatureReader getFeatureReader(Query query,
                Transaction transaction) throws IOException {
-               FeatureReader reader = super.getFeatureReader(query, transaction);
+               FeatureReader<SimpleFeatureType, SimpleFeature> reader = super.getFeatureReader(query, transaction);
                try {
                    return new ForceCoordinateSystemFeatureReader(reader,
                        AbstractCiteDataTest.FORCED_WGS84);

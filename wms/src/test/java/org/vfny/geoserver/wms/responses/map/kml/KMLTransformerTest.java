@@ -4,33 +4,23 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.vividsolutions.jts.geom.Envelope;
-import org.geoserver.data.test.MockData;
-import org.geoserver.util.ReaderUtils;
-import org.geoserver.wms.WMSTestSupport;
-import org.geotools.data.FeatureSource;
-import org.geotools.map.DefaultMapLayer;
-import org.geotools.map.MapContext;
-import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
-import org.geotools.styling.Style;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.servlets.GetMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSTestSupport;
+import org.geotools.data.FeatureSource;
+import org.geotools.map.MapLayer;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.vfny.geoserver.wms.WMSMapContext;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 public class KMLTransformerTest extends WMSTestSupport {
@@ -52,11 +42,13 @@ public class KMLTransformerTest extends WMSTestSupport {
         dataDirectory.addStyle("SingleFeature", getClass().getResource("singlefeature.sld"));
     }
 
+    @SuppressWarnings("unchecked")
     public void testVectorTransformer() throws Exception {
         KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
         transformer.setIndentation(2);
 
-        FeatureSource featureSource = mapLayer.getFeatureSource();
+        FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
+        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
         int nfeatures = featureSource.getFeatures().size();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -70,6 +62,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         assertEquals(nfeatures, element.getElementsByTagName("Placemark").getLength());
     }
     
+    @SuppressWarnings("unchecked")
     public void testFilteredData() throws Exception {
         MapLayer mapLayer = createMapLayer( MockData.BASIC_POLYGONS,  "SingleFeature");
         
@@ -79,7 +72,8 @@ public class KMLTransformerTest extends WMSTestSupport {
         KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
         transformer.setIndentation(2);
 
-        FeatureSource featureSource = mapLayer.getFeatureSource();
+        FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
+        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(featureSource.getFeatures(), output);

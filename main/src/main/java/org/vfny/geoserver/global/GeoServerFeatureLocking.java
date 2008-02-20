@@ -4,14 +4,16 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.IOException;
+
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import java.io.IOException;
 
 
 /**
@@ -29,10 +31,11 @@ import java.io.IOException;
  * so? It would need to support writing and locking though.
  * </p>
  *
- * @author Gabriel Rold�n
+ * @author Gabriel Roldan
  * @version $Id$
  */
-public class GeoServerFeatureLocking extends GeoServerFeatureStore implements FeatureLocking {
+public class GeoServerFeatureLocking extends GeoServerFeatureStore implements
+        FeatureLocking<SimpleFeatureType, SimpleFeature> {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *
@@ -42,13 +45,14 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
      * @param declaredCRS 
      * @param srsHandling see {@link FeatureTypeInfo#FORCE} & co.
      */
-    GeoServerFeatureLocking(FeatureLocking locking, SimpleFeatureType schema, Filter definitionQuery,
-        CoordinateReferenceSystem declaredCRS, int srsHandling) {
+    GeoServerFeatureLocking(FeatureLocking<SimpleFeatureType, SimpleFeature> locking,
+            SimpleFeatureType schema, Filter definitionQuery,
+            CoordinateReferenceSystem declaredCRS, int srsHandling) {
         super(locking, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
-    FeatureLocking locking() {
-        return (FeatureLocking) source;
+    FeatureLocking<SimpleFeatureType, SimpleFeature> locking() {
+        return (FeatureLocking<SimpleFeatureType, SimpleFeature>) source;
     }
 
     /**
@@ -64,7 +68,7 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
      */
     public void setFeatureLock(FeatureLock lock) {
         if (source instanceof FeatureLocking) {
-            ((FeatureLocking) source).setFeatureLock(lock);
+            ((FeatureLocking<SimpleFeatureType, SimpleFeature>) source).setFeatureLock(lock);
         } else {
             throw new UnsupportedOperationException("FeatureTypeConfig does not supports locking");
         }
@@ -82,7 +86,7 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
      */
     public int lockFeatures(Query query) throws IOException {
         if (source instanceof FeatureLocking) {
-            return ((FeatureLocking) source).lockFeatures(query);
+            return ((FeatureLocking<SimpleFeatureType, SimpleFeature>) source).lockFeatures(query);
         } else {
             throw new DataSourceException("FeatureTypeConfig does not supports locking");
         }

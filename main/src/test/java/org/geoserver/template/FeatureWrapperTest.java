@@ -15,6 +15,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.OutputStreamWriter;
@@ -23,7 +24,7 @@ import java.io.Writer;
 
 
 public class FeatureWrapperTest extends TestCase {
-    FeatureCollection features;
+    FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     Configuration cfg;
 
     protected void setUp() throws Exception {
