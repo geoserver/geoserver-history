@@ -1,5 +1,6 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,23 +13,22 @@ import javax.xml.bind.DatatypeConverter;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.OtherText;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Symbolizer;
+import org.geotools.styling.TextSymbolizer2;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.filter.expression.Expression;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.map.kml.OWS5GeometryTransformer.KML3GeometryTranslator;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
 
 public class OWS5VectorTransformer extends KMLVectorTransformer {
 
@@ -53,11 +53,21 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
         public KML3Translator(ContentHandler contentHandler) {
             super(contentHandler);
             
-            OWS5GeometryTransformer geometryTransformer = new OWS5GeometryTransformer();
-            geometryTranslator = (KML3GeometryTranslator) geometryTransformer.createTranslator(contentHandler);
+            KMLGeometryTransformer geometryTransformer = new KMLGeometryTransformer();
+            //geometryTransformer.setUseDummyZ( true );
+            geometryTransformer.setOmitXMLDeclaration(true);
+            geometryTransformer.setNamespaceDeclarationEnabled(true);
 
-            // we need to make sure the data type converter is registered
-            // properly
+            GeoServer config = mapContext.getRequest().getGeoServer();
+            geometryTransformer.setNumDecimals(config.getNumDecimals());
+
+            geometryTranslator = geometryTransformer.createTranslator(contentHandler);
+            
+//            GML3 outputting transformer
+//            OWS5GeometryTransformer geometryTransformer = new OWS5GeometryTransformer();
+//            geometryTranslator = (KML3GeometryTranslator) geometryTransformer.createTranslator(contentHandler);
+
+            // we need to make sure the data type converter is registered properly
             DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
             // We need to create a unique ID for this schema. Given the
@@ -84,7 +94,7 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
                 return;
             
             // TODO: consider turning this into a Freemarker template
-            final SimpleFeatureType schema = collection.getSchema();
+            final SimpleFeatureType schema = (SimpleFeatureType) collection.getSchema();
             final String[] atts = new String[] { "name", schema.getTypeName(), "id", schemaId };
             start("Schema", KMLUtils.attributes(atts));
 
@@ -217,36 +227,130 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
 
         }
         
-        /**
-         * Encodes a KML Placemark geometry from a geometry + centroid.
-         */
-        protected void encodePlacemarkGeometry(Geometry geometry, Coordinate centroid) {
-            //if point, just encode a single point, otherwise encode the geometry
-            // + centroid
-            if ( geometry instanceof Point || 
-                    (geometry instanceof MultiPoint) && ((MultiPoint)geometry).getNumPoints() == 1 ) {
-                encodeGeometry( geometry );
+//        /**
+//         * Encodes a KML Placemark geometry from a geometry + centroid.
+//         */
+//        protected void encodePlacemarkGeometry(Geometry geometry, Coordinate centroid, FeatureTypeStyle[] styles) {
+//            // if point, just encode a single point, otherwise encode the geometry + centroid
+//            if ( geometry instanceof Point || 
+//                    (geometry instanceof MultiPoint) && ((MultiPoint)geometry).getNumPoints() == 1 ) {
+//                encodeGeometry( geometry, styles);
+//            }
+//            else {
+//                start("MultiGeometry");
+//
+//                //the centroid
+//                start("Point");
+//
+//                if (!Double.isNaN(centroid.z)) {
+//                    element("pos", centroid.x + " " + centroid.y + " " + centroid.z);
+//                } else {
+//                    element("pos", centroid.x + " " + centroid.y);
+//                }
+//
+//                end("Point");
+//
+//                //the actual geometry
+//                encodeGeometry(geometry, styles);
+//
+//                end("MultiGeometry");
+//            }
+//            
+//        }
+        
+        @Override
+        protected void encodePlacemarkDescription(SimpleFeature feature, FeatureTypeStyle[] styles)
+                throws IOException {
+            // look for a kml text style with the description attribute
+            List<TextSymbolizer2> textSymbolizers = getTextSymbolizers2(feature, styles);
+            Expression description = null;
+            for (TextSymbolizer2 ts : textSymbolizers) {
+                if(ts.getFeatureDescription() != null)
+                    description = ts.getFeatureDescription();
             }
-            else {
-                start("MultiGeometry");
-
-                //the centroid
-                start("Point");
-
-                if (!Double.isNaN(centroid.z)) {
-                    element("pos", centroid.x + " " + centroid.y + " " + centroid.z);
-                } else {
-                    element("pos", centroid.x + " " + centroid.y);
-                }
-
-                end("Point");
-
-                //the actual geometry
-                encodeGeometry(geometry);
-
-                end("MultiGeometry");
+            if(description == null) {
+                // use the freemarker template as a fallback
+                super.encodePlacemarkDescription(feature, styles);
+                return;
             }
             
+            start("description");
+            cdata(description.evaluate(feature, String.class));
+            end("description");
+        }
+        
+        @Override
+        protected void encodePlacemarkSnippet(SimpleFeature feature, FeatureTypeStyle[] styles) {
+            // look for a kml text style with the abstract attribute
+            List<TextSymbolizer2> textSymbolizers = getTextSymbolizers2(feature, styles);
+            Expression abxtract = null;
+            for (TextSymbolizer2 ts : textSymbolizers) {
+                if(ts.getSnippet() != null)
+                    abxtract = ts.getSnippet();
+            }
+            if(abxtract == null) {
+                // no snippet then...
+                return;
+            }
+            start("Snippet");
+            cdata(abxtract.evaluate(feature, String.class));
+            end("Snippet");
+        }
+        
+        @Override
+        protected void encodePlacemarkTime(SimpleFeature feature, FeatureTypeStyle[] styles)
+                throws IOException {
+            // look for a kml text style with the time/startTime/endTime otherText attributes
+            List<TextSymbolizer2> textSymbolizers = getTextSymbolizers2(feature, styles);
+            Expression abxtract = null;
+            Date fromDate = null;
+            Date toDate = null;
+            Date timestamp = null;
+            for (TextSymbolizer2 ts : textSymbolizers) {
+                final OtherText ot = ts.getOtherText();
+                if(ot != null && ot.getTarget() != null && ot.getText() != null) {
+                    if(ot.getTarget().toLowerCase().equals("kml:fromdate")) 
+                        fromDate = ot.getText().evaluate(feature, Date.class);
+                    else if(ot.getTarget().toLowerCase().equals("kml:todate"))
+                        toDate = ot.getText().evaluate(feature, Date.class);
+                    else if(ot.getTarget().toLowerCase().equals("kml:timestamp"))
+                        timestamp = ot.getText().evaluate(feature, Date.class);
+                }
+            }
+            try {
+                if(fromDate != null || toDate != null)
+                    encodeKmlTimeSpan(fromDate, toDate);
+                else if(timestamp != null)
+                    encodeKmlTimeStamp(timestamp);
+                else
+                    super.encodePlacemarkTime(feature, styles);
+            } catch(Exception e) {
+                throw (IOException) new IOException().initCause(e);
+            }
+        }
+
+        /**
+         * Extracts all of the TextSymbolizer2 from the active rules, in the order
+         * they are declared.
+         * @param feature
+         * @param styles
+         * @return
+         */
+        private List<TextSymbolizer2> getTextSymbolizers2(SimpleFeature feature,
+                FeatureTypeStyle[] styles) {
+            List<TextSymbolizer2> textSymbolizers = new ArrayList<TextSymbolizer2>();
+            for (int i = 0; i < styles.length; i++) {
+                Rule[] rules = filterRules(styles[i], feature );
+                for ( int j = 0; j < rules.length; j++ ) {
+                    Symbolizer[] syms = rules[j].getSymbolizers();
+                    for ( int k = 0; k < syms.length; k++) {
+                        if ( syms[k] instanceof TextSymbolizer2) {
+                            textSymbolizers.add((TextSymbolizer2) syms[k]);
+                        }
+                    }
+                }
+            }
+            return textSymbolizers;
         }
         
         

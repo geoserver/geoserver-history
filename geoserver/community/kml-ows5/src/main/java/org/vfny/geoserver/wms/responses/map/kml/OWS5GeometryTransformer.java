@@ -23,10 +23,8 @@ import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
- * Geometry transformer for KML geometries.
- * <p>
- * This class does nothing beyond the normal gml3 geometry transformer
- * besides ensure no gml prefix is used.
+ * This is a GML3 geometry encoder for KML - OWS5 branch. It has been an experiment
+ * that people decided to discard.
  * </p>
  * @author Andrea Aime, TOPP
  *
