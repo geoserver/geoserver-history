@@ -15,6 +15,7 @@ import java.util.Iterator;
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import freemarker.template.Configuration;
@@ -85,7 +86,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         // otherwise we stick with the generic ones
         SimpleFeatureType templateFeatureType = null;
         if(results.size() == 1) {
-            templateFeatureType = ((FeatureCollection) results.get(0)).getSchema();
+            templateFeatureType = ((FeatureCollection<SimpleFeatureType, SimpleFeature>) results.get(0)).getSchema();
         }
         Template header = getTemplate(templateFeatureType, "header.ftl", charSet);
         Template footer = getTemplate(templateFeatureType, "footer.ftl", charSet);
@@ -94,7 +95,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
             header.process(null, osw);
             
             for (Iterator it = results.iterator(); it.hasNext();) {
-                FeatureCollection fc = (FeatureCollection) it.next();
+                FeatureCollection<SimpleFeatureType, SimpleFeature> fc = (FeatureCollection) it.next();
                 if(fc.size() > 0) {
                     SimpleFeatureType ft = fc.getSchema();
                     Template content = getTemplate(ft, "content.ftl", charSet);

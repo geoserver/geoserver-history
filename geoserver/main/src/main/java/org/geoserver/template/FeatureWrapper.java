@@ -63,7 +63,7 @@ import freemarker.template.TemplateModelException;
  * <pre>
  *         <code>
  *  //features we want to apply template to
- *  FeatureCollection features = ...;
+ *  FeatureCollection<SimpleFeatureType, SimpleFeature> features = ...;
  *
  *  //create the configuration and set the wrapper
  *  Configuration cfg = new Configuration();

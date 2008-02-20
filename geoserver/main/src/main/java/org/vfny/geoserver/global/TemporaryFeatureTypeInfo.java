@@ -4,28 +4,20 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.w3c.dom.Element;
 
-/**
- *  This is a very simple class that lets you wrap a temporary datastore into a FeatureTypeInfo.
- *   This is being used by the UserLayer#InlineFeature, and will probably be used by the
- *   UserLayer#OWS (remote WFS).
- *
- *   Currently the only thing that you need to do for this is #getFeatureSource().
- *
- *   We throw errors for everything else so people dont screw up!
- *
- */
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import com.vividsolutions.jts.geom.Envelope;
 
 
 public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
@@ -41,11 +33,11 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
         this.ds = ds;
     }
 
-    public FeatureSource getFeatureSource() throws IOException {
+    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource() throws IOException {
         return ds.getFeatureSource(ds.getTypeNames()[0]);
     }
     
-    public FeatureSource getFeatureSource(boolean skipReproject) throws IOException {
+    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(boolean skipReproject) throws IOException {
         return getFeatureSource();
     }
 
@@ -153,7 +145,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
-    private SimpleFeatureType getFeatureType(FeatureSource fs)
+    private SimpleFeatureType getFeatureType(FeatureSource<SimpleFeatureType, SimpleFeature> fs)
         throws IOException {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }

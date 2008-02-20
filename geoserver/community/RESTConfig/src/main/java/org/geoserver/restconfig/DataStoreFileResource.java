@@ -27,6 +27,8 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.DataStoreFactorySpi.Param;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.restlet.data.MediaType;
@@ -335,7 +337,7 @@ public class DataStoreFileResource extends Resource{
 
         ftc.setDefaultStyle("polygon");
 
-        FeatureSource source = store.getFeatureSource(featureTypeName);
+        FeatureSource<SimpleFeatureType, SimpleFeature> source = store.getFeatureSource(featureTypeName);
 
         CoordinateReferenceSystem crs = source.getSchema().getCRS();
         LOG.info("Trying to autoconfigure " + featureTypeName + "; found CRS " + crs);

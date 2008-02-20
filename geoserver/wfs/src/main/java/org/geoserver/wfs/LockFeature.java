@@ -9,6 +9,8 @@ import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.WfsFactory;
+
+import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.DefaultTransaction;
@@ -23,6 +25,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.FilterFactory2;
@@ -143,8 +146,8 @@ public class LockFeature {
                 } 
 
                 FeatureTypeInfo meta;
-                FeatureSource source;
-                FeatureCollection features;
+                FeatureSource<SimpleFeatureType, SimpleFeature> source;
+                FeatureCollection<SimpleFeatureType, SimpleFeature> features;
 
                 try {
                     meta = catalog.getFeatureTypeInfo(typeName.getLocalPart(),
@@ -167,7 +170,7 @@ public class LockFeature {
                     features = source.getFeatures(filter);
 
                     if (source instanceof FeatureLocking) {
-                        ((FeatureLocking) source).setFeatureLock(fLock);
+                        ((FeatureLocking<SimpleFeatureType, SimpleFeature>) source).setFeatureLock(fLock);
                     }
                 } catch (IOException e) {
                     throw new WFSException(e);
@@ -201,7 +204,8 @@ public class LockFeature {
                             Query query = new DefaultQuery(meta.getTypeName(), (Filter) fidFilter,
                                     Query.DEFAULT_MAX, Query.ALL_NAMES, lock.getHandle());
 
-                            numberLocked = ((FeatureLocking) source).lockFeatures(query);
+                            numberLocked = ((FeatureLocking<SimpleFeatureType, SimpleFeature>) source)
+                                    .lockFeatures(query);
 
                             if (numberLocked == 1) {
                                 LOGGER.fine("Lock " + fid + " (authID:" + fLock.getAuthorization()
@@ -243,8 +247,8 @@ public class LockFeature {
                     try {
                         try {
                             t.addAuthorization(response.getLockId());
-                            source.getDataStore().getLockingManager()
-                                  .refresh(response.getLockId(), t);
+                            DataStore dataStore = (DataStore) source.getDataStore();
+                            dataStore.getLockingManager().refresh(response.getLockId(), t);
                         } finally {
                             t.commit();
                         }

@@ -26,6 +26,8 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 import org.geotools.feature.FeatureCollection;
 
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 
 import org.opengis.filter.expression.Function;
@@ -716,8 +718,9 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
 	 * <!-- end-user-doc -->
      * @generated
      */
-	public FeatureCollection createFeatureCollectionFromString(EDataType eDataType, String initialValue) {
-        return (FeatureCollection)super.createFromString(eDataType, initialValue);
+	@SuppressWarnings("unchecked")
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> createFeatureCollectionFromString(EDataType eDataType, String initialValue) {
+        return (FeatureCollection<SimpleFeatureType, SimpleFeature>) super.createFromString(eDataType, initialValue);
     }
 
 	/**

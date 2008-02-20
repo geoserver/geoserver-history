@@ -12,6 +12,7 @@ import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
 import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -25,8 +26,8 @@ import java.io.IOException;
  * @author Andrea Aime, TOPP
  *
  */
-public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
-    implements VersioningFeatureSource {
+public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource implements
+        VersioningFeatureSource {
     GeoServerVersioningFeatureSource(VersioningFeatureSource source, SimpleFeatureType schema,
         Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
         super(source, schema, definitionQuery, declaredCRS, srsHandling);
@@ -39,8 +40,8 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
         return ((VersioningFeatureSource) source).getDifferences(fromVersion, toVersion, filter, users);
     }
 
-    public FeatureCollection getLog(String fromVersion, String toVersion, Filter filter, String[] users, int maxFeatures)
-        throws IOException {
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> getLog(String fromVersion,
+            String toVersion, Filter filter, String[] users, int maxFeatures) throws IOException {
         return ((VersioningFeatureSource) source).getLog(fromVersion, toVersion, filter, users, maxFeatures);
     }
 
@@ -77,7 +78,8 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
     
     
 
-    public FeatureCollection getVersionedFeatures(Query query) throws IOException {
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> getVersionedFeatures(Query query)
+            throws IOException {
         final VersioningFeatureSource versioningSource = ((VersioningFeatureSource) source);
         Query newQuery = adaptQuery(query, versioningSource.getVersionedFeatures().getSchema());
         
@@ -85,7 +87,8 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
         try {
             //this is the raw "unprojected" feature collection
             
-            FeatureCollection fc = versioningSource.getVersionedFeatures(newQuery);
+            FeatureCollection<SimpleFeatureType, SimpleFeature> fc;
+            fc = versioningSource.getVersionedFeatures(newQuery);
 
             return reprojectFeatureCollection(targetCRS, fc);
         } catch (Exception e) {
@@ -93,12 +96,13 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
         }
     }
 
-    public FeatureCollection getVersionedFeatures(Filter filter)
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> getVersionedFeatures(Filter filter)
             throws IOException {
         return getFeatures(new DefaultQuery(schema.getTypeName(), filter));
     }
 
-    public FeatureCollection getVersionedFeatures() throws IOException {
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> getVersionedFeatures()
+            throws IOException {
         return getFeatures(Query.ALL);
     }
 }

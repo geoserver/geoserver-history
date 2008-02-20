@@ -256,7 +256,7 @@ public class KMLWriter extends OutputStreamWriter {
 		super.write('\n');
 	}
 
-	public void writeFeaturesAsRaster(final FeatureCollection features,
+	public void writeFeaturesAsRaster(final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			final MapLayer layer, final int order) throws IOException,
 			AbortedException {
 		Style style = layer.getStyle();
@@ -276,7 +276,7 @@ public class KMLWriter extends OutputStreamWriter {
 		}
 	}
 
-	public void writeFeaturesAsVectors(final FeatureCollection features,
+	public void writeFeaturesAsVectors(final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			final MapLayer layer) throws IOException, AbortedException {
 		Style style = layer.getStyle();
 
@@ -295,7 +295,7 @@ public class KMLWriter extends OutputStreamWriter {
 		}
 	}
 
-	public void writeCoverages(final FeatureCollection features,
+	public void writeCoverages(final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			final MapLayer layer) throws IOException, AbortedException {
 		Style style = layer.getStyle();
 
@@ -489,7 +489,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 * @TODO: multiple features types result in muliple data passes, could be
 	 *        split into separate tempory files then joined.
 	 */
-	private void processStylersVector(final FeatureCollection features,
+	private void processStylersVector(final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			final FeatureTypeStyle[] featureStylers, final MapLayer layer)
 			throws IOException, IllegalAttributeException {
 		final int ftsLength = featureStylers.length;
@@ -516,7 +516,7 @@ public class KMLWriter extends OutputStreamWriter {
 				// re-evaluate sensible ranges for GE
 				NumberRange scaleRange = new NumberRange(scaleDenominator,
 						scaleDenominator);
-				FeatureIterator reader = features.features();
+				FeatureIterator<SimpleFeature> reader = features.features();
 
 				while (true) {
 					try {
@@ -645,7 +645,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 * @TODO: multiple features types result in muliple data passes, could be
 	 *        split into separate tempory files then joined.
 	 */
-	private void processStylersCoverage(final FeatureCollection features,
+	private void processStylersCoverage(final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			final FeatureTypeStyle[] featureStylers, final MapLayer layer)
 			throws IOException, IllegalAttributeException {
 		final int ftStylesLength = featureStylers.length;
@@ -668,7 +668,7 @@ public class KMLWriter extends OutputStreamWriter {
 					return;
 				}
 
-				FeatureIterator reader = features.features();
+				FeatureIterator<SimpleFeature> reader = features.features();
 
 				// we aren't going to iterate through the features because we
 				// just need to prepare
@@ -740,7 +740,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 * @throws IOException
 	 * @throws IllegalAttributeException
 	 */
-	private void processStylersRaster(final FeatureCollection features,
+	private void processStylersRaster(final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			final FeatureTypeStyle[] featureStylers, final MapLayer layer,
 			final int order) throws IOException, IllegalAttributeException {
 		startFolder("layer_" + order, layer.getTitle());
@@ -767,7 +767,7 @@ public class KMLWriter extends OutputStreamWriter {
 					return;
 				}
 
-				FeatureIterator reader = features.features();
+				FeatureIterator<SimpleFeature> reader = features.features();
 
 				// we aren't going to iterate through the features because we
 				// just need to prepare
@@ -1056,7 +1056,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 *            The scale range we are working on... provided in order to make
 	 *            the style factory happy
 	 */
-	private boolean processSymbolizers(final FeatureCollection features,
+	private boolean processSymbolizers(final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
 			final SimpleFeature feature, final Symbolizer[] symbolizers,
 			Range scaleRange, final MapLayer layer, final int order,
 			final int layerCounter, StringBuffer title, boolean vectorResult)

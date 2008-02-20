@@ -6,23 +6,26 @@ package org.geoserver.feature.retype;
 
 import java.io.IOException;
 
-import org.geotools.data.DataStore;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 
 /**
  * Renaming wrapper for a {@link FeatureLocking} instance, to be used along with {@link RetypingDataStore} 
  */
-class RetypingFeatureLocking extends RetypingFeatureStore implements FeatureLocking {
+class RetypingFeatureLocking extends RetypingFeatureStore implements
+        FeatureLocking<SimpleFeatureType, SimpleFeature> {
 
-    public RetypingFeatureLocking(RetypingDataStore ds, FeatureLocking wrapped, FeatureTypeMap typeMap) {
+    public RetypingFeatureLocking(RetypingDataStore ds,
+            FeatureLocking<SimpleFeatureType, SimpleFeature> wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
     
-    FeatureLocking featureLocking() {
-        return (FeatureLocking) wrapped;
+    FeatureLocking<SimpleFeatureType, SimpleFeature> featureLocking() {
+        return (FeatureLocking<SimpleFeatureType, SimpleFeature>) wrapped;
     }
 
     public int lockFeatures() throws IOException {

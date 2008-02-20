@@ -33,7 +33,6 @@ import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
 import org.geotools.data.memory.MemoryDataStore;
-import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureTypes;
@@ -50,6 +49,7 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -440,7 +440,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
      * so that the styles defined in the SLD take precedence over the named
      * styles stored within the map server. The user-defined SLD styles can be
      * given names and they can be marked as being the default style for a
-     * layer. To be more specific, if a style named “CenterLine” is referenced
+     * layer. To be more specific, if a style named ï¿½CenterLineï¿½ is referenced
      * for a layer and a style with that name is defined for the corresponding
      * layer in the SLD, then the SLD style definition is used. Otherwise, the
      * standard named-style mechanism built into the map server is used. If the
@@ -659,7 +659,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
                 filter = Filter.INCLUDE;
             
             // connect the layer
-            FeatureSource fs = remoteWFS.getFeatureSource(name);
+            FeatureSource<SimpleFeatureType, SimpleFeature> fs = remoteWFS.getFeatureSource(name);
             
             // this is messy, why the spec allows for multiple constraints and multiple
             // styles is beyond me... we'll style each remote layer with all possible
@@ -1005,8 +1005,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 
 			SimpleFeatureType currFt = ul.getInlineFeatureType();
 			Query q = new DefaultQuery(currFt.getTypeName(), Filter.INCLUDE);
-			FeatureReader ilReader = ul.getInlineFeatureDatastore()
-					.getFeatureReader(q, Transaction.AUTO_COMMIT);
+			FeatureReader<SimpleFeatureType, SimpleFeature> ilReader;
+            ilReader = ul.getInlineFeatureDatastore().getFeatureReader(q, Transaction.AUTO_COMMIT);
 			CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null) ? DefaultGeographicCRS.WGS84
 					: getMapRequest.getCrs();
 			MemoryDataStore reTypedDS = new MemoryDataStore(
@@ -1040,7 +1040,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	            
 	            // search into the remote WFS if there is any
 	            if(remoteTypeNames != null && Collections.binarySearch(remoteTypeNames, layerName) >= 0) {
-	                FeatureSource remoteSource = remoteWFS.getFeatureSource(layerName);
+	                FeatureSource<SimpleFeatureType, SimpleFeature> remoteSource;
+                    remoteSource = remoteWFS.getFeatureSource(layerName);
 	                if(remoteSource != null)
 	                    layers.add(new MapLayerInfo(remoteSource));
 	                    continue;

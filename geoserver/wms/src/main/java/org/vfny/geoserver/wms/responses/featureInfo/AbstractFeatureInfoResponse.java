@@ -30,6 +30,7 @@ import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.PointOutsideCoverageException;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
@@ -180,6 +181,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @throws WmsException For any problems.
      */
+    @SuppressWarnings("unchecked")
     protected void execute(MapLayerInfo[] requestedLayers, Filter[] filters, int x, int y)
         throws WmsException {
         GetFeatureInfoRequest request = getRequest();
@@ -247,7 +249,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     }
 
                     Query q = new DefaultQuery(finfo.getTypeName(), null, getFInfoFilter, request.getFeatureCount(), Query.ALL_NAMES, null);
-                    FeatureCollection match = finfo.getFeatureSource().getFeatures(q);
+                    FeatureCollection<SimpleFeatureType, SimpleFeature> match = finfo.getFeatureSource().getFeatures(q);
 
                     //this was crashing Gml2FeatureResponseDelegate due to not setting
                     //the featureresults, thus not being able of querying the SRS
@@ -264,7 +266,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
                     try {
                         double[] pixelValues = coverage.evaluate(position, (double[]) null);
-                        FeatureCollection pixel = wrapPixelInFeatureCollection(coverage, pixelValues, cinfo.getName());
+                        FeatureCollection<SimpleFeatureType, SimpleFeature> pixel;
+                        pixel = wrapPixelInFeatureCollection(coverage, pixelValues, cinfo.getName());
                         metas.add(requestedLayers[i]);
                         results.add(pixel);
                     } catch(PointOutsideCoverageException e) {
@@ -277,7 +280,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         } 
     }
 
-    private FeatureCollection wrapPixelInFeatureCollection(
+    private FeatureCollection<SimpleFeatureType, SimpleFeature> wrapPixelInFeatureCollection(
             GridCoverage2D coverage, double[] pixelValues, String coverageName) throws SchemaException, IllegalAttributeException {
         GridSampleDimension[] sampleDimensions = coverage.getSampleDimensions();
         SimpleFeatureType gridType;

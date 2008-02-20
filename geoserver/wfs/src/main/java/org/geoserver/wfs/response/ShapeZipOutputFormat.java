@@ -14,6 +14,7 @@ import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.File;
@@ -82,6 +83,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
     /**
      * @see WFSGetFeatureOutputFormat#write(Object, OutputStream, Operation)
      */
+    @SuppressWarnings("unchecked")
     protected void write(FeatureCollectionType featureCollection, OutputStream output,
         Operation getFeature) throws IOException, ServiceException {
         //We might get multiple featurecollections in our response (multiple queries?) so we need to
@@ -90,11 +92,12 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
         ZipOutputStream zipOut = new ZipOutputStream(output);
 
         try {
-            Iterator outputFeatureCollections = featureCollection.getFeature().iterator();
-            FeatureCollection curCollection;
+            Iterator<FeatureCollection<SimpleFeatureType, SimpleFeature>> outputFeatureCollections;
+            outputFeatureCollections = featureCollection.getFeature().iterator();
+            FeatureCollection<SimpleFeatureType, SimpleFeature> curCollection;
 
             while (outputFeatureCollections.hasNext()) {
-                curCollection = (FeatureCollection) outputFeatureCollections.next();
+                curCollection = outputFeatureCollections.next();
                 writeCollectionToShapefile(curCollection, tempDir);
 
                 String name = curCollection.getSchema().getTypeName();
@@ -201,7 +204,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
      * @param c the featurecollection to write
      * @param tempDir the temp directory into which it should be written
      */
-    private void writeCollectionToShapefile(FeatureCollection c, File tempDir) {
+    private void writeCollectionToShapefile(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir) {
         SimpleFeatureType schema = c.getSchema();
 
         try {
@@ -218,7 +221,8 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
                     "Error in shapefile schema. It is possible you don't have a geometry set in the output.");
             }
 
-            FeatureStore store = (FeatureStore) sfds.getFeatureSource(schema.getTypeName());
+            FeatureStore<SimpleFeatureType, SimpleFeature> store;
+            store = (FeatureStore<SimpleFeatureType, SimpleFeature>) sfds.getFeatureSource(schema.getTypeName());
             store.addFeatures(c);
             try {
                 if(schema.getCRS() != null)

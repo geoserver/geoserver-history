@@ -4,6 +4,21 @@
  */
 package org.geoserver.wfs;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.ActionType;
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.InsertedFeatureType;
@@ -22,23 +37,12 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -248,10 +252,11 @@ public class Transaction {
                 }
 
                 try {
-                    FeatureSource source = meta.getFeatureSource();
+                    FeatureSource<SimpleFeatureType, SimpleFeature> source = meta.getFeatureSource();
 
                     if (source instanceof FeatureStore) {
-                        FeatureStore store = (FeatureStore) source;
+                        FeatureStore<SimpleFeatureType, SimpleFeature> store;
+                        store = (FeatureStore<SimpleFeatureType, SimpleFeature>) source;
                         store.setTransaction(transaction);
                         stores.put(elementName, source);
 

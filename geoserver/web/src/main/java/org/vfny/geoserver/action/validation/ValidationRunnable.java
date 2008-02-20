@@ -6,9 +6,17 @@
  */
 package org.vfny.geoserver.action.validation;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.data.DataStore;
-import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Repository;
 import org.geotools.feature.FeatureCollection;
@@ -16,17 +24,10 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.geotools.validation.Validator;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -113,13 +114,13 @@ public class ValidationRunnable implements Runnable {
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             String typeRef = (String) entry.getKey();
-            FeatureSource featureSource = (FeatureSource) entry.getValue();
+            FeatureSource <SimpleFeatureType, SimpleFeature> featureSource = (FeatureSource) entry.getValue();
             String dataStoreId = typeRef.split(":")[0];
 
             try {
                 LOGGER.finer(dataStoreId + ": feature validation, " + featureSource);
 
-                FeatureCollection features = featureSource.getFeatures();
+                FeatureCollection<SimpleFeatureType, SimpleFeature> features = featureSource.getFeatures();
                 validator.featureValidation(dataStoreId, features, results);
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -177,7 +178,7 @@ public class ValidationRunnable implements Runnable {
                     String[] ss = ds.getTypeNames();
     
                     for (int j = 0; j < ss.length; j++) {
-                        FeatureSource fs = ds.getFeatureSource(ss[j]);
+                        FeatureSource<SimpleFeatureType, SimpleFeature> fs = ds.getFeatureSource(ss[j]);
                         sources.put(dsc.getId() + ":" + ss[j], fs);
     
                         //v.runFeatureTests(dsc.getId(),fs.getSchema(),

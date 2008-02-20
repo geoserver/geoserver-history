@@ -6,7 +6,6 @@ package org.vfny.geoserver.action.data;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -25,10 +24,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.referencing.FactoryException;
@@ -174,7 +173,8 @@ public class TypesEditorAction extends ConfigAction {
         try {
             dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
             SimpleFeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
-            FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+            FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+            fs = dataStore.getFeatureSource(featureType.getTypeName());
 
             CoordinateReferenceSystem crs = fs.getSchema().getCRS();
             String s = CRS.lookupIdentifier(crs, true);
@@ -219,7 +219,8 @@ public class TypesEditorAction extends ConfigAction {
         try {
             dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
             SimpleFeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
-            FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+            FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+            fs = dataStore.getFeatureSource(featureType.getTypeName());
     
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine(new StringBuffer("calculating bbox for their dataset").toString());

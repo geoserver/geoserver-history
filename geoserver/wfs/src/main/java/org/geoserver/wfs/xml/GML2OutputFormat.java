@@ -21,6 +21,7 @@ import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
@@ -118,6 +119,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     *
     * @throws IOException DOCUMENT ME!
     */
+    @SuppressWarnings("unchecked")
     public void prepare(String outputFormat, FeatureCollectionType results, GetFeatureType request)
         throws IOException {
         this.compressOutput = formatNameCompressed.equalsIgnoreCase(outputFormat);
@@ -132,7 +134,8 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         int srs = -1;
         for (int i = 0; i < results.getFeature().size(); i++) {
             //FeatureResults features = (FeatureResults) f.next();
-            FeatureCollection features = (FeatureCollection) results.getFeature().get(i);
+            FeatureCollection<SimpleFeatureType, SimpleFeature> features;
+            features = (FeatureCollection) results.getFeature().get(i);
             SimpleFeatureType featureType = features.getSchema();
 
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getName());

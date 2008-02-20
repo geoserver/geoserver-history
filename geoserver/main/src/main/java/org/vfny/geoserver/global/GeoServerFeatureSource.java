@@ -26,7 +26,9 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.feature.SchemaException;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.FactoryException;
@@ -50,15 +52,15 @@ import org.opengis.referencing.operation.TransformException;
  * so?
  * </p>
  *
- * @author Gabriel Rold�n
+ * @author Gabriel Roldan
  * @version $Id$
  */
-public class GeoServerFeatureSource implements FeatureSource {
+public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, SimpleFeature> {
     /** Shared package logger */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
 
     /** FeatureSource being served up */
-    protected FeatureSource source;
+    protected FeatureSource<SimpleFeatureType, SimpleFeature> source;
 
     /**
      * GeoTools2 Schema information
@@ -87,7 +89,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @param definitionQuery Filter used to limit results
      * @param declaredCRS Geometries will be forced or projected to this CRS
      */
-    GeoServerFeatureSource(FeatureSource source, SimpleFeatureType schema, Filter definitionQuery,
+    GeoServerFeatureSource(FeatureSource<SimpleFeatureType, SimpleFeature> source, SimpleFeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem declaredCRS, int srsHandling) {
         this.source = source;
         this.schema = schema;
@@ -98,6 +100,18 @@ public class GeoServerFeatureSource implements FeatureSource {
         if (this.definitionQuery == null) {
             this.definitionQuery = Filter.INCLUDE;
         }
+    }
+
+    /**
+     * Returns the same name than the feature type (ie,
+     * {@code getSchema().getName()} to honor the simple feature land common
+     * practice of calling the same both the Features produces and their types
+     * 
+     * @since 1.7
+     * @see FeatureSource#getName()
+     */
+    public Name getName() {
+        return getSchema().getName();
     }
 
     /**
@@ -116,14 +130,16 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @return
      */
-    public static GeoServerFeatureSource create(FeatureSource featureSource, SimpleFeatureType schema,
+    public static GeoServerFeatureSource create(FeatureSource <SimpleFeatureType, SimpleFeature> featureSource, SimpleFeatureType schema,
         Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
         if (featureSource instanceof FeatureLocking) {
-            return new GeoServerFeatureLocking((FeatureLocking) featureSource, schema,
-                definitionQuery, declaredCRS, srsHandling);
+            return new GeoServerFeatureLocking(
+                    (FeatureLocking<SimpleFeatureType, SimpleFeature>) featureSource, schema,
+                    definitionQuery, declaredCRS, srsHandling);
         } else if (featureSource instanceof FeatureStore) {
-            return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery,
-                declaredCRS, srsHandling);
+            return new GeoServerFeatureStore(
+                    (FeatureStore<SimpleFeatureType, SimpleFeature>) featureSource, schema,
+                    definitionQuery, declaredCRS, srsHandling);
         }
 
         return new GeoServerFeatureSource(featureSource, schema, definitionQuery, declaredCRS, srsHandling);
@@ -256,7 +272,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @see org.geotools.data.FeatureSource#getDataStore()
      */
     public DataStore getDataStore() {
-        return source.getDataStore();
+        return (DataStore) source.getDataStore();
     }
 
     /**
@@ -304,13 +320,14 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
-    public FeatureCollection getFeatures(Query query) throws IOException {
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(Query query)
+            throws IOException {
         Query newQuery = adaptQuery(query, schema);
         
         CoordinateReferenceSystem targetCRS = query.getCoordinateSystemReproject();
         try {
             //this is the raw "unprojected" feature collection
-            FeatureCollection fc = source.getFeatures(newQuery);
+            FeatureCollection<SimpleFeatureType, SimpleFeature> fc = source.getFeatures(newQuery);
 
             return reprojectFeatureCollection(targetCRS, fc);
         } catch (Exception e) {
@@ -329,8 +346,9 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @throws OperationNotFoundException
      * @throws FactoryException
      */
-    protected FeatureCollection reprojectFeatureCollection(
-            CoordinateReferenceSystem targetCRS, FeatureCollection fc)
+    protected FeatureCollection<SimpleFeatureType, SimpleFeature> reprojectFeatureCollection(
+            CoordinateReferenceSystem targetCRS,
+            FeatureCollection<SimpleFeatureType, SimpleFeature> fc)
             throws IOException, SchemaException, TransformException,
             OperationNotFoundException, FactoryException {
         if ( fc.getSchema().getDefaultGeometry() == null ) {
@@ -410,12 +428,12 @@ public class GeoServerFeatureSource implements FeatureSource {
         return newQuery;
     }
 
-    public FeatureCollection getFeatures(Filter filter)
-        throws IOException {
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(Filter filter)
+            throws IOException {
         return getFeatures(new DefaultQuery(schema.getTypeName(), filter));
     }
 
-    public FeatureCollection getFeatures() throws IOException {
+    public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures() throws IOException {
         return getFeatures(Query.ALL);
     }
 

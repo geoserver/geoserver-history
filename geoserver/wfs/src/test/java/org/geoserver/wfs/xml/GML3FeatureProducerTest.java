@@ -18,6 +18,8 @@ import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.DataStoreInfo;
 import org.w3c.dom.Document;
 
@@ -42,9 +44,9 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
 
     public void testSingle() throws Exception {
         DataStoreInfo dataStore = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
-        FeatureSource source = dataStore.getDataStore().getFeatureSource(
-                MockData.SEVEN.getLocalPart());
-        FeatureCollection features = source.getFeatures();
+        FeatureSource<SimpleFeatureType, SimpleFeature> source;
+        source = dataStore.getDataStore().getFeatureSource(MockData.SEVEN.getLocalPart());
+        FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures();
 
         FeatureCollectionType fcType = WfsFactory.eINSTANCE
                 .createFeatureCollectionType();

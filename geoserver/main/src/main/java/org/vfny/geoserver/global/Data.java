@@ -30,6 +30,7 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
@@ -1917,8 +1918,8 @@ SCHEMA:
      * @see org.geotools.data.Catalog#getFeatureSource(java.lang.String,
      *      java.lang.String)
      */
-    public synchronized FeatureSource getFeatureSource(String prefix, String typeName)
-        throws IOException {
+    public synchronized FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(
+            String prefix, String typeName) throws IOException {
         if ((prefix == null) || (prefix == "")) {
             prefix = defaultNameSpace.getPrefix();
         }

@@ -80,7 +80,7 @@ public class FeatureDescriptionTemplateTest extends TestCase {
     //                "four", new Integer(4), new Double(4.4), gf.createPoint(new Coordinate(4, 4))
     //            }, "fid.4") {
     //        };
-    //        FeatureCollection features = new DefaultFeatureCollection(null,null) {};
+    //        FeatureCollection<SimpleFeatureType, SimpleFeature> features = new DefaultFeatureCollection(null,null) {};
     //        features.add( f );
     //        features.add( f4 );
     //        

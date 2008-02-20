@@ -16,6 +16,8 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
@@ -129,7 +131,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                 CoverageInfo cvi = request.getWMS().getData().getCoverageInfo(layer);
                 mli.setCoverage(cvi);
 
-                FeatureCollection feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) cvi.getCoverage(null, null));
+                FeatureCollection<SimpleFeatureType, SimpleFeature> feature;
+                feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) cvi.getCoverage(null, null));
                 request.setLayer(feature.getFeatureType());
             } catch (NoSuchElementException ne) {
                 throw new WmsException(ne, new StringBuffer(layer)

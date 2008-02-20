@@ -21,6 +21,7 @@ import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.xml.transform.TransformerBase;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -206,6 +207,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
             super.element(element, content);
         }
         
+        @SuppressWarnings("unchecked")
         protected List loadFeatureCollections(WMSMapContext map) throws IOException {
             ReferencedEnvelope mapArea = map.getAreaOfInterest();
             CoordinateReferenceSystem wgs84 = null;
@@ -222,9 +224,10 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                 MapLayer layer = map.getLayer(i);
                 DefaultQuery query = new DefaultQuery(layer.getQuery());
 
-                FeatureCollection features = null;
+                FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
                 try {
-                    FeatureSource source = layer.getFeatureSource();
+                    FeatureSource<SimpleFeatureType, SimpleFeature> source;
+                    source = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
                     
                     GeometryDescriptor gd = source.getSchema().getDefaultGeometry();
                     if(gd == null) {

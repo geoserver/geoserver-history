@@ -837,7 +837,7 @@ public abstract class AbstractService extends HttpServlet implements Application
         try {
             return ((GeoServer) servContext.getAttribute("GeoServer")).getMimeType();
         } catch (NullPointerException e) {
-            return "text/xml; charset=" + Charset.forName("UTF-8").displayName();
+            return "text/xml; charset=" + Charset.forName("UTF-8").name();
         }
     }
 

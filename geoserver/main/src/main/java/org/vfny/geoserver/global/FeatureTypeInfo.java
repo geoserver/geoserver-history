@@ -19,7 +19,6 @@ import org.geoserver.feature.retype.RetypingDataStore;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.ReTypeFeatureReader;
 import org.geotools.feature.AttributeTypeBuilder;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -27,6 +26,7 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -503,7 +503,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @throws IOException when an error occurs.
      */
-    public FeatureSource getFeatureSource() throws IOException {
+    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource() throws IOException {
         return getFeatureSource(false);
     }
     
@@ -513,13 +513,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * that should be able to perform a full reprojection on its own, and do generalization
      * before reprojection (thus avoid to reproject all of the original coordinates)
      */
-    public FeatureSource getFeatureSource(boolean skipReproject) throws IOException {
+    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(boolean skipReproject) throws IOException {
         if (!isEnabled() || (getDataStoreInfo().getDataStore() == null)) {
             throw new IOException("featureType: " + getName()
                 + " does not have a properly configured " + "datastore");
         }
 
-        FeatureSource realSource = getAliasedFeatureSource();
+        FeatureSource<SimpleFeatureType, SimpleFeature> realSource = getAliasedFeatureSource();
         
         // avoid reprojection if the calling code can do it better
         int localSrsHandling = srsHandling;
@@ -586,9 +586,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @return
      * @throws IOException
      */
-    private FeatureSource getAliasedFeatureSource() throws IOException {
+    private FeatureSource<SimpleFeatureType, SimpleFeature> getAliasedFeatureSource()
+            throws IOException {
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        FeatureSource fs;
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
         if(alias == null) {
             fs = dataStore.getFeatureSource(typeName);
         } else {
@@ -637,7 +638,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         }
     }
 
-    /*public static FeatureSource reTypeSource(FeatureSource source,
+    /*public static FeatureSource reTypeSource(FeatureSource<SimpleFeatureType, SimpleFeature> source,
        FeatureTypeInfoDTO ftc) throws SchemaException {
        AttributeDescriptor[] attributes = new AttributeDescriptor[ftc.getSchemaAttributes()
                                                          .size()];
@@ -701,7 +702,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
     private Envelope getBoundingBox(CoordinateReferenceSystem targetCrs)
         throws IOException {
-        FeatureSource realSource = getAliasedFeatureSource();
+        FeatureSource<SimpleFeatureType, SimpleFeature> realSource = getAliasedFeatureSource();
         Envelope bbox = FeatureSourceUtils.getBoundingBoxEnvelope(realSource);
 
         // check if the original CRS is not the declared one
@@ -802,7 +803,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 + " does not have a properly configured " + "datastore");
         }
 
-        FeatureSource realSource = getAliasedFeatureSource();
+        FeatureSource<SimpleFeatureType, SimpleFeature> realSource = getAliasedFeatureSource();
 
         return realSource.getSchema().getDefaultGeometry();
     }
@@ -1133,7 +1134,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * Fixes the data store feature type so that it has the right CRS (only in case they are missing)
      * and the requiered base attributes
      */
-    private SimpleFeatureType getFeatureType(FeatureSource fs)
+    private SimpleFeatureType getFeatureType(FeatureSource<SimpleFeatureType, SimpleFeature> fs)
         throws IOException {
         if (ft == null) {
             int count = 0;

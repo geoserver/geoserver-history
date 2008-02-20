@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,13 +24,13 @@ import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
-import org.geotools.renderer.lite.LiteFeatureTypeStyle;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -40,11 +41,6 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
-import java.awt.Transparency;
-import java.awt.image.BufferedImage;
-import java.text.NumberFormat;
-import java.util.Iterator;
-
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -181,10 +177,12 @@ public class KMLTransformer extends TransformerBase {
         /**
          * Encodes a vector layer as kml.
          */
+        @SuppressWarnings("unchecked")
         protected void encodeVectorLayer(WMSMapContext mapContext, MapLayer layer) {
             //get the data
-            FeatureSource featureSource = layer.getFeatureSource();
-            FeatureCollection features = null;
+            FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
+            featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
+            FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
 
             try {
                 features = loadFeatureCollection(featureSource, layer, mapContext);
@@ -338,7 +336,8 @@ public class KMLTransformer extends TransformerBase {
             }
         }
 
-        FeatureCollection loadFeatureCollection(FeatureSource featureSource, MapLayer layer,
+        FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollection(
+                FeatureSource <SimpleFeatureType, SimpleFeature> featureSource, MapLayer layer,
             WMSMapContext mapContext) throws Exception {
             SimpleFeatureType schema = featureSource.getSchema();
 

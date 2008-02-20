@@ -5,6 +5,8 @@
 package org.geoserver.feature;
 
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 
 /**
@@ -17,9 +19,9 @@ import org.geotools.feature.FeatureCollection;
  * @deprecated use {@link org.geotools.feature.collection.DecoratingFeatureCollection}.
  */
 public class DecoratingFeatureCollection 
-   extends org.geotools.feature.collection.DecoratingFeatureCollection { 
+   extends org.geotools.feature.collection.DecoratingFeatureCollection<SimpleFeatureType, SimpleFeature> { 
     
-    public DecoratingFeatureCollection(FeatureCollection delegate) {
+    public DecoratingFeatureCollection(FeatureCollection<SimpleFeatureType, SimpleFeature> delegate) {
         super( delegate );
     }
 

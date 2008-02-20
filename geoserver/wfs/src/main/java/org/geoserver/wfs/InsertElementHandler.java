@@ -67,6 +67,7 @@ public class InsertElementHandler implements TransactionElementHandler {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void execute(EObject element, TransactionType request, Map featureStores,
         TransactionResponseType response, TransactionListener listener)
         throws WFSTransactionException {
@@ -82,7 +83,8 @@ public class InsertElementHandler implements TransactionElementHandler {
             for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
                 SimpleFeature feature = (SimpleFeature) f.next();
                 SimpleFeatureType schema = feature.getFeatureType();
-                FeatureCollection collection = (FeatureCollection) schema2features.get(schema);
+                FeatureCollection<SimpleFeatureType, SimpleFeature> collection;
+                collection = (FeatureCollection) schema2features.get(schema);
 
                 if (collection == null) {
                     collection = new DefaultFeatureCollection(null, schema);
@@ -101,11 +103,12 @@ public class InsertElementHandler implements TransactionElementHandler {
             HashMap schema2fids = new HashMap();
 
             for (Iterator c = schema2features.values().iterator(); c.hasNext();) {
-                FeatureCollection collection = (FeatureCollection) c.next();
+                FeatureCollection<SimpleFeatureType, SimpleFeature> collection = (FeatureCollection) c.next();
                 SimpleFeatureType schema = collection.getSchema();
 
                 final QName elementName = new QName(schema.getName().getNamespaceURI(), schema.getTypeName());
-                FeatureStore store = (FeatureStore) featureStores.get(elementName);
+                FeatureStore<SimpleFeatureType, SimpleFeature> store;
+                store = (FeatureStore<SimpleFeatureType, SimpleFeature>) featureStores.get(elementName);
 
                 if (store == null) {
                     throw new WFSException("Could not locate FeatureStore for '" + elementName
@@ -201,10 +204,10 @@ public class InsertElementHandler implements TransactionElementHandler {
      * @param collection
      * @throws PointOutsideEnvelopeException
      */
-    void checkFeatureCoordinatesRange(FeatureCollection collection)
+    void checkFeatureCoordinatesRange(FeatureCollection<SimpleFeatureType, SimpleFeature> collection)
             throws PointOutsideEnvelopeException {
         List types = collection.getSchema().getAttributes();
-        FeatureIterator fi = collection.features();
+        FeatureIterator<SimpleFeature> fi = collection.features();
         try {
             while(fi.hasNext()) {
                 SimpleFeature f = fi.next();

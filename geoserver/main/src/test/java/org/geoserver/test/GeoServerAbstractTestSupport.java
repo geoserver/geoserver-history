@@ -42,6 +42,8 @@ import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.util.logging.Log4JLoggerFactory;
 import org.geotools.util.logging.Logging;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -214,7 +216,8 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      *
      * @param typeName The qualified type name of the feature source.
      */
-    protected FeatureSource getFeatureSource(QName typeName)
+    @SuppressWarnings("unchecked")
+    protected FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(QName typeName)
         throws IOException {
         return getCatalog().getFeatureSource(typeName.getPrefix(), typeName.getLocalPart());
     }

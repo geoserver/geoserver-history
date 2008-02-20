@@ -124,7 +124,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
         String handle = update.getHandle();
         long updated = response.getTransactionSummary().getTotalUpdated().longValue();
 
-        FeatureStore store = (FeatureStore) featureStores.get(elementName);
+        FeatureStore<SimpleFeatureType, SimpleFeature> store;
+        store = (FeatureStore<SimpleFeatureType, SimpleFeature>) featureStores.get(elementName);
 
         if (store == null) {
             throw new WFSException("Could not locate FeatureStore for '" + elementName + "'");
@@ -204,7 +205,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
             Set fids = new HashSet();
             LOGGER.finer("Preprocess to remember modification as a set of fids");
             
-            FeatureCollection features = store.getFeatures(filter);
+            FeatureCollection<SimpleFeatureType, SimpleFeature> features = store.getFeatures(filter);
             listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, elementName, features));
 
             Iterator preprocess = features.iterator();
@@ -239,7 +240,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 // make sure we unlock
                 if ((request.getLockId() != null) && store instanceof FeatureLocking
                         && (request.getReleaseAction() == AllSomeType.SOME_LITERAL)) {
-                    FeatureLocking locking = (FeatureLocking) store;
+                    FeatureLocking<SimpleFeatureType, SimpleFeature> locking;
+                    locking = (FeatureLocking<SimpleFeatureType, SimpleFeature>) store;
                     locking.unLockFeatures(filter);
                 }
             }
@@ -257,7 +259,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
                 Id modified = ff.id(featureIds);
 
-                FeatureCollection changed = store.getFeatures(modified);
+                FeatureCollection<SimpleFeatureType, SimpleFeature> changed = store.getFeatures(modified);
                 listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_UPDATE,
                         elementName, changed));
             }

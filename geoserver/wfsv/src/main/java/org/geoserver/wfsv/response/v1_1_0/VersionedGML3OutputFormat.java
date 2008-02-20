@@ -28,14 +28,13 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.xml.GML3OutputFormat;
-import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.xml.Encoder;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.xml.sax.SAXException;
 
 /**
  * Works just like {@link GML3OutputFormat}, but refers to DescribeVersionedFeatureType and encodes
@@ -76,7 +75,7 @@ public class VersionedGML3OutputFormat extends Response {
         HashMap /* <String,Set> */ns2metas = new HashMap();
 
         for (Iterator fc = featureCollections.iterator(); fc.hasNext();) {
-            FeatureCollection features = (FeatureCollection) fc.next();
+            FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) fc.next();
             SimpleFeatureType featureType = features.getSchema();
 
             // load the metadata for the feature type

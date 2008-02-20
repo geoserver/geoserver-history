@@ -4,16 +4,6 @@
  */
 package org.vfny.geoserver.util;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geoserver.feature.FeatureSourceUtils;
-import org.geoserver.feature.retype.RetypingDataStore;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFactorySpi.Param;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.FeatureSource;
-import org.vfny.geoserver.global.DataStoreInfo;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +11,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.ServletContext;
+
+import org.geoserver.feature.FeatureSourceUtils;
+import org.geoserver.feature.retype.RetypingDataStore;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.DataStoreFactorySpi.Param;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.vfny.geoserver.global.DataStoreInfo;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -272,7 +277,7 @@ public abstract class DataStoreUtils {
     /**
      * @deprecated use {@link org.geoserver.feature.FeatureSourceUtils#
      */
-    public static Envelope getBoundingBoxEnvelope(FeatureSource fs)
+    public static Envelope getBoundingBoxEnvelope(FeatureSource<SimpleFeatureType, SimpleFeature> fs)
         throws IOException {
         return FeatureSourceUtils.getBoundingBoxEnvelope(fs);
     }

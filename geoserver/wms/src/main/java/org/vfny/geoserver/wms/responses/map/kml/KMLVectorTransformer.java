@@ -209,7 +209,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         }
 
         public void encode(Object o) throws IllegalArgumentException {
-            FeatureCollection features = (FeatureCollection) o;
+            FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) o;
             SimpleFeatureType featureType = features.getSchema();
 
             if (isStandAlone()) {
@@ -243,13 +243,14 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Encodes the <Schema> element in kml 2.2
          * @param featureTypeStyles
          */
-        protected void encodeSchemas(FeatureCollection featureTypeStyles) {
+        protected void encodeSchemas(FeatureCollection<SimpleFeatureType, SimpleFeature> featureTypeStyles) {
             // the code is at the moment in KML3VectorTransformer
         }
 
-        protected void encode(FeatureCollection features, FeatureTypeStyle[] styles) {
+        protected void encode(FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+                FeatureTypeStyle[] styles) {
            //grab a feader and process
-            FeatureIterator reader = features.features();
+            FeatureIterator<SimpleFeature> reader = features.features();
 
             try {
                 while (reader.hasNext()) {

@@ -21,18 +21,17 @@ import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.feature.IllegalAttributeException;
-import org.geotools.feature.SchemaException;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -231,7 +230,7 @@ public class GetMapResponse implements Response {
 				if(layers[i].getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
 				    cachingPossible = false;
 				    
-				    final FeatureSource source = layers[i].getRemoteFeatureSource();
+				    final FeatureSource<SimpleFeatureType, SimpleFeature> source = layers[i].getRemoteFeatureSource();
                     layer = new DefaultMapLayer(source, style);
                     layer.setTitle(layers[i].getName());
                     
@@ -271,7 +270,7 @@ public class GetMapResponse implements Response {
 						}
 					}
 
-					final FeatureSource source;
+					final FeatureSource<SimpleFeatureType, SimpleFeature> source;
 					// /////////////////////////////////////////////////////////
 					//
 					// Adding a feature layer

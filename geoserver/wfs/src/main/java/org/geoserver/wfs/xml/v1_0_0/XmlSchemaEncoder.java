@@ -95,7 +95,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         // Initialize return information and intermediate return objects
         StringBuffer tempResponse = new StringBuffer();
 
-        tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfs.getCharSet().displayName()
+        tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfs.getCharSet().name()
             + "\"?>" + "\n<xs:schema ");
 
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());

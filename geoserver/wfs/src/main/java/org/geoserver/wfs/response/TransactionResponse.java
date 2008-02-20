@@ -73,7 +73,7 @@ public class TransactionResponse extends Response {
 
         //boolean verbose = ConfigInfo.getInstance().formatOutput();
         //String indent = ((verbose) ? "\n" + OFFSET : " ");
-        String encoding = wfs.getCharSet().displayName();
+        String encoding = wfs.getCharSet().name();
         String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>";
         writer.write(xmlHeader);
 

@@ -14,11 +14,14 @@ import net.opengis.wfs.WfsFactory;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.data.FeatureSource;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 public class ShapeZipTest extends WFSTestSupport {
     
     public void testNoNativeProjection() throws Exception {
-        FeatureSource fs = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS).getFeatureSource(true);
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+        fs = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS).getFeatureSource(true);
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();

@@ -28,14 +28,16 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
-    FeatureCollection wrapped;
+    FeatureCollection<SimpleFeatureType, SimpleFeature> wrapped;
 
     /**
      * Builds a new BoundsFeatureCollection
      * @param wrapped the wrapped feature collection
      * @param targetSchema the target schema
      */
-    public FeatureBoundsFeatureCollection(final FeatureCollection wrapped, final SimpleFeatureType targetSchema) {
+    public FeatureBoundsFeatureCollection(
+            final FeatureCollection<SimpleFeatureType, SimpleFeature> wrapped,
+            final SimpleFeatureType targetSchema) {
         super(targetSchema, 
             new AbstractResourceCollection() {
                 protected Iterator openIterator() {
@@ -59,11 +61,11 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
      * @author Andrea Aime - TOPP
      *
      */
-    private static class BoundsIterator implements Iterator {
-        FeatureIterator wrapped;
+    private static class BoundsIterator implements Iterator<SimpleFeature> {
+        FeatureIterator<SimpleFeature> wrapped;
         SimpleFeatureType targetSchema;
 
-        public BoundsIterator(FeatureIterator wrapped, SimpleFeatureType targetSchema) {
+        public BoundsIterator(FeatureIterator<SimpleFeature> wrapped, SimpleFeatureType targetSchema) {
             this.wrapped = wrapped;
             this.targetSchema = targetSchema;
         }
@@ -76,7 +78,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
             return wrapped.hasNext();
         }
 
-        public Object next() throws NoSuchElementException {
+        public SimpleFeature next() throws NoSuchElementException {
             SimpleFeature base = wrapped.next();
             return new BoundedFeature(base, targetSchema);
         }

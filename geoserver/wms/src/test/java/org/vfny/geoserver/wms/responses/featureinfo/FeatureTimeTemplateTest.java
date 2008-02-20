@@ -6,6 +6,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
 
 public class FeatureTimeTemplateTest extends WMSTestSupport {
@@ -15,9 +16,9 @@ public class FeatureTimeTemplateTest extends WMSTestSupport {
     protected void setUp() throws Exception {
         super.setUp();
     
-        FeatureSource source = getFeatureSource(MockData.PRIMITIVEGEOFEATURE);
-        FeatureCollection features = source.getFeatures();
-        FeatureIterator iterator = features.features();
+        FeatureSource<SimpleFeatureType, SimpleFeature> source = getFeatureSource(MockData.PRIMITIVEGEOFEATURE);
+        FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures();
+        FeatureIterator <SimpleFeature> iterator = features.features();
         while( iterator.hasNext() ) {
             SimpleFeature f = iterator.next();
             if ( f.getAttribute("dateProperty") != null ) {

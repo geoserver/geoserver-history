@@ -5,10 +5,13 @@
 package org.geoserver.feature.retype;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.geoserver.feature.RetypingFeatureCollection;
+import org.geotools.data.DataAccess;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -23,7 +26,9 @@ import org.geotools.data.ServiceInfo;
 import org.geotools.data.Transaction;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 
 /**
@@ -54,31 +59,33 @@ public class RetypingDataStore implements DataStore {
                 "GeoServer does not support schema updates at the moment");
     }
 
-    public FeatureWriter getFeatureWriter(String typeName, Filter filter, Transaction transaction)
-            throws IOException {
+    public FeatureWriter<SimpleFeatureType, SimpleFeature> getFeatureWriter(String typeName,
+            Filter filter, Transaction transaction) throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(typeName);
         updateMap(map, false);
-        FeatureWriter writer = wrapped.getFeatureWriter(map.getOriginalName(), filter, transaction);
+        FeatureWriter<SimpleFeatureType, SimpleFeature> writer = wrapped.getFeatureWriter(map.getOriginalName(), filter, transaction);
         if (map.isUnchanged())
             return writer;
         return new RetypingFeatureCollection.RetypingFeatureWriter(writer, map.getFeatureType());
     }
 
-    public FeatureWriter getFeatureWriter(String typeName, Transaction transaction)
+    public FeatureWriter<SimpleFeatureType, SimpleFeature> getFeatureWriter(String typeName, Transaction transaction)
             throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(typeName);
         updateMap(map, false);
-        FeatureWriter writer = wrapped.getFeatureWriter(map.getOriginalName(), transaction);
+        FeatureWriter<SimpleFeatureType, SimpleFeature> writer;
+        writer = wrapped.getFeatureWriter(map.getOriginalName(), transaction);
         if (map.isUnchanged())
             return writer;
         return new RetypingFeatureCollection.RetypingFeatureWriter(writer, map.getFeatureType());
     }
 
-    public FeatureWriter getFeatureWriterAppend(String typeName, Transaction transaction)
+    public FeatureWriter<SimpleFeatureType, SimpleFeature> getFeatureWriterAppend(String typeName, Transaction transaction)
             throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(typeName);
         updateMap(map, false);
-        FeatureWriter writer = wrapped.getFeatureWriterAppend(map.getOriginalName(), transaction);
+        FeatureWriter<SimpleFeatureType, SimpleFeature> writer;
+        writer = wrapped.getFeatureWriterAppend(map.getOriginalName(), transaction);
         if (map.isUnchanged())
             return writer;
         return new RetypingFeatureCollection.RetypingFeatureWriter(writer, map.getFeatureType());
@@ -113,26 +120,30 @@ public class RetypingDataStore implements DataStore {
         return transformedNames;
     }
 
-    public FeatureReader getFeatureReader(Query query, Transaction transaction) throws IOException {
+    public FeatureReader<SimpleFeatureType, SimpleFeature> getFeatureReader(Query query,
+            Transaction transaction) throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(query.getTypeName());
         updateMap(map, false);
-        FeatureReader reader = wrapped.getFeatureReader(retypeQuery(query, map), transaction);
+        FeatureReader<SimpleFeatureType, SimpleFeature> reader;
+        reader = wrapped.getFeatureReader(retypeQuery(query, map), transaction);
         if (map.isUnchanged())
             return reader;
         return new RetypingFeatureCollection.RetypingFeatureReader(reader, map.getFeatureType());
     }
 
-    public FeatureSource getFeatureSource(String typeName) throws IOException {
+    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(String typeName) throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(typeName);
         updateMap(map, false);
-        FeatureSource source = wrapped.getFeatureSource(map.getOriginalName());
+        FeatureSource<SimpleFeatureType, SimpleFeature> source = wrapped.getFeatureSource(map.getOriginalName());
         if (map.isUnchanged())
             return source;
         if (source instanceof FeatureLocking) {
-            FeatureLocking locking = (FeatureLocking) source;
+            FeatureLocking<SimpleFeatureType, SimpleFeature> locking;
+            locking = (FeatureLocking<SimpleFeatureType, SimpleFeature>) source;
             return new RetypingFeatureLocking(this, locking, map);
         } else if (source instanceof FeatureStore) {
-            FeatureStore store = (FeatureStore) source;
+            FeatureStore<SimpleFeatureType, SimpleFeature> store;
+            store = (FeatureStore<SimpleFeatureType, SimpleFeature>) source;
             return new RetypingFeatureStore(this, store, map);
         }
         return new RetypingFeatureSource(this, source, map);
@@ -142,10 +153,11 @@ public class RetypingDataStore implements DataStore {
         return wrapped.getLockingManager();
     }
 
-    public FeatureSource getView(Query query) throws IOException, SchemaException {
+    public FeatureSource<SimpleFeatureType, SimpleFeature> getView(Query query) throws IOException,
+            SchemaException {
         FeatureTypeMap map = getTypeMapBackwards(query.getTypeName());
         updateMap(map, false);
-        FeatureSource view = wrapped.getView(query);
+        FeatureSource<SimpleFeatureType, SimpleFeature> view = wrapped.getView(query);
         return new RetypingFeatureSource(this, view, map);
     }
 
@@ -260,5 +272,52 @@ public class RetypingDataStore implements DataStore {
         return wrapped.getInfo();
     }
     
+    /**
+     * Delegates to {@link #getFeatureSource(String)} with
+     * {@code name.getLocalPart()}
+     * 
+     * @since 2.5
+     * @see DataAccess#getFeatureSource(Name)
+     */
+    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(Name typeName)
+            throws IOException {
+        return getFeatureSource(typeName.getLocalPart());
+    }
     
+    /**
+     * Returns the same list of names than {@link #getTypeNames()} meaning the
+     * returned Names have no namespace set.
+     * 
+     * @since 1.7
+     * @see DataAccess#getNames()
+     */
+    public List<Name> getNames() throws IOException {
+        String[] typeNames = getTypeNames();
+        List<Name> names = new ArrayList<Name>(typeNames.length);
+        for (String typeName : typeNames) {
+            names.add(new org.geotools.feature.Name(typeName));
+        }
+        return names;
+    }
+
+    /**
+     * Delegates to {@link #getSchema(String)} with {@code name.getLocalPart()}
+     * 
+     * @since 1.7
+     * @see DataAccess#getSchema(Name)
+     */
+    public SimpleFeatureType getSchema(Name name) throws IOException {
+        return getSchema(name.getLocalPart());
+    }
+
+    /**
+     * Delegates to {@link #updateSchema(String, SimpleFeatureType)} with
+     * {@code name.getLocalPart()}
+     * 
+     * @since 1.7
+     * @see DataAccess#getFeatureSource(Name)
+     */
+    public void updateSchema(Name typeName, SimpleFeatureType featureType) throws IOException {
+        updateSchema(typeName.getLocalPart(), featureType);
+    }    
 }
