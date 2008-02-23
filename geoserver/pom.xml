@@ -954,7 +954,7 @@
  </modules>
 
  <properties>
-  <gs.version>1.6.0</gs.version>
+  <gs.version>1.6-SNAPSHOT</gs.version>
   <gt.version>2.4-SNAPSHOT</gt.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
