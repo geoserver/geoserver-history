@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFactorySpi.Param;
+import org.geotools.data.DataAccessFactory.Param;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.resource.StringRepresentation;
