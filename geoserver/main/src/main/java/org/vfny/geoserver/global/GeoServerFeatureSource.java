@@ -26,6 +26,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypes;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
@@ -324,6 +325,11 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     private Query reprojectFilter(Query query) throws IOException {
+        FeatureType nativeFeatureType = source.getSchema();
+        final GeometryAttributeType geom = nativeFeatureType.getDefaultGeometry();
+        // handle the geometryless case
+        if(geom == null)
+            return query;
         try {
             // default CRS: the CRS we can assume geometry and bbox elements in filter are
             // that is, usually the declared one, but the native one in the leave case
@@ -332,8 +338,7 @@ public class GeoServerFeatureSource implements FeatureSource {
             // the native one usually, but it's the declared on in the force case (since in
             // that case we completely ignore the native one)
             CoordinateReferenceSystem targetCRS = null;
-            FeatureType nativeFeatureType = source.getSchema();
-            CoordinateReferenceSystem nativeCRS = nativeFeatureType.getDefaultGeometry().getCoordinateSystem();
+            CoordinateReferenceSystem nativeCRS = geom.getCoordinateSystem();
             if(srsHandling == FeatureTypeInfo.FORCE) {
                 defaultCRS = declaredCRS;
                 targetCRS = declaredCRS;
