@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +50,15 @@ import org.opengis.referencing.cs.CoordinateSystem;
  *
  */
 public class MockData {
+    // Extra configuration keys for vector data
+    /**
+     * Use FeatureTypeInfo constants for srs handling as values
+     */
+    public static final String KEY_SRS_HANDLINGS = "srsHandling";
+    public static final String KEY_ALIAS = "alias";
+    public static final String KEY_STYLE = "style"; 
+    public static final String KEY_SRS_NUMBER = "srs";
+    
     // //// WMS 1.1.1
     /**
      * WMS 1.1.1 cite namespace + uri
@@ -362,7 +372,7 @@ public class MockData {
                 styleName = name.getLocalPart();
                 addStyle(styleName, style);
             }
-            addPropertiesType(name, properties, styleName, null);
+            addPropertiesType(name, properties, Collections.singletonMap(KEY_STYLE, styleName));
         }
     }
     
@@ -390,12 +400,11 @@ public class MockData {
      * @param properties
      *            a URL to the property file backing the feature type. If null,
      *            an emtpy property file will be used
-     * @param style
-     *            a URL to the style that will be associated to the feature
-     *            type, or null to use a default one
+     * @param extraParams
+     *            a map from extra configurable keys to their values (see for example
      * @throws IOException
      */
-    public void addPropertiesType(QName name, URL properties, String styleName, String alias) throws IOException {
+    public void addPropertiesType(QName name, URL properties, Map extraParams) throws IOException {
         // setup the type directory if needed
         File directory = new File(data, name.getPrefix());
         if ( !directory.exists() ) {
@@ -414,7 +423,7 @@ public class MockData {
         copy( propertiesContents, f );
         
         // write the info file
-        info(name, styleName, alias);
+        info(name, extraParams);
         
         // setup the meta information to be written in the catalog 
         namespaces.put(name.getPrefix(), name.getNamespaceURI());
@@ -501,9 +510,18 @@ public class MockData {
         out.close();
     }
 
-    void info(QName name, String styleName, String alias) throws IOException {
+    void info(QName name, Map<String, Object> extraParams) throws IOException {
         String type = name.getLocalPart();
         String prefix = name.getPrefix();
+        
+        // prepare extra params default
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(KEY_STYLE, "Default");
+        params.put(KEY_SRS_HANDLINGS, 2);
+        params.put(KEY_ALIAS, null);
+        params.put(KEY_SRS_NUMBER, 4326);
+        // override with whatever the user provided
+        params.putAll(extraParams);
 
         File featureTypeDir = new File(featureTypes, prefix + "_" + type);
         featureTypeDir.mkdir();
@@ -514,13 +532,13 @@ public class MockData {
         FileWriter writer = new FileWriter(info);
         writer.write("<featureType datastore=\"" + prefix + "\">");
         writer.write("<name>" + type + "</name>");
-        if(alias != null)
-            writer.write("<alias>" + alias + "</alias>");
-        writer.write("<SRS>4326</SRS>");
+        if(params.get(KEY_ALIAS) != null)
+            writer.write("<alias>" + params.get(KEY_ALIAS) + "</alias>");
+        writer.write("<SRS>" + params.get(KEY_SRS_NUMBER) + "</SRS>");
         // this mock type may have wrong SRS compared to the actual one in the property files...
         // let's configure SRS handling not to alter the original one, and have 4326 used only
         // for capabilities
-        writer.write("<SRSHandling>2</SRSHandling>");
+        writer.write("<SRSHandling>" + params.get(KEY_SRS_HANDLINGS) +  "</SRSHandling>");
         writer.write("<title>" + type + "</title>");
         writer.write("<abstract>abstract about " + type + "</abstract>");
         writer.write("<numDecimals value=\"8\"/>");
@@ -528,9 +546,10 @@ public class MockData {
         writer.write(
             "<latLonBoundingBox dynamic=\"false\" minx=\"-180\" miny=\"-90\" maxx=\"180\" maxy=\"90\"/>");
 
-        if(styleName == null)
-            styleName = "Default";
-        writer.write("<styles default=\"" + styleName + "\"/>");
+        String style = (String) params.get(KEY_STYLE);
+        if(style == null)
+            style = "Default";
+        writer.write("<styles default=\"" + style + "\"/>");
 
         writer.write("</featureType>");
 

@@ -2,11 +2,10 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wfs;
+package org.geoserver.feature;
 
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.spatial.BBOX;
@@ -22,13 +21,10 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  */
 public class DefaultCRSFilterVisitor extends DuplicatingFilterVisitor {
-    SimpleFeatureType featureType;
     private CoordinateReferenceSystem defaultCrs;
 
-    public DefaultCRSFilterVisitor(FilterFactory2 factory, SimpleFeatureType featureType, 
-            CoordinateReferenceSystem defaultCrs) {
+    public DefaultCRSFilterVisitor(FilterFactory2 factory, CoordinateReferenceSystem defaultCrs) {
         super(factory);
-        this.featureType = featureType;
         this.defaultCrs = defaultCrs;
     }
     
