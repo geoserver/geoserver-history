@@ -539,7 +539,7 @@ public class GetMapResponse implements Response {
 	 */
     void clearMapContext() {
         try {
-            if(map.getLayerCount() > 0)
+            if(map != null && map.getLayerCount() > 0)
                 map.clearLayerList();
         } catch (Exception e) // we dont want to propogate a new error
         {
