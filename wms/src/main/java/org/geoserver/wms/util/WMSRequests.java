@@ -260,12 +260,14 @@ public class WMSRequests {
             
             if ( req.getRawKvp().get("filter") != null ) {
                 //split out the filter we need
-                List filters = KvpUtils.readFlat((String)req.getRawKvp().get("filter"),"()");
+                List filters = KvpUtils.readFlat((String) req.getRawKvp().get("filter"),
+                        KvpUtils.OUTER_DELIMETER);
                 params.put( "filter", filters.get(index) );
             }
             else if ( req.getRawKvp().get("cql_filter") != null ) {
                 //split out the filter we need
-                List filters = KvpUtils.readFlat((String)req.getRawKvp().get("cql_filter"),"|");
+                List filters = KvpUtils.readFlat((String) req.getRawKvp().get("cql_filter"),
+                        KvpUtils.CQL_DELIMITER);
                 params.put( "cql_filter", filters.get(index) );
             }
             else if ( req.getRawKvp().get("featureid") != null  ) {
