@@ -97,8 +97,6 @@ public class ServiceException extends org.geoserver.platform.ServiceException {
      */
     public ServiceException(String message) {
         super(message, (String) null);
-
-        LOGGER.fine(this.getMessage());
     }
 
     /**
@@ -118,8 +116,6 @@ public class ServiceException extends org.geoserver.platform.ServiceException {
      */
     public ServiceException(Throwable e) {
         super(e, null);
-
-        LOGGER.fine(this.getMessage());
     }
 
     /**
@@ -132,8 +128,6 @@ public class ServiceException extends org.geoserver.platform.ServiceException {
         super(message);
 
         this.locator = locator;
-
-        LOGGER.fine("> [" + this.locator + "]:\n  " + this.getMessage());
     }
     
     public ServiceException(String message, String code, String locator) {
