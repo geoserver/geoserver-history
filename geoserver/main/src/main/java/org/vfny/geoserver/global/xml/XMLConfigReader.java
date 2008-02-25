@@ -199,33 +199,20 @@ public class XMLConfigReader {
             throw new ConfigurationException("Can't access " + root.getAbsolutePath(), e);
         }
 
-        // //Doing some trys here for either being in the webapp, with data and
-        // web-inf defined
-        // //or in a true data_dir, with the catalog and service in the same
-        // root dir.
-        // try {
-        // configDir = ReaderUtils.checkFile(new File(root, "WEB-INF/"), true);
-        // } catch (ConfigurationException confE) {
-        // //no WEB-INF, so we're in a data_dir, use as root.
-        // configDir = root;
-        // }
-        // File configFile = ReaderUtils.checkFile(new File(configDir,
-        // "services.xml"), false);
+        // try and see if this is a data dir of some kind, then load the services
         File servicesFile = GeoserverDataDirectory.findConfigFile("services.xml");
+        File catalogFile = GeoserverDataDirectory.findConfigFile("catalog.xml");
+        if(servicesFile == null)
+            throw new ConfigurationException("Invalid data dir, it does not contain a valid services.xml");
+        if(catalogFile == null)
+            throw new ConfigurationException("Invalid data dir, it does not contain a valid catalog.xml");
         loadServices(servicesFile);
 
-        File catalogFile = GeoserverDataDirectory.findConfigFile("catalog.xml");
-
-        File featureTypeDir = GeoserverDataDirectory.findConfigDir(root, "featureTypes/");
-        File styleDir = GeoserverDataDirectory.findConfigDir(root, "styles/");
-        File coverageDir = GeoserverDataDirectory.findConfigDir(root, "coverages/");
-
+        // find or create the minimal subdirs in a data directory, then load the catalog
+        File featureTypeDir = GeoserverDataDirectory.findCreateConfigDir("featureTypes");
+        File styleDir = GeoserverDataDirectory.findCreateConfigDir("styles");
+        File coverageDir = GeoserverDataDirectory.findCreateConfigDir("coverages");
         loadCatalog(catalogFile, featureTypeDir, styleDir, coverageDir);
-
-        // Future additions
-        // validationDir = ReaderUtils.initFile(new
-        // File(dataDir,"validation/"),true);
-        // loadValidation(validationDir);
     }
 
     /**
@@ -256,9 +243,9 @@ public class XMLConfigReader {
             configElem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException e) {
-            throw new ConfigurationException(e);
-        } catch (IOException e) {
-            throw new ConfigurationException(e);
+            throw new ConfigurationException(configFile + " was not found", e);
+        } catch (Exception e) {
+            throw new ConfigurationException(configFile + " contents do not seem to be valid", e);
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {
@@ -365,9 +352,9 @@ public class XMLConfigReader {
             catalogElem = ReaderUtils.parse(fr);
             fr.close();
         } catch (FileNotFoundException e) {
-            throw new ConfigurationException(e);
-        } catch (IOException e) {
-            throw new ConfigurationException(e);
+            throw new ConfigurationException(catalogFile + " was not found", e);
+        } catch (Exception e) {
+            throw new ConfigurationException(catalogFile + " contents to not seem to be valid", e);
         }
 
         try {
@@ -1416,6 +1403,12 @@ public class XMLConfigReader {
             LOGGER.finest(new StringBuffer("is dir: ").append(featureTypeRoot.isDirectory())
                     .toString());
         }
+        
+        if (featureTypeRoot == null) { // no coverages have been specified by the
+            // user (that is ok)
+            return Collections.EMPTY_MAP;
+        }
+
 
         if (!featureTypeRoot.isDirectory()) {
             throw new IllegalArgumentException("featureTypeRoot must be a directoy");
