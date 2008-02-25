@@ -96,6 +96,9 @@ public class KvpUtils {
     /** Delimeter for inner value lists in the KVPs */
     public static final Tokenizer INNER_DELIMETER = new Tokenizer(",");
 
+    /** Delimeter for multiple filters in a CQL filter list (<code>";"</code>) */
+    public static final Tokenizer CQL_DELIMITER = new Tokenizer(";");
+
     /**
      * Attempts to parse out the proper typeNames from the FeatureId filters.
      * It simply uses the value before the '.' character.
@@ -165,17 +168,28 @@ public class KvpUtils {
     }
     
     /**
-     * Reads a tokenized string and turns it into a list.  In this method, the
-     * tokenizer is quite flexible.  Note that if the list is unspecified (ie.
-     * is null) or is unconstrained (ie. is ''), then the method returns an
-     * empty list.
-     *
-     * @param rawList The tokenized string.
-     * @param delimiter The delimeter for the string tokens.
-     *
+     * Reads a tokenized string and turns it into a list. In this method, the
+     * tokenizer is quite flexible. Note that if the list is unspecified (ie. is
+     * null) or is unconstrained (ie. is ''), then the method returns an empty
+     * list.
+     * <p>
+     * If possible, use the method version that receives a well known
+     * {@link #readFlat(String, org.geoserver.ows.util.KvpUtils.Tokenizer) Tokenizer},
+     * as there might be special cases to catch out, like for the
+     * {@link #OUTER_DELIMETER outer delimiter "()"}. If this method delimiter
+     * argument does not match a well known Tokenizer, it'll use a simple string
+     * tokenization based on splitting out the strings with the raw passed in
+     * delimiter.
+     * </p>
+     * 
+     * @param rawList
+     *            The tokenized string.
+     * @param delimiter
+     *            The delimeter for the string tokens.
+     * 
      * @return A list of the tokenized string.
      * 
-     * @deprecated at 1.6.0-RC1, use {@link #readFlat(String, org.geoserver.ows.util.KvpUtils.Tokenizer)}
+     * @see #readFlat(String, org.geoserver.ows.util.KvpUtils.Tokenizer)
      */
     public static List readFlat(String rawList, String delimiter) {
         Tokenizer delim;
@@ -187,10 +201,11 @@ public class KvpUtils {
             delim = OUTER_DELIMETER;
         } else if (INNER_DELIMETER.getRegExp().equals(delimiter)) {
             delim = INNER_DELIMETER;
+        }else if(CQL_DELIMITER.getRegExp().equals(delimiter)){
+            delim = CQL_DELIMITER;
         } else {
-            throw new IllegalArgumentException("Only the following delimiters are supported: "
-                    + VALUE_DELIMITER + ", " + OUTER_DELIMETER + ", " + INNER_DELIMETER + ", "
-                    + KEYWORD_DELIMITER);
+            LOGGER.fine("Using not a well known kvp tokenization delimiter: " + delimiter);
+            delim = new Tokenizer(delimiter);
         }
         return readFlat(rawList, delim);
     }

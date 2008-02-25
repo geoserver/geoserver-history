@@ -195,12 +195,12 @@ public class KMLReflector extends WMService {
         String filterKey = null;
         if (requestParams.containsKey("FILTER")) {
                 String filter = (String) requestParams.get("FILTER");
-                filters = KvpUtils.readFlat(filter, "()");
+                filters = KvpUtils.readFlat(filter, KvpUtils.OUTER_DELIMETER);
                 filterKey = "filter";
         }
         else if ( requestParams.containsKey("CQL_FILTER")) {
                 String filter = (String) requestParams.get("CQL_FILTER");
-                filters = KvpUtils.readFlat(filter, "|" );
+                filters = KvpUtils.readFlat(filter, KvpUtils.CQL_DELIMITER );
                 filterKey = "cql_filter";
         }
         else if ( requestParams.containsKey("FEATUREID") ) {

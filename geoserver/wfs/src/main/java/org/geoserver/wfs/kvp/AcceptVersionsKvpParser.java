@@ -25,7 +25,7 @@ public class AcceptVersionsKvpParser extends KvpParser {
     public Object parse(String value) throws Exception {
         AcceptVersionsType acceptVersions = OwsFactory.eINSTANCE
             .createAcceptVersionsType();
-        acceptVersions.getVersion().addAll(KvpUtils.readFlat(value, ","));
+        acceptVersions.getVersion().addAll(KvpUtils.readFlat(value, KvpUtils.INNER_DELIMETER));
 
         return acceptVersions;
     }
