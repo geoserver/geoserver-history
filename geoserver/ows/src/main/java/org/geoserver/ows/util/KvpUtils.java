@@ -81,10 +81,10 @@ public class KvpUtils {
             final int len = list.size();
             if (len > 0) {
                 String first = (String) list.get(0);
-                String last = (String) list.get(len - 1);
                 if (first.startsWith("(")) {
                     list.set(0, first.substring(1));
                 }
+                String last = (String) list.get(len - 1);
                 if (last.endsWith(")")) {
                     list.set(len - 1, last.substring(0, last.length() - 1));
                 }
