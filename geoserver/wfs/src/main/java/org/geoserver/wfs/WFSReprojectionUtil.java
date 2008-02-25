@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfs;
 
+import org.geoserver.feature.DefaultCRSFilterVisitor;
+import org.geoserver.feature.ReprojectingFilterVisitor;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureType;
@@ -71,9 +73,8 @@ class WFSReprojectionUtil {
      * @param wfsVersion
      * @return
      */
-    public static Filter applyDefaultCRS(Filter filter, FeatureType schema,
-            CoordinateReferenceSystem defaultCRS) {
-        DefaultCRSFilterVisitor defaultVisitor = new DefaultCRSFilterVisitor(ff, schema, defaultCRS);
+    public static Filter applyDefaultCRS(Filter filter, CoordinateReferenceSystem defaultCRS) {
+        DefaultCRSFilterVisitor defaultVisitor = new DefaultCRSFilterVisitor(ff, defaultCRS);
         return (Filter) filter.accept(defaultVisitor, null);
     }
 
@@ -101,7 +102,7 @@ class WFSReprojectionUtil {
      */
     public static Filter normalizeFilterCRS(Filter filter, FeatureType schema,
             CoordinateReferenceSystem defaultCRS) {
-        Filter defaulted = applyDefaultCRS(filter, schema, defaultCRS);
+        Filter defaulted = applyDefaultCRS(filter, defaultCRS);
         return reprojectFilter(defaulted, schema);
     }
 

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wfs;
+package org.geoserver.feature;
 
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;
@@ -22,13 +22,10 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  */
 public class DefaultCRSFilterVisitor extends DuplicatingFilterVisitor {
-    FeatureType featureType;
     private CoordinateReferenceSystem defaultCrs;
 
-    public DefaultCRSFilterVisitor(FilterFactory2 factory, FeatureType featureType, 
-            CoordinateReferenceSystem defaultCrs) {
+    public DefaultCRSFilterVisitor(FilterFactory2 factory, CoordinateReferenceSystem defaultCrs) {
         super(factory);
-        this.featureType = featureType;
         this.defaultCrs = defaultCrs;
     }
     

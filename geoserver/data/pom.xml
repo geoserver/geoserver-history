@@ -31,6 +31,14 @@
 	  <artifactId>gt2-main</artifactId>
 	</dependency>
     <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-epsg-hsql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-xml-gml2</artifactId>
+    </dependency>
+    <dependency>
 	  <groupId>org.geotools.demo</groupId>
 	  <artifactId>gt2-demo-property</artifactId>
 	</dependency>

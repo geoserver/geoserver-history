@@ -1,9 +1,10 @@
-package org.geoserver.wfs;
+package org.geoserver.feature;
 
 import java.util.Collections;
 
 import junit.framework.TestCase;
 
+import org.geoserver.feature.ReprojectingFilterVisitor;
 import org.geotools.data.DataUtilities;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;

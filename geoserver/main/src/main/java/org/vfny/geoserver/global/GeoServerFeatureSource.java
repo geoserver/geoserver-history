@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.geoserver.feature.DefaultCRSFilterVisitor;
+import org.geoserver.feature.ReprojectingFilterVisitor;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -23,10 +25,12 @@ import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.SchemaException;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.OperationNotFoundException;
@@ -305,7 +309,8 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
     public FeatureCollection getFeatures(Query query) throws IOException {
-        Query newQuery = adaptQuery(query, schema);
+        Query reprojected = reprojectFilter(query);
+        Query newQuery = adaptQuery(reprojected, schema);
         
         CoordinateReferenceSystem targetCRS = query.getCoordinateSystemReproject();
         try {
@@ -315,6 +320,47 @@ public class GeoServerFeatureSource implements FeatureSource {
             return reprojectFeatureCollection(targetCRS, fc);
         } catch (Exception e) {
             throw new DataSourceException(e);
+        }
+    }
+
+    private Query reprojectFilter(Query query) throws IOException {
+        try {
+            // default CRS: the CRS we can assume geometry and bbox elements in filter are
+            // that is, usually the declared one, but the native one in the leave case
+            CoordinateReferenceSystem defaultCRS = null;
+            // we need to reproject all bbox and geometries to a target crs, which is
+            // the native one usually, but it's the declared on in the force case (since in
+            // that case we completely ignore the native one)
+            CoordinateReferenceSystem targetCRS = null;
+            FeatureType nativeFeatureType = source.getSchema();
+            CoordinateReferenceSystem nativeCRS = nativeFeatureType.getDefaultGeometry().getCoordinateSystem();
+            if(srsHandling == FeatureTypeInfo.FORCE) {
+                defaultCRS = declaredCRS;
+                targetCRS = declaredCRS;
+                nativeFeatureType = FeatureTypes.transform(nativeFeatureType, declaredCRS);
+            } else if(srsHandling == FeatureTypeInfo.REPROJECT) {
+                defaultCRS = declaredCRS;
+                targetCRS = nativeCRS;
+            } else { // FeatureTypeInfo.LEAVE
+                defaultCRS = nativeCRS;
+                targetCRS = nativeCRS;
+            }
+            
+            // now we apply a default to all geometries and bbox in the filter
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+            DefaultCRSFilterVisitor defaultCRSVisitor = new DefaultCRSFilterVisitor(ff, defaultCRS);
+            Filter defaultedFilter = (Filter) query.getFilter().accept(defaultCRSVisitor, null);
+            
+            // and then we reproject all geometries so that the datastore receives
+            // them in the native projection system (or the forced one, in case of force) 
+            ReprojectingFilterVisitor reprojectingVisitor = new ReprojectingFilterVisitor(ff, nativeFeatureType);
+            Filter reprojectedFilter = (Filter) defaultedFilter.accept(reprojectingVisitor, null);
+            
+            DefaultQuery reprojectedQuery = new DefaultQuery(query);
+            reprojectedQuery.setFilter(reprojectedFilter);
+            return reprojectedQuery;
+        } catch(Exception e) {
+            throw new DataSourceException("Had troubles handling filter reprojection...", e);
         }
     }
 
@@ -379,6 +425,9 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @throws IOException
      */
     protected Query adaptQuery(Query query, FeatureType schema) throws IOException {
+        // if needed, reproject the filter to the native srs
+        
+        
         Query newQuery = makeDefinitionQuery(query, schema);
 
         // see if the CRS got xfered over
