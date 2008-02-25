@@ -90,7 +90,7 @@ public abstract class WfsXmlWriter {
         this.output = output;
 
         //default to wfs configured charset
-        charSetEncoding = wfs.getCharSet().displayName();
+        charSetEncoding = wfs.getCharSet().name();
 
         //schema locations
         schemaLocations = new HashMap();

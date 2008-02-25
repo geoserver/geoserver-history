@@ -619,7 +619,7 @@ public class XMLConfigReader {
                     geoServer.setCharSet(cs);
 
                     if (LOGGER.isLoggable(Level.FINER)) {
-                        LOGGER.finer(new StringBuffer("charSet: ").append(cs.displayName())
+                        LOGGER.finer(new StringBuffer("charSet: ").append(cs.name())
                                 .toString());
                     }
                 } catch (Exception ex) {
