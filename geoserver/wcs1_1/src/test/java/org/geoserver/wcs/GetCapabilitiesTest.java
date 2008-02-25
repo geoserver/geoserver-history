@@ -2,16 +2,12 @@ package org.geoserver.wcs;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class GetCapabilitiesTest extends WCSTestSupport {
     
