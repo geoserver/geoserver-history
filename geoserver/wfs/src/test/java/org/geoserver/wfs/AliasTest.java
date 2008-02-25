@@ -3,6 +3,7 @@ package org.geoserver.wfs;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 
@@ -26,11 +27,14 @@ public class AliasTest extends WFSTestSupport {
         URL properties = MockData.class.getResource(name.getLocalPart() + ".properties");
         URL style = MockData.class.getResource(name.getLocalPart() + ".sld");
         String styleName = null;
+        HashMap<String, Object> extra = new HashMap<String, Object>();
         if(style != null) {
             styleName = name.getLocalPart();
             dataDirectory.addStyle(styleName, style);
+            extra.put(MockData.KEY_STYLE, styleName);
         }
-        dataDirectory.addPropertiesType(name, properties, styleName, alias);
+        extra.put(MockData.KEY_ALIAS, alias);
+        dataDirectory.addPropertiesType(name, properties, extra);
     }
 
     @Override

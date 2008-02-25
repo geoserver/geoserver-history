@@ -1,5 +1,7 @@
 package org.geoserver.wfs.v1_1;
 
+import java.util.Collections;
+
 import javax.xml.namespace.QName;
 
 import junit.textui.TestRunner;
@@ -20,9 +22,7 @@ public class GetFeatureTest extends WFSTestSupport {
         // add extra types
         dataDirectory.addPropertiesType( 
                 new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
-                getClass().getResource("WithGMLProperties.properties"),
-                null, null
-             );
+                getClass().getResource("WithGMLProperties.properties"), Collections.EMPTY_MAP);
     }
 
     public void testGet() throws Exception {
@@ -333,8 +333,7 @@ public class GetFeatureTest extends WFSTestSupport {
         
         dataDirectory.addPropertiesType( 
                 new QName( MockData.SF_URI, "new", MockData.SF_PREFIX ), 
-                getClass().getResource("new.properties"), 
-                null, null
+                getClass().getResource("new.properties"), Collections.EMPTY_MAP 
             );
         applicationContext.refresh();
         

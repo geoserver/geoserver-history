@@ -4,6 +4,12 @@
  */
 package org.geoserver.wfs;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.custommonkey.xmlunit.SimpleNamespaceContext;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 
 
@@ -22,5 +28,20 @@ public class WFSTestSupport extends GeoServerTestSupport {
      */
     protected WFS getWFS() {
         return (WFS) applicationContext.getBean("wfs");
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        
+        // init xmlunit
+        Map<String, String> namespaces = new HashMap<String, String>();
+        namespaces.put("wfs", "http://www.opengis.net/wfs");
+        namespaces.put("ows", "http://www.opengis.net/ows");
+        namespaces.put(MockData.CITE_PREFIX, MockData.CITE_URI); 
+        namespaces.put(MockData.CDF_PREFIX, MockData.CDF_URI);
+        namespaces.put(MockData.CGF_PREFIX, MockData.CGF_URI);
+        namespaces.put(MockData.SF_PREFIX, MockData.SF_URI);
+        XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }
 }

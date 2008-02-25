@@ -1,4 +1,4 @@
-package org.geoserver.wfs;
+package org.geoserver.feature;
 
 import java.util.Collections;
 

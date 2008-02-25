@@ -5,6 +5,10 @@ import org.w3c.dom.NodeList;
 
 public class GeometrylessTest extends WFSTestSupport {
     
+    protected String getDefaultLogConfiguration() {
+        return "/DEFAULT_LOGGING.properties";
+    }
+    
     public void testGetFeature10() throws Exception {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.0.0&service=wfs");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()

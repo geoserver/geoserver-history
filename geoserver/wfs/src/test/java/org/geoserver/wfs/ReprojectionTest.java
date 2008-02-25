@@ -1,10 +1,16 @@
 package org.geoserver.wfs;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
+import org.geotools.data.jdbc.FeatureTypeInfo;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -14,6 +20,7 @@ import org.w3c.dom.Element;
 public class ReprojectionTest extends WFSTestSupport {
     private static final String TARGET_CRS_CODE = "EPSG:900913";
     public static QName NULL_GEOMETRIES = new QName(MockData.CITE_URI, "NullGeometries", MockData.CITE_PREFIX);
+    public static QName GOOGLE = new QName(MockData.CITE_URI, "GoogleFeatures", MockData.CITE_PREFIX);
     MathTransform tx;
     
     protected void setUp() throws Exception {
@@ -29,7 +36,12 @@ public class ReprojectionTest extends WFSTestSupport {
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
         dataDirectory.addPropertiesType(NULL_GEOMETRIES, 
-                ReprojectionTest.class.getResource("NullGeometries.properties"), null, null);
+                ReprojectionTest.class.getResource("NullGeometries.properties"), Collections.EMPTY_MAP);
+        Map<String, Object> extra = new HashMap<String, Object>();
+        extra.put(MockData.KEY_SRS_HANDLINGS, org.vfny.geoserver.global.FeatureTypeInfo.REPROJECT);
+        extra.put(MockData.KEY_SRS_NUMBER, 900913);
+        dataDirectory.addPropertiesType(GOOGLE, 
+                ReprojectionTest.class.getResource("GoogleFeatures.properties"), extra);
     }
     
     public void testGetFeatureGet() throws Exception {
@@ -43,6 +55,14 @@ public class ReprojectionTest extends WFSTestSupport {
 //        print(dom2);
         
         runTest(dom1,dom2);
+    }
+    
+    public void testGetFeatureReprojectedFeatureType() throws Exception {
+        // bbox is 4,4,6,6 in wgs84, coordinates have been reprojected to 900913
+        Document dom = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename=" + 
+            GOOGLE.getLocalPart() + "&bbox=445000,445000,668000,668000");
+        print(dom);
+        assertXpathEvaluatesTo("1", "count(//cite:GoogleFeatures)", dom);
     }
     
     public void testGetFeaturePost() throws Exception {

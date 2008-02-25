@@ -11,7 +11,7 @@ import net.sf.json.JSONObject;
 import org.geoserver.wfs.WFSTestSupport;
 
 public class GeoJSONTest extends WFSTestSupport {
-	
+    
     public void testGet() throws Exception {	
     	InputStream is = get("wfs?request=GetFeature&version=1.0.0&typename=sf:PrimitiveGeoFeature&maxfeatures=1&outputformat=json");
     	BufferedReader in = new BufferedReader(new InputStreamReader(is));

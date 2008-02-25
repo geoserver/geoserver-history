@@ -1,5 +1,7 @@
 package org.geoserver.wfs.v1_1;
 
+import java.util.Collections;
+
 import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
@@ -17,7 +19,7 @@ public class TransactionTest extends WFSTestSupport {
         dataDirectory.addPropertiesType( 
                 new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
                 getClass().getResource("WithGMLProperties.properties"),
-                null, null
+                Collections.EMPTY_MAP
              );
     }
     
