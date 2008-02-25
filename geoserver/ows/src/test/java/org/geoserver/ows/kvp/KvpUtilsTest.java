@@ -44,6 +44,14 @@ public class KvpUtilsTest extends TestCase {
         actual = KvpUtils.readFlat("(abc)(def)()", KvpUtils.OUTER_DELIMETER);
         assertKvp(expected, actual);
 
+        expected = new String[]{"abc"};
+        actual = KvpUtils.readFlat("(abc)", KvpUtils.OUTER_DELIMETER);
+        assertKvp(expected, actual);
+
+        expected = new String[]{""};
+        actual = KvpUtils.readFlat("()", KvpUtils.OUTER_DELIMETER);
+        assertKvp(expected, actual);
+
         expected = new String[]{"", "A=1", "B=2", ""};
         actual = KvpUtils.readFlat(";A=1;B=2;", KvpUtils.CQL_DELIMITER);
         assertKvp(expected, actual);
