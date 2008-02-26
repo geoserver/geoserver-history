@@ -374,7 +374,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>wfsv</artifactId>
-          <version>1.6.0-RC3</version>
+          <version>${project.version}</version>
         </dependency>
       </dependencies>
     </profile>
