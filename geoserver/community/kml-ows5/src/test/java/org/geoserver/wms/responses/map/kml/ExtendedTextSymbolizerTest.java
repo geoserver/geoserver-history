@@ -3,7 +3,9 @@ package org.geoserver.wms.responses.map.kml;
 import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 
@@ -34,7 +36,7 @@ public class ExtendedTextSymbolizerTest extends WMSTestSupport {
                 .addStyle("KmlTimespan", ExtendedDataTest.class.getResource("KmlTimespan.sld"));
 
         dataDirectory.addPropertiesType(DATES, ExtendedTextSymbolizerTest.class
-                .getResource("Dates.properties"), "KmlTimestamp", null);
+                .getResource("Dates.properties"), Collections.singletonMap(MockData.STYLE, "KmlTimestamp"));
     }
 
     protected String getDefaultLogConfiguration() {
