@@ -1,5 +1,7 @@
 package org.geoserver.wms.responses.map.kml;
 
+import java.util.Collections;
+
 import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
@@ -15,7 +17,7 @@ public class ExtendedDataTest extends WMSTestSupport {
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         dataDirectory.addWellKnownTypes(new QName[] { MockData.BUILDINGS });
-        dataDirectory.addPropertiesType(ONLYGEOM, getClass().getResource("OnlyGeom.properties"), null, null);
+        dataDirectory.addPropertiesType(ONLYGEOM, getClass().getResource("OnlyGeom.properties"), Collections.EMPTY_MAP);
     }
 
     public void testDefaultOutput() throws Exception {
