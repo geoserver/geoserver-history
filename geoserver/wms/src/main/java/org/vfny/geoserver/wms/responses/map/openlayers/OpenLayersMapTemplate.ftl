@@ -98,7 +98,7 @@
                         INFO_FORMAT: 'text/html',
                         QUERY_LAYERS: map.layers[0].params.LAYERS,
                         FEATURE_COUNT: 50,
-                        <#assign skipped=["request","bbox","service","version","format","width","height"]>
+                        <#assign skipped=["request","bbox","service","version","format","width","height","layers","styles","srs"]>
                         <#list parameters as param>            
                         <#if !(skipped?seq_contains(param.name?lower_case))>
                         ${param.name}: '${param.value}',
