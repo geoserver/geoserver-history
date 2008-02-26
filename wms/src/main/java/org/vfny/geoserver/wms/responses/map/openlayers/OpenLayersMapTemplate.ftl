@@ -42,8 +42,8 @@
                 controls: [],
                 maxExtent: bounds,
                 maxResolution: ${maxResolution?c},
-                projection: "${request.SRS}",
-                units: '${units}'
+                projection: "${request.SRS?js_string}",
+                units: '${units?js_string}'
             };
             map = new OpenLayers.Map('map', options);
             
@@ -53,7 +53,7 @@
                 "${layerName} - Tiled", "${baseUrl}/wms",
                 {
                     <#list parameters as param>            
-                    ${param.name}: '${param.value}',
+                    ${param.name}: '${param.value?js_string}',
                     </#list>
                     format: 'image/png',
                     tiled: 'true',
@@ -67,7 +67,7 @@
                 "${layerName} - Untiled", "${baseUrl}/wms",
                 {
                     <#list parameters as param>            
-                    ${param.name}: '${param.value}',
+                    ${param.name}: '${param.value?js_string}',
                     </#list>
                     format: 'image/png'
                 },
@@ -101,7 +101,7 @@
                         <#assign skipped=["request","bbox","service","version","format","width","height","layers","styles","srs"]>
                         <#list parameters as param>            
                         <#if !(skipped?seq_contains(param.name?lower_case))>
-                        ${param.name}: '${param.value}',
+                        ${param.name}: '${param.value?js_string}',
                         </#if>
                         </#list>
                         WIDTH: map.size.w,
