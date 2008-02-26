@@ -104,7 +104,7 @@ public class FeatureWrapper extends BeansWrapper {
      */
     protected String wrapValue(Object o) {
         if(o == null){
-            //nulls throw tempaltes off, use empty string
+            //nulls throw templates off, use empty string
             return "";
         }
     	if ( o instanceof Date ) { 
