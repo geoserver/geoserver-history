@@ -302,8 +302,9 @@ public abstract class DefaultRasterMapProducer extends
 		renderer.paint(graphic, paintArea, dataArea);
 		
         // apply watermarking
-       try {
-            this.wmPainter.paint(graphic, paintArea);
+        try {
+            if (wmPainter != null)
+                this.wmPainter.paint(graphic, paintArea);
         } catch (Exception e) {
             throw new WmsException("Problem occurred while trying to watermark data", "", e);
         } 
