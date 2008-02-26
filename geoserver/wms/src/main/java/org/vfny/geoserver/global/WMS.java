@@ -45,12 +45,44 @@ public class WMS extends Service {
                                           //  "application/vnd.ogc.se_blank"
         };
     public static final String WEB_CONTAINER_KEY = "WMS";
+    
+    public static final int WATERMARK_UL = 0;
+    public static final int WATERMARK_UC = 1;
+    public static final int WATERMARK_UR = 2;
+    public static final int WATERMARK_CL = 3;
+    public static final int WATERMARK_CC = 4;
+    public static final int WATERMARK_CR = 5;
+    public static final int WATERMARK_LL = 6;
+    public static final int WATERMARK_LC = 7;
+    public static final int WATERMARK_LR = 8;
 
     /** svg Renderer to use **/
     private String svgRenderer;
 
     /** svg anitalias or not **/
     private boolean svgAntiAlias;
+
+    /** global Watermarking **/
+    private boolean globalWatermarking;
+
+    /** global Watermarking URL **/
+    private String globalWatermarkingURL;
+    
+    /** globlal Watermarking alpha **/
+    private int watermarkTransparency;
+    
+    /** 
+     * Watermark position
+     * <pre>
+     * O -- O -- O      0 -- 1 -- 2
+     * |    |    |      |    |    |
+     * O -- O -- O  ==  3 -- 4 -- 5
+     * |    |    |      |    |    |
+     * O -- O -- O      6 -- 7 -- 8
+     * </pre>
+     *
+     */
+    private int watermarkPosition;
 
     /** rendering interpolation or not **/
     private Map baseMapLayers;
@@ -74,6 +106,10 @@ public class WMS extends Service {
         setId("wms");
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
+        globalWatermarking = config.getGlobalWatermarking();
+        globalWatermarkingURL = config.getGlobalWatermarkingURL();
+        watermarkTransparency = config.getWatermarkTransparency();
+        watermarkPosition = config.getWatermarkPosition();
         allowInterpolation = config.getAllowInterpolation();
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
@@ -117,6 +153,10 @@ public class WMS extends Service {
         super.load(config.getService());
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
+        globalWatermarking = config.getGlobalWatermarking();
+        globalWatermarkingURL = config.getGlobalWatermarkingURL();
+        watermarkTransparency = config.getWatermarkTransparency();
+        watermarkPosition = config.getWatermarkPosition();
         allowInterpolation = config.getAllowInterpolation();
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
@@ -157,6 +197,10 @@ public class WMS extends Service {
         w.setService((ServiceDTO) super.toDTO());
         w.setSvgRenderer(svgRenderer);
         w.setSvgAntiAlias(svgAntiAlias);
+        w.setGlobalWatermarking(globalWatermarking);
+        w.setGlobalWatermarkingURL(globalWatermarkingURL);
+        w.setWatermarkTransparency(watermarkTransparency);
+        w.setWatermarkPosition(watermarkPosition);
         w.setAllowInterpolation(allowInterpolation);
         w.setBaseMapLayers(baseMapLayers);
         w.setBaseMapStyles(baseMapStyles);
@@ -301,5 +345,37 @@ public class WMS extends Service {
 
     public void getBaseMapEnvelopes(Map envelopes) {
         baseMapEnvelopes = envelopes;
+    }
+
+    public boolean isGlobalWatermarking() {
+        return globalWatermarking;
+    }
+
+    public void setGlobalWatermarking(boolean globalWatermarking) {
+        this.globalWatermarking = globalWatermarking;
+    }
+
+    public String getGlobalWatermarkingURL() {
+        return globalWatermarkingURL;
+    }
+
+    public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
+        this.globalWatermarkingURL = globalWatermarkingURL;
+    }
+
+    public int getWatermarkTransparency() {
+        return watermarkTransparency;
+    }
+
+    public void setWatermarkTransparency(int watermarkTransparency) {
+        this.watermarkTransparency = watermarkTransparency;
+    }
+
+    public int getWatermarkPosition() {
+        return watermarkPosition;
+    }
+
+    public void setWatermarkPosition(int watermarkPosition) {
+        this.watermarkPosition = watermarkPosition;
     }
 }

@@ -908,6 +908,25 @@ public class XMLConfigReader {
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
         wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
 
+        if (ReaderUtils.getChildText(wmsElement, "globalWatermarking") != null) {
+            wms.setGlobalWatermarking(!"false".equals(ReaderUtils.getChildText(wmsElement,
+                        "globalWatermarking")));
+        }
+
+        wms.setGlobalWatermarkingURL(ReaderUtils.getChildText(wmsElement, "globalWatermarkingURL"));
+        
+        if (ReaderUtils.getChildText(wmsElement, "globalWatermarkingTransparency") != null) {
+            wms.setWatermarkTransparency(Integer.parseInt(ReaderUtils.getChildText(wmsElement,
+                        "globalWatermarkingTransparency")));
+        }
+        
+        if (ReaderUtils.getChildText(wmsElement, "globalWatermarkingPosition") != null) {
+            wms.setWatermarkPosition(Integer.parseInt(ReaderUtils.getChildText(wmsElement,
+                "globalWatermarkingPosition")));
+        } else {
+            wms.setWatermarkPosition(8); // lower right corner
+        }
+
         try {
             wms.setAllowInterpolation(ReaderUtils.getChildText(wmsElement, "allowInterpolation",
                     true));

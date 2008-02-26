@@ -418,7 +418,11 @@ public class GetMapResponse implements Response {
 					}
 				}
 			}
-
+			
+			// enable simple watermarking
+			if (this.delegate instanceof DefaultRasterMapProducer)
+                ((DefaultRasterMapProducer)this.delegate).setWmPainter(new WatermarkPainter(request));
+			
 			// /////////////////////////////////////////////////////////
 			//
 			// Producing the map in the requested format.
