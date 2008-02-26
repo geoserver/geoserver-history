@@ -383,6 +383,10 @@ public class XMLConfigWriter {
         Map baseMapStyles = null;
         Map baseMapEnvelopes = null;
         boolean svgAntiAlias = false;
+        boolean globalWatermarking = false;
+        String globalWatermarkingURL = null;
+        int watermarkTransparency = 0;
+        int watermarkPosition = 8;
         String allowInterpolation = null;
         boolean citeConformanceHacks = false;
 
@@ -407,6 +411,10 @@ public class XMLConfigWriter {
             t = "WMS";
             svgRenderer = w.getSvgRenderer();
             svgAntiAlias = w.getSvgAntiAlias();
+            globalWatermarking = w.getGlobalWatermarking();
+            globalWatermarkingURL = w.getGlobalWatermarkingURL();
+            watermarkTransparency = w.getWatermarkTransparency();
+            watermarkPosition = w.getWatermarkPosition();
             allowInterpolation = w.getAllowInterpolation();
             baseMapLayers = w.getBaseMapLayers();
             baseMapStyles = w.getBaseMapStyles();
@@ -526,6 +534,14 @@ public class XMLConfigWriter {
 
         if (obj instanceof WMSDTO) {
             cw.textTag("svgAntiAlias", svgAntiAlias + "");
+            cw.textTag("globalWatermarking", globalWatermarking + "");
+
+            if (globalWatermarkingURL != null) {
+                cw.textTag("globalWatermarkingURL", globalWatermarkingURL);
+            }
+            
+            cw.textTag("globalWatermarkingTransparency", watermarkTransparency + "");
+            cw.textTag("globalWatermarkingPosition", watermarkPosition + "");
 
             if (allowInterpolation != null) {
                 cw.textTag("allowInterpolation", allowInterpolation);
@@ -1407,6 +1423,9 @@ public class XMLConfigWriter {
                 }
             }
 
+            // //
+            // storing the envelope
+            // //
             if (cv.getEnvelope() != null) {
                 GeneralEnvelope e = cv.getEnvelope();
                 m = new HashMap();
@@ -1635,9 +1654,11 @@ public class XMLConfigWriter {
                         temp.put("name", key);
                         temp.put("value", text);
                     } else {
-                        temp.put("name", key);
-                        temp.put("value",
-                            cv.getParameters().get(key).toString().replaceAll("\"", "'"));
+                        if (cv.getParameters().get(key) != null) {
+                            temp.put("name", key);
+                            temp.put("value",
+                                cv.getParameters().get(key).toString().replaceAll("\"", "'"));
+                        }
                     }
 
                     cw.attrTag("parameter", temp);

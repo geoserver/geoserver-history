@@ -11,7 +11,9 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -107,6 +109,10 @@ public abstract class DefaultRasterMapProducer extends
 
 	/** Which format to encode the image in if one is not supplied */
 	private static final String DEFAULT_MAP_FORMAT = "image/png";
+	
+	/** The Watermark Painter instance **/
+	private WatermarkPainter wmPainter;
+
 
 	/**
 	 * 
@@ -284,7 +290,7 @@ public abstract class DefaultRasterMapProducer extends
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
 		}
 		renderer.setRendererHints(rendererParams);
-
+		
 		// if abort already requested bail out
 		if (this.abortRequested) {
 			graphic.dispose();
@@ -294,6 +300,15 @@ public abstract class DefaultRasterMapProducer extends
 		// finally render the image
 		final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
 		renderer.paint(graphic, paintArea, dataArea);
+		
+        // apply watermarking
+       try {
+            this.wmPainter.paint(graphic, paintArea);
+        } catch (Exception e) {
+            throw new WmsException("Problem occurred while trying to watermark data", "", e);
+        } 
+
+		
 		graphic.dispose();
 		if (!this.abortRequested) {
             if(palette != null && palette.getMapSize() < 256)
@@ -302,17 +317,27 @@ public abstract class DefaultRasterMapProducer extends
                 this.image = preparedImage;
 		}
 	}
+	
+    /**
+     * Set the Watermark Painter.
+     * 
+     * @param wmPainter
+     *            the wmPainter to set
+     */
+    public void setWmPainter(WatermarkPainter wmPainter) {
+        this.wmPainter = wmPainter;
+    }
 
     /**
-	 * Sets up a {@link BufferedImage#TYPE_4BYTE_ABGR} if the paletteInverter is
-	 * not provided, or a indexed image otherwise. Subclasses may override this
-	 * method should they need a special kind of image
-	 * 
-	 * @param width
-	 * @param height
-	 * @param paletteInverter
-	 * @return
-	 */
+     * Sets up a {@link BufferedImage#TYPE_4BYTE_ABGR} if the paletteInverter is
+     * not provided, or a indexed image otherwise. Subclasses may override this
+     * method should they need a special kind of image
+     * 
+     * @param width
+     * @param height
+     * @param paletteInverter
+     * @return
+     */
 	protected RenderedImage prepareImage(int width, int height,
 			IndexColorModel palette, boolean transparent) {
 	    return ImageUtils.createImage(width, height, palette, transparent);

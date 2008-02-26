@@ -71,7 +71,7 @@
                     </#list>
                     format: 'image/png'
                 },
-                {singleTile: true} 
+                {singleTile: true, ratio: 1} 
             );
         
             map.addLayers([untiled, tiled]);

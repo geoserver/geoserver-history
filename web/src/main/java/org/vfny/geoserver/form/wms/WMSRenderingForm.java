@@ -4,12 +4,28 @@
  */
 package org.vfny.geoserver.form.wms;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataAccessFactory.Param;
+import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.form.data.FormUtils;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.DataStoreUtils;
+import org.vfny.geoserver.util.Requests;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +34,10 @@ public class WMSRenderingForm extends ActionForm {
     List svgRenderers;
     String svgRenderer;
     boolean svgAntiAlias;
+    boolean globalWatermarking;
+    String globalWatermarkingURL;
+    int watermarkTransparency;
+    int watermarkPosition;
     List intTypes;
     String allowInterpolation;
 
@@ -43,6 +63,7 @@ public class WMSRenderingForm extends ActionForm {
     * but it works just fine.
     */
     private boolean svgAntiAliasChecked = false;
+    private boolean globalWatermarkingChecked = false;
 
     public WMSRenderingForm() {
         svgRenderers = new ArrayList();
@@ -68,18 +89,16 @@ public class WMSRenderingForm extends ActionForm {
         }
 
         svgAntiAlias = config.getSvgAntiAlias();
+        globalWatermarking = config.getGlobalWatermarking();
+        globalWatermarkingURL = config.getGlobalWatermarkingURL();
+        watermarkTransparency = config.getWatermarkTransparency();
+        watermarkPosition = config.getWatermarkPosition();
 
         allowInterpolation = config.getAllowInterpolation();
 
         if (allowInterpolation == null) {
             allowInterpolation = WMSConfig.INT_BIlINEAR;
         }
-    }
-
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
-        ActionErrors errors = new ActionErrors();
-
-        return errors;
     }
 
     public void setSvgRenderer(String svgRenderer) {
@@ -143,5 +162,87 @@ public class WMSRenderingForm extends ActionForm {
      */
     public void setEnabledChecked(boolean svgAntiAliasChecked) {
         this.svgAntiAliasChecked = svgAntiAliasChecked;
+    }
+
+    public boolean isGlobalWatermarking() {
+        return globalWatermarking;
+    }
+
+    public void setGlobalWatermarking(boolean globalWatermarking) {
+        globalWatermarkingChecked = true;
+        this.globalWatermarking = globalWatermarking;
+    }
+
+    /**
+    * @return The value of the anti aliasing rendering hint.
+    */
+    public boolean getGlobalWatermarking() {
+        return globalWatermarking;
+    }
+
+    public boolean isGlobalWatermarkingChecked() {
+        return globalWatermarkingChecked;
+    }
+
+    public String getGlobalWatermarkingURL() {
+        return globalWatermarkingURL;
+    }
+
+    public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
+        this.globalWatermarkingURL = globalWatermarkingURL;
+    }
+    
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+        ActionErrors errors = new ActionErrors();
+
+        // Selected DataStoreConfig is in session
+        //
+        UserContainer user = Requests.getUserContainer(request);
+        if ((globalWatermarkingURL != null) && !"".equals(globalWatermarkingURL)) {
+            URL url = null;
+
+            try {
+                // if this does not throw an exception then cool
+                url = new URL(globalWatermarkingURL);
+            } catch (MalformedURLException e) {
+                //check for special case of file
+                try {
+                    if (GeoserverDataDirectory.findDataFile(globalWatermarkingURL).exists()) {
+                        url = new URL("file://" + globalWatermarkingURL);
+                        globalWatermarkingURL = "file://" + globalWatermarkingURL;
+                    }
+                } catch (MalformedURLException e1) {
+                    //let this paramter die later
+                }
+            }
+            
+            if(url != null && (url.getProtocol() == null || url.getProtocol().equals("file"))) {
+                //do a check to see if the shapefile url is valid, report 
+                // an error if it does not 
+                File file = GeoserverDataDirectory.findDataFile(globalWatermarkingURL);
+                FormUtils.checkFileExistsAndCanRead(file, errors);
+            } 
+        }
+        
+        if(watermarkTransparency < 0 || watermarkTransparency > 100)
+            errors.add("watermarkTransparency", new ActionError("error.watermark.transparency.invalid"));
+        
+        return errors;
+    }
+
+    public int getWatermarkTransparency() {
+        return watermarkTransparency;
+    }
+
+    public void setWatermarkTransparency(int watermarkTransparency) {
+        this.watermarkTransparency = watermarkTransparency;
+    }
+
+    public int getWatermarkPosition() {
+        return watermarkPosition;
+    }
+
+    public void setWatermarkPosition(int watermarkPosition) {
+        this.watermarkPosition = watermarkPosition;
     }
 }

@@ -25,13 +25,22 @@ public class WMSRenderingAction extends ConfigAction {
         WMSRenderingForm renderingForm = (WMSRenderingForm) form;
 
         boolean svgAntiAlias = renderingForm.getSvgAntiAlias();
+        boolean globalWatermarking = renderingForm.getGlobalWatermarking();
 
         if (renderingForm.isSvgAntiAliasChecked() == false) {
             svgAntiAlias = false;
         }
 
+        if (renderingForm.isGlobalWatermarkingChecked() == false) {
+            globalWatermarking = false;
+        }
+
         config.setSvgRenderer(renderingForm.getSvgRenderer());
         config.setSvgAntiAlias(svgAntiAlias);
+        config.setGlobalWatermarking(globalWatermarking);
+        config.setGlobalWatermarkingURL(renderingForm.getGlobalWatermarkingURL());
+        config.setWatermarkTransparency(renderingForm.getWatermarkTransparency());
+        config.setWatermarkPosition(renderingForm.getWatermarkPosition());
         config.setAllowInterpolation(renderingForm.getAllowInterpolation());
         getApplicationState().notifyConfigChanged();
 
