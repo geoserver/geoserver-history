@@ -143,7 +143,7 @@ public class StylesSelectAction extends ConfigAction {
         for (Iterator it = config.getFeaturesTypes().values().iterator(); it.hasNext();) {
             FeatureTypeConfig ft = (FeatureTypeConfig) it.next();
 
-            if (styleId.equals(ft.getDefaultStyle())) {
+            if (styleId.equals(ft.getDefaultStyle()) || ft.getStyles().contains(styleId)) {
                 DataStoreConfig ds = config.getDataStore(ft.getDataStoreId());
 
                 // misconfigured data stores are not included int the map, ouff...
@@ -158,7 +158,7 @@ public class StylesSelectAction extends ConfigAction {
         for (Iterator it = config.getCoverages().values().iterator(); it.hasNext();) {
             CoverageConfig cc = (CoverageConfig) it.next();
 
-            if (styleId.equals(cc.getDefaultStyle())) {
+            if (styleId.equals(cc.getDefaultStyle()) || cc.getStyles().contains(styleId)) {
                 CoverageStoreConfig cs = config.getDataFormat(cc.getFormatId());
                 results.add(cs.getNameSpaceId() + ":" + cc.getName());
             }
