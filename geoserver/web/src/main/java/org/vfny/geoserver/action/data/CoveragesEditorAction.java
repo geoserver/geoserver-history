@@ -274,8 +274,8 @@ public final class CoveragesEditorAction extends ConfigAction {
         config.setSupportedFormats(supportedFormats(form));
         config.setDefaultStyle(form.getStyleId());
 
+        config.getStyles().clear();
         if (form.getOtherSelectedStyles() != null) {
-            config.getStyles().clear();
 
             for (int i = 0; i < form.getOtherSelectedStyles().length; i++) {
                 config.addStyle(form.getOtherSelectedStyles()[i]);
