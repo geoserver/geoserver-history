@@ -221,14 +221,20 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         		
         		FeatureTypeInfo curFTI = layers[i].getFeature();
         		try {
-        			if(useNativeBounds) {
-        				curbbox = curFTI.getLatLongBoundingBox();
+        			if(curFTI != null) {
+        				// Local feature type
+            			if(useNativeBounds) {
+            				curbbox = curFTI.getLatLongBoundingBox();
+            			} else {
+            				curbbox = curFTI.getBoundingBox();
+            			}
         			} else {
-        				curbbox = curFTI.getBoundingBox();
-        			}
+        				curbbox = layers[i].getRemoteFeatureSource().getBounds();
+        			}	
         		} catch(IOException e) {
-        			e.printStackTrace();
-        		}
+    				e.printStackTrace();
+    			}
+        		
         		if(i == 0) {
         			layerbbox = new Envelope(curbbox);
         		} else {
