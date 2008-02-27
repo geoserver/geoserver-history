@@ -92,7 +92,7 @@ public class DataDataStoresNewForm extends ActionForm {
         if ((getDataStoreID() == null) || getDataStoreID().equals("")) {
             errors.add("dataStoreID",
                 new ActionError("error.dataStoreId.required", getDataStoreID()));
-        } else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataStoreID())) {
+        } else if (!Pattern.matches("^\\w(\\w|\\.)*$", getDataStoreID())) {
             errors.add("dataStoreID", new ActionError("error.dataStoreId.invalid", getDataStoreID()));
         }
 
