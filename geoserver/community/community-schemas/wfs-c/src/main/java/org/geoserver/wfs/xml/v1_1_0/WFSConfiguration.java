@@ -23,6 +23,7 @@ import org.geoserver.wfs.xml.v1_1_0.overrides.ISOCodeTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOCurvePropertyTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyExtractor;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMeasureTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiPointTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiSurfaceTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOPointTypeBinding;
@@ -168,6 +169,7 @@ public class WFSConfiguration extends Configuration {
     private void registerBindingOverrides(MutablePicoContainer container) {
         registerOverride(container, XS.ANYTYPE, ISOXSAnyTypeBinding.class);
         registerOverride(container, GML.CodeType, ISOCodeTypeBinding.class);
+        registerOverride(container, GML.CodeType, ISOMeasureTypeBinding.class);
 
         /*
         registerOverride(container, XS.DATE, ISOXSDateBinding.class);
