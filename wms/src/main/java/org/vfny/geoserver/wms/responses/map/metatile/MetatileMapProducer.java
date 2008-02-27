@@ -92,7 +92,7 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
 			if (LOGGER.isLoggable(Level.FINER)) {
 				LOGGER.finer("Looked for meta tile " + key.metaTileCoords.x
 						+ ", " + key.metaTileCoords.y + "in cache: "
-						+ ((tile == null) ? "hit!" : "miss"));
+						+ ((tile != null) ? "hit!" : "miss"));
 			}
 
 			if (tile == null) {
