@@ -81,7 +81,7 @@ public class WMSCapabilitiesResponse implements Response {
         //UpdateSequence handling for WMS:  see WMS 1.1.1 page 23
         CapabilitiesRequest capreq = (CapabilitiesRequest)request;
         int reqUS = -1;
-        if (capreq.getUpdateSequence() != null) {
+        if (capreq.getUpdateSequence() != null && !"".equals(capreq.getUpdateSequence().trim())) {
 	        try {
 	        	reqUS = Integer.parseInt(capreq.getUpdateSequence());
 	        } catch (NumberFormatException nfe) {
