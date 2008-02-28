@@ -65,6 +65,17 @@ public class WcsException extends ServiceException {
     public WcsException(String message, String locator) {
         super(message, locator);
     }
+    
+    /**
+     * Message code and locator constructor.
+     *
+     * @param message The message for the .
+     * @param locator The java class that caused the problem
+     */
+    public WcsException(String message, String locator, String code) {
+        super(message, locator);
+        setCode(code);
+    }
 
     public WcsException(String message, Throwable cause) {
         super(message, cause);
