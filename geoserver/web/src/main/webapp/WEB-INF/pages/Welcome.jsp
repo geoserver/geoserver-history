@@ -44,7 +44,7 @@
     </a>
    </li>
    <li>
-    <a href="http://www.moximedia.com:8080/imf-ows/imf.jsp?site=gs_users">
+    <a href="http://sigma.openplans.org/users/">
       User Map
     </a>
   </li>
