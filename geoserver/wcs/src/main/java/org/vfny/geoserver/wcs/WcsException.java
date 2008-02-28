@@ -28,7 +28,7 @@ public class WcsException extends ServiceException {
     
     public enum WcsExceptionCode {
         MissingParameterValue, InvalidParameterValue, NoApplicableCode, UnsupportedCombination, NotEnoughStorage,
-        InvalidUpdateSequence
+        InvalidUpdateSequence, CurrentUpdateSequence
     }
 
     /**

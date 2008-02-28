@@ -12,6 +12,8 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wcs.WcsException;
+import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -82,10 +84,10 @@ public class WCSCapabilitiesResponse implements Response {
         }
         int geoUS = request.getServiceRef().getServiceRef().getGeoServer().getUpdateSequence();
     	if (reqUS > geoUS) {
-    		throw new ServiceException("Client supplied an updateSequence that is greater than the current sever updateSequence","InvalidUpdateSequence");
+    		throw new WcsException("Client supplied an updateSequence that is greater than the current sever updateSequence", WcsExceptionCode.InvalidParameterValue, "");
     	}
     	if (reqUS == geoUS) {
-    		throw new ServiceException("WCS capabilities document is current (updateSequence = " + geoUS + ")","CurrentUpdateSequence");
+    		throw new WcsException("WCS capabilities document is current (updateSequence = " + geoUS + ")", WcsExceptionCode.CurrentUpdateSequence, "");
     	}
     	//otherwise it's a normal response...
 
