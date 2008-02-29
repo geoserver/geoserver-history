@@ -18,12 +18,6 @@
  		<constructor-arg ref="applicationState"/>
  	</bean>
  	
- 	<!-- file publisher -->
-	<bean id="filePublisher" class="org.geoserver.ows.FilePublisher">
-		<constructor-arg ref="resourceLoader"/>
-	</bean>
-	
-	
    <bean id="dispatcherMapping" 
     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	 <property name="alwaysUseFullPath" value="true"/>

@@ -29,9 +29,8 @@ public class GetCapabilitiesTest extends WCSTestSupport {
 //         print(dom);
         checkValidationErrors(dom, WCS11_SCHEMA);
         
-        // make sure we provided the store values (for the moment, unsupported, 
-        // so store param should be false
-        assertXpathEvaluatesTo("False", "/wcs:Capabilities/ows:OperationsMetadata" +
+        // make sure we provided the store values
+        assertXpathEvaluatesTo("True", "/wcs:Capabilities/ows:OperationsMetadata" +
         		"/ows:Operation[@name=\"GetCoverage\"]/ows:Parameter/ows:AllowedValues", dom);
     }
     

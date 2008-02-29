@@ -75,8 +75,6 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
         Boolean store = (Boolean) kvp.get("store");
         if (store != null)
             output.setStore(store.booleanValue());
-        if (output.isStore())
-            throw new WcsException("store is not supported", InvalidParameterValue, "store");
 
         // check and set format
         String format = (String) kvp.get("format");

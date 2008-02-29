@@ -47,6 +47,10 @@ public class DebugCoverageResponseDelegate implements CoverageResponseDelegate {
     public String getContentType(GeoServer gs) {
         return "text/plain";
     }
+    
+    public String getFileExtension() {
+        return "txt";
+    }
 
     public String getMimeFormatFor(String outputFormat) {
         if(canProduce(outputFormat))
