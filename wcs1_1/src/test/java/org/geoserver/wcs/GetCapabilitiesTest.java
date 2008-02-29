@@ -6,6 +6,7 @@ import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -30,7 +31,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         checkValidationErrors(dom, WCS11_SCHEMA);
         
         // make sure we provided the store values
-        assertXpathEvaluatesTo("True", "/wcs:Capabilities/ows:OperationsMetadata" +
+        assertXpathEvaluatesTo("TrueFalse", "/wcs:Capabilities/ows:OperationsMetadata" +
         		"/ows:Operation[@name=\"GetCoverage\"]/ows:Parameter/ows:AllowedValues", dom);
     }
     
@@ -145,7 +146,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&updateSequence=1");
         checkValidationErrors(dom, WCS11_SCHEMA);
 //        print(dom);
-        assertXpathEvaluatesTo("1", "count(/ows:ExceptionReport)", dom);
+        checkOws11Exception(dom);
     }
     
     public void testUpdateSequenceSuperiorPost() throws Exception {
@@ -157,27 +158,42 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         Document dom = postAsDOM(BASEPATH, request);
         checkValidationErrors(dom, WCS11_SCHEMA);
 //        print(dom);
-        assertXpathEvaluatesTo("1", "count(/ows:ExceptionReport)", dom);
+        checkOws11Exception(dom);
     }
     
-    public void testSectionsIgnoreGet() throws Exception {
+    public void testSectionsBogus() throws Exception {
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&sections=Bogus");
         checkValidationErrors(dom, WCS11_SCHEMA);
-        final Node root = dom.getFirstChild();
-        assertEquals("wcs:Capabilities", root.getNodeName());
-        assertTrue(root.getChildNodes().getLength() > 0);
+        checkOws11Exception(dom);
+        assertXpathEvaluatesTo(WcsExceptionCode.InvalidParameterValue.toString(), "/ows:ExceptionReport/ows:Exception/@exceptionCode", dom);
     }
     
-//    public void testBogusSectionPost() throws Exception {
-//        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-//            + "<wcs:GetCapabilities service=\"WCS\" xmlns:ows=\"http://www.opengis.net/ows/1.1\""
-//            + " xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\""
-//            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-//            + "  <ows:Sections>\r\n" 
-//            + "    <ows:Section>Bogus</ows:Section>\r\n" 
-//            + "  </ows:Sections> " 
-//            + "</wcs:GetCapabilities>";
-//        Document dom = postAsDOM(BASEPATH, request);
-//        assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
-//    }
+    public void testSectionsAll() throws Exception {
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&sections=All");
+        checkValidationErrors(dom, WCS11_SCHEMA);
+        assertXpathEvaluatesTo("1", "count(//ows:ServiceIdentification)", dom);
+        assertXpathEvaluatesTo("1", "count(//ows:ServiceProvider)", dom);
+        assertXpathEvaluatesTo("1", "count(//ows:OperationsMetadata)", dom);
+        assertXpathEvaluatesTo("1", "count(//wcs:Contents)", dom);
+    }
+    
+    public void testOneSection() throws Exception {
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&sections=ServiceProvider");
+        checkValidationErrors(dom, WCS11_SCHEMA);
+        assertXpathEvaluatesTo("0", "count(//ows:ServiceIdentification)", dom);
+        assertXpathEvaluatesTo("1", "count(//ows:ServiceProvider)", dom);
+        assertXpathEvaluatesTo("0", "count(//ows:OperationsMetadata)", dom);
+        assertXpathEvaluatesTo("0", "count(//wcs:Contents)", dom);
+    }
+    
+    public void testTwoSection() throws Exception {
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&sections=ServiceProvider,Contents");
+        checkValidationErrors(dom, WCS11_SCHEMA);
+        assertXpathEvaluatesTo("0", "count(//ows:ServiceIdentification)", dom);
+        assertXpathEvaluatesTo("1", "count(//ows:ServiceProvider)", dom);
+        assertXpathEvaluatesTo("0", "count(//ows:OperationsMetadata)", dom);
+        assertXpathEvaluatesTo("1", "count(//wcs:Contents)", dom);
+    }
+
+    
 }
