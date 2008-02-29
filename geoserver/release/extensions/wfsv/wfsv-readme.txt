@@ -1,4 +1,4 @@
-GEOSERVER 1.6.0+ SERVICE EXTENSIONS README
+GEOSERVER 1.6.1+ SERVICE EXTENSIONS README
 
 This package contains a versioning WFS service implementation as well
 as a versioning postgis datastore that is distributed as a separate plug-in.  

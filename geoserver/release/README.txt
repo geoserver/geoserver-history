@@ -1,3 +1,18 @@
+GeoServer 1.6.1
+---------------
+This release has over 40 patches and improvements since 1.6.0. They include
+
+* Feature type aliases
+* Max features support, defined per feature type
+* GetFeatureInfo on coverages
+* Generate PDFs from coverages
+* UpdateSequence support in WMS and WCS
+
+And many many more. Check out the entire 1.6.x changelog:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=14070&pid=10311&sorter/field=issuekey&sorter/order=DESC
+
+This release is based off of Geotools 2.4.1. 
+
 GeoServer 1.6.0
 ---------------
 
