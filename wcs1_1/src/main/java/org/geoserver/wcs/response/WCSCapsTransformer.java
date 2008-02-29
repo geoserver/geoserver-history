@@ -5,6 +5,7 @@
 package org.geoserver.wcs.response;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -225,7 +226,7 @@ public class WCSCapsTransformer extends TransformerBase {
             handleOperation("GetCapabilities", null);
             handleOperation("DescribeCoverage", null);
             handleOperation("GetCoverage", new HashMap<String, List<String>>() {{
-                put("store", Collections.singletonList("False"));
+                put("store", Arrays.asList("True", "False"));
             }});
             
             // specify that we do support xml post encoding, clause 8.3.2.2 of the WCS 1.1.1 spec

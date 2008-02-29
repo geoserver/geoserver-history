@@ -85,6 +85,10 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
     public String getContentDisposition() {
         return "attachment;filename=" + this.sourceCoverage.getName() + ".tiff";
     }
+    
+    public String getFileExtension() {
+        return "tiff";
+    }
 
     public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {

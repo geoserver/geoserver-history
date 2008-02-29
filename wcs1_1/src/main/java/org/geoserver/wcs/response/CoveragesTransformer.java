@@ -38,13 +38,19 @@ public class CoveragesTransformer extends TransformerBase {
 
     private GetCoverageType request;
 
+    private String coverageLocation;
+
     /**
-     * Creates a new WFSCapsTransformer object.
+     * Creates a new WFSCapsTransformer object to be used when encoding the multipart output
      */
     public CoveragesTransformer(WCS wcs, GetCoverageType request) {
-        super();
+        this(wcs, request, "cid:theCoverage");
+    }
+
+    public CoveragesTransformer(WCS wcs, GetCoverageType request, String coverageLocation) {
         this.wcs = wcs;
         this.request = request;
+        this.coverageLocation = coverageLocation;
         setNamespaceDeclarationEnabled(false);
     }
 
@@ -122,7 +128,7 @@ public class CoveragesTransformer extends TransformerBase {
             element("ows:Abstract", ci.getDescription());
             element("ows:Identifier", ci.getName());
             final AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", "cid:theCoverage");
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", coverageLocation);
             element("ows:Reference", "", attributes);
             end("wcs:Coverage");
         }

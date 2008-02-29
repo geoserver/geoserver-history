@@ -32,6 +32,14 @@ public interface CoverageResponseDelegate {
      * @uml.property name="contentEncoding" multiplicity="(0 1)"
      */
     String getContentEncoding();
+    
+    /**
+     * Returns an appropriate file extension for the coverages encoded with this delegate
+     * (used mainly when storing the coverage on disk for later retrieval).
+     * For example a GeoTiff encoding delegate might return "tif" (no period, just extension).
+     * @return
+     */
+    String getFileExtension();
 
     /**
      *

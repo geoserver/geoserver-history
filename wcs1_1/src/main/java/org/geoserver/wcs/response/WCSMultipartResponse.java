@@ -54,6 +54,16 @@ public class WCSMultipartResponse extends Response {
         return new String[][] { { "Content-Disposition",
                 "attachment;filename=\"" + identifier.replace(':', '_') + ".eml\"" } };
     }
+    
+    @Override
+    public boolean canHandle(Operation operation) {
+        // this one can handle GetCoverage responses where store = false
+        if(!(operation.getParameters()[0] instanceof GetCoverageType))
+            return false;
+        
+        GetCoverageType getCoverage = (GetCoverageType) operation.getParameters()[0];
+        return !getCoverage.getOutput().isStore();
+    }
 
     @Override
     public void write(Object value, OutputStream output, Operation operation) throws IOException,

@@ -95,6 +95,10 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
         ? new StringBuffer("attachment;filename=").append(this.sourceCoverage.getName()).append(".")
                                                   .append(outputFormat).toString() : null;
     }
+    
+    public String getFileExtension() {
+        return "outputFormat";
+    }
 
     public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {

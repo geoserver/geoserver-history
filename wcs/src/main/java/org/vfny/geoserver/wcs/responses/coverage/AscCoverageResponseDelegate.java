@@ -92,6 +92,10 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
         return compressOutput ? ("attachment;filename=" + this.sourceCoverage.getName() + ".asc.gz")
                               : null;
     }
+    
+    public String getFileExtension() {
+        return compressOutput ? "asc.gz" : "asc";
+    }
 
     public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {

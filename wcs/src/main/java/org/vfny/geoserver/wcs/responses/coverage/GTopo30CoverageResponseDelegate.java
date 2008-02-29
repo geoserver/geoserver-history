@@ -95,6 +95,10 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
         return new StringBuffer("attachment;filename=").append(this.sourceCoverage.getName())
                                                        .append(".zip").toString();
     }
+    
+    public String getFileExtension() {
+        return "zip";
+    }
 
     /*
      * (non-Javadoc)

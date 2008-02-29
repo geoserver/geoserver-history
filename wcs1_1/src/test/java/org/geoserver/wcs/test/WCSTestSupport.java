@@ -75,6 +75,7 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("wcs", "http://www.opengis.net/wcs/1.1.1");
         namespaces.put("ows", "http://www.opengis.net/ows/1.1");
+        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
         xpath = XMLUnit.newXpathEngine();
     }
