@@ -101,22 +101,6 @@ public class GetCoverageReaderTest extends WCSTestSupport {
                 .getGridBaseCRS());
     }
 
-    public void testStoreUnsupported() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
-        raw.put("identifier", layerId);
-        raw.put("format", "image/tiff");
-        raw.put("BoundingBox", "-45,146,-42,147");
-        raw.put("store", "true");
-
-        try {
-            reader.read(reader.createRequest(), parseKvp(raw), raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals("store", e.getLocator());
-            assertEquals("InvalidParameterValue", e.getCode());
-        }
-    }
 
     public void testUnsupportedCRS() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
