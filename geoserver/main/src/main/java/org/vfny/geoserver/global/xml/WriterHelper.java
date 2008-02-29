@@ -251,7 +251,10 @@ public class WriterHelper {
             }
         }
 
-        sb.append(">" + escape(((data != null) ? data : "")) + "</" + tagName + ">");
+        String escapedData = "";
+        if(data  != null)
+            escapedData = escape(data);
+        sb.append(">" + escapedData + "</" + tagName + ">");
         writeln(sb.toString());
     }
 
@@ -286,8 +289,12 @@ public class WriterHelper {
      * @return
      */
     private String escape(String text) {
-    	String s = text;
-    	if(s.matches(".*[\"&'<>].*")) {
+        String s = new String(text);
+    	
+        // All redundant carriage returns should already have been stripped.
+        s = s.replaceAll("\r\n", "\n");
+    	
+        if(s.matches("(.*)[\"&'<>]*(.*)(\\n)*")) {
 			s = s.replaceAll("\"", "&quot;");
 			s = s.replaceAll("&", "&amp;");
 			s = s.replaceAll("'", "&apos;");

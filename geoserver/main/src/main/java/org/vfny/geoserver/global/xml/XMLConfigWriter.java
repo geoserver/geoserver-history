@@ -447,7 +447,8 @@ public class XMLConfigWriter {
             cw.openTag("keywords");
 
             for (int i = 0; i < s.getKeywords().size(); i++) {
-                cw.textTag("keyword", s.getKeywords().get(i).toString());
+                String str = s.getKeywords().get(i).toString();
+                cw.textTag("keyword", str.replaceAll("\\r", ""));
             }
 
             cw.closeTag("keywords");
