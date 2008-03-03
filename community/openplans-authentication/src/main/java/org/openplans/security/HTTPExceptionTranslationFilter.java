@@ -53,7 +53,9 @@ public class HTTPExceptionTranslationFilter implements Filter{
                 sendDeniedMessage(resp);
             }
             
-            LOGGER.info("Handled AccessDeniedException."); 
+            LOGGER.info("Handled " + ade); 
+            LOGGER.info("Logged in as " + SecurityContextHolder.getContext().getAuthentication());
+//            ade.printStackTrace();
         }
     }
 
