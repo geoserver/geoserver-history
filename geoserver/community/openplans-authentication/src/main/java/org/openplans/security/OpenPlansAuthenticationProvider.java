@@ -109,7 +109,7 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
             // the token is expected to be 40 characters, this may change depending on the hash function used
             // the truncating is only needed to deal with weird garbage characters added by tomcat
         
-        System.out.println("input:" + token);
+        LOGGER.info("input:" + token);
 
 		if (getAuth(auth.getName()).equals(token)) {
 			return createNewAuthentication(auth);
@@ -135,7 +135,7 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
       
       if (roleSet == null) {
         roleSet = new TreeSet();
-        roleSet.add("ROLE_LOGGED");
+        roleSet.add("ROLE_AUTHENTICATED");
       }
       
       ga = new GrantedAuthority[roleSet.size() + (auth.getAuthorities() == null? 0 : auth.getAuthorities().length)];
@@ -198,7 +198,7 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
 		} catch (Exception nsae) {
 			nsae.printStackTrace();
 		}
-        System.out.println("auth: " + auth);
+        LOGGER.info("auth: " + auth);
 		return auth;
 	}
 }
