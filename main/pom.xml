@@ -14,6 +14,14 @@
 	<packaging>jar</packaging>
   <name>Main Module</name>
 
+  <repositories>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+    </repository>
+  </repositories>
+
 	<dependencies>
   
     <dependency>
@@ -29,6 +37,26 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet</artifactId>
+      <version>1.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.freemarker</artifactId>
+      <version>1.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.noelios.restlet</groupId>
+      <artifactId>com.noelios.restlet.ext.servlet</artifactId>
+      <version>1.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.json-lib</groupId>
+      <artifactId>json-lib</artifactId>
+      <classifier>jdk13</classifier>
     </dependency>
     <dependency>
       <groupId>struts</groupId>
