@@ -3,7 +3,6 @@
 
 <beans>
 
-<bean id="restWrapper" class="org.geoserver.rest.WrappingController"/>
 
 <bean id="restConfigMapping" class="org.geoserver.rest.RESTMapping">
 <property name="routes">
@@ -142,15 +141,5 @@
 </bean>
 <bean id="dummyRestlet" class="org.geoserver.restconfig.DummyRestlet"/>
 
-<bean id="restConfigDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-<property name="alwaysUseFullPath" value="true"/>
-<property name="mappings">
-	<props>
-		<prop key="/api">restWrapper</prop>
-		<prop key="/api/**">restWrapper</prop>
-	</props>
-</property>
-
-</bean>
 
 </beans>
