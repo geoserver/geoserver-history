@@ -29,12 +29,12 @@
 
 <ul>
   <li>
-    <a href="http://docs.codehaus.org/display/GEOSDOC/Documentation">
+    <a href="http://geoserver.org/display/GEOSDOC/Documentation">
       Documentation
     </a>
   </li>
   <li>
-    <a href="http://docs.codehaus.org/display/GEOS/Home">
+    <a href="http://geoserver.org/">
       Wiki
     </a>
   </li>
