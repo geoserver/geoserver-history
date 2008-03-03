@@ -33,7 +33,6 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
 import org.geotools.renderer.shape.ShapefileRenderer;
-import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -112,6 +111,9 @@ public abstract class DefaultRasterMapProducer extends
 
     /** Which format to encode the image in if one is not supplied */
     private static final String DEFAULT_MAP_FORMAT = "image/png";
+	
+	/** The Watermark Painter instance **/
+	private WatermarkPainter wmPainter;
 
     /**
      * 
@@ -296,23 +298,43 @@ public abstract class DefaultRasterMapProducer extends
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
         }
         renderer.setRendererHints(rendererParams);
-
+		
         // if abort already requested bail out
         if (this.abortRequested) {
             graphic.dispose();
             return;
         }
 
-        // finally render the image
-        final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
-        renderer.paint(graphic, paintArea, dataArea);
-        graphic.dispose();
-        if (!this.abortRequested) {
-            if (palette != null && palette.getMapSize() < 256)
+		// finally render the image
+		final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
+		renderer.paint(graphic, paintArea, dataArea);
+		
+        // apply watermarking
+        try {
+            if (wmPainter != null)
+                this.wmPainter.paint(graphic, paintArea);
+        } catch (Exception e) {
+            throw new WmsException("Problem occurred while trying to watermark data", "", e);
+        } 
+
+		
+		graphic.dispose();
+		if (!this.abortRequested) {
+            if(palette != null && palette.getMapSize() < 256)
                 this.image = optimizeSampleModel(preparedImage);
             else
                 this.image = preparedImage;
         }
+    }
+	
+    /**
+     * Set the Watermark Painter.
+     * 
+     * @param wmPainter
+     *            the wmPainter to set
+     */
+    public void setWmPainter(WatermarkPainter wmPainter) {
+        this.wmPainter = wmPainter;
     }
 
     /**

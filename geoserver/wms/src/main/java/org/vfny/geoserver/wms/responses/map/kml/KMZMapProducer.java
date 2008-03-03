@@ -19,6 +19,7 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
+import org.vfny.geoserver.wms.responses.WatermarkPainter;
 import org.vfny.geoserver.wms.responses.map.png.PNGMapProducer;
 
 /**
@@ -154,6 +155,7 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 
 			// render the map
 			mapProducer.setMapContext(mapContext);
+			mapProducer.setWmPainter(new WatermarkPainter(this.mapContext.getRequest()));
 			mapProducer.produceMap();
 
 			// write it to the zip stream

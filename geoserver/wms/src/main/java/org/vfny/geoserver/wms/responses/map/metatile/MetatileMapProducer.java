@@ -23,6 +23,7 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.map.metatile.QuickTileCache.MetaTileKey;
 
 /**
@@ -113,7 +114,14 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
 
 				// generate, split and cache
 				delegate.setMapContext(mapContext);
+				
+				// enable meta watermarking
+				// enable simple watermarking
+	            if (this.delegate instanceof DefaultRasterMapProducer)
+	                ((DefaultRasterMapProducer)this.delegate).setWmPainter(new MetatileWatermarkPainter(key, request));
+				
 				delegate.produceMap();
+				
 
 				RenderedImage metaTile = delegate.getImage();
 				RenderedImage[] tiles = split(key, metaTile, mapContext);
@@ -204,7 +212,7 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
 		final int tileSize = key.getTileSize();
 		final RenderingHints no_cache = new RenderingHints(JAI.KEY_TILE_CACHE,
 				null);
-
+		
 		for (int i = 0; i < metaFactor; i++) {
 			for (int j = 0; j < metaFactor; j++) {
 				int x = j * tileSize;

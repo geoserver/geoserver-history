@@ -24,6 +24,7 @@ import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractRasterMapProducer;
+import org.vfny.geoserver.wms.responses.WatermarkPainter;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.FontFactory;
@@ -208,7 +209,11 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 				return;
 			}
 
+			// render the map
 			renderer.paint(graphic, paintArea, at);
+			
+			// render the watermark
+			new WatermarkPainter(this.mapContext.getRequest()).paint(graphic, paintArea);
 
 			if (!this.abortRequested) {
 				this.bos = curOs;
