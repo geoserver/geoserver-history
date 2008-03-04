@@ -9,6 +9,7 @@ import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.InputSource;
 import java.io.Reader;
 import java.util.Iterator;
@@ -34,6 +35,19 @@ public class WfsXmlReader extends XmlRequestReader {
 
         Parser parser = new Parser(configuration);
 
+        if(wfs.getCiteConformanceHacks())
+            parser.setValidating(true);
+
+        //"inject" namespace mappings
+        NameSpaceInfo[] namespaces = configuration.getCatalog().getNameSpaces();
+        for ( int i = 0; i < namespaces.length; i++) {
+            if ( namespaces[i].isDefault() ) 
+                continue;
+            
+            parser.getNamespaces().declarePrefix( 
+                namespaces[i].getPrefix(), namespaces[i].getURI());
+        }
+        
         // set the input source with the correct encoding
         InputSource source = new InputSource(reader);
         source.setEncoding(wfs.getCharSet().name());
