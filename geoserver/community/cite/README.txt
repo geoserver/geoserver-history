@@ -7,19 +7,23 @@ Create a directory called 'engine', and check the out the teamengine sources
 into it.
 
   'mkdir engine'
-  'svn co http://teamengine.svn.sourceforge.net/svnroot/teamengine/trunk
+  'svn co -r 288 http://teamengine.svn.sourceforge.net/svnroot/teamengine/trunk
 engine'
   
+*Note*: Revision 288 is the last verified version of the engine.
+
 B. Get Test Sources
 
 Create a directory called 'tests', and check out the cite test sources into
 it.
 
   'mkdir tests'
-  'svn co https://svn.opengeospatial.org:8443/ogc-projects/cite/trunk tests'
+  'svn co -r 2363 https://svn.opengeospatial.org:8443/ogc-projects/cite/trunk tests'
 
 *Note* : You will need a user name and password for the cite subversion
  repository. If you have a cite portal account, that will work.
+
+*Note* : Revision 2363 is the last verified version of the tests.
 
 C. Build the Test Engine
 
