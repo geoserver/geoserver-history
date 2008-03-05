@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+<bean id="historyController" class="org.geoserver.geosync.GeoSyncController">
+   <property name="listener">
+       <ref bean="historyRecorder"/>
+   </property>
+</bean>
+<bean id="historyRecorder" class="org.geoserver.geosync.RecordingTransactionListener"/>
+
+<bean id="historyDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="alwaysUseFullPath" value="true"/>
+    <property name="mappings">
+        <props>
+            <prop key="/history">historyController</prop>
+            <prop key="/history/**">historyController</prop>
+        </props>
+    </property>
+</bean>
+
+</beans>
