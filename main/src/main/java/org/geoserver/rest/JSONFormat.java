@@ -28,8 +28,19 @@ import org.restlet.resource.Representation;
  * @author David Winslow <dwinslow@openplans.org>
  */
 public class JSONFormat implements DataFormat {
+
+    private MediaType myType;
+
+    public JSONFormat(){
+        this(new MediaType("text/json"));
+    }
+
+    public JSONFormat(MediaType type){
+        myType = type;
+    }
+
     public Representation makeRepresentation(final Map map) {
-        return new OutputRepresentation(MediaType.APPLICATION_JSON) {
+        return new OutputRepresentation(myType) {
                 public void write(OutputStream os) {
                     try {
                         Writer outWriter = new BufferedWriter(new OutputStreamWriter(os));
