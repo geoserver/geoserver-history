@@ -20,7 +20,7 @@ ALTER TABLE "PrimitiveGeoFeature" add "uriProperty" varchar;
 ALTER TABLE "PrimitiveGeoFeature" add "measurand" float not null;
 ALTER TABLE "PrimitiveGeoFeature" add "dateTimeProperty" datetime;
 ALTER TABLE "PrimitiveGeoFeature" add "dateProperty" datetime;
-ALTER TABLE "PrimitiveGeoFeature" add "decimalProperty" decimal(4,2) not null;
+ALTER TABLE "PrimitiveGeoFeature" add "decimalProperty" double(2) not null;
 ALTER TABLE "PrimitiveGeoFeature" add "relatedFeature" varchar; 
 ALTER TABLE "PrimitiveGeoFeature" ADD "id" int AUTO_INCREMENT(1);
 ALTER TABLE "PrimitiveGeoFeature" ADD CONSTRAINT "surfacePropertyGeometryType" CHECK GeometryType("surfaceProperty") IS NULL OR GeometryType("surfaceProperty") = 'POLYGON';

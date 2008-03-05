@@ -12,7 +12,7 @@ ALTER TABLE "PrimitiveGeoFeature" ADD "uriProperty" varchar;
 ALTER TABLE "PrimitiveGeoFeature" ADD "measurand" float not null;
 ALTER TABLE "PrimitiveGeoFeature" ADD "dateTimeProperty" datetime;
 ALTER TABLE "PrimitiveGeoFeature" ADD "dateProperty" datetime;
-ALTER TABLE "PrimitiveGeoFeature" ADD "decimalProperty" decimal(4,2) not null;
+ALTER TABLE "PrimitiveGeoFeature" ADD "decimalProperty" double(2) not null;
 ALTER TABLE "PrimitiveGeoFeature" ADD "relatedFeature" varchar; 
 ALTER TABLE "PrimitiveGeoFeature" ADD "id" int AUTO_INCREMENT(1);
 ALTER TABLE "PrimitiveGeoFeature" ADD CONSTRAINT "surfacePropertyGeometryType" CHECK GeometryType("surfaceProperty") IS NULL OR GeometryType("surfaceProperty") = 'POLYGON';
