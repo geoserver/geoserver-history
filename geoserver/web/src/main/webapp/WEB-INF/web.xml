@@ -254,11 +254,7 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>hider</servlet-name>
-    <url-pattern>/data/services.xml</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>hider</servlet-name>
-    <url-pattern>/data/catalog.xml</url-pattern>
+    <url-pattern>/data/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
    <servlet-name>TestWfsPost</servlet-name>
