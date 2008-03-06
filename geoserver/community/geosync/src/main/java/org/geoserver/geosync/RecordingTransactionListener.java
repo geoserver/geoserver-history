@@ -1,5 +1,6 @@
 package org.geoserver.geosync;
 
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -25,14 +26,44 @@ public class RecordingTransactionListener implements TransactionListener{
     }
 
     public void dataStoreChange(TransactionEvent event) throws WFSException{
-
-       // if (recordWorthyEvents.contains(event.getType())){
-            // Something was inserted!!
-        	myHistory.add(event.getType().name() + " on " + event.getLayerName());
-       // }
+        myHistory.add(makeDescription(event));
     }
     
-    public List getHistoryList(){
+    public List getHistoryList(String layername){
+        List matches = new ArrayList();
+        Iterator it = myHistory.iterator();
+
+        while (it.hasNext()){
+            SyncItem si = (SyncItem)it.next();
+            if (si.getLayer().equals(layername)){
+                matches.add(si);
+            }
+        }
+        
+        return matches;
+    }
+
+    public List getFullHistoryList(){
         return myHistory;
     }
+
+    public SyncItem makeDescription(TransactionEvent evt){
+        SyncItem item = new SyncItem();
+        item.setLayer(evt.getLayerName().toString());
+        item.setAction(evt.getType().toString());
+        List l = new ArrayList();
+
+        try{
+            Iterator it = evt.getAffectedFeatures().iterator();
+            while (it.hasNext()){
+                l.add(it.next().toString());
+            }
+        } catch (Exception e){
+            // Silence exceptions
+        }
+        item.setAffectedFeatures(l);
+
+        return item;
+    }
+
 }

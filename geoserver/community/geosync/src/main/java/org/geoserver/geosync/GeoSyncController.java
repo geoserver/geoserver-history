@@ -21,6 +21,8 @@ import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.io.SyndFeedOutput;
 
+import org.geoserver.wfs.TransactionEvent;
+
 public class GeoSyncController extends AbstractController {
 
     static final DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
@@ -38,9 +40,14 @@ public class GeoSyncController extends AbstractController {
     public ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp){
         resp.setContentType("text/plain");
         try{
-            generateFeed(resp);
+            String layer = req.getParameter("layer");
+            SyndFeed feed = generateFeed(layer);
+            SyndFeedOutput out = new SyndFeedOutput();
+            Writer writer = resp.getWriter();
+            out.output(feed, writer);
         } catch (Exception e){
             // what to do? output is borked?
+            //
             resp.setStatus(500);
             e.printStackTrace();
         }
@@ -48,7 +55,7 @@ public class GeoSyncController extends AbstractController {
         return null;
     }
 
-    public void generateFeed(HttpServletResponse response) throws Exception{
+    public SyndFeed generateFeed(String layername) throws Exception{
         SyndFeed feed = new SyndFeedImpl();
         feed.setFeedType("atom_1.0");
 
@@ -56,13 +63,15 @@ public class GeoSyncController extends AbstractController {
         feed.setLink("http://geoserver.org/"); //TODO: get the local url and use that
         feed.setDescription("Changes for feature type "); // TODO: get the feature type name and use that
 
-        List history = myListener.getHistoryList(); 
+        List history;
+        if (layername != null){
+           history = myListener.getHistoryList(layername); 
+        } else {
+           history = myListener.getFullHistoryList();
+        };
 
         feed.setEntries(encodeHistory(history));
-
-        SyndFeedOutput out = new SyndFeedOutput();
-        Writer writer = response.getWriter();
-        out.output(feed, writer);
+        return feed;
     }
 
     public List encodeHistory(List history) throws Exception{
@@ -70,16 +79,17 @@ public class GeoSyncController extends AbstractController {
 
         Iterator it = history.iterator();
         while(it.hasNext()){
-            String thingy = (String)it.next();
-            System.out.println("Found thingy: " + thingy);
+            String event = it.next().toString();
             SyndEntry entry = new SyndEntryImpl();
             entry.setTitle("Feature A");
             entry.setLink("http://geoserver.org/a");
             entry.setPublishedDate(DATE_PARSER.parse("2004-06-08"));
             SyndContent description = new SyndContentImpl();
-            description.setType("text/plain");
-            description.setValue(thingy);
-            entry.setDescription(description);
+            description.setType("text/html");
+            description.setValue(event);
+            List contents = new ArrayList();
+            contents.add(description);
+            entry.setContents(contents);
             entries.add(entry);
         }
 
