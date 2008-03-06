@@ -77,6 +77,9 @@ public class DemoRequestAction extends GeoServerAction {
             demoForm.setUrl(baseUrl);
             demoForm.setBody("");
         }
+        
+        if(demo.indexOf('/') != -1 || demo.indexOf('\\') != -1)
+            throw new IllegalArgumentException("Invalid path " + demo);
 
         String service = demo.substring(0, demo.indexOf('_')).toLowerCase();
         String url = Requests.getBaseUrl(request, getGeoServer()) + service;
