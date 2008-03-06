@@ -17,6 +17,9 @@ import javax.xml.namespace.QName;
 
 public class GetFeatureTest extends WFSTestSupport {
     public void testGet() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         Document doc = getAsDOM(
                 "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&service=wfs");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
@@ -52,6 +55,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testPostFormEncoded() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String request = "wfs?service=WFS&version=1.1.0&request=GetFeature&typename=sf:PrimitiveGeoFeature"
             + "&namespace=xmlns(sf=http://cite.opengeospatial.org/gmlsf)";
 
@@ -62,6 +68,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testPostWithFilter() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.1.0\" "
             + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
             + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
@@ -86,6 +95,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testPostWithBboxFilter() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.1.0\" "
             + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
             + "xmlns:gml=\"http://www.opengis.net/gml\" "
@@ -107,6 +119,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testPostWithFailingUrnBboxFilter() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.1.0\" "
             + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
             + "xmlns:gml=\"http://www.opengis.net/gml\" "
@@ -128,6 +143,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testPostWithMatchingUrnBboxFilter() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.1.0\" "
             + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
             + "xmlns:gml=\"http://www.opengis.net/gml\" "
@@ -177,6 +195,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testWithSRS() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs\" version=\"1.1.0\" service=\"WFS\">"
             + "<wfs:Query xmlns:cdf=\"http://www.opengis.net/cite/data\" typeName=\"cdf:Other\" srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\"/>"
             + "</wfs:GetFeature>";
@@ -200,6 +221,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testWithGmlObjectId() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature xmlns:cdf=\"http://www.opengis.net/cite/data\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\" service=\"WFS\">"
             + "<wfs:Query  typeName=\"cdf:Seven\" srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">"
             + "</wfs:Query>" + "</wfs:GetFeature>";
@@ -222,6 +246,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testPostWithBoundsEnabled() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         // enable feature bounds computation
         boolean oldFeatureBounding = getWFS().isFeatureBounding();
         getWFS().setFeatureBounding(true);
@@ -274,6 +301,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testWithGMLProperties() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         dataDirectory.addFeatureType(new QName(MockData.SF_URI, "WithGMLProperties",
                 MockData.SF_PREFIX), getClass().getResourceAsStream("WithGMLProperties.properties"));
         applicationContext.refresh();

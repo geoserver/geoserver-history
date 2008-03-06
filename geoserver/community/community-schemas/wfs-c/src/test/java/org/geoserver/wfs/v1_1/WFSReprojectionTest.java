@@ -27,6 +27,9 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
 
     public void testGetFeatureGet() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         Document dom1 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename="
                 + MockData.POLYGONS.getLocalPart());
         Document dom2 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename="
@@ -36,6 +39,9 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
 
     public void testGetFeaturePost() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.0.0\" "
             + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
             + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
@@ -61,7 +67,10 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
 
     public void testGetFeatureWithProjectedBoxGet() throws Exception {
-        String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName="
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
+       String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName="
             + MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM(q);
         print(dom);
@@ -87,6 +96,9 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
 
     public void testGetFeatureWithProjectedBoxPost() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName="
             + MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM(q);
@@ -123,6 +135,9 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
 
     public void testInsertSrsName() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName="
             + MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM(q);
@@ -161,6 +176,9 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
 
     public void testInsertGeomSrsName() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName="
             + MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM(q);
@@ -199,6 +217,9 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
 
     public void testUpdate() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName="
             + MockData.POLYGONS.getLocalPart();
 

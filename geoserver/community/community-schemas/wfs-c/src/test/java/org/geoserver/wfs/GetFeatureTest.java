@@ -11,6 +11,9 @@ import org.w3c.dom.NodeList;
 
 public class GetFeatureTest extends WFSTestSupport {
     public void testGet() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         Document doc = getAsDOM(
                 "wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0&service=wfs");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
@@ -27,6 +30,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testPost() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.0.0\" "
             + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
             + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
@@ -44,6 +50,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testPostWithFilter() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.0.0\" "
             + "outputFormat=\"GML2\" " + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
             + "xmlns:wfs=\"http://www.opengis.net/wfs\" "

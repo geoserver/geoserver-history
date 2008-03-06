@@ -11,6 +11,9 @@ import org.w3c.dom.NodeList;
 
 public class GetFeatureWithLockTest extends WFSTestSupport {
     public void testUpdateLockedFeatureWithLockId() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         // get feature
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.0.0\" "
             + "expiry=\"10\" " + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
@@ -60,6 +63,9 @@ public class GetFeatureWithLockTest extends WFSTestSupport {
 
     public void testUpdateLockedFeatureWithoutLockId()
         throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         // get feature
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.0.0\" "
             + "expiry=\"10\" " + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
@@ -111,6 +117,9 @@ public class GetFeatureWithLockTest extends WFSTestSupport {
 
     public void testGetFeatureWithLockReleaseActionSome()
         throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature" + "  service=\"WFS\"" + "  version=\"1.0.0\""
             + "  expiry=\"10\"" + "  xmlns:cdf=\"http://www.opengis.net/cite/data\""
             + "  xmlns:ogc=\"http://www.opengis.net/ogc\""

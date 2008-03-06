@@ -41,6 +41,9 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
     }
 
     public void testSingle() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         DataStoreInfo dataStore = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
         FeatureSource source = dataStore.getDataStore()
                                         .getFeatureSource(MockData.SEVEN.getLocalPart());
@@ -59,6 +62,9 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
     }
 
     public void testMultipleSameNamespace() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         DataStoreInfo dataStore = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
 
         FeatureCollectionType fcType = WfsFactory.eINSTANCE.createFeatureCollectionType();
@@ -80,6 +86,9 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
     }
 
     public void testMultipleDifferentNamespace() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         DataStoreInfo seven = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
         DataStoreInfo polys = getCatalog().getDataStoreInfo(MockData.CGF_PREFIX);
 

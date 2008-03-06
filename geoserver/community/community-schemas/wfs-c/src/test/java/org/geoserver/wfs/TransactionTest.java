@@ -16,7 +16,10 @@ import org.w3c.dom.Document;
  */
 public class TransactionTest extends WFSTestSupport {
     public void testDelete() throws Exception {
-        // 1. do a getFeature
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
+       // 1. do a getFeature
         String getFeature = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.0.0\" "
             + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
             + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
@@ -49,6 +52,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testInsert() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         // 1. do a getFeature
         String getFeature = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.0.0\" "
             + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
@@ -83,6 +89,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testUpdate() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         // 1. do a getFeature
         String getFeature = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.0.0\" "
             + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "

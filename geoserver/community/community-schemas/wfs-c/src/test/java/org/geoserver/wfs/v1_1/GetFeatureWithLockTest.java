@@ -10,6 +10,9 @@ import org.w3c.dom.Document;
 
 public class GetFeatureWithLockTest extends WFSTestSupport {
     public void test() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeatureWithLock service=\"WFS\" version=\"1.1.0\" "
             + "	  handle=\"GetFeatureWithLock-tc1\"" + "	  expiry=\"5\""
             + "	  resultType=\"results\"" + "	  xmlns:wfs=\"http://www.opengis.net/wfs\""

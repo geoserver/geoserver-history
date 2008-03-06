@@ -22,6 +22,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testInsert1() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
             + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
             + " xmlns:gml=\"http://www.opengis.net/gml\" "
@@ -70,6 +73,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testInsertWithNoSRS() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         // 1. do a getFeature
         String getFeature = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.1.0\" "
             + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
@@ -106,6 +112,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testInsertWithSRS() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         // 1. do a getFeature
         String getFeature = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.1.0\" "
             + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
@@ -150,6 +159,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testInsertWithGMLProperties() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
             + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
             + "xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" "
@@ -212,6 +224,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testUpdateWithGMLProperties() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\""
             + " xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\""
             + " xmlns:ogc=\"http://www.opengis.net/ogc\""
@@ -293,6 +308,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testInsertWithBoundedBy() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
             + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
             + " xmlns:gml=\"http://www.opengis.net/gml\" "
@@ -319,6 +337,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testInsert2() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
             + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
             + " xmlns:gml=\"http://www.opengis.net/gml\" "
@@ -351,6 +372,9 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testUpdate() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\""
             + " xmlns:cite=\"http://www.opengis.net/cite\""
             + " xmlns:ogc=\"http://www.opengis.net/ogc\""
