@@ -1,3 +1,23 @@
+GeoServer 1.6.2a
+----------------
+Fixed path parsing issue in demo section.
+
+
+GeoServer 1.6.2
+---------------
+This release contains one small but important patch since 1.6.1:
+
+* Data_dir inside .war distribution is now hidden by default
+
+See http://jira.codehaus.org/browse/GEOS-1785
+
+This release is based off of Geotools 2.4.1
+
+
+Changes:
+http://jira.codehaus.org/browse/GEOS-1785
+
+
 GeoServer 1.6.1
 ---------------
 This release has over 40 patches and improvements since 1.6.0. They include

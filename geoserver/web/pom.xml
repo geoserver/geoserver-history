@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.6.1</version>
+    <version>1.6.2</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -34,37 +34,37 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>validation</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
@@ -167,14 +167,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -319,12 +319,12 @@
           <contextPath>geoserver</contextPath>
           <webApp>${project.build.directory}/geoserver</webApp>
           <!-- uncomment following to set a GEOSERVER_DATA_DIR -->
-          <!--<systemProperties>
+          <systemProperties>
             <systemProperty>
             <name>GEOSERVER_DATA_DIR</name>
-            <value>/home/dwinslow/geoserver-configuration/release</value>
+            <value>/home/mike/geoserver/release</value>
             </systemProperty>
-            </systemProperties>-->
+            </systemProperties>
         </configuration>
       </plugin>
 
@@ -363,7 +363,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>wfsv</artifactId>
-          <version>1.6.1</version>
+          <version>1.6.2</version>
         </dependency>
       </dependencies>
     </profile>

@@ -6,12 +6,12 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>1.6.1</version>
- <name>GeoServer 1.6.1</name>
+ <version>1.6.2</version>
+ <name>GeoServer 1.6.2</name>
 
  <scm>
-  <connection>scm:svn:http://svn.codehaus.org/geoserver/branches/1.6.1/geoserver</connection>
-  <url>http://svn.codehaus.org/geoserver/branches/1.6.1/geoserver</url>
+  <connection>scm:svn:http://svn.codehaus.org/geoserver/branches/1.6.2/geoserver</connection>
+  <url>http://svn.codehaus.org/geoserver/branches/1.6.2/geoserver</url>
  </scm>
 
  <organization>
@@ -745,7 +745,7 @@
       <descriptor>release/ext-pyramid.xml</descriptor>
       <descriptor>release/ext-wfsv.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.6.1</finalName>
+     <finalName>geoserver-1.6.2</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -954,7 +954,7 @@
  </modules>
 
  <properties>
-  <gs.version>1.6.1</gs.version>
+  <gs.version>1.6.2</gs.version>
   <gt.version>2.4.1</gt.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>

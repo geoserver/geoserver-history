@@ -3,7 +3,7 @@
   <parent>
     <artifactId>community</artifactId>
     <groupId>org.geoserver</groupId>
-    <version>1.6.1</version>
+    <version>1.6.2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.geoserver</groupId>
@@ -31,7 +31,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
