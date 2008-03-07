@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.io.Writer;
@@ -22,6 +24,10 @@ import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.io.SyndFeedOutput;
 
 import org.geoserver.wfs.TransactionEvent;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+
+import freemarker.template.Template;
+import freemarker.template.Configuration;
 
 public class GeoSyncController extends AbstractController {
 
@@ -38,16 +44,30 @@ public class GeoSyncController extends AbstractController {
     }
 
     public ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp){
-        resp.setContentType("text/plain");
+        resp.setContentType("text/xml");
+        Map kvPairs = KvpRequestReader.parseKvpSet(req.getQueryString());
+        System.out.println("Found kv pairs: " + kvPairs);
+        String requestType = (String)kvPairs.get("SERVICE_DOCUMENT");
         try{
-            String layer = req.getParameter("layer");
-            SyndFeed feed = generateFeed(layer);
-            SyndFeedOutput out = new SyndFeedOutput();
             Writer writer = resp.getWriter();
-            out.output(feed, writer);
+            if (requestType == null){
+                String layer = (String)kvPairs.get("layer");
+                SyndFeed feed = generateFeed(layer);
+                SyndFeedOutput out = new SyndFeedOutput();
+                out.output(feed, writer);
+            } else {
+                Configuration config = new Configuration();
+                config.setClassForTemplateLoading(getClass(), "");
+                // todo: get a list of layers
+                List l = new ArrayList();
+                l.add("notes");
+                Map context = new HashMap();
+                context.put("SERVER_URL", "http://localhost:8008/geoserver/");
+                context.put("LAYERS", l);
+                Template t = config.getTemplate("XMLTemplates/service_document.ftl");
+                t.process(context, writer);
+            }
         } catch (Exception e){
-            // what to do? output is borked?
-            //
             resp.setStatus(500);
             e.printStackTrace();
         }
@@ -85,7 +105,7 @@ public class GeoSyncController extends AbstractController {
             entry.setLink("http://geoserver.org/a");
             entry.setPublishedDate(DATE_PARSER.parse("2004-06-08"));
             SyndContent description = new SyndContentImpl();
-            description.setType("text/html");
+            description.setType("text/xml");
             description.setValue(event);
             List contents = new ArrayList();
             contents.add(description);
