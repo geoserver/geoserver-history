@@ -207,8 +207,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
                 dataStore = DataStoreUtils.getDataStore(m);
                 LOGGER.fine("connection established by " + toString());
             } catch (Throwable ex) {
-                throw new IllegalStateException("can't create the datastore " + getId() + ": "
-                    + ex.getClass().getName() + ": " + ex.getMessage() + "\n" + ex.toString());
+                throw new IllegalStateException("can't create the datastore " + getId(), ex);
             }
 
             if (dataStore == null) {

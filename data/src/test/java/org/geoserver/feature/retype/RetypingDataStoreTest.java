@@ -13,6 +13,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.geoserver.data.test.IOUtils;
 import org.geoserver.data.test.MockData;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -59,7 +60,7 @@ public class RetypingDataStoreTest extends TestCase {
 
         final String fileName = MockData.BUILDINGS.getLocalPart() + ".properties";
         URL properties = MockData.class.getResource(fileName);
-        MockData.copy(properties.openStream(), new File(data, fileName));
+        IOUtils.copy(properties.openStream(), new File(data, fileName));
 
         PropertyDataStore pds = new PropertyDataStore(data);
         rts = new RetypingDataStore(pds) {
@@ -80,7 +81,7 @@ public class RetypingDataStoreTest extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        MockData.delete(data);
+        IOUtils.delete(data);
     }
 
     public void testLookupFeatureType() throws Exception {

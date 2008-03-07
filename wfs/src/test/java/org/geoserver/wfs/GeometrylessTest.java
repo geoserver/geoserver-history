@@ -5,7 +5,7 @@ import org.w3c.dom.NodeList;
 
 public class GeometrylessTest extends WFSTestSupport {
     
-    protected String getDefaultLogConfiguration() {
+    protected String getLogConfiguration() {
         return "/DEFAULT_LOGGING.properties";
     }
     

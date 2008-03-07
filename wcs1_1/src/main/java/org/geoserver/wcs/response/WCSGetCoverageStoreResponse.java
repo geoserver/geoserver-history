@@ -108,6 +108,7 @@ public class WCSGetCoverageStoreResponse extends Response {
         } finally {
             if(os != null) os.close();
         }
+        System.out.println(coverageFile);
         
         // build the path where the clients will be able to retrieve the coverage files
         final String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs.getGeoServer().getProxyBaseUrl());

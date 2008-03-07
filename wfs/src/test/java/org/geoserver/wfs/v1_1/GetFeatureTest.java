@@ -331,7 +331,7 @@ public class GetFeatureTest extends WFSTestSupport {
         Document dom = getAsDOM( "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:new");
         assertEquals( "ExceptionReport", dom.getDocumentElement().getLocalName() );
         
-        dataDirectory.addPropertiesType( 
+        getTestData().addPropertiesType( 
                 new QName( MockData.SF_URI, "new", MockData.SF_PREFIX ), 
                 getClass().getResource("new.properties"), Collections.EMPTY_MAP 
             );
