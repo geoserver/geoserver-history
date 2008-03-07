@@ -80,7 +80,10 @@ public class LiveDbmsData extends LiveData {
      * required to grab a connection with a jdbc datastore, which will be also
      * used to filter out the files during copy (by default, only catalog.xml)</li>
      * <li>the location of the sql script used to initialize the database (this
-     * one can be null if no initialization is needed)</li>
+     * one can be null if no initialization is needed). It's advisable to prepare
+     * a sql script that first drops all tables and views and then recreates them,
+     * if a statement fails it'll be logged and skipped anyways. This makes it possible
+     * to inspect the database contents  </li>
      * 
      * @param dataDirSourceDirectory
      * @param filterMap
@@ -108,6 +111,11 @@ public class LiveDbmsData extends LiveData {
 
         // then look in the user home directory
         File base = new File(System.getProperty("user.home"), ".geoserver");
+        // create the hidden folder, this is handy especially on windows where
+        // a user cannot create a directory starting with . from the UI 
+        // (works only from the command line)
+        if(!base.exists())
+            base.mkdir();
         File fixtureFile = new File(base, fixtureId + ".properties");
         if (!fixtureFile.exists()) {
             final String warning = "Disabling test based on fixture " + fixtureId + " since the file "
@@ -137,7 +145,7 @@ public class LiveDbmsData extends LiveData {
         p.load(new FileInputStream(fixture));
         Map<String, String> filters = new HashMap(p);
 
-        // filter out the
+        // replace the keys contained in catalog.xml with the actual values
         if (filteredPaths != null && filteredPaths.size() > 0) {
             for (String path : filteredPaths) {
                 File from = new File(source, path);
