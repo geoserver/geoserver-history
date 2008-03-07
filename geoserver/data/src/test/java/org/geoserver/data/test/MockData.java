@@ -7,11 +7,9 @@ package org.geoserver.data.test;
 import java.awt.geom.AffineTransform;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,7 +47,7 @@ import org.opengis.referencing.cs.CoordinateSystem;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class MockData {
+public class MockData implements TestData {
     // Extra configuration keys for vector data
     /**
      * Use FeatureTypeInfo constants for srs handling as values
@@ -249,15 +247,10 @@ public class MockData {
     /** The coverage store id to namespace map */
     private HashMap coverageStoresNamespaces = new HashMap();
 
-    /**
-     * @param base
-     *            Base of the GeoServer data directory.
-     *
-     * @throws IOException
-     */
+    
     public MockData() throws IOException {
         // setup the root
-        data = File.createTempFile("mock", "data", new File("./target"));
+        data = IOUtils.createRandomDirectory("./target", "mock", "data");
         data.delete();
         data.mkdir();
 
@@ -273,7 +266,7 @@ public class MockData {
         styles = new File(data, "styles");
         styles.mkdir();
         //copy over the minimal style
-        copy(MockData.class.getResourceAsStream("Default.sld"), new File(styles, "Default.sld"));
+        IOUtils.copy(MockData.class.getResourceAsStream("Default.sld"), new File(styles, "Default.sld"));
 
         //plugins
         plugIns = new File(data, "plugIns");
@@ -291,6 +284,15 @@ public class MockData {
         namespaces.put(DEFAULT_PREFIX, DEFAULT_URI);
         namespaces.put("", DEFAULT_URI);
         layerStyles.put("Default", "Default.sld");
+    }
+    
+    public void setUp() throws IOException {
+        setUpCatalog();
+        copyTo(MockData.class.getResourceAsStream("services.xml"), "services.xml");
+    }
+    
+    public boolean isTestDataAvailable() {
+        return true;
     }
 
     /**
@@ -329,7 +331,7 @@ public class MockData {
      */
     public void copyTo(InputStream input, String location)
         throws IOException {
-        copy(input, new File(getDataDirectoryRoot(), location));
+        IOUtils.copy(input, new File(getDataDirectoryRoot(), location));
     }
     
     /**
@@ -386,7 +388,7 @@ public class MockData {
         layerStyles.put(styleId, styleId + ".sld");
         InputStream styleContents = style.openStream();
         File to = new File(styles, styleId + ".sld");
-        copy(styleContents, to);
+        IOUtils.copy(styleContents, to);
     }
 
     /**
@@ -420,7 +422,7 @@ public class MockData {
             propertiesContents = new ByteArrayInputStream( "-=".getBytes() );
         else
             propertiesContents = properties.openStream();
-        copy( propertiesContents, f );
+        IOUtils.copy( propertiesContents, f );
         
         // write the info file
         info(name, extraParams);
@@ -458,7 +460,7 @@ public class MockData {
         File f = new File(directory, name.getLocalPart() + "." + extension);
         
         // copy over the contents
-        copy( coverage.openStream(), f );
+        IOUtils.copy( coverage.openStream(), f );
         coverageInfo(name, f, styleName);
         
         // setup the meta information to be written in the catalog 
@@ -472,11 +474,11 @@ public class MockData {
     }
     
     /**
-     * Sets up the data directory, creating all the necessary files.
+     * Sets up the catalog in the data directory
      *
      * @throws IOException
      */
-    public void setUpCatalog() throws IOException {
+    protected void setUpCatalog() throws IOException {
         // create the catalog.xml
         CatalogWriter writer = new CatalogWriter();
         writer.dataStores(dataStores, dataStoreNamepaces);
@@ -494,20 +496,7 @@ public class MockData {
         directory.mkdir();
 
         File to = new File(directory, name.getLocalPart() + ".properties");
-        copy(from, to);     
-    }
-
-    public static void copy(InputStream from, File to) throws IOException {
-        OutputStream out = new FileOutputStream(to);
-
-        byte[] buffer = new byte[4096];
-        int bytes = 0;
-        while ((bytes = from.read(buffer)) != -1)
-            out.write(buffer, 0, bytes);
-
-        from.close();
-        out.flush();
-        out.close();
+        IOUtils.copy(from, to);     
     }
 
     void info(QName name, Map<String, Object> extraParams) throws IOException {
@@ -703,31 +692,16 @@ public class MockData {
      * @throws IOException
      */
     public void tearDown() throws IOException {
-        delete(templates);
-        delete(validation);
-        delete(plugIns);
-        delete(styles);
-        delete(featureTypes);
-        delete(coverages);
-        delete(data);
+//        IOUtils.delete(templates);
+//        IOUtils.delete(validation);
+//        IOUtils.delete(plugIns);
+//        IOUtils.delete(styles);
+//        IOUtils.delete(featureTypes);
+//        IOUtils.delete(coverages);
+        IOUtils.delete(data);
 
         styles = null;
         featureTypes = null;
         data = null;
-    }
-
-    public static void delete(File dir) throws IOException {
-        File[] files = dir.listFiles();
-
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()) {
-                delete(files[i]);
-            } else {
-                if(!files[i].delete())
-                    System.out.println("Could not delete " + files[i].getAbsolutePath());
-            }
-        }
-
-        dir.delete();
     }
 }

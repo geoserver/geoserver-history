@@ -30,11 +30,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import javax.xml.validation.ValidatorHandler;
+
+import junit.framework.TestCase;
 
 import org.geoserver.data.test.MockData;
-import org.geoserver.ows.Dispatcher;
-import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.data.test.TestData;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -45,7 +45,6 @@ import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
@@ -63,8 +62,6 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletConfig;
 import com.mockrunner.mock.web.MockServletContext;
-
-import junit.framework.TestCase;
 
 /**
  * Base test class for GeoServer unit tests.
@@ -89,16 +86,36 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * Application context
      */
     protected GeoServerTestApplicationContext applicationContext;
+    
+    /**
+     * Returns a test data instance
+     * 
+     * @return
+     */
+    public abstract TestData getTestData() throws Exception;
+
+    /**
+     * Override runTest so that the test will be skipped if the TestData is not
+     * available
+     */
+    protected void runTest() throws Throwable {
+        if (getTestData().isTestDataAvailable()) {
+            super.runTest();
+        } else {
+            LOGGER.warning("Skipping " + getClass() + "." + getName()
+                    + " since test data is not available");
+        }
+    }
 
     /**
      * If subclasses overide they *must* call super.setUp() first.
      */
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
         Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
-        
+
         // setup quiet logging (we need to to this here because Data
         // is loaded before GoeServer has a chance to setup logging for good)
         try {
@@ -107,30 +124,29 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
             LOGGER.log(Level.SEVERE, "Could not configure log4j logging redirection", e);
         }
         GeoServer.suppressLoggingConfiguration();
-        setupLogging(getClass().getResourceAsStream(getDefaultLogConfiguration()));
-                 
-        // set up a mock servlet context
-        MockServletContext servletContext = new MockServletContext();
-        servletContext.setInitParameter("GEOSERVER_DATA_DIR", getDataDirLocation());
-        servletContext.setInitParameter("serviceStrategy", "PARTIAL-BUFFER2");
-        
-        applicationContext = new GeoServerTestApplicationContext(getSpringContextLocations(), servletContext);
-        applicationContext.refresh();
-    
-        //set the parameter after a refresh because it appears a refresh wipes
-        // out all parameters
-        servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, applicationContext);
+        GeoServer.configureGeoServerLogging(getClass().getResourceAsStream(getLogConfiguration()), false, true, null);
+
+        // set up test data and, if succeeds, create a mock servlet context and start up the spring configuration
+        final TestData testData = getTestData();
+        testData.setUp();
+        if (testData.isTestDataAvailable()) {
+            MockServletContext servletContext = new MockServletContext();
+            servletContext.setInitParameter("GEOSERVER_DATA_DIR", testData.getDataDirectoryRoot()
+                    .getPath());
+            servletContext.setInitParameter("serviceStrategy", "PARTIAL-BUFFER2");
+
+            applicationContext = new GeoServerTestApplicationContext(getSpringContextLocations(),
+                    servletContext);
+            applicationContext.refresh();
+
+            // set the parameter after a refresh because it appears a refresh
+            // wipes
+            // out all parameters
+            servletContext.setAttribute(
+                    WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
+                    applicationContext);
+        }
     }
-    
-    /**
-     * Subclasses should implement this method and return the location of the data directory
-     * to be used for the tests.
-     * This method can be used to setup a mock data directory if the subclass wants to, whilst
-     * the cleanup of the data dir, if needed, is to be performed in {@link #tearDown()}
-     * @return
-     * @throws Exception
-     */
-    protected abstract String getDataDirLocation() throws Exception;
     
     /**
      * Returns the spring context locations to be used in order to build the GeoServer Spring
@@ -150,12 +166,8 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * in subclasses and choose a different configuration, for example "/DEFAULT_LOGGING.properties".
      * @return
      */
-    protected String getDefaultLogConfiguration() {
+    protected String getLogConfiguration() {
         return "/TEST_LOGGING.properties";
-    }
-    
-    protected void setupLogging(InputStream loggingConfigStream) throws Exception {
-        GeoServer.configureGeoServerLogging(loggingConfigStream, false, true, null);
     }
 
     /**
@@ -184,10 +196,17 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      */
     protected void tearDown() throws Exception {
         super.tearDown();
-
+        
         //kill the context
         applicationContext.destroy();
         applicationContext = null;
+        
+        if(getTestData() != null) {
+            // this cleans up the data directory static loader, if we don't the next test
+            // will keep on running on the current data dir
+            GeoserverDataDirectory.destroy();
+            getTestData().tearDown();
+        }
     }
 
     /**

@@ -4,7 +4,6 @@ import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +18,6 @@ import javax.mail.internet.MimeMessage;
 
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.DataSourceException;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.w3c.dom.Document;
 
@@ -91,8 +89,7 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
         return multipart;
     }
 
-    private GridCoverage2D readCoverage(InputStream is) throws IOException, FileNotFoundException,
-            DataSourceException {
+    private GridCoverage2D readCoverage(InputStream is) throws Exception {
         // for some funny reason reading directly from the input stream does not
         // work we have to create a temp file instead
         File f = storeToTempFile(is, ".tiff");
@@ -102,9 +99,8 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
         return coverage;
     }
 
-    private File storeToTempFile(InputStream is, String extension) throws IOException,
-            FileNotFoundException {
-        File f = File.createTempFile("coverage", extension, dataDirectory.getDataDirectoryRoot());
+    private File storeToTempFile(InputStream is, String extension) throws Exception {
+        File f = File.createTempFile("coverage", extension, getTestData().getDataDirectoryRoot());
         FileOutputStream fos = new FileOutputStream(f);
         byte[] buffer = new byte[4096];
         int read = 0;

@@ -1990,6 +1990,11 @@ SCHEMA:
                         + dataStoreInfo.getId(), e);
             }
         }
+        
+        for (Iterator it = catalog.getCoverageInfos().values().iterator(); it.hasNext();) {
+            CoverageInfo info = (CoverageInfo) it.next();
+            
+        }
         LOGGER.info("Done disposing datastores.");
     }
 }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.data.test.TestData;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
@@ -31,26 +32,16 @@ public class GeoServerTestSupport extends GeoServerAbstractTestSupport {
     /**
      * mock GeoServer data directory
      */
-    protected MockData dataDirectory;
-    
-    protected String getDataDirLocation() throws Exception {
-        // create the data directory
-        dataDirectory = new MockData();
-        populateDataDirectory(dataDirectory);
-        dataDirectory.setUpCatalog();
-        dataDirectory.copyTo(getServicesFile().openStream(), "services.xml");
-        
-        return dataDirectory.getDataDirectoryRoot().getAbsolutePath();
-    }
+    private MockData dataDirectory;
     
     @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        
-        //kill the data directory
-        dataDirectory.tearDown();
-        GeoserverDataDirectory.destroy();
-        dataDirectory = null;
+    public MockData getTestData() throws Exception {
+        if(dataDirectory == null) {
+            // create the data directory
+            dataDirectory = new MockData();
+            populateDataDirectory(dataDirectory);
+        } 
+        return dataDirectory;
     }
     
     /**
