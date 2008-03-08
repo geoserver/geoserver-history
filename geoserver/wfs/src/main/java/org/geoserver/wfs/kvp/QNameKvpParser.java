@@ -46,7 +46,7 @@ public class QNameKvpParser extends FlatKvpParser {
         if (i != -1) {
             String prefix = token.substring(0, i);
             String local = token.substring(i + 1);
-
+            
             String uri = null;
             if(prefix != null && !"".equals(prefix)) {
                 final NameSpaceInfo namespace = catalog.getNameSpace(prefix);
@@ -60,8 +60,10 @@ public class QNameKvpParser extends FlatKvpParser {
             String uri = catalog.getDefaultNameSpace().getURI();
             String prefix = catalog.getDefaultPrefix();
             String local = token;
-
+            
             return new QName(uri, local, prefix);
         }
     }
+    
+  
 }

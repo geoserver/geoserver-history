@@ -162,8 +162,11 @@ public class InsertElementHandler implements TransactionElementHandler {
                         schema2fids.put(schema.getTypeName(), fids);
                     }
 
-                    listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_INSERT,
-                            elementName, collection));
+                    TransactionEvent event = new TransactionEvent(TransactionEventType.PRE_INSERT,
+                            elementName, collection);
+                    event.setSource( insert );
+                    
+                    listener.dataStoreChange( event );
                     fids.addAll(store.addFeatures(collection));
                 }
             }
