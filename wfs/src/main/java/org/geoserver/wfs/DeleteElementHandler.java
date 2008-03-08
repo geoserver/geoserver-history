@@ -12,6 +12,7 @@ import net.opengis.wfs.TransactionType;
 import org.eclipse.emf.ecore.EObject;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureLockException;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
@@ -102,8 +103,10 @@ public class DeleteElementHandler implements TransactionElementHandler {
             filter = WFSReprojectionUtil.normalizeFilterCRS(filter, store.getSchema(), declaredCRS);
             
             // notify listeners
-            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_DELETE,
-                    elementName, store.getFeatures(filter)));
+            TransactionEvent event = new TransactionEvent(TransactionEventType.PRE_DELETE,
+                    elementName, store.getFeatures(filter));
+            event.setSource( delete );
+            listener.dataStoreChange( event );
 
             // compute damaged area
             Envelope damaged = store.getBounds(new DefaultQuery(
@@ -188,7 +191,14 @@ public class DeleteElementHandler implements TransactionElementHandler {
         } catch (IOException e) {
             String msg = e.getMessage();
             String eHandle = (String) EMFUtils.get(element, "handle");
-            throw new WFSTransactionException(msg, (String) null, eHandle, handle);
+            String code = null;
+            
+            //check case of feature lock exception and set appropriate exception
+            //code
+            if ( e instanceof FeatureLockException ) {
+                code = "MissingParameterValue";
+            }
+            throw new WFSTransactionException(msg, code, eHandle, handle);
         }
 
         // update deletion count

@@ -141,10 +141,11 @@ public class RollbackElementHandler implements TransactionElementHandler {
             Filter deletedFilter = filterFactory.id(deletedIds);
 
             // notify pre-update and pre-delete
+            
             listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, layerName,
-                    vstore.getFeatures(updatedFilter)));
+                    vstore.getFeatures(updatedFilter), rollback));
             listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_DELETE, layerName, 
-                    vstore.getFeatures(deletedFilter)));
+                    vstore.getFeatures(deletedFilter), rollback));
 
             // now do the actual rollback
             try {

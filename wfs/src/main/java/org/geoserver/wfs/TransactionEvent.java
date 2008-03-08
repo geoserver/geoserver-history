@@ -6,6 +6,8 @@ package org.geoserver.wfs;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.InsertElementType;
+
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -20,12 +22,19 @@ public class TransactionEvent {
     private TransactionEventType type;
     private FeatureCollection<SimpleFeatureType, SimpleFeature> affectedFeatures;
     private QName layerName;
+    private Object source;
 
     public TransactionEvent(TransactionEventType type, QName layerName,
             FeatureCollection<SimpleFeatureType, SimpleFeature> affectedFeatures) {
+        this( type, layerName, affectedFeatures, null );
+    }
+    
+    public TransactionEvent(TransactionEventType type, QName layerName,
+            FeatureCollection<SimpleFeatureType, SimpleFeature> affectedFeatures, Object source) {
         this.type = type;
         this.layerName = layerName;
         this.affectedFeatures = affectedFeatures;
+        this.source = source;
     }
 
     /**
@@ -44,7 +53,32 @@ public class TransactionEvent {
         return affectedFeatures;
     }
     
+    /**
+     * The name of the layer / feature type that this transaction effects.
+     */
     public QName getLayerName() {
         return layerName;
+    }
+    
+    /**
+     * Sets the source of the transction.
+     */
+    public void setSource(Object source) {
+        this.source = source;
+    }
+    
+    /**
+     * Returns the source of the transaction.
+     * <p>
+     * One of:
+     * <ul>
+     *  <li>{@link InsertElementType}
+     *  <li>{@link UpdateElementType}
+     *  <li>{@link DeleteElementType}
+     * </ul>
+     * </p>
+     */
+    public Object getSource() {
+        return source;
     }
 }

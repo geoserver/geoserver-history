@@ -206,7 +206,10 @@ public class UpdateElementHandler implements TransactionElementHandler {
             LOGGER.finer("Preprocess to remember modification as a set of fids");
             
             FeatureCollection<SimpleFeatureType, SimpleFeature> features = store.getFeatures(filter);
-            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, elementName, features));
+            TransactionEvent event = new TransactionEvent(TransactionEventType.PRE_UPDATE, elementName, features);
+            event.setSource( update );
+            
+            listener.dataStoreChange( event );
 
             Iterator preprocess = features.iterator();
 
