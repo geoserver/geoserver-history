@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import net.opengis.wfs.TransactionType;
 
+import org.acegisecurity.Authentication;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.userdetails.UserDetails;
 import org.geoserver.wfs.Transaction;
@@ -33,9 +34,12 @@ public class VersioningTransaction extends Transaction {
         DefaultTransaction transaction = new DefaultTransaction();
         // use handle as the log messages
         String username = "anonymous";
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername(); 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null) {
+            Object principal = authentication.getPrincipal();
+            if(principal instanceof UserDetails) {
+                username = ((UserDetails) principal).getUsername(); 
+            }
         }
         transaction.putProperty(VersionedPostgisDataStore.AUTHOR, username);
         transaction.putProperty(VersionedPostgisDataStore.MESSAGE, request.getHandle());
