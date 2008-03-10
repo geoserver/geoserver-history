@@ -13,6 +13,7 @@ import org.opengis.parameter.InvalidParameterValueException;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -431,5 +432,31 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
         }
 
         return null;
+    }
+    
+    public void dispose() {
+        try {
+            if ((hintReader != null) && (hintReader.get() != null)) {
+                GridCoverageReader gcr = (GridCoverageReader) (hintReader.get());
+                gcr.dispose();
+                hintReader = null;
+            }
+        } catch(IOException e) {
+            LOGGER.log(Level.FINE, "Exception occurred trying to dispose the coverage reader", e);
+            // ok, we tried...
+        }
+        
+        try {
+            if ((reader != null) && (reader.get() != null)) {
+                GridCoverageReader gcr = (GridCoverageReader) (reader.get());
+                gcr.dispose();
+                reader = null;
+            }
+        } catch(IOException e) {
+            LOGGER.log(Level.FINE, "Exception occurred trying to dispose the coverage reader", e);
+            // ok, we tried...
+        }
+
+        
     }
 }
