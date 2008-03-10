@@ -7,6 +7,9 @@
    <property name="listener">
        <ref bean="historyRecorder"/>
    </property>
+   <property name="geoserver">
+       <ref bean="geoServer"/>
+   </property>
 </bean>
 <bean id="historyRecorder" class="org.geoserver.geosync.RecordingTransactionListener"/>
 

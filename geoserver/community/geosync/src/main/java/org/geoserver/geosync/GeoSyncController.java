@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.io.Writer;
 import java.io.PrintWriter;
 
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -21,17 +20,30 @@ import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
+import com.sun.syndication.feed.synd.SyndLink;
+import com.sun.syndication.feed.synd.SyndLinkImpl;
 import com.sun.syndication.io.SyndFeedOutput;
+import com.sun.syndication.propono.atom.common.AtomService;
+import com.sun.syndication.propono.atom.common.Workspace;
+import com.sun.syndication.propono.atom.common.Collection;
 
 import org.geoserver.wfs.TransactionEvent;
+import org.geoserver.ows.util.RequestUtils;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.global.GeoServer;
 
 import freemarker.template.Template;
 import freemarker.template.Configuration;
 
+import org.jdom.Document;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+
 public class GeoSyncController extends AbstractController {
 
     static final DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
+
+    private GeoServer myGeoserver;
 
     private RecordingTransactionListener myListener;
 
@@ -43,29 +55,51 @@ public class GeoSyncController extends AbstractController {
         myListener = rtl;
     }
 
+    public void setGeoserver(GeoServer gs){
+        myGeoserver = gs;
+    }
+
+    public GeoServer getGeoserver(){
+        return myGeoserver;
+    }
+
     public ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp){
         resp.setContentType("text/xml");
         Map kvPairs = KvpRequestReader.parseKvpSet(req.getQueryString());
         System.out.println("Found kv pairs: " + kvPairs);
-        String requestType = (String)kvPairs.get("SERVICE_DOCUMENT");
+        String requestType = (String)kvPairs.get("REQUEST");
+        String base = RequestUtils.proxifiedBaseURL(RequestUtils.baseURL(req), myGeoserver.getProxyBaseUrl());
+
         try{
-            Writer writer = resp.getWriter();
-            if (requestType == null){
-                String layer = (String)kvPairs.get("layer");
-                SyndFeed feed = generateFeed(layer);
+            if ("GETCAPABILITIES".equalsIgnoreCase(requestType)){
+                AtomService service = new AtomService();
+
+                Workspace workspace = new Workspace(
+                        "GeoSync Workspace", "application/atom+xml;type=entry");
+                service.addWorkspace(workspace);
+
+                Collection entryCol = new Collection(
+                        "GeoSync Update Feed", "text",  base + "/geosync/request=feed");
+                entryCol.setAccept("application/atom+xml;type=entry");        
+                workspace.addCollection( entryCol );
+                                                                                        
+                resp.setContentType("application/atomsvc+xml");
+
+                //TODO: Categories
+                Document d = service.serviceToDocument();
+                XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+                outputter.output(d, resp.getOutputStream());
+            } else if ("FEED".equalsIgnoreCase(requestType)){
+                SyndFeed feed = generateFeed(kvPairs, base);
                 SyndFeedOutput out = new SyndFeedOutput();
+                PrintWriter writer = resp.getWriter();
                 out.output(feed, writer);
+            } else if ("DESCRIBESEARCH".equalsIgnoreCase(requestType)){
+
             } else {
-                Configuration config = new Configuration();
-                config.setClassForTemplateLoading(getClass(), "");
-                // todo: get a list of layers
-                List l = new ArrayList();
-                l.add("notes");
-                Map context = new HashMap();
-                context.put("SERVER_URL", "http://localhost:8008/geoserver/");
-                context.put("LAYERS", l);
-                Template t = config.getTemplate("XMLTemplates/service_document.ftl");
-                t.process(context, writer);
+                resp.setStatus(400);
+                PrintWriter writer = resp.getWriter();
+                writer.println("Bad request");
             }
         } catch (Exception e){
             resp.setStatus(500);
@@ -73,6 +107,24 @@ public class GeoSyncController extends AbstractController {
         }
 
         return null;
+    }
+
+    public SyndFeed generateFeed(Map params, String base) throws Exception{
+        params.remove("REQUEST");
+        SyndFeed feed;
+        if (params.isEmpty()){
+            // do defaulty stuff
+            feed = new SyndFeedImpl();
+            feed.setFeedType("atom_1.0");
+            SyndLink link = new SyndLinkImpl();
+            link.setHref(base + "/history?request=DescribeSearch");
+            link.setRel("search");
+            link.setType("application/opensearchdescription+xml");
+            feed.setLink(base + "/history?request=DescribeSearch");
+        } else {
+            feed = generateFeed((String)null);
+        }
+        return feed;
     }
 
     public SyndFeed generateFeed(String layername) throws Exception{
