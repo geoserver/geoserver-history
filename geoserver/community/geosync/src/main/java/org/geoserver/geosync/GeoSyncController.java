@@ -95,7 +95,14 @@ public class GeoSyncController extends AbstractController {
                 PrintWriter writer = resp.getWriter();
                 out.output(feed, writer);
             } else if ("DESCRIBESEARCH".equalsIgnoreCase(requestType)){
-
+                Configuration cfg = new Configuration();
+                cfg.setClassForTemplateLoading(getClass(), "");
+                Map ctx = new HashMap();
+                ctx.put("GEOSERVER_URL", base);
+                ctx.put("CONTACT_ADDRESS", myGeoserver.getContactEmail());
+                Template t = cfg.getTemplate("opensearchdescription.ftl");
+                PrintWriter writer = resp.getWriter();
+                t.process(ctx, writer);
             } else {
                 resp.setStatus(400);
                 PrintWriter writer = resp.getWriter();
