@@ -1991,9 +1991,9 @@ SCHEMA:
             }
         }
         
-        for (Iterator it = catalog.getCoverageInfos().values().iterator(); it.hasNext();) {
-            CoverageInfo info = (CoverageInfo) it.next();
-            
+        for (Iterator it = catalog.getFormats().iterator(); it.hasNext();) {
+            CoverageStoreInfo info = (CoverageStoreInfo) it.next();
+            info.dispose();
         }
         LOGGER.info("Done disposing datastores.");
     }

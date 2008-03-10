@@ -190,6 +190,17 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         //set up the data directory
         dataDirectory.addWellKnownTypes(MockData.TYPENAMES);
     }
+    
+    /**
+     * Subclasses may override this method to force memory cleaning before the 
+     * test data dir is cleaned up. This is necessary on windows if coverages are used in the
+     * test, since readers might still be around in the heap as garbage without having
+     * been disposed of
+     * @return
+     */
+    protected boolean isMemoryCleanRequired() {
+        return false;
+    }
 
     /**
      * If subclasses overide they *must* call super.tearDown() first.
@@ -200,6 +211,9 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         //kill the context
         applicationContext.destroy();
         applicationContext = null;
+
+        if(isMemoryCleanRequired())
+            System.gc(); System.runFinalization();
         
         if(getTestData() != null) {
             // this cleans up the data directory static loader, if we don't the next test

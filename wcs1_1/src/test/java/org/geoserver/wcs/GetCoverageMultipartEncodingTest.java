@@ -47,7 +47,7 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
         // now check the first part is a proper description
         BodyPart coveragesPart = multipart.getBodyPart(0);
         assertEquals("text/xml", coveragesPart.getContentType());
-        System.out.println("Coverages part: " + coveragesPart.getContent());
+//        System.out.println("Coverages part: " + coveragesPart.getContent());
         assertEquals("<urn:ogc:wcs:1.1:coverages>", coveragesPart.getHeader("Content-ID")[0]);
         // read the xml document into a dom
         Document dom = dom(coveragesPart.getDataHandler().getInputStream());

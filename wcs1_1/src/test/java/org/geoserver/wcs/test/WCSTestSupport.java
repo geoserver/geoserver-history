@@ -49,6 +49,8 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
     
     protected XpathEngine xpath;
     
+    protected static final boolean IS_WINDOWS;
+    
     protected static final Schema WCS11_SCHEMA;
     
     static {
@@ -58,6 +60,13 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
         } catch(Exception e) {
             throw new RuntimeException("Could not parse the WCS 1.1.1 schemas", e);
         }
+        boolean windows = false;
+        try {
+            windows = System.getProperty("os.name").matches(".*Windows.*");
+        } catch(Exception e) {
+            // no os.name? oh well, never mind
+        }
+        IS_WINDOWS = windows;
     }
 
     /**
@@ -78,6 +87,11 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
         namespaces.put("xlink", "http://www.w3.org/1999/xlink");
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
         xpath = XMLUnit.newXpathEngine();
+    }
+    
+    @Override
+    protected boolean isMemoryCleanRequired() {
+        return IS_WINDOWS;
     }
 
     @Override
