@@ -1,7 +1,8 @@
 package org.getoserver.wfsv;
 
-import org.w3c.dom.Document;
 import static org.custommonkey.xmlunit.XMLAssert.*;
+
+import org.w3c.dom.Document;
 
 public class HistoryRelatedTest extends WFSVTestSupport {
 
@@ -133,8 +134,12 @@ public class HistoryRelatedTest extends WFSVTestSupport {
         		"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
         		"  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n" + 
         		"                      http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n" + 
-        		"  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"1\" toFeatureVersion=\"13\"/>\r\n" + 
+        		"  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n" + 
         		"</wfsv:GetLog>"; 
-        
+        Document doc = postAsDOM(root(), request);
+        assertXpathEvaluatesTo("2", "count(//topp:changesets)", doc);
+        // version 2 and 3 are taken to version enable roads and restricted
+        assertXpathEvaluatesTo("Inserting, updating and deleting", "//topp:changesets[@fid=\"changesets.4\"]/topp:message", doc);
+        assertXpathEvaluatesTo("anonymous", "//topp:changesets[@fid=\"changesets.4\"]/topp:author", doc);
     }
 }
