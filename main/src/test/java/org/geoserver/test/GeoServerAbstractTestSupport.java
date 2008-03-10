@@ -208,20 +208,23 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         
-        //kill the context
-        applicationContext.destroy();
-        applicationContext = null;
-
-        if(isMemoryCleanRequired())
-            System.gc(); System.runFinalization();
-        
-        if(getTestData() != null) {
-            // this cleans up the data directory static loader, if we don't the next test
-            // will keep on running on the current data dir
-            GeoserverDataDirectory.destroy();
-            getTestData().tearDown();
+        if(getTestData().isTestDataAvailable()) {
+            //kill the context
+            applicationContext.destroy();
+            applicationContext = null;
+    
+            if(isMemoryCleanRequired())
+                System.gc(); System.runFinalization();
+            
+            if(getTestData() != null) {
+                // this cleans up the data directory static loader, if we don't the next test
+                // will keep on running on the current data dir
+                GeoserverDataDirectory.destroy();
+                getTestData().tearDown();
+            }
         }
     }
+        
 
     /**
      * Accessor for global catalog instance from the test application context.
