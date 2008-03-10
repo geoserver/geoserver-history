@@ -52,6 +52,7 @@
   <!-- http url mapping -->
   <bean id="wfsvURLMapping"
     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="alwaysUseFullPath" value="true"/>    
     <property name="interceptors">
       <list>
         <ref bean="citeComplianceHack" />
