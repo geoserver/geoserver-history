@@ -39,7 +39,7 @@ public class ExtendedTextSymbolizerTest extends WMSTestSupport {
                 .getResource("Dates.properties"), Collections.singletonMap(MockData.STYLE, "KmlTimestamp"));
     }
 
-    protected String getDefaultLogConfiguration() {
+    protected String getLogConfiguration() {
         return "/DEFAULT_LOGGING.properties";
     }
 
