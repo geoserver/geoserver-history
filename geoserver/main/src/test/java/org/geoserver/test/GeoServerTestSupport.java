@@ -6,6 +6,7 @@ package org.geoserver.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.namespace.QName;
 
@@ -42,6 +43,18 @@ public class GeoServerTestSupport extends GeoServerAbstractTestSupport {
             populateDataDirectory(dataDirectory);
         } 
         return dataDirectory;
+    }
+    
+    /** 
+     * Adds the desired type and coverages to the data directory. This method adds all well known
+     * data types, subclasses may add their extra ones or decide to avoid the standar ones and 
+     * build a custom list calling {@link MockData#addPropertiesType(QName, java.net.URL, java.net.URL)}
+     * and {@link MockData#addCoverage(QName, InputStream, String)}
+     * @throws IOException
+     */
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        //set up the data directory
+        dataDirectory.addWellKnownTypes(MockData.TYPENAMES);
     }
     
     /**

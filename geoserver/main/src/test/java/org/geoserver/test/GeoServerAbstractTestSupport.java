@@ -33,7 +33,6 @@ import javax.xml.validation.Validator;
 
 import junit.framework.TestCase;
 
-import org.geoserver.data.test.MockData;
 import org.geoserver.data.test.TestData;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
@@ -179,18 +178,6 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         return GeoServerTestSupport.class.getResource("services.xml");
     }
 
-    /** 
-     * Adds the desired type and coverages to the data directory. This method adds all well known
-     * data types, subclasses may add their extra ones or decide to avoid the standar ones and 
-     * build a custom list calling {@link MockData#addPropertiesType(QName, java.net.URL, java.net.URL)}
-     * and {@link MockData#addCoverage(QName, InputStream, String)}
-     * @throws IOException
-     */
-    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
-        //set up the data directory
-        dataDirectory.addWellKnownTypes(MockData.TYPENAMES);
-    }
-    
     /**
      * Subclasses may override this method to force memory cleaning before the 
      * test data dir is cleaned up. This is necessary on windows if coverages are used in the
