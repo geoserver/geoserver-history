@@ -200,8 +200,10 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
             applicationContext.destroy();
             applicationContext = null;
     
-            if(isMemoryCleanRequired())
-                System.gc(); System.runFinalization();
+            if(isMemoryCleanRequired()) {
+                System.gc(); 
+                System.runFinalization();
+            }
             
             if(getTestData() != null) {
                 // this cleans up the data directory static loader, if we don't the next test
