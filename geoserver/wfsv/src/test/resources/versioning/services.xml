@@ -124,7 +124,7 @@ data.
       <accessConstraints>NONE</accessConstraints>
       <srsXmlStyle value = "true" />
       <serviceLevel value = "31" />
-      <citeConformanceHacks>false</citeConformanceHacks>
+      <citeConformanceHacks>true</citeConformanceHacks>
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
     </service>
     <service enabled = "true" type = "WMS" >
