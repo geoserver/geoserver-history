@@ -9,8 +9,8 @@ public class HistoryRelatedTest extends WFSVTestSupport {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        
-        if(getTestData().isTestDataAvailable()) {
+
+        if (getTestData().isTestDataAvailable()) {
             // build some history the other tests will use
             String transaction = //
             "<wfs:Transaction service=\"WFSV\" version=\"1.0.0\"\r\n"
@@ -48,12 +48,13 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                     + "    </ogc:Filter>\r\n" // 
                     + "  </wfs:Delete>\r\n" + "</wfs:Transaction>\r\n";
             Document doc = postAsDOM(root(), transaction);
-    
+
             // let's just ensure the transaction was successful
             assertXpathEvaluatesTo("1", "count(/wfs:WFS_TransactionResponse)", doc);
             assertXpathEvaluatesTo("archsites.5",
                     "/wfs:WFS_TransactionResponse/wfs:InsertResult/ogc:FeatureId/@fid", doc);
-            assertXpathEvaluatesTo("1",
+            assertXpathEvaluatesTo(
+                    "1",
                     "count(/wfs:WFS_TransactionResponse/wfs:TransactionResult/wfs:Status/wfs:SUCCESS)",
                     doc);
         }
@@ -73,7 +74,8 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "</wfs:GetFeature>\r\n";
         Document doc = postAsDOM(root(), before);
         assertXpathEvaluatesTo("4", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
-        assertXpathEvaluatesTo("Signature Rock", "//topp:archsites[@fid=\"archsites.1\"]/topp:str1", doc);
+        assertXpathEvaluatesTo("Signature Rock",
+                "//topp:archsites[@fid=\"archsites.1\"]/topp:str1", doc);
         assertXpathEvaluatesTo("1", "count(//topp:archsites[@fid=\"archsites.2\"])", doc);
         assertXpathEvaluatesTo("0", "count(//topp:archsites[@fid=\"archsites.5\"])", doc);
 
@@ -89,27 +91,25 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfs:Query typeName=\"topp:archsites\"/>\r\n" + "</wfs:GetFeature>\r\n";
         doc = postAsDOM(root(), current);
         assertXpathEvaluatesTo("4", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
-        assertXpathEvaluatesTo("Signature Rock, updated", "//topp:archsites[@fid=\"archsites.1\"]/topp:str1", doc);
+        assertXpathEvaluatesTo("Signature Rock, updated",
+                "//topp:archsites[@fid=\"archsites.1\"]/topp:str1", doc);
         assertXpathEvaluatesTo("0", "count(//topp:archsites[@fid=\"archsites.2\"])", doc);
         assertXpathEvaluatesTo("1", "count(//topp:archsites[@fid=\"archsites.5\"])", doc);
     }
-    
+
     public void testVersionedFeatureCollection() throws Exception {
-        String request = "<wfsv:GetVersionedFeature service=\"WFSV\" version=\"1.0.0\"\r\n" + 
-        		"  outputFormat=\"GML2\"\r\n" + 
-        		"  xmlns:topp=\"http://www.openplans.org/topp\"\r\n" + 
-        		"  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n" + 
-        		"  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n" + 
-        		"  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n" + 
-        		"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
-        		"  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n" + 
-        		"                      http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioninig.xsd\">\r\n" + 
-        		"  <wfs:Query typeName=\"topp:archsites\">\r\n" + 
-        		"    <ogc:Filter>\r\n" + 
-        		"       <ogc:FeatureId fid=\"archsites.5\"/>\r\n" + 
-        		"    </ogc:Filter>\r\n" + 
-        		"  </wfs:Query>\r\n" + 
-        		"</wfsv:GetVersionedFeature>";
+        String request = "<wfsv:GetVersionedFeature service=\"WFSV\" version=\"1.0.0\"\r\n"
+                + "  outputFormat=\"GML2\"\r\n"
+                + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
+                + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
+                + "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n"
+                + "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n"
+                + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"
+                + "  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n"
+                + "                      http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioninig.xsd\">\r\n"
+                + "  <wfs:Query typeName=\"topp:archsites\">\r\n" + "    <ogc:Filter>\r\n"
+                + "       <ogc:FeatureId fid=\"archsites.5\"/>\r\n" + "    </ogc:Filter>\r\n"
+                + "  </wfs:Query>\r\n" + "</wfsv:GetVersionedFeature>";
         Document doc = postAsDOM(root(), request);
         assertXpathEvaluatesTo("1", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
         assertXpathEvaluatesTo("1", "count(//topp:archsites[@fid=\"archsites.5\"])", doc);
@@ -120,26 +120,89 @@ public class HistoryRelatedTest extends WFSVTestSupport {
         assertXpathEvaluatesTo("1", "count(//topp:lastUpdatedBy)", doc);
         assertXpathEvaluatesTo("1", "count(//topp:lastUpdateDate)", doc);
         assertXpathEvaluatesTo("1", "count(//topp:lastUpdateMessage)", doc);
-        assertXpathEvaluatesTo("anonymous", "//topp:archsites[@fid=\"archsites.5\"]/topp:createdBy", doc);
-        assertXpathEvaluatesTo("Inserting, updating and deleting", "//topp:archsites[@fid=\"archsites.5\"]/topp:lastUpdateMessage", doc);
+        assertXpathEvaluatesTo("anonymous",
+                "//topp:archsites[@fid=\"archsites.5\"]/topp:createdBy", doc);
+        assertXpathEvaluatesTo("Inserting, updating and deleting",
+                "//topp:archsites[@fid=\"archsites.5\"]/topp:lastUpdateMessage", doc);
     }
-    
+
     public void testLog() throws Exception {
-        String request =  
-        		"<wfsv:GetLog service=\"WFSV\" version=\"1.0.0\"\r\n" + 
-        		"  xmlns:topp=\"http://www.openplans.org/topp\"\r\n" + 
-        		"  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n" + 
-        		"  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n" + 
-        		"  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n" + 
-        		"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
-        		"  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n" + 
-        		"                      http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n" + 
-        		"  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n" + 
-        		"</wfsv:GetLog>"; 
+        String request = "<wfsv:GetLog service=\"WFSV\" version=\"1.0.0\"\r\n"
+                + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
+                + "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n"
+                + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
+                + "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n"
+                + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"
+                + "  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n"
+                + "                      http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n"
+                + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
+                + "</wfsv:GetLog>";
         Document doc = postAsDOM(root(), request);
         assertXpathEvaluatesTo("2", "count(//topp:changesets)", doc);
         // version 2 and 3 are taken to version enable roads and restricted
-        assertXpathEvaluatesTo("Inserting, updating and deleting", "//topp:changesets[@fid=\"changesets.4\"]/topp:message", doc);
-        assertXpathEvaluatesTo("anonymous", "//topp:changesets[@fid=\"changesets.4\"]/topp:author", doc);
+        assertXpathEvaluatesTo("Inserting, updating and deleting",
+                "//topp:changesets[@fid=\"changesets.4\"]/topp:message", doc);
+        assertXpathEvaluatesTo("anonymous", "//topp:changesets[@fid=\"changesets.4\"]/topp:author",
+                doc);
+    }
+
+    public void testLogHtml() throws Exception {
+        String request = "<wfsv:GetLog service=\"WFSV\" version=\"1.0.0\"\r\n"
+                + "  outputFormat=\"HTML\""
+                + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
+                + "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n"
+                + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
+                + "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n"
+                + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"
+                + "  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n"
+                + "                      http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n"
+                + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
+                + "</wfsv:GetLog>";
+        Document doc = postAsDOM(root(), request);
+        // test it's html and there are 2 history rows in the table (tr owning a
+        // td, not tr owning a th)
+        assertXpathEvaluatesTo("2", "count(/html/body/table/tr[td])", doc);
+    }
+
+    public void testGetDiff() throws Exception {
+        String request = "<wfsv:GetDiff service=\"WFSV\" version=\"1.1.0\"\r\n"
+                + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
+                + "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n"
+                + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
+                + "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n"
+                + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"
+                + "  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n"
+                + "  http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n"
+                + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"1\"/>\r\n"
+                + "</wfsv:GetDiff>";
+        Document doc = postAsDOM(root(), request);
+        assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Insert)", doc);
+        assertXpathEvaluatesTo("archsites.5", "/wfs:Transaction/wfs:Insert/topp:archsites/@gml:id",
+                doc);
+        assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Update)", doc);
+        assertXpathEvaluatesTo("archsites.1",
+                "/wfs:Transaction/wfs:Update/ogc:Filter/ogc:FeatureId/@fid", doc);
+        assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Update/wfs:Property)", doc);
+        assertXpathEvaluatesTo("Signature Rock, updated",
+                "/wfs:Transaction/wfs:Update/wfs:Property/wfs:Value", doc);
+        assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Delete)", doc);
+        assertXpathEvaluatesTo("archsites.2",
+                "/wfs:Transaction/wfs:Delete/ogc:Filter/ogc:FeatureId/@fid", doc);
+    }
+
+    public void testGetDiffHtml() throws Exception {
+        String request = "<wfsv:GetDiff service=\"WFSV\" version=\"1.1.0\"\r\n"
+                + "outputFormat=\"HTML\""
+                + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
+                + "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n"
+                + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
+                + "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n"
+                + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"
+                + "  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n"
+                + "  http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n"
+                + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"1\"/>\r\n"
+                + "</wfsv:GetDiff>";
+        // just make sure it's valid xml
+        postAsDOM(root(), request);
     }
 }
