@@ -202,7 +202,33 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n"
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"1\"/>\r\n"
                 + "</wfsv:GetDiff>";
-        // just make sure it's valid xml
+        // just make sure html is valid xml as well
         postAsDOM(root(), request);
+    }
+
+    public void testGetDiffReverse() throws Exception {
+        String request = "<wfsv:GetDiff service=\"WFSV\" version=\"1.1.0\"\r\n"
+                + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
+                + "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n"
+                + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
+                + "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n"
+                + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"
+                + "  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n"
+                + "                      http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfsv.xsd\">\r\n"
+                + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"CURRENT\"  "
+                + "toFeatureVersion=\"1\"/>\r\n" + "</wfsv:GetDiff>";
+        Document doc = postAsDOM(root(), request);
+        assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Insert)", doc);
+        assertXpathEvaluatesTo("archsites.2", "/wfs:Transaction/wfs:Insert/topp:archsites/@gml:id",
+                doc);
+        assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Update)", doc);
+        assertXpathEvaluatesTo("archsites.1",
+                "/wfs:Transaction/wfs:Update/ogc:Filter/ogc:FeatureId/@fid", doc);
+        assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Update/wfs:Property)", doc);
+        assertXpathEvaluatesTo("Signature Rock",
+                "/wfs:Transaction/wfs:Update/wfs:Property/wfs:Value", doc);
+        assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Delete)", doc);
+        assertXpathEvaluatesTo("archsites.5",
+                "/wfs:Transaction/wfs:Delete/ogc:Filter/ogc:FeatureId/@fid", doc);
     }
 }
