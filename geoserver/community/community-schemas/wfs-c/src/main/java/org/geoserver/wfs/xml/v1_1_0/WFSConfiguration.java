@@ -169,7 +169,7 @@ public class WFSConfiguration extends Configuration {
     private void registerBindingOverrides(MutablePicoContainer container) {
         registerOverride(container, XS.ANYTYPE, ISOXSAnyTypeBinding.class);
         registerOverride(container, GML.CodeType, ISOCodeTypeBinding.class);
-        registerOverride(container, GML.CodeType, ISOMeasureTypeBinding.class);
+        registerOverride(container, GML.MeasureType, ISOMeasureTypeBinding.class);
 
         /*
         registerOverride(container, XS.DATE, ISOXSDateBinding.class);

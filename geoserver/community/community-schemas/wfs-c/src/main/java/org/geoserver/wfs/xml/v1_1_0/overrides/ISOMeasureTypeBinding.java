@@ -50,7 +50,7 @@ public class ISOMeasureTypeBinding extends MeasureTypeBinding {
             Attribute attribute = (Attribute) object;
         	Measure measure = (Measure) attribute.getValue();
 
-            if (measure.getUnit() != null) {
+            if (measure != null && measure.getUnit() != null) {
                 return new URI(((BaseUnit) measure.getUnit()).getSymbol());
             }
         }
