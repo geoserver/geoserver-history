@@ -20,7 +20,7 @@ public class GeoSyncControllerTest extends GeoServerTestSupport {
         Document d = postAsDOM( "wfs", insert );
         assertEquals( "wfs:TransactionResponse", d.getDocumentElement().getNodeName() );
         
-        d = getAsDOM("/history?request=feed");
+        d = getAsDOM("/history?request=feed&a=b");
         assertEquals( "feed", d.getDocumentElement().getNodeName() );
         
         assertNotNull( getFirstElementByTagName( d, "wfs:Insert" ) );
