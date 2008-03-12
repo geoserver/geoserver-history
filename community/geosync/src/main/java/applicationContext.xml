@@ -11,7 +11,12 @@
        <ref bean="geoServer"/>
    </property>
 </bean>
-<bean id="historyRecorder" class="org.geoserver.geosync.RecordingTransactionListener"/>
+<bean id="historyRecorder" class="org.geoserver.geosync.RecordingTransactionListener">
+   <property>
+        <ref bean="wfsXmlConfiguration-1.1"/>
+   </property>
+</bean>
+
 
 <bean id="historyDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="alwaysUseFullPath" value="true"/>

@@ -26,6 +26,9 @@ import com.sun.syndication.io.SyndFeedOutput;
 import com.sun.syndication.propono.atom.common.AtomService;
 import com.sun.syndication.propono.atom.common.Workspace;
 import com.sun.syndication.propono.atom.common.Collection;
+import com.sun.syndication.feed.module.georss.GeoRSSModule;
+import com.sun.syndication.feed.module.georss.W3CGeoModuleImpl;
+import com.sun.syndication.feed.module.georss.geometries.Position;
 
 import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.ows.util.RequestUtils;
@@ -80,7 +83,9 @@ public class GeoSyncController extends AbstractController {
 
                 Collection entryCol = new Collection(
                         "GeoSync Update Feed", "text",  base + "/geosync/request=feed");
-                entryCol.setAccept("application/atom+xml;type=entry");        
+                List accepts = new ArrayList();
+                accepts.add("application/atom+xml;type=entry");
+                entryCol.setAccepts(accepts);        
                 workspace.addCollection( entryCol );
                                                                                         
                 resp.setContentType("application/atomsvc+xml");
@@ -127,7 +132,9 @@ public class GeoSyncController extends AbstractController {
             link.setHref(base + "/history?request=DescribeSearch");
             link.setRel("search");
             link.setType("application/opensearchdescription+xml");
-            feed.setLink(base + "/history?request=DescribeSearch");
+            List links = feed.getLinks();
+            links.add(link);
+            feed.setLinks(links);
         } else {
             feed = generateFeed((String)null);
         }
@@ -140,7 +147,7 @@ public class GeoSyncController extends AbstractController {
 
         feed.setTitle("Geoserver History Feed");
         feed.setLink("http://geoserver.org/"); //TODO: get the local url and use that
-        feed.setDescription("Changes for feature type "); // TODO: get the feature type name and use that
+        // feed.setDescription("Changes for feature type "); // TODO: get the feature type name and use that
 
         List history;
         if (layername != null){
@@ -158,14 +165,19 @@ public class GeoSyncController extends AbstractController {
 
         Iterator it = history.iterator();
         while(it.hasNext()){
-            String event = it.next().toString();
+            SyncItem item = (SyncItem)it.next();
             SyndEntry entry = new SyndEntryImpl();
             entry.setTitle("Feature A");
             entry.setLink("http://geoserver.org/a");
             entry.setPublishedDate(DATE_PARSER.parse("2004-06-08"));
             SyndContent description = new SyndContentImpl();
-            description.setType("text/xml");
-            description.setValue(event);
+            description.setType("text/plain");
+            description.setValue(item.toString());
+
+            // GeoRSSModule geoInfo = new W3CGeoModuleImpl();
+            // geoInfo.setPosition(new Position(54.2, 12.4));
+            // entry.getModules().add(geoInfo);
+            // TODO: use real data for Geo output
             List contents = new ArrayList();
             contents.add(description);
             entry.setContents(contents);
