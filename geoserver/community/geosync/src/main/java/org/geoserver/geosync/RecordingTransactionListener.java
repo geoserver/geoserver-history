@@ -30,6 +30,7 @@ public class RecordingTransactionListener implements TransactionListener{
         recordWorthyEvents = new TreeSet();
         recordWorthyEvents.add(TransactionEventType.POST_INSERT);
         recordWorthyEvents.add(TransactionEventType.POST_UPDATE);
+        recordWorthyEvents.add(TransactionEventType.PRE_DELETE);
     }
 
     public RecordingTransactionListener(){
@@ -37,7 +38,12 @@ public class RecordingTransactionListener implements TransactionListener{
     }
 
     public void dataStoreChange(TransactionEvent event) throws WFSException{
-        myHistory.add(makeDescription(event));
+        
+        if ( recordWorthyEvents.contains( event.getType() ) ) {
+            myHistory.add( event );
+        }
+        
+        //myHistory.add(makeDescription(event));
     }
     
     public WFSConfiguration getWFSConfig(){
@@ -54,10 +60,15 @@ public class RecordingTransactionListener implements TransactionListener{
         Iterator it = myHistory.iterator();
 
         while (it.hasNext()){
-            SyncItem si = (SyncItem)it.next();
-            if (si.getLayer().equals(layername)){
-                matches.add(si);
+            TransactionEvent e = (TransactionEvent) it.next();
+            if ( e.getLayerName().equals( layername ) ) {
+                matches.add( e );
             }
+            
+//            SyncItem si = (SyncItem)it.next();
+//            if (si.getLayer().equals(layername)){
+//                matches.add(si);
+//            }
         }
         
         return matches;
