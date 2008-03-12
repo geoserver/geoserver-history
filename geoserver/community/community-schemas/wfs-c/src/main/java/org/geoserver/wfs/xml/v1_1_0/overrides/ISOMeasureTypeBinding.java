@@ -16,46 +16,43 @@
 package org.geoserver.wfs.xml.v1_1_0.overrides;
 
 import java.net.URI;
-
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import org.geotools.geometry.DirectPosition2D;
-import org.geotools.gml3.bindings.GML;
-import org.geotools.gml3.bindings.MeasureTypeBinding;
-import org.geotools.gml3.bindings.PointTypeBinding;
-import org.geotools.measure.Measure;
-import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.DefaultGeocentricCRS;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.opengis.feature.Attribute;
-import org.opengis.feature.GeometryAttribute;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.util.Map;
 
 import javax.units.BaseUnit;
 import javax.xml.namespace.QName;
 
+import org.geotools.feature.Name;
+import org.geotools.gml3.bindings.MeasureTypeBinding;
+import org.geotools.measure.Measure;
+import org.opengis.feature.Attribute;
+import org.xml.sax.Attributes;
 
 /**
- * Binding object for the type http://www.opengis.net/gml:PointType.
- *
+ * Binding for complex feature Measure with unit-of-measure property.
  */
 public class ISOMeasureTypeBinding extends MeasureTypeBinding {
- 
+    
+    private static final Name UOM = new Name("uom");
 
-    public Object getProperty(Object object, QName name)throws Exception {
-        if ("uom".equals(name.getLocalPart())) {
+    public Object getProperty(Object object, QName name) throws Exception {
+        if (UOM.toString().equals(name.getLocalPart())) {
             Attribute attribute = (Attribute) object;
-        	Measure measure = (Measure) attribute.getValue();
-
+            /* first look for a client property and use it if it is set */
+            Map clientProperties = (Map) attribute.getDescriptor().getUserData(
+                    Attributes.class);
+            if (clientProperties != null) {
+                String uom = (String) clientProperties.get(UOM);
+                if (uom != null) {
+                    return new URI(uom);
+                }
+            }
+            /* might have uom set somewhere else, such as data */
+            Measure measure = (Measure) attribute.getValue();
             if (measure != null && measure.getUnit() != null) {
                 return new URI(((BaseUnit) measure.getUnit()).getSymbol());
             }
         }
-		return null;
+        return null;
     }
 
- 
 }
