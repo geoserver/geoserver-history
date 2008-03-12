@@ -171,8 +171,8 @@ public class InsertElementHandler implements TransactionElementHandler {
                     fids.addAll(store.addFeatures(collection));
                     
                     //fire post insert event
-                    event = new TransactionEvent(TransactionEventType.POST_INSERT, elementName, collection, insert );
-                    listener.dataStoreChange( event );
+                    //event = new TransactionEvent(TransactionEventType.POST_INSERT, elementName, collection, insert );
+                    //listener.dataStoreChange( event );
                 }
             }
 
