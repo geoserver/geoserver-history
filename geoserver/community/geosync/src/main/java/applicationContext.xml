@@ -10,11 +10,11 @@
    <property name="geoserver">
        <ref bean="geoServer"/>
    </property>
-</bean>
-<bean id="historyRecorder" class="org.geoserver.geosync.RecordingTransactionListener">
-   <property>
+   <property name="xmlConfiguration">
         <ref bean="wfsXmlConfiguration-1.1"/>
    </property>
+</bean>
+<bean id="historyRecorder" class="org.geoserver.geosync.RecordingTransactionListener">
 </bean>
 
 
