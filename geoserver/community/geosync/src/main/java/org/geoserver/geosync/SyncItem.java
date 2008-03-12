@@ -7,6 +7,7 @@ public class SyncItem {
     private String myLayer;
     private String myAction;
     private List   myAffectedFeatures;
+    private Object mySource;
 
     public SyncItem(){
     }
@@ -33,6 +34,14 @@ public class SyncItem {
 
     public List getAffectedFeatures(){
         return myAffectedFeatures;
+    }
+
+    public Object getSource(){
+        return mySource;
+    }
+
+    public void setSource(Object src){
+        mySource = src;
     }
 
     public String toString(){

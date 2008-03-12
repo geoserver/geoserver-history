@@ -29,7 +29,12 @@
         <dependency>
             <groupId>rome</groupId>
             <artifactId>propono</artifactId>
-            <version>0.6</version>
+            <version>0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>georss</artifactId>
+            <version>0.9.8</version>
         </dependency>
 	</dependencies>
 </project>
