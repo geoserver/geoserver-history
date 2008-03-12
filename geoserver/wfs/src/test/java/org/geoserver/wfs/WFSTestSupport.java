@@ -11,6 +11,7 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geoserver.wfs.xml.v1_0_0.WFSConfiguration;
 
 
 /**
@@ -28,6 +29,20 @@ public class WFSTestSupport extends GeoServerTestSupport {
      */
     protected WFS getWFS() {
         return (WFS) applicationContext.getBean("wfs");
+    }
+    
+    /**
+     * @return The 1.0 xml configuration.
+     */
+    protected WFSConfiguration getXmlConfiguration10() {
+        return (WFSConfiguration) applicationContext.getBean( "wfsXmlConfiguration-1.0" );
+    }
+    
+    /**
+     * @return The 1.1 xml configuration.
+     */
+    protected org.geoserver.wfs.xml.v1_1_0.WFSConfiguration getXmlConfiguration11() {
+        return  (org.geoserver.wfs.xml.v1_1_0.WFSConfiguration) applicationContext.getBean( "wfsXmlConfiguration-1.1" );
     }
     
     @Override
