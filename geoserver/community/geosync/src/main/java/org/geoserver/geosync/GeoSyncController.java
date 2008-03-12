@@ -36,7 +36,9 @@ import com.sun.syndication.propono.atom.common.Workspace;
 import com.sun.syndication.propono.atom.common.Collection;
 import com.sun.syndication.feed.module.georss.GeoRSSModule;
 import com.sun.syndication.feed.module.georss.W3CGeoModuleImpl;
-import com.sun.syndication.feed.module.georss.geometries.Position;
+import com.sun.syndication.feed.module.georss.geometries.PositionList;
+import com.sun.syndication.feed.module.georss.geometries.LinearRing;
+import com.sun.syndication.feed.module.georss.geometries.Polygon;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.geoserver.wfs.TransactionEvent;
@@ -200,7 +202,15 @@ public class GeoSyncController extends AbstractController {
             description.setValue(encodeTransaction( e ));
 
             // GeoRSSModule geoInfo = new W3CGeoModuleImpl();
-            // geoInfo.setPosition(new Position(54.2, 12.4));
+            // Polygon bounds = new Polygon();
+            // PositionList exterior = new PositionList();
+            // double minLat = 0, minLong = 0, maxLat = 0, maxLong = 0;
+            // exterior.add(minLat, minLong);
+            // exterior.add(minLat, maxLong);
+            // exterior.add(maxLat, maxLong);
+            // exterior.add(maxLat, minLong);
+            // bounds.setExterior(new LinearRing(exterior));
+            // geoInfo.setGeometry(bounds);
             // entry.getModules().add(geoInfo);
             // TODO: use real data for Geo output
             List contents = new ArrayList();
