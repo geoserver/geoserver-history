@@ -1,5 +1,11 @@
 package org.geoserver.geosync;
 
+import net.opengis.wfs.DeleteElementType;
+import net.opengis.wfs.InsertElementType;
+import net.opengis.wfs.TransactionType;
+import net.opengis.wfs.UpdateElementType;
+import net.opengis.wfs.WfsFactory;
+
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +18,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -30,8 +38,12 @@ import com.sun.syndication.feed.module.georss.GeoRSSModule;
 import com.sun.syndication.feed.module.georss.W3CGeoModuleImpl;
 import com.sun.syndication.feed.module.georss.geometries.Position;
 
+import org.apache.xml.serialize.OutputFormat;
 import org.geoserver.wfs.TransactionEvent;
+import org.geoserver.wfs.xml.v1_1_0.WFS;
+import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geoserver.ows.util.RequestUtils;
+import org.geotools.xml.Encoder;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.global.GeoServer;
 
@@ -50,6 +62,8 @@ public class GeoSyncController extends AbstractController {
 
     private RecordingTransactionListener myListener;
 
+    private WFSConfiguration xmlConfiguration;
+    
     public RecordingTransactionListener getListener(){
         return myListener;
     }
@@ -64,6 +78,10 @@ public class GeoSyncController extends AbstractController {
 
     public GeoServer getGeoserver(){
         return myGeoserver;
+    }
+    
+    public void setXmlConfiguration(WFSConfiguration xmlConfiguration) {
+        this.xmlConfiguration = xmlConfiguration;
     }
 
     public ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp){
@@ -83,9 +101,11 @@ public class GeoSyncController extends AbstractController {
 
                 Collection entryCol = new Collection(
                         "GeoSync Update Feed", "text",  base + "/geosync/request=feed");
+
                 List accepts = new ArrayList();
                 accepts.add("application/atom+xml;type=entry");
                 entryCol.setAccepts(accepts);        
+
                 workspace.addCollection( entryCol );
                                                                                         
                 resp.setContentType("application/atomsvc+xml");
@@ -122,12 +142,13 @@ public class GeoSyncController extends AbstractController {
     }
 
     public SyndFeed generateFeed(Map params, String base) throws Exception{
-        params.remove("REQUEST");
+        //params.remove("REQUEST");
         SyndFeed feed;
         if (params.isEmpty()){
             // do defaulty stuff
             feed = new SyndFeedImpl();
             feed.setFeedType("atom_1.0");
+            
             SyndLink link = new SyndLinkImpl();
             link.setHref(base + "/history?request=DescribeSearch");
             link.setRel("search");
@@ -165,14 +186,18 @@ public class GeoSyncController extends AbstractController {
 
         Iterator it = history.iterator();
         while(it.hasNext()){
-            SyncItem item = (SyncItem)it.next();
+            TransactionEvent e = (TransactionEvent) it.next();
+            //SyncItem item = (SyncItem)it.next();
+            
             SyndEntry entry = new SyndEntryImpl();
             entry.setTitle("Feature A");
             entry.setLink("http://geoserver.org/a");
             entry.setPublishedDate(DATE_PARSER.parse("2004-06-08"));
+            
+            //encode the content as the wfs transcation
             SyndContent description = new SyndContentImpl();
-            description.setType("text/plain");
-            description.setValue(item.toString());
+            description.setType("text/xml");
+            description.setValue(encodeTransaction( e ));
 
             // GeoRSSModule geoInfo = new W3CGeoModuleImpl();
             // geoInfo.setPosition(new Position(54.2, 12.4));
@@ -185,5 +210,29 @@ public class GeoSyncController extends AbstractController {
         }
 
         return entries;
+    }
+    
+    String encodeTransaction( TransactionEvent e ) throws IOException {
+        TransactionType tx = WfsFactory.eINSTANCE.createTransactionType();
+        Object source = e.getSource();
+        
+        if ( source instanceof InsertElementType ) {
+            tx.getInsert().add( source );
+        }
+        else if ( source instanceof UpdateElementType ) {
+            tx.getUpdate().add( source );
+        }
+        else if ( source instanceof DeleteElementType ) {
+            tx.getDelete().add( source );
+        }
+        
+        Encoder encoder = new Encoder( xmlConfiguration );
+        OutputFormat of = new OutputFormat();
+        of.setOmitXMLDeclaration( true );
+        encoder.setOutputFormat( of );
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        encoder.encode( tx, WFS.TRANSACTION, out );
+        return new String( out.toByteArray() );
     }
 }
