@@ -28,8 +28,8 @@ public class RecordingTransactionListener implements TransactionListener{
 
     static {
         recordWorthyEvents = new TreeSet();
-        recordWorthyEvents.add(TransactionEventType.POST_INSERT);
-        recordWorthyEvents.add(TransactionEventType.POST_UPDATE);
+        recordWorthyEvents.add(TransactionEventType.PRE_INSERT);
+        recordWorthyEvents.add(TransactionEventType.PRE_UPDATE);
         recordWorthyEvents.add(TransactionEventType.PRE_DELETE);
     }
 
