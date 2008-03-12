@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.geoserver.wfs.TransactionEventType;
 import org.geoserver.wfs.TransactionListener;
@@ -24,6 +26,8 @@ public class RecordingTransactionListener implements TransactionListener{
     private static Set recordWorthyEvents;
     private List myHistory;
     private WFSConfiguration myWFSConfiguration;
+
+    private static Map filterHandling;
    
 
     static {
@@ -31,6 +35,10 @@ public class RecordingTransactionListener implements TransactionListener{
         recordWorthyEvents.add(TransactionEventType.PRE_INSERT);
         recordWorthyEvents.add(TransactionEventType.PRE_UPDATE);
         recordWorthyEvents.add(TransactionEventType.PRE_DELETE);
+
+        filterHandling = new HashMap();
+        // NOTE: Keys in this map should be ALL CAPS to play nice with the KvpParser
+        filterHandling.put("LAYER", new LayerNameFilter());
     }
 
     public RecordingTransactionListener(){
@@ -38,12 +46,9 @@ public class RecordingTransactionListener implements TransactionListener{
     }
 
     public void dataStoreChange(TransactionEvent event) throws WFSException{
-        
         if ( recordWorthyEvents.contains( event.getType() ) ) {
             myHistory.add( event );
         }
-        
-        //myHistory.add(makeDescription(event));
     }
     
     public WFSConfiguration getWFSConfig(){
@@ -64,13 +69,23 @@ public class RecordingTransactionListener implements TransactionListener{
             if ( e.getLayerName().equals( layername ) ) {
                 matches.add( e );
             }
-            
-//            SyncItem si = (SyncItem)it.next();
-//            if (si.getLayer().equals(layername)){
-//                matches.add(si);
-//            }
         }
         
+        return matches;
+    }
+
+    public List getHistoryList(Map filterParams){
+        List matches = new ArrayList();
+        Iterator it = myHistory.iterator();
+        HistoryFilter filter = getFilter(filterParams);
+
+        while (it.hasNext()){
+            TransactionEvent e = (TransactionEvent) it.next();
+            if (filter.pass(e)){
+                matches.add(e);
+            }
+        }
+
         return matches;
     }
 
@@ -111,6 +126,61 @@ public class RecordingTransactionListener implements TransactionListener{
 //        enc.encode(tx, WFS.TRANSACTION, );
 
         return item;
+    }
+
+    private HistoryFilter getFilter(Map filterParams){
+        Iterator it = filterParams.entrySet().iterator();
+        List filters = new ArrayList();
+        while (it.hasNext()){
+            Map.Entry entry = (Map.Entry)it.next();
+            HistoryFilter f = (HistoryFilter)filterHandling.get(entry.getKey());
+            if (f != null){
+                f.initialize((String)entry.getValue());
+                filters.add(f);
+            }
+        }
+        return new CompositeFilter(filters);
+    }
+
+    public static interface HistoryFilter {
+        public void initialize(String param);
+        public boolean pass(TransactionEvent evt);
+    }
+
+    public static class CompositeFilter implements HistoryFilter {
+        private List myFilters;
+
+        public CompositeFilter(List filters){
+            myFilters = filters;
+        }
+
+        public void initialize(String param){
+            // no need
+        }
+
+        public boolean pass(TransactionEvent evt){
+            Iterator it = myFilters.iterator();
+            
+            while (it.hasNext()){
+                HistoryFilter f = (HistoryFilter)it.next();
+                if (f != null && !f.pass(evt)){
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    public static class LayerNameFilter implements HistoryFilter{
+        String myLayer;
+        public void initialize(String param){
+            myLayer = param;
+        }
+
+        public boolean pass(TransactionEvent evt){
+            return myLayer.equals(evt.getLayerName().toString());
+        }
     }
 
 }

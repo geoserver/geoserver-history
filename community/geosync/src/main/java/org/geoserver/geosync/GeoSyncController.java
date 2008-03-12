@@ -144,7 +144,7 @@ public class GeoSyncController extends AbstractController {
     }
 
     public SyndFeed generateFeed(Map params, String base) throws Exception{
-        //params.remove("REQUEST");
+        params.remove("REQUEST");
         SyndFeed feed;
         if (params.isEmpty()){
             // do defaulty stuff
@@ -159,12 +159,12 @@ public class GeoSyncController extends AbstractController {
             links.add(link);
             feed.setLinks(links);
         } else {
-            feed = generateFeed((String)null);
+            feed = generateFeed(params);
         }
         return feed;
     }
 
-    public SyndFeed generateFeed(String layername) throws Exception{
+    public SyndFeed generateFeed(Map params) throws Exception{
         SyndFeed feed = new SyndFeedImpl();
         feed.setFeedType("atom_1.0");
 
@@ -172,12 +172,7 @@ public class GeoSyncController extends AbstractController {
         feed.setLink("http://geoserver.org/"); //TODO: get the local url and use that
         // feed.setDescription("Changes for feature type "); // TODO: get the feature type name and use that
 
-        List history;
-        if (layername != null){
-           history = myListener.getHistoryList(layername); 
-        } else {
-           history = myListener.getFullHistoryList();
-        };
+        List history = myListener.getHistoryList(params); 
 
         feed.setEntries(encodeHistory(history));
         return feed;
