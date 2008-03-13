@@ -2,7 +2,7 @@ For a comprehensive guide for developers, go the main documentation site:
 http://docs.codehaus.org/display/GEOSDOC/Developers+Guide
 
 ---------------------------
-
+ 
 1) Install JAVA SDK
 Download and install the Java SDK.
 
