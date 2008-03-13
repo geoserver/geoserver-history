@@ -63,15 +63,15 @@ public class AlternativesResponseStream extends ServletOutputStream {
         if (myStream != null) return myStream;
         String type = myResponse.getContentType();
 
-        if (type == null){
-            logger.warning("Mime type was not set before first write!");
-        }
+//        if (type == null){
+//            logger.warning("Mime type was not set before first write!");
+//        }
 
         if (type != null && isCompressible(type)){
-            logger.info("Compressing output for mimetype: " + type);
+//            logger.info("Compressing output for mimetype: " + type);
             myStream = new GZIPResponseStream(myResponse);
         } else {
-            logger.info("Not compressing output for mimetype: " + type);
+//            logger.info("Not compressing output for mimetype: " + type);
             myStream = myResponse.getOutputStream();
         }
 
