@@ -389,13 +389,6 @@
            <value>true</value>
          </property>
       </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.geoserver</groupId>
-          <artifactId>RESTConfig</artifactId>
-          <version>1.0</version>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
 </project>
