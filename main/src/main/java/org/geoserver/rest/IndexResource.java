@@ -32,11 +32,6 @@ class IndexResource extends MapResource {
         myRouter = r;
     }
 
-    public IndexResource(Context con, Request req, Response res, Router router) {
-        super(con, req, res);
-        myRouter = router;
-    }
-
     public Map getSupportedFormats() {
         Map m = new HashMap();
 
