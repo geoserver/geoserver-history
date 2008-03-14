@@ -6,6 +6,7 @@ package org.geoserver.wms;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -202,8 +203,20 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
 			}
 			getMap.setCrs(reqCRS);
         } else {
-        	for(int i=0; useNativeBounds && i<layers.length; i++) {        		
-        		useNativeBounds = layers[i].getFeature().getSRS().equalsIgnoreCase(reqSRS);	
+        	for(int i=0; useNativeBounds && i<layers.length; i++) {
+                if (layers[i] == null) {
+                    continue;
+                } else if (useNativeBounds = layers[i].getFeature() != null) {
+                    useNativeBounds = layers[i].getFeature().getSRS()
+                    .equalsIgnoreCase(reqSRS);
+                } else if (layers[i].getRemoteFeatureSource() != null) {
+                    // Not sure about this, but how to find the SRS?
+                    useNativeBounds = false;
+                } else if (layers[i].getCoverage() != null) {
+                    useNativeBounds = false;
+                } else {
+                    //?
+                }
         	}
         }
         		
@@ -221,15 +234,29 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         		
         		FeatureTypeInfo curFTI = layers[i].getFeature();
         		try {
-        			if(curFTI != null) {
-        				// Local feature type
-            			if(useNativeBounds) {
-            				curbbox = curFTI.getLatLongBoundingBox();
-            			} else {
-            				curbbox = curFTI.getBoundingBox();
-            			}
+        			if (curFTI != null) {
+                        // Local feature type
+                        if (useNativeBounds) {
+                                curbbox = curFTI.getLatLongBoundingBox();
+                        } else {
+                                curbbox = curFTI.getBoundingBox();
+                        }
+
+        			} else if (layers[i].getRemoteFeatureSource() != null) {
+                        // This layer was requested through a remote SLD or something similar
+                        curbbox = layers[i].getRemoteFeatureSource()
+                        .getBounds();
+
+        			} else if (layers[i].getCoverage() != null) {
+                        // This is a coverage?
+                        // The following is awfully convoluted... too many Envelope classes
+                        GeneralEnvelope genEnv = layers[i].getCoverage()
+                        .getWGS84LonLatEnvelope();
+                        double[] ll = genEnv.getLowerCorner().getCoordinates();
+                        double[] ur = genEnv.getUpperCorner().getCoordinates();
+                        curbbox = new Envelope(ll[0], ll[1], ur[0], ur[1]);
         			} else {
-        				curbbox = layers[i].getRemoteFeatureSource().getBounds();
+                        // ?
         			}	
         		} catch(IOException e) {
     				e.printStackTrace();
