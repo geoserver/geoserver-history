@@ -31,10 +31,18 @@ public class JSONFormat implements DataFormat {
 
     private MediaType myType;
 
+    /**
+     * Make a JSONFormat that sets the default MediaType (text/json) for its output
+     */
     public JSONFormat(){
         this(new MediaType("text/json"));
     }
 
+    /**
+     * Make a JSONFormat that sets a custom MediaType for its output
+     *
+     * @param type the MediaType to set
+     */
     public JSONFormat(MediaType type){
         myType = type;
     }
