@@ -181,8 +181,6 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                     collection.close(iterator);
                 }
 
-            }
-             
                 jsonWriter.endArray(); //end features
                 
                 // Coordinate Referense System, currently only if the namespace is EPSG
@@ -204,28 +202,12 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                 }
 
                 // Bounding box for featurecollection
-            if(hasGeom) {
-                ReferencedEnvelope e = null;
-                for ( int i = 0; i < resultsList.size(); i++ ) {
-                    FeatureCollection  collection = (FeatureCollection) resultsList.get(i);
-                    if ( e == null ) {
-                        e = collection.getBounds();
-                    }
-                    else {
-                        e.expandToInclude( collection.getBounds() );
-                    }
-                        
-                }
-
-                if ( e != null ) {
-                    jsonWriter.writeBoundingBox(e);    
-                }
-            }
-            	
+                if(hasGeom)
+                	jsonWriter.writeBoundingBox(collection.getBounds());
                 
                 jsonWriter.endObject(); // end featurecollection
                 outWriter.flush();
-            
+            }
         } catch (JSONException jsonException) {
             ServiceException serviceException = 
                 new ServiceException("Error: " + jsonException.getMessage());
