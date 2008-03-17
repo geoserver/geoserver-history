@@ -165,17 +165,7 @@ public class GeoSyncController extends AbstractController {
     }
 
     public SyndFeed generateFeed(Map params) throws Exception{
-        SyndFeed feed = new SyndFeedImpl();
-        feed.setFeedType("atom_1.0");
-
-        feed.setTitle("Geoserver History Feed");
-        feed.setLink("http://geoserver.org/"); //TODO: get the local url and use that
-        // feed.setDescription("Changes for feature type "); // TODO: get the feature type name and use that
-
-        List history = myListener.getHistoryList(params); 
-
-        feed.setEntries(encodeHistory(history));
-        return feed;
+        return myListener.getCurrentFeed();
     }
 
     public List encodeHistory(List history) throws Exception{
