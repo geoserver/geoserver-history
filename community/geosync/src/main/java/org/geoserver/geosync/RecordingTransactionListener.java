@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.FileWriter;
+import java.io.StringReader;
 
 import org.geoserver.wfs.TransactionEventType;
 import org.geoserver.wfs.TransactionListener;
@@ -25,6 +26,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.ConfigurationException;
 
 import org.geotools.xml.Encoder;
+import org.geotools.xml.Parser;
 
 import org.apache.xml.serialize.OutputFormat;
 
@@ -60,21 +62,20 @@ public class RecordingTransactionListener implements TransactionListener{
     private WFSConfiguration xmlConfiguration;
     static final DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
 
-    private static Map filterHandling;
+    private Map filterHandling;
 
     static {
         recordWorthyEvents = new TreeSet();
         recordWorthyEvents.add(TransactionEventType.PRE_INSERT);
         recordWorthyEvents.add(TransactionEventType.PRE_UPDATE);
         recordWorthyEvents.add(TransactionEventType.PRE_DELETE);
-
-        filterHandling = new HashMap();
-        // NOTE: Keys in this map should be ALL CAPS to play nice with the KvpParser
-        filterHandling.put("LAYER", new LayerNameFilter());
     }
 
     public RecordingTransactionListener(){
         myHistory = new ArrayList();
+        filterHandling = new HashMap();
+        // NOTE: Keys in this map should be ALL CAPS to play nice with the KvpParser
+        filterHandling.put("LAYER", new LayerNameFilter());
     }
 
     public void dataStoreChange(TransactionEvent event) throws WFSException{
@@ -82,7 +83,8 @@ public class RecordingTransactionListener implements TransactionListener{
             try {
                 SyndFeed feed = getCurrentFeed();
                 List l = feed.getEntries();
-                l.add(eventToEntry(event));
+                SyndEntry entry = eventToEntry(event);
+                l.add(entry);
                 feed.setEntries(l);
                 saveFeed(feed);
             } catch (Exception e){
@@ -111,7 +113,7 @@ public class RecordingTransactionListener implements TransactionListener{
         try{ 
             SyndFeedInput input = new SyndFeedInput();
             return input.build(new XmlReader(getFile()));
-        } catch (Exception e){
+       } catch (Exception e){
             System.out.println("Feed requested but no stored data exists; generating template.");
             SyndFeed feed = new SyndFeedImpl();
             feed.setFeedType("atom_1.0");
@@ -123,12 +125,25 @@ public class RecordingTransactionListener implements TransactionListener{
         }
     }
 
+    public SyndFeed filterFeed(Map params) throws Exception{
+        SyndFeed feed = getCurrentFeed();
+        HistoryFilter filter = getFilter(params);
+        List entries = feed.getEntries();
+        for (int i = 0; i < entries.size(); i++){
+            SyndEntry entry = (SyndEntry)entries.get(i);
+            if (!filter.pass(entry)){
+                entries.remove(i);
+                i--;
+            }
+        }
+        return feed;
+    }
+
     public void saveFeed(SyndFeed feed) throws Exception{
         File f = getFile();
         PrintWriter writer = new PrintWriter(new FileWriter(f));
         SyndFeedOutput out = new SyndFeedOutput();
         out.output(feed, writer);
-        out.output(feed, new PrintWriter(System.out));
     }
 
     public SyndEntry eventToEntry(TransactionEvent evt) throws Exception{
@@ -200,21 +215,6 @@ public class RecordingTransactionListener implements TransactionListener{
         return matches;
     }
 
-    public List getHistoryList(Map filterParams){
-        List matches = new ArrayList();
-        Iterator it = myHistory.iterator();
-        HistoryFilter filter = getFilter(filterParams);
-
-        while (it.hasNext()){
-            TransactionEvent e = (TransactionEvent) it.next();
-            if (filter.pass(e)){
-                matches.add(e);
-            }
-        }
-
-        return matches;
-    }
-
     public List getFullHistoryList(){
         return myHistory;
     }
@@ -233,12 +233,12 @@ public class RecordingTransactionListener implements TransactionListener{
         return new CompositeFilter(filters);
     }
 
-    public static interface HistoryFilter {
+    public interface HistoryFilter {
         public void initialize(String param);
-        public boolean pass(TransactionEvent evt);
+        public boolean pass(SyndEntry entry);
     }
 
-    public static class CompositeFilter implements HistoryFilter {
+    public class CompositeFilter implements HistoryFilter {
         private List myFilters;
 
         public CompositeFilter(List filters){
@@ -249,12 +249,12 @@ public class RecordingTransactionListener implements TransactionListener{
             // no need
         }
 
-        public boolean pass(TransactionEvent evt){
+        public boolean pass(SyndEntry entry){
             Iterator it = myFilters.iterator();
             
             while (it.hasNext()){
                 HistoryFilter f = (HistoryFilter)it.next();
-                if (f != null && !f.pass(evt)){
+                if (f != null && !f.pass(entry)){
                     return false;
                 }
             }
@@ -263,14 +263,25 @@ public class RecordingTransactionListener implements TransactionListener{
         }
     }
 
-    public static class LayerNameFilter implements HistoryFilter{
+    public class LayerNameFilter implements HistoryFilter{
         String myLayer;
+
         public void initialize(String param){
             myLayer = param;
         }
 
-        public boolean pass(TransactionEvent evt){
-            return myLayer.equals(evt.getLayerName().toString());
+        public boolean pass(SyndEntry entry){
+            try{
+                String xmlBlob = entry.getDescription().getValue();
+                Parser parser = new Parser(xmlConfiguration);
+                TransactionType tx = (TransactionType) parser.parse(new StringReader(xmlBlob));
+                return myLayer.equals(null);// evt.getLayerName().toString());
+            } catch (Exception e){
+                e.printStackTrace();
+                // pass since we didn't understand, I guess
+                // TODO: revisit and decide whether unparsable stuff should stay in the feed
+                return true; 
+            }
         }
     }
 
