@@ -181,33 +181,51 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                     collection.close(iterator);
                 }
 
-                jsonWriter.endArray(); //end features
+            }
+             
+            jsonWriter.endArray(); //end features
                 
-                // Coordinate Referense System, currently only if the namespace is EPSG
-                if(crs != null) {
-                  	NamedIdentifier namedIdent = (NamedIdentifier) crs.getIdentifiers().iterator().next();
-                	String csStr = namedIdent.getCodeSpace().toUpperCase();
-                	
-                	if(csStr.equals("EPSG")) {
-                		jsonWriter.key("crs");
-                		jsonWriter.object();
-                		jsonWriter.key("type").value(csStr);
-                			jsonWriter.key("properties");
-                			jsonWriter.object();
-                				jsonWriter.key("code");
-                				jsonWriter.value(namedIdent.getCode());
-                			jsonWriter.endObject(); // end properties
-                		jsonWriter.endObject(); // end crs
-                	}
+            // Coordinate Referense System, currently only if the namespace is EPSG
+            if(crs != null) {
+              	NamedIdentifier namedIdent = (NamedIdentifier) crs.getIdentifiers().iterator().next();
+            	String csStr = namedIdent.getCodeSpace().toUpperCase();
+            	
+            	if(csStr.equals("EPSG")) {
+            		jsonWriter.key("crs");
+            		jsonWriter.object();
+            		jsonWriter.key("type").value(csStr);
+            			jsonWriter.key("properties");
+            			jsonWriter.object();
+            				jsonWriter.key("code");
+            				jsonWriter.value(namedIdent.getCode());
+            			jsonWriter.endObject(); // end properties
+            		jsonWriter.endObject(); // end crs
+            	}
+            }
+
+            // Bounding box for featurecollection
+            if(hasGeom) {
+                ReferencedEnvelope e = null;
+                for ( int i = 0; i < resultsList.size(); i++ ) {
+                    FeatureCollection  collection = (FeatureCollection) resultsList.get(i);
+                    if ( e == null ) {
+                        e = collection.getBounds();
+                    }
+                    else {
+                        e.expandToInclude( collection.getBounds() );
+                    }
+                        
                 }
 
-                // Bounding box for featurecollection
-                if(hasGeom)
-                	jsonWriter.writeBoundingBox(collection.getBounds());
-                
-                jsonWriter.endObject(); // end featurecollection
-                outWriter.flush();
+                if ( e != null ) {
+                    jsonWriter.writeBoundingBox(e);    
+                }
             }
+            	
+            
+            jsonWriter.endObject(); // end featurecollection
+            outWriter.flush();
+            
         } catch (JSONException jsonException) {
             ServiceException serviceException = 
                 new ServiceException("Error: " + jsonException.getMessage());
