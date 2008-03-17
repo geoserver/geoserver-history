@@ -165,7 +165,7 @@ public class GeoSyncController extends AbstractController {
     }
 
     public SyndFeed generateFeed(Map params) throws Exception{
-        return myListener.getCurrentFeed();
+        return myListener.filterFeed(params);
     }
 
     public List encodeHistory(List history) throws Exception{
