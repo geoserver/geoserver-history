@@ -28,6 +28,8 @@ import org.vfny.geoserver.global.ConfigurationException;
 
 import org.geotools.xml.Encoder;
 import org.geotools.xml.Parser;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 
 import org.apache.xml.serialize.OutputFormat;
 
@@ -38,6 +40,7 @@ import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.UpdateElementType;
 
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
@@ -54,10 +57,9 @@ import com.sun.syndication.propono.atom.common.AtomService;
 import com.sun.syndication.propono.atom.common.Workspace;
 import com.sun.syndication.propono.atom.common.Collection;
 import com.sun.syndication.feed.module.georss.GeoRSSModule;
-import com.sun.syndication.feed.module.georss.W3CGeoModuleImpl;
-import com.sun.syndication.feed.module.georss.geometries.PositionList;
-import com.sun.syndication.feed.module.georss.geometries.LinearRing;
-import com.sun.syndication.feed.module.georss.geometries.Polygon;
+import com.sun.syndication.feed.module.georss.SimpleModuleImpl;
+import com.sun.syndication.feed.module.georss.geometries.Position;
+import com.sun.syndication.feed.module.georss.geometries.Envelope;
 
 public class RecordingTransactionListener implements TransactionListener{
     private static Set recordWorthyEvents;
@@ -159,21 +161,26 @@ public class RecordingTransactionListener implements TransactionListener{
             description.setType("text/xml");
             description.setValue(encodeTransaction( evt ));
 
-            // GeoRSSModule geoInfo = new W3CGeoModuleImpl();
-            // Polygon bounds = new Polygon();
-            // PositionList exterior = new PositionList();
-            // double minLat = 0, minLong = 0, maxLat = 0, maxLong = 0;
-            // exterior.add(minLat, minLong);
-            // exterior.add(minLat, maxLong);
-            // exterior.add(maxLat, maxLong);
-            // exterior.add(maxLat, minLong);
-            // bounds.setExterior(new LinearRing(exterior));
-            // geoInfo.setGeometry(bounds);
-            // entry.getModules().add(geoInfo);
-            // TODO: use real data for Geo output
+            // attach the content to the entry
             List contents = new ArrayList();
             contents.add(description);
             entry.setContents(contents);
+
+            // Add the georss info
+            ReferencedEnvelope refenv = evt.getAffectedFeatures().getBounds();
+
+            GeoRSSModule geoInfo = new SimpleModuleImpl();
+            double minLat = refenv.getMinimum(0),
+                   minLong = refenv.getMinimum(1),
+                   maxLat = refenv.getMaximum(0),
+                   maxLong = refenv.getMaximum(1);
+            Envelope bounds = new Envelope(minLat, minLong, maxLat, maxLong);
+            geoInfo.setGeometry(bounds);
+            List modules = entry.getModules();
+            modules.add(geoInfo);
+            entry.setModules(modules);
+            System.out.println("Entry with georss: " + entry);
+
             return entry;
     }
     
