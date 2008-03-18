@@ -154,8 +154,8 @@ public class RecordingTransactionListener implements TransactionListener{
 
     public SyndEntry eventToEntry(TransactionEvent evt) throws Exception{
         SyndEntry entry = new SyndEntryImpl();
-        entry.setTitle("Feature A");
-        entry.setLink("http://geoserver.org/a");
+        entry.setTitle("Changes to " + evt.getLayerName().getLocalPart());
+        // entry.setLink("http://geoserver.org/a");
         entry.setPublishedDate(new Date());
 
         //encode the content as the wfs transcation
