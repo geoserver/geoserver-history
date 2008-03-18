@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.io.StringReader;
+import java.awt.geom.Rectangle2D;
 
 import org.geoserver.wfs.TransactionEventType;
 import org.geoserver.wfs.TransactionListener;
@@ -57,6 +58,7 @@ import com.sun.syndication.propono.atom.common.AtomService;
 import com.sun.syndication.propono.atom.common.Workspace;
 import com.sun.syndication.propono.atom.common.Collection;
 import com.sun.syndication.feed.module.georss.GeoRSSModule;
+import com.sun.syndication.feed.module.georss.GeoRSSUtils;
 import com.sun.syndication.feed.module.georss.SimpleModuleImpl;
 import com.sun.syndication.feed.module.georss.geometries.Position;
 import com.sun.syndication.feed.module.georss.geometries.Envelope;
@@ -81,10 +83,11 @@ public class RecordingTransactionListener implements TransactionListener{
         // NOTE: Keys in this map should be ALL CAPS to play nice with the KvpParser
         filterHandling.put("LAYER", new LayerNameFilter());
         filterHandling.put("DATE", new DateFilter());
+        filterHandling.put("BBOX", new BBoxFilter());
     }
 
     public void dataStoreChange(TransactionEvent event) throws WFSException{
-        if ( recordWorthyEvents.contains( event.getType() ) ) {
+        if ( recordWorthyEvents.contains( event.getType() ) && !event.getAffectedFeatures().isEmpty() ) {
             try {
                 SyndFeed feed = getCurrentFeed();
                 List l = feed.getEntries();
@@ -150,38 +153,37 @@ public class RecordingTransactionListener implements TransactionListener{
     }
 
     public SyndEntry eventToEntry(TransactionEvent evt) throws Exception{
-            
-            SyndEntry entry = new SyndEntryImpl();
-            entry.setTitle("Feature A");
-            entry.setLink("http://geoserver.org/a");
-            entry.setPublishedDate(new Date());
-            
-            //encode the content as the wfs transcation
-            SyndContent description = new SyndContentImpl();
-            description.setType("text/xml");
-            description.setValue(encodeTransaction( evt ));
+        SyndEntry entry = new SyndEntryImpl();
+        entry.setTitle("Feature A");
+        entry.setLink("http://geoserver.org/a");
+        entry.setPublishedDate(new Date());
 
-            // attach the content to the entry
-            List contents = new ArrayList();
-            contents.add(description);
-            entry.setContents(contents);
+        //encode the content as the wfs transcation
+        SyndContent description = new SyndContentImpl();
+        description.setType("text/xml");
+        description.setValue(encodeTransaction( evt ));
 
-            // Add the georss info
-            ReferencedEnvelope refenv = evt.getAffectedFeatures().getBounds();
+        // attach the content to the entry
+        List contents = new ArrayList();
+        contents.add(description);
+        entry.setContents(contents);
 
-            GeoRSSModule geoInfo = new SimpleModuleImpl();
-            double minLat = refenv.getMinimum(0),
-                   minLong = refenv.getMinimum(1),
-                   maxLat = refenv.getMaximum(0),
-                   maxLong = refenv.getMaximum(1);
-            Envelope bounds = new Envelope(minLat, minLong, maxLat, maxLong);
-            geoInfo.setGeometry(bounds);
-            List modules = entry.getModules();
-            modules.add(geoInfo);
-            entry.setModules(modules);
-            System.out.println("Entry with georss: " + entry);
+        // Add the georss info
+        ReferencedEnvelope refenv = evt.getAffectedFeatures().getBounds();
 
-            return entry;
+        GeoRSSModule geoInfo = new SimpleModuleImpl();
+        double minLat = refenv.getMinimum(0),
+               minLong = refenv.getMinimum(1),
+               maxLat = refenv.getMaximum(0),
+               maxLong = refenv.getMaximum(1);
+        Envelope bounds = new Envelope(minLat, minLong, maxLat, maxLong);
+        geoInfo.setGeometry(bounds);
+        List modules = entry.getModules();
+        modules.add(geoInfo);
+        entry.setModules(modules);
+        System.out.println("Entry with georss: " + entry);
+
+        return entry;
     }
     
     String encodeTransaction( TransactionEvent e ) throws IOException {
@@ -287,6 +289,37 @@ public class RecordingTransactionListener implements TransactionListener{
             if (myDate != null){
                 return myDate.before(entry.getPublishedDate());
             } else return true;
+        }
+    }
+
+    public class BBoxFilter implements HistoryFilter{
+        Rectangle2D myBBox;
+
+        public void initialize(String param){
+            try{
+                String[] parts = param.split(",");
+                double minLat = Double.valueOf(parts[0]);
+                double minLon = Double.valueOf(parts[1]);
+                double maxLat = Double.valueOf(parts[2]);
+                double maxLon = Double.valueOf(parts[3]);
+                myBBox = new Rectangle2D.Double(minLat, minLon, maxLat - minLat, maxLon - minLon);
+            } catch (Exception e){
+                myBBox = null;
+            }
+        }
+
+        public boolean pass(SyndEntry entry){
+            GeoRSSModule geo = GeoRSSUtils.getGeoRSS(entry);
+            if (geo != null && myBBox != null && geo.getGeometry() instanceof Envelope){
+                Envelope env = (Envelope) geo.getGeometry();
+                Rectangle2D rect = new Rectangle2D.Double(env.getMinLatitude(),
+                        env.getMinLongitude(),
+                        env.getMaxLatitude() - env.getMinLatitude(),
+                        env.getMaxLongitude() - env.getMinLongitude());
+                System.out.println("Testing " + myBBox + " against " + rect);
+                return myBBox.intersects(rect);
+            }
+            return true;
         }
     }
 
