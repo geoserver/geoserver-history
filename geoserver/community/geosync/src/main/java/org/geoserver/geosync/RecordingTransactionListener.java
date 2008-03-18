@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Date;
 import java.io.File;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,6 +37,8 @@ import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.UpdateElementType;
 
+import org.opengis.feature.simple.SimpleFeature;
+
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -60,7 +63,6 @@ public class RecordingTransactionListener implements TransactionListener{
     private static Set recordWorthyEvents;
     private List myHistory;
     private WFSConfiguration xmlConfiguration;
-    static final DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
 
     private Map filterHandling;
 
@@ -88,7 +90,6 @@ public class RecordingTransactionListener implements TransactionListener{
                 feed.setEntries(l);
                 saveFeed(feed);
             } catch (Exception e){
-                System.out.println("Failure while trying to update history.");
                 e.printStackTrace();
                 // LOG ERROR HERE!!
             }
@@ -105,7 +106,6 @@ public class RecordingTransactionListener implements TransactionListener{
 
     public File getFile() throws ConfigurationException{
         File f = GeoserverDataDirectory.findCreateConfigDir("geosync");
-        System.out.println("Created " + f);
         return new File(f, "history.xml");
     }
 
@@ -114,7 +114,7 @@ public class RecordingTransactionListener implements TransactionListener{
             SyndFeedInput input = new SyndFeedInput();
             return input.build(new XmlReader(getFile()));
        } catch (Exception e){
-            System.out.println("Feed requested but no stored data exists; generating template.");
+            // System.out.println("Feed requested but no stored data exists; generating template.");
             SyndFeed feed = new SyndFeedImpl();
             feed.setFeedType("atom_1.0");
             feed.setTitle("Geoserver History Feed");
@@ -151,7 +151,7 @@ public class RecordingTransactionListener implements TransactionListener{
             SyndEntry entry = new SyndEntryImpl();
             entry.setTitle("Feature A");
             entry.setLink("http://geoserver.org/a");
-            entry.setPublishedDate(DATE_PARSER.parse("2004-06-08"));
+            entry.setPublishedDate(new Date());
             
             //encode the content as the wfs transcation
             SyndContent description = new SyndContentImpl();
@@ -272,10 +272,34 @@ public class RecordingTransactionListener implements TransactionListener{
 
         public boolean pass(SyndEntry entry){
             try{
-                String xmlBlob = entry.getDescription().getValue();
+                String xmlBlob = ((SyndContent)entry.getContents().get(0)).getValue();
                 Parser parser = new Parser(xmlConfiguration);
                 TransactionType tx = (TransactionType) parser.parse(new StringReader(xmlBlob));
-                return myLayer.equals(null);// evt.getLayerName().toString());
+
+                Set qnames = new TreeSet();
+
+                Iterator it = tx.getInsert().iterator();
+                while (it.hasNext()){
+                    InsertElementType iet = (InsertElementType)it.next();
+                    Iterator iter = iet.getFeature().iterator();
+                    while (iter.hasNext()){
+                        qnames.add(((SimpleFeature)iter.next()).getFeatureType().getTypeName());
+                    }
+                }
+
+                it = tx.getDelete().iterator();
+                while (it.hasNext()){
+                    DeleteElementType det = (DeleteElementType)it.next();
+                    qnames.add(det.getTypeName().getLocalPart());
+                }
+
+                it = tx.getUpdate().iterator();
+                while (it.hasNext()){
+                    UpdateElementType uet = (UpdateElementType)it.next();
+                    qnames.add(uet.getTypeName().getLocalPart());
+                }
+
+                return qnames.contains(myLayer);// evt.getLayerName().toString());
             } catch (Exception e){
                 e.printStackTrace();
                 // pass since we didn't understand, I guess
