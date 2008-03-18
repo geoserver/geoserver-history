@@ -278,7 +278,7 @@ public class WMS extends Service {
      * @return false
      */
     public boolean supportsRemoteWFS() {
-        return false; //djb: hopefully this will change soon.
+        return true; 
     }
 
     /**
