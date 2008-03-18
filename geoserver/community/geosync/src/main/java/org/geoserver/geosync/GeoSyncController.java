@@ -89,7 +89,6 @@ public class GeoSyncController extends AbstractController {
     public ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp){
         resp.setContentType("text/xml");
         Map kvPairs = KvpRequestReader.parseKvpSet(req.getQueryString());
-        System.out.println("Found kv pairs: " + kvPairs);
         String requestType = (String)kvPairs.get("REQUEST");
         String base = RequestUtils.proxifiedBaseURL(RequestUtils.baseURL(req), myGeoserver.getProxyBaseUrl());
 
