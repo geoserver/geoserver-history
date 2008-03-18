@@ -78,6 +78,7 @@ public class RecordingTransactionListener implements TransactionListener{
         filterHandling = new HashMap();
         // NOTE: Keys in this map should be ALL CAPS to play nice with the KvpParser
         filterHandling.put("LAYER", new LayerNameFilter());
+        filterHandling.put("DATE", new DateFilter());
     }
 
     public void dataStoreChange(TransactionEvent event) throws WFSException{
@@ -260,6 +261,25 @@ public class RecordingTransactionListener implements TransactionListener{
             }
 
             return true;
+        }
+    }
+
+    public class DateFilter implements HistoryFilter{
+        Date myDate;
+        final DateFormat DATEPARSER = new SimpleDateFormat("yyyy-MM-dd");
+
+        public void initialize(String param){
+            try{
+                myDate = DATEPARSER.parse(param);
+            } catch (Exception e){
+                myDate = null;
+            }
+        }
+
+        public boolean pass(SyndEntry entry){
+            if (myDate != null){
+                return myDate.before(entry.getPublishedDate());
+            } else return true;
         }
     }
 
