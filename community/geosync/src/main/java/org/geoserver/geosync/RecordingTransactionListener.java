@@ -181,7 +181,6 @@ public class RecordingTransactionListener implements TransactionListener{
         List modules = entry.getModules();
         modules.add(geoInfo);
         entry.setModules(modules);
-        System.out.println("Entry with georss: " + entry);
 
         return entry;
     }
@@ -316,7 +315,6 @@ public class RecordingTransactionListener implements TransactionListener{
                         env.getMinLongitude(),
                         env.getMaxLatitude() - env.getMinLatitude(),
                         env.getMaxLongitude() - env.getMinLongitude());
-                System.out.println("Testing " + myBBox + " against " + rect);
                 return myBBox.intersects(rect);
             }
             return true;
