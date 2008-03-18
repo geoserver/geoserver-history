@@ -34,7 +34,7 @@
         <dependency>
             <groupId>rome</groupId>
             <artifactId>georss</artifactId>
-            <version>0.9.8</version>
+            <version>0.1</version>
         </dependency>
         <dependency>
             <groupId>org.geoserver</groupId>
