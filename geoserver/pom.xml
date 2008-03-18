@@ -43,6 +43,12 @@
 
  <repositories>
   <repository>
+   <id>opengeo</id>
+   <name>OpenGeo Maven Repository</name>
+   <url>http://repo.opengeo.org/</url>
+   <layout>default</layout>
+  </repository>
+  <repository>
    <id>geotools</id>
    <name>geotools</name>
    <url>http://maven.geotools.fr/repository/</url>
