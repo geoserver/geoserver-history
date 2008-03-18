@@ -16,13 +16,16 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.NamedIdentifier;
+import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -59,7 +62,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         for (Iterator f = featureCollection.getFeature().iterator(); f
         .hasNext();) {
             FeatureCollection fc = (FeatureCollection) f.next();
-            sb.append(fc.getSchema().getTypeName() + "_");
+            sb.append(fc.getSchema().getName().getLocalPart() + "_");
         }
         sb.setLength(sb.length() - 1);
         return "inline; filename=" + sb.toString() + ".txt";
@@ -102,32 +105,30 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                 FeatureIterator iterator = collection.features();
 
                 try {
-                    FeatureType fType;
-                    AttributeType[] types;
+                    SimpleFeatureType fType;
+                    List<AttributeDescriptor> types;
 
                     while (iterator.hasNext()) {
-                        Feature feature = iterator.next();
+                        SimpleFeature feature = (SimpleFeature) iterator.next();
                         jsonWriter.object();
                         jsonWriter.key("type").value("Feature");
                         jsonWriter.key("id").value(feature.getID());
 
                         fType = feature.getFeatureType();
-                        types = fType.getAttributeTypes();
+                        types = fType.getAttributes();
 
-                        AttributeType defaultGeomType = fType
-                        .getDefaultGeometry();
+                        GeometryDescriptor defaultGeomType = fType.getDefaultGeometry();
 
                         if (crs == null && defaultGeomType != null)
-                            crs = fType.getDefaultGeometry()
-                            .getCoordinateSystem();
+                            crs = fType.getDefaultGeometry().getCRS();
 
                         jsonWriter.key("geometry");
-                        Geometry aGeom = feature.getDefaultGeometry();
+                        Geometry aGeom = (Geometry) feature.getDefaultGeometry();
 
                         if (aGeom == null) {
                             // In case the default geometry is not set, we will
                             // just use the first geometry we find
-                            for (int j = 0; j < types.length && aGeom == null; j++) {
+                            for (int j = 0; j < types.size() && aGeom == null; j++) {
                                 Object value = feature.getAttribute(j);
                                 if (value != null && value instanceof Geometry) {
                                     aGeom = (Geometry) value;
@@ -148,8 +149,9 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                         jsonWriter.key("properties");
                         jsonWriter.object();
 
-                        for (int j = 0; j < types.length; j++) {
+                        for (int j = 0; j < types.size(); j++) {
                             Object value = feature.getAttribute(j);
+                            AttributeDescriptor ad = types.get(j);
 
                             if (value != null) {
                                 if (value instanceof Geometry) {
@@ -160,25 +162,25 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                                     // geometry here if it's not the default. 
                                     // If it's the default that you already
                                     // printed above, so you don't need it here.
-                                    if (types[j].equals(defaultGeomType)) {
+                                    if (ad.equals(defaultGeomType)) {
                                         // Do nothing, we wrote it above
                                         // jsonWriter.value("geometry_name");
                                     } else {
-                                        jsonWriter.key(types[j].getLocalName());
+                                        jsonWriter.key(ad.getLocalName());
                                         jsonWriter.writeGeom((Geometry) value);
                                     }
                                 } else {
-                                    jsonWriter.key(types[j].getLocalName());
+                                    jsonWriter.key(ad.getLocalName());
                                     jsonWriter.value(value);
                                 }
 
                             } else {
-                                jsonWriter.key(types[j].getLocalName());
+                                jsonWriter.key(ad.getLocalName());
                                 jsonWriter.value(null);
                             }
                         }
                         // Bounding box for feature in properties
-                        ReferencedEnvelope refenv = feature.getBounds();
+                        ReferencedEnvelope refenv = new ReferencedEnvelope(feature.getBounds());
                         if (featureBounding && !refenv.isEmpty())
                             jsonWriter.writeBoundingBox(refenv);
 
