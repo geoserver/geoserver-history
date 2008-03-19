@@ -1227,11 +1227,18 @@ SCHEMA:
             return found;
         }
 
+        //do an unprefixed check as well... if we dont find a prefixed 
+        // match and only one unprexied feature type matches, bingo!
+        List<FeatureTypeInfo> unprefixed = new ArrayList();
         for (Iterator i = featureTypes.values().iterator(); i.hasNext();) {
             FeatureTypeInfo fto = (FeatureTypeInfo) i.next();
 
             if ((name != null) && name.equals(fto.getName())) {
                 found = fto;
+            }
+            
+            if ( fto.getTypeName().equals( name ) ) {
+                unprefixed.add( fto );
             }
         }
 
@@ -1239,6 +1246,10 @@ SCHEMA:
             return found;
         }
 
+        if ( unprefixed.size() == 1 ){
+            return unprefixed.get( 0 );
+        }
+        
         throw new NoSuchElementException("Could not locate FeatureTypeConfig '" + name + "'");
     }
 
@@ -1958,8 +1969,33 @@ SCHEMA:
         // vector layers are namespace prefixed, coverages are not
         if (layerName.indexOf(":") == -1) {
             final String prefixedName = defaultNameSpace.getPrefix() + ":" + layerName;
-
-            return (Integer) layerNames.get(prefixedName);
+            
+            layerType = (Integer) layerNames.get(prefixedName); 
+            if ( layerType != null ) {
+                return layerType;
+            }
+            
+            //ok one last try, check other namespces
+            List<Integer> possible = new ArrayList<Integer>();
+            for ( int i = 0; i < getNameSpaces().length; i++ ) {
+                NameSpaceInfo ns = getNameSpaces()[i];
+                if ( ns.isDefault() ) {
+                    continue;
+                }
+                
+                Integer possibleLayerType = 
+                    (Integer) layerNames.get( ns.getPrefix() + ":" + layerName );
+                if ( possibleLayerType != null ) {
+                    possible.add( possibleLayerType );
+                }
+            }
+            
+            //only one match, cool, return it
+            if ( possible.size() == 1 ) {
+                return possible.get( 1 );
+            }
+            
+            return null;
         } else {
             final String strippedName = layerName.substring(layerName.indexOf(":") + 1,
                     layerName.length());
