@@ -272,6 +272,10 @@
    <servlet-name>dispatcher</servlet-name>
    <url-pattern>/temp/*</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/history/*</url-pattern>
+  </servlet-mapping>
       
   <mime-mapping>
    <extension>xsl</extension>
