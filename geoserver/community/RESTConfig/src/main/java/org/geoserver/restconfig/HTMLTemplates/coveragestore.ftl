@@ -5,6 +5,6 @@
 <li> URL: ${URL} </li>
 <li> Description: ${Description} </li>
 <li> Type: ${Type} </li>
-<li> <a href="${page.currentURL}/coverages">Coverages</a> </li>
+<li> <a href="${page.currentURL}/layers">Coverages</a> </li>
 </ul>
 <#include "tail.ftl">
