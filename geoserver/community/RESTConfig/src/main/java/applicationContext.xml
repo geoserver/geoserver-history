@@ -43,6 +43,8 @@
           <key><value>/folders</value></key>
           <ref bean="folderListFinder"/>
         </entry>
+
+<!--    Leave out everything but the data for now 
         <entry>
           <key><value>/styles/{style}.{type}</value></key>
           <ref bean="styleFinder"/>
@@ -86,7 +88,7 @@
         <entry>
           <key><value>/dummy.{type}</value></key>
           <ref bean="dummyRestlet"/>
-        </entry>
+        </entry> -->
   </map>
 </property>
 </bean>
