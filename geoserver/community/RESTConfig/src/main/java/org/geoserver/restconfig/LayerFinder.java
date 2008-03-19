@@ -11,6 +11,10 @@ import org.restlet.resource.Resource;
 
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
+
+import java.util.Map;
 
 public class LayerFinder extends Finder {
 
@@ -35,16 +39,20 @@ public class LayerFinder extends Finder {
 
     public Resource findTarget(Request request, Response response){
         String folder = (String) request.getAttributes().get("folder");
-        Resource r;
+        Resource r = null;
+        Map folders = FolderListFinder.getVirtualFolderMap(getDataConfig());
+        Object o = folders.get(folder);
 
-        if (getDataConfig().getDataFormatIds().contains(folder)){
-            r = new CoverageResource(getData(), getDataConfig());
-        } else {
+        if (o instanceof Map){
+            r = new VirtualLayerResource(getData(), getDataConfig());
+        } else if (o instanceof DataStoreConfig) {
             r = new FeatureTypeResource(getData(), getDataConfig());
+        } else if (o instanceof CoverageStoreConfig) {
+            r = new CoverageResource(getData(), getDataConfig());
         }
 
-        r.init(getContext(), request, response);
-
+        if (r != null) r.init(getContext(), request, response);
+        
         return r;
     }
 }

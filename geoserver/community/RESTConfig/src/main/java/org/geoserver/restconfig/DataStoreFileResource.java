@@ -62,9 +62,15 @@ public class DataStoreFileResource extends Resource{
      */
     private Map myFormats; 
 
-    public DataStoreFileResource() {
+    public DataStoreFileResource(){
         myFormats = new HashMap();
         myFormats.put("shp", "Shapefile");
+    }
+
+    public DataStoreFileResource(Data data, DataConfig dataConfig) {
+        this();
+        setData(data);
+        setDataConfig(dataConfig);
     }
 
     public void setDataConfig(DataConfig dc){

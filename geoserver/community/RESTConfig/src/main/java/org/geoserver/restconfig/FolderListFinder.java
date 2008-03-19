@@ -13,6 +13,7 @@ import org.restlet.resource.Resource;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.DataFormat;
@@ -33,6 +34,16 @@ import java.util.Collections;
 public class FolderListFinder extends Finder {
 
     private DataConfig myDataConfig;
+    private static Set FILE_DS_TYPES;
+    private static Set FILE_CS_TYPES;
+
+    static {
+        FILE_DS_TYPES = new HashSet();
+        FILE_DS_TYPES.add("Shapefile");
+
+        FILE_CS_TYPES = new HashSet();
+        FILE_CS_TYPES.add("GeoTIFF"); // TODO: Flesh out these lists properly.  Can we do it programmatically instead of hardcoding?
+    }
 
     public void setDataConfig(DataConfig dc){
         myDataConfig = dc;
@@ -58,9 +69,6 @@ public class FolderListFinder extends Finder {
             myPostFormats.put(MediaType.TEXT_XML, new AutoXMLFormat());
             myPostFormats.put(MediaType.APPLICATION_JSON, new JSONFormat());
             myPostFormats.put(null, myPostFormats.get(MediaType.TEXT_XML));
-
-            myFileStoreTypes = new HashSet();
-            myFileStoreTypes.add("Shapefile");
         }
 
         public Map getSupportedFormats() {
@@ -80,26 +88,36 @@ public class FolderListFinder extends Finder {
         public Map getMap() {
             Map m = new HashMap();
             List l = new ArrayList();
-            l.addAll(getDataConfig().getDataFormatIds());
-
-            Iterator it = getDataConfig().getDataStores().values().iterator();
-            // Map folders = new HashMap(); // keep track of which files are in which folders (map folder->set(files))
-            while(it.hasNext()){
-                DataStoreConfig dsc = (DataStoreConfig)it.next();
-//                if(myFileStoreTypes.contains(dsc.getFactory().getDisplayName()) && dsc.getConnectionParams().get("url") != null){
+            Map folders = getVirtualFolderMap(getDataConfig());
+//            l.addAll(getDataConfig().getDataFormatIds());
+//
+//            Iterator it = getDataConfig().getDataStores().values().iterator();
+//
+//            Map folders = new HashMap(); 
+//            while(it.hasNext()){
+//                DataStoreConfig dsc = (DataStoreConfig)it.next();
+//                if(myFileStoreTypes.contains(dsc.getFactory().getDisplayName()) 
+//                        && dsc.getConnectionParams().get("url") != null) {
 //                    String value = dsc.getConnectionParams().get("url").toString();
+//                    int lastSlash = value.lastIndexOf("/");
+//                    value = (lastSlash == -1) ? value : value.substring(0, lastSlash);
+//                    lastSlash = value.lastIndexOf("/");
+//                    value = value.substring(lastSlash + 1);
 //                    String parent = findParentPath(value);
 //                    Set files = (Set)folders.get(parent);
 //                    files = (files == null ? new HashSet() : files);
 //                    files.add(dsc);
 //                    folders.put(parent, files);
 //                } else {
-                    l.add(dsc.getId());
+//                    l.add(dsc.getId());
 //                }              
-            }
-
-            //LOG.info("File layers:" + folders);
-
+//            }
+//
+//            LOG.info("File layers:" + folders);
+//
+//            l.addAll(folders.keySet());
+            
+            l.addAll(folders.keySet());
             Collections.sort(l);
             m.put("Layers", l);
             
@@ -119,16 +137,47 @@ public class FolderListFinder extends Finder {
             Map m = format.readRepresentation(getRequest().getEntity());
             LOG.info("Read data as: " + m);
         }
+    }
 
-        private String findParentPath(String path){
-            int lastSlashIndex = path.lastIndexOf("/");
-            if (lastSlashIndex == -1){
-                // TODO: no slashes? this seems weird
-                return path;
+    private static String findParentPath(String value){
+        int lastSlash = value.lastIndexOf("/");
+        value = (lastSlash == -1) ? value : value.substring(0, lastSlash);
+        lastSlash = value.lastIndexOf("/");
+        value = value.substring(lastSlash + 1);
+        return value;
+    }
+
+    public static Map getVirtualFolderMap(DataConfig dc){
+        Map folders = new HashMap();
+        Iterator it =  dc.getDataStores().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            DataStoreConfig dsc = (DataStoreConfig)entry.getValue();
+            if (FILE_DS_TYPES.contains(dsc.getFactory().getDisplayName())
+                    && dsc.getConnectionParams().get("url") != null) {
+                String value = dsc.getConnectionParams().get("url").toString();
+                value = findParentPath(value);
+                Map files = (Map)folders.get(value);
+                files = (files == null ? new HashMap() : files);
+                files.put(dsc.getId(), dsc);
+                folders.put(value, files);
             } else {
-                return path.substring(0, lastSlashIndex);
+                folders.put(entry.getKey(), entry.getValue());
             }
-            
         }
+
+        it = dc.getDataFormats().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            CoverageStoreConfig csc = (CoverageStoreConfig)entry.getValue();
+            // if (FILE_CS_TYPES.contains(csc.getFactory().getName());
+            String path = findParentPath(csc.getUrl());
+            Map files = (Map)folders.get(path);
+            files = (files == null ? new HashMap() : files);
+            files.put(csc.getId(), csc);
+            folders.put(path, files);
+        }
+
+        return folders;
     }
 }

@@ -68,8 +68,13 @@ public class CoverageStoreResource extends MapResource {
 
     public Map getMap(){
     	String storeName = (String) getRequest().getAttributes().get("folder");
+        return getMap(myDataConfig.getDataFormat(storeName));
+    
+    }
+
+    public static Map getMap(CoverageStoreConfig csc){
         Map m = new HashMap();
-        CoverageStoreConfig csc = myDataConfig.getDataFormat(storeName);
+
         if (csc == null){
         	return null;
         }

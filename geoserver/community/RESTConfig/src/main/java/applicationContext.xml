@@ -31,10 +31,10 @@
           <key><value>/folders/{folder}</value></key>
           <ref bean="folderConfigFinder"/>
         </entry>
-        <!-- <entry>
+        <entry>
           <key><value>/folders/{folder}/file.{type}</value></key>
           <ref bean="folderFileFinder"/>
-        </entry> -->
+        </entry>
         <entry>
           <key><value>/folders.{type}</value></key>
           <ref bean="folderListFinder"/>
@@ -100,6 +100,10 @@
 <bean id="layerListFinder" class="org.geoserver.restconfig.LayerListFinder">
     <property name="dataConfig"><ref bean="dataConfig"/></property>
     <property name="data"><ref bean="data"/></property>
+</bean>
+<bean id="folderFileFinder" class="org.geoserver.restconfig.FolderFileFinder">
+    <!-- <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property> -->
 </bean>
 <bean id="folderConfigFinder" class="org.geoserver.restconfig.FolderConfigFinder">
     <property name="dataConfig"><ref bean="dataConfig"/></property>
