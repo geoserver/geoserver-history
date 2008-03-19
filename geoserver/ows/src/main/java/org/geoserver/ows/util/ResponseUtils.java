@@ -210,6 +210,32 @@ public class ResponseUtils {
     }
     
     /**
+     * Strips off the first compontent of a path.
+     * <p>
+     * Examples: 
+     * <ul>
+     *   <li>foo/bar -> bar
+     *   <li>/foo/bar -> bar
+     *   <li>/foo/bar/foobar -> bar/foobar
+     *   <li>/foo -> ""
+     * </ul>
+     * </p>
+     */
+    public static String stripBeginningPath(String path ) {
+        int i = 0;
+        if  (path.startsWith("/")) {
+            i = 1;
+        }
+        
+        int index = path.indexOf('/',i);
+        if ( index > -1 ) {
+            return path.substring( index + 1 );
+        }
+        
+        return "";
+    }
+    
+    /**
      * Ensures a path is absolute (starting with '/').
      * 
      * @param path The path.
