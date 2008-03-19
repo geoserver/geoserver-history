@@ -25,8 +25,9 @@
 	<modules>
 		<!-- module>hello</module>
 		<module>preferences</module>
-		<module>community-schemas</module> -->
+		<module>community-schemas</module>
+		<module>kml-ows5</module-->
 		<module>RESTConfig</module>
-		<module>kml-ows5</module>
+		<module>geosync</module>
 	</modules>
 </project>
