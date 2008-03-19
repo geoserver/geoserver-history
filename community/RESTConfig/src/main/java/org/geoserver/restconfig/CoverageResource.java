@@ -175,7 +175,7 @@ public class CoverageResource extends MapResource {
         String qualified = coverageStore + ":" + coverageName;
         CoverageConfig cc = (CoverageConfig) myDC.getCoverages().get(qualified);
 
-        return getCoverageConfigMap(cc);
+        return getMap(cc);
     }
 
     public boolean allowPut() {
@@ -245,7 +245,7 @@ public class CoverageResource extends MapResource {
         return genv;
     }
 
-    private Map getCoverageConfigMap(CoverageConfig cc) {
+    public static Map getMap(CoverageConfig cc) {
         Map m = new HashMap();
         m.put("WMSPath", cc.getWmsPath());
         m.put("CRS", cc.getCrs().getIdentifiers().toArray()[0].toString());

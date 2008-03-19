@@ -91,44 +91,45 @@ public class DataStoreResource extends MapResource {
 
     public Map getMap() {
         try{
-            DataStoreConfig myDSC = findMyDataStore();
-
-            Map map = new HashMap();
-            map.put("Enabled", Boolean.toString(myDSC.isEnabled()));
-            map.put("Namespace", myDSC.getNameSpaceId());
-            map.put("Description", (myDSC.getAbstract() == null ? "" : myDSC.getAbstract()));
-            map.put("DataStoreType", myDSC.getFactory().getDisplayName());
-
-            DataStoreFactorySpi factory = myDSC.getFactory();
-
-            List storeSpecificParameters = new ArrayList();
-            Param[] parameters = factory.getParametersInfo();
-            for (int i = 0; i < parameters.length; i++){
-                Param p = parameters[i];
-                if (!("namespace".equals(p.key))){
-                    Object value = myDSC.getConnectionParams().get(p.key);
-                    Map entry = new HashMap();
-                    if (value == null) {
-                        entry.put("value", "");
-                    } else if (value instanceof String){
-                        entry.put("value", value);
-                    } else {
-                        entry.put("value", p.text(value));
-                    }
-                    String key = p.key.substring(p.key.lastIndexOf(':') + 1);
-                    entry.put("name", key);
-                    entry.put("type", p.type.getName());
-                    entry.put("required", Boolean.toString(p.required));
-                    storeSpecificParameters.add(entry);
-                }
-            }
-
-            map.put("Params", storeSpecificParameters);
-
-            return map;
+            return getMap(findMyDataStore());
         } catch (Exception e){
             return null;
         }
+    }
+
+    public static Map getMap(DataStoreConfig myDSC){
+        Map map = new HashMap();
+        map.put("Enabled", Boolean.toString(myDSC.isEnabled()));
+        map.put("Namespace", myDSC.getNameSpaceId());
+        map.put("Description", (myDSC.getAbstract() == null ? "" : myDSC.getAbstract()));
+        map.put("DataStoreType", myDSC.getFactory().getDisplayName());
+
+        DataStoreFactorySpi factory = myDSC.getFactory();
+
+        List storeSpecificParameters = new ArrayList();
+        Param[] parameters = factory.getParametersInfo();
+        for (int i = 0; i < parameters.length; i++){
+            Param p = parameters[i];
+            if (!("namespace".equals(p.key))){
+                Object value = myDSC.getConnectionParams().get(p.key);
+                Map entry = new HashMap();
+                if (value == null) {
+                    entry.put("value", "");
+                } else if (value instanceof String){
+                    entry.put("value", value);
+                } else {
+                    entry.put("value", p.text(value));
+                }
+                String key = p.key.substring(p.key.lastIndexOf(':') + 1);
+                entry.put("name", key);
+                entry.put("type", p.type.getName());
+                entry.put("required", Boolean.toString(p.required));
+                storeSpecificParameters.add(entry);
+            }
+        }
+
+        map.put("Params", storeSpecificParameters);
+        return map;
     }
 
     public boolean allowPut(){
