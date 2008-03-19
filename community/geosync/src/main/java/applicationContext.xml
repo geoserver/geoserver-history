@@ -10,6 +10,9 @@
    <property name="geoserver">
        <ref bean="geoServer"/>
    </property>
+   <property name="catalog">
+       <ref bean="catalog"/>
+   </property>
    <property name="xmlConfiguration">
         <ref bean="wfsXmlConfiguration-1.1"/>
    </property>

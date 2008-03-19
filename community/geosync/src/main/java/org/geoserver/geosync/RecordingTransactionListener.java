@@ -2,6 +2,7 @@ package org.geoserver.geosync;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ import java.io.FileWriter;
 import java.io.StringReader;
 import java.awt.geom.Rectangle2D;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.geoserver.wfs.TransactionEventType;
 import org.geoserver.wfs.TransactionListener;
 import org.geoserver.wfs.WFSException;
@@ -29,6 +32,7 @@ import org.vfny.geoserver.global.ConfigurationException;
 
 import org.geotools.xml.Encoder;
 import org.geotools.xml.Parser;
+import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
@@ -57,6 +61,7 @@ import com.sun.syndication.io.SyndFeedOutput;
 import com.sun.syndication.propono.atom.common.AtomService;
 import com.sun.syndication.propono.atom.common.Workspace;
 import com.sun.syndication.propono.atom.common.Collection;
+import com.sun.syndication.feed.module.georss.GMLModuleImpl;
 import com.sun.syndication.feed.module.georss.GeoRSSModule;
 import com.sun.syndication.feed.module.georss.GeoRSSUtils;
 import com.sun.syndication.feed.module.georss.SimpleModuleImpl;
@@ -68,8 +73,6 @@ public class RecordingTransactionListener implements TransactionListener{
     private List myHistory;
     private WFSConfiguration xmlConfiguration;
 
-    private Map filterHandling;
-
     static {
         recordWorthyEvents = new TreeSet();
         recordWorthyEvents.add(TransactionEventType.PRE_INSERT);
@@ -79,22 +82,18 @@ public class RecordingTransactionListener implements TransactionListener{
 
     public RecordingTransactionListener(){
         myHistory = new ArrayList();
-        filterHandling = new HashMap();
-        // NOTE: Keys in this map should be ALL CAPS to play nice with the KvpParser
-        filterHandling.put("LAYER", new LayerNameFilter());
-        filterHandling.put("DATE", new DateFilter());
-        filterHandling.put("BBOX", new BBoxFilter());
     }
 
     public void dataStoreChange(TransactionEvent event) throws WFSException{
         if ( recordWorthyEvents.contains( event.getType() ) && !event.getAffectedFeatures().isEmpty() ) {
             try {
-                SyndFeed feed = getCurrentFeed();
+                String layer = event.getLayerName().getLocalPart();
+                SyndFeed feed = readFeed(layer);
                 List l = feed.getEntries();
                 SyndEntry entry = eventToEntry(event);
                 l.add(entry);
                 feed.setEntries(l);
-                saveFeed(feed);
+                saveFeed(layer,feed);
             } catch (Exception e){
                 e.printStackTrace();
                 // LOG ERROR HERE!!
@@ -110,29 +109,36 @@ public class RecordingTransactionListener implements TransactionListener{
         xmlConfiguration = wfsc;
     }
 
-    public File getFile() throws ConfigurationException{
+    public File getFile( String layer ) throws ConfigurationException{
         File f = GeoserverDataDirectory.findCreateConfigDir("geosync");
-        return new File(f, "history.xml");
+        return new File(f, layer + "-history.xml");
     }
 
-    public SyndFeed getCurrentFeed() throws Exception{
-        try{ 
-            SyndFeedInput input = new SyndFeedInput();
-            return input.build(new XmlReader(getFile()));
-       } catch (Exception e){
-            // System.out.println("Feed requested but no stored data exists; generating template.");
-            SyndFeed feed = new SyndFeedImpl();
-            feed.setFeedType("atom_1.0");
-            feed.setTitle("Geoserver History Feed");
-            SyndLink link = new SyndLinkImpl();
-            link.setHref("http://geoserver.org/");
-            feed.setLink(link);
-            return feed;
+    public SyndFeed readFeed(String layer) throws Exception{
+        //create an empty feed
+        SyndFeed feed;
+        
+        File file = getFile(layer);
+        if ( file.exists() ) {
+            //read the feed from disk filtering as need be
+            synchronized ( this ) {
+                SyndFeedInput input = new SyndFeedInput();
+                feed = input.build(new XmlReader(getFile(layer)));    
+            }
         }
+        else {
+            //create a new empty feed
+            feed = new SyndFeedImpl();
+            feed.setFeedType("atom_1.0");
+            feed.setTitle(layer + " changes");
+        }
+        
+        return feed;
     }
 
-    public SyndFeed filterFeed(Map params) throws Exception{
-        SyndFeed feed = getCurrentFeed();
+    public SyndFeed filterFeed(String layer, Map params, String baseUrl,HttpServletRequest req)  throws Exception{
+        
+        SyndFeed feed = readFeed(layer);
         HistoryFilter filter = getFilter(params);
         List entries = feed.getEntries();
         for (int i = 0; i < entries.size(); i++){
@@ -142,14 +148,22 @@ public class RecordingTransactionListener implements TransactionListener{
                 i--;
             }
         }
+        
+        //set the link element
+        SyndLink link = new SyndLinkImpl();
+        link.setHref(req.getRequestURL().toString());
+        feed.setLink(link);
+        
         return feed;
     }
 
-    public void saveFeed(SyndFeed feed) throws Exception{
-        File f = getFile();
-        PrintWriter writer = new PrintWriter(new FileWriter(f));
-        SyndFeedOutput out = new SyndFeedOutput();
-        out.output(feed, writer);
+    public void saveFeed(String layer, SyndFeed feed) throws Exception{
+        File f = getFile(layer);
+        synchronized ( this ) {
+            PrintWriter writer = new PrintWriter(new FileWriter(f));
+            SyndFeedOutput out = new SyndFeedOutput();
+            out.output(feed, writer);    
+        }
     }
 
     public SyndEntry eventToEntry(TransactionEvent evt) throws Exception{
@@ -171,7 +185,7 @@ public class RecordingTransactionListener implements TransactionListener{
         // Add the georss info
         ReferencedEnvelope refenv = evt.getAffectedFeatures().getBounds();
 
-        GeoRSSModule geoInfo = new SimpleModuleImpl();
+        GeoRSSModule geoInfo = new GMLModuleImpl();
         double minLat = refenv.getMinimum(0),
                minLong = refenv.getMinimum(1),
                maxLat = refenv.getMaximum(0),
@@ -231,13 +245,36 @@ public class RecordingTransactionListener implements TransactionListener{
     private HistoryFilter getFilter(Map filterParams){
         Iterator it = filterParams.entrySet().iterator();
         List filters = new ArrayList();
+        
+        Date start, end = null;
         while (it.hasNext()){
             Map.Entry entry = (Map.Entry)it.next();
-            HistoryFilter f = (HistoryFilter)filterHandling.get(entry.getKey());
-            if (f != null){
-                f.initialize((String)entry.getValue());
-                filters.add(f);
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            
+            if ( "bbox".equalsIgnoreCase( key ) ) {
+                BBoxFilter f = new BBoxFilter();
+                f.initialize( value );
+                
+                filters.add( f );
             }
+            else if ( "startIndex".equalsIgnoreCase( key ) ) {
+                int index = Integer.parseInt( (String) entry.getValue() );
+                filters.add( new IndexFilter( index ) );
+            }
+            else if ( "dtstart".equalsIgnoreCase( key ) ) {
+                DateFilter filter = new DateFilter( DateFilter.BEFORE );
+                filter.initialize( value );
+                
+                filters.add( filter );
+            }
+            else if ( "dtend".equalsIgnoreCase( key) ) {
+                DateFilter filter = new DateFilter( DateFilter.AFTER );
+                filter.initialize( value );
+                
+                filters.add( filter );
+            }
+            
         }
         return new CompositeFilter(filters);
     }
@@ -272,50 +309,76 @@ public class RecordingTransactionListener implements TransactionListener{
         }
     }
 
-    public class DateFilter implements HistoryFilter{
-        Date myDate;
-        final DateFormat DATEPARSER = new SimpleDateFormat("yyyy-MM-dd");
+    public class IndexFilter implements HistoryFilter {
+        int index;
+        int counter = 0;
+        
+        public IndexFilter( int index ) {
+            this.index = index;
+        }
+       
+        public void initialize(String param) {
+            
+        }
 
+        public boolean pass(SyndEntry entry) {
+            return ++counter >= index;
+        }
+    }
+    
+    public class DateFilter implements HistoryFilter{
+        
+        public static final int BEFORE = 0;
+        public static final int AFTER = 1;
+        
+        Date myDate;
+        int rel;
+        
+        public DateFilter( int rel ) {
+            this.rel = rel;
+        }
+        
         public void initialize(String param){
-            try{
-                myDate = DATEPARSER.parse(param);
-            } catch (Exception e){
-                myDate = null;
+            try {
+                myDate = ((Calendar) new XSDateTimeBinding().parse(null, param )).getTime();
+            } catch (Exception e) {
+                throw new RuntimeException( e );
             }
         }
 
         public boolean pass(SyndEntry entry){
-            if (myDate != null){
-                return myDate.before(entry.getPublishedDate());
-            } else return true;
+            switch ( rel ) {
+            case BEFORE:
+                return myDate.before( entry.getUpdatedDate() );
+            case AFTER:
+                return myDate.after( entry.getUpdatedDate() );
+            }
+            
+            throw new RuntimeException();
         }
     }
 
     public class BBoxFilter implements HistoryFilter{
-        Rectangle2D myBBox;
+        //Rectangle2D myBBox;
+        com.vividsolutions.jts.geom.Envelope myBBox;
 
         public void initialize(String param){
-            try{
-                String[] parts = param.split(",");
-                double minLat = Double.valueOf(parts[0]);
-                double minLon = Double.valueOf(parts[1]);
-                double maxLat = Double.valueOf(parts[2]);
-                double maxLon = Double.valueOf(parts[3]);
-                myBBox = new Rectangle2D.Double(minLat, minLon, maxLat - minLat, maxLon - minLon);
-            } catch (Exception e){
-                myBBox = null;
-            }
+            String[] parts = param.split(",");
+            double minLat = Double.valueOf(parts[0]);
+            double minLon = Double.valueOf(parts[1]);
+            double maxLat = Double.valueOf(parts[2]);
+            double maxLon = Double.valueOf(parts[3]);
+            myBBox = new com.vividsolutions.jts.geom.Envelope(minLon, maxLon, minLat,maxLat);
         }
 
         public boolean pass(SyndEntry entry){
             GeoRSSModule geo = GeoRSSUtils.getGeoRSS(entry);
             if (geo != null && myBBox != null && geo.getGeometry() instanceof Envelope){
                 Envelope env = (Envelope) geo.getGeometry();
-                Rectangle2D rect = new Rectangle2D.Double(env.getMinLatitude(),
-                        env.getMinLongitude(),
-                        env.getMaxLatitude() - env.getMinLatitude(),
-                        env.getMaxLongitude() - env.getMinLongitude());
-                return myBBox.intersects(rect);
+                com.vividsolutions.jts.geom.Envelope box = 
+                    new com.vividsolutions.jts.geom.Envelope( env.getMinLongitude(), env.getMaxLongitude(), 
+                        env.getMinLatitude(), env.getMaxLatitude() );
+                return myBBox.intersects( box );
             }
             return true;
         }

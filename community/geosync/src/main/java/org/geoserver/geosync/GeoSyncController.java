@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.io.ByteArrayOutputStream;
@@ -34,6 +35,7 @@ import com.sun.syndication.io.SyndFeedOutput;
 import com.sun.syndication.propono.atom.common.AtomService;
 import com.sun.syndication.propono.atom.common.Workspace;
 import com.sun.syndication.propono.atom.common.Collection;
+import com.sun.syndication.feed.atom.Link;
 import com.sun.syndication.feed.module.georss.GeoRSSModule;
 import com.sun.syndication.feed.module.georss.W3CGeoModuleImpl;
 import com.sun.syndication.feed.module.georss.geometries.PositionList;
@@ -45,8 +47,10 @@ import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.xml.Encoder;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 
 import freemarker.template.Template;
@@ -61,6 +65,7 @@ public class GeoSyncController extends AbstractController {
     static final DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
 
     private GeoServer myGeoserver;
+    private Data catalog;
 
     private RecordingTransactionListener myListener;
 
@@ -81,93 +86,195 @@ public class GeoSyncController extends AbstractController {
     public GeoServer getGeoserver(){
         return myGeoserver;
     }
+
+    public void setCatalog(Data catalog) {
+        this.catalog = catalog;
+    }
     
     public void setXmlConfiguration(WFSConfiguration xmlConfiguration) {
         this.xmlConfiguration = xmlConfiguration;
     }
 
     public ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp){
-        resp.setContentType("text/xml");
-        Map kvPairs = KvpRequestReader.parseKvpSet(req.getQueryString());
-        String requestType = (String)kvPairs.get("REQUEST");
-        String base = RequestUtils.proxifiedBaseURL(RequestUtils.baseURL(req), myGeoserver.getProxyBaseUrl());
-
-        try{
-            if ("GETCAPABILITIES".equalsIgnoreCase(requestType)){
-                AtomService service = new AtomService();
-
-                Workspace workspace = new Workspace(
-                        "GeoSync Workspace", "application/atom+xml;type=entry");
-                service.addWorkspace(workspace);
-
-                Collection entryCol = new Collection(
-                        "GeoSync Update Feed", "text",  base + "/geosync/request=feed");
-
-                List accepts = new ArrayList();
-                accepts.add("application/atom+xml;type=entry");
-                entryCol.setAccepts(accepts);        
-
-                workspace.addCollection( entryCol );
-                                                                                        
-                resp.setContentType("application/atomsvc+xml");
-
-                //TODO: Categories
-                Document d = service.serviceToDocument();
-                XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-                outputter.output(d, resp.getOutputStream());
-            } else if ("FEED".equalsIgnoreCase(requestType)){
-                SyndFeed feed = generateFeed(kvPairs, base);
-                SyndFeedOutput out = new SyndFeedOutput();
-                PrintWriter writer = resp.getWriter();
-                out.output(feed, writer);
-            } else if ("DESCRIBESEARCH".equalsIgnoreCase(requestType)){
+        String path = req.getPathInfo();
+        
+        //strip off query string
+        if ( path != null && path.indexOf( '?' ) > -1 ) {
+            path = path.substring(0, path.indexOf('?') );
+        }
+        
+        //is this a requst for the serach template?
+        boolean search = false;
+        if ( path != null && path.endsWith( "/opensearch.xml" ) ) {
+            path = path.substring( 0, path.length() - "/opensearch.xml".length() );
+            search = true;
+        }
+        
+        //figure out the layer of the request 
+        String layer = null;
+        if ( path != null && !"".equals( path ) ) {
+            //requsting particular layer
+            layer = path.substring( 1 );
+            try {
+                catalog.getFeatureTypeInfo( layer );    
+            }
+            catch( NoSuchElementException e ) {
+                layer = null;
+            }
+        }
+        if ( layer == null ) {
+            resp.setStatus( 404 );
+            return null;
+        }
+       
+        try {
+            String baseUrl = RequestUtils.proxifiedBaseURL(
+                RequestUtils.baseURL(req), myGeoserver.getProxyBaseUrl());
+            baseUrl = ResponseUtils.appendPath( baseUrl, "history/"+ layer );
+            
+            //generate the content
+            resp.setContentType("text/xml");
+            
+            if ( search ) {
+                //send back the opensearch template
+                //write out the opensearch template
                 Configuration cfg = new Configuration();
                 cfg.setClassForTemplateLoading(getClass(), "");
+                
                 Map ctx = new HashMap();
-                ctx.put("GEOSERVER_URL", base);
                 ctx.put("CONTACT_ADDRESS", myGeoserver.getContactEmail());
+                ctx.put( "LAYER", layer );
+                ctx.put( "BASE_URL", baseUrl );
+                
                 Template t = cfg.getTemplate("opensearchdescription.ftl");
                 PrintWriter writer = resp.getWriter();
                 t.process(ctx, writer);
-            } else {
-                resp.setStatus(400);
-                PrintWriter writer = resp.getWriter();
-                writer.println("Bad request");
+                writer.flush();
             }
+            else {
+                Map kvp = KvpRequestReader.parseKvpSet( req.getQueryString() );
+                SyndFeed feed = null;
+                
+                if ( kvp.isEmpty() ) {
+                     //send back a feed with a link to the opensearch template
+                    feed = new SyndFeedImpl();
+                    feed.setFeedType("atom_1.0");
+                    SyndLink link = new SyndLinkImpl();
+                    link.setRel( "search" );
+                    link.setHref( ResponseUtils.appendPath(baseUrl, "opensearch.xml"));
+                    link.setType( "application/opensearchdescription+xml");
+                    feed.getLinks().add( link );
+                }
+                else {
+                    //send back the actual feed
+                    feed = myListener.filterFeed(layer,kvp,baseUrl,req);
+                }
+                
+                //write out the feed
+                SyndFeedOutput out = new SyndFeedOutput();
+                out.output(feed, resp.getWriter());
+                resp.getWriter().flush();
+            }
+           
         } catch (Exception e){
-            resp.setStatus(500);
-            e.printStackTrace();
+          resp.setStatus(500);
+          e.printStackTrace();
         }
+            
+            
+//            if ( search ) {
+//               
+//            }
+//            else {
+//                //write out the actual content
+//                
+//                SyndFeed feed = generateFeed(kvp, baseUrl);
+//                SyndFeedOutput out = new SyndFeedOutput();
+//                PrintWriter writer = resp.getWriter();
+//                out.output(feed, writer);
+//            }
+//        }
+//        catch( Exception e ) {
+//            resp.setStatus(500);
+//            e.printStackTrace();
+//        }
+//        
+//        Map kvPairs = KvpRequestReader.parseKvpSet(req.getQueryString());
+//        String requestType = (String)kvPairs.get("REQUEST");
+//        String base = RequestUtils.proxifiedBaseURL(RequestUtils.baseURL(req), myGeoserver.getProxyBaseUrl());
+//
+//        try{
+//            if ("GETCAPABILITIES".equalsIgnoreCase(requestType)){
+//                AtomService service = new AtomService();
+//
+//                Workspace workspace = new Workspace(
+//                        "GeoSync Workspace", "application/atom+xml;type=entry");
+//                service.addWorkspace(workspace);
+//
+//                Collection entryCol = new Collection(
+//                        "GeoSync Update Feed", "text",  base + "/geosync/request=feed");
+//
+//                List accepts = new ArrayList();
+//                accepts.add("application/atom+xml;type=entry");
+//                entryCol.setAccepts(accepts);        
+//
+//                workspace.addCollection( entryCol );
+//                                                                                        
+//                resp.setContentType("application/atomsvc+xml");
+//
+//                //TODO: Categories
+//                Document d = service.serviceToDocument();
+//                XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+//                outputter.output(d, resp.getOutputStream());
+//            } else if ("FEED".equalsIgnoreCase(requestType)){
+//                SyndFeed feed = generateFeed(kvPairs, base);
+//                SyndFeedOutput out = new SyndFeedOutput();
+//                PrintWriter writer = resp.getWriter();
+//                out.output(feed, writer);
+//            } else if ("DESCRIBESEARCH".equalsIgnoreCase(requestType)){
+//                Configuration cfg = new Configuration();
+//                cfg.setClassForTemplateLoading(getClass(), "");
+//                Map ctx = new HashMap();
+//                ctx.put("GEOSERVER_URL", base);
+//                ctx.put("CONTACT_ADDRESS", myGeoserver.getContactEmail());
+//                Template t = cfg.getTemplate("opensearchdescription.ftl");
+//                PrintWriter writer = resp.getWriter();
+//                t.process(ctx, writer);
+//            } else {
+//                resp.setStatus(400);
+//                PrintWriter writer = resp.getWriter();
+//                writer.println("Bad request");
+//            }
+//        } catch (Exception e){
+//            resp.setStatus(500);
+//            e.printStackTrace();
+//        }
 
         return null;
     }
 
-    public SyndFeed generateFeed(Map params, String base) throws Exception{
-        params.remove("REQUEST");
-        SyndFeed feed;
-        if (params.isEmpty()){
-            // do defaulty stuff
-            feed = new SyndFeedImpl();
-            feed.setFeedType("atom_1.0");
-            
-            SyndLink link = new SyndLinkImpl();
-            link.setHref(base + "/history?request=DescribeSearch");
-            link.setRel("search");
-            link.setType("application/opensearchdescription+xml");
-            List links = feed.getLinks();
-            links.add(link);
-            feed.setLinks(links);
-        } else {
-            feed = generateFeed(params);
-        }
-        return feed;
-    }
+//    public SyndFeed generateFeed(Map params, String base) throws Exception{
+//        params.remove("REQUEST");
+//        SyndFeed feed;
+//        if (params.isEmpty()){
+//            // do defaulty stuff
+//            feed = new SyndFeedImpl();
+//            feed.setFeedType("atom_1.0");
+//            
+//            SyndLink link = new SyndLinkImpl();
+//            link.setHref(base + "/history?request=DescribeSearch");
+//            link.setRel("search");
+//            link.setType("application/opensearchdescription+xml");
+//            List links = feed.getLinks();
+//            links.add(link);
+//            feed.setLinks(links);
+//        } else {
+//            feed = generateFeed(params);
+//        }
+//        return feed;
+//    }
 
-    public SyndFeed generateFeed(Map params) throws Exception{
-        return myListener.filterFeed(params);
-    }
-
-    public List encodeHistory(List history) throws Exception{
+   public List encodeHistory(List history) throws Exception{
         List entries = new ArrayList();
 
         Iterator it = history.iterator();
