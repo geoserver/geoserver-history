@@ -13,6 +13,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.referencing.operation.projection.ProjectionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -186,53 +187,51 @@ public class DefaultWebMapService implements WebMapService,
      * specified by the user. If both height and width are specified by the
      * user, the automatically determined bounding box will be adjusted to fit
      * inside these bounds.
+     * 
+     * General idea
+     * 1) Figure out whether SRS has been specified, fall back to EPSG:4326
+     * 2) Determine whether all requested layers use the same SRS, 
+     *   - if so, try to do bounding box calculations in native coordinates
+     * 3) Aggregate the bounding boxes (in EPSG:4326 or native)
+     * 4a) If bounding box has been specified, adjust height of image to match 
+     * 4b) If bounding box has not been specified, but height has, adjust bounding box
      */
-    private void autoSetBoundsAndSize() {
+    protected void autoSetBoundsAndSize() {
         // Get the layers
-        MapLayerInfo[] layers = getMap.getLayers();
-
-        // Determine the SRS first
+        MapLayerInfo[] layers = getMap.getLayers();        
+        
+        /** 1) Check what SRS has been requested */
         String reqSRS = getMap.getSRS();
         CoordinateReferenceSystem reqCRS = getMap.getCrs();
+        
+        // Keep track of whether we can use native all the way
         boolean useNativeBounds = true;
-        if (getMap.getSRS() == null || reqSRS.equalsIgnoreCase("EPSG:4326")) {
+        
+        if (reqSRS == null || reqSRS.equalsIgnoreCase(DefaultWebMapService.SRS)) {
+            reqSRS = DefaultWebMapService.SRS;
+            forceSRS(reqSRS);
             useNativeBounds = false;
-            reqSRS = "EPSG:4326";
-            getMap.setSRS(reqSRS);
-            try {
-                reqCRS = CRS.decode(reqSRS);
-            } catch (NoSuchAuthorityCodeException e) {
-                e.printStackTrace();
-            } catch (FactoryException e) {
-                e.printStackTrace();
-            }
-            getMap.setCrs(reqCRS);
+            
         } else {
+            /** 2) Compare requested SRS */
             for (int i = 0; useNativeBounds && i < layers.length; i++) {
-                if (layers[i] == null) {
-                    continue;
-                } else if (useNativeBounds = layers[i].getFeature() != null) {
-                    useNativeBounds = layers[i].getFeature().getSRS()
-                            .equalsIgnoreCase(reqSRS);
-                } else if (layers[i].getRemoteFeatureSource() != null) {
-                    // Not sure about this, but how to find the SRS?
-                    useNativeBounds = false;
-                } else if (layers[i].getCoverage() != null) {
-                    useNativeBounds = false;
+                if (layers[i] != null && layers[i].getFeature() != null) {
+                    useNativeBounds = 
+                        layers[i].getFeature().getSRS().equalsIgnoreCase(reqSRS);
                 } else {
-                    // ?
+                    useNativeBounds = false;
                 }
             }
         }
-
+        
         // Ready to determine the bounds based on the layers, if not specified
-        Envelope layerbbox = null;
+        Envelope aggregateBbox = getMap.getBbox();
+        boolean specifiedBbox = true;
 
-        boolean specifiedBbox = (getMap.getBbox() != null);
+        // If bbox is not specified by request
+        if (aggregateBbox == null) {
+            specifiedBbox = false;
 
-        if (specifiedBbox) {
-            layerbbox = getMap.getBbox();
-        } else {
             // Get the bounding box from the layers
             for (int i = 0; i < layers.length; i++) {
                 Envelope curbbox = null;
@@ -241,7 +240,7 @@ public class DefaultWebMapService implements WebMapService,
                 try {
                     if (curFTI != null) {
                         // Local feature type
-                        if (useNativeBounds) {
+                        if (! useNativeBounds) {
                             curbbox = curFTI.getLatLongBoundingBox();
                         } else {
                             curbbox = curFTI.getBoundingBox();
@@ -255,8 +254,7 @@ public class DefaultWebMapService implements WebMapService,
 
                     } else if (layers[i].getCoverage() != null) {
                         // This is a coverage?
-                        // The following is awfully convoluted... too many
-                        // Envelope classes
+                        // We have too many Envelope classes...
                         GeneralEnvelope genEnv = layers[i].getCoverage()
                                 .getWGS84LonLatEnvelope();
                         double[] ll = genEnv.getLowerCorner().getCoordinates();
@@ -264,23 +262,36 @@ public class DefaultWebMapService implements WebMapService,
                         curbbox = new Envelope(ll[0], ll[1], ur[0], ur[1]);
                     } else {
                         // ?
+                        throw new RuntimeException("Unknown feature type in DefaultWebMapServer");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                if (i == 0) {
-                    layerbbox = new Envelope(curbbox);
+                if (aggregateBbox != null) {
+                    aggregateBbox.expandToInclude(curbbox);
                 } else {
-                    layerbbox.expandToInclude(curbbox);
+                    aggregateBbox = curbbox;
                 }
             }
-            // Reproject if we have to
-            if (!useNativeBounds) {
+   
+            ReferencedEnvelope ref = null;
+            // Reproject back to requested SRS if we have to
+            if (!useNativeBounds && ! reqSRS.equalsIgnoreCase(SRS)) {
                 try {
-                    ReferencedEnvelope ref = new ReferencedEnvelope(layerbbox,
+                   ref = new ReferencedEnvelope(aggregateBbox,
                             CRS.decode("EPSG:4326"));
-                    layerbbox = ref.transform(reqCRS, true);
+                    aggregateBbox = ref.transform(reqCRS, true);
+                } catch (ProjectionException pe) {
+                    ref.expandBy( -1 * ref.getWidth() / 50, -1 * ref.getHeight() / 50);
+                    try {
+                        aggregateBbox = ref.transform(reqCRS, true);
+                    } catch (FactoryException e) {
+                        e.printStackTrace();
+                    } catch (TransformException e) {
+                        e.printStackTrace();
+                    }
+                    // And again...
                 } catch (NoSuchAuthorityCodeException e) {
                     e.printStackTrace();
                 } catch (TransformException e) {
@@ -292,24 +303,24 @@ public class DefaultWebMapService implements WebMapService,
         }
 
         // Just in case
-        if (layerbbox == null)
-            layerbbox = BBOX;
-
-        double bbheight = layerbbox.getHeight();
-        double bbwidth = layerbbox.getWidth();
-        double bbratio = bbwidth / bbheight;
-
-        if (!specifiedBbox) {
-            // Zoom out 4%, accomodates for reprojection etc
-            layerbbox.expandBy(layerbbox.getWidth() / 50,
-                    layerbbox.getHeight() / 50);
+        if (aggregateBbox == null) {
+            forceSRS(DefaultWebMapService.SRS);
+            aggregateBbox = DefaultWebMapService.BBOX;   
         }
+
+        // Start the processing of adjust either the bounding box
+        // or the pixel height / width
+        
+        double bbheight = aggregateBbox.getHeight();
+        double bbwidth = aggregateBbox.getWidth();
+        double bbratio = bbwidth / bbheight;
 
         double mheight = getMap.getHeight();
         double mwidth = getMap.getWidth();
-
+        
         if (mheight > 0.5 && mwidth > 0.5 && specifiedBbox) {
-            // This person really doesnt want our help
+            // This person really doesnt want our help,
+            // we'll warp it any way they like it...
         } else {
             if (mheight > 0.5 && mwidth > 0.5) {
                 // Fully specified, need to adjust bbox
@@ -318,12 +329,15 @@ public class DefaultWebMapService implements WebMapService,
                 if (bbratio > mratio) {
                     // Too wide, need to increase height of bb
                     double diff = ((bbwidth / mratio) - bbheight) / 2;
-                    layerbbox.expandBy(0, diff);
+                    aggregateBbox.expandBy(0, diff);
                 } else {
                     // Too tall, need to increase width of bb
                     double diff = ((bbheight * mratio) - bbwidth) / 2;
-                    layerbbox.expandBy(diff, 0);
+                    aggregateBbox.expandBy(diff, 0);
                 }
+                
+                adjustBounds(reqSRS, aggregateBbox);
+                
             } else if (mheight > 0.5) {
                 mwidth = bbratio * mheight;
             } else {
@@ -337,9 +351,49 @@ public class DefaultWebMapService implements WebMapService,
             }
 
             // Actually set the bounding box and size of image
-            getMap.setBbox(layerbbox);
+            getMap.setBbox(aggregateBbox);
             getMap.setWidth((int) mwidth);
             getMap.setHeight((int) mheight);
         }
+    }
+    
+    private void forceSRS(String srs) {
+        getMap.setSRS(srs);
+        
+        try {
+            getMap.setCrs( CRS.decode(srs) );
+        } catch (NoSuchAuthorityCodeException e) {
+            e.printStackTrace();
+        } catch (FactoryException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * This adjusts the bounds by zooming out 2%, but also ensuring that
+     * the maximum bounds do not exceed the world bounding box
+     * 
+     * This only applies if the SRS is EPSG:4326 or EPSG:900913
+     * 
+     * @param reqSRS the SRS 
+     * @param bbox the current bounding box
+     * @return the adjusted bounding box
+     */
+    private Envelope adjustBounds(String reqSRS, Envelope bbox) {        
+        if(reqSRS.equalsIgnoreCase("EPSG:4326")) {
+            bbox.expandBy(bbox.getWidth() / 100, bbox.getHeight() / 100);
+            Envelope maxEnv = new Envelope(
+                    -180.0,-90.0,
+                    180.0,90.0 );
+            return bbox.intersection(maxEnv);
+            
+        } else if(reqSRS.equalsIgnoreCase("EPSG:900913")) {
+            bbox.expandBy(bbox.getWidth() / 100, bbox.getHeight() / 100);
+            Envelope maxEnv = new Envelope(
+                    -20037508.33, -20037508.33,
+                    20037508.33, 20037508.33 );
+            return bbox.intersection(maxEnv);
+        }
+        return bbox;
     }
 }
