@@ -59,6 +59,8 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
         throws ServiceException {
         DescribeLayerRequest req = new DescribeLayerRequest((WMService) service);
         req.setHttpServletRequest(request);
+        
+        req.setVersion(getValue("VERSION"));
 
         String layersParam = getValue("LAYERS");
 

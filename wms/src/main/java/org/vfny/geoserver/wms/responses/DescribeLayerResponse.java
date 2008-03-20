@@ -74,7 +74,7 @@ public class DescribeLayerResponse implements Response {
             LOGGER.fine(new StringBuffer("executing request ").append(request).toString());
         }
 
-        this.transformer = new DescribeLayerTransformer(this.request.getBaseUrl(), request.getServiceRef().getGeoServer());
+        this.transformer = new DescribeLayerTransformer(this.request.getBaseUrl(), request.getServiceRef().getGeoServer(), request.getVersion());
         this.transformer.setNamespaceDeclarationEnabled(false);
         this.transformer.setEncoding(this.request.getGeoServer().getCharSet());
 
