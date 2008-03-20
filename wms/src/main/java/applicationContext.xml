@@ -142,6 +142,9 @@
  	<bean id="validateSldKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
  		<constructor-arg value="validateschema"/>
  	</bean>
+    <bean id="sldKvpParser" class="org.geoserver.ows.kvp.URLKvpParser">
+        <constructor-arg value="sld"/>
+    </bean>
  	
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
