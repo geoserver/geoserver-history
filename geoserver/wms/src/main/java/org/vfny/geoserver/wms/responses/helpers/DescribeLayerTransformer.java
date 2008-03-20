@@ -33,13 +33,15 @@ public class DescribeLayerTransformer extends TransformerBase {
     
     private GeoServer geoserver;
 
+    private String version;
+
     /**
      * Creates a new DescribeLayerTransformer object.
      *
      * @param baseUrl the url string wich holds the validation
      * schemas and DTD's on this server instance.
      */
-    public DescribeLayerTransformer(String baseUrl, GeoServer gs) {
+    public DescribeLayerTransformer(String baseUrl, GeoServer gs, String version) {
         super();
 
         if (baseUrl == null) {
@@ -48,6 +50,7 @@ public class DescribeLayerTransformer extends TransformerBase {
 
         this.baseUrl = baseUrl;
         this.geoserver = gs;
+        this.version = version;
     }
 
     /**
@@ -90,7 +93,7 @@ public class DescribeLayerTransformer extends TransformerBase {
      * @author Gabriel Roldan, Axios Engineering
      * @version $Id$
      */
-    private static class DescribeLayerTranslator extends TranslatorSupport {
+    private class DescribeLayerTranslator extends TranslatorSupport {
         /**
          * Creates a new DescribeLayerTranslator object.
          *
@@ -114,10 +117,12 @@ public class DescribeLayerTransformer extends TransformerBase {
 
             DescribeLayerRequest req = (DescribeLayerRequest) o;
 
-            AttributesImpl version = new AttributesImpl();
-            version.addAttribute("", "version", "version", "", "1.0.0");
+            AttributesImpl versionAtt = new AttributesImpl();
+            // TODO: grab the version from the request, should be equal to
+            // the WMS one
+            versionAtt.addAttribute("", "version", "version", "", version);
 
-            start("WMS_DescribeLayerResponse", version);
+            start("WMS_DescribeLayerResponse", versionAtt);
 
             handleLayers(req);
 
