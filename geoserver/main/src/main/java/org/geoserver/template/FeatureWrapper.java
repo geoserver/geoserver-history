@@ -158,11 +158,10 @@ public class FeatureWrapper extends BeansWrapper {
             map.put("typeName", feature.getFeatureType().getTypeName());
 
             //next add variables for each attribute, variable name = name of attribute
-            SimpleSequence attributes = new SimpleSequence();
             Map attributeMap = new LinkedHashMap();
 
             for (int i = 0; i < feature.getNumberOfAttributes(); i++) {
-                AttributeType type = feature.getFeatureType().getAttributeType(i);
+                AttributeType attDescriptor = feature.getFeatureType().getAttributeType(i);
 
                 Map attribute = new HashMap();
                 Object value = feature.getAttribute(i);
@@ -170,18 +169,17 @@ public class FeatureWrapper extends BeansWrapper {
                 if ( value == null ) {
                     //some special case checks
                     attribute.put("rawValue", "");
-                    attribute.put("isGeometry", Boolean.valueOf(Geometry.class.isAssignableFrom(type.getBinding())));
+                    attribute.put("isGeometry", Boolean.valueOf(Geometry.class.isAssignableFrom(attDescriptor.getBinding())));
                 } else {
                     attribute.put("rawValue", value);
                     attribute.put("isGeometry", Boolean.valueOf(value instanceof Geometry));
                 }
 
-                attribute.put("name", type.getName());
-                attribute.put("type", type.getType().getName());
+                attribute.put("name", attDescriptor.getLocalName());
+                attribute.put("type", attDescriptor.getBinding().getName());
 
-                map.put(type.getName(), attribute);
-                attributeMap.put(type.getName(), attribute);
-                attributes.add(attribute);
+                map.put(attDescriptor.getLocalName(), attribute);
+                attributeMap.put(attDescriptor.getLocalName(), attribute);
             }
 
             // create a variable "attributes" which his a list of all the 
