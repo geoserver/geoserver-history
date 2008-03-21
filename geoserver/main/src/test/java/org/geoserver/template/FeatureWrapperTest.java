@@ -4,57 +4,83 @@
  */
 package org.geoserver.template;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import freemarker.template.Configuration;
-import freemarker.template.SimpleObjectWrapper;
-import freemarker.template.Template;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
+
 import org.geotools.data.DataUtilities;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.DefaultFeature;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.DefaultFeatureType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.template.Configuration;
+import freemarker.template.SimpleHash;
+import freemarker.template.SimpleSequence;
+import freemarker.template.Template;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
 
 public class FeatureWrapperTest extends TestCase {
+    FeatureType featureType;
+
     FeatureCollection features;
+
     Configuration cfg;
 
     protected void setUp() throws Exception {
         super.setUp();
 
-        //create some data
-        GeometryFactory gf = new GeometryFactory();
-        FeatureType featureType = DataUtilities.createType("testType",
+        // create some data
+        featureType = DataUtilities.createType("testType",
                 "string:String,int:Integer,double:Double,geom:Point");
 
-        features = new DefaultFeatureCollection(null, null) {
-                };
-        features.add(new DefaultFeature((DefaultFeatureType) featureType,
-                new Object[] {
-                    "one", new Integer(1), new Double(1.1), gf.createPoint(new Coordinate(1, 1))
-                }, "fid.1") {
-            });
-        features.add(new DefaultFeature((DefaultFeatureType) featureType,
-                new Object[] {
-                    "two", new Integer(2), new Double(2.2), gf.createPoint(new Coordinate(2, 2))
-                }, "fid.2") {
-            });
-        features.add(new DefaultFeature((DefaultFeatureType) featureType,
-                new Object[] {
-                    "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
-                }, "fid.3") {
-            });
+        features = createFeatureCollection(3);
 
         cfg = new Configuration();
         cfg.setClassForTemplateLoading(getClass(), "");
         cfg.setObjectWrapper(new FeatureWrapper());
+    }
+
+    /**
+     * Creates <code>numberOfFeatures</code> features as test data according
+     * to the test {@link #featureType}
+     * 
+     * @param numberOfFeatures
+     *            how many features to create
+     * @return the feature collection containing the test features
+     */
+    private FeatureCollection createFeatureCollection(final int numberOfFeatures) throws Exception {
+        GeometryFactory gf = new GeometryFactory();
+        FeatureCollection features = new DefaultFeatureCollection(null, null) {
+        };
+        for (int i = 1; i <= numberOfFeatures; i++) {
+            Object[] attributes = new Object[4];
+            attributes[0] = "name_" + i;
+            attributes[1] = new Integer(1);
+            attributes[2] = new Double(i + "." + i);
+            attributes[3] = gf.createPoint(new Coordinate(i, i));
+            String fid = "fid." + i;
+            Feature feature = new DefaultFeature((DefaultFeatureType) featureType, attributes, fid) {
+            };
+
+            features.add(feature);
+        }
+        return features;
     }
 
     public void testFeatureCollection() throws Exception {
@@ -71,8 +97,8 @@ public class FeatureWrapperTest extends TestCase {
         StringWriter out = new StringWriter();
         template.process(features.iterator().next(), out);
 
-        //replace ',' with '.' for locales which use a comma for decimal point
-        assertEquals("one\n1\n1.1\nPOINT (1 1)", out.toString().replace(',', '.'));
+        // replace ',' with '.' for locales which use a comma for decimal point
+        assertEquals("name_1\n1\n1.1\nPOINT (1 1)", out.toString().replace(',', '.'));
     }
 
     public void testFeatureDynamic() throws Exception {
@@ -81,8 +107,8 @@ public class FeatureWrapperTest extends TestCase {
         StringWriter out = new StringWriter();
         template.process(features.iterator().next(), out);
 
-        //replace ',' with '.' for locales which use a comma for decimal point
-        assertEquals("string=one\nint=1\ndouble=1.1\ngeom=POINT (1 1)\n",
-            out.toString().replace(',', '.'));
+        // replace ',' with '.' for locales which use a comma for decimal point
+        assertEquals("string=name_1\nint=1\ndouble=1.1\ngeom=POINT (1 1)\n", out.toString()
+                .replace(',', '.'));
     }
 }

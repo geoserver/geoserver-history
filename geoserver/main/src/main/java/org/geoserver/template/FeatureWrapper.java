@@ -5,16 +5,20 @@
 package org.geoserver.template;
 
 import java.text.DateFormat;
+import java.util.AbstractMap;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
+import org.geotools.util.MapEntry;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -82,7 +86,7 @@ import freemarker.template.TemplateModelException;
  * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  * @author Andrea Aime, TOPP
- * 
+ * @author Gabriel Roldan, TOPP
  */
 public class FeatureWrapper extends BeansWrapper {
     public FeatureWrapper() {
@@ -107,6 +111,28 @@ public class FeatureWrapper extends BeansWrapper {
      * @return the formated date as a String, or the object
      */
     protected String wrapValue(Object o) {
+        return valueToString(o);
+    }
+
+    /**
+     * Returns a sensible String value for attributes so they are easily used by
+     * templates.
+     * <p>
+     * Special cases:
+     * <ul>
+     * <li>for Date values returns a default {@link DateFormat} representation</li>
+     * <li>for Boolean values returns "true" or "false"</li>
+     * <li>for null values returns an empty string</li>
+     * <li>for any other value returns its toString()</li>
+     * </ul>
+     * </p>
+     * 
+     * @param o
+     *            the object for which to return a String representation
+     *            suitable to be used as template content
+     * @return the formated date as a String, or the object
+     */
+    private static String valueToString(Object o) {
         if (o == null) {
             // nulls throw tempaltes off, use empty string
             return "";
@@ -116,6 +142,9 @@ public class FeatureWrapper extends BeansWrapper {
         }
         if (o instanceof Boolean) {
             return ((Boolean) o).booleanValue() ? "true" : "false";
+        }
+        if (o instanceof Geometry) {
+            return String.valueOf(o);
         }
         return String.valueOf(o);
     }
@@ -153,6 +182,7 @@ public class FeatureWrapper extends BeansWrapper {
             map.put("name", ft.getTypeName());
             return map;
         } else if (object instanceof Feature) {
+
             Feature feature = (Feature) object;
 
             // create the model
@@ -162,32 +192,10 @@ public class FeatureWrapper extends BeansWrapper {
             map.put("fid", feature.getID());
             map.put("typeName", feature.getFeatureType().getTypeName());
 
-            // next add variables for each attribute, variable name = name of
-            // attribute
-            Map attributeMap = new LinkedHashMap();
-
-            for (int i = 0; i < feature.getNumberOfAttributes(); i++) {
-                AttributeType attDescriptor = feature.getFeatureType().getAttributeType(i);
-
-                Map attribute = new HashMap();
-                Object value = feature.getAttribute(i);
-                attribute.put("value", wrapValue(value));
-                if (value == null) {
-                    // some special case checks
-                    attribute.put("rawValue", "");
-                    attribute.put("isGeometry", Boolean.valueOf(Geometry.class
-                            .isAssignableFrom(attDescriptor.getBinding())));
-                } else {
-                    attribute.put("rawValue", value);
-                    attribute.put("isGeometry", Boolean.valueOf(value instanceof Geometry));
-                }
-
-                attribute.put("name", attDescriptor.getLocalName());
-                attribute.put("type", attDescriptor.getBinding().getName());
-
-                map.put(attDescriptor.getLocalName(), attribute);
-                attributeMap.put(attDescriptor.getLocalName(), attribute);
-            }
+            // next create the Map representing the per attribute useful
+            // properties for a template
+            Map attributeMap = new FeatureAttributesMap(feature);
+            map.putAll(attributeMap);
 
             // create a variable "attributes" which his a list of all the
             // attributes, but at the same time, is a map keyed by name
@@ -197,5 +205,149 @@ public class FeatureWrapper extends BeansWrapper {
         }
 
         return super.wrap(object);
+    }
+
+    /**
+     * Adapts a Feature to a java.util.Map, where the map keys are the feature
+     * attribute names and the values other Map representing the Feature
+     * name/value attributes.
+     * <p>
+     * A special purpose Map implementation is used in order to lazily return
+     * the attribute properties, most notably the toString representation of
+     * attribute values.
+     * </p>
+     * 
+     * @author Gabriel Roldan
+     * @see AttributeMap
+     */
+    private static class FeatureAttributesMap extends AbstractMap {
+        private Set entrySet;
+
+        private Feature feature;
+
+        public FeatureAttributesMap(Feature feature) {
+            this.feature = feature;
+        }
+
+        public Set entrySet() {
+            if (entrySet == null) {
+                entrySet = new LinkedHashSet();
+                final AttributeType[] types = feature.getFeatureType().getAttributeTypes();
+                final int attributeCount = types.length;
+                String attName;
+                Map attributesMap;
+                for (int i = 0; i < attributeCount; i++) {
+                    attName = types[i].getLocalName();
+                    attributesMap = new AttributeMap(attName, feature);
+                    entrySet.add(new MapEntry(attName, attributesMap));
+                }
+            }
+            return entrySet;
+        }
+    }
+
+    /**
+     * Wraps a Feature as a
+     * <code>Map&lt;String, Map&lt;String, Object&gt;&gt;</code>.
+     * <p>
+     * The Map keys are the wrapped feature's property names and the Map values
+     * are Maps with appropriate key/value pairs for each feature attribute.
+     * </p>
+     * <p>
+     * For instance, the value attribute Maps hold the following properties:
+     * <ul>
+     * <li>name: String holding the attribute name</li>
+     * <li>type: String with the java class name bound to the attribute type</li>
+     * <li>value: String representation of the attribute value suitable to be
+     * used directly in a template expression. <code>null</code> values are
+     * returned as the empty string, non String values as per
+     * {@link FeatureWrapper#valueToString(Object)}</li>
+     * <li>rawValue: the actual attribute value as it is in the Feature</li>
+     * <li>isGeometry: Boolean indicating whether the attribute is of a
+     * geometric type</li>
+     * </ul>
+     * </p>
+     * 
+     */
+    private static class AttributeMap extends AbstractMap {
+
+        private final String attributeName;
+
+        private final Feature feature;
+
+        private Set entrySet;
+
+        /**
+         * Builds an "attribute map" as used in templates for the given
+         * attribute of the given feature.
+         * 
+         * @param attributeName
+         *            the name of the feature attribute this attribute map is
+         *            built for
+         * @param feature
+         *            the feature where to lazily grab the attribute named
+         *            <code>attributeName</code> from
+         */
+        public AttributeMap(final String attributeName, final Feature feature) {
+            this.attributeName = attributeName;
+            this.feature = feature;
+        }
+
+        /**
+         * Override so asking for the hashCode does not implies traversing the
+         * whole map and thus calling entrySet() prematurely
+         */
+        public int hashCode() {
+            return attributeName.hashCode();
+        }
+
+        /**
+         * Returns this map's entry set. An entry for each of the properties
+         * mentioned in this class's javadoc is returned. Of special interest is
+         * the entry for the <code>"value"</code> property, which is lazily
+         * evaluated through the use of a {@link DeferredValueEntry}
+         */
+        public Set entrySet() {
+            if (entrySet == null) {
+                entrySet = new LinkedHashSet();
+                final FeatureType featureType = feature.getFeatureType();
+                final AttributeType attributeType = featureType.getAttributeType(attributeName);
+                final Object value = feature.getAttribute(attributeName);
+
+                entrySet.add(new DeferredValueEntry("value", value));
+                entrySet.add(new MapEntry("name", attributeName));
+                entrySet.add(new MapEntry("type", attributeType.getBinding().getName()));
+
+                Object rawValue = value == null ? "" : value;
+                boolean isGeometry = attributeType instanceof GeometryAttributeType;
+                entrySet.add(new MapEntry("isGeometry", Boolean.valueOf(isGeometry)));
+                entrySet.add(new MapEntry("rawValue", rawValue));
+            }
+            return entrySet;
+        }
+
+        /**
+         * A special purpose Map.Entry whose value is transformed to String on
+         * demand, thus avoiding to hold both the actual value object and its
+         * string value.
+         * 
+         * @see FeatureWrapper#valueToString(Object)
+         */
+        private static class DeferredValueEntry extends MapEntry {
+            private static final long serialVersionUID = -3919798947862996744L;
+
+            public DeferredValueEntry(String key, Object attribute) {
+                super(key, attribute);
+            }
+
+            /**
+             * Returns the value corresponding to this entry, as a String.
+             */
+            public Object getValue() {
+                Object actualValue = super.getValue();
+                String stringValue = FeatureWrapper.valueToString(actualValue);
+                return stringValue;
+            }
+        }
     }
 }
