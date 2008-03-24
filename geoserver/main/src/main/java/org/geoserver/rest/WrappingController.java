@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.restlet.Restlet;
 import org.restlet.Router;
+import org.restlet.Route;
+import org.restlet.util.Template;
 import org.springframework.beans.BeansException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -58,7 +60,9 @@ public class WrappingController extends AbstractController {
         while (it.hasNext()){
             String key = (String)it.next();
 
-            r.attach(key, (Restlet)m.get(key));
+            Route route = r.attach(key, (Restlet)m.get(key));
+            route.getTemplate().setMatchingMode(Template.MODE_EQUALS);
+            System.out.println("Added route with MODE_EQUALS");
         }
     }
 
@@ -74,7 +78,10 @@ public class WrappingController extends AbstractController {
                 addRoutes(rm.getRoutes(), myRouter);
             }
 
-            myRouter.attach("", new BeanResourceFinder(new IndexResource(myRouter)));
+            Route route = 
+                myRouter.attach("", new BeanResourceFinder(new IndexResource(myRouter)));
+            route.getTemplate().setMatchingMode(Template.MODE_EQUALS);
+            myRouter.attachDefault(new CatchAllRestlet());
         }
 
         return myRouter;
