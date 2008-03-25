@@ -259,6 +259,19 @@ public class Dispatcher extends AbstractController {
         return new BufferedReader(reader);
     }
 
+    /**
+     * Sets up the minimal request parameters from which to obtain the service
+     * and returns it
+     * <p>
+     * If strict cite compliance is not set and no service parameter was
+     * provided, an attempt to inferr the service from the context path is made
+     * (ej, from /geoserver/wfs?request...)
+     * </p>
+     * 
+     * @param req
+     * @return
+     * @throws Exception
+     */
     Service service(Request req) throws Exception {
         //check kvp
         if (req.kvp != null) {
@@ -297,6 +310,7 @@ public class Dispatcher extends AbstractController {
             if (service == null) {
                 service = normalize((String) map.get("service"));
 
+                //only set the inferred service if strict cite compliance is not set
                 if ((service != null) && !citeCompliant) {
                     req.service = service;
                 }
