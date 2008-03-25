@@ -17,6 +17,7 @@
 			<outputDirectory></outputDirectory>
 			<includes>
 				<include>gt2-mysql*.jar</include>
+				<include>mysql-connector-java-*.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
