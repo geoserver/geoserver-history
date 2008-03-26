@@ -12,49 +12,53 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Default configuration for services. This class represents all the
  * commonalities to the WFS and WMS services.
- *
+ * 
  * <p>
  * WFS wfs = new WFS(dto); Service serv = (Service)WFS;
  * System.out.println(serv.getName());
  * </p>
- *
+ * 
  * @author Gabriel Rold?n
  * @author Chris Holmes
  * @version $Id$
- *
+ * 
  * @see WMS
  * @see WFS
  */
-public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
-    //    private boolean enabled;
-    //    private URL onlineResource;
-    //    private String name;
-    //    private String title;
-    //    private String serverAbstract;
-    //    private String[] keywords = new String[0];
-    //    private String fees;
-    //    private String accessConstraints;
-    //    private String maintainer;
+public abstract class Service extends OWS /* extends GlobalLayerSupertype */{
+    // private boolean enabled;
+    // private URL onlineResource;
+    // private String name;
+    // private String title;
+    // private String serverAbstract;
+    // private String[] keywords = new String[0];
+    // private String fees;
+    // private String accessConstraints;
+    // private String maintainer;
     private String strategy;
+
     private MetaDataLink metadataLink;
+
     private int partialBufferSize;
+
     private GeoServer gs;
+
     private Data dt;
 
     /**
      * Service constructor.
-     *
+     * 
      * <p>
      * Stores the new ServiceDTO data for this service.
      * </p>
-     *
+     * 
      * @param config
-     *
-     * @throws NullPointerException when the param is null
+     * 
+     * @throws NullPointerException
+     *             when the param is null
      */
     public Service(ServiceDTO dto) {
         if (dto == null) {
@@ -80,6 +84,7 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      * <p>
      * loads a new copy of data into this object.
      * </p>
+     * 
      * @param dto
      */
     public void load(ServiceDTO dto) {
@@ -103,7 +108,7 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
 
     /**
      * Sets the strategy used by the service when performing a response.
-     *
+     * 
      */
     public void setStrategy(String strategy) {
         this.strategy = strategy;
@@ -117,16 +122,17 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
     }
 
     /**
-     * @return The size of the buffer used by the PARTIAL-BUFFER strategy.
-     * TODO: this should be factored out when config is splittable among modules.
+     * @return The size of the buffer used by the PARTIAL-BUFFER strategy. TODO:
+     *         this should be factored out when config is splittable among
+     *         modules.
      */
     public int getPartialBufferSize() {
         return partialBufferSize;
     }
 
     /**
-     * Sets the size of the buffer used by the PARTIAL-BUFFER strategy.
-     * TODO: this should be factored out when config is splittable among modules.
+     * Sets the size of the buffer used by the PARTIAL-BUFFER strategy. TODO:
+     * this should be factored out when config is splittable among modules.
      */
     public void setPartialBufferSize(int partialBufferSize) {
         this.partialBufferSize = partialBufferSize;
@@ -152,7 +158,7 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
 
     /**
      * Access dt property.
-     *
+     * 
      * @return Returns the dt.
      */
     public Data getData() {
@@ -161,8 +167,9 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
 
     /**
      * Set dt to dt.
-     *
-     * @param dt The dt to set.
+     * 
+     * @param dt
+     *            The dt to set.
      */
     public void setData(Data dt) {
         this.dt = dt;
@@ -170,7 +177,7 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
 
     /**
      * Access gs property.
-     *
+     * 
      * @return Returns the gs.
      */
     public GeoServer getGeoServer() {
@@ -179,8 +186,9 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
 
     /**
      * Set gs to gs.
-     *
-     * @param gs The gs to set.
+     * 
+     * @param gs
+     *            The gs to set.
      */
     public void setGeoServer(GeoServer gs) {
         this.gs = gs;
@@ -188,9 +196,20 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
 
     /**
      * @return Returns the metadataLink.
-     *
+     * 
      */
     public MetaDataLink getMetadataLink() {
         return metadataLink;
     }
+
+    /**
+     * Returns the character encoding scheme the service shall use to encode all
+     * its XML responses in.
+     * 
+     * @return the character set for the service to encode XML responses in.
+     */
+    public Charset getCharSet() {
+        return getGeoServer().getCharSet();
+    }
+
 }
