@@ -198,7 +198,7 @@ public class DescribeResponse implements Response {
         }
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\"")
-                    .append(wcsRequest.getGeoServer().getCharSet().name()).append("\"?>")
+                    .append(wcs.getCharSet().name()).append("\"?>")
                     .append("\n<CoverageDescription version=").append(CURR_VER).append(" ")
                     .toString();
 

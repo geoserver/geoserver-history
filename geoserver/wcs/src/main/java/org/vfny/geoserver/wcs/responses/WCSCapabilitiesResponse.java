@@ -93,19 +93,17 @@ public class WCSCapabilitiesResponse implements Response {
     	}
     	//otherwise it's a normal response...
 
-        WCSCapsTransformer transformer = new WCSCapsTransformer(request
-				.getBaseUrl(), applicationContext);
+        final WCS wcsConfig = (WCS) applicationContext.getBean("wcs");
+        final Charset encoding = wcsConfig.getCharSet();
 
+        WCSCapsTransformer transformer = new WCSCapsTransformer(request
+                .getBaseUrl(), applicationContext);
+        transformer.setEncoding(encoding);
         transformer.setIndentation(2);
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        final Writer writer;
-        {
-            final WCS wcsConfig = (WCS) applicationContext.getBean("wcs");
-            final Charset encoding = wcsConfig.getCharSet();
-            writer = new OutputStreamWriter(out, encoding);
-        }
         try {
-            transformer.transform(request, writer);
+            transformer.transform(request, out);
         } catch (TransformerException e) {
             throw new WcsException(e);
         }
