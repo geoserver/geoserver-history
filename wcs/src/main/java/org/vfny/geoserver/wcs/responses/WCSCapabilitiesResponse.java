@@ -4,22 +4,27 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.logging.Logger;
-import javax.xml.transform.TransformerException;
 
 
 /**
@@ -95,8 +100,11 @@ public class WCSCapabilitiesResponse implements Response {
 				.getBaseUrl(), applicationContext);
 
         transformer.setIndentation(2);
+        final WCS wcsConfig = (WCS) applicationContext.getBean("wcs");
+        final Charset encoding = wcsConfig.getCharSet();
+        transformer.setEncoding(encoding);
+        
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-
         try {
             transformer.transform(request, out);
         } catch (TransformerException e) {

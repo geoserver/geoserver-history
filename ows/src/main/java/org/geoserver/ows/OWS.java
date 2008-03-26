@@ -5,7 +5,6 @@
 package org.geoserver.ows;
 
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -69,11 +68,6 @@ public class OWS {
      * Maintainer of the service.
      */
     private String maintainer;
-
-    /**
-     * Character set to use.
-     */
-    private Charset charSet = Charset.forName("UTF-8");
 
     /**
      * List of keywords associated with the service.
@@ -262,17 +256,6 @@ public class OWS {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    /**
-     * @return the character set for the service.
-     */
-    public Charset getCharSet() {
-        return charSet;
-    }
-
-    public void setCharSet(Charset charSet) {
-        this.charSet = charSet;
     }
 
     /**

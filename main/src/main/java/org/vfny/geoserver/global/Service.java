@@ -193,4 +193,14 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
     public MetaDataLink getMetadataLink() {
         return metadataLink;
     }
+  
+    /**
+     * Returns the character encoding scheme the service shall use to encode all its XML responses in.
+     * 
+     * @return the character set for the service to encode XML responses in.
+     */
+    public Charset getCharSet() {
+        return getGeoServer().getCharSet();
+    }
+
 }

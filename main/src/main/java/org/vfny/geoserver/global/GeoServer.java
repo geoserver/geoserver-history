@@ -246,12 +246,13 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getCharSet purpose.
-     *
-     * <p>
      * Returns the default charset for this server instance.
+     * <p>
+     * That is, the server wide setting that indicates which character encoding scheme
+     * {@link org.vfny.geoserver.global.Service} implementations shall provide to Operations in
+     * order to encode XML responses in.
      * </p>
-     *
+     * 
      * @return Charset the default charset for this server instance.
      */
     public Charset getCharSet() {
