@@ -1,5 +1,8 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.nio.charset.Charset;
+
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
@@ -19,6 +22,9 @@ public class OWS5MapProducer extends KMLMapProducer {
         boolean style = styleParam == null || "true".equals(styleParam.toLowerCase());
         
         transformer = new OWS5Transformer(extendedData, style);
+        WMS wms = request.getWMS();
+        Charset encoding = wms.getCharSet();
+        transformer.setEncoding(encoding);
         transformer.setIndentation(3);
     }
     

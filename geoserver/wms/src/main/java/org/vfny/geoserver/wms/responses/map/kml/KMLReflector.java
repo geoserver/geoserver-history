@@ -7,6 +7,8 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import org.geoserver.wms.WebMapService;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
+
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -98,6 +100,8 @@ public class KMLReflector {
         
         KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer();
         transformer.setIndentation(3);
+        Charset encoding = request.getWMS().getCharSet();
+        transformer.setEncoding(encoding);
         transformer.setEncodeAsRegion( request.getSuperOverlay() );
         transformer.transform( request, response.getOutputStream() );
         

@@ -274,6 +274,7 @@ public class KMLTransformer extends TransformerBase {
         
         protected void initTransformer(KMLTransformerBase delegate) {
             delegate.setIndentation( getIndentation() );
+            delegate.setEncoding(getEncoding());
             delegate.setStandAlone(false);
         }
 
