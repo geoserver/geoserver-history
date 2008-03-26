@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -18,6 +19,7 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 import org.vfny.geoserver.wms.responses.WatermarkPainter;
 import org.vfny.geoserver.wms.responses.map.png.PNGMapProducer;
@@ -98,7 +100,10 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	public void produceMap() throws WmsException {
 		transformer = new KMLTransformer();
 		transformer.setKmz(true);
-
+		 GetMapRequest request = mapContext.getRequest();
+		 WMS wms = request.getWMS();
+		 Charset encoding = wms.getCharSet();
+		 transformer.setEncoding(encoding);
 		// TODO: use GeoServer.isVerbose() to determine if we should indent?
 		transformer.setIndentation(3);
 	}

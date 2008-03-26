@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -19,6 +20,7 @@ import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.helpers.WMSCapsTransformer;
@@ -103,6 +105,9 @@ public class WMSCapabilitiesResponse implements Response {
 
         // if (request.getWFS().getGeoServer().isVerbose()) {
         transformer.setIndentation(2);
+        final WMS wms = (WMS)applicationContext.getBean("wms");
+        final Charset encoding = wms.getCharSet();
+        transformer.setEncoding(encoding);
 
         // }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
