@@ -265,17 +265,6 @@ public class OWS {
     }
 
     /**
-     * @return the character set for the service.
-     */
-    public Charset getCharSet() {
-        return charSet;
-    }
-
-    public void setCharSet(Charset charSet) {
-        this.charSet = charSet;
-    }
-
-    /**
      * <p>
      * Client properties for the service.
      * </p>
