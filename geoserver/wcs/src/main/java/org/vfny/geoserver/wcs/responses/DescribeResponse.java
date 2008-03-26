@@ -29,6 +29,9 @@ import org.vfny.geoserver.wcs.requests.WCSRequest;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +87,15 @@ public class DescribeResponse implements Response {
      * @uml.associationEnd multiplicity="(1 1)"
      */
     protected final DatumFactory datumFactory = ReferencingFactoryFinder.getDatumFactory(null);
+    
+    /**
+     * The service configuration bean this response works upon
+     */
+    private WCS wcs;
+
+    public DescribeResponse(final WCS wcs) {
+        this.wcs = wcs;
+    }
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
@@ -163,8 +175,10 @@ public class DescribeResponse implements Response {
 
     public void writeTo(OutputStream out) throws WcsException {
         try {
-            byte[] content = xmlResponse.getBytes();
-            out.write(content);
+            final Charset encoding = wcs.getCharSet();
+            Writer writer = new OutputStreamWriter(out, encoding);
+            writer.write(xmlResponse);
+            writer.flush();
         } catch (IOException ex) {
             throw new WcsException(ex, "", getClass().getName());
         }

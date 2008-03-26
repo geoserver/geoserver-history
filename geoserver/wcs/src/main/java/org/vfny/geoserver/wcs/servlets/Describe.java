@@ -42,7 +42,7 @@ public class Describe extends WCService {
     * @return DOCUMENT ME!
     */
     protected Response getResponseHandler() {
-        return new DescribeResponse();
+        return new DescribeResponse(getWCS());
     }
 
     /**

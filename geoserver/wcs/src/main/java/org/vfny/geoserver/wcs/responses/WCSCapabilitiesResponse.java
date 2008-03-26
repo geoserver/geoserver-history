@@ -10,11 +10,15 @@ import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wcs.WcsException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
@@ -94,9 +98,14 @@ public class WCSCapabilitiesResponse implements Response {
 
         transformer.setIndentation(2);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-
+        final Writer writer;
+        {
+            final WCS wcsConfig = (WCS) applicationContext.getBean("wcs");
+            final Charset encoding = wcsConfig.getCharSet();
+            writer = new OutputStreamWriter(out, encoding);
+        }
         try {
-            transformer.transform(request, out);
+            transformer.transform(request, writer);
         } catch (TransformerException e) {
             throw new WcsException(e);
         }
