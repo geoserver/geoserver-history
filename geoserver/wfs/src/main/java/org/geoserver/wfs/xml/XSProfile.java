@@ -5,6 +5,7 @@
 package org.geoserver.wfs.xml;
 
 import org.geotools.feature.AttributeTypeBuilder;
+import org.geotools.feature.NameImpl;
 
 import org.geotools.feature.type.ProfileImpl;
 import org.geotools.feature.type.SchemaImpl;
@@ -63,7 +64,7 @@ public class XSProfile extends TypeMappingProfile {
     }
 
     static Name name(QName qName) {
-        return new org.geotools.feature.Name(qName.getNamespaceURI(), qName.getLocalPart());
+        return new NameImpl(qName.getNamespaceURI(), qName.getLocalPart());
     }
 
     public XSProfile() {

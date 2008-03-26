@@ -24,6 +24,7 @@ import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.Transaction;
+import org.geotools.feature.NameImpl;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -295,7 +296,7 @@ public class RetypingDataStore implements DataStore {
         String[] typeNames = getTypeNames();
         List<Name> names = new ArrayList<Name>(typeNames.length);
         for (String typeName : typeNames) {
-            names.add(new org.geotools.feature.Name(typeName));
+            names.add(new NameImpl(typeName));
         }
         return names;
     }
