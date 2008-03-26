@@ -4,7 +4,16 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import org.springframework.context.ApplicationContext;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -13,13 +22,6 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.responses.helpers.DescribeLayerTransformer;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.transform.TransformerException;
 
 
 /**
@@ -76,7 +78,8 @@ public class DescribeLayerResponse implements Response {
 
         this.transformer = new DescribeLayerTransformer(this.request.getBaseUrl(), request.getServiceRef().getGeoServer(), request.getVersion());
         this.transformer.setNamespaceDeclarationEnabled(false);
-        this.transformer.setEncoding(this.request.getGeoServer().getCharSet());
+        Charset encoding = this.request.getWMS().getCharSet();
+        this.transformer.setEncoding(encoding);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
