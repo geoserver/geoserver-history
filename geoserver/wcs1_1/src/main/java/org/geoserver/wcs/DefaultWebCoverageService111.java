@@ -4,6 +4,7 @@ import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -101,7 +102,9 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         // TODO: add support for 1.0.0 in here
 
         if ("1.1.0".equals(version) || "1.1.1".equals(version)) {
-            return new WCSCapsTransformer(wcs, catalog);
+            WCSCapsTransformer capsTransformer = new WCSCapsTransformer(wcs, catalog);
+            capsTransformer.setEncoding(wcs.getCharSet());
+            return capsTransformer;
         }
 
         throw new WcsException("Could not understand version:" + version);
@@ -110,7 +113,9 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
     public DescribeCoverageTransformer describeCoverage(DescribeCoverageType request) {
         final String version = request.getVersion();
         if ("1.1.0".equals(version) || "1.1.1".equals(version)) {
-            return new DescribeCoverageTransformer(wcs, catalog);
+            DescribeCoverageTransformer describeTransformer = new DescribeCoverageTransformer(wcs, catalog);
+            describeTransformer.setEncoding(wcs.getCharSet());
+            return describeTransformer;
         }
 
         throw new WcsException("Could not understand version:" + version);
