@@ -498,8 +498,13 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Title", wms.getTitle());
             element("Abstract", wms.getAbstract());
 
-            handleRootSRSAndBbox(ftypes, MapLayerInfo.TYPE_VECTOR);
-
+            {
+                List layers = new ArrayList(ftypes.size() + coverages.size());
+                layers.addAll(ftypes);
+                layers.addAll(coverages);
+                handleRootSRSAndBbox(layers);
+            }
+            
             // now encode each layer individually
             LayerTree featuresLayerTree = new LayerTree(ftypes);
             handleFeaturesTree(featuresLayerTree);
@@ -522,181 +527,71 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-        * Called from <code>handleLayers()</code>, does the first
-        * iteration over the available featuretypes to look for common SRS's
-        * and summarize their LatLonBBox'es, to state at the root layer.<p>NOTE:
-        * by now we just have "layer.getSRS()", so the search is done against
-        * this only SRS.</p>
-        *
-        * @param ftypes DOCUMENT ME!
-        * @param TYPE DOCUMENT ME!
-        *
-        * @throws RuntimeException DOCUMENT ME!
-        *
-        * @task TODO: figure out how to incorporate multiple SRS using the
-        *       reprojection facilities from gt2
-        */
-        private void handleRootSRSAndBbox(Collection ftypes, int TYPE) {
-            String commonSRS = "";
-            boolean isCommonSRS = true;
+         * Called from <code>handleLayers()</code>, does the first iteration
+         * over the available featuretypes and coverages to summarize their LatLonBBox'es, to
+         * state at the root layer, and writes down the list of supported SRS's.
+         * 
+         * @param ftypes
+         *            the collection of FeatureTypeInfo and CoverageInfo objects to traverse
+         */
+        private void handleRootSRSAndBbox(Collection ftypes) {
             Envelope latlonBbox = new Envelope();
             Envelope layerBbox = null;
 
-            if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
-            }
+            LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
 
-            if (TYPE == MapLayerInfo.TYPE_VECTOR) {
-                FeatureTypeInfo layer;
+                FeatureTypeInfo vectorLayer;
+                CoverageInfo rasterLayer;
 
-                for (Iterator it = ftypes.iterator(); it.hasNext();) {
-                    layer = (FeatureTypeInfo) it.next();
-
-                    if (layer.isEnabled()) {
-                        try {
-                            layerBbox = layer.getLatLongBoundingBox();
-                        } catch (IOException e) {
-                            throw new RuntimeException("Can't obtain latLonBBox of "
-                                + layer.getName() + ": " + e.getMessage(), e);
-                        }
-
-                        latlonBbox.expandToInclude(layerBbox);
-
-                        String layerSRS = layer.getSRS();
-
-                        if ("".equals(commonSRS)) {
-                            commonSRS = layerSRS;
-                        } else if (!commonSRS.equals(layerSRS)) {
-                            isCommonSRS = false;
-                        }
+            for (Iterator it = ftypes.iterator(); it.hasNext();) {
+                Object layer = it.next();
+                if(layer instanceof FeatureTypeInfo){
+                    vectorLayer = (FeatureTypeInfo) layer;
+                    if(!vectorLayer.isEnabled()){
+                        continue;
                     }
-                }
-
-                if (isCommonSRS) {
-                    commonSRS = EPSG + commonSRS;
-                    LOGGER.fine("Common SRS is " + commonSRS);
-                } else {
-                    commonSRS = "";
-                    LOGGER.fine(
-                        "No common SRS, don't forget to incorporate reprojection support...");
-                }
-
-                if (!(commonSRS.equals(""))) {
-                    comment("common SRS:");
-                    element("SRS", commonSRS);
-                }
-
-                // okay - we've sent out the commonSRS, if it exists.
-                comment("All supported EPSG projections:");
-
-                try {
-                    Set s = CRS.getSupportedCodes("EPSG");
-                    Iterator it = s.iterator();
-                    String currentSRS;
-
-                    while (it.hasNext()) {
-                        // do not output srs if it was output as common srs
-                        // note, if commonSRS is "", this will not match
-                        currentSRS = it.next().toString();
-
-                        if (!currentSRS.equals(commonSRS)) {
-                            element("SRS", EPSG + currentSRS);
-                        }
+                    try {
+                        layerBbox = vectorLayer.getLatLongBoundingBox();
+                    } catch (IOException e) {
+                        throw new RuntimeException("Can't obtain latLonBBox of "
+                            + vectorLayer.getName() + ": " + e.getMessage(), e);
                     }
-                } catch (Exception e) {
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+                }else{
+                    rasterLayer = (CoverageInfo) layer;
+                    if(!rasterLayer.isEnabled()){
+                        continue;
                     }
-                }
-
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
-                }
-
-                handleLatLonBBox(latlonBbox);
-            } else if (TYPE == MapLayerInfo.TYPE_RASTER) {
-                CoverageInfo layer;
-
-                for (Iterator it = ftypes.iterator(); it.hasNext();) {
-                    layer = (CoverageInfo) it.next();
-
-                    if (layer.isEnabled()) {
-                        final GeneralEnvelope bbox = layer.getWGS84LonLatEnvelope();
+                    final GeneralEnvelope bbox = rasterLayer.getWGS84LonLatEnvelope();
+                    if(bbox != null){
                         layerBbox = new Envelope(bbox.getLowerCorner().getOrdinate(0),
                                 bbox.getUpperCorner().getOrdinate(0),
                                 bbox.getLowerCorner().getOrdinate(1),
                                 bbox.getUpperCorner().getOrdinate(1));
-
-                        latlonBbox.expandToInclude(layerBbox);
-
-                        String layerSRS = layer.getSrsName();
-
-                        if ("".equals(commonSRS)) {
-                            commonSRS = layerSRS;
-                        } else if (!commonSRS.equals(layerSRS)) {
-                            isCommonSRS = false;
-                        }
                     }
                 }
-
-                if (isCommonSRS) {
-                    // commonSRS = EPSG + commonSRS;
-                    if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.fine(new StringBuffer("Common SRS is ").append(commonSRS).toString());
-                    }
-                } else {
-                    commonSRS = "";
-
-                    if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.fine(
-                            "No common SRS, don't forget to incorporate reprojection support...");
-                    }
-                }
-
-                if (!(commonSRS.equals(""))) {
-                    comment("common SRS:");
-                    element("SRS", commonSRS);
-                }
-
-                // okay - we've sent out the commonSRS, if it exists.
-                comment("All supported EPSG projections:");
-
-                try {
-                    String currentSRS;
-                    ArrayList SRSs = new ArrayList(ftypes.size());
-
-                    for (Iterator it = ftypes.iterator(); it.hasNext();) {
-                        layer = (CoverageInfo) it.next();
-
-                        if (layer.isEnabled()) {
-                            List s = layer.getRequestCRSs();
-                            Iterator it_1 = s.iterator();
-
-                            while (it_1.hasNext()) {
-                                // do not output srs if it was output as common
-                                // srs
-                                // note, if commonSRS is "", this will not match
-                                currentSRS = it_1.next().toString();
-
-                                if (!currentSRS.equals(commonSRS) && !SRSs.contains(currentSRS)) {
-                                    SRSs.add(currentSRS);
-                                    element("SRS", currentSRS);
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
-                    }
-                }
-
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
-                }
-
-                handleLatLonBBox(latlonBbox);
+                latlonBbox.expandToInclude(layerBbox);
             }
+
+            comment("All supported EPSG projections:");
+
+            try {
+                Set s = CRS.getSupportedCodes("EPSG");
+                Iterator it = s.iterator();
+                String currentSRS;
+
+                while (it.hasNext()) {
+                    currentSRS = it.next().toString();
+                    element("SRS", EPSG + currentSRS);
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+            }
+
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("Summarized LatLonBBox is " + latlonBbox);
+            }
+
+            handleLatLonBBox(latlonBbox);
         }
 
         /**
