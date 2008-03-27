@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -82,8 +83,14 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
     public static final List extensions(Class extensionPoint, ApplicationContext context) {
         String[] names = extensionsCache.get(extensionPoint);
         if(names == null) {
-            names = context.getBeanNamesForType(extensionPoint);
-            extensionsCache.put(extensionPoint, names);
+            checkContext(context);
+            if ( context != null ) {
+                names = context.getBeanNamesForType(extensionPoint);
+                extensionsCache.put(extensionPoint, names);
+            }
+            else {
+                return Collections.EMPTY_LIST;
+            }
         }
         List result = new ArrayList(names.length);
         for (int i = 0; i < names.length; i++) {
@@ -112,11 +119,21 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      * @return
      */
     public static final Object bean(String name) {
-        return context.getBean(name);
+        checkContext(context);
+        return context != null ? context.getBean(name) : null;
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
         if(event instanceof ContextRefreshedEvent)
             extensionsCache.clear();
+    }
+    
+    /**
+     * Checks the context, if null will issue a warning.
+     */
+    static void checkContext(ApplicationContext context) {
+        if ( context == null ) {
+            LOGGER.severe( "Extension lookup occured, but ApplicationContext is unset.");
+        }
     }
 }
