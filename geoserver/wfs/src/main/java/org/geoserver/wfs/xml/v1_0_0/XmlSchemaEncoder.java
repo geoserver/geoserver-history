@@ -4,6 +4,21 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
 import net.opengis.wfs.DescribeFeatureTypeType;
 
 import org.geoserver.ows.util.RequestUtils;
@@ -17,17 +32,6 @@ import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTypeTransformer;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.transform.TransformerException;
 
 
 public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
@@ -76,8 +80,9 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
         }
 
-        byte[] content = xmlResponse.getBytes();
-        output.write(content);
+        Writer writer = new OutputStreamWriter(output, wfs.getCharSet());
+        writer.write(xmlResponse);
+        writer.flush();
     }
 
     /**

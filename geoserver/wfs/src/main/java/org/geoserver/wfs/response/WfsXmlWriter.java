@@ -159,7 +159,7 @@ public abstract class WfsXmlWriter {
         boolean root = writer == null;
 
         if (root) {
-            writer = new BufferedWriter(new OutputStreamWriter(output));
+            writer = new BufferedWriter(new OutputStreamWriter(output, wfs.getCharSet()));
 
             //write the processing instruction
             writer.write("<?xml version=\"1.0\" encoding=\"" + charSetEncoding + "\"?>");

@@ -73,6 +73,7 @@ public class HitsOutputFormat extends Response {
         hits.setTimeStamp(featureCollection.getTimeStamp());
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
+        encoder.setEncoding(wfs.getCharSet());
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
             ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd"));
 

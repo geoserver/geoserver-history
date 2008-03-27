@@ -85,6 +85,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         }
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
+        encoder.setEncoding(wfs.getCharSet());
 
         //declare wfs schema location
         BaseRequestType gft = (BaseRequestType)getFeature.getParameters()[0];

@@ -4,6 +4,17 @@
  */
 package org.geoserver.wfsv.response.v1_1_0;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.PropertyType;
@@ -11,7 +22,7 @@ import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WfsFactory;
 import net.opengis.wfsv.GetDiffType;
-import org.apache.xml.serialize.OutputFormat;
+
 import org.eclipse.emf.common.util.EList;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
@@ -32,15 +43,6 @@ import org.opengis.filter.identity.FeatureId;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.xml.sax.SAXException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -173,9 +175,8 @@ public class GetDiffTransactionOutputFormat extends Response {
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
             ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd"));
 
-        OutputFormat format = new OutputFormat();
-        format.setIndenting(true);
-        encoder.setOutputFormat(format);
+        encoder.setIndenting(true);
+        encoder.setEncoding(wfs.getCharSet());
 
         // set up schema locations
         // round up the info objects for each feature collection

@@ -68,7 +68,7 @@ public class TransactionResponse extends Response {
         throws IOException, ServiceException {
         TransactionResultsType result = response.getTransactionResults();
 
-        Writer writer = new OutputStreamWriter(output);
+        Writer writer = new OutputStreamWriter(output, wfs.getCharSet());
         writer = new BufferedWriter(writer);
 
         //boolean verbose = ConfigInfo.getInstance().formatOutput();
@@ -196,6 +196,7 @@ public class TransactionResponse extends Response {
         }
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
+        encoder.setEncoding(wfs.getCharSet());
 
         TransactionType req = (TransactionType)operation.getParameters()[0];
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
