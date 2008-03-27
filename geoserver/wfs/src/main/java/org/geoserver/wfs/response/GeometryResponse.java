@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.gml3.GML;
 import org.geotools.gml3.GMLConfiguration;
@@ -27,8 +28,14 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public class GeometryResponse extends Response {
 
-    public GeometryResponse() {
+    /**
+     * Service configuration
+     */
+    private WFS wfs;
+
+    public GeometryResponse(WFS wfs) {
         super( Geometry.class );
+        this.wfs = wfs;
     }
     
     public String getMimeType(Object value, Operation operation)
@@ -41,7 +48,8 @@ public class GeometryResponse extends Response {
             throws IOException, ServiceException {
     
         Encoder encoder = new Encoder( new GMLConfiguration() );
-
+        encoder.setEncoding(wfs.getCharSet());
+        
         if ( value instanceof Point ) {
             encoder.encode( value, GML.Point, output );
         }

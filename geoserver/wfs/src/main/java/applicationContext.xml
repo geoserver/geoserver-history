@@ -157,11 +157,14 @@
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="geometryResponse"
-		class="org.geoserver.wfs.response.GeometryResponse"/>
+		class="org.geoserver.wfs.response.GeometryResponse">
+        <constructor-arg ref="wfs"/>
+    </bean>
 	<bean id="featureResponse"
 		class="org.geoserver.wfs.response.FeatureResponse">
 		<constructor-arg ref="catalog"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
+        <constructor-arg ref="wfs"/>
 	</bean>
 	
 	<!-- cite compliance hack -->

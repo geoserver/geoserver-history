@@ -8,6 +8,7 @@ import javax.xml.namespace.QName;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -26,12 +27,14 @@ public class FeatureResponse extends Response {
 
     Data catalog;
     WFSConfiguration configuration;
+    private WFS wfs;
     
-    public FeatureResponse(Data catalog, WFSConfiguration configuration) {
+    public FeatureResponse(Data catalog, WFSConfiguration configuration, WFS wfs) {
         super( SimpleFeature.class );
         
         this.catalog = catalog;
         this.configuration = configuration;
+        this.wfs = wfs;
     }
     
     public String getMimeType(Object value, Operation operation)
@@ -52,6 +55,7 @@ public class FeatureResponse extends Response {
         
         //create teh encoder
         Encoder encoder = new Encoder( configuration );
+        encoder.setEncoding(wfs.getCharSet());
         encoder.encode( feature, 
             new QName( meta.getNameSpace().getURI(), meta.getTypeName()), output );
     }
