@@ -367,5 +367,21 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>community</id>
+      <activation>
+        <property>
+          <name>community</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>rest</artifactId>
+          <version>1.0</version>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>
