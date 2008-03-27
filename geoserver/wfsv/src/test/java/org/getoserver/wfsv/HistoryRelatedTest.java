@@ -127,7 +127,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
     }
 
     public void testLog() throws Exception {
-        String request = "<wfsv:GetLog service=\"WFSV\" version=\"1.0.0\"\r\n"
+        String request = "<wfsv:GetLog service=\"WFSV\" version=\"1.0.0\" outputFormat=\"GML2\" \r\n"
                 + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
                 + "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n"
                 + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
@@ -138,6 +138,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
         Document doc = postAsDOM(root(), request);
+        print(doc);
         assertXpathEvaluatesTo("2", "count(//topp:changesets)", doc);
         // version 2 and 3 are taken to version enable roads and restricted
         assertXpathEvaluatesTo("Inserting, updating and deleting",
