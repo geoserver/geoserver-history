@@ -1,15 +1,13 @@
 package org.geoserver.sldservice;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 
+import junit.framework.TestCase;
+
 import org.geotools.styling.StyledLayerDescriptor;
-import org.junit.Test;
 
-public class SldDocTest {
+public class SldDocTest extends TestCase {
 
-	@Test
 	public void testLoadFile() {
 		SldDoc sldDoc= new SldDoc();
 		File f = new File("src/test/resources/Lakes.sld");

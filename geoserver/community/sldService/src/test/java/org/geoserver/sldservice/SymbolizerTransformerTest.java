@@ -5,22 +5,22 @@ package org.geoserver.sldservice;
 
 import java.io.File;
 
+import junit.framework.TestCase;
+
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.Symbolizer;
-import org.junit.Test;
 
 /**
  * @author kappu
  *
  */
-public class SymbolizerTransformerTest {
+public class SymbolizerTransformerTest extends TestCase {
 
 	/**
 	 * Test method for {@link org.geoserver.sldservice.utils.SymbolizerTransformer#SymbolizerTransformer()}.
 	 */
-	@Test
 	public void testSymbolizerTransformer() {
 		SldDoc sldDoc= new SldDoc();
 		//SymbolizerTransformer sT=new SymbolizerTransformer();
@@ -44,7 +44,6 @@ public class SymbolizerTransformerTest {
 	/**
 	 * Test method for {@link org.geoserver.sldservice.utils.SymbolizerTransformer#SymbolizerTransformer(java.util.Map)}.
 	 */
-	@Test
 	public void testSymbolizerTransformerMap() {
 	
 	}
@@ -52,7 +51,6 @@ public class SymbolizerTransformerTest {
 	/**
 	 * Test method for {@link org.geoserver.sldservice.utils.SymbolizerTransformer#createTranslator(org.xml.sax.ContentHandler)}.
 	 */
-	@Test
 	public void testCreateTranslatorContentHandler() {
 		
 	}

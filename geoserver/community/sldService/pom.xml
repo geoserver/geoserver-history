@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>community</artifactId>
     <groupId>org.geoserver</groupId>
@@ -8,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.geoserver</groupId>
   <artifactId>sldService</artifactId>
-  <version>0.0.1</version>
+  <version>1.6-SNAPSHOT</version>
   <description>REST SDL SERVICE</description>
   <repositories>
     <repository>
@@ -31,7 +33,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
@@ -43,7 +45,7 @@
       <artifactId>org.restlet.ext.spring</artifactId>
       <version>1.0.5</version>
     </dependency>
- <dependency>
+    <dependency>
       <groupId>org.restlet</groupId>
       <artifactId>org.restlet.ext.json</artifactId>
       <version>1.0.5</version>
@@ -57,7 +59,7 @@
       <groupId>net.sf.json-lib</groupId>
       <artifactId>json-lib</artifactId>
       <version>2.1</version>
-      <classifier>jdk15</classifier>
+      <classifier>jdk13</classifier>
     </dependency>
     <dependency>
       <groupId>xom</groupId>
@@ -67,38 +69,35 @@
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt2-main</artifactId>
-      <version>2.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt2-xml</artifactId>
-      <version>2.4-SNAPSHOT</version>
+      <version>${gt.version}</version>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt2-render</artifactId>
-      <version>2.4-SNAPSHOT</version>
     </dependency>
-	<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-xml-filter</artifactId>
-			<version>2.4-SNAPSHOT</version>
-		</dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-xml-filter</artifactId>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.1</version>
     </dependency>
   </dependencies>
-<build>
-<plugins>
-  <plugin>
-     <artifactId>maven-compiler-plugin</artifactId>
-     <configuration>
-     <source>1.5</source>
-     <target>1.5</target>
-     </configuration>
-  </plugin>
-</plugins>
-</build>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
