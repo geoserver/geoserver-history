@@ -23,10 +23,11 @@
 	</dependencies>
 
 	<modules>
-		<module>hello</module>
+		<!-- <module>hello</module>
 		<module>preferences</module>
 		<module>community-schemas</module>
-		<module>kml-ows5</module>
+		<module>kml-ows5</module> -->
         <module>rest</module>
+        <module>RESTConfig</module>
 	</modules>
 </project>

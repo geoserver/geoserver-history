@@ -3,15 +3,236 @@
 
 <beans>
 
-<bean id="restconfigwrapper" class="org.geoserver.restconfig.WrappingController"/>
+<bean id="restWrapper" class="org.geoserver.restconfig.WrappingController"/>
 
+<bean id="restConfigMapping" class="org.geoserver.restconfig.RESTMapping">
+<property name="routes">
+  <map>
+        <entry>
+          <key><value>/datastores/{datastore}/featuretypes/{featuretype}.{type}</value></key>
+          <ref bean="featureTypeFinder"/>
+        </entry>
+        <entry>
+          <key><value>/datastores/{datastore}/featuretypes/{featuretype}</value></key>
+          <ref bean="featureTypeFinder"/>
+        </entry>
+        <entry>
+          <key><value>/datastores/{datastore}/featuretypes.{type}</value></key>
+          <ref bean="featureTypeListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/datastores/{datastore}/featuretypes</value></key>
+          <ref bean="featureTypeListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/datastores/{datastore}.{type}</value></key>
+          <ref bean="datastoreFinder"/>
+        </entry>
+        <entry>
+          <key><value>/datastores/{datastore}</value></key>
+          <ref bean="datastoreFinder"/>
+        </entry>
+        <!--entry>
+          <key><value>/datastores/{datastore}/file.{type}</value></key>
+          <ref bean="datastoreFileFinder"/>
+        </entry -->
+        <entry>
+          <key><value>/datastores.{type}</value></key>
+          <ref bean="datastoreListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/datastores</value></key>
+          <ref bean="datastoreListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/styles/{style}.{type}</value></key>
+          <ref bean="styleFinder"/>
+        </entry>
+        <entry>
+          <key><value>/styles/{style}</value></key>
+          <ref bean="styleFinder"/>
+        </entry>
+        <entry>
+          <key><value>/styles.{type}</value></key>
+          <ref bean="styleListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/styles</value></key>
+          <ref bean="styleListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/coveragestores/{coveragestore}/coverages/{coverage}.{type}</value></key>
+          <ref bean="coverageFinder"/>
+        </entry>
+        <entry>
+          <key><value>/coveragestores/{coveragestore}/coverages/{coverage}</value></key>
+          <ref bean="coverageFinder"/>
+        </entry>
+        <entry>
+          <key><value>/coveragestores/{coveragestore}/coverages.{type}</value></key>
+          <ref bean="coverageListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/coveragestores/{coveragestore}/coverages</value></key>
+          <ref bean="coverageListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/coveragestores/{coveragestore}.{type}</value></key>
+          <ref bean="coverageStoreFinder"/>
+        </entry>
+        <entry>
+          <key><value>/coveragestores/{coveragestore}</value></key>
+          <ref bean="coverageStoreFinder"/>
+        </entry>
+        <entry>
+          <key><value>/coveragestores.{type}</value></key>
+          <ref bean="coverageStoreListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/coveragestores</value></key>
+          <ref bean="coverageStoreListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/layergroups/{group}.{type}</value></key>
+          <ref bean="layerGroupFinder"/>
+        </entry>
+        <entry>
+          <key><value>/layergroups/{group}</value></key>
+          <ref bean="layerGroupFinder"/>
+        </entry>
+        <entry>
+          <key><value>/layergroups.{type}</value></key>
+          <ref bean="layerGroupListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/layergroups</value></key>
+          <ref bean="layerGroupListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/projections/{projection}</value></key>
+          <ref bean="dummyRestlet"/>
+        </entry>
+        <entry>
+          <key><value>/projections</value></key>
+          <ref bean="dummyRestlet"/>
+        </entry>
+        <entry>
+          <key><value>/dummy.{type}</value></key>
+          <ref bean="dummyRestlet"/>
+        </entry>
+  </map>
+</property>
+</bean>
+
+<bean id="featureTypeFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.FeatureTypeResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"><ref bean="data"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="featureTypeListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.FeatureTypeListResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="datastoreFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.DataStoreResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"><ref bean="data"/></property>
+    </bean>
+  </property>
+</bean>
+<!--bean id="datastoreFileFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.DataStoreFileResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"><ref bean="data"/></property>
+    </bean>
+  </property>
+</bean -->
+<bean id="datastoreListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.DataStoreListResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="styleFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.StyleResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"> <ref bean="data"/> </property>
+    </bean>
+  </property>
+</bean>
+<bean id="styleListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.StyleListResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="coverageFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.CoverageResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"><ref bean="data"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="coverageListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.CoverageListResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="coverageStoreFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.CoverageStoreResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"> <ref bean="data"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="coverageStoreListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.CoverageStoreListResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+    </bean>
+  </property>
+</bean> 
+<bean id="layerGroupFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.LayerGroupResource">
+      <property name="WMSConfig"><ref bean="wmsConfig"/></property>
+      <property name="WMS"><ref bean="wms"/></property>
+      <property name="WFS"><ref bean="wfs"/></property>
+      <property name="WCS"><ref bean="wcs"/></property>
+      <property name="geoserver"><ref bean="geoServer"/> </property>
+    </bean>
+  </property>
+</bean> 
+<bean name="layerGroupListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.LayerGroupListResource">
+      <property name="WMSConfig"><ref bean="wmsConfig"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="dummyRestlet" class="org.geoserver.restconfig.DummyRestlet"/>
 
 <bean id="restConfigDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 <property name="alwaysUseFullPath" value="true"/>
 <property name="mappings">
 	<props>
-		<prop key="/api">restconfigwrapper</prop>
-		<prop key="/api/**">restconfigwrapper</prop>
+		<prop key="/api">restWrapper</prop>
+		<prop key="/api/**">restWrapper</prop>
 	</props>
 </property>
 

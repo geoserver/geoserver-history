@@ -1,4 +1,11 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.restconfig;
+
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,67 +16,67 @@ import org.springframework.beans.BeansException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import org.geoserver.platform.GeoServerExtensions;
+
 import com.noelios.restlet.ext.servlet.ServletConverter;
 
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.WMSConfig;
-
 /**
-  * Simple AbstractController implementation that does the translation between
-  * Spring requests and Restlet requests.
-  */
+ * Simple AbstractController implementation that does the translation between
+ * Spring requests and Restlet requests.
+ */
 public class WrappingController extends AbstractController {
+    public static String METHOD_PUT = "PUT";
+    public static String METHOD_DELETE = "DELETE";
+    ServletConverter myConverter;
+    private Router myRouter;
 
-	public static String METHOD_PUT = "PUT";
-	public static String METHOD_DELETE = "DELETE";
+    public WrappingController() {
+        super();
+        setSupportedMethods(new String[] {
+                METHOD_GET, METHOD_POST, METHOD_PUT, METHOD_DELETE, METHOD_HEAD
+            });
+    }
 
-	ServletConverter myConverter;
+    protected void initApplicationContext() throws BeansException {
+        super.initApplicationContext();
 
-        public WrappingController(){
-		super();
-		setSupportedMethods(new String[]{
-				METHOD_GET,
-				METHOD_POST,
-				METHOD_PUT,
-				METHOD_DELETE,
-				METHOD_HEAD}
-		);
-	}
-	
-	protected void initApplicationContext() throws BeansException {
-		super.initApplicationContext();
+        myConverter = new ServletConverter(getServletContext());
+        myConverter.setTarget(createRoot());
+    }
 
-		myConverter = new ServletConverter(getServletContext());
-		myConverter.setTarget(createRoot());
-	}
+    protected ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp)
+        throws Exception {
 
-	protected ModelAndView handleRequestInternal(HttpServletRequest req,
-			HttpServletResponse resp) throws Exception {
-		myConverter.service(req, resp);
+            myConverter.service(req, resp);
 
-		return null;
-	}
+            return null;
+    }
 
-	public Restlet createRoot() {
-		Router router = new Router();
+    public void addRoutes(Map m, Router r){
+        Iterator it = m.keySet().iterator();
 
-		DataConfig dc = (DataConfig) getApplicationContext().getBean("dataConfig");
-		WMSConfig wmsc = (WMSConfig) getApplicationContext().getBean("wmsConfig");
-		router.attach("/datastores", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc, wmsc));
-		router.attach("/datastores/{datastore}", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc, wmsc));
-		// This rule messes everything up: router.attach("/datastores/{datastore}/featuretypes", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc));
-		router.attach("/datastores/{datastore}/featuretypes/{featuretype}", new ResourceFinder(ResourceFinder.RESOURCE_FEATURETYPE, router.getContext(), dc, wmsc));
-                router.attach("/styles/{style}", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc));
-                router.attach("/styles", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc));
-                router.attach("/coverages", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc));
-                router.attach("/coverages/{coverage}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc));
-                router.attach("/dummy/{name}", new DummyRestlet(getApplicationContext()));
-		router.attach("/layergroups", new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), dc, wmsc));
-		router.attach("/layergroups/{group}", new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), dc, wmsc));
-		router.attach("/projections/", new DummyRestlet(getApplicationContext()));
-		router.attach("/projections/{projection}", new DummyRestlet(getApplicationContext()));
-		
-		return router;
-	}
+        while (it.hasNext()){
+            String key = (String)it.next();
 
+            r.attach(key, (Restlet)m.get(key));
+        }
+    }
+
+    public Restlet createRoot() {
+        if (myRouter == null){
+            myRouter = new Router();
+
+            Iterator i = 
+                GeoServerExtensions.extensions(RESTMapping.class).iterator();
+
+            while (i.hasNext()){
+                RESTMapping rm = (RESTMapping)i.next();
+                addRoutes(rm.getRoutes(), myRouter);
+            }
+
+            myRouter.attach("", new BeanResourceFinder(new IndexResource(myRouter)));
+        }
+
+        return myRouter;
+   }
 }

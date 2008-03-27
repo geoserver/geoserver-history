@@ -3,11 +3,11 @@
 All known datastores:
 <ul>
 <#list datastores as datastore>
-  <li><a href="${currentURL}/${datastore.id}">${datastore.id} (${datastore.type})</a>
+  <li><a href="${page.currentURL}/${datastore.id}">${datastore.id} (${datastore.type})</a>
 	<ul>
   	<#if datastore.featuretypes??>
 		<#list datastore.featuretypes as ft>
-		<li><a href="${currentURL}/${datastore.id}/featuretypes/${ft.name}">${ft.name}</a></li>
+		<li><a href="${page.currentURL}/${datastore.id}/featuretypes/${ft}">${ft}</a></li>
 		</#list>
 	<#else>
 		<li>no feature types</li>
