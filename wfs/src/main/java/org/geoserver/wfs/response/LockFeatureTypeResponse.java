@@ -57,7 +57,7 @@ public class LockFeatureTypeResponse extends Response {
         }
 
         String indent = wfs.isVerbose() ? "   " : "";
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output, wfs.getCharSet()));
 
         LockFeatureType lft = (LockFeatureType)operation.getParameters()[0];
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(lft.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
@@ -123,6 +123,7 @@ public class LockFeatureTypeResponse extends Response {
     void write1_1(LockFeatureResponseType lockResponse, OutputStream output, Operation operation)
         throws IOException {
         Encoder encoder = new Encoder(configuration, configuration.schema());
+        encoder.setEncoding(wfs.getCharSet());
         
         LockFeatureType req = (LockFeatureType)operation.getParameters()[0];
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());

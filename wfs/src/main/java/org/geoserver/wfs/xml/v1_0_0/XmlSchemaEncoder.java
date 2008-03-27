@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -76,8 +78,9 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
         }
 
-        byte[] content = xmlResponse.getBytes();
-        output.write(content);
+        Writer writer = new OutputStreamWriter(output, wfs.getCharSet());
+        writer.write(xmlResponse);
+        writer.flush();
     }
 
     /**

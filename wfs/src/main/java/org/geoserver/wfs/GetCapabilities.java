@@ -13,6 +13,7 @@ import net.opengis.wfs.GetCapabilitiesType;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.CapabilitiesTransformer.WFS1_0;
 import org.geotools.util.Version;
 import org.vfny.geoserver.global.Data;
 
@@ -84,15 +85,16 @@ public class GetCapabilities {
             accepted = request.getAcceptVersions().getVersion();
         String version = RequestUtils.getVersionPreOws(provided, accepted);
 
+        final CapabilitiesTransformer capsTransformer;
         if ("1.0.0".equals(version)) {
-            return new CapabilitiesTransformer.WFS1_0(wfs, catalog);
+            capsTransformer = new CapabilitiesTransformer.WFS1_0(wfs, catalog);
+        }else if ("1.1.0".equals(version)) {
+            capsTransformer = new CapabilitiesTransformer.WFS1_1(wfs, catalog);
+        }else{
+            throw new WFSException("Could not understand version:" + version);
         }
-
-        if ("1.1.0".equals(version)) {
-            return new CapabilitiesTransformer.WFS1_1(wfs, catalog);
-        }
-
-        throw new WFSException("Could not understand version:" + version);
+        capsTransformer.setEncoding(wfs.getCharSet());
+        return capsTransformer;
     }
     
     

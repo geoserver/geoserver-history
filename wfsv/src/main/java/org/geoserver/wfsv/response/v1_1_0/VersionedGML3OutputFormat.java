@@ -100,6 +100,7 @@ public class VersionedGML3OutputFormat extends Response {
         }
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
+        encoder.setEncoding(wfs.getCharSet());
 
         // declare wfs schema location
         BaseRequestType gft = (BaseRequestType) getFeature.getParameters()[0];
