@@ -3,9 +3,7 @@
 
 <beans>
 
-<bean id="restWrapper" class="org.geoserver.restconfig.WrappingController"/>
-
-<bean id="restConfigMapping" class="org.geoserver.restconfig.RESTMapping">
+<bean id="restConfigMapping" class="org.geoserver.rest.RESTMapping">
 <property name="routes">
   <map>
         <entry>
@@ -32,10 +30,10 @@
           <key><value>/datastores/{datastore}</value></key>
           <ref bean="datastoreFinder"/>
         </entry>
-        <!--entry>
+        <entry>
           <key><value>/datastores/{datastore}/file.{type}</value></key>
           <ref bean="datastoreFileFinder"/>
-        </entry -->
+        </entry>
         <entry>
           <key><value>/datastores.{type}</value></key>
           <ref bean="datastoreListFinder"/>
@@ -147,14 +145,14 @@
     </bean>
   </property>
 </bean>
-<!--bean id="datastoreFileFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="datastoreFileFinder" class="org.geoserver.restconfig.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreFileResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
       <property name="data"><ref bean="data"/></property>
     </bean>
   </property>
-</bean -->
+</bean>
 <bean id="datastoreListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreListResource">
@@ -227,15 +225,5 @@
 </bean>
 <bean id="dummyRestlet" class="org.geoserver.restconfig.DummyRestlet"/>
 
-<bean id="restConfigDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-<property name="alwaysUseFullPath" value="true"/>
-<property name="mappings">
-	<props>
-		<prop key="/api">restWrapper</prop>
-		<prop key="/api/**">restWrapper</prop>
-	</props>
-</property>
-
-</bean>
 
 </beans>

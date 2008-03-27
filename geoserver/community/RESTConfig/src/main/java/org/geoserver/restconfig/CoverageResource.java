@@ -40,6 +40,10 @@ import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.AutoXMLFormat;
 
 /**
  * Restlet for Style resources
@@ -53,7 +57,7 @@ public class CoverageResource extends MapResource {
     public Map getSupportedFormats() {
         Map m = new HashMap();
         m.put("html",
-            new HTMLFormat("HTMLTemplates/coverage.ftl") {
+            new FreemarkerFormat("HTMLTemplates/coverage.ftl", getClass(), MediaType.TEXT_HTML) {
                 public Map readRepresentation(Representation rep) {
                     try {
                         SAXBuilder builder = new SAXBuilder();

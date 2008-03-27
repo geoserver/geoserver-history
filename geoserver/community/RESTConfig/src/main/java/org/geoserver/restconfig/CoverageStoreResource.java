@@ -25,6 +25,11 @@ import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.dto.DataDTO;
 // import org.geoserver.data.util.CoverageStoreUtils;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.JSONFormat;
+
 public class CoverageStoreResource extends MapResource {
     private DataConfig myDataConfig;
     private Data myData;
@@ -179,7 +184,7 @@ public class CoverageStoreResource extends MapResource {
     public Map getSupportedFormats() {
         Map m = new HashMap();
 
-        m.put("html", new HTMLFormat("HTMLTemplates/coveragestore.ftl"));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/coveragestore.ftl", getClass(), MediaType.TEXT_HTML));
         m.put("json", new JSONFormat());
         m.put("xml", new AutoXMLFormat("coveragestore"));
         m.put(null, m.get("html"));

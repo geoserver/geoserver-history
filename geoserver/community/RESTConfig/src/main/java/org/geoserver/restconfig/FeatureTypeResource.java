@@ -26,6 +26,12 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
+
+import org.restlet.data.MediaType;
 
 /**
  * Restlet for DataStore resources
@@ -57,7 +63,7 @@ public class FeatureTypeResource extends MapResource {
     public Map getSupportedFormats() {
         Map m = new HashMap();
 
-        m.put("html", new HTMLFormat("HTMLTemplates/featuretype.ftl"));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/featuretype.ftl", getClass(), MediaType.TEXT_HTML));
         m.put("json", new JSONFormat());
         m.put("xml", new AutoXMLFormat("FeatureType"));
         m.put(null, m.get("html"));

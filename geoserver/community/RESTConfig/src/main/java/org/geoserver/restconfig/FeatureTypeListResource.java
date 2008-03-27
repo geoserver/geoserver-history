@@ -13,6 +13,12 @@ import java.util.Map;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.AutoXMLFormat;
+
+import org.restlet.data.MediaType;
 
 /**
  * Restlet for DataStore resources
@@ -33,7 +39,7 @@ public class FeatureTypeListResource extends MapResource {
     public Map getSupportedFormats() {
         Map m = new HashMap();
 
-        m.put("html", new HTMLFormat("HTMLTemplates/featuretype.ftl"));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/featuretype.ftl", getClass(), MediaType.TEXT_HTML));
         m.put("json", new JSONFormat());
         m.put("xml", new AutoXMLFormat("FeatureTypes"));
         m.put(null, m.get("html"));

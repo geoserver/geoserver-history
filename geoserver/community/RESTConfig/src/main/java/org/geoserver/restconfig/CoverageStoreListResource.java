@@ -9,9 +9,14 @@ import java.util.Map;
 
 import org.restlet.Context;
 import org.restlet.data.Request;
+import org.restlet.data.MediaType;
 import org.restlet.data.Response;
 import org.vfny.geoserver.config.DataConfig;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.FreemarkerFormat;
 
 public class CoverageStoreListResource extends MapResource {
     private DataConfig myDataConfig;
@@ -45,7 +50,7 @@ public class CoverageStoreListResource extends MapResource {
 
     public Map getSupportedFormats() {
         Map m = new HashMap();
-        m.put("html", new HTMLFormat("HTMLTemplates/coveragestores.ftl"));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/coveragestores.ftl", getClass(), MediaType.TEXT_HTML));
         m.put("json", new JSONFormat());
         m.put("xml", new AutoXMLFormat("coveragestores"));
         m.put(null, m.get("html"));

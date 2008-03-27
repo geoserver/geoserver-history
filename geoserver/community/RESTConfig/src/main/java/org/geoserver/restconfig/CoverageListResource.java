@@ -15,6 +15,12 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.vfny.geoserver.config.DataConfig;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
+
+import org.restlet.data.MediaType;
 
 /**
  * Restlet for Style resources
@@ -27,7 +33,7 @@ public class CoverageListResource extends MapResource {
     public Map getSupportedFormats() {
         Map m = new HashMap();
 
-        m.put("html", new HTMLFormat("HTMLTemplates/coverages.ftl"));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/coverages.ftl", getClass(), MediaType.TEXT_HTML));
         m.put("json", new JSONFormat());
         m.put("xml", new AutoXMLFormat("coveragestore"));
         m.put(null, m.get("html"));

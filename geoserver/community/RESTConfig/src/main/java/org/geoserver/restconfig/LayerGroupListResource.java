@@ -13,8 +13,13 @@ import java.util.Map;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.data.MediaType;
 import org.vfny.geoserver.config.WMSConfig;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
 
 /**
  * Restlet for Style resources
@@ -44,7 +49,7 @@ class LayerGroupListResource extends MapResource {
 
     public Map getSupportedFormats() {
         Map m = new HashMap();
-        m.put("html", new HTMLFormat("HTMLTemplates/layergroups.ftl"));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/layergroups.ftl", getClass(), MediaType.TEXT_HTML));
         m.put("json", new JSONFormat());
         m.put("xml",  new AutoXMLFormat("layergroups"));
         m.put(null, m.get("html"));
