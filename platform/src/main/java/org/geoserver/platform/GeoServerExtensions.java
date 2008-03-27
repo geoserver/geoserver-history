@@ -5,6 +5,7 @@
 package org.geoserver.platform;
 
 import org.geotools.util.SoftValueHashMap;
+import org.geotools.util.logging.Logging;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -14,6 +15,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -33,6 +35,11 @@ import java.util.List;
  *
  */
 public class GeoServerExtensions implements ApplicationContextAware, ApplicationListener {
+    
+    /**
+     * logger 
+     */
+    public static Logger LOGGER = Logging.getLogger( "org.geoserver" );
     
     /**
      * Caches the names of the beans for a particular type, so that the lookup (expensive)

@@ -11,11 +11,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
 
+import org.geoserver.data.DataStoreFactoryInitializer;
 import org.geoserver.feature.FeatureSourceUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
@@ -64,9 +67,15 @@ public abstract class DataStoreUtils {
      * @return
      */
     public static DataStore getDataStore(Map params) throws IOException {
-        DataStore store = DataStoreFinder.getDataStore(params);
-        if(store == null)
+        DataStoreFactorySpi factory = aquireFactory(params);
+        if ( factory == null ) {
             return null;
+        }
+        
+        DataStore store = factory.createDataStore(params);
+        if ( store == null ) {
+            return null;
+        }
         
         String[] names = store.getTypeNames();
         for (int i = 0; i < names.length; i++) {
@@ -109,7 +118,8 @@ public abstract class DataStoreUtils {
     public static DataStoreFactorySpi aquireFactory(Map params) {
         for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
-
+            initializeDataStoreFactory( factory );
+            
             if (factory.canProcess(params)) {
                 return factory;
             }
@@ -143,7 +153,8 @@ public abstract class DataStoreUtils {
     public static DataStoreFactorySpi aquireFactory(String displayName) {
         for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
-
+            initializeDataStoreFactory( factory );
+            
             if (factory.getDisplayName().equals(displayName)) {
                 return factory;
             }
@@ -156,6 +167,29 @@ public abstract class DataStoreUtils {
         return null;
     }
 
+    /**
+     * Initializes a newly created data store factory by processing the {@link DataStoreFactoryInitializer} 
+     * extension point.
+     *
+     */
+    static DataStoreFactorySpi initializeDataStoreFactory( DataStoreFactorySpi factory ) {
+        List initializers = GeoServerExtensions.extensions( DataStoreFactoryInitializer.class );
+        for ( Iterator i = initializers.iterator(); i.hasNext(); ) {
+            DataStoreFactoryInitializer initer = (DataStoreFactoryInitializer) i.next();
+            if ( initer.getFactoryClass().isAssignableFrom( factory.getClass() ) ) {
+                try {
+                    initer.initialize( factory );
+                }
+                catch( Throwable t ) {
+                    String msg = "Error occured processing extension: " + initer.getClass().getName();
+                    GeoServerExtensions.LOGGER.log( Level.WARNING, msg, t );
+                }
+            }
+        }
+        
+        return factory;
+    }
+    
     /**
      * Utility method for finding Params
      *
@@ -200,6 +234,8 @@ public abstract class DataStoreUtils {
 
         for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
+            initializeDataStoreFactory(factory);
+            
             list.add(factory.getDisplayName());
         }
 
