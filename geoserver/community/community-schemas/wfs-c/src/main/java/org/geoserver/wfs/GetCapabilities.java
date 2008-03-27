@@ -151,14 +151,15 @@ public class GetCapabilities {
             }
         }
 
+        final CapabilitiesTransformer capsTransformer;
         if ("1.0.0".equals(version)) {
-            return new CapabilitiesTransformer.WFS1_0(wfs, catalog);
+            capsTransformer = new CapabilitiesTransformer.WFS1_0(wfs, catalog);
+        }else if ("1.1.0".equals(version)) {
+            capsTransformer = new CapabilitiesTransformer.WFS1_1(wfs, catalog);
+        }else{
+            throw new WFSException("Could not understand version:" + version);
         }
-
-        if ("1.1.0".equals(version)) {
-            return new CapabilitiesTransformer.WFS1_1(wfs, catalog);
-        }
-
-        throw new WFSException("Could not understand version:" + version);
+        capsTransformer.setEncoding(wfs.getCharSet());
+        return capsTransformer;
     }
 }

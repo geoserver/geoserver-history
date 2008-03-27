@@ -196,6 +196,7 @@ public class TransactionResponse extends Response {
         }
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
+        encoder.setEncoding(wfs.getCharSet());
 
         TransactionType req = (TransactionType) operation.getParameters()[0];
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(),

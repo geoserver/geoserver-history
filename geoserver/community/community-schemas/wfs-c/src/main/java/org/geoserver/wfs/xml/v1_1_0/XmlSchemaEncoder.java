@@ -55,6 +55,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
         //serialize
         schema.updateElement();
-        XSDResourceImpl.serialize(output, schema.getElement());
+        final String encoding = wfs.getCharSet().name();
+        XSDResourceImpl.serialize(output, schema.getElement(), encoding);
     }
 }
