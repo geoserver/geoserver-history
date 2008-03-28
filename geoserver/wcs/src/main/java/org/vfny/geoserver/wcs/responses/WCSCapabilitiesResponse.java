@@ -89,7 +89,7 @@ public class WCSCapabilitiesResponse implements Response {
         }
         int geoUS = request.getServiceRef().getServiceRef().getGeoServer().getUpdateSequence();
     	if (reqUS > geoUS) {
-    		throw new WcsException("Client supplied an updateSequence that is greater than the current sever updateSequence", WcsExceptionCode.InvalidParameterValue, "");
+    		throw new WcsException("Client supplied an updateSequence that is greater than the current sever updateSequence", WcsExceptionCode.InvalidUpdateSequence, "");
     	}
     	if (reqUS == geoUS) {
     		throw new WcsException("WCS capabilities document is current (updateSequence = " + geoUS + ")", WcsExceptionCode.CurrentUpdateSequence, "");
