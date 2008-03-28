@@ -4,8 +4,13 @@
  */
 package org.vfny.geoserver.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
@@ -75,6 +80,11 @@ public class WMSConfig extends ServiceConfig {
     private Map baseMapEnvelopes;
     private String allowInterpolation;
 
+    /**
+     * Set of EPSG codes used to limit the number of SRS elements displayed in
+     * the GetCapabilities document
+     */
+    private Set/*<String>*/ capabilitiesCrs;
 
     /**
      * WMS constructor.
@@ -97,6 +107,7 @@ public class WMSConfig extends ServiceConfig {
         baseMapLayers = new HashMap();
         baseMapStyles = new HashMap();
         baseMapEnvelopes = new HashMap();
+        capabilitiesCrs = new HashSet();
     }
 
     /**
@@ -121,6 +132,7 @@ public class WMSConfig extends ServiceConfig {
         baseMapLayers = w.getBaseMapLayers();
         baseMapStyles = w.getBaseMapStyles();
         baseMapEnvelopes = w.getBaseMapEnvelopes();
+        capabilitiesCrs = w.getCapabilitiesCrs();
     }
 
     /**
@@ -161,6 +173,7 @@ public class WMSConfig extends ServiceConfig {
         baseMapLayers = dto.getBaseMapLayers();
         baseMapStyles = dto.getBaseMapStyles();
         baseMapEnvelopes = dto.getBaseMapEnvelopes();
+        capabilitiesCrs = dto.getCapabilitiesCrs();
     }
 
     /**
@@ -187,7 +200,8 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setBaseMapLayers(baseMapLayers);
         wmsDto.setBaseMapStyles(baseMapStyles);
         wmsDto.setBaseMapEnvelopes(baseMapEnvelopes);
-
+        wmsDto.setCapabilitiesCrs(capabilitiesCrs);
+        
         return wmsDto;
     }
 
@@ -303,4 +317,11 @@ public class WMSConfig extends ServiceConfig {
         this.watermarkPosition = watermarkPosition;
     }
 
+    public Set getCapabilitiesCrs(){
+        return new TreeSet(capabilitiesCrs);
+    }
+    
+    public void setCapabilitiesCrs(Set crsList) {
+        this.capabilitiesCrs = crsList == null ? new TreeSet() : new TreeSet(crsList);
+    }
 }

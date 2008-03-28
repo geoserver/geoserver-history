@@ -10,6 +10,8 @@
 package org.vfny.geoserver.global.dto;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -66,6 +68,13 @@ public final class WMSDTO implements DataTransferObject {
     private int watermarkPosition;
 
     /**
+     * Set of EPSG codes used to limit the number of SRS elements displayed in
+     * the GetCapabilities document
+     */
+    private Set/*<String>*/ capabilitiesCrs = new TreeSet();
+    
+    
+    /**
      * WMS constructor.  does nothing
      */
     public WMSDTO() {
@@ -100,6 +109,7 @@ public final class WMSDTO implements DataTransferObject {
         baseMapLayers = other.getBaseMapLayers();
         baseMapStyles = other.getBaseMapStyles();
         baseMapEnvelopes = other.getBaseMapEnvelopes();
+        capabilitiesCrs = other.getCapabilitiesCrs();
     }
 
     /**
@@ -181,6 +191,8 @@ public final class WMSDTO implements DataTransferObject {
             }
         }
 
+        equals = capabilitiesCrs.equals(dto.getCapabilitiesCrs());
+        
         return equals;
     }
 
@@ -200,7 +212,8 @@ public final class WMSDTO implements DataTransferObject {
         | ((svgRenderer == null) ? 0 : svgRenderer.hashCode())
         | ((baseMapLayers == null) ? 0 : baseMapLayers.hashCode())
         | ((baseMapStyles == null) ? 0 : baseMapStyles.hashCode())
-        | ((baseMapEnvelopes == null) ? 0 : baseMapEnvelopes.hashCode());
+        | ((baseMapEnvelopes == null) ? 0 : baseMapEnvelopes.hashCode())
+        | capabilitiesCrs.hashCode();
     }
 
     /**
@@ -361,5 +374,17 @@ public final class WMSDTO implements DataTransferObject {
 
     public void setWatermarkPosition(int watermarkPosition) {
         this.watermarkPosition = watermarkPosition;
+    }
+    
+    public Set getCapabilitiesCrs(){
+        return new TreeSet(capabilitiesCrs);
+    }
+    
+    public void setCapabilitiesCrs(Set crsList){
+        if(crsList == null){
+            this.capabilitiesCrs.clear();
+        }else{
+            this.capabilitiesCrs = new TreeSet(crsList);
+        }
     }
 }

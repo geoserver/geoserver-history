@@ -10,24 +10,25 @@ import org.vfny.geoserver.global.dto.WMSDTO;
 
 import java.util.Collections;
 import java.util.Map;
-
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * WMS
- *
+ * 
  * <p>
- * Represents the GeoServer information required to configure an  instance of
- * the WMS Server. This class holds the currently used  configuration and is
- * instantiated initially by the GeoServerPlugIn  at start-up, but may be
- * modified by the Configuration Interface  during runtime. Such modifications
- * come from the GeoServer Object  in the SessionContext.
+ * Represents the GeoServer information required to configure an instance of the
+ * WMS Server. This class holds the currently used configuration and is
+ * instantiated initially by the GeoServerPlugIn at start-up, but may be
+ * modified by the Configuration Interface during runtime. Such modifications
+ * come from the GeoServer Object in the SessionContext.
  * </p>
- *
+ * 
  * <p>
  * WMS wms = new WMS(dto); System.out.println(wms.getName() + wms.WMS_VERSION);
  * System.out.println(wms.getAbstract());
  * </p>
- *
+ * 
  * @author Gabriel Rold???n
  * @version $Id$
  */
@@ -39,40 +40,53 @@ public class WMS extends Service {
     private static final String FIXED_SERVICE_NAME = "OGC:WMS";
 
     /** list of WMS Exception Formats */
-    private static final String[] EXCEPTION_FORMATS = {
-            "application/vnd.ogc.se_xml", //DJB: these arent actually supported!!
-                                          //"application/vnd.ogc.se_inimage",
-                                          //  "application/vnd.ogc.se_blank"
-        };
+    private static final String[] EXCEPTION_FORMATS = { "application/vnd.ogc.se_xml", // DJB:
+    // these
+    // arent
+    // actually
+    // supported!!
+    // "application/vnd.ogc.se_inimage",
+    // "application/vnd.ogc.se_blank"
+    };
+
     public static final String WEB_CONTAINER_KEY = "WMS";
-    
+
     public static final int WATERMARK_UL = 0;
+
     public static final int WATERMARK_UC = 1;
+
     public static final int WATERMARK_UR = 2;
+
     public static final int WATERMARK_CL = 3;
+
     public static final int WATERMARK_CC = 4;
+
     public static final int WATERMARK_CR = 5;
+
     public static final int WATERMARK_LL = 6;
+
     public static final int WATERMARK_LC = 7;
+
     public static final int WATERMARK_LR = 8;
 
-    /** svg Renderer to use **/
+    /** svg Renderer to use * */
     private String svgRenderer;
 
-    /** svg anitalias or not **/
+    /** svg anitalias or not * */
     private boolean svgAntiAlias;
 
-    /** global Watermarking **/
+    /** global Watermarking * */
     private boolean globalWatermarking;
 
-    /** global Watermarking URL **/
+    /** global Watermarking URL * */
     private String globalWatermarkingURL;
-    
-    /** globlal Watermarking alpha **/
+
+    /** globlal Watermarking alpha * */
     private int watermarkTransparency;
-    
-    /** 
+
+    /**
      * Watermark position
+     * 
      * <pre>
      * O -- O -- O      0 -- 1 -- 2
      * |    |    |      |    |    |
@@ -80,26 +94,36 @@ public class WMS extends Service {
      * |    |    |      |    |    |
      * O -- O -- O      6 -- 7 -- 8
      * </pre>
-     *
+     * 
      */
     private int watermarkPosition;
 
-    /** rendering interpolation or not **/
+    /** rendering interpolation or not * */
     private Map baseMapLayers;
+
     private Map baseMapStyles;
+
     private Map baseMapEnvelopes;
+
     private String allowInterpolation;
+
     private WFS wfs;
 
     /**
+     * Limited set of CRS codes displayed in the capabilities document
+     */
+    private Set capabilitiesCrsList = Collections.EMPTY_SET;
+
+    /**
      * WMS constructor.
-     *
+     * 
      * <p>
      * Stores the data specified in the WMSDTO object in this WMS Object for
      * GeoServer to use.
      * </p>
-     *
-     * @param config The data intended for GeoServer to use.
+     * 
+     * @param config
+     *            The data intended for GeoServer to use.
      */
     public WMS(WMSDTO config) {
         super(config.getService());
@@ -114,19 +138,20 @@ public class WMS extends Service {
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
         baseMapEnvelopes = config.getBaseMapEnvelopes();
+        capabilitiesCrsList = config.getCapabilitiesCrs();
     }
 
     /**
-     * Creates the WMS service by getting the WMSDTO object from the
-     * config and calling {@link #WMS(WMSDTO)}.
-     *
+     * Creates the WMS service by getting the WMSDTO object from the config and
+     * calling {@link #WMS(WMSDTO)}.
+     * 
      * @param config
      * @param data
      * @param geoServer
      * @throws ConfigurationException
      */
     public WMS(Config config, Data data, GeoServer geoServer, WFS wfs)
-        throws ConfigurationException {
+            throws ConfigurationException {
         this(config.getWms());
         setData(data);
         setGeoServer(geoServer);
@@ -134,8 +159,9 @@ public class WMS extends Service {
     }
 
     /**
-     * Quick hack to fix geot-770, need a full class rewrite otherwise and
-     * we are too near release to do that
+     * Quick hack to fix geot-770, need a full class rewrite otherwise and we
+     * are too near release to do that
+     * 
      * @return
      */
     public WFS getWFS() {
@@ -143,12 +169,13 @@ public class WMS extends Service {
     }
 
     /**
-    * load purpose.
-    * <p>
-    * loads a new instance of data into this object.
-    * </p>
-    * @param config
-    */
+     * load purpose.
+     * <p>
+     * loads a new instance of data into this object.
+     * </p>
+     * 
+     * @param config
+     */
     public void load(WMSDTO config) {
         super.load(config.getService());
         svgRenderer = config.getSvgRenderer();
@@ -161,15 +188,16 @@ public class WMS extends Service {
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
         baseMapEnvelopes = config.getBaseMapEnvelopes();
+        capabilitiesCrsList = config.getCapabilitiesCrs();
     }
 
     /**
      * WMS constructor.
-     *
+     * 
      * <p>
      * Package constructor intended for default use by GeoServer
      * </p>
-     *
+     * 
      * @see GeoServer#GeoServer()
      */
     WMS() {
@@ -179,16 +207,16 @@ public class WMS extends Service {
 
     /**
      * Implement toDTO.
-     *
+     * 
      * <p>
      * Package method used by GeoServer. This method may return references, and
      * does not clone, so extreme caution sould be used when traversing the
      * results.
      * </p>
-     *
+     * 
      * @return WMSDTO An instance of the data this class represents. Please see
      *         Caution Above.
-     *
+     * 
      * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
      * @see WMSDTO
      */
@@ -205,17 +233,18 @@ public class WMS extends Service {
         w.setBaseMapLayers(baseMapLayers);
         w.setBaseMapStyles(baseMapStyles);
         w.setBaseMapEnvelopes(baseMapEnvelopes);
+        w.setCapabilitiesCrs(capabilitiesCrsList);
 
         return w;
     }
 
     /**
      * getExceptionFormats purpose.
-     *
+     * 
      * <p>
      * Returns a static list of Exception Formats in as Strings
      * </p>
-     *
+     * 
      * @return String[] a static list of Exception Formats
      */
     public String[] getExceptionFormats() {
@@ -225,7 +254,7 @@ public class WMS extends Service {
     /**
      * overrides getName() to return the fixed service name as specified by OGC
      * WMS 1.1 spec
-     *
+     * 
      * @return static service name.
      */
     public String getName() {
@@ -234,7 +263,7 @@ public class WMS extends Service {
 
     /**
      * Returns the version of this WMS Instance.
-     *
+     * 
      * @return static version name
      */
     public static String getVersion() {
@@ -242,43 +271,44 @@ public class WMS extends Service {
     }
 
     /**
-     * Informs the user that this WMS supports SLD.  We don't currently
-     * handle sld, still needs to be rolled in from geotools, so this now
-     * must be false.
-     *
-     *  //djb: we support it now
-     *
+     * Informs the user that this WMS supports SLD. We don't currently handle
+     * sld, still needs to be rolled in from geotools, so this now must be
+     * false.
+     * 
+     * //djb: we support it now
+     * 
      * @return false
      */
     public boolean supportsSLD() {
-        return true; //djb: we support it now
+        return true; // djb: we support it now
     }
 
     /**
      * Informs the user that this WMS supports User Layers
-     *
+     * 
      * @return false
      */
     public boolean supportsUserLayer() {
-        return true; //djb we support this partially - we support inlinefeatures.  Soon we'll support remote wfs
+        return true; // djb we support this partially - we support
+        // inlinefeatures. Soon we'll support remote wfs
     }
 
     /**
      * Informs the user that this WMS supports User Styles
-     *
+     * 
      * @return false
      */
     public boolean supportsUserStyle() {
-        return true; //djb: we support this now!
+        return true; // djb: we support this now!
     }
 
     /**
      * Informs the user that this WMS supports Remote WFS.
-     *
+     * 
      * @return false
      */
     public boolean supportsRemoteWFS() {
-        return true; 
+        return true;
     }
 
     /**
@@ -303,7 +333,8 @@ public class WMS extends Service {
     }
 
     /**
-     * Sets the Flag indicating wether the svg renderer should anti-alias or not.
+     * Sets the Flag indicating wether the svg renderer should anti-alias or
+     * not.
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
         this.svgAntiAlias = svgAntiAlias;
@@ -377,5 +408,14 @@ public class WMS extends Service {
 
     public void setWatermarkPosition(int watermarkPosition) {
         this.watermarkPosition = watermarkPosition;
+    }
+
+    public Set getCapabilitiesCrsList() {
+        return new TreeSet(capabilitiesCrsList);
+    }
+
+    public void setCapabilitiesCrsList(Set epsgCodes) {
+        this.capabilitiesCrsList = epsgCodes == null ? Collections.EMPTY_SET : new TreeSet(
+                epsgCodes);
     }
 }
