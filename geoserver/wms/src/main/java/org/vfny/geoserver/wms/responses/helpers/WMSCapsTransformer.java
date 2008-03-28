@@ -560,7 +560,10 @@ public class WMSCapsTransformer extends TransformerBase {
 
                 while (it.hasNext()) {
                     currentSRS = it.next().toString();
-                    element("SRS", EPSG + currentSRS);
+                    if(currentSRS.indexOf(':') == -1){
+                        currentSRS = EPSG + currentSRS;
+                    }
+                    element("SRS", currentSRS);
                 }
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
