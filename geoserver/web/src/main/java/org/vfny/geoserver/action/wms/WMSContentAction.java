@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.util.MessageResources;
+import org.geotools.data.ows.Capabilities;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -378,6 +380,7 @@ public final class WMSContentAction extends ConfigAction {
             HashMap layerMap = new HashMap();
             HashMap styleMap = new HashMap();
             HashMap envelopeMap = new HashMap();
+            Set capabilitiesCrsList =  contentForm.getCapabilitiesCrsList();
 
             int bmi;
             Iterator it;
@@ -435,6 +438,7 @@ public final class WMSContentAction extends ConfigAction {
             config.setBaseMapLayers(layerMap);
             config.setBaseMapStyles(styleMap);
             config.setBaseMapEnvelopes(envelopeMap);
+            config.setCapabilitiesCrs(capabilitiesCrsList);
 
             getApplicationState().notifyConfigChanged();
 

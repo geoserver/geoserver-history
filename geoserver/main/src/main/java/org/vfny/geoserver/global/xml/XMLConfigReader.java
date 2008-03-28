@@ -19,10 +19,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -905,6 +907,23 @@ public class XMLConfigReader {
         wms = new WMSDTO();
         wms.setService(loadService(wmsElement));
 
+        final String spaceSeparatedListOfCrsCodes = ReaderUtils.getChildText(wmsElement, "capabilitiesCrsList");
+        if(spaceSeparatedListOfCrsCodes != null){
+            final String[] codes = spaceSeparatedListOfCrsCodes.split(",");
+            Set capabilitiesCrsCodes = new HashSet();
+            for(int i = 0; i < codes.length; i++){
+                String code = codes[i].toUpperCase().trim();
+                try{
+                    CRS.decode(code);
+                    capabilitiesCrsCodes.add(code);
+                }catch(Exception e){
+                    LOGGER.warning("Invalid CRS code found in capabilitiesCrsList: '" + code
+                            + "' is not a known CRS identifier");
+                }
+            }
+            wms.setCapabilitiesCrs(capabilitiesCrsCodes);
+        }
+        
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
         wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
 

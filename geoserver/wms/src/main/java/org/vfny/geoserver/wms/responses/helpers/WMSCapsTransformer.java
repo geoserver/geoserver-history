@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -497,16 +498,16 @@ public class WMSCapsTransformer extends TransformerBase {
 
             element("Title", wms.getTitle());
             element("Abstract", wms.getAbstract());
-
-            handleRootCrsList();
-
+            
+            handleRootCrsList(wms.getCapabilitiesCrsList());
+            
             {
                 List layers = new ArrayList(ftypes.size() + coverages.size());
                 layers.addAll(ftypes);
                 layers.addAll(coverages);
                 handleRootBbox(layers);
             }
-
+            
             // now encode each layer individually
             LayerTree featuresLayerTree = new LayerTree(ftypes);
             handleFeaturesTree(featuresLayerTree);
@@ -527,22 +528,42 @@ public class WMSCapsTransformer extends TransformerBase {
 
             end("Layer");
         }
+        
 
         /**
          * Called by <code>handleLayers()</code>, writes down list of
          * supported CRS's for the root Layer.
+         * <p>
+         * If <code>epsgCodes</code> is not empty, the list of supported CRS
+         * identifiers written down to the capabilities document is limited to
+         * those in the <code>epsgCodes</code> list. Otherwise, all the
+         * GeoServer supported CRS identifiers are used.
+         * </p>
+         * 
+         * @param epsgCodes
+         *            possibly empty set of CRS identifiers to limit the number
+         *            of SRS elements to.
          */
-        private void handleRootCrsList() {
-            comment("All supported EPSG projections:");
-
+        private void handleRootCrsList(final Set epsgCodes) {
+            final Set capabilitiesCrsIdentifiers;
+            if(epsgCodes.isEmpty()){
+                comment("All supported EPSG projections:");
+                capabilitiesCrsIdentifiers = CRS.getSupportedCodes("EPSG");
+            }else{
+                comment("Limited list of EPSG projections:");
+                capabilitiesCrsIdentifiers = new TreeSet(epsgCodes);
+            }
+            
             try {
-                Set s = CRS.getSupportedCodes("EPSG");
-                Iterator it = s.iterator();
+                Iterator it = capabilitiesCrsIdentifiers.iterator();
                 String currentSRS;
 
                 while (it.hasNext()) {
                     currentSRS = it.next().toString();
-                    element("SRS", EPSG + currentSRS);
+                    if(currentSRS.indexOf(':') == -1){
+                        currentSRS = EPSG + currentSRS;
+                    }
+                    element("SRS", currentSRS);
                 }
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
@@ -594,21 +615,6 @@ public class WMSCapsTransformer extends TransformerBase {
                     }
                 }
                 latlonBbox.expandToInclude(layerBbox);
-            }
-
-            comment("All supported EPSG projections:");
-
-            try {
-                Set s = CRS.getSupportedCodes("EPSG");
-                Iterator it = s.iterator();
-                String currentSRS;
-
-                while (it.hasNext()) {
-                    currentSRS = it.next().toString();
-                    element("SRS", EPSG + currentSRS);
-                }
-            } catch (Exception e) {
-                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
             }
 
             if (LOGGER.isLoggable(Level.FINE)) {
