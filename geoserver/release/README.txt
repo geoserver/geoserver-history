@@ -1,3 +1,67 @@
+GeoServer 1.7.0-alpha1 
+----------------------
+
+The first release of the 1.7.x branch. This release is experimental and marked as an alpha. The major developments of 1.7 are Xlink support for WFS 1.1 and a full implementation of WCS 1.1.1.
+
+This release is based on GeoTools 2.5.x:
+  revision = 29730, 
+  svn tag = 'geoserver-1.7.0-alpha1'
+
+
+GeoServer 1.6.0
+---------------
+
+The official 1.6.0 release of GeoServer. The 1.6 branch contians new features not present in 1.5. The highlights include:
+
+* WFS 1.1 
+* WMS performance enhancements
+* Security
+* WFS Versioning Extension (experimental)
+* WFS reprojection 
+* KML Superoverlays, Templates, and general improvements 
+* GeoJSON and GeoRSS output formats
+
+And many many more. Check out the entire 1.6.x changelog:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=12871&fixfor=13993&fixfor=13874&fixfor=13631&fixfor=13619&fixfor=13675&fixfor=13547&fixfor=13250&fixfor=13200&pid=10311&sorter/field=issuekey&sorter/order=DESC
+
+This release is based off of Geotools 2.4.0. 
+
+GeoServer 1.6.0-RC3
+-------------------
+
+This release is the third release candidate for 1.6.0. It addresses some very 
+important performance and scalability issues regarding memory leaks. With a 
+few other odds and ends. The changlog is available here:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?version=13993&styleName=Text&projectId=10311
+
+This release is based off of Geotools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc3,
+revision = 28790
+
+GeoServer 1.6.0-RC2
+-------------------
+
+This release is the second release candidate for 1.6.0. It includes some key
+bug fixes since RC1. Notable fixes since RC1 include:
+
+* KML / SLD rule processing
+* better error reporting for invalid XML requests
+* request parameter to enable XML validation
+* datastore fixes including PostGIS reprojection and Oracle permissions
+* SVG rendering improvements
+
+Also in this release are some notable improvements to the experimental
+Versioning WFS support, which includes the addition of
+VersionedFeatureCollection.
+
+The entire changelog can be found here:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?version=13874&styleName=Text&projectId=10311
+
+This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc2,
+revision = 28406
+
 GeoServer 1.6-rc1
 ---------------------
 
