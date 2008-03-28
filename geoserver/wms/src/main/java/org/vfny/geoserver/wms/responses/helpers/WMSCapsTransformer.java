@@ -498,11 +498,13 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Title", wms.getTitle());
             element("Abstract", wms.getAbstract());
 
+            handleRootCrsList();
+
             {
                 List layers = new ArrayList(ftypes.size() + coverages.size());
                 layers.addAll(ftypes);
                 layers.addAll(coverages);
-                handleRootSRSAndBbox(layers);
+                handleRootBbox(layers);
             }
 
             // now encode each layer individually
@@ -527,14 +529,36 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Called from <code>handleLayers()</code>, does the first iteration
-         * over the available featuretypes and coverages to summarize their LatLonBBox'es, to
-         * state at the root layer, and writes down the list of supported SRS's.
+         * Called by <code>handleLayers()</code>, writes down list of
+         * supported CRS's for the root Layer.
+         */
+        private void handleRootCrsList() {
+            comment("All supported EPSG projections:");
+
+            try {
+                Set s = CRS.getSupportedCodes("EPSG");
+                Iterator it = s.iterator();
+                String currentSRS;
+
+                while (it.hasNext()) {
+                    currentSRS = it.next().toString();
+                    element("SRS", EPSG + currentSRS);
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+            }
+        }
+
+        /**
+         * Called by <code>handleLayers()</code>, iterates over the available
+         * featuretypes and coverages to summarize their LatLonBBox'es and write
+         * the aggregated bounds for the root layer.
          * 
          * @param ftypes
-         *            the collection of FeatureTypeInfo and CoverageInfo objects to traverse
+         *            the collection of FeatureTypeInfo and CoverageInfo objects
+         *            to traverse
          */
-        private void handleRootSRSAndBbox(Collection ftypes) {
+        private void handleRootBbox(Collection ftypes) {
             Envelope latlonBbox = new Envelope();
             Envelope layerBbox = null;
 
