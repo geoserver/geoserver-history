@@ -45,9 +45,9 @@ public class FolderConfigFinder extends Finder {
         if (resource instanceof Map){
             r = new VirtualFolderResource(resource);
         } else if (resource instanceof CoverageStoreConfig){
-            r = new CoverageStoreResource(); // (CoverageStoreConfig) resource);
+            r = new CoverageStoreResource(getData(), getDataConfig()); // (CoverageStoreConfig) resource);
         } else if (resource instanceof DataStoreConfig) {
-            r = new DataStoreResource(); // (DataStoreConfig)resource);
+            r = new DataStoreResource(getData(), getDataConfig()); // (DataStoreConfig)resource);
         }
 /** 
         if (getDataConfig().getDataFormatIds().contains(folder)){
