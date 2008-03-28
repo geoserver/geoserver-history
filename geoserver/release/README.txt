@@ -1,12 +1,49 @@
 GeoServer 1.7.0-alpha1 
 ----------------------
 
-The first release of the 1.7.x branch. This release is experimental and marked as an alpha. The major developments of 1.7 are Xlink support for WFS 1.1 and a full implementation of WCS 1.1.1.
+The first release of the 1.7.x branch. This release is experimental and marked
+as an alpha. The major developments of 1.7 are Xlink support for WFS 1.1 and a
+full implementation of WCS 1.1.1.
 
 This release is based on GeoTools 2.5.x:
   revision = 29730, 
   svn tag = 'geoserver-1.7.0-alpha1'
 
+
+GeoServer 1.6.2a
+----------------
+Fixed path parsing issue in demo section.
+
+
+GeoServer 1.6.2
+---------------
+This release contains one small but important patch since 1.6.1:
+
+* Data_dir inside .war distribution is now hidden by default
+
+See http://jira.codehaus.org/browse/GEOS-1785
+
+This release is based off of Geotools 2.4.1
+
+
+Changes:
+http://jira.codehaus.org/browse/GEOS-1785
+
+
+GeoServer 1.6.1
+---------------
+This release has over 40 patches and improvements since 1.6.0. They include
+
+* Feature type aliases
+* Max features support, defined per feature type
+* GetFeatureInfo on coverages
+* Generate PDFs from coverages
+* UpdateSequence support in WMS and WCS
+
+And many many more. Check out the entire 1.6.x changelog:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=14070&pid=10311&sorter/field=issuekey&sorter/order=DESC
+
+This release is based off of Geotools 2.4.1. 
 
 GeoServer 1.6.0
 ---------------
