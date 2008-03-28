@@ -44,7 +44,6 @@
           <ref bean="folderListFinder"/>
         </entry>
 
-<!--    Leave out everything but the data for now 
         <entry>
           <key><value>/styles/{style}.{type}</value></key>
           <ref bean="styleFinder"/>
@@ -61,6 +60,7 @@
           <key><value>/styles</value></key>
           <ref bean="styleListFinder"/>
         </entry>
+<!--    Leave out everything but the data and styles for now 
         <entry>
           <key><value>/layergroups/{group}.{type}</value></key>
           <ref bean="layerGroupFinder"/>
