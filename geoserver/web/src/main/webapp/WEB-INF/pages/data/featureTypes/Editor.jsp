@@ -90,7 +90,7 @@ function prepareFormData(){
         <table>
         	<tr>
         		<td>
-        			<html:select property="panelStyleIds" multiple="multiple">
+        			<html:select property="panelStyleIds" multiple="multiple" size="8">
           				<html:options property="styles"/>
         			</html:select>
         		</td>
@@ -100,7 +100,7 @@ function prepareFormData(){
         			<input type="button" value="<<" style="width:30" onClick="removeStyle()">
         		</td>
         		<td>
-        			<html:select property="otherSelectedStyles" style="width:130" multiple="multiple">
+        			<html:select property="otherSelectedStyles" style="width:130" multiple="multiple" size="8">
         				<html:options property="typeStyles"/>
         			</html:select>
         		</td>
@@ -308,7 +308,7 @@ function prepareFormData(){
 		</span>
 	  </td>
 	  <td class="datum">
-		<html:textarea property="keywords" cols="90" rows="10"/>
+		<html:textarea property="keywords" cols="60" rows="2"/>
 	  </td>
     </tr>
 
