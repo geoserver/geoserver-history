@@ -1,7 +1,3 @@
-/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.geoserver.rest;
 
 import org.restlet.Finder;
@@ -9,31 +5,33 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.Resource;
 
-/**
- * The BeanResourceFinder class wraps a Resource and simply finds that Resource.
- * It allows you to wrap a Resource and use it as a Restlet.
- *
- * @author David Winslow <dwinslow@openplans.org>
- */
-public class BeanResourceFinder extends Finder{
-    Resource myBeanToFind;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-    public BeanResourceFinder(){}
+public class BeanResourceFinder extends Finder implements ApplicationContextAware{
+    ApplicationContext myContext;
+    String myBeanName;
 
-    public BeanResourceFinder(Resource res){
-        myBeanToFind = res; 
+    public void setApplicationContext(ApplicationContext con){
+        myContext = con;
+    }        
+
+    public BeanResourceFinder(ApplicationContext con, String beanName){
+        myContext = con;
+        myBeanName = beanName;
     }
 
-    public void setBeanToFind(Resource name){
-        myBeanToFind = name;
+    public void setBeanToFind(String name){
+        myBeanName = name;
     }
 
-    public Resource getBeanToFind(){
-        return myBeanToFind;
+    public String getBeanToFind(){
+        return myBeanName;
     }
 
     public Resource findTarget(Request request, Response response){
-        myBeanToFind.init(getContext(), request, response);
-        return myBeanToFind;
+        Resource res = (Resource) myContext.getBean(getBeanToFind());
+        res.init(getContext(), request, response);
+        return res;
     }
 }
