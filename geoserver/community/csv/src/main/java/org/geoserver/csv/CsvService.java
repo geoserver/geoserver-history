@@ -98,7 +98,7 @@ public abstract class CsvService {
                 continue;
             
             // if needed, drop the view and the data table
-            String viewName = attName + "View";
+            String viewName = attName + "_view";
             if(names.contains(attName)) {
                 ddlDelegate.dropView(viewName);
                 ddlDelegate.dropTable(attName);
