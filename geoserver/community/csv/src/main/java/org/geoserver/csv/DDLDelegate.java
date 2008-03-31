@@ -7,15 +7,6 @@ import org.geotools.feature.FeatureType;
 public interface DDLDelegate {
 
     /**
-     * Creates the schema for the specified feature type (which is supposed to
-     * be geometryless)
-     * 
-     * @param type
-     */
-    public void createSchema(FeatureType type, String primaryKey)
-            throws IOException;
-
-    /**
      * Creates a view by joining the geometryTable and the dataTable using an
      * equi-join on the join field
      * 
@@ -41,4 +32,13 @@ public interface DDLDelegate {
      * @param tableName
      */
     public void dropTable(String tableName) throws IOException;
+
+    /**
+     * Creates an index on the specified table column (the name of the index will be
+     * tableName_columnName)
+     * @param tableName
+     * @param columnName
+     * @throws IOException
+     */
+    public void createIndex(String tableName, String columnName) throws IOException;
 }

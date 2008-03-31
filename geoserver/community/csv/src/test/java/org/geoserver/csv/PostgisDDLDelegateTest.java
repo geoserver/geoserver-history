@@ -7,15 +7,17 @@ import org.geotools.feature.FeatureType;
 
 public class PostgisDDLDelegateTest extends AbstractPostgisTest {
 
-    public void testCreateDrop() throws Exception {
+    public void testDrop() throws Exception {
         FeatureType ft = DataUtilities.createType("testData",
                 "fid:String,houseNumber:int,ratio:double");
-        ddl.createSchema(ft, "fid");
+        store.createSchema(ft);
         FeatureType created = store.getSchema(ft.getTypeName());
-        assertEquals("houseNumber", created.getAttributeType(0).getLocalName());
-        assertEquals(Integer.class, created.getAttributeType(0).getBinding());
-        assertEquals("ratio", created.getAttributeType(1).getLocalName());
-        assertEquals(Double.class, created.getAttributeType(1).getBinding());
+        assertEquals("fid", created.getAttributeType(0).getLocalName());
+        assertEquals(String.class, created.getAttributeType(0).getBinding());
+        assertEquals("houseNumber", created.getAttributeType(1).getLocalName());
+        assertEquals(Integer.class, created.getAttributeType(1).getBinding());
+        assertEquals("ratio", created.getAttributeType(2).getLocalName());
+        assertEquals(Double.class, created.getAttributeType(2).getBinding());
 
         ddl.dropTable("testData");
         assertFalse(Arrays.asList(store.getTypeNames()).contains("testData"));
@@ -24,7 +26,7 @@ public class PostgisDDLDelegateTest extends AbstractPostgisTest {
     public void testCreateDropView() throws Exception {
         FeatureType ft = DataUtilities.createType("testData",
                 "fid:String,address:Double,testData:int");
-        ddl.createSchema(ft, "fid");
+        store.createSchema(ft);
         ddl.createView("road", "testData", "fid", "testData", "testDataView");
         FeatureType view = store.getSchema("testDataView");
         FeatureType geom = store.getSchema("road");

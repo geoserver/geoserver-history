@@ -30,14 +30,13 @@ public class CsvServiceTest extends AbstractPostgisTest {
         // grab the surface type and view
         FeatureType surfaceType = store.getSchema("surface");
         FeatureType surfaceViewType = store.getSchema("surface_view");
-        assertEquals(1, surfaceType.getAttributeCount());
-        // 1 extra column from the view, 1 extra column because the view has no fk
-        assertEquals(1 + 1 + roadType.getAttributeCount(), surfaceViewType.getAttributeCount());
+        assertEquals(2, surfaceType.getAttributeCount());
+        assertEquals(2 + roadType.getAttributeCount(), surfaceViewType.getAttributeCount());
         // grab the max speed type and view
         FeatureType maxSpeedType = store.getSchema("maxSpeed");
         FeatureType maxSpeedViewType = store.getSchema("maxSpeed_view");
-        assertEquals(1, maxSpeedType.getAttributeCount());
-        assertEquals(1 + 1 + roadType.getAttributeCount(), maxSpeedViewType.getAttributeCount());
+        assertEquals(2, maxSpeedType.getAttributeCount());
+        assertEquals(2  + roadType.getAttributeCount(), maxSpeedViewType.getAttributeCount());
         
     }
 

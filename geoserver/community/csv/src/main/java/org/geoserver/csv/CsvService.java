@@ -108,7 +108,8 @@ public abstract class CsvService {
             // build the feature type, the table and the view
             try {
                 dataSchemas[j] = FeatureTypes.newFeatureType(new AttributeType[] {joinAttribute, attribute}, attName);
-                ddlDelegate.createSchema(dataSchemas[j], joinField);
+                store.createSchema(dataSchemas[j]);
+                ddlDelegate.createIndex(dataSchemas[j].getTypeName(), joinField);
                 ddlDelegate.createView(geomSchema.getTypeName(), attName, joinField, attName, viewName);
                 stores[j] = (FeatureStore) store.getFeatureSource(attName);
                 j++;
