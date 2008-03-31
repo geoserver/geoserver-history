@@ -13,6 +13,6 @@ import org.restlet.resource.Representation;
  * @author David Winslow <dwinslow@openplans.org>
  */ 
 public interface DataFormat {
-    Representation makeRepresentation(Map data);
-    Map readRepresentation(Representation representation);
+    Representation makeRepresentation(Object data);
+    Object readRepresentation(Representation representation);
 }

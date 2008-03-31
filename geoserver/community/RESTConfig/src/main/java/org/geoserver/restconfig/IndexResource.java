@@ -41,7 +41,7 @@ class IndexResource extends MapResource {
         return m;
     }
 
-    public Map getMap() {
+    public Object getMap() {
         Map m = new HashMap();
         m.put("links", getLinkList());
 

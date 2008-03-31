@@ -21,12 +21,12 @@ public interface DataFormat {
      * @param data a Map containing the data to be represented
      * @param the corresponding Representation
      */
-    Representation makeRepresentation(Map data);
+    Representation makeRepresentation(Object data);
 
     /**
      * Convert a Representation to a Map
      * @param representation a Representation containing the data to be converted
      * @return the corresponding Map
      */
-    Map readRepresentation(Representation representation);
+    Object readRepresentation(Representation representation);
 }

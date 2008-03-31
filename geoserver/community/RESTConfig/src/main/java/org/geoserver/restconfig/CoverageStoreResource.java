@@ -60,7 +60,7 @@ public class CoverageStoreResource extends MapResource {
         return myData;
     }
 
-    public Map getMap(){
+    public Object getMap(){
     	String storeName = (String) getRequest().getAttributes().get("coveragestore");
         Map m = new HashMap();
         CoverageStoreConfig csc = myDataConfig.getDataFormat(storeName);

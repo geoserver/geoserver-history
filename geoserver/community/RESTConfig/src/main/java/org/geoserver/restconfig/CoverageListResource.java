@@ -49,7 +49,7 @@ public class CoverageListResource extends MapResource {
         return myDC;
     }
 
-    public Map getMap() {
+    public Object getMap() {
         String coverageStoreName = (String)getRequest().getAttributes().get("coveragestore");
         Map m = new HashMap();
         Map coverages = myDC.getCoverages();

@@ -47,8 +47,6 @@ class IndexRestlet extends Finder{
 
     private class IndexResource extends MapResource{
 
-
-
         public Map getSupportedFormats() {
             Map m = new HashMap();
 
@@ -58,7 +56,7 @@ class IndexRestlet extends Finder{
             return m;
         }
 
-        public Map getMap() {
+        public Object getMap() {
             Map m = new HashMap();
             m.put("links", getLinkList());
 

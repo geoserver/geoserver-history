@@ -40,7 +40,7 @@ public class CoverageStoreListResource extends MapResource {
     }
 
 
-    public Map getMap() {
+    public Object getMap() {
         Map m = new HashMap();
         m.put("coveragestores", myDataConfig.getDataFormatIds());
 

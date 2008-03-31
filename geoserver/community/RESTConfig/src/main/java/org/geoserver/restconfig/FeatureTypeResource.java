@@ -71,7 +71,7 @@ public class FeatureTypeResource extends MapResource {
         return m;
     }
 
-    public Map getMap() {
+    public Object getMap() {
         myFTC = findMyFeatureTypeConfig();
         Map m = new HashMap();
 

@@ -57,7 +57,7 @@ public class DataStoreListResource extends MapResource {
         return m;
     }
 
-    public Map getMap() {
+    public Object getMap() {
         return makeDataStoreMap();
     }
 

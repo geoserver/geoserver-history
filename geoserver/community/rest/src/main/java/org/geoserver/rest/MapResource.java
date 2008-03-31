@@ -51,7 +51,7 @@ public abstract class MapResource extends Resource {
     public abstract Map getSupportedFormats();
 
     public void handleGet() {
-        Map details = getMap();
+        Object details = getMap();
         myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
 
         if ((myRequestFormat == null) | (details == null)) {
@@ -70,18 +70,18 @@ public abstract class MapResource extends Resource {
             return;
         }
 
-        if (details != null) {
+        /* if (details != null) {
             Map page = getPageDetails();
             details.put("page", page);
             getResponse().setEntity(myRequestFormat.makeRepresentation(details));
-        }
+        } */
     }
 
     /**
      * This method must be overridden by subclasses; it will be called to handle the HTTP GET method.
      * @param details the Map equivalent of the uploaded Representation
      */
-    public abstract Map getMap();
+    public abstract Object getMap();
 
     /**
      * Put some metadata about the HTTP location of the resource into a
@@ -115,7 +115,7 @@ public abstract class MapResource extends Resource {
     public void handlePut() {
         myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
 
-        Map details = myRequestFormat.readRepresentation(getRequest().getEntity());
+        Object details = myRequestFormat.readRepresentation(getRequest().getEntity());
 
         if ((myRequestFormat == null) || (details == null)) {
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
@@ -139,6 +139,6 @@ public abstract class MapResource extends Resource {
      * This method should be overridden by subclasses that wish to implement the HTTP PUT method.
      * @param details the Map equivalent of the uploaded Representation
      */
-    protected void putMap(Map details) throws Exception {
+    protected void putMap(Object details) throws Exception {
     }
 }

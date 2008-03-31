@@ -8,128 +8,124 @@
   <map>
         <entry>
           <key><value>/datastores/{datastore}/featuretypes/{featuretype}.{type}</value></key>
-          <ref bean="featureTypeFinder"/>
+          <value>featureTypeFinder</value>
         </entry>
         <entry>
           <key><value>/datastores/{datastore}/featuretypes/{featuretype}</value></key>
-          <ref bean="featureTypeFinder"/>
+          <value>featureTypeFinder</value>
         </entry>
         <entry>
           <key><value>/datastores/{datastore}/featuretypes.{type}</value></key>
-          <ref bean="featureTypeListFinder"/>
+          <value>featureTypeListFinder</value>
         </entry>
         <entry>
           <key><value>/datastores/{datastore}/featuretypes</value></key>
-          <ref bean="featureTypeListFinder"/>
+          <value>featureTypeListFinder</value>
         </entry>
         <entry>
           <key><value>/datastores/{datastore}.{type}</value></key>
-          <ref bean="datastoreFinder"/>
+          <value>datastoreFinder</value>
         </entry>
         <entry>
           <key><value>/datastores/{datastore}</value></key>
-          <ref bean="datastoreFinder"/>
+          <value>datastoreFinder</value>
         </entry>
         <entry>
           <key><value>/datastores/{datastore}/file.{type}</value></key>
-          <ref bean="datastoreFileFinder"/>
+          <value>datastoreFileFinder</value>
         </entry>
         <entry>
           <key><value>/datastores.{type}</value></key>
-          <ref bean="datastoreListFinder"/>
+          <value>datastoreListFinder</value>
         </entry>
         <entry>
           <key><value>/datastores</value></key>
-          <ref bean="datastoreListFinder"/>
+          <value>datastoreListFinder</value>
         </entry>
         <entry>
           <key><value>/styles/{style}.{type}</value></key>
-          <ref bean="styleFinder"/>
+          <value>styleFinder</value>
         </entry>
         <entry>
           <key><value>/styles/{style}</value></key>
-          <ref bean="styleFinder"/>
+          <value>styleFinder</value>
         </entry>
         <entry>
           <key><value>/styles.{type}</value></key>
-          <ref bean="styleListFinder"/>
+          <value>styleListFinder</value>
         </entry>
         <entry>
           <key><value>/styles</value></key>
-          <ref bean="styleListFinder"/>
+          <value>styleListFinder</value>
         </entry>
         <entry>
           <key><value>/coveragestores/{coveragestore}/coverages/{coverage}.{type}</value></key>
-          <ref bean="coverageFinder"/>
+          <value>coverageFinder</value>
         </entry>
         <entry>
           <key><value>/coveragestores/{coveragestore}/coverages/{coverage}</value></key>
-          <ref bean="coverageFinder"/>
+          <value>coverageFinder</value>
         </entry>
         <entry>
           <key><value>/coveragestores/{coveragestore}/coverages.{type}</value></key>
-          <ref bean="coverageListFinder"/>
+          <value>coverageListFinder</value>
         </entry>
         <entry>
           <key><value>/coveragestores/{coveragestore}/coverages</value></key>
-          <ref bean="coverageListFinder"/>
+          <value>coverageListFinder</value>
         </entry>
         <entry>
           <key><value>/coveragestores/{coveragestore}.{type}</value></key>
-          <ref bean="coverageStoreFinder"/>
+          <value>coverageStoreFinder</value>
         </entry>
         <entry>
           <key><value>/coveragestores/{coveragestore}</value></key>
-          <ref bean="coverageStoreFinder"/>
+          <value>coverageStoreFinder</value>
         </entry>
         <entry>
           <key><value>/coveragestores.{type}</value></key>
-          <ref bean="coverageStoreListFinder"/>
+          <value>coverageStoreListFinder</value>
         </entry>
         <entry>
           <key><value>/coveragestores</value></key>
-          <ref bean="coverageStoreListFinder"/>
+          <value>coverageStoreListFinder</value>
         </entry>
         <entry>
           <key><value>/layergroups/{group}.{type}</value></key>
-          <ref bean="layerGroupFinder"/>
+          <value>layerGroupFinder</value>
         </entry>
         <entry>
           <key><value>/layergroups/{group}</value></key>
-          <ref bean="layerGroupFinder"/>
+          <value>layerGroupFinder</value>
         </entry>
         <entry>
           <key><value>/layergroups.{type}</value></key>
-          <ref bean="layerGroupListFinder"/>
+          <value>layerGroupListFinder</value>
         </entry>
         <entry>
           <key><value>/layergroups</value></key>
-          <ref bean="layerGroupListFinder"/>
+          <value>layerGroupListFinder</value>
         </entry>
         <entry>
           <key><value>/projections/{projection}</value></key>
-          <ref bean="dummyRestlet"/>
+          <value>dummyRestlet</value>
         </entry>
         <entry>
           <key><value>/projections</value></key>
-          <ref bean="dummyRestlet"/>
+          <value>dummyRestlet</value>
         </entry>
         <entry>
           <key><value>/dummy.{type}</value></key>
-          <ref bean="dummyRestlet"/>
+          <value>dummyRestlet</value>
         </entry>
   </map>
 </property>
 </bean>
 
-<bean id="featureTypeFinder" class="org.geoserver.restconfig.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.FeatureTypeResource">
+    <bean id="featureTypeFinder" class="org.geoserver.restconfig.FeatureTypeResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
       <property name="data"><ref bean="data"/></property>
     </bean>
-  </property>
-</bean>
 <bean id="featureTypeListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.FeatureTypeListResource">

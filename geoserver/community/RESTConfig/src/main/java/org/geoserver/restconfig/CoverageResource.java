@@ -58,7 +58,7 @@ public class CoverageResource extends MapResource {
         Map m = new HashMap();
         m.put("html",
             new FreemarkerFormat("HTMLTemplates/coverage.ftl", getClass(), MediaType.TEXT_HTML) {
-                public Map readRepresentation(Representation rep) {
+                public Object readRepresentation(Representation rep) {
                     try {
                         SAXBuilder builder = new SAXBuilder();
                         Document doc = builder.build(rep.getStream());
@@ -162,7 +162,7 @@ public class CoverageResource extends MapResource {
         return myData;
     }
 
-    public Map getMap() {
+    public Object getMap() {
         String coverageStore = (String) getRequest().getAttributes().get("coveragestore");
         String coverageName = (String) getRequest().getAttributes().get("coverage");
         String qualified = coverageStore + ":" + coverageName;

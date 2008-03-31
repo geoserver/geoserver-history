@@ -57,7 +57,7 @@ class LayerGroupListResource extends MapResource {
         return m;
     }
 
-    public Map getMap() {
+    public Object getMap() {
         Map context = new HashMap();
         Map layerGroups = myWMSConfig.getBaseMapLayers();
         List layerNames = new ArrayList();

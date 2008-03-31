@@ -47,7 +47,7 @@ public class FeatureTypeListResource extends MapResource {
         return m;
     }
 
-    public Map getMap() {
+    public Object getMap() {
     	String dataStoreName = (String)getRequest().getAttributes().get("datastore");
     	
     	if (myDC.getDataStores().containsKey(dataStoreName)){

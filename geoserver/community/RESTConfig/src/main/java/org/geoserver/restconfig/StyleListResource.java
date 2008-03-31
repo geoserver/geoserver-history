@@ -47,7 +47,7 @@ class StyleListResource extends MapResource {
         return myDC;
     }
 
-    public Map getMap() {
+    public Object getMap() {
         Map styles = myDC.getStyles();
         Map templateContext = new HashMap();
         List styleList = new ArrayList();

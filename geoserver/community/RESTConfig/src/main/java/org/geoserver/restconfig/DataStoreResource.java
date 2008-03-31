@@ -83,7 +83,7 @@ public class DataStoreResource extends MapResource {
         return m;
     }
 
-    public Map getMap() {
+    public Object getMap() {
         try{
             DataStoreConfig myDSC = findMyDataStore();
 

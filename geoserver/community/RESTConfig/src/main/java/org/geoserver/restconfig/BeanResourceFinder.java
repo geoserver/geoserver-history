@@ -24,6 +24,7 @@ public class BeanResourceFinder extends Finder{
 
     public Resource findTarget(Request request, Response response){
         myBeanToFind.init(getContext(), request, response);
+        System.out.println("BeanResourceFinder found " + myBeanToFind);
         return myBeanToFind;
     }
 }

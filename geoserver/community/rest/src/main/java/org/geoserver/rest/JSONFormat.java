@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
@@ -39,26 +40,17 @@ public class JSONFormat implements DataFormat {
         myType = type;
     }
 
-    public Representation makeRepresentation(final Map map) {
+    public Representation makeRepresentation(final Object o) {
         return new OutputRepresentation(myType) {
                 public void write(OutputStream os) {
                     try {
                         Writer outWriter = new BufferedWriter(new OutputStreamWriter(os));
-                        map.remove("page");
 
                         outWriter.flush();
 
-                        JSONObject json = new JSONObject();
-                        Object obj = toJSONObject(map);
+                        JSON obj = (JSON)toJSONObject(o);
 
-                        if (obj instanceof JSONObject) {
-                            json = (JSONObject) obj;
-                        } else {
-                            json = new JSONObject();
-                            json.put("context", obj);
-                        }
-
-                        json.write(outWriter);
+                        obj.write(outWriter);
                         outWriter.flush();
                     } catch (Exception e) {
                         try {
@@ -103,7 +95,7 @@ public class JSONFormat implements DataFormat {
             };
     }
 
-    public Map readRepresentation(Representation rep) {
+    public Object readRepresentation(Representation rep) {
         try {
             JSONObject obj = JSONObject.fromObject(rep.getText());
 

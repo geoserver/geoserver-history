@@ -113,7 +113,7 @@ class LayerGroupResource extends MapResource {
         return m;
     }
 
-    public Map getMap() {
+    public Object getMap() {
         String group = (String)getRequest().getAttributes().get("group");
         Map context = new HashMap();
         Map layerGroups = myWMSConfig.getBaseMapLayers();

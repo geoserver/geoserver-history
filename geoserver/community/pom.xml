@@ -30,7 +30,7 @@
 			</activation>
 			<modules>
 				<module>sldService</module>
-				<module>csv</module>
+		<!--		<module>csv</module> -->
 				<module>rest</module>
 				<module>RESTConfig</module>
 			</modules>
