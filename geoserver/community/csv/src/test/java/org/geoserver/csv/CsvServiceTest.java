@@ -23,7 +23,7 @@ public class CsvServiceTest extends AbstractPostgisTest {
     }
 
     public void testImportCsvFile() throws Exception {
-        File csvFile = getCsvFile("/csv/roadAttributes.csv");
+        File csvFile = getCsvFile("/resources/csv/roadAttributes.csv");
         csv.configureCsvFile("road", "id", csvFile);
         // grab the geom column
         FeatureType roadType = store.getSchema("road");

@@ -14,7 +14,7 @@ import org.geotools.feature.FeatureType;
 public class CsvFileReaderHeaderTest extends TestCase {
 
     public void testCorrectFile() throws Exception {
-        CsvFileReader reader = new CsvFileReader(getCsvFile("/csv/full.csv"));
+        CsvFileReader reader = new CsvFileReader(getCsvFile("/resources/csv/full.csv"));
         FeatureType ft = reader.getFeatureType();
         assertTrue(ft.getTypeName().contains("full"));
         assertEquals(4, ft.getAttributeCount());
@@ -33,14 +33,14 @@ public class CsvFileReaderHeaderTest extends TestCase {
 
     public void testMissingHeaders() throws Exception {
         try {
-            new CsvFileReader(getCsvFile("/csv/onlyDescriptions.csv"));
+            new CsvFileReader(getCsvFile("/resources/csv/onlyDescriptions.csv"));
             fail("Should have failed, only one header line");
         } catch (Exception e) {
             // ok
         }
 
         try {
-            new CsvFileReader(getCsvFile("/csv/notypes.csv"));
+            new CsvFileReader(getCsvFile("/resources/csv/notypes.csv"));
             fail("Should have failed, only one header line");
         } catch (Exception e) {
             // ok
@@ -49,7 +49,7 @@ public class CsvFileReaderHeaderTest extends TestCase {
 
     public void testInconsistentHeaders() throws Exception {
         try {
-            new CsvFileReader(getCsvFile("/csv/inconsistent.csv"));
+            new CsvFileReader(getCsvFile("/resources/csv/inconsistent.csv"));
             fail("Should have failed, incosistent headers");
         } catch (Exception e) {
             // ok
@@ -58,7 +58,7 @@ public class CsvFileReaderHeaderTest extends TestCase {
 
     public void testUnknownTypes() throws Exception {
         try {
-            new CsvFileReader(getCsvFile("/csv/invalidTypes.csv"));
+            new CsvFileReader(getCsvFile("/resources/csv/invalidTypes.csv"));
             fail("Should have failed, invalid types");
         } catch (IOException e) {
             assertTrue(e.getMessage().contains("blob"));
@@ -66,7 +66,7 @@ public class CsvFileReaderHeaderTest extends TestCase {
     }
 
     public void testReadDataCount() throws Exception {
-        CsvFileReader reader = new CsvFileReader(getCsvFile("/csv/full.csv"));
+        CsvFileReader reader = new CsvFileReader(getCsvFile("/resources/csv/full.csv"));
         FeatureIterator it = reader.getFeatures();
         assertTrue(it.hasNext());
         assertNotNull(it.next());
@@ -84,7 +84,7 @@ public class CsvFileReaderHeaderTest extends TestCase {
     }
     
     public void testReadDataFeatures() throws Exception {
-        CsvFileReader reader = new CsvFileReader(getCsvFile("/csv/full.csv"));
+        CsvFileReader reader = new CsvFileReader(getCsvFile("/resources/csv/full.csv"));
         FeatureIterator it = reader.getFeatures();
         it.hasNext();
         Feature f = it.next();
