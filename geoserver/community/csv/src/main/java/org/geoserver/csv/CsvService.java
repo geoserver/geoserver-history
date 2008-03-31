@@ -120,11 +120,11 @@ public abstract class CsvService {
         // make sure the join field is there in both tables
         if (geomSchema.getAttributeType(joinField) == null)
             throw new IOException("Could not find the joinField " + joinField
-                    + " in the geometric table, available attributes are: "
+                    + " in the geometric table" + targetGeometryTable + " available attributes are: "
                     + attributeNames(geomSchema));
         if (csvSchema.getAttributeType(joinField) == null)
             throw new IOException("Could not find the joinField " + joinField
-                    + " in the data table, available attributes are: "
+                    + " in the csv file, available attributes are: "
                     + attributeNames(csvSchema));
 
         // build the target table for each attribute

@@ -1,6 +1,7 @@
 package org.geoserver.csv;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -25,6 +26,48 @@ public class CsvServiceTest extends AbstractPostgisTest {
             }
 
         };
+    }
+    
+    public void testLayers() throws Exception {
+        List<String> geometries = csv.getGeometryLayers();
+        assertEquals(1, geometries.size());
+        assertEquals("road", geometries.get(0));
+        
+        // import a couple of leyers
+        csv.configureCsvFile("road", "id",
+                getCsvFile("/resources/csv/roadTwoAttributes.csv"));
+        
+        // check geometries are still the same
+        geometries = csv.getGeometryLayers();
+        assertEquals(1, geometries.size());
+        assertEquals("road", geometries.get(0));
+        
+        List<String> data = csv.getDataLayers();
+        assertEquals(2, data.size());
+        assertTrue(data.contains("surface_view"));
+        assertTrue(data.contains("maxSpeed_view"));
+    }
+    
+    public void testImportInconsistentJoinField() throws Exception {
+        try {
+            csv.configureCsvFile("road", "fid",
+                getCsvFile("/resources/csv/roadWrongAttribute.csv"));
+            fail("Should have failed, fid attribute is not in the geom table");
+        } catch(IOException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage().contains("fid"));
+            assertTrue(e.getMessage().contains("road"));
+        }
+        
+        try {
+            csv.configureCsvFile("road", "id",
+                getCsvFile("/resources/csv/roadWrongAttribute.csv"));
+            fail("Should have failed, id attribute is not in the csv file");
+        } catch(IOException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage().contains("id"));
+            assertTrue(e.getMessage().contains("csv"));
+        }
     }
     
     public void testImport() throws Exception {

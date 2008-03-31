@@ -54,6 +54,11 @@
       <artifactId>gt2-postgis</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>rest</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
