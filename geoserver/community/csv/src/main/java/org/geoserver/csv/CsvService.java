@@ -21,9 +21,9 @@ import org.geotools.feature.FeatureTypes;
 
 /**
  * The main entry point for the csv services, acts as a facade for all the logic
- * in this module. It's an abstract class to facilitate testing and reuse, a special
- * subclass that works in a GeoServer only environment and that sports the full
- * functionality is provided as well.
+ * in this module. It's an abstract class to facilitate testing and reuse, a
+ * special subclass that works in a GeoServer only environment and that sports
+ * the full functionality is provided as well.
  * 
  * @author Andrea Aime - TOPP
  * 
@@ -79,7 +79,7 @@ public abstract class CsvService {
         // build the target table for each attribute
         List<LayerResult> result = buildReplaceTables(geomSchema, joinField,
                 csvSchema);
-        
+
         // 
 
         return result;
@@ -88,42 +88,49 @@ public abstract class CsvService {
     private List<LayerResult> buildReplaceTables(FeatureType geomSchema,
             String joinField, FeatureType csvSchema) throws IOException {
         // first off, drop all tables that we need to replace
-        Set<String> names = new HashSet<String>(Arrays.asList(store.getTypeNames()));
+        Set<String> names = new HashSet<String>(Arrays.asList(store
+                .getTypeNames()));
         Set<String> replaced = new HashSet<String>();
         AttributeType joinAttribute = csvSchema.getAttributeType(joinField);
-        FeatureType[] dataSchemas = new FeatureType[csvSchema.getAttributeCount() -1];
+        FeatureType[] dataSchemas = new FeatureType[csvSchema
+                .getAttributeCount() - 1];
         FeatureStore[] stores = new FeatureStore[dataSchemas.length];
         for (int i = 0, j = 0; i < csvSchema.getAttributeCount(); i++) {
             final AttributeType attribute = csvSchema.getAttributeType(i);
             String attName = attribute.getLocalName();
-            
+
             // do not drop tables whose name is the join field
-            if(attName.equals(joinField)) 
+            if (attName.equals(joinField))
                 continue;
-            
+
             // if needed, drop the view and the data table
             String viewName = attName + "_view";
-            if(names.contains(attName)) {
+            if (names.contains(attName)) {
                 ddlDelegate.dropView(viewName);
                 ddlDelegate.dropTable(attName);
                 replaced.add(attName);
             }
-            
+
             // build the feature type, the table and the view
             try {
-                dataSchemas[j] = FeatureTypes.newFeatureType(new AttributeType[] {joinAttribute, attribute}, attName);
+                dataSchemas[j] = FeatureTypes.newFeatureType(
+                        new AttributeType[] { joinAttribute, attribute },
+                        attName);
                 store.createSchema(dataSchemas[j]);
-                ddlDelegate.createIndex(dataSchemas[j].getTypeName(), joinField);
-                ddlDelegate.createView(geomSchema.getTypeName(), attName, joinField, attName, viewName);
+                ddlDelegate
+                        .createIndex(dataSchemas[j].getTypeName(), joinField);
+                ddlDelegate.createView(geomSchema.getTypeName(), attName,
+                        joinField, attName, viewName);
                 stores[j] = (FeatureStore) store.getFeatureSource(attName);
                 j++;
             } catch (Exception e) {
-                throw new DataSourceException("Unexpected error occured during data import", e);
+                throw new DataSourceException(
+                        "Unexpected error occured during data import", e);
             }
         }
-        
+
         return null;
-        
+
     }
 
     private List<String> attributeNames(FeatureType geomSchema) {

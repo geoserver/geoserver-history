@@ -2,8 +2,6 @@ package org.geoserver.csv;
 
 import java.io.IOException;
 
-import org.geotools.feature.FeatureType;
-
 public interface DDLDelegate {
 
     /**
@@ -17,7 +15,8 @@ public interface DDLDelegate {
      * @param viewName
      */
     public void createView(String geometryTable, String dataTable,
-            String joinField, String dataField, String viewName) throws IOException;
+            String joinField, String dataField, String viewName)
+            throws IOException;
 
     /**
      * Drops the specified view
@@ -34,11 +33,13 @@ public interface DDLDelegate {
     public void dropTable(String tableName) throws IOException;
 
     /**
-     * Creates an index on the specified table column (the name of the index will be
-     * tableName_columnName)
+     * Creates an index on the specified table column (the name of the index
+     * will be tableName_columnName)
+     * 
      * @param tableName
      * @param columnName
      * @throws IOException
      */
-    public void createIndex(String tableName, String columnName) throws IOException;
+    public void createIndex(String tableName, String columnName)
+            throws IOException;
 }

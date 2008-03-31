@@ -43,25 +43,28 @@ public class CsvFeatureIterator implements FeatureIterator {
     }
 
     public Feature next() throws NoSuchElementException {
-        if(lastLine == null && !hasNext())
+        if (lastLine == null && !hasNext())
             throw new NoSuchElementException("No more lines in this csv file");
-        
+
         // grab the line
         String[] line = lastLine;
         lastLine = null;
- 
-        // build the feature values by converting each string to the expected class
+
+        // build the feature values by converting each string to the expected
+        // class
         Object[] values = new Object[ft.getAttributeCount()];
         for (int i = 0; i < values.length; i++) {
-            values[i] =  Converters.convert(line[i], ft.getAttributeType(i).getBinding());
-            if(values[i] == null)
+            values[i] = Converters.convert(line[i], ft.getAttributeType(i)
+                    .getBinding());
+            if (values[i] == null)
                 values[i] = line[i];
         }
-        
+
         try {
             return ft.create(values);
         } catch (IllegalAttributeException e) {
-            throw new RuntimeException("At least one attribute value is invalid", e);
+            throw new RuntimeException(
+                    "At least one attribute value is invalid", e);
         }
     }
 
