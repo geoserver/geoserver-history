@@ -1,0 +1,6 @@
+"Feature id","Kind of surface"
+id,surface
+string,string
+"rd1","paved"
+"rd2","fullOfHoles"
+"rd3","magneticRail"

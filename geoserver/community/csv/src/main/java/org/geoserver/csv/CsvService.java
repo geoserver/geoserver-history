@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.geoserver.csv.LayerResult.LayerOperation;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.jdbc.JDBCDataStore;
@@ -88,13 +89,13 @@ public abstract class CsvService {
     private List<LayerResult> buildReplaceTables(FeatureType geomSchema,
             String joinField, FeatureType csvSchema) throws IOException {
         // first off, drop all tables that we need to replace
-        Set<String> names = new HashSet<String>(Arrays.asList(store
-                .getTypeNames()));
-        Set<String> replaced = new HashSet<String>();
         AttributeType joinAttribute = csvSchema.getAttributeType(joinField);
         FeatureType[] dataSchemas = new FeatureType[csvSchema
                 .getAttributeCount() - 1];
+        Set<String> names = new HashSet<String>(Arrays.asList(store
+                .getTypeNames()));
         FeatureStore[] stores = new FeatureStore[dataSchemas.length];
+        List<LayerResult> results = new ArrayList<LayerResult>();
         for (int i = 0, j = 0; i < csvSchema.getAttributeCount(); i++) {
             final AttributeType attribute = csvSchema.getAttributeType(i);
             String attName = attribute.getLocalName();
@@ -102,13 +103,14 @@ public abstract class CsvService {
             // do not drop tables whose name is the join field
             if (attName.equals(joinField))
                 continue;
-
-            // if needed, drop the view and the data table
+            
+            // if needed, drop the view and the data table (and also register the result)
             String viewName = attName + "_view";
+            results.add(new LayerResult(viewName));
             if (names.contains(attName)) {
                 ddlDelegate.dropView(viewName);
                 ddlDelegate.dropTable(attName);
-                replaced.add(attName);
+                results.get(j).setOperation(LayerOperation.REPLACED);
             }
 
             // build the feature type, the table and the view
@@ -129,7 +131,7 @@ public abstract class CsvService {
             }
         }
 
-        return null;
+        return results;
 
     }
 
@@ -193,7 +195,7 @@ public abstract class CsvService {
      * @return
      */
     boolean isJoinedLayer(FeatureType schema) {
-        return schema.getTypeName().endsWith("View");
+        return schema.getTypeName().endsWith("_view");
     }
 
     /**

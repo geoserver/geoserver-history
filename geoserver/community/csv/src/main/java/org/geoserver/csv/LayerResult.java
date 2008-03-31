@@ -15,4 +15,21 @@ public class LayerResult {
     String layerName;
 
     LayerOperation operation;
+
+    public LayerResult(String layerName) {
+        this.layerName = layerName;
+        this.operation = LayerOperation.CREATED;
+    }
+
+    public String getLayerName() {
+        return layerName;
+    }
+
+    public void setOperation(LayerOperation operation) {
+        this.operation = operation;
+    }
+
+    public LayerOperation getOperation() {
+        return operation;
+    }
 }
