@@ -21,7 +21,9 @@ import org.geotools.feature.FeatureTypes;
 
 /**
  * The main entry point for the csv services, acts as a facade for all the logic
- * in this module
+ * in this module. It's an abstract class to facilitate testing and reuse, a special
+ * subclass that works in a GeoServer only environment and that sports the full
+ * functionality is provided as well.
  * 
  * @author Andrea Aime - TOPP
  * 
@@ -77,6 +79,8 @@ public abstract class CsvService {
         // build the target table for each attribute
         List<LayerResult> result = buildReplaceTables(geomSchema, joinField,
                 csvSchema);
+        
+        // 
 
         return result;
     }
