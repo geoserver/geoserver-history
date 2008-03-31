@@ -52,6 +52,50 @@ public abstract class CsvService {
     }
 
     /**
+     * Returns a list of geometric layer names
+     * 
+     * @return
+     */
+    public List<String> getGeometryLayers() throws IOException {
+        String[] typeNames = store.getTypeNames();
+        List<String> result = new ArrayList<String>();
+        for (int i = 0; i < typeNames.length; i++) {
+            FeatureType ft = store.getSchema(typeNames[i]);
+            // geometryless
+            if (ft.getDefaultGeometry() == null)
+                continue;
+
+            // joined?
+            if (isJoinedLayer(ft))
+                continue;
+
+            result.add(typeNames[i]);
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of data layer names
+     * 
+     * @return
+     */
+    public List<String> getDataLayers() throws IOException {
+        String[] typeNames = store.getTypeNames();
+        List<String> result = new ArrayList<String>();
+        for (int i = 0; i < typeNames.length; i++) {
+            FeatureType ft = store.getSchema(typeNames[i]);
+            // geometryless -> raw data
+            if (ft.getDefaultGeometry() == null)
+                continue;
+
+            // joined?
+            if (isJoinedLayer(ft))
+                result.add(typeNames[i]);
+        }
+        return result;
+    }
+
+    /**
      * Uploads the specified file into the database, splits it into a set of
      * tables, creates the views, and returns a list of LayerResult objects
      * summarizing the upload outcome for each column
@@ -127,7 +171,8 @@ public abstract class CsvService {
                 }
             }
         } catch (IllegalAttributeException e) {
-            throw new DataSourceException("Unexpected feature creation issue", e);
+            throw new DataSourceException("Unexpected feature creation issue",
+                    e);
         } finally {
             if (it != null)
                 it.close();
@@ -205,48 +250,12 @@ public abstract class CsvService {
     }
 
     /**
-     * Returns a list of geometric layer names
+     * Returns the layer description given the GeoServer layer name
      * 
+     * @param layerId
      * @return
      */
-    public List<String> getGeometryLayers() throws IOException {
-        String[] typeNames = store.getTypeNames();
-        List<String> result = new ArrayList<String>();
-        for (int i = 0; i < typeNames.length; i++) {
-            FeatureType ft = store.getSchema(typeNames[i]);
-            // geometryless
-            if (ft.getDefaultGeometry() == null)
-                continue;
-
-            // joined?
-            if (isJoinedLayer(ft))
-                continue;
-
-            result.add(typeNames[i]);
-        }
-        return result;
-    }
-
-    /**
-     * Returns a list of data layer names
-     * 
-     * @return
-     */
-    public List<String> getDataLayers() throws IOException {
-        String[] typeNames = store.getTypeNames();
-        List<String> result = new ArrayList<String>();
-        for (int i = 0; i < typeNames.length; i++) {
-            FeatureType ft = store.getSchema(typeNames[i]);
-            // geometryless -> raw data
-            if (ft.getDefaultGeometry() == null)
-                continue;
-
-            // joined?
-            if (isJoinedLayer(ft))
-                result.add(typeNames[i]);
-        }
-        return result;
-    }
+    public abstract String getLayerDescription(String layerId);
 
     /**
      * Returns true if the provided schema represents a joined view (data +
@@ -259,11 +268,4 @@ public abstract class CsvService {
         return schema.getTypeName().endsWith("_view");
     }
 
-    /**
-     * Returns the layer description given the GeoServer layer name
-     * 
-     * @param layerId
-     * @return
-     */
-    public abstract String getLayerDescription(String layerId);
 }
