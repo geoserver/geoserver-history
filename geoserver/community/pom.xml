@@ -10,9 +10,9 @@
 	</parent>
 
 	<groupId>org.geoserver</groupId>
-  <artifactId>community</artifactId>
+	<artifactId>community</artifactId>
 	<packaging>pom</packaging>
-  <name>Community Space</name>
+	<name>Community Space</name>
 
 	<dependencies>
 		<dependency>
@@ -23,11 +23,12 @@
 	</dependencies>
 
 	<modules>
-		<!-- <module>hello</module>
+		<module>hello</module>
 		<module>preferences</module>
 		<module>community-schemas</module>
-		<module>kml-ows5</module> -->
-        <module>rest</module>
-        <module>RESTConfig</module>
+		<module>kml-ows5</module>
+		<module>rest</module>
+		<module>RESTConfig</module>
 	</modules>
+
 </project>
