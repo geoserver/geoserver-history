@@ -8,17 +8,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.geoserver.csv.LayerResult.LayerOperation;
 import org.geotools.data.DataSourceException;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.jdbc.JDBCDataStore;
 import org.geotools.feature.AttributeType;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypes;
+import org.geotools.feature.IllegalAttributeException;
 
 /**
  * The main entry point for the csv services, acts as a facade for all the logic
@@ -81,20 +87,75 @@ public abstract class CsvService {
         List<LayerResult> result = buildReplaceTables(geomSchema, joinField,
                 csvSchema);
 
-        // 
+        // import the data into the tables
+        importData(csvReader, joinField);
 
         return result;
     }
 
+    private void importData(CsvFileReader csvReader, String joinField)
+            throws IOException {
+        FeatureType csvSchema = csvReader.getFeatureType();
+
+        // first off, grab the feature stores used for import
+        Map<String, FeatureStore> stores = new HashMap<String, FeatureStore>();
+        for (int i = 0; i < csvSchema.getAttributeCount(); i++) {
+            final AttributeType attribute = csvSchema.getAttributeType(i);
+            String attName = attribute.getLocalName();
+
+            if (attName.equals(joinField))
+                continue;
+            stores.put(attName, (FeatureStore) store.getFeatureSource(attName));
+        }
+
+        // now read the features, split them into sub-features, and import each
+        // into the associated feature store
+        FeatureIterator it = null;
+        try {
+            it = csvReader.getFeatures();
+            while (it.hasNext()) {
+                Feature csvFeature = it.next();
+
+                for (String attName : stores.keySet()) {
+                    // build the shaved feature for insertion in the data table
+                    Object[] newAtts = new Object[] {
+                            csvFeature.getAttribute(joinField),
+                            csvFeature.getAttribute(attName) };
+                    FeatureStore fstore = stores.get(attName);
+                    Feature subFeature = fstore.getSchema().create(newAtts);
+                    fstore.addFeatures(DataUtilities.collection(subFeature));
+                }
+            }
+        } catch (IllegalAttributeException e) {
+            throw new DataSourceException("Unexpected feature creation issue", e);
+        } finally {
+            if (it != null)
+                it.close();
+        }
+    }
+
+    /**
+     * Manage the schemas:
+     * <ul>
+     * <li>drop all the tables that do need replacement</li>
+     * <li>build the new ones, add the indexes required to get good performance
+     * off joins</li>
+     * <li>build the joined views</li>
+     * </ul>
+     * 
+     * @param geomSchema
+     * @param joinField
+     * @param csvSchema
+     * @return
+     * @throws IOException
+     */
     private List<LayerResult> buildReplaceTables(FeatureType geomSchema,
             String joinField, FeatureType csvSchema) throws IOException {
-        // first off, drop all tables that we need to replace
         AttributeType joinAttribute = csvSchema.getAttributeType(joinField);
         FeatureType[] dataSchemas = new FeatureType[csvSchema
                 .getAttributeCount() - 1];
         Set<String> names = new HashSet<String>(Arrays.asList(store
                 .getTypeNames()));
-        FeatureStore[] stores = new FeatureStore[dataSchemas.length];
         List<LayerResult> results = new ArrayList<LayerResult>();
         for (int i = 0, j = 0; i < csvSchema.getAttributeCount(); i++) {
             final AttributeType attribute = csvSchema.getAttributeType(i);
@@ -103,8 +164,9 @@ public abstract class CsvService {
             // do not drop tables whose name is the join field
             if (attName.equals(joinField))
                 continue;
-            
-            // if needed, drop the view and the data table (and also register the result)
+
+            // if needed, drop the view and the data table (and also register
+            // the result)
             String viewName = attName + "_view";
             results.add(new LayerResult(viewName));
             if (names.contains(attName)) {
@@ -123,7 +185,6 @@ public abstract class CsvService {
                         .createIndex(dataSchemas[j].getTypeName(), joinField);
                 ddlDelegate.createView(geomSchema.getTypeName(), attName,
                         joinField, attName, viewName);
-                stores[j] = (FeatureStore) store.getFeatureSource(attName);
                 j++;
             } catch (Exception e) {
                 throw new DataSourceException(

@@ -53,6 +53,9 @@ public abstract class AbstractPostgisTest extends OnlineTestCase {
         st.execute("SELECT AddGeometryColumn"
                 + "('public', 'road', 'geom', 0, 'LINESTRING', 2)");
         st.execute("ALTER TABLE road add name varchar;");
+        st.execute("INSERT INTO road VALUES('road1', 'rd1', GeometryFromText('LINESTRING(0 0, 1 1)'");
+        st.execute("INSERT INTO road VALUES('road2', 'rd2', GeometryFromText('LINESTRING(0 0, -1 -1)'");
+        st.execute("INSERT INTO road VALUES('road3', 'rd3', GeometryFromText('LINESTRING(10 10, 20 20)'");
 
         st.close();
         conn.close();
