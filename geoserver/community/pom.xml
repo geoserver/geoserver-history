@@ -21,14 +21,26 @@
 			<version>1.6-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	
+	<profiles>
+    <profile>
+      <id>Java 5 Specific Plugins</id>
+      <activation>
+        <jdk>1.5</jdk>
+      </activation>
+      <modules>
+         <module>sldService</module>
+         <module>csv</module>
+         <module>rest</module>
+         <module>RESTConfig</module>
+      </modules>
+    </profile>
+  </profiles>
 
 	<modules>
 		<module>hello</module>
 		<module>preferences</module>
 		<module>community-schemas</module>
 		<module>kml-ows5</module>
-		<module>rest</module>
-		<module>RESTConfig</module>
 	</modules>
-
 </project>

@@ -1,0 +1,6 @@
+"ZIP Code","Total Population SF3","Non-Hispanic","Hispanic All Races, with a comma"
+zipCode,totalPopulationSF3,nonHispanic,hispanicAllRaces
+string,float,integer,float
+"90001",54.587,8,46.402
+"90002",44.342,16,27.723
+"90003",59.003,19,39.496
