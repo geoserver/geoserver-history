@@ -10,7 +10,11 @@ import org.geotools.data.postgis.PostgisDataStoreFactory;
 import org.geotools.test.OnlineTestCase;
 
 /**
- * Base class for online tests that do need to connect to a postgis data store
+ * Base class for online tests that do need to connect to a postgis data store.
+ * PLEASE NOTICE: to run these tests you'll need a Postgis datastore around and
+ * you'll have to put copy the csv-postgis.properties file provided
+ * in src/test/java/resources/ into your home/.geotools directory (and adapt it
+ * so that the connection params do match you PC) 
  * 
  * @author Andrea Aime - TOPP
  * 
@@ -49,13 +53,13 @@ public abstract class AbstractPostgisTest extends OnlineTestCase {
         st.execute("delete from geometry_columns");
 
         // create an empty geometric table
-        st.execute("CREATE TABLE road (fid varchar PRIMARY KEY, id int )");
+        st.execute("CREATE TABLE road (fid varchar PRIMARY KEY, id varchar )");
         st.execute("SELECT AddGeometryColumn"
-                + "('public', 'road', 'geom', 0, 'LINESTRING', 2)");
+                + "('public', 'road', 'geom', -1, 'LINESTRING', 2)");
         st.execute("ALTER TABLE road add name varchar;");
-        st.execute("INSERT INTO road VALUES('road1', 'rd1', GeometryFromText('LINESTRING(0 0, 1 1)'");
-        st.execute("INSERT INTO road VALUES('road2', 'rd2', GeometryFromText('LINESTRING(0 0, -1 -1)'");
-        st.execute("INSERT INTO road VALUES('road3', 'rd3', GeometryFromText('LINESTRING(10 10, 20 20)'");
+        st.execute("INSERT INTO road VALUES('road1', 'rd1', GeometryFromText('LINESTRING(0 0, 1 1)'))");
+        st.execute("INSERT INTO road VALUES('road2', 'rd2', GeometryFromText('LINESTRING(0 0, -1 -1)'))");
+        st.execute("INSERT INTO road VALUES('road3', 'rd3', GeometryFromText('LINESTRING(10 10, 20 20)'))");
 
         st.close();
         conn.close();

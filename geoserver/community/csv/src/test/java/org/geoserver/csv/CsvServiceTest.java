@@ -51,7 +51,7 @@ public class CsvServiceTest extends AbstractPostgisTest {
         assertTrue(it.hasNext());
         Feature f = it.next();
         assertEquals("rd1", f.getAttribute("id"));
-        assertEquals("surface", f.getAttribute("paved"));
+        assertEquals("paved", f.getAttribute("surface"));
         assertFalse(it.hasNext());
         it.close();
     }
