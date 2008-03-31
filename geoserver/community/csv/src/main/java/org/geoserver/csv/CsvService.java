@@ -72,7 +72,7 @@ public abstract class CsvService {
         if (csvSchema.getAttributeType(joinField) == null)
             throw new IOException("Could not find the joinField " + joinField
                     + " in the data table, available attributes are: "
-                    + attributeNames(geomSchema));
+                    + attributeNames(csvSchema));
 
         // build the target table for each attribute
         List<LayerResult> result = buildReplaceTables(geomSchema, joinField,

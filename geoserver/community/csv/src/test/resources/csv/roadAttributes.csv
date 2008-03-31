@@ -1,0 +1,6 @@
+"Feature id","Kind of surface","Speed limit"
+id,surface,maxSpeed
+string,string,float
+"rd1","paved",60.0
+"rd2","fullOfHoles",20.0
+"rd3","magneticRail",200.0
