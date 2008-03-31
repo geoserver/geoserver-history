@@ -15,7 +15,7 @@ import org.geotools.test.OnlineTestCase;
  * @author Andrea Aime - TOPP
  * 
  */
-public class AbstractPostgisTest extends OnlineTestCase {
+public abstract class AbstractPostgisTest extends OnlineTestCase {
 
     PostgisDataStore store;
 

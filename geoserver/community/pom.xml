@@ -29,8 +29,8 @@
 				<jdk>1.5</jdk>
 			</activation>
 			<modules>
-				<!-- <module>sldService</module> -->
-				<!-- <module>csv</module> -->
+				<module>sldService</module>
+				<module>csv</module>
 				<module>rest</module>
 				<module>RESTConfig</module>
 			</modules>
