@@ -45,45 +45,44 @@ public abstract class MapResource extends Resource {
     }
 
     /**
-     * This method should return a map of format name == Dataformat for the MapResource to use 
+     * This method should return a map of format name == DataFormat for the MapResource to use 
      * in translating to and from different output Formats
      */
     public abstract Map getSupportedFormats();
 
     public void handleGet() {
-        Object details = getMap();
-//         LOG.info("Getting on a " + getClass() + ": " + details);
-        
-        myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
+        try {
+			Object details = getMap();
 
-        if ((myRequestFormat == null) | (details == null)) {
-            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            getResponse().setEntity(
-                    new StringRepresentation(
-                        "Could not find requested resource; format was " +
-                        getRequest().getAttributes().get("type") + 
-                        "; resource type is " + getClass(),
-                        MediaType.TEXT_PLAIN
-                        )
-                    );
-
-            LOG.info("Failed MapResource request; format: " + myRequestFormat + "; details: " + details);
-
-            return;
-        }
-
-        getResponse().setEntity(myRequestFormat.makeRepresentation(details));
+			String formatName = (String)getRequest().getAttributes().get("type");
+			myRequestFormat = (DataFormat) myFormatMap.get(formatName);
+			getResponse().setEntity(myRequestFormat.makeRepresentation(details));
+				
+	        if ((myRequestFormat == null) | (details == null)) {
+	        	LOG.info("Failed MapResource request; format: " + myRequestFormat + "; details: " + details);
+	        	
+	        	throw new RestletException(new StringRepresentation(
+	        			"Could not find requested resource; format=" + formatName 
+	        			+ "; resource type is: " + MediaType.TEXT_PLAIN
+	        			),
+	        			Status.CLIENT_ERROR_NOT_FOUND
+	        	);
+	        }
+		} catch (RestletException re) {
+			getResponse().setEntity(re.getRepresentation());
+			getResponse().setStatus(re.getStatus());
+		}
     }
 
     /**
      * This method must be overridden by subclasses; it will be called to handle the HTTP GET method.
      * @param details the Map equivalent of the uploaded Representation
      */
-    public abstract Object getMap();
+    public abstract Object getMap() throws RestletException;
 
     /**
      * Put some metadata about the HTTP location of the resource into a
-     * map so that it is available to the DataFormat.
+     * map so that it can be made available to the DataFormat.
      *
      * @return a Map containing page metadata
      */
@@ -111,32 +110,31 @@ public abstract class MapResource extends Resource {
     }
 
     public void handlePut() {
-        myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
-
-        Object details = myRequestFormat.readRepresentation(getRequest().getEntity());
-
-        if ((myRequestFormat == null) || (details == null)) {
-            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            getResponse()
-                .setEntity(new StringRepresentation("Could not find  requested resource",
-                    MediaType.TEXT_PLAIN));
-
-            return;
-        }
-
         try {
+            myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
+
+            Object details = myRequestFormat.readRepresentation(getRequest().getEntity());
+
+            if ((myRequestFormat == null) || (details == null)) {
+                throw new RestletException(new StringRepresentation("Could not find  requested resource",
+                        MediaType.TEXT_PLAIN),
+                        Status.CLIENT_ERROR_NOT_FOUND
+                );
+            }
+
             putMap(details);
-        } catch (Exception e) {
-            e.printStackTrace();
-            getResponse().setEntity(e.toString(), MediaType.TEXT_PLAIN);
-            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+        } catch (RestletException re) {
+            getResponse().setEntity(re.getRepresentation());
+            getResponse().setStatus(re.getStatus());
         }
     }
 
     /**
      * This method should be overridden by subclasses that wish to implement the HTTP PUT method.
      * @param details the Map equivalent of the uploaded Representation
+     * @throws RestletException if anything goes wrong.  The Status and Representation in the RestletException will be sent to the client.
      */
-    protected void putMap(Object details) throws Exception {
+    protected void putMap(Object details) throws RestletException {
+    	throw new RestletException("PUT not supported for this resource", Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
     }
 }

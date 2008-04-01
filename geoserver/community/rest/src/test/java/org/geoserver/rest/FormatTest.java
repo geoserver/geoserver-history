@@ -1,13 +1,12 @@
 package org.geoserver.rest;
 
-import org.geoserver.test.GeoServerTestSupport;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.HashMap; import java.util.Iterator;
 
-import org.restlet.resource.Representation;
+import org.geoserver.test.GeoServerTestSupport;
 
 /**
  * A set of generic tests for output formats to just check that they can read their own output. 
@@ -16,7 +15,9 @@ import org.restlet.resource.Representation;
 public class FormatTest extends GeoServerTestSupport {
     List formats;
 
-    public void setUp(){
+    public void setUp() throws Exception{
+    	super.setUp();
+    	// Add to this list if you would like to test another general format
         formats = new ArrayList();
         formats.add(new AutoXMLFormat());
         formats.add(new JSONFormat());
