@@ -29,5 +29,6 @@
 		<module>kml-ows5</module-->
 		<module>RESTConfig</module>
 		<module>geosync</module>
+        <module>geosearch</module>
 	</modules>
 </project>
