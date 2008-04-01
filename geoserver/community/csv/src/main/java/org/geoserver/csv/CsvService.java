@@ -30,6 +30,8 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.IllegalAttributeException;
 
+import au.com.bytecode.opencsv.CSVReader;
+
 /**
  * The main entry point for the csv services, acts as a facade for all the logic
  * in this module. It's an abstract class to facilitate testing and reuse, a
@@ -40,21 +42,6 @@ import org.geotools.feature.IllegalAttributeException;
  * 
  */
 public abstract class CsvService {
-    DDLDelegate ddlDelegate;
-
-    JDBCDataStore store;
-
-    /**
-     * Builds a new csv service on top of the provided {@link JDBCDataStore} and
-     * DDLDelegate
-     * 
-     * @param configuration
-     */
-    public CsvService(JDBCDataStore store, DDLDelegate ddlDelegate) {
-        this.store = store;
-        this.ddlDelegate = ddlDelegate;
-    }
-
     /**
      * Subclasses can use this one, they will have to init the store and ddlDelegate
      * fields manually
@@ -62,6 +49,10 @@ public abstract class CsvService {
     protected CsvService() {
         // no init, just for subclasses
     }
+    
+    protected abstract JDBCDataStore getDataStore();
+    
+    protected abstract DDLDelegate getDDLDelegate();
 
     /**
      * Returns a list of geometric layer names
@@ -69,6 +60,7 @@ public abstract class CsvService {
      * @return
      */
     public List<String> getGeometryLayers() throws IOException {
+        JDBCDataStore store = getDataStore();
         String[] typeNames = store.getTypeNames();
         List<String> result = new ArrayList<String>();
         for (int i = 0; i < typeNames.length; i++) {
@@ -92,6 +84,7 @@ public abstract class CsvService {
      * @return
      */
     public List<String> getDataLayers() throws IOException {
+        JDBCDataStore store = getDataStore();
         String[] typeNames = store.getTypeNames();
         List<String> result = new ArrayList<String>();
         for (int i = 0; i < typeNames.length; i++) {
@@ -116,6 +109,8 @@ public abstract class CsvService {
      */
     public List<LayerResult> configureCsvFile(String targetGeometryTable,
             String joinField, File csvFile) throws IOException {
+        JDBCDataStore store = getDataStore();
+        
         // check the geometry layer is known
         FeatureType geomSchema = null;
         try {
@@ -141,8 +136,7 @@ public abstract class CsvService {
                     + attributeNames(csvSchema));
 
         // build the target table for each attribute
-        List<LayerResult> result = buildReplaceTables(geomSchema, joinField,
-                csvSchema);
+        List<LayerResult> result = buildReplaceTables(geomSchema, joinField, csvReader);
 
         // import the data into the tables
         importData(csvReader, joinField);
@@ -161,6 +155,7 @@ public abstract class CsvService {
 
     private void importData(CsvFileReader csvReader, String joinField)
             throws IOException {
+        JDBCDataStore store = getDataStore();
         FeatureType csvSchema = csvReader.getFeatureType();
 
         // first off, grab the feature stores used for import
@@ -225,7 +220,10 @@ public abstract class CsvService {
      * @throws IOException
      */
     private List<LayerResult> buildReplaceTables(FeatureType geomSchema,
-            String joinField, FeatureType csvSchema) throws IOException {
+            String joinField, CsvFileReader csvReader) throws IOException {
+        JDBCDataStore store = getDataStore();
+        DDLDelegate ddlDelegate = getDDLDelegate();
+        FeatureType csvSchema = csvReader.getFeatureType();
         AttributeType joinAttribute = csvSchema.getAttributeType(joinField);
         FeatureType[] dataSchemas = new FeatureType[csvSchema
                 .getAttributeCount() - 1];
@@ -243,7 +241,8 @@ public abstract class CsvService {
             // if needed, drop the view and the data table (and also register
             // the result)
             String viewName = attName + "_view";
-            results.add(new LayerResult(viewName));
+            
+            results.add(new LayerResult(viewName, csvReader.getDescription(i)));
             if (names.contains(attName)) {
                 ddlDelegate.dropView(viewName);
                 ddlDelegate.dropTable(attName);

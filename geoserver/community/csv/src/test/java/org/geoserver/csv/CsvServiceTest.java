@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.geoserver.csv.LayerResult.LayerOperation;
 import org.geotools.data.Query;
+import org.geotools.data.jdbc.JDBCDataStore;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
@@ -18,11 +19,21 @@ public class CsvServiceTest extends AbstractPostgisTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        csv = new CsvService(store, ddl) {
+        csv = new CsvService() {
 
             @Override
             public String getLayerDescription(String layerId) {
                 return "";
+            }
+
+            @Override
+            protected DDLDelegate getDDLDelegate() {
+                return ddl;
+            }
+
+            @Override
+            protected JDBCDataStore getDataStore() {
+                return store;
             }
 
         };

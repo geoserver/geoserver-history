@@ -6,6 +6,7 @@
   <bean id="csvGeoserverService"
     class="org.geoserver.csv.GeoServerCsvService">
     <constructor-arg index="0" ref="catalog" />
+    <constructor-arg index="1" ref="dataConfig" />
   </bean>
 
   <bean id="csvRestConfigMapping"

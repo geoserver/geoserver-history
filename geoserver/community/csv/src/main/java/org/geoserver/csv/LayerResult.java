@@ -13,11 +13,14 @@ public class LayerResult {
     };
 
     String layerName;
+    
+    String layerDescription;
 
     LayerOperation operation;
 
-    public LayerResult(String layerName) {
+    public LayerResult(String layerName, String layerDescription) {
         this.layerName = layerName;
+        this.layerDescription = layerDescription;
         this.operation = LayerOperation.CREATED;
     }
 
@@ -31,5 +34,9 @@ public class LayerResult {
 
     public LayerOperation getOperation() {
         return operation;
+    }
+
+    public String getLayerDescription() {
+        return layerDescription;
     }
 }
