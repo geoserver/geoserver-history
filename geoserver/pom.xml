@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
@@ -415,27 +415,47 @@
    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-beans</artifactId>
-    <version>1.2.5</version>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-core</artifactId>
-    <version>1.2.5</version>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-context</artifactId>
-    <version>1.2.5</version>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-webmvc</artifactId>
-    <version>1.2.5</version>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
-    <groupId>org.acegisecurity</groupId>
-    <artifactId>acegi-security</artifactId>
-    <version>1.0.3</version>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc-struts</artifactId>
+    <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc-struts</artifactId>
+    <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aop</artifactId>
+    <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-tx</artifactId>
+    <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
     <groupId>log4j</groupId>
@@ -680,7 +700,7 @@
   </pluginManagement>
  
   <!-- TODO: the resources stuff hardcodes paths to source + test directories,
-			we should be able to use some properties here -->
+      we should be able to use some properties here -->
   <resources>
    <resource>
     <directory>${basedir}/src/main/java</directory>
@@ -702,8 +722,8 @@
     <excludes>
      <exclude>**/doc-files/**</exclude>
      <exclude>
-						org/geotools/resources/i18n/**/*.properties
-					</exclude>
+            org/geotools/resources/i18n/**/*.properties
+          </exclude>
     </excludes>
    </resource>
   </resources>
@@ -1022,6 +1042,7 @@
  <properties>
   <gs.version>1.7.0-SNAPSHOT</gs.version>
   <gt.version>2.5-SNAPSHOT</gt.version>
+  <spring.version>2.5.2</spring.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
@@ -1063,27 +1084,27 @@
         <version>4.4</version>
        </docletArtifact>
        <additionalparam>
-								-inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify
-								-postfixpackage -nodefontsize 9
-								-nodefontpackagesize 7
-								-link http://java.sun.com/j2se/1.5/docs/api
-								-link http://java.sun.com/j2ee/1.4/docs/api
-								-link http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs
-								-link http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi
-								-link http://jsr-108.sourceforge.net/javadoc
-								-link http://geoapi.sourceforge.net/snapshot/javadoc
-								-link http://geoapi.sourceforge.net/pending/javadoc
-								-link http://geoapi.sourceforge.net/legacy/javadoc
-								-link http://www.jump-project.org/docs/jts/1.7/api
-								-link http://www.geotools.fr/javadoc/2.2/
-								-link http://xmlgraphics.apache.org/batik/javadoc
-								-link http://itextdocs.lowagie.com/docs
-								-tag todo:tfmc:TODO:
-								-tag task:tfmc:TODO:
-								-tag revisit:tfmc:TODO:
-								-tag source:Xt:Source:
-								-tag tutorial:Xt:Tutorial:
-							</additionalparam>
+          -inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify
+          -postfixpackage -nodefontsize 9
+          -nodefontpackagesize 7
+          -link http://java.sun.com/j2se/1.5/docs/api
+          -link http://java.sun.com/j2ee/1.4/docs/api
+          -link http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs
+           -link http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi
+           -link http://jsr-108.sourceforge.net/javadoc
+           -link http://geoapi.sourceforge.net/snapshot/javadoc
+           -link http://geoapi.sourceforge.net/pending/javadoc
+           -link http://geoapi.sourceforge.net/legacy/javadoc
+           -link http://www.jump-project.org/docs/jts/1.7/api
+           -link http://www.geotools.fr/javadoc/2.2/
+           -link http://xmlgraphics.apache.org/batik/javadoc
+           -link http://itextdocs.lowagie.com/docs
+           -tag todo:tfmc:TODO:
+           -tag task:tfmc:TODO:
+           -tag revisit:tfmc:TODO:
+           -tag source:Xt:Source:
+           -tag tutorial:Xt:Tutorial:
+         </additionalparam>
       </configuration>
      </plugin>
     </plugins>
@@ -1119,17 +1140,17 @@
     </plugins>
    </build>
   </profile>
-  	<profile>
-		  <id>release</id>
-			<activation>
-				<property>
-					<name>release</name>
-				</property>
-			</activation>
-			<modules>
-			  <module>release</module>
-			</modules>
-		</profile>
+  <profile>
+    <id>release</id>
+    <activation>
+      <property>
+        <name>release</name>
+      </property>
+    </activation>
+    <modules>
+      <module>release</module>
+    </modules>
+  </profile>
  </profiles>
 
 </project>
