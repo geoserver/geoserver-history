@@ -12,14 +12,12 @@ import org.geotools.data.jdbc.JDBCDataStore;
 import org.geotools.data.postgis.PostgisDataStore;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.DataStoreInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 
 public class GeoServerCsvService extends CsvService {
@@ -117,6 +115,14 @@ public class GeoServerCsvService extends CsvService {
     @Override
     public String getLayerDescription(String layerId) throws IOException {
         return catalog.getFeatureTypeInfo(layerId).getAbstract();
+    }
+
+    public String getDataStoreId() {
+        return dataStoreId;
+    }
+
+    public void setDataStoreId(String dataStoreId) {
+        this.dataStoreId = dataStoreId;
     }
 
 }

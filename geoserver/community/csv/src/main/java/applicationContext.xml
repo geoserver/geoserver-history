@@ -29,6 +29,10 @@
           <key><value>/csv/dataLayers</value></key>
           <value>dataLayersResource</value>
         </entry>
+        <entry>
+          <key><value>/csv/dataLayers/{layerName}</value></key>
+          <value>dataLayerResource</value>
+        </entry>
       </map>
     </property>
   </bean>
@@ -42,6 +46,13 @@
   <bean id="dataLayersResource"
     class="org.geoserver.csv.rest.DataLayersResource">
     <constructor-arg index="0" ref="csvGeoserverService" />
+  </bean>
+  
+  <bean id="dataLayerResource"
+    class="org.geoserver.csv.rest.DataLayerResource">
+    <constructor-arg index="0" ref="csvGeoserverService" />
+    <constructor-arg index="1" ref="catalog" />
+    <constructor-arg index="2" ref="dataConfig" />
   </bean>
   
 </beans>
