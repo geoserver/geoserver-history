@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+<bean id="restConfigMapping" class="org.geoserver.rest.RESTMapping">
+<property name="routes">
+  <map>
+        <entry>
+          <key><value>/sitemap.xml</value></key>
+          <ref bean="sitemap"/>
+        </entry>
+        <entry>
+          <key><value>/geosearch/{namespace}</value></key>
+          <ref bean="namespaceindex"/>
+        </entry>
+        <entry>
+          <key><value>/geosearch/{namespace}/{layer}</value></key>
+          <ref bean="layer"/>
+        </entry>
+  </map>
+</property>
+</bean>
+
+<bean id="sitemap" class="org.geoserver.geosearch.SiteMapRestlet">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+    <property name="geoServer"><ref bean="geoServer"/></property>
+</bean>
+<bean id="namespaceindex" class="org.geoserver.geosearch.NamespaceIndexRestlet">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+    <property name="geoServer"><ref bean="geoServer"/></property>
+</bean>
+<bean id="layer" class="org.geoserver.geosearch.LayerRestlet">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+    <property name="geoServer"><ref bean="geoServer"/></property>
+    <property name="getMap"><ref bean="wmsGetMap"/></property>
+    <property name="wms"><ref bean="wms"/></property>
+</bean>
+
+<bean id="KMLGeosearchMapProducerFactory" 
+    class="org.vfny.geoserver.wms.responses.map.kml.GeoSearchMapProducerFactory">
+</bean>
+
+</beans>
