@@ -1,12 +1,9 @@
 <#include "head.ftl">
 <h1>Layer Groups</h1>
 All known layer groups:
+<ul>
 <#list layers as layer>
-  <p> ${layer.name} </p>
-  <ul>
-    <#list layer.members as member>
-      <li>${member}</li>
-    </#list>
-  </ul>
+  <li> ${layer} </li>
 </#list>
+</ul>
 <#include "tail.ftl">
