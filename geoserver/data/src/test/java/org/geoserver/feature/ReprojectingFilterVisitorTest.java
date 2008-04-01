@@ -1,6 +1,7 @@
 package org.geoserver.feature;
 
 import java.util.Collections;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -12,6 +13,8 @@ import org.geotools.feature.FeatureType;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.ExpressionVisitor;
+import org.opengis.filter.expression.Function;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.spatial.BBOX;
 import org.opengis.filter.spatial.Intersects;
@@ -124,5 +127,46 @@ public class ReprojectingFilterVisitorTest extends TestCase {
         assertEquals(original, clone);
     }
     
+    public void testIntersectsWithFunction() throws Exception {
+        GeometryFactory gf = new GeometryFactory();
+        final LineString ls = gf.createLineString(new Coordinate[] {new Coordinate(10, 15), new Coordinate(20, 25)});
+        ls.setUserData(CRS.decode("urn:x-ogc:def:crs:EPSG:6.11.2:4326"));
+        
+        Function function = new Function() {
+
+            public String getName() {
+                return "function";
+            }
+
+            public List getParameters() {
+                return Collections.EMPTY_LIST;
+            }
+
+            public Object accept(ExpressionVisitor visitor, Object extraData) {
+                return visitor.visit( this, extraData ); 
+            }
+
+            public Object evaluate(Object object) {
+                return ls;
+            }
+
+            public Object evaluate(Object arg0, Class arg1) {
+                return ls;
+            }
+        };
+        
+        // see if coordinates gets flipped, urn forces lat/lon interpretation
+        Intersects original = ff.intersects(ff.property("geom"), function);
+        Filter clone = (Filter) original.accept(reprojector, null);
+        assertNotSame(original, clone);
+        Intersects isClone = (Intersects) clone;
+        assertEquals(isClone.getExpression1(), original.getExpression1());
+        LineString clonedLs = (LineString) isClone.getExpression2().evaluate(null);
+        assertTrue(15 == clonedLs.getCoordinateN(0).x);
+        assertTrue(10 == clonedLs.getCoordinateN(0).y);
+        assertTrue(25 == clonedLs.getCoordinateN(1).x);
+        assertTrue(20 == clonedLs.getCoordinateN(1).y);
+        assertEquals(CRS.decode("EPSG:4326"), clonedLs.getUserData());
+    }
     
 }
