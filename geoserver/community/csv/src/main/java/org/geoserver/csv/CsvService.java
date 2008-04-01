@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,7 +18,10 @@ import java.util.Set;
 import org.geoserver.csv.LayerResult.LayerOperation;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
+import org.geotools.data.FeatureWriter;
+import org.geotools.data.Transaction;
 import org.geotools.data.jdbc.JDBCDataStore;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
@@ -49,6 +53,14 @@ public abstract class CsvService {
     public CsvService(JDBCDataStore store, DDLDelegate ddlDelegate) {
         this.store = store;
         this.ddlDelegate = ddlDelegate;
+    }
+
+    /**
+     * Subclasses can use this one, they will have to init the store and ddlDelegate
+     * fields manually
+     */
+    protected CsvService() {
+        // no init, just for subclasses
     }
 
     /**
@@ -120,7 +132,8 @@ public abstract class CsvService {
         // make sure the join field is there in both tables
         if (geomSchema.getAttributeType(joinField) == null)
             throw new IOException("Could not find the joinField " + joinField
-                    + " in the geometric table" + targetGeometryTable + " available attributes are: "
+                    + " in the geometric table" + targetGeometryTable
+                    + " available attributes are: "
                     + attributeNames(geomSchema));
         if (csvSchema.getAttributeType(joinField) == null)
             throw new IOException("Could not find the joinField " + joinField
@@ -136,20 +149,30 @@ public abstract class CsvService {
 
         return result;
     }
+    
+    /**
+     * Returns the layer description given the GeoServer layer name
+     * 
+     * @param layerId
+     * @return
+     */
+    public abstract String getLayerDescription(String layerId) throws IOException;
+
 
     private void importData(CsvFileReader csvReader, String joinField)
             throws IOException {
         FeatureType csvSchema = csvReader.getFeatureType();
 
         // first off, grab the feature stores used for import
-        Map<String, FeatureStore> stores = new HashMap<String, FeatureStore>();
+        Transaction t = new DefaultTransaction();
+        Map<String, FeatureWriter> stores = new HashMap<String, FeatureWriter>();
         for (int i = 0; i < csvSchema.getAttributeCount(); i++) {
             final AttributeType attribute = csvSchema.getAttributeType(i);
             String attName = attribute.getLocalName();
 
             if (attName.equals(joinField))
                 continue;
-            stores.put(attName, (FeatureStore) store.getFeatureSource(attName));
+            stores.put(attName, store.getFeatureWriterAppend(attName, t));
         }
 
         // now read the features, split them into sub-features, and import each
@@ -159,23 +182,30 @@ public abstract class CsvService {
             it = csvReader.getFeatures();
             while (it.hasNext()) {
                 Feature csvFeature = it.next();
+                final Object joinFieldValue = csvFeature.getAttribute(joinField);
 
                 for (String attName : stores.keySet()) {
                     // build the shaved feature for insertion in the data table
-                    Object[] newAtts = new Object[] {
-                            csvFeature.getAttribute(joinField),
-                            csvFeature.getAttribute(attName) };
-                    FeatureStore fstore = stores.get(attName);
-                    Feature subFeature = fstore.getSchema().create(newAtts);
-                    fstore.addFeatures(DataUtilities.collection(subFeature));
+                    FeatureWriter writer = stores.get(attName);
+                    Feature f = writer.next();
+                    
+                    f.setAttribute(joinField, joinFieldValue);
+                    f.setAttribute(attName, csvFeature.getAttribute(attName));
+                    writer.write();
                 }
             }
-        } catch (IllegalAttributeException e) {
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
             throw new DataSourceException("Unexpected feature creation issue",
                     e);
         } finally {
+            t.close();
             if (it != null)
                 it.close();
+            for (FeatureWriter writer : stores.values()) {
+                writer.close();
+            }
         }
     }
 
@@ -248,14 +278,6 @@ public abstract class CsvService {
         }
         return names;
     }
-
-    /**
-     * Returns the layer description given the GeoServer layer name
-     * 
-     * @param layerId
-     * @return
-     */
-    public abstract String getLayerDescription(String layerId);
 
     /**
      * Returns true if the provided schema represents a joined view (data +

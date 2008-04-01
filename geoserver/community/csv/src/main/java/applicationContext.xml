@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+  <bean id="csvGeoserverService"
+    class="org.geoserver.csv.GeoServerCsvService">
+    <constructor-arg index="0" ref="catalog" />
+  </bean>
+
+  <bean id="csvRestConfigMapping"
+    class="org.geoserver.rest.RESTMapping">
+    <property name="routes">
+      <map>
+        <entry>
+          <key><value>/csv/geometryLayers.{type}</value></key>
+          <value>geometryLayersResource</value>
+        </entry>
+        <entry>
+          <key><value>/csv/geometryLayers</value></key>
+          <value>geometryLayersResource</value>
+        </entry>
+        <entry>
+          <key><value>/csv/dataLayers.{type}</value></key>
+          <value>dataLayersResource</value>
+        </entry>
+        <entry>
+          <key><value>/csv/dataLayers</value></key>
+          <value>dataLayersResource</value>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="geometryLayersResource"
+    class="org.geoserver.csv.rest.GeometryLayersResource">
+    <constructor-arg index="0" ref="csvGeoserverService" />
+  </bean>
+
+
+  <bean id="dataLayersResource"
+    class="org.geoserver.csv.rest.DataLayersResource">
+    <constructor-arg index="0" ref="csvGeoserverService" />
+  </bean>
+  
+</beans>
