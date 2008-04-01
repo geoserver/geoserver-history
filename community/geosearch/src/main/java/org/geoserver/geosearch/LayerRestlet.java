@@ -1,70 +1,47 @@
 package org.geoserver.geosearch;
 
-import org.restlet.Restlet;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.MediaType;
-import org.restlet.data.Method;
-import org.restlet.data.Status;
-import org.restlet.resource.OutputRepresentation;
-
-import org.xml.sax.ContentHandler;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.output.XMLOutputter;
-import org.jdom.output.Format;
-
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.CoverageStoreConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.config.CoverageConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.wms.servlets.GetMap;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.responses.GetMapResponse;
-import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.platform.GeoServerExtensions;
-
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.DirectPosition2D;
-import org.geotools.util.logging.Logging;
-import org.geotools.feature.FeatureCollection;
+import org.geoserver.wms.kvp.GetMapKvpRequestReader;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.DefaultQuery;
-
-import org.opengis.filter.Filter;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.util.logging.Logging;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.Namespace;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
-import org.opengis.feature.Query;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.geometry.BoundingBox;
-
-import org.springframework.context.ApplicationContextAware;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
+import org.restlet.resource.OutputRepresentation;
 import org.springframework.context.ApplicationContext;
-
-import com.vividsolutions.jts.geom.Envelope;
+import org.springframework.context.ApplicationContextAware;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.GetMapResponse;
+import org.vfny.geoserver.wms.servlets.GetMap;
 
 public class LayerRestlet extends GeoServerProxyAwareRestlet implements ApplicationContextAware {
     private static Logger LOGGER = Logging.getLogger("org.geoserver.geosearch");
