@@ -52,6 +52,8 @@ public abstract class MapResource extends Resource {
 
     public void handleGet() {
         Object details = getMap();
+        LOG.info("Getting on a " + getClass() + ": " + details);
+        
         myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
 
         if ((myRequestFormat == null) | (details == null)) {
@@ -70,11 +72,7 @@ public abstract class MapResource extends Resource {
             return;
         }
 
-        /* if (details != null) {
-            Map page = getPageDetails();
-            details.put("page", page);
-            getResponse().setEntity(myRequestFormat.makeRepresentation(details));
-        } */
+        getResponse().setEntity(myRequestFormat.makeRepresentation(details));
     }
 
     /**

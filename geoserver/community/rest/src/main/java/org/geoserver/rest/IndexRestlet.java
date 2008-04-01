@@ -59,6 +59,7 @@ class IndexRestlet extends Finder{
         public Object getMap() {
             Map m = new HashMap();
             m.put("links", getLinkList());
+            m.put("page", getPageDetails());
 
             return m;
         }
