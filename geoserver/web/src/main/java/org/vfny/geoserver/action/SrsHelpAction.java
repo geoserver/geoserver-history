@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class SrsHelpAction extends Action {
-    private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(SrsHelpAction.class.toString());
+    private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(SrsHelpAction.class.getName());
 
     /**
      *  This is a simple action - it reads in the GT2 supported EPSG codes.
