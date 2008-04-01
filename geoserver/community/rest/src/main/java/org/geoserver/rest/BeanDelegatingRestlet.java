@@ -18,7 +18,6 @@ public class BeanDelegatingRestlet extends Restlet{
     public void handle(Request req, Response res){
         Object bean = myContext.getBean(myBeanName);
         Restlet restlet = (Restlet)bean;
-        System.out.println("BeanDelegating Reslet delegating to: " + restlet);
         restlet.handle(req, res);
     }
 }
