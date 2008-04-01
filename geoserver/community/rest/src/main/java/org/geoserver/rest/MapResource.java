@@ -52,7 +52,7 @@ public abstract class MapResource extends Resource {
 
     public void handleGet() {
         Object details = getMap();
-        LOG.info("Getting on a " + getClass() + ": " + details);
+//         LOG.info("Getting on a " + getClass() + ": " + details);
         
         myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
 
