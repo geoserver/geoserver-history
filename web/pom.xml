@@ -398,7 +398,7 @@
     <profile>
       <id>geosearch</id>
       <dependencies>
-        <dependency>
+         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>geosearch</artifactId>
           <version>0.1</version>
@@ -410,8 +410,18 @@
       <dependencies>
         <dependency>
           <groupId>org.geoserver</groupId>
-          <artifactId>RESTConfig</artifactId>
-          <version>1.0</version>
+          <artifactId>rest</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>geosearch</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>geosearch</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>

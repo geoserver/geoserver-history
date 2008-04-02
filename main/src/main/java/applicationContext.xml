@@ -129,17 +129,4 @@
 	<bean id="filePublisher" class="org.geoserver.ows.FilePublisher">
 	  <constructor-arg ref="resourceLoader" />
 	</bean>
-
-    <bean id="restWrapper" class="org.geoserver.rest.WrappingController"/>
-
-    <bean id="restletDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-    <property name="alwaysUseFullPath" value="true"/>
-    <property name="mappings">
-        <props>
-            <prop key="/api">restWrapper</prop>
-            <prop key="/api/**">restWrapper</prop>
-        </props>
-    </property>
-
-    </bean>
 </beans>

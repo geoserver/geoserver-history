@@ -58,11 +58,10 @@ public class AutoXMLFormat implements DataFormat {
         myRootName = s;
     }
 
-    public Representation makeRepresentation(Map map) {
-        map.remove("page");
+    public Representation makeRepresentation(Object context) {
         Element root = new Element(myRootName);
         final Document doc = new Document(root);
-        insert(root, map);
+        insert(root, context);
         return new OutputRepresentation(MediaType.APPLICATION_XML){
             public void write(OutputStream outputStream){
                 try{
@@ -104,17 +103,16 @@ public class AutoXMLFormat implements DataFormat {
         }        
     }
 
-    public Map readRepresentation(Representation rep) {
-        Map m;
+    public Object readRepresentation(Representation rep) {
+        Object result = null;
         try {
             SAXBuilder builder = new SAXBuilder();
             Document doc = builder.build(rep.getStream());
             Element elem = doc.getRootElement();
-            m = (Map)convert(elem);
+            result = convert(elem);
         } catch (Exception e){
-            m = new HashMap();
         }
-        return m;
+        return result;
     }
 
     /**

@@ -57,14 +57,14 @@
    </snapshots>
    <layout>legacy</layout>
   </repository>
-  <repository>
+  <!-- <repository>
    <id>refractions</id>
    <name>refractions</name>
    <url>http://lists.refractions.net/m2/</url>
    <snapshots>
     <enabled>true</enabled>
    </snapshots>
-  </repository>
+  </repository> -->
   <repository>
    <id>mortbay</id>
    <name>mortbay</name>
