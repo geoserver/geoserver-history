@@ -727,7 +727,7 @@ error.style.noParse=スタイルを解�?�?�る�?��?��?��?�
 label.SRSHelp=SRS Help
 
 #might want the other langages to point to a different url!
-label.SRSHelp.URL=http://docs.codehaus.org/display/GEOS/crshelp
+label.SRSHelp.URL=http://geoserver.org/display/GEOS/crshelp
 
 label.SRSList=SRSリスト
 
