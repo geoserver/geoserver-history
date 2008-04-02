@@ -41,6 +41,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
+import org.vfny.geoserver.wms.responses.map.kml.GeoSearchMapProducerFactory;
 import org.vfny.geoserver.wms.servlets.GetMap;
 
 public class LayerRestlet extends GeoServerProxyAwareRestlet implements ApplicationContextAware {
@@ -115,6 +116,7 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
     public void doGet(Request request, Response response) throws Exception{
         String namespace = (String)request.getAttributes().get("namespace");
         String layername = (String)request.getAttributes().get("layer");
+        GeoSearchMapProducerFactory.BASE_URL = getBaseURL(request);
         if (request.getMethod().equals(Method.GET)) {
             GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getGetMap(), getWms());
             Map raw = new HashMap();
@@ -135,17 +137,17 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
                     gmresp.execute(gmreq);
                     gmresp.writeTo(os);
                     } catch (IOException ioe){
-                        // blah, this will never happen
+                    // blah, this will never happen
                     }
                     }
 
-            });
+                    });
 
         } else {
             response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
         }
     }
-    
+
     /**
      * Parses a raw set of kvp's into a parsed set of kvps.
      *
@@ -153,37 +155,37 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
      */
     protected Map parseKvp(Map /*<String,String>*/ raw)
         throws Exception {
-        //parse the raw values
-        List parsers = GeoServerExtensions.extensions(KvpParser.class, getApplicationContext());
-        Map kvp = new CaseInsensitiveMap(new HashMap());
+            //parse the raw values
+            List parsers = GeoServerExtensions.extensions(KvpParser.class, getApplicationContext());
+            Map kvp = new CaseInsensitiveMap(new HashMap());
 
-        for (Iterator e = raw.entrySet().iterator(); e.hasNext();) {
-            Map.Entry entry = (Map.Entry) e.next();
-            String key = (String) entry.getKey();
-            String val = (String) entry.getValue();
-            Object parsed = null;
+            for (Iterator e = raw.entrySet().iterator(); e.hasNext();) {
+                Map.Entry entry = (Map.Entry) e.next();
+                String key = (String) entry.getKey();
+                String val = (String) entry.getValue();
+                Object parsed = null;
 
-            for (Iterator p = parsers.iterator(); p.hasNext();) {
-                KvpParser parser = (KvpParser) p.next();
+                for (Iterator p = parsers.iterator(); p.hasNext();) {
+                    KvpParser parser = (KvpParser) p.next();
 
-                if (key.equalsIgnoreCase(parser.getKey())) {
-                    parsed = parser.parse(val);
+                    if (key.equalsIgnoreCase(parser.getKey())) {
+                        parsed = parser.parse(val);
 
-                    if (parsed != null) {
-                        break;
+                        if (parsed != null) {
+                            break;
+                        }
                     }
                 }
+
+                if (parsed == null) {
+                    parsed = val;
+                }
+
+                kvp.put(key, parsed);
             }
 
-            if (parsed == null) {
-                parsed = val;
-            }
-
-            kvp.put(key, parsed);
+            return kvp;
         }
-
-        return kvp;
-    }
 
 
     private Document buildKML(String namespace, String layername){

@@ -19,6 +19,7 @@ public class GeoSearchMapProducerFactory implements GetMapProducerFactorySpi {
 
     }
 
+    public static String BASE_URL;
 
     /**
      * this is just to check the requested mime type starts with this string,
@@ -34,11 +35,11 @@ public class GeoSearchMapProducerFactory implements GetMapProducerFactorySpi {
     public static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
 
     /** Format name
-     */
+    */
     public static final String FORMAT = "application/kml";
 
     /** Set of supported mime types for the producers made by this Factory
-     */
+    */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(PRODUCE_TYPE);
 
     public boolean canProduce(String mapFormat) {
