@@ -19,7 +19,11 @@
           <value>featureTypeStyleResource</value>
         </entry>
         <entry>
-          <key><value>/sldservice/{featureType}/styles/{userStyleID}/{featureTypeID}/{firstRuleId}</value></key>
+          <key><value>/sldservice/{featureType}/styles/{userStyleID}/{featureTypeID}/rules</value></key>
+          <value>rulesResource</value>
+        </entry>
+        <entry>
+          <key><value>/sldservice/{featureType}/styles/{userStyleID}/{featureTypeID}/rules/{firstRuleId}</value></key>
           <value>rulesResource</value>
         </entry>
         <entry>
