@@ -124,6 +124,10 @@ public class DescribeFeatureType {
 
                 // not found
                 String msg = "Could not find type: " + name;
+                if (citeConformance) {
+                    msg += ". \nStrict WFS protocol conformance is being applied.\n"
+                            + "Make sure the type name is correctly qualified";
+                }
                 throw new WFSException(msg);
             }
         } else {
