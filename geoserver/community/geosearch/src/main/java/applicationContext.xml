@@ -7,27 +7,27 @@
   <map>
         <entry>
           <key><value>/sitemap.xml</value></key>
-          <ref bean="sitemap"/>
+          <value>sitemap</value>
         </entry>
         <entry>
           <key><value>/geosearch/{namespace}</value></key>
-          <ref bean="namespaceindex"/>
+          <value>namespaceindex</value>
         </entry>
         <entry>
           <key><value>/geosearch/{namespace}/{layer}</value></key>
-          <ref bean="layer"/>
+          <value>layer</value>
         </entry>
         <entry>
           <key><value>/geosearch/{namespace}/{layer}.{type}</value></key>
-          <ref bean="layer"/>
+          <value>layer</value>
         </entry>
         <entry>
           <key><value>/geosearch/{namespace}/{layer}/{feature}</value></key>
-          <ref bean="feature"/>
+          <value>feature</value>
         </entry>
         <entry>
            <key><value>/geosearch/{namespace}/{layer}/{feature}</value></key>
-           <ref bean="feature"/>
+           <value>feature</value>
         </entry>
   </map>
 </property>
