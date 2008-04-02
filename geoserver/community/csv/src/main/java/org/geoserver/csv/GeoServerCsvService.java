@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -141,6 +142,30 @@ public class GeoServerCsvService extends CsvService {
 
     public void setDataStoreId(String dataStoreId) {
         this.dataStoreId = dataStoreId;
+    }
+    
+    @Override
+    public List<String> getDataLayers() throws IOException {
+        return filterLayers(super.getDataLayers());
+    }
+
+    private List<String> filterLayers(List<String> result) {
+        // make sure we return only those known to GeoServer
+        List<String> filtered = new ArrayList<String>();
+        for (int i = 0; i < result.size(); i++) {
+            try {
+                catalog.getFeatureTypeInfo(result.get(i));
+                filtered.add(result.get(i));
+            } catch(Exception e) {
+                //
+            }
+        }
+        return filtered;
+    }
+    
+    @Override
+    public List<String> getGeometryLayers() throws IOException {
+        return filterLayers(super.getGeometryLayers());
     }
 
 }
