@@ -7,30 +7,32 @@ package org.geoserver.wfs;
 import net.opengis.wfs.DescribeFeatureTypeType;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.NameSpaceInfo;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.xml.namespace.QName;
 
-
 /**
  * Web Feature Service DescribeFeatureType operation.
  * <p>
- * This operation returns an array of  {@link org.geoserver.data.feature.FeatureTypeInfo} metadata
- * objects corresponding to the feature type names specified in the request.
+ * This operation returns an array of
+ * {@link org.geoserver.data.feature.FeatureTypeInfo} metadata objects
+ * corresponding to the feature type names specified in the request.
  * </p>
- *
+ * 
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
+ * 
  * @version $Id$
  */
 public class DescribeFeatureType {
     /**
-    * Catalog reference
-    */
+     * Catalog reference
+     */
     private Data catalog;
 
     /**
@@ -39,11 +41,13 @@ public class DescribeFeatureType {
     private WFS wfs;
 
     /**
-         * Creates a new wfs DescribeFeatureType operation.
-         *
-         * @param wfs The wfs configuration
-         * @param catalog The geoserver catalog.
-         */
+     * Creates a new wfs DescribeFeatureType operation.
+     * 
+     * @param wfs
+     *            The wfs configuration
+     * @param catalog
+     *            The geoserver catalog.
+     */
     public DescribeFeatureType(WFS wfs, Data catalog) {
         this.catalog = catalog;
         this.wfs = wfs;
@@ -65,17 +69,43 @@ public class DescribeFeatureType {
         this.catalog = catalog;
     }
 
-    public FeatureTypeInfo[] run(DescribeFeatureTypeType request)
-        throws WFSException {
+    public FeatureTypeInfo[] run(DescribeFeatureTypeType request) throws WFSException {
         List names = new ArrayList(request.getTypeName());
 
-        //list of catalog handles
+        final boolean citeConformance = getWFS().getCiteConformanceHacks();
+        if (!citeConformance) {
+            // HACK: as per GEOS-1816, if strict cite compliance is not set, and
+            // the user specified a typeName with no namespace prefix, we want
+            // it to be interpreted as being in the GeoServer's "default
+            // namespace". Yet, the xml parser did its job and since TypeName is
+            // of QName type, not having a ns prefix means it got parsed as a
+            // QName in the default namespace. That is, in the wfs namespace.
+            List hackedNames = new ArrayList(names.size());
+            final Data catalog = getWFS().getData();
+            final NameSpaceInfo defaultNameSpace = catalog.getDefaultNameSpace();
+            if (defaultNameSpace == null) {
+                throw new IllegalStateException("No default namespace configured in GeoServer");
+            }
+            final String defaultNsUri = defaultNameSpace.getURI();
+            for (Iterator it = names.iterator(); it.hasNext();) {
+                QName name = (QName) it.next();
+                String nsUri = name.getNamespaceURI();
+                if (org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE.equals(nsUri)) {
+                    // for this one we need to assign the default geoserver
+                    // namespace
+                    name = new QName(defaultNsUri, name.getLocalPart());
+                }
+                hackedNames.add(name);
+            }
+            names = hackedNames;
+        }
+
+        // list of catalog handles
         Collection infos = catalog.getFeatureTypeInfos().values();
         ArrayList requested = new ArrayList();
 
         if (!names.isEmpty()) {
-O: 
-            for (Iterator t = names.iterator(); t.hasNext();) {
+            O: for (Iterator t = names.iterator(); t.hasNext();) {
                 QName name = (QName) t.next();
 
                 for (Iterator h = infos.iterator(); h.hasNext();) {
@@ -85,19 +115,19 @@ O:
 
                     if (namespace.equals(name.getNamespaceURI())
                             && local.equals(name.getLocalPart())) {
-                        //found, continue on and keep this handle in list
+                        // found, continue on and keep this handle in list
                         requested.add(meta);
 
                         continue O;
                     }
                 }
 
-                //not found
+                // not found
                 String msg = "Could not find type: " + name;
                 throw new WFSException(msg);
             }
         } else {
-            //if there are no specific requested types then get all.
+            // if there are no specific requested types then get all.
             requested.addAll(infos);
         }
 
