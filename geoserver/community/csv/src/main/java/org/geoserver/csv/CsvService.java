@@ -10,16 +10,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.geoserver.csv.LayerResult.LayerOperation;
 import org.geotools.data.DataSourceException;
-import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
 import org.geotools.data.jdbc.JDBCDataStore;
@@ -28,9 +25,6 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypes;
-import org.geotools.feature.IllegalAttributeException;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * The main entry point for the csv services, acts as a facade for all the logic
@@ -43,15 +37,15 @@ import au.com.bytecode.opencsv.CSVReader;
  */
 public abstract class CsvService {
     /**
-     * Subclasses can use this one, they will have to init the store and ddlDelegate
-     * fields manually
+     * Subclasses can use this one, they will have to init the store and
+     * ddlDelegate fields manually
      */
     protected CsvService() {
         // no init, just for subclasses
     }
-    
+
     protected abstract JDBCDataStore getDataStore();
-    
+
     protected abstract DDLDelegate getDDLDelegate();
 
     /**
@@ -110,7 +104,7 @@ public abstract class CsvService {
     public List<LayerResult> configureCsvFile(String targetGeometryTable,
             String joinField, File csvFile) throws IOException {
         JDBCDataStore store = getDataStore();
-        
+
         // check the geometry layer is known
         FeatureType geomSchema = null;
         try {
@@ -136,22 +130,23 @@ public abstract class CsvService {
                     + attributeNames(csvSchema));
 
         // build the target table for each attribute
-        List<LayerResult> result = buildReplaceTables(geomSchema, joinField, csvReader);
+        List<LayerResult> result = buildReplaceTables(geomSchema, joinField,
+                csvReader);
 
         // import the data into the tables
         importData(csvReader, joinField);
 
         return result;
     }
-    
+
     /**
      * Returns the layer description given the GeoServer layer name
      * 
      * @param layerId
      * @return
      */
-    public abstract String getLayerDescription(String layerId) throws IOException;
-
+    public abstract String getLayerDescription(String layerId)
+            throws IOException;
 
     private void importData(CsvFileReader csvReader, String joinField)
             throws IOException {
@@ -177,13 +172,14 @@ public abstract class CsvService {
             it = csvReader.getFeatures();
             while (it.hasNext()) {
                 Feature csvFeature = it.next();
-                final Object joinFieldValue = csvFeature.getAttribute(joinField);
+                final Object joinFieldValue = csvFeature
+                        .getAttribute(joinField);
 
                 for (String attName : stores.keySet()) {
                     // build the shaved feature for insertion in the data table
                     FeatureWriter writer = stores.get(attName);
                     Feature f = writer.next();
-                    
+
                     f.setAttribute(joinField, joinFieldValue);
                     f.setAttribute(attName, csvFeature.getAttribute(attName));
                     writer.write();
@@ -241,7 +237,7 @@ public abstract class CsvService {
             // if needed, drop the view and the data table (and also register
             // the result)
             String viewName = attName + "_view";
-            
+
             results.add(new LayerResult(viewName, csvReader.getDescription(i)));
             if (names.contains(attName)) {
                 ddlDelegate.dropView(viewName);

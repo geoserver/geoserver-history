@@ -13,7 +13,7 @@ public class LayerResult {
     };
 
     String layerName;
-    
+
     String layerDescription;
 
     LayerOperation operation;

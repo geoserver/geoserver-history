@@ -47,7 +47,7 @@ public class GeoServerCsvService extends CsvService {
         // don't screw up geoserver startup if the property file is not there
         dataStoreId = props.getProperty("datastore");
     }
-    
+
     @Override
     protected JDBCDataStore getDataStore() {
         DataStoreInfo info = catalog.getDataStoreInfo(dataStoreId);
@@ -56,11 +56,11 @@ public class GeoServerCsvService extends CsvService {
         else
             return null;
     }
-    
+
     @Override
     protected DDLDelegate getDDLDelegate() {
         JDBCDataStore store = getDataStore();
-        if(store == null)
+        if (store == null)
             return null;
         return new PostgisDDLDelegate((PostgisDataStore) store);
     }
@@ -79,12 +79,12 @@ public class GeoServerCsvService extends CsvService {
         for (LayerResult layerResult : results) {
             final String qualifiedName = dataStoreId + ":"
                     + layerResult.getLayerName();
-            FeatureTypeConfig ftConfig = dataConfig.getFeatureTypeConfig(qualifiedName); 
+            FeatureTypeConfig ftConfig = dataConfig
+                    .getFeatureTypeConfig(qualifiedName);
 
-            if(ftConfig == null) {
-                ftConfig = new FeatureTypeConfig(
-                        dataStoreId,
-                        getDataStore().getSchema(layerResult.getLayerName()), true);
+            if (ftConfig == null) {
+                ftConfig = new FeatureTypeConfig(dataStoreId, getDataStore()
+                        .getSchema(layerResult.getLayerName()), true);
             }
             ftConfig.setAbstract(layerResult.getLayerDescription());
             ftConfig.setTitle(layerResult.getLayerDescription());
@@ -103,7 +103,9 @@ public class GeoServerCsvService extends CsvService {
             XMLConfigWriter.store((DataDTO) dataConfig.toDTO(),
                     GeoserverDataDirectory.getGeoserverDataDirectory());
         } catch (ConfigurationException e) {
-            throw new DataSourceException("Error occurred trying to write out the GeoServer configuration", e);
+            throw new DataSourceException(
+                    "Error occurred trying to write out the GeoServer configuration",
+                    e);
         }
 
         return results;
