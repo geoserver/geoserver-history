@@ -425,5 +425,15 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>geowebcache</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>geowebcache</artifactId>
+          <version>0.1</version>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>

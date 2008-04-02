@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <bean id="gwcDispatcher" class="org.geowebcache.GeoWebCacheDispatcher">
+  
+  </bean>
+  <bean id="gwcUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="alwaysUseFullPath" value="true"/>
+    <property name="mappings">
+      <props>
+        <prop key="/gwc">gwcDispatcher</prop>
+        <prop key="/gwc/*">gwcDispatcher</prop>
+      </props>
+    </property>
+  </bean>
+</beans>
