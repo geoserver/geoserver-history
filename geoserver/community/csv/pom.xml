@@ -12,6 +12,7 @@
   <artifactId>csv</artifactId>
   <version>1.6-SNAPSHOT</version>
   <description>CSV thematic mapping module</description>
+  <name>CSV thematic mapping module</name>
   <dependencies>
     <dependency>
       <groupId>org.geoserver</groupId>
