@@ -1,4 +1,4 @@
-package org.geoserver.sldservice;
+package org.geoserver.sldservice.resource;
 
 /* utils class that list attributs for a featuretype
  * this will be deprecated when available in restconfig
@@ -6,18 +6,12 @@ package org.geoserver.sldservice;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.servlet.http.HttpServletRequest;
-
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.xml.XMLSerializer;
 
-import org.geotools.styling.Style;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
@@ -26,13 +20,9 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.StringRepresentation;
-import org.vfny.geoserver.global.CoverageInfo;
+import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.AttributeTypeInfo;
-import com.noelios.restlet.ext.servlet.ServletCall;
-import com.noelios.restlet.http.HttpCall;
-import com.noelios.restlet.http.HttpRequest;
 
 /**
  * @author kappu
@@ -45,8 +35,7 @@ public class ListAttributes extends Restlet {
 	private Data dt;
 	private String featureTypeName;
 
-	public ListAttributes(Context context, Data dt) {
-		super(context);
+	public ListAttributes(Data dt) {
 		this.dt = dt;
 	}
 

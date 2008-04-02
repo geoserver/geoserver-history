@@ -1,33 +1,11 @@
 package org.geoserver.sldservice.resource;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-
-import net.sf.json.JSONObject;
-import net.sf.json.util.PropertyFilter;
-
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
 import org.geotools.styling.FeatureTypeStyle;
-import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyledLayerDescriptor;
-import org.opengis.filter.FilterFactory2;
-import org.restlet.Context;
 import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.Resource;
 import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.global.Data;
-
-import com.noelios.restlet.ext.servlet.ServletCall;
-import com.noelios.restlet.http.HttpCall;
-import com.noelios.restlet.http.HttpRequest;
 
 public class FeatureTypeStyleResource extends BaseResource {
 	private int featureTypeStyleID;
@@ -35,10 +13,8 @@ public class FeatureTypeStyleResource extends BaseResource {
 	private Style style;
 	private FeatureTypeStyle fTStyle;
 	
-	public FeatureTypeStyleResource(Context con, Request req, Response resp, Data data) {
-		super(con, req, resp,data);
-		this.userStyleID = req.getAttributes().get("userStyleID").toString();
-		this.featureTypeStyleID = Integer.parseInt(req.getAttributes().get("featureTypeID").toString().trim());
+	public FeatureTypeStyleResource(Data data) {
+		super(data);
 	}
 
 	public boolean allowGet() {
@@ -46,6 +22,10 @@ public class FeatureTypeStyleResource extends BaseResource {
 	}
 
 	public void handleGet() {
+        this.userStyleID = getRequest().getAttributes().get("userStyleID").toString();
+	    this.featureTypeStyleID = Integer.parseInt(getRequest().getAttributes().get("featureTypeID").toString().trim());
+
+	    
 		style = this.dt.getStyle(this.userStyleID);
 		fTStyle = style.getFeatureTypeStyles()[this.featureTypeStyleID];
 		if(fTStyle!=null){

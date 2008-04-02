@@ -2,6 +2,8 @@ package org.geoserver.sldservice.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
@@ -40,13 +42,16 @@ import com.noelios.restlet.http.HttpRequest;
  */
 public class BaseResource extends Resource {
 	protected Data dt;
-	protected String baseUrl;
 
-	public BaseResource(Context con, Request req, Response resp, Data data) {
-		super(con, req, resp);
+	public BaseResource(Data data) {
 		this.dt = data;
-		baseUrl = this.getRequest().getResourceRef().toString();
-		if(baseUrl.charAt(baseUrl.length()-1)=='/')baseUrl=baseUrl.substring(0, baseUrl.length()-1);
+	}
+	
+	protected String getBaseUrl() {
+	    String baseUrl = getRequest().getResourceRef().toString();
+        if(baseUrl.charAt(baseUrl.length()-1)=='/')
+            baseUrl=baseUrl.substring(0, baseUrl.length()-1);
+        return baseUrl;
 	}
 
 	protected StyledLayerDescriptor loadFile(File file) throws Exception {
@@ -108,13 +113,13 @@ public class BaseResource extends Resource {
 		String fTypeStyleSz;
 		FeatureTypeStyle fTypeStyle = ftStyleA[0];
 		fTypeStyleSz = "{'name':'" + fTypeStyle.getName() + "','link':'"
-				+ this.baseUrl + "/0','id':'0'}";
+				+ getBaseUrl() + "/0','id':'0'}";
 		userStyleSz += fTypeStyleSz;
 
 		for (int i = 1; i < ftStyleA.length; i++) {
 			fTypeStyle = ftStyleA[i];
 			fTypeStyleSz = "{'name':'" + fTypeStyle.getName() + "','link':'"
-					+ this.baseUrl + "/" + i + "','id':,'" + i + "'}";
+					+ getBaseUrl() + "/" + i + "','id':,'" + i + "'}";
 			userStyleSz += "," + fTypeStyleSz;
 		}
 		userStyleSz += "]}";
@@ -250,4 +255,27 @@ public class BaseResource extends Resource {
 		return symbolizerSz;
 		
 	}
+	
+	protected Object findLayer(Map attributes) {
+        /* Looks in attribute map if there is the featureType param */
+        if (attributes.containsKey("featureType")) {
+            String featureTypeName = (String) attributes.get("featureType");
+
+            /* First try to find as a FeatureType */
+            try {
+                return this.dt.getFeatureTypeInfo(featureTypeName);
+            } catch (NoSuchElementException e) {
+                /* Try to find as coverage */
+                try {
+                    return this.dt.getCoverageInfo(featureTypeName);
+
+                } catch (NoSuchElementException e1) {
+                    /* resurce not found return null */
+                    return null;
+                }
+            }
+            /*attribute not found*/
+        } else
+            return null;
+    }
 }
