@@ -72,8 +72,17 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                 }
             }
 
+            //            String[] name = mapContext.getRequest().getLayers()[0].getName().split(":",2);
+            String name = feature.getType().getTypeName();
+
+            String id = feature.getID();
+
             // TODO: Make a real link
-            element("atom:link", null, KMLUtils.attributes(new String[]{"rel","self","href","http://geoserver.org/"}));
+            element("link", null, KMLUtils.attributes(
+                        new String[]{
+                        "rel","self",
+                        "href", GeoSearchMapProducerFactory.BASE_URL + "/" + name + "/" + id}));
+
 
             // look at
             encodePlacemarkLookAt(centroid);
