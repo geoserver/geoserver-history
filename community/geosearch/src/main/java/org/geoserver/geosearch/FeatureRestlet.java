@@ -44,7 +44,7 @@ import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.GeoSearchMapProducerFactory;
 import org.vfny.geoserver.wms.servlets.GetMap;
 
-public class LayerRestlet extends GeoServerProxyAwareRestlet implements ApplicationContextAware {
+public class FeatureRestlet extends GeoServerProxyAwareRestlet implements ApplicationContextAware {
     private static Logger LOGGER = Logging.getLogger("org.geoserver.geosearch");
 
     private Data myData;
@@ -52,9 +52,6 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
     private WMS myWMS;
     private GetMap myGetMap;
     private ApplicationContext myContext;
-
-    private static Namespace KML = Namespace.getNamespace("http://earth.google.com/kml/2.2");
-    private static Namespace ATOM = Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom");
 
     public void setData(Data d){
         myData = d;
@@ -96,7 +93,7 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
         return myContext;
     }
 
-    public LayerRestlet() {
+    public FeatureRestlet() {
     }
 
     public void handle(Request request, Response response){
@@ -116,19 +113,20 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
     public void doGet(Request request, Response response) throws Exception{
         String namespace = (String)request.getAttributes().get("namespace");
         String layername = (String)request.getAttributes().get("layer");
-        String format = (String)request.getAttributes().get("format");
-        
+        String featureId = (String)request.getAttributes().get("feature");
+        String format    = (String)request.getAttributes().get("format");
         GeoSearchMapProducerFactory.BASE_URL = getBaseURL(request);
         if (request.getMethod().equals(Method.GET)) {
             GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getGetMap(), getWms());
             Map raw = new HashMap();
             raw.put("layers", namespace + ":" + layername); 
-            // raw.put("styles", "polygon");
+            raw.put("styles", "polygon");
             raw.put("format", (format == null ? "kmlgeosearch" : format));
             raw.put("srs", "epsg:4326");
             raw.put("bbox", "-180,-90,180,90");
             raw.put("height", "600");
             raw.put("width", "800");
+            raw.put("featureid", layername + "." + featureId);
 
             final GetMapRequest gmreq = (GetMapRequest) reader.read((GetMapRequest) reader.createRequest(), parseKvp(raw), raw);
 
@@ -188,68 +186,5 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
 
             return kvp;
         }
-
-
-    private Document buildKML(String namespace, String layername){
-        FeatureCollection<SimpleFeatureType, SimpleFeature> features = findFeatures(namespace, layername);
-        Document doc = new Document();
-        Element kml = new Element("kml", KML);
-        Element docElem = new Element("Document", KML);
-        Element name = new Element("name", KML);
-        name.setText(namespace + ":" + layername);
-        docElem.addContent(name);
-
-        Iterator it = features.iterator();
-        while (it.hasNext()){
-            SimpleFeature f = (SimpleFeature)it.next();
-            Element feature = encodeFeature(f, "http://localhost:8080/geoserver/api/geosearch/" + namespace + "/" + layername);
-            docElem.addContent(feature);
-        }
-
-        kml.addContent(docElem);
-        doc.setRootElement(kml);
-        return doc;
-    }
-
-    private Element encodeFeature(SimpleFeature f, String parentURL){
-        Element feature = new Element("Placemark", KML);
-        Element name = new Element("name", KML);
-        name.setText(f.getID());
-        Element lookAt = getLookAt(f.getBounds());
-        // Element geometry = new Element("Geometry", KML);
-        Element link = new Element("link", ATOM);
-        link.setAttribute("rel", "self");
-        link.setAttribute("type", "application/vnd.google-earth.kml+xml");
-        link.setAttribute("href", parentURL + "/" + getNumericID(f.getID()));
-        feature.addContent(name).addContent(lookAt).addContent(link);
-        return feature;
-    }
-
-    private static String getNumericID(String featureID){
-        int index = featureID.lastIndexOf(".");
-        return featureID.substring(index);
-    }
-
-    private static Element getLookAt(BoundingBox bbox){
-        return NamespaceIndexRestlet.getLookAt(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
-    }
-
-    private FeatureCollection<SimpleFeatureType, SimpleFeature> findFeatures(String namespace, String layername){
-        try{
-            String typename = namespace + ":" + layername;
-            FeatureTypeInfo info = getData().getFeatureTypeInfo(typename);
-            FeatureSource<SimpleFeatureType, SimpleFeature> source = info.getFeatureSource();
-            DefaultQuery query = new DefaultQuery(DefaultQuery.ALL);
-            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2( GeoTools.getDefaultHints() );
-            query.setSortBy(new SortBy[]{ff.sort("fid",SortOrder.ASCENDING)});
-            query.setMaxFeatures(100); // TODO: make feature limit a parameter to the request
-            FeatureCollection<SimpleFeatureType, SimpleFeature> results = source.getFeatures(query);
-            return results;
-        } catch (IOException ioe){
-            System.out.println("IOException while retrieving data:  ");
-            ioe.printStackTrace();
-            return null;
-        }
-    }
 }
 
