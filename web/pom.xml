@@ -396,18 +396,32 @@
       </dependencies>
     </profile>
     <profile>
-      <id>community</id>
-      <activation>
-         <property>
-           <name>community</name>
-           <value>true</value>
-         </property>
-      </activation>
+      <id>geosearch</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>geosearch</artifactId>
+          <version>0.1</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>rest</id>
       <dependencies>
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>RESTConfig</artifactId>
           <version>1.0</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>geosync</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>geosync</artifactId>
+          <version>0.1</version>
         </dependency>
       </dependencies>
     </profile>
