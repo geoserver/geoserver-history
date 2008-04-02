@@ -7,6 +7,8 @@ package org.geoserver.wfs;
 import net.opengis.wfs.DescribeFeatureTypeType;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.NameSpaceInfo;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -69,6 +71,34 @@ public class DescribeFeatureType {
         throws WFSException {
         List names = new ArrayList(request.getTypeName());
 
+        final boolean citeConformance = getWFS().getCiteConformanceHacks();
+        if (!citeConformance) {
+            // HACK: as per GEOS-1816, if strict cite compliance is not set, and
+            // the user specified a typeName with no namespace prefix, we want
+            // it to be interpreted as being in the GeoServer's "default
+            // namespace". Yet, the xml parser did its job and since TypeName is
+            // of QName type, not having a ns prefix means it got parsed as a
+            // QName in the default namespace. That is, in the wfs namespace.
+            List hackedNames = new ArrayList(names.size());
+            final Data catalog = getWFS().getData();
+            final NameSpaceInfo defaultNameSpace = catalog.getDefaultNameSpace();
+            if (defaultNameSpace == null) {
+                throw new IllegalStateException("No default namespace configured in GeoServer");
+            }
+            final String defaultNsUri = defaultNameSpace.getURI();
+            for (Iterator it = names.iterator(); it.hasNext();) {
+                QName name = (QName) it.next();
+                String nsUri = name.getNamespaceURI();
+                if (org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE.equals(nsUri)) {
+                    // for this one we need to assign the default geoserver
+                    // namespace
+                    name = new QName(defaultNsUri, name.getLocalPart());
+                }
+                hackedNames.add(name);
+            }
+            names = hackedNames;
+        }
+
         //list of catalog handles
         Collection infos = catalog.getFeatureTypeInfos().values();
         ArrayList requested = new ArrayList();
@@ -94,6 +124,10 @@ O:
 
                 //not found
                 String msg = "Could not find type: " + name;
+                if (citeConformance) {
+                    msg += ". \nStrict WFS protocol conformance is being applied.\n"
+                            + "Make sure the type name is correctly qualified";
+                }
                 throw new WFSException(msg);
             }
         } else {
