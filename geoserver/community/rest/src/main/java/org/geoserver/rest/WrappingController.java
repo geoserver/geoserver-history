@@ -12,9 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.restlet.Restlet;
 import org.restlet.Router;
-import org.restlet.Route;
-import org.restlet.util.Template;
+import org.restlet.resource.Resource;
 import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -55,14 +56,16 @@ public class WrappingController extends AbstractController {
     }
 
     public void addRoutes(Map m, Router r){
-        Iterator it = m.keySet().iterator();
+        Iterator it = m.entrySet().iterator();
 
         while (it.hasNext()){
-            String key = (String)it.next();
+            Map.Entry entry = (Map.Entry) it.next();
 
-            Route route = r.attach(key, (Restlet)m.get(key));
-            route.getTemplate().setMatchingMode(Template.MODE_EQUALS);
-            System.out.println("Added route with MODE_EQUALS");
+            if (getApplicationContext().getBean(entry.getValue().toString()) instanceof Resource){
+                r.attach(entry.getKey().toString(), new BeanResourceFinder(getApplicationContext(), entry.getValue().toString()));
+            } else {
+                r.attach(entry.getKey().toString(), new BeanDelegatingRestlet(getApplicationContext(), entry.getValue().toString()));
+            }
         }
     }
 
@@ -78,10 +81,7 @@ public class WrappingController extends AbstractController {
                 addRoutes(rm.getRoutes(), myRouter);
             }
 
-            Route route = 
-                myRouter.attach("", new BeanResourceFinder(new IndexResource(myRouter)));
-            route.getTemplate().setMatchingMode(Template.MODE_EQUALS);
-            myRouter.attachDefault(new CatchAllRestlet());
+            myRouter.attach("", new IndexRestlet(myRouter));
         }
 
         return myRouter;

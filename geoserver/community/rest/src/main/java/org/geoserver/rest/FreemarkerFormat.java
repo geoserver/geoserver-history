@@ -36,11 +36,11 @@ public class FreemarkerFormat implements DataFormat{
         myType = type;
     }
 
-    public Representation makeRepresentation(Map m){
-        return new TemplateRepresentation(myTemplateFileName, myConfig, m, myType);
+    public Representation makeRepresentation(Object context){
+        return new TemplateRepresentation(myTemplateFileName, myConfig, context, myType);
     }
 
-    public Map readRepresentation(Representation representation){
+    public Object readRepresentation(Representation representation){
         return null;
     }
 }
