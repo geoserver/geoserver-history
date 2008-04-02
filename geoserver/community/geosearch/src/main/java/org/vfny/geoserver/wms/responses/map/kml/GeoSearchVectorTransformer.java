@@ -73,15 +73,15 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             }
 
             //            String[] name = mapContext.getRequest().getLayers()[0].getName().split(":",2);
-            String name = feature.getType().getTypeName();
+//            String name = feature.getType().getTypeName();
 
-            String id = feature.getID();
+            String id[] = feature.getID().split("\\.");
 
             // TODO: Make a real link
             element("link", null, KMLUtils.attributes(
                         new String[]{
                         "rel","self",
-                        "href", GeoSearchMapProducerFactory.BASE_URL + "/" + name + "/" + id}));
+                        "href", GeoSearchMapProducerFactory.BASE_URL + "/" + id[0] + "/" + id[1]}));
 
 
             // look at

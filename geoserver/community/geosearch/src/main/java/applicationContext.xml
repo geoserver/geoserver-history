@@ -17,6 +17,18 @@
           <key><value>/geosearch/{namespace}/{layer}</value></key>
           <ref bean="layer"/>
         </entry>
+        <entry>
+          <key><value>/geosearch/{namespace}/{layer}.{type}</value></key>
+          <ref bean="layer"/>
+        </entry>
+        <entry>
+          <key><value>/geosearch/{namespace}/{layer}/{feature}</value></key>
+          <ref bean="feature"/>
+        </entry>
+        <entry>
+           <key><value>/geosearch/{namespace}/{layer}/{feature}</value></key>
+           <ref bean="feature"/>
+        </entry>
   </map>
 </property>
 </bean>
@@ -32,6 +44,13 @@
     <property name="geoServer"><ref bean="geoServer"/></property>
 </bean>
 <bean id="layer" class="org.geoserver.geosearch.LayerRestlet">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+    <property name="geoServer"><ref bean="geoServer"/></property>
+    <property name="getMap"><ref bean="wmsGetMap"/></property>
+    <property name="wms"><ref bean="wms"/></property>
+</bean>
+<bean id="feature" class="org.geoserver.geosearch.FeatureRestlet">
     <property name="dataConfig"><ref bean="dataConfig"/></property>
     <property name="data"><ref bean="data"/></property>
     <property name="geoServer"><ref bean="geoServer"/></property>
