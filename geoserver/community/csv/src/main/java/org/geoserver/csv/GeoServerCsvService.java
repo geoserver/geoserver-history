@@ -2,6 +2,7 @@ package org.geoserver.csv;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
@@ -10,10 +11,12 @@ import java.util.logging.Logger;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.jdbc.JDBCDataStore;
 import org.geotools.data.postgis.PostgisDataStore;
+import org.geotools.feature.FeatureType;
+import org.geotools.styling.SLDTransformer;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.DataStoreInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -71,38 +74,51 @@ public class GeoServerCsvService extends CsvService {
     @Override
     public List<LayerResult> configureCsvFile(String targetGeometryTable,
             String joinField, File csvFile) throws IOException {
-        List<LayerResult> results = super.configureCsvFile(targetGeometryTable,
-                joinField, csvFile);
-
-        FeatureTypeConfig geomConfig = dataConfig
-                .getFeatureTypeConfig(dataStoreId + ":" + targetGeometryTable);
-        for (LayerResult layerResult : results) {
-            final String qualifiedName = dataStoreId + ":"
-                    + layerResult.getLayerName();
-            FeatureTypeConfig ftConfig = dataConfig
-                    .getFeatureTypeConfig(qualifiedName);
-
-            if (ftConfig == null) {
-                ftConfig = new FeatureTypeConfig(dataStoreId, getDataStore()
-                        .getSchema(layerResult.getLayerName()), true);
-            }
-            ftConfig.setAbstract(layerResult.getLayerDescription());
-            ftConfig.setTitle(layerResult.getLayerDescription());
-            // ftConfig.setDataStoreId(dataStoreId);
-            ftConfig.setDefaultStyle(geomConfig.getDefaultStyle());
-            ftConfig.setSRSHandling(geomConfig.getSRSHandling());
-            ftConfig.setSRS(geomConfig.getSRS());
-            ftConfig.setLatLongBBox(geomConfig.getLatLongBBox());
-            ftConfig.setNativeBBox(geomConfig.getNativeBBox());
-
-            dataConfig.removeFeatureType(qualifiedName);
-            dataConfig.addFeatureType(qualifiedName, ftConfig);
-        }
-        catalog.load(dataConfig.toDTO());
+        List<LayerResult> results = super.configureCsvFile(
+                targetGeometryTable, joinField, csvFile);
         try {
+            FeatureTypeConfig geomConfig = dataConfig
+                    .getFeatureTypeConfig(dataStoreId + ":"
+                            + targetGeometryTable);
+            for (LayerResult layerResult : results) {
+                final String qualifiedName = dataStoreId + ":"
+                        + layerResult.getLayerName();
+                FeatureTypeConfig ftConfig = dataConfig
+                        .getFeatureTypeConfig(qualifiedName);
+
+                if (ftConfig == null) {
+                    final FeatureType schema = getDataStore().getSchema(
+                            layerResult.getLayerName());
+                    ftConfig = new FeatureTypeConfig(dataStoreId, schema, true);
+                }
+                ftConfig.setAbstract(layerResult.getLayerDescription());
+                ftConfig.setTitle(layerResult.getLayerDescription());
+                ftConfig.setSRSHandling(geomConfig.getSRSHandling());
+                ftConfig.setSRS(geomConfig.getSRS());
+                ftConfig.setLatLongBBox(geomConfig.getLatLongBBox());
+                ftConfig.setNativeBBox(geomConfig.getNativeBBox());
+
+                // handle style
+                File styleFile = new File(GeoserverDataDirectory
+                        .findCreateConfigDir("styles"), layerResult
+                        .getLayerName());
+                SLDTransformer tx = new SLDTransformer();
+                tx.setIndentation(2);
+                tx.transform(catalog.getStyle(geomConfig.getDefaultStyle()),
+                        new FileOutputStream(styleFile));
+                StyleConfig newStyle = new StyleConfig();
+                newStyle.setId(layerResult.getLayerName());
+                newStyle.setFilename(styleFile);
+                dataConfig.addStyle(newStyle.getId(), newStyle);
+                ftConfig.setDefaultStyle(newStyle.getId());
+
+                dataConfig.removeFeatureType(qualifiedName);
+                dataConfig.addFeatureType(qualifiedName, ftConfig);
+            }
+            catalog.load(dataConfig.toDTO());
             XMLConfigWriter.store((DataDTO) dataConfig.toDTO(),
                     GeoserverDataDirectory.getGeoserverDataDirectory());
-        } catch (ConfigurationException e) {
+        } catch (Exception e) {
             throw new DataSourceException(
                     "Error occurred trying to write out the GeoServer configuration",
                     e);
