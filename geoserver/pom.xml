@@ -1037,6 +1037,7 @@
   <module>net.opengis.wfs</module>
   <module>net.opengis.wfsv</module>
   <module>net.opengis.wcs.1_1</module>
+  <module>community</module>
  </modules>
 
  <properties>
@@ -1050,20 +1051,6 @@
  </properties>
 
  <profiles>
-
-  <!-- community profile, include community module -->
-  <profile>
-    <id>community</id>
-   <activation>
-    <property>
-     <name>community</name>
-    </property>
-   </activation>
-   <modules>
-    <module>community</module>
-   </modules>
-  </profile>
-  
   <!-- uml graphing -->
   <profile>
    <id>uml</id>
