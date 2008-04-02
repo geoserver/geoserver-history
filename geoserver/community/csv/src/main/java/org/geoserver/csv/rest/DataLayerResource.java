@@ -9,7 +9,7 @@ import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.DataFormat;
 import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
-import org.geotools.data.DataSourceException;
+import org.geoserver.rest.RestletException;
 import org.restlet.data.MediaType;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -38,7 +38,7 @@ public class DataLayerResource extends MapResource {
     }
 
     @Override
-    public Object getMap() {
+    public Object getMap() throws RestletException {
         String layerName = (String) getRequest().getAttributes().get(
                 "layerName");
         try {
@@ -48,11 +48,9 @@ public class DataLayerResource extends MapResource {
             result.put("title", description);
             return result;
         } catch (Exception e) {
-            Response resp = getResponse();
-            resp.setEntity("An error occurred while retrieving the layer "
-                    + layerName + ": " + e.getMessage(), MediaType.TEXT_PLAIN);
-            resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-            return null;
+            throw new RestletException(
+                    "An error occurred while retrieving the layer " + layerName
+                            + ": " + e.getMessage(), Status.CLIENT_ERROR_BAD_REQUEST);
         }
     }
 

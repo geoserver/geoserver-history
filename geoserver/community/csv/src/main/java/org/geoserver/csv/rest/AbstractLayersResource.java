@@ -13,6 +13,8 @@ import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.DataFormat;
 import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
+import org.geoserver.rest.RestletException;
+import org.restlet.data.Status;
 
 public abstract class AbstractLayersResource extends MapResource {
     protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.csv");
@@ -23,7 +25,7 @@ public abstract class AbstractLayersResource extends MapResource {
     }
 
     @Override
-    public Object getMap() {
+    public Object getMap() throws RestletException {
         try {
             List<String> layers = getLayers();
             List<Map<String, String>> layerList = new ArrayList<Map<String, String>>();
@@ -35,8 +37,8 @@ public abstract class AbstractLayersResource extends MapResource {
             }
             return layerList;
         } catch (Exception e) {
-            // TODO: remove this ugly wrapping...
-            throw new RuntimeException(e);
+            throw new RestletException("Error occurred computing the layer list: " + e.getMessage(), 
+                    Status.SERVER_ERROR_INTERNAL);
         }
 
     }
