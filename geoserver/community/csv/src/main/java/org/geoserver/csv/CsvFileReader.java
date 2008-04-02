@@ -65,7 +65,7 @@ public class CsvFileReader {
      * 
      * @return
      */
-    FeatureType getFeatureType() {
+    public FeatureType getFeatureType() {
         return ft;
     }
 
