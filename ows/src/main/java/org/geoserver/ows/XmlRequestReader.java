@@ -81,20 +81,7 @@ public abstract class XmlRequestReader {
         }
     }
 
-    //    /**
-    //     *
-    //     * Creates the xml reader for the specified element of a particular version.
-    //     *
-    //     * @param namespace The namespace of the element
-    //     * @param local The local name of the element
-    //     * @param version The version of the element in which the reader supports,
-    //     * may be <code>null</code>.
-    //     */
-    //    public XmlRequestReader(String namespace, String local, Version version) {
-    //        this(new QName(namespace, local), version, null);
-    //    }
-
-    /**
+      /**
      * @return The qualified name of the element that this reader reads.
      */
     public QName getElement() {
