@@ -61,6 +61,7 @@ class StyleListResource extends MapResource {
         }
 
         templateContext.put("styles", styleList);
+        templateContext.put("page", getPageDetails());
 
         return templateContext;
     }

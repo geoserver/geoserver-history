@@ -435,6 +435,16 @@
         </dependency>
       </dependencies>
     </profile>
+     <profile>
+      <id>RESTConfig</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>RESTConfig</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
     <profile>
       <id>geowebcache</id>
       <dependencies>

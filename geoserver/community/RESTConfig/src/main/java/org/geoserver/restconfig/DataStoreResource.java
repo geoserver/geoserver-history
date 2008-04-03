@@ -136,26 +136,26 @@ public class DataStoreResource extends MapResource {
         return true;
     }
     
-    @Override
-    protected void putMap(Map details) /*throws Exception*/ {
+    protected void putMap(Object details) /*throws Exception*/ {
         try{
     	String dataStoreName = (String)getRequest().getAttributes().get("datastore");
     	DataStoreConfig myDSC = findMyDataStore();
+        Map m = (Map)details;
     	
     	if (myDSC == null){
 //            DataStoreFactorySpi factory = 
 //                findDataStoreFactory((String)details.get("DataStoreType"));
     	    myDSC = new DataStoreConfig(
     	    		dataStoreName,
-    	    		(String)details.get("DataStoreType")
+    	    		(String)m.get("DataStoreType")
     	            );
     	}
     	
-    	myDSC.setEnabled(Boolean.valueOf((String)details.get("Enabled")));
-    	myDSC.setNameSpaceId((String)details.get("Namespace"));
-    	myDSC.setAbstract((String)details.get("Description"));
+    	myDSC.setEnabled(Boolean.valueOf((String)m.get("Enabled")));
+    	myDSC.setNameSpaceId((String)m.get("Namespace"));
+    	myDSC.setAbstract((String)m.get("Description"));
     	
-        Map params = buildParamMap(((List)details.get("Params")),
+        Map params = buildParamMap(((List)m.get("Params")),
         		myDSC.getFactory().getParametersInfo());
         
         myDSC.setConnectionParams(params);

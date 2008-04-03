@@ -2,7 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-<bean id="restConfigMapping" class="org.geoserver.rest.RESTMapping">
+<bean id="geosearchMapping" class="org.geoserver.rest.RESTMapping">
 <property name="routes">
   <map>
         <entry>
