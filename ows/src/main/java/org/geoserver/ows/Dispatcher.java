@@ -36,6 +36,8 @@ import org.acegisecurity.AcegiSecurityException;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.ows.security.OperationInterceptor;
 import org.geoserver.ows.util.EncodingInfo;
+import org.geoserver.ows.util.KvpMap;
+import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.XmlCharsetDetector;
@@ -934,31 +936,9 @@ public class Dispatcher extends AbstractController {
         }
 
         //track parsed kvp and unparsd
-        Map parsedKvp = new KvpMap();
-        Map rawKvp = new KvpMap();
+        Map parsedKvp = KvpUtils.normalize(kvp);
+        Map rawKvp = new KvpMap( parsedKvp );
         
-        for (Iterator itr = kvp.entrySet().iterator(); itr.hasNext();) {
-            Map.Entry entry = (Map.Entry) itr.next();
-            String key = (String) entry.getKey();
-            String value = null;
-
-            if (entry.getValue() instanceof String) {
-                value = (String) entry.getValue();
-            } else if (entry.getValue() instanceof String[]) {
-                //TODO: perhaps handle multiple values for a key
-                value = (String) ((String[]) entry.getValue())[0];
-            }
-
-            //trim the string
-            if ( value != null ) {
-                value = value.trim(); 
-            }
-            
-            //convert key to lowercase 
-            parsedKvp.put(key.toLowerCase(), value);
-            rawKvp.put(key.toLowerCase(), value );
-        }
-
         req.kvp = parsedKvp;
         req.rawKvp = rawKvp;
     }
@@ -966,59 +946,9 @@ public class Dispatcher extends AbstractController {
     void parseKVP(Request req) throws ServiceException {
         
         preParseKVP( req );
-        
-        //look up parser objects
-        Collection parsers = GeoServerExtensions.extensions(KvpParser.class);
-       
-        //strip out parsers which do not match current service/request/version
-        String service = (String) req.kvp.get( "service" );
-        String version = (String) req.kvp.get( "version" );
-        String request = (String) req.kvp.get( "request" );
-        for (Iterator p = parsers.iterator(); p.hasNext(); ) {
-            KvpParser parser = (KvpParser) p.next();
-            
-            if ( parser.getService() != null && !parser.getService().equals(service) ) {
-                p.remove();
-                continue;
-            }
-            
-            if ( parser.getVersion() != null && !parser.getVersion().equals(version) ) {
-                p.remove();
-                continue;
-            }
-            
-            if ( parser.getRequest() != null && !parser.getRequest().equals(request) ) {
-                p.remove();
-            }
-        }
-        
-        //parser the kvp's
-        for (Iterator itr = req.kvp.entrySet().iterator(); itr.hasNext();) {
-            Map.Entry entry = (Map.Entry) itr.next();
-            String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
-            
-            //find the parser for this key value pair
-            Object parsed = null;
-
-            for (Iterator pitr = parsers.iterator(); pitr.hasNext() && parsed == null;) {
-                KvpParser parser = (KvpParser) pitr.next();
-
-                if (key.equalsIgnoreCase(parser.getKey())) {
-                    try {
-                        parsed = parser.parse(value);
-                    } catch (Throwable t) {
-                        //dont throw any exceptions yet, befor the service is
-                        // known
-                        req.error = t;
-                    }
-                }
-            }
-
-            //if noone could parse, just set to string value
-            if (parsed != null) {
-                entry.setValue(parsed);
-            }
+        List<Throwable> errors = KvpUtils.parse( req.kvp );
+        if ( !errors.isEmpty() ) {
+            req.error = errors.get(0);
         }
     }
 
@@ -1225,35 +1155,7 @@ public class Dispatcher extends AbstractController {
         handler.handleServiceException(se, service, request.httpRequest, request.httpResponse);
     }
 
-    /**
-     * Map which makes keys case insensitive.
-     *
-     * @author Justin Deoliveira, The Open Planning Project
-     *
-     */
-    private static class KvpMap extends HashMap {
-        private static final long serialVersionUID = 1L;
-
-        public boolean containsKey(Object key) {
-            return super.containsKey(upper(key));
-        }
-
-        public Object get(Object key) {
-            return super.get(upper(key));
-        }
-
-        public Object put(Object key, Object value) {
-            return super.put(upper(key), value);
-        }
-
-        Object upper(Object key) {
-            if ((key != null) && key instanceof String) {
-                return ((String) key).toUpperCase();
-            }
-
-            return key;
-        }
-    }
+   
 
     /**
      * Helper class to hold attributes of hte request
