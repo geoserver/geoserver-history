@@ -27,7 +27,7 @@ public class GeoSearchMapProducerFactory implements GetMapProducerFactorySpi {
      * escape the '+' sign in "kml+xml", which is decoded as a space
      * character at server side.
      */
-    private static final String PRODUCE_TYPE = "kmlgeosearch";
+    private static final String PRODUCE_TYPE = "geosearch-kml";
 
     /** Official KML mime type
      * @TODO add KMZ support
