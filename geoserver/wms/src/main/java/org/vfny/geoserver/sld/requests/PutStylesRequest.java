@@ -5,6 +5,7 @@
 package org.vfny.geoserver.sld.requests;
 
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.wms.servlets.WMService;
 
@@ -13,8 +14,8 @@ public class PutStylesRequest extends Request {
     private MandatoryParameters mandatoryParameters = new MandatoryParameters();
     private OptionalParameters optionalParameters = new OptionalParameters();
 
-    public PutStylesRequest(AbstractService service) {
-        super("SLD", "PutStyles", service);
+    public PutStylesRequest(WMS wms) {
+        super("SLD", "PutStyles", wms);
     }
 
     public void setMode(String mode) {

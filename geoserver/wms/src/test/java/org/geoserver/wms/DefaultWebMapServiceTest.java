@@ -22,10 +22,9 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
      */
     public void test1() throws Exception {
         GetMapRequest mockGMR = createGetMapRequest(MockData.BASIC_POLYGONS);
-        WMService wmsHandle = mockGMR.getWMService();
-
+        
         /* Create a request */
-        GetMapRequest request = new GetMapRequest(wmsHandle);
+        GetMapRequest request = new GetMapRequest(getWMS());
 
         /* Create the reflector */
         DefaultWebMapService reflector = new DefaultWebMapService();
@@ -61,10 +60,9 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
      */
     public void test2() throws Exception {
         GetMapRequest mockGMR = createGetMapRequest(MockData.BASIC_POLYGONS);
-        WMService wmsHandle = mockGMR.getWMService();
-
+        
         /* Create a request */
-        GetMapRequest request = new GetMapRequest(wmsHandle);
+        GetMapRequest request = new GetMapRequest(getWMS());
 
         /* Create the reflector */
         DefaultWebMapService reflector = new DefaultWebMapService();
@@ -107,14 +105,13 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
     public void test3() throws Exception {
         GetMapRequest mockStreams = createGetMapRequest(MockData.BRIDGES);
         GetMapRequest mockBridges = createGetMapRequest(MockData.STREAMS);
-        WMService wmsHandle = mockStreams.getWMService();
         
         MapLayerInfo[] mls = new MapLayerInfo[2];
         mls[0] = mockBridges.getLayers()[0];
         mls[1] = mockStreams.getLayers()[0];
         
         /* Create a request */
-        GetMapRequest request = new GetMapRequest(wmsHandle);
+        GetMapRequest request = new GetMapRequest(getWMS());
 
         /* Create the reflector */
         DefaultWebMapService reflector = new DefaultWebMapService();

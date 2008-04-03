@@ -71,7 +71,7 @@ public class GetMap extends WMService {
 
         //we need to construct an approriate serviceRequest from the GetMap XML POST.
         try {
-            GetMapXmlReader xmlPostReader = new GetMapXmlReader(this);
+            GetMapXmlReader xmlPostReader = new GetMapXmlReader(getWMS());
 
             Reader xml = request.getReader();
             serviceRequest = xmlPostReader.read(xml, request);
@@ -105,7 +105,7 @@ public class GetMap extends WMService {
      * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new GetMapXmlReader(this);
+        return new GetMapXmlReader(getWMS());
     }
 
     /**
@@ -119,7 +119,7 @@ public class GetMap extends WMService {
         Map layers = this.getWMS().getBaseMapLayers();
         Map styles = this.getWMS().getBaseMapStyles();
 
-        GetMapKvpReader kvp = new GetMapKvpReader(params, this);
+        GetMapKvpReader kvp = new GetMapKvpReader(params, getWMS());
 
         // filter layers and styles if the user specified "layers=basemap"
         // This must happen after the kvp reader has been initially called

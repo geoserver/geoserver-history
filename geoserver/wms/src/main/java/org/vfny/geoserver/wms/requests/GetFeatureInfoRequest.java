@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.servlets.WMService;
 
 
@@ -67,11 +68,22 @@ public class GetFeatureInfoRequest extends WMSRequest {
     /**
      * Creates a new GetMapRequest object.
      * @param service The service that will handle the request
+     * 
+     * @deprecated use {@link #GetFeatureInfoRequest(WMS)}
      */
-    public GetFeatureInfoRequest(WMService service) {
-        super("GetFeatureInfo", service);
-    }
+//    public GetFeatureInfoRequest(WMService service) {
+//        this(service.getWMS());
+//        //super("GetFeatureInfo", service);
+//    }
 
+    /**
+     * Creates a new GetFeatureInfoRequest object.
+     * @param wms The WMS configuration object.
+     */
+    public GetFeatureInfoRequest(WMS wms) {
+        super("GetFeatureInfo", wms);
+    }
+    
     /**
      * @return Returns the exeptionFormat.
      */

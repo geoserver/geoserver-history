@@ -63,8 +63,8 @@ public class PutStyles extends AbstractService {
     public final String success_mime_type = "application/vnd.ogc.success+xml";
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
-    public PutStyles() {
-        super("WMS", "PutStyles", null);
+    public PutStyles( WMS wms ) {
+        super("WMS", "PutStyles", wms);
     }
 
     protected boolean isServiceEnabled(HttpServletRequest req) {
@@ -76,7 +76,7 @@ public class PutStyles extends AbstractService {
     }
 
     protected KvpRequestReader getKvpReader(Map params) {
-        return new PutStylesKvpReader(params, this);
+        return new PutStylesKvpReader(params,(WMS) getServiceRef());
     }
 
     protected XmlRequestReader getXmlRequestReader() {
@@ -118,7 +118,7 @@ public class PutStyles extends AbstractService {
             requestParams.put(paramName.toUpperCase(), paramValue);
         }
 
-        PutStylesKvpReader requestReader = new PutStylesKvpReader(requestParams, this);
+        PutStylesKvpReader requestReader = new PutStylesKvpReader(requestParams, (WMS) getServiceRef());
 
         PutStylesRequest serviceRequest; // the request object we will deal with
 
@@ -179,7 +179,7 @@ public class PutStyles extends AbstractService {
         out.close();
         requestXml = new BufferedReader(new FileReader(temp)); // pretend like nothing has happened
 
-        PutStylesRequest serviceRequest = new PutStylesRequest(this);
+        PutStylesRequest serviceRequest = new PutStylesRequest((WMS) getServiceRef());
         serviceRequest.setSldBody(sb.toString()); // save the SLD body in the request object
 
         ServletContext context = request.getSession().getServletContext();

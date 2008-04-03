@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wcs.requests.readers;
 
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
@@ -29,8 +30,8 @@ public class DescribeKvpReader extends KvpRequestReader {
      *
      * @param kvPairs the key/value pairs containing DESCRIBE
      */
-    public DescribeKvpReader(Map kvPairs, WCService service) {
-        super(kvPairs, service);
+    public DescribeKvpReader(Map kvPairs, WCS wcs) {
+        super(kvPairs, wcs);
     }
 
     /**
@@ -43,7 +44,7 @@ public class DescribeKvpReader extends KvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws WcsException {
-        DescribeRequest currentRequest = new DescribeRequest((WCService) service);
+        DescribeRequest currentRequest = new DescribeRequest((WCS) serviceConfig);
 
         if (keyExists("SERVICE")) {
             final String service = getValue("SERVICE");

@@ -175,7 +175,7 @@ public class WCSCapsTransformer extends TransformerBase {
             }
 
             this.request = (CapabilitiesRequest) o;
-			final WCS wcs = (WCS) request.getServiceRef().getServiceRef();
+			final WCS wcs = (WCS) request.getServiceConfig();
 
             final AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
@@ -217,7 +217,7 @@ public class WCSCapsTransformer extends TransformerBase {
          *             For any errors.
          */
         private void handleService() {
-            final WCS wcs = (WCS) request.getServiceRef().getServiceRef();
+            final WCS wcs = (WCS) request.getServiceConfig();
             AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
             start("Service", attributes);
@@ -256,7 +256,7 @@ public class WCSCapsTransformer extends TransformerBase {
          *             DOCUMENT ME!
          */
         private void handleCapabilities() {
-            final WCS wcs = (WCS) request.getServiceRef().getServiceRef();
+            final WCS wcs = (WCS) request.getServiceConfig();
             start("Capability");
             handleRequest(wcs);
             handleExceptions(wcs);
@@ -293,7 +293,7 @@ public class WCSCapsTransformer extends TransformerBase {
 
             String url = "";
             String baseUrl = RequestUtils.proxifiedBaseURL(
-					request.getBaseUrl(), request.getServiceRef()
+					request.getBaseUrl(), request.getServiceConfig()
 							.getGeoServer().getProxyBaseUrl());
             baseUrl = ResponseUtils.appendPath(baseUrl, "wcs");
             

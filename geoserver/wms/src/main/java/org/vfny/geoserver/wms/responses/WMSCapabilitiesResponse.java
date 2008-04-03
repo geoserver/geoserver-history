@@ -90,7 +90,7 @@ public class WMSCapabilitiesResponse implements Response {
 	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
 	        }
         }
-        int geoUS = request.getServiceRef().getServiceRef().getGeoServer().getUpdateSequence();
+        int geoUS = request.getServiceConfig().getGeoServer().getUpdateSequence();
     	if (reqUS > geoUS) {
     		throw new org.geoserver.platform.ServiceException("Client supplied an updateSequence that is greater than the current sever updateSequence","InvalidUpdateSequence");
     	}

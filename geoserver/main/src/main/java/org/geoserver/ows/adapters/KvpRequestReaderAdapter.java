@@ -5,6 +5,7 @@
 package org.geoserver.ows.adapters;
 
 import org.geoserver.ows.HttpServletRequestAware;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import java.lang.reflect.Constructor;
@@ -41,10 +42,10 @@ import javax.servlet.http.HttpServletRequest;
 public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
     implements HttpServletRequestAware {
     Class delegateClass;
-    AbstractService service;
+    Service service;
     HttpServletRequest request;
 
-    public KvpRequestReaderAdapter(Class requestBean, Class delegateClass, AbstractService service) {
+    public KvpRequestReaderAdapter(Class requestBean, Class delegateClass, Service service) {
         super(requestBean);
         this.delegateClass = delegateClass;
         this.service = service;

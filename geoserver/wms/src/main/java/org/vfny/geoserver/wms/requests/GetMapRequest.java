@@ -52,12 +52,12 @@ public class GetMapRequest extends WMSRequest {
     private Map /*<String,String>*/ rawKvp;
     
     /**
-     * Creates a GetMapRequest request.
-     *
-     * @param service The service handling the request.
+     * Creates a GetMapRequest object.
+     * 
+     * @param wms The WMS service config.
      */
-    public GetMapRequest(WMService service) {
-        super(TRANSACTION_REQUEST_TYPE, service);
+    public GetMapRequest(WMS wms) {
+        super(TRANSACTION_REQUEST_TYPE, wms );
     }
 
     /**

@@ -21,24 +21,21 @@ import java.util.Map;
  * @version $Id$
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader {
-    /**
-     * DOCUMENT ME!
-     *
-     * @param params DOCUMENT ME!
-     */
-
-    //protected static final GeoServer config = GeoServer.getInstance();
 
     /**
      * Creates a new kvp reader for a WMS request.
      *
      * @param kvpPairs The raw key value pairs.
-     * @param service The servlet handling the request.
+     * @param wms The WMS config object.
      */
-    public WmsKvpRequestReader(Map kvpPairs, WMService service) {
-        super(kvpPairs, service);
+    public WmsKvpRequestReader(Map kvpPairs, WMS wms) {
+        super(kvpPairs, wms);
     }
-
+    
+    public WMS getWMS() {
+        return (WMS) serviceConfig;
+    }
+    
     /**
     * DOCUMENT ME!
     *

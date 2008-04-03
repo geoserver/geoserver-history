@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.requests;
 import com.vividsolutions.jts.geom.Envelope;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.List;
@@ -28,11 +29,12 @@ import java.util.logging.Logger;
 public class GetKMLReflectKvpReader extends GetMapKvpReader {
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers.wms");
 
-    public GetKMLReflectKvpReader(Map kvpPairs, WMService service) {
-        super(kvpPairs, service);
+   
+    public GetKMLReflectKvpReader(Map kvpPairs, WMS wms) {
+        super(kvpPairs, wms);
         setStylesRequired(false);
     }
-
+    
     /**
      * Optional parameters are:
      * width

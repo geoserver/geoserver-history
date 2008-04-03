@@ -15,13 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 
 
 public class PutStylesKvpReader extends KvpRequestReader {
-    public PutStylesKvpReader(Map kvpPairs, AbstractService service) {
+
+
+    public PutStylesKvpReader(Map kvpPairs, WMS service) {
         super(kvpPairs, service);
     }
 
     public Request getRequest(HttpServletRequest httpRequest)
         throws ServiceException {
-        PutStylesRequest request = new PutStylesRequest(getServiceRef());
+        PutStylesRequest request = new PutStylesRequest((WMS) serviceConfig);
         request.setHttpServletRequest(httpRequest);
 
         String version = getRequestVersion();

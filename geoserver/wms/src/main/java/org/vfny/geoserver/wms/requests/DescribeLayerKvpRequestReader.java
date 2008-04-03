@@ -10,6 +10,7 @@ import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.List;
@@ -32,16 +33,15 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
     /** package's logger  */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DescribeLayerKvpRequestReader.class.getPackage()
                                                                                              .getName());
-
     /**
      * Constructs a new DescribeLayer request parser.
      * @param params
-     * @param service The service that handles the request
+     * @param service The wms service config.
      */
-    public DescribeLayerKvpRequestReader(Map params, WMService service) {
-        super(params, service);
+    public DescribeLayerKvpRequestReader(Map params, WMS wms) {
+        super(params, wms);
     }
-
+    
     /**
      * Does the request parsing and constructs a <code>DescribeLayerRequest</code>,
      * wich holds the requiered layers as <code>FeatureTypeInfo</code> references.
@@ -57,7 +57,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        DescribeLayerRequest req = new DescribeLayerRequest((WMService) service);
+        DescribeLayerRequest req = new DescribeLayerRequest((WMS)serviceConfig);
         req.setHttpServletRequest(request);
         
         req.setVersion(getValue("VERSION"));

@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 
@@ -15,7 +16,9 @@ import org.vfny.geoserver.util.requests.CapabilitiesRequest;
  *
  */
 public class WMSCapabilitiesRequest extends CapabilitiesRequest {
-    public WMSCapabilitiesRequest(AbstractService service) {
-        super("WMS", service);
+    
+    
+    public WMSCapabilitiesRequest(WMS wms) {
+        super("WMS",wms);
     }
 }

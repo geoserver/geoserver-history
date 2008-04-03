@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.servlets.WCService;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,8 +45,8 @@ public class DescribeRequest extends WCSRequest {
     /**
      * Empty constructor.
      */
-    public DescribeRequest(WCService service) {
-        super("DescribeCoverage", service);
+    public DescribeRequest(WCS wcs) {
+        super("DescribeCoverage", wcs);
     }
 
     /**

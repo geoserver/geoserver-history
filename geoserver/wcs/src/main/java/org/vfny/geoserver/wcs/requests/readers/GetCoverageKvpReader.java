@@ -7,6 +7,7 @@ package org.vfny.geoserver.wcs.requests.readers;
 import com.vividsolutions.jts.geom.Envelope;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
@@ -27,8 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 public class GetCoverageKvpReader extends KvpRequestReader {
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers");
 
-    public GetCoverageKvpReader(Map kvPairs, WCService service) {
-        super(kvPairs, service);
+    public GetCoverageKvpReader(Map kvPairs, WCS wcs) {
+        super(kvPairs, wcs);
     }
 
     public Request getRequest(HttpServletRequest request)
@@ -38,7 +39,7 @@ public class GetCoverageKvpReader extends KvpRequestReader {
 
     public CoverageRequest getCoverageRequest(HttpServletRequest srequest)
         throws WcsException {
-        CoverageRequest currentRequest = new CoverageRequest((WCService) service);
+        CoverageRequest currentRequest = new CoverageRequest((WCS)serviceConfig);
         currentRequest.setHttpServletRequest(srequest);
 
         Map parameters = new HashMap();

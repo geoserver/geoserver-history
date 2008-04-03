@@ -206,7 +206,7 @@ public class WMSCapsTransformer extends TransformerBase {
                         request).toString());
             }
 
-            WMS wms = (WMS) request.getServiceRef().getServiceRef();
+            WMS wms = (WMS) request.getServiceConfig();
             AttributesImpl rootAtts = new AttributesImpl(wmsVersion);
             rootAtts.addAttribute("", "updateSequence", "updateSequence", "", wms.getGeoServer().getUpdateSequence() + "");
             start("WMT_MS_Capabilities", rootAtts);
@@ -219,7 +219,7 @@ public class WMSCapsTransformer extends TransformerBase {
          * Encodes the service metadata section of a WMS capabilities document.
          */
         private void handleService() {
-            WMS wms = (WMS) request.getServiceRef().getServiceRef();
+            WMS wms = (WMS) request.getServiceConfig();
             start("Service");
 
             element("Name", "OGC:WMS");
@@ -341,7 +341,7 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Format", WMS_CAPS_MIME);
             
             String serviceUrl = 
-                RequestUtils.proxifiedBaseURL(request.getBaseUrl(), request.getServiceRef().getGeoServer().getProxyBaseUrl()) +
+                RequestUtils.proxifiedBaseURL(request.getBaseUrl(), request.getServiceConfig().getGeoServer().getProxyBaseUrl()) +
                 "wms?SERVICE=WMS&";
 
             handleDcpType(serviceUrl, serviceUrl);
@@ -431,7 +431,7 @@ public class WMSCapsTransformer extends TransformerBase {
         private void handleException() {
             start("Exception");
 
-            WMS wms = (WMS) request.getServiceRef().getServiceRef();
+            WMS wms = (WMS) request.getServiceConfig();
             Iterator it = Arrays.asList(wms.getExceptionFormats()).iterator();
 
             while (it.hasNext()) {
@@ -446,7 +446,7 @@ public class WMSCapsTransformer extends TransformerBase {
          */
         private void handleSLD() {
             AttributesImpl sldAtts = new AttributesImpl();
-            WMS config = (WMS) request.getServiceRef().getServiceRef();
+            WMS config = (WMS) request.getServiceConfig();
             String supportsSLD = config.supportsSLD() ? "1" : "0";
             String supportsUserLayer = config.supportsUserLayer() ? "1" : "0";
             String supportsUserStyle = config.supportsUserStyle() ? "1" : "0";
@@ -489,7 +489,7 @@ public class WMSCapsTransformer extends TransformerBase {
          *       gridcoverages, etc)
          */
         private void handleLayers() {
-            WMS wms = (WMS) request.getServiceRef().getServiceRef();
+            WMS wms = (WMS) request.getServiceConfig();
             start("Layer");
 
             Data catalog = wms.getData();
@@ -1060,7 +1060,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 StringBuffer onlineResource =
                     new StringBuffer(RequestUtils.proxifiedBaseURL(
                             request.getBaseUrl()
-                            ,request.getServiceRef().getGeoServer().getProxyBaseUrl()
+                            ,request.getServiceConfig().getGeoServer().getProxyBaseUrl()
                             ));
                 onlineResource.append("wms/GetLegendGraphic?VERSION=");
                 onlineResource.append(GetLegendGraphicRequest.SLD_VERSION);

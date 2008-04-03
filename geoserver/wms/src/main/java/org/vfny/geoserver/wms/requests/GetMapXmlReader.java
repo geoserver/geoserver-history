@@ -34,6 +34,7 @@ import org.geotools.styling.UserLayer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.GETMAPValidator;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -60,12 +61,16 @@ public class GetMapXmlReader extends XmlRequestReader {
 
     /**
      * Creates a new GetMapXmlReader object.
-     * @param service this is the service that handles the request
+     * @param wms The WMS config object.
      */
-    public GetMapXmlReader(WMService service) {
-        super(service);
+    public GetMapXmlReader(WMS wms) {
+        super(wms);
     }
-
+    
+    public WMS getWMS() {
+        return (WMS) getService();
+    }
+    
     /**
      * Reads the GetMap XML request into a GetMap Request object.
      *
@@ -78,7 +83,7 @@ public class GetMapXmlReader extends XmlRequestReader {
      */
     public Request read(Reader reader, HttpServletRequest req)
         throws WmsException {
-        GetMapRequest getMapRequest = new GetMapRequest((WMService) getServiceRef());
+        GetMapRequest getMapRequest = new GetMapRequest(getWMS());
         getMapRequest.setHttpServletRequest(req);
 
         boolean validateSchema = wantToValidate(req);
@@ -262,7 +267,7 @@ public class GetMapXmlReader extends XmlRequestReader {
             requestParams.put(paramName.toUpperCase(), paramValue);
         }
 
-        GetMapKvpReader kvpReader = new GetMapKvpReader(requestParams, (WMService) getServiceRef());
+        GetMapKvpReader kvpReader = new GetMapKvpReader(requestParams, getWMS());
 
         String version = kvpReader.getRequestVersion();
         getMapRequest.setVersion(version);

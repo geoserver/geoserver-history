@@ -9,6 +9,7 @@ import java.util.Map;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.servlets.WMService;
 
 
@@ -137,12 +138,13 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * Creates a new GetLegendGraphicRequest object.
-     * @param service The service that will handle the request
+     * @param wms The WMS configuration object.
      */
-    public GetLegendGraphicRequest(WMService service) {
-        super("GetLegendGraphic", service);
+   
+    public GetLegendGraphicRequest(WMS wms) {
+        super("GetLegendGraphic", wms);
     }
-
+    
     /**
      * DOCUMENT ME!
      *

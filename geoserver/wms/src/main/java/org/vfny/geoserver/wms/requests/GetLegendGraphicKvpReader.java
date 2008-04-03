@@ -72,19 +72,19 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      */
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
-    /**
+   /**
      * Creates a new GetLegendGraphicKvpReader object.
      * 
      * @param params
      *            map of key/value pairs with the parameters for a
      *            GetLegendGraphic request
-     * @param service
-     *            service handle request
+     * @param wms
+     *            WMS config object.
      */
-    public GetLegendGraphicKvpReader(Map params, WMService service) {
-        super(params, service);
+    public GetLegendGraphicKvpReader(Map params, WMS wms) {
+        super(params, wms);
     }
-
+    
     /**
      * DOCUMENT ME!
      * 
@@ -99,7 +99,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      *             if some invalid parameter was passed.
      */
     public Request getRequest(HttpServletRequest httpRequest) throws ServiceException {
-        GetLegendGraphicRequest request = new GetLegendGraphicRequest((WMService) getServiceRef());
+        GetLegendGraphicRequest request = new GetLegendGraphicRequest(getWMS());
         // TODO: we should really get rid of the HttpServletRequest dependency
         // beyond the HTTP facade. Neither the request readers should depend on
         // it
@@ -156,12 +156,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 
         String format = getValue("FORMAT");
 
-        if (getServiceRef().getApplicationContext() == null) {
-            LOGGER
-                    .log(Level.SEVERE,
-                            "Application Context is null. No producer beans can be found!");
-        } else if (!GetLegendGraphicResponse.supportsFormat(format, getServiceRef()
-                .getApplicationContext())) {
+        if (!GetLegendGraphicResponse.supportsFormat(format)) {
             throw new WmsException(new StringBuffer("Invalid graphic format: ").append(format)
                     .toString(), "InvalidFormat");
         } else {

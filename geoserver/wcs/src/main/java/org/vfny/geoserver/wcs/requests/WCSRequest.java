@@ -22,29 +22,15 @@ public class WCSRequest extends Request {
     /**
      * A WCSRequest configured with WCS_SERVICE_TYPE
      */
-    public WCSRequest(String requestType, WCService service) {
+    public WCSRequest(String requestType, WCS service) {
         super(WCS_SERVICE_TYPE, requestType, service);
-    }
-
-    /**
-     * Sets the wcs service object.
-     */
-    public void setWCService(WCService wcs) {
-        setServiceRef(wcs);
-    }
-
-    /**
-     * Returns the wcs service object..
-     */
-    public WCService getWCService() {
-        return (WCService) getServiceRef();
     }
 
     /**
      * Convenience method for obtaining the global wcs service instance.
      */
     public WCS getWCS() {
-        return getWCService().getWCS();
+        return (WCS) serviceConfig;
     }
 
     /**

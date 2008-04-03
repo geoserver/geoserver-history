@@ -70,6 +70,6 @@ public class GetFeatureInfo extends WMService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new GetFeatureInfoKvpReader(params, this);
+        return new GetFeatureInfoKvpReader(params, getWMS());
     }
 }

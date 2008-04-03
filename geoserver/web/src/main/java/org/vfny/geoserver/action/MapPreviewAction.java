@@ -87,8 +87,7 @@ public class MapPreviewAction extends GeoServerAction {
 
         // 1) get the capabilities info so we can find out our feature types
         WMS wms = getWMS(request);
-        Capabilities caps = new Capabilities(wms);
-        CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS", caps);
+        CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS", wms);
         capRequest.setHttpServletRequest(request);
 
         Data catalog = wms.getData();
