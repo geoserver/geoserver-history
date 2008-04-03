@@ -152,25 +152,6 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
 
     }
 
-    private Element createNetworkLink(Layer layer){
-        Element networkLink = new Element("NetworkLink", KML);
-        Element name = new Element("name", KML);
-        name.setText(layer.getTitle());
-        networkLink.addContent(name);
-        Element open = new Element("open", KML);
-        open.setText("1");
-        networkLink.addContent(open);
-        Element snippet = new Element("Snippet", KML);
-        snippet.setText(layer.getDescription());
-        networkLink.addContent(snippet);
-        Element url = new Element("Url", KML);
-        Element href = new Element("href", KML);
-        href.setText("http://example.com/layer");
-        url.addContent(href);
-        networkLink.addContent(url);
-        return networkLink;
-    }
-
     private Element createNetworkLink(String namespace, MapLayerInfo layer){
         Element networkLink = new Element("NetworkLink", KML);
         Element name = new Element("name", KML);
@@ -184,7 +165,7 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
         networkLink.addContent(snippet);
         Element url = new Element("Url", KML);
         Element href = new Element("href", KML);
-        href.setText(GEOSERVER_URL + "/" + namespace + "/" + layer.getName());
+        href.setText(GEOSERVER_URL + "/" + namespace + "/" + layer.getName().split(":",2)[1]);
         url.addContent(href);
         networkLink.addContent(url);
         return networkLink;
