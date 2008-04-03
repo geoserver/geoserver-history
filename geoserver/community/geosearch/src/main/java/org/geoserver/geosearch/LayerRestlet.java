@@ -120,7 +120,7 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
         
         GeoSearchMapProducerFactory.BASE_URL = getBaseURL(request);
         if (request.getMethod().equals(Method.GET)) {
-            GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getGetMap(), getWms());
+            GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getWms());
             Map raw = new HashMap();
             raw.put("layers", namespace + ":" + layername); 
             // raw.put("styles", "polygon");
