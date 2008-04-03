@@ -280,7 +280,11 @@
    <servlet-name>dispatcher</servlet-name>
    <url-pattern>/gwc/*</url-pattern>
   </servlet-mapping>
-        
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+          
   <mime-mapping>
    <extension>xsl</extension>
    <mime-type>text/xml</mime-type>
