@@ -27,13 +27,13 @@ import com.noelios.restlet.ext.servlet.ServletConverter;
  * Simple AbstractController implementation that does the translation between
  * Spring requests and Restlet requests.
  */
-public class WrappingController extends AbstractController {
+public class RESTDispatcher extends AbstractController {
     public static String METHOD_PUT = "PUT";
     public static String METHOD_DELETE = "DELETE";
     ServletConverter myConverter;
     private Router myRouter;
 
-    public WrappingController() {
+    public RESTDispatcher() {
         super();
         setSupportedMethods(new String[] {
                 METHOD_GET, METHOD_POST, METHOD_PUT, METHOD_DELETE, METHOD_HEAD
