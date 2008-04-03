@@ -41,8 +41,8 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
 
     /** DOCUMENT ME! */
     private DefaultRasterLegendProducer legendProducer;
-    GetLegendGraphic service;
-
+    WMS wms;
+    
     /**
      * DOCUMENT ME!
      *
@@ -71,8 +71,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
                     }
                 };
 
-        WMS wms = new WMS(MockUtils.newWmsDto());
-        service = new GetLegendGraphic(wms);
+        wms = new WMS(MockUtils.newWmsDto());
     }
 
     /**
@@ -99,7 +98,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
         LOGGER.info("testing single rule " + rule.getName() + " from style "
             + multipleRulesStyle.getName());
 
-        GetLegendGraphicRequest req = new GetLegendGraphicRequest(service);
+        GetLegendGraphicRequest req = new GetLegendGraphicRequest(wms);
         req.setLayer(getCiteDataStore().getSchema(ROAD_SEGMENTS_TYPE));
         req.setStyle(multipleRulesStyle);
         req.setRule(rule);
@@ -208,7 +207,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     private BufferedImage testProduceLegendGraphic(String citeTypeName, int ruleCount)
         throws Exception {
         SimpleFeatureType layer = getCiteDataStore().getSchema(citeTypeName);
-        GetLegendGraphicRequest req = new GetLegendGraphicRequest(service);
+        GetLegendGraphicRequest req = new GetLegendGraphicRequest(wms);
         req.setLayer(layer);
         req.setStyle(getDefaultStyle(citeTypeName));
 
