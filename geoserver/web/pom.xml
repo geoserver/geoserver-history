@@ -353,6 +353,27 @@
       </dependencies>
     </profile>
     <profile>
+      <id>csv</id>
+      <activation>
+        <property>
+          <name>csv</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>sldService</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>csv</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>wfsv</id>
       <activation>
         <property>
