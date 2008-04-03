@@ -12,7 +12,7 @@
   <artifactId>sldService</artifactId>
   <version>1.6-SNAPSHOT</version>
   <description>REST SLD service</description>
-  <description>REST SLD service</description>
+  <name>REST SLD service</name>
   <repositories>
     <repository>
       <id>codehaus</id>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>rest</artifactId>
-      <version>1.0</version>
+      <version>1.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>xom</groupId>
