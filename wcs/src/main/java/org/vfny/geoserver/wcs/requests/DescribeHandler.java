@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.servlets.WCService;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -31,9 +32,9 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     /** Local variable to track current tag */
     private String currentTag = new String();
 
-    public DescribeHandler(WCService service) {
+    public DescribeHandler(WCS wcs) {
         super();
-        request = new DescribeRequest(service);
+        request = new DescribeRequest(wcs);
     }
 
     /**

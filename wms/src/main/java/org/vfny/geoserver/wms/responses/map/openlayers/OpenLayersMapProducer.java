@@ -99,7 +99,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 					.getAreaOfInterest())));
 			String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(
 			        mapContext.getRequest().getBaseUrl(),
-			        mapContext.getRequest().getServiceRef().getGeoServer().getProxyBaseUrl());
+			        mapContext.getRequest().getWMS().getGeoServer().getProxyBaseUrl());
 			map.put("baseUrl", canonicUrl(proxifiedBaseUrl));
 			map.put("parameters", getLayerParameter(mapContext.getRequest()
 					.getHttpServletRequest()));

@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesHandler;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.WmsException;
@@ -29,13 +30,14 @@ import javax.xml.parsers.SAXParserFactory;
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
+
     /**
      * Creates the new reader.
      *
-     * @param service The WMS service hanlding the request.
+     * @param wms The WMS service config.
      */
-    public CapabilitiesXmlReader(WMService service) {
-        super(service);
+    public CapabilitiesXmlReader(WMS wms) {
+        super(wms);
     }
 
     /**
@@ -53,7 +55,7 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
 
         // instantiante parsers and content handlers
         CapabilitiesHandler currentRequest = new CapabilitiesHandler(new WMSCapabilitiesRequest(
-                    getServiceRef()));
+                    (WMS) getService()));
 
         // read in XML file and parse to content handler
         try {

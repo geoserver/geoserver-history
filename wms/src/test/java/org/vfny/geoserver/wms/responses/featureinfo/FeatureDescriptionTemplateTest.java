@@ -47,7 +47,7 @@ public class FeatureDescriptionTemplateTest extends TestCase {
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         template.process(f, new OutputStreamWriter(output));
-        template.process(f, new OutputStreamWriter(System.out));
+        //template.process(f, new OutputStreamWriter(System.out));
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));

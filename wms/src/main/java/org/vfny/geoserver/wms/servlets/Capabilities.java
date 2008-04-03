@@ -42,7 +42,7 @@ public class Capabilities extends WMService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new CapabilitiesKvpReader(params, this);
+        return new CapabilitiesKvpReader(params, getWMS());
     }
 
     /**
@@ -51,7 +51,7 @@ public class Capabilities extends WMService {
      * @return DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new CapabilitiesXmlReader(this);
+        return new CapabilitiesXmlReader(getWMS());
     }
 
     /**

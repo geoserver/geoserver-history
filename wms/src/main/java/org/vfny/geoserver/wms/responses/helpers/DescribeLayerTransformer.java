@@ -139,7 +139,7 @@ public class DescribeLayerTransformer extends TransformerBase {
         private void handleLayers(DescribeLayerRequest req) {
             MapLayerInfo layer;
 
-            String url = RequestUtils.proxifiedBaseURL(req.getBaseUrl(),req.getServiceRef().getGeoServer().getProxyBaseUrl()) + "wfs/WfsDispatcher?";
+            String url = RequestUtils.proxifiedBaseURL(req.getBaseUrl(),req.getServiceConfig().getGeoServer().getProxyBaseUrl()) + "wfs/WfsDispatcher?";
 
             AttributesImpl layerAtts = new AttributesImpl();
             layerAtts.addAttribute("", "name", "name", "", "");

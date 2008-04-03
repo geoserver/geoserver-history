@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import org.geoserver.ows.util.KvpMap;
+import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
@@ -45,11 +48,11 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     /**
      * Creates a new GetMapKvpReader object.
      * @param kvpPairs Key Values pairs of the request
-     * @param service The service handling the request
+     * @param wms The wms config object.
      */
-    public GetFeatureInfoKvpReader(Map kvpPairs, WMService service) {
-        super(kvpPairs, service);
-        getMapReader = new GetMapKvpReader(kvpPairs, service);
+    public GetFeatureInfoKvpReader(Map kvpPairs, WMS wms) {
+        super(kvpPairs, wms);
+        getMapReader = new GetMapKvpReader(kvpPairs, wms);
     }
 
     /**
@@ -67,20 +70,21 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
      */
     public Request getRequest(HttpServletRequest httpRequest)
         throws ServiceException {
-        WMService service = (WMService) getServiceRef();
-        WMS wms = service.getWMS();
-        request = new GetFeatureInfoRequest(service);
+        //WMService service = (WMService) getServiceRef();
+        //WMS wms = service.getWMS();
+        request = new GetFeatureInfoRequest(getWMS());
         request.setHttpServletRequest(httpRequest);
 
         String version = getRequestVersion();
         request.setVersion(version);
 
+        
         getMapReader.setStylesRequired(false);
-
         GetMapRequest getMapPart = (GetMapRequest) getMapReader.getRequest(httpRequest);
+        
         request.setGetMapRequest(getMapPart);
 
-        MapLayerInfo[] layers = parseLayers(wms);
+        MapLayerInfo[] layers = parseLayers(getWMS());
         request.setQueryLayers(layers);
 
         String format = getValue("INFO_FORMAT");

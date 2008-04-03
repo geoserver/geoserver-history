@@ -40,7 +40,7 @@ public class Capabilities extends WCService {
     * @return DOCUMENT ME!
     */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new CapabilitiesKvpReader(params, this);
+        return new CapabilitiesKvpReader(params, getWCS());
     }
 
     /**
@@ -49,7 +49,7 @@ public class Capabilities extends WCService {
      * @return DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new CapabilitiesXmlReader(this);
+        return new CapabilitiesXmlReader(getWCS());
     }
 
     /**

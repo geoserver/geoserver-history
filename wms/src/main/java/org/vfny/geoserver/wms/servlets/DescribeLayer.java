@@ -45,7 +45,7 @@ public class DescribeLayer extends WMService {
      * @return a new DescribeLayerKvpRequestReader
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new DescribeLayerKvpRequestReader(params, this);
+        return new DescribeLayerKvpRequestReader(params, getWMS());
     }
 
     /**

@@ -93,7 +93,7 @@ public class KMLReflector extends WMService {
     }
 
     protected KvpRequestReader getKvpReader(Map params) {
-        return new GetKMLReflectKvpReader(params, this);
+        return new GetKMLReflectKvpReader(params, getWMS());
     }
 
     protected XmlRequestReader getXmlRequestReader() {

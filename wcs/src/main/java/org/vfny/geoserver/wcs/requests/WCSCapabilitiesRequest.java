@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
-import org.vfny.geoserver.servlets.AbstractService;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 
 
@@ -15,7 +15,7 @@ import org.vfny.geoserver.util.requests.CapabilitiesRequest;
  *
  */
 public class WCSCapabilitiesRequest extends CapabilitiesRequest {
-    public WCSCapabilitiesRequest(AbstractService service) {
-        super("WCS", service);
+    public WCSCapabilitiesRequest(WCS wcs) {
+        super("WCS", wcs);
     }
 }

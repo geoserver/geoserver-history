@@ -163,18 +163,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 */
 	private boolean stylesRequired = true;
 
-	/**
-	 * Creates a new GetMapKvpReader object.
-	 * 
-	 * @param kvpPairs
-	 *            Key Values pairs of the request
-	 * @param service
-	 *            The service handling the request
-	 */
-	public GetMapKvpReader(Map kvpPairs, WMService service) {
-		super(kvpPairs, service);
-	}
-
+        /**
+         * Creates a new GetMapKvpReader object.
+         * 
+         * @param kvpPairs
+         *            Key Values pairs of the request
+         * @param wms
+         *            The WMS config object.
+         */
+        public GetMapKvpReader(Map kvpPairs, WMS wms) {
+                super(kvpPairs, wms);
+        }
+        
 	/**
 	 * Sets wether the STYLES parameter must be parsed
 	 * 
@@ -209,7 +209,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 */
 	public Request getRequest(HttpServletRequest httpRequest)
 			throws ServiceException {
-		GetMapRequest request = new GetMapRequest((WMService) service);
+		GetMapRequest request = new GetMapRequest(getWMS());
 		request.setHttpServletRequest(httpRequest);
 
 		String version = getRequestVersion();

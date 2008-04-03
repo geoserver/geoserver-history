@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver;
 
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.Requests;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +47,8 @@ abstract public class Request {
     protected String version = "";
 
     /** service reference */
-    protected AbstractService serviceRef;
+    //protected AbstractService serviceRef;
+    protected Service serviceConfig;
     
     /** reference to the base Url that this request was called with.
      * Note that this is a complete duplicate of info in the above HttpServletRequest
@@ -61,11 +63,12 @@ abstract public class Request {
       * @param serviceType Name of hte service (example, WFS)
       * @param requestType Name of the request (example, GetCapabilties)
       * @param serviceRef The servlet for the request.
+      * 
       */
-    protected Request(String serviceType, String requestType, AbstractService serviceRef) {
-        this.service = serviceType;
-        this.request = requestType;
-        this.serviceRef = serviceRef;
+    protected Request(String service, String request,Service serviceConfig) {
+        this.service = service;
+        this.request = request;
+        this.serviceConfig = serviceConfig;
     }
     
     /**
@@ -147,19 +150,12 @@ abstract public class Request {
     }
 
     /**
-     * Sets the reference to the service.
+     * @return The service configuration.
      */
-    public void setServiceRef(AbstractService serviceRef) {
-        this.serviceRef = serviceRef;
+    public Service getServiceConfig() {
+        return serviceConfig;
     }
-
-    /**
-     * @return the reference the service.
-     */
-    public AbstractService getServiceRef() {
-        return serviceRef;
-    }
-
+    
     public boolean equals(Object o) {
         if (!(o instanceof Request)) {
             return false;
@@ -209,33 +205,11 @@ abstract public class Request {
         return httpServletRequest;
     }
 
-    //JD: delete this
-    //	public WMS getWMS(){
-    //		WMS vp = Requests.getWMS( getHttpServletRequest() );
-    //		return vp;
-    //	}
-    //	
-    //	public WFS getWFS(){
-    //		WFS vp = Requests.getWFS( getHttpServletRequest() );
-    //		return vp;
-    //	}
     public String getRootDir() {
         throw new IllegalArgumentException(
             "getRootDir -- functionality removed - please verify that its okay with geoserver_data_dir");
 
         //return httpServletRequest.getSession().getServletContext().getRealPath("/");
-    }
-
-    /**
-     * Gets the url that schemas should be referenced from.  For now this will
-     * always be local, if we bring back schemaBaseUrl as a param then that will
-     * be possible too.  So it is just baseUrl plus data/capabilities, which
-     * is where we store the schemas now.
-     *
-     * @return the base url of the schemas.  Will be getBaseUrl() + data/capabilities.
-     */
-    public String getSchemaBaseUrl() {
-        return Requests.getSchemaBaseUrl(getHttpServletRequest(), serviceRef.getGeoServer());
     }
 
     /**

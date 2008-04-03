@@ -6,6 +6,7 @@ package org.vfny.geoserver.util.requests.readers;
 
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 import java.io.Reader;
 import java.util.logging.Logger;
@@ -26,7 +27,8 @@ public abstract class XmlRequestReader {
     protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers");
 
     /** The service handling the request **/
-    private AbstractService service;
+    private Service serviceConfig;
+    
 
     /**
     * DOCUMENT ME!
@@ -40,25 +42,17 @@ public abstract class XmlRequestReader {
     public abstract Request read(Reader reader, HttpServletRequest req)
         throws ServiceException;
 
+   
     /**
      * This will create a new XmlRequestReader
-     * @param service The service handling the request
+     * @param service The config of the service handling the request
      */
-    public XmlRequestReader(AbstractService service) {
-        this.service = service;
+    public XmlRequestReader(Service service) {
+        this.serviceConfig = service;;
     }
-
-    /**
-     * @return the service handling the request
-     */
-    public AbstractService getServiceRef() {
-        return service;
-    }
-
-    /**
-     * sets the service handling the request
-     */
-    public void setServiceRef(AbstractService service) {
-        this.service = service;
+    
+    
+    public Service getService() {
+        return serviceConfig;
     }
 }

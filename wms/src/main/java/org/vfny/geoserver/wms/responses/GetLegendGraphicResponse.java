@@ -200,9 +200,38 @@ public class GetLegendGraphicResponse implements Response {
      *        "image/png").
      *
      * @return wether a legend producer can manage the specified format or not.
+     * 
+     * @deprecated use {@link #supportsFormat(String)}
      */
     public static boolean supportsFormat(String mimeType, ApplicationContext context) {
-        return loadLegendFormats(context).contains(mimeType);
+        return supportsFormat(mimeType);
+    }
+
+    /**
+     * Utility method to ask all the available legend graphic producer
+     * factories if they support the production of a legend graphic in the
+     * format specified.
+     *
+     * @param mimeType the MIME type of the desired legend format (e.g.
+     *        "image/png").
+     *
+     * @return wether a legend producer can manage the specified format or not.
+     * 
+     */
+    public static boolean supportsFormat(String mimeType) {
+        return loadLegendFormats().contains(mimeType);
+    }
+    
+    /**
+     * Convenient method to search and return all the supported image formats
+     * for the creation of legend graphics.
+     *
+     * @return the set of all the supported legend graphic formats.
+     * 
+     * @deprecated use {@link #getFormats()}
+     */
+    public static Set getFormats(ApplicationContext context) {
+        return getFormats();
     }
 
     /**
@@ -211,19 +240,15 @@ public class GetLegendGraphicResponse implements Response {
      *
      * @return the set of all the supported legend graphic formats.
      */
-    public static Set getFormats(ApplicationContext context) {
-        return loadLegendFormats(context);
+    public static Set getFormats() {
+        return loadLegendFormats();
     }
-
+    
     /**
      * Convenience method for processing the GetMapProducerFactorySpi extension
      * point and returning the set of available image formats.
-     *
-     * @param applicationContext
-     *            The application context.
-     *
      */
-    private static Set loadLegendFormats(ApplicationContext applicationContext) {
+    private static Set loadLegendFormats() {
         Collection producers = GeoServerExtensions.extensions(GetLegendGraphicProducerSpi.class);
         Set formats = new HashSet();
         GetLegendGraphicProducerSpi producer;

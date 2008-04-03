@@ -23,14 +23,14 @@ import javax.servlet.http.HttpServletRequest;
  * @version $Id$
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
+    
     /**
-     * Constructor with raw request string.  Calls parent.
-     *
-     * @param kvPairs The raw string of a capabilities kvp request.
-     *
-     *
+     * Creates a Capabilities Kvp Reader.
+     * 
+     * @param kvPairs the kvp set.
+     * @param service The wms service config.
      */
-    public CapabilitiesKvpReader(Map kvPairs, WMService service) {
+    public CapabilitiesKvpReader(Map kvPairs, WMS service) {
         super(kvPairs, service);
     }
 
@@ -43,7 +43,7 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        CapabilitiesRequest currentRequest = new WMSCapabilitiesRequest(service);
+        CapabilitiesRequest currentRequest = new WMSCapabilitiesRequest((WMS) serviceConfig);
         currentRequest.setHttpServletRequest(request);
 
         String reqVersion = WMS.getVersion();

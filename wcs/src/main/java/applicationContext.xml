@@ -94,28 +94,28 @@
  		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.WCSCapabilitiesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.CapabilitiesKvpReader" />
-      	<constructor-arg index="2" ref="wcsGetCapabilities" />
+      	<constructor-arg index="2" ref="wcs" />
 	</bean>
 
 	<bean id="describeCoverageKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.DescribeRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.DescribeKvpReader" />
-      	<constructor-arg index="2" ref="wcsDescribeCoverage" />
+      	<constructor-arg index="2" ref="wcs" />
 	</bean>
 	
 	<bean id="getCoverageKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.CoverageRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.GetCoverageKvpReader" />
-      	<constructor-arg index="2" ref="wcsGetCoverage" />
+      	<constructor-arg index="2" ref="wcs" />
 	</bean>
 	
 	<!--  xml request readers -->
 	<bean id="wcsXmlReader" class="org.geoserver.ows.adapters.XmlRequestReaderAdapter"
 		abstract="true">
 		<constructor-arg index="0" value="http://www.opengis.net/wcs"/>
-		<constructor-arg index="2" ref="wcsGetCapabilities"/>
+		<constructor-arg index="2" ref="wcs"/>
 	</bean>
 	
 	<bean id="wcsGetCapabilitiesXmlReader" parent="wcsXmlReader">

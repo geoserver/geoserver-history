@@ -53,7 +53,7 @@ public class Describe extends WCService {
      * @return DOCUMENT ME!
      */
     protected KvpRequestReader getKvpReader(Map params) {
-        return new DescribeKvpReader(params, this);
+        return new DescribeKvpReader(params, getWCS());
     }
 
     /**
@@ -62,6 +62,6 @@ public class Describe extends WCService {
      * @return DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new DescribeXmlReader(this);
+        return new DescribeXmlReader(getWCS());
     }
 }

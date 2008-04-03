@@ -38,10 +38,9 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     protected void setUp() throws Exception {
         super.setUp();
 
-        GetMap getMap = (GetMap) applicationContext.getBean("wmsGetMap");
         dispatcher = (Dispatcher) applicationContext.getBean("dispatcher");
         WMS wms = (WMS) applicationContext.getBean("wms");
-        reader = new GetMapKvpRequestReader(getMap, wms);
+        reader = new GetMapKvpRequestReader(wms);
     }
 
     public void testCreateRequest() throws Exception {
@@ -240,7 +239,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
             request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
             fail("The style looked up, 'ThisStyleDoesNotExists', should not have been found");
         } catch(WmsException e) {
-            System.out.println(e);
+            //System.out.println(e);
         }
     }
     
