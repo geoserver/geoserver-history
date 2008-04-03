@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.rest.RESTUtils;
+import org.geoserver.wms.WebMapService;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -52,10 +54,15 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
     private WMS myWMS;
     private GetMap myGetMap;
     private ApplicationContext myContext;
+    private WebMapService webMapService;
 
     private static Namespace KML = Namespace.getNamespace("http://earth.google.com/kml/2.2");
     private static Namespace ATOM = Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom");
 
+    public void setWebMapService(WebMapService webMapService) {
+        this.webMapService = webMapService;
+    }
+    
     public void setData(Data d){
         myData = d;
     }
@@ -121,6 +128,8 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
         GeoSearchMapProducerFactory.BASE_URL = getBaseURL(request);
         if (request.getMethod().equals(Method.GET)) {
             GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getWms());
+            reader.setHttpRequest( RESTUtils.getServletRequest( request ) );
+            
             Map raw = new HashMap();
             raw.put("layers", namespace + ":" + layername); 
             // raw.put("styles", "polygon");
@@ -129,7 +138,7 @@ public class LayerRestlet extends GeoServerProxyAwareRestlet implements Applicat
             raw.put("bbox", "-180,-90,180,90");
             raw.put("height", "600");
             raw.put("width", "800");
-
+            
             final GetMapRequest gmreq = (GetMapRequest) reader.read((GetMapRequest) reader.createRequest(), parseKvp(raw), raw);
 
             final GetMapResponse gmresp = new GetMapResponse(getWms(), getApplicationContext());
