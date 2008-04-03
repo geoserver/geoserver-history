@@ -101,7 +101,10 @@ public class FeatureRestlet extends GeoServerProxyAwareRestlet implements Applic
         String layername = (String)request.getAttributes().get("layer");
         String featureId = (String)request.getAttributes().get("feature");
         String format    = (String)request.getAttributes().get("format");
-        GeoSearchMapProducerFactory.BASE_URL = getBaseURL(request);
+        String bu = getBaseURL(request);
+        int lastslash = bu.lastIndexOf("/");
+        bu = bu.substring(0, lastslash);
+        GeoSearchMapProducerFactory.BASE_URL = bu;
         
         if (request.getMethod().equals(Method.GET)) {
             GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getWms());
@@ -110,7 +113,7 @@ public class FeatureRestlet extends GeoServerProxyAwareRestlet implements Applic
             Map raw = new HashMap();
             raw.put("layers", namespace + ":" + layername); 
             raw.put("styles", "polygon");
-            raw.put("format", "kmlgeosearch");
+            raw.put("format", "geosearch-kml");
             raw.put("srs", "epsg:4326");
             raw.put("bbox", "-180,-90,180,90");
             raw.put("height", "600");
