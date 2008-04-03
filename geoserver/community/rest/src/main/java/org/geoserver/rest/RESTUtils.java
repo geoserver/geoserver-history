@@ -8,7 +8,7 @@ import com.noelios.restlet.ext.servlet.ServletCall;
 import com.noelios.restlet.http.HttpRequest;
 
 /**
- * Utility class for reslets.
+ * Utility class for Restlets.
  * 
  * @author Justin Deoliveira, The Open Planning Project
  *
@@ -16,9 +16,9 @@ import com.noelios.restlet.http.HttpRequest;
 public class RESTUtils {
 
     /**
-     * Returns the underlying HttpServletRequest from a reslet Request object.
+     * Returns the underlying HttpServletRequest from a Restlet Request object.
      * <p>
-     * Note that this only returns a value in teh case where the reslet 
+     * Note that this only returns a value in the case where the Restlet 
      * request/call is originating from a servlet.
      * </p>
      * @return The HttpServletRequest, or null.
