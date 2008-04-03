@@ -2,7 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-    <bean id="restWrapper" class="org.geoserver.rest.WrappingController"/>
+    <bean id="restWrapper" class="org.geoserver.rest.RESTDispatcher"/>
 
     <bean id="restletDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="alwaysUseFullPath" value="true"/>
