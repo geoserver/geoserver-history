@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -299,6 +300,36 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         return request;
     }
 
+    /**
+     * Convenience method for subclasses to create mock http servlet requests.
+     * <p>
+     * Examples of using this method are:
+     * <pre>
+     * <code>
+     *   Map kvp = new HashMap();
+     *   kvp.put( "service", "wfs" );
+     *   kvp.put( "request", "GetCapabilities" );
+     *   
+     *   createRequest( "wfs", kvp );
+     * </code>
+     * </pre>
+     * </p>
+     * @param path The path for the request, minus any query string parameters.
+     * @param kvp The key value pairs to be put in teh query string. 
+     * 
+     */
+    protected MockHttpServletRequest createRequest( String path, Map kvp ) {
+        StringBuffer q = new StringBuffer();
+        for ( Iterator e = kvp.entrySet().iterator(); e.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) e.next();
+            q.append( entry.getKey() ).append("=").append( entry.getValue() );
+            q.append( "&" );
+        }
+        q.setLength(q.length()-1);
+        
+        return createRequest( ResponseUtils.appendQueryString(path, q.toString() ) );
+    }
+    
     /**
      * Executes an ows request using the GET method.
      *
