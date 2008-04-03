@@ -110,7 +110,7 @@ public class FeatureRestlet extends GeoServerProxyAwareRestlet implements Applic
             Map raw = new HashMap();
             raw.put("layers", namespace + ":" + layername); 
             raw.put("styles", "polygon");
-            raw.put("format", (format == null ? "kmlgeosearch" : format));
+            raw.put("format", "kmlgeosearch");
             raw.put("srs", "epsg:4326");
             raw.put("bbox", "-180,-90,180,90");
             raw.put("height", "600");
