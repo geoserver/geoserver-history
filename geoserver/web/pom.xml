@@ -400,7 +400,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>rest</artifactId>
-          <version>1.0</version>
+          <version>1.6-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>org.geoserver</groupId>

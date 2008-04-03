@@ -43,24 +43,25 @@
       <version>1.6-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>rest</artifactId>
+      <version>1.6-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.restlet</groupId>
       <artifactId>org.restlet</artifactId>
-      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
       <artifactId>org.restlet.ext.spring</artifactId>
-      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>com.noelios.restlet</groupId>
       <artifactId>com.noelios.restlet.ext.servlet</artifactId>
-      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
       <artifactId>org.restlet.ext.freemarker</artifactId>
-      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>net.sf.json-lib</groupId>

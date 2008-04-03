@@ -67,6 +67,11 @@
     <enabled>false</enabled>
    </snapshots>
   </repository>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+    </repository>
  </repositories>
 
  <pluginRepositories>
@@ -596,6 +601,31 @@
      <artifactId>jsqlparser</artifactId> 
      <version>0.3.14</version> 
    </dependency>
+     <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.fileupload</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.freemarker</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.spring</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.noelios.restlet</groupId>
+      <artifactId>com.noelios.restlet.ext.servlet</artifactId>
+      <version>1.0.8</version>
+    </dependency>
   </dependencies>
  </dependencyManagement>
 

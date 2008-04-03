@@ -33,6 +33,7 @@
 				<module>csv</module>
 				<module>rest</module>
 				<module>RESTConfig</module>
+				<module>QueryUsers</module>
 			</modules>
 		</profile>
 		<profile>
