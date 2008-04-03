@@ -3,9 +3,6 @@
 
 <beans>
 
-<bean id="restwrapper" class="org.geoserver.usermanagement.WrappingController"/>
-
-
 <bean id="restDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 <property name="alwaysUseFullPath" value="true"/>
 <property name="mappings">

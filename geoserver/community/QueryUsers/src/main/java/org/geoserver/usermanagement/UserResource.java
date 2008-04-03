@@ -35,12 +35,10 @@ import org.restlet.resource.StringRepresentation;
 import org.springframework.dao.DataAccessException;
 
 import org.geoserver.security.EditableUserDAO;
-import org.geoserver.restconfig.HTMLTemplate;
-
-import net.sf.json.JSONObject;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONNull;
-import net.sf.json.util.JSONUtils;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.DataFormat;
 
 /**
  * First stab at representing user accounts as Restlet Resource objects.
@@ -54,100 +52,29 @@ public class UserResource extends Resource {
     private static Map myFormatMap;
     private DataFormat myRequestFormat; 
 
-    static{
-	myFormatMap = new HashMap();
-	DataFormat json = 
-	    new DataFormat(){
-		public Representation makeRepresentation(final Map map){
-		    return new OutputRepresentation(MediaType.APPLICATION_JSON){
-			public void write(OutputStream os){
-			    try{
-				Writer outWriter = new BufferedWriter(new OutputStreamWriter(os));
-				(new JSONObject(map)).write(outWriter);
-				outWriter.flush();
-			    } catch (IOException ioe){
-				// how to handle?
-			    }
-			}
-		    };
-		}
-		public Map readRepresentation(Representation rep){
-		    try{
-			JSONObject obj = new JSONObject(rep.getText()); 
-			Object maybeMap = toMap(obj);
-			if (maybeMap instanceof Map){
-			    return (Map) maybeMap;
-			}
+    private void initFormats(){
+        myFormatMap = new HashMap();
+        DataFormat json = new JSONFormat();
+        DataFormat html = new FreemarkerFormat("HTMLTemplates/user.ftl", getClass(), MediaType.TEXT_HTML);
+        DataFormat xml = new AutoXMLFormat();
 
-
-			Map map = new HashMap();
-			map.put("context", maybeMap); // TODO: figure out what to do rather than this kind of arbitrary thing
-
-			return map; 
-		    } catch (IOException ioe){
-			return new HashMap();
-		    }
-		}
-
-		protected Object toMap(Object json){
-		    if (json instanceof JSONObject){
-                         Map m = new HashMap();
-			 Iterator it = ((JSONObject)json).keys();
-			 while (it.hasNext()){
-			     String key = (String)it.next();
-			     m.put(key, toMap(((JSONObject)json).get(key)));
-			 }
-			 return m;
-		    } else if (json instanceof JSONArray){
-			List l = new ArrayList();
-			for (int i = 0; i < ((JSONArray)json).length(); i++){
-			    l.add(toMap(((JSONArray)json).get(i)));
-			}
-			return l;
-		    } else if (json instanceof JSONNull){
-			return null;
-		    } else {
-			return json;
-		    }
-
-		}
-	    };
-
-	DataFormat html = 
-	    new DataFormat(){
-		public Representation makeRepresentation(Map map){
-		    return HTMLTemplate.getHtmlRepresentation("HTMLTemplates/user.ftl", map); 
-		}
-
-		public Map readRepresentation(Representation rep){
-		    return new HashMap();
-		}
-	    };
-
-	DataFormat xml = 
-	    new DataFormat(){
-		public Representation makeRepresentation(Map map){
-		    return new StringRepresentation("XML not implemented", MediaType.TEXT_PLAIN);
-		}
-		public Map readRepresentation(Representation rep){
-		    return new HashMap();
-		}
-	    };
-
-	myFormatMap.put("json", json);
-	myFormatMap.put("html", html);
-	myFormatMap.put("xml", xml);
-	myFormatMap.put(null, html);
+        myFormatMap.put("json", json);
+        myFormatMap.put("html", html);
+        myFormatMap.put("xml", xml);
+        myFormatMap.put(null, html);
     }
 
     public UserResource(Context context,
-	    Request request,
-	    Response response,
-	    EditableUserDAO eud){
-	super(context, request, response);
-	myUserName = (String)request.getAttributes().get("name");
-	myUserService = eud;
-	myRequestFormat = (DataFormat)myFormatMap.get(request.getAttributes().get("type"));
+            Request request,
+            Response response,
+            EditableUserDAO eud){
+        super(context, request, response);
+        myUserName = (String)request.getAttributes().get("name");
+        myUserService = eud;
+        myRequestFormat = (DataFormat)myFormatMap.get(request.getAttributes().get("type"));
+        if (myFormatMap == null){
+            initFormats();
+        }
     }
 
     public boolean allowGet() {
@@ -191,7 +118,7 @@ public class UserResource extends Resource {
 	    return;
 	}
 
-	Map details = myRequestFormat.readRepresentation(getRequest().getEntity());
+	Map details = (Map)myRequestFormat.readRepresentation(getRequest().getEntity());
 	if (details != null){
 	    try{
 		putMap(details);
