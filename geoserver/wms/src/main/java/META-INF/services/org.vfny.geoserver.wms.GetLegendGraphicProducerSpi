@@ -1,3 +1,0 @@
-org.vfny.geoserver.wms.responses.legend.gif.GIFLegendGraphicProducerFactory
-org.vfny.geoserver.wms.responses.legend.jai.JaiLegendGraphicProducerFactory
-org.vfny.geoserver.wms.responses.legend.png.PNGLegendGraphicProducerFactory
