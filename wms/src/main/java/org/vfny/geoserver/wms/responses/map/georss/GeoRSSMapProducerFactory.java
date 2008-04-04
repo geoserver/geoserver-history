@@ -24,7 +24,10 @@ public class GeoRSSMapProducerFactory implements GetMapProducerFactorySpi {
         aliases.addAll(RSSGeoRSSMapProducer.FORMATS);
     }
 
-    public boolean canProduce(String mapFormat) {
+    public GeoRSSMapProducerFactory() {
+	}
+
+	public boolean canProduce(String mapFormat) {
         return formats.contains(mapFormat) || aliases.contains(mapFormat);
     }
 

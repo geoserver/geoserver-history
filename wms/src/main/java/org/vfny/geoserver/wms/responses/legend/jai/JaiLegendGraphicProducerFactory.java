@@ -23,7 +23,6 @@ public class JaiLegendGraphicProducerFactory implements GetLegendGraphicProducer
      *
      */
     public JaiLegendGraphicProducerFactory() {
-        super();
     }
 
     /**

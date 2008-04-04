@@ -39,7 +39,6 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
 	 * Creates a new PNGMapProducerFactory object.
 	 */
 	public PNGMapProducerFactory() {
-		super();
 	}
 
 	/**
@@ -71,7 +70,7 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
 	}
 
 	/**
-	 * Returns wether the map producers created by this factory can create maps
+	 * Returns whether the map producers created by this factory can create maps
 	 * in the passed output format.
 	 * 
 	 * @param mapFormat

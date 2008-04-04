@@ -37,7 +37,6 @@ public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     public JPEGMapProducerFactory() {
-        super();
     }
 
     public String getName() {
