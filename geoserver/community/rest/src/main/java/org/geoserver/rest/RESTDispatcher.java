@@ -11,16 +11,14 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.restlet.Restlet;
 import org.restlet.Router;
 import org.restlet.resource.Resource;
+import org.restlet.resource.StringRepresentation;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
-
-import org.geoserver.platform.GeoServerExtensions;
 
 import com.noelios.restlet.ext.servlet.ServletConverter;
 
@@ -52,9 +50,31 @@ public class RESTDispatcher extends AbstractController {
     protected ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp)
         throws Exception {
 
+        try {
             myConverter.service(req, resp);
-
-            return null;
+        }
+        catch( Exception e ) {
+            RestletException re = null;
+            if ( e instanceof RestletException ) {
+                re = (RestletException) e;
+            }
+            if ( re == null && e.getCause() instanceof RestletException ) {
+                re = (RestletException) e.getCause();
+            }
+            
+            if ( re != null ) {
+                resp.setStatus( re.getStatus().getCode() );
+                re.getRepresentation().write(resp.getOutputStream());
+                resp.getOutputStream().flush();
+            }
+            else {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                new StringRepresentation( e.getMessage() ).write( resp.getOutputStream() );
+                resp.getOutputStream().flush();
+            }
+        }
+            
+        return null;
     }
 
     public void addRoutes(Map m, Router r){
