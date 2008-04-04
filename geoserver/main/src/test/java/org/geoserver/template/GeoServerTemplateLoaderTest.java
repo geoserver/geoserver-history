@@ -6,73 +6,56 @@ package org.geoserver.template;
 
 import junit.framework.TestCase;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.test.GeoServerTestSupport;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+
+import com.mockrunner.mock.web.MockServletConfig;
+import com.mockrunner.mock.web.MockServletContext;
+
 import java.io.File;
 import java.io.IOException;
 
 
-public class GeoServerTemplateLoaderTest extends TestCase {
+public class GeoServerTemplateLoaderTest extends GeoServerTestSupport {
     public void test() throws Exception {
-        File data = File.createTempFile(getName(), "template");
-        data.delete();
-        data.mkdir();
-
-        System.setProperty("GEOSERVER_DATA_DIR", data.getAbsolutePath());
-
+        File data = getTestData().getDataDirectoryRoot();
+        
         File templates = new File(data, "templates");
-        templates.mkdir();
-
+        
         File featureTypes = new File(data, "featureTypes");
-        featureTypes.mkdir();
-
+        
         File featureType1 = new File(featureTypes, "ft1");
         featureType1.mkdir();
 
         File featureType2 = new File(featureTypes, "ft2");
         featureType2.mkdir();
 
-        try {
-            GeoServerResourceLoader loader = new GeoServerResourceLoader(data);
-            GenericWebApplicationContext context = new GenericWebApplicationContext();
-            context.getBeanFactory().registerSingleton("resourceLoader", loader);
+        GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
 
-            GeoserverDataDirectory.init(context);
+        //test a path relative to templates
+        File expected = new File(templates, "1.ftl");
+        expected.createNewFile();
 
-            GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
+        File actual = (File) templateLoader.findTemplateSource("1.ftl");
+        assertEquals(expected.getCanonicalPath(), actual.getCanonicalPath());
 
-            //test a path relative to templates
-            File expected = new File(templates, "1.ftl");
-            expected.createNewFile();
+        //test a path relative to featureTypes
+        expected = new File(featureType1, "2.ftl");
+        expected.createNewFile();
 
-            File actual = (File) templateLoader.findTemplateSource("1.ftl");
-            assertEquals(expected.getCanonicalPath(), actual.getCanonicalPath());
+        actual = (File) templateLoader.findTemplateSource("ft1/2.ftl");
+        assertEquals(expected.getCanonicalPath(), actual.getCanonicalPath());
 
-            //test a path relative to featureTypes
-            expected = new File(featureType1, "2.ftl");
-            expected.createNewFile();
+        actual = (File) templateLoader.findTemplateSource("2.ftl");
+        assertNull(actual);
 
-            actual = (File) templateLoader.findTemplateSource("ft1/2.ftl");
-            assertEquals(expected.getCanonicalPath(), actual.getCanonicalPath());
-
-            actual = (File) templateLoader.findTemplateSource("2.ftl");
-            assertNull(actual);
-
-            // Removed this for the moment, I need to setup a mock catalog in
-            // order to test again feature type specific template loading
-            // templateLoader.setFeatureType("ft1");
-            // actual = (File) templateLoader.findTemplateSource("2.ftl");
-            // assertEquals(expected.getCanonicalPath(),
-            // actual.getCanonicalPath());
-
-            //test loading relative to class
-            Object source = templateLoader.findTemplateSource("FeatureSimple.ftl");
-            assertNotNull(source);
-            assertFalse(source instanceof File);
-            templateLoader.getReader(source, "UTF-8");
-        } finally {
-            delete(data);
-        }
+        //test loading relative to class
+        Object source = templateLoader.findTemplateSource("FeatureSimple.ftl");
+        assertNotNull(source);
+        assertFalse(source instanceof File);
+        templateLoader.getReader(source, "UTF-8");
+        
     }
 
     void delete(File file) throws IOException {
