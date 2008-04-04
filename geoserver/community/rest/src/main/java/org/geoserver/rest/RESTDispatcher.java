@@ -6,6 +6,7 @@ package org.geoserver.rest;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ public class RESTDispatcher extends AbstractController {
     public static String METHOD_DELETE = "DELETE";
     ServletConverter myConverter;
     private Router myRouter;
+    private Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.rest");
 
     public RESTDispatcher() {
         super();
@@ -60,6 +62,8 @@ public class RESTDispatcher extends AbstractController {
 
         while (it.hasNext()){
             Map.Entry entry = (Map.Entry) it.next();
+
+            // LOG.info("Found mapping: " + entry.getKey().toString());
 
             if (getApplicationContext().getBean(entry.getValue().toString()) instanceof Resource){
                 r.attach(entry.getKey().toString(), new BeanResourceFinder(getApplicationContext(), entry.getValue().toString()));
