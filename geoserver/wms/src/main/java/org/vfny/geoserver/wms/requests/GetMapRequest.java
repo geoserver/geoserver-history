@@ -622,6 +622,44 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
+     * Sets the maximum number of features to fetch in this request.
+     * <p>
+     * This property only applies if the reqeust is for a vector layer.
+     * </p>
+     */
+    public void setMaxFeatures( Integer maxFeatures ) {
+        this.optionalParams.maxFeatures = maxFeatures;
+    }
+    
+    /**
+     * The maximum number of features to fetch in this request.
+     */
+    public Integer getMaxFeatures() {
+        return this.optionalParams.maxFeatures;
+    }
+
+    /**
+     * Sets the offset or start index at which to start returning features in 
+     * the request.
+     * <p>
+     * It is used in conjunction with {@link #getMaxFeatures()} to page through
+     * a feature set. This property only applies if the request is for a vector 
+     * layer.
+     * </p>
+     */
+    public void setStartIndex( Integer startIndex ) {
+        this.optionalParams.startIndex = startIndex;
+    }
+    
+    /**
+     * The offset or start index at which to start returning features in 
+     * the request.
+     */
+    public Integer getStartIndex() {
+        return this.optionalParams.startIndex;
+    }
+
+    /**
      * Sets the raw kvp parameters which were used to create the request.
      */
     public void setRawKvp( Map rawKvp ) {
@@ -750,6 +788,10 @@ public class GetMapRequest extends WMSRequest {
         
         /** Remote OWS url */
         URL remoteOwsURL;
+        
+        /** paging parameters */
+        Integer maxFeatures;
+        Integer startIndex;
     }
 
     /**
