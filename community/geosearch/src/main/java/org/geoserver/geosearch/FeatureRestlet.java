@@ -84,8 +84,13 @@ public class FeatureRestlet extends Restlet {
         catch( NoSuchElementException e ) {
             //ignore, handled later
         }
+
         if ( featureType == null ) {
             throw new RestletException( "No such layer:" + layer, Status.CLIENT_ERROR_NOT_FOUND);    
+        }
+
+        if ( !featureType.isIndexingEnabled() ) {
+            throw new RestletException( "Layer not indexable: " + layer, Status.CLIENT_ERROR_FORBIDDEN);
         }
             
         //create some kvp and pass through to GetMapKvpreader
