@@ -29,15 +29,7 @@ class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	/** standard logger */
 	protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.kml");
 
-	/**
-	 * encoder instance which does all the hard work
-	 * 
-	 * @uml.property name="kmlEncoder"
-	 * @uml.associationEnd multiplicity="(0 1)"
-	 */
-
-	// private EncodeKML kmlEncoder;
-	/** kml transformer which turns the map contedxt into kml */
+        /** kml transformer which turns the map contedxt into kml */
 	protected KMLTransformer transformer;
 
 	public KMLMapProducer(String mapFormat, String mime_type) {
