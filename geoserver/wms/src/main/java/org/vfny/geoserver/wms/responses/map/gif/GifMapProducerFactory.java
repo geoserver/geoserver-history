@@ -33,7 +33,6 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
      * Creates a new GifMapProducerFactory object.
      */
     public GifMapProducerFactory() {
-        super();
     }
 
     /**

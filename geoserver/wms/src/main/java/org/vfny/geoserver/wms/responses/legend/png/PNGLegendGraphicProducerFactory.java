@@ -23,7 +23,7 @@ public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducer
      *
      */
     public PNGLegendGraphicProducerFactory() {
-        super();
+
     }
 
     /**
