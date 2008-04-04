@@ -11,7 +11,7 @@ import org.restlet.data.MediaType;
  * 
  * @author David Winslow
  */
-public class RestletException extends Exception{
+public class RestletException extends RuntimeException {
     Status myStatus;
     Representation myRepresentation;
 
