@@ -123,7 +123,7 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
         phoneNumber.setText(getGeoServer().getContactVoice());
         folder.addContent(phoneNumber);
         Element snippet = new Element("Snippet", KML);
-        snippet.setText("All " + layerList.size() + " layers in the " + namespace + " namespace");
+        snippet.setText("All layers in the " + namespace + " namespace");
         folder.addContent(snippet);
         Element open = new Element("open", KML);
         open.setText("1");
@@ -144,12 +144,18 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
         Iterator it = layerList.iterator();
         while (it.hasNext()){
             MapLayerInfo l = (MapLayerInfo)it.next();
-            folder.addContent(createNetworkLink(namespace, l));
+            if (isIndexable(l))
+                folder.addContent(createNetworkLink(namespace, l));
         }
 
         d.setRootElement(kml);
         return d;
 
+    }
+
+    private boolean isIndexable(MapLayerInfo l){
+        return ( l.getFeature() != null )
+            && ( l.getFeature().isIndexingEnabled() );
     }
 
     private Element createNetworkLink(String namespace, MapLayerInfo layer){
