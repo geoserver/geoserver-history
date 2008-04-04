@@ -10,24 +10,16 @@
           <value>sitemap</value>
         </entry>
         <entry>
-          <key><value>/geosearch/{namespace}</value></key>
+          <key><value>/geosearch/{namespace}.kml</value></key>
           <value>namespaceindex</value>
         </entry>
         <entry>
-          <key><value>/geosearch/{namespace}/{layer}</value></key>
-          <value>layer</value>
-        </entry>
-        <entry>
-          <key><value>/geosearch/{namespace}/{layer}.{type}</value></key>
-          <value>layer</value>
-        </entry>
-        <entry>
-          <key><value>/geosearch/{namespace}/{layer}/{feature}</value></key>
+          <key><value>/geosearch/{namespace}/{layer}.kml</value></key>
           <value>feature</value>
         </entry>
         <entry>
-           <key><value>/geosearch/{namespace}/{layer}/{feature}</value></key>
-           <value>feature</value>
+          <key><value>/geosearch/{namespace}/{layer}/{feature}.kml</value></key>
+          <value>feature</value>
         </entry>
   </map>
 </property>
@@ -43,23 +35,15 @@
     <property name="data"><ref bean="data"/></property>
     <property name="geoServer"><ref bean="geoServer"/></property>
 </bean>
-<bean id="layer" class="org.geoserver.geosearch.LayerRestlet">
-    <property name="dataConfig"><ref bean="dataConfig"/></property>
-    <property name="data"><ref bean="data"/></property>
-    <property name="geoServer"><ref bean="geoServer"/></property>
-    <property name="getMap"><ref bean="wmsGetMap"/></property>
-    <property name="wms"><ref bean="wms"/></property>
-</bean>
 <bean id="feature" class="org.geoserver.geosearch.FeatureRestlet">
-    <property name="dataConfig"><ref bean="dataConfig"/></property>
-    <property name="data"><ref bean="data"/></property>
-    <property name="geoServer"><ref bean="geoServer"/></property>
-    <property name="getMap"><ref bean="wmsGetMap"/></property>
     <property name="wms"><ref bean="wms"/></property>
+    <property name="webMapService"><ref bean="webMapService"/></property>
+    <property name="catalog"><ref bean="catalog"/></property>
 </bean>
 
 <bean id="KMLGeosearchMapProducerFactory" 
     class="org.vfny.geoserver.wms.responses.map.kml.GeoSearchMapProducerFactory">
+    <constructor-arg ref="catalog"/>
 </bean>
 
 </beans>
