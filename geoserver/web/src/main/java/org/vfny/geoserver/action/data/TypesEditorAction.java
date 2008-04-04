@@ -379,11 +379,16 @@ public class TypesEditorAction extends ConfigAction {
         config.setWmsPath(form.getWmsPath());
         config.setCacheMaxAge(form.getCacheMaxAge());
         config.setCachingEnabled(form.isCachingEnabled());
+        config.setIndexingEnabled(form.isIndexingEnabled());
         config.setMaxFeatures(Integer.parseInt(form.getMaxFeatures()));
         config.setSRSHandling(form.getSrsHandlingCode());
 
         if (!form.isCachingEnabledChecked()) {
             config.setCachingEnabled(false);
+        }
+
+        if (!form.isIndexingEnabledChecked()){
+            config.setIndexingEnabled(false);
         }
 
         String schemaBase = form.getSchemaBase();

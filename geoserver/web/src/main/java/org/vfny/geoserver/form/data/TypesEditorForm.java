@@ -154,9 +154,13 @@ public class TypesEditorForm extends ActionForm {
     /** The optional max amount of features to be served over wfs */ 
     private String maxFeatures = "";
 
-    /** Should we add the CacheControl: max-age header to maps generated from this featureType? **/
+    /** Should we add the CacheControl: max-age header to maps generated from this featureType? */
     private boolean cachingEnabled;
     private boolean cachingEnabledChecked = false;
+
+    /** Should we list this layer when crawlers request the sitemap? */
+    private boolean indexingEnabled;
+    private boolean indexingEnabledChecked = false;
 
     /**
      * One of a select list - simplest is AbstractBaseClass.
@@ -252,6 +256,10 @@ public class TypesEditorForm extends ActionForm {
         this.cacheMaxAge = type.getCacheMaxAge();
         this.cachingEnabled = type.isCachingEnabled();
         cachingEnabledChecked = false;
+
+        this.indexingEnabled = type.isIndexingEnabled();
+        indexingEnabledChecked = false;
+
         this.maxFeatures = String.valueOf(type.getMaxFeatures());
 
         Envelope bounds = type.getLatLongBBox();
@@ -1066,13 +1074,26 @@ public class TypesEditorForm extends ActionForm {
         return cachingEnabled;
     }
 
+    public boolean isIndexingEnabled(){
+        return indexingEnabled;
+    }
+
     public void setCachingEnabled(boolean cachingEnabled) {
         cachingEnabledChecked = true;
         this.cachingEnabled = cachingEnabled;
     }
 
+    public void setIndexingEnabled(boolean indexingEnabled){
+        indexingEnabledChecked = true;
+        this.indexingEnabled = true;
+    }
+
     public boolean isCachingEnabledChecked() {
         return cachingEnabledChecked;
+    }
+
+    public boolean isIndexingEnabledChecked(){
+        return indexingEnabledChecked;
     }
 
     public String[] getOtherSelectedStyles() {

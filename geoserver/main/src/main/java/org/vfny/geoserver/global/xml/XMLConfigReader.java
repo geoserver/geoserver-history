@@ -1682,6 +1682,12 @@ public class XMLConfigReader {
                         true))).booleanValue());
             }
 
+            Element searchInfo = ReaderUtils.getChildElement(fTypeRoot, "searchable");
+            ft.setIndexingEnabled(false); // disable indexing by default
+            if (searchInfo != null) {
+                ft.setIndexingEnabled((new Boolean(ReaderUtils.getAttribute(searchInfo, "enabled", true))).booleanValue());
+            }
+
             // Modif C. Kolbowicz - 06/10/2004
             Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
 
