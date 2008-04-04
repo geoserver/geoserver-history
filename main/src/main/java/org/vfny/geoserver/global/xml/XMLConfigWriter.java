@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -1195,6 +1196,7 @@ public class XMLConfigWriter {
             }
 
             cw.attrTag("cacheinfo", m);
+            cw.attrTag("searchable", Collections.singletonMap("enabled", Boolean.toString(ft.isIndexingEnabled())));
 
             if (ft.getDefinitionQuery() != null) {
                 cw.openTag("definitionQuery");

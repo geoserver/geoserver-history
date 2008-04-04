@@ -179,6 +179,11 @@ public class FeatureTypeConfig {
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
+
+    /**
+     * Should we list this layer when crawlers request the sitemap?
+     */
+    private boolean indexingEnabled;
     
     /**
      * The maximum number of features to be served for this feature type (it's understood
@@ -242,6 +247,8 @@ public class FeatureTypeConfig {
 
         cachingEnabled = false;
         cacheMaxAge = null;
+
+        indexingEnabled = false;
     }
 
     /**
@@ -352,6 +359,8 @@ public class FeatureTypeConfig {
         cachingEnabled = dto.isCachingEnabled();
         cacheMaxAge = dto.getCacheMaxAge();
         maxFeatures = dto.getMaxFeatures();
+
+        indexingEnabled = dto.isIndexingEnabled();
     }
 
     /**
@@ -422,6 +431,8 @@ public class FeatureTypeConfig {
         f.setCachingEnabled(cachingEnabled);
         f.setCacheMaxAge(cacheMaxAge);
         f.setMaxFeatures(maxFeatures);
+
+        f.setIndexingEnabled(indexingEnabled);
 
         return f;
     }
@@ -791,8 +802,16 @@ public class FeatureTypeConfig {
         return cachingEnabled;
     }
 
+    public boolean isIndexingEnabled() {
+        return indexingEnabled;
+    }
+
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
+    }
+
+    public void setIndexingEnabled(boolean indexingEnabled){
+        this.indexingEnabled = indexingEnabled;
     }
 
     public String getCacheMaxAge() {

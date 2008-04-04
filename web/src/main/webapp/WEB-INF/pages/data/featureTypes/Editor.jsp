@@ -399,7 +399,15 @@ function prepareFormData(){
     		<html:checkbox property="cachingEnabled" />
     	</td>
     </tr>
-    
+    <tr> <td class="label">
+             <span class="help" title="<bean:message key="help.type.searchingEnabled" />">
+                 <bean:message key="label.searchingEnabled"/>:
+             </span>
+         </td>
+         <td class="datum">
+             <html:checkbox property="indexingEnabled"/>
+         </td>
+    </tr>
     <tr>
     	<td class="label">
     		<span class="help" title="<bean:message key="help.type.cacheMaxAge" />">

@@ -242,6 +242,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
+
+    /**
+     * Should we list this layer when crawlers request the sitemap?
+     */
+    private boolean indexingEnabled;
     
     /**
      * Either force or reproject (force is the only way if native data has no native SRS)
@@ -315,6 +320,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         cacheMaxAge = dto.getCacheMaxAge();
         cachingEnabled = dto.isCachingEnabled();
+
+        indexingEnabled = dto.isIndexingEnabled();
         
         maxFeatures = dto.getMaxFeatures();
     }
@@ -368,6 +375,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         dto.setCacheMaxAge(cacheMaxAge);
         dto.setCachingEnabled(cachingEnabled);
+        dto.setIndexingEnabled(indexingEnabled);
 
         return dto;
     }
@@ -1468,11 +1476,27 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
+     * Should we list this layer when crawlers request the sitemap?
+     * @return true if we should, false if we should not list it
+     */
+    public boolean isIndexingEnabled(){
+        return indexingEnabled;
+    }
+
+    /**
      * Sets whether we should add the cache-control: max-age header to maps containing this layer
      * @param cachingEnabled true if we should add the header, false if we should omit the header
      */
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
+    }
+
+    /**
+     * Sets whether we should list this layer when crawlers request the sitemap.
+     * @param indexingEnabled true if we should, false if we should not list it
+     */
+    public void setIndexingEnabled(boolean indexingEnabled){
+        this.indexingEnabled = indexingEnabled;
     }
     
     /**
