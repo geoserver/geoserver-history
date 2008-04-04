@@ -60,7 +60,7 @@ public class Config implements ApplicationContextAware {
                 doConfigSanityCheck();
             } catch (ConfigurationException ce) {
                 LOGGER.severe(ce.getMessage());
-                throw new BeanInitializationException(ce.getMessage());
+                throw new BeanInitializationException(ce.getMessage(),ce);
             }
             
             reader = new XMLConfigReader(dataDirectory(), sc);
@@ -84,7 +84,7 @@ public class Config implements ApplicationContextAware {
             ReaderUtils.checkFile(dataDirectory, true);
         } catch (FileNotFoundException e) {
             throw new ConfigurationException("Can't access the configuration directory. Reason: "
-                    + e.getMessage());
+                    + e.getMessage(), e);
         }
     }
 
