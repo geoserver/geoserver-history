@@ -3,12 +3,16 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.xml.sax.Attributes;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -19,9 +23,12 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
     Logger LOGGER = org.geotools.util.logging.Logging
         .getLogger("org.geoserver.geosearch");
 
+    Data catalog;
+    
     public GeoSearchVectorTransformer(WMSMapContext mapContext,
-            MapLayer mapLayer) {
+            MapLayer mapLayer, Data catalog) {
         super(mapContext, mapLayer);
+        this.catalog = catalog;
     }
 
     public Translator createTranslator(ContentHandler handler) {
@@ -71,18 +78,21 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                     LOGGER.log(Level.WARNING, msg, e);
                 }
             }
-
-            //            String[] name = mapContext.getRequest().getLayers()[0].getName().split(":",2);
-//            String name = feature.getType().getTypeName();
-
             String id[] = feature.getID().split("\\.");
-
-            // TODO: Make a real link
+            
+            //get namespace prefix
+            NameSpaceInfo ns = catalog.getNameSpaceFromURI( feature.getFeatureType().getName().getNamespaceURI());
+            
+            GetMapRequest request = mapContext.getRequest();
+            
+            String link = 
+                RequestUtils.proxifiedBaseURL(request.getBaseUrl(), request.getGeoServer().getProxyBaseUrl());
+            link = ResponseUtils.appendPath(link, "geosearch/" + ns.getPrefix() + "/" + id[0] + "/" + id[1] + ".kml" );
+            
             element("link", null, KMLUtils.attributes(
                         new String[]{
                         "rel","self",
-                        "href", GeoSearchMapProducerFactory.BASE_URL + "/" + id[0] + "/" + id[1]}));
-
+                        "href", link}));
 
             // look at
             encodePlacemarkLookAt(centroid);

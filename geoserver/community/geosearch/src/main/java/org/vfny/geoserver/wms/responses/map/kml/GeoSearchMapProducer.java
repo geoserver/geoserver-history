@@ -1,11 +1,16 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 public class GeoSearchMapProducer extends KMLMapProducer {
-    public GeoSearchMapProducer(String format, String mimeType){
+    
+    Data catalog;
+    
+    public GeoSearchMapProducer(String format, String mimeType, Data catalog){
         super(format, mimeType);
+        this.catalog = catalog;
     }
 
     public void produceMap() throws WmsException {
@@ -17,7 +22,7 @@ public class GeoSearchMapProducer extends KMLMapProducer {
 //        String styleParam = (String) request.getFormatOptions().get("style");
 //        boolean style = styleParam == null || "true".equals(styleParam.toLowerCase());
         
-        transformer = new GeoSearchTransformer();
+        transformer = new GeoSearchTransformer( catalog );
         transformer.setIndentation(3);
     }
 }
