@@ -165,7 +165,7 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
         networkLink.addContent(snippet);
         Element url = new Element("Url", KML);
         Element href = new Element("href", KML);
-        href.setText(GEOSERVER_URL + "/" + namespace + "/" + layer.getName().split(":",2)[1]);
+        href.setText(GEOSERVER_URL + "/" + namespace + "/" + layer.getName().split(":",2)[1] + ".kml");
         url.addContent(href);
         networkLink.addContent(url);
         return networkLink;

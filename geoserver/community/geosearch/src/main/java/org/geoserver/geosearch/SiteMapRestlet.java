@@ -61,7 +61,7 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
 
         NameSpaceInfo[] namespaces = getData().getNameSpaces();
         for (int i = 0; i < namespaces.length; i++){
-            addUrl(urlset, GEOSERVER_ROOT + "/geosearch/" + namespaces[i].getPrefix());
+            addUrl(urlset, GEOSERVER_ROOT + "/geosearch/" + namespaces[i].getPrefix() + ".kml");
         }
 
         response.setEntity(new JDOMRepresentation(d));
