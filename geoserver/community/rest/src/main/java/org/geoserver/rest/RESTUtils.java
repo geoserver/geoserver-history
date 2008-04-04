@@ -2,6 +2,7 @@ package org.geoserver.rest;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.restlet.data.Reference;
 import org.restlet.data.Request;
 
 import com.noelios.restlet.ext.servlet.ServletCall;
@@ -33,5 +34,17 @@ public class RESTUtils {
         }
         
         return null;
+    }
+    
+    public static String getBaseURL( Request request ) {
+        Reference ref = request.getResourceRef();
+        HttpServletRequest servletRequest = getServletRequest(request);
+        if ( servletRequest != null ) {
+            String baseURL = ref.getIdentifier();
+            return baseURL.substring(0, baseURL.length()-servletRequest.getPathInfo().length());
+        }
+        else {
+            return ref.getParentRef().getIdentifier();
+        }
     }
 }
