@@ -55,6 +55,11 @@
    <id>refractions</id>
    <name>refractions</name>
    <url>http://lists.refractions.net/m2/</url>
+  </repository>
+  <repository>
+   <id>refractions</id>
+   <name>refractions</name>
+   <url>http://lists.refractions.net/m2/</url>
    <snapshots>
     <enabled>true</enabled>
    </snapshots>
