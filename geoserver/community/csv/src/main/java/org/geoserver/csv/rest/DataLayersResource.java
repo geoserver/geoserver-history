@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -84,8 +85,8 @@ public class DataLayersResource extends AbstractLayersResource {
             IOUtils.copy(file.getInputStream(), new FileOutputStream(csv));
             List results = csvService.configureCsvFile(geometryLayer,
                     joinField, csv);
-            JSONFormat format = new JSONFormat(MediaType.TEXT_PLAIN);
-            resp.setEntity(format.makeRepresentation(convertToMapList(results)));
+            JSONFormat format = new JSONFormat(MediaType.TEXT_HTML);
+            resp.setEntity(format.makeRepresentation(convertToMap(results)));
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,
                     "Error occurred managing csv file upload request", e);
@@ -94,12 +95,15 @@ public class DataLayersResource extends AbstractLayersResource {
         }
     }
 
-    private Object convertToMapList(List<LayerResult> layers) {
-        List<Map> results = new ArrayList<Map>();
+    private Object convertToMap(List<LayerResult> layers) {
+        List<Map> dataLayers = new ArrayList<Map>();
         for (LayerResult layer : layers) {
-            results.add(Collections.singletonMap(layer.getLayerName(), getRequest().getResourceRef().toString() + "/" + layer.getLayerName()));
+            dataLayers.add(Collections.singletonMap(layer.getLayerName(), getRequest().getResourceRef().toString() + "/" + layer.getLayerName()));
         }
-        return results;
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("success", "true");
+        result.put("dataLayers", dataLayers);
+        return result;
     }
 
 }
