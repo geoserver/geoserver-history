@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.data.util.CoverageUtils;
+import org.geoserver.feature.PagingFeatureSource;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DefaultQuery;
@@ -270,7 +271,7 @@ public class GetMapResponse implements Response {
 						}
 					}
 
-					final FeatureSource<SimpleFeatureType, SimpleFeature> source;
+					FeatureSource<SimpleFeatureType, SimpleFeature> source;
 					// /////////////////////////////////////////////////////////
 					//
 					// Adding a feature layer
@@ -278,7 +279,7 @@ public class GetMapResponse implements Response {
 					// /////////////////////////////////////////////////////////
 					try {
 						source = layers[i].getFeature().getFeatureSource(true);
-
+						
 						// NOTE for the feature. Here there was some code that
 						// sounded like:
 						// * get the bounding box from feature source
@@ -293,6 +294,18 @@ public class GetMapResponse implements Response {
 						// and a tiled client like OpenLayers, it dragged the
 						// server to his knees
 						// and the client simply timed out
+                                                
+                                                //check for startIndex + offset, if so wrap in paging
+                                                // feature source
+                                                // JD: This is a TEMPORARY measure... paging this way 
+                                                // for 1) does not scale, and 2) does not pre-imply 
+                                                // ordering so its not really even valid, for now its
+                                                // just an experiment
+                                                if ( request.getStartIndex() != null ) {
+                                                    int l = request.getMaxFeatures() != null ? 
+                                                        request.getMaxFeatures() : Integer.MAX_VALUE;
+                                                    source = new PagingFeatureSource( source, request.getStartIndex(), l );
+                                                }
 					} catch (IOException exp) {
 						if (LOGGER.isLoggable(Level.SEVERE)) {
 							LOGGER.log(Level.SEVERE, new StringBuffer(
