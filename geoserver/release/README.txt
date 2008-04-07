@@ -1,3 +1,53 @@
+GeoServer 1.6.3
+---------------
+This release contains over 30 patches and improvements since 1.6.2.  In particular, this new version has:
+
+* Watermarking
+* Ability to limit the SRS list in the WMS capabilities
+* Better coverage reprojection
+* Optimized KML generation
+
+Check out the entire 1.6.3 changelog:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=14102
+
+This release is based off of Geotools 2.4.2.
+
+
+GeoServer 1.6.2a
+----------------
+Fixed path parsing issue in demo section.
+
+
+GeoServer 1.6.2
+---------------
+This release contains one small but important patch since 1.6.1:
+
+* Data_dir inside .war distribution is now hidden by default
+
+See http://jira.codehaus.org/browse/GEOS-1785
+
+This release is based off of Geotools 2.4.1
+
+
+Changes:
+http://jira.codehaus.org/browse/GEOS-1785
+
+
+GeoServer 1.6.1
+---------------
+This release has over 40 patches and improvements since 1.6.0. They include
+
+* Feature type aliases
+* Max features support, defined per feature type
+* GetFeatureInfo on coverages
+* Generate PDFs from coverages
+* UpdateSequence support in WMS and WCS
+
+And many many more. Check out the entire 1.6.x changelog:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=14070&pid=10311&sorter/field=issuekey&sorter/order=DESC
+
+This release is based off of Geotools 2.4.1. 
+
 GeoServer 1.6.0
 ---------------
 
