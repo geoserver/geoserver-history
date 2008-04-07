@@ -15,6 +15,7 @@ import org.geotools.util.logging.Logging;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
+import org.restlet.data.Form;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -71,6 +72,17 @@ public class FeatureRestlet extends Restlet {
         String layer = (String)request.getAttributes().get("layer");
         String namespace = (String)request.getAttributes().get("namespace");
         String feature = (String)request.getAttributes().get("feature");
+        Form form = request.getResourceRef().getQueryAsForm();
+        int startIndex = 0; 
+        int maxFeatures = 100;
+
+        try{ 
+            startIndex = Integer.valueOf(form.getFirstValue("startindex", true));
+        } catch (Exception e) {}
+
+        try{
+            maxFeatures = Integer.valueOf(form.getFirstValue("maxfeatures", true));
+        } catch (Exception e) {}
         
         NameSpaceInfo ns = catalog.getNameSpace(namespace);
         if ( ns == null ) {
@@ -97,6 +109,9 @@ public class FeatureRestlet extends Restlet {
         KvpMap raw = new KvpMap();
         raw.put("layers", namespace + ":" + layer);
         raw.put("format", "geosearch-kml");
+        raw.put("startIndex", Integer.toString(startIndex));
+        raw.put("maxfeatures", Integer.toString(maxFeatures));
+
         
         if ( feature != null ) {
             raw.put("featureid", layer + "." + feature);    
