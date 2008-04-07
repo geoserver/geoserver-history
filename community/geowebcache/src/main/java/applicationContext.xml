@@ -2,16 +2,62 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-  <bean id="gwcDispatcher" class="org.geowebcache.GeoWebCacheDispatcher">
-  
-  </bean>
+  	<!-- Add configuration beans here -->	
+	<bean id="geoserverConfig" class="org.geowebcache.util.GetCapabilitiesConfiguration" lazy-init="true">
+		<constructor-arg type="org.geowebcache.cache.CacheFactory" ref="cacheFactory"/>
+		<constructor-arg value="http://localhost:8080/geoserver/wms?request=getCapabilities"/>
+		<constructor-arg value=""/>
+		<constructor-arg value="4x4"/>
+	</bean>
+	
+	<!-- For each configuration bean above, add them below to activate -->
+	<bean id="tLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher" lazy-init="true">
+		<property name="config" ref="geoserverConfig"/>
+	</bean>
+				
+	<!-- controller for handling all incoming requests -->
+	<bean id="gwcDispatcher" class="org.geowebcache.GeoWebCacheDispatcher" lazy-init="true">
+		<property name="tileLayerDispatcher" ref="tLDispatcher"/>
+		<property name="servletPrefix" value="gwc"/>
+	</bean>
+	    
+    <!-- Services, make sure you name the bean the same as the path -->
+    <bean id="serviceWMS" 
+    	class="org.geowebcache.service.wms.WMSService"/>
+	<bean id="serviceGMaps"
+		class="org.geowebcache.service.gmaps.GMapsConverter"/>
+	<bean id="serviceVE"
+		class="org.geowebcache.service.ve.VEConverter"/>
+	<bean id="serviceKML"
+		class="org.geowebcache.service.kml.KMLService"/>
+			
+	<!-- Caches and associated Cache Keys -->
+	<bean id="cacheJCS" class="org.geowebcache.cache.jcs.JCSCache">
+		<property name="defaultKeyBeanId"><value>cacheKeyJCS</value></property>
+	</bean>
+	<bean id="cacheKeyJCS" class="org.geowebcache.cache.jcs.JCSKey"/>
+	
+	<bean id="cacheFile" class="org.geowebcache.cache.file.FileCache">
+		<property name="defaultKeyBeanId"><value>cacheKeyFile</value></property>
+	</bean>
+	<bean id="cacheKeyFile" class="org.geowebcache.cache.file.FilePathKey"/>
+	    
+    <!-- Cache and CacheKey factories -->
+    <bean id="cacheKeyFactory" class="org.geowebcache.cache.CacheKeyFactory"/>
+    
+	<bean id="cacheFactory" class="org.geowebcache.cache.CacheFactory">
+		<constructor-arg type="org.geowebcache.cache.CacheKeyFactory" ref="cacheKeyFactory"/>
+		<property name="defaultCacheBeanId"><value>cacheFile</value></property>
+	</bean>
+	
   <bean id="gwcUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
       <props>
         <prop key="/gwc">gwcDispatcher</prop>
-        <prop key="/gwc/*">gwcDispatcher</prop>
+        <prop key="/gwc/**">gwcDispatcher</prop>
       </props>
     </property>
   </bean>
+  
 </beans>
