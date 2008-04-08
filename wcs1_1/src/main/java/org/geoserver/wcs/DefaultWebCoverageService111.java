@@ -242,8 +242,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     .getReadParameters());
             final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
             intersected.intersect(originalEnvelope);
-            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(gridToCRS,
-                    intersected);
+            final GridGeometry2D destinationGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersected, null);
             parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
                     destinationGridGeometry);
             coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat()
