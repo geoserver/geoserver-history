@@ -4,33 +4,33 @@
  */
 package org.geoserver.wms;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.geoserver.test.GeoServerTestSupport;
-import org.geotools.data.DataStore;
-import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
-import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.servlets.GetMap;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
-import javax.xml.namespace.QName;
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -43,6 +43,7 @@ import javax.xml.namespace.QName;
  *
  */
 public class WMSTestSupport extends GeoServerTestSupport {
+   
     /**
      * @return The global wms singleton from the application context.
      */
@@ -119,5 +120,30 @@ public class WMSTestSupport extends GeoServerTestSupport {
     }
     
     
+    /**
+     * Asserts that the image is not blank, in the sense that there must be
+     * pixels different from the passed background color.
+     *
+     * @param testName the name of the test to throw meaningfull messages if
+     *        something goes wrong
+     * @param image the imgage to check it is not "blank"
+     * @param bgColor the background color for which differing pixels are
+     *        looked for
+     */
+    protected void assertNotBlank(String testName, BufferedImage image, Color bgColor) {
+        int pixelsDiffer = 0;
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                if (image.getRGB(x, y) != bgColor.getRGB()) {
+                    ++pixelsDiffer;
+                }
+            }
+        }
+
+        LOGGER.info(testName + ": pixel count=" + (image.getWidth() * image.getHeight())
+            + " non bg pixels: " + pixelsDiffer);
+        assertTrue(testName + " image is comlpetely blank", 0 < pixelsDiffer);
+    }
     
 }
