@@ -1,19 +1,25 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.feature.PagingFeatureSource;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
+
+import sun.security.action.GetBooleanAction;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -24,7 +30,7 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
         .getLogger("org.geoserver.geosearch");
 
     Data catalog;
-    
+
     public GeoSearchVectorTransformer(WMSMapContext mapContext,
             MapLayer mapLayer, Data catalog) {
         super(mapContext, mapLayer);
@@ -39,6 +45,61 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
 
         public GeoSearchKMLTranslator(ContentHandler handler) {
             super(handler);
+        }
+
+        public void encode(Object o) throws IllegalArgumentException {
+            FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) o;
+            SimpleFeatureType featureType = features.getSchema();
+
+            if (isStandAlone()) {
+                start("kml");
+            }
+
+            // start the root document, name it the name of the layer
+            start("Document");
+            element("name", mapLayer.getTitle());
+
+            String linkbase = "";
+            try {
+                linkbase = getFeatureTypeURL();
+                linkbase += ".kml";
+            } catch (IOException ioe) {
+                throw new RuntimeException(ioe);
+            }
+
+            int maxFeatures = mapContext.getRequest().getMaxFeatures();
+            int prevStart = mapContext.getRequest().getStartIndex() - maxFeatures;
+            int nextStart = mapContext.getRequest().getStartIndex() + maxFeatures;
+
+            if (prevStart >= 0) {
+                String prevLink = linkbase + "?startindex=" + prevStart
+                    + "&maxfeatures=" + maxFeatures;
+                element("atom:link", null, KMLUtils.attributes(new String[] {
+                            "rel", "prev", "href", prevLink }));
+            }
+
+            String nextLink = linkbase + "?startindex=" + nextStart
+                + "&maxfeatures=" + maxFeatures;
+            element("atom:link", null, KMLUtils.attributes(new String[] {
+                        "rel", "next", "href", nextLink }));
+
+            // get the styles for hte layer
+            FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(
+                    mapLayer.getStyle(), featureType);
+
+            // encode the schemas (kml 2.2)
+            encodeSchemas(features);
+
+            // encode the layers
+            encode(features, featureTypeStyles);
+
+            // encode the legend
+            // encodeLegendScreenOverlay();
+            end("Document");
+
+            if (isStandAlone()) {
+                end("kml");
+            }
         }
 
         /**
@@ -79,20 +140,24 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                 }
             }
             String id[] = feature.getID().split("\\.");
-            
-            //get namespace prefix
-            NameSpaceInfo ns = catalog.getNameSpaceFromURI( feature.getFeatureType().getName().getNamespaceURI());
-            
+
+            // get namespace prefix
+
             GetMapRequest request = mapContext.getRequest();
-            
-            String link = 
-                RequestUtils.proxifiedBaseURL(request.getBaseUrl(), request.getGeoServer().getProxyBaseUrl());
-            link = ResponseUtils.appendPath(link, "geosearch/" + ns.getPrefix() + "/" + id[0] + "/" + id[1] + ".kml" );
-            
-            element("link", null, KMLUtils.attributes(
-                        new String[]{
-                        "rel","self",
-                        "href", link}));
+
+            String link = "";
+
+            try {
+                link = getFeatureTypeURL();
+            } catch (IOException ioe) {
+                /* what could *possibly* go wrong? */
+                throw new RuntimeException(ioe);
+            }
+
+            link = link + "/" + id[1] + ".kml";
+
+            element("atom:link", null, KMLUtils.attributes(new String[] {
+                        "rel", "self", "href", link }));
 
             // look at
             encodePlacemarkLookAt(centroid);
@@ -117,6 +182,19 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             encodePlacemarkGeometry(geometry, centroid, styles);
 
             end("Placemark");
+        }
+
+        private String getFeatureTypeURL() throws IOException {
+            String nsUri = mapLayer.getFeatureSource().getSchema().getName().getNamespaceURI();
+
+            NameSpaceInfo ns = catalog.getNameSpaceFromURI(nsUri);
+            String featureTypeName = mapLayer.getFeatureSource().getSchema().getName().getLocalPart();
+            GetMapRequest request = mapContext.getRequest();
+            String link = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+                    request.getGeoServer().getProxyBaseUrl());
+            link = ResponseUtils.appendPath(link, "geosearch/" + ns.getPrefix()
+                    + "/" + featureTypeName);
+            return link;
         }
 
     }
