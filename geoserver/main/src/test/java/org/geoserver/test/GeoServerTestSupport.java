@@ -6,9 +6,11 @@ package org.geoserver.test;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -48,6 +50,7 @@ import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletContext;
+import com.mockrunner.mock.web.MockServletOutputStream;
 
 
 /**
@@ -85,8 +88,13 @@ public class GeoServerTestSupport extends TestCase {
         super.setUp();
         
         // configure axis ordering
-        Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
-        Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
+          if (System.getProperty("org.geotools.referencing.forceXY") == null) {
+              System.setProperty("org.geotools.referencing.forceXY", "true");
+          }
+          if (Boolean.TRUE.equals(Hints
+                  .getSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER))) {
+              Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
+          }
 
         //set up the data directory
         dataDirectory = new MockData();
@@ -292,13 +300,51 @@ public class GeoServerTestSupport extends TestCase {
      * @throws Exception
      */
     protected InputStream post( String path , String xml ) throws Exception {
+        MockHttpServletResponse response = postAsServletResponse(path, xml);
+        return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+    }
+
+    /**
+     * Executes an ows request using the POST method.
+     * <p>
+     * 
+     * </p>
+     * @param path The porition of the request after the context ( no query string ), 
+     *      example: 'wms'. 
+     * 
+     * @return the servlet response
+     * 
+     * @throws Exception
+     */
+    protected MockHttpServletResponse postAsServletResponse(String path,
+            String xml) throws Exception {
         MockHttpServletRequest request = createRequest( path );
         request.setMethod( "POST" );
         request.setContentType( "application/xml" );
         request.setBodyContent(xml);
         
         MockHttpServletResponse response = dispatch( request );
-        return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+        return response;
+    }
+    
+    /**
+     * Extracts the true binary stream out of the response. The usual way 
+     * (going thru {@link MockHttpServletResponse#getOutputStreamContent()})
+     * mangles bytes if the content is not made of chars.
+     * @param response
+     * @return
+     */
+    protected InputStream getBinaryInputStream(MockHttpServletResponse response) {
+        try {
+            MockServletOutputStream os = (MockServletOutputStream) response.getOutputStream();
+            final Field field = os.getClass().getDeclaredField("buffer");
+            field.setAccessible(true);
+            ByteArrayOutputStream bos = (ByteArrayOutputStream) field.get(os);
+            return new ByteArrayInputStream(bos.toByteArray());
+        } catch(Exception e) {
+            throw new RuntimeException("Whoops, did you change the MockRunner version? " +
+            		"If so, you might want to change this method too");
+        }
     }
     
     /**
@@ -358,8 +404,7 @@ public class GeoServerTestSupport extends TestCase {
     protected Document dom( InputStream input ) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
         factory.setNamespaceAware( true );
-        //factory.setValidating( true );
-        
+       
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document dom = builder.parse( input );
 
