@@ -16,13 +16,14 @@ import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geoserver.wfs.xml.XSQNameBinding;
 import org.geoserver.wfs.xml.filter.v1_1.FilterTypeBinding;
 import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
-import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOAbstractFeatureTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOAbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOCodeTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOCurvePropertyTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyExtractor;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOGeometryPropertyTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMeasureTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiPointTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiSurfaceTypeBinding;
@@ -36,13 +37,9 @@ import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
-import org.geotools.xml.OptionalComponentParameter;
 import org.geotools.xml.Schemas;
 import org.geotools.xs.bindings.XS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.Parameter;
-import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 
@@ -180,7 +177,8 @@ public class WFSConfiguration extends Configuration {
         registerOverride(container, GML.FeaturePropertyType, ISOFeaturePropertyTypeBinding.class);
         registerOverride(container, GML.AbstractFeatureType, ISOAbstractFeatureTypeBinding.class);
 
-        registerOverride(container, GML.AbstractGeometryType, ISOAbstractFeatureTypeBinding.class);
+        registerOverride(container, GML.AbstractGeometryType, ISOAbstractGeometryTypeBinding.class);
+        registerOverride(container, GML.GeometryPropertyType, ISOGeometryPropertyTypeBinding.class);
 
         registerOverride(container, GML.PointType, ISOPointTypeBinding.class);
         registerOverride(container, GML.MultiPointType, ISOMultiPointTypeBinding.class);
