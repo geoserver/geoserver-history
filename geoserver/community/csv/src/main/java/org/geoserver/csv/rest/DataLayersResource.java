@@ -60,24 +60,22 @@ public class DataLayersResource extends AbstractLayersResource {
             }
 
             if (file == null) {
-                resp.setEntity("'file' parameter is required but not provided", MediaType.TEXT_PLAIN);
-                resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                sendExtJsError(resp, Status.CLIENT_ERROR_BAD_REQUEST,
+                        "'file' parameter is required but not provided");
                 return;
             } else if (geometryLayer == null) {
-                resp
-                        .setEntity("'geometryLayer' parameter is required but not provided", MediaType.TEXT_PLAIN);
-                resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                sendExtJsError(resp, Status.CLIENT_ERROR_BAD_REQUEST,
+                        "'geometryLayer' parameter is required but not provided");
                 return;
             } else if (joinField == null) {
-                resp
-                        .setEntity("'joinField' parameter is required but not provided", MediaType.TEXT_PLAIN);
-                resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                sendExtJsError(resp, Status.CLIENT_ERROR_BAD_REQUEST,
+                        "'joinField' parameter is required but not provided");
                 return;
             } else if (!csvService.getGeometryLayers().contains(geometryLayer)) {
-                resp.setEntity("geometryLayer " + geometryLayer
-                        + " is unknown, valid values are "
-                        + csvService.getGeometryLayers(), MediaType.TEXT_PLAIN);
-                resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                sendExtJsError(resp, Status.CLIENT_ERROR_BAD_REQUEST,
+                        "geometryLayer " + geometryLayer
+                                + " is unknown, valid values are "
+                                + csvService.getGeometryLayers());
                 return;
             }
 
@@ -90,15 +88,37 @@ public class DataLayersResource extends AbstractLayersResource {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,
                     "Error occurred managing csv file upload request", e);
-            resp.setStatus(Status.SERVER_ERROR_INTERNAL);
-            resp.setEntity(e.getMessage(), MediaType.TEXT_PLAIN);
+            sendExtJsError(resp, Status.SERVER_ERROR_INTERNAL, e.getMessage());
         }
+    }
+
+    /**
+     * Apparently extJs cannot handle 505, we have to send a 200 with the error
+     * embedded in a JSON map...
+     * 
+     * @param resp
+     * @param status
+     * @param message
+     */
+    private void sendExtJsError(final Response resp, Status status,
+            String message) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("success", "false");
+        result.put("message", message);
+        result.put("status", status.getCode());
+        JSONFormat format = new JSONFormat(MediaType.TEXT_HTML);
+        resp.setEntity(format.makeRepresentation(result));
     }
 
     private Object convertToMap(List<LayerResult> layers) {
         List<Map> dataLayers = new ArrayList<Map>();
         for (LayerResult layer : layers) {
-            dataLayers.add(Collections.singletonMap(layer.getLayerName(), getRequest().getResourceRef().toString() + "/" + layer.getLayerName()));
+            Map<String, Object> layerMap = new HashMap<String, Object>();
+            layerMap.put("name", layer.getLayerName());
+            layerMap.put("title", layer.getLayerDescription());
+            layerMap.put("url", getRequest().getResourceRef().toString() + "/"
+                    + layer.getLayerName());
+            dataLayers.add(layerMap);
         }
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("success", "true");
