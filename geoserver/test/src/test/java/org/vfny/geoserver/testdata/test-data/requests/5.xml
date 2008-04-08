@@ -1,5 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<DescribeFeatureType outputFormat="XMLSCHEMA">
-  <TypeName>rail</TypeName>
-  <TypeName>roads</TypeName>
-</DescribeFeatureType>
