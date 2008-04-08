@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.6.3</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -34,37 +34,37 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.3</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.3</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.3</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.3</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.3</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.3</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>validation</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.3</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
@@ -167,14 +167,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.3</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.3</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -384,7 +384,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>wfsv</artifactId>
-          <version>1.6-SNAPSHOT</version>
+          <version>1.6.3</version>
         </dependency>
       </dependencies>
     </profile>
@@ -400,7 +400,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>rest</artifactId>
-          <version>1.6-SNAPSHOT</version>
+          <version>1.6.3</version>
         </dependency>
         <dependency>
           <groupId>org.geoserver</groupId>

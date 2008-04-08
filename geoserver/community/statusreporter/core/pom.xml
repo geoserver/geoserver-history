@@ -31,17 +31,17 @@
 		<dependency>
                         <groupId>org.geoserver</groupId>
                         <artifactId>wfs</artifactId>
-			<version>1.6-SNAPSHOT</version>
+			<version>1.6.3</version>
                 </dependency>
 		<dependency>
                         <groupId>org.geoserver</groupId>
                         <artifactId>wms</artifactId>
-			<version>1.6-SNAPSHOT</version>
+			<version>1.6.3</version>
                 </dependency>
 		<dependency>
                         <groupId>org.geoserver</groupId>
                         <artifactId>data</artifactId>
-			<version>1.6-SNAPSHOT</version>
+			<version>1.6.3</version>
                 </dependency>
 		<dependency>
                         <groupId>org.geoserver</groupId>
