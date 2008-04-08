@@ -100,12 +100,7 @@ public class ISOAbstractGeometryTypeBinding extends AbstractComplexBinding {
     }
 
     public Object getProperty(Object object, QName name)
-        throws Exception {
-        if (object instanceof GeometryAttribute) {
-            GeometryAttribute att = (GeometryAttribute) object;
-            System.out.println("Att: " + att.getValue());
-        }
-
+            throws Exception {
         /*
         if ("srsName".equals(name.getLocalPart())) {
             Geometry geometry = (Geometry) object;
