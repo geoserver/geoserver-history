@@ -45,11 +45,11 @@ public class FeatureRestlet extends Restlet {
     public void setCatalog(Data catalog) {
         this.catalog = catalog;
     }
-    
+
     public void setWebMapService(WebMapService webMapService) {
         this.webMapService = webMapService;
     }
-    
+
     public FeatureRestlet() {
     }
 
@@ -65,7 +65,7 @@ public class FeatureRestlet extends Restlet {
         } else {
             response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
         }
- 
+
     }
 
     public void doGet(Request request, Response response) throws Exception{
@@ -76,6 +76,13 @@ public class FeatureRestlet extends Restlet {
         int startIndex = 0; 
         int maxFeatures = 100;
 
+        //        if ( (feature == null) 
+        //            && ( (form.getFirstValue("startindex", true) == null
+        //            || form.getFirstValue("maxfeatures", true) == null)
+        //            )){
+        //            // redirect to first page?
+        //        }
+
         try{ 
             startIndex = Integer.valueOf(form.getFirstValue("startindex", true));
         } catch (Exception e) {}
@@ -83,12 +90,12 @@ public class FeatureRestlet extends Restlet {
         try{
             maxFeatures = Integer.valueOf(form.getFirstValue("maxfeatures", true));
         } catch (Exception e) {}
-        
+
         NameSpaceInfo ns = catalog.getNameSpace(namespace);
         if ( ns == null ) {
             throw new RestletException( "No such namespace:" + namespace, Status.CLIENT_ERROR_NOT_FOUND );
         }
-        
+
         FeatureTypeInfo featureType = null;
         try {
             featureType = catalog.getFeatureTypeInfo(layer,ns.getUri());
@@ -104,7 +111,7 @@ public class FeatureRestlet extends Restlet {
         if ( !featureType.isIndexingEnabled() ) {
             throw new RestletException( "Layer not indexable: " + layer, Status.CLIENT_ERROR_FORBIDDEN);
         }
-            
+
         //create some kvp and pass through to GetMapKvpreader
         KvpMap raw = new KvpMap();
         raw.put("layers", namespace + ":" + layer);
@@ -112,14 +119,14 @@ public class FeatureRestlet extends Restlet {
         raw.put("startIndex", Integer.toString(startIndex));
         raw.put("maxfeatures", Integer.toString(maxFeatures));
 
-        
+
         if ( feature != null ) {
             raw.put("featureid", layer + "." + feature);    
         }
-        
+
         GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getWms());
         reader.setHttpRequest( RESTUtils.getServletRequest( request ) );
-        
+
         //parse into request object
         raw = KvpUtils.normalize(raw);
         KvpMap kvp = new KvpMap( raw );
@@ -127,14 +134,14 @@ public class FeatureRestlet extends Restlet {
         final GetMapRequest getMapRequest =  
             (GetMapRequest) reader.read( (GetMapRequest) reader.createRequest(), kvp, raw );
         getMapRequest.setBaseUrl( RESTUtils.getBaseURL(request));
-        
+
         //delegate to wms reflector
         final GetMapResponse getMapResponse = webMapService.reflect(getMapRequest);
-        
+
         //wrap resposne in a reslet output rep
         OutputRepresentation output = new OutputRepresentation( 
-            new MediaType("application/xml+kml")  
-        ) {
+                new MediaType("application/xml+kml")  
+                ) {
             public void write(OutputStream outputStream) throws IOException {
                 getMapResponse.execute(getMapRequest);
                 getMapResponse.writeTo(outputStream);
@@ -142,7 +149,7 @@ public class FeatureRestlet extends Restlet {
         };
         response.setEntity( output );
 
-        
+
     }
 }
 

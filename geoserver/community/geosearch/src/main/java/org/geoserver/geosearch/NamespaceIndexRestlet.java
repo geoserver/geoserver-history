@@ -171,7 +171,7 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
         networkLink.addContent(snippet);
         Element url = new Element("Url", KML);
         Element href = new Element("href", KML);
-        href.setText(GEOSERVER_URL + "/" + namespace + "/" + layer.getName().split(":",2)[1] + ".kml");
+        href.setText(GEOSERVER_URL + "/" + namespace + "/" + layer.getName().split(":",2)[1] + ".kml?startindex=0&maxfeatures=100");
         url.addContent(href);
         networkLink.addContent(url);
         return networkLink;
@@ -206,188 +206,188 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
         return results;
     }
 
-/*
-    private List getLayers(String namespace){
-        // ugh really? 
-        List results = new ArrayList();
+    /*
+       private List getLayers(String namespace){
+// ugh really? 
+List results = new ArrayList();
 
-        List storesInNameSpace = new ArrayList();
+List storesInNameSpace = new ArrayList();
 
-        Iterator it = getDataConfig().getDataFormats().entrySet().iterator();
-        while(it.hasNext()){
-            Map.Entry entry = (Map.Entry)it.next();
-            CoverageStoreConfig csc = (CoverageStoreConfig)entry.getValue();
-            if (csc.getNameSpaceId().equals(namespace)){
-                storesInNameSpace.add(entry.getKey());
-            }
-        }
+Iterator it = getDataConfig().getDataFormats().entrySet().iterator();
+while(it.hasNext()){
+Map.Entry entry = (Map.Entry)it.next();
+CoverageStoreConfig csc = (CoverageStoreConfig)entry.getValue();
+if (csc.getNameSpaceId().equals(namespace)){
+storesInNameSpace.add(entry.getKey());
+}
+}
 
-        it = getDataConfig().getDataStores().entrySet().iterator();
-        while(it.hasNext()){
-            Map.Entry entry = (Map.Entry)it.next();
-            DataStoreConfig dsc = (DataStoreConfig)entry.getValue();
-            if (dsc.getNameSpaceId().equals(namespace)){
-                storesInNameSpace.add(entry.getKey());
-            }
-        }
+it = getDataConfig().getDataStores().entrySet().iterator();
+while(it.hasNext()){
+Map.Entry entry = (Map.Entry)it.next();
+DataStoreConfig dsc = (DataStoreConfig)entry.getValue();
+if (dsc.getNameSpaceId().equals(namespace)){
+storesInNameSpace.add(entry.getKey());
+}
+}
 
-        it = getDataConfig().getCoverages().entrySet().iterator();
-        while (it.hasNext()){
-            Map.Entry entry = (Map.Entry) it.next();
-            String qualifiedName = entry.getKey().toString();
-            CoverageConfig cc = (CoverageConfig)entry.getValue();
-            Iterator it2 = storesInNameSpace.iterator();
-            while (it2.hasNext()){
-                String dsName = (String)(it2.next()) + ":";
-                if (qualifiedName.startsWith(dsName)){
-                    results.add(new CoverageLayer((CoverageConfig)cc));
-                    break;
-                }
-            }
-        }
+it = getDataConfig().getCoverages().entrySet().iterator();
+while (it.hasNext()){
+Map.Entry entry = (Map.Entry) it.next();
+String qualifiedName = entry.getKey().toString();
+CoverageConfig cc = (CoverageConfig)entry.getValue();
+Iterator it2 = storesInNameSpace.iterator();
+while (it2.hasNext()){
+String dsName = (String)(it2.next()) + ":";
+if (qualifiedName.startsWith(dsName)){
+results.add(new CoverageLayer((CoverageConfig)cc));
+break;
+}
+}
+}
 
-        it = getDataConfig().getFeaturesTypes().entrySet().iterator();
-        while (it.hasNext()){
-            Map.Entry entry = (Map.Entry) it.next();
-            String qualifiedName = entry.getKey().toString();
-            FeatureTypeConfig ftc = (FeatureTypeConfig)entry.getValue();
-            Iterator it2 = storesInNameSpace.iterator();
-            while (it2.hasNext()){
-                String dsName = (String)(it2.next()) + ":";
-                if (qualifiedName.startsWith(dsName)){
-                    results.add(new FeatureTypeLayer((FeatureTypeConfig)ftc));
-                    break;
-                }
-            }
-        }
+it = getDataConfig().getFeaturesTypes().entrySet().iterator();
+while (it.hasNext()){
+Map.Entry entry = (Map.Entry) it.next();
+String qualifiedName = entry.getKey().toString();
+FeatureTypeConfig ftc = (FeatureTypeConfig)entry.getValue();
+Iterator it2 = storesInNameSpace.iterator();
+while (it2.hasNext()){
+String dsName = (String)(it2.next()) + ":";
+if (qualifiedName.startsWith(dsName)){
+results.add(new FeatureTypeLayer((FeatureTypeConfig)ftc));
+break;
+}
+}
+}
 
-        return results;
+return results;
+}
+
+
+private GeneralEnvelope accumulateBBox(List layers){
+GeneralEnvelope result = null;
+Iterator it = layers.iterator();
+while (it.hasNext()){
+GeneralEnvelope genv = ((Layer)it.next()).getBounds();
+if (result == null){
+result = genv;
+} else {
+result.add(genv);
+}
+}
+return result;
+}
+
+*/
+
+private Envelope accumulateBBox(List layers) throws IOException{
+    Envelope result = new Envelope();
+    result.setToNull();
+    Iterator it = layers.iterator();
+    while (it.hasNext()){
+        Envelope env = ((MapLayerInfo)it.next()).getLatLongBoundingBox();
+        result.expandToInclude(env);
     }
+    return result;
+}
+
+private Element getLookAt(Envelope e){
+    return getLookAt(e.getMinX(), e.getMinY(), e.getMaxX(), e.getMaxY());
+}
 
 
-    private GeneralEnvelope accumulateBBox(List layers){
-        GeneralEnvelope result = null;
-        Iterator it = layers.iterator();
-        while (it.hasNext()){
-            GeneralEnvelope genv = ((Layer)it.next()).getBounds();
-            if (result == null){
-                result = genv;
-            } else {
-                result.add(genv);
-            }
-        }
-        return result;
-    }
+private Element getLookAt(GeneralEnvelope e){
+    return getLookAt(e.getMinimum(1), e.getMinimum(0), e.getMaximum(1), e.getMaximum(0));
+}
 
-    */
-    
-    private Envelope accumulateBBox(List layers) throws IOException{
-        Envelope result = new Envelope();
-        result.setToNull();
-        Iterator it = layers.iterator();
-        while (it.hasNext()){
-            Envelope env = ((MapLayerInfo)it.next()).getLatLongBoundingBox();
-            result.expandToInclude(env);
-        }
-        return result;
-    }
+public static Element getLookAt(double lon1, double lat1, double lon2, double lat2){
+    double R_EARTH = 6.371 * 1000000; // meters
+    double VIEWER_WIDTH = 22 * Math.PI / 180; // The field of view of the google maps camera, in radians
 
-    private Element getLookAt(Envelope e){
-        return getLookAt(e.getMinX(), e.getMinY(), e.getMaxX(), e.getMaxY());
-    }
+    double[] p1 = getRect(lon1, lat1, R_EARTH);
+    double[] p2 = getRect(lon2, lat2, R_EARTH);
+    double[] midpoint = new double[]{
+        (p1[0] + p2[0])/2,
+            (p1[1] + p2[1])/2,
+            (p1[2] + p2[2])/2
+    };
 
+    midpoint = getGeographic(midpoint[0], midpoint[1], midpoint[2]);
 
-    private Element getLookAt(GeneralEnvelope e){
-        return getLookAt(e.getMinimum(1), e.getMinimum(0), e.getMaximum(1), e.getMaximum(0));
-    }
+    // averaging the longitudes; using the rectangular coordinates makes the calculated center tend toward the corner that's closer to the equator. 
+    midpoint[0] = ((lon1 + lon2)/2); 
 
-    public static Element getLookAt(double lon1, double lat1, double lon2, double lat2){
-        double R_EARTH = 6.371 * 1000000; // meters
-        double VIEWER_WIDTH = 22 * Math.PI / 180; // The field of view of the google maps camera, in radians
+    double distance = distance(p1, p2);
 
-        double[] p1 = getRect(lon1, lat1, R_EARTH);
-        double[] p2 = getRect(lon2, lat2, R_EARTH);
-        double[] midpoint = new double[]{
-            (p1[0] + p2[0])/2,
-                (p1[1] + p2[1])/2,
-                (p1[2] + p2[2])/2
-        };
+    double height = distance/ (2 * Math.tan(VIEWER_WIDTH));
 
-        midpoint = getGeographic(midpoint[0], midpoint[1], midpoint[2]);
+    LOGGER.fine("lat1: " + lat1 + "; lon1: " + lon1);
+    LOGGER.fine("lat2: " + lat2 + "; lon2: " + lon2);
+    LOGGER.fine("latmid: " + midpoint[1] + "; lonmid: " + midpoint[0]);
 
-        // averaging the longitudes; using the rectangular coordinates makes the calculated center tend toward the corner that's closer to the equator. 
-        midpoint[0] = ((lon1 + lon2)/2); 
-
-        double distance = distance(p1, p2);
-
-        double height = distance/ (2 * Math.tan(VIEWER_WIDTH));
-
-        LOGGER.fine("lat1: " + lat1 + "; lon1: " + lon1);
-        LOGGER.fine("lat2: " + lat2 + "; lon2: " + lon2);
-        LOGGER.fine("latmid: " + midpoint[1] + "; lonmid: " + midpoint[0]);
-
-        Element lookAt = new Element("LookAt", KML);
-        Element lon = new Element("longitude", KML).setText(Double.toString((lon1+lon2)/2));
-        Element lat = new Element("latitude", KML);
-        lat.setText(Double.toString(midpoint[1]));
-        Element alt = new Element("altitude", KML);
-        alt.setText("0");
-        Element range = new Element("range", KML);
-        range.setText(Double.toString(distance));
-        Element tilt = new Element("tilt", KML);
-        tilt.setText("0");
-        Element heading = new Element("heading", KML);
-        heading.setText("0");
-        Element altitudeMode = new Element("altitudeMode", KML).setText("clampToGround");
-        lookAt.addContent(lon);
-        lookAt.addContent(lat);
-        lookAt.addContent(alt);
-        lookAt.addContent(range);
-        lookAt.addContent(tilt);
-        lookAt.addContent(heading);
+    Element lookAt = new Element("LookAt", KML);
+    Element lon = new Element("longitude", KML).setText(Double.toString((lon1+lon2)/2));
+    Element lat = new Element("latitude", KML);
+    lat.setText(Double.toString(midpoint[1]));
+    Element alt = new Element("altitude", KML);
+    alt.setText("0");
+    Element range = new Element("range", KML);
+    range.setText(Double.toString(distance));
+    Element tilt = new Element("tilt", KML);
+    tilt.setText("0");
+    Element heading = new Element("heading", KML);
+    heading.setText("0");
+    Element altitudeMode = new Element("altitudeMode", KML).setText("clampToGround");
+    lookAt.addContent(lon);
+    lookAt.addContent(lat);
+    lookAt.addContent(alt);
+    lookAt.addContent(range);
+    lookAt.addContent(tilt);
+    lookAt.addContent(heading);
 
 
-        return lookAt;
-       /*  "<LookAt id=\"geoserver\">" + 
-            "  <longitude>" + ((lon1 + lon2)/2) +  "</longitude>      <!-- kml:angle180 -->" +
-            "  <latitude>"+midpoint[1]+"</latitude>        <!-- kml:angle90 -->" +
-            "  <altitude>0</altitude>       <!-- double --> " +
-            "  <range>"+distance+"</range>              <!-- double -->" +
-            "  <tilt>0</tilt>               <!-- float -->" +
-            "  <heading>0</heading>         <!-- float -->" +
-            "  <altitudeMode>clampToGround</altitudeMode> " +
-            "  <!--kml:altitudeModeEnum:clampToGround, relativeToGround, absolute -->" +
-            "</LookAt>"; */
-    }
+    return lookAt;
+    /*  "<LookAt id=\"geoserver\">" + 
+        "  <longitude>" + ((lon1 + lon2)/2) +  "</longitude>      <!-- kml:angle180 -->" +
+        "  <latitude>"+midpoint[1]+"</latitude>        <!-- kml:angle90 -->" +
+        "  <altitude>0</altitude>       <!-- double --> " +
+        "  <range>"+distance+"</range>              <!-- double -->" +
+        "  <tilt>0</tilt>               <!-- float -->" +
+        "  <heading>0</heading>         <!-- float -->" +
+        "  <altitudeMode>clampToGround</altitudeMode> " +
+        "  <!--kml:altitudeModeEnum:clampToGround, relativeToGround, absolute -->" +
+        "</LookAt>"; */
+}
 
-    private static double[] getRect(double lat, double lon, double radius){
-        double theta = (90 - lat) * Math.PI/180;
-        double phi   = (90 - lon) * Math.PI/180;
+private static double[] getRect(double lat, double lon, double radius){
+    double theta = (90 - lat) * Math.PI/180;
+    double phi   = (90 - lon) * Math.PI/180;
 
-        double x = radius * Math.sin(phi) * Math.cos(theta);
-        double y = radius * Math.sin(phi) * Math.sin(theta);
-        double z = radius * Math.cos(phi);
-        return new double[]{x, y, z};
-    }
+    double x = radius * Math.sin(phi) * Math.cos(theta);
+    double y = radius * Math.sin(phi) * Math.sin(theta);
+    double z = radius * Math.cos(phi);
+    return new double[]{x, y, z};
+}
 
-    private static double[] getGeographic(double x, double y, double z){
-        double theta, phi, radius;
-        radius = distance(new double[]{x, y, z}, new double[]{0,0,0});
-        theta = Math.atan2(Math.sqrt(x * x + y * y) , z);
-        phi = Math.atan2(y , x);
+private static double[] getGeographic(double x, double y, double z){
+    double theta, phi, radius;
+    radius = distance(new double[]{x, y, z}, new double[]{0,0,0});
+    theta = Math.atan2(Math.sqrt(x * x + y * y) , z);
+    phi = Math.atan2(y , x);
 
-        double lat = 90 - (theta * 180 / Math.PI);
-        double lon = 90 - (phi * 180 / Math.PI);
+    double lat = 90 - (theta * 180 / Math.PI);
+    double lon = 90 - (phi * 180 / Math.PI);
 
-        return new double[]{(lon > 180 ? lon - 360 : lon), lat, radius};
-    }
+    return new double[]{(lon > 180 ? lon - 360 : lon), lat, radius};
+}
 
-    private static double distance(double[] p1, double[] p2){
-        double dx = p1[0] - p2[0];
-        double dy = p1[1] - p2[1];
-        double dz = p1[2] - p2[2];
-        return Math.sqrt(dx * dx + dy * dy + dz * dz);
-    }
+private static double distance(double[] p1, double[] p2){
+    double dx = p1[0] - p2[0];
+    double dy = p1[1] - p2[1];
+    double dz = p1[2] - p2[2];
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
 
 }
 
