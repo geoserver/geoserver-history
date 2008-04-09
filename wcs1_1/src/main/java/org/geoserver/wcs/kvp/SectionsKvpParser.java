@@ -6,8 +6,8 @@ package org.geoserver.wcs.kvp;
 
 import java.util.List;
 
-import net.opengis.ows.v1_1_0.Ows11Factory;
-import net.opengis.ows.v1_1_0.SectionsType;
+import net.opengis.ows11.Ows11Factory;
+import net.opengis.ows11.SectionsType;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;

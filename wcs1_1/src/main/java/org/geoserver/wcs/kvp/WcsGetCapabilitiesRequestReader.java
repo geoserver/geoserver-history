@@ -6,10 +6,10 @@ package org.geoserver.wcs.kvp;
 
 import java.util.Map;
 
-import net.opengis.ows.v1_1_0.AcceptVersionsType;
-import net.opengis.ows.v1_1_0.Ows11Factory;
-import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
-import net.opengis.wcs.v1_1_1.Wcs111Factory;
+import net.opengis.ows11.AcceptVersionsType;
+import net.opengis.ows11.Ows11Factory;
+import net.opengis.wcs11.GetCapabilitiesType;
+import net.opengis.wcs11.Wcs111Factory;
 
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
 

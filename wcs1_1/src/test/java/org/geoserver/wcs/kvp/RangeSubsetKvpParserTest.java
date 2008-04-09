@@ -5,9 +5,9 @@ import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParame
 import java.util.List;
 
 import junit.framework.TestCase;
-import net.opengis.wcs.v1_1_1.AxisSubsetType;
-import net.opengis.wcs.v1_1_1.FieldSubsetType;
-import net.opengis.wcs.v1_1_1.RangeSubsetType;
+import net.opengis.wcs11.AxisSubsetType;
+import net.opengis.wcs11.FieldSubsetType;
+import net.opengis.wcs11.RangeSubsetType;
 
 import org.vfny.geoserver.wcs.WcsException;
 

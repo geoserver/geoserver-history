@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import net.opengis.wcs.v1_1_1.DescribeCoverageType;
+import net.opengis.wcs11.DescribeCoverageType;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.kvp.GridType;

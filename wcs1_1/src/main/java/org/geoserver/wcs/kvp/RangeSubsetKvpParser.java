@@ -9,12 +9,12 @@ import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParame
 import java.io.StringReader;
 import java.util.Iterator;
 
-import net.opengis.ows.v1_1_0.CodeType;
-import net.opengis.ows.v1_1_0.Ows11Factory;
-import net.opengis.wcs.v1_1_1.AxisSubsetType;
-import net.opengis.wcs.v1_1_1.FieldSubsetType;
-import net.opengis.wcs.v1_1_1.RangeSubsetType;
-import net.opengis.wcs.v1_1_1.Wcs111Factory;
+import net.opengis.ows11.CodeType;
+import net.opengis.ows11.Ows11Factory;
+import net.opengis.wcs11.AxisSubsetType;
+import net.opengis.wcs11.FieldSubsetType;
+import net.opengis.wcs11.RangeSubsetType;
+import net.opengis.wcs11.Wcs111Factory;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.wcs.kvp.rangesubset.ASTAxisId;

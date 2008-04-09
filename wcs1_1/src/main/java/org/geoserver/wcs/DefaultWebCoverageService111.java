@@ -18,16 +18,16 @@ import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
-import net.opengis.ows.v1_1_0.BoundingBoxType;
-import net.opengis.wcs.v1_1_1.AxisSubsetType;
-import net.opengis.wcs.v1_1_1.DescribeCoverageType;
-import net.opengis.wcs.v1_1_1.DomainSubsetType;
-import net.opengis.wcs.v1_1_1.FieldSubsetType;
-import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
-import net.opengis.wcs.v1_1_1.GetCoverageType;
-import net.opengis.wcs.v1_1_1.GridCrsType;
-import net.opengis.wcs.v1_1_1.OutputType;
-import net.opengis.wcs.v1_1_1.RangeSubsetType;
+import net.opengis.ows11.BoundingBoxType;
+import net.opengis.wcs11.AxisSubsetType;
+import net.opengis.wcs11.DescribeCoverageType;
+import net.opengis.wcs11.DomainSubsetType;
+import net.opengis.wcs11.FieldSubsetType;
+import net.opengis.wcs11.GetCapabilitiesType;
+import net.opengis.wcs11.GetCoverageType;
+import net.opengis.wcs11.GridCrsType;
+import net.opengis.wcs11.OutputType;
+import net.opengis.wcs11.RangeSubsetType;
 
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.util.RequestUtils;
