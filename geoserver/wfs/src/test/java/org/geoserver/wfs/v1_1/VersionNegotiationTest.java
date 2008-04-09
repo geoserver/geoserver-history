@@ -1,6 +1,6 @@
 package org.geoserver.wfs.v1_1;
 
-import net.opengis.ows.OwsFactory;
+import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.GetCapabilitiesType;
 import net.opengis.wfs.WfsFactory;
 
@@ -15,7 +15,7 @@ public class VersionNegotiationTest extends WFSTestSupport {
 
     WfsFactory factory;
 
-    OwsFactory owsFactory;
+    Ows10Factory owsFactory;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -23,7 +23,7 @@ public class VersionNegotiationTest extends WFSTestSupport {
         getCaps = new GetCapabilities(getWFS(), getCatalog());
 
         factory = WfsFactory.eINSTANCE;
-        owsFactory = OwsFactory.eINSTANCE;
+        owsFactory = Ows10Factory.eINSTANCE;
     }
 
     public void test0() throws Exception {
