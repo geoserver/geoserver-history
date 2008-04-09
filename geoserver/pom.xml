@@ -1085,7 +1085,6 @@
   <module>wms</module>
   <module>validation</module>
   <module>web</module>
-  <module>test</module>
   <module>ows</module>
   <module>community</module>
  </modules>
