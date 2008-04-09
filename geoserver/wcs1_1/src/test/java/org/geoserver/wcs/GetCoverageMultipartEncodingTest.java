@@ -59,10 +59,6 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
         BodyPart coveragePart = multipart.getBodyPart(1);
         assertEquals("image/tiff", coveragePart.getContentType());
         assertEquals("<theCoverage>", coveragePart.getHeader("Content-ID")[0]);
-
-        // make sure we can read the coverage back
-        InputStream is = coveragePart.getDataHandler().getInputStream();
-        readCoverage(is);
     }
 
     /**
@@ -82,32 +78,16 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
 
     private Multipart getMultipart(MockHttpServletResponse response) throws MessagingException,
             IOException {
-        String content = response.getOutputStreamContent();
-        MimeMessage body = new MimeMessage((Session) null, new ByteArrayInputStream(content
-                .getBytes()));
+        MimeMessage body = new MimeMessage((Session) null, getBinaryInputStream(response));
         Multipart multipart = (Multipart) body.getContent();
         return multipart;
     }
 
     private GridCoverage2D readCoverage(InputStream is) throws Exception {
-        // for some funny reason reading directly from the input stream does not
-        // work we have to create a temp file instead
-        File f = storeToTempFile(is, ".tiff");
-        GeoTiffReader reader = new GeoTiffReader(f);
+        GeoTiffReader reader = new GeoTiffReader(is);
         GridCoverage2D coverage = (GridCoverage2D) reader.read(null);
         reader.dispose();
         return coverage;
-    }
-
-    private File storeToTempFile(InputStream is, String extension) throws Exception {
-        File f = File.createTempFile("coverage", extension, getTestData().getDataDirectoryRoot());
-        FileOutputStream fos = new FileOutputStream(f);
-        byte[] buffer = new byte[4096];
-        int read = 0;
-        while ((read = is.read(buffer)) > 0)
-            fos.write(buffer, 0, read);
-        fos.close();
-        return f;
     }
 
     public void testTiffOutput() throws Exception {
@@ -125,10 +105,8 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
         assertEquals("<theCoverage>", coveragePart.getHeader("Content-ID")[0]);
 
         // make sure we can read the coverage back
-        InputStream is = coveragePart.getDataHandler().getInputStream();
-        File temp = storeToTempFile(is, ".tiff");
         ImageReader reader = ImageIO.getImageReadersByFormatName("tiff").next();
-        reader.setInput(ImageIO.createImageInputStream(temp));
+        reader.setInput(ImageIO.createImageInputStream(coveragePart.getInputStream()));
         reader.read(0);
     }
 
@@ -147,10 +125,8 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
         assertEquals("<theCoverage>", coveragePart.getHeader("Content-ID")[0]);
 
         // make sure we can read the coverage back
-        InputStream is = coveragePart.getDataHandler().getInputStream();
-        File temp = storeToTempFile(is, ".png");
         ImageReader reader = ImageIO.getImageReadersByFormatName("png").next();
-        reader.setInput(ImageIO.createImageInputStream(temp));
+        reader.setInput(ImageIO.createImageInputStream(coveragePart.getInputStream()));
         reader.read(0);
     }
 
