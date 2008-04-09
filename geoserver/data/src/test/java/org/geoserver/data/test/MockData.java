@@ -427,6 +427,10 @@ public class MockData implements TestData {
      * @throws IOException
      */
     public void addPropertiesType(QName name, URL properties, Map extraParams) throws IOException {
+        // sanitize input params
+        if(extraParams == null)
+            extraParams = Collections.EMPTY_MAP;
+        
         // setup the type directory if needed
         File directory = new File(data, name.getPrefix());
         if ( !directory.exists() ) {
