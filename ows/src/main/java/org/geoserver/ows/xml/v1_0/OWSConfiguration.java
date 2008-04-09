@@ -4,7 +4,7 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
-import net.opengis.ows.OwsFactory;
+import net.opengis.ows10.Ows10Factory;
 
 import org.geotools.xlink.XLINKConfiguration;
 import org.geotools.xml.Configuration;
@@ -77,13 +77,13 @@ public class OWSConfiguration extends Configuration {
     * <p>
     * The following factories are registered:
     * <ul>
-    * <li>{@link OwsFactory}
+    * <li>{@link Ows10Factory}
     * </ul>
     * </p>
     */
     protected void configureContext(MutablePicoContainer container) {
         super.configureContext(container);
 
-        container.registerComponentInstance(OwsFactory.eINSTANCE);
+        container.registerComponentInstance(Ows10Factory.eINSTANCE);
     }
 }

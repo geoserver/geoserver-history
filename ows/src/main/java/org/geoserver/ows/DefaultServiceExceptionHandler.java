@@ -14,9 +14,9 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.opengis.ows.ExceptionReportType;
-import net.opengis.ows.ExceptionType;
-import net.opengis.ows.OwsFactory;
+import net.opengis.ows10.ExceptionReportType;
+import net.opengis.ows10.ExceptionType;
+import net.opengis.ows10.Ows10Factory;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
@@ -61,7 +61,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
      */
     public void handleServiceException(ServiceException exception, Service service,
         HttpServletRequest request, HttpServletResponse response) {
-        OwsFactory factory = OwsFactory.eINSTANCE;
+        Ows10Factory factory = Ows10Factory.eINSTANCE;
 
         ExceptionType e = factory.createExceptionType();
 

@@ -4,7 +4,7 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
-import net.opengis.ows.OwsFactory;
+import net.opengis.ows10.Ows10Factory;
 import org.geotools.xml.AbstractSimpleBinding;
 import org.geotools.xml.InstanceComponent;
 import javax.xml.namespace.QName;
@@ -33,9 +33,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class PositionTypeBinding extends AbstractSimpleBinding {
-    OwsFactory owsfactory;
+    Ows10Factory owsfactory;
 
-    public PositionTypeBinding(OwsFactory owsfactory) {
+    public PositionTypeBinding(Ows10Factory owsfactory) {
         this.owsfactory = owsfactory;
     }
 
