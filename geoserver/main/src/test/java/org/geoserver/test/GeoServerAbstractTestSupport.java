@@ -116,8 +116,12 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
-        Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
+        if (System.getProperty("org.geotools.referencing.forceXY") == null) {
+            System.setProperty("org.geotools.referencing.forceXY", "true");
+        }
+        if (Boolean.TRUE.equals(Hints.getSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER))) {
+            Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
+        }
 
         // setup quiet logging (we need to to this here because Data
         // is loaded before GoeServer has a chance to setup logging for good)
