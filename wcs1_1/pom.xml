@@ -22,9 +22,8 @@
       <version>1.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.geoserver</groupId>
-      <artifactId>net.opengis.wcs.1_1</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <groupId>org.geotools.ogc</groupId>
+      <artifactId>wcs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
