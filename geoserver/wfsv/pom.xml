@@ -22,9 +22,8 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.geoserver</groupId>
-      <artifactId>net.opengis.wfsv</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.geotools.ogc</groupId>
+      <artifactId>wfsv</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
