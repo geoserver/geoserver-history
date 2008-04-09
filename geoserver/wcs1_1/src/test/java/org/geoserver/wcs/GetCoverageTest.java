@@ -6,7 +6,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.opengis.wcs.v1_1_1.GetCoverageType;
+import net.opengis.wcs11.GetCoverageType;
 
 import org.geoserver.wcs.kvp.GetCoverageRequestReader;
 import org.geoserver.wcs.test.WCSTestSupport;

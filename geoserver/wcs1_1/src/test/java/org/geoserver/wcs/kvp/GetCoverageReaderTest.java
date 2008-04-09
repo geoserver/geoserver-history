@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.opengis.wcs.v1_1_1.AxisSubsetType;
-import net.opengis.wcs.v1_1_1.FieldSubsetType;
-import net.opengis.wcs.v1_1_1.GetCoverageType;
-import net.opengis.wcs.v1_1_1.RangeSubsetType;
+import net.opengis.wcs11.AxisSubsetType;
+import net.opengis.wcs11.FieldSubsetType;
+import net.opengis.wcs11.GetCoverageType;
+import net.opengis.wcs11.RangeSubsetType;
 
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.Data;

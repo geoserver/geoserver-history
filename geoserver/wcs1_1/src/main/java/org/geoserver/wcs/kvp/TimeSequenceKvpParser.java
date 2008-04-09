@@ -2,7 +2,7 @@ package org.geoserver.wcs.kvp;
 
 import java.util.logging.Logger;
 
-import net.opengis.wcs.v1_1_1.TimeSequenceType;
+import net.opengis.wcs11.TimeSequenceType;
 
 import org.geoserver.ows.KvpParser;
 import org.geotools.util.logging.Logging;

@@ -12,7 +12,7 @@ import java.io.OutputStream;
 
 import javax.xml.transform.TransformerException;
 
-import net.opengis.wcs.v1_1_1.GetCoverageType;
+import net.opengis.wcs11.GetCoverageType;
 
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.RequestUtils;

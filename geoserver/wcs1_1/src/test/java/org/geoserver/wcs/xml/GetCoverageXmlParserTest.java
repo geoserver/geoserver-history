@@ -4,10 +4,10 @@ import java.io.StringReader;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
-import net.opengis.wcs.v1_1_1.AxisSubsetType;
-import net.opengis.wcs.v1_1_1.FieldSubsetType;
-import net.opengis.wcs.v1_1_1.GetCoverageType;
-import net.opengis.wcs.v1_1_1.GridCrsType;
+import net.opengis.wcs11.AxisSubsetType;
+import net.opengis.wcs11.FieldSubsetType;
+import net.opengis.wcs11.GetCoverageType;
+import net.opengis.wcs11.GridCrsType;
 
 import org.geoserver.wcs.xml.v1_1_1.WCSConfiguration;
 import org.geoserver.wcs.xml.v1_1_1.WcsXmlReader;

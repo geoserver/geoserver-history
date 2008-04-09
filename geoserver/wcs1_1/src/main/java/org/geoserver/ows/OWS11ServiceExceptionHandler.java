@@ -15,9 +15,9 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.opengis.ows.v1_1_0.ExceptionReportType;
-import net.opengis.ows.v1_1_0.ExceptionType;
-import net.opengis.ows.v1_1_0.Ows11Factory;
+import net.opengis.ows11.ExceptionReportType;
+import net.opengis.ows11.ExceptionType;
+import net.opengis.ows11.Ows11Factory;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.Service;

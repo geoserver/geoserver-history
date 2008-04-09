@@ -9,8 +9,8 @@ import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 import java.util.Arrays;
 import java.util.List;
 
-import net.opengis.ows.v1_1_0.BoundingBoxType;
-import net.opengis.ows.v1_1_0.Ows11Factory;
+import net.opengis.ows11.BoundingBoxType;
+import net.opengis.ows11.Ows11Factory;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;

@@ -15,7 +15,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import net.opengis.wcs.v1_1_1.GetCoverageType;
+import net.opengis.wcs11.GetCoverageType;
 
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;

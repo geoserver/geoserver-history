@@ -9,13 +9,13 @@ import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.MissingParame
 
 import java.util.Map;
 
-import net.opengis.ows.v1_1_0.BoundingBoxType;
-import net.opengis.wcs.v1_1_1.DomainSubsetType;
-import net.opengis.wcs.v1_1_1.GetCoverageType;
-import net.opengis.wcs.v1_1_1.GridCrsType;
-import net.opengis.wcs.v1_1_1.OutputType;
-import net.opengis.wcs.v1_1_1.TimeSequenceType;
-import net.opengis.wcs.v1_1_1.Wcs111Factory;
+import net.opengis.ows11.BoundingBoxType;
+import net.opengis.wcs11.DomainSubsetType;
+import net.opengis.wcs11.GetCoverageType;
+import net.opengis.wcs11.GridCrsType;
+import net.opengis.wcs11.OutputType;
+import net.opengis.wcs11.TimeSequenceType;
+import net.opengis.wcs11.Wcs111Factory;
 
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
 import org.vfny.geoserver.global.Data;

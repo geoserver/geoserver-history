@@ -13,7 +13,7 @@ import javax.activation.DataContentHandler;
 import javax.activation.DataSource;
 import javax.xml.transform.TransformerException;
 
-import net.opengis.wcs.v1_1_1.GetCoverageType;
+import net.opengis.wcs11.GetCoverageType;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.vfny.geoserver.global.CoverageInfo;

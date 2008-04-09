@@ -7,8 +7,8 @@ package org.geoserver.wcs.kvp;
 import java.util.List;
 import java.util.Map;
 
-import net.opengis.wcs.v1_1_1.DescribeCoverageType;
-import net.opengis.wcs.v1_1_1.Wcs111Factory;
+import net.opengis.wcs11.DescribeCoverageType;
+import net.opengis.wcs11.Wcs111Factory;
 
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
 import org.geoserver.ows.util.KvpUtils;
