@@ -42,12 +42,12 @@
   </ciManagement>
 
  <repositories>
-  <repository>
+  <!--repository>
    <id>opengeo</id>
    <name>OpenGeo Maven Repository</name>
    <url>http://repo.opengeo.org/</url>
    <layout>default</layout>
-  </repository>
+  </repository-->
   <repository>
    <id>geotools</id>
    <name>geotools</name>
@@ -275,6 +275,26 @@
    <dependency>
      <groupId>org.geotools</groupId>
      <artifactId>gt2-cql</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+     <groupId>org.geotools.ogc</groupId>
+     <artifactId>ows</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+     <groupId>org.geotools.ogc</groupId>
+     <artifactId>wfs</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+     <groupId>org.geotools.ogc</groupId>
+     <artifactId>wfsv</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+     <groupId>org.geotools.ogc</groupId>
+     <artifactId>wcs</artifactId>
      <version>${gt.version}</version>
    </dependency>
    <dependency>
@@ -1067,11 +1087,6 @@
   <module>web</module>
   <module>test</module>
   <module>ows</module>
-  <module>net.opengis.ows</module>
-  <module>net.opengis.ows.1_1</module>
-  <module>net.opengis.wfs</module>
-  <module>net.opengis.wfsv</module>
-  <module>net.opengis.wcs.1_1</module>
   <module>community</module>
  </modules>
 
