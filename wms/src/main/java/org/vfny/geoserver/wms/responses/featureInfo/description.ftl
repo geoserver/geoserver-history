@@ -1,25 +1,12 @@
 <table border='1'>
 
 <tr>
-  <th colspan='${attributes?size}' scope='col'>${typeName}</th>
+  <th colspan='2' scope='col'>${typeName}</th>
 </tr>
 
-<tr>
 <#list attributes as a>
-  <td>${a.name}</td>
-</#list>
-</tr>
-
 <tr>
-<#list attributes as a>
-  <td>
-  <#if a.isGeometry >
-[GEOMETRY]
-  <#else>
-${a.value}
-  </#if>
-  </td>
-</#list>
+  <td>${a.name}</td> <td><#if a.isGeometry > [GEOMETRY] <#else> ${a.value} </#if> </td>
 </tr>
-
+</#list>
 </table>
