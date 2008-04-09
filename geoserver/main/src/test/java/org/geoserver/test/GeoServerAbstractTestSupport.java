@@ -2,11 +2,13 @@ package org.geoserver.test;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,6 +64,7 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletConfig;
 import com.mockrunner.mock.web.MockServletContext;
+import com.mockrunner.mock.web.MockServletOutputStream;
 
 /**
  * Base test class for GeoServer unit tests.
@@ -461,23 +464,68 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * @throws Exception
      */
     protected InputStream post( String path , String xml ) throws Exception {
-        MockHttpServletRequest request = createRequest( path );
-        request.setMethod( "POST" );
-        request.setContentType( "application/xml" );
-        request.setBodyContent(xml);
-        
-        MockHttpServletResponse response = dispatch( request );
-        return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+        MockHttpServletResponse response = postAsServletResponse(path, xml);
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
     }
 
     /**
      * Executes an ows request using the POST method.
-     *
-     * @param path The porition of the request after the context ( no query string ), 
-     *      example: 'wms'. 
-     *
-     * @param body the body of the request
-     * @param contentType the mimetype to set for the request
+     * <p>
+     * 
+     * </p>
+     * 
+     * @param path
+     *            The porition of the request after the context ( no query
+     *            string ), example: 'wms'.
+     * 
+     * @return the servlet response
+     * 
+     * @throws Exception
+     */
+    protected MockHttpServletResponse postAsServletResponse(String path, String xml)
+            throws Exception {
+        MockHttpServletRequest request = createRequest(path);
+        request.setMethod("POST");
+        request.setContentType("application/xml");
+        request.setBodyContent(xml);
+
+        MockHttpServletResponse response = dispatch(request);
+        return response;
+    }
+
+    /**
+     * Extracts the true binary stream out of the response. The usual way (going
+     * thru {@link MockHttpServletResponse#getOutputStreamContent()}) mangles
+     * bytes if the content is not made of chars.
+     * 
+     * @param response
+     * @return
+     */
+    protected InputStream getBinaryInputStream(MockHttpServletResponse response) {
+        try {
+            MockServletOutputStream os = (MockServletOutputStream) response.getOutputStream();
+            final Field field = os.getClass().getDeclaredField("buffer");
+            field.setAccessible(true);
+            ByteArrayOutputStream bos = (ByteArrayOutputStream) field.get(os);
+            return new ByteArrayInputStream(bos.toByteArray());
+        } catch (Exception e) {
+            throw new RuntimeException("Whoops, did you change the MockRunner version? "
+                    + "If so, you might want to change this method too");
+        }
+    }
+            
+            
+    /**
+     * Executes an ows request using the POST method.
+     * 
+     * @param path
+     *            The porition of the request after the context ( no query
+     *            string ), example: 'wms'.
+     * 
+     * @param body
+     *            the body of the request
+     * @param contentType
+     *            the mimetype to set for the request
      * 
      * @return An input stream which is the result of the request.
      * 
