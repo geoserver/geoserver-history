@@ -10,9 +10,9 @@
 	</parent>
 
 	<groupId>org.geoserver</groupId>
-  <artifactId>community-schemas</artifactId>
+	<artifactId>community-schemas</artifactId>
 	<packaging>pom</packaging>
-  <name>Community Space</name>
+	<name>Community Schemas</name>
 
 	<dependencies>
 		<dependency>
@@ -26,4 +26,5 @@
 		<module>wfs-c</module>
 		<module>web-c</module>
 	</modules>
+
 </project>

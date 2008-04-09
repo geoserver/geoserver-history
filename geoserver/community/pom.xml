@@ -37,12 +37,7 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>Community Schemas</id>
-			<activation>
-				<property>
-					<name>community-schemas</name>
-				</property>
-			</activation>
+			<id>community-schemas</id>
 			<modules>
 				<module>community-schemas</module>
 			</modules>
