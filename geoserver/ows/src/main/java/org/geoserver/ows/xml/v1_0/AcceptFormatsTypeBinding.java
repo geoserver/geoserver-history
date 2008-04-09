@@ -4,8 +4,8 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
-import net.opengis.ows.AcceptFormatsType;
-import net.opengis.ows.OwsFactory;
+import net.opengis.ows10.AcceptFormatsType;
+import net.opengis.ows10.Ows10Factory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -34,9 +34,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class AcceptFormatsTypeBinding extends AbstractComplexBinding {
-    OwsFactory owsfactory;
+    Ows10Factory owsfactory;
 
-    public AcceptFormatsTypeBinding(OwsFactory owsfactory) {
+    public AcceptFormatsTypeBinding(Ows10Factory owsfactory) {
         this.owsfactory = owsfactory;
     }
 

@@ -4,11 +4,11 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
-import net.opengis.ows.AcceptFormatsType;
-import net.opengis.ows.AcceptVersionsType;
-import net.opengis.ows.GetCapabilitiesType;
-import net.opengis.ows.OwsFactory;
-import net.opengis.ows.SectionsType;
+import net.opengis.ows10.AcceptFormatsType;
+import net.opengis.ows10.AcceptVersionsType;
+import net.opengis.ows10.GetCapabilitiesType;
+import net.opengis.ows10.Ows10Factory;
+import net.opengis.ows10.SectionsType;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.Binding;
 import org.geotools.xml.ElementInstance;
@@ -57,9 +57,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
-    OwsFactory owsfactory;
+    Ows10Factory owsfactory;
 
-    public GetCapabilitiesTypeBinding(OwsFactory owsfactory) {
+    public GetCapabilitiesTypeBinding(Ows10Factory owsfactory) {
         this.owsfactory = owsfactory;
     }
 
