@@ -4,8 +4,8 @@
  */
 package org.geoserver.wfs.kvp;
 
-import net.opengis.ows.AcceptFormatsType;
-import net.opengis.ows.OwsFactory;
+import net.opengis.ows10.AcceptFormatsType;
+import net.opengis.ows10.Ows10Factory;
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 import java.util.Iterator;
@@ -27,7 +27,7 @@ public class AcceptFormatsKvpParser extends KvpParser {
     public Object parse(String value) throws Exception {
         List values = KvpUtils.readFlat(value);
 
-        AcceptFormatsType acceptFormats = OwsFactory.eINSTANCE.createAcceptFormatsType();
+        AcceptFormatsType acceptFormats = Ows10Factory.eINSTANCE.createAcceptFormatsType();
 
         for (Iterator v = values.iterator(); v.hasNext();) {
             acceptFormats.getOutputFormat().add(v.next());

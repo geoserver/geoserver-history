@@ -4,7 +4,7 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
-import net.opengis.ows.OwsFactory;
+import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.GetCapabilitiesType;
 import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
@@ -45,9 +45,9 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
     /**
      * Ows Factory
      */
-    OwsFactory owsFactory;
+    Ows10Factory owsFactory;
 
-    public GetCapabilitiesTypeBinding(WfsFactory wfsFactory, OwsFactory owsFactory) {
+    public GetCapabilitiesTypeBinding(WfsFactory wfsFactory, Ows10Factory owsFactory) {
         this.wfsFactory = wfsFactory;
         this.owsFactory = owsFactory;
     }

@@ -4,8 +4,8 @@
  */
 package org.geoserver.wfs.kvp;
 
-import net.opengis.ows.AcceptVersionsType;
-import net.opengis.ows.OwsFactory;
+import net.opengis.ows10.AcceptVersionsType;
+import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.GetCapabilitiesType;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public class GetCapabilitiesKvpRequestReader extends WFSKvpRequestReader {
 
         //set the version attribute on the request
         if (kvp.containsKey("version")) {
-            AcceptVersionsType acceptVersions = OwsFactory.eINSTANCE
+            AcceptVersionsType acceptVersions = Ows10Factory.eINSTANCE
                 .createAcceptVersionsType();
             acceptVersions.getVersion().add(kvp.get("version"));
 
