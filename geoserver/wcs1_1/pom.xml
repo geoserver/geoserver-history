@@ -23,7 +23,7 @@
     </dependency>
     <dependency>
       <groupId>org.geotools.ogc</groupId>
-      <artifactId>wcs</artifactId>
+      <artifactId>net.opengis.wcs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>

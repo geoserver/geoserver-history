@@ -279,22 +279,22 @@
    </dependency>
    <dependency>
      <groupId>org.geotools.ogc</groupId>
-     <artifactId>ows</artifactId>
+     <artifactId>net.opengis.ows</artifactId>
      <version>${gt.version}</version>
    </dependency>
    <dependency>
      <groupId>org.geotools.ogc</groupId>
-     <artifactId>wfs</artifactId>
+     <artifactId>net.opengis.wfs</artifactId>
      <version>${gt.version}</version>
    </dependency>
    <dependency>
      <groupId>org.geotools.ogc</groupId>
-     <artifactId>wfsv</artifactId>
+     <artifactId>net.opengis.wfsv</artifactId>
      <version>${gt.version}</version>
    </dependency>
    <dependency>
      <groupId>org.geotools.ogc</groupId>
-     <artifactId>wcs</artifactId>
+     <artifactId>net.opengis.wcs</artifactId>
      <version>${gt.version}</version>
    </dependency>
    <dependency>
