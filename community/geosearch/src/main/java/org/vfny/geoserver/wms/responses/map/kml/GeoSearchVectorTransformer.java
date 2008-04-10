@@ -56,7 +56,8 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             }
 
             // start the root document, name it the name of the layer
-            start("Document");
+            start("Document", KMLUtils.attributes(new String[] {
+                            "xmlns:atom", "http://purl.org/atom/ns#" }));
             element("name", mapLayer.getTitle());
 
             String linkbase = "";
