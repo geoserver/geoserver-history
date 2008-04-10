@@ -31,18 +31,18 @@
       <version>1.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt2-xml-gml3</artifactId>
+      <groupId>org.geotools.xsd</groupId>
+      <artifactId>gml3</artifactId>
       <version>${gt.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt2-xml-filter</artifactId>
+      <groupId>org.geotools.xsd</groupId>
+      <artifactId>filter</artifactId>
       <version>${gt.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt2-xml-ows</artifactId>
+      <groupId>org.geotools.xsd</groupId>
+      <artifactId>ows</artifactId>
       <version>${gt.version}</version>
       <!-- This is due to the fact the ows model jars come from geoserver but are
            deployed separately for gt2 as well... this results in a conflict -->

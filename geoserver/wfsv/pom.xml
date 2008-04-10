@@ -27,7 +27,7 @@
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-postgis-versioned</artifactId>
+      <artifactId>postgis-versioned</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -81,7 +81,7 @@
       <!-- Binding generation -->
       <!--plugin>
         <groupId>org.geotools.maven</groupId>
-        <artifactId>gt2-xmlcodegen</artifactId>
+        <artifactId>xmlcodegen</artifactId>
 	<version>${gt.version}</version>
         <configuration>
           <schemaLocation>wfsv.xsd</schemaLocation>

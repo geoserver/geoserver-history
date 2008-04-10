@@ -161,31 +161,31 @@
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-api</artifactId>
+      <artifactId>api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-main</artifactId>
+      <artifactId>main</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-coverage</artifactId>
+      <artifactId>coverage</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-shapefile</artifactId>
+      <artifactId>shapefile</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-postgis</artifactId>
+      <artifactId>postgis</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-wfs</artifactId>
+      <artifactId>wfs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-validation</artifactId>
+      <artifactId>validation</artifactId>
     </dependency>
 
     <!-- Test dependencies -->
@@ -375,7 +375,7 @@
       <dependencies>
         <dependency>
           <groupId>org.geotools</groupId>
-          <artifactId>gt2-arcsde</artifactId>
+          <artifactId>arcsde</artifactId>
           <version>${gt.version}</version>
         </dependency>
       </dependencies>
