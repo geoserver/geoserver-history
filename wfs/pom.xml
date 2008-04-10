@@ -28,7 +28,7 @@
     </dependency>
     <dependency>
       <groupId>org.geotools.ogc</groupId>
-      <artifactId>wfs</artifactId>
+      <artifactId>net.opengis.wfs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools.xsd</groupId>
