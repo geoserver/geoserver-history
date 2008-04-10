@@ -20,27 +20,27 @@
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt2-api</artifactId>
+   <artifactId>api</artifactId>
   </dependency>
   <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-epsg-hsql</artifactId>
+    <artifactId>epsg-hsql</artifactId>
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt2-main</artifactId>
+   <artifactId>main</artifactId>
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt2-coverage</artifactId>
+   <artifactId>coverage</artifactId>
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt2-h2</artifactId>
+   <artifactId>h2</artifactId>
   </dependency>
   <dependency>
    <groupId>org.geotools.demo</groupId>
-   <artifactId>gt2-demo-property</artifactId>
+   <artifactId>property</artifactId>
   </dependency>
   <dependency>
    <groupId>junit</groupId>

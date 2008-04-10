@@ -124,157 +124,157 @@
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2</artifactId>
+    <artifactId>geotools</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-arcgrid</artifactId>
+    <artifactId>arcgrid</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-geotiff</artifactId>
+    <artifactId>geotiff</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-gtopo30</artifactId>
+    <artifactId>gtopo30</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-image</artifactId>
+    <artifactId>image</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-imagemosaic</artifactId>
+    <artifactId>imagemosaic</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-imagepyramid</artifactId>
+    <artifactId>imagepyramid</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-api</artifactId>
+    <artifactId>api</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-main</artifactId>
+    <artifactId>main</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-validation</artifactId>
+    <artifactId>validation</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-render</artifactId>
+    <artifactId>render</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-shapefile-renderer</artifactId>
+    <artifactId>shapefile-renderer</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools.demo</groupId>
-    <artifactId>gt2-demo-property</artifactId>
+    <artifactId>property</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-epsg-hsql</artifactId>
+    <artifactId>epsg-hsql</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-epsg-extension</artifactId>
+    <artifactId>epsg-extension</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-coverage</artifactId>
+    <artifactId>coverage</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-referencing</artifactId>
+    <artifactId>referencing</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>core</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>gml2</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>gml3</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>filter</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-xml-core</artifactId>
+    <artifactId>shapefile</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-xml-gml2</artifactId>
+    <artifactId>data</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-xml-gml3</artifactId>
+    <artifactId>jdbc</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-xml-filter</artifactId>
+    <artifactId>postgis</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-shapefile</artifactId>
+    <artifactId>h2</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-data</artifactId>
+    <artifactId>wfs</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-jdbc</artifactId>
+    <artifactId>wms</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-postgis</artifactId>
+    <artifactId>postgis-versioned</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-h2</artifactId>
-    <version>${gt.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geotools</groupId>
-    <artifactId>gt2-wfs</artifactId>
-    <version>${gt.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geotools</groupId>
-    <artifactId>gt2-wms</artifactId>
-    <version>${gt.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geotools</groupId>
-    <artifactId>gt2-postgis-versioned</artifactId>
-    <version>${gt.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geotools</groupId>
-    <artifactId>gt2-metadata</artifactId>
+    <artifactId>metadata</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
      <groupId>org.geotools</groupId>
-     <artifactId>gt2-cql</artifactId>
+     <artifactId>cql</artifactId>
      <version>${gt.version}</version>
    </dependency>
    <dependency>
@@ -729,11 +729,11 @@
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt2-api</artifactId>
+   <artifactId>api</artifactId>
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt2-main</artifactId>
+   <artifactId>main</artifactId>
   </dependency>
   <dependency>
    <groupId>junit</groupId>

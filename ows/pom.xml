@@ -45,8 +45,8 @@
 			<artifactId>ows</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-xml-core</artifactId>
+			<groupId>org.geotools.xsd</groupId>
+			<artifactId>core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -83,7 +83,7 @@
 		<plugins>
 			<!--plugin>
         <groupId>org.geotools.maven</groupId>
-        <artifactId>gt2-xmlcodegen</artifactId>
+        <artifactId>xmlcodegen</artifactId>
         <configuration>
           <schemaLocation>owsAll.xsd</schemaLocation>
           <schemaSourceDirectory>/home/jdeolive/devel/geoserver/ows4/community/ows/src/main/java/org/geoserver/xml/ows/v1_0_0</schemaSourceDirectory>

@@ -31,16 +31,16 @@
       <artifactId>wfs</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt2-xml-gml3</artifactId>
+      <groupId>org.geotools.xsd</groupId>
+      <artifactId>gml3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.xsd</groupId>
+      <artifactId>filter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-xml-filter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt2-shapefile</artifactId>
+      <artifactId>shapefile</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
@@ -108,7 +108,7 @@
       </plugin>
       <!--plugin>
         <groupId>org.geotools.maven</groupId>
-        <artifactId>gt2-xmlcodegen</artifactId>
+        <artifactId>xmlcodegen</artifactId>
         <configuration>
         <schemaLocation>wfs.xsd</schemaLocation>
         <schemaSourceDirectory>${basedir}/src/main/java/org/geoserver/wfs/xml/v1_1_0/</schemaSourceDirectory>

@@ -52,7 +52,7 @@
             all datastores that have a "url" parameter
           -->
           <groupId>org.geotools</groupId>
-          <artifactId>gt2-gml</artifactId>
+          <artifactId>gml</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -156,27 +156,27 @@
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-api</artifactId>
+      <artifactId>api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-main</artifactId>
+      <artifactId>main</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-coverage</artifactId>
+      <artifactId>coverage</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-shapefile</artifactId>
+      <artifactId>shapefile</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-postgis</artifactId>
+      <artifactId>postgis</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-validation</artifactId>
+      <artifactId>validation</artifactId>
     </dependency>
     <!--dependency>
       <groupId>com.mockrunner</groupId>
@@ -239,11 +239,11 @@
 
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-fm</artifactId>
+      <artifactId>fm</artifactId>
       <version>2.4-SNAPSHOT</version>
       <exclusions>
         <!-- excluding the xerces transitive dependency
-          from jxpath, dependency of gt2-fm, since it conflicts
+          from jxpath, dependency of fm, since it conflicts
           with the xercesImpl and api dependency of geoserver and
           causes an out of memory error -->
         <exclusion>
@@ -254,17 +254,17 @@
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-community-schema-ds</artifactId>
+      <artifactId>community-schema-ds</artifactId>
       <version>2.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geotools.demo</groupId>
-      <artifactId>gt2-demo-property</artifactId>
+      <artifactId>demo-property</artifactId>
       <version>2.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-geometryless</artifactId>
+      <artifactId>geometryless</artifactId>
       <version>2.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
@@ -392,7 +392,7 @@
       <dependencies>
         <dependency>
           <groupId>org.geotools</groupId>
-          <artifactId>gt2-arcsde</artifactId>
+          <artifactId>arcsde</artifactId>
           <version>${gt.version}</version>
         </dependency>
       </dependencies>
