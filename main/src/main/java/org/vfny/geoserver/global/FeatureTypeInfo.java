@@ -683,7 +683,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @throws IOException when an error occurs
      */
-    public Envelope getBoundingBox() throws IOException {
+    public ReferencedEnvelope getBoundingBox() throws IOException {
         CoordinateReferenceSystem declaredCRS = getDeclaredCRS();
         CoordinateReferenceSystem nativeCRS = getNativeCRS();
         if ((nativeBBox == null) || nativeBBox.isNull()) {
@@ -705,10 +705,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             }
         }
 
-        return nativeBBox;
+        return (ReferencedEnvelope) nativeBBox;
     }
 
-    private Envelope getBoundingBox(CoordinateReferenceSystem targetCrs)
+    private ReferencedEnvelope getBoundingBox(CoordinateReferenceSystem targetCrs)
         throws IOException {
         FeatureSource<SimpleFeatureType, SimpleFeature> realSource = getAliasedFeatureSource();
         Envelope bbox = FeatureSourceUtils.getBoundingBoxEnvelope(realSource);
@@ -1510,5 +1510,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     
     public void setMaxFeatures(int maxFeatures) {
         this.maxFeatures = maxFeatures;
+    }
+    
+    public int getSrsHandling() {
+        return srsHandling;
     }
 }
