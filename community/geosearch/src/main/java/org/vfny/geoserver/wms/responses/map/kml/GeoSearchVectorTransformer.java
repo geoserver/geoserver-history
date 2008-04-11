@@ -102,6 +102,8 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
             } else if (stratname.equalsIgnoreCase("data")) { 
                 setRegionatingStrategy(new DataRegionatingStrategy());
+            } else if (stratname.equalsIgnoreCase("geo")) { 
+                setRegionatingStrategy(new GeometryRegionatingStrategy());
             } else {
                 LOGGER.info("Bogus regionating strategy [" + stratname + "] specified, using default style-based strategy.");
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
