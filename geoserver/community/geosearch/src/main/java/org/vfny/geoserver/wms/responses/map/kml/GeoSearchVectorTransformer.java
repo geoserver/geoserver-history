@@ -38,13 +38,19 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
     }
 
     public Translator createTranslator(ContentHandler handler) {
-        return new GeoSearchKMLTranslator(handler);
+        GeoSearchKMLTranslator translator = new GeoSearchKMLTranslator(handler);
+        return translator;
     }
 
     protected class GeoSearchKMLTranslator extends KMLTranslator {
+        private RegionatingStrategy myStrategy;
 
         public GeoSearchKMLTranslator(ContentHandler handler) {
             super(handler);
+        }
+
+        public void setRegionatingStrategy(RegionatingStrategy rs){
+            myStrategy = rs;
         }
 
         public void encode(Object o) throws IllegalArgumentException {
@@ -87,6 +93,19 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             // get the styles for hte layer
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(
                     mapLayer.getStyle(), featureType);
+
+            String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
+            if (stratname == null) {
+                LOGGER.info("no regionating strategy specified, using default style-based strategy");
+                setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
+            } else if (stratname.equalsIgnoreCase("sld")) {
+                setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
+            } else if (stratname.equalsIgnoreCase("data")) { 
+                setRegionatingStrategy(new DataRegionatingStrategy());
+            } else {
+                LOGGER.info("Bogus regionating strategy [" + stratname + "] specified, using default style-based strategy.");
+                setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
+            }
 
             // encode the schemas (kml 2.2)
             encodeSchemas(features);
@@ -198,5 +217,13 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             return link;
         }
 
+        protected void encode(SimpleFeature feature, FeatureTypeStyle[] styles) {
+            String featureId = featureId(feature);
+
+            if ( myStrategy.include(scaleDenominator, feature) ) {
+                encodeStyle(feature, styles);
+                encodePlacemark(feature,styles);    
+            }
+        }
     }
 }
