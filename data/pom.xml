@@ -39,8 +39,12 @@
    <artifactId>h2</artifactId>
   </dependency>
   <dependency>
-   <groupId>org.geotools.demo</groupId>
+   <groupId>org.geotools</groupId>
    <artifactId>property</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.geotools.xsd</groupId>
+   <artifactId>gml2</artifactId>
   </dependency>
   <dependency>
    <groupId>junit</groupId>
