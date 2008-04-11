@@ -278,6 +278,56 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
             }
         }.transform(filter, extraData);
     }
+    
+    /**
+     * Helper method to reproject a geometry.
+     */
+    protected Geometry reproject( Object value, CoordinateReferenceSystem propertyCrs) {
+        if ( value == null ) {
+            return null;
+        }
+        
+        if (!(value instanceof Geometry))
+            throw new IllegalArgumentException("Binary geometry filter, but second expression "
+                    + "is not a geometry literal? (it's a " + value.getClass() + ")");
+        Geometry geom = (Geometry) value;
+        
+        // does it make sense to proceed?
+        if (geom.getUserData() == null
+                || !(geom.getUserData() instanceof CoordinateReferenceSystem))
+            return geom;
+
+        try {
+            // reproject
+            CoordinateReferenceSystem geomCRS = (CoordinateReferenceSystem) geom.getUserData();
+            Geometry transformed = JTS.transform(geom, CRS.findMathTransform(geomCRS, propertyCrs, true));
+            transformed.setUserData(propertyCrs);
+            
+            return transformed;
+        } catch(Exception e) {
+            throw new RuntimeException("Could not reproject geometry " + value, e);
+        }
+    }
+    
+    Expression reproject(final Expression expression,
+            final CoordinateReferenceSystem propertyCrs, boolean forceReprojection) {
+        // check for case of section filter being a function
+        if (expression instanceof Function) {
+            //wrap the function in one that will transform the result
+            final Function delegate = (Function) expression;
+            return  new FunctionReprojector(propertyCrs, delegate);
+        } else if (expression instanceof Literal) {
+            // second expression is a geometry literal
+            Object value = ((Literal) expression).getValue();
+            return ff.literal(reproject(value,propertyCrs));
+        } else if(forceReprojection) {
+            throw new IllegalArgumentException("Binary geometry filter, but second expression "
+                    + "is not a literal or function? (it's a " + expression.getClass() + ")");
+        } else {
+            // we were not forced to reproject, then return the original expression
+            return null;
+        }
+    }
 
     /**
      * Factors out most of the logic needed to reproject a geometry filter, leaving subclasses
@@ -300,83 +350,11 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
             // "transformed" expressions
             Expression ex1 =  (Expression) filter.getExpression1().accept(
                     ReprojectingFilterVisitor.this, extraData);
-            
-            Expression ex2 = null;
-            
-            // check for case of section filter being a function
-            if (filter.getExpression2() instanceof Function) {
-                //wrap the function in one that will transform the result
-                final Function delegate = (Function) filter.getExpression2();
-                Function wrapper = new Function() {
-
-                    public String getName() {
-                        return delegate.getName();
-                    }
-
-                    public List<Expression> getParameters() {
-                        return delegate.getParameters();
-                    }
-
-                    public Object accept(ExpressionVisitor visitor, Object extraData) {
-                        return delegate.accept( visitor, extraData );
-                    }
-
-                    public Object evaluate(Object object) {
-                        Object value = delegate.evaluate( object );
-                        return reproject(value, propertyCrs, filter);
-                    }
-
-                    public <T> T evaluate(Object object, Class<T> context) {
-                        T value = delegate.evaluate( object, context );
-                        return (T) reproject(value, propertyCrs, filter);
-                    }
-                };
-                
-                ex2 = wrapper;
-            }
-            // second expression is a geometry literal
-            else if (filter.getExpression2() instanceof Literal) {
-                Object value = ((Literal) filter.getExpression2()).getValue();
-                ex2 = ff.literal(reproject(value,propertyCrs,filter));
-            }
-            else {
-                throw new IllegalArgumentException("Binary geometry filter, but second expression "
-                        + "is not a literal or function? (it's a " + filter.getExpression2().getClass() + ")");
-            }
+            Expression ex2 = reproject(filter.getExpression2(), propertyCrs, true);
             
             return cloneFilter(filter, extraData, ex1, ex2 );
         }
 
-        /**
-         * Helper method to reproject a geometry.
-         */
-        Geometry reproject( Object value, CoordinateReferenceSystem propertyCrs, BinarySpatialOperator filter ) {
-            if ( value == null ) {
-                return null;
-            }
-            
-            if (!(value instanceof Geometry))
-                throw new IllegalArgumentException("Binary geometry filter, but second expression "
-                        + "is not a geometry literal? (it's a " + value.getClass() + ")");
-            Geometry geom = (Geometry) value;
-            
-            // does it make sense to proceed?
-            if (geom.getUserData() == null
-                    || !(geom.getUserData() instanceof CoordinateReferenceSystem))
-                return geom;
-
-            try {
-                // reproject
-                CoordinateReferenceSystem geomCRS = (CoordinateReferenceSystem) geom.getUserData();
-                Geometry transformed = JTS.transform(geom, CRS.findMathTransform(geomCRS, propertyCrs, true));
-                transformed.setUserData(propertyCrs);
-                
-                return transformed;
-            } catch(Exception e) {
-                throw new RuntimeException("Could not reproject geometry filter " + filter, e);
-            }
-    
-        }
         /**
          * Straight cloning using cascaded visit
          * 
@@ -407,42 +385,33 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
      */
     private abstract class BinaryComparisonTransformer {
         Object transform(BinaryComparisonOperator filter, Object extraData) {
-            // check working assumptions, first expression is a property
-            if (!(filter.getExpression1() instanceof PropertyName))
-                throw new IllegalArgumentException("Binary geometry filter, but first expression "
-                        + "is not a property name? (it's a " + filter.getExpression1().getClass()
-                        + ")");
-            CoordinateReferenceSystem propertyCrs = findPropertyCRS((PropertyName) filter.getExpression1());
-
-            // we have to reproject only if the property is geometric and is compared against
-            // a geometric literal
-            if (!(propertyCrs != null && (filter.getExpression2() instanceof Literal) && 
-                    ((Literal) filter.getExpression2()).getValue() instanceof Geometry))
+            // binary filters may use two random expressions, check if we have
+            // enough information for a reprojection
+            PropertyName name;
+            Expression other;
+            if ((filter.getExpression1() instanceof PropertyName)) {
+                name = (PropertyName) filter.getExpression1();
+                other = filter.getExpression2();
+            } else if(filter.getExpression2() instanceof PropertyName) {
+                name = (PropertyName) filter.getExpression2();
+                other = filter.getExpression1();
+            } else {
                 return cloneFilter(filter, extraData);
-
-            // extract the geometry
-            Object value = ((Literal) filter.getExpression2()).getValue();
-            Geometry geom = (Geometry) value;
-
-            // does it make sense to proceed?
-            if (geom.getUserData() == null
-                    || !(geom.getUserData() instanceof CoordinateReferenceSystem))
-                return cloneFilter(filter, extraData);
-
-            try {
-                // reproject
-                CoordinateReferenceSystem geomCRS = (CoordinateReferenceSystem) geom.getUserData();
-                Geometry transformed = JTS.transform(geom, CRS.findMathTransform(geomCRS, propertyCrs, true));
-                transformed.setUserData(propertyCrs);
-    
-                // clone
-                Expression ex1 = (Expression) filter.getExpression1().accept(
-                        ReprojectingFilterVisitor.this, extraData);
-                Expression ex2 = ff.literal(transformed);
-                return cloneFilter(filter, extraData, ex1, ex2);
-            } catch(Exception e) {
-                throw new RuntimeException("Could not reproject geometry filter " + filter, e);
             }
+                
+            CoordinateReferenceSystem propertyCrs = findPropertyCRS(name);
+
+            // we have to reproject only if the property is geometric 
+            if (propertyCrs == null)
+                return cloneFilter(filter, extraData);
+            
+            // "transformed" expressions
+            Expression ex1 =  (Expression) name.accept(ReprojectingFilterVisitor.this, extraData);
+            Expression ex2 = reproject(other, propertyCrs, false);
+            if(ex2 == null)
+                ex2 = (Expression) other.accept(ReprojectingFilterVisitor.this, extraData);
+                        
+            return cloneFilter(filter, extraData, ex1, ex2 );
         }
 
         /**
@@ -466,6 +435,45 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
         abstract Object cloneFilter(BinaryComparisonOperator filter, Object extraData, Expression ex1,
                 Expression ex2);
         
+    }
+    
+    /**
+     * Makes sure that the result of a function gets reprojected to the specified CRS, should
+     * it be a Geometry
+     * @author Justin DeOliveira - TOPP
+     *
+     */
+    protected class FunctionReprojector implements Function {
+        private final CoordinateReferenceSystem propertyCrs;
+
+        private final Function delegate;
+
+        protected FunctionReprojector(CoordinateReferenceSystem propertyCrs, Function delegate) {
+            this.propertyCrs = propertyCrs;
+            this.delegate = delegate;
+        }
+
+        public String getName() {
+            return delegate.getName();
+        }
+
+        public List<Expression> getParameters() {
+            return delegate.getParameters();
+        }
+
+        public Object accept(ExpressionVisitor visitor, Object extraData) {
+            return delegate.accept( visitor, extraData );
+        }
+
+        public Object evaluate(Object object) {
+            Object value = delegate.evaluate( object );
+            return reproject(value, propertyCrs);
+        }
+
+        public <T> T evaluate(Object object, Class<T> context) {
+            T value = delegate.evaluate( object, context );
+            return (T) reproject(value, propertyCrs);
+        }
     }
 
 }
