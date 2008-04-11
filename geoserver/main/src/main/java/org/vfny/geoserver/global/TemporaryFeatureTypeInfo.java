@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureType;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -88,7 +89,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
-    public Envelope getBoundingBox() throws IOException {
+    public ReferencedEnvelope getBoundingBox() throws IOException {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 

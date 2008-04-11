@@ -30,6 +30,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
 import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -45,6 +46,7 @@ import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.AttributeForm;
 import org.vfny.geoserver.form.data.TypesEditorForm;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
@@ -271,8 +273,12 @@ public class TypesEditorAction extends ConfigAction {
             Envelope declaredEnvelope = envelope;
 
             if (!CRS.equalsIgnoreMetadata(original, crsDeclared)) {
-                MathTransform xform = CRS.findMathTransform(original, crsDeclared, true);
-                declaredEnvelope = JTS.transform(envelope, null, xform, 10); //convert data bbox to lat/long
+                if(typeForm.getSrsHandlingCode() == FeatureTypeInfo.REPROJECT) {
+                    MathTransform xform = CRS.findMathTransform(original, crsDeclared, true);
+                    declaredEnvelope = JTS.transform(envelope, null, xform, 10); //convert data bbox to lat/long
+                } else if(typeForm.getSrsHandlingCode() == FeatureTypeInfo.FORCE) {
+                    declaredEnvelope = new ReferencedEnvelope(envelope, crsDeclared);
+                }
             }
 
             LOGGER.finer("Seeting form's data envelope: " + declaredEnvelope);
@@ -367,12 +373,14 @@ public class TypesEditorAction extends ConfigAction {
             } catch (Exception e){
                 LOGGER.severe("Couldn't convert new BBox to native coordinate system! Error was" + e);
             }
+        } else {
+            config.setNativeBBox(getNativeBBox(form));
         }
         // may the native bbox have been changed due to a change
-        // in the CRS code by the user
-        // if(config.getNativeBBox() != null || (nativeBbox != null && !config.getNativeBBox().equals(nativeBbox))){
-            // config.setNativeBBox(nativeBbox);            
-        // }
+//        // in the CRS code by the user
+//         if(config.getNativeBBox() != null || (nativeBbox != null && !config.getNativeBBox().equals(nativeBbox))){
+//             config.setNativeBBox(nativeBbox);            
+//         }
         config.setKeywords(keyWords(form));
         config.setMetadataLinks(metadataLinks(form));
         config.setWmsPath(form.getWmsPath());
