@@ -16,13 +16,23 @@
 
   <dependencies>
     
-    <!-- plugin in jdbc driveres -->
+    <!-- plugin in jdbc drivers -->
     <!-- dependency>
       <groupId>net.sourceforge.jtds</groupId>
       <artifactId>jtds</artifactId>
       <version>1.2.2</version>
     </dependency-->
-    
+
+    <!--
+      oracle spatial support: should be safe to include
+      as will only fail at runtime if oracle used and one
+      of ojdbc14.jar or odjbc5.jar is not present
+    -->
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-oracle-spatial</artifactId>
+      <version>2.4-SNAPSHOT</version>
+    </dependency>
     
     <!-- dependency>
       <groupId>oracle</groupId>
