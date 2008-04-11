@@ -75,13 +75,7 @@ public class FeatureRestlet extends Restlet {
         Form form = request.getResourceRef().getQueryAsForm();
         int startIndex = 0; 
         int maxFeatures = 100;
-
-        //        if ( (feature == null) 
-        //            && ( (form.getFirstValue("startindex", true) == null
-        //            || form.getFirstValue("maxfeatures", true) == null)
-        //            )){
-        //            // redirect to first page?
-        //        }
+        String regionateBy = null;
 
         try{ 
             startIndex = Integer.valueOf(form.getFirstValue("startindex", true));
@@ -90,6 +84,10 @@ public class FeatureRestlet extends Restlet {
         try{
             maxFeatures = Integer.valueOf(form.getFirstValue("maxfeatures", true));
         } catch (Exception e) {}
+
+        regionateBy = form.getFirstValue("regionateBy", true);
+        if (regionateBy == null) regionateBy = "sld";
+
 
         NameSpaceInfo ns = catalog.getNameSpace(namespace);
         if ( ns == null ) {
@@ -118,6 +116,7 @@ public class FeatureRestlet extends Restlet {
         raw.put("format", "geosearch-kml");
         raw.put("startIndex", Integer.toString(startIndex));
         raw.put("maxfeatures", Integer.toString(maxFeatures));
+        raw.put("format_options", "regionateby:" + regionateBy);
 
 
         if ( feature != null ) {
