@@ -12,6 +12,7 @@ import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.PropertyIsEqualTo;
 import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.Function;
@@ -127,34 +128,27 @@ public class ReprojectingFilterVisitorTest extends TestCase {
         assertEquals(original, clone);
     }
     
-    public void testIntersectsWithFunction() throws Exception {
+    public void testPropertyEqualsFirstArgumentNotPropertyName() throws Exception {
         GeometryFactory gf = new GeometryFactory();
-        final LineString ls = gf.createLineString(new Coordinate[] {new Coordinate(10, 15), new Coordinate(20, 25)});
+        LineString ls = gf.createLineString(new Coordinate[] {new Coordinate(10, 15), new Coordinate(20, 25)});
         ls.setUserData(CRS.decode("urn:x-ogc:def:crs:EPSG:6.11.2:4326"));
         
-        Function function = new Function() {
+        // make sure a class cast does not occur, see: http://jira.codehaus.org/browse/GEOS-1860
+        Function function = ff.function("geometryType", ff.property("geom"));
+        PropertyIsEqualTo original = ff.equals(ff.literal("Point"), function);
+        Filter clone = (Filter) original.accept(reprojector, null);
+        assertNotSame(original, clone);
+        assertEquals(original, clone);
 
-            public String getName() {
-                return "function";
-            }
-
-            public List<Expression> getParameters() {
-                return Collections.EMPTY_LIST;
-            }
-
-            public Object accept(ExpressionVisitor visitor, Object extraData) {
-                return visitor.visit( this, extraData ); 
-            }
-
-            public Object evaluate(Object object) {
-                return ls;
-            }
-
-            public <T> T evaluate(Object object, Class<T> context) {
-                return (T) ls;
-            }
-            
-        };
+        // try the opposite, literal and function
+        original = ff.equals(function, ff.literal("Point"));
+        clone = (Filter) original.accept(reprojector, null);
+        assertNotSame(original, clone);
+        assertEquals(original, clone);
+    }
+    
+    public void testIntersectsWithFunction() throws Exception {
+        Function function = new GeometryFunction();
         
         // see if coordinates gets flipped, urn forces lat/lon interpretation
         Intersects original = ff.intersects(ff.property("geom"), function);
@@ -170,5 +164,55 @@ public class ReprojectingFilterVisitorTest extends TestCase {
         assertEquals(CRS.decode("EPSG:4326"), clonedLs.getUserData());
     }
     
+    public void testPropertyEqualWithFunction() throws Exception {
+        Function function = new GeometryFunction();
+        
+        // see if coordinates gets flipped, urn forces lat/lon interpretation
+        PropertyIsEqualTo original = ff.equals(ff.property("geom"), function);
+        PropertyIsEqualTo clone = (PropertyIsEqualTo) original.accept(reprojector, null);
+        assertNotSame(original, clone);
+        assertEquals(clone.getExpression1(), original.getExpression1());
+        LineString clonedLs = (LineString) clone.getExpression2().evaluate(null);
+        assertTrue(15 == clonedLs.getCoordinateN(0).x);
+        assertTrue(10 == clonedLs.getCoordinateN(0).y);
+        assertTrue(25 == clonedLs.getCoordinateN(1).x);
+        assertTrue(20 == clonedLs.getCoordinateN(1).y);
+        assertEquals(CRS.decode("EPSG:4326"), clonedLs.getUserData());
+    }
     
+    
+    
+    
+    
+
+    private final class GeometryFunction implements Function {
+        final LineString ls;
+        
+        
+        public GeometryFunction() throws Exception {
+            GeometryFactory gf = new GeometryFactory();
+            ls = gf.createLineString(new Coordinate[] {new Coordinate(10, 15), new Coordinate(20, 25)});
+            ls.setUserData(CRS.decode("urn:x-ogc:def:crs:EPSG:6.11.2:4326"));
+        }
+
+        public String getName() {
+            return "function";
+        }
+
+        public List<Expression> getParameters() {
+            return Collections.EMPTY_LIST;
+        }
+
+        public Object accept(ExpressionVisitor visitor, Object extraData) {
+            return visitor.visit( this, extraData ); 
+        }
+
+        public Object evaluate(Object object) {
+            return ls;
+        }
+
+        public <T> T evaluate(Object object, Class<T> context) {
+            return (T) ls;
+        }
+    }
 }
