@@ -34,6 +34,7 @@ import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.jts.LiteCoordinateSequenceFactory;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.EMFUtils;
@@ -531,6 +532,9 @@ public class GetFeature {
             dataQuery.setVersion(query.getFeatureVersion());
         }
 
+        //create the Hints to set at the end
+        final Hints hints = new Hints();
+                
         //handle xlink traversal depth
         if (request.getTraverseXlinkDepth() != null) {
             //TODO: make this an integer in the model, and have hte NumericKvpParser
@@ -538,8 +542,7 @@ public class GetFeature {
             Integer traverseXlinkDepth = traverseXlinkDepth( request.getTraverseXlinkDepth() );
             
             //set the depth as a hint on the query
-            Hints hints = new Hints(Hints.ASSOCIATION_TRAVERSAL_DEPTH, traverseXlinkDepth);
-            dataQuery.setHints(hints);
+            hints.put(Hints.ASSOCIATION_TRAVERSAL_DEPTH, traverseXlinkDepth);
         }
         
         //handle xlink properties
@@ -550,7 +553,6 @@ public class GetFeature {
                 Integer traverseXlinkDepth = traverseXlinkDepth( xlinkProperty.getTraverseXlinkDepth() );
                 
                 //set the depth and property as hints on the query
-                Hints hints = new Hints();
                 hints.put(Hints.ASSOCIATION_TRAVERSAL_DEPTH, traverseXlinkDepth );
                 
                 PropertyName xlinkPropertyName = filterFactory.property( xlinkProperty.getValue() );
@@ -562,6 +564,12 @@ public class GetFeature {
                 break;
             }
         }
+        
+        //tell the datastore to use a lite coordinate sequence factory, if possible
+        hints.put(Hints.JTS_COORDINATE_SEQUENCE_FACTORY, new LiteCoordinateSequenceFactory());
+
+        //finally, set the hints
+        dataQuery.setHints(hints);
         
         return dataQuery;
     }
