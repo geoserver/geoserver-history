@@ -6,6 +6,7 @@
 package org.geoserver.wfs.response;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -15,6 +16,8 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
+
 import net.sf.json.JSONException;
 import net.sf.json.util.JSONBuilder;
 import java.io.Writer;
@@ -45,23 +48,22 @@ public class GeoJSONBuilder extends JSONBuilder {
         this.key("type");
         this.value(getGeometryName(geometry));
 
-        int geometryType = getGeometryType(geometry);
+        final int geometryType = getGeometryType(geometry);
 
         if (geometryType != MULTIGEOMETRY) {
             this.key("coordinates");
 
             switch (geometryType) {
             case POINT:
-                writeCoordinate(geometry.getCoordinate());
-
+                Point point = (Point)geometry;
+                writeCoordinate(point.getX(), point.getY());
                 break;
-
             case LINESTRING:
+                writeCoordinates(((LineString)geometry).getCoordinateSequence());
+                break;
             case MULTIPOINT:
                 writeCoordinates(geometry.getCoordinates());
-
                 break;
-
             case POLYGON:
                 writePolygon((Polygon) geometry);
 
@@ -71,7 +73,7 @@ public class GeoJSONBuilder extends JSONBuilder {
                 this.array();
 
                 for (int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
-                    writeCoordinates(geometry.getGeometryN(i).getCoordinates());
+                    writeCoordinates(((LineString)geometry.getGeometryN(i)).getCoordinateSequence());
                 }
 
                 this.endArray();
@@ -107,28 +109,33 @@ public class GeoJSONBuilder extends JSONBuilder {
         return this.endArray();
     }
 
+    private JSONBuilder writeCoordinates(Coordinate[] coords)
+        throws JSONException {
+        return writeCoordinates(new CoordinateArraySequence(coords));
+    }
+    
     /**
      * Write the coordinates of a geometry
      * @param coords The coordinates to write
      * @return this
      * @throws JSONException
      */
-    private JSONBuilder writeCoordinates(Coordinate[] coords)
+    private JSONBuilder writeCoordinates(CoordinateSequence coords)
         throws JSONException {
         this.array();
 
-        for (int i = 0; i < coords.length; i++) {
-            Coordinate coord = coords[i];
-            writeCoordinate(coord);
+        final int coordCount = coords.size();
+        for (int i = 0; i < coordCount; i++) {
+            writeCoordinate(coords.getX(i), coords.getY(i));
         }
 
         return this.endArray();
     }
 
-    private JSONBuilder writeCoordinate(Coordinate coord) {
+    private JSONBuilder writeCoordinate(double x, double y) {
         this.array();
-        this.value(coord.x);
-        this.value(coord.y);
+        this.value(x);
+        this.value(y);
 
         return this.endArray();
     }
@@ -138,13 +145,13 @@ public class GeoJSONBuilder extends JSONBuilder {
      * @return this
      */
     protected JSONBuilder writeBoundingBox(Envelope env) {
-    	this.key("bbox");
-    	this.array();
-    	this.value(env.getMinX());
-    	this.value(env.getMinY());
-    	this.value(env.getMaxX());
-    	this.value(env.getMaxY());
-    	return this.endArray();
+        this.key("bbox");
+        this.array();
+        this.value(env.getMinX());
+        this.value(env.getMinY());
+        this.value(env.getMaxX());
+        this.value(env.getMaxY());
+        return this.endArray();
     }
 
     /**
@@ -154,10 +161,10 @@ public class GeoJSONBuilder extends JSONBuilder {
      */
     private void writePolygon(Polygon geometry) throws JSONException {
         this.array();
-        writeCoordinates(geometry.getExteriorRing().getCoordinates());
+        writeCoordinates(geometry.getExteriorRing().getCoordinateSequence());
 
         for (int i = 0, ii = geometry.getNumInteriorRing(); i < ii; i++) {
-            writeCoordinates(geometry.getInteriorRingN(i).getCoordinates());
+            writeCoordinates(geometry.getInteriorRingN(i).getCoordinateSequence());
         }
 
         this.endArray(); //end the linear ring
