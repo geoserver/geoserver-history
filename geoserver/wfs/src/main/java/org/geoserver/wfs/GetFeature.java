@@ -19,12 +19,14 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
+import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
+import org.geotools.geometry.jts.LiteCoordinateSequenceFactory;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.factory.GeotoolsFactory;
 import org.geotools.xml.EMFUtils;
@@ -432,6 +434,10 @@ public class GetFeature {
             dataQuery.setVersion(query.getFeatureVersion());
         }
 
+        //set hints
+        Hints hints = new Hints(Hints.JTS_COORDINATE_SEQUENCE_FACTORY, new LiteCoordinateSequenceFactory());
+        dataQuery.setHints(hints);
+        
         return dataQuery;
     }
 
