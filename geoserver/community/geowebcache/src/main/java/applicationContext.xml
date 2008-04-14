@@ -5,11 +5,25 @@ o<?xml version="1.0" encoding="UTF-8"?>
   <!-- controller for handling all incoming requests -->
   <bean id="gwcDispatcher" class="org.geowebcache.GeoWebCacheDispatcher">
     <property name="tileLayerDispatcher" ref="gsTLDispatcher"/>
+    <property name="seederDispatcher" ref="gsSeederDispatcher"/>
     <property name="servletPrefix" value="gwc"/>
   </bean>
 
   <bean id="gsTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
-    <property name="config" ref="geoserverConfig"/>
+  	<property name="config">
+    <list>
+      <ref bean="geoserverConfig"/>
+      <!-- Add additional Configuration beans here -->
+    </list>
+    </property>
+  </bean>
+  
+  <bean id="gsSeederDispatcher" class="org.geowebcache.seeder.SeederDispatcher">
+	<property name="allowedSeeders">
+    <list>
+      <value>127.0.0.1</value>
+    </list>
+    </property>
   </bean>
   
   <bean id="gsConfig" class="org.geowebcache.util.GetCapabilitiesConfiguration">
