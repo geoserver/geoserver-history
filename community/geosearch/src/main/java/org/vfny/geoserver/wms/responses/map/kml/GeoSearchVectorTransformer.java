@@ -9,10 +9,14 @@ import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.xml.transform.Translator;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -22,6 +26,7 @@ import org.xml.sax.ContentHandler;
 import sun.security.action.GetBooleanAction;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class GeoSearchVectorTransformer extends KMLVectorTransformer {
@@ -96,7 +101,7 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
 
             String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
             if (stratname == null) {
-                LOGGER.info("no regionating strategy specified, using default style-based strategy");
+                LOGGER.info("No regionating strategy specified, using default style-based strategy");
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
             } else if (stratname.equalsIgnoreCase("sld")) {
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
@@ -108,6 +113,8 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                 LOGGER.info("Bogus regionating strategy [" + stratname + "] specified, using default style-based strategy.");
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
             }
+            
+            myStrategy.preProcess(mapContext, 0); // TODO: this should be moved somewhere that it can be applied for each layer
 
             // encode the schemas (kml 2.2)
             encodeSchemas(features);
@@ -220,9 +227,24 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
         }
 
         protected void encode(SimpleFeature feature, FeatureTypeStyle[] styles) {
-            String featureId = featureId(feature);
+        	ReferencedEnvelope bounds = mapContext.getAreaOfInterest();
+        	ReferencedEnvelope featureBounds = 
+        		new ReferencedEnvelope(((Geometry)feature.getDefaultGeometry()).getEnvelopeInternal(),
+        				feature.getType().getDefaultGeometry().getCRS());
+        	CoordinateReferenceSystem nativeCRS = featureBounds.getCoordinateReferenceSystem();
+    
+        	try {
+				boolean reprojectBBox = (nativeCRS != null)
+						&& !CRS.equalsIgnoreMetadata(bounds
+								.getCoordinateReferenceSystem(), nativeCRS);
+				if (reprojectBBox) {
+					bounds = bounds.transform(nativeCRS, true);
+				}
+			} catch (Exception e) {
+			}
 
-            if ( myStrategy.include(scaleDenominator, feature) ) {
+            if (bounds.intersects((Envelope)featureBounds)
+                && myStrategy.include(feature)) {
                 encodeStyle(feature, styles);
                 encodePlacemark(feature,styles);    
             }
