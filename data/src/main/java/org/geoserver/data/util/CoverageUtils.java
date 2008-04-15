@@ -397,4 +397,20 @@ public class CoverageUtils {
                     true));
         return gc.getSampleDimensions();
     }
+    public static MathTransform getMathTransform(CoordinateReferenceSystem sourceCRS,
+            CoordinateReferenceSystem destCRS) {
+            try {
+                CoordinateOperation op = operationFactory.createOperation(sourceCRS, destCRS);
+
+                if (op != null) {
+                    return op.getMathTransform();
+                }
+            } catch (OperationNotFoundException e) {
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            } catch (FactoryException e) {
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            }
+
+            return null;
+        }    
 }
