@@ -1,11 +1,20 @@
 package org.geoserver.wfs;
 
+import junit.framework.Test;
+
 import org.geoserver.test.GeoServerTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class SrsNameTest extends GeoServerTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new SrsNameTest());
+    }
 
 	public void testWfs10() throws Exception {
 		String q = "wfs?request=getfeature&service=wfs&version=1.0.0" +

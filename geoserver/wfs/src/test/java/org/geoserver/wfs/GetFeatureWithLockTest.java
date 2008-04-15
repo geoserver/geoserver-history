@@ -1,10 +1,19 @@
 package org.geoserver.wfs;
 
+import junit.framework.Test;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class GetFeatureWithLockTest extends WFSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetFeatureWithLockTest());
+    }
 
     public void testUpdateLockedFeatureWithLockId() throws Exception {
         // get feature

@@ -4,6 +4,8 @@
  */
 package org.geoserver.wms;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -14,6 +16,13 @@ import org.vfny.geoserver.wms.servlets.WMService;
 import com.vividsolutions.jts.geom.Envelope;
 
 public class DefaultWebMapServiceTest extends WMSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new DefaultWebMapServiceTest());
+    }
     
     /** 
      * This is just a very basic test, mostly testing defaults

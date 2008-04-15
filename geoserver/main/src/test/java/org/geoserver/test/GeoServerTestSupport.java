@@ -65,7 +65,7 @@ import com.mockrunner.mock.web.MockServletOutputStream;
  * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  */
-public class GeoServerTestSupport extends TestCase {
+public class GeoServerTestSupport extends OneTimeSetupTest {
     /**
      * Common logger for test cases
      */
@@ -74,19 +74,17 @@ public class GeoServerTestSupport extends TestCase {
     /**
      * mock GeoServer data directory
      */
-    protected MockData dataDirectory;
+    protected static MockData dataDirectory;
 
     /**
      * Application context
      */
-    protected GeoServerTestApplicationContext applicationContext;
+    protected static GeoServerTestApplicationContext applicationContext;
 
     /**
      * If subclasses overide they *must* call super.setUp() first.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
-        
+    protected void oneTimeSetUp() throws Exception {
         // configure axis ordering
           if (System.getProperty("org.geotools.referencing.forceXY") == null) {
               System.setProperty("org.geotools.referencing.forceXY", "true");
@@ -154,9 +152,7 @@ public class GeoServerTestSupport extends TestCase {
     /**
      * If subclasses overide they *must* call super.tearDown() first.
      */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-
+    protected void oneTimeTearDown() throws Exception {
         //kill the context
         applicationContext.destroy();
         applicationContext = null;

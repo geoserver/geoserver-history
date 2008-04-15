@@ -3,8 +3,8 @@ package org.geoserver.wfs.v1_1;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 
+import junit.framework.Test;
 import net.opengis.wfs.DescribeFeatureTypeType;
-import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.data.test.MockData;
@@ -19,6 +19,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class DescribeFeatureResponseTest extends WFSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new DescribeFeatureResponseTest());
+    }
 
     Operation request() {
         Service service = new Service("wfs", null, null);

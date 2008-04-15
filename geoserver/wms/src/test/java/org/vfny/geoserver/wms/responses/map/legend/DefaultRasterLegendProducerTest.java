@@ -42,8 +42,8 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
      * @throws Exception DOCUMENT ME!
      * @throws UnsupportedOperationException DOCUMENT ME!
      */
-    public void setUp() throws Exception {
-        super.setUp();
+    public void setUpInternal() throws Exception {
+        super.setUpInternal();
         this.legendProducer = new DefaultRasterLegendProducer() {
                     public void writeTo(OutputStream out)
                         throws ServiceException, IOException {
@@ -63,9 +63,9 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
      *
      * @throws Exception DOCUMENT ME!
      */
-    public void tearDown() throws Exception {
+    public void tearDownInternal() throws Exception {
         this.legendProducer = null;
-        super.tearDown();
+        super.tearDownInternal();
     }
 
     /**

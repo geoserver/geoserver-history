@@ -6,6 +6,8 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.vividsolutions.jts.geom.Envelope;
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wms.WMSTestSupport;
@@ -35,9 +37,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class KMLTransformerTest extends WMSTestSupport {
     WMSMapContext mapContext;
     MapLayer mapLayer;
-
-    protected void setUp() throws Exception {
-        super.setUp();
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new KMLTransformerTest());
+    }
+    
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
 
         mapLayer = createMapLayer( MockData.BASIC_POLYGONS );
         

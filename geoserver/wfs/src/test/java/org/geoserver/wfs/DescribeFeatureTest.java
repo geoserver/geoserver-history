@@ -1,8 +1,17 @@
 package org.geoserver.wfs;
 
+import junit.framework.Test;
+
 import org.w3c.dom.Document;
 
 public class DescribeFeatureTest extends WFSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new DescribeFeatureTest());
+    }
 
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=DescribeFeatureType&version=1.0.0");

@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import junit.framework.Test;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
@@ -21,6 +22,13 @@ import org.vfny.geoserver.global.DataStoreInfo;
 import org.w3c.dom.Document;
 
 public class GML3FeatureProducerTest extends WFSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GML3FeatureProducerTest());
+    }
 
     GML3OutputFormat producer() {
         WFSConfiguration configuration = new WFSConfiguration(getCatalog(),

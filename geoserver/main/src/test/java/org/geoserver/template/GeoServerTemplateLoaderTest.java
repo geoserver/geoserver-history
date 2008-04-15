@@ -4,15 +4,17 @@
  */
 package org.geoserver.template;
 
-import junit.framework.TestCase;
-import org.geoserver.platform.GeoServerResourceLoader;
-import org.springframework.web.context.support.GenericWebApplicationContext;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
+import org.geoserver.platform.GeoServerResourceLoader;
+import org.springframework.web.context.support.GenericWebApplicationContext;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 public class GeoServerTemplateLoaderTest extends TestCase {
+    
     public void test() throws Exception {
         File data = File.createTempFile(getName(), "template");
         data.delete();

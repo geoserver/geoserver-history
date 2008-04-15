@@ -22,8 +22,8 @@ public class TransactionListenerTest extends WFSTestSupport {
         return extended;
     }
     
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
         listener = (TransactionListenerTester) applicationContext.getBean("transactionListenerTester");
         listener.clear();
     }

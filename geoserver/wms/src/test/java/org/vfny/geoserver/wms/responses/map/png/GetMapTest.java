@@ -7,6 +7,8 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletResponse;
 import javax.xml.namespace.QName;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.RemoteOWSTestSupport;
 import org.geoserver.wms.WMSTestSupport;
@@ -53,14 +55,21 @@ public class GetMapTest extends WMSTestSupport {
         + "                        <ogc:Height>250</ogc:Height>\n "
         + "                </ogc:Size>\n " + "        </ogc:Output>\n " + "</ogc:GetMap>\n ";
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         ImageUtilities.allowNativeCodec("png", true, false);
         // add a feature type
         dataDirectory.addFeatureType( 
             new QName( MockData.SF_URI, "states", MockData.SF_PREFIX ), getClass().getResourceAsStream("states.properties")
         );
         applicationContext.refresh();
+    }
+        
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetMapTest());
     }
     
 //    protected String getDefaultLogConfiguration() {

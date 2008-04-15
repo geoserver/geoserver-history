@@ -2,6 +2,8 @@ package org.geoserver.wfs;
 
 import java.util.StringTokenizer;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -11,10 +13,17 @@ import org.w3c.dom.Element;
 
 public class ReprojectionTest extends WFSTestSupport {
     private static final String TARGET_CRS_CODE = "EPSG:900913";
-    MathTransform tx;
+    static MathTransform tx;
     
-    protected void setUp() throws Exception {
-        super.setUp();
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new ReprojectionTest());
+    }
+    
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
     
         CoordinateReferenceSystem epsg4326 = CRS.decode(TARGET_CRS_CODE);
         CoordinateReferenceSystem epsg32615 = CRS.decode("EPSG:32615");
@@ -130,164 +139,7 @@ public class ReprojectionTest extends WFSTestSupport {
         assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
     }
     
-    public void testInsertSrsName() throws Exception {
-        String q = "wfs?request=getfeature&service=wfs&version=1.0.0&typeName=" + 
-            MockData.POLYGONS.getLocalPart();
-        Document dom = getAsDOM( q );
-        
-        Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
-        Element posList = getFirstElementByTagName( polygonProperty, "gml:coordinates");
-        
-        double[] c = coordinates(posList.getFirstChild().getNodeValue());
-        double[] cr = new double[c.length];
-        tx.transform(c, 0, cr, 0, cr.length/2);
-        
-        String xml = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\" "
-        + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
-        + " xmlns:gml=\"http://www.opengis.net/gml\" "
-        + " xmlns:cgf=\"" + MockData.CGF_URI + "\">"
-        + "<wfs:Insert handle=\"insert-1\" srsName=\"" + TARGET_CRS_CODE + "\">"
-        + " <cgf:Polygons>"
-        +    "<cgf:polygonProperty>"
-        +      "<gml:Polygon >" 
-        +       "<gml:outerBoundaryIs>"
-        +          "<gml:LinearRing>" 
-        +             "<gml:coordinates>";
-        for ( int i = 0; i < cr.length; ) {
-            xml += cr[i++] + "," + cr[i++];
-            if ( i < cr.length - 1 ) {
-                xml += " ";
-            }
-        }
-        xml +=        "</gml:coordinates>"
-        +        "</gml:LinearRing>"
-        +      "</gml:outerBoundaryIs>"
-        +    "</gml:Polygon>"
-        +   "</cgf:polygonProperty>"
-        + " </cgf:Polygons>"
-        + "</wfs:Insert>"
-        + "</wfs:Transaction>";
-        postAsDOM( "wfs", xml );
-        
-        dom = getAsDOM( q );
-        
-        assertEquals( 2, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
-        
-    }
-    
-    public void testInsertGeomSrsName() throws Exception {
-        String q = "wfs?request=getfeature&service=wfs&version=1.0&typeName=" + 
-            MockData.POLYGONS.getLocalPart();
-        Document dom = getAsDOM( q );
-        
-        Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
-        Element posList = getFirstElementByTagName( polygonProperty, "gml:coordinates");
-        
-        double[] c = coordinates(posList.getFirstChild().getNodeValue());
-        double[] cr = new double[c.length];
-        tx.transform(c, 0, cr, 0, cr.length/2);
-        
-        String xml = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\" "
-        + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
-        + " xmlns:gml=\"http://www.opengis.net/gml\" "
-        + " xmlns:cgf=\"" + MockData.CGF_URI + "\">"
-        + "<wfs:Insert handle=\"insert-1\">"
-        + " <cgf:Polygons>"
-        +    "<cgf:polygonProperty>"
-        +      "<gml:Polygon srsName=\"" + TARGET_CRS_CODE + "\">" 
-        +       "<gml:outerBoundaryIs>"
-        +          "<gml:LinearRing>" 
-        +             "<gml:coordinates>";
-        for ( int i = 0; i < cr.length; ) {
-            xml += cr[i++] + "," + cr[i++];
-            if ( i < cr.length - 1 ) {
-                xml += " ";
-            }
-        }
-        xml +=        "</gml:coordinates>"
-        +        "</gml:LinearRing>"
-        +      "</gml:outerBoundaryIs>"
-        +    "</gml:Polygon>"
-        +   "</cgf:polygonProperty>"
-        + " </cgf:Polygons>"
-        + "</wfs:Insert>"
-        + "</wfs:Transaction>";
-        postAsDOM( "wfs", xml );
-        
-        dom = getAsDOM( q );
-        
-        assertEquals( 2, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
-        
-    }
-    
-    public void testUpdate() throws Exception {
-        String q = "wfs?request=getfeature&service=wfs&version=1.0&typeName=" + 
-        MockData.POLYGONS.getLocalPart();
-        
-        Document dom = getAsDOM( q );
-        
-        Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
-        Element posList = getFirstElementByTagName( polygonProperty, "gml:coordinates");
-        
-        double[] c = coordinates(posList.getFirstChild().getNodeValue());
-        double[] cr = new double[c.length];
-        tx.transform(c, 0, cr, 0, cr.length/2);
-        
-        // perform an update
-        String xml = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\" "
-                + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
-                + "xmlns:gml=\"http://www.opengis.net/gml\"> "
-                + "<wfs:Update typeName=\"cgf:Polygons\" > " + "<wfs:Property>"
-                + "<wfs:Name>polygonProperty</wfs:Name>" 
-                + "<wfs:Value>" 
-                +      "<gml:Polygon srsName=\"" + TARGET_CRS_CODE + "\">" 
-                +       "<gml:outerBoundaryIs>"
-                +          "<gml:LinearRing>" 
-                +             "<gml:coordinates>";
-                for ( int i = 0; i < cr.length; ) {
-                    xml += cr[i++] + "," + cr[i++];
-                    if ( i < cr.length - 1 ) {
-                        xml += " ";
-                    }
-                }
-                xml +=        "</gml:coordinates>"
-                +        "</gml:LinearRing>"
-                +      "</gml:outerBoundaryIs>"
-                +    "</gml:Polygon>"
-                + "</wfs:Value>" 
-                + "</wfs:Property>" 
-                + "<ogc:Filter>"
-                + "<ogc:PropertyIsEqualTo>"
-                + "<ogc:PropertyName>id</ogc:PropertyName>"
-                + "<ogc:Literal>t0002</ogc:Literal>"
-                + "</ogc:PropertyIsEqualTo>" + "</ogc:Filter>"
-                + "</wfs:Update>" + "</wfs:Transaction>";
-                
-        dom = postAsDOM( "wfs", xml );
-        
-        assertEquals( "wfs:WFS_TransactionResponse", dom.getDocumentElement().getNodeName() );
-        Element success = getFirstElementByTagName(dom, "wfs:SUCCESS" );
-        assertNotNull(success);
-        
-        dom = getAsDOM(q);
-        
-        polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
-        posList = getFirstElementByTagName( polygonProperty, "gml:coordinates");
-        double[] c1 = coordinates(posList.getFirstChild().getNodeValue());
-
-        assertEquals( c.length, c1.length );
-        for ( int i = 0; i < c.length; i++ ) {
-            int x = (int)(c[i] + 0.5);
-            int y = (int)(c1[i] + 0.5);
-            
-            assertEquals(x,y);
-        }
-        
-    }
-    
-    public void runTest( Document dom1, Document dom2 ) throws Exception {
+    private void runTest( Document dom1, Document dom2 ) throws Exception {
         Element box = getFirstElementByTagName(dom1.getDocumentElement(), "gml:Box");
         Element coordinates = getFirstElementByTagName(box, "gml:coordinates");
         double[] d1 = coordinates(coordinates.getFirstChild().getNodeValue());
@@ -304,7 +156,7 @@ public class ReprojectionTest extends WFSTestSupport {
         }
     }
     
-    double[] coordinates(String string) {
+    private double[] coordinates(String string) {
         StringTokenizer st = new StringTokenizer(string, " ");
         double[] coordinates = new double[st.countTokens()*2];
         int i = 0;
@@ -312,17 +164,6 @@ public class ReprojectionTest extends WFSTestSupport {
             String tuple = st.nextToken();
             coordinates[i++] = Double.parseDouble(tuple.split(",")[0]);
             coordinates[i++] = Double.parseDouble(tuple.split(",")[1]);
-        }
-        
-        return coordinates;
-    }
-    
-    double[] posList(String string) {
-        StringTokenizer st = new StringTokenizer(string, " ");
-        double[] coordinates = new double[st.countTokens()];
-        int i = 0;
-        while(st.hasMoreTokens()) {
-            coordinates[i++] = Double.parseDouble(st.nextToken());
         }
         
         return coordinates;

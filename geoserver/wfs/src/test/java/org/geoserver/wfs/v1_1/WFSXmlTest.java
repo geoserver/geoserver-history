@@ -1,11 +1,20 @@
 package org.geoserver.wfs.v1_1;
 
+import junit.framework.Test;
+
 import org.geoserver.wfs.WFSTestSupport;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Parser;
 
 public class WFSXmlTest extends WFSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new WFSXmlTest());
+    }
 
     WFSConfiguration configuration() {
         return new WFSConfiguration(getCatalog(),

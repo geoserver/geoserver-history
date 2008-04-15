@@ -4,15 +4,14 @@ import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
-import org.geoserver.wfs.kvp.SrsNameKvpParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class TransactionTest extends WFSTestSupport {
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
     
         dataDirectory.addFeatureType( 
             new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 

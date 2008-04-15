@@ -1,10 +1,19 @@
 package org.geoserver.wfs;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 public class GetFeatureTest extends WFSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetFeatureTest());
+    }
     
     public void testGet() throws Exception {
     	testGetFifteenAll("wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0&service=wfs");
