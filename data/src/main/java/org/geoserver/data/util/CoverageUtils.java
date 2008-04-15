@@ -57,17 +57,13 @@ public class CoverageUtils {
 
         if ((params != null) && (params.values().size() > 0)) {
             List list = params.values();
-            Iterator it = list.iterator();
-            ParameterDescriptor descr = null;
-            ParameterValue val = null;
-
+            final Iterator it = list.iterator();
             while (it.hasNext()) {
-                val = (ParameterValue) it.next();
+                final ParameterValue val = (ParameterValue) it.next();
 
                 if (val != null) {
-                    descr = (ParameterDescriptor) val.getDescriptor();
-
-                    String _key = descr.getName().toString();
+                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
+                    final String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
                         // skip namespace as it is *magic* and
@@ -85,8 +81,7 @@ public class CoverageUtils {
                         // IGNORING READ_GRIDGEOMETRY2D param
                         continue;
                     }
-
-                    Object value = val.getValue();
+                    final Object value = val.getValue();
 
                     parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null,
                             value).createValue());
@@ -112,17 +107,13 @@ public class CoverageUtils {
 
         if ((params != null) && (params.values().size() > 0)) {
             List list = params.values();
-            Iterator it = list.iterator();
-            ParameterDescriptor descr = null;
-            ParameterValue val = null;
-
+            final Iterator it = list.iterator();
             while (it.hasNext()) {
-                val = (ParameterValue) it.next();
+                final ParameterValue val = (ParameterValue) it.next();
 
                 if (val != null) {
-                    descr = (ParameterDescriptor) val.getDescriptor();
-
-                    String _key = descr.getName().toString();
+                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
+                    final String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
                         // skip namespace as it is *magic* and
@@ -173,18 +164,15 @@ public class CoverageUtils {
         final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 
         if ((params != null) && (params.values().size() > 0)) {
-            List list = params.values();
-            Iterator it = list.iterator();
-            ParameterDescriptor descr = null;
-            ParameterValue val = null;
-
+            final List list = params.values();
+            final Iterator it = list.iterator();
             while (it.hasNext()) {
-                val = (ParameterValue) it.next();
+                final ParameterValue val = (ParameterValue) it.next();
 
                 if (val != null) {
-                    descr = (ParameterDescriptor) val.getDescriptor();
+                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
 
-                    String _key = descr.getName().toString();
+                    final String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
                         // skip namespace as it is *magic* and
@@ -268,23 +256,6 @@ public class CoverageUtils {
                                     }, new double[] { coords[2], coords[3] });
                         }
                     }
-                }
-            } else if (key.equalsIgnoreCase("values_palette")) {
-                if ((getParamValue(paramValues, index) != null)
-                        && (((String) getParamValue(paramValues, index)).length() > 0)) {
-                    String tmp = (String) getParamValue(paramValues, index);
-                    String[] strColors = tmp.split(";");
-                    Vector colors = new Vector();
-
-                    for (int col = 0; col < strColors.length; col++) {
-                        if (Color.decode(strColors[col]) != null) {
-                            colors.add(Color.decode(strColors[col]));
-                        }
-                    }
-
-                    value = colors.toArray(new Color[colors.size()]);
-                } else {
-                    value = "#000000;#3C3C3C;#FFFFFF";
                 }
             } else {
                 Class[] clArray = { getParamValue(paramValues, index).getClass() };
@@ -393,23 +364,6 @@ public class CoverageUtils {
         }
 
         return value;
-    }
-
-    public static MathTransform getMathTransform(CoordinateReferenceSystem sourceCRS,
-        CoordinateReferenceSystem destCRS) {
-        try {
-            CoordinateOperation op = operationFactory.createOperation(sourceCRS, destCRS);
-
-            if (op != null) {
-                return op.getMathTransform();
-            }
-        } catch (OperationNotFoundException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        } catch (FactoryException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        }
-
-        return null;
     }
     
     /**
