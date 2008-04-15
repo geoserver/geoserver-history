@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.config;
 
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -20,11 +21,15 @@ import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
+import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.GridRange2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.geometry.Envelope2D;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.resources.XArray;
 import org.geotools.util.SimpleInternationalString;
 import org.opengis.coverage.grid.Format;
@@ -34,6 +39,8 @@ import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.CoordinateSystem;
+import org.opengis.referencing.datum.PixelInCell;
+import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -201,125 +208,144 @@ public class CoverageConfig {
      * @throws ConfigurationException
      */
     public CoverageConfig(String formatId, Format format, AbstractGridCoverage2DReader reader,
-        HttpServletRequest request) throws ConfigurationException {
+        final HttpServletRequest request) throws ConfigurationException {
+    	///////////////////////////////////////////////////////////////////////
+    	//
+    	// Initial checks
+    	//
+    	///////////////////////////////////////////////////////////////////////
         if ((formatId == null) || (formatId.length() == 0)) {
-            throw new IllegalArgumentException("formatId is required for CoverageConfig");
+            throw new ConfigurationException("formatId is required for CoverageConfig");
         }
-
         if (format == null) {
-            throw new ConfigurationException(new StringBuffer("Cannot handle format: ").append(
+            throw new ConfigurationException(new StringBuilder("Cannot handle format: ").append(
                     formatId).toString());
         }
-
+        if(reader==null){
+            throw new ConfigurationException(new StringBuilder("Cannot handle null reader for format: ").append(
+                    formatId).toString());
+        }
+        
+    	///////////////////////////////////////////////////////////////////////
+    	//
+    	// Get the coverage config as needed
+    	//
+    	///////////////////////////////////////////////////////////////////////
         this.formatId = formatId;
-
         final DataConfig dataConfig = getDataConfig(request);
         final CoverageStoreConfig cvConfig = dataConfig.getDataFormat(formatId);
-
         if (cvConfig == null) {
             // something is horribly wrong no FormatID selected!
             // The JSP needs to not include us if there is no
             // selected Format
             //
-            throw new RuntimeException("selectedCoverageSetId required in Session");
+            throw new ConfigurationException("selectedCoverageSetId required in Session");
         }
 
+    	///////////////////////////////////////////////////////////////////////
+    	//
+    	// Now get all the information from the Reader and fill up the config
+    	//
+    	///////////////////////////////////////////////////////////////////////
         crs = reader.getCrs();
         srsName = (((crs != null) && !crs.getIdentifiers().isEmpty())
             ? crs.getIdentifiers().toArray()[0].toString() : "UNKNOWN");
         srsWKT = ((crs != null) ? crs.toWKT() : "UNKNOWN");
         envelope = reader.getOriginalEnvelope();
-
+        final GeneralGridRange originalRange=reader.getOriginalGridRange();
+        final MathTransform gridToWorldCorner =  reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER);
+        grid = new GridGeometry2D(originalRange,reader.getOriginalGridToWorld(PixelInCell.CELL_CENTER),crs);
         try {
             lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
         } catch (IndexOutOfBoundsException e) {
             final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
-                        "Converting Envelope to Lat-Lon WGS84: ").append(e.toString()).toString());
+                        "Converting Envelope to Lat-Lon WGS84: ").append(e.getLocalizedMessage()).toString());
             newEx.initCause(e);
             throw newEx;
         } catch (FactoryException e) {
             final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
-                        "Converting Envelope to Lat-Lon WGS84: ").append(e.toString()).toString());
+                        "Converting Envelope to Lat-Lon WGS84: ").append(e.getLocalizedMessage()).toString());
             newEx.initCause(e);
             throw newEx;
         } catch (TransformException e) {
             final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
-                        "Converting Envelope to Lat-Lon WGS84: ").append(e.toString()).toString());
+                        "Converting Envelope to Lat-Lon WGS84: ").append(e.getLocalizedMessage()).toString());
             newEx.initCause(e);
             throw newEx;
         }
 
-        /**
-         * Now reading a fake small GridCoverage just to retrieve meta information:
-         * - calculating a new envelope which is 1/20 of the original one
-         * - reading the GridCoverage subset
-         */
+    	///////////////////////////////////////////////////////////////////////
+    	//
+    	// Now reading a fake small GridCoverage just to retrieve meta
+		// information about bands:
+    	//
+        // - calculating a new envelope which is 1/20 of the original one
+        // - reading the GridCoverage subset
+        //
+    	///////////////////////////////////////////////////////////////////////
         final GridCoverage2D gc;
 
         try {
             final ParameterValueGroup readParams = format.getReadParameters();
             final Map parameters = CoverageUtils.getParametersKVP(readParams);
-
-            double[] minCP = envelope.getLowerCorner().getCoordinates();
-            double[] maxCP = new double[] {
-                    minCP[0] + (envelope.getLength(0) / 20.0),
-                    minCP[1] + (envelope.getLength(1) / 20.0)
-                };
-            final GeneralEnvelope subEnvelope = new GeneralEnvelope(minCP, maxCP);
-            subEnvelope.setCoordinateReferenceSystem(reader.getCrs());
-
+            final int minX=originalRange.getLower(0);
+            final int minY=originalRange.getLower(1);
+            final int width=originalRange.getLength(0);
+            final int height=originalRange.getLength(1);
+            final int maxX=minX+(width<=5?width:5);
+            final int maxY=minY+(height<=5?height:5);
+            //we have to be sure that we are working against a valid grid range.
+            final GridRange2D testRange= new GridRange2D(minX,minY,maxX,maxY);
+            //build the corresponding envelope
+            final GeneralEnvelope testEnvelope =CRS.transform(gridToWorldCorner,new GeneralEnvelope(testRange.getBounds()));
+            testEnvelope.setCoordinateReferenceSystem(crs);
             parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-                new GridGeometry2D(reader.getOriginalGridRange(), subEnvelope));
+                new GridGeometry2D(testRange, testEnvelope));
+            //try to read this coverage
             gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters,
                         true));
-            // //
-            // AlFa: Getting the original coverage GridGeometry
-            // //
-            grid = gc.getGridGeometry();
+            if(gc==null){
+            	throw new ConfigurationException("Unable to acquire test coverage for format:"+formatId);
+            }
             dimensions = parseCoverageDimesions(gc.getSampleDimensions());
         } catch (UnsupportedEncodingException e) {
             final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
-                        "Coverage dimensions: ").append(e.toString()).toString());
+                        "Coverage dimensions: ").append(e.getLocalizedMessage()).toString());
             newEx.initCause(e);
             throw newEx;
         } catch (IllegalArgumentException e) {
             final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
-                        "Coverage dimensions: ").append(e.toString()).toString());
+                        "Coverage dimensions: ").append(e.getLocalizedMessage()).toString());
             newEx.initCause(e);
             throw newEx;
         } catch (IOException e) {
             final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
-                        "Coverage dimensions: ").append(e.toString()).toString());
+                        "Coverage dimensions: ").append(e.getLocalizedMessage()).toString());
             newEx.initCause(e);
             throw newEx;
+        } catch (TransformException e) {
+        	 final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
+             			"Coverage dimensions: ").append(e.getLocalizedMessage()).toString());
+        	 newEx.initCause(e);
+        	 throw newEx;
         }
-
         dimentionNames = getDimensionNames(gc);
 
         final DataConfig config = ConfigRequests.getDataConfig(request);
-        StringBuffer cvName = new StringBuffer(gc.getName().toString());
+        StringBuilder cvName =null;
         int count = 0;
-        StringBuffer key;
-        Map coverages;
-        Set cvKeySet;
-        boolean key_exists;
-        String cvKey;
-        Iterator it;
-
         while (true) {
-            key = new StringBuffer(gc.getName().toString());
-
+            final StringBuilder key = new StringBuilder(gc.getName().toString());
             if (count > 0) {
-                key.append("_").append(count) /*.append("]")*/;
+                key.append("_").append(count);
             }
 
-            coverages = config.getCoverages();
-            cvKeySet = coverages.keySet();
-            key_exists = false;
+            Map coverages = config.getCoverages();
+            Set cvKeySet = coverages.keySet();
+            boolean key_exists = false;
 
-            for (it = cvKeySet.iterator(); it.hasNext();) {
-                cvKey = ((String) it.next()).toLowerCase();
-
+            for (Iterator it = cvKeySet.iterator(); it.hasNext();) {
+                String cvKey = ((String) it.next()).toLowerCase();
                 if (cvKey.endsWith(key.toString().toLowerCase())) {
                     key_exists = true;
                 }
@@ -327,7 +353,6 @@ public class CoverageConfig {
 
             if (!key_exists) {
                 cvName = key;
-
                 break;
             } else {
                 count++;
@@ -347,41 +372,26 @@ public class CoverageConfig {
         keywords.add(name);
         nativeFormat = format.getName();
         dirName = new StringBuffer(formatId).append("_").append(name).toString();
-        requestCRSs = new ArrayList(10);
-
+        requestCRSs = new ArrayList();
         if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
                 && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
             requestCRSs.add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
                                             .toArray()[0]).toString());
         }
-
-        responseCRSs = new ArrayList(10);
-
+        responseCRSs = new ArrayList();
         if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
                 && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
             responseCRSs.add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
                                              .toArray()[0]).toString());
         }
-
-        supportedFormats = new ArrayList(10);
-
+        supportedFormats = new ArrayList();
         final List formats = CoverageStoreUtils.listDataFormats();
-        String fName;
-        Format fTmp;
-
         for (Iterator i = formats.iterator(); i.hasNext();) {
-            fTmp = (Format) i.next();
-            fName = fTmp.getName();
+            final Format fTmp = (Format) i.next();
+            final  String fName = fTmp.getName();
 
             if (fName.equalsIgnoreCase("WorldImage")) {
-                /*
-                 * final String[] formatNames = ImageIO.getReaderFormatNames();
-                 * final int length = formatNames.length; for (int f=0; f<length;
-                 * f++) { // TODO check if coverage can encode Format
-                 * supportedFormats.add(formatNames[f]); }
-                 */
-
-                // TODO check if coverage can encode Format
+            	// TODO check if coverage can encode Format
                 supportedFormats.add("GIF");
                 supportedFormats.add("PNG");
                 supportedFormats.add("JPEG");
@@ -394,10 +404,8 @@ public class CoverageConfig {
                 supportedFormats.add(fName);
             }
         }
-
-        defaultInterpolationMethod = "nearest neighbor"; // TODO make me
-                                                         // parametric
-
+        // TODO make me parametric
+        defaultInterpolationMethod = "nearest neighbor"; 
         interpolationMethods = new ArrayList(10);
         interpolationMethods.add("nearest neighbor");
         interpolationMethods.add("bilinear");
