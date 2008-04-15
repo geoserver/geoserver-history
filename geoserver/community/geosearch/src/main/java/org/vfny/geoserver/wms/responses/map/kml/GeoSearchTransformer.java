@@ -5,21 +5,26 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.simple.SimpleFeature;
+import org.geotools.data.Query;
+import org.geotools.data.FeatureSource;
+import org.geotools.feature.FeatureCollection;
 
 public class GeoSearchTransformer extends KMLTransformer {
 
     Data catalog;
-    
+
     public GeoSearchTransformer(Data catalog) {
         this.catalog = catalog;
     }
-    
+
     public Translator createTranslator(ContentHandler handler){
-        return new KML3Translator(handler);
+        return new GeoSearchKMLTranslator(handler);
     }
 
-    protected class KML3Translator extends KMLTranslator {
-        public KML3Translator(ContentHandler handler){
+    protected class GeoSearchKMLTranslator extends KMLTranslator {
+        public GeoSearchKMLTranslator(ContentHandler handler){
             super(handler);
         }
 
@@ -27,6 +32,13 @@ public class GeoSearchTransformer extends KMLTransformer {
                 MapLayer layer){
             return new GeoSearchVectorTransformer(mapContext, layer, catalog);
         }
+
+        FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollection(
+                FeatureSource <SimpleFeatureType, SimpleFeature> featureSource, MapLayer layer,
+                WMSMapContext mapContext) throws Exception {
+            return featureSource.getFeatures(Query.ALL);
+        }
+
     }
 }
 

@@ -1,7 +1,9 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import org.opengis.feature.simple.SimpleFeature;
+import org.geotools.feature.FeatureCollection;
 import org.opengis.filter.Filter;
+import org.vfny.geoserver.wms.WMSMapContext;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import java.util.logging.Logger;
@@ -18,7 +20,13 @@ public class SLDRegionatingStrategy implements RegionatingStrategy {
 
     static final double TOLERANCE = 1e-6;
 
-    public boolean include(double scaleDenominator, SimpleFeature feature){
+    private double scaleDenominator;
+
+    public void preProcess(WMSMapContext con, int layerIndex){
+        // no preprocessing necessary, the SLD knows all
+    }
+
+    public boolean include(SimpleFeature feature){
         for (int i = 0; i < styles.length; i++){
             if (filterRules(styles[i], feature, scaleDenominator).length > 0) {
                 return true;
