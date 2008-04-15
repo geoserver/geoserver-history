@@ -260,14 +260,10 @@ public final class CoverageStoreUtils {
         final Map map = new HashMap(params.size());
 
         final ParameterValueGroup info = factory.createFormat().getReadParameters();
-        String key;
-        Object value;
-
         // Convert Params into the kind of Map we actually need
         for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-            key = (String) i.next();
-            value = find(info, key).getValue();
-
+            String key = (String) i.next();
+            Object value = find(info, key).getValue();
             if (value != null) {
                 map.put(key, value);
             }
