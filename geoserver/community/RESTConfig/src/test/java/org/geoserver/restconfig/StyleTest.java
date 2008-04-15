@@ -1,9 +1,5 @@
 package org.geoserver.restconfig;
 
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import org.geoserver.test.GeoServerTestSupport;
 import org.w3c.dom.Document;
 

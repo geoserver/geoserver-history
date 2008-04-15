@@ -7,6 +7,8 @@ package org.vfny.geoserver.wms.responses.map.svg;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 
+import junit.framework.Test;
+
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.memory.MemoryDataStore;
@@ -26,6 +28,14 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 public class SVGMapProducerTest extends WMSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new SVGMapProducerTest());
+    }
+    
     public void testHeterogeneousGeometry() throws Exception {
         GeometryFactory gf = new GeometryFactory();
         Point point = gf.createPoint(new Coordinate(10, 10));

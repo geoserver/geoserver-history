@@ -1,5 +1,7 @@
 package org.geoserver.wfs;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -10,11 +12,18 @@ import org.w3c.dom.NodeList;
 
 public class MaxFeaturesTest extends WFSTestSupport {
 
-    private Data catalog;
+    private static Data catalog;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new MaxFeaturesTest());
+    }
 
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         // set global max to 5
         GeoServer gs = (GeoServer) applicationContext.getBean("geoServer");
         GeoServerDTO dto = (GeoServerDTO) gs.toDTO();

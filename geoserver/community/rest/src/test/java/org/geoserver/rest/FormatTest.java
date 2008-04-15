@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Test;
+
 import org.geoserver.test.GeoServerTestSupport;
 
 /**
@@ -13,18 +15,21 @@ import org.geoserver.test.GeoServerTestSupport;
  * Format classes should probably still have their own custom tests to verify the format itself is correct.
  */
 public class FormatTest extends GeoServerTestSupport {
-    List formats;
+    static List formats;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new FormatTest());
+    }
 
-    public void setUp() throws Exception{
-    	super.setUp();
+    public void oneTimeSetUp() throws Exception{
+    	super.oneTimeSetUp();
     	// Add to this list if you would like to test another general format
         formats = new ArrayList();
         formats.add(new AutoXMLFormat());
         formats.add(new JSONFormat());
-    }
-
-    public void tearDown(){
-        formats.clear();
     }
 
     public void testFormatMap(){

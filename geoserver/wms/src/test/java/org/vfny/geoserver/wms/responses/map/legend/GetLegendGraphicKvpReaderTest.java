@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import junit.framework.Test;
+
 import org.geoserver.ows.adapters.KvpRequestReaderAdapter;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geotools.styling.Style;
@@ -24,8 +26,15 @@ public class GetLegendGraphicKvpReaderTest extends KvpRequestReaderTestSupport {
     
     KvpRequestReaderAdapter reader;
     
-    protected void setUp() throws Exception {
-        super.setUp();
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetLegendGraphicKvpReaderTest());
+    }
+    
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
 
         GetLegendGraphic getLegend = (GetLegendGraphic) applicationContext.getBean("wmsGetLegendGraphic");
         WMS wms = (WMS) applicationContext.getBean("wms");

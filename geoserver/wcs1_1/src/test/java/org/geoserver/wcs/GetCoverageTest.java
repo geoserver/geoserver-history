@@ -1,10 +1,18 @@
 package org.geoserver.wcs;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+
+import junit.framework.Test;
+import junit.textui.TestRunner;
 
 import net.opengis.wcs11.GetCoverageType;
 
@@ -18,6 +26,7 @@ import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.opengis.coverage.grid.GridCoverage;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
+import org.w3c.dom.Document;
 
 public class GetCoverageTest extends WCSTestSupport {
 
@@ -32,10 +41,17 @@ public class GetCoverageTest extends WCSTestSupport {
     private WCSConfiguration configuration;
 
     private WcsXmlReader xmlReader;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetCoverageTest());
+    }
 
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
         kvpreader = (GetCoverageRequestReader) applicationContext
                 .getBean("wcs111GetCoverageRequestReader");
         service = (WebCoverageService111) applicationContext.getBean("wcs111ServiceTarget");
@@ -44,10 +60,10 @@ public class GetCoverageTest extends WCSTestSupport {
         xmlReader = new WcsXmlReader("GetCoverage", "1.1.1", configuration);
     }
 
-//    @Override
-//    protected String getDefaultLogConfiguration() {
-//        return "/DEFAULT_LOGGING.properties";
-//    }
+    @Override
+    protected String getLogConfiguration() {
+        return "/DEFAULT_LOGGING.properties";
+    }
     
     
 
@@ -359,6 +375,34 @@ public class GetCoverageTest extends WCSTestSupport {
         GridCoverage[] coverages = executeGetCoverageXml(request);
     }
     
+    public void testStoreSupported() throws Exception {
+        String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
+                + layerId(WCSTestSupport.TASMANIA_BM)
+                + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
+                + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=geotiff&store=true";
+        Document dom = getAsDOM(request);
+//        print(dom);
+        checkValidationErrors(dom, WCS11_SCHEMA);
+        assertXpathEvaluatesTo(WCSTestSupport.TASMANIA_BM.getLocalPart(),
+                "wcs:Coverages/wcs:Coverage/ows:Title", dom);
+        
+        // grab the file path
+        String path = xpath.evaluate("//ows:Reference/@xlink:href", dom);
+        File temp = new File(getTestData().getDataDirectoryRoot(), "temp");
+        if(!temp.exists())
+            temp.mkdir();
+        File wcsTemp = new File(temp, "wcs");
+            wcsTemp.mkdir();
+        File coverageFile = new File(wcsTemp, path.substring(path.lastIndexOf("/") + 1)).getAbsoluteFile();
+        System.out.println(coverageFile);
+        
+        // make sure the tiff can be actually read
+        ImageReader reader = ImageIO.getImageReadersByFormatName("tiff").next();
+        reader.setInput(ImageIO.createImageInputStream(coverageFile));
+        reader.read(0);
+        reader.dispose();
+    }
+    
     /**
      * Runs GetCoverage on the specified parameters and returns an array of coverages
      */
@@ -377,6 +421,8 @@ public class GetCoverageTest extends WCSTestSupport {
         return service.getCoverage(getCoverage);
     }
     
-    
+    public static void main(String[] args) {
+        TestRunner.run(suite());
+    }
 
 }

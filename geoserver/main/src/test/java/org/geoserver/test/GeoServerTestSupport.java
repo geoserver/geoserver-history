@@ -11,8 +11,6 @@ import java.io.InputStream;
 import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
-import org.geoserver.data.test.TestData;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
 
@@ -30,19 +28,17 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  */
 public class GeoServerTestSupport extends GeoServerAbstractTestSupport {
     
-    /**
-     * mock GeoServer data directory
-     */
-    private MockData dataDirectory;
-    
+   
     @Override
-    public MockData getTestData() throws Exception {
-        if(dataDirectory == null) {
-            // create the data directory
-            dataDirectory = new MockData();
-            populateDataDirectory(dataDirectory);
-        } 
+    public MockData buildTestData() throws Exception {
+        // create the data directory
+        MockData dataDirectory = new MockData();
+        populateDataDirectory(dataDirectory);
         return dataDirectory;
+    }
+    
+    public MockData getTestData() {
+        return (MockData) super.getTestData();
     }
     
     /** 
@@ -69,7 +65,7 @@ public class GeoServerTestSupport extends GeoServerAbstractTestSupport {
     protected void setupTemplate(QName featureTypeName,String template,String body)
         throws IOException {
         
-        dataDirectory.copyToFeatureTypeDirectory( new ByteArrayInputStream(body.getBytes()), featureTypeName, template );
+        getTestData().copyToFeatureTypeDirectory( new ByteArrayInputStream(body.getBytes()), featureTypeName, template );
     }
 
     

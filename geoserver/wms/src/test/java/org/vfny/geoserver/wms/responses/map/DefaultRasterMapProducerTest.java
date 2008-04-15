@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -49,21 +51,21 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     private DefaultRasterMapProducer rasterMapProducer;
 
     /**
-     * 
+     * This is a READ ONLY TEST so we can use one time setup
      */
-    public DefaultRasterMapProducerTest() {
-        super();
-    }
-
+    public static Test suite() {
+        return new OneTimeTestSetup(new DefaultRasterMapProducerTest());
+    }   
+    
     /**
      * DOCUMENT ME!
      * 
      * @throws Exception
      *             DOCUMENT ME!
      */
-    public void setUp() throws Exception {
+    public void setUpInternal() throws Exception {
+        super.setUpInternal();
         this.rasterMapProducer = getProducerInstance();
-        super.setUp();
     }
 
     /**
@@ -81,9 +83,9 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * @throws Exception
      *             DOCUMENT ME!
      */
-    public void tearDown() throws Exception {
+    public void tearDownInternal() throws Exception {
         this.rasterMapProducer = null;
-        super.tearDown();
+        super.tearDownInternal();
     }
 
     /**

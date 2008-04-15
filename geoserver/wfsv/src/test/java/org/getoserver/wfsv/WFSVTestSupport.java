@@ -23,25 +23,20 @@ import org.vfny.geoserver.global.Data;
  */
 public class WFSVTestSupport extends GeoServerAbstractTestSupport {
     
-    LiveData testData;
-
     // protected String getLogConfiguration() {
     // return "/DEFAULT_LOGGING.properties";
     // }
 
     @Override
-    public TestData getTestData() throws Exception {
-        if (testData == null) {
-            File base = new File("./src/test/resources/");
-            testData = new LiveDbmsData(new File(base, "versioning"), "wfsv", new File(base,
-                    "versioning.sql"));
-        }
-        return testData;
+    public TestData buildTestData() throws Exception {
+        File base = new File("./src/test/resources/");
+        return new LiveDbmsData(new File(base, "versioning"), "wfsv", new File(base,
+                "versioning.sql"));
     }
     
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         
         // init xmlunit
         Map<String, String> namespaces = new HashMap<String, String>();

@@ -46,8 +46,8 @@ public class MapResourceTest extends GeoServerTestSupport {
 	
 	private ExceptionThrowingMapResource myResource;
 	
-	public void setUp() throws Exception{
-		super.setUp();
+	public void setUpInternal() throws Exception{
+		super.setUpInternal();
 		myResource = new ExceptionThrowingMapResource(
 				new StringRepresentation("Error"),
 				Status.CLIENT_ERROR_BAD_REQUEST);

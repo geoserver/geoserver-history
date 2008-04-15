@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.DefaultQuery;
@@ -20,8 +22,15 @@ public class PagingFeatureSourceTest extends GeoServerTestSupport {
 
     PagingFeatureSource source;
     
-    protected void setUp() throws Exception {
-        super.setUp();
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new PagingFeatureSourceTest());
+    }
+    
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
         
         source = new PagingFeatureSource( getFeatureSource( MockData.FIFTEEN ), 5, 5 );
     }
