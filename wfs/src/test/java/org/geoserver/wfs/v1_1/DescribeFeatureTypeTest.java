@@ -1,5 +1,7 @@
 package org.geoserver.wfs.v1_1;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
@@ -7,6 +9,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class DescribeFeatureTypeTest extends WFSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new DescribeFeatureTypeTest());
+    }
 
     public void testDateMappings() throws Exception {
         

@@ -2,9 +2,6 @@ package org.geoserver.wcs;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -16,6 +13,8 @@ import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
+import junit.framework.Test;
+
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.geotiff.GeoTiffReader;
@@ -24,6 +23,13 @@ import org.w3c.dom.Document;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
 public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetCoverageMultipartEncodingTest());
+    }
 
     // @Override
     // protected String getDefaultLogConfiguration() {

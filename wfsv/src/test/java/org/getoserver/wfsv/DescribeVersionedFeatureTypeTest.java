@@ -1,13 +1,22 @@
 package org.getoserver.wfsv;
 
-import org.w3c.dom.Document;
 import static org.custommonkey.xmlunit.XMLAssert.*;
+import junit.framework.Test;
+
+import org.w3c.dom.Document;
 
 public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
 
-    @Override
-    protected String getLogConfiguration() {
-        return "/DEFAULT_LOGGING.properties";
+//    @Override
+//    protected String getLogConfiguration() {
+//        return "/DEFAULT_LOGGING.properties";
+//    }
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new DescribeVersionedFeatureTypeTest());
     }
     
     public void testDescribeArcsitesPost10() throws Exception {

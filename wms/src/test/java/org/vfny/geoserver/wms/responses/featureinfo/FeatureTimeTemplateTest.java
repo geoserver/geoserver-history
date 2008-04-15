@@ -1,5 +1,7 @@
 package org.vfny.geoserver.wms.responses.featureinfo;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -11,10 +13,18 @@ import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
 
 public class FeatureTimeTemplateTest extends WMSTestSupport {
 
-    SimpleFeature feature;
+    static SimpleFeature feature;
     
-    protected void setUp() throws Exception {
-        super.setUp();
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new FeatureTimeTemplateTest());
+    }
+    
+    
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
     
         FeatureSource<SimpleFeatureType, SimpleFeature> source = getFeatureSource(MockData.PRIMITIVEGEOFEATURE);
         FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures();

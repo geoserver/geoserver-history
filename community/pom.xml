@@ -54,5 +54,11 @@
         <module>geowebcache</module>
       </modules>
     </profile>
+    <profile>
+      <id>kml-ows5</id>
+      <modules> 
+        <module>kml-ows5</module>
+      </modules>
+    </profile>
   </profiles>
 </project>

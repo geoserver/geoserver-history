@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.Test;
+
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.ServiceException;
@@ -39,6 +41,14 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
 
     /** mock config object */
     WMS wms;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetLegendGraphicKvpReaderTest());
+    }
+    
 
     /**
      * Remainder:
@@ -58,8 +68,8 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
      * <li>EXCEPTIONS/Optional
      * </ul>
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
         requiredParameters = new HashMap();
         requiredParameters.put("VERSION", "1.0.0");
         requiredParameters.put("REQUEST", "GetLegendGraphic");
@@ -83,33 +93,6 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
         this.requestReader = new GetLegendGraphicKvpReader(allParameters, wms);
         this.httpRequest = createRequest("wms", allParameters);
     }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // disabled this test for the moment as a 
-    //	fix for http://jira.codehaus.org/browse/GEOS-710
-    //	Since at the moment none of the other request do check the version numbers, we 
-    //	disable this check for the moment, and wait for a proper fix once the 
-    //	we support more than one version of WMS/WFS specs
-
-    //	public void testVersion() throws Exception {
-    //		requiredParameters.put("VERSION", "WRONG");
-    //		
-    //		this.requestReader = 
-    //			new GetLegendGraphicKvpReader(requiredParameters, dummy);
-    //		try {
-    //			requestReader.getRequest(httpRequest);
-    //			fail("Expected ServiceException due to wrong VERSION parameter");
-    //		} catch (ServiceException e) {
-    //			// OK
-    //		}
-    //		requiredParameters.put("VERSION", "1.0.0");
-    //		GetLegendGraphicRequest parsedRequest;
-    //		parsedRequest = (GetLegendGraphicRequest) requestReader
-    //				.getRequest(httpRequest);
-    //	}
 
     /**
      * This test ensures that when a SLD parameter has been passed that refers

@@ -1,14 +1,22 @@
 package org.getoserver.wfsv;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
+import junit.framework.Test;
 
 import org.w3c.dom.Document;
 
 public class HistoryRelatedTest extends WFSVTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new HistoryRelatedTest());
+    }
 
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
 
         if (getTestData().isTestDataAvailable()) {
             // build some history the other tests will use

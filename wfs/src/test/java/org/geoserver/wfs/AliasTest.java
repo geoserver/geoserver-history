@@ -1,11 +1,12 @@
 package org.geoserver.wfs;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 
 import javax.xml.namespace.QName;
+
+import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.vfny.geoserver.global.Data;
@@ -16,6 +17,20 @@ import org.w3c.dom.NodeList;
 public class AliasTest extends WFSTestSupport {
 
     private Data catalog;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new AliasTest());
+    }
+    
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
+
+        catalog = (Data) applicationContext.getBean("catalog");
+    }
     
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
@@ -35,13 +50,6 @@ public class AliasTest extends WFSTestSupport {
         }
         extra.put(MockData.KEY_ALIAS, alias);
         dataDirectory.addPropertiesType(name, properties, extra);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        catalog = (Data) applicationContext.getBean("catalog");
     }
 
     public void testAliasFifteen() throws Exception {

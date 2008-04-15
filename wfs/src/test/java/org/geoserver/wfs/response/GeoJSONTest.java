@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import junit.framework.Test;
 import junit.textui.TestRunner;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -11,6 +12,13 @@ import net.sf.json.JSONObject;
 import org.geoserver.wfs.WFSTestSupport;
 
 public class GeoJSONTest extends WFSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GeoJSONTest());
+    }
 	
     public void testGet() throws Exception {	
     	InputStream is = get("wfs?request=GetFeature&version=1.0.0&typename=sf:PrimitiveGeoFeature&maxfeatures=1&outputformat=json");

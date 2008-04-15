@@ -6,20 +6,17 @@ package org.geoserver.wms.kvp;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
+
+import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geoserver.wms.RemoteOWSTestSupport;
-import org.geotools.data.DataStore;
-import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.styling.Style;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
@@ -28,15 +25,21 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.servlets.GetMap;
 
 
 public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     GetMapKvpRequestReader reader;
     Dispatcher dispatcher;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetMapKvpRequestReaderTest());
+    }
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
 
         dispatcher = (Dispatcher) applicationContext.getBean("dispatcher");
         WMS wms = (WMS) applicationContext.getBean("wms");

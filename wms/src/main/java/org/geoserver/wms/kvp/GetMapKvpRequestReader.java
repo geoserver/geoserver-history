@@ -160,7 +160,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 			} catch (Exception e) {
 				// couldnt make it - we send off a service exception with the
 				// correct info
-				throw new WmsException(e.getLocalizedMessage(), "InvalidSRS");
+			    throw new WmsException("Error occurred decoding the espg code " + epsgCode, "InvalidSRS", e);
 			}
 		}
 		

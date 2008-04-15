@@ -4,20 +4,14 @@
  */
 package org.geoserver.template;
 
-import junit.framework.TestCase;
-import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.test.GeoServerTestSupport;
-import org.springframework.web.context.support.GenericWebApplicationContext;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-
-import com.mockrunner.mock.web.MockServletConfig;
-import com.mockrunner.mock.web.MockServletContext;
-
 import java.io.File;
 import java.io.IOException;
 
+import org.geoserver.test.GeoServerTestSupport;
+
 
 public class GeoServerTemplateLoaderTest extends GeoServerTestSupport {
+    
     public void test() throws Exception {
         File data = getTestData().getDataDirectoryRoot();
         

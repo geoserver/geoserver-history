@@ -47,7 +47,7 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
     
     public static QName WORLD = new QName(WCS_URI, "World", WCS_PREFIX);
     
-    protected XpathEngine xpath;
+    protected static XpathEngine xpath;
     
     protected static final boolean IS_WINDOWS;
     
@@ -77,8 +77,8 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
     }
 
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         
         // init xmlunit
         Map<String, String> namespaces = new HashMap<String, String>();

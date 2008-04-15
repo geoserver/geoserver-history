@@ -46,8 +46,8 @@ public class WFSTestSupport extends GeoServerTestSupport {
     }
     
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         
         // init xmlunit
         Map<String, String> namespaces = new HashMap<String, String>();

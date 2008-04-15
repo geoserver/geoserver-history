@@ -10,6 +10,8 @@ import java.io.ByteArrayOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -26,9 +28,17 @@ import com.vividsolutions.jts.geom.Envelope;
 public class KMLTransformerTest extends WMSTestSupport {
     WMSMapContext mapContext;
     MapLayer mapLayer;
-
-    protected void setUp() throws Exception {
-        super.setUp();
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new KMLTransformerTest());
+    }
+    
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
 
         mapLayer = createMapLayer( MockData.BASIC_POLYGONS );
         

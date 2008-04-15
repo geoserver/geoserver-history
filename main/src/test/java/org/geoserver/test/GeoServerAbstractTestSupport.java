@@ -79,7 +79,7 @@ import com.mockrunner.mock.web.MockServletOutputStream;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  * @author Andrea Aime, The Open Planning Project
  */
-public abstract class GeoServerAbstractTestSupport extends TestCase {
+public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     /**
      * Common logger for test cases
      */
@@ -88,14 +88,20 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
     /**
      * Application context
      */
-    protected GeoServerTestApplicationContext applicationContext;
+    protected static GeoServerTestApplicationContext applicationContext;
+
+    protected static TestData testData;
     
     /**
      * Returns a test data instance
      * 
      * @return
      */
-    public abstract TestData getTestData() throws Exception;
+    protected abstract TestData buildTestData() throws Exception;
+    
+    public TestData getTestData() {
+        return testData;
+    }
 
     /**
      * Override runTest so that the test will be skipped if the TestData is not
@@ -111,11 +117,10 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
     }
 
     /**
-     * If subclasses overide they *must* call super.setUp() first.
+     * If subclasses override they *must* call super.setUp() first.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Override
+    protected void oneTimeSetUp() throws Exception {
         if (System.getProperty("org.geotools.referencing.forceXY") == null) {
             System.setProperty("org.geotools.referencing.forceXY", "true");
         }
@@ -134,7 +139,7 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         GeoServer.configureGeoServerLogging(getClass().getResourceAsStream(getLogConfiguration()), false, true, null);
 
         // set up test data and, if succeeds, create a mock servlet context and start up the spring configuration
-        final TestData testData = getTestData();
+        testData = buildTestData();
         testData.setUp();
         if (testData.isTestDataAvailable()) {
             MockServletContext servletContext = new MockServletContext();
@@ -200,24 +205,27 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
     /**
      * If subclasses overide they *must* call super.tearDown() first.
      */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        
+    @Override
+    protected void oneTimeTearDown() throws Exception {
         if(getTestData().isTestDataAvailable()) {
-            //kill the context
-            applicationContext.destroy();
-            applicationContext = null;
-    
-            if(isMemoryCleanRequired()) {
-                System.gc(); 
-                System.runFinalization();
-            }
-            
-            if(getTestData() != null) {
-                // this cleans up the data directory static loader, if we don't the next test
-                // will keep on running on the current data dir
-                GeoserverDataDirectory.destroy();
-                getTestData().tearDown();
+            try {
+                //kill the context
+                applicationContext.destroy();
+        
+                if(isMemoryCleanRequired()) {
+                    System.gc(); 
+                    System.runFinalization();
+                }
+                
+                if(getTestData() != null) {
+                    // this cleans up the data directory static loader, if we don't the next test
+                    // will keep on running on the current data dir
+                    GeoserverDataDirectory.destroy();
+                    getTestData().tearDown();
+                }
+            } finally {
+                applicationContext = null;
+                testData = null;
             }
         }
     }

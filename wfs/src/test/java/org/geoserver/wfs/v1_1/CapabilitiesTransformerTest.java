@@ -3,8 +3,6 @@ package org.geoserver.wfs.v1_1;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,19 +35,11 @@ public class CapabilitiesTransformerTest extends WFSTestSupport {
                 new ByteArrayInputStream(output.toByteArray()));
 
         ErrorHandler handler = new ErrorHandler(logger, Level.WARNING);
+        // use the schema embedded in the web module
         ReaderUtils.validate(reader, handler, WFS.NAMESPACE,
-                "http://schemas.opengis.net/wfs/1.1.0/wfs.xsd");
+                "../web/src/main/webapp/schemas/wfs/1.1.0/wfs.xsd");
 
-        //only check for no errors if online
-        try {
-        
-            URLConnection c = new URL("http://schemas.opengis.net/wfs/1.1.0/wfs.xsd").openConnection();
-            c.getInputStream().read();
-            
-            assertTrue(handler.errors.isEmpty());
-        }
-        catch( Exception e  ) {
-        }
+        assertTrue(handler.errors.isEmpty());
         
     }
 }
