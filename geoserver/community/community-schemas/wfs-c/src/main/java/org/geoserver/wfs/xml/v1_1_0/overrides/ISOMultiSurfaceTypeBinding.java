@@ -37,8 +37,13 @@ public class ISOMultiSurfaceTypeBinding extends MultiSurfaceTypeBinding {
     public Object getProperty(Object object, QName name)
         throws Exception {
         if (GML.surfaceMember.equals(name)) {
-            Attribute att = (Attribute) object;
-            MultiPolygon multiSurface = (MultiPolygon) att.getValue();
+            MultiPolygon multiSurface = null;
+            if (object instanceof Attribute) {
+                Attribute att = (Attribute) object;
+                multiSurface = (MultiPolygon) att.getValue();
+            } else if (object instanceof MultiPolygon) {
+                multiSurface = (MultiPolygon) object;
+            }
 
             if (multiSurface != null) {
                 Polygon[] members = new Polygon[multiSurface.getNumGeometries()];
