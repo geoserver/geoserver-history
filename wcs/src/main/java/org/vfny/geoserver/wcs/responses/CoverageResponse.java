@@ -74,14 +74,6 @@ public class CoverageResponse implements Response {
     }
 
     /**
-     * Tolerance for NOT drawing a coverage.
-     *
-     * If after a scaling a coverage has all dimensions smaller than
-     * {@link GridCoverageRenderer#MIN_DIM_TOLERANCE} we just do not draw it.
-     */
-    private static final int MIN_DIM_TOLERANCE = 1;
-
-    /**
      *
      */
     CoverageResponseDelegate delegate;
