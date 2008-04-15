@@ -1,14 +1,14 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import org.opengis.feature.simple.SimpleFeature;
+import java.util.ArrayList;
+import java.util.logging.Logger;
 import org.geotools.feature.FeatureCollection;
-import org.opengis.filter.Filter;
-import org.vfny.geoserver.wms.WMSMapContext;
+import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
-import java.util.logging.Logger;
-import java.util.ArrayList;
-
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.Filter;
+import org.vfny.geoserver.wms.WMSMapContext;
 
 public class SLDRegionatingStrategy implements RegionatingStrategy {
     private FeatureTypeStyle[] styles;
@@ -23,7 +23,14 @@ public class SLDRegionatingStrategy implements RegionatingStrategy {
     private double scaleDenominator;
 
     public void preProcess(WMSMapContext con, int layerIndex){
-        // no preprocessing necessary, the SLD knows all
+        scaleDenominator = 1; 
+        try {
+            scaleDenominator = 
+                RendererUtilities.calculateScale(con.getAreaOfInterest(), con.getMapWidth(), con.getMapHeight(), null);
+        } 
+        catch( Exception e ) {
+            LOGGER.severe("Error calculating scale denominator" + e );
+        }
     }
 
     public boolean include(SimpleFeature feature){
