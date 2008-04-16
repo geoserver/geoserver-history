@@ -54,6 +54,13 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
         }
     }
 
+    /**
+     * Creates a "sitemap.xml" with all the namespaces that contain
+     * one or more featuretypes.
+     * 
+     * @param request
+     * @param response
+     */
     public void doGet(Request request, Response response){
         Document d = new Document();
         Element urlset = new Element("urlset", SITEMAP);
@@ -61,7 +68,9 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
 
         NameSpaceInfo[] namespaces = getData().getNameSpaces();
         for (int i = 0; i < namespaces.length; i++){
-            addUrl(urlset, GEOSERVER_ROOT + "/geosearch/" + namespaces[i].getPrefix() + ".kml");
+            if(namespaces[i].getTypeNames().size() > 0) {
+                addUrl(urlset, GEOSERVER_ROOT + "/geosearch/" + namespaces[i].getPrefix() + ".kml");
+            }
         }
 
         response.setEntity(new JDOMRepresentation(d));
