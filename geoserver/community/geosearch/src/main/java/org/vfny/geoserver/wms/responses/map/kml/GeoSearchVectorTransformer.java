@@ -67,8 +67,9 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             }
 
             // start the root document, name it the name of the layer
-            start("Document", KMLUtils.attributes(new String[] {
-                            "xmlns:atom", "http://purl.org/atom/ns#" }));
+            // KML 2.2 start("Document", KMLUtils.attributes(new String[] {
+            //                "xmlns:atom", "http://purl.org/atom/ns#" }));
+            start("Document");
             element("name", mapLayer.getTitle());
 
             String linkbase = "";
@@ -84,16 +85,21 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             int nextStart = mapContext.getRequest().getStartIndex() + maxFeatures;
 
             if (prevStart >= 0) {
-                String prevLink = linkbase + "?startindex=" + prevStart
-                    + "&maxfeatures=" + maxFeatures;
-                element("atom:link", null, KMLUtils.attributes(new String[] {
-                            "rel", "prev", "href", prevLink }));
+                //String prevLink = linkbase + "?startindex=" + prevStart
+                //    + "&maxfeatures=" + maxFeatures;
+                //element("atom:link", null, KMLUtils.attributes(new String[] {
+                //            "rel", "prev", "href", prevLink }));
+                encodeSequentialNetworkLink(linkbase, prevStart,
+                        maxFeatures, "prev", "Previous page");
             }
 
-            String nextLink = linkbase + "?startindex=" + nextStart
-                + "&maxfeatures=" + maxFeatures;
-            element("atom:link", null, KMLUtils.attributes(new String[] {
-                        "rel", "next", "href", nextLink }));
+            //String nextLink = linkbase + "?startindex=" + nextStart
+            //    + "&maxfeatures=" + maxFeatures;
+            //element("atom:link", null, KMLUtils.attributes(new String[] {
+            //            "rel", "next", "href", nextLink }));
+            
+            encodeSequentialNetworkLink(linkbase, nextStart,
+                    maxFeatures, "next", "Next page");
 
             // get the styles for hte layer
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(
@@ -131,6 +137,55 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             }
         }
 
+        /**
+         * 
+         * Encodes a networklink for previous or next document in a sequence
+         * 
+         * Note that in KML 2.2 atom:link is supported and may be better.
+         *
+         * @param linkbase the base fore creating URLs
+         * @param prevStart previous start value
+         * @param maxFeatures maximum number of features to return
+         * @param id attribute to use for this NetworkLink
+         * @param readableName goes into linkName
+         */
+        private void encodeSequentialNetworkLink(String linkbase, int prevStart,
+                int maxFeatures, String id, String readableName) {
+            String link = linkbase + "?startindex=" + prevStart
+                    + "&maxfeatures=" + maxFeatures;
+            start("NetworkLink", KMLUtils.attributes(new String[] {"id", id}));
+            element("linkName",readableName);
+            start("Link");
+            element("href",link);
+            end("Link");
+            end("NetworkLink");
+        }
+        
+        /**
+         * 
+         * Encodes a networklink
+         * 
+         * Note that in KML 2.2 atom:link is supported and may be better.
+         *
+         * @param linkbase the base fore creating URLs
+         * @param id attribute to use for this NetworkLink, may be null
+         * @param readableName goes into linkName, may be null
+         */
+        private void encodeNetworkLink(String link, String id, String readableName) {
+            if(id != null) {
+                start("NetworkLink", KMLUtils.attributes(new String[] {"id", id}));
+            } else {
+                start("NetworkLink");
+            }
+            if(readableName != null) {
+                element("linkName",readableName);
+            }   
+            start("Link");
+            element("href",link);
+            end("Link");
+            end("NetworkLink");
+        }
+                
         /**
          * Encodes a KML Placemark from a feature and optional name.
          */
@@ -185,8 +240,10 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
 
             link = link + "/" + id[1] + ".kml";
 
-            element("atom:link", null, KMLUtils.attributes(new String[] {
-                        "rel", "self", "href", link }));
+            // KML 2.2 element("atom:link", null, KMLUtils.attributes(new String[] {
+            //            "rel", "self", "href", link }));
+
+            encodeNetworkLink(link, id[1], null);
 
             // look at
             encodePlacemarkLookAt(centroid);
