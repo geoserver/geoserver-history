@@ -81,8 +81,12 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             }
 
             int maxFeatures = mapContext.getRequest().getMaxFeatures();
-            int prevStart = mapContext.getRequest().getStartIndex() - maxFeatures;
-            int nextStart = mapContext.getRequest().getStartIndex() + maxFeatures;
+            int startIndex =
+                (mapContext.getRequest().getStartIndex() == null)
+                ? 0 
+                : mapContext.getRequest().getStartIndex().intValue();
+            int prevStart = startIndex - maxFeatures;
+            int nextStart = startIndex + maxFeatures;
 
             if (prevStart >= 0) {
                 //String prevLink = linkbase + "?startindex=" + prevStart
