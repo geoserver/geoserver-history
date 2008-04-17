@@ -21,7 +21,6 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-import javax.media.jai.util.Range;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 
@@ -54,6 +53,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.geotools.util.Range;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
