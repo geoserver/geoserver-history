@@ -1,12 +1,7 @@
-<table border='1'>
+<h2>${typeName}</h2>
 
-<tr>
-  <th colspan='2' scope='col'>${typeName}</th>
-</tr>
-
+<ul class="textattributes">
 <#list attributes as a>
-<tr>
-  <td>${a.name}</td> <td><#if a.isGeometry > [GEOMETRY] <#else> ${a.value} </#if> </td>
-</tr>
+  <#if ! a.isGeometry ><li><strong><div class="atr-name">${a.name}</div>:</strong> <div class="atr-value">${a.value}</div></li></#if>
 </#list>
-</table>
+</ul>
