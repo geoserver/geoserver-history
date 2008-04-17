@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.geoserver.feature.PagingFeatureSource;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
@@ -67,8 +69,8 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             }
 
             // start the root document, name it the name of the layer
-            // KML 2.2 start("Document", KMLUtils.attributes(new String[] {
-            //                "xmlns:atom", "http://purl.org/atom/ns#" }));
+            start("Document", KMLUtils.attributes(
+                    new String[] {"xmlns:atom", "http://purl.org/atom/ns#" }));
             start("Document");
             element("name", mapLayer.getTitle());
 
@@ -88,22 +90,27 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             int prevStart = startIndex - maxFeatures;
             int nextStart = startIndex + maxFeatures;
 
+            // Previous page, if any
             if (prevStart >= 0) {
-                //String prevLink = linkbase + "?startindex=" + prevStart
-                //    + "&maxfeatures=" + maxFeatures;
-                //element("atom:link", null, KMLUtils.attributes(new String[] {
-                //            "rel", "prev", "href", prevLink }));
+                String prevLink = linkbase + "?startindex=" 
+                    + prevStart + "&maxfeatures=" + maxFeatures;
+                element("atom:link", null, KMLUtils.attributes(new String[] {
+                            "rel", "prev", "href", prevLink }));
                 encodeSequentialNetworkLink(linkbase, prevStart,
                         maxFeatures, "prev", "Previous page");
             }
-
-            //String nextLink = linkbase + "?startindex=" + nextStart
-            //    + "&maxfeatures=" + maxFeatures;
-            //element("atom:link", null, KMLUtils.attributes(new String[] {
-            //            "rel", "next", "href", nextLink }));
             
-            encodeSequentialNetworkLink(linkbase, nextStart,
-                    maxFeatures, "next", "Next page");
+            // Next page, if any
+            if (features.size() >= maxFeatures) {
+                String nextLink = linkbase + "?startindex=" + nextStart
+                        + "&maxfeatures=" + maxFeatures;
+                element("atom:link", null, KMLUtils.attributes(new String[] {
+                        "rel", "next", "href", nextLink }));
+                encodeSequentialNetworkLink(linkbase, nextStart,
+                        maxFeatures, "next", "Next page");
+            }
+            
+
 
             // get the styles for hte layer
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(
@@ -175,20 +182,20 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
          * @param id attribute to use for this NetworkLink, may be null
          * @param readableName goes into linkName, may be null
          */
-        private void encodeNetworkLink(String link, String id, String readableName) {
-            if(id != null) {
-                start("NetworkLink", KMLUtils.attributes(new String[] {"id", id}));
-            } else {
-                start("NetworkLink");
-            }
-            if(readableName != null) {
-                element("linkName",readableName);
-            }   
-            start("Link");
-            element("href",link);
-            end("Link");
-            end("NetworkLink");
-        }
+//        private void encodeNetworkLink(String link, String id, String readableName) {
+//            if(id != null) {
+//                start("NetworkLink", KMLUtils.attributes(new String[] {"id", id}));
+//            } else {
+//                start("NetworkLink");
+//            }
+//            if(readableName != null) {
+//                element("linkName",readableName);
+//            }   
+//            start("Link");
+//            element("href",link);
+//            end("Link");
+//            end("NetworkLink");
+//        }
                 
         /**
          * Encodes a KML Placemark from a feature and optional name.
@@ -244,10 +251,10 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
 
             link = link + "/" + id[1] + ".kml";
 
-            // KML 2.2 element("atom:link", null, KMLUtils.attributes(new String[] {
-            //            "rel", "self", "href", link }));
+            element("atom:link", null, KMLUtils.attributes(new String[] {
+                        "rel", "self", "href", link }));
 
-            encodeNetworkLink(link, id[1], null);
+            // This crashes Google Earth - encodeNetworkLink(link, id[1], null);
 
             // look at
             encodePlacemarkLookAt(centroid);
@@ -276,15 +283,31 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
 
         private String getFeatureTypeURL() throws IOException {
             String nsUri = mapLayer.getFeatureSource().getSchema().getName().getNamespaceURI();
-
             NameSpaceInfo ns = catalog.getNameSpaceFromURI(nsUri);
             String featureTypeName = mapLayer.getFeatureSource().getSchema().getName().getLocalPart();
             GetMapRequest request = mapContext.getRequest();
-            String link = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+            
+            //TODO The old code, commented out below, results in
+            // link = http://localhost:8080/geoserver/rest/geosearch/topp/states.kml?st
+            // due to getBaseUrl()
+            //
+            //String link = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+            //        request.getGeoServer().getProxyBaseUrl());
+            //
+
+            // If you prefer pretty code, this is a good point to close your eyes:
+            String baseUrl = request.getHttpServletRequest().getRequestURL().toString();
+            int searchIdx = baseUrl.indexOf("rest/geosearch");
+            if(searchIdx < 0) {
+                LOGGER.log(Level.WARNING, "Unable to find rest/geosearch in URL " + baseUrl);
+            } else {
+                baseUrl = baseUrl.substring(0,searchIdx);
+            }
+            baseUrl = RequestUtils.proxifiedBaseURL(baseUrl,
                     request.getGeoServer().getProxyBaseUrl());
-            link = ResponseUtils.appendPath(link, "geosearch/" + ns.getPrefix()
-                    + "/" + featureTypeName);
-            return link;
+                    
+            return baseUrl + "rest/geosearch/" + ns.getPrefix()
+                    + "/" + featureTypeName;
         }
 
         protected void encode(SimpleFeature feature, FeatureTypeStyle[] styles) {
