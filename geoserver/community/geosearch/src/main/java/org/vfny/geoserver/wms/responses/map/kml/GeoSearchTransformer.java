@@ -12,7 +12,6 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 
 public class GeoSearchTransformer extends KMLTransformer {
-
     Data catalog;
 
     public GeoSearchTransformer(Data catalog) {
@@ -32,13 +31,6 @@ public class GeoSearchTransformer extends KMLTransformer {
                 MapLayer layer){
             return new GeoSearchVectorTransformer(mapContext, layer, catalog);
         }
-
-        FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollection(
-                FeatureSource <SimpleFeatureType, SimpleFeature> featureSource, MapLayer layer,
-                WMSMapContext mapContext) throws Exception {
-            return featureSource.getFeatures(Query.ALL);
-        }
-
     }
 }
 
