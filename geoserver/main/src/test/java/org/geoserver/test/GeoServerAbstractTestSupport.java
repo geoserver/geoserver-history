@@ -50,6 +50,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.NameSpaceInfo;
@@ -295,6 +296,13 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         QName qname = new QName(ns.getUri(), name, ns.getPrefix());
         return qname;
     }
+
+    /**
+     * @deprecated use {@link #getLayerId(QName)}.
+     */
+    public final String layerId(QName layerName) {
+        return getLayerId( layerName );
+    }
     
     /**
      * Given a qualified layer name returns a string in the form "prefix:localPart" if prefix
@@ -302,7 +310,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @param layerName
      * @return
      */
-    public String layerId(QName layerName) {
+    public String getLayerId(QName layerName) {
         if(layerName.getPrefix() != null)
             return layerName.getPrefix() + ":" + layerName.getLocalPart();
         else
