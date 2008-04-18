@@ -237,11 +237,11 @@ public class CoverageConfig {
             throw new ConfigurationException("formatId is required for CoverageConfig");
         }
         if (format == null) {
-            throw new ConfigurationException(new StringBuilder("Cannot handle format: ").append(
+            throw new ConfigurationException(new StringBuffer("Cannot handle format: ").append(
                     formatId).toString());
         }
         if(reader==null){
-            throw new ConfigurationException(new StringBuilder("Cannot handle null reader for format: ").append(
+            throw new ConfigurationException(new StringBuffer("Cannot handle null reader for format: ").append(
                     formatId).toString());
         }
         
@@ -351,10 +351,10 @@ public class CoverageConfig {
         dimentionNames = getDimensionNames(gc);
 
         final DataConfig config = ConfigRequests.getDataConfig(request);
-        StringBuilder cvName =null;
+        StringBuffer cvName =null;
         int count = 0;
         while (true) {
-            final StringBuilder key = new StringBuilder(gc.getName().toString());
+            final StringBuffer key = new StringBuffer(gc.getName().toString());
             if (count > 0) {
                 key.append("_").append(count);
             }
