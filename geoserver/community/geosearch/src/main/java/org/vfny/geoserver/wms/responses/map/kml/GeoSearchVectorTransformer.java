@@ -110,10 +110,9 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                             maxFeatures, "next", "Next page");
                 }
             }
-            
 
 
-            // get the styles for hte layer
+            // get the styles for the layer
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(
                     mapLayer.getStyle(), featureType);
 
@@ -124,7 +123,10 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             } else if (stratname.equalsIgnoreCase("sld")) {
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
             } else if (stratname.equalsIgnoreCase("data")) { 
-                setRegionatingStrategy(new DataRegionatingStrategy());
+                String attname = (String)mapContext.getRequest().getFormatOptions().get("regionateAttr");
+                if (attname == null)
+                    attname = "cat";
+                setRegionatingStrategy(new DataRegionatingStrategy(attname));
             } else if (stratname.equalsIgnoreCase("geo")) { 
                 setRegionatingStrategy(new GeometryRegionatingStrategy());
             } else {

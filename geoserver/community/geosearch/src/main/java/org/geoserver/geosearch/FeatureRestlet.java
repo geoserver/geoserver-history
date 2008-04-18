@@ -76,6 +76,7 @@ public class FeatureRestlet extends Restlet {
         int startIndex = 0; 
         int maxFeatures = 100;
         String regionateBy = null;
+        String regionateAttr = null;
 
         try{ 
             startIndex = Integer.valueOf(form.getFirstValue("startindex", true));
@@ -87,6 +88,9 @@ public class FeatureRestlet extends Restlet {
 
         regionateBy = form.getFirstValue("regionateBy", true);
         if (regionateBy == null) regionateBy = "sld";
+
+        regionateAttr = form.getFirstValue("regionateAttr", true);
+        if (regionateAttr == null) regionateAttr = "cat";
 
 
         NameSpaceInfo ns = catalog.getNameSpace(namespace);
@@ -116,7 +120,7 @@ public class FeatureRestlet extends Restlet {
         raw.put("format", "geosearch-kml");
         raw.put("startIndex", Integer.toString(startIndex));
         raw.put("maxfeatures", Integer.toString(maxFeatures));
-        raw.put("format_options", "regionateby:" + regionateBy);
+        raw.put("format_options", "regionateby:" + regionateBy + ";regionateAttr:" + regionateAttr);
 
 
         if ( feature != null ) {
