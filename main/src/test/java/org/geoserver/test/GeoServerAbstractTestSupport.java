@@ -52,6 +52,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.NameSpaceInfo;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -261,6 +263,37 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     protected FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(QName typeName)
         throws IOException {
         return getCatalog().getFeatureSource(typeName.getPrefix(), typeName.getLocalPart());
+    }
+
+    /**
+     * Get the FeatureTypeInfo for a featuretype to allow configuration tweaks for tests.
+     *
+     * @param typename the QName for the type
+     */
+    protected FeatureTypeInfo getFeatureTypeInfo(QName typename){
+        return getCatalog().getFeatureTypeInfo(typename);
+    }
+
+    /**
+     * Get the FeatureTypeInfo for a featuretype by the layername that would be used in a request.
+     *
+     * @param typename the layer name for the type
+     */
+    protected FeatureTypeInfo getFeatureTypeInfo(String typename){
+        return getFeatureTypeInfo(resolveLayerName(typename));
+    }
+
+    /**
+     * Get the QName for a layer specified by the layername that would be used in a request.
+     * @param typename the layer name for the type
+     */
+    protected QName resolveLayerName(String typename){
+        int i = typename.indexOf(":");
+        String prefix = typename.substring(0, i);
+        String name = typename.substring(i + 1);
+        NameSpaceInfo ns = getCatalog().getNamespaceMetaData(prefix);
+        QName qname = new QName(ns.getUri(), name, ns.getPrefix());
+        return qname;
     }
     
     /**
