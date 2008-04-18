@@ -1,7 +1,7 @@
-<h2>${typeName}</h2>
+<h4>${typeName}</h4>
 
 <ul class="textattributes">
 <#list attributes as a>
-  <#if ! a.isGeometry ><li><strong><div class="atr-name">${a.name}</div>:</strong> <div class="atr-value">${a.value}</div></li></#if>
+  <#if ! a.isGeometry ><li><strong><span class="atr-name">${a.name}</span>:</strong> <span class="atr-value">${a.value}</span></li></#if>
 </#list>
 </ul>
