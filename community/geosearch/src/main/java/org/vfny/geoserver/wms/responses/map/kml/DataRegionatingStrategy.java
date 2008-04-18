@@ -33,10 +33,14 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
     private static long MAX_LEVELS = 5;
     private static long FEATURES_PER_TILE = 5;
-    private static String ATTRIBUTE_NAME = "count";
+    private static String myAttributeName = "count";
 
     private Long myMin;
     private Long myMax;
+
+    public DataRegionatingStrategy(String attname){
+        myAttributeName = attname;
+    }
 
     public void preProcess(WMSMapContext con, int index) {
         preProcessEven(con, index);
@@ -53,7 +57,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
             DefaultQuery query =
                 new DefaultQuery(Query.ALL);
-            SortBy sortBy = ff.sort(ATTRIBUTE_NAME, SortOrder.ASCENDING);
+            SortBy sortBy = ff.sort(myAttributeName, SortOrder.ASCENDING);
             query.setSortBy(new SortBy[]{sortBy});
             FeatureCollection col = source.getFeatures(Query.ALL); 
 //            LOGGER.info("Collection contains " + col.size() + " features.");
@@ -66,11 +70,11 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
                 for (int i = 0; i < featuresToSkip - 1; i++) it.next();
 
                 SimpleFeature f = (SimpleFeature) it.next();
-                myMax = ((Number)f.getAttribute(ATTRIBUTE_NAME)).longValue();
+                myMax = ((Number)f.getAttribute(myAttributeName)).longValue();
 
                 for (int i = 0; i < featureCount; i++) it.next();
                 f = (SimpleFeature)it.next();
-                myMin = ((Number)f.getAttribute(ATTRIBUTE_NAME)).longValue();
+                myMin = ((Number)f.getAttribute(myAttributeName)).longValue();
             } finally {
                 col.close(it);
             }
@@ -95,7 +99,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
                 while (it.hasNext()) {
                     SimpleFeature f = (SimpleFeature) it.next();
 
-                    long l = ((Number) f.getAttribute(ATTRIBUTE_NAME)).longValue();
+                    long l = ((Number) f.getAttribute(myAttributeName)).longValue();
                     if (myMin == null || myMin.longValue() > l)
                         myMin = new Long(l);
                     if (myMax == null || myMax.longValue() < l)
@@ -152,7 +156,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     public boolean include(SimpleFeature feature) {
         try {
-            Object att = feature.getAttribute(ATTRIBUTE_NAME);
+            Object att = feature.getAttribute(myAttributeName);
             long l = ((Number) att).longValue();
 
             return myMin.longValue() <= l && myMax.longValue() >= l;
