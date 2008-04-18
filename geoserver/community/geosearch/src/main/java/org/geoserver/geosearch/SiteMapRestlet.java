@@ -7,6 +7,7 @@ import org.restlet.data.Method;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.NameSpaceInfo;
@@ -68,7 +69,20 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
 
         NameSpaceInfo[] namespaces = getData().getNameSpaces();
         for (int i = 0; i < namespaces.length; i++){
-            if(namespaces[i].getTypeNames().size() > 0) {
+            boolean add = false;
+            for ( Iterator t = namespaces[i].getTypeNames().iterator(); !add && t.hasNext(); ) {
+                try {
+                    FeatureTypeInfo fti = getData().getFeatureTypeInfo((String)t.next());
+                    if ( fti != null && fti.isIndexingEnabled() ) {
+                        add = true;
+                    }
+                }
+                catch( Exception e ) {
+                    
+                }
+            }
+            
+            if ( add ) {
                 addUrl(urlset, GEOSERVER_ROOT + "/geosearch/" + namespaces[i].getPrefix() + ".kml");
             }
         }
