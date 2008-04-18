@@ -226,27 +226,48 @@ public class RulesBuilder {
 		try {
 			/* First class */
 			r = styleFactory.createRule();
-			f = CQL.toFilter(att + " <=" + ff.literal(groups.getMax(0)));
-			r.setFilter(f);
-			r.setTitle(" <= " + ff.literal(groups.getMax(0)));
-			list.add(r);
-			
+			if(groups.getMin(0).equals(groups.getMax(0))){
+				f = CQL.toFilter(att + " =" + ff.literal(groups.getMax(0)));
+				r.setFilter(f);
+				r.setTitle( ff.literal(groups.getMax(0)).toString());
+				list.add(r);
+			}else{
+				f = CQL.toFilter(att + " <=" + ff.literal(groups.getMax(0)));
+				r.setFilter(f);
+				r.setTitle(" <= " + ff.literal(groups.getMax(0)));
+				list.add(r);
+			}
 			for (int i = 1; i < groups.getSize() - 1; i++) {
 				r = styleFactory.createRule();
-				f = CQL.toFilter(att + ">" + ff.literal(groups.getMin(i))
-						+ " AND " + att + " <=" + ff.literal(groups.getMax(i)));
-				r.setTitle(" > " + ff.literal(groups.getMin(i)) + " AND <= "
-						+ ff.literal(groups.getMax(i)));
-				r.setFilter(f);
-				list.add(r);
+				if(groups.getMin(i).equals(groups.getMax(i))){
+					f = CQL.toFilter(att + "=" + ff.literal(groups.getMin(i)));
+					r.setTitle( ff.literal(groups.getMin(i)).toString());
+					r.setFilter(f);
+					list.add(r);
+				}else{
+					f = CQL.toFilter(att + ">" + ff.literal(groups.getMin(i))
+							+ " AND " + att + " <=" + ff.literal(groups.getMax(i)));
+					r.setTitle(" > " + ff.literal(groups.getMin(i)) + " AND <= "
+							+ ff.literal(groups.getMax(i)));
+					r.setFilter(f);
+					list.add(r);
+				}
 			}
 			/* Last class */
 			r = styleFactory.createRule();
-			f = CQL.toFilter(att + ">"
-					+ ff.literal(groups.getMin(groups.getSize() - 1)));
-			r.setFilter(f);
-			r.setTitle(" > " + ff.literal(groups.getMin(groups.getSize() - 1)));
-			list.add(r);
+			if(groups.getMin(groups.getSize() - 1).equals(groups.getMax(groups.getSize() - 1))){
+				f = CQL.toFilter(att + "="
+						+ ff.literal(groups.getMin(groups.getSize() - 1)));
+				r.setFilter(f);
+				r.setTitle( ff.literal(groups.getMin(groups.getSize() - 1)).toString());
+				list.add(r);
+			}else{
+				f = CQL.toFilter(att + ">"
+						+ ff.literal(groups.getMin(groups.getSize() - 1)));
+				r.setFilter(f);
+				r.setTitle(" > " + ff.literal(groups.getMin(groups.getSize() - 1)));
+				list.add(r);
+				}
 			return list;
 		} catch (CQLException e) {
 			// TODO Auto-generated catch block
