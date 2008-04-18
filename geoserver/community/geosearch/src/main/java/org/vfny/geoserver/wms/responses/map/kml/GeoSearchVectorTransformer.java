@@ -81,32 +81,34 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                 throw new RuntimeException(ioe);
             }
 
-            int maxFeatures = mapContext.getRequest().getMaxFeatures();
-            int startIndex =
-                (mapContext.getRequest().getStartIndex() == null)
-                ? 0 
-                : mapContext.getRequest().getStartIndex().intValue();
-            int prevStart = startIndex - maxFeatures;
-            int nextStart = startIndex + maxFeatures;
+            if (mapContext.getRequest().getMaxFeatures() != null){
+                int maxFeatures = mapContext.getRequest().getMaxFeatures();
+                int startIndex =
+                    (mapContext.getRequest().getStartIndex() == null)
+                    ? 0 
+                    : mapContext.getRequest().getStartIndex().intValue();
+                int prevStart = startIndex - maxFeatures;
+                int nextStart = startIndex + maxFeatures;
 
-            // Previous page, if any
-            if (prevStart >= 0) {
-                String prevLink = linkbase + "?startindex=" 
-                    + prevStart + "&maxfeatures=" + maxFeatures;
-                element("atom:link", null, KMLUtils.attributes(new String[] {
-                            "rel", "prev", "href", prevLink }));
-                encodeSequentialNetworkLink(linkbase, prevStart,
-                        maxFeatures, "prev", "Previous page");
-            }
-            
-            // Next page, if any
-            if (features.size() >= maxFeatures) {
-                String nextLink = linkbase + "?startindex=" + nextStart
+                // Previous page, if any
+                if (prevStart >= 0) {
+                    String prevLink = linkbase + "?startindex=" 
+                        + prevStart + "&maxfeatures=" + maxFeatures;
+                    element("atom:link", null, KMLUtils.attributes(new String[] {
+                                "rel", "prev", "href", prevLink }));
+                    encodeSequentialNetworkLink(linkbase, prevStart,
+                            maxFeatures, "prev", "Previous page");
+                }
+
+                // Next page, if any
+                if (features.size() >= maxFeatures) {
+                    String nextLink = linkbase + "?startindex=" + nextStart
                         + "&maxfeatures=" + maxFeatures;
-                element("atom:link", null, KMLUtils.attributes(new String[] {
-                        "rel", "next", "href", nextLink }));
-                encodeSequentialNetworkLink(linkbase, nextStart,
-                        maxFeatures, "next", "Next page");
+                    element("atom:link", null, KMLUtils.attributes(new String[] {
+                                "rel", "next", "href", nextLink }));
+                    encodeSequentialNetworkLink(linkbase, nextStart,
+                            maxFeatures, "next", "Next page");
+                }
             }
             
 
