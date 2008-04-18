@@ -1,25 +1,32 @@
-/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.geoserver.wfs.v1_1;
 
+import junit.framework.Test;
 import net.opengis.ows.OwsFactory;
 import net.opengis.wfs.GetCapabilitiesType;
 import net.opengis.wfs.WfsFactory;
+
 import org.geoserver.wfs.CapabilitiesTransformer;
 import org.geoserver.wfs.GetCapabilities;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.xml.transform.TransformerBase;
 
-
 public class VersionNegotiationTest extends WFSTestSupport {
-    GetCapabilities getCaps;
-    WfsFactory factory;
-    OwsFactory owsFactory;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    static GetCapabilities getCaps;
+
+    static WfsFactory factory;
+
+    static OwsFactory owsFactory;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new VersionNegotiationTest());
+    }
+
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
 
         getCaps = new GetCapabilities(getWFS(), getCatalog());
 
@@ -63,6 +70,7 @@ public class VersionNegotiationTest extends WFSTestSupport {
 
     public void test5() throws Exception {
         // test accepted = 0.0.0
+
         GetCapabilitiesType request = factory.createGetCapabilitiesType();
         request.setService("WFS");
         request.setAcceptVersions(owsFactory.createAcceptVersionsType());
@@ -74,6 +82,7 @@ public class VersionNegotiationTest extends WFSTestSupport {
 
     public void test6() throws Exception {
         // test accepted = 1.1.1
+
         GetCapabilitiesType request = factory.createGetCapabilitiesType();
         request.setService("WFS");
         request.setAcceptVersions(owsFactory.createAcceptVersionsType());
@@ -93,4 +102,5 @@ public class VersionNegotiationTest extends WFSTestSupport {
         TransformerBase tx = getCaps.run(request);
         assertTrue(tx instanceof CapabilitiesTransformer.WFS1_0);
     }
+
 }
