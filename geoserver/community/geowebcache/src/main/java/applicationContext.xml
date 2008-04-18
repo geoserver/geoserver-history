@@ -1,4 +1,3 @@
-o<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
@@ -12,7 +11,7 @@ o<?xml version="1.0" encoding="UTF-8"?>
   <bean id="gsTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
   	<property name="config">
     <list>
-      <ref bean="geoserverConfig"/>
+      <ref bean="gsConfig"/>
       <!-- Add additional Configuration beans here -->
     </list>
     </property>
@@ -38,7 +37,7 @@ o<?xml version="1.0" encoding="UTF-8"?>
     <property name="mappings">
       <props>
         <prop key="/gwc">gwcDispatcher</prop>
-        <prop key="/gwc/*">gwcDispatcher</prop>
+        <prop key="/gwc/**">gwcDispatcher</prop>
       </props>
     </property>
   </bean>
