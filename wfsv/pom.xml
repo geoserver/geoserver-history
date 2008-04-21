@@ -27,7 +27,7 @@
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>postgis-versioned</artifactId>
+      <artifactId>gt-postgis-versioned</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
