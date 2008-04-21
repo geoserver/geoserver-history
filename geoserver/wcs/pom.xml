@@ -22,31 +22,31 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>coverage</artifactId>
+			<artifactId>gt-coverage</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>referencing</artifactId>
+			<artifactId>gt-referencing</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>arcgrid</artifactId>
+			<artifactId>gt-arcgrid</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>geotiff</artifactId>
+			<artifactId>gt-geotiff</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gtopo30</artifactId>
+			<artifactId>gt-gtopo30</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>image</artifactId>
+			<artifactId>gt-image</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>imagemosaic</artifactId>
+			<artifactId>gt-imagemosaic</artifactId>
 		</dependency>
     <!--
 		<dependency>

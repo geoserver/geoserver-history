@@ -32,15 +32,15 @@
     </dependency>
     <dependency>
       <groupId>org.geotools.xsd</groupId>
-      <artifactId>gml3</artifactId>
+      <artifactId>gt-gml3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools.xsd</groupId>
-      <artifactId>filter</artifactId>
+      <artifactId>gt-filter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>shapefile</artifactId>
+      <artifactId>gt-shapefile</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>

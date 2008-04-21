@@ -33,19 +33,19 @@
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>render</artifactId>
+      <artifactId>gt-render</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>shapefile-renderer</artifactId>
+      <artifactId>gt-shapefile-renderer</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>geotiff</artifactId>
+      <artifactId>gt-geotiff</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>wfs</artifactId>
+      <artifactId>gt-wfs</artifactId>
     </dependency>
     <dependency>
       <groupId>batik</groupId>
