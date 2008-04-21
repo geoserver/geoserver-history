@@ -191,7 +191,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @return
      */
     protected URL getServicesFile() {
-        return GeoServerTestSupport.class.getResource("services.xml");
+        return GeoServerAbstractTestSupport.class.getResource("services.xml");
     }
 
     /**
