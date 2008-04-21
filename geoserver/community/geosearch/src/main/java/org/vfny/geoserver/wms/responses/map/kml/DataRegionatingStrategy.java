@@ -43,6 +43,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
     }
 
     public void preProcess(WMSMapContext con, int index) {
+        LOGGER.severe("Regionate attribute: " + myAttributeName);
         preProcessEven(con, index);
     }
 
@@ -67,14 +68,19 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             Iterator it = col.iterator();
 
             try{
-                for (int i = 0; i < featuresToSkip - 1; i++) it.next();
+                SimpleFeature f;
+                for (int i = 0; i < featuresToSkip - 1; i++) f = (SimpleFeature)it.next();
+                f = (SimpleFeature) it.next();
 
-                SimpleFeature f = (SimpleFeature) it.next();
-                myMax = ((Number)f.getAttribute(myAttributeName)).longValue();
+                if (f.getAttribute(myAttributeName) != null)
+                    myMax = ((Number)f.getAttribute(myAttributeName)).longValue();
 
-                for (int i = 0; i < featureCount; i++) it.next();
-                f = (SimpleFeature)it.next();
-                myMin = ((Number)f.getAttribute(myAttributeName)).longValue();
+                for (int i = 0; it.hasNext() && i < featureCount; i++) f = (SimpleFeature)it.next();
+
+                if (it.hasNext()) f = (SimpleFeature)it.next();
+
+                if (f.getAttribute(myAttributeName) != null)
+                    myMin = ((Number)f.getAttribute(myAttributeName)).longValue();
             } finally {
                 col.close(it);
             }
@@ -149,7 +155,10 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             if (reprojectBBox) {
                 requestBounds = requestBounds.transform(fullBounds.getCoordinateReferenceSystem(), true);
             } else {
-                LOGGER.info("Data-based regionating code couldn't reproject, please make sure your datastore is configured properly (hint: for postgis add -s <srsid> to the shp2psql command arguments)");
+                LOGGER.info("Data-based regionating code couldn't reproject, please make sure your "
+                + "datastore is configured properly (hint: for postgis add -s <srsid> to the "
+                + "shp2psql command arguments)"
+                );
             }
             return 1 - (int) (Math.log(requestBounds.getWidth() / fullBounds.getWidth()));
         }
