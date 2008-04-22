@@ -6,6 +6,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
+import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -22,7 +23,7 @@ public class SLDRegionatingStrategy implements RegionatingStrategy {
 
     private double scaleDenominator;
 
-    public void preProcess(WMSMapContext con, int layerIndex){
+    public void preProcess(WMSMapContext con, MapLayer layer){
         scaleDenominator = 1; 
         try {
             scaleDenominator = 

@@ -2,6 +2,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.geotools.map.MapLayer;
 
 /**
  * Common interface for classes defining a mechanism for regionating KML placemarks.  
@@ -15,7 +16,7 @@ public interface RegionatingStrategy {
      * by the bbox filter on the request.
      * @param collection a FeatureCollection containing the entire dataset
      */
-    public void preProcess(WMSMapContext context, int layerIndex);
+    public void preProcess(WMSMapContext context, MapLayer layer);
 
     /**
      * Decide whether a feature should be displayed at a particular scale.  This method should 
