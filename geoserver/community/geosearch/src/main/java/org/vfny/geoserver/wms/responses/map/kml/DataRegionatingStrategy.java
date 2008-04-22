@@ -22,6 +22,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.map.MapLayer;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
@@ -59,12 +60,12 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         myAttributeName = attname;
     }
 
-    public void preProcess(WMSMapContext con, int index) {
-        myZoomLevel = getZoomLevel(con, index);
-        myRanges = getRangesFromCache(con, index);
+    public void preProcess(WMSMapContext con, MapLayer layer) {
+        myZoomLevel = getZoomLevel(con, layer);
+        myRanges = getRangesFromCache(con, layer);
         if (myRanges == null){
-            myRanges = preProcessBasic(con, index);
-            addRangesToCache(con, index, myRanges);
+            myRanges = preProcessBasic(con, layer);
+            addRangesToCache(con, layer, myRanges);
         }
         setRange(myRanges);
     }
@@ -76,9 +77,9 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
      * @param con the WMSMapContext for the current request
      * @param index the numeric index of the layer currently being processed
      */
-    private List getRangesFromCache(WMSMapContext con, int index){
+    private List getRangesFromCache(WMSMapContext con, MapLayer layer){
         try{
-            File cache = findCacheFile(con, index, myZoomLevel);
+            File cache = findCacheFile(con, layer, myZoomLevel);
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(cache)));
             String line;
             List ranges = new ArrayList();
@@ -98,9 +99,9 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
      * @param index the numeric index of the layer currently being processed
      * @param ranges the range values for the current request 
      */
-    private void addRangesToCache(WMSMapContext con, int index, List ranges){
+    private void addRangesToCache(WMSMapContext con, MapLayer layer, List ranges){
         try{
-            File cache = findCacheFile(con, index, myZoomLevel);
+            File cache = findCacheFile(con, layer, myZoomLevel);
             PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cache))));
             Iterator it = ranges.iterator();
             while (it.hasNext()){
@@ -114,16 +115,16 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         }
     }
 
-    private File findCacheFile(WMSMapContext con, int index, long zoomLevel){
+    private File findCacheFile(WMSMapContext con, MapLayer layer, long zoomLevel){
         File f = null;
         try{
-            FeatureSource source = con.getLayer(index).getFeatureSource();
+            FeatureSource source = layer.getFeatureSource();
             MapLayerInfo[] config = con.getRequest().getLayers();
             for (int i = 0; i < config.length; i++){
-                MapLayerInfo layer = config[i];
-                if (layer.getName().equals(con.getLayer(index).getTitle())){
+                MapLayerInfo theLayer = config[i];
+                if (theLayer.getName().equals(layer.getTitle())){
                     f = GeoserverDataDirectory.findCreateConfigDir("featureTypes");
-                    f = new File(f, layer.getDirName());
+                    f = new File(f, theLayer.getDirName());
                     f = new File(f, myAttributeName + ".cache");
                     break;
                 } 
@@ -150,11 +151,11 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         return true;
     }
 
-    private void preProcessEven(WMSMapContext con, int index) {
+    private void preProcessEven(WMSMapContext con, MapLayer layer) {
         List ranges = new ArrayList();
         try {
             FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
-            FeatureSource source = con.getLayer(index).getFeatureSource();
+            FeatureSource source = layer.getFeatureSource();
 
             DefaultQuery query =
                 new DefaultQuery(Query.ALL);
@@ -182,13 +183,13 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         }
     }
 
-    private List preProcessBasic(WMSMapContext con, int index) {
+    private List preProcessBasic(WMSMapContext con, MapLayer layer) {
         List ranges = new ArrayList();
         try {
-            long zoomLevel = getZoomLevel(con, index);
+            long zoomLevel = getZoomLevel(con, layer);
             // LOGGER.info("I've decided this is at zoom level: " + zoomLevel);
 
-            FeatureCollection col = con.getLayer(index).getFeatureSource().getFeatures(Query.ALL);
+            FeatureCollection col = layer.getFeatureSource().getFeatures(Query.ALL);
 
             Iterator it = col.iterator();
             Long min = null;
@@ -244,10 +245,10 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         return (long)Math.pow(4,zoomLevel) * FEATURES_PER_TILE;
     }
 
-    private long getZoomLevel(WMSMapContext context, int index){
+    private long getZoomLevel(WMSMapContext context, MapLayer layer){
         try{
             FeatureSource<SimpleFeatureType, SimpleFeature> source = 
-                (FeatureSource<SimpleFeatureType, SimpleFeature>) context.getLayer(index).getFeatureSource();
+                (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
             ReferencedEnvelope fullBounds = source.getBounds();
             ReferencedEnvelope requestBounds = context.getAreaOfInterest();
             boolean reprojectBBox = (fullBounds.getCoordinateReferenceSystem() != null)

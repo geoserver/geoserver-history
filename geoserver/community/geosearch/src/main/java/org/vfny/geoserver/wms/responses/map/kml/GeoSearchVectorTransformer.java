@@ -134,7 +134,7 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
             }
             
-            myStrategy.preProcess(mapContext, 0); // TODO: this should be moved somewhere that it can be applied for each layer
+            myStrategy.preProcess(mapContext, mapLayer);
 
             // encode the schemas (kml 2.2)
             encodeSchemas(features);
