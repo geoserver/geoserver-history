@@ -4,6 +4,9 @@
  */
 package org.geoserver.ows.util;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -48,8 +51,14 @@ public class RequestUtils {
     }
 
     /**
-     * Given a base URL and a proxy url (which may or may-not be null)
-     * this method grafts the two together so that the proper 'proxified' or 'non-proxified' url is returned
+     * Given the actual <code>baseUrl</code> (may or may not include context) and a proxy base url,
+     * returns the proxy base if not null or the actual one, ensuring the returned value ends with "/".
+     * <p>
+     * Be careful this does not account for a full reverse-proxy like url replacement, and is actually
+     * meant only for OWS output that need some sort of schema information to be returned in the response
+     * content.
+     * </p>
+     * 
      * @return proxyBase if given, baseUrl otherwise, either way ensuring it ends up with "/"
      */
     public static String proxifiedBaseURL(String baseUrl, String proxyBase) {

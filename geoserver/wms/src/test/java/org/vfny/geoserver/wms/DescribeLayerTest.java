@@ -19,7 +19,7 @@ public class DescribeLayerTest extends WMSTestSupport {
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
         GeoServerDTO dto =  (GeoServerDTO) getGeoServer().toDTO();
-        dto.setProxyBaseUrl("src/test/resources");
+        dto.setProxyBaseUrl("src/test/resources/geoserver");
         getGeoServer().load(dto);
     }
 
