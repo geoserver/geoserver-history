@@ -226,11 +226,6 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>org.gvsig</groupId>
-      <artifactId>bxml-geoserver</artifactId>
-      <version>M2-SNAPSHOT</version>
-    </dependency>
   </dependencies>
 
   <pluginRepositories>
