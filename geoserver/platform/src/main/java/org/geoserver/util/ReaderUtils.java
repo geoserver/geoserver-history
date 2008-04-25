@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -534,6 +535,9 @@ public class ReaderUtils {
      * @return The list of keywords that were found.
      */
     public static List getKeyWords(Element keywordsElem) {
+        if(keywordsElem == null){
+            return Collections.EMPTY_LIST;
+        }
         NodeList klist = keywordsElem.getElementsByTagName("keyword");
         int kCount = klist.getLength();
         List keywords = new ArrayList(kCount);
