@@ -4,12 +4,7 @@
  */
 package org.geoserver.ows.util;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.geoserver.platform.GeoServerExtensions;
 
 
 /**
@@ -51,7 +46,7 @@ public class RequestUtils {
 
         return url;
     }
-    
+
     /**
      * Given a base URL and a proxy url (which may or may-not be null)
      * this method grafts the two together so that the proper 'proxified' or 'non-proxified' url is returned
