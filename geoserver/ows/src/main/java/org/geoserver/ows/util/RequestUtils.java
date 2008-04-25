@@ -55,25 +55,29 @@ public class RequestUtils {
     /**
      * Given a base URL and a proxy url (which may or may-not be null)
      * this method grafts the two together so that the proper 'proxified' or 'non-proxified' url is returned
-     * 
+     * @return proxyBase if given, baseUrl otherwise, either way ensuring it ends up with "/"
      */
     public static String proxifiedBaseURL(String baseUrl, String proxyBase) {
         if (proxyBase == null || proxyBase.trim().length() == 0) {
-        	if (!baseUrl.endsWith("/")) baseUrl += "/";
-        	return baseUrl;
+            if (!baseUrl.endsWith("/"))
+                baseUrl += "/";
+            return baseUrl;
         }
-        
-        try {
-            URI baseUri = new URI(baseUrl);
-            if (proxyBase.endsWith("/")) proxyBase = proxyBase.substring(0, proxyBase.length() -1);
-            
-            String proxifiedBaseUrl = proxyBase + baseUri.getPath();
-            if (!proxifiedBaseUrl.endsWith("/")) proxifiedBaseUrl += "/";
-            
-            return proxifiedBaseUrl;
-        } catch (URISyntaxException urise) {
-            //hmm...guess the proxy base must be invalid
-            throw new RuntimeException("Invalid Proxy Base URL property is set in your GeoServer installation.",urise);
-        }
+        return proxyBase.endsWith("/")? proxyBase : proxyBase + "/";
+//        try {
+//            URI baseUri = new URI(baseUrl);
+//            if (proxyBase.endsWith("/"))
+//                proxyBase = proxyBase.substring(0, proxyBase.length() - 1);
+//
+//            String proxifiedBaseUrl = proxyBase + baseUri.getPath();
+//            if (!proxifiedBaseUrl.endsWith("/"))
+//                proxifiedBaseUrl += "/";
+//
+//            return proxifiedBaseUrl;
+//        } catch (URISyntaxException urise) {
+//            // hmm...guess the proxy base must be invalid
+//            throw new RuntimeException(
+//                    "Invalid Proxy Base URL property is set in your GeoServer installation.", urise);
+//        }
     }
 }
