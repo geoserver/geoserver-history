@@ -54,11 +54,11 @@
 	<bean:message key="text.visitDemoPage"/>
 </p>
 
-	<a href="../../../wcs?service=WCS&request=GetCapabilities">WCS Capabilities</a>
+	<a href="./ows?service=WCS&request=GetCapabilities">WCS Capabilities</a>
 	<br>
-	<a href="../../../wfs?service=WFS&request=GetCapabilities">WFS Capabilities</a>
+	<a href="./ows?service=WFS&request=GetCapabilities">WFS Capabilities</a>
 	<br>
-	<a href="../../../wms?service=WMS&request=GetCapabilities">WMS Capabilities</a>
+	<a href="./ows?service=WMS&request=GetCapabilities">WMS Capabilities</a>
 	<br><br>
-	<a href="../../../srsHelp.do"><bean:message key="label.SRSList"/></a>
+	<a href="./srsHelp.do"><bean:message key="label.SRSList"/></a>
 <br>

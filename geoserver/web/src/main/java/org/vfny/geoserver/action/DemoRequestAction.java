@@ -7,6 +7,7 @@ package org.vfny.geoserver.action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.geoserver.ows.util.RequestUtils;
 import org.vfny.geoserver.form.DemoRequestForm;
 import org.vfny.geoserver.util.Requests;
 import java.io.BufferedReader;
@@ -67,8 +68,10 @@ public class DemoRequestAction extends GeoServerAction {
 
         File dir = demoForm.getDir();
         String demo = demoForm.getDemo();
-        String baseUrl = Requests.getBaseUrl(request, getGeoServer());
+        //String baseUrl = Requests.getBaseUrl(request, getGeoServer());
 
+        String baseUrl = RequestUtils.baseURL(request);
+        
         if (demo == null) {
             demo = "";
         }
@@ -82,7 +85,7 @@ public class DemoRequestAction extends GeoServerAction {
             throw new IllegalArgumentException("Invalid path " + demo);
 
         String service = demo.substring(0, demo.indexOf('_')).toLowerCase();
-        String url = Requests.getBaseUrl(request, getGeoServer()) + service;
+        String url = baseUrl + service;
 
         File file = new File(dir, demo);
         BufferedReader reader = new BufferedReader(new FileReader(file));

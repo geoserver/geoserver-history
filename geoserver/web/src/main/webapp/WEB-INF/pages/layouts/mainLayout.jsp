@@ -116,20 +116,17 @@
 	window.onresize=resize_iframe; 
 
 		-->
-	</script>
-  	
+	</script>  	
+    <% 
+        GeoServer gs = (GeoServer)getServletConfig().getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY );
+        String baseUrl = Requests.getBaseUrl(request, gs);
+    %>
     <style type="text/css">
       <!-- @import url("<html:rewrite forward='style'/>"); -->
     </style>
   
     <link type="image/gif" href="<html:rewrite forward='icon'/>" rel="icon"/>
     <link href="<html:rewrite forward='favicon'/>" rel="SHORTCUT ICON"/>
-    <% 
-        GeoServer gs = (GeoServer)getServletConfig().getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY );
-        String baseUrl = Requests.getBaseJspUrl(request, gs);
-    %>
-     <base href="<%=baseUrl%>"/> 
-    <!-- <html:base/> -->
   </head>
   <body>
   

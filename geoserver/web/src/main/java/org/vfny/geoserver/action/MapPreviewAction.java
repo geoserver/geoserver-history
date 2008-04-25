@@ -270,7 +270,7 @@ public class MapPreviewAction extends GeoServerAction {
         String proxifiedBaseUrl = RequestUtils.baseURL(request);
         GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class).get(0);
         proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl, gs.getProxyBaseUrl());
-        myForm.set("BaseUrl", proxifiedBaseUrl );
+        myForm.set("BaseUrl", "");
 
         return mapping.findForward("success");
     }

@@ -329,7 +329,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	        </td>
 	        <td>
 	        &nbsp;-&nbsp;
-	        <a href="../../../srsHelp.do">
+	        <a href="srsHelp.do">
 	              <bean:message key="label.SRSList"/>
 	            </a>
 	        </td>

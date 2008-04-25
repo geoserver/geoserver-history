@@ -20,7 +20,7 @@
 		   -->
         </html:form>		  
       </td>
-    <form action="../../../TestWfsPost" method="POST">    
+    <form action="TestWfsPost" method="POST">    
     </tr>
       <tr>
         <td class="label"><bean:message key="label.URL"/>:</td>
