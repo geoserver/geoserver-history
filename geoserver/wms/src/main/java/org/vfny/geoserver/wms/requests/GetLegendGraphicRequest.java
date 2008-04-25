@@ -305,10 +305,45 @@ public class GetLegendGraphicRequest extends WMSRequest {
         this.width = width;
     }
     
+    /**
+     * Returns the possibly empty set of key/value pair parameters to control
+     * some aspects of legend generation.
+     * <p>
+     * These parameters are meant to be passed as the request parameter
+     * <code>"LEGEND_OPTIONS"</code> with the format
+     * <code>LEGEND_OPTIONS=multiKey:val1,val2,val3;singleKey:val</code>.
+     * </p>
+     * <p>
+     * The known options, all optional, are:
+     * <ul>
+     * <li><code>fontName</code>: name of the system font used for legend
+     * rule names. Defaults to "Sans-Serif"
+     * <li><code>fontStyle</code>: one of "plain", "italic" or "bold"
+     * <li><code>fontSize</code>: integer for the font size in pixels
+     * <li><code>fontColor</code>: a <code>String</code> that represents
+     * an opaque color as a 24-bit integer
+     * <li><code>bgColor</code>: allows to override the legend background
+     * color
+     * <li><code>fontAntiAliasing</code>: a boolean indicating whether to
+     * use antia aliasing in font rendering. Anything of the following works:
+     * "yes", "true", "1". Anything else means false.
+     * <li><code>forceLabels</code>: "on" means labels will always be drawn,
+     * even if only one rule is available. "off" means labels will never be
+     * drawn, even if multiple rules are available.
+     * </ul>
+     * </p>
+     * 
+     * @return
+     */
     public Map getLegendOptions() {
         return legendOptions;
     }
     
+    /**
+     * Sets the legend options parameters.
+     * @param legendOptions the key/value pair of legend options strings
+     * @see #getLegendOptions()
+     */
     public void setLegendOptions(Map legendOptions) {
         this.legendOptions = legendOptions;
     }
