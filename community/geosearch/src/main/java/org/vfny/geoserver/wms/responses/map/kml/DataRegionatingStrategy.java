@@ -13,6 +13,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.io.PrintWriter;
 
 import org.geotools.data.DefaultQuery;
@@ -66,11 +69,11 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     public void preProcess(WMSMapContext con, MapLayer layer) {
         myZoomLevel = getZoomLevel(con, layer);
-        // myRanges = getRangesFromCache(con, layer);
-        // if (myRanges == null){
-        myRanges = preProcessHierarchical(con, layer);
-        //   addRangesToCache(con, layer, myRanges);
-        // }
+        myRanges = getRangesFromCache(con, layer);
+        if (myRanges == null){
+            myRanges = preProcessHierarchical(con, layer);
+            addRangesToCache(con, layer, myRanges);
+        }
         setRange(myRanges, con);
     }
 
@@ -81,17 +84,13 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
      * @param con the WMSMapContext for the current request
      * @param index the numeric index of the layer currently being processed
      */
-    private List getRangesFromCache(WMSMapContext con, MapLayer layer){
+    private TileLevel getRangesFromCache(WMSMapContext con, MapLayer layer){
         try{
             File cache = findCacheFile(con, layer, myZoomLevel);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(cache)));
-            String line;
-            List ranges = new ArrayList();
-            while ((line = reader.readLine()) != null){
-                ranges.add(Long.valueOf(line));
-            }
-            return ranges;
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(cache));
+            return (TileLevel)in.readObject();
         } catch (Exception e){
+            LOGGER.info("Error while trying to write range cache to disk: " + e + ": " + e.getMessage());
         }
 
         return null;
@@ -103,19 +102,16 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
      * @param index the numeric index of the layer currently being processed
      * @param ranges the range values for the current request 
      */
-    private void addRangesToCache(WMSMapContext con, MapLayer layer, List ranges){
+    private void addRangesToCache(WMSMapContext con, MapLayer layer, TileLevel ranges){
         try{
             File cache = findCacheFile(con, layer, myZoomLevel);
-            PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cache))));
-            Iterator it = ranges.iterator();
-            while (it.hasNext()){
-                writer.println(it.next());
-            }
-            writer.flush();
-            writer.close();
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(cache));
+            out.writeObject(ranges);
+            out.flush();
+            out.close();
         } catch (Exception e){
             // it's okay, we just won't cache these values
-            LOGGER.info("Error while trying to cache calculated range values: " + e.getMessage());
+            LOGGER.info("Error while trying to cache calculated range values: " + e + ": " + e.getMessage());
         }
     }
 
@@ -145,8 +141,8 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
         TileLevel theTile = levels.findTile(con.getAreaOfInterest());
         theTile = (theTile == null ? levels : theTile); // if the bbox is bogus we just assume the lowest zoomlevel
-        myMax = theTile.getMax(myAttributeName);
-        myMin = theTile.getMin(myAttributeName);
+        myMax = theTile.getMax();
+        myMin = theTile.getMin();
     }
 
     private void setRange(List ranges){
@@ -336,19 +332,23 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         return false;
     }
 
-    private static class TileLevel {
+    private static class TileLevel implements Serializable {
         ReferencedEnvelope myBBox;
+        String myAttributeName;
         long myFeaturesPerTile;
         long myZoomLevel;
 
-        List myFeatures;
+        Number myMax;
+        Number myMin;
+        long myFeatureCount;
+
         List myChildren;
 
         public TileLevel(ReferencedEnvelope bbox, long featuresPerTile, long zoomLevel){
             myBBox = bbox;
             myFeaturesPerTile = featuresPerTile;
             myZoomLevel = zoomLevel;
-            myFeatures = new ArrayList();
+            myFeatureCount = 0;
             myChildren = null;
         }
 
@@ -357,8 +357,12 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         }
 
         public void add(SimpleFeature f){
-            if (myFeatures.size() < myFeaturesPerTile) {
-                myFeatures.add(f);
+            if (myFeatureCount < myFeaturesPerTile) {
+                Number num = (Number)f.getAttribute(myAttributeName);
+                if (myMin == null || myMin.doubleValue() > num.doubleValue())
+                    myMin = num;
+                if (myMax == null || myMax.doubleValue() < num.doubleValue())
+                    myMax = num;
             } else {
                 addToChild(f);
             }
@@ -431,39 +435,20 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             return this;
         }
 
-        public Number getMax(String attributeName){
-            Number result = null;
-            Iterator it = myFeatures.iterator();
-            while (it.hasNext()){
-                SimpleFeature feature = (SimpleFeature)it.next();
-                Number value = (Number)feature.getAttribute(attributeName);
-                if (result == null || result.doubleValue() < value.doubleValue()){
-                    result = value;
-                }
-            }
-            
-            return result;
+        public Number getMax(){
+            return myMax;
         }
 
-        public Number getMin(String attributeName){
-            Number result = null;
-            Iterator it = myFeatures.iterator();
-            while (it.hasNext()){
-                SimpleFeature feature = (SimpleFeature)it.next();
-                Number value = (Number)feature.getAttribute(attributeName);;
-                if (result == null || result.doubleValue() > value.doubleValue()){
-                    result = value;
-                }
-            }
-            return result;
-        }
+        public Number getMin(){
+            return myMin;
+        } 
         
         public String toString(){ // TODO: this should do newlines + indentation
             String newline = "\n";
             StringBuffer result = new StringBuffer().append("TileLevel: ").append(myBBox);
             result.append(newline);
-            for (int i = 0; i < myFeatures.size(); i++)
-                result.append(myFeatures.get(i).toString()).append(newline);
+
+            result.append("Max: ").append(myMax).append(", Min: ").append(myMin).append(newline);
             
             for (int i = 0; myChildren != null && i < myChildren.size(); i++)
                 result.append(myChildren.get(i).toString()).append(newline);
