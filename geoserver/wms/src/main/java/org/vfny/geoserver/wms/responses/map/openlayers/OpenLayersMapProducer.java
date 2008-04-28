@@ -126,8 +126,8 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 	/**
 	 * OL does support only a limited number of unit types, we have to try and
 	 * return one of those, otherwise the scale won't be shown. From the OL
-	 * guide: possible values are �degrees� (or �dd�), �m�, �ft�, �km�, �mi�,
-	 * �inches�.
+	 * guide: possible values are "degrees" (or "dd"), "m", "ft", "km", "mi",
+	 * "inches".
 	 * 
 	 * @param request
 	 * @return
@@ -140,7 +140,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 		try {
 			String unit = crs.getCoordinateSystem().getAxis(0).getUnit()
 					.toString();
-			if ("�".equals(unit) || "degrees".equals(unit) || "dd".equals(unit))
+			if ("°".equals(unit) || "degrees".equals(unit) || "dd".equals(unit))
 				result = "degrees";
 			else if ("m".equals(unit) || "meters".equals(unit))
 				result = "m";
