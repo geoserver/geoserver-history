@@ -140,7 +140,10 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 		try {
 			String unit = crs.getCoordinateSystem().getAxis(0).getUnit()
 					.toString();
-			if ("°".equals(unit) || "degrees".equals(unit) || "dd".equals(unit))
+			// use the unicode escape sequence for the degree sign so its not
+            // screwed up by different local encodings
+			final String degreeSign = "\u00B0";
+			if (degreeSign.equals(unit) || "degrees".equals(unit) || "dd".equals(unit))
 				result = "degrees";
 			else if ("m".equals(unit) || "meters".equals(unit))
 				result = "m";
@@ -217,6 +220,4 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 
 	public void produceMap() throws WmsException {
 	}
-
-
 }
