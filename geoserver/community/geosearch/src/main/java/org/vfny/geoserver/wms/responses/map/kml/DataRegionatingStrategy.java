@@ -28,10 +28,14 @@ import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Strategy for regionating based on algorithmic stuff related to the actual
@@ -47,9 +51,9 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
     private static long FEATURES_PER_TILE = 5;
     private static String myAttributeName = "count";
 
-    private List myRanges;
-    private Long myMin;
-    private Long myMax;
+    private TileLevel myRanges;
+    private Number myMin;
+    private Number myMax;
     private long myZoomLevel;
 
     /**
@@ -62,12 +66,12 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     public void preProcess(WMSMapContext con, MapLayer layer) {
         myZoomLevel = getZoomLevel(con, layer);
-        myRanges = getRangesFromCache(con, layer);
-        if (myRanges == null){
-            myRanges = preProcessBasic(con, layer);
-            addRangesToCache(con, layer, myRanges);
-        }
-        setRange(myRanges);
+        // myRanges = getRangesFromCache(con, layer);
+        // if (myRanges == null){
+        myRanges = preProcessHierarchical(con, layer);
+        //   addRangesToCache(con, layer, myRanges);
+        // }
+        setRange(myRanges, con);
     }
 
     /**
@@ -136,6 +140,15 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         return f;
     }
 
+    private void setRange(TileLevel levels, WMSMapContext con){
+        if (levels == null) return;
+
+        TileLevel theTile = levels.findTile(con.getAreaOfInterest());
+        theTile = (theTile == null ? levels : theTile); // if the bbox is bogus we just assume the lowest zoomlevel
+        myMax = theTile.getMax(myAttributeName);
+        myMin = theTile.getMin(myAttributeName);
+    }
+
     private void setRange(List ranges){
     	if (ranges.size() == 0) return;
     	
@@ -151,7 +164,42 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         return true;
     }
 
-    private void preProcessEven(WMSMapContext con, MapLayer layer) {
+    private TileLevel preProcessHierarchical(WMSMapContext con, MapLayer layer){
+        LOGGER.info("Getting ready to do the hierarchy thing!");
+        try{
+            FeatureSource<SimpleFeatureType, SimpleFeature> source = 
+                (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
+            ReferencedEnvelope fullBounds = source.getBounds();
+            TileLevel level = new TileLevel(fullBounds, FEATURES_PER_TILE, 1);
+
+            FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
+            DefaultQuery query = new DefaultQuery(Query.ALL);
+            SortBy sortBy = ff.sort(myAttributeName, SortOrder.DESCENDING);
+            query.setSortBy(new SortBy[]{sortBy});
+            FeatureCollection col = source.getFeatures(query);
+            Iterator it = col.iterator();
+
+            try{
+                while (it.hasNext()){
+                    SimpleFeature f = (SimpleFeature)it.next();
+                    level.add(f);
+                }
+            } finally {
+                col.close(it);
+            }
+
+            // LOGGER.info("Found levels: " + level);
+            return level;
+            
+        } catch (Exception e){
+            LOGGER.severe("Error while trying to regionate by data (hierarchical)): " + e);
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private List preProcessQuantiles(WMSMapContext con, MapLayer layer) {
         List ranges = new ArrayList();
         try {
             FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
@@ -159,9 +207,9 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
             DefaultQuery query =
                 new DefaultQuery(Query.ALL);
-            SortBy sortBy = ff.sort(myAttributeName, SortOrder.ASCENDING);
+            SortBy sortBy = ff.sort(myAttributeName, SortOrder.DESCENDING);
             query.setSortBy(new SortBy[]{sortBy});
-            FeatureCollection col = source.getFeatures(Query.ALL); 
+            FeatureCollection col = source.getFeatures(query); 
 
             Iterator it = col.iterator();
 
@@ -178,9 +226,11 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
                 col.close(it);
             }
         } catch (Exception e) {
-            LOGGER.severe("Failure while trying to regionate by data: " + e);
+            LOGGER.severe("Failure while trying to regionate by data (quantiles): " + e);
             e.printStackTrace();
         }
+
+        return ranges;
     }
 
     private List preProcessBasic(WMSMapContext con, MapLayer layer) {
@@ -217,7 +267,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         } catch (NullPointerException npe){
         	LOGGER.severe("Failed to find specified attribute; check the attribute name in your request.");
         } catch (Exception e) {
-            LOGGER.severe("Tried to regionate data, but failed due to " + e);
+            LOGGER.severe("Failure while trying to regionate by data (linear): " + e);
             e.printStackTrace();
         }
 
@@ -251,24 +301,26 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
                 (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
             ReferencedEnvelope fullBounds = source.getBounds();
             ReferencedEnvelope requestBounds = context.getAreaOfInterest();
-            boolean reprojectBBox = (fullBounds.getCoordinateReferenceSystem() != null)
-                && !CRS.equalsIgnoreMetadata(
-                        requestBounds.getCoordinateReferenceSystem(), 
-                        fullBounds.getCoordinateReferenceSystem()
-                        );
-            if (reprojectBBox) {
-                requestBounds = requestBounds.transform(fullBounds.getCoordinateReferenceSystem(), true);
-            } else {
-                LOGGER.info("Data-based regionating code couldn't reproject, please make sure your "
-                + "datastore is configured properly (hint: for postgis add -s <srsid> to the "
-                + "shp2psql command arguments)"
-                );
-            }
+            requestBounds = reproject(requestBounds, fullBounds.getCoordinateReferenceSystem());
             return Math.max(1, 1 - (int) (Math.log(requestBounds.getWidth() / fullBounds.getWidth())));
         } catch (Exception e){
             LOGGER.severe("Zoom Level calculation failed, error was: " + e);
             return 1;
         }
+    }
+
+    private static ReferencedEnvelope reproject(ReferencedEnvelope renv, CoordinateReferenceSystem crs) throws Exception{
+        boolean reprojectBBox = (crs != null)
+                && !CRS.equalsIgnoreMetadata(renv.getCoordinateReferenceSystem(), crs);
+            if (reprojectBBox) {
+                renv = renv.transform(crs, true);
+            } else {
+                LOGGER.info("Data-based regionating code couldn't reproject, please make sure your "
+                + "datastore is configured properly (hint: for postgis add -s <srsid> to the "
+                + "shp2psql command arguments)"
+                );
+            } 
+            return renv;
     }
 
     public boolean include(SimpleFeature feature) {
@@ -284,4 +336,139 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         return false;
     }
 
+    private static class TileLevel {
+        ReferencedEnvelope myBBox;
+        long myFeaturesPerTile;
+        long myZoomLevel;
+
+        List myFeatures;
+        List myChildren;
+
+        public TileLevel(ReferencedEnvelope bbox, long featuresPerTile, long zoomLevel){
+            myBBox = bbox;
+            myFeaturesPerTile = featuresPerTile;
+            myZoomLevel = zoomLevel;
+            myFeatures = new ArrayList();
+            myChildren = null;
+        }
+
+        public boolean withinTileBounds(SimpleFeature f){
+            return myBBox.intersects(((Geometry)f.getDefaultGeometry()).getEnvelopeInternal());
+        }
+
+        public void add(SimpleFeature f){
+            if (myFeatures.size() < myFeaturesPerTile) {
+                myFeatures.add(f);
+            } else {
+                addToChild(f);
+            }
+        }
+
+        private void addToChild(SimpleFeature f){
+            if (myChildren == null){
+                myChildren = createChildTiles();
+            }
+            
+            Iterator it = myChildren.iterator();
+            while (it.hasNext()){
+                TileLevel child = (TileLevel)it.next();
+                if (child.withinTileBounds(f)){
+                	child.add(f);
+                	continue;
+                }
+            }
+        }
+
+        private List createChildTiles(){
+            List children = new ArrayList();
+            ReferencedEnvelope topLeft = new ReferencedEnvelope(myBBox.getCoordinateReferenceSystem());
+            topLeft.expandToInclude(myBBox.getCenter(0), myBBox.getMaximum(1));
+            topLeft.expandToInclude(myBBox.getMinimum(0), myBBox.getCenter(1));
+            
+            ReferencedEnvelope topRight = new ReferencedEnvelope(myBBox.getCoordinateReferenceSystem());
+            topLeft.expandToInclude(myBBox.getMaximum(0), myBBox.getMaximum(1));
+            topLeft.expandToInclude(myBBox.getCenter(0), myBBox.getCenter(1));
+            
+            ReferencedEnvelope bottomLeft = new ReferencedEnvelope(myBBox.getCoordinateReferenceSystem());
+            topLeft.expandToInclude(myBBox.getCenter(0), myBBox.getCenter(1));
+            topLeft.expandToInclude(myBBox.getMinimum(0), myBBox.getMinimum(1));
+
+            ReferencedEnvelope bottomRight = new ReferencedEnvelope(myBBox.getCoordinateReferenceSystem());
+            topLeft.expandToInclude(myBBox.getMaximum(0), myBBox.getCenter(1));
+            topLeft.expandToInclude(myBBox.getCenter(0), myBBox.getMinimum(1));
+            
+            children.add(new TileLevel(topLeft, myFeaturesPerTile, myZoomLevel + 1));
+            children.add(new TileLevel(topRight, myFeaturesPerTile, myZoomLevel + 1));
+            children.add(new TileLevel(bottomLeft, myFeaturesPerTile, myZoomLevel + 1));
+            children.add(new TileLevel(bottomRight, myFeaturesPerTile, myZoomLevel + 1));
+            return children;
+        }
+
+        private TileLevel findTile(ReferencedEnvelope bounds){
+            try{
+                bounds = reproject(bounds, myBBox.getCoordinateReferenceSystem());
+            } catch (Exception e){
+                return null;
+            }
+            if (!myBBox.contains((Envelope)bounds)){
+                LOGGER.severe("Requested tile (" + bounds + ") outside bounds (" + myBBox + ")...");
+                return null;
+            }
+
+            TileLevel theTile = null;
+
+            Iterator it = myChildren.iterator();
+            while (it.hasNext()){
+                TileLevel child = (TileLevel)it.next();
+                theTile = child.findTile(bounds);
+                if (theTile != null) break;
+            }
+
+            if (theTile == null){
+                return this;
+            }
+
+            return this;
+        }
+
+        public Number getMax(String attributeName){
+            Number result = null;
+            Iterator it = myFeatures.iterator();
+            while (it.hasNext()){
+                SimpleFeature feature = (SimpleFeature)it.next();
+                Number value = (Number)feature.getAttribute(attributeName);
+                if (result == null || result.doubleValue() < value.doubleValue()){
+                    result = value;
+                }
+            }
+            
+            return result;
+        }
+
+        public Number getMin(String attributeName){
+            Number result = null;
+            Iterator it = myFeatures.iterator();
+            while (it.hasNext()){
+                SimpleFeature feature = (SimpleFeature)it.next();
+                Number value = (Number)feature.getAttribute(attributeName);;
+                if (result == null || result.doubleValue() > value.doubleValue()){
+                    result = value;
+                }
+            }
+            return result;
+        }
+        
+        public String toString(){ // TODO: this should do newlines + indentation
+            String newline = "\n";
+            StringBuffer result = new StringBuffer().append("TileLevel: ").append(myBBox);
+            result.append(newline);
+            for (int i = 0; i < myFeatures.size(); i++)
+                result.append(myFeatures.get(i).toString()).append(newline);
+            
+            for (int i = 0; myChildren != null && i < myChildren.size(); i++)
+                result.append(myChildren.get(i).toString()).append(newline);
+            
+            return result.toString();
+        }
+    }
 }
