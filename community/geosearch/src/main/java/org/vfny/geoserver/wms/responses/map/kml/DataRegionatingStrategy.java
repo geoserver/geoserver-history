@@ -52,7 +52,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
     private static long MAX_LEVELS = 5;
     private static long FEATURES_PER_TILE = 5;
-    private static String myAttributeName = "count";
+    private static String myAttributeName;
 
     private TileLevel myRanges;
     private Number myMin;
