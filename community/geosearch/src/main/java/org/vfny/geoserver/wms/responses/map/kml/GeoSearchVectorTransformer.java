@@ -303,7 +303,7 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             String baseUrl = request.getHttpServletRequest().getRequestURL().toString();
             int searchIdx = baseUrl.indexOf("rest/geosearch");
             if(searchIdx < 0) {
-                LOGGER.log(Level.WARNING, "Unable to find rest/geosearch in URL " + baseUrl);
+//              LOGGER.log(Level.WARNING, "Unable to find rest/geosearch in URL " + baseUrl);
             } else {
                 baseUrl = baseUrl.substring(0,searchIdx);
             }

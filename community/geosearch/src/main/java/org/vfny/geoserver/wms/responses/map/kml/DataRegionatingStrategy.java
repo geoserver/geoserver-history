@@ -75,6 +75,8 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             addRangesToCache(con, layer, myRanges);
         }
         setRange(myRanges, con);
+
+        LOGGER.info("Found range for request: " + myMin + " <-> " + myMax);
     }
 
     /**
@@ -363,6 +365,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
                     myMin = num;
                 if (myMax == null || myMax.doubleValue() < num.doubleValue())
                     myMax = num;
+                myFeatureCount++;
             } else {
                 addToChild(f);
             }
@@ -421,11 +424,13 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
             TileLevel theTile = null;
 
-            Iterator it = myChildren.iterator();
-            while (it.hasNext()){
-                TileLevel child = (TileLevel)it.next();
-                theTile = child.findTile(bounds);
-                if (theTile != null) break;
+            if (myChildren != null){
+                Iterator it = myChildren.iterator();
+                while (it.hasNext()){
+                    TileLevel child = (TileLevel)it.next();
+                    theTile = child.findTile(bounds);
+                    if (theTile != null) break;
+                }
             }
 
             if (theTile == null){
