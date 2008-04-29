@@ -57,26 +57,38 @@ public class RequestUtils {
     }
     
     /**
-     * Given a base URL and a proxy url (which may or may-not be null)
-     * this method grafts the two together so that the proper 'proxified' or 'non-proxified' url is returned
+     * Given the actual <code>baseUrl</code> (may or may not include context) and a proxy base url,
+     * returns the proxy base if not null or the actual one, ensuring the returned value ends with "/".
+     * <p>
+     * Be careful this does not account for a full reverse-proxy like url replacement, and is actually
+     * meant only for OWS output that need some sort of schema information to be returned in the response
+     * content.
+     * </p>
      * 
      */
     public static String proxifiedBaseURL(String baseUrl, String proxyBase) {
-        if (proxyBase == null || proxyBase.trim().length() == 0)
+        if (proxyBase == null || proxyBase.trim().length() == 0) {
+            if (!baseUrl.endsWith("/"))
+                baseUrl += "/";
             return baseUrl;
-        
-        try {
-            URI baseUri = new URI(baseUrl);
-            if (proxyBase.endsWith("/")) proxyBase = proxyBase.substring(0, proxyBase.length() -1);
-            
-            String proxifiedBaseUrl = proxyBase + baseUri.getPath();
-            if (!proxifiedBaseUrl.endsWith("/")) proxifiedBaseUrl += "/";
-            
-            return proxifiedBaseUrl;
-        } catch (URISyntaxException urise) {
-            //hmm...guess the proxy base must be invalid
-            throw new RuntimeException("Invalid Proxy Base URL property is set in your GeoServer installation.",urise);
         }
+        return proxyBase.endsWith("/")? proxyBase : proxyBase + "/";
+        
+//        try {
+//            URI baseUri = new URI(baseUrl);
+//            if (proxyBase.endsWith("/"))
+//                proxyBase = proxyBase.substring(0, proxyBase.length() - 1);
+//
+//            String proxifiedBaseUrl = proxyBase + baseUri.getPath();
+//            if (!proxifiedBaseUrl.endsWith("/"))
+//                proxifiedBaseUrl += "/";
+//
+//            return proxifiedBaseUrl;
+//        } catch (URISyntaxException urise) {
+//            // hmm...guess the proxy base must be invalid
+//            throw new RuntimeException(
+//                    "Invalid Proxy Base URL property is set in your GeoServer installation.", urise);
+//        }
     }
 
     /**
