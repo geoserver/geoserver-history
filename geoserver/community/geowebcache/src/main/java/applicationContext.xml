@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <!-- controller for handling all incoming requests -->
+  <bean id="gwcDispatcher" class="org.geowebcache.GeoWebCacheDispatcher">
+    <property name="tileLayerDispatcher" ref="gsTLDispatcher"/>
+    <property name="seederDispatcher" ref="gsSeederDispatcher"/>
+    <property name="servletPrefix" value="gwc"/>
+  </bean>
+  
+  <bean id="gsTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
+    <property name="config">
+      <list>
+	<ref bean="gsConfig"/>
+	<!-- Add additional Configuration beans here -->
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="gsSeederDispatcher" class="org.geowebcache.seeder.SeederDispatcher">
+    <property name="allowedSeeders">
+      <list>
+	<value>127.0.0.1</value>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="gsConfig" class="org.geowebcache.util.GeoServerConfiguration">
+    <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="cacheFactory"/>
+    <constructor-arg value="image/png,image/png8,image/jpeg,image/gif,geosearch-kml"/>
+    <constructor-arg value="4x4"/>
+  </bean>
+  
+  <bean id="gwcUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="alwaysUseFullPath" value="true"/>
+    <property name="mappings">
+      <props>
+        <prop key="/gwc">gwcDispatcher</prop>
+        <prop key="/gwc/**">gwcDispatcher</prop>
+      </props>
+    </property>
+  </bean>
+</beans>

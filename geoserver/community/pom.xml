@@ -42,6 +42,12 @@
 				<module>community-schemas</module>
 			</modules>
 		</profile>
+		<profile>
+			<id>geowebcache</id>
+			<modules>
+				<module>geowebcache</module>
+			</modules>
+		</profile>
 	</profiles>
 
 	<modules>
