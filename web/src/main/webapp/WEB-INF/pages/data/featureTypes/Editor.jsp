@@ -132,7 +132,7 @@ function prepareFormData(){
         </td>
         <td>
         &nbsp;-&nbsp;
-        <a href="../../../srsHelp.do">
+        <a href="srsHelp.do">
               <bean:message key="label.SRSList"/>
             </a>
         </td>
@@ -499,7 +499,7 @@ function prepareFormData(){
             <td><bean:message key="label.max"/>:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
             <td width=16>
               <% if (first == false) { %>
-          	  <html:image src="../../../images/up.png" 
+          	  <html:image src="images/up.png" 
           	  	          titleKey="type.title.up" 
           	  	          property="action" 
           	  	          value='<%= "up_"+ index%>'/>
@@ -508,7 +508,7 @@ function prepareFormData(){
           	</td>
           	<td width=16>
           	  <% if (attributesSize-1 != index.intValue()) { %>
-          	  <html:image src="../../../images/down.png" 
+          	  <html:image src="images/down.png" 
           	              titleKey="type.title.down" 
           	              property="action" 
           	              value='<%= "down_"+ index%>'/>

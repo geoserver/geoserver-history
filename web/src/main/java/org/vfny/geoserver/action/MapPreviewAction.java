@@ -273,10 +273,10 @@ public class MapPreviewAction extends GeoServerAction {
         myForm.set("HeightList", heightList.toArray(new String[heightList.size()]));
         myForm.set("FTNamespaceList", ftnsList.toArray(new String[ftnsList.size()]));
         myForm.set("CoverageStatus", coverageStatus.toArray(new Integer[coverageStatus.size()]));
-        String proxifiedBaseUrl = RequestUtils.baseURL(request);
+        //String proxifiedBaseUrl = RequestUtils.baseURL(request);
         GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class).get(0);
-        proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl, gs.getProxyBaseUrl());
-        myForm.set("BaseUrl", proxifiedBaseUrl );
+        //proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl, gs.getProxyBaseUrl());
+        myForm.set("BaseUrl", "" );
 
         return mapping.findForward("success");
     }

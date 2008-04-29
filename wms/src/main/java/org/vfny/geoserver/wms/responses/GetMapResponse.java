@@ -119,6 +119,9 @@ public class GetMapResponse implements Response {
 	 *             DOCUMENT ME!
 	 * @throws WmsException
 	 *             DOCUMENT ME!
+	 * TODO: This method have become a 300+ lines monster, refactore it to 
+	 * private methods from which names one can inferr what's going on... but get
+	 * a decent test coverage on it first as to avoid regressions as much as possible
 	 */
 	public void execute(Request req) throws ServiceException {
 		GetMapRequest request = (GetMapRequest) req;
@@ -196,7 +199,7 @@ public class GetMapResponse implements Response {
 				|| (map.getAreaOfInterest().getLength(1) <= 0)) {
 			if (LOGGER.isLoggable(Level.FINE)) {
 				LOGGER
-						.fine("We are not going to render anything because either the are is null ar the dimensions are not positive.");
+						.fine("We are not going to render anything because either the area is null or the dimensions are not positive.");
 			}
 
 			return;
@@ -295,17 +298,18 @@ public class GetMapResponse implements Response {
 						// server to his knees
 						// and the client simply timed out
                                                 
-                                                //check for startIndex + offset, if so wrap in paging
-                                                // feature source
-                                                // JD: This is a TEMPORARY measure... paging this way 
-                                                // for 1) does not scale, and 2) does not pre-imply 
-                                                // ordering so its not really even valid, for now its
-                                                // just an experiment
-                                                if ( request.getStartIndex() != null ) {
-                                                    int l = request.getMaxFeatures() != null ? 
-                                                        request.getMaxFeatures() : Integer.MAX_VALUE;
-                                                    source = new PagingFeatureSource( source, request.getStartIndex(), l );
-                                                }
+                        // check for startIndex + offset, if so wrap in
+                        // paging
+                        // feature source
+                        // JD: This is a TEMPORARY measure... paging this way
+                        // for 1) does not scale, and 2) does not pre-imply
+                        // ordering so its not really even valid, for now its
+                        // just an experiment
+                        if (request.getStartIndex() != null) {
+                            int l = request.getMaxFeatures() != null ? request.getMaxFeatures()
+                                    : Integer.MAX_VALUE;
+                            source = new PagingFeatureSource(source, request.getStartIndex(), l);
+                        }
 					} catch (IOException exp) {
 						if (LOGGER.isLoggable(Level.SEVERE)) {
 							LOGGER.log(Level.SEVERE, new StringBuffer(
