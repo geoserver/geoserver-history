@@ -51,7 +51,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
     private static long MAX_LEVELS = 5;
-    private static long FEATURES_PER_TILE = 5;
+    private static long FEATURES_PER_TILE = 1000;
     private static String myAttributeName;
 
     private TileLevel myRanges;
@@ -69,11 +69,11 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     public void preProcess(WMSMapContext con, MapLayer layer) {
         myZoomLevel = getZoomLevel(con, layer);
-        myRanges = getRangesFromCache(con, layer);
-        if (myRanges == null){
+//        myRanges = getRangesFromCache(con, layer);
+//        if (myRanges == null){
             myRanges = preProcessHierarchical(con, layer);
-            addRangesToCache(con, layer, myRanges);
-        }
+//            addRangesToCache(con, layer, myRanges);
+//        }
         setRange(myRanges, con);
 
         LOGGER.info("Found range for request: " + myMin + " <-> " + myMax);
@@ -168,7 +168,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             FeatureSource<SimpleFeatureType, SimpleFeature> source = 
                 (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
             ReferencedEnvelope fullBounds = source.getBounds();
-            TileLevel level = new TileLevel(fullBounds, FEATURES_PER_TILE, 1);
+            TileLevel level = new TileLevel(fullBounds, myAttributeName, FEATURES_PER_TILE, 1);
 
             FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
             DefaultQuery query = new DefaultQuery(Query.ALL);
@@ -178,7 +178,10 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             Iterator it = col.iterator();
 
             try{
+                int count = 0;
                 while (it.hasNext()){
+                    if (((++count) % 1000) == 0) LOGGER.info("" + count + "/" + col.size());
+
                     SimpleFeature f = (SimpleFeature)it.next();
                     level.add(f);
                 }
@@ -326,7 +329,6 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             Object att = feature.getAttribute(myAttributeName);
             Number num = (Number)att;
 
-            // return myMin.longValue() <= l && myMax.longValue() >= l;
             return inRange(num);
         } catch (Exception e) {
             LOGGER.info("Encountered problem while trying to apply data regionating filter: " + e);
@@ -346,12 +348,13 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
         List myChildren;
 
-        public TileLevel(ReferencedEnvelope bbox, long featuresPerTile, long zoomLevel){
+        public TileLevel(ReferencedEnvelope bbox, String attributeName, long featuresPerTile, long zoomLevel){
             myBBox = bbox;
             myFeaturesPerTile = featuresPerTile;
             myZoomLevel = zoomLevel;
             myFeatureCount = 0;
             myChildren = null;
+            myAttributeName = attributeName;
         }
 
         public boolean withinTileBounds(SimpleFeature f){
@@ -361,10 +364,12 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         public void add(SimpleFeature f){
             if (myFeatureCount < myFeaturesPerTile) {
                 Number num = (Number)f.getAttribute(myAttributeName);
-                if (myMin == null || myMin.doubleValue() > num.doubleValue())
+                if (myMin == null || myMin.doubleValue() > num.doubleValue()){
                     myMin = num;
-                if (myMax == null || myMax.doubleValue() < num.doubleValue())
+                }
+                if (myMax == null || myMax.doubleValue() < num.doubleValue()){
                     myMax = num;
+                }
                 myFeatureCount++;
             } else {
                 addToChild(f);
@@ -404,10 +409,10 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             topLeft.expandToInclude(myBBox.getMaximum(0), myBBox.getCenter(1));
             topLeft.expandToInclude(myBBox.getCenter(0), myBBox.getMinimum(1));
             
-            children.add(new TileLevel(topLeft, myFeaturesPerTile, myZoomLevel + 1));
-            children.add(new TileLevel(topRight, myFeaturesPerTile, myZoomLevel + 1));
-            children.add(new TileLevel(bottomLeft, myFeaturesPerTile, myZoomLevel + 1));
-            children.add(new TileLevel(bottomRight, myFeaturesPerTile, myZoomLevel + 1));
+            children.add(new TileLevel(topLeft, myAttributeName, myFeaturesPerTile, myZoomLevel + 1));
+            children.add(new TileLevel(topRight, myAttributeName, myFeaturesPerTile, myZoomLevel + 1));
+            children.add(new TileLevel(bottomLeft, myAttributeName, myFeaturesPerTile, myZoomLevel + 1));
+            children.add(new TileLevel(bottomRight, myAttributeName, myFeaturesPerTile, myZoomLevel + 1));
             return children;
         }
 
