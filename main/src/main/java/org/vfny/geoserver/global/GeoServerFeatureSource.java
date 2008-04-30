@@ -20,6 +20,7 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
+import org.geotools.data.QueryCapabilities;
 import org.geotools.data.ResourceInfo;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
@@ -601,5 +602,9 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
 
     public ResourceInfo getInfo() {
         return source.getInfo();
+    }
+
+    public QueryCapabilities getQueryCapabilities() {
+        return source.getQueryCapabilities();
     }   
 }

@@ -9,6 +9,7 @@ import org.geotools.data.DataAccess;
 import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.QueryCapabilities;
 import org.geotools.data.ResourceInfo;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -201,5 +202,9 @@ public class PagingFeatureSource implements FeatureSource {
                 delegate = null;
             }
         }
+    }
+
+    public QueryCapabilities getQueryCapabilities() {
+        return null;
     }
 }
