@@ -2,23 +2,31 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+  <!-- Configuration -->
+  <bean id="gwcGSConfig" class="org.geowebcache.util.GeoServerConfiguration">
+    <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="gwcCacheFactory"/>
+    <constructor-arg value="image/png,image/png8,image/jpeg,image/gif,geosearch-kml"/>
+    <constructor-arg value="4x4"/>
+  </bean>
+
   <!-- controller for handling all incoming requests -->
   <bean id="gwcDispatcher" class="org.geowebcache.GeoWebCacheDispatcher">
-    <property name="tileLayerDispatcher" ref="gsTLDispatcher"/>
-    <property name="seederDispatcher" ref="gsSeederDispatcher"/>
+    <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
+    <property name="seederDispatcher" ref="gwcSeederDispatcher"/>
     <property name="servletPrefix" value="gwc"/>
   </bean>
-  
-  <bean id="gsTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
+
+  <!-- Tile layer dispatcher -->
+  <bean id="gwcTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
     <property name="config">
       <list>
-	<ref bean="gsConfig"/>
-	<!-- Add additional Configuration beans here -->
+	<ref bean="gwcGSConfig"/>
       </list>
     </property>
   </bean>
   
-  <bean id="gsSeederDispatcher" class="org.geowebcache.seeder.SeederDispatcher">
+  <!-- Seeder dispatcher -->
+  <bean id="gwcSeederDispatcher" class="org.geowebcache.seeder.SeederDispatcher">
     <property name="allowedSeeders">
       <list>
 	<value>127.0.0.1</value>
@@ -26,12 +34,7 @@
     </property>
   </bean>
   
-  <bean id="gsConfig" class="org.geowebcache.util.GeoServerConfiguration">
-    <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="cacheFactory"/>
-    <constructor-arg value="image/png,image/png8,image/jpeg,image/gif,geosearch-kml"/>
-    <constructor-arg value="4x4"/>
-  </bean>
-  
+  <!-- URL mappings -->
   <bean id="gwcUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
@@ -40,5 +43,31 @@
         <prop key="/gwc/**">gwcDispatcher</prop>
       </props>
     </property>
+  </bean>
+
+  <!-- Services -->
+  <bean id="gwcServiceWMS" 
+    	class="org.geowebcache.service.wms.WMSService"/>
+  <bean id="gwcServiceGMaps"
+	class="org.geowebcache.service.gmaps.GMapsConverter"/>
+  <bean id="gwcServiceMGMaps"
+	class="org.geowebcache.service.mgmaps.MGMapsConverter"/>
+  <bean id="gwcServiceVE"
+	class="org.geowebcache.service.ve.VEConverter"/>
+  <bean id="gwcServiceKML"
+	class="org.geowebcache.service.kml.KMLService"/>
+  
+  <!-- Cache backends -->
+  <bean id="gwcCacheFile" class="org.geowebcache.cache.file.FileCache">
+    <property name="defaultKeyBeanId"><value>gwcCacheKeyFile</value></property>
+  </bean>
+  <bean id="gwcCacheKeyFile" class="org.geowebcache.cache.file.FilePathKey"/>
+  
+  <!-- Cache and CacheKey factories -->
+  <bean id="gwcCacheKeyFactory" class="org.geowebcache.cache.CacheKeyFactory"/>
+
+  <bean id="gwcCacheFactory" class="org.geowebcache.cache.CacheFactory">
+    <constructor-arg type="org.geowebcache.cache.CacheKeyFactory" ref="gwcCacheKeyFactory"/>
+    <property name="defaultCacheBeanId"><value>gwcCacheFile</value></property>
   </bean>
 </beans>

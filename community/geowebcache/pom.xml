@@ -11,10 +11,10 @@
   </parent>
 
   <groupId>org.geoserver</groupId>
-  <artifactId>geowebcache</artifactId>
+  <artifactId>gwc</artifactId>
   <packaging>jar</packaging>
   <version>0.1</version>
-  <name>GeoWebCache Module</name>
+  <name>GeoWebCache (GWC) Module</name>
 
   <dependencies>
     <dependency>

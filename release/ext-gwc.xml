@@ -1,12 +1,12 @@
 <assembly>
-	<id>geowebcache-plugin</id>
+	<id>gwc-plugin</id>
 	<formats>
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>release/extensions/geowebcache</directory>
+			<directory>release/extensions/gwc</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
 				<include>*</include>
@@ -20,6 +20,7 @@
 				<include>commons-configuration-*.jar</include>
 				<include>commons-logging-api-*.jar</include>
 				<include>geowebcache-*.jar</include>
+				<include>gwc-*.jar</include>
 				<include>jcs-*.jar</include>
 				<include>tomcat-util*</include>
 				<include>xmlrpc-*</include>
