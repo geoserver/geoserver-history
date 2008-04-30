@@ -69,11 +69,11 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     public void preProcess(WMSMapContext con, MapLayer layer) {
         myZoomLevel = getZoomLevel(con, layer);
-//        myRanges = getRangesFromCache(con, layer);
-//        if (myRanges == null){
+        myRanges = getRangesFromCache(con, layer);
+        if (myRanges == null){
             myRanges = preProcessHierarchical(con, layer);
-//            addRangesToCache(con, layer, myRanges);
-//        }
+            addRangesToCache(con, layer, myRanges);
+        }
         setRange(myRanges, con);
 
         LOGGER.info("Found range for request: " + myMin + " <-> " + myMax);
@@ -92,7 +92,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(cache));
             return (TileLevel)in.readObject();
         } catch (Exception e){
-            LOGGER.info("Error while trying to write range cache to disk: " + e + ": " + e.getMessage());
+            LOGGER.info("Error while trying to read range cache from disk: " + e + ": " + e.getMessage());
         }
 
         return null;
@@ -113,7 +113,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             out.close();
         } catch (Exception e){
             // it's okay, we just won't cache these values
-            LOGGER.info("Error while trying to cache calculated range values: " + e + ": " + e.getMessage());
+            LOGGER.info("Error while trying to write range cache to disk: " + e + ": " + e.getMessage());
         }
     }
 
