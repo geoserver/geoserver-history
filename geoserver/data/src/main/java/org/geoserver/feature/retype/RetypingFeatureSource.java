@@ -15,6 +15,7 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.QueryCapabilities;
 import org.geotools.data.ResourceInfo;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -120,6 +121,10 @@ public class RetypingFeatureSource implements FeatureSource<SimpleFeatureType, S
 
     public ResourceInfo getInfo() {
         return wrapped.getInfo();
+    }
+
+    public QueryCapabilities getQueryCapabilities() {
+        return wrapped.getQueryCapabilities();
     }
 
 }
