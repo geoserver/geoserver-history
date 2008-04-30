@@ -446,11 +446,11 @@
       </dependencies>
     </profile>
     <profile>
-      <id>geowebcache</id>
+      <id>gwc</id>
       <dependencies>
         <dependency>
           <groupId>org.geoserver</groupId>
-          <artifactId>geowebcache</artifactId>
+          <artifactId>gwc</artifactId>
           <version>0.1</version>
         </dependency>
       </dependencies>

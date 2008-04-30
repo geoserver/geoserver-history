@@ -49,9 +49,9 @@
       </modules>
     </profile>
     <profile>
-      <id>geowebcache</id>
+      <id>gwc</id>
       <modules> 
-        <module>geowebcache</module>
+        <module>gwc</module>
       </modules>
     </profile>
     <profile>
