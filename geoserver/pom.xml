@@ -787,7 +787,7 @@
       <descriptor>release/ext-arcsde.xml</descriptor>
       <descriptor>release/ext-pyramid.xml</descriptor>
       <descriptor>release/ext-wfsv.xml</descriptor>
-      <descriptor>release/ext-geowebcache.xml</descriptor>
+      <descriptor>release/ext-gwc.xml</descriptor>
      </descriptors>
      <finalName>geoserver-1.6.0</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>

@@ -20,7 +20,7 @@
 				<include>commons-configuration-*.jar</include>
 				<include>commons-logging-api-*.jar</include>
 				<include>geowebcache-*.jar</include>
-				<include>jcs-*.jar</include>
+				<include>gwc-*.jar</include>
 				<include>tomcat-util*</include>
 				<include>xmlrpc-*</include>
 			</includes>
