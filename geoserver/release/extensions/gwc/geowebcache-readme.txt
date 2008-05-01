@@ -28,6 +28,20 @@ GEOWEBCACHE_CACHE_DIR in web.xml:
    <param-value>/tmp</param-value>
  </context-param>
 
+
+USING THE EXTENSION
+This extension works just like the standalone version of GeoWebCache,
+the main difference is the URL you use to access it.
+
+If you access GeoServer through http://localhost:8080/geoserver and you 
+have the topp:states dataset loaded (part of the release) you can try
+http://localhost:8080/geoserver/gwc/service/ve?layers=topp:states&quadkey=02
+
+Note that if you find GeoWebCache documentation that refers to 
+http://localhost:8080/geowebcache/*
+the equivalent, when using the extension, is
+http://localhost:8080/geoserver/gwc/*
+
 PLEASE CHECK YOUR LOGFILES IF YOU ENCOUNTER ANY PROBLEMS
 
 See http://geowebcache.org for bugtracker, mailinglists
