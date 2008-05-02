@@ -225,10 +225,7 @@ public class GetMapResponse implements Response {
 					.getMethod().equals("GET");
 			final String featureVersion = request.getFeatureVersion();
 			int maxAge = Integer.MAX_VALUE;
-
-			final int length = layers.length;
-
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i < layers.length; i++) {
 				final Style layerStyle = styles[i];
 				final Filter layerFilter = filters[i];
 
@@ -471,15 +468,19 @@ public class GetMapResponse implements Response {
         Filter userRequestedFilter;
         Filter combined;
 
-        for (int i = 0; i < nLayers; i++) {
+        int i=0;
+        for (MapLayerInfo layer: layers) {
             userRequestedFilter = requestFilters.get(i);
-            layerDefinitionFilter = layers[i].getFeature().getDefinitionQuery();
-            // heck, how I wish we use the null objects more
-            if (layerDefinitionFilter == null) {
-                layerDefinitionFilter = Filter.INCLUDE;
+            if(layer.getType()!=MapLayerInfo.TYPE_RASTER)
+            {
+                layerDefinitionFilter = layer.getFeature().getDefinitionQuery();
+                // heck, how I wish we use the null objects more
+                if (layerDefinitionFilter == null) {
+                    layerDefinitionFilter = Filter.INCLUDE;
+                }
+                combined = filterFac.and(layerDefinitionFilter, userRequestedFilter);
+                combinedList[i] = combined;
             }
-            combined = filterFac.and(layerDefinitionFilter, userRequestedFilter);
-            combinedList[i] = combined;
         }
         return combinedList;
     }
