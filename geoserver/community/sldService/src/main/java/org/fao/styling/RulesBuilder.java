@@ -299,12 +299,12 @@ public class RulesBuilder {
 				Set ls = groups.getValues(i);
 				Iterator it = ls.iterator();
 				val = ff.literal(it.next());
-				szFilter = att + "=\"" + val + "\"";
+				szFilter = att + "=\'" + val + "\'";
 				szTitle = "" + val;
 
 				while (it.hasNext()) {
 					val = ff.literal(it.next());
-					szFilter += " OR " + att + "=\"" + val + "\"";
+					szFilter += " OR " + att + "=\'" + val + "\'";
 					szTitle += " OR " + val;
 				}
 				f = CQL.toFilter(szFilter);

@@ -166,7 +166,7 @@ public class UserStyleResource extends BaseResource {
             List<Rule> rulesL = null;
             try {
             
-            	rulesL=createRules(ftInf);
+            	rulesL= createRules(ftInf);
             
             	if (rulesL != null) {
                     Rule[] rules = new Rule[rulesL.size()];
@@ -194,12 +194,7 @@ public class UserStyleResource extends BaseResource {
                     getResponse().setStatus(Status.SUCCESS_CREATED);
                     getResponse().setEntity("Classification succesfully created",
                             MediaType.TEXT_PLAIN);
-                } else {
-                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-                    getResponse().setEntity("Unable to complete classfication",
-                            MediaType.TEXT_PLAIN);
-    
-                }
+                } 
             } catch (Exception e) {
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                 getResponse().setEntity(e.toString(), MediaType.TEXT_PLAIN);
@@ -308,13 +303,12 @@ public class UserStyleResource extends BaseResource {
     }
     
     /*create the list  of rule based on parameters passed by post or put request*/
-    private List<Rule> createRules(FeatureTypeInfo ftInf){
+    private List<Rule> createRules(FeatureTypeInfo ftInf) {
     	Integer classNum = null;
         Color startColor = null;
         Color endColor = null;
         Color midColor = null;
         RulesBuilder ruBuild;
-        System.out.println("nuova versione");
     	try{
         /*
          * Retrive and check mandatory post pram: classMethod property
