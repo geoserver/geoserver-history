@@ -80,6 +80,13 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
             for (Iterator itr = typeName.iterator(); itr.hasNext();) {
                 QName qName = (QName) itr.next();
+                
+                // check the type name is known, otherwise complain
+                if(catalog.getFeatureTypeInfo(qName) == null) {
+                    String name = qName.getPrefix() + ":" + qName.getLocalPart();
+                    throw new WFSException("Feature type " + name + " unknown", "InvalidParameterValue", "typeName");
+                }
+                
                 List l = new ArrayList();
                 l.add(qName);
                 list.add(l);
