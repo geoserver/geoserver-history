@@ -32,7 +32,7 @@
     </dependency>
     <dependency>
       <groupId>org.geotools.xsd</groupId>
-      <artifactId>gml3</artifactId>
+      <artifactId>gt-gml3</artifactId>
       <version>${gt.version}</version>
     </dependency>
     <dependency>
