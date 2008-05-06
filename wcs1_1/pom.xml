@@ -37,12 +37,12 @@
     </dependency>
     <dependency>
       <groupId>org.geotools.xsd</groupId>
-      <artifactId>filter</artifactId>
+      <artifactId>gt-filter</artifactId>
       <version>${gt.version}</version>
     </dependency>
     <dependency>
       <groupId>org.geotools.xsd</groupId>
-      <artifactId>ows</artifactId>
+      <artifactId>gt-ows</artifactId>
       <version>${gt.version}</version>
       <!-- This is due to the fact the ows model jars come from geoserver but are
            deployed separately for gt2 as well... this results in a conflict -->
