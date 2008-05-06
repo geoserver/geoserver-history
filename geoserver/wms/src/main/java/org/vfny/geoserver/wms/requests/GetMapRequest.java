@@ -396,7 +396,8 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * DOCUMENT ME!
+     * Sets the GetMap request value for the FORMAT parameter, which is
+     * the MIME type for the kind of image required.
      *
      * @param format DOCUMENT ME!
      */
