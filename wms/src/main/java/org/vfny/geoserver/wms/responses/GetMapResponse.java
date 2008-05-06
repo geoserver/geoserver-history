@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.data.util.CoverageUtils;
-import org.geoserver.feature.PagingFeatureSource;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DefaultQuery;
@@ -34,7 +32,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.filter.sort.SortBy;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -106,27 +103,28 @@ public class GetMapResponse implements Response {
 	public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
 		this.wms = wms;
 		this.applicationContext = applicationContext;
-		responseHeaders = new HashMap(10);
+		responseHeaders = new HashMap();
 	}
 
 	/**
 	 * Returns any extra headers that this service might want to set in the HTTP
 	 * response object.
+	 * 
 	 */
 	public HashMap getResponseHeaders() {
-		return responseHeaders;
+		return new HashMap(responseHeaders);
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Implements the map production logic for a WMS GetMap request, delegating the encoding
+	 * to the appropriate output format to a {@link GetMapProducer} appropriate for the required format.
 	 * 
 	 * @param req
-	 *            DOCUMENT ME!
+	 *           a {@link GetMapRequest}
 	 * 
 	 * @throws ServiceException
-	 *             DOCUMENT ME!
-	 * @throws WmsException
-	 *             DOCUMENT ME!
+	 *             if an error occurs creating the map from the provided request
+	 *             
 	 * TODO: This method have become a 300+ lines monster, refactore it to 
 	 * private methods from which names one can inferr what's going on... but get
 	 * a decent test coverage on it first as to avoid regressions as much as possible
@@ -607,7 +605,7 @@ public class GetMapResponse implements Response {
 	 */
 	private GetMapProducer getDelegate(String outputFormat, WMS wms)
 			throws WmsException {
-		final Collection producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class);	
+		final Collection producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class, applicationContext);	
 
 		for (Iterator iter = producers.iterator(); iter.hasNext();) {
 			final GetMapProducerFactorySpi factory = (GetMapProducerFactorySpi) iter.next();
@@ -630,6 +628,7 @@ public class GetMapResponse implements Response {
 	 * formats' MIME types that the producers can handle
 	 * 
 	 * @return a Set&lt;String&gt; with the supported mime types.
+	 * @deprecated seems not to be used
 	 */
 	public Set getMapFormats() {
 		Set wmsGetMapFormats = loadImageFormats(applicationContext);
@@ -665,5 +664,13 @@ public class GetMapResponse implements Response {
 	@Override
 	protected void finalize() throws Throwable {
 	    clearMapContext();
+	}
+
+	/**
+	 * This is package visible only to allow getting to the delegate from inside unit tests
+	 * @return
+	 */
+	GetMapProducer getDelegate(){
+	    return delegate;
 	}
 }
