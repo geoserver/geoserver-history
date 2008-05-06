@@ -3,56 +3,56 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.geoserver</groupId>
-		<artifactId>geoserver</artifactId>
-		<version>1.6-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.geoserver</groupId>
+    <artifactId>geoserver</artifactId>
+    <version>1.6-SNAPSHOT</version>
+  </parent>
 
-	<groupId>org.geoserver</groupId>
-	<artifactId>community</artifactId>
-	<packaging>pom</packaging>
-	<name>Community Space</name>
+  <groupId>org.geoserver</groupId>
+  <artifactId>community</artifactId>
+  <packaging>pom</packaging>
+  <name>Community Space</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>platform</artifactId>
-			<version>1.6-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
-	
-	<profiles>
-		<profile>
-			<id>Java 5 Specific Plugins</id>
-			<activation>
-				<jdk>1.5</jdk>
-			</activation>
-			<modules>
-				<module>sldService</module>
-				<module>csv</module>
-				<module>rest</module>
-				<module>RESTConfig</module>
-				<module>QueryUsers</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>community-schemas</id>
-			<modules>
-				<module>community-schemas</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>gwc</id>
-			<modules>
-				<module>gwc</module>
-			</modules>
-		</profile>
-	</profiles>
-
-	<modules>
-		<module>hello</module>
-		<module>kml-ows5</module>
-	</modules>
-
+  <dependencies>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>platform</artifactId>
+      <version>1.6-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
+  <profiles>
+    <profile>
+      <id>Java 5 Specific Plugins</id>
+      <activation>
+        <jdk>1.5</jdk>
+      </activation>
+      <modules>
+        <module>sldService</module>
+        <module>csv</module>
+        <module>rest</module>
+        <module>RESTConfig</module>
+        <module>QueryUsers</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>community-schemas</id>
+      <modules>
+        <module>community-schemas</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>rest</id>
+      <modules>
+        <module>rest</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>gwc</id>
+      <modules>
+        <module>gwc</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

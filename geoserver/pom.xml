@@ -994,6 +994,7 @@
   <module>net.opengis.ows</module>
   <module>net.opengis.wfs</module>
   <module>net.opengis.wfsv</module>
+  <module>community</module>
  </modules>
 
  <properties>
