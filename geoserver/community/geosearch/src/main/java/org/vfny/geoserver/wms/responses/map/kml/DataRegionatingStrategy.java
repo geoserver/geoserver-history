@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.Set;
+import java.util.TreeSet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,8 +37,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-
+import org.vfny.geoserver.global.GeoserverDataDirectory; 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -51,7 +52,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
     private static long MAX_LEVELS = 5;
-    private static long FEATURES_PER_TILE = 1000;
+    private static long FEATURES_PER_TILE = 100;
     private static String myAttributeName;
 
     private TileLevel myRanges;
@@ -74,9 +75,8 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             myRanges = preProcessHierarchical(con, layer);
             addRangesToCache(con, layer, myRanges);
         }
-        setRange(myRanges, con);
-
-        LOGGER.info("Found range for request: " + myMin + " <-> " + myMax);
+        TileLevel temp = myRanges.findTile(con.getAreaOfInterest());
+        if (temp != null) myRanges = temp;
     }
 
     /**
@@ -327,11 +327,11 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
     public boolean include(SimpleFeature feature) {
         try {
             Object att = feature.getAttribute(myAttributeName);
-            Number num = (Number)att;
 
-            return inRange(num);
+            return myRanges.include(feature);
         } catch (Exception e) {
             LOGGER.info("Encountered problem while trying to apply data regionating filter: " + e);
+            e.printStackTrace();
         }
         return false;
     }
@@ -344,7 +344,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
         Number myMax;
         Number myMin;
-        long myFeatureCount;
+        Set myFeatures;
 
         List myChildren;
 
@@ -352,7 +352,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             myBBox = bbox;
             myFeaturesPerTile = featuresPerTile;
             myZoomLevel = zoomLevel;
-            myFeatureCount = 0;
+            myFeatures = new TreeSet();
             myChildren = null;
             myAttributeName = attributeName;
         }
@@ -362,15 +362,8 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         }
 
         public void add(SimpleFeature f){
-            if (myFeatureCount < myFeaturesPerTile) {
-                Number num = (Number)f.getAttribute(myAttributeName);
-                if (myMin == null || myMin.doubleValue() > num.doubleValue()){
-                    myMin = num;
-                }
-                if (myMax == null || myMax.doubleValue() < num.doubleValue()){
-                    myMax = num;
-                }
-                myFeatureCount++;
+            if (myFeatures.size() < myFeaturesPerTile) {
+                myFeatures.add(f.getID());
             } else {
                 addToChild(f);
             }
@@ -416,7 +409,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             return children;
         }
 
-        private TileLevel findTile(ReferencedEnvelope bounds){
+        public TileLevel findTile(ReferencedEnvelope bounds){
             try{
                 bounds = reproject(bounds, myBBox.getCoordinateReferenceSystem());
             } catch (Exception e){
@@ -452,6 +445,10 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         public Number getMin(){
             return myMin;
         } 
+
+        public boolean include(SimpleFeature feature){
+            return myFeatures.contains(feature.getID());
+        }
         
         public String toString(){ // TODO: this should do newlines + indentation
             String newline = "\n";
