@@ -119,7 +119,7 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
             String attname = (String)mapContext.getRequest().getFormatOptions().get("regionateAttr");
             if (attname == null)
-                attname = "count";
+                attname = "value_amt";
 
             if (stratname == null) {
                 LOGGER.info("No regionating strategy specified, using default data-based strategy");
