@@ -40,7 +40,7 @@ public class GetFeatureKvpRequestReaderTest extends KvpRequestReaderTestSupport 
             assertEquals("InvalidParameterValue", e.getCode());
             assertEquals("typeName", e.getLocator());
             System.out.println(e.getMessage());
-            assertTrue(e.getMessage().contains("cite:InvalidTypeName"));
+            assertTrue(e.getMessage().indexOf("cite:InvalidTypeName") > -1);
         }
     }
 
@@ -63,7 +63,7 @@ public class GetFeatureKvpRequestReaderTest extends KvpRequestReaderTestSupport 
             assertEquals("InvalidParameterValue", e.getCode());
             assertEquals("typeName", e.getLocator());
             System.out.println(e.getMessage());
-            assertTrue(e.getMessage().contains("InvalidTypeName"));
+            assertTrue(e.getMessage().indexOf("InvalidTypeName") > -1);
         }
     }
 }
