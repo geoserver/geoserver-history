@@ -379,7 +379,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
                 TileLevel child = (TileLevel)it.next();
                 if (child.withinTileBounds(f)){
                 	child.add(f);
-                	continue;
+                	break;
                 }
             }
         }
