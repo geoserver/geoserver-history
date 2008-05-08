@@ -26,10 +26,10 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -78,7 +78,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     private static final String INFO_FILE = "info.xml";
 
     /** used to create styles */
-    private static StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
+    private static StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
 
     /** used to cache layer names and types **/
     private volatile Map layerNames = new HashMap();
@@ -673,16 +673,8 @@ SCHEMA:
             } catch (IOException ioException) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
-                        new StringBuffer("FeatureTypeInfo ").append(key)
-                                                            .append(" ignored - as DataStore ")
-                                                            .append(dataStoreId)
-                                                            .append(" is unavailable:")
-                                                            .append(ioException).toString());
-                }
-
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
-                        ioException);
+                        "FeatureTypeInfo " + key + " ignored - as DataStore " 
+                        + dataStoreId + " is unavailable", ioException);
                 }
 
                 errors.put(featureTypeDTO, ioException);
@@ -691,31 +683,15 @@ SCHEMA:
             } catch (NoSuchElementException nse) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
-                        new StringBuffer("FeatureTypeInfo ").append(key)
-                                                            .append(" ignored - as DataStore ")
-                                                            .append(dataStoreId)
-                                                            .append(" can't find SimpleFeatureType '"
-                            + typeName + "'.  Error was:\n").append(nse).toString());
-                }
-
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, typeName + " not found", nse);
+                    "FeatureTypeInfo " + key + " ignored - as DataStore " 
+                    + dataStoreId + " can't find FeatureType '" + typeName, nse);
                 }
 
                 continue;
             } catch (Throwable unExpected) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE,
-                        new StringBuffer("FeatureTypeInfo ").append(key)
-                                                            .append(" ignored - as DataStore ")
-                                                            .append(dataStoreId)
-                                                            .append(" is broken:").append(unExpected)
-                                                            .toString());
-                }
-
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
-                        unExpected);
+                    LOGGER.log(Level.SEVERE, "FeatureTypeInfo " + key + " ignored - as DataStore " 
+                            + dataStoreId  + " is broken", unExpected);
                 }
 
                 errors.put(featureTypeDTO, unExpected);
@@ -739,14 +715,7 @@ SCHEMA:
             } catch (ConfigurationException configException) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
-                        new StringBuffer("FeatureTypeInfo ").append(key)
-                                                            .append(" ignored - configuration problem:")
-                                                            .append(configException).toString());
-                }
-
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.log(Level.FINEST,
-                        new StringBuffer(key).append(" unavailable").toString(), configException);
+                        "FeatureTypeInfo " + key + " ignored because of a configuration problem", configException);
                 }
 
                 errors.put(featureTypeDTO, configException);
