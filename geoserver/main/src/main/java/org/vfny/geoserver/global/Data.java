@@ -668,16 +668,8 @@ SCHEMA:
             } catch (IOException ioException) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
-                        new StringBuffer("FeatureTypeInfo ").append(key)
-                                                            .append(" ignored - as DataStore ")
-                                                            .append(dataStoreId)
-                                                            .append(" is unavailable:")
-                                                            .append(ioException).toString());
-                }
-
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
-                        ioException);
+                        "FeatureTypeInfo " + key + " ignored - as DataStore " 
+                        + dataStoreId + " is unavailable", ioException);
                 }
 
                 errors.put(featureTypeDTO, ioException);
@@ -686,31 +678,15 @@ SCHEMA:
             } catch (NoSuchElementException nse) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
-                        new StringBuffer("FeatureTypeInfo ").append(key)
-                                                            .append(" ignored - as DataStore ")
-                                                            .append(dataStoreId)
-                                                            .append(" can't find FeatureType '"
-                            + typeName + "'.  Error was:\n").append(nse).toString());
-                }
-
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, typeName + " not found", nse);
+                    "FeatureTypeInfo " + key + " ignored - as DataStore " 
+                    + dataStoreId + " can't find FeatureType '" + typeName, nse);
                 }
 
                 continue;
             } catch (Throwable unExpected) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE,
-                        new StringBuffer("FeatureTypeInfo ").append(key)
-                                                            .append(" ignored - as DataStore ")
-                                                            .append(dataStoreId)
-                                                            .append(" is broken:").append(unExpected)
-                                                            .toString());
-                }
-
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
-                        unExpected);
+                    LOGGER.log(Level.SEVERE, "FeatureTypeInfo " + key + " ignored - as DataStore " 
+                            + dataStoreId  + " is broken", unExpected);
                 }
 
                 errors.put(featureTypeDTO, unExpected);
@@ -734,14 +710,7 @@ SCHEMA:
             } catch (ConfigurationException configException) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
-                        new StringBuffer("FeatureTypeInfo ").append(key)
-                                                            .append(" ignored - configuration problem:")
-                                                            .append(configException).toString());
-                }
-
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.log(Level.FINEST,
-                        new StringBuffer(key).append(" unavailable").toString(), configException);
+                        "FeatureTypeInfo " + key + " ignored because of a configuration problem", configException);
                 }
 
                 errors.put(featureTypeDTO, configException);
