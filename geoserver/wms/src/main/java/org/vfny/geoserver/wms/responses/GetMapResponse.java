@@ -466,11 +466,11 @@ public class GetMapResponse implements Response {
         Filter userRequestedFilter;
         Filter combined;
 
-        int i=0;
-        for (MapLayerInfo layer: layers) {
+        MapLayerInfo layer;
+        for (int i = 0; i < nLayers; i++) {
+            layer = layers[i];
             userRequestedFilter = requestFilters.get(i);
-            if(layer.getType()!=MapLayerInfo.TYPE_RASTER)
-            {
+            if(layer.getType()!=MapLayerInfo.TYPE_RASTER){
                 layerDefinitionFilter = layer.getFeature().getDefinitionQuery();
                 // heck, how I wish we use the null objects more
                 if (layerDefinitionFilter == null) {
