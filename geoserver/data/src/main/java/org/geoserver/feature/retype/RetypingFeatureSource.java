@@ -13,9 +13,9 @@ import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureListener;
-import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.QueryCapabilities;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.opengis.filter.Filter;
@@ -102,6 +102,10 @@ public class RetypingFeatureSource implements FeatureSource {
 
     public Set getSupportedHints() {
         return wrapped.getSupportedHints();
+    }
+
+    public QueryCapabilities getQueryCapabilities() {
+        return wrapped.getQueryCapabilities();
     }
 
 }

@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses.map.svg;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
@@ -194,9 +195,14 @@ public class EncodeSVG {
                 bboxFilter.addRightGeometry(bboxExpression);
 
                 Query bboxQuery = new DefaultQuery(schema.getTypeName(), bboxFilter);
+                Query definitionQuery = layer.getQuery();
+                DefaultQuery finalQuery = new DefaultQuery(DataUtilities.mixQueries(definitionQuery, bboxQuery, "svgEncoder"));
+                finalQuery.setHints(definitionQuery.getHints());
+                finalQuery.setSortBy(definitionQuery.getSortBy());
+                finalQuery.setStartIndex(definitionQuery.getStartIndex());
 
                 LOGGER.fine("obtaining FeatureReader for " + schema.getTypeName());
-                featureReader = fSource.getFeatures(bboxQuery).features();
+                featureReader = fSource.getFeatures(finalQuery).features();
                 LOGGER.fine("got FeatureReader, now writing");
 
                 String groupId = null;
