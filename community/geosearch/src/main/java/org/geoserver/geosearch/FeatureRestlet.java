@@ -2,6 +2,7 @@ package org.geoserver.geosearch;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
@@ -144,8 +145,16 @@ public class FeatureRestlet extends Restlet {
                 new MediaType("application/xml+kml")  
                 ) {
             public void write(OutputStream outputStream) throws IOException {
-                getMapResponse.execute(getMapRequest);
-                getMapResponse.writeTo(outputStream);
+                try{
+                    getMapResponse.execute(getMapRequest);
+                    getMapResponse.writeTo(outputStream);
+                } catch (IOException ioe){
+                    throw ioe;
+                } catch (Exception e){
+                    PrintStream printStream = new PrintStream(outputStream);
+                    printStream.println("Unable to index feature due to: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         };
         response.setEntity( output );
