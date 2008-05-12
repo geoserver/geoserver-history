@@ -1,22 +1,20 @@
-;GeoServer Null Soft Installer creation file.
+;GeoServer NullSoft Installer creation file.
 ;Written by Chris Holmes
-
+;
 ;We will eventually make this buildable from ant, but for a first
 ;stab the way to use this is to build a complete binary release with
 ;ant.  Then unzip that file in a fresh directory and copy this nsi file
 ;to the geoserver/ directory created by that unzip.  Then compile the
 ;nsi script from there.  If you have any questions just email 
-;geoserver-devel@lists.sourceforge.net, and we can write up a better guide and/or
-;get things working right in ant.
-
+;geoserver-devel@lists.sourceforge.net, and we can write up a better
+;guide and/or get things working right in ant.
 ;
 ; 
-
-;    HOW TO USE THE NULL SOFT INSTALLER IS IN THE DOCUMENTATION/DEVELOPER/RELEASEGUIDE!!
-;    it has a step-by-step guide.
+;HOW TO USE THE NULLSOFT INSTALLER IS IN THE
+;DOCUMENTATION/DEVELOPER/RELEASEGUIDE!!
 ;11:00 AM 5/23/2005
 ;
-
+;Additional Comments/Edits made by Mike Pumphrey, May 2008
 
 ;--------------------------------
 ;Include Modern UI
@@ -25,12 +23,15 @@
   XPStyle on
 
 ;--------------------------------
+; Fix Vista installation problems
+RequestExecutionLevel "admin"
+  
+;--------------------------------
 ;General
 
   ;Name and file
   Name "GeoServer 1.6.0"
   OutFile "geoserver-1.6.0.exe"
-
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\GeoServer 1.6.0"
@@ -49,15 +50,15 @@
 ;--------------------------------
 ;Interface Settings
 
-  !define MUI_ICON   "${NSISDIR}\Contrib\Graphics\Icons\win-install.ico"
+  !define MUI_ICON   "webapps\geoserver\WEB-INF\images\gs.ico"
   !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
-  
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
-      installation of GeoServer 1.6.0 \r\n \
-			Please report any problems or suggestions for improvement to \
-      geoserver-devel@lists.sourceforge.net. \r\n \r\n \
-      Click Next to continue."
+                                installation of GeoServer 1.6.0.  \
+                                Please report any suggestions or issues \
+								to geoserver-devel@lists.sourceforge.net. \r\n\
+                                Click Next to continue."
+
 ;--------------------------------
 ;Pages
 
@@ -74,9 +75,7 @@
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
   
   !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
-  
   !insertmacro MUI_PAGE_INSTFILES
-
   !insertmacro MUI_PAGE_FINISH
   
   !insertmacro MUI_UNPAGE_WELCOME
@@ -89,9 +88,8 @@
  
   !insertmacro MUI_LANGUAGE "English"
 
-
-ReserveFile "dataDirPage.ini"; -bo
-!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS ; -bo
+  ReserveFile "dataDirPage.ini"; -bo
+  !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS ; -bo
 
 ;--------------------------------
 ;Installer Sections
@@ -112,14 +110,13 @@ Section "GeoServer Section" SecGeoServer
   File /a start.jar
   File /r webapps
 	
-
-
-  ## Create the GEOSERVER_DATA_DIR environment variable (this will overwrite if one already exists)
+  ; Create the GEOSERVER_DATA_DIR environment variable
+  ; (this will overwrite if one already exists)
   Push GEOSERVER_DATA_DIR
   Push $DATA_DIR
   Call WriteEnvStr
 
-  ;Store installation folderh
+  ; Store installation folderh
   WriteRegStr HKCU "Software\GeoServer" "" $INSTDIR
   
   ;Create uninstaller
@@ -131,14 +128,12 @@ Section "GeoServer Section" SecGeoServer
     Call findJavaPath
     Pop $2
 
-
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
     SetOutPath "$INSTDIR"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Documentation.lnk"\
-                   "$INSTDIR\documents\GEOSDOC\Documentation.html"
+                   "http://geoserver.org"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Administration.lnk" \
                    "http://localhost:8080/geoserver/"
-
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Start GeoServer.lnk" \
                    "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx300m -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar'\
                    "$INSTDIR\webapps\geoserver\WEB-INF\images\gs.ico" 0 SW_SHOWNORMAL
@@ -146,7 +141,6 @@ Section "GeoServer Section" SecGeoServer
                    "$2\bin\java.exe" '-DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar --stop'\
                    "$INSTDIR\webapps\geoserver\WEB-INF\images\gs.ico" 0 SW_SHOWMINIMIZED
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
-
   
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -160,7 +154,7 @@ SectionEnd
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecGeoServer} $(DESC_GeoServer)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecGeoServer} $(DESC_GeoServer)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function echoJava
@@ -169,27 +163,26 @@ Function echoJava
 
    Call findJavaPath
    Pop $1
-   MessageBox MB_OK "Using Java Development Kit found in $1.  If you would \
-     like GeoServer to use another JDK then hit Cancel and set the JAVA_HOME \ 
-     environment variable the location of your preferred JDK.  If your JDK \
-     is not version 1.4 then please download and install a new one from \ 
-     http://java.sun.com/j2se/1.4.  NOTE: this must be JDK/SDK - not a JRE."
+   MessageBox MB_OK "Using Java Development Kit (JDK) found in: \
+     $\r $\n$1$\r $\n\
+	 If you would like GeoServer to use another JDK then hit Cancel and set the \
+	 JAVA_HOME environment variable the location of your preferred JDK. \
+	 You can download a new one from \ 
+     http://java.sun.com/javase/downloads. $\r\
+	 NOTE: You must use a JDK - not a Java Runtime Environment (JRE)."
 
 FunctionEnd
 
-
-
-; =====================
 Function .onInit
 
-   # Splash Screen
-   # the plugins dir is automatically deleted when the installer exits
+   ;Splash Screen
+   ;plugins dir is automatically deleted when the installer exits
    InitPluginsDir
    File /oname=$PLUGINSDIR\splash.bmp "splash.bmp"
    splash::show 1500 $PLUGINSDIR\splash
-   Pop $0 ;	$0 has '1' if the user closed the splash screen early,
-	  ;	'0' if everything closed normally, and '-1' if some error occurred.
-
+   ; $0 has '1' if the user closed the splash screen early,
+   ; '0' if everything closed normally, and '-1' if some error occurred.
+   Pop $0
 
    #Extract InstallOptions INI files
    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "dataDirPage.ini"
@@ -204,36 +197,31 @@ Function .onInit
 FunctionEnd
 
 
-; =====================
 Function dataDirPage
 
-  ## get the existing data dir environment variable
+  ;get the existing data dir environment variable
   ReadEnvStr $1 GEOSERVER_DATA_DIR
   ;MessageBox MB_OK "existing env string: $1"
 
   StrCmp $1 "" 0 copy_str
-  ## if it doesn't exist, use: "$INSTDIR\data_dir"
-    StrCpy $1 "$INSTDIR\data_dir"
+  ;if it doesn't exist, use: "$INSTDIR\data_dir"
+  StrCpy $1 "$INSTDIR\data_dir"
 
-  ## if it exists, use it for temp value until user chooses new one
+  ;if it exists, use it for temp value until user chooses new one
   copy_str:
-    StrCpy $DATA_DIR $1
+  StrCpy $DATA_DIR $1
 
   
-  !insertmacro MUI_HEADER_TEXT "GeoServer Data Directory" "Choose your Data Directory's location."
+  !insertmacro MUI_HEADER_TEXT "GeoServer Data Directory" "Choose the location of your data directory."
   !insertmacro MUI_INSTALLOPTIONS_INITDIALOG "dataDirPage.ini"
   Pop $HWND
   GetDlgItem $1 $HWND 1202	; 1200 + field number - 1 (MINUS ONE!!!!!!!! pos NSIS)
   SendMessage $1 ${WM_SETTEXT} 1 "STR:$DATA_DIR"
   !insertmacro MUI_INSTALLOPTIONS_SHOW
-  
 
 FunctionEnd
-; =====================
 
 
-
-; =====================
 Function dataDirPageLeave
   
   !insertmacro MUI_INSTALLOPTIONS_READ $R1 "dataDirPage.ini" "Field 3" "State"
@@ -241,8 +229,8 @@ Function dataDirPageLeave
   ;MessageBox MB_OK "window value: $DATA_DIR"
 
 FunctionEnd
-; =====================
 
+;------------------------------------
 
 
 ; =====================
@@ -256,11 +244,8 @@ FunctionEnd
 Function findJavaPath
 
   ClearErrors
-
   ReadEnvStr $1 JAVA_HOME
-
   IfErrors 0 FoundJDK
-
   ClearErrors
 
   ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Development Kit" "CurrentVersion"
@@ -271,11 +256,11 @@ Function findJavaPath
   FoundJDK:
 
   IfErrors 0 NoAbort
-    MessageBox MB_OK "Couldn't find a Java Development Kit installed on this \
-    computer. Please download one from http://java.sun.com/j2se/1.4. If there \
-    is already a JDK 1.4 or greater installed on this computer, set an \
-    environment variable JAVA_HOME to the pathname of the directory where it \
-    is installed.   NOTE: this must be JDK/SDK - not a JRE."
+    MessageBox MB_OK "Couldn't find a Java Development Kit (JDK) installed on this \
+    machine. Please download one from http://java.sun.com/javase/downloads. \
+	If there already is already a JDK (1.4 or newer) installed, please make sure the \
+    JAVA_HOME environment variable is set correctly. \
+    NOTE: You must have a JDK installed, not a Java Runtime Environment (JRE)."
 
     Abort
 
@@ -288,20 +273,21 @@ FunctionEnd
 
 
 !ifndef _WriteEnvStr_nsh
-!define _WriteEnvStr_nsh
+  !define _WriteEnvStr_nsh
+  !include WinMessages.nsh
  
-!include WinMessages.nsh
- 
-!ifndef WriteEnvStr_RegKey
-  !ifdef ALL_USERS
-    !define WriteEnvStr_RegKey \
+  !ifndef WriteEnvStr_RegKey
+    !ifdef ALL_USERS
+      !define WriteEnvStr_RegKey \
        'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
-  !else
-    !define WriteEnvStr_RegKey 'HKCU "Environment"'
+    !else
+      !define WriteEnvStr_RegKey 'HKCU "Environment"'
+    !endif
   !endif
-!endif
+;close !endif?
 
-#
+;-----------------------------
+
 # WriteEnvStr - Writes an environment variable
 # Note: Win9x systems requires reboot
 #
@@ -309,7 +295,6 @@ FunctionEnd
 #  Push "HOMEDIR"           # name
 #  Push "C:\New Home Dir\"  # value
 #  Call WriteEnvStr
-#
 Function WriteEnvStr
   Exch $1 ; $1 has environment variable value
   Exch
@@ -339,15 +324,14 @@ Function WriteEnvStr
     Pop $1
 FunctionEnd
 
+;---------------------------------------
  
-#
 # un.DeleteEnvStr - Removes an environment variable
 # Note: Win9x systems requires reboot
 #
 # Example:
 #  Push "HOMEDIR"           # name
 #  Call un.DeleteEnvStr
-#
 Function un.DeleteEnvStr
   Exch $0 ; $0 now has the name of the variable
   Push $1
@@ -402,7 +386,8 @@ FunctionEnd
 !ifndef IsNT_KiCHiK
 !define IsNT_KiCHiK
  
-#
+;---------------------------------------
+ 
 # [un.]IsNT - Pushes 1 if running on NT, 0 if not
 #
 # Example:
@@ -458,12 +443,12 @@ Section "Uninstall"
   Delete "$INSTDIR\*.txt"
   Delete "$INSTDIR\*.jar"
 
-  RMDir "$INSTDIR"
+  RMDIR /r "$INSTDIR"
   
   IfFileExists "$INSTDIR" 0 Removed
      MessageBox MB_YESNO|MB_ICONQUESTION \
           "Remove all files in your GeoServer 1.6.0 directory? (If you have anything you created that you want to keep, click No)" IDNO Removed
-     Delete "$INSTDIR\*.*" ;
+     Delete "$INSTDIR\*.*"
      RMDIR /r "$INSTDIR"
      Sleep 500
      IfFileExists "$INSTDIR" 0 Removed
