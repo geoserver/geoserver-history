@@ -32,7 +32,8 @@ import junit.framework.TestCase;
  * @author Gabriel Roldan (TOPP)
  * @version $Id$
  * @since 2.5.x
- * @source $URL$
+ * @source $URL:
+ *         https://svn.codehaus.org/geoserver/trunk/geoserver/web/src/test/java/org/geoserver/filters/ReverseProxyFilterTest.java $
  */
 public class ReverseProxyFilterTest extends TestCase {
 
@@ -105,6 +106,37 @@ public class ReverseProxyFilterTest extends TestCase {
                 contentType);
 
         assertEquals(content, result);
+    }
+
+    public void testDoFilterRelativeUrl() throws ServletException, IOException {
+        final String proxyBaseUrl = "https://proxy.server:9090/applications/geoserver";
+        final String requestBaseUrl = "http://localhost:8080/geoserver";
+        final String requestResource = "/resource.js";
+        final String content = "var=\"/geoserver/wms?\";";
+        final String contentType = "application/x-javascript";
+
+        String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
+                contentType);
+
+        final String expected = "var=\"/applications/geoserver/wms?\";\n";
+        assertEquals(expected, result);
+    }
+
+    public void testDoFilterProxyRoot() throws ServletException, IOException {
+        final String proxyBaseUrl = "https://proxy.server";
+        final String requestBaseUrl = "http://localhost:8080/geoserver";
+        final String requestResource = "/resource.js";
+        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>\n"
+                + "<a href=\"/geoserver/style.css\"></a>\n";
+        final String contentType = "text/html; charset=UTF-8";
+
+        String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
+                contentType);
+
+        final String expected = "<a href=\"https://proxy.server/linked.html\">link</a>\n"
+                + "<a href=\"/style.css\"></a>\n";
+
+        assertEquals(expected, result);
     }
 
     /**

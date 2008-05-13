@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.filters;
 
 import java.io.BufferedReader;
@@ -34,19 +38,56 @@ import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.GeoServer;
 
 /**
+ * Servlet Filter that performs URL translation on content based on configured mime types.
+ * <p>
+ * This filter does the job of a content filtering reverse proxy, like apache2 <code>mod_html</code>,
+ * but meant to be used out of the box for situations where the UI needs to be exposed through a
+ * proxy server but for one reason or another the external reverse proxy is not installed or can't
+ * be configured to perform URL translation on contents.
+ * </p>
+ * <p>
+ * This Filter uses the configured {@link GeoServer#getProxyBaseUrl() proxyBaseUrl} to translate the
+ * URL's found in textual content whose MIME type matches one of the regular expressions provided
+ * through the <code>"mime-types"</code> filter init parameter.
+ * </p>
+ * <p>
+ * Sample translations: given GeoServer being running in a servlet engine at
+ * <code>http://localhost:8080/geoserver</code> and the <code>proxyBaseUrl</code> configured as
+ * <code>http://myserver/tools/geoserver</code>:
+ * <ul>
+ * <li><code>"http://localhost:8080/geoserver/welcome.do"</code> gets translated as
+ * <code>"http://myserver/tools/geoserver/welcome.do"</code>
+ * <li><code>"/geoserver/style.css"</code> gets translated as
+ * <code>"/tools/geoserver/style.css"</code>
+ * </ul>
+ * </p>
+ * 
  * @author Gabriel Roldan (TOPP)
  * @version $Id$
  * @since 2.5.x
- * @source $URL$
+ * @source $URL:
+ *         https://svn.codehaus.org/geoserver/trunk/geoserver/web/src/main/java/org/geoserver/filters/ReverseProxyFilter.java $
  */
 public class ReverseProxyFilter implements Filter {
 
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.filters");
 
+    /**
+     * The name of the filter init parameter that contains the comma separated list of regular
+     * expressions used to match the response mime types to translate URL's for
+     */
     private static final String MIME_TYPES_INIT_PARAM = "mime-types";
 
+    /**
+     * The set of Patterns used to match response mime types
+     */
     private final Set<Pattern> mimeTypePatterns = new HashSet<Pattern>();
 
+    /**
+     * Parses the <code>mime-types</code> init parameter, which is a comma separated list of
+     * regular expressions used to match the response mime types to decide whether to apply the URL
+     * translation on content or not.
+     */
     public void init(final FilterConfig filterConfig) throws ServletException {
         final String initParameter = filterConfig.getInitParameter(MIME_TYPES_INIT_PARAM);
         final String[] split = initParameter.split(",");
@@ -68,7 +109,21 @@ public class ReverseProxyFilter implements Filter {
     }
 
     /**
-     * 
+     * Uses a response wrapper to evaluate the mime type set and if it matches one of the configured
+     * mime types applies URL translation from internal URL's to proxified ones.
+     * <p>
+     * When a matching mime type is found, the full response is cached during
+     * <code>chain.doFilter</code>, and the content is assumed to be textual in the
+     * <code>response.getCharacterEncoding()</code> charset. If the mime type does not match any
+     * of the configured ones no translation nor response cacheing is performed.
+     * <p>
+     * </p>
+     * The URL translation is a two-step process, done line by line from the cached content and
+     * written to the actual response output stream. It first translates the
+     * <code>protocol://host:port</code> section of URL's and then replaces the servlet context
+     * from the server URL by the proxy base URL context. This accounts for absolute urls as well as
+     * relative, root based, urls as used in javascript code and css.
+     * </p>
      */
     public void doFilter(final ServletRequest request,
             final ServletResponse response,
@@ -128,14 +183,14 @@ public class ReverseProxyFilter implements Filter {
 
             String line;
             String translatedLine;
-            LOGGER.info("translating " + ((HttpServletRequest)request).getRequestURI());
+            LOGGER.finer("translating " + ((HttpServletRequest) request).getRequestURI());
             while ((line = reader.readLine()) != null) {
                 translatedLine = line.replaceAll(serverBase, proxyBase);
                 translatedLine = translatedLine.replaceAll(context, proxyContext);
-                if(LOGGER.isLoggable(Level.INFO)){
-                    if(!line.equals(translatedLine)){
-                        LOGGER.info("translated '" + line + "'");
-                        LOGGER.info("        as '" + translatedLine + "'");
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    if (!line.equals(translatedLine)) {
+                        LOGGER.finest("translated '" + line + "'");
+                        LOGGER.finest("        as '" + translatedLine + "'");
                     }
                 }
                 writer.println(translatedLine);
@@ -166,11 +221,18 @@ public class ReverseProxyFilter implements Filter {
     /**
      * A servlet response wrapper that caches the content if its mime type matches one of the
      * provided patterns.
+     * <p>
+     * Whether to cache the content or not has to be decided when {@link #setContentType(String)} is
+     * called, doing the pattern matching with the provided set of regular expression patterns. So
+     * after using this response wrapper, {@link #isCacheing()} indicates whether content cache was
+     * done, and if so, the cached content is accessed through {@link #getCachedContent()}.
+     * </p>
      * 
      * @author Gabriel Roldan (TOPP)
      * @version $Id$
      * @since 2.5.x
-     * @source $URL$
+     * @source $URL:
+     *         https://svn.codehaus.org/geoserver/trunk/geoserver/web/src/main/java/org/geoserver/filters/ReverseProxyFilter.java $
      */
     private static class CacheingResponseWrapper extends HttpServletResponseWrapper {
 
@@ -184,6 +246,11 @@ public class ReverseProxyFilter implements Filter {
 
         private ByteArrayOutputStream cache;
 
+        /**
+         * @param response the wrapped response
+         * @param cacheingMimeTypes the patterns to do mime type matching with to decide whether to
+         *            cache content or not
+         */
         public CacheingResponseWrapper(final HttpServletResponse response,
                                        Set<Pattern> cacheingMimeTypes) {
             super(response);
@@ -192,10 +259,17 @@ public class ReverseProxyFilter implements Filter {
             this.cacheContent = false;
         }
 
+        /**
+         * @return whether content cacheing has been accomplished or not after the response was
+         *         used.
+         */
         public boolean isCacheing() {
             return cacheContent;
         }
 
+        /**
+         * @return the cached contend, as long as <code>isCacheing() == true</code>
+         */
         public byte[] getCachedContent() {
             return cache.toByteArray();
         }
