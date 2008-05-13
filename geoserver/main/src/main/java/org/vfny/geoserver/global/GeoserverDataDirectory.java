@@ -96,6 +96,23 @@ public class GeoserverDataDirectory {
     }
 
     /**
+     * Locate coverage type directory name using the coverage name as a key into the catalog 
+     * @see Data#getCoverageInfo(String)
+     * @param coverageName
+     *            String The FeatureTypeInfo Name
+
+     * @return the feature type dir name, or null if not found (either the feature type or the directory)
+     *
+     * @throws NoSuchElementException
+     */
+    public static String findCoverageDirName(String coverageName) {
+        Data data = getCatalog();
+        CoverageInfo coverageInfo = data.getCoverageInfo(coverageName);
+        String dirName = coverageInfo.getDirName();
+        return dirName;
+    }
+
+    /**
      * Returns whether GeoServer is using a true data directory, loaded from outside the webapp, or if its defaulting to the webapp embedded
      * dataDir. We're in the process of moving away from storing anything in the webapp but are keeping this to ease the transition.
      *
