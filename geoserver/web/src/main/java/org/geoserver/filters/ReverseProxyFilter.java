@@ -195,8 +195,13 @@ public class ReverseProxyFilter implements Filter {
             final String context;
             // the proxy context (eg, /tools/geoserver/)
             final String proxyContext;
+            final String baseUrl;
             {
-                final String baseUrl = RequestUtils.baseURL((HttpServletRequest) request);
+                String _baseUrl = RequestUtils.baseURL((HttpServletRequest) request);
+                if(_baseUrl.endsWith("/")){
+                    _baseUrl = _baseUrl.substring(0, _baseUrl.length() - 1);
+                }
+                baseUrl = _baseUrl;
                 final URL base = new URL(baseUrl);
                 final URL proxy = new URL(proxyBaseUrl);
 
@@ -211,7 +216,17 @@ public class ReverseProxyFilter implements Filter {
             String translatedLine;
             LOGGER.finer("translating " + ((HttpServletRequest) request).getRequestURI());
             while ((line = reader.readLine()) != null) {
-                translatedLine = line.replaceAll(serverBase, proxyBase);
+                //ugh, we need to revert any already translated URL, like in the case
+                //of the server config form where the proxyBaseUrl is set. Otherwise
+                //it could be mangled
+                if(line.indexOf(proxyBaseUrl) != -1){
+                    translatedLine = line.replaceAll(proxyBaseUrl, baseUrl);
+                }else{
+                    translatedLine = line;
+                }
+
+                //now apply the translation from servlet url to proxy url
+                translatedLine = translatedLine.replaceAll(serverBase, proxyBase);
                 translatedLine = translatedLine.replaceAll(context, proxyContext);
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     if (!line.equals(translatedLine)) {
