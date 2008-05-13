@@ -12,11 +12,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.vfny.geoserver.global.CoverageInfo;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -120,7 +124,22 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         if(templateLoader == null) {
             templateLoader = new GeoServerTemplateLoader(getClass());
         }
-        templateLoader.setFeatureType(featureType);
+
+        Data catalog =  (Data) GeoServerExtensions.bean("data");
+        String localName = featureType.getName().getLocalPart();
+        String namespaceURI = featureType.getName().getNamespaceURI();
+        FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(localName, namespaceURI);
+        if(featureTypeInfo != null){
+            templateLoader.setFeatureType(featureType);
+        }else{
+            CoverageInfo cInfo = catalog.getCoverageInfo(localName);
+            if(cInfo != null){
+                templateLoader.setCoverageName(localName);
+            }else{
+                throw new IllegalArgumentException("Can't find neither a FeatureType nor " +
+                        "a CoverageInfo named " + localName);
+            }
+        }
 
         synchronized (templateConfig) {
             templateConfig.setTemplateLoader(templateLoader);
