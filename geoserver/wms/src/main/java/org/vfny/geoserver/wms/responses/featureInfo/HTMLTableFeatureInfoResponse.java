@@ -127,17 +127,18 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         }
         
         Data catalog =  (Data) GeoServerExtensions.bean("data");
-        FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(featureType.getTypeName(), featureType.getTypeName().toString());
+        String localName = featureType.getTypeName();
+        String namespaceURI = featureType.getNamespace().toString();
+        FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(localName, namespaceURI);
         if(featureTypeInfo != null){
             templateLoader.setFeatureType(featureType);
         }else{
-            String coverageName = featureType.getTypeName();
-            CoverageInfo cInfo = catalog.getCoverageInfo(coverageName);
+            CoverageInfo cInfo = catalog.getCoverageInfo(localName);
             if(cInfo != null){
-                templateLoader.setCoverageName(coverageName);
+                templateLoader.setCoverageName(localName);
             }else{
                 throw new IllegalArgumentException("Can't find neither a FeatureType nor " +
-                		"a CoverageInfo named " + coverageName);
+                		"a CoverageInfo named " + localName);
             }
         }
 
