@@ -27,11 +27,42 @@
           <value>rulesResource</value>
         </entry>
         <entry>
+          <key><value>/sldservice/updateStyle/{layerName}</value></key>
+          <value>updateLayerStyleResource</value>
+        </entry>
+        <entry>
           <key><value>/sldservice/{featureType}/attributes</value></key>
           <value>listAttributesRestlet</value>
         </entry>
+        <entry>
+          <key><value>/sldservice/{featureType}/quantile/{property}/{classNum}</value></key>
+          <value>quantileGeneratorRestlet</value>
+        </entry>
+        <entry>
+          <key><value>/sldservice/{featureType}/equalInterval/{property}/{classNum}</value></key>
+          <value>equalIntervalGeneratorRestlet</value>
+        </entry>
+        <entry>
+          <key><value>/sldservice/{featureType}/uniqueInterval/{property}/{classNum}</value></key>
+          <value>uniqueIntervalGeneratorRestlet</value>
+        </entry>
       </map>
     </property>
+  </bean>
+
+  <bean id="uniqueIntervalGeneratorRestlet"
+    class="org.geoserver.sldservice.resource.UniqueIntervalGenerator">
+    <constructor-arg index="0" ref="catalog" />
+  </bean>
+
+  <bean id="equalIntervalGeneratorRestlet"
+    class="org.geoserver.sldservice.resource.EqualIntervalGenerator">
+    <constructor-arg index="0" ref="catalog" />
+  </bean>
+
+  <bean id="quantileGeneratorRestlet"
+    class="org.geoserver.sldservice.resource.QuantileGenerator">
+    <constructor-arg index="0" ref="catalog" />
   </bean>
 
   <bean id="featureTypeStyleResource"
@@ -54,11 +85,16 @@
     <constructor-arg index="0" ref="catalog" />
   </bean>
 
+  <bean id="updateLayerStyleResource"
+    class="org.geoserver.sldservice.resource.UpdateLayerStyleResource">
+    <constructor-arg index="0" ref="dataConfig" />
+    <constructor-arg index="1" ref="catalog" />
+  </bean>
+
   <bean id="userStyleResource"
     class="org.geoserver.sldservice.resource.UserStyleResource">
     <constructor-arg index="0" ref="catalog" />
     <constructor-arg index="1" ref="dataConfig" />
   </bean>
-
 
 </beans>

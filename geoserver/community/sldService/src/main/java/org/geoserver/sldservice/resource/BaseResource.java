@@ -208,6 +208,7 @@ public class BaseResource extends Resource {
 		return ruleSz;
 
 	}
+	
 	protected String jsonFilter(Filter filter) {
 		String filterSz = null;
 		String xmlFilter;

@@ -10,7 +10,7 @@ public class RedColorRamp implements ColorRamp  {
 
 	
 	private int classNum=0;
-	private List<Color> colors =new ArrayList();
+	private List<Color> colors = new ArrayList();
 	
 	public int getNumClasses() {
 		
