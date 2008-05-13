@@ -46,6 +46,17 @@ import org.vfny.geoserver.global.GeoServer;
  * be configured to perform URL translation on contents.
  * </p>
  * <p>
+ * <h2>Init parameters</h2>
+ * <ul>
+ * <li><b><code>enabled</code></b>: one of <code>true</code> or <code>false</code>,
+ * defaults to <code>false</code>. Indicates whether to enable this filter or not.
+ * <li><b><code>mime-types</code></b>: comma separated list of java regular expressions used to
+ * match the response mime type and decide whether to perform URL translation on the response
+ * content or not.
+ * </ul>
+ * </p>
+ * <p>
+ * <h2>Operation</h2>
  * This Filter uses the configured {@link GeoServer#getProxyBaseUrl() proxyBaseUrl} to translate the
  * URL's found in textual content whose MIME type matches one of the regular expressions provided
  * through the <code>"mime-types"</code> filter init parameter.
@@ -73,10 +84,17 @@ public class ReverseProxyFilter implements Filter {
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.filters");
 
     /**
+     * Name of the filter init parameter that indicates whether the filter is enabled or disabled
+     */
+    private static final String ENABLED_INIT_PARAM = "enabled";
+
+    /**
      * The name of the filter init parameter that contains the comma separated list of regular
      * expressions used to match the response mime types to translate URL's for
      */
     private static final String MIME_TYPES_INIT_PARAM = "mime-types";
+
+    private boolean filterIsEnabled;
 
     /**
      * The set of Patterns used to match response mime types
@@ -89,23 +107,31 @@ public class ReverseProxyFilter implements Filter {
      * translation on content or not.
      */
     public void init(final FilterConfig filterConfig) throws ServletException {
-        final String initParameter = filterConfig.getInitParameter(MIME_TYPES_INIT_PARAM);
-        final String[] split = initParameter.split(",");
+        final String enabledInitParam = filterConfig.getInitParameter(ENABLED_INIT_PARAM);
 
-        LOGGER.finer("Initializing Reverse Proxy Filter");
-        try {
-            for (int i = 0; i < split.length; i++) {
-                String mimeTypeRegExp = split[i];
-                LOGGER.finest("Registering mime type regexp for reverse proxy filter: "
-                        + mimeTypeRegExp);
-                Pattern mimeTypePattern = Pattern.compile(mimeTypeRegExp);
-                mimeTypePatterns.add(mimeTypePattern);
+        filterIsEnabled = Boolean.valueOf(enabledInitParam).booleanValue();
+        if (filterIsEnabled) {
+
+            final String mimeTypesInitParam = filterConfig.getInitParameter(MIME_TYPES_INIT_PARAM);
+            final String[] split = mimeTypesInitParam.split(",");
+
+            LOGGER.finer("Initializing Reverse Proxy Filter");
+            try {
+                for (int i = 0; i < split.length; i++) {
+                    String mimeTypeRegExp = split[i];
+                    LOGGER.finest("Registering mime type regexp for reverse proxy filter: "
+                            + mimeTypeRegExp);
+                    Pattern mimeTypePattern = Pattern.compile(mimeTypeRegExp);
+                    mimeTypePatterns.add(mimeTypePattern);
+                }
+            } catch (PatternSyntaxException e) {
+                throw new ServletException("Error compiling Reverse Proxy Filter mime-types: "
+                        + e.getMessage(), e);
             }
-        } catch (PatternSyntaxException e) {
-            throw new ServletException("Error compiling Reverse Proxy Filter mime-types: "
-                    + e.getMessage(), e);
+            LOGGER.finer("Reverse Proxy Filter configured");
+        } else {
+            LOGGER.fine("Reverse Proxy Filter is disabled by configuration");
         }
-        LOGGER.finer("Reverse Proxy Filter configured");
     }
 
     /**
@@ -129,7 +155,7 @@ public class ReverseProxyFilter implements Filter {
             final ServletResponse response,
             final FilterChain chain) throws IOException, ServletException {
 
-        if (!(request instanceof HttpServletRequest)) {
+        if (!(filterIsEnabled || (request instanceof HttpServletRequest))) {
             chain.doFilter(request, response);
             return;
         }
