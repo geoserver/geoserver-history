@@ -92,7 +92,7 @@ public class ReverseProxyFilterTest extends TestCase {
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
                 contentType, false);
 
-        //no translation performed, filter is disabled
+        // no translation performed, filter is disabled
         assertEquals(content, result);
     }
 
@@ -153,6 +153,23 @@ public class ReverseProxyFilterTest extends TestCase {
                 + "<a href=\"/style.css\"></a>\n";
 
         assertEquals(expected, result);
+    }
+
+    /**
+     * May the content already contain the proxified url, so no translation should be done or it
+     * could end up mangled
+     */
+    public void testDoFilterContentContainsProxifiedUrl() throws ServletException, IOException {
+        final String proxyBaseUrl = "https://localhost/geoserver/tools";
+        final String requestBaseUrl = "http://localhost:8080/geoserver";
+        final String requestResource = "/resource.js";
+        final String content = "<input type=text value=\"https://localhost/geoserver/tools/proxified\">link</a>\n";
+        final String contentType = "text/html; charset=UTF-8";
+
+        String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
+                contentType, true);
+
+        assertEquals(content, result);
     }
 
     /**
