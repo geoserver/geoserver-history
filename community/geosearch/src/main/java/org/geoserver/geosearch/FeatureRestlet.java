@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.geoserver.ows.util.KvpMap;
 import org.geoserver.ows.util.KvpUtils;
@@ -153,7 +154,7 @@ public class FeatureRestlet extends Restlet {
                 } catch (Exception e){
                     PrintStream printStream = new PrintStream(outputStream);
                     printStream.println("Unable to index feature due to: " + e.getMessage());
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "Failure to index features.", e);
                 }
             }
         };
