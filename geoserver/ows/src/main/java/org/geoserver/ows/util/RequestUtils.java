@@ -44,10 +44,10 @@ public class RequestUtils {
      *
      */
     public static String baseURL(HttpServletRequest req) {
-        String url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()
-            + req.getContextPath() + "/";
-
-        return url;
+        StringBuffer sb = new StringBuffer(req.getScheme());
+        sb.append("://").append(req.getServerName()).append(":").append(req.getServerPort())
+                .append(req.getContextPath()).append("/");
+        return sb.toString();
     }
 
     /**
