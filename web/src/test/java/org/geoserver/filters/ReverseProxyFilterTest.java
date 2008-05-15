@@ -39,6 +39,8 @@ public class ReverseProxyFilterTest extends TestCase {
 
     private static final String DEFAULT_MIME_TYPES_REGEX = "text/html.*,text/css.*,text/javascript.*,application/x-javascript.*";
 
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    
     ReverseProxyFilter filter;
 
     protected void setUp() throws Exception {
@@ -86,7 +88,7 @@ public class ReverseProxyFilterTest extends TestCase {
         final String proxyBaseUrl = "https://proxy.server:9090/applications/geoserver";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/www/resource.html";
-        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>\n";
+        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>" + LINE_SEPARATOR;
         final String contentType = "text/html";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
@@ -100,13 +102,13 @@ public class ReverseProxyFilterTest extends TestCase {
         final String proxyBaseUrl = "https://proxy.server:9090/applications/geoserver";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/www/resource.html";
-        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>\n";
+        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>" + LINE_SEPARATOR;
         final String contentType = "text/html";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
                 contentType, true);
 
-        String expected = "<a href=\"https://proxy.server:9090/applications/geoserver/linked.html\">link</a>\n";
+        String expected = "<a href=\"https://proxy.server:9090/applications/geoserver/linked.html\">link</a>" + LINE_SEPARATOR;
 
         assertEquals(expected, result);
     }
@@ -115,7 +117,7 @@ public class ReverseProxyFilterTest extends TestCase {
         final String proxyBaseUrl = "https://proxy.server:9090/applications/geoserver";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/www/resource.bin";
-        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>\n";
+        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>" + LINE_SEPARATOR;
         final String contentType = "application/octect-stream";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
@@ -134,7 +136,7 @@ public class ReverseProxyFilterTest extends TestCase {
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
                 contentType, true);
 
-        final String expected = "var=\"/applications/geoserver/wms?\";\n";
+        final String expected = "var=\"/applications/geoserver/wms?\";" + LINE_SEPARATOR;
         assertEquals(expected, result);
     }
 
@@ -142,15 +144,15 @@ public class ReverseProxyFilterTest extends TestCase {
         final String proxyBaseUrl = "https://proxy.server";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/resource.js";
-        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>\n"
-                + "<a href=\"/geoserver/style.css\"></a>\n";
+        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>" + LINE_SEPARATOR
+                + "<a href=\"/geoserver/style.css\"></a>" + LINE_SEPARATOR;
         final String contentType = "text/html; charset=UTF-8";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
                 contentType, true);
 
-        final String expected = "<a href=\"https://proxy.server/linked.html\">link</a>\n"
-                + "<a href=\"/style.css\"></a>\n";
+        final String expected = "<a href=\"https://proxy.server/linked.html\">link</a>" + LINE_SEPARATOR
+                + "<a href=\"/style.css\"></a>" + LINE_SEPARATOR;
 
         assertEquals(expected, result);
     }
@@ -163,7 +165,7 @@ public class ReverseProxyFilterTest extends TestCase {
         final String proxyBaseUrl = "https://localhost/geoserver/tools";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/resource.js";
-        final String content = "<input type=text value=\"https://localhost/geoserver/tools/proxified\">link</a>\n";
+        final String content = "<input type=text value=\"https://localhost/geoserver/tools/proxified\">link</a>" + LINE_SEPARATOR;
         final String contentType = "text/html; charset=UTF-8";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
