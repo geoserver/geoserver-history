@@ -122,7 +122,7 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                 attname = "value_amt";
 
             if (stratname == null) {
-                LOGGER.info("No regionating strategy specified, using default data-based strategy");
+                // LOGGER.info("No regionating strategy specified, using default data-based strategy");
                 setRegionatingStrategy(new DataRegionatingStrategy(attname));
             } else if (stratname.equalsIgnoreCase("sld")) {
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
