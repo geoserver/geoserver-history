@@ -24,22 +24,32 @@
   
   <profiles>
     <profile>
-      <id>Java 5 Specific Plugins</id>
-      <activation>
-        <jdk>1.5</jdk>
-      </activation>
-      <modules>
-        <module>sldService</module>
-        <module>csv</module>
-        <module>rest</module>
-        <module>RESTConfig</module>
-        <module>QueryUsers</module>
-      </modules>
-    </profile>
-    <profile>
       <id>community-schemas</id>
       <modules>
         <module>community-schemas</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>sldService</id>
+      <modules>
+        <module>sldService</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>queryUsers</id>
+      <modules>
+        <module>queryUsers</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- The csv module is going to be used only in conjuction
+           with those others, at least for the moment -->
+      <id>csv</id>
+      <modules>
+        <module>rest</module>
+        <module>csv</module>
+        <module>RESTConfig</module>
+        <module>sldService</module>
       </modules>
     </profile>
     <profile>
