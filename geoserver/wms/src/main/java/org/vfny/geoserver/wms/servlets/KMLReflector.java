@@ -26,6 +26,7 @@ import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -278,6 +279,7 @@ public class KMLReflector extends WMService {
               layerbbox.expandToInclude(le);
             }
 
+            final URL geoserverUrl = new URL(proxifiedBaseUrl);
             if (serviceRequest.getSuperOverlay()) {
                 Envelope bbox = serviceRequest.getBbox();
 
@@ -297,32 +299,47 @@ public class KMLReflector extends WMService {
                 sb.append("</Region>");
 
                 sb.append("<Link>\n");
-                sb.append("<href><![CDATA[" + proxifiedBaseUrl
-                    + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML"
-                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
-                    + layers[i].getName() + style + "&bbox=" + (String) requestParams.get("BBOX")
-                    + filter
-                    + "&legend=" + String.valueOf(serviceRequest.getLegend())
-                    + "&superoverlay=true]]></href>\n");
+                
+                StringBuffer queryString = new StringBuffer("wms?");
+                queryString.append("service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML");
+                queryString.append("&width=").append(WIDTH).append("&height=").append(HEIGHT);
+                queryString.append("&srs=").append(SRS).append("&layers=").append(layers[i].getName());
+                queryString.append(style).append("&bbox=").append(requestParams.get("BBOX"));
+                queryString.append(filter).append("&legend=").append(serviceRequest.getLegend());
+                queryString.append("&superoverlay=true");
+                
+                URL url = new URL(geoserverUrl, queryString.toString());
+                
+                sb.append("<href><![CDATA[");
+                sb.append(url.toExternalForm());
+                sb.append("]]></href>\n");
                 sb.append("<viewRefreshMode>onRegion</viewRefreshMode>\n");
 
                 sb.append("</Link>\n");
                 sb.append("</NetworkLink>\n");
             } else {
-
+                StringBuffer queryString = new StringBuffer("wms?");
+                queryString.append("service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML");
+                queryString.append("&width=").append(WIDTH).append("&height=").append(HEIGHT);
+                queryString.append("&srs=").append(SRS).append("&layers=");
+                queryString.append(layers[i].getName());
+                queryString.append(style);
+                queryString.append(filter); // optional
+                queryString.append("&KMScore=").append(serviceRequest.getKMScore());
+                queryString.append("&KMAttr=").append(serviceRequest.getKMattr());
+                queryString.append("&legend=").append(serviceRequest.getLegend());
+                
+                URL url = new URL(geoserverUrl, queryString.toString());
+                
                 sb.append("<NetworkLink>\n");
                 sb.append(getLookAt(le));
                 sb.append("<name>" + layers[i].getName() + "</name>\n");
                 sb.append("<open>1</open>\n");
                 sb.append("<visibility>1</visibility>\n");
                 sb.append("<Url>\n");
-                sb.append("<href><![CDATA[" + proxifiedBaseUrl
-                    + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"
-                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
-                    + layers[i].getName() + style + filter // optional
-                    + "&KMScore=" + serviceRequest.getKMScore() + "&KMAttr="
-                    + String.valueOf(serviceRequest.getKMattr()) + "&legend="
-                    + String.valueOf(serviceRequest.getLegend()) + "]]></href>\n");
+                sb.append("<href><![CDATA[");
+                sb.append(url.toExternalForm());
+                sb.append("]]></href>\n");
                 sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
                 sb.append("<viewRefreshTime>" + REFRESH + "</viewRefreshTime>\n");
                 sb.append("</Url>\n");
