@@ -84,34 +84,49 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
     public void writeTo(OutputStream out)
         throws org.vfny.geoserver.ServiceException, java.io.IOException {
         // setup the writer
-        Charset charSet = getRequest().getGeoServer().getCharSet();
-        OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
+        final Charset charSet = getRequest().getGeoServer().getCharSet();
+        final OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
         
         // if there is only one feature type loaded, we allow for header/footer customization,
         // otherwise we stick with the generic ones
-        FeatureType templateFeatureType = null;
+        Template footer = null;
         if(results.size() == 1) {
-            templateFeatureType = ((FeatureCollection) results.get(0)).getSchema();
+            FeatureType templateFeatureType = ((FeatureCollection) results.get(0)).getSchema();
+            Template header = getTemplate(templateFeatureType, "header.ftl", charSet);
+            footer = getTemplate(templateFeatureType, "footer.ftl", charSet);
+            try {
+                header.process(null, osw);
+            } catch (TemplateException e) {
+                String msg = "Error occured processing header template.";
+                throw (IOException) new IOException(msg).initCause(e);
+            }
         }
-        Template header = getTemplate(templateFeatureType, "header.ftl", charSet);
-        Template footer = getTemplate(templateFeatureType, "footer.ftl", charSet);
         
-        try {
-            header.process(null, osw);
-            
-            for (Iterator it = results.iterator(); it.hasNext();) {
-                FeatureCollection fc = (FeatureCollection) it.next();
-                if(fc.size() > 0) {
-                    FeatureType ft = fc.getSchema();
-                    Template content = getTemplate(ft, "content.ftl", charSet);
+        //process content template for all feature collections found
+        for (Iterator it = results.iterator(); it.hasNext();) {
+            FeatureCollection fc = (FeatureCollection) it.next();
+            if(fc.size() > 0) {
+                FeatureType ft = fc.getSchema();
+                Template content = getTemplate(ft, "content.ftl", charSet);
+                try {
                     content.process(fc, osw);
+                } catch(TemplateException e) {
+                    String msg = "Error occured processing content template " + 
+                    content.getName() + " for " + ft.getTypeName();
+                    throw (IOException) new IOException(msg).initCause(e);
                 }
             }
-            
-            footer.process(null, osw);
-        } catch(TemplateException e) {
-            String msg = "Error occured processing template.";
-            throw (IOException) new IOException(msg).initCause(e);
+        }
+        
+        // if a template footer was loaded (ie, there were only one feature 
+        // collection), process it
+        if(footer != null){
+            try {
+                footer.process(null, osw);
+            } catch (TemplateException e) {
+                String msg = "Error occured processing footer template.";
+                throw (IOException) new IOException(msg).initCause(e);
+            }
         }
         osw.flush();
     }
@@ -120,26 +135,40 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         return null;
     }
     
+    /**
+     * Uses a {@link GeoServerTemplateLoader TemplateLoader} too look up for the template file
+     * named <code>templateFilename</code> for the given <code>featureType</code>.
+     * 
+     * @param featureType the featureType to look the template for, may well correspond to an 
+     * actually registered feature type or to a wrapper feature type used to adapt the result of
+     * the feature info request over a raster coverage.
+     * @param templateFileName the name of the template to look for
+     * @param charset the encoding to apply to the resulting {@link Template}
+     * @return the template named <code>templateFileName</code>
+     * @throws IOException if the template can't be loaded
+     */
     Template getTemplate(FeatureType featureType, String templateFileName, Charset charset) throws IOException {
         // setup template subsystem
         if(templateLoader == null) {
             templateLoader = new GeoServerTemplateLoader(getClass());
         }
         
-        Data catalog =  (Data) GeoServerExtensions.bean("data");
-        String localName = featureType.getTypeName();
-        String namespaceURI = featureType.getNamespace().toString();
-        FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(localName, namespaceURI);
-        if(featureTypeInfo != null){
-            templateLoader.setFeatureType(featureType);
-        }else{
+        final Data catalog =  (Data) GeoServerExtensions.bean("data");
+        final String localName = featureType.getTypeName();
+        final String namespaceURI = featureType.getNamespace().toString();
+        final FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(localName, namespaceURI);
+        
+        if(featureTypeInfo == null){
+            //It may be a wrapped coverage
             CoverageInfo cInfo = catalog.getCoverageInfo(localName);
             if(cInfo != null){
                 templateLoader.setCoverageName(localName);
             }else{
                 throw new IllegalArgumentException("Can't find neither a FeatureType nor " +
-                		"a CoverageInfo named " + localName);
+                        "a CoverageInfo named " + localName);
             }
+        }else{
+            templateLoader.setFeatureType(featureType);
         }
 
         synchronized (templateConfig) {
