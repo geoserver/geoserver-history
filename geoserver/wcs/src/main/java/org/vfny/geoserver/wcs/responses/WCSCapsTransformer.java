@@ -291,7 +291,6 @@ public class WCSCapsTransformer extends TransformerBase {
             start("DCPType");
             start("HTTP");
 
-            String url = "";
             String baseUrl = RequestUtils.proxifiedBaseURL(
 					request.getBaseUrl(), request.getServiceRef()
 							.getGeoServer().getProxyBaseUrl());
@@ -300,15 +299,7 @@ public class WCSCapsTransformer extends TransformerBase {
             //ensure ends in "?" or "&"
             baseUrl = ResponseUtils.appendQueryString(baseUrl, "");
 
-            if (request.isDispatchedRequest()) {
-                url = baseUrl;
-            }
-            else {
-                url = new StringBuffer(baseUrl).append("/").append(capabilityName).append("?")
-                .toString();    
-            }
-
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseUrl);
 
             start("Get");
             start("OnlineResource", attributes);
@@ -318,14 +309,7 @@ public class WCSCapsTransformer extends TransformerBase {
             end("DCPType");
 
             attributes = new AttributesImpl();
-
-            if (request.isDispatchedRequest()) {
-                url = baseUrl;
-            } else {
-                url = new StringBuffer(baseUrl).append("/").append(capabilityName).toString();
-            }
-
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseUrl);
 
             start("DCPType");
             start("HTTP");

@@ -238,30 +238,6 @@ abstract public class Request {
         return Requests.getSchemaBaseUrl(getHttpServletRequest(), serviceRef.getGeoServer());
     }
 
-    /**
-     * Whether this request was sent through one of the dispatchers, or if
-     * it went directly through the servlet.  This is used by the capabilities
-     * response, since we give back a dispatched capabilities document to clients
-     * who request it with a dispatcher.
-     * @return true if the request came through a dispatcher.
-     */
-    public boolean isDispatchedRequest() {
-        HttpServletRequest hsr = getHttpServletRequest();
-
-        // will happen if the dispatcher was called, as opposed to using the /wfs url.
-        String uri = hsr.getRequestURI();
-
-        if (uri != null) {
-            uri = uri.toLowerCase();
-        }
-
-        // will happen if the dispatcher was called, as opposed to using the /wfs url.
-        if (uri.endsWith("/wcs") || uri.endsWith("/wfs") || uri.endsWith("/wms")) {
-            return true;
-        }
-
-        return false;
-    }
 
     /**
      * Tests if user is Logged into GeoServer.
