@@ -299,12 +299,17 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         try{
             FeatureSource<SimpleFeatureType, SimpleFeature> source = 
                 (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
-            ReferencedEnvelope fullBounds = source.getBounds();
+            ReferencedEnvelope fullBounds = getWorldBounds();
             ReferencedEnvelope requestBounds = context.getAreaOfInterest();
             requestBounds = reproject(requestBounds, fullBounds.getCoordinateReferenceSystem());
-            return Math.max(1, 1 - (int) (Math.log(requestBounds.getWidth() / fullBounds.getWidth())));
+            long level = 0 - Math.round(
+                    Math.log(requestBounds.getWidth() / fullBounds.getWidth()) / 
+                    Math.log(2)
+                    );
+            if (level < 0) throw new Exception ("Request bounds " + requestBounds + " larger than the world apparently!");
+            return level;
         } catch (Exception e){
-            LOGGER.severe("Zoom Level calculation failed, error was: " + e);
+            LOGGER.log(Level.SEVERE, "Zoom Level calculation failed, error was: ", e);
             return 1;
         }
     }
@@ -327,7 +332,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
     
     private static ReferencedEnvelope getWorldBounds(){
     	try{
-    	    return new ReferencedEnvelope(-180.0, 180.0, -180.0, 180.0, CRS.decode("EPSG:4326"));
+    	    return new ReferencedEnvelope(-180.0, 180.0, -270.0, 90.0, CRS.decode("EPSG:4326"));
     	} catch (Exception e){
     	    LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
     	}
@@ -399,8 +404,14 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             
                 if (child.withinTileBounds(f)){
                 	child.add(f);
-                	break;
+                	return;
                 }
+            }
+
+            LOGGER.log(Level.SEVERE, "EEK! No child found to accept feature! Bounds are: ");
+            for (int i = 0; i < myChildren.size(); i++){
+                TileLevel child = (TileLevel) myChildren.get(i);
+                System.out.println(child.myBBox);
             }
         }
 
@@ -482,18 +493,6 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         } 
 
         public boolean include(SimpleFeature feature){
-            /*
-            if (myChildren != null){
-                Iterator it = myChildren.iterator();
-                while (it.hasNext()){
-                    TileLevel child = (TileLevel) it.next();
-                    if (child.myFeatures.contains(feature.getID())){
-                        return true;
-                    }
-                }
-            }
-            */
-
             return myFeatures.contains(feature.getID());
         }
         
