@@ -81,7 +81,7 @@ public class DataLayersResource extends AbstractLayersResource {
 
             csv = File.createTempFile("csv", ".csv");
             IOUtils.copy(file.getInputStream(), new FileOutputStream(csv));
-            List results = csvService.configureCsvFile(geometryLayer,
+            List<LayerResult> results = csvService.configureCsvFile(geometryLayer,
                     joinField, csv);
             JSONFormat format = new JSONFormat(MediaType.TEXT_HTML);
             resp.setEntity(format.makeRepresentation(convertToMap(results)));
@@ -89,6 +89,10 @@ public class DataLayersResource extends AbstractLayersResource {
             LOGGER.log(Level.SEVERE,
                     "Error occurred managing csv file upload request", e);
             sendExtJsError(resp, Status.SERVER_ERROR_INTERNAL, e.getMessage());
+        } finally {
+            // wipe out the temp file, we don't need it anymore
+            if(csv != null)
+                csv.delete();
         }
     }
 
