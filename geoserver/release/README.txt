@@ -1,3 +1,17 @@
+GeoServer 1.6.4
+---------------
+This release contains 35 patches and bugfixes since 1.6.3.  While mainly a bugfix release, this version has:
+
+* Better default formatting of KML output
+* Improved and updated Windows installer
+* Support for Freemarker templates for coverage layers
+
+See the entire 1.6.4 changelog:
+http://jira.codehaus.org/browse/GEOS/fixforversion/14170
+
+This release is based off of Geotools 2.4.3.
+
+
 GeoServer 1.6.3
 ---------------
 This release contains over 30 patches and improvements since 1.6.2.  In particular, this new version has:
