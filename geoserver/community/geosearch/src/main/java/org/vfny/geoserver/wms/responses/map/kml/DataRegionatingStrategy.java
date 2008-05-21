@@ -51,8 +51,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
     private static long FEATURES_PER_TILE = 100;
     private static String myAttributeName;
 
-    private TileLevel myRanges;
-    private List myRangeList;
+    private TileLevel myTileLevel;
     private Number myMin;
     private Number myMax;
     private long myZoomLevel;
@@ -67,20 +66,22 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     public void preProcess(WMSMapContext con, MapLayer layer) {
         myZoomLevel = getZoomLevel(con, layer);
-        myRanges = getRangesFromCache(con, layer);
-        if (myRanges == null){
-            myRanges = preProcessHierarchical(con, layer);
-            LOGGER.info("Created tile hierarchy: " + myRanges);
-            addRangesToCache(con, layer, myRanges);
+        myTileLevel = getRangesFromCache(con, layer);
+        if (myTileLevel == null){
+            myTileLevel = preProcessHierarchical(con, layer);
+            LOGGER.info("Created tile hierarchy: " + myTileLevel);
+            addRangesToCache(con, layer, myTileLevel);
         }
-        myRangeList = myRanges.tilesAtDepth((int)myZoomLevel);
+
+        TileLevel temp = myTileLevel.findTile(con.getAreaOfInterest());
+        if (temp != null && temp.getZoomLevel() == myZoomLevel) myTileLevel = temp;
     }
 
     /**
      * Check the cache and find the cached range values for the current combination of (layer, zoomlevel, attribute). 
      * If the values are not cached, return null.
      *
-     * @param con the WMSMapContext for the current request
+     * @paramRanges con the WMSMapContext for the current request
      * @param index the numeric index of the layer currently being processed
      */
     private TileLevel getRangesFromCache(WMSMapContext con, MapLayer layer){
@@ -135,30 +136,6 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         return f;
     }
 
-    private void setRange(TileLevel levels, WMSMapContext con){
-        if (levels == null) return;
-
-        TileLevel theTile = levels.findTile(con.getAreaOfInterest());
-        theTile = (theTile == null ? levels : theTile); // if the bbox is bogus we just assume the lowest zoomlevel
-        myMax = theTile.getMax();
-        myMin = theTile.getMin();
-    }
-
-    private void setRange(List ranges){
-    	if (ranges.size() == 0) return;
-    	
-        myMin = (myZoomLevel <= 1) ? null : new Long(((Number)ranges.get((int)(myZoomLevel - 1))).longValue());
-        myMax = (myZoomLevel >= ranges.size()) 
-            ? new Long(((Number)ranges.get((int)(ranges.size() - 1))).longValue()) 
-            : new Long(((Number)ranges.get((int)(myZoomLevel))).longValue());
-    }
-
-    private boolean inRange(Number n){
-        if ((myMin != null) && (myMin.longValue() > n.longValue())) return false;
-        if ((myMax != null) && (myMax.longValue() < n.longValue())) return false;
-        return true;
-    }
-
     private TileLevel preProcessHierarchical(WMSMapContext con, MapLayer layer){
         LOGGER.info("Getting ready to do the hierarchy thing!");
         try{
@@ -167,8 +144,8 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             CoordinateReferenceSystem nativeCRS = source.getSchema().getDefaultGeometry().getCRS();
             ReferencedEnvelope fullBounds = getWorldBounds();
             fullBounds = fullBounds.transform(nativeCRS, true);
-            TileLevel level = new TileLevel(fullBounds, myAttributeName, FEATURES_PER_TILE, 1);
-
+            TileLevel root = TileLevel.makeRootLevel(fullBounds, FEATURES_PER_TILE);
+            
             FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
             DefaultQuery query = new DefaultQuery(Query.ALL);
             SortBy sortBy = ff.sort(myAttributeName, SortOrder.DESCENDING);
@@ -182,117 +159,19 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
                     if (((++count) % 1000) == 0) LOGGER.info("" + count + "/" + col.size());
 
                     SimpleFeature f = (SimpleFeature)it.next();
-                    level.add(f);
+                    root.add(f);
                 }
             } finally {
                 col.close(it);
             }
 
-            // LOGGER.info("Found levels: " + level);
-            return level;
-            
+            return root;
         } catch (Exception e){
             LOGGER.severe("Error while trying to regionate by data (hierarchical)): " + e);
             e.printStackTrace();
         }
 
         return null;
-    }
-
-    private List preProcessQuantiles(WMSMapContext con, MapLayer layer) {
-        List ranges = new ArrayList();
-        try {
-            FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
-            FeatureSource source = layer.getFeatureSource();
-
-            DefaultQuery query =
-                new DefaultQuery(Query.ALL);
-            SortBy sortBy = ff.sort(myAttributeName, SortOrder.DESCENDING);
-            query.setSortBy(new SortBy[]{sortBy});
-            FeatureCollection col = source.getFeatures(query); 
-
-            Iterator it = col.iterator();
-
-            try{
-                SimpleFeature f = null;
-                for (int i = 0; i < MAX_LEVELS; i++){
-                    int j = 0;
-                    do {
-                        f = (SimpleFeature)it.next();
-                    } while (j < getFeatureCountAtZoomLevel(i));
-                    ranges.add(f.getAttribute(myAttributeName));
-                }
-            } finally {
-                col.close(it);
-            }
-        } catch (Exception e) {
-            LOGGER.severe("Failure while trying to regionate by data (quantiles): " + e);
-            e.printStackTrace();
-        }
-
-        return ranges;
-    }
-
-    private List preProcessBasic(WMSMapContext con, MapLayer layer) {
-        List ranges = new ArrayList();
-        try {
-            long zoomLevel = getZoomLevel(con, layer);
-            // LOGGER.info("I've decided this is at zoom level: " + zoomLevel);
-
-            FeatureCollection col = layer.getFeatureSource().getFeatures(Query.ALL);
-
-            Iterator it = col.iterator();
-            Long min = null;
-            Long max = null;
-
-            try {
-                while (it.hasNext()) {
-                    SimpleFeature f = (SimpleFeature) it.next();
-
-                    Number value = (Number) f.getAttribute(myAttributeName);
-                    if (min == null || min.longValue() > value.longValue())
-                        min = new Long(value.longValue());
-                    if (max == null || max.longValue() < value.longValue())
-                        max = new Long(value.longValue());
-                }
-            } finally {
-                col.close(it);
-            }
-
-            long range = max - min;
-
-            for (long i = 1; i < MAX_LEVELS; i++){
-                ranges.add(min + (i * range / MAX_LEVELS));
-            }
-        } catch (NullPointerException npe){
-        	LOGGER.severe("Failed to find specified attribute; check the attribute name in your request.");
-        } catch (Exception e) {
-            LOGGER.severe("Failure while trying to regionate by data (linear): " + e);
-            e.printStackTrace();
-        }
-
-        return ranges;
-    }
-
-    /**
-     * Find the number of features that are at lower zoomlevels than the one provided.  When
-     * skipping around the sorted list of features to find the minimum value of the range 
-     * included at this zoomlevel.
-     */
-    private long findSkipAmount(long zoomLevel){
-        long skipAmount = 0;
-        for (long i = 0; i < zoomLevel; i++){
-            skipAmount += getFeatureCountAtZoomLevel(i);
-        }
-        return skipAmount;
-    }
-
-    private long getFeatureCountAtZoomLevel(long zoomLevel){
-        return (long)(Math.pow(4, zoomLevel) * FEATURES_PER_TILE);
-    }
-
-    private long findLayerSize(long zoomLevel){
-        return (long)Math.pow(4,zoomLevel) * FEATURES_PER_TILE;
     }
 
     private long getZoomLevel(WMSMapContext context, MapLayer layer){
@@ -316,7 +195,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     private static ReferencedEnvelope getWorldBounds(){
     	try{
-    	    return new ReferencedEnvelope(-180.0, 180.0, -270.0, 90.0, CRS.decode("EPSG:4326"));
+    	    return new ReferencedEnvelope(-180.0, 180.0, -90.0, 90.0, CRS.decode("EPSG:4326"));
     	} catch (Exception e){
     	    LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
     	}
@@ -326,15 +205,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     public boolean include(SimpleFeature feature) {
         try {
-            Iterator it = myRangeList.iterator();
-            while (it.hasNext()){
-                TileLevel tile = (TileLevel)it.next();
-                if (tile.include(feature)){
-                    return true;
-                }
-            }
-
-            return false;
+            return myTileLevel.include(feature);
         } catch (Exception e) {
             LOGGER.info("Encountered problem while trying to apply data regionating filter: " + e);
             e.printStackTrace();
