@@ -13,28 +13,63 @@ import java.util.logging.Logger;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Envelope;
 
+/**
+ * Represent the set of features that exist in a particular tile at a particular zoomlevel in a
+ * regionated hierarchy.  The mechanism is pretty simple, a TileLevel expects to have features 
+ * passed to its add() method in their order of 'importance' (to be determined by client code) and
+ * will automatically push features down to lower zoomlevels after a certain quota has been met.
+ *
+ * @author David Winslow
+ */
 public class TileLevel implements Serializable {
     static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
 
     ReferencedEnvelope myBBox;
-    String myAttributeName;
     long myFeaturesPerTile;
     long myZoomLevel;
 
-    Number myMax;
-    Number myMin;
     Set myFeatures;
 
     private List myChildren;
     private int roundRobinCounter;
 
-    public TileLevel(ReferencedEnvelope bbox, String attributeName, long featuresPerTile, long zoomLevel){
+    public TileLevel(ReferencedEnvelope bbox, long featuresPerTile, long zoomLevel){
         myBBox = bbox;
         myFeaturesPerTile = featuresPerTile;
         myZoomLevel = zoomLevel;
         myFeatures = new TreeSet();
         myChildren = null;
-        myAttributeName = attributeName;
+    }
+
+    private TileLevel(ReferencedEnvelope bbox, List childTiles){
+        myBBox = bbox;
+        myFeaturesPerTile = 0;
+        myZoomLevel = 0;
+        myFeatures = new TreeSet();
+        myChildren = childTiles;
+    }
+
+    public static TileLevel makeRootLevel(ReferencedEnvelope fullBounds, long featuresPerTile){
+        ReferencedEnvelope western = new ReferencedEnvelope(
+                fullBounds.getMinimum(0),
+                fullBounds.getCenter(0),
+                fullBounds.getMinimum(1),
+                fullBounds.getMaximum(1),
+                fullBounds.getCoordinateReferenceSystem()
+                );
+        ReferencedEnvelope eastern = new ReferencedEnvelope(
+                fullBounds.getCenter(0),
+                fullBounds.getMaximum(0),
+                fullBounds.getMinimum(1),
+                fullBounds.getMaximum(1),
+                fullBounds.getCoordinateReferenceSystem()
+                );
+
+        LOGGER.info("Creating root tilelevel with bboxes: "  + western + "; " + eastern);
+        List children = new ArrayList();
+        children.add(new TileLevel(western, featuresPerTile, 1));
+        children.add(new TileLevel(eastern, featuresPerTile, 1));
+        return new TileLevel(fullBounds, children);
     }
 
     public boolean withinTileBounds(SimpleFeature f){
@@ -106,10 +141,10 @@ public class TileLevel implements Serializable {
                 myBBox.getCoordinateReferenceSystem()
                 );
 
-        children.add(new TileLevel(topLeft, myAttributeName, myFeaturesPerTile, myZoomLevel + 1));
-        children.add(new TileLevel(topRight, myAttributeName, myFeaturesPerTile, myZoomLevel + 1));
-        children.add(new TileLevel(bottomLeft, myAttributeName, myFeaturesPerTile, myZoomLevel + 1));
-        children.add(new TileLevel(bottomRight, myAttributeName, myFeaturesPerTile, myZoomLevel + 1));
+        children.add(new TileLevel(topLeft, myFeaturesPerTile, myZoomLevel + 1));
+        children.add(new TileLevel(topRight, myFeaturesPerTile, myZoomLevel + 1));
+        children.add(new TileLevel(bottomLeft, myFeaturesPerTile, myZoomLevel + 1));
+        children.add(new TileLevel(bottomRight, myFeaturesPerTile, myZoomLevel + 1));
         return children;
     }
 
@@ -121,34 +156,26 @@ public class TileLevel implements Serializable {
         }
 
         if (!myBBox.contains((Envelope)bounds)){
-            return null;
-        }
+            Envelope overlap = bounds.intersection(myBBox);
+            double ratio = (bounds.getWidth() * bounds.getHeight()) 
+                / (overlap.getWidth() * overlap.getHeight());
 
-        TileLevel theTile = null;
+            if (Math.abs(1 - ratio) > 0.05){
+                return null;
+            }
+        }
 
         if (myChildren != null){
             Iterator it = myChildren.iterator();
             while (it.hasNext()){
                 TileLevel child = (TileLevel)it.next();
-                theTile = child.findTile(bounds);
-                if (theTile != null) break;
+                TileLevel theTile = child.findTile(bounds);
+                if (theTile != null) return theTile;
             }
-        }
-
-        if (theTile == null){
-            return this;
         }
 
         return this;
     }
-
-    public Number getMax(){
-        return myMax;
-    }
-
-    public Number getMin(){
-        return myMin;
-    } 
 
     public boolean include(SimpleFeature feature){
         return myFeatures.contains(feature.getID());
@@ -166,6 +193,14 @@ public class TileLevel implements Serializable {
         }
 
         return d + 1;
+    }
+
+    public long getZoomLevel(){
+        return myZoomLevel;
+    }
+
+    public ReferencedEnvelope getBounds(){
+        return myBBox;
     }
 
     public int getFeatureCount(){
