@@ -1,5 +1,6 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
 import java.io.Serializable;
@@ -70,6 +71,18 @@ public class TileLevel implements Serializable {
         children.add(new TileLevel(western, featuresPerTile, 1));
         children.add(new TileLevel(eastern, featuresPerTile, 1));
         return new TileLevel(fullBounds, children);
+    }
+    
+    public void populate(FeatureCollection collection){
+    	Iterator it = collection.iterator();
+    	try{
+	    	while (it.hasNext()){
+	    		SimpleFeature feature = (SimpleFeature)it.next();
+	    		add(feature);
+	    	}
+    	} finally {
+    		collection.close(it);
+    	}
     }
 
     public boolean withinTileBounds(SimpleFeature f){

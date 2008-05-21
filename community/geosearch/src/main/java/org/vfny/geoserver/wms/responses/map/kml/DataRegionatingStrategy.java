@@ -193,7 +193,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         }
     }
 
-    private static ReferencedEnvelope getWorldBounds(){
+    static ReferencedEnvelope getWorldBounds(){
     	try{
     	    return new ReferencedEnvelope(-180.0, 180.0, -90.0, 90.0, CRS.decode("EPSG:4326"));
     	} catch (Exception e){
