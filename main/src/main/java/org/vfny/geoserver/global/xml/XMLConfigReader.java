@@ -1688,6 +1688,11 @@ public class XMLConfigReader {
                 ft.setIndexingEnabled((new Boolean(ReaderUtils.getAttribute(searchInfo, "enabled", true))).booleanValue());
             }
 
+            Element regionateInfo = ReaderUtils.getChildElement(fTypeRoot, "regionateAttribute");
+            if (regionateInfo != null) {
+                ft.setRegionateAttribute(ReaderUtils.getAttribute(regionateInfo, "value", false));
+            }
+
             // Modif C. Kolbowicz - 06/10/2004
             Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
 

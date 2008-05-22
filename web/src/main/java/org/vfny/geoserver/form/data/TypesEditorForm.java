@@ -148,6 +148,8 @@ public class TypesEditorForm extends ActionForm {
     /** FeatureType abstract */
     private String description;
 
+    private String regionateAttribute;
+
     /** The amount of time to use for the CacheControl: max-age parameter in maps generated from this featuretype **/
     private String cacheMaxAge;
     
@@ -250,6 +252,7 @@ public class TypesEditorForm extends ActionForm {
         this.styleId = type.getDefaultStyle();
 
         description = type.getAbstract();
+        regionateAttribute = type.getRegionateAttribute();
         
         this.maxFeatures = type.getMaxFeatures() == 0? String.valueOf(type.getMaxFeatures()) : "";
 
@@ -677,6 +680,10 @@ public class TypesEditorForm extends ActionForm {
         return description;
     }
 
+    public String getRegionateAttribute(){
+        return regionateAttribute;
+    }
+
     /**
      * Set abstact (or description) to description.
      *
@@ -684,6 +691,10 @@ public class TypesEditorForm extends ActionForm {
      */
     public void setAbstract(String description) {
         this.description = description;
+    }
+
+    public void setRegionateAttribute(String attr){
+        this.regionateAttribute = attr;
     }
 
     /**

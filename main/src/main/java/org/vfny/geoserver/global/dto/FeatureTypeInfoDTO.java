@@ -153,6 +153,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * it's less than the global maxFeatures). 0 is used as the "no limit" flag
      */
      private int maxFeatures = 0;
+     
+     /**
+      * The name of the property to use when regionating using the attribute strategy.
+      */
+     private String regionateAttribute; 
 
     /**
      * FeatureTypeInfo constructor.
@@ -234,6 +239,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         cacheMaxAge = dto.getCacheMaxAge();
 
         indexingEnabled = dto.isIndexingEnabled();
+        regionateAttribute = dto.getRegionateAttribute();
+
         
         maxFeatures = dto.getMaxFeatures();
     }
@@ -908,12 +915,20 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         return indexingEnabled;
     }
 
+    public String getRegionateAttribute(){
+        return regionateAttribute;
+    }
+
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
     }
 
     public void setIndexingEnabled(boolean indexingEnabled){
         this.indexingEnabled = indexingEnabled;
+    }
+
+    public void setRegionateAttribute(String attr){
+        this.regionateAttribute = attr;
     }
 
     public String getCacheMaxAge() {

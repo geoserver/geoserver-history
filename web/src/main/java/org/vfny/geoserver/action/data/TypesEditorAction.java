@@ -389,6 +389,7 @@ public class TypesEditorAction extends ConfigAction {
         config.setCachingEnabled(form.isCachingEnabled());
         config.setIndexingEnabled(form.isIndexingEnabled());
         config.setMaxFeatures(Integer.parseInt(form.getMaxFeatures()));
+        config.setRegionateAttribute(form.getRegionateAttribute());
         config.setSRSHandling(form.getSrsHandlingCode());
 
         if (!form.isCachingEnabledChecked()) {

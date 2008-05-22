@@ -4,28 +4,21 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.geoserver.feature.PagingFeatureSource;
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.xml.transform.Translator;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
-
-import sun.security.action.GetBooleanAction;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -118,8 +111,10 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
 
             String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
             String attname = (String)mapContext.getRequest().getFormatOptions().get("regionateAttr");
+            
+            
             if (attname == null)
-                attname = "value_amt";
+                attname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateAttribute();
 
             if (stratname == null) {
                 // LOGGER.info("No regionating strategy specified, using default data-based strategy");

@@ -184,6 +184,11 @@ public class FeatureTypeConfig {
      * Should we list this layer when crawlers request the sitemap?
      */
     private boolean indexingEnabled;
+
+    /**
+     * The name of the property to use when regionating using the attribute strategy.
+     */
+    private String regionateAttribute;
     
     /**
      * The maximum number of features to be served for this feature type (it's understood
@@ -249,6 +254,7 @@ public class FeatureTypeConfig {
         cacheMaxAge = null;
 
         indexingEnabled = false;
+        regionateAttribute = "";
     }
 
     /**
@@ -361,6 +367,7 @@ public class FeatureTypeConfig {
         maxFeatures = dto.getMaxFeatures();
 
         indexingEnabled = dto.isIndexingEnabled();
+        regionateAttribute = dto.getRegionateAttribute();
     }
 
     /**
@@ -433,6 +440,7 @@ public class FeatureTypeConfig {
         f.setMaxFeatures(maxFeatures);
 
         f.setIndexingEnabled(indexingEnabled);
+        f.setRegionateAttribute(regionateAttribute);
 
         return f;
     }
@@ -806,12 +814,28 @@ public class FeatureTypeConfig {
         return indexingEnabled;
     }
 
+    /**
+     * Which property should we use when regionating using the attribute strategy?
+     * @return the name of the property
+     */
+    public String getRegionateAttribute(){
+        return regionateAttribute;
+    }
+
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
     }
 
     public void setIndexingEnabled(boolean indexingEnabled){
         this.indexingEnabled = indexingEnabled;
+    }
+
+    /**
+     * Set which property to use when regionating using the attribute strategy.
+     * @param attr the name of the property
+     */
+    public void setRegionateAttribute(String attr){
+        this.regionateAttribute = attr;
     }
 
     public String getCacheMaxAge() {
