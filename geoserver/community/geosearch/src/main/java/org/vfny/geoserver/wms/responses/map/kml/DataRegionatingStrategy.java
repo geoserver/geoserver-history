@@ -90,7 +90,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(cache));
             return (TileLevel)in.readObject();
         } catch (Exception e){
-            LOGGER.info("Error while trying to read range cache from disk: " + e + ": " + e.getMessage());
+            LOGGER.log(Level.INFO, "Error while trying to read range cache from disk.", e);
         }
 
         return null;
@@ -111,7 +111,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             out.close();
         } catch (Exception e){
             // it's okay, we just won't cache these values
-            LOGGER.info("Error while trying to write range cache to disk: " + e + ": " + e.getMessage());
+            LOGGER.log(Level.INFO, "Error while trying to write range cache to disk.", e);
         }
     }
 
@@ -130,8 +130,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
                 } 
             }
         } catch (Exception e){
-            LOGGER.severe("Exception while finding the location for the cachefile!");
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Exception while finding the location for the cachefile!", e);
         }
         return f;
     }
@@ -156,8 +155,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
             return root;
         } catch (Exception e){
-            LOGGER.severe("Error while trying to regionate by data (hierarchical)): " + e);
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error while trying to regionate by data (hierarchical)): ", e);
         }
 
         return null;
@@ -196,8 +194,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         try {
             return myTileLevel.include(feature);
         } catch (Exception e) {
-            LOGGER.info("Encountered problem while trying to apply data regionating filter: " + e);
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Encountered problem while trying to apply data regionating filter: ", e);
         }
         return false;
     }
