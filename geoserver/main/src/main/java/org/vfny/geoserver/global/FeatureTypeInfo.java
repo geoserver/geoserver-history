@@ -247,6 +247,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * Should we list this layer when crawlers request the sitemap?
      */
     private boolean indexingEnabled;
+
+    /**
+     * The name of the property to use when regionating using the attribute strategy.
+     */
+    private String regionateAttribute;
     
     /**
      * Either force or reproject (force is the only way if native data has no native SRS)
@@ -322,6 +327,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         cachingEnabled = dto.isCachingEnabled();
 
         indexingEnabled = dto.isIndexingEnabled();
+        regionateAttribute = dto.getRegionateAttribute();
         
         maxFeatures = dto.getMaxFeatures();
     }
@@ -376,6 +382,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setCacheMaxAge(cacheMaxAge);
         dto.setCachingEnabled(cachingEnabled);
         dto.setIndexingEnabled(indexingEnabled);
+        dto.setRegionateAttribute(regionateAttribute);
 
         return dto;
     }
@@ -1484,6 +1491,14 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
+     * Which property should we use when regionating using the attribute strategy?
+     * @return the name of the property
+     */
+    public String getRegionateAttribute(){
+        return regionateAttribute;
+    }
+
+    /**
      * Sets whether we should add the cache-control: max-age header to maps containing this layer
      * @param cachingEnabled true if we should add the header, false if we should omit the header
      */
@@ -1497,6 +1512,14 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public void setIndexingEnabled(boolean indexingEnabled){
         this.indexingEnabled = indexingEnabled;
+    }
+
+    /**
+     * Sets which property should we use when regionating using the attribute strategy?
+     * @param attr the name of the property
+     */
+    public void setRegionateAttribute(String attr){
+        this.regionateAttribute = attr;
     }
     
     /**

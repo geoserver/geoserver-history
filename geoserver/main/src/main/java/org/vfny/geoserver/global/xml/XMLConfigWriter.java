@@ -1197,6 +1197,7 @@ public class XMLConfigWriter {
 
             cw.attrTag("cacheinfo", m);
             cw.attrTag("searchable", Collections.singletonMap("enabled", Boolean.toString(ft.isIndexingEnabled())));
+            cw.attrTag("regionateAttribute", Collections.singletonMap("value", ft.getRegionateAttribute()));
 
             if (ft.getDefinitionQuery() != null) {
                 cw.openTag("definitionQuery");

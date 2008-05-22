@@ -408,6 +408,15 @@ function prepareFormData(){
              <html:checkbox property="indexingEnabled"/>
          </td>
     </tr>
+    <tr> <td class="label">
+             <span class="help" title="<bean:message key="help.type.regionateAttribute" />">
+                   <bean:message key="label.regionateAttribute"/>:
+             </span>
+         </td>
+         <td class="datum">
+             <html:text property="regionateAttribute"/>
+         </td>
+    </tr>
     <tr>
     	<td class="label">
     		<span class="help" title="<bean:message key="help.type.cacheMaxAge" />">
