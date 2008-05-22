@@ -438,17 +438,17 @@ public class KvpUtils {
         for (Iterator p = parsers.iterator(); p.hasNext(); ) {
             KvpParser parser = (KvpParser) p.next();
             
-            if ( parser.getService() != null && !parser.getService().equals(service) ) {
+            if ( parser.getService() != null && !parser.getService().equalsIgnoreCase(service) ) {
                 p.remove();
                 continue;
             }
             
-            if ( parser.getVersion() != null && !parser.getVersion().equals(version) ) {
+            if ( parser.getVersion() != null && !parser.getVersion().toString().equals(version) ) {
                 p.remove();
                 continue;
             }
             
-            if ( parser.getRequest() != null && !parser.getRequest().equals(request) ) {
+            if ( parser.getRequest() != null && !parser.getRequest().equalsIgnoreCase(request) ) {
                 p.remove();
             }
         }
