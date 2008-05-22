@@ -67,9 +67,9 @@ public class CustomColorRamp implements ColorRamp {
 		{
 			mid=classNum/2;
 			int rest=classNum%2;
-			sRed =  ((double)midColor.getRed()-startColor.getRed())/(double)(mid-1);
-			sGreen = ((double)midColor.getGreen()-startColor.getGreen())/(double)(mid-1);
-			sBlue = ((double)midColor.getBlue()-startColor.getBlue())/(double)(mid-1);
+			sRed =  ((double)midColor.getRed()-startColor.getRed())/(double)(mid);
+			sGreen = ((double)midColor.getGreen()-startColor.getGreen())/(double)(mid);
+			sBlue = ((double)midColor.getBlue()-startColor.getBlue())/(double)(mid);
 			for(int i=0;i<mid;i++){
 				red=(int)(sRed*i+startColor.getRed());
 				green=(int) (sGreen*i+startColor.getGreen());
