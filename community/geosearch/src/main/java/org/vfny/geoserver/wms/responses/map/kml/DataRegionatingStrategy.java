@@ -151,19 +151,8 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             SortBy sortBy = ff.sort(myAttributeName, SortOrder.DESCENDING);
             query.setSortBy(new SortBy[]{sortBy});
             FeatureCollection col = source.getFeatures(query);
-            Iterator it = col.iterator();
 
-            try{
-                int count = 0;
-                while (it.hasNext()){
-                    if (((++count) % 1000) == 0) LOGGER.info("" + count + "/" + col.size());
-
-                    SimpleFeature f = (SimpleFeature)it.next();
-                    root.add(f);
-                }
-            } finally {
-                col.close(it);
-            }
+            root.populate(col);
 
             return root;
         } catch (Exception e){
