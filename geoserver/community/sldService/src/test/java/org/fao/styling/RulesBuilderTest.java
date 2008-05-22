@@ -10,13 +10,15 @@ import junit.framework.TestCase;
 import org.geotools.data.DataStore;
 import org.geotools.data.property.PropertyDataStore;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.filter.AndImpl;
 import org.geotools.styling.Rule;
+import org.opengis.filter.And;
 import org.opengis.filter.Filter;
 import org.opengis.filter.PropertyIsEqualTo;
 import org.opengis.filter.PropertyIsGreaterThan;
+import org.opengis.filter.PropertyIsGreaterThanOrEqualTo;
 import org.opengis.filter.PropertyIsLessThanOrEqualTo;
 import org.opengis.filter.expression.Expression;
-import org.opengis.filter.expression.Literal;
 import org.opengis.filter.expression.PropertyName;
 
 public class RulesBuilderTest extends TestCase {
@@ -61,9 +63,36 @@ public class RulesBuilderTest extends TestCase {
         }
     }
     
-    public void testEqualInterval() throws Exception  {
+    public void testEqualIntervalClosed() throws Exception  {
         FeatureCollection fc = store.getFeatureSource("TestPoly").getFeatures();
-        List<Rule> rules = builder.equalIntervalClassification(fc, "population", 2);
+        List<Rule> rules = builder.equalIntervalClassification(fc, "population", 2, false);
+        assertEquals(2, rules.size());
+        
+        // check first rule
+        Rule r = rules.get(0);
+        Filter f = r.getFilter();
+        assertTrue(f instanceof AndImpl);
+        And and = ((And) f);
+        assertEquals(2, and.getChildren().size());
+        assertTrue(and.getChildren().get(0) instanceof PropertyIsGreaterThanOrEqualTo);
+        assertEquals(0.0, ((PropertyIsGreaterThanOrEqualTo) and.getChildren().get(0)).getExpression2().evaluate(null));
+        assertTrue(and.getChildren().get(1) instanceof PropertyIsLessThanOrEqualTo);
+        assertEquals(100.0, ((PropertyIsLessThanOrEqualTo) and.getChildren().get(1)).getExpression2().evaluate(null));
+        
+        r = rules.get(1);
+        f = r.getFilter();
+        assertTrue(f instanceof AndImpl);
+        and = ((And) f);
+        assertEquals(2, and.getChildren().size());
+        assertTrue(and.getChildren().get(0) instanceof PropertyIsGreaterThan);
+        assertEquals(100.0, ((PropertyIsGreaterThan) and.getChildren().get(0)).getExpression2().evaluate(null));
+        assertTrue(and.getChildren().get(1) instanceof PropertyIsLessThanOrEqualTo);
+        assertEquals(200.0, ((PropertyIsLessThanOrEqualTo) and.getChildren().get(1)).getExpression2().evaluate(null));
+    }
+    
+    public void testEqualIntervalOpen() throws Exception  {
+        FeatureCollection fc = store.getFeatureSource("TestPoly").getFeatures();
+        List<Rule> rules = builder.equalIntervalClassification(fc, "population", 2, true);
         assertEquals(2, rules.size());
         
         // check first rule
@@ -81,7 +110,7 @@ public class RulesBuilderTest extends TestCase {
     
     public void testQuantileOverboard() throws Exception  {
         FeatureCollection fc = store.getFeatureSource("TestPoly").getFeatures();
-        List<Rule> rules = builder.quantileClassification(fc, "population", 10);
+        List<Rule> rules = builder.quantileClassification(fc, "population", 10, true);
         // there are just 8 values, so it does not make sense to have 10 rules
         assertEquals(8, rules.size());
     }

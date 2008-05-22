@@ -113,7 +113,7 @@ public class EqualIntervalGenerator extends Restlet {
 			/* First try to find as a FeatureType */
 			try {
 				FeatureCollection ftCollection = this.dt.getFeatureTypeInfo(featureTypeName).getFeatureSource(true).getFeatures();
-				return builder.equalIntervalClassification(ftCollection, property, classNum);
+				return builder.equalIntervalClassification(ftCollection, property, classNum, true);
 			} catch (NoSuchElementException e) {
 				e.printStackTrace();
 				return null;

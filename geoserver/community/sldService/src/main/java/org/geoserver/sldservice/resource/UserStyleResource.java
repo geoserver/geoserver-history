@@ -370,7 +370,19 @@ public class UserStyleResource extends BaseResource {
             endColor = getColor(params, "endColor", true);
             midColor = getColor(params, "midColor", false);
         }
-
+        
+        /*
+         * See if the users wants open or closed classification
+         */
+        boolean open;
+        if (params.getFirst("open") == null
+                || params.getFirst("open").getValue() == null 
+                || !params.getFirst("open").getValue().toLowerCase().equals("true")) {
+            open = false;
+        } else {
+            open= true;
+        }
+        
         /*
          * Now we can start to create classification
          */
@@ -380,11 +392,11 @@ public class UserStyleResource extends BaseResource {
             if (classMethod.equals("quantile"))
                 rulesL = ruBuild.quantileClassification(ftInf
                         .getFeatureSource().getFeatures(), property,
-                        classNum);
+                        classNum, open);
             else if (classMethod.equals("equalInterval"))
                 rulesL = ruBuild.equalIntervalClassification(ftInf
                         .getFeatureSource().getFeatures(), property,
-                        classNum);
+                        classNum, open);
             else if (classMethod.equals("unique"))
                 rulesL = ruBuild.uniqueIntervalClassification(ftInf
                         .getFeatureSource().getFeatures(), property);

@@ -56,7 +56,7 @@ public class RulesBuilder {
 	 * @return
 	 */
 	public List<Rule> quantileClassification(FeatureCollection features,
-			String property, int classNumber) {
+			String property, int classNumber, boolean open) {
 
 		FeatureType fType;
 		Classifier groups = null;
@@ -65,7 +65,10 @@ public class RulesBuilder {
 					ff.literal(classNumber));
 			groups = (Classifier) classify.evaluate(features);
 			if (groups instanceof RangedClassifier)
-				return this.rangedRules((RangedClassifier) groups, property);
+			    if(open)
+			        return openRangedRules((RangedClassifier) groups, property);
+			    else
+			        return closedRangedRules((RangedClassifier) groups, property);
 			else if (groups instanceof ExplicitClassifier)
 				return this
 						.explicitRules((ExplicitClassifier) groups, property);
@@ -88,7 +91,7 @@ public class RulesBuilder {
 	 * @return
 	 */
 	public List<Rule> equalIntervalClassification(FeatureCollection features,
-			String property, int classNumber) {
+			String property, int classNumber, boolean open) {
 		Classifier groups = null;
 		try {
 			Function classify = ff.function("EqualInterval", ff
@@ -96,7 +99,10 @@ public class RulesBuilder {
 			groups = (Classifier) classify.evaluate(features);
 			System.out.println(groups.getSize());
 			if (groups instanceof RangedClassifier)
-				return this.rangedRules((RangedClassifier) groups, property);
+			    if(open)
+			        return openRangedRules((RangedClassifier) groups, property);
+			    else
+			        return closedRangedRules((RangedClassifier) groups, property);
 			else if (groups instanceof ExplicitClassifier)
 				return this
 						.explicitRules((ExplicitClassifier) groups, property);
@@ -128,7 +134,7 @@ public class RulesBuilder {
 					.property(property), ff.literal(classNumber));
 			groups = (Classifier) classify.evaluate(features);
 			if (groups instanceof RangedClassifier)
-				return this.rangedRules((RangedClassifier) groups, property);
+				return this.closedRangedRules((RangedClassifier) groups, property);
 			else if (groups instanceof ExplicitClassifier)
 				return this
 						.explicitRules((ExplicitClassifier) groups, property);
@@ -209,6 +215,72 @@ public class RulesBuilder {
 	public StyleFactory getStyleFactory() {
 		return this.styleFactory;
 	}
+	
+	/**
+     * Generate Rules from Rangedclassifier groups
+     * build a List of rules
+     * @param groups
+     * @param property
+     * @return
+     */
+    private List<Rule> openRangedRules(RangedClassifier groups, String property) {
+
+        Rule r;
+        Filter f;
+        List<Rule> list = new ArrayList();
+        PropertyName att = ff.property(property);
+        try {
+            /* First class */
+            r = styleFactory.createRule();
+            if(groups.getMin(0).equals(groups.getMax(0))){
+                f = CQL.toFilter(att + " =" + ff.literal(groups.getMax(0)));
+                r.setFilter(f);
+                r.setTitle( ff.literal(groups.getMax(0)).toString());
+                list.add(r);
+            }else{
+                f = CQL.toFilter(att + " <=" + ff.literal(groups.getMax(0)));
+                r.setFilter(f);
+                r.setTitle(" <= " + ff.literal(groups.getMax(0)));
+                list.add(r);
+            }
+            for (int i = 1; i < groups.getSize() - 1; i++) {
+                r = styleFactory.createRule();
+                if(groups.getMin(i).equals(groups.getMax(i))){
+                    f = CQL.toFilter(att + "=" + ff.literal(groups.getMin(i)));
+                    r.setTitle( ff.literal(groups.getMin(i)).toString());
+                    r.setFilter(f);
+                    list.add(r);
+                }else{
+                    f = CQL.toFilter(att + ">" + ff.literal(groups.getMin(i))
+                            + " AND " + att + " <=" + ff.literal(groups.getMax(i)));
+                    r.setTitle(" > " + ff.literal(groups.getMin(i)) + " AND <= "
+                            + ff.literal(groups.getMax(i)));
+                    r.setFilter(f);
+                    list.add(r);
+                }
+            }
+            /* Last class */
+            r = styleFactory.createRule();
+            if(groups.getMin(groups.getSize() - 1).equals(groups.getMax(groups.getSize() - 1))){
+                f = CQL.toFilter(att + "="
+                        + ff.literal(groups.getMin(groups.getSize() - 1)));
+                r.setFilter(f);
+                r.setTitle( ff.literal(groups.getMin(groups.getSize() - 1)).toString());
+                list.add(r);
+            }else{
+                f = CQL.toFilter(att + ">"
+                        + ff.literal(groups.getMin(groups.getSize() - 1)));
+                r.setFilter(f);
+                r.setTitle(" > " + ff.literal(groups.getMin(groups.getSize() - 1)));
+                list.add(r);
+                }
+            return list;
+        } catch (CQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 	/**
 	 * Generate Rules from Rangedclassifier groups
@@ -217,7 +289,7 @@ public class RulesBuilder {
 	 * @param property
 	 * @return
 	 */
-	private List<Rule> rangedRules(RangedClassifier groups, String property) {
+	private List<Rule> closedRangedRules(RangedClassifier groups, String property) {
 
 		Rule r;
 		Filter f;
@@ -226,26 +298,17 @@ public class RulesBuilder {
 		try {
 			/* First class */
 			r = styleFactory.createRule();
-			if(groups.getMin(0).equals(groups.getMax(0))){
-				f = CQL.toFilter(att + " =" + ff.literal(groups.getMax(0)));
-				r.setFilter(f);
-				r.setTitle( ff.literal(groups.getMax(0)).toString());
-				list.add(r);
-			}else{
-				f = CQL.toFilter(att + " <=" + ff.literal(groups.getMax(0)));
-				r.setFilter(f);
-				r.setTitle(" <= " + ff.literal(groups.getMax(0)));
-				list.add(r);
-			}
-			for (int i = 1; i < groups.getSize() - 1; i++) {
+			for (int i = 0; i < groups.getSize(); i++) {
 				r = styleFactory.createRule();
+				if(i > 0 && groups.getMax(i).equals(groups.getMax(i -1)))
+				    continue;
 				if(groups.getMin(i).equals(groups.getMax(i))){
 					f = CQL.toFilter(att + "=" + ff.literal(groups.getMin(i)));
 					r.setTitle( ff.literal(groups.getMin(i)).toString());
 					r.setFilter(f);
 					list.add(r);
-				}else{
-					f = CQL.toFilter(att + ">" + ff.literal(groups.getMin(i))
+				} else {
+					f = CQL.toFilter(att + (i == 0 ? ">=" : ">") + ff.literal(groups.getMin(i))
 							+ " AND " + att + " <=" + ff.literal(groups.getMax(i)));
 					r.setTitle(" > " + ff.literal(groups.getMin(i)) + " AND <= "
 							+ ff.literal(groups.getMax(i)));
@@ -253,21 +316,6 @@ public class RulesBuilder {
 					list.add(r);
 				}
 			}
-			/* Last class */
-			r = styleFactory.createRule();
-			if(groups.getMin(groups.getSize() - 1).equals(groups.getMax(groups.getSize() - 1))){
-				f = CQL.toFilter(att + "="
-						+ ff.literal(groups.getMin(groups.getSize() - 1)));
-				r.setFilter(f);
-				r.setTitle( ff.literal(groups.getMin(groups.getSize() - 1)).toString());
-				list.add(r);
-			}else{
-				f = CQL.toFilter(att + ">"
-						+ ff.literal(groups.getMin(groups.getSize() - 1)));
-				r.setFilter(f);
-				r.setTitle(" > " + ff.literal(groups.getMin(groups.getSize() - 1)));
-				list.add(r);
-				}
 			return list;
 		} catch (CQLException e) {
 			// TODO Auto-generated catch block

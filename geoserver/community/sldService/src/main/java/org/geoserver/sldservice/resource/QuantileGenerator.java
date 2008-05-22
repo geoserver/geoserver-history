@@ -113,7 +113,7 @@ public class QuantileGenerator extends Restlet {
 			/* First try to find as a FeatureType */
 			try {
 				FeatureCollection ftCollection = this.dt.getFeatureTypeInfo(featureTypeName).getFeatureSource(true).getFeatures();
-				return builder.quantileClassification(ftCollection, property, classNum);
+				return builder.quantileClassification(ftCollection, property, classNum, true);
 			} catch (NoSuchElementException e) {
 				e.printStackTrace();
 				return null;
