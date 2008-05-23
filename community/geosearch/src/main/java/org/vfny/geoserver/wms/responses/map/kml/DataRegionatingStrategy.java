@@ -37,6 +37,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.geoserver.ows.HttpErrorCodeException;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -77,6 +78,10 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             TileLevel root = preProcessHierarchical(con, layer); // note: This has the side effect of populating myAcceptableFeatures
             LOGGER.info("Created tile hierarchy: " + root);
             addRangesToDB(con, layer, root);
+        }
+
+        if (myAcceptableFeatures.size() == 0){
+            throw new HttpErrorCodeException(204); 
         }
     }
 
