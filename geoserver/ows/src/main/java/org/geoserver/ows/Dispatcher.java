@@ -1103,32 +1103,50 @@ public class Dispatcher extends AbstractController {
         }
         logger.log(Level.SEVERE, "", t);
 
-        //wrap in service exception if necessary
-        ServiceException se = null;
-
-        if (t instanceof ServiceException) {
-            se = (ServiceException) t;
-        } else {
-            //unwind the exception stack, look for a service exception
-            Throwable cause = t.getCause();
-
-            while (cause != null) {
-                if (cause instanceof ServiceException) {
-                    ServiceException cse = (ServiceException) cause;
-                    se = new ServiceException(cse.getMessage(), t, cse.getCode(), cse.getLocator());
-
-                    break;
-                }
-
-                cause = cause.getCause();
+        //unwind the exception stack until we find one we know about 
+        Throwable cause = t;
+        while( cause != null ) {
+            if ( cause instanceof ServiceException ) {
+                break;
+            }
+            if ( cause instanceof HttpErrorCodeException ) {
+                break;
+            }
+            
+            cause = cause.getCause();
+        }
+        
+        if ( cause == null ) {
+            //did not fine a "special" exception, create a service exception
+            // by default
+            cause = new ServiceException(t);
+        }
+        
+        if ( cause instanceof ServiceException ) {
+            ServiceException se = (ServiceException) cause;
+            if ( cause != t ) {
+                //copy the message, code + locator, but set cause equal to root
+                se = new ServiceException( se.getMessage(), t, se.getCode(), se.getLocator() ); 
+            }
+            
+            handleServiceException(se,service,request);
+        }
+        else if ( cause instanceof HttpErrorCodeException ) {
+            //TODO: log the exception stack trace
+            
+            //set the error code
+            HttpErrorCodeException ece = (HttpErrorCodeException) cause;
+            try {
+                request.httpResponse.sendError(ece.getErrorCode());
+            } 
+            catch (IOException e) {
+                //means the resposne was already commited
+                //TODO: something
             }
         }
+    }
 
-        if (se == null) {
-            //couldn't find one, just wrap in one
-            se = new ServiceException(t);
-        }
-
+    void handleServiceException( ServiceException se, Service service, Request request ) {
         //find an exception handler
         ServiceExceptionHandler handler = null;
 
@@ -1208,7 +1226,7 @@ public class Dispatcher extends AbstractController {
             return service + " " + version + " " + request;
         }
     }
-
+    
     /**
      * Allows setting up a security interceptor that will allow security checks around
      * service invocations
