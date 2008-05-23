@@ -15,6 +15,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -51,7 +55,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
     private static long FEATURES_PER_TILE = 100;
     private static String myAttributeName;
 
-    private TileLevel myTileLevel;
+    private Set myAcceptableFeatures;
     private Number myMin;
     private Number myMax;
     private long myZoomLevel;
@@ -66,73 +70,69 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     public void preProcess(WMSMapContext con, MapLayer layer) {
         myZoomLevel = getZoomLevel(con, layer);
-        myTileLevel = getRangesFromCache(con, layer);
-        if (myTileLevel == null){
-            myTileLevel = preProcessHierarchical(con, layer);
-            LOGGER.info("Created tile hierarchy: " + myTileLevel);
-            addRangesToCache(con, layer, myTileLevel);
-        }
-
-        TileLevel temp = myTileLevel.findTile(con.getAreaOfInterest());
-        if (temp != null && temp.getZoomLevel() == myZoomLevel) myTileLevel = temp;
-    }
-
-    /**
-     * Check the cache and find the cached range values for the current combination of (layer, zoomlevel, attribute). 
-     * If the values are not cached, return null.
-     *
-     * @paramRanges con the WMSMapContext for the current request
-     * @param index the numeric index of the layer currently being processed
-     */
-    private TileLevel getRangesFromCache(WMSMapContext con, MapLayer layer){
         try{
-            File cache = findCacheFile(con, layer, myZoomLevel);
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(cache));
-            return (TileLevel)in.readObject();
+            myAcceptableFeatures = getRangesFromDB(con, layer);
         } catch (Exception e){
-            LOGGER.log(Level.INFO, "Error while trying to read range cache from disk.", e);
+            LOGGER.log(Level.INFO, "No cached tile hierarchy found; constructing quad tree from data.", e);
+            TileLevel root = preProcessHierarchical(con, layer); // note: This has the side effect of populating myAcceptableFeatures
+            LOGGER.info("Created tile hierarchy: " + root);
+            addRangesToDB(con, layer, root);
         }
-
-        return null;
     }
 
-    /**
-     * Cache the range values for the current combination of (layer, zoomlevel, attribute)
-     * @param con the WMSMapContext for the current request
-     * @param index the numeric index of the layer currently being processed
-     * @param ranges the range values for the current request 
-     */
-    private void addRangesToCache(WMSMapContext con, MapLayer layer, TileLevel ranges){
+    private void addRangesToDB(WMSMapContext con, MapLayer layer, TileLevel ranges){
         try{
-            File cache = findCacheFile(con, layer, myZoomLevel);
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(cache));
-            out.writeObject(ranges);
-            out.flush();
-            out.close();
+            Class.forName("org.h2.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:h2:h2database/regionate", "geoserver", "geopass");
+            String tableName = findCacheTable(con, layer);
+
+            Statement statement = connection.createStatement();
+            statement.execute("DROP TABLE IF EXISTS " + tableName);
+            statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar(50))");
+            statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
+
+            ranges.writeTo(statement, tableName);
+            statement.close();
+            connection.close();
         } catch (Exception e){
-            // it's okay, we just won't cache these values
-            LOGGER.log(Level.INFO, "Error while trying to write range cache to disk.", e);
+            LOGGER.log(Level.WARNING, "Unable to store range information in database.", e);
         }
     }
 
-    private File findCacheFile(WMSMapContext con, MapLayer layer, long zoomLevel){
-        File f = null;
+    private Set getRangesFromDB(WMSMapContext con, MapLayer layer) throws Exception{
+        Class.forName("org.h2.Driver");
+        Connection connection = DriverManager.getConnection("jdbc:h2:h2database/regionate", "geoserver", "geopass");
+        String tableName = findCacheTable(con, layer);
+
+        long[] coords = TileLevel.getTileCoords(con.getAreaOfInterest(), TileLevel.getWorldBounds());
+
+        Statement statement = connection.createStatement();
+        String sql = "SELECT fid FROM " + tableName + " WHERE x = " + coords[0] + " AND y = " + coords[1] + " AND z = " + coords[2];
+        statement.execute( sql );
+
+        ResultSet results = statement.getResultSet();
+        Set returnable = new TreeSet();
+        while (results.next()){
+            returnable.add(results.getString(1));
+        }
+
+        return returnable;
+    }
+
+    private String findCacheTable(WMSMapContext con, MapLayer layer){
         try{
             FeatureSource source = layer.getFeatureSource();
             MapLayerInfo[] config = con.getRequest().getLayers();
             for (int i = 0; i < config.length; i++){
                 MapLayerInfo theLayer = config[i];
                 if (theLayer.getName().equals(layer.getTitle())){
-                    f = GeoserverDataDirectory.findCreateConfigDir("featureTypes");
-                    f = new File(f, theLayer.getDirName());
-                    f = new File(f, myAttributeName + ".cache");
-                    break;
+                    return theLayer.getDirName() + "_" + myAttributeName;
                 } 
             }
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "Exception while finding the location for the cachefile!", e);
         }
-        return f;
+        return null;
     }
 
     private TileLevel preProcessHierarchical(WMSMapContext con, MapLayer layer){
@@ -141,7 +141,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             FeatureSource<SimpleFeatureType, SimpleFeature> source = 
                 (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
             CoordinateReferenceSystem nativeCRS = source.getSchema().getDefaultGeometry().getCRS();
-            ReferencedEnvelope fullBounds = getWorldBounds();
+            ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
             fullBounds = fullBounds.transform(nativeCRS, true);
             TileLevel root = TileLevel.makeRootLevel(fullBounds, FEATURES_PER_TILE);
             
@@ -152,6 +152,9 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             FeatureCollection col = source.getFeatures(query);
 
             root.populate(col);
+            
+            TileLevel requestTile = root.findTile(con.getAreaOfInterest());
+            myAcceptableFeatures = requestTile.getFeatureSet();
 
             return root;
         } catch (Exception e){
@@ -165,7 +168,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         try{
             FeatureSource<SimpleFeatureType, SimpleFeature> source = 
                 (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
-            ReferencedEnvelope fullBounds = getWorldBounds();
+            ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
             ReferencedEnvelope requestBounds = context.getAreaOfInterest();
             requestBounds = requestBounds.transform(fullBounds.getCoordinateReferenceSystem(), true);
             long level = 0 - Math.round(
@@ -180,19 +183,9 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
         }
     }
 
-    static ReferencedEnvelope getWorldBounds(){
-    	try{
-    	    return new ReferencedEnvelope(-180.0, 180.0, -90.0, 90.0, CRS.decode("EPSG:4326"));
-    	} catch (Exception e){
-    	    LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
-    	}
-    	
-        return null;
-    }
-
     public boolean include(SimpleFeature feature) {
         try {
-            return myTileLevel.include(feature);
+            return myAcceptableFeatures.contains(feature.getID());
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Encountered problem while trying to apply data regionating filter: ", e);
         }

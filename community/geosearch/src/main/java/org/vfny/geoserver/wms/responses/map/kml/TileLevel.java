@@ -2,6 +2,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import java.io.Serializable;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.sql.Statement;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -216,6 +218,10 @@ public class TileLevel implements Serializable {
         return myBBox;
     }
 
+    public Set getFeatureSet(){
+        return myFeatures;
+    }
+
     public int getFeatureCount(){
         return myFeatures.size();
     }
@@ -224,6 +230,51 @@ public class TileLevel implements Serializable {
         List l = new ArrayList();
         accumulateTiles(l, i);
         return l;
+    }
+
+    static ReferencedEnvelope getWorldBounds(){
+    	try{
+    	    return new ReferencedEnvelope(-180.0, 180.0, -90.0, 90.0, CRS.decode("EPSG:4326"));
+    	} catch (Exception e){
+    	    LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
+    	}
+    	
+        return null;
+    }
+
+    public static long[] getTileCoords(ReferencedEnvelope requestBBox, ReferencedEnvelope worldBounds){
+        try{
+            requestBBox = requestBBox.transform(worldBounds.getCoordinateReferenceSystem(), true);
+        } catch (Exception e){
+            LOGGER.log(Level.WARNING, "Couldn't reproject while acquiring tile coordinates", e);
+        }
+
+        long z = Math.round(Math.log(worldBounds.getWidth() / requestBBox.getWidth())/Math.log(2));
+        long x = Math.round(((requestBBox.getMinimum(0) - worldBounds.getMinimum(0)) / worldBounds.getLength(0)) * Math.pow(2, z));
+        long y = Math.round(((worldBounds.getMaximum(1) - requestBBox.getMaximum(1)) / worldBounds.getLength(1)) * Math.pow(2, z-1));
+
+        return new long[]{x,y,z};
+    }
+
+    public void writeTo(Statement st, String tableName){
+        long[] coords = getTileCoords(myBBox, getWorldBounds());
+
+        Iterator it = myFeatures.iterator();
+        while (it.hasNext()){
+            try{
+            st.execute("INSERT INTO " + tableName + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + it.next() + "\' )");
+            } catch (Exception e){
+                LOGGER.log(Level.SEVERE, "SQL Error while trying to store tile hierarchy!", e);
+            }
+        }
+
+        if (myChildren != null){
+            it = myChildren.iterator();
+            while (it.hasNext()){
+                TileLevel child = (TileLevel)it.next();
+                child.writeTo(st, tableName);
+            }
+        }
     }
 
     private void accumulateTiles(List l, int i){
