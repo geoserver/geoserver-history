@@ -23,7 +23,7 @@ public class TileLevelTest extends RegionatingTestSupport {
         FeatureSource source = getFeatureSource(STACKED_FEATURES);
         FeatureCollection collection = source.getFeatures();
 
-        TileLevel root = TileLevel.makeRootLevel(DataRegionatingStrategy.getWorldBounds(), 1);
+        TileLevel root = TileLevel.makeRootLevel(TileLevel.getWorldBounds(), 1);
         root.populate(collection);
 
         assertEquals("Found unexpected depth for tree: " + root, 11, root.depth());
@@ -59,7 +59,7 @@ public class TileLevelTest extends RegionatingTestSupport {
         FeatureSource source = getFeatureSource(DISPERSED_FEATURES);
         FeatureCollection collection = source.getFeatures();
 
-        TileLevel root = TileLevel.makeRootLevel(DataRegionatingStrategy.getWorldBounds(), 1);
+        TileLevel root = TileLevel.makeRootLevel(TileLevel.getWorldBounds(), 1);
         root.populate(collection);
 
         assertEquals("Expected 3 but found " + root.depth() + " for depth of tree: " + root, 3, root.depth());
@@ -71,17 +71,17 @@ public class TileLevelTest extends RegionatingTestSupport {
         FeatureSource source = getFeatureSource(DISPERSED_FEATURES);
         FeatureCollection collection = source.getFeatures();
 
-        TileLevel root = TileLevel.makeRootLevel(DataRegionatingStrategy.getWorldBounds(), 1);
+        TileLevel root = TileLevel.makeRootLevel(TileLevel.getWorldBounds(), 1);
         root.populate(collection);
 
         CoordinateReferenceSystem crs = CRS.decode("EPSG:4326");
         ReferencedEnvelope[] boxes = new ReferencedEnvelope[]{
             // one of the two top-level tiles
             new ReferencedEnvelope(-180, 0, -90, 90, crs),  
-                // a tile below the top level
-                new ReferencedEnvelope(-180, -90, -90, 0, crs), 
-                // a tile that doesn't have a direct match, should return the smallest existing tile that matches
-                new ReferencedEnvelope(-180, -135, -90, -45, crs) 
+            // a tile below the top level
+            new ReferencedEnvelope(-180, -90, -90, 0, crs), 
+            // a tile that doesn't have a direct match, should return the smallest existing tile that matches
+            new ReferencedEnvelope(-180, -135, -90, -45, crs) 
         };
 
         assertEquals(1, root.findTile(boxes[0]).getZoomLevel()); 
