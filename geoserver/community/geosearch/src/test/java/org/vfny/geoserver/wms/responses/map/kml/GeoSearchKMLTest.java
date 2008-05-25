@@ -17,7 +17,7 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
             "&format=" + KMLMapProducerFactory.MIME_TYPE + 
             "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
-            "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
+            "&height=1024&width=1024&bbox=-180,-90,0,90&srs=EPSG:4326" +  
             "&featureid=BasicPolygons.1107531493643";
 
         Document document = getAsDOM(path);
@@ -30,7 +30,7 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
             "&format=" + KMLMapProducerFactory.MIME_TYPE + 
             "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
-            "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
+            "&height=1024&width=1024&bbox=-180,-90,0,90&srs=EPSG:4326" +  
             "&featureid=BasicPolygons.1107531493643" +
             "&format_options=regionateBy:data;regionateAttr:NUM_LANES";
 
