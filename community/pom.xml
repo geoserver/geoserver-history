@@ -60,5 +60,11 @@
         <module>kml-ows5</module>
       </modules>
     </profile>
+    <profile>
+      <id>dds</id>
+      <modules>
+        <module>dds</module>
+      </modules>
+    </profile>
   </profiles>
 </project>
