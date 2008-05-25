@@ -314,7 +314,7 @@ public final class CoveragesEditorAction extends ConfigAction {
 
         while (it.hasNext()) {
             paramKey = (String) it.next();
-            paramValue = (String) form.getParamValues().get(index);
+            paramValue = form.getParamValues().get(index) instanceof String ? (String) form.getParamValues().get(index) : "";
             params.put(paramKey, paramValue);
             index++;
         }

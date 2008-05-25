@@ -426,7 +426,7 @@ public final class CoveragesEditorForm extends ActionForm {
 
         while (it.hasNext()) {
             paramKey = (String) it.next();
-            paramValue = (String) type.getParameters().get(paramKey);
+            paramValue = type.getParameters().get(paramKey) instanceof String ? (String) type.getParameters().get(paramKey) : "";
             paramHelp.add(paramKey);
             paramKeys.add(paramKey);
             paramValues.add(paramValue);
