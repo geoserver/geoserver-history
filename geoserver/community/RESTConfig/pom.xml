@@ -14,7 +14,7 @@
   <groupId>org.geoserver</groupId>
   <artifactId>RESTConfig</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.6-SNAPSHOT</version>
   <name>REST Configuration Service Module</name>
 
   <repositories>

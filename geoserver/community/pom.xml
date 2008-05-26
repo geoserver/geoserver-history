@@ -53,6 +53,12 @@
       </modules>
     </profile>
     <profile>
+      <id>RESTConfig</id>
+      <modules>
+        <module>RESTConfig</module>
+      </modules>
+    </profile>
+    <profile>
       <id>rest</id>
       <modules>
         <module>rest</module>

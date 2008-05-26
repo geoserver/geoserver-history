@@ -390,25 +390,24 @@
       </dependencies>
     </profile>
     <profile>
-      <id>community</id>
-      <activation>
-        <property>
-          <name>community</name>
-          <value>true</value>
-        </property>
-      </activation>
+      <id>RESTConfig</id>
       <dependencies>
         <dependency>
           <groupId>org.geoserver</groupId>
-          <artifactId>rest</artifactId>
-          <version>1.6-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-          <groupId>org.geoserver</groupId>
           <artifactId>RESTConfig</artifactId>
-          <version>1.0</version>
+          <version>${project.version}</version>
         </dependency>
       </dependencies>
+    </profile>
+    <profile>
+    <id>rest</id>
+    <dependencies>
+        <dependency>
+            <groupId>org.geoserver</groupId>
+            <artifactId>rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
     </profile>
     <profile>
       <id>gwc</id>
