@@ -532,14 +532,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                         final Color color = SLD.color(mark.getFill());
                         encodeColor(color, opacity);
                     }
-                } else {
-                    //default
-                    encodeColor("ffaaaaaa");
-                }
-            } else {
-                //default
-                encodeColor("ffaaaaaa");
-            }
+                } 
+            } 
 
             element("colorMode", "normal");
 

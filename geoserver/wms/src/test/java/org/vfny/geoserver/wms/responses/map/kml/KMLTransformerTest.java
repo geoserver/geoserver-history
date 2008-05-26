@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.Test;
 
+import org.custommonkey.xmlunit.XMLAssert;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -50,6 +51,8 @@ public class KMLTransformerTest extends WMSTestSupport {
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
         dataDirectory.addStyle("SingleFeature", getClass().getResource("singlefeature.sld"));
+        dataDirectory.addStyle("Bridge", getClass().getResource("bridge.sld"));
+        dataDirectory.copyTo(getClass().getResourceAsStream("bridge.png"), "styles/bridge.png");
     }
 
     @SuppressWarnings("unchecked")
@@ -70,6 +73,30 @@ public class KMLTransformerTest extends WMSTestSupport {
         assertEquals("kml", element.getNodeName());
         assertEquals(nfeatures, element.getElementsByTagName("Style").getLength());
         assertEquals(nfeatures, element.getElementsByTagName("Placemark").getLength());
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void testExternalGraphicBackround() throws Exception {
+        // see http://jira.codehaus.org/browse/GEOS-1947
+        MapLayer mapLayer = createMapLayer( MockData.POINTS,  "Bridge");
+        WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
+        mapContext.addLayer(mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+        transformer.setIndentation(2);
+
+        FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
+        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
+        int nfeatures = featureSource.getFeatures().size();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        transformer.transform(featureSource.getFeatures(), output);
+        System.out.println(output.toString());
+        
+        Document document = dom(new ByteArrayInputStream(output.toByteArray()));
+
+        // make sure we are generating icon styles, but that we're not sticking a color onto them
+        XMLAssert.assertXpathEvaluatesTo("" + nfeatures, "count(//Style/IconStyle/Icon/href)", document);
+        XMLAssert.assertXpathEvaluatesTo("0", "count(//Style/IconStyle/Icon/color)", document);
     }
     
     @SuppressWarnings("unchecked")
