@@ -188,7 +188,7 @@ public abstract class FeatureTypeSchemaBuilder {
         throws IOException {
         //look if the schema for the type is already defined
         String prefix = featureTypeMeta.getNameSpace().getPrefix();
-        String name = featureTypeMeta.getNativeTypeName();
+        String name = featureTypeMeta.getTypeName();
 
         File schemaFile = null;
 
