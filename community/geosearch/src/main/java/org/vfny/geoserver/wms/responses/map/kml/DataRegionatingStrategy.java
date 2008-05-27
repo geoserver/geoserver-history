@@ -167,7 +167,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
             root.populate(col);
             
             TileLevel requestTile = root.findTile(con.getAreaOfInterest());
-            myAcceptableFeatures = requestTile.getFeatureSet();
+            myAcceptableFeatures = (requestTile != null ? requestTile.getFeatureSet() : root.getFeatureSet());
 
             return root;
         } catch (Exception e){
