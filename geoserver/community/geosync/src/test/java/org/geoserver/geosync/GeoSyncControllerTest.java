@@ -16,8 +16,8 @@ import org.w3c.dom.NodeList;
 
 public class GeoSyncControllerTest extends GeoServerTestSupport {
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         
         String insert = 
             "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
