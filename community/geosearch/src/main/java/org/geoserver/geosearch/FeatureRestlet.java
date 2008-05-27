@@ -120,7 +120,7 @@ public class FeatureRestlet extends Restlet {
         raw.put("format", "geosearch-kml");
         raw.put("startIndex", Integer.toString(startIndex));
         raw.put("maxfeatures", Integer.toString(maxFeatures));
-        raw.put("format_options", "regionateby:" + regionateBy + (regionateAttr != null ? ";regionateAttr:" + regionateAttr : ""));
+        raw.put("format_options", "relLinks:true;regionateby:" + regionateBy + (regionateAttr != null ? ";regionateAttr:" + regionateAttr : ""));
 
 
         if ( feature != null ) {
