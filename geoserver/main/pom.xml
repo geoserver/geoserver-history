@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.6-SNAPSHOT</version>
+		<version>1.6.5-beta</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
@@ -19,12 +19,12 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.5-beta</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>ows</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.6.5-beta</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -109,7 +109,7 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>data</artifactId>
-                        <version>1.6-SNAPSHOT</version>
+                        <version>1.6.5-beta</version>
                         <classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
