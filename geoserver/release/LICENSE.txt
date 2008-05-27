@@ -1,5 +1,5 @@
 GeoServer, open geospatial information server
-Copyright (C) 2001 - 2006 The Open Planning Project - http://topp.openplans.org
+Copyright (C) 2001 - 2008 The Open Planning Project - http://topp.openplans.org
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -231,7 +231,7 @@ Definitions:
 -------
 
 
-Geoserver includes a few snippets from the Prototype library (www.prototypejs.org), 
+GeoServer includes a few snippets from the Prototype library (www.prototypejs.org), 
 under a MIT license:
 
 -------

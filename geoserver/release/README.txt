@@ -1,3 +1,9 @@
+GeoServer 1.6.4b
+---------------
+This release is based off of Geotools 2.4.4 and fixes the following issue:
+http://jira.codehaus.org/browse/GEOS-1942
+
+
 GeoServer 1.6.4
 ---------------
 This release contains 35 patches and bugfixes since 1.6.3.  While mainly a bugfix release, this version has:
