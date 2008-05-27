@@ -105,7 +105,8 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
 
         String token = (auth.getCredentials() == null ? "" : auth.getCredentials().toString());
     
-        token = token.substring(0, 40);  
+        if (token.length() > 40)
+            token = token.substring(0, 40);  
             // the token is expected to be 40 characters, this may change depending on the hash function used
             // the truncating is only needed to deal with weird garbage characters added by tomcat
         
