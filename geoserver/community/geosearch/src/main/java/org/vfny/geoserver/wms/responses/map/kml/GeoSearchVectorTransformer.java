@@ -74,7 +74,11 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                 throw new RuntimeException(ioe);
             }
 
-            if (mapContext.getRequest().getMaxFeatures() != null){
+            String relLinks = (String)mapContext.getRequest().getFormatOptions().get("relLinks");
+
+
+            if (mapContext.getRequest().getMaxFeatures() != null &&
+                relLinks != null && relLinks.equalsIgnoreCase("true") ){
                 int maxFeatures = mapContext.getRequest().getMaxFeatures();
                 int startIndex =
                     (mapContext.getRequest().getStartIndex() == null)
@@ -118,7 +122,7 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
 
             if (stratname == null) {
                 // LOGGER.info("No regionating strategy specified, using default data-based strategy");
-                setRegionatingStrategy(new DataRegionatingStrategy(attname));
+                setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
             } else if (stratname.equalsIgnoreCase("sld")) {
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
             } else if (stratname.equalsIgnoreCase("data")) { 
