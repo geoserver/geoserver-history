@@ -25,13 +25,7 @@ public class SLDRegionatingStrategy implements RegionatingStrategy {
 
     public void preProcess(WMSMapContext con, MapLayer layer){
         scaleDenominator = 1; 
-        try {
-            scaleDenominator = 
-                RendererUtilities.calculateScale(con.getAreaOfInterest(), con.getMapWidth(), con.getMapHeight(), null);
-        } 
-        catch( Exception e ) {
-            LOGGER.severe("Error calculating scale denominator" + e );
-        }
+        // TODO: Perhaps we should actually do some calculations to figure this out? 
     }
 
     public boolean include(SimpleFeature feature){
