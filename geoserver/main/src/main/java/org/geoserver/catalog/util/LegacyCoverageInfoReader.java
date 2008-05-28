@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,6 +30,11 @@ public class LegacyCoverageInfoReader {
     Element coverage;
     
     /**
+     * The directory containing the feature type info.xml file
+     */
+    File parentDirectory;
+    
+    /**
      * Parses the info.xml file into a DOM.
      * <p>
      * This method *must* be called before any other methods.
@@ -39,6 +45,7 @@ public class LegacyCoverageInfoReader {
      * @throws IOException In event of a parser error.
      */
     public void read(File file) throws IOException {
+        parentDirectory = file.getParentFile();
         Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(file));
 
         try {
@@ -215,5 +222,10 @@ public class LegacyCoverageInfoReader {
         Element supportedFormats = ReaderUtils.getChildElement(coverage, "supportedInterpolations" );
         String[] interpolations = ReaderUtils.getChildText(supportedFormats, "interpolationMethods" ).split(",");
         return Arrays.asList(interpolations);
+    }
+
+
+    public String parentDirectoryName() {
+        return parentDirectory.getName();
     }
 }

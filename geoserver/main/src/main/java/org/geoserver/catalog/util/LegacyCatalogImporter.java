@@ -2,6 +2,7 @@ package org.geoserver.catalog.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,7 +30,6 @@ import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
@@ -122,63 +122,151 @@ public class LegacyCatalogImporter {
     public void imprt(File dir) throws Exception {
         CatalogFactory factory = catalog.getFactory();
 
-        // catalog.xml
+        // first off, import the main catalog so that namespaces, workspaces, styles,
+        // datastores and coveragestores are read
         File catalogFile = new File(dir, "catalog.xml");
         if (!catalogFile.exists()) {
             throw new FileNotFoundException("Could not find catalog.xml under:"
                     + dir.getAbsolutePath());
         }
+        importCatalog(catalogFile);
+        
+        // for each feature type file, load the info.xml into a FeatureTypeInfo
+        File featureTypes = new File(dir, "featureTypes");
+        File[] featureTypeDirectories = featureTypes.listFiles();
+        for (int i = 0; i < featureTypeDirectories.length; i++) {
+            File featureTypeDirectory = featureTypeDirectories[i];
+            if (!featureTypeDirectory.isDirectory() || featureTypeDirectory.isHidden() )
+                continue;
 
-        LegacyCatalogReader reader = new LegacyCatalogReader();
-        reader.read(catalogFile);
-
-        // namespaces / workspaces
-        Map namespaces = reader.namespaces();
-        for (Iterator n = namespaces.entrySet().iterator(); n.hasNext();) {
-            Map.Entry entry = (Map.Entry) n.next();
-            if (entry.getKey() == null || "".equals(entry.getKey())) {
+            // load info.xml
+            File ftInfoFile = new File(featureTypeDirectory, "info.xml");
+            if (!ftInfoFile.exists()) {
+                LOGGER.fine("No info.xml found in directory: '" + featureTypeDirectory.getName() +  "', ignoring");
                 continue;
             }
 
-            NamespaceInfo namespace = factory.createNamespace();
-            namespace.setPrefix((String) entry.getKey());
-            namespace.setURI((String) entry.getValue());
-            catalog.add(namespace);
-            
-            WorkspaceInfo workspace = factory.createWorkspace();
-            workspace.setName( (String) entry.getKey() );
-            catalog.add(workspace);
-            
-            if ( namespace.getURI().equals( namespaces.get( "" ) )) {
-                catalog.setDefaultNamespace(namespace);
-                catalog.setDefaultWorkspace(workspace);
+            LegacyFeatureTypeInfoReader ftInfoReader = new LegacyFeatureTypeInfoReader();
+            try {
+                ftInfoReader.read(ftInfoFile);
+                FeatureTypeInfo featureType = readFeatureType(ftInfoReader);
+                
+                catalog.add(featureType);
+                
+                LOGGER.info( "Loaded feature type '" + featureType.getPrefixedName() + "'" );
+                
+                // create a wms layer for the feature type
+                LayerInfo layer = factory.createLayer();
+                layer.setResource(featureType);
+                layer.setName(featureType.getName());
+                layer.setPath(featureType.getName());
+                layer.setType(LayerInfo.Type.VECTOR);
+               
+                String defaultStyleName = ftInfoReader.defaultStyle();
+                if ( defaultStyleName != null ) {
+                    layer.setDefaultStyle(catalog.getStyleByName(defaultStyleName));    
+                }
+                
+                Map legendURL = ftInfoReader.legendURL();
+                if( legendURL != null ) {
+                    LegendInfo legend = factory.createLegend(); 
+                    legend.setHeight( (Integer) legendURL.get( "height" ) );
+                    legend.setWidth( (Integer) legendURL.get( "width" ) );
+                    legend.setFormat( (String) legendURL.get( "format" ) );
+                    legend.setOnlineResource( (String) legendURL.get( "onlineResource" ) );
+                    layer.setLegend( legend );
+                }
+                
+                layer.setEnabled(featureType.isEnabled());
+                catalog.add(layer);
+            } catch( Exception e ) {
+                LOGGER.warning( "Error loadin '" + featureTypeDirectory.getName() + "/info.xml', ignoring" );
+                LOGGER.log( Level.INFO, "", e );
+                continue;
             }
-            
-            LOGGER.info( "Loaded namespace '" + namespace.getPrefix() + 
-                "' (" + namespace.getURI() + ")");
         }
         
-        if ( catalog.getDefaultNamespace() != null ) {
-            LOGGER.info( "Default namespace: '" + catalog.getDefaultNamespace().getPrefix() + "'" );
-        }
-        else {
-            LOGGER.warning( "No default namespace set.");
-        }
-        
-        // styles
-        Map styles = reader.styles();
-        for (Iterator s = styles.entrySet().iterator(); s.hasNext();) {
-            Map.Entry entry = (Map.Entry) s.next();
-            StyleInfo style = factory.createStyle();
-            style.setName((String) entry.getKey());
-            style.setFilename((String)entry.getValue());
-            
-            catalog.add(style);
-            LOGGER.info( "Loaded style '" + style.getName() + "'" );
+        // for each coverage definition in coverage, read it
+        File coverages = new File(dir, "coverages");
+        File[] coverageDirectories = coverages.listFiles();
+        for (int i = 0; coverageDirectories != null && i < coverageDirectories.length; i++) {
+            File coverageDirectory = coverageDirectories[i];
+            if (!coverageDirectory.isDirectory() || coverageDirectory.isHidden())
+                continue;
+
+            // load info.xml
+            File cInfoFile = new File(coverageDirectory, "info.xml");
+            if (!cInfoFile.exists()) {
+                LOGGER.fine("No info.xml found in directory: '" + coverageDirectory.getName() +  "', ignoring");
+                continue;
+            }
+
+            LegacyCoverageInfoReader cInfoReader = new LegacyCoverageInfoReader();
+            try {
+                cInfoReader.read(cInfoFile);
+    
+                CoverageInfo coverage = readCoverage(cInfoReader);
+                catalog.add(coverage);
+    
+                // create a wms layer for the feature type
+                LayerInfo layer = factory.createLayer();
+                layer.setResource(coverage);
+                layer.setName(coverage.getName());
+                layer.setPath(coverage.getName());
+                layer.setType(LayerInfo.Type.RASTER);
+                
+                String defaultStyleName = cInfoReader.defaultStyle();
+                if ( defaultStyleName != null ) {
+                    layer.setDefaultStyle(catalog.getStyleByName(defaultStyleName));    
+                }
+               
+                catalog.add(layer);
+            } catch(Exception e) {
+                LOGGER.warning( "Error loading '" + coverageDirectory.getName() + "/info.xml', ignoring" );
+                LOGGER.log( Level.INFO, "", e );
+                continue;
+            }
         }
 
-        // data stores
-        List dataStores = reader.dataStores();
+    }
+
+    void importCatalog(File catalogFile) throws FileNotFoundException,
+            IOException, Exception {
+        CatalogFactory factory = catalog.getFactory();
+        
+        LegacyCatalogReader reader = new LegacyCatalogReader();
+        reader.read(catalogFile);
+
+        // build all the catalog objects that can be read from the catalog.xml file
+        importNamespaces(factory, reader.namespaces());
+        importStyles(factory, reader.styles());
+        importDataStores(factory, reader.dataStores());
+        importFormats(factory, reader.formats());
+    }
+
+    void importFormats(CatalogFactory factory, List formats) {
+        for (Iterator f = formats.iterator(); f.hasNext();) {
+            Map map = (Map) f.next();
+            CoverageStoreInfo coverageStore = factory.createCoverageStore();
+
+            coverageStore.setName((String) map.get("id"));
+            coverageStore.setType((String) map.get("type"));
+            coverageStore.setURL((String) map.get("url"));
+            coverageStore.setDescription((String) map.get("description"));
+
+            String namespacePrefix = (String)map.get( "namespace");
+            //coverageStore.setNamespace( catalog.getNamespaceByPrefix( namespacePrefix ));
+            coverageStore.setWorkspace( catalog.getWorkspaceByName( namespacePrefix ));
+            
+            coverageStore.setEnabled( (Boolean) map.get( "enabled" ) );
+            catalog.add(coverageStore);
+            
+            LOGGER.info( "Processed coverage store '" + coverageStore.getName() + "', " 
+                    + (coverageStore.isEnabled() ? "enabled" : "disabled") );
+        }
+    }
+
+    void importDataStores(CatalogFactory factory, List dataStores) {
         for (Iterator d = dataStores.iterator(); d.hasNext();) {
             Map map = (Map) d.next();
             DataStoreInfo dataStore = factory.createDataStore();
@@ -236,368 +324,305 @@ public class LegacyCatalogImporter {
                 }
             }
         }
+    }
 
-        // feature types
-        File featureTypes = new File(dir, "featureTypes");
-        File[] featureTypeDirectories = featureTypes.listFiles();
-        for (int i = 0; i < featureTypeDirectories.length; i++) {
-            File featureTypeDirectory = featureTypeDirectories[i];
-            if (!featureTypeDirectory.isDirectory() || featureTypeDirectory.isHidden() )
-                continue;
+    /**
+     * Imports all styles and loads them into the catalog
+     * @param factory
+     * @param styles
+     */
+    void importStyles(CatalogFactory factory, Map styles) {
+        for (Iterator s = styles.entrySet().iterator(); s.hasNext();) {
+            Map.Entry entry = (Map.Entry) s.next();
+            StyleInfo style = factory.createStyle();
+            style.setName((String) entry.getKey());
+            style.setFilename((String)entry.getValue());
+            
+            catalog.add(style);
+            LOGGER.info( "Loaded style '" + style.getName() + "'" );
+        }
+    }
 
-            // load info.xml
-            File ftInfoFile = new File(featureTypeDirectory, "info.xml");
-            if (!ftInfoFile.exists()) {
-                LOGGER.fine("No info.xml found in directory: '" + featureTypeDirectory.getName() +  "', ignoring");
+    /**
+     * Imports namespaces and create symmetric workspaces for them
+     * @param factory
+     * @param namespaces
+     */
+    void importNamespaces(CatalogFactory factory, Map namespaces) {
+        for (Iterator n = namespaces.entrySet().iterator(); n.hasNext();) {
+            Map.Entry entry = (Map.Entry) n.next();
+            if (entry.getKey() == null || "".equals(entry.getKey())) {
                 continue;
             }
 
-            LegacyFeatureTypeInfoReader ftInfoReader = new LegacyFeatureTypeInfoReader();
+            NamespaceInfo namespace = factory.createNamespace();
+            namespace.setPrefix((String) entry.getKey());
+            namespace.setURI((String) entry.getValue());
+            catalog.add(namespace);
+            
+            WorkspaceInfo workspace = factory.createWorkspace();
+            workspace.setName( (String) entry.getKey() );
+            catalog.add(workspace);
+            
+            if ( namespace.getURI().equals( namespaces.get( "" ) )) {
+                catalog.setDefaultNamespace(namespace);
+                catalog.setDefaultWorkspace(workspace);
+            }
+            
+            LOGGER.info( "Loaded namespace '" + namespace.getPrefix() + 
+                "' (" + namespace.getURI() + ")");
+        }
+        
+        if ( catalog.getDefaultNamespace() != null ) {
+            LOGGER.info( "Default namespace: '" + catalog.getDefaultNamespace().getPrefix() + "'" );
+        } else {
+            LOGGER.warning( "No default namespace set.");
+        }
+    }
+    
+    FeatureTypeInfo readFeatureType(LegacyFeatureTypeInfoReader ftInfoReader) throws Exception {
+        CatalogFactory factory = catalog.getFactory();
+        FeatureTypeInfo featureType = factory.createFeatureType();
+        
+        featureType.setNativeName(ftInfoReader.name());
+        if ( ftInfoReader.alias() != null ) {
+            featureType.setName( ftInfoReader.alias() );    
+        }
+        else {
+            featureType.setName( ftInfoReader.name() );
+        }
+        
+        featureType.setSRS("EPSG:" + ftInfoReader.srs());
+        
+        ProjectionPolicy pp = ProjectionPolicy.get( ftInfoReader.srsHandling() );
+        if ( pp == null ) {
+            pp = ProjectionPolicy.FORCE_DECLARED;
+        }
+        featureType.setProjectionPolicy(pp);
+        
+        featureType.setTitle(ftInfoReader.title());
+        featureType.setAbstract(ftInfoReader.abstrct());
+        featureType.getKeywords().addAll(ftInfoReader.keywords());
+        featureType.setLatLonBoundingBox(new ReferencedEnvelope(
+                ftInfoReader.latLonBoundingBox(),
+                DefaultGeographicCRS.WGS84));
+        featureType.setEnabled(true);
+        featureType.getMetadata().put( "dirName", ftInfoReader.parentDirectoryName() );
+        featureType.getMetadata().put( "indexingEnabled", ftInfoReader.searchable() );
+        
+        //link to datastore
+        String dataStoreName = ftInfoReader.dataStore();
+        DataStoreInfo dataStore = catalog.getDataStoreByName( dataStoreName );
+        if ( dataStore == null ) {
+            LOGGER.warning( "Ignoring feature type: '" + ftInfoReader.parentDirectoryName()
+                + "', data store '" + dataStoreName + "'  not found");
+            featureType.setEnabled(false);
+        }
+        featureType.setStore(dataStore);
+        
+        if ( featureType.isEnabled() && !dataStore.isEnabled() ) {
+            LOGGER.info( "Ignoring feature type: '" + ftInfoReader.parentDirectoryName()
+                    + "', data store is disabled");
+            featureType.setEnabled(false);
+        }
+        
+        if ( featureType.isEnabled() ) {
+            Exception error = null;
+            
+            //native crs
+            DataStore ds = null;
             try {
-                ftInfoReader.read(ftInfoFile);
+                ds = dataStore.getDataStore(null);
             }
             catch( Exception e ) {
-                LOGGER.warning( "Error parsing '" + featureTypeDirectory.getName() + "/info.xml', ignoring" );
+                LOGGER.warning( "Ignoring feature type: '" + featureType.getName() 
+                        + "', error occured connecting to data store: " + e.getMessage() );
                 LOGGER.log( Level.INFO, "", e );
-                continue;
+                error = e;
             }
-
-            FeatureTypeInfo featureType = factory.createFeatureType();
-            
-            featureType.setNativeName(ftInfoReader.name());
-            if ( ftInfoReader.alias() != null ) {
-                featureType.setName( ftInfoReader.alias() );    
-            }
-            else {
-                featureType.setName( ftInfoReader.name() );
-            }
-            
-            featureType.setSRS("EPSG:" + ftInfoReader.srs());
-            
-            ProjectionPolicy pp = ProjectionPolicy.get( ftInfoReader.srsHandling() );
-            if ( pp == null ) {
-                pp = ProjectionPolicy.FORCE_DECLARED;
-            }
-            featureType.setProjectionPolicy(pp);
-            
-            featureType.setTitle(ftInfoReader.title());
-            featureType.setAbstract(ftInfoReader.abstrct());
-            featureType.getKeywords().addAll(ftInfoReader.keywords());
-            featureType.setLatLonBoundingBox(new ReferencedEnvelope(
-                    ftInfoReader.latLonBoundingBox(),
-                    DefaultGeographicCRS.WGS84));
-            featureType.setEnabled(true);
-            featureType.getMetadata().put( "dirName", featureTypeDirectory.getName() );
-            featureType.getMetadata().put( "indexingEnabled", ftInfoReader.searchable() );
-            
-            //link to datastore
-            String dataStoreName = ftInfoReader.dataStore();
-            DataStoreInfo dataStore = catalog.getDataStoreByName( dataStoreName );
-            if ( dataStore == null ) {
-                LOGGER.warning( "Ignoring feature type: '" + featureTypeDirectory.getName() 
-                    + "', data store '" + dataStoreName + "'  not found");
-                featureType.setEnabled(false);
-            }
-            featureType.setStore(dataStore);
-            
-            if ( featureType.isEnabled() && !dataStore.isEnabled() ) {
-                LOGGER.info( "Ignoring feature type: '" + featureTypeDirectory.getName() 
-                        + "', data store is disabled");
-                featureType.setEnabled(false);
-            }
-            
-            if ( featureType.isEnabled() ) {
-                Exception error = null;
-                
-                //native crs
-                DataStore ds = null;
+             
+            if ( error == null ) {
                 try {
-                    ds = dataStore.getDataStore(null);
+                    SimpleFeatureType ft = ds.getSchema( featureType.getNativeName() );
+                    featureType.setNativeCRS(ft.getCRS());
+                    
+                    //attributes
+                    for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
+                        AttributeDescriptor ad = ft.getAttribute( x );
+                        AttributeTypeInfo att = catalog.getFactory().createAttribute();
+                        att.setName( ad.getLocalName() );
+                        att.setMinOccurs( ad.getMinOccurs() );
+                        att.setMaxOccurs( ad.getMaxOccurs() );
+                        att.setAttribute( ad );
+                        featureType.getAttributes().add( att );
+                    }
                 }
                 catch( Exception e ) {
-                    LOGGER.warning( "Ignoring feature type: '" + featureType.getName() 
-                            + "', error occured connecting to data store: " + e.getMessage() );
-                    LOGGER.log( Level.INFO, "", e );
+                    LOGGER.warning( "Ignoring feature type: '" + featureType.getNativeName() 
+                            + "', error occured loading schema: " + e.getMessage() );
+                    LOGGER.log(Level.INFO, "", e );
                     error = e;
                 }
-                 
-                if ( error == null ) {
+            }
+            
+            if ( error == null ) {
+                //native bounds
+                Envelope nativeBBOX = ftInfoReader.nativeBoundingBox();
+                if ( nativeBBOX == null ) {
                     try {
-                        SimpleFeatureType ft = ds.getSchema( featureType.getNativeName() );
-                        featureType.setNativeCRS(ft.getCRS());
-                        
-                        //attributes
-                        for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
-                            AttributeDescriptor ad = ft.getAttribute( x );
-                            AttributeTypeInfo att = catalog.getFactory().createAttribute();
-                            att.setName( ad.getLocalName() );
-                            att.setMinOccurs( ad.getMinOccurs() );
-                            att.setMaxOccurs( ad.getMaxOccurs() );
-                            att.setAttribute( ad );
-                            featureType.getAttributes().add( att );
+                        //dynamic, calculate it
+                        FeatureSource source = ds.getFeatureSource(featureType.getNativeName()); 
+                        nativeBBOX = source.getBounds();
+                        if ( nativeBBOX == null ) {
+                            FeatureCollection features = source.getFeatures();
+                            FeatureIterator iterator = features.features();
+                            try {
+                                nativeBBOX = new Envelope();
+                                if ( !iterator.hasNext() ) {
+                                    nativeBBOX.setToNull();
+                                }
+                                else {
+                                    nativeBBOX.init( (Envelope) iterator.next().getBounds() );
+                                    while( iterator.hasNext() ) {
+                                        nativeBBOX.expandToInclude(( (Envelope) iterator.next().getBounds() ));    
+                                    }
+                                }
+                            }
+                            finally {
+                                features.close( iterator );
+                            }
                         }
-                    }
-                    catch( Exception e ) {
-                        LOGGER.warning( "Ignoring feature type: '" + featureType.getNativeName() 
-                                + "', error occured loading schema: " + e.getMessage() );
+                    } catch (Exception e) {
+                        LOGGER.warning( "Ignoring feature type: '" + featureType.getName() 
+                                + "', error occured calculating bounds: " + e.getMessage() );
                         LOGGER.log(Level.INFO, "", e );
                         error = e;
                     }
                 }
                 
-                if ( error == null ) {
-                    //native bounds
-                    Envelope nativeBBOX = ftInfoReader.nativeBoundingBox();
-                    if ( nativeBBOX == null ) {
-                        try {
-                            //dynamic, calculate it
-                            FeatureSource source = ds.getFeatureSource(featureType.getNativeName()); 
-                            nativeBBOX = source.getBounds();
-                            if ( nativeBBOX == null ) {
-                                FeatureCollection features = source.getFeatures();
-                                FeatureIterator iterator = features.features();
-                                try {
-                                    nativeBBOX = new Envelope();
-                                    if ( !iterator.hasNext() ) {
-                                        nativeBBOX.setToNull();
-                                    }
-                                    else {
-                                        nativeBBOX.init( (Envelope) iterator.next().getBounds() );
-                                        while( iterator.hasNext() ) {
-                                            nativeBBOX.expandToInclude(( (Envelope) iterator.next().getBounds() ));    
-                                        }
-                                    }
-                                }
-                                finally {
-                                    features.close( iterator );
-                                }
-                            }
-                        } catch (Exception e) {
-                            LOGGER.warning( "Ignoring feature type: '" + featureType.getName() 
-                                    + "', error occured calculating bounds: " + e.getMessage() );
-                            LOGGER.log(Level.INFO, "", e );
-                            error = e;
-                        }
-                    }
-                    
-                    featureType.setNativeBoundingBox(new ReferencedEnvelope(nativeBBOX,featureType.getNativeCRS()));
-                }
-                
-                
-                if ( error != null ) {
-                    featureType.setEnabled(false);
-                }
+                featureType.setNativeBoundingBox(new ReferencedEnvelope(nativeBBOX,featureType.getNativeCRS()));
             }
             
-            // link to namespace
-            for (Iterator d = dataStores.iterator(); d.hasNext();) {
-                Map map = (Map) d.next();
-                if (dataStoreName.equals(map.get("id"))) {
-                    String prefix = (String) map.get("namespace");
-                    NamespaceInfo namespace = (NamespaceInfo) catalog
-                            .getNamespaceByPrefix(prefix);
-                    featureType.setNamespace(namespace);
-                    break;
-                }
+            
+            if ( error != null ) {
+                featureType.setEnabled(false);
             }
-            
-            catalog.add(featureType);
-            
-            LOGGER.info( "Loaded feature type '" + featureType.getPrefixedName() + "'" );
-            
-            // create a wms layer for the feature type
-            LayerInfo layer = factory.createLayer();
-            layer.setResource(featureType);
-            layer.setName(featureType.getName());
-            layer.setPath(featureType.getName());
-            layer.setType(LayerInfo.Type.VECTOR);
-           
-            String defaultStyleName = ftInfoReader.defaultStyle();
-            if ( defaultStyleName != null ) {
-                layer.setDefaultStyle(catalog.getStyleByName(defaultStyleName));    
-            }
-            
-            Map legendURL = ftInfoReader.legendURL();
-            if( legendURL != null ) {
-                LegendInfo legend = factory.createLegend(); 
-                legend.setHeight( (Integer) legendURL.get( "height" ) );
-                legend.setWidth( (Integer) legendURL.get( "width" ) );
-                legend.setFormat( (String) legendURL.get( "format" ) );
-                legend.setOnlineResource( (String) legendURL.get( "onlineResource" ) );
-                layer.setLegend( legend );
-            }
-            
-            layer.setEnabled(featureType.isEnabled());
-            catalog.add(layer);
         }
         
-        // coverage stores
-        List formats = reader.formats();
-        for (Iterator f = formats.iterator(); f.hasNext();) {
-            Map map = (Map) f.next();
-            CoverageStoreInfo coverageStore = factory.createCoverageStore();
-
-            coverageStore.setName((String) map.get("id"));
-            coverageStore.setType((String) map.get("type"));
-            coverageStore.setURL((String) map.get("url"));
-            coverageStore.setDescription((String) map.get("description"));
-
-            String namespacePrefix = (String)map.get( "namespace");
-            //coverageStore.setNamespace( catalog.getNamespaceByPrefix( namespacePrefix ));
-            coverageStore.setWorkspace( catalog.getWorkspaceByName( namespacePrefix ));
-            
-            coverageStore.setEnabled( (Boolean) map.get( "enabled" ) );
-            catalog.add(coverageStore);
-            
-            LOGGER.info( "Processed coverage store '" + coverageStore.getName() + "', " 
-                    + (coverageStore.isEnabled() ? "enabled" : "disabled") );
+        // link to namespace
+        String prefix = catalog.getDataStore(dataStoreName).getWorkspace().getId();
+        featureType.setNamespace(catalog.getNamespaceByPrefix(prefix));
+        
+        return featureType;
+    }
+    
+    CoverageInfo readCoverage(LegacyCoverageInfoReader cInfoReader) throws Exception {
+        CatalogFactory factory = catalog.getFactory();
+        
+        // link to coverage store
+        String coverageStoreName = cInfoReader.format();
+        CoverageStoreInfo coverageStore = catalog.getCoverageStoreByName(coverageStoreName);
+        
+        if ( coverageStore == null ) {
+            LOGGER.warning( "Ignoring coverage: '" + cInfoReader.parentDirectoryName()
+                + "', coverage store '" + coverageStoreName + "'  not found");
+            return null;
         }
         
-        // coverages
-        File coverages = new File(dir, "coverages");
-        File[] coverageDirectories = coverages.listFiles();
-        for (int i = 0; coverageDirectories != null && i < coverageDirectories.length; i++) {
-            File coverageDirectory = coverageDirectories[i];
-            if (!coverageDirectory.isDirectory() || coverageDirectory.isHidden())
-                continue;
-
-            // load info.xml
-            File cInfoFile = new File(coverageDirectory, "info.xml");
-            if (!cInfoFile.exists()) {
-                LOGGER.fine("No info.xml found in directory: '" + coverageDirectory.getName() +  "', ignoring");
-                continue;
-            }
-
-            LegacyCoverageInfoReader cInfoReader = new LegacyCoverageInfoReader();
-            cInfoReader.read(cInfoFile);
-
-            // link to coverage store
-            String coverageStoreName = cInfoReader.format();
-            CoverageStoreInfo coverageStore = catalog.getCoverageStoreByName(coverageStoreName);
+        if ( !coverageStore.isEnabled() ) {
+            LOGGER.info( "Ignoring coverage: '" + cInfoReader.parentDirectoryName() 
+                    + "', coverage store is disabled");
+            return null;
+        }
+        
+        CoverageInfo coverage = factory.createCoverage();
+        coverage.setStore(coverageStore);
+        
+        coverage.setName(cInfoReader.name());
+        coverage.setNativeName(cInfoReader.name());
+        coverage.setTitle(cInfoReader.label());
+        coverage.setDescription(cInfoReader.description());
+        coverage.getKeywords().addAll( cInfoReader.keywords() );
+        
+        Map<String,Object> envelope = cInfoReader.envelope();
+        coverage.setSRS((String)envelope.get( "srsName" ));
+        
+        CoordinateReferenceSystem crs = CRS.decode(coverage.getSRS());
+        coverage.setNativeCRS( crs );
+        
+        ReferencedEnvelope bounds = new ReferencedEnvelope( 
+            (Double) envelope.get( "x1" ), (Double) envelope.get( "x2" ), 
+            (Double) envelope.get( "y1" ), (Double) envelope.get( "y2" ), 
+            crs
+        );
+        coverage.setNativeBoundingBox(bounds);
+        
+        GeneralEnvelope boundsLatLon = 
+            CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope( bounds ) ); 
+        coverage.setLatLonBoundingBox(new ReferencedEnvelope( boundsLatLon ) );
+        
+        GeneralEnvelope gridEnvelope = new GeneralEnvelope( bounds );
+        Map grid = cInfoReader.grid();
+        if ( grid != null ) {
+            int[] low = (int[]) grid.get( "low" );
+            int[] high = (int[]) grid.get( "high" );
             
-            if ( coverageStore == null ) {
-                LOGGER.warning( "Ignoring coverage: '" + coverageDirectory.getName() 
-                    + "', coverage store '" + coverageStoreName + "'  not found");
-                continue;
-            }
+            GeneralGridRange range = new GeneralGridRange(low, high);
             
-            if ( !coverageStore.isEnabled() ) {
-                LOGGER.info( "Ignoring coverage: '" + coverageDirectory.getName() 
-                        + "', coverage store is disabled");
-                continue;
-            }
-            
-            CoverageInfo coverage = factory.createCoverage();
-            coverage.setStore(coverageStore);
-            
-            coverage.setName(cInfoReader.name());
-            coverage.setNativeName(cInfoReader.name());
-            coverage.setTitle(cInfoReader.label());
-            coverage.setDescription(cInfoReader.description());
-            coverage.getKeywords().addAll( cInfoReader.keywords() );
-            
-            Map<String,Object> envelope = cInfoReader.envelope();
-            coverage.setSRS((String)envelope.get( "srsName" ));
-            
-            CoordinateReferenceSystem crs = CRS.decode(coverage.getSRS());
-            coverage.setNativeCRS( crs );
-            
-            ReferencedEnvelope bounds = new ReferencedEnvelope( 
-                (Double) envelope.get( "x1" ), (Double) envelope.get( "x2" ), 
-                (Double) envelope.get( "y1" ), (Double) envelope.get( "y2" ), 
-                crs
-            );
-            coverage.setNativeBoundingBox(bounds);
-            
-            GeneralEnvelope boundsLatLon = 
-                CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope( bounds ) ); 
-            coverage.setLatLonBoundingBox(new ReferencedEnvelope( boundsLatLon ) );
-            
-            GeneralEnvelope gridEnvelope = new GeneralEnvelope( bounds );
-            Map grid = cInfoReader.grid();
-            if ( grid != null ) {
-                int[] low = (int[]) grid.get( "low" );
-                int[] high = (int[]) grid.get( "high" );
+            Map<String,Double> tx = (Map<String, Double>) grid.get( "geoTransform" );
+            if ( tx != null ) {
+                double[] matrix = new double[3 * 3];
+                matrix[0] = tx.get( "scaleX") != null ? tx.get( "scaleX") : matrix[0];
+                matrix[1] = tx.get( "shearX") != null ? tx.get( "shearX") : matrix[1];
+                matrix[2] = tx.get( "translateX") != null ? tx.get( "translateX") : matrix[2];
+                matrix[3] = tx.get( "shearY") != null ? tx.get( "shearY") : matrix[3];
+                matrix[4] = tx.get( "scaleY") != null ? tx.get( "scaleY") : matrix[4];
+                matrix[5] = tx.get( "translateY") != null ? tx.get( "translateY") : matrix[5];
+                matrix[8] = 1.0;
                 
-                GeneralGridRange range = new GeneralGridRange(low, high);
-                
-                Map<String,Double> tx = (Map<String, Double>) grid.get( "geoTransform" );
-                if ( tx != null ) {
-                    double[] matrix = new double[3 * 3];
-                    matrix[0] = tx.get( "scaleX") != null ? tx.get( "scaleX") : matrix[0];
-                    matrix[1] = tx.get( "shearX") != null ? tx.get( "shearX") : matrix[1];
-                    matrix[2] = tx.get( "translateX") != null ? tx.get( "translateX") : matrix[2];
-                    matrix[3] = tx.get( "shearY") != null ? tx.get( "shearY") : matrix[3];
-                    matrix[4] = tx.get( "scaleY") != null ? tx.get( "scaleY") : matrix[4];
-                    matrix[5] = tx.get( "translateY") != null ? tx.get( "translateY") : matrix[5];
-                    matrix[8] = 1.0;
-                    
-                    MathTransform gridToCRS = new DefaultMathTransformFactory()
-                        .createAffineTransform( new GeneralMatrix(3,3,matrix));
-                    coverage.setGrid( new GridGeometry2D(range,gridToCRS,crs) );
-                }
-                else {
-                    coverage.setGrid( new GridGeometry2D( range, gridEnvelope ) );
-                }
+                MathTransform gridToCRS = new DefaultMathTransformFactory()
+                    .createAffineTransform( new GeneralMatrix(3,3,matrix));
+                coverage.setGrid( new GridGeometry2D(range,gridToCRS,crs) );
             }
             else {
-                // new grid range
-                GeneralGridRange range = new GeneralGridRange(new int[] { 0,
-                        0 }, new int[] { 1, 1 });
-                coverage.setGrid( new GridGeometry2D(range, gridEnvelope) );
+                coverage.setGrid( new GridGeometry2D( range, gridEnvelope ) );
             }
-            
-            for ( Iterator x = cInfoReader.coverageDimensions().iterator(); x   .hasNext(); ) {
-                Map map = (Map) x.next();
-                CoverageDimensionInfo cd = factory.createCoverageDimension();
-                cd.setName((String)map.get("name"));
-                cd.setDescription((String)map.get("description"));
-                cd.setRange(
-                   new NumberRange((Double)map.get("min"),(Double)map.get("max"))
-                );
-                coverage.getDimensions().add( cd );
-            }
-            
-            coverage.setNativeFormat(cInfoReader.nativeFormat());
-            coverage.getSupportedFormats().addAll(cInfoReader.supportedFormats());
-            
-            coverage.setDefaultInterpolationMethod(cInfoReader.defaultInterpolation());
-            coverage.getInterpolationMethods().addAll( cInfoReader.supportedInterpolations());
-            
-            coverage.getRequestSRS().addAll(cInfoReader.requestCRSs());
-            coverage.getResponseSRS().addAll(cInfoReader.responseCRSs());
-            
-            coverage.getMetadata().put( "dirName", coverageDirectory.getName());
-            // link to namespace
-            for (Iterator d = formats.iterator(); d.hasNext();) {
-                Map map = (Map) d.next();
-                if (coverageStoreName.equals(map.get("id"))) {
-                    String prefix = (String) map.get("namespace");
-                    NamespaceInfo namespace = (NamespaceInfo) catalog
-                            .getNamespaceByPrefix(prefix);
-                    coverage.setNamespace(namespace);
-                    break;
-                }
-            }
-
-            coverage.setEnabled( coverageStore.isEnabled() );
-            catalog.add(coverage);
-
-            // create a wms layer for the feature type
-            LayerInfo layer = factory.createLayer();
-            layer.setResource(coverage);
-            layer.setName(coverage.getName());
-            layer.setPath(coverage.getName());
-            layer.setType(LayerInfo.Type.RASTER);
-            
-            String defaultStyleName = cInfoReader.defaultStyle();
-            if ( defaultStyleName != null ) {
-                layer.setDefaultStyle(catalog.getStyleByName(defaultStyleName));    
-            }
-           
-            catalog.add(layer);
         }
-
+        else {
+            // new grid range
+            GeneralGridRange range = new GeneralGridRange(new int[] { 0,
+                    0 }, new int[] { 1, 1 });
+            coverage.setGrid( new GridGeometry2D(range, gridEnvelope) );
+        }
+        
+        for ( Iterator x = cInfoReader.coverageDimensions().iterator(); x   .hasNext(); ) {
+            Map map = (Map) x.next();
+            CoverageDimensionInfo cd = factory.createCoverageDimension();
+            cd.setName((String)map.get("name"));
+            cd.setDescription((String)map.get("description"));
+            cd.setRange(
+               new NumberRange((Double)map.get("min"),(Double)map.get("max"))
+            );
+            coverage.getDimensions().add( cd );
+        }
+        
+        coverage.setNativeFormat(cInfoReader.nativeFormat());
+        coverage.getSupportedFormats().addAll(cInfoReader.supportedFormats());
+        
+        coverage.setDefaultInterpolationMethod(cInfoReader.defaultInterpolation());
+        coverage.getInterpolationMethods().addAll( cInfoReader.supportedInterpolations());
+        
+        coverage.getRequestSRS().addAll(cInfoReader.requestCRSs());
+        coverage.getResponseSRS().addAll(cInfoReader.responseCRSs());
+        
+        coverage.getMetadata().put( "dirName", cInfoReader.parentDirectoryName());
+        coverage.setEnabled( coverageStore.isEnabled() );
+        
+        // link to namespace
+        String prefix = catalog.getCoverageStore(coverageStoreName).getWorkspace().getId();
+        coverage.setNamespace(catalog.getNamespaceByPrefix(prefix));
+        
+        return coverage;
     }
 
     
