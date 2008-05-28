@@ -88,7 +88,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
     private void addRangesToDB(WMSMapContext con, MapLayer layer, TileLevel ranges){
         try{
             Class.forName("org.h2.Driver");
-            String dataDir = con.getRequest().getWMS().getData().getBaseDir().getCanonicalPath();
+            String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
             Connection connection = 
             	DriverManager.getConnection(
             			"jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
@@ -110,7 +110,7 @@ public class DataRegionatingStrategy implements RegionatingStrategy {
 
     private Set getRangesFromDB(WMSMapContext con, MapLayer layer) throws Exception{
         Class.forName("org.h2.Driver");
-        String dataDir = con.getRequest().getWMS().getData().getBaseDir().getCanonicalPath();
+        String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
         Connection connection = 
         	DriverManager.getConnection(
         			"jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
