@@ -6,6 +6,7 @@ package org.geoserver.wfs.kvp;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.platform.ServiceException;
 import org.geotools.filter.FilterFilter;
 import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.gml.GMLFilterDocument;
@@ -13,7 +14,6 @@ import org.geotools.gml.GMLFilterGeometry;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 import org.opengis.filter.Filter;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.util.requests.FilterHandlerImpl;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.xml.sax.InputSource;
