@@ -36,6 +36,8 @@ import javax.xml.validation.Validator;
 
 import junit.framework.TestCase;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServerLoader;
 import org.geoserver.data.test.TestData;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
@@ -232,8 +234,19 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
             }
         }
     }
-        
-
+     
+    /**
+     * Reloads the catalog and configuration from disk.
+     * <p>
+     * This method can be used by subclasses from a test method after they have
+     * changed the configuration on disk.
+     * </p>
+     */
+    protected void reloadCatalogAndConfiguration() throws Exception {
+        GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class , applicationContext );
+        loader.reload();
+    }
+    
     /**
      * Accessor for global catalog instance from the test application context.
      */
