@@ -254,7 +254,8 @@ public class ApplicationState implements InitializingBean {
             loadStatus();
         }
 
-        return geoserverStatus[7];
+        //return geoserverStatus[7];
+        return geoserverStatus[4];
     }
 
     public int getDataBad() {
@@ -263,7 +264,8 @@ public class ApplicationState implements InitializingBean {
             loadStatus();
         }
 
-        return geoserverStatus[8];
+        //return geoserverStatus[8];
+        return geoserverStatus[5];
     }
 
     public int getDataDisabled() {
@@ -272,7 +274,8 @@ public class ApplicationState implements InitializingBean {
             loadStatus();
         }
 
-        return geoserverStatus[9];
+        //return geoserverStatus[9];
+        return geoserverStatus[6];
     }
 
     public int getGeoserverGood() {
@@ -557,7 +560,19 @@ public class ApplicationState implements InitializingBean {
 
     /** Flattened for your JSP pleasure */
     public List getDataStoreErrorValues() {
-        return new LinkedList(getDataStoreErrors().values());
+        LinkedList l = new LinkedList();
+        
+        for ( Object o : getDataStoreErrors().values() ) {
+            if ( o instanceof Throwable ) {
+                Throwable t = (Throwable) o;
+                while( t.getCause() != null ) {
+                    t = t.getCause();
+                }
+                
+                l.add( t.getMessage() );
+            }
+        }
+        return l;
     }
 
     /**

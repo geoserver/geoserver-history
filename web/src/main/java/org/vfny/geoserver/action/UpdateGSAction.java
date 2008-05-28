@@ -69,20 +69,18 @@ public class UpdateGSAction extends ConfigAction {
             final int gsUs = geoserverDTO.getUpdateSequence();
             geoserverDTO.setUpdateSequence(gsUs + 1);
             
+            //load the data bean from the modified config DTO
+            getWCS(request).getData().load(dataDTO);
+            //load the main geoserver bean from the modified config DTO
+            getWCS(request).getGeoServer().load(geoserverDTO);
+            
             //load each service global bean from the modified config DTO
             getWCS(request).load(wcsDTO);
             getWFS(request).load(wfsDTO);
             getWMS(request).load(wmsDTO);
             
-            //load the main geoserver bean from the modified config DTO
-            getWCS(request).getGeoServer().load(geoserverDTO);
-            //load the data bean from the modified config DTO
-            getWCS(request).getData().load(dataDTO);
-            
             //also, don't forget to update the main global config with the changes to the updatesequence
             getGlobalConfig().update(geoserverDTO);
-
-
             getApplicationState().notifyToGeoServer();
         } catch (ConfigurationException e) {
             e.printStackTrace();
@@ -103,24 +101,24 @@ public class UpdateGSAction extends ConfigAction {
         ServletContext sc = request.getSession().getServletContext();
         gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
 
-        try {
-            Map plugins = new HashMap();
-            Map testSuites = new HashMap();
-
-            if (getValidationConfig().toDTO(plugins, testSuites)) {
-                //sorry, no time to really test this, but I got a null pointer
-                //exception with the demo build target. ch
-                if (getWFS(request).getValidation() != null) {
-                    getWFS(request).getValidation().load(testSuites, plugins);
-                }
-            } else {
-                throw new ConfigurationException(
-                    "ValidationConfig experienced an error exporting Data Transpher Objects.");
-            }
-        } catch (ConfigurationException e) {
-            e.printStackTrace();
-            throw new ServletException(e);
-        }
+        //try {
+        //    Map plugins = new HashMap();
+        //    Map testSuites = new HashMap();
+        //
+        //    if (getValidationConfig().toDTO(plugins, testSuites)) {
+        //        //sorry, no time to really test this, but I got a null pointer
+        //        //exception with the demo build target. ch
+        //        if (getWFS(request).getValidation() != null) {
+        //            getWFS(request).getValidation().load(testSuites, plugins);
+        //        }
+        //    } else {
+        //        throw new ConfigurationException(
+        //            "ValidationConfig experienced an error exporting Data Transpher Objects.");
+        //    }
+        //} catch (ConfigurationException e) {
+        //    e.printStackTrace();
+        //    throw new ServletException(e);
+        //}
 
         // We need to stay on the same page!
         getApplicationState(request).notifyToGeoServer();

@@ -5,6 +5,7 @@
 package org.vfny.geoserver.action;
 
 import org.apache.struts.action.Action;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.wfs.WFS;
 import org.springframework.web.struts.ActionSupport;
 import org.vfny.geoserver.global.ApplicationState;
@@ -157,7 +158,15 @@ public class GeoServerAction extends ActionSupport {
     public GeoServer getGeoServer() {
         return (GeoServer) getWebApplicationContext().getBean("geoServer");
     }
-
+    
+    public org.geoserver.config.GeoServer getConfiguration() {
+        return (org.geoserver.config.GeoServer) getWebApplicationContext().getBean( "geoServer2" );
+    }
+    
+    public Catalog getCatalog() {
+        return getConfiguration().getCatalog();
+    }
+    
     /**
      * Access GeoServer Application State from the WebContainer.
      *

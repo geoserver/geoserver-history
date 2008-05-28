@@ -102,86 +102,86 @@ public class SaveXMLAction extends ConfigAction {
             throw new ServletException(confE);
         }
 
-        Map plugIns = (Map) getWFS(request).getValidation().toPlugInDTO();
-        Map testSuites = (Map) getWFS(request).getValidation().toTestSuiteDTO();
-
-        Iterator i = null;
-
-        if (plugIns != null) {
-            i = plugIns.keySet().iterator();
-
-            while (i.hasNext()) {
-                PlugInDTO dto = null;
-                Object key = null;
-
-                try {
-                    key = i.next();
-                    dto = (PlugInDTO) plugIns.get(key);
-
-                    String fName = dto.getName().replaceAll(" ", "") + ".xml";
-                    File pFile = WriterUtils.initWriteFile(new File(plugInDir, fName), false);
-                    FileWriter fw = new FileWriter(pFile);
-                    XMLWriter.writePlugIn(dto, fw);
-                    fw.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new ServletException(e);
-                }
-            }
-        }
-
-        // deletes of plug ins here
-
-        /*File[] pluginFL = plugInDir.listFiles();
-           for(int j=0;j<pluginFL.length;j++){
-                   String flName = pluginFL[j].getName();
-                   flName = flName.substring(0,flName.length()-4);
-                   if(plugIns.get(flName)==null){
-                           // delete this
-                           pluginFL[j].delete();
-                   }
-           }*/
-        if (testSuites != null) {
-            i = testSuites.keySet().iterator();
-
-            while (i.hasNext()) {
-                TestSuiteDTO dto = null;
-
-                try {
-                    dto = (TestSuiteDTO) testSuites.get(i.next());
-
-                    String fName = dto.getName().replaceAll(" ", "") + ".xml";
-                    File pFile = WriterUtils.initWriteFile(new File(validationDir, fName), false);
-                    FileWriter fw = new FileWriter(pFile); //new File(validationDir,
-                                                           //dto.getName().replaceAll(" ", "") + ".xml"));
-
-                    XMLWriter.writeTestSuite(dto, fw);
-                    fw.close();
-                } catch (Exception e) {
-                    System.err.println(dto.getClass());
-                    e.printStackTrace();
-                    throw new ServletException(e);
-                }
-            }
-        }
-
-        // deletes of testSuites here
-        File[] testsFL = validationDir.listFiles();
-
-        if (testsFL != null) {
-            for (int j = 0; j < testsFL.length; j++) {
-                boolean found = false;
-                i = testSuites.keySet().iterator();
-
-                while (!found && i.hasNext())
-                    found = (((TestSuiteDTO) testSuites.get(i.next())).getName().replaceAll(" ", "")
-                        + ".xml").equals(testsFL[j].getName());
-
-                if (!found) {
-                    testsFL[j].delete();
-                }
-            }
-        }
+        //Map plugIns = (Map) getWFS(request).getValidation().toPlugInDTO();
+        //Map testSuites = (Map) getWFS(request).getValidation().toTestSuiteDTO();
+        //
+        //Iterator i = null;
+        //
+        //if (plugIns != null) {
+        //    i = plugIns.keySet().iterator();
+        //
+        //    while (i.hasNext()) {
+        //        PlugInDTO dto = null;
+        //        Object key = null;
+        //
+        //        try {
+        //            key = i.next();
+        //            dto = (PlugInDTO) plugIns.get(key);
+        //
+        //            String fName = dto.getName().replaceAll(" ", "") + ".xml";
+        //            File pFile = WriterUtils.initWriteFile(new File(plugInDir, fName), false);
+        //            FileWriter fw = new FileWriter(pFile);
+        //            XMLWriter.writePlugIn(dto, fw);
+        //            fw.close();
+        //        } catch (Exception e) {
+        //            e.printStackTrace();
+        //            throw new ServletException(e);
+        //        }
+        //    }
+        //}
+        //
+        //// deletes of plug ins here
+        //
+        ///*File[] pluginFL = plugInDir.listFiles();
+        //   for(int j=0;j<pluginFL.length;j++){
+        //           String flName = pluginFL[j].getName();
+        //           flName = flName.substring(0,flName.length()-4);
+        //           if(plugIns.get(flName)==null){
+        //                   // delete this
+        //                   pluginFL[j].delete();
+        //           }
+        //   }*/
+        //if (testSuites != null) {
+        //    i = testSuites.keySet().iterator();
+        //
+        //    while (i.hasNext()) {
+        //        TestSuiteDTO dto = null;
+        //
+        //        try {
+        //            dto = (TestSuiteDTO) testSuites.get(i.next());
+        //
+        //            String fName = dto.getName().replaceAll(" ", "") + ".xml";
+        //            File pFile = WriterUtils.initWriteFile(new File(validationDir, fName), false);
+        //            FileWriter fw = new FileWriter(pFile); //new File(validationDir,
+        //                                                   //dto.getName().replaceAll(" ", "") + ".xml"));
+        //
+        //            XMLWriter.writeTestSuite(dto, fw);
+        //            fw.close();
+        //        } catch (Exception e) {
+        //            System.err.println(dto.getClass());
+        //            e.printStackTrace();
+        //            throw new ServletException(e);
+        //        }
+        //    }
+        //}
+        //
+        //// deletes of testSuites here
+        //File[] testsFL = validationDir.listFiles();
+        //
+        //if (testsFL != null) {
+        //    for (int j = 0; j < testsFL.length; j++) {
+        //        boolean found = false;
+        //        i = testSuites.keySet().iterator();
+        //
+        //        while (!found && i.hasNext())
+        //            found = (((TestSuiteDTO) testSuites.get(i.next())).getName().replaceAll(" ", "")
+        //                + ".xml").equals(testsFL[j].getName());
+        //
+        //        if (!found) {
+        //            testsFL[j].delete();
+        //        }
+        //    }
+        //}
 
         getApplicationState(request).notifiySaveXML();
 

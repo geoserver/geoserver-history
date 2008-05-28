@@ -7,6 +7,8 @@ package org.vfny.geoserver.action.data;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -84,11 +86,15 @@ public class DataCoveragesNewAction extends ConfigAction {
         CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
 
         if (cvStoreInfo == null) {
-            cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
-                    catalog);
+            org.geoserver.catalog.CoverageStoreInfo cvStore = 
+                getCatalog().getFactory().createCoverageStore();
+            cvStoreInfo = new CoverageStoreInfo( cvStore, getCatalog() );
+            cvStoreInfo.load(getDataConfig().getDataFormat(formatID).toDTO());
+            //cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
+            //        getCatalog());
         }
 
-        CoverageConfig coverageConfig = newCoverageConfig(cvStoreInfo, formatID, request);
+        CoverageConfig coverageConfig = newCoverageConfig(cvStoreInfo, formatID, request, getCatalog());
 
         user.setCoverageConfig(coverageConfig);
 
@@ -99,7 +105,7 @@ public class DataCoveragesNewAction extends ConfigAction {
      * Static method so that the CoverageStore editor can do the same thing that the new one
      * does.*/
     public static CoverageConfig newCoverageConfig(CoverageStoreInfo cvStoreInfo, String formatID,
-        HttpServletRequest request) throws ConfigurationException {
+        HttpServletRequest request, Catalog catalog ) throws ConfigurationException {
         //GridCoverage gc = null;
         final Format format = cvStoreInfo.getFormat();
         AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
@@ -114,7 +120,8 @@ public class DataCoveragesNewAction extends ConfigAction {
                 "Could not obtain a reader for the CoverageDataSet. Please check the CoverageDataSet configuration!");
         }
 
-        CoverageConfig coverageConfig = new CoverageConfig(formatID, format, reader, request);
+        CoverageConfig coverageConfig = 
+            new CoverageConfig(formatID, format, reader, request,catalog);
 
         request.setAttribute(NEW_COVERAGE_KEY, "true");
         request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfig);
