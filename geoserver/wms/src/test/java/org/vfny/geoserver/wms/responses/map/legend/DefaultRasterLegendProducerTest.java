@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;

@@ -8,11 +8,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import org.geoserver.platform.ServiceException;
+
 import junit.framework.Test;
+
 
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.styling.Style;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
