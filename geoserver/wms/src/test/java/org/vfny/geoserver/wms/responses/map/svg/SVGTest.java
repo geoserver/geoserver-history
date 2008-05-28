@@ -1,5 +1,12 @@
 package org.vfny.geoserver.wms.responses.map.svg;
 
+import java.io.InputStream;
+import java.net.URL;
+
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
@@ -26,13 +33,22 @@ public class SVGTest extends WMSTestSupport {
                 "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
                 "&featureid=BasicPolygons.1107531493643"
             );
-//            print(doc);
             
             assertEquals( 1, doc.getElementsByTagName("svg").getLength());
             assertEquals( 1, doc.getElementsByTagName("g").getLength());
     }
     
     public void testBatikSvgGenerator() throws Exception {
+        
+        //batik includes DTD reference which forces us to be online, skip test
+        // in offline case
+        
+        try {
+            new URL( "http://www.w3.org").openConnection().connect();
+        } catch (Exception e) {
+            return;
+        }
+        
         getWMS().setSvgRenderer(WMSConfig.SVG_BATIK);
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
@@ -42,10 +58,9 @@ public class SVGTest extends WMSTestSupport {
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
             "&featureid=BasicPolygons.1107531493643"
         );
-//        print(doc);
         
         assertEquals( 1, doc.getElementsByTagName("svg").getLength());
         assertTrue(doc.getElementsByTagName("g").getLength() > 1);
-}
+    }
     
 }
