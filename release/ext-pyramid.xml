@@ -16,7 +16,7 @@
 			<directory>release/target/dependency</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
-				<include>gt2-imagepyramid*.jar</include>
+				<include>gt-imagepyramid*.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
