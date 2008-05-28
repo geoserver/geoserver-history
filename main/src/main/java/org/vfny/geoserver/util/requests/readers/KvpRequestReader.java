@@ -7,6 +7,7 @@ package org.vfny.geoserver.util.requests.readers;
 import com.vividsolutions.jts.geom.Envelope;
 
 import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.platform.ServiceException;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFilter;
@@ -15,11 +16,12 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
+
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.ServiceException;
+
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.FilterHandlerImpl;
