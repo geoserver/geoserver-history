@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver;
 
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import java.io.IOException;
