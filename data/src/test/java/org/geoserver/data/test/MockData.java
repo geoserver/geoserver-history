@@ -192,7 +192,6 @@ public class MockData implements TestData {
     // Extra types
     public static QName GEOMETRYLESS = new QName(CITE_URI, "Geometryless", CITE_PREFIX);
     
-
     /**
      * List of all cite types names
      */
@@ -227,6 +226,19 @@ public class MockData implements TestData {
     public static QName[] WFS11_TYPENAMES = new QName[] {
             PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, GENERICENTITY /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
         };
+    
+    /**
+     * map of qname to srs
+     */
+    public static HashMap<QName,Integer> SRS = new HashMap<QName, Integer>();
+    static {
+        for ( int i = 0; i < WFS10_TYPENAMES.length; i++ ) {
+            SRS.put( WFS10_TYPENAMES[i], 32615);
+        }
+        for ( int i = 0; i < WFS11_TYPENAMES.length; i++ ) {
+            SRS.put( WFS11_TYPENAMES[i], 4326 );
+        }
+    }
 
     /** the base of the data directory */
     File data;
@@ -532,7 +544,13 @@ public class MockData implements TestData {
         params.put(KEY_STYLE, "Default");
         params.put(KEY_SRS_HANDLINGS, 2);
         params.put(KEY_ALIAS, null);
-        params.put(KEY_SRS_NUMBER, 4326);
+        
+        Integer srs = SRS.get( name );
+        if ( srs == null ) {
+            srs = 4326;
+        }
+        params.put(KEY_SRS_NUMBER, srs);
+        
         // override with whatever the user provided
         params.putAll(extraParams);
 
