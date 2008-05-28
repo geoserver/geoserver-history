@@ -2,7 +2,6 @@ package org.geoserver.catalog.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.StringTokenizer;
 
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.util.ReaderUtils;
-import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.w3c.dom.Element;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -32,6 +30,11 @@ public class LegacyFeatureTypeInfoReader {
     Element featureType;
     
     /**
+     * The directory containing the feature type info.xml file
+     */
+    File parentDirectory;
+    
+    /**
      * Parses the info.xml file into a DOM.
      * <p>
      * This method *must* be called before any other methods.
@@ -42,6 +45,7 @@ public class LegacyFeatureTypeInfoReader {
      * @throws IOException In event of a parser error.
      */
     public void read(File file) throws IOException {
+        parentDirectory = file.getParentFile();
         Reader reader = 
             XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(file));
         
@@ -153,6 +157,10 @@ public class LegacyFeatureTypeInfoReader {
         }
         
         return false;
+    }
+    
+    public String parentDirectoryName() {
+        return parentDirectory.getName();
     }
     
 }
