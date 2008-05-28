@@ -3,15 +3,16 @@
 
 <beans>
 
-	<!-- the wcs service. -->
-	<bean id="wcs"
+	<!-- the wcs configuration bean. -->
+	<!--bean id="wcs"
 		class="org.vfny.geoserver.global.WCS" depends-on="config">
-        <!-- the depends-on attribute ensures config was initialized before
-          trying to instantiate this bean.
-         -->
-		<constructor-arg ref="config"/>
+       <constructor-arg ref="config"/>
 		<constructor-arg ref="data"/>
 		<constructor-arg ref="geoServer"/>
+	</bean-->
+	<bean id="wcsLoader" class="org.geoserver.wcs.WCSLoader"/>
+	<bean id="wcs" class="org.vfny.geoserver.global.WCS">
+	  <constructor-arg ref="geoServer2"/>
 	</bean>
 	
 	<!-- the wcs service config -->
