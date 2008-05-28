@@ -453,7 +453,12 @@ public class TransactionTest extends WFSTestSupport {
         
         Element roadSegment = getFirstElementByTagName(dom, "cite:RoadSegments" );
         Element posList = getFirstElementByTagName( roadSegment, "gml:posList" );
-        assertEquals( "4.2582 52.0643 4.2584 52.0648", posList.getFirstChild().getNodeValue() );
+        String[] pos = posList.getFirstChild().getTextContent().split( " " );
+        assertEquals( 4, pos.length );
+        assertEquals( 4.2582, Double.parseDouble( pos[0] ), 1E-4 );
+        assertEquals( 52.0643, Double.parseDouble( pos[1] ), 1E-4 );
+        assertEquals( 4.2584, Double.parseDouble( pos[2] ), 1E-4 );
+        assertEquals( 52.0648, Double.parseDouble( pos[3] ), 1E-4 );
     }
     
     public void testUpdateForcedSRS() throws Exception {
@@ -507,7 +512,12 @@ public class TransactionTest extends WFSTestSupport {
         
         Element roadSegment = getFirstElementByTagName(dom, "cite:RoadSegments" );
         Element posList = getFirstElementByTagName( roadSegment, "gml:posList" );
-        assertEquals( "4.2582 52.0643 4.2584 52.0648", posList.getFirstChild().getNodeValue() );
+        String[] pos = posList.getFirstChild().getTextContent().split( " " );
+        assertEquals( 4, pos.length );
+        assertEquals( 4.2582, Double.parseDouble( pos[0] ), 1E-4 );
+        assertEquals( 52.0643, Double.parseDouble( pos[1] ), 1E-4 );
+        assertEquals( 4.2584, Double.parseDouble( pos[2] ), 1E-4 );
+        assertEquals( 52.0648, Double.parseDouble( pos[3] ), 1E-4 );
     }
     
     public void testUpdateWithInvalidProperty() throws Exception {
