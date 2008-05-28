@@ -5,13 +5,14 @@
 package org.vfny.geoserver.sld.servlets;
 
 import org.geoserver.ows.util.XmlCharsetDetector;
+import org.geoserver.platform.ServiceException;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.StyledLayerDescriptor;
-import org.vfny.geoserver.ExceptionHandler;
+
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.ServiceException;
+
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
@@ -80,16 +81,6 @@ public class PutStyles extends AbstractService {
     }
 
     protected XmlRequestReader getXmlRequestReader() {
-        /**
-        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-        *       abstract method
-        */
-        throw new java.lang.UnsupportedOperationException(
-            "Method getXmlRequestReader() not yet implemented.");
-    }
-
-    protected ExceptionHandler getExceptionHandler() {
-        // TODO Auto-generated method stub
         /**
         * @todo Implement this org.vfny.geoserver.servlets.AbstractService
         *       abstract method
