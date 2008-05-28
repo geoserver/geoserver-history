@@ -13,9 +13,13 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
+import sun.reflect.annotation.ExceptionProxy;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -80,22 +84,52 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      *
      * @return A collection of the extensions, or an empty collection.
      */
-    public static final List extensions(Class extensionPoint, ApplicationContext context) {
+    public static final <T> List<T> extensions(Class<T> extensionPoint, ApplicationContext context) {
         String[] names = extensionsCache.get(extensionPoint);
         if(names == null) {
             checkContext(context);
             if ( context != null ) {
-                names = context.getBeanNamesForType(extensionPoint);
-                extensionsCache.put(extensionPoint, names);
+                try {
+                    names = context.getBeanNamesForType(extensionPoint);
+                    extensionsCache.put(extensionPoint, names);    
+                }
+                catch( Exception e ) {
+                    //JD: this can happen during testing... if the application 
+                    // context has been closed and a non-one time setup test is
+                    // run that triggers an extension lookup
+                    LOGGER.log( Level.SEVERE, "bean lookup error", e );
+                    return Collections.EMPTY_LIST;
+                }
             }
             else {
                 return Collections.EMPTY_LIST;
             }
         }
+        
+        //look up all the beans
         List result = new ArrayList(names.length);
         for (int i = 0; i < names.length; i++) {
             result.add(context.getBean(names[i]));
         }
+        
+        //sort the results based on ExtensionPriority
+        Collections.sort( result, new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+                int p1 = ExtensionPriority.LOWEST;
+                if ( o1 instanceof ExtensionPriority ) {
+                    p1 = ((ExtensionPriority)o1).getPriority();
+                }
+                
+                int p2 = ExtensionPriority.LOWEST;
+                if ( o2 instanceof ExtensionPriority ) {
+                    p2 = ((ExtensionPriority)o2).getPriority();
+                }
+                
+                return new Integer(p1).compareTo(p2);
+            }
+        });
+        
         return result;
     }
 
@@ -109,7 +143,7 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      *
      * @return A collection of the extensions, or an empty collection.
      */
-    public static final List extensions(Class extensionPoint) {
+    public static final <T> List<T> extensions(Class<T> extensionPoint) {
         return extensions(extensionPoint, context);
     }
     
@@ -123,6 +157,31 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
         return context != null ? context.getBean(name) : null;
     }
 
+    /**
+     * Loads a single bean by its type.
+     * <p>
+     * This method returns null if there is no such bean. An exception is thrown
+     * if multiple beans of the specified type exist.
+     * </p>
+     *
+     * @param type THe type of the bean to lookup.
+     * 
+     * @throws IllegalArgumentException If there are multiple beans of the specified
+     * type in the context. 
+     */
+    public static final <T> T bean(Class<T> type) throws IllegalArgumentException {
+        List<T> beans = extensions(type);
+        if ( beans.isEmpty() ) {
+            return null;
+        }
+        
+        if ( beans.size() > 1 ) {
+            throw new IllegalArgumentException( "Multiple beans of type " + type.getName() );
+        }
+        
+        return beans.get( 0 );
+    }
+    
     public void onApplicationEvent(ApplicationEvent event) {
         if(event instanceof ContextRefreshedEvent)
             extensionsCache.clear();
