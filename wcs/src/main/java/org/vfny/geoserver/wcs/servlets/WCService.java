@@ -4,10 +4,9 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
-import org.vfny.geoserver.ExceptionHandler;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.wcs.WcsExceptionHandler;
+
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -47,15 +46,6 @@ abstract public class WCService extends AbstractService {
      */
     public void setWCS(WCS wcs) {
         setServiceRef(wcs);
-    }
-
-    /**
-     * a Web Coverage ServiceConfig exception handler
-     *
-     * @return an instance of WcsExceptionHandler
-     */
-    protected ExceptionHandler getExceptionHandler() {
-        return WcsExceptionHandler.getInstance();
     }
 
     protected boolean isServiceEnabled(HttpServletRequest req) {
