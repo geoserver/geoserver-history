@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
+import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
 import org.geotools.data.DataStore;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -344,41 +345,50 @@ public class TypesEditorForm extends ActionForm {
             if(dataStore != null) dataStore.dispose();
         }
 
-        if (((type.getSchemaBase() == null) || "--".equals(type.getSchemaBase()))
-                || (type.getSchemaAttributes() == null)) {
+        if ( featureType == null ) {
             //We are using the generated attributes
             this.schemaBase = "--";
             this.schemaName = typeName + "_Type";
             this.attributes = new LinkedList();
-
-            // Generate ReadOnly list of Attributes
-            //
-            List generated = DataTransferObjectFactory.generateAttributes(featureType);
-            this.attributes = attributesDisplayList(generated);
             addList = Collections.EMPTY_LIST;
-        } else {
-            this.schemaBase = type.getSchemaBase();
-            this.schemaName = type.getSchemaName();
-            this.attributes = new LinkedList();
-
-            //
-            // Need to add read only AttributeDisplay for each required attribute
-            // defined by schemaBase
-            //
-            List schemaAttributes = DataTransferObjectFactory.generateRequiredAttributes(schemaBase);
-            attributes.addAll(attributesDisplayList(schemaAttributes));
-            attributes.addAll(attributesFormList(type.getSchemaAttributes(), featureType));
-            addList = new ArrayList(featureType.getAttributeCount());
-
-            for (int i = 0; i < featureType.getAttributeCount(); i++) {
-                String attributeName = featureType.getAttribute(i).getLocalName();
-
-                if (lookUpAttribute(attributeName) == null) {
-                    addList.add(attributeName);
+        }
+        else {
+            if (((type.getSchemaBase() == null) || "--".equals(type.getSchemaBase()))
+                    || (type.getSchemaAttributes() == null)) {
+                //We are using the generated attributes
+                this.schemaBase = "--";
+                this.schemaName = typeName + "_Type";
+                this.attributes = new LinkedList();
+    
+                // Generate ReadOnly list of Attributes
+                //
+                List generated = DataTransferObjectFactory.generateAttributes(featureType);
+                this.attributes = attributesDisplayList(generated);
+                addList = Collections.EMPTY_LIST;
+            } else {
+                this.schemaBase = type.getSchemaBase();
+                this.schemaName = type.getSchemaName();
+                this.attributes = new LinkedList();
+    
+                //
+                // Need to add read only AttributeDisplay for each required attribute
+                // defined by schemaBase
+                //
+                List schemaAttributes = DataTransferObjectFactory.generateRequiredAttributes(schemaBase);
+                attributes.addAll(attributesDisplayList(schemaAttributes));
+                attributes.addAll(attributesFormList(type.getSchemaAttributes(), featureType));
+                addList = new ArrayList(featureType.getAttributeCount());
+    
+                for (int i = 0; i < featureType.getAttributeCount(); i++) {
+                    String attributeName = featureType.getAttribute(i).getLocalName();
+    
+                    if (lookUpAttribute(attributeName) == null) {
+                        addList.add(attributeName);
+                    }
                 }
             }
         }
-
+        
         StringBuffer buf = new StringBuffer();
 
         for (Iterator i = type.getKeywords().iterator(); i.hasNext();) {
@@ -393,19 +403,20 @@ public class TypesEditorForm extends ActionForm {
         this.keywords = buf.toString();
 
         metadataLinks = new MetaDataLink[2];
-        metadataLinks[0] = new MetaDataLink();
+        metadataLinks[0] = new MetaDataLink(new MetadataLinkInfoImpl());
         metadataLinks[0].setType("text/plain");
-        metadataLinks[1] = new MetaDataLink();
+        metadataLinks[1] = new MetaDataLink(new MetadataLinkInfoImpl());
         metadataLinks[1].setType("text/plain");
 
         if ((type.getMetadataLinks() != null) && (type.getMetadataLinks().size() > 0)) {
             List links = new ArrayList(type.getMetadataLinks());
             MetaDataLink link = (MetaDataLink) links.get(0);
-            metadataLinks[0] = new MetaDataLink(link);
+            
+            metadataLinks[0] = new MetaDataLink(new MetadataLinkInfoImpl()).load( link ); 
 
             if (links.size() > 1) {
                 link = (MetaDataLink) links.get(1);
-                metadataLinks[1] = new MetaDataLink(link);
+                metadataLinks[1] = new MetaDataLink(new MetadataLinkInfoImpl()).load( link );
             }
         }
 
