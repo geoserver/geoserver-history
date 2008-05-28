@@ -20,7 +20,7 @@ public class SrsNameTest extends GeoServerTestSupport {
         String q = "wfs?request=getfeature&service=wfs&version=1.0.0"
                 + "&typename=cgf:Points";
         Document d = getAsDOM(q);
-
+        
         assertEquals("wfs:FeatureCollection", d.getDocumentElement()
                 .getNodeName());
 
@@ -28,7 +28,7 @@ public class SrsNameTest extends GeoServerTestSupport {
         assertFalse(boxes.getLength() == 0);
         for (int i = 0; i < boxes.getLength(); i++) {
             Element box = (Element) boxes.item(i);
-            assertEquals("http://www.opengis.net/gml/srs/epsg.xml#4326", box
+            assertEquals("http://www.opengis.net/gml/srs/epsg.xml#32615", box
                     .getAttribute("srsName"));
         }
 
@@ -36,7 +36,7 @@ public class SrsNameTest extends GeoServerTestSupport {
         assertFalse(points.getLength() == 0);
         for (int i = 0; i < points.getLength(); i++) {
             Element point = (Element) points.item(i);
-            assertEquals("http://www.opengis.net/gml/srs/epsg.xml#4326", point
+            assertEquals("http://www.opengis.net/gml/srs/epsg.xml#32615", point
                     .getAttribute("srsName"));
         }
 
