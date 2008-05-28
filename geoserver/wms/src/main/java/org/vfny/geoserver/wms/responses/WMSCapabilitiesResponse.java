@@ -14,10 +14,10 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.platform.ServiceException;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;

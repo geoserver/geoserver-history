@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses.legend.png;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.image.ImageWorker;
 import org.geotools.resources.image.ImageUtilities;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;

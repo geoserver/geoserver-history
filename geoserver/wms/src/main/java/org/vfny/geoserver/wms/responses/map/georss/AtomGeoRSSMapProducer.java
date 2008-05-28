@@ -11,7 +11,7 @@ import java.util.HashSet;
 
 import javax.xml.transform.TransformerException;
 
-import org.vfny.geoserver.ServiceException;
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;

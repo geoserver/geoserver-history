@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wms;
 
-import org.vfny.geoserver.ServiceException;
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import java.io.IOException;
 import java.io.OutputStream;

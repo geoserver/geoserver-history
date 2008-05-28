@@ -13,8 +13,8 @@ import java.util.zip.ZipOutputStream;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.map.MapLayer;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;

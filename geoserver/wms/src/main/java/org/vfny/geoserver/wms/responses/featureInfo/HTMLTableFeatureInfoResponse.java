@@ -12,7 +12,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
+import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.platform.GeoServerExtensions;
+
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.FeatureCollection;
@@ -81,7 +85,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * @throws java.io.IOException For problems writing the output.
      */
     public void writeTo(OutputStream out)
-        throws org.vfny.geoserver.ServiceException, java.io.IOException {
+        throws ServiceException, java.io.IOException {
         // setup the writer
         final Charset charSet = getRequest().getGeoServer().getCharSet();
         final OutputStreamWriter osw = new OutputStreamWriter(out, charSet);

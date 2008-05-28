@@ -9,8 +9,8 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.image.ImageWorker;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.ImageUtils;
 
