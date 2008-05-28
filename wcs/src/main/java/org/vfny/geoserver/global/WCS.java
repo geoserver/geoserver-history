@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.wcs.WCSInfo;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WCSDTO;
 
@@ -29,6 +30,8 @@ import org.vfny.geoserver.global.dto.WCSDTO;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
  * @version $Id$
+ * 
+ * @deprecated use {@link WCSInfo}.
  */
 public final class WCS extends Service {
     public static final String WEB_CONTAINER_KEY = "WCS";
@@ -39,55 +42,67 @@ public final class WCS extends Service {
             "application/vnd.ogc.se_blank"
         };
 
-    /**
-     *
-     * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
-     */
-    private boolean gmlPrefixing;
+    ///**
+    // *
+    // * @uml.property name="gmlPrefixing" multiplicity="(0 1)"
+    // */
+    //private boolean gmlPrefixing;
 
-    /**
-     * WCS constructor.
-     *
-     * <p>
-     * Stores the data specified in the WCSDTO object in this WCS Object for
-     * GeoServer to use.
-     * </p>
-     *
-     * @param config
-     *            The data intended for GeoServer to use.
-     */
-    public WCS(WCSDTO config) {
-        super(config.getService());
-        setId("wcs");
-        gmlPrefixing = config.isGmlPrefixing();
-    }
+    ///**
+    // * WCS constructor.
+    // *
+    // * <p>
+    // * Stores the data specified in the WCSDTO object in this WCS Object for
+    // * GeoServer to use.
+    // * </p>
+    // *
+    // * @param config
+    // *            The data intended for GeoServer to use.
+    // */
+    //public WCS(WCSDTO config) {
+    //    super(config.getService());
+    //    setId("wcs");
+    //    gmlPrefixing = config.isGmlPrefixing();
+    //}
 
-    /**
-     * Creates the WCS service by getting the WCSDTO object from the
-     * config and calling {@link #WCS(WCSDTO)}.
-     *
-     * @throws ConfigurationException
-     */
-    public WCS(Config config, Data data, GeoServer geoServer)
-        throws ConfigurationException {
-        this(config.getWcs());
-        setData(data);
-        setGeoServer(geoServer);
-    }
+    ///**
+    // * Creates the WCS service by getting the WCSDTO object from the
+    // * config and calling {@link #WCS(WCSDTO)}.
+    // *
+    // * @throws ConfigurationException
+    // */
+    //public WCS(Config config, Data data, GeoServer geoServer)
+    //    throws ConfigurationException {
+    //    this(config.getWcs());
+    //    setData(data);
+    //    setGeoServer(geoServer);
+    //}
 
-    /**
-     * WCS constructor.
-     *
-     * <p>
-     * Package constructor intended for default use by GeoServer
-     * </p>
-     *
-     * @see GeoServer#GeoServer()
-     */
-    WCS() {
-        super(new ServiceDTO());
-        setId("wcs");
+    WCSInfo wcs;
+    
+    public WCS( org.geoserver.config.GeoServer gs ) {
+        super( gs.getService(WCSInfo.class), gs );
+        init();
     }
+    
+    public void init() {
+        wcs = gs.getService(WCSInfo.class);
+        service = wcs;
+    }
+    
+    ///**
+    // * WCS constructor.
+    // *
+    // * <p>
+    // * Package constructor intended for default use by GeoServer
+    // * </p>
+    // *
+    // * @see GeoServer#GeoServer()
+    // */
+    //WCS() {
+    //    super(new ServiceDTO());
+    //    setId("wcs");
+    //}
 
     /**
      * load purpose.
@@ -100,7 +115,10 @@ public final class WCS extends Service {
      */
     public void load(WCSDTO config) {
         super.load(config.getService());
-        gmlPrefixing = config.isGmlPrefixing();
+        setGmlPrefixing(config.isGmlPrefixing());
+        //gmlPrefixing = config.isGmlPrefixing();
+        
+        gs.save( wcs );
     }
 
     /**
@@ -118,10 +136,11 @@ public final class WCS extends Service {
      * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
      * @see WCSDTO
      */
-    public Object toDTO() {
+    public WCSDTO toDTO() {
         WCSDTO dto = new WCSDTO();
         dto.setService((ServiceDTO) super.toDTO());
-        dto.setGmlPrefixing(gmlPrefixing);
+        dto.setGmlPrefixing(isGmlPrefixing());
+        //dto.setGmlPrefixing(gmlPrefixing);
 
         return dto;
     }
@@ -136,7 +155,8 @@ public final class WCS extends Service {
      * @return
      */
     public boolean isGmlPrefixing() {
-        return gmlPrefixing;
+        return wcs.isGMLPrefixing();
+        //return gmlPrefixing;
     }
 
     /**
@@ -151,7 +171,8 @@ public final class WCS extends Service {
      * @uml.property name="gmlPrefixing"
      */
     public void setGmlPrefixing(boolean b) {
-        gmlPrefixing = b;
+        wcs.setGMLPrefixing( b );
+        //gmlPrefixing = b;
     }
 
     /**
