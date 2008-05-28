@@ -88,39 +88,36 @@ public class WatermarkPainter {
             graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
             double tx = tile.getMinX(); 
             double ty = tile.getMinY();
-            switch(watermarkPosition) {
-                case WMS.WATERMARK_UL:
-                    break;
-                case WMS.WATERMARK_UC:
-                    tx += (tile.getWidth() - logo.getWidth()) / 2; 
-                    break;
-                case WMS.WATERMARK_UR:
-                    tx += tile.getWidth() - logo.getWidth();
-                    break;
-                case WMS.WATERMARK_CL:
-                    ty += (tile.getHeight() - logo.getHeight()) / 2;
-                    break;
-                case WMS.WATERMARK_CC:
-                    ty += (tile.getHeight() - logo.getHeight()) / 2;
-                    tx += (tile.getWidth() - logo.getWidth()) / 2; 
-                    break;
-                case WMS.WATERMARK_CR:
-                    ty += (tile.getHeight() - logo.getHeight()) / 2;
-                    tx += tile.getWidth() - logo.getWidth();
-                    break;
-                case WMS.WATERMARK_LL:
-                    ty += tile.getHeight() - logo.getHeight();
-                    break;
-                case WMS.WATERMARK_LC:
-                    ty += tile.getHeight() - logo.getHeight();
-                    tx += (tile.getWidth() - logo.getWidth()) / 2; 
-                    break;
-                case WMS.WATERMARK_LR:
-                    ty += tile.getHeight() - logo.getHeight();
-                    tx += tile.getWidth() - logo.getWidth();
-                    break;
-                
+            
+            if ( watermarkPosition == WMS.WATERMARK_UC) { 
+                tx += (tile.getWidth() - logo.getWidth()) / 2; 
             }
+            else if ( watermarkPosition == WMS.WATERMARK_UR ) {
+                tx += tile.getWidth() - logo.getWidth();
+            }
+            else if ( watermarkPosition == WMS.WATERMARK_CL ) {
+                ty += (tile.getHeight() - logo.getHeight()) / 2;
+            }
+            else if ( watermarkPosition == WMS.WATERMARK_CC ) {
+                ty += (tile.getHeight() - logo.getHeight()) / 2;
+                tx += (tile.getWidth() - logo.getWidth()) / 2;
+            }
+            else if ( watermarkPosition == WMS.WATERMARK_CR ) {
+                ty += (tile.getHeight() - logo.getHeight()) / 2;
+                tx += tile.getWidth() - logo.getWidth();
+            }
+            else if ( watermarkPosition == WMS.WATERMARK_LL ) {
+                ty += tile.getHeight() - logo.getHeight();
+            }
+            else if ( watermarkPosition == WMS.WATERMARK_LC ) {
+                ty += tile.getHeight() - logo.getHeight();
+                tx += (tile.getWidth() - logo.getWidth()) / 2;
+            }
+            else if ( watermarkPosition == WMS.WATERMARK_LR ) {
+                ty += tile.getHeight() - logo.getHeight();
+                tx += tile.getWidth() - logo.getWidth();
+            }
+          
             graphics.drawRenderedImage(logo, AffineTransform.getTranslateInstance(tx, ty));
         } finally {
             graphics.setComposite(oldComposite);
