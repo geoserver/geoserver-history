@@ -34,6 +34,8 @@ import javax.servlet.ServletContext;
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.ows.xml.v1_0.UpdateSequenceTypeBinding;
@@ -129,6 +131,8 @@ public class XMLConfigReader {
     /** the servlet context * */
     ServletContext context;
 
+    Catalog catalog;
+    
     /**
      * XMLConfigReader constructor.
      * 
@@ -145,7 +149,7 @@ public class XMLConfigReader {
         data = new DataDTO();
         root = new File(".");
     }
-
+    
     /**
      * <p>
      * This method loads the config files from the specified directory into a
@@ -168,9 +172,10 @@ public class XMLConfigReader {
      * @throws ConfigurationException
      *             When an error occurs.
      */
-    public XMLConfigReader(File root, ServletContext context) throws ConfigurationException {
+    public XMLConfigReader(File root, ServletContext context, Catalog catalog) throws ConfigurationException {
         this.root = root;
         this.context = context;
+        this.catalog = catalog;
         wms = new WMSDTO();
         wfs = new WFSDTO();
         wcs = new WCSDTO();
@@ -303,7 +308,7 @@ public class XMLConfigReader {
         keyWords.add("GEOSERVER");
         service.setKeywords(keyWords);
 
-        MetaDataLink mdl = new MetaDataLink();
+        MetaDataLink mdl = new MetaDataLink(catalog.getFactory().createMetadataLink());
         mdl.setAbout("http://geoserver.org");
         mdl.setType("undef");
         mdl.setMetadataType("other");
@@ -1020,7 +1025,7 @@ public class XMLConfigReader {
             s.setKeywords(ReaderUtils.getKeyWords(ReaderUtils.getChildElement(serviceRoot,
                     "keywords")));
             s.setMetadataLink(getMetaDataLink(ReaderUtils.getChildElement(serviceRoot,
-                    "metadataLink")));
+                    "metadataLink"),catalog));
             s.setFees(ReaderUtils.getChildText(serviceRoot, "fees"));
             s.setAccessConstraints(ReaderUtils.getChildText(serviceRoot, "accessConstraints"));
             s.setMaintainer(ReaderUtils.getChildText(serviceRoot, "maintainer"));
@@ -1637,7 +1642,7 @@ public class XMLConfigReader {
                 List l = new LinkedList();
 
                 for (int i = 0; i < childs.length; i++) {
-                    l.add(getMetaDataLink(childs[i]));
+                    l.add(getMetaDataLink(childs[i],catalog));
                 }
 
                 ft.setMetadataLinks(l);
@@ -2279,7 +2284,7 @@ public class XMLConfigReader {
             dimensions = new CoverageDimension[dimElems.getLength()];
 
             for (int dim = 0; dim < dimElems.getLength(); dim++) {
-                dimensions[dim] = new CoverageDimension();
+                dimensions[dim] = new CoverageDimension(catalog.getFactory().createCoverageDimension());
                 dimensions[dim].setName(ReaderUtils.getElementText((Element) ((Element) dimElems
                         .item(dim)).getElementsByTagName("name").item(0)));
                 dimensions[dim].setDescription(ReaderUtils
@@ -2320,7 +2325,7 @@ public class XMLConfigReader {
     }
 
     protected MetaDataLink loadMetaDataLink(Element metalinkRoot) {
-        MetaDataLink ml = new MetaDataLink();
+        MetaDataLink ml = new MetaDataLink(catalog.getFactory().createMetadataLink());
 
         try {
             ml.setAbout(ReaderUtils.getAttribute(metalinkRoot, "about", false));
@@ -2712,8 +2717,8 @@ public class XMLConfigReader {
      * @return The MetaDataLink that was found.
      * @throws Exception
      */
-    public static MetaDataLink getMetaDataLink(Element metadataElem) throws Exception {
-        MetaDataLink mdl = new MetaDataLink();
+    public static MetaDataLink getMetaDataLink(Element metadataElem, Catalog catalog) throws Exception {
+        MetaDataLink mdl = new MetaDataLink(catalog.getFactory().createMetadataLink());
         String tmp;
 
         if (metadataElem != null) {

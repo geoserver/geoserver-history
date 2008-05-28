@@ -29,6 +29,10 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
+import org.geoserver.config.ContactInfo;
+import org.geoserver.config.GeoServerInfo;
+
+import org.geoserver.jai.JAIInfo;
 import org.geotools.data.DataStoreFactorySpi;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -37,13 +41,14 @@ import org.vfny.geoserver.util.Requests;
 
 import com.sun.media.jai.util.SunTileCache;
 
-
 /**
  * Complete configuration set for the whole server
  *
  * @author Gabriel Roldan
  * @author dzwiers
  * @version $Id$
+ * 
+ * @deprecated use {@link GeoServerInfo}.
  */
 public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     /**
@@ -68,6 +73,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * </p>
      */
     public static final String WEB_CONTAINER_KEY = "GeoServer";
+    /*
     private String title;
     private int maxFeatures = Integer.MAX_VALUE;
     private boolean verbose = true;
@@ -101,8 +107,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     private Boolean imageIOCache;
     private Boolean JPEGnativeAcc;
     private Boolean PNGnativeAcc;
-
-    /** Should we throw the stack traces back in responses? */
+    
+    
     private boolean verboseExceptions = false;
 
     private String log4jConfigFile;
@@ -112,60 +118,84 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     private List listeners;
     private Config config;
     
-    /** Used by tests to use programmatic configuration of the logging level */
+    
     private static boolean suppressLoggingConfiguration;
     
     private int updateSequence;
+    */
+    public static boolean suppressLoggingConfiguration;
     
     /**
      * Default constructor only to facilitate unit testing mock ups; real
      * uses shall create an instance through {@link #GeoServer(Config)}.
      */
-    public GeoServer() {
-        //do nothing
-    }
+//    public GeoServer() {
+//        //do nothing
+//    }
 
+    org.geoserver.config.GeoServer gs;
+    GeoServerInfo info;
+    
     /**
      * Creates a GeoServer instance and loads its configuration.
      *
      * @throws ConfigurationException
      */
-    public GeoServer(Config config) throws ConfigurationException {
-        LOGGER.fine("Creating GeoServer");
-        load(config.getGeoServer());
-        this.config = config;
-        
-        listeners = new ArrayList();    
-    }
+//    public GeoServer(Config config) throws ConfigurationException {
+//        LOGGER.fine("Creating GeoServer");
+//        load(config.getGeoServer());
+//        this.config = config;
+//        
+//        listeners = new ArrayList();    
+//    }
 
+    /**
+     * do not use this
+     */
+    protected GeoServer() {
+        
+    }
+    
+    public GeoServer( org.geoserver.config.GeoServer gs ) {
+        this.gs = gs;
+        init();
+    }
+    
+    public void init() {
+        this.info = gs.getGlobal();
+    }
+    
     /**
      * Adds a listener to be notified of state change.
      */
     public void addListener( Listener listener ) {
-        listeners.add( listener );
+        //TODO: forward listener
+        //listeners.add( listener );
     }
 
     /**
      * Removes a listener.
      */
     public void removeListener( Listener listener ) {
-        listeners.remove( listener );
+        //TODO: forward listener.
+        //listeners.remove( listener );
     }
     
     /**
      * Notifies all listeners of a change.
      */
     public void fireChange() {
-        for ( Iterator l = listeners.iterator(); l.hasNext(); ) {
-            Listener listener = (Listener) l.next();
-            try {
-                listener.changed();
-            }
-            catch( Throwable t ) {
-                LOGGER.warning( "listener threw exception, turn logging to FINE to view stack trace" );
-                LOGGER.log( Level.FINE, t.getLocalizedMessage(), t );
-            }
-        }
+        //TODO: forward event
+        //for ( Iterator l = listeners.iterator(); l.hasNext(); ) {
+        //    Listener listener = (Listener) l.next();
+        //    try {
+        //        listener.changed();
+        //    }
+        //    catch( Throwable t ) {
+        //        LOGGER.warning( "listener threw exception, turn logging to FINE to view stack trace" );
+        //        LOGGER.log( Level.FINE, t.getLocalizedMessage(), t );
+        //    }
+        //}
     }
     /**
      * getAddress purpose.
@@ -177,7 +207,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Address.
      */
     public String getAddress() {
-        return notNull(address);
+        return info.getContactInfo().getAddress();
+        //return notNull(address);
     }
 
     /**
@@ -190,7 +221,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact City.
      */
     public String getAddressCity() {
-        return notNull(addressCity);
+        return info.getContactInfo().getAddressCity();
+        //return notNull(addressCity);
     }
 
     /**
@@ -203,7 +235,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Country.
      */
     public String getAddressCountry() {
-        return notNull(addressCountry);
+        return info.getContactInfo().getAddressCountry();
+        //return notNull(addressCountry);
     }
 
     /**
@@ -216,7 +249,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact PostalCode.
      */
     public String getAddressPostalCode() {
-        return notNull(addressPostalCode);
+        return info.getContactInfo().getAddressPostalCode();
+        //return notNull(addressPostalCode);
     }
 
     /**
@@ -229,7 +263,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact State.
      */
     public String getAddressState() {
-        return notNull(addressState);
+        return info.getContactInfo().getAddressState();
+        //return notNull(addressState);
     }
 
     /**
@@ -242,7 +277,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Address Type.
      */
     public String getAddressType() {
-        return notNull(addressType);
+        return info.getContactInfo().getAddressType();
+        //return notNull(addressType);
     }
 
     /**
@@ -256,11 +292,13 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return Charset the default charset for this server instance.
      */
     public Charset getCharSet() {
-        if (charSet != null) {
-            return charSet;
-        }
-
-        return Charset.forName("UTF-8");
+        return Charset.forName(info.getCharset());
+        
+        //if (charSet != null) {
+        //    return charSet;
+        //}
+        //
+        //return Charset.forName("UTF-8");
     }
 
     /**
@@ -273,7 +311,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Email.
      */
     public String getContactEmail() {
-        return notNull(contactEmail);
+        return info.getContactInfo().getContactEmail();
+        //return notNull(contactEmail);
     }
 
     /**
@@ -286,7 +325,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Facsimile.
      */
     public String getContactFacsimile() {
-        return notNull(contactFacsimile);
+        return info.getContactInfo().getContactFacsimile();
+        //return notNull(contactFacsimile);
     }
 
     /**
@@ -299,7 +339,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Organization.
      */
     public String getContactOrganization() {
-        return notNull(contactOrganization);
+        return info.getContactInfo().getContactOrganization();
+        //return notNull(contactOrganization);
     }
 
     /**
@@ -312,7 +353,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Person.
      */
     public String getContactPerson() {
-        return notNull(contactPerson);
+        return info.getContactInfo().getContactPerson();
+        //return notNull(contactPerson);
     }
 
     /**
@@ -325,7 +367,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Position.
      */
     public String getContactPosition() {
-        return notNull(contactPosition);
+        return info.getContactInfo().getContactPosition();
+        //return notNull(contactPosition);
     }
 
     /**
@@ -338,7 +381,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Phone.
      */
     public String getContactVoice() {
-        return notNull(contactVoice);
+        return info.getContactInfo().getContactVoice();
+        //return notNull(contactVoice);
     }
 
     /**
@@ -351,7 +395,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the online Resource.
      */
     public String getOnlineResource() {
-        return notNull(onlineResource);
+        return info.getOnlineResource();
+        //return notNull(onlineResource);
     }
 
     /**
@@ -364,7 +409,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     * @return String the Logging Level.
     */
     public String getLog4jConfigFile() {
-        return log4jConfigFile;
+        return info.getLoggingLevel();
+        //return log4jConfigFile;
     }
 
     /**
@@ -377,7 +423,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the max number of features supported.
      */
     public int getMaxFeatures() {
-        return maxFeatures;
+        return info.getMaxFeatures();
+        //return maxFeatures;
     }
 
     /**
@@ -403,7 +450,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return int the default number of decimals allowed in the data.
      */
     public int getNumDecimals() {
-        return numDecimals;
+        return info.getNumDecimals();
+        //return numDecimals;
     }
 
     /**
@@ -431,7 +479,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      *       and figuring out how to copy over the ogc schemas.
      */
     public String getSchemaBaseUrl() {
-        return schemaBaseUrl;
+        return info.getSchemaBaseUrl();
+        //return schemaBaseUrl;
     }
 
     /**
@@ -440,21 +489,24 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return
      */
     public String getProxyBaseUrl() {
-        return proxyBaseUrl;
+        return info.getProxyBaseUrl();
+        //return proxyBaseUrl;
     }
 
     /**
 	 * @return the updateSequence
 	 */
 	public int getUpdateSequence() {
-		return updateSequence;
+	    return info.getUpdateSequence();
+	    //return updateSequence;
 	}
 
 	/**
 	 * @param updateSequence the updateSequence to set
 	 */
 	public void setUpdateSequence(int updateSequence) {
-		this.updateSequence = updateSequence;
+	    info.setUpdateSequence(updateSequence);
+	    //this.updateSequence = updateSequence;
 	}
 
 	/**
@@ -463,7 +515,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return true when verbose
      */
     public boolean isVerbose() {
-        return verbose;
+        return info.isVerbose();
+        //return verbose;
     }
 
     /**
@@ -476,55 +529,107 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      */
     public void load(GeoServerDTO dto) throws ConfigurationException {
         if (dto != null) {
-            address = dto.getContact().getAddress();
-            addressCity = dto.getContact().getAddressCity();
-            addressCountry = dto.getContact().getAddressCountry();
-            addressPostalCode = dto.getContact().getAddressPostalCode();
-            addressState = dto.getContact().getAddressState();
-            addressType = dto.getContact().getAddressType();
-            charSet = dto.getCharSet();
-            contactEmail = dto.getContact().getContactEmail();
-            contactFacsimile = dto.getContact().getContactFacsimile();
-            contactOrganization = dto.getContact().getContactOrganization();
-            contactPerson = dto.getContact().getContactPerson();
-            contactPosition = dto.getContact().getContactPosition();
-            contactVoice = dto.getContact().getContactVoice();
+            ContactInfo contact = gs.getFactory().createContact();
+            contact.setAddress( dto.getContact().getAddress() );
+            contact.setAddressCity( dto.getContact().getAddressCity() );
+            contact.setAddressCountry( dto.getContact().getAddressCountry() );
+            contact.setAddressPostalCode( dto.getContact().getAddressPostalCode() );
+            contact.setAddressState( dto.getContact().getAddressState() );
+            contact.setAddressType( dto.getContact().getAddressType() );
+            contact.setContactEmail( dto.getContact().getContactEmail() );
+            contact.setContactFacsimile( dto.getContact().getContactFacsimile() );
+            contact.setContactOrganization( dto.getContact().getContactOrganization() );
+            contact.setContactPerson( dto.getContact().getContactPerson() );
+            contact.setContactPosition( dto.getContact().getContactPosition() );
+            contact.setContactVoice( dto.getContact().getContactVoice() );;
+            contact.setOnlineResource( dto.getContact().getOnlineResource() );
             
-            log4jConfigFile = dto.getLog4jConfigFile();
-            suppressStdOutLogging = dto.getSuppressStdOutLogging();
-            logLocation = dto.getLogLocation();
-            try {
-                if(!suppressLoggingConfiguration)
-                    configureGeoServerLogging(log4jConfigFile, suppressStdOutLogging, logLocation);
-            } catch (IOException ioe) {
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE,"",ioe);
-                }
-                throw new ConfigurationException("", ioe);
+            info.setContactInfo( contact );
+            
+            //address = dto.getContact().getAddress();
+            //addressCity = dto.getContact().getAddressCity();
+            //addressCountry = dto.getContact().getAddressCountry();
+            //addressPostalCode = dto.getContact().getAddressPostalCode();
+            //addressState = dto.getContact().getAddressState();
+            //addressType = dto.getContact().getAddressType();
+            //charSet = dto.getCharSet();
+            //contactEmail = dto.getContact().getContactEmail();
+            //contactFacsimile = dto.getContact().getContactFacsimile();
+            //contactOrganization = dto.getContact().getContactOrganization();
+            //contactPerson = dto.getContact().getContactPerson();
+            //contactPosition = dto.getContact().getContactPosition();
+            //contactVoice = dto.getContact().getContactVoice();
+            
+            info.setLoggingLevel( dto.getLog4jConfigFile() );
+            info.setStdOutLogging(!dto.getSuppressStdOutLogging());
+            info.setLoggingLocation( dto.getLogLocation() );
+            
+            //log4jConfigFile = dto.getLog4jConfigFile();
+            //suppressStdOutLogging = dto.getSuppressStdOutLogging();
+            //logLocation = dto.getLogLocation();
+            //try {
+            //    if(!suppressLoggingConfiguration)
+            //        configureGeoServerLogging(info);
+            //        //configureGeoServerLogging(log4jConfigFile, suppressStdOutLogging, logLocation);
+            //} catch (IOException ioe) {
+            //    if (LOGGER.isLoggable(Level.FINE)) {
+            //        LOGGER.log(Level.FINE,"",ioe);
+            //    }
+            //    throw new ConfigurationException("", ioe);
+            //}
+            
+            JAIInfo jai = new JAIInfo();
+            jai.setMemoryCapacity(dto.getJaiMemoryCapacity());
+            jai.setMemoryThreshold(dto.getJaiMemoryThreshold());
+            jai.setTileThreads( dto.getJaiTileThreads() );
+            jai.setTilePriority( dto.getJaiTilePriority() );
+            jai.setRecycling( dto.getJaiRecycling() );
+            jai.setImageIOCache( dto.getImageIOCache() );
+            jai.setPNGAcceleration( dto.getJaiPNGNative() );
+            jai.setJPEGAcceleration( dto.getJaiJPEGNative() );
+            //initJAI(jai);
+            info.getMetadata().put( JAIInfo.KEY, jai );
+            
+            //memoryCapacity = dto.getJaiMemoryCapacity();
+            //memoryThreshold = dto.getJaiMemoryThreshold();
+            //tileThreads = dto.getJaiTileThreads();
+            //tilePriority = dto.getJaiTilePriority();
+            //tileCache = dto.getTileCache();
+            //recycling = dto.getJaiRecycling();
+            //imageIOCache = dto.getImageIOCache();
+            //JPEGnativeAcc = dto.getJaiJPEGNative();
+            //PNGnativeAcc = dto.getJaiPNGNative();
+            
+            
+            //initJAI(memoryCapacity, memoryThreshold, recycling, imageIOCache);
+
+            info.setMaxFeatures( dto.getMaxFeatures() );
+            info.setNumDecimals( dto.getNumDecimals() );
+            info.setSchemaBaseUrl( dto.getSchemaBaseUrl() );
+            info.setProxyBaseUrl( dto.getProxyBaseUrl() );
+            info.setVerbose( dto.isVerbose() );
+            info.setVerboseExceptions( dto.isVerboseExceptions() );
+            info.setUpdateSequence( dto.getUpdateSequence() );
+            
+            if ( dto.getCharSet() != null ) {
+                info.setCharset( dto.getCharSet().toString() );
+            }
+            else {
+                info.setCharset( "UTF-8");
             }
             
-            memoryCapacity = dto.getJaiMemoryCapacity();
-            memoryThreshold = dto.getJaiMemoryThreshold();
-            tileThreads = dto.getJaiTileThreads();
-            tilePriority = dto.getJaiTilePriority();
-            tileCache = dto.getTileCache();
-            recycling = dto.getJaiRecycling();
-            imageIOCache = dto.getImageIOCache();
-            JPEGnativeAcc = dto.getJaiJPEGNative();
-            PNGnativeAcc = dto.getJaiPNGNative();
-
-            initJAI(memoryCapacity, memoryThreshold, recycling, imageIOCache);
-
-            maxFeatures = dto.getMaxFeatures();
-            numDecimals = dto.getNumDecimals();
-            onlineResource = dto.getContact().getOnlineResource();
-            schemaBaseUrl = dto.getSchemaBaseUrl();
-            proxyBaseUrl = dto.getProxyBaseUrl();
-            verbose = dto.isVerbose();
-            adminUserName = dto.getAdminUserName();
-            adminPassword = dto.getAdminPassword();
-            verboseExceptions = dto.isVerboseExceptions();
-            updateSequence = dto.getUpdateSequence();
+            gs.save( info );
+            
+            //maxFeatures = dto.getMaxFeatures();
+            //numDecimals = dto.getNumDecimals();
+            //onlineResource = dto.getContact().getOnlineResource();
+            //schemaBaseUrl = dto.getSchemaBaseUrl();
+            //proxyBaseUrl = dto.getProxyBaseUrl();
+            //verbose = dto.isVerbose();
+            //adminUserName = dto.getAdminUserName();
+            //adminPassword = dto.getAdminPassword();
+            //verboseExceptions = dto.isVerboseExceptions();
+            //updateSequence = dto.getUpdateSequence();
         } else {
             throw new ConfigurationException("load(GeoServerDTO) expected a non-null value");
         }
@@ -595,80 +700,89 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         return f;
     }
     
-    public static void configureGeoServerLogging(String log4jConfigFileStr, boolean suppressStdOutLogging, String logFileName) throws IOException, ConfigurationException {
-        
-        //to initialize logging we need to do a couple of things:
-        // 1)  Figure out whether the user has 'overridden' some configuration settings
-        // in the logging system (not using log4j in commons-logging.properties or perhaps
-        // has set up their own 'custom' log4j.properties file.
-        // 2)  If they *have*, then we don't worry about configuring logging
-        // 3)  If they haven't, then we configure logging to use the log4j config file
-        // specified, and remove console appenders if the suppressstdoutlogging is true.
-        LOGGER.fine("CONFIGURING GEOSERVER LOGGING -------------------------");
-        
-        if (log4jConfigFileStr == null) {
-            log4jConfigFileStr = "DEFAULT_LOGGING.properties";
-            LOGGER.warning("No log4jConfigFile defined in services.xml:  using 'DEFAULT_LOGGING.properties'");
-        }
-        
-        File log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs"+ File.separator + log4jConfigFileStr);
-        
-        if (log4jConfigFile == null) {
-            //hmm, well, we don't have a log4j config file and this could be due to the fact
-            //that this is a data-dir upgrade.  We can count on the DEFAULT_LOGGING.properties file
-            //being present on the classpath, so we'll upgrade their data_dir and then use the
-            //default DEFAULT_LOGGING.properties configuration.
-            LOGGER.warning("log4jConfigFile '" + log4jConfigFileStr + "' couldn't be found in the data dir, so GeoServer will " +
-            "install the various logging config file into the data dir, and then try to find it again.");
-            
-            //this forces the data_dir/logs directory to be present (if it wasn't already)
-            File lcdir = GeoserverDataDirectory.findCreateConfigDir("logs");
-            
-            //now we copy in the various logging config files from the base repo location on the classpath
-            final String[] lcfiles = new String[] { "DEFAULT_LOGGING.properties",
-                    "VERBOSE_LOGGING.properties",
-                    "PRODUCTION_LOGGING.properties",
-                    "GEOTOOLS_DEVELOPER_LOGGING.properties",
-                    "GEOSERVER_DEVELOPER_LOGGING.properties" };
-            
-            for (int i = 0; i < lcfiles.length; i++) {
-                File target = new File(lcdir.getAbsolutePath(), lcfiles[i]);
-                if (!target.exists()) {
-                    copyResourceToFile(lcfiles[i], target);
-                }
-            }
-            
-            //ok, the possibly-new 'logs' directory is in-place, with all the various configs there.
-            // Is the originally configured log4jconfigfile there now?
-            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator + log4jConfigFileStr);
-            if (log4jConfigFile == null) {
-                LOGGER.warning("Still couldn't find log4jConfigFile '" + log4jConfigFileStr + "'.  Using DEFAULT_LOGGING.properties instead.");
-            }
-            
-            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator + "DEFAULT_LOGGING.properties");
-        }
+    //public static void configureGeoServerLogging(String log4jConfigFileStr, boolean suppressStdOutLogging, String logFileName) throws IOException, ConfigurationException {
+//    public static void configureGeoServerLogging(GeoServerInfo info) throws IOException, ConfigurationException {
+//            
+//        String log4jConfigFileStr = info.getLoggingLevel();
+//        boolean suppressStdOutLogging = !info.isStdOutLogging();
+//        String logFileName = info.getLoggingLocation();
+//        
+//        //to initialize logging we need to do a couple of things:
+//        // 1)  Figure out whether the user has 'overridden' some configuration settings
+//        // in the logging system (not using log4j in commons-logging.properties or perhaps
+//        // has set up their own 'custom' log4j.properties file.
+//        // 2)  If they *have*, then we don't worry about configuring logging
+//        // 3)  If they haven't, then we configure logging to use the log4j config file
+//        // specified, and remove console appenders if the suppressstdoutlogging is true.
+//        LOGGER.fine("CONFIGURING GEOSERVER LOGGING -------------------------");
+//        
+//        if (log4jConfigFileStr == null) {
+//            log4jConfigFileStr = "DEFAULT_LOGGING.properties";
+//            LOGGER.warning("No log4jConfigFile defined in services.xml:  using 'DEFAULT_LOGGING.properties'");
+//        }
+//        
+//        File log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs"+ File.separator + log4jConfigFileStr);
+//        
+//        if (log4jConfigFile == null) {
+//            //hmm, well, we don't have a log4j config file and this could be due to the fact
+//            //that this is a data-dir upgrade.  We can count on the DEFAULT_LOGGING.properties file
+//            //being present on the classpath, so we'll upgrade their data_dir and then use the
+//            //default DEFAULT_LOGGING.properties configuration.
+//            LOGGER.warning("log4jConfigFile '" + log4jConfigFileStr + "' couldn't be found in the data dir, so GeoServer will " +
+//            "install the various logging config file into the data dir, and then try to find it again.");
+//            
+//            //this forces the data_dir/logs directory to be present (if it wasn't already)
+//            File lcdir = GeoserverDataDirectory.findCreateConfigDir("logs");
+//            
+//            //now we copy in the various logging config files from the base repo location on the classpath
+//            final String[] lcfiles = new String[] { "DEFAULT_LOGGING.properties",
+//                    "VERBOSE_LOGGING.properties",
+//                    "PRODUCTION_LOGGING.properties",
+//                    "GEOTOOLS_DEVELOPER_LOGGING.properties",
+//                    "GEOSERVER_DEVELOPER_LOGGING.properties" };
+//            
+//            for (int i = 0; i < lcfiles.length; i++) {
+//                File target = new File(lcdir.getAbsolutePath(), lcfiles[i]);
+//                if (!target.exists()) {
+//                    copyResourceToFile(lcfiles[i], target);
+//                }
+//            }
+//            
+//            //ok, the possibly-new 'logs' directory is in-place, with all the various configs there.
+//            // Is the originally configured log4jconfigfile there now?
+//            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator + log4jConfigFileStr);
+//            if (log4jConfigFile == null) {
+//                LOGGER.warning("Still couldn't find log4jConfigFile '" + log4jConfigFileStr + "'.  Using DEFAULT_LOGGING.properties instead.");
+//            }
+//            
+//            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator + "DEFAULT_LOGGING.properties");
+//        }
+//
+//        if (log4jConfigFile == null || !log4jConfigFile.exists()) {
+//            throw new ConfigurationException("Unable to load logging configuration '" + log4jConfigFileStr + "'.  In addition, an attempt " +
+//                    "was made to create the 'logs' directory in your data dir, and to use the DEFAULT_LOGGING configuration, but" +
+//                    "this failed as well.  Is your data dir writeable?");
+//        }
+//        
+//		// reconfiguring log4j logger levels by resetting and loading a new set of configuration properties
+//        InputStream loggingConfigStream = new FileInputStream(log4jConfigFile);
+//        if (loggingConfigStream == null) {
+//            LOGGER.warning("Couldn't open Log4J configuration file '" + log4jConfigFile.getAbsolutePath());
+//            return;
+//        } else {
+//            LOGGER.fine("GeoServer logging profile '" + log4jConfigFile.getName() + "' enabled.");
+//        }
+//
+//        configureGeoServerLogging(loggingConfigStream, suppressStdOutLogging, false, 
+//				logFileName);
+//    }
 
-        if (log4jConfigFile == null || !log4jConfigFile.exists()) {
-            throw new ConfigurationException("Unable to load logging configuration '" + log4jConfigFileStr + "'.  In addition, an attempt " +
-                    "was made to create the 'logs' directory in your data dir, and to use the DEFAULT_LOGGING configuration, but" +
-                    "this failed as well.  Is your data dir writeable?");
-        }
-        
-		// reconfiguring log4j logger levels by resetting and loading a new set of configuration properties
-        InputStream loggingConfigStream = new FileInputStream(log4jConfigFile);
-        if (loggingConfigStream == null) {
-            LOGGER.warning("Couldn't open Log4J configuration file '" + log4jConfigFile.getAbsolutePath());
-            return;
-        } else {
-            LOGGER.fine("GeoServer logging profile '" + log4jConfigFile.getName() + "' enabled.");
-        }
-
-        configureGeoServerLogging(loggingConfigStream, suppressStdOutLogging, false, 
-				logFileName);
-    }
-
-	public static void configureGeoServerLogging(InputStream loggingConfigStream, boolean suppressStdOutLogging, boolean suppressFileLogging, String logFileName) throws FileNotFoundException, IOException,
+    /**
+     * @deprecated use {@link LoggingInitializer}
+     */
+    public static void configureGeoServerLogging(InputStream loggingConfigStream, boolean suppressStdOutLogging, boolean suppressFileLogging, String logFileName) throws FileNotFoundException, IOException,
 			ConfigurationException {
+        
         Properties lprops = new Properties();
         lprops.load(loggingConfigStream);
         LogManager.resetConfiguration();
@@ -711,7 +825,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             }
         } 
         LOGGER.fine("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
-	}
+    }
 
     private static void copyResourceToFile(String resource, File target) throws ConfigurationException {
         InputStream is = null; 
@@ -743,34 +857,39 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
     
 
-    
-    public void initJAI(final double memCapacity, final double memoryThreshold,
-        final Boolean recycling, final Boolean ImageIOCache) {
-        // setting JAI wide hints
-        jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED, recycling);
-
-        // tile factory and recycler
-        final RecyclingTileFactory recyclingFactory = new RecyclingTileFactory();
-        jaiDef.setRenderingHint(JAI.KEY_TILE_FACTORY, recyclingFactory);
-        jaiDef.setRenderingHint(JAI.KEY_TILE_RECYCLER, recyclingFactory);
-
-        // Setting up Cache Capacity
-        jaiCache = (SunTileCache) jaiDef.getTileCache();
-
-        long jaiMemory = (long) (memCapacity * Runtime.getRuntime().maxMemory());
-        jaiCache.setMemoryCapacity(jaiMemory);
-
-        // Setting up Cahce Threshold
-        jaiCache.setMemoryThreshold((float) memoryThreshold);
-
-        jaiDef.getTileScheduler().setParallelism(tileThreads);
-        jaiDef.getTileScheduler().setPrefetchParallelism(tileThreads);
-        jaiDef.getTileScheduler().setPriority(tilePriority);
-        jaiDef.getTileScheduler().setPrefetchPriority(tilePriority);
-
-        // ImageIO Caching
-        ImageIO.setUseCache(ImageIOCache.booleanValue());
-    }
+    //public void initJAI( JAIInfo jai ) {
+    ////public void initJAI(final double memCapacity, final double memoryThreshold,
+    ////    final Boolean recycling, final Boolean ImageIOCache) {
+    //    
+    //    JAI jaiDef = JAI.getDefaultInstance();
+    //    jai.setJAI( jaiDef );
+    //    
+    //    // setting JAI wide hints
+    //    jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED, jai.getRecycling());
+    //
+    //    // tile factory and recycler
+    //    final RecyclingTileFactory recyclingFactory = new RecyclingTileFactory();
+    //    jaiDef.setRenderingHint(JAI.KEY_TILE_FACTORY, recyclingFactory);
+    //    jaiDef.setRenderingHint(JAI.KEY_TILE_RECYCLER, recyclingFactory);
+    //
+    //    // Setting up Cache Capacity
+    //    SunTileCache jaiCache = (SunTileCache) jaiDef.getTileCache();
+    //    jai.setTileCache( jaiCache );
+    //    
+    //    long jaiMemory = (long) (jai.getMemoryCapacity() * Runtime.getRuntime().maxMemory());
+    //    jaiCache.setMemoryCapacity(jaiMemory);
+    //
+    //    // Setting up Cahce Threshold
+    //    jaiCache.setMemoryThreshold((float) jai.getMemoryThreshold());
+    //
+    //    jaiDef.getTileScheduler().setParallelism(jai.getTileThreads());
+    //    jaiDef.getTileScheduler().setPrefetchParallelism(jai.getTileThreads());
+    //    jaiDef.getTileScheduler().setPriority(jai.getTilePriority());
+    //    jaiDef.getTileScheduler().setPrefetchPriority(jai.getTilePriority());
+    //
+    //    // ImageIO Caching
+    //    ImageIO.setUseCache(jai.getImageIOCache());
+    //}
 
     /**
      * toDTO purpose.
@@ -783,47 +902,84 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      *
      * @return DTO the generated object
      */
-    public Object toDTO() {
+    public GeoServerDTO toDTO() {
         GeoServerDTO dto = new GeoServerDTO();
-        dto.setCharSet(charSet);
-        dto.setLog4jConfigFile(log4jConfigFile);
-        dto.setMaxFeatures(maxFeatures);
-        dto.setNumDecimals(numDecimals);
-        dto.setSchemaBaseUrl(schemaBaseUrl);
-        dto.setProxyBaseUrl(proxyBaseUrl);
-        dto.setVerbose(verbose);
-        dto.setAdminUserName(adminUserName);
-        dto.setAdminPassword(adminPassword);
-        dto.setVerboseExceptions(verboseExceptions);
-        dto.setSuppressStdOutLogging(suppressStdOutLogging);
-        dto.setLogLocation(logLocation);
-        dto.setJaiMemoryCapacity(memoryCapacity);
-        dto.setJaiMemoryThreshold(memoryThreshold);
-        dto.setJaiTileThreads(tileThreads);
-        dto.setJaiTilePriority(tilePriority);
-        dto.setTileCache(tileCache);
-        dto.setJaiRecycling(recycling);
-        dto.setImageIOCache(imageIOCache);
-        dto.setJaiJPEGNative(JPEGnativeAcc);
-        dto.setJaiPNGNative(PNGnativeAcc);
-        dto.setUpdateSequence(updateSequence);
+        dto.setCharSet( getCharSet() );
+        dto.setMaxFeatures( getMaxFeatures() );
+        dto.setNumDecimals( getNumDecimals() );
+        dto.setSchemaBaseUrl( getSchemaBaseUrl() );
+        dto.setProxyBaseUrl( getProxyBaseUrl() );
+        dto.setVerbose( isVerbose() );
+        dto.setVerboseExceptions( isVerboseExceptions() );
+        dto.setLogLocation( getLogLocation() );
+        dto.setSuppressStdOutLogging( getSuppressStdOutLogging() );
+        dto.setLog4jConfigFile( getLog4jConfigFile() );
+        
+        dto.setJaiMemoryCapacity(getMemoryCapacity());
+        dto.setJaiMemoryThreshold(getMemoryThreshold());
+        dto.setJaiTileThreads(getTileThreads());
+        dto.setJaiTilePriority(getTilePriority());
+        dto.setTileCache(getTileCache());
+        dto.setJaiRecycling(getRecycling());
+        dto.setImageIOCache(getImageIOCache());
+        dto.setJaiJPEGNative(getJPEGNativeAcceleration());
+        dto.setJaiPNGNative(getPNGNativeAcceleration());
+        dto.setUpdateSequence(getUpdateSequence());
+        
+        //dto.setLog4jConfigFile(log4jConfigFile);
+        //dto.setCharSet(charSet);
+        //dto.setMaxFeatures(maxFeatures);
+        //dto.setNumDecimals(numDecimals);
+        //dto.setSchemaBaseUrl(schemaBaseUrl);
+        //dto.setProxyBaseUrl(proxyBaseUrl);
+        //dto.setVerbose(verbose);
+        //dto.setAdminUserName(adminUserName);
+        //dto.setAdminPassword(adminPassword);
+        //dto.setVerboseExceptions(verboseExceptions);
+        //dto.setSuppressStdOutLogging(suppressStdOutLogging);
+        //dto.setLogLocation(logLocation);
+        //dto.setJaiMemoryCapacity(memoryCapacity);
+        //dto.setJaiMemoryThreshold(memoryThreshold);
+        //dto.setJaiTileThreads(tileThreads);
+        //dto.setJaiTilePriority(tilePriority);
+        //dto.setTileCache(tileCache);
+        //dto.setJaiRecycling(recycling);
+        //dto.setImageIOCache(imageIOCache);
+        //dto.setJaiJPEGNative(JPEGnativeAcc);
+        //dto.setJaiPNGNative(PNGnativeAcc);
+        //dto.setUpdateSequence(updateSequence);
 
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
 
-        cdto.setAddress(address);
-        cdto.setAddressCity(addressCity);
-        cdto.setAddressCountry(addressCountry);
-        cdto.setAddressPostalCode(addressPostalCode);
-        cdto.setAddressState(addressState);
-        cdto.setAddressType(addressType);
-        cdto.setContactEmail(contactEmail);
-        cdto.setContactFacsimile(contactFacsimile);
-        cdto.setContactOrganization(contactOrganization);
-        cdto.setContactPerson(contactPerson);
-        cdto.setContactPosition(contactPosition);
-        cdto.setContactVoice(contactVoice);
-        cdto.setOnlineResource(onlineResource);
+
+        cdto.setAddress(getAddress());
+        cdto.setAddressCity(getAddressCity());
+        cdto.setAddressCountry(getAddressCountry());
+        cdto.setAddressPostalCode(getAddressPostalCode());
+        cdto.setAddressState(getAddressState());
+        cdto.setAddressType(getAddressType());
+        cdto.setContactEmail(getContactEmail());
+        cdto.setContactFacsimile(getContactFacsimile());
+        cdto.setContactOrganization(getContactOrganization());
+        cdto.setContactPerson(getContactPerson());
+        cdto.setContactPosition(getContactPosition());
+        cdto.setContactVoice(getContactVoice());
+        cdto.setOnlineResource(getOnlineResource());
+        
+        //cdto.setAddress(address);
+        //cdto.setAddressCity(addressCity);
+        //cdto.setAddressCountry(addressCountry);
+        //cdto.setAddressPostalCode(addressPostalCode);
+        //cdto.setAddressState(addressState);
+        //cdto.setAddressType(addressType);
+        //cdto.setContactEmail(contactEmail);
+        //cdto.setContactFacsimile(contactFacsimile);
+        //cdto.setContactOrganization(contactOrganization);
+        //cdto.setContactPerson(contactPerson);
+        //cdto.setContactPosition(contactPosition);
+        //cdto.setContactVoice(contactVoice);
+        //cdto.setOnlineResource(onlineResource);
         
 
         return dto;
@@ -835,7 +991,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return Returns the title.
      */
     public String getTitle() {
-        return title;
+        return info.getTitle();
+        //return title;
     }
 
     /**
@@ -844,7 +1001,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @param title The title to set.
      */
     public void setTitle(String title) {
-        this.title = title;
+        info.setTitle( title );
+        //this.title = title;
     }
 
     /**
@@ -875,22 +1033,22 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     public String getAdminUserName() {
-        return adminUserName;
+        return info.getAdminUsername();
     }
-
+    
     public String getAdminPassword() {
-        return adminPassword;
+        return info.getAdminPassword();
     }
 
     public String toString() {
         StringBuffer geoserver = new StringBuffer("[GeoServer: \n");
-        geoserver.append("   maxFeatures - " + maxFeatures);
-        geoserver.append("\n   verbose - " + verbose);
-        geoserver.append("\n   numDecimals - " + numDecimals);
-        geoserver.append("\n   charSet - " + charSet);
-        geoserver.append("\n   log4jConfigFile - " + log4jConfigFile);
-        geoserver.append("\n   adminUserName - " + adminUserName);
-        geoserver.append("\n   adminPassword - " + adminPassword);
+        geoserver.append("   maxFeatures - " + getMaxFeatures());
+        geoserver.append("\n   verbose - " + isVerbose());
+        geoserver.append("\n   numDecimals - " + getNumDecimals());
+        geoserver.append("\n   charSet - " + getCharSet());
+        geoserver.append("\n   log4jConfigFile - " + getLog4jConfigFile());
+        geoserver.append("\n   adminUserName - " + getAdminUserName());
+        geoserver.append("\n   adminPassword - " + getAdminPassword());
 
         return geoserver.toString();
     }
@@ -902,7 +1060,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return Returns the showStackTraces.
      */
     public boolean isVerboseExceptions() {
-        return verboseExceptions;
+        return info.isVerboseExceptions();
+        //return verboseExceptions;
     }
 
     /**
@@ -912,7 +1071,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @param showStackTraces The showStackTraces to set.
      */
     public void setVerboseExceptions(boolean showStackTraces) {
-        this.verboseExceptions = showStackTraces;
+        info.setVerboseExceptions( showStackTraces );
+        //this.verboseExceptions = showStackTraces;
     }
 
     /**
@@ -923,7 +1083,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      *
      */
     public String getLogLocation() {
-        return logLocation;
+        return info.getLoggingLocation();
+        //return logLocation;
     }
 
     /**
@@ -931,64 +1092,79 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * the server logs to.
      */
     public void setLogLocation(String logLocation) {
-        this.logLocation = logLocation;
+        info.setLoggingLocation( logLocation );
+        //this.logLocation = logLocation;
     }
 
     /**
      * @return True if the server is logging to file, otherwise false.
      */
     public boolean getSuppressStdOutLogging() {
-        return suppressStdOutLogging;
+        return !info.isStdOutLogging();
+        //return suppressStdOutLogging;
     }
 
     /**
      * Toggles server logging to file.
      */
     public void setSuppressStdOutLogging(boolean loggingToFile) {
-        this.suppressStdOutLogging = loggingToFile;
+        info.setStdOutLogging(!loggingToFile);
+        //this.suppressStdOutLogging = loggingToFile;
     }
 
+    JAIInfo jai() {
+        return (JAIInfo) info.getMetadata().get( JAIInfo.KEY );
+    }
+    
     public JAI getJAIDefault() {
-        return jaiDef;
+        return jai().getJAI();
     }
 
     public SunTileCache getJaiCache() {
-        return jaiCache;
+        return jai().getTileCache();
     }
 
     public double getMemoryCapacity() {
-        return memoryCapacity;
+        return jai().getMemoryCapacity();
+        //return memoryCapacity;
     }
 
     public Boolean getRecycling() {
-        return recycling;
+        return jai().getRecycling();
+        //return recycling;
     }
 
     public Boolean getJPEGNativeAcceleration() {
-        return JPEGnativeAcc;
+        return jai().getJPEGAcceleration();
+        //return JPEGnativeAcc;
     }
 
     public Boolean getPNGNativeAcceleration() {
-        return PNGnativeAcc;
+        return jai().getPNGAcceleration();
+        //return PNGnativeAcc;
     }
 
     public double getMemoryThreshold() {
-        return memoryThreshold;
+        return jai().getMemoryThreshold();
+        //return memoryThreshold;
     }
 
     /**
      * @return Returns the imageIOCache.
      */
     public Boolean getImageIOCache() {
-        return imageIOCache;
+        return jai().getImageIOCache();
+        //return imageIOCache;
     }
 
     public int getTilePriority() {
-        return tilePriority;
+        return jai().getTilePriority();
+        //return tilePriority;
     }
 
     public int getTileThreads() {
-        return tileThreads;
+        return jai().getTileThreads();
+        //return tileThreads;
     }
 
     /**
@@ -1012,12 +1188,13 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @see Requests#getTileCacheBaseUrl(javax.servlet.http.HttpServletRequest, GeoServer)
      */
     public String getTileCache() {
-        return tileCache;
+        return null;
+        //return tileCache;
     }
 
-    public void setTileCache(String tileCache) {
-        this.tileCache = tileCache;
-    }
+    //public void setTileCache(String tileCache) {
+    //    this.tileCache = tileCache;
+    //}
 
     /**
      * Implements {@link DisposableBean#destroy()} to release resources being held

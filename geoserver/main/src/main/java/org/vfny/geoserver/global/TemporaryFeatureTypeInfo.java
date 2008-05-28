@@ -30,8 +30,10 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
      * @param ft
      */
     public TemporaryFeatureTypeInfo(DataStore ds) {
-        super();
+        super(null,null);
         this.ds = ds;
+        
+        throw new RuntimeException( "fix me");
     }
 
     public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource() throws IOException {

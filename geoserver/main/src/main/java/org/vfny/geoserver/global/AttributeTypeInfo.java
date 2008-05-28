@@ -11,6 +11,8 @@ package org.vfny.geoserver.global;
 
 import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,35 +29,49 @@ import java.util.Map;
  * @version $Id$
  */
 public class AttributeTypeInfo {
-    private String name;
-    private int minOccurs;
-    private int maxOccurs;
-    private boolean nillable;
-    private String typeName;
-    private boolean isComplex;
+    //private String name;
+    //private int minOccurs;
+    //private int maxOccurs;
+    //private boolean nillable;
+    //private String typeName;
+    //private boolean isComplex;
+    //
+    ///** Readl GeoTools2 AttributeDescriptor */
+    //private AttributeDescriptor type;
+    //private Map meta;
+    //
+    //public AttributeTypeInfo(AttributeTypeInfoDTO dto) {
+    //    type = null;
+    //    meta = new HashMap();
+    //    name = dto.getName();
+    //    minOccurs = dto.getMinOccurs();
+    //    maxOccurs = dto.getMaxOccurs();
+    //    nillable = dto.isNillable();
+    //    isComplex = dto.isComplex();
+    //    typeName = dto.getType();
+    //}
+    //
+    //public AttributeTypeInfo(AttributeDescriptor type) {
+    //    this.type = type;
+    //    meta = new HashMap();
+    //}
 
-    /** Readl GeoTools2 AttributeDescriptor */
-    private AttributeDescriptor type;
-    private Map meta;
-
-    public AttributeTypeInfo(AttributeTypeInfoDTO dto) {
-        type = null;
-        meta = new HashMap();
-        name = dto.getName();
-        minOccurs = dto.getMinOccurs();
-        maxOccurs = dto.getMaxOccurs();
-        nillable = dto.isNillable();
-        isComplex = dto.isComplex();
-        typeName = dto.getType();
+    org.geoserver.catalog.AttributeTypeInfo attributeType;
+    
+    public AttributeTypeInfo(org.geoserver.catalog.AttributeTypeInfo attributeType) {
+        this.attributeType = attributeType;
     }
 
-    public AttributeTypeInfo(AttributeDescriptor type) {
-        this.type = type;
-        meta = new HashMap();
+    public void load(AttributeTypeInfoDTO dto) {
+        attributeType.setName( dto.getName() );
+        attributeType.setMinOccurs( dto.getMinOccurs() );
+        attributeType.setMaxOccurs( dto.getMaxOccurs() );
+        attributeType.setNillable( dto.isNillable() );
     }
-
+    
     public String getName() {
-        return name;
+        return attributeType.getName();
+        //return name;
     }
 
     /**
@@ -66,7 +82,8 @@ public class AttributeTypeInfo {
      * @see org.geotools.data.AttributeTypeMetaData#getAttributeType()
      */
     public AttributeDescriptor getAttributeType() {
-        return type;
+        return attributeType.getAttribute();
+        //return type;
     }
 
     /**
@@ -75,7 +92,8 @@ public class AttributeTypeInfo {
      * @param type DOCUMENT ME!
      */
     public void sync(AttributeDescriptor type) {
-        this.type = type;
+        attributeType.setAttribute(type);
+        //this.type = type;
     }
 
     /**
@@ -85,15 +103,15 @@ public class AttributeTypeInfo {
      *
      * @see org.geotools.data.AttributeTypeMetaData#getAttributeName()
      */
-    public String getAttributeName() {
-        String r = typeName;
-
-        if ((r == null) && (type != null)) {
-            r = type.getLocalName();
-        }
-
-        return r;
-    }
+    //public String getAttributeName() {
+    //    String r = typeName;
+    //
+    //    if ((r == null) && (type != null)) {
+    //        r = type.getLocalName();
+    //    }
+    //
+    //    return r;
+    //}
 
     /**
      * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
@@ -111,11 +129,12 @@ public class AttributeTypeInfo {
      * @return The element, or <code>TYPE_FRAGMENT</code>
      */
     public String getType() {
-        if (isComplex) {
-            return "(xml fragment)";
-        } else {
-            return typeName;
-        }
+        return "gml:AbstractFeatureType";
+        //if (isComplex) {
+        //    return "(xml fragment)";
+        //} else {
+        //    return typeName;
+        //}
     }
 
     /**
@@ -131,13 +150,13 @@ public class AttributeTypeInfo {
      *
      * @param fragment The fragment to set.
      */
-    public String getFragment() {
-        if (isComplex) {
-            return typeName;
-        } else {
-            return null;
-        }
-    }
+    //public String getFragment() {
+    //    if (isComplex) {
+    //        return typeName;
+    //    } else {
+    //        return null;
+    //    }
+    //}
 
     /**
      * Implement containsMetaData.
@@ -149,7 +168,8 @@ public class AttributeTypeInfo {
      * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
      */
     public boolean containsMetaData(String key) {
-        return meta.containsKey(key);
+        return attributeType.getMetadata().get( key ) != null;
+        //return meta.containsKey(key);
     }
 
     /**
@@ -162,7 +182,8 @@ public class AttributeTypeInfo {
      *      java.lang.Object)
      */
     public void putMetaData(String key, Object value) {
-        meta.put(key, value);
+        attributeType.getMetadata().put( key, (Serializable) value);
+        //meta.put(key, value);
     }
 
     /**
@@ -175,17 +196,25 @@ public class AttributeTypeInfo {
      * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
      */
     public Object getMetaData(String key) {
-        return meta.get(key);
+        return attributeType.getMetadata().get( key );
+        //return meta.get(key);
     }
 
     Object toDTO() {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
-        dto.setComplex(isComplex);
-        dto.setMaxOccurs(maxOccurs);
-        dto.setMinOccurs(minOccurs);
-        dto.setName(name);
-        dto.setNillable(nillable);
-        dto.setType(typeName);
+        
+        dto.setName( attributeType.getName() );
+        dto.setMinOccurs( attributeType.getMinOccurs() );
+        dto.setMaxOccurs( attributeType.getMaxOccurs() );
+        dto.setNillable( attributeType.isNillable() );
+        dto.setType( getType() );
+        
+        //dto.setComplex(isComplex);
+        //dto.setMaxOccurs(maxOccurs);
+        //dto.setMinOccurs(minOccurs);
+        //dto.setName(name);
+        //dto.setNillable(nillable);
+        //dto.setType(typeName);
 
         return dto;
     }
@@ -196,7 +225,8 @@ public class AttributeTypeInfo {
      * @return Returns the maxOccurs.
      */
     public int getMaxOccurs() {
-        return maxOccurs;
+        return attributeType.getMaxOccurs();
+        //return maxOccurs;
     }
 
     /**
@@ -205,7 +235,8 @@ public class AttributeTypeInfo {
      * @return Returns the minOccurs.
      */
     public int getMinOccurs() {
-        return minOccurs;
+        return attributeType.getMinOccurs();
+        //return minOccurs;
     }
 
     /**
@@ -214,11 +245,12 @@ public class AttributeTypeInfo {
      * @return Returns the nillable.
      */
     public boolean isNillable() {
-        return nillable;
+        return attributeType.isNillable();
+        //return nillable;
     }
 
     public String toString() {
-        return "[AttributeTypeInfo backed by " + toDTO() + " with type " + type + " and meta "
-        + meta;
+        return "[AttributeTypeInfo backed by " + toDTO() + " with type " + attributeType.getAttribute() + " and meta "
+        + attributeType.getMetadata();
     }
 }

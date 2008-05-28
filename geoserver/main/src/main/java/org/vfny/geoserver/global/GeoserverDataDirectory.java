@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.config.GeoServerLoader;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.springframework.context.ApplicationContext;
@@ -47,7 +48,7 @@ import javax.servlet.ServletContext;
  */
 public class GeoserverDataDirectory {
     // caches the dataDir
-    private static GeoServerResourceLoader loader;
+    public static GeoServerResourceLoader loader;
     private static Data catalog;
     private static ApplicationContext appContext;
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
@@ -92,7 +93,12 @@ public class GeoserverDataDirectory {
             ftInfo = data.getFeatureTypeInfo(name);
         if(ftInfo == null)
             return null;
-        return ftInfo.getDirName();
+        String dirName = ftInfo.getDirName();
+        if ( dirName == null ) {
+            dirName = ftInfo.getPrefix() + "_" + ftInfo.getTypeName();
+        }
+        
+        return dirName;
     }
 
     /**
@@ -183,6 +189,23 @@ public class GeoserverDataDirectory {
     }
 
     /**
+     * Looks up a file under the "styles" directory.
+     * 
+     * @param fileName The name of the file.
+     * 
+     * @return The style file, or null if it does not exist.
+     */
+    public static File findStyleFile(String fileName) {
+        File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
+        File styleFile = new File( new File( baseDir, "styles" ), fileName );
+        
+        if (styleFile.exists() ) {
+            return styleFile;
+        }
+        
+        return null;
+    }
+    /**
      * Given a path, tries to interpret it as a file into the data directory, or as an absolute
      * location, and returns the actual absolute location of the File
      * @param path
@@ -266,7 +289,7 @@ public class GeoserverDataDirectory {
                     loader.setBaseDirectory(dataDir);
                     loader.addSearchLocation(new File(dataDir, "data"));
                     loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-
+                    
                     LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
                         + dataDir.getAbsolutePath() + "\n----------------------------------");
 
@@ -306,8 +329,10 @@ public class GeoserverDataDirectory {
             loader.addSearchLocation(new File(dataDir, "WEB-INF"));
             LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
                 + dataDir.getAbsolutePath() + "\n----------------------------------");
-            loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
-            loader.addSearchLocation(new File(servContext.getRealPath("data")));
+            //loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
+            //loader.addSearchLocation(new File(servContext.getRealPath("data")));
+            
+            
         }
     }
 
@@ -320,6 +345,7 @@ public class GeoserverDataDirectory {
     public static void destroy() {
         loader = null;
         isTrueDataDir = false;
+        catalog = null;
     }
     
     private static Data getCatalog() {

@@ -17,6 +17,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.units.Unit;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geotools.coverage.Category;
@@ -193,6 +195,8 @@ public class CoverageConfig {
      */
     private Map parameters;
 
+    Catalog catalog;
+    
     /**
      * Package visible constructor for test cases
      */
@@ -208,12 +212,15 @@ public class CoverageConfig {
      * @throws ConfigurationException
      */
     public CoverageConfig(String formatId, Format format, AbstractGridCoverage2DReader reader,
-        final HttpServletRequest request) throws ConfigurationException {
+        final HttpServletRequest request, Catalog catalog) throws ConfigurationException {
+
+
     	///////////////////////////////////////////////////////////////////////
     	//
     	// Initial checks
     	//
     	///////////////////////////////////////////////////////////////////////
+
         if ((formatId == null) || (formatId.length() == 0)) {
             throw new ConfigurationException("formatId is required for CoverageConfig");
         }
@@ -307,7 +314,7 @@ public class CoverageConfig {
             if(gc==null){
             	throw new ConfigurationException("Unable to acquire test coverage for format:"+formatId);
             }
-            dimensions = parseCoverageDimesions(gc.getSampleDimensions());
+            dimensions = parseCoverageDimesions(gc.getSampleDimensions(),catalog);
         } catch (UnsupportedEncodingException e) {
             final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
                         "Coverage dimensions: ").append(e.getLocalizedMessage()).toString());
@@ -363,9 +370,13 @@ public class CoverageConfig {
         wmsPath = "/";
         label = new StringBuffer(name).append(" is a ").append(format.getDescription()).toString();
         description = new StringBuffer("Generated from ").append(formatId).toString();
-        metadataLink = new MetaDataLink();
-        metadataLink.setAbout(format.getDocURL());
-        metadataLink.setMetadataType("other");
+        
+        MetadataLinkInfo ml = catalog.getFactory().createMetadataLink();
+        ml.setAbout(format.getDocURL());
+        ml.setMetadataType("other");
+        metadataLink = new MetaDataLink(ml);
+        //metadataLink.setAbout(format.getDocURL());
+        //metadataLink.setMetadataType("other");
         keywords = new ArrayList(10);
         keywords.add("WCS");
         keywords.add(formatId);
@@ -449,13 +460,13 @@ public class CoverageConfig {
      * @return
      * @throws UnsupportedEncodingException
      */
-    private CoverageDimension[] parseCoverageDimesions(GridSampleDimension[] sampleDimensions)
+    private CoverageDimension[] parseCoverageDimesions(GridSampleDimension[] sampleDimensions, Catalog catalog)
         throws UnsupportedEncodingException {
         final int length = sampleDimensions.length;
         CoverageDimension[] dims = new CoverageDimension[length];
 
         for (int i = 0; i < length; i++) {
-            dims[i] = new CoverageDimension();
+            dims[i] = new CoverageDimension(catalog.getFactory().createCoverageDimension());
             dims[i].setName(sampleDimensions[i].getDescription().toString(Locale.getDefault()));
 
             StringBuffer label = new StringBuffer("GridSampleDimension".intern());

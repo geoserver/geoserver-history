@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="services" size="1345,1159" id="org.geoserver.config" metadata="uml2-1.0" initialized="true" scrolledX="73" scrolledY="641" tag="1000" key="323030373031323220636F6E66696775726174696F6E2F6A64656F6C697665">
+  <children xsi:type="editmodel:InterfaceEditModel" name="ServiceInfo" location="277,439" size="205,332" id="org.geoserver.config/ServiceInfo">
+    <children xsi:type="editmodel:CompartmentEditModel" size="182,234">
+      <children xsi:type="editmodel:AttributeEditModel" name="abstract" id="org.geoserver.config/ServiceInfo#abstract"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="accessConstraints" id="org.geoserver.config/ServiceInfo#accessConstraints"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="citeCompliant" id="org.geoserver.config/ServiceInfo#citeCompliant"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="enabled" id="org.geoserver.config/ServiceInfo#enabled"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="exceptionFormats" id="org.geoserver.config/ServiceInfo#exceptionFormats"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="fees" id="org.geoserver.config/ServiceInfo#fees"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="keywords" id="org.geoserver.config/ServiceInfo#keywords"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="maintainer" id="org.geoserver.config/ServiceInfo#maintainer"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="metadata" id="org.geoserver.config/ServiceInfo#metadata"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="name" id="org.geoserver.config/ServiceInfo#name"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="onlineResource" id="org.geoserver.config/ServiceInfo#onlineResource"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="title" id="org.geoserver.config/ServiceInfo#title"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="versions" id="org.geoserver.config/ServiceInfo#versions"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="122,36">
+      <children xsi:type="editmodel:MethodEditModel" name="getClientProperties" id="org.geoserver.config/ServiceInfo#getClientProperties()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getId" id="org.geoserver.config/ServiceInfo#getId()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" autoLocated="true" id="org.geoserver.config/GeoServerInfo@geoServer+org.geoserver.config/ServiceInfo@service" source="//@children.0" target="//@children.2" targetEnd="//@children.0/@sourceConnections.0/@children.2" label="//@children.0/@sourceConnections.0/@children.0" sourceEnd="//@children.0/@sourceConnections.0/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,13" fontInfo="Arial-8-0" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="service" location="205,165" id="org.geoserver.config/GeoServerInfo@geoServer+org.geoserver.config/ServiceInfo@service|org.geoserver.config/ServiceInfo#service" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="geoServer" location="0,165" id="org.geoserver.config/GeoServerInfo@geoServer+org.geoserver.config/ServiceInfo@service|org.geoserver.config/GeoServerInfo#geoServer" multiplicityLabel="//@children.0/@sourceConnections.0/@children.2/@children.1" roleLabel="//@children.0/@sourceConnections.0/@children.2/@children.0" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" + geoServer" location="590,584" size="63,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="0..1" location="636,611" size="17,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+      </children>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" autoLocated="true" id="org.geoserver.catalog/MetadataLinkInfo@metadataLink+org.geoserver.config/ServiceInfo@service" source="//@children.0" target="//@children.1" targetEnd="//@children.0/@sourceConnections.1/@children.2" label="//@children.0/@sourceConnections.1/@children.0" sourceEnd="//@children.0/@sourceConnections.1/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,13" fontInfo="Arial-8-0" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="service" location="102,332" id="org.geoserver.catalog/MetadataLinkInfo@metadataLink+org.geoserver.config/ServiceInfo@service|org.geoserver.config/ServiceInfo#service" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="metadataLink" location="169,0" id="org.geoserver.catalog/MetadataLinkInfo@metadataLink+org.geoserver.config/ServiceInfo@service|org.geoserver.catalog/MetadataLinkInfo#metadataLink" multiplicityLabel="//@children.0/@sourceConnections.1/@children.2/@children.1" roleLabel="//@children.0/@sourceConnections.1/@children.2/@children.0" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" + metadataLink" location="386,850" size="80,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="0..1" location="355,850" size="17,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+      </children>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.0/@sourceConnections.1" name="MetadataLinkInfo" location="210,870" size="307,152" id="org.geoserver.catalog/MetadataLinkInfo">
+    <children xsi:type="editmodel:CompartmentEditModel" size="124,72">
+      <children xsi:type="editmodel:AttributeEditModel" name="about" id="org.geoserver.catalog/MetadataLinkInfo#about"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="content" id="org.geoserver.catalog/MetadataLinkInfo#content"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="metadataType" id="org.geoserver.catalog/MetadataLinkInfo#metadataType"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="type" id="org.geoserver.catalog/MetadataLinkInfo#type"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="53,18">
+      <children xsi:type="editmodel:MethodEditModel" name="getId" id="org.geoserver.catalog/MetadataLinkInfo#getId()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.0/@sourceConnections.0" name="GeoServerInfo" location="660,439" size="173,350" id="org.geoserver.config/GeoServerInfo">
+    <children xsi:type="editmodel:CompartmentEditModel" size="150,252">
+      <children xsi:type="editmodel:AttributeEditModel" name="adminPassword" id="org.geoserver.config/GeoServerInfo#adminPassword"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="adminUserName" id="org.geoserver.config/GeoServerInfo#adminUserName"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="charset" id="org.geoserver.config/GeoServerInfo#charset"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="maxFeatures" id="org.geoserver.config/GeoServerInfo#maxFeatures"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="memoryCapacity" id="org.geoserver.config/GeoServerInfo#memoryCapacity"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="memoryThreshold" id="org.geoserver.config/GeoServerInfo#memoryThreshold"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="metadata" id="org.geoserver.config/GeoServerInfo#metadata"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="numDecimals" id="org.geoserver.config/GeoServerInfo#numDecimals"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="onlineResource" id="org.geoserver.config/GeoServerInfo#onlineResource"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="proxyBaseUrl" id="org.geoserver.config/GeoServerInfo#proxyBaseUrl"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="schemaBaseUrl" id="org.geoserver.config/GeoServerInfo#schemaBaseUrl"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="title" id="org.geoserver.config/GeoServerInfo#title"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="verbose" id="org.geoserver.config/GeoServerInfo#verbose"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="verboseExceptions" id="org.geoserver.config/GeoServerInfo#verboseExceptions"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="122,36">
+      <children xsi:type="editmodel:MethodEditModel" name="getClientProperties" id="org.geoserver.config/GeoServerInfo#getClientProperties()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getId" id="org.geoserver.config/GeoServerInfo#getId()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" properties="wireOptions=3" autoName="false"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showInterfaceStereotype="true" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>
