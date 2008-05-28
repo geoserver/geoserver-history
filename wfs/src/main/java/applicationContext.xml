@@ -30,16 +30,17 @@
 	<bean id="filterFactory" class="org.geotools.filter.FilterFactoryImpl"/>
 
 	<!-- wfs configuration bean -->
-	<bean id="wfs" class="org.geoserver.wfs.WFS" depends-on="config">
-        <!-- the depends-on attribute ensures config was initialized before
-          trying to instantiate this bean.
-         -->
-		<constructor-arg ref="config"/>
+	<!--bean id="wfs" class="org.geoserver.wfs.WFS" depends-on="config">
+       <constructor-arg ref="config"/>
 		<constructor-arg ref="catalog"/>
 		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="validation"/>
-	</bean>
-
+	</bean-->
+	<bean id="wfsLoader" class="org.geoserver.wfs.WFSLoader"/>
+    <bean id="wfs" class="org.geoserver.wfs.WFS">
+      <constructor-arg ref="geoServer2"/>
+    </bean>
+    
 	<!-- wfs service -->
 	<!--bean id="wfsService" class="org.geoserver.wfs.DefaultWebFeatureService">
 		<constructor-arg ref="wfs"/>
