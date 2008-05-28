@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.ServiceException;
+
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 import java.io.Reader;

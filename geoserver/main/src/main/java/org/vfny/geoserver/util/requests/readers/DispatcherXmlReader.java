@@ -5,7 +5,8 @@
 package org.vfny.geoserver.util.requests.readers;
 
 import org.apache.xerces.parsers.SAXParser;
-import org.vfny.geoserver.ServiceException;
+import org.geoserver.platform.ServiceException;
+
 import org.vfny.geoserver.util.requests.DispatcherHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
