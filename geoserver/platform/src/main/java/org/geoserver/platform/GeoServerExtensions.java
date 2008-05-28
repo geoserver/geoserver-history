@@ -170,7 +170,25 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      * type in the context. 
      */
     public static final <T> T bean(Class<T> type) throws IllegalArgumentException {
-        List<T> beans = extensions(type);
+        checkContext(context);
+        return context != null ? bean( type, context ) : null;
+    }
+    
+    /**
+     * Loads a single bean by its type from the specified application context.
+     * <p>
+     * This method returns null if there is no such bean. An exception is thrown
+     * if multiple beans of the specified type exist.
+     * </p>
+     *
+     * @param type THe type of the bean to lookup.
+     * @param context The application context
+     * 
+     * @throws IllegalArgumentException If there are multiple beans of the specified
+     * type in the context. 
+     */
+    public static final <T> T bean(Class<T> type, ApplicationContext context) throws IllegalArgumentException {
+        List<T> beans = extensions(type,context);
         if ( beans.isEmpty() ) {
             return null;
         }
