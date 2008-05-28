@@ -6,13 +6,19 @@ package org.geoserver.platform;
 
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -157,6 +163,31 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 
         return null;
     }
+    
+    /**
+     * Performs a resource lookup.
+     * <p>
+     * <pre>
+     * Example:
+     *   File f = resourceLoader.find( "data", "shapefiles", "foo.shp" );
+     * </pre> 
+     * </p>
+     * @param location The components of the path of the resource to lookup.
+     * 
+     * @return The file handle representing the resource, or null if the
+     *  resource could not be found.
+     *  
+     * @throws IOException Any I/O errors that occur.
+     */
+    public File find( String... location ) throws IOException {
+        StringBuffer loc = new StringBuffer();
+        for ( int i = 0; i < location.length; i++ ) {
+            loc.append( location[i] ).append( File.separator );
+        }
+        loc.setLength(loc.length()-1);
+        return find( loc.toString() );
+        
+    }
 
     /**
      * Creates a new directory.
@@ -250,5 +281,59 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
         file.createNewFile();
 
         return file;
+    }
+    
+    /**
+     * Copies a resource located on the classpath to a specified path.
+     * <p>
+     * The <tt>resource</tt> is obtained from teh context class loader of the 
+     * current thread. When the <tt>to</tt> parameter is specified as a relative
+     * path it is considered to be relative to {@link #getBaseDirectory()}.
+      </p>
+     * 
+     * @param resource The resource to copy.
+     * @param to The destination to copy to.
+     */
+    public void copyFromClassPath( String resource, String to ) throws IOException {
+        File target = new File( to );
+        if ( !target.isAbsolute() ) {
+            target = new File( getBaseDirectory(), to );
+        }
+        
+        copyFromClassPath(resource, target);
+    }
+    
+    /**
+     * Copies a resource from the classpath to a specified file.
+     * 
+     */
+    public void copyFromClassPath( String resource, File target ) throws IOException {
+        InputStream is = null; 
+        OutputStream os = null;
+        byte[] buffer = new byte[4096];
+        int read;
+        
+        try {
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+            os = new FileOutputStream(target);
+            while((read = is.read(buffer)) > 0)
+                os.write(buffer, 0, read);
+        } catch (FileNotFoundException targetException) {
+            throw new IOException("Can't write to file " + target.getAbsolutePath() + 
+                    ". Check write permissions on target folder for user " + System.getProperty("user.name"));
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Error trying to copy logging configuration file", e);
+        } finally {
+            try {
+                if(is != null){
+                    is.close();
+                }
+                if(os != null){
+                    os.close();
+                }
+            } catch(IOException e) {
+                // we tried...
+            }
+        }
     }
 }
