@@ -6,7 +6,8 @@ package org.geoserver.wms.kvp;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
-import org.vfny.geoserver.ServiceException;
+import org.geoserver.platform.ServiceException;
+
 import java.awt.geom.Point2D;
 import java.util.List;
 

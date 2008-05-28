@@ -15,8 +15,8 @@ import javax.media.jai.JAI;
 import javax.media.jai.operator.CropDescriptor;
 
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;

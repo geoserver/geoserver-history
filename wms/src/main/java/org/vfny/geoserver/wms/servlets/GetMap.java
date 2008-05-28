@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -44,48 +44,6 @@ public class GetMap extends WMService {
 
     protected GetMap(String id, WMS wms) {
         super(id, wms);
-    }
-
-    // TODO: check is this override adds any value compared to the superclass one,
-    // remove otherwise
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        //If the post is of mime-type application/x-www-form-urlencoded
-        //Then the get system can handle it. For all other requests the
-        //post code must handle it.
-        if (isURLEncoded(request)) {
-            doGet(request, response);
-
-            return;
-        }
-
-        //DJB: added post support
-        Request serviceRequest = null;
-
-        //        this.curRequest = request;
-        if (!isServiceEnabled(request)) {
-            sendDisabledServiceError(response);
-
-            return;
-        }
-
-        //we need to construct an approriate serviceRequest from the GetMap XML POST.
-        try {
-            GetMapXmlReader xmlPostReader = new GetMapXmlReader(getWMS());
-
-            Reader xml = request.getReader();
-            serviceRequest = xmlPostReader.read(xml, request);
-        } catch (ServiceException se) {
-            sendError(request, response, se);
-
-            return;
-        } catch (Throwable e) {
-            sendError(request, response, e);
-
-            return;
-        }
-
-        doService(request, response, serviceRequest);
     }
 
     /**

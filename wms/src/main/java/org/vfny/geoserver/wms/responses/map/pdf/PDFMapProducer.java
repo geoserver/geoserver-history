@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -73,7 +74,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 	 *            The output stream to write to.
 	 */
 	public void writeTo(OutputStream out)
-			throws org.vfny.geoserver.ServiceException, java.io.IOException {
+			throws ServiceException, java.io.IOException {
 		// write to out
 		out.write(bos.toByteArray());
 	}

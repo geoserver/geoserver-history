@@ -4,9 +4,10 @@
  */
 package org.vfny.geoserver.wms;
 
-import org.vfny.geoserver.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.geoserver.platform.ServiceException;
 
 
 /**

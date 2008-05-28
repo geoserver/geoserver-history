@@ -30,6 +30,7 @@ import javax.media.jai.JAI;
 import javax.media.jai.LookupTableJAI;
 import javax.media.jai.operator.LookupDescriptor;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
@@ -155,7 +156,7 @@ public abstract class DefaultRasterMapProducer extends
 	 *             DOCUMENT ME!
 	 */
 	public void writeTo(OutputStream out)
-			throws org.vfny.geoserver.ServiceException, java.io.IOException {
+			throws ServiceException, java.io.IOException {
 		formatImageOutputStream(this.image, out);
 	}
 

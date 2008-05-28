@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.legend.jai;
 
-import org.vfny.geoserver.ServiceException;
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;

@@ -11,6 +11,7 @@ import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wfs.xml.GML2OutputFormat;
@@ -18,7 +19,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.ServiceException;
+
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
