@@ -287,13 +287,13 @@ public class GetCoverageTest extends WCSTestSupport {
 
         // extract all bands. We had two bugs here, one related to the case sensitiveness
         // and the other about the inability to extract bands at all (with exception of the red one) 
-        String[] bands = new String[] {"red", "grEEN", "Blue"};
+        String[] bands = new String[] {"red_band", "grEEN_band", "Blue_band"};
         for (int i = 0; i < bands.length; i++) {
             raw.put("rangeSubset", "contents:nearest[Bands[" + bands[i] + "]]");
             GridCoverage[] coverages = executeGetCoverageKvp(raw);
             assertEquals(1, coverages[0].getNumSampleDimensions());
             final String coverageBand = coverages[0].getSampleDimension(0).getDescription().toString();
-            assertEquals(bands[i].replace('_', ' ').toLowerCase(), coverageBand.toLowerCase());
+            assertEquals(bands[i].toLowerCase(), coverageBand.toLowerCase());
         }
     }
     
@@ -304,11 +304,11 @@ public class GetCoverageTest extends WCSTestSupport {
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
 
-        raw.put("rangeSubset", "contents:nearest[Bands[RED,BLUE]]");
+        raw.put("rangeSubset", "contents:nearest[Bands[RED_BAND,BLUE_BAND]]");
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         assertEquals(2, coverages[0].getNumSampleDimensions());
-        assertEquals("RED", coverages[0].getSampleDimension(0).getDescription().toString());
-        assertEquals("BLUE", coverages[0].getSampleDimension(1).getDescription().toString());
+        assertEquals("RED_BAND", coverages[0].getSampleDimension(0).getDescription().toString());
+        assertEquals("BLUE_BAND", coverages[0].getSampleDimension(1).getDescription().toString());
     }
     
     public void testRangeSubsetSwap() throws Exception {
@@ -318,11 +318,11 @@ public class GetCoverageTest extends WCSTestSupport {
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
 
-        raw.put("rangeSubset", "contents:nearest[Bands[BLUE,GREEN]]");
+        raw.put("rangeSubset", "contents:nearest[Bands[BLUE_BAND,GREEN_BAND]]");
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         assertEquals(2, coverages[0].getNumSampleDimensions());
-        assertEquals("BLUE", coverages[0].getSampleDimension(0).getDescription().toString());
-        assertEquals("GREEN", coverages[0].getSampleDimension(1).getDescription().toString());
+        assertEquals("BLUE_BAND", coverages[0].getSampleDimension(0).getDescription().toString());
+        assertEquals("GREEN_BAND", coverages[0].getSampleDimension(1).getDescription().toString());
     }
     
     public void testRangeSubsetOnlyInterpolation() throws Exception {
