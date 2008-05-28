@@ -34,6 +34,7 @@ import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WCS;
+import org.vfny.geoserver.util.ResponseUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
 import org.vfny.geoserver.wcs.requests.WCSRequest;

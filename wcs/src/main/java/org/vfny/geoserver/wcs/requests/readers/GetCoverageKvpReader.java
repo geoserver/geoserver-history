@@ -5,8 +5,10 @@
 package org.vfny.geoserver.wcs.requests.readers;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.ServiceException;
+
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wcs.WcsException;
