@@ -4,6 +4,7 @@
  */
 package org.geoserver.wfs;
 
+import org.geoserver.wfs.WFSInfo.ServiceLevel;
 import org.vfny.geoserver.global.Config;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
@@ -34,6 +35,7 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * @author Justin Deoliveira
  *
  * @version $Id$
+ * @deprecated use {@link WFSInfo}
  */
 public class WFS extends org.vfny.geoserver.global.Service {
     /** web container key */
@@ -55,70 +57,85 @@ public class WFS extends org.vfny.geoserver.global.Service {
     public static final int SERVICE_LOCKING = WFSDTO.SERVICE_LOCKING;
 
     /** ServiceLevel mask equivilent to basic WFS conformance */
-    public static final int BASIC = WFSDTO.BASIC;
-
+    //public static final int BASIC = WFSDTO.BASIC;
+    public static final int BASIC = WFSInfo.ServiceLevel.BASIC.getCode();
+    
     /** ServiceLevel mask for transactional WFS conformance. */
-    public static final int TRANSACTIONAL = WFSDTO.TRANSACTIONAL;
-
+    //public static final int TRANSACTIONAL = WFSDTO.TRANSACTIONAL;
+    public static final int TRANSACTIONAL = WFSInfo.ServiceLevel.TRANSACTIONAL.getCode();
+    
     /** ServiceLevel mask equivilent to complete WFS conformance */
-    public static final int COMPLETE = WFSDTO.COMPLETE;
+    //public static final int COMPLETE = WFSDTO.COMPLETE;
+    public static final int COMPLETE = WFSInfo.ServiceLevel.COMPLETE.getCode();
 
     /**
      * Properties
      */
-    private GeoValidator gv;
-    private int serviceLevel;
-    private boolean srsXmlStyle;
-    private boolean citeConformanceHacks;
-    private boolean featureBounding;
+    //private GeoValidator gv;
+    //private int serviceLevel;
+    //private boolean srsXmlStyle;
+    //private boolean citeConformanceHacks;
+    //private boolean featureBounding;
 
-    /**
-     * WFS constructor.
-     *
-     * <p>
-     * Stores the data specified in the WFSDTO object in this WFS Object for
-     * GeoServer to use.
-     * </p>
-     *
-     * @param config The data intended for GeoServer to use.
-     */
-    public WFS(WFSDTO config) {
-        super(config.getService());
-        setId("wfs");
-        setSrsXmlStyle(config.isSrsXmlStyle());
-        setServiceLevel(config.getServiceLevel());
-        setCiteConformanceHacks(config.getCiteConformanceHacks());
-        setFeatureBounding(config.isFeatureBounding());
+    ///**
+    // * WFS constructor.
+    // *
+    // * <p>
+    // * Stores the data specified in the WFSDTO object in this WFS Object for
+    // * GeoServer to use.
+    // * </p>
+    // *
+    // * @param config The data intended for GeoServer to use.
+    // */
+    //public WFS(WFSDTO config) {
+    //    super(config.getService());
+    //    setId("wfs");
+    //    setSrsXmlStyle(config.isSrsXmlStyle());
+    //    setServiceLevel(config.getServiceLevel());
+    //    setCiteConformanceHacks(config.getCiteConformanceHacks());
+    //    setFeatureBounding(config.isFeatureBounding());
+    //}
+
+    ///**
+    // * Creates the WFS service by getting the WFSDTO object from the
+    // * config and calling {@link #WFS(WFSDTO)}.
+    // *
+    // * @throws ConfigurationException
+    // */
+    //public WFS(Config config, Data data, GeoServer geoServer, GeoValidator validator)
+    //    throws ConfigurationException {
+    //    this(config.getWfs());
+    //    setData(data);
+    //    setGeoServer(geoServer);
+    //    setValidation(validator);
+    //}
+
+    ///**
+    // * WFS constructor.
+    // *
+    // * <p>
+    // * Package constructor intended for default use by GeoServer
+    // * </p>
+    // *
+    // * @see GeoServer#GeoServer()
+    // */
+    //WFS() {
+    //    super(new ServiceDTO());
+    //    setId("wfs");
+    //}
+
+    WFSInfo wfs;
+    
+    public WFS( org.geoserver.config.GeoServer gs ) {
+        super( gs.getService(WFSInfo.class), gs );
+        init();
     }
-
-    /**
-     * Creates the WFS service by getting the WFSDTO object from the
-     * config and calling {@link #WFS(WFSDTO)}.
-     *
-     * @throws ConfigurationException
-     */
-    public WFS(Config config, Data data, GeoServer geoServer, GeoValidator validator)
-        throws ConfigurationException {
-        this(config.getWfs());
-        setData(data);
-        setGeoServer(geoServer);
-        setValidation(validator);
+    
+    public void init() {
+        this.wfs = gs.getService(WFSInfo.class);
+        service = wfs;
     }
-
-    /**
-     * WFS constructor.
-     *
-     * <p>
-     * Package constructor intended for default use by GeoServer
-     * </p>
-     *
-     * @see GeoServer#GeoServer()
-     */
-    WFS() {
-        super(new ServiceDTO());
-        setId("wfs");
-    }
-
+    
     /**
      * load purpose.
      *
@@ -151,14 +168,19 @@ public class WFS extends org.vfny.geoserver.global.Service {
      * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
      * @see WFSDTO
      */
-    public Object toDTO() {
+    public WFSDTO toDTO() {
         WFSDTO dto = new WFSDTO();
         dto.setService((ServiceDTO) super.toDTO());
 
-        dto.setServiceLevel(serviceLevel);
-        dto.setSrsXmlStyle(srsXmlStyle);
-        dto.setCiteConformanceHacks(citeConformanceHacks);
-        dto.setFeatureBounding(featureBounding);
+        dto.setServiceLevel(getServiceLevel());
+        dto.setSrsXmlStyle(isSrsXmlStyle());
+        dto.setCiteConformanceHacks(getCiteConformanceHacks());
+        dto.setFeatureBounding(isFeatureBounding());
+        
+        //dto.setServiceLevel(serviceLevel);
+        //dto.setSrsXmlStyle(srsXmlStyle);
+        //dto.setCiteConformanceHacks(citeConformanceHacks);
+        //dto.setFeatureBounding(featureBounding);
 
         return dto;
     }
@@ -170,7 +192,9 @@ public class WFS extends org.vfny.geoserver.global.Service {
     * @return <tt>true</tt> if the srs is reported with the xml style
     */
     public boolean isSrsXmlStyle() {
-        return srsXmlStyle;
+        GMLInfo gml = wfs.getGML().get( WFSInfo.Version.V_10 );
+        return gml.getSrsNameStyle() == GMLInfo.SrsNameStyle.XML;
+        //return srsXmlStyle;
     }
 
     /**
@@ -180,7 +204,16 @@ public class WFS extends org.vfny.geoserver.global.Service {
      * @param doXmlStyle whether the srs style should be xml or not.
      */
     public void setSrsXmlStyle(boolean doXmlStyle) {
-        this.srsXmlStyle = doXmlStyle;
+        GMLInfo gml = wfs.getGML().get( WFSInfo.Version.V_10 );
+        
+        if ( doXmlStyle ) {
+            gml.setSrsNameStyle(GMLInfo.SrsNameStyle.XML);    
+        }
+        else {
+            gml.setSrsNameStyle(GMLInfo.SrsNameStyle.NORMAL);
+        }
+        
+        //this.srsXmlStyle = doXmlStyle;
     }
 
     /**
@@ -195,26 +228,28 @@ public class WFS extends org.vfny.geoserver.global.Service {
      *         is  <tt>true</tt>, <tt>EPSG:</tt> if <tt>false</tt>
      */
     public String getSrsPrefix() {
-        return srsXmlStyle ? "http://www.opengis.net/gml/srs/epsg.xml#" : "EPSG:";
+        GMLInfo gml = wfs.getGML().get( WFSInfo.Version.V_10 );
+        return gml.getSrsNameStyle().getPrefix();
+        //return srsXmlStyle ? "http://www.opengis.net/gml/srs/epsg.xml#" : "EPSG:";
     }
 
-    /**
-     * Access gv property.
-     *
-     * @return Returns the gv.
-     */
-    public GeoValidator getValidation() {
-        return gv;
-    }
+    ///**
+    // * Access gv property.
+    // *
+    // * @return Returns the gv.
+    // */
+    //public GeoValidator getValidation() {
+    //    return gv;
+    //}
 
-    /**
-     * Set gv to gv.
-     *
-     * @param gv The gv to set.
-     */
-    void setValidation(GeoValidator gv) {
-        this.gv = gv;
-    }
+    ///**
+    // * Set gv to gv.
+    // *
+    // * @param gv The gv to set.
+    // */
+    //void setValidation(GeoValidator gv) {
+    //    this.gv = gv;
+    //}
 
     /**
      * Sets serviceLevel property.
@@ -222,7 +257,8 @@ public class WFS extends org.vfny.geoserver.global.Service {
      * @param serviceLevel The new service level.
      */
     public void setServiceLevel(int serviceLevel) {
-        this.serviceLevel = serviceLevel;
+        wfs.setServiceLevel( ServiceLevel.get( serviceLevel ) );
+        //this.serviceLevel = serviceLevel;
     }
 
     /**
@@ -231,7 +267,8 @@ public class WFS extends org.vfny.geoserver.global.Service {
      * @return Returns the serviceLevel.
      */
     public int getServiceLevel() {
-        return serviceLevel;
+        return wfs.getServiceLevel().getCode();
+        //return serviceLevel;
     }
 
     /**
@@ -240,7 +277,8 @@ public class WFS extends org.vfny.geoserver.global.Service {
      * @param on
      */
     public void setCiteConformanceHacks(boolean on) {
-        citeConformanceHacks = on;
+        wfs.setCiteCompliant(on);
+        //citeConformanceHacks = on;
     }
 
     /**
@@ -249,7 +287,8 @@ public class WFS extends org.vfny.geoserver.global.Service {
      * @return
      */
     public boolean getCiteConformanceHacks() {
-        return (citeConformanceHacks);
+        return wfs.isCiteCompliant();
+        //return (citeConformanceHacks);
     }
 
     /**
@@ -260,7 +299,8 @@ public class WFS extends org.vfny.geoserver.global.Service {
      *         automatically generated.
      */
     public boolean isFeatureBounding() {
-        return featureBounding;
+        return wfs.getGML().get( WFSInfo.Version.V_10 ).isFeatureBounding();
+        //return featureBounding;
     }
 
     /**
@@ -271,6 +311,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
      *        boundedBy automatically generated.
      */
     public void setFeatureBounding(boolean featureBounding) {
-        this.featureBounding = featureBounding;
+        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding(featureBounding);
+        //this.featureBounding = featureBounding;
     }
 }
