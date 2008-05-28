@@ -4,11 +4,22 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.catalog.LayerGroupInfo;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WatermarkInfo;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,6 +42,7 @@ import java.util.TreeSet;
  * 
  * @author Gabriel Rold???n
  * @version $Id$
+ * @deprecated use {@link WMSInfo}
  */
 public class WMS extends Service {
     /** WMS version spec implemented */
@@ -51,113 +63,134 @@ public class WMS extends Service {
 
     public static final String WEB_CONTAINER_KEY = "WMS";
 
-    public static final int WATERMARK_UL = 0;
+    //public static final int WATERMARK_UL = 0;
+    public static final int WATERMARK_UL = WatermarkInfo.Position.TOP_LEFT.getCode();
 
-    public static final int WATERMARK_UC = 1;
+    //public static final int WATERMARK_UC = 1;
+    public static final int WATERMARK_UC = WatermarkInfo.Position.TOP_CENTER.getCode();
+    
+    public static final int WATERMARK_UR = WatermarkInfo.Position.TOP_RIGHT.getCode();
+    //public static final int WATERMARK_UR = 2;
 
-    public static final int WATERMARK_UR = 2;
+    public static final int WATERMARK_CL = WatermarkInfo.Position.MID_LEFT.getCode();
+    //public static final int WATERMARK_CL = 3;
+    
+    public static final int WATERMARK_CC = WatermarkInfo.Position.MID_CENTER.getCode();
+    //public static final int WATERMARK_CC = 4;
+    
+    public static final int WATERMARK_CR = WatermarkInfo.Position.MID_RIGHT.getCode();
+    //public static final int WATERMARK_CR = 5;
+    
+    public static final int WATERMARK_LL = WatermarkInfo.Position.BOT_LEFT.getCode();
+    //public static final int WATERMARK_LL = 6;
+    
+    public static final int WATERMARK_LC = WatermarkInfo.Position.BOT_CENTER.getCode();
+    //public static final int WATERMARK_LC = 7;
+    
+    public static final int WATERMARK_LR = WatermarkInfo.Position.BOT_RIGHT.getCode();
+    //public static final int WATERMARK_LR = 8;
+    
+    ///** svg Renderer to use * */
+    //private String svgRenderer;
+    //
+    ///** svg anitalias or not * */
+    //private boolean svgAntiAlias;
+    //
+    ///** global Watermarking * */
+    //private boolean globalWatermarking;
+    //
+    ///** global Watermarking URL * */
+    //private String globalWatermarkingURL;
+    //
+    ///** globlal Watermarking alpha * */
+    //private int watermarkTransparency;
+    //
+    ///**
+    // * Watermark position
+    // * 
+    // * <pre>
+    // * O -- O -- O      0 -- 1 -- 2
+    // * |    |    |      |    |    |
+    // * O -- O -- O  ==  3 -- 4 -- 5
+    // * |    |    |      |    |    |
+    // * O -- O -- O      6 -- 7 -- 8
+    // * </pre>
+    // * 
+    // */
+    //private int watermarkPosition;
+    //
+    ///** rendering interpolation or not * */
+    //private Map baseMapLayers;
+    //
+    //private Map baseMapStyles;
+    //
+    //private Map baseMapEnvelopes;
+    //
+    //private String allowInterpolation;
+    //
+    //private WFS wfs;
+    //
+    ///**
+    // * Limited set of CRS codes displayed in the capabilities document
+    // */
+    //private Set capabilitiesCrsList = Collections.EMPTY_SET;
 
-    public static final int WATERMARK_CL = 3;
+    ///**
+    // * WMS constructor.
+    // * 
+    // * <p>
+    // * Stores the data specified in the WMSDTO object in this WMS Object for
+    // * GeoServer to use.
+    // * </p>
+    // * 
+    // * @param config
+    // *            The data intended for GeoServer to use.
+    // */
+    //public WMS(WMSDTO config) {
+    //    super(config.getService());
+    //    setId("wms");
+    //    svgRenderer = config.getSvgRenderer();
+    //    svgAntiAlias = config.getSvgAntiAlias();
+    //    globalWatermarking = config.getGlobalWatermarking();
+    //    globalWatermarkingURL = config.getGlobalWatermarkingURL();
+    //    watermarkTransparency = config.getWatermarkTransparency();
+    //    watermarkPosition = config.getWatermarkPosition();
+    //    allowInterpolation = config.getAllowInterpolation();
+    //    baseMapLayers = config.getBaseMapLayers();
+    //    baseMapStyles = config.getBaseMapStyles();
+    //    baseMapEnvelopes = config.getBaseMapEnvelopes();
+    //    capabilitiesCrsList = config.getCapabilitiesCrs();
+    //}
 
-    public static final int WATERMARK_CC = 4;
+    ///**
+    // * Creates the WMS service by getting the WMSDTO object from the config and
+    // * calling {@link #WMS(WMSDTO)}.
+    // * 
+    // * @param config
+    // * @param data
+    // * @param geoServer
+    // * @throws ConfigurationException
+    // */
+    //public WMS(Config config, Data data, GeoServer geoServer, WFS wfs)
+    //        throws ConfigurationException {
+    //    this(config.getWms());
+    //    setData(data);
+    //    setGeoServer(geoServer);
+    //    this.wfs = wfs;
+    //}
 
-    public static final int WATERMARK_CR = 5;
-
-    public static final int WATERMARK_LL = 6;
-
-    public static final int WATERMARK_LC = 7;
-
-    public static final int WATERMARK_LR = 8;
-
-    /** svg Renderer to use * */
-    private String svgRenderer;
-
-    /** svg anitalias or not * */
-    private boolean svgAntiAlias;
-
-    /** global Watermarking * */
-    private boolean globalWatermarking;
-
-    /** global Watermarking URL * */
-    private String globalWatermarkingURL;
-
-    /** globlal Watermarking alpha * */
-    private int watermarkTransparency;
-
-    /**
-     * Watermark position
-     * 
-     * <pre>
-     * O -- O -- O      0 -- 1 -- 2
-     * |    |    |      |    |    |
-     * O -- O -- O  ==  3 -- 4 -- 5
-     * |    |    |      |    |    |
-     * O -- O -- O      6 -- 7 -- 8
-     * </pre>
-     * 
-     */
-    private int watermarkPosition;
-
-    /** rendering interpolation or not * */
-    private Map baseMapLayers;
-
-    private Map baseMapStyles;
-
-    private Map baseMapEnvelopes;
-
-    private String allowInterpolation;
-
-    private WFS wfs;
-
-    /**
-     * Limited set of CRS codes displayed in the capabilities document
-     */
-    private Set capabilitiesCrsList = Collections.EMPTY_SET;
-
-    /**
-     * WMS constructor.
-     * 
-     * <p>
-     * Stores the data specified in the WMSDTO object in this WMS Object for
-     * GeoServer to use.
-     * </p>
-     * 
-     * @param config
-     *            The data intended for GeoServer to use.
-     */
-    public WMS(WMSDTO config) {
-        super(config.getService());
-        setId("wms");
-        svgRenderer = config.getSvgRenderer();
-        svgAntiAlias = config.getSvgAntiAlias();
-        globalWatermarking = config.getGlobalWatermarking();
-        globalWatermarkingURL = config.getGlobalWatermarkingURL();
-        watermarkTransparency = config.getWatermarkTransparency();
-        watermarkPosition = config.getWatermarkPosition();
-        allowInterpolation = config.getAllowInterpolation();
-        baseMapLayers = config.getBaseMapLayers();
-        baseMapStyles = config.getBaseMapStyles();
-        baseMapEnvelopes = config.getBaseMapEnvelopes();
-        capabilitiesCrsList = config.getCapabilitiesCrs();
+    WMSInfo wms;
+    
+    public WMS( org.geoserver.config.GeoServer gs ) {
+        super( gs.getService(WMSInfo.class), gs );
+        init();
+        //wms.setName( FIXED_SERVICE_NAME );
     }
-
-    /**
-     * Creates the WMS service by getting the WMSDTO object from the config and
-     * calling {@link #WMS(WMSDTO)}.
-     * 
-     * @param config
-     * @param data
-     * @param geoServer
-     * @throws ConfigurationException
-     */
-    public WMS(Config config, Data data, GeoServer geoServer, WFS wfs)
-            throws ConfigurationException {
-        this(config.getWms());
-        setData(data);
-        setGeoServer(geoServer);
-        this.wfs = wfs;
+    
+    public void init() {
+        wms = gs.getService(WMSInfo.class);
+        service = wms;
     }
-
     /**
      * Quick hack to fix geot-770, need a full class rewrite otherwise and we
      * are too near release to do that
@@ -165,7 +198,8 @@ public class WMS extends Service {
      * @return
      */
     public WFS getWFS() {
-        return wfs;
+        return new WFS( gs );
+        //return wfs;
     }
 
     /**
@@ -178,32 +212,45 @@ public class WMS extends Service {
      */
     public void load(WMSDTO config) {
         super.load(config.getService());
-        svgRenderer = config.getSvgRenderer();
-        svgAntiAlias = config.getSvgAntiAlias();
-        globalWatermarking = config.getGlobalWatermarking();
-        globalWatermarkingURL = config.getGlobalWatermarkingURL();
-        watermarkTransparency = config.getWatermarkTransparency();
-        watermarkPosition = config.getWatermarkPosition();
-        allowInterpolation = config.getAllowInterpolation();
-        baseMapLayers = config.getBaseMapLayers();
-        baseMapStyles = config.getBaseMapStyles();
-        baseMapEnvelopes = config.getBaseMapEnvelopes();
-        capabilitiesCrsList = config.getCapabilitiesCrs();
+        
+        setSvgRenderer( config.getSvgRenderer() );
+        setSvgAntiAlias( config.getSvgAntiAlias() );
+        setGlobalWatermarking(config.getGlobalWatermarking());
+        setGlobalWatermarkingURL(config.getGlobalWatermarkingURL());
+        setWatermarkTransparency(config.getWatermarkTransparency());
+        setWatermarkPosition(config.getWatermarkPosition());
+        setAllowInterpolation(config.getAllowInterpolation());
+        setBaseMapLayers(config.getBaseMapLayers());
+        setBaseMapStyles(config.getBaseMapStyles());
+        setBaseMapEnvelopes(config.getBaseMapEnvelopes());
+        setCapabilitiesCrsList(config.getCapabilitiesCrs());
+        
+        //svgRenderer = config.getSvgRenderer();
+        //svgAntiAlias = config.getSvgAntiAlias();
+        //globalWatermarking = config.getGlobalWatermarking();
+        //globalWatermarkingURL = config.getGlobalWatermarkingURL();
+        //watermarkTransparency = config.getWatermarkTransparency();
+        //watermarkPosition = config.getWatermarkPosition();
+        //allowInterpolation = config.getAllowInterpolation();
+        //baseMapLayers = config.getBaseMapLayers();
+        //baseMapStyles = config.getBaseMapStyles();
+        //baseMapEnvelopes = config.getBaseMapEnvelopes();
+        //capabilitiesCrsList = config.getCapabilitiesCrs();
     }
 
-    /**
-     * WMS constructor.
-     * 
-     * <p>
-     * Package constructor intended for default use by GeoServer
-     * </p>
-     * 
-     * @see GeoServer#GeoServer()
-     */
-    WMS() {
-        super(new ServiceDTO());
-        setId("wms");
-    }
+    ///**
+    // * WMS constructor.
+    // * 
+    // * <p>
+    // * Package constructor intended for default use by GeoServer
+    // * </p>
+    // * 
+    // * @see GeoServer#GeoServer()
+    // */
+    //WMS() {
+    //    super(new ServiceDTO());
+    //    setId("wms");
+    //}
 
     /**
      * Implement toDTO.
@@ -220,20 +267,33 @@ public class WMS extends Service {
      * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
      * @see WMSDTO
      */
-    public Object toDTO() {
+    public WMSDTO toDTO() {
         WMSDTO w = new WMSDTO();
         w.setService((ServiceDTO) super.toDTO());
-        w.setSvgRenderer(svgRenderer);
-        w.setSvgAntiAlias(svgAntiAlias);
-        w.setGlobalWatermarking(globalWatermarking);
-        w.setGlobalWatermarkingURL(globalWatermarkingURL);
-        w.setWatermarkTransparency(watermarkTransparency);
-        w.setWatermarkPosition(watermarkPosition);
-        w.setAllowInterpolation(allowInterpolation);
-        w.setBaseMapLayers(baseMapLayers);
-        w.setBaseMapStyles(baseMapStyles);
-        w.setBaseMapEnvelopes(baseMapEnvelopes);
-        w.setCapabilitiesCrs(capabilitiesCrsList);
+        
+        w.setSvgRenderer(getSvgRenderer());
+        w.setSvgAntiAlias(isSvgAntiAlias());
+        w.setGlobalWatermarking(isGlobalWatermarking());
+        w.setGlobalWatermarkingURL(getGlobalWatermarkingURL());
+        w.setWatermarkTransparency(getWatermarkTransparency());
+        w.setWatermarkPosition(getWatermarkPosition());
+        w.setAllowInterpolation(getAllowInterpolation());
+        w.setBaseMapLayers(getBaseMapLayers());
+        w.setBaseMapStyles(getBaseMapStyles());
+        w.setBaseMapEnvelopes(getBaseMapEnvelopes());
+        w.setCapabilitiesCrs(getCapabilitiesCrsList());
+        
+        //w.setSvgRenderer(svgRenderer);
+        //w.setSvgAntiAlias(svgAntiAlias);
+        //w.setGlobalWatermarking(globalWatermarking);
+        //w.setGlobalWatermarkingURL(globalWatermarkingURL);
+        //w.setWatermarkTransparency(watermarkTransparency);
+        //w.setWatermarkPosition(watermarkPosition);
+        //w.setAllowInterpolation(allowInterpolation);
+        //w.setBaseMapLayers(baseMapLayers);
+        //w.setBaseMapStyles(baseMapStyles);
+        //w.setBaseMapEnvelopes(baseMapEnvelopes);
+        //w.setCapabilitiesCrs(capabilitiesCrsList);
 
         return w;
     }
@@ -251,15 +311,15 @@ public class WMS extends Service {
         return EXCEPTION_FORMATS;
     }
 
-    /**
-     * overrides getName() to return the fixed service name as specified by OGC
-     * WMS 1.1 spec
-     * 
-     * @return static service name.
-     */
-    public String getName() {
-        return FIXED_SERVICE_NAME;
-    }
+    ///**
+    // * overrides getName() to return the fixed service name as specified by OGC
+    // * WMS 1.1 spec
+    // * 
+    // * @return static service name.
+    // */
+    //public String getName() {
+    //    return FIXED_SERVICE_NAME;
+    //}
 
     /**
      * Returns the version of this WMS Instance.
@@ -315,21 +375,25 @@ public class WMS extends Service {
      * @return the id of the SVG renderer being used by the wms.
      */
     public String getSvgRenderer() {
-        return svgRenderer;
+        return (String) wms.getMetadata().get( "svgRenderer" );
+        //return svgRenderer;
     }
 
     /**
      * Sets the id of the SVG renderer being used by the wms.
      */
     public void setSvgRenderer(String svgRenderer) {
-        this.svgRenderer = svgRenderer;
+        wms.getMetadata().put( "svgRenderer", svgRenderer );
+        //this.svgRenderer = svgRenderer;
     }
 
     /**
      * @return Flag indicating wether the svg renderer should anti-alias or not.
      */
     public boolean isSvgAntiAlias() {
-        return svgAntiAlias;
+        Boolean svgAntiAlias = (Boolean) wms.getMetadata().get( "svgAntiAlias");
+        return svgAntiAlias != null ? svgAntiAlias : true; 
+        //return svgAntiAlias;
     }
 
     /**
@@ -337,85 +401,192 @@ public class WMS extends Service {
      * not.
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
-        this.svgAntiAlias = svgAntiAlias;
+        wms.getMetadata().put( "svgAntiAlias", svgAntiAlias );
+        //this.svgAntiAlias = svgAntiAlias;
     }
 
     /**
      * @return Flag indicating wether the renderer should interpolate or not.
      */
     public String getAllowInterpolation() {
-        return allowInterpolation;
+        return wms.getInterpolation();
+        //return allowInterpolation;
     }
 
     /**
      * Sets the Flag indicating wether the renderer should interpolate or not.
      */
     public void setAllowInterpolation(String allowInterpolation) {
-        this.allowInterpolation = allowInterpolation;
+        wms.setInterpolation(allowInterpolation);
+        //this.allowInterpolation = allowInterpolation;
     }
 
     public Map getBaseMapLayers() {
-        return baseMapLayers != null ? baseMapLayers : Collections.EMPTY_MAP;
+        HashMap baseLayers = new HashMap();
+        for ( LayerGroupInfo map : gs.getCatalog().getLayerGroups() ) {
+            StringBuffer layers = new StringBuffer();
+            for ( LayerInfo l : map.getLayers() ) {
+                layers.append( l.getName() ).append( "," );
+            }
+            layers.setLength( layers.length() - 1 );
+            baseLayers.put( map.getName(), layers.toString() );
+        }
+        return baseLayers;
+        //return baseMapLayers != null ? baseMapLayers : Collections.EMPTY_MAP;
     }
 
     public void setBaseMapLayers(Map layers) {
-        baseMapLayers = layers;
+        HashMap baseLayers = new HashMap();
+        for ( LayerGroupInfo map : gs.getCatalog().getLayerGroups() ) {
+            gs.getCatalog().remove( map );
+        }
+        for ( Iterator e = layers.entrySet().iterator(); e.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) e.next();
+            String name = (String) entry.getKey();
+            String[] layerNames = ((String) entry.getValue()).split(",");
+            
+            LayerGroupInfo baseMap = gs.getCatalog().getFactory().createLayerGroup();
+            baseMap.setName( name );
+            for ( String layerName : layerNames ) {
+                ResourceInfo resource = null;
+                
+                if ( layerName.contains( ":" ) ) {
+                    resource = gs.getCatalog().getResourceByName( layerName.split(":")[0], layerName.split(":")[1], ResourceInfo.class );
+                }
+                else {
+                    resource = gs.getCatalog().getResourceByName( layerName, ResourceInfo.class );
+                }
+                
+                if ( resource == null ) {
+                    throw new RuntimeException( "No such layer: " + layerName );
+                }
+                LayerInfo layer = gs.getCatalog().getLayers( resource ).get( 0 );
+                if ( layer == null ) {
+                    throw new RuntimeException( "No such layer: " + layerName );
+                }
+                
+                baseMap.getLayers().add( layer );
+            }
+            gs.getCatalog().add( baseMap );
+        }
+        
     }
 
     public Map getBaseMapStyles() {
-        return baseMapStyles != null ? baseMapStyles : Collections.EMPTY_MAP;
+        HashMap baseMapStyles = new HashMap();
+        for ( LayerGroupInfo map : gs.getCatalog().getLayerGroups() ) {
+            StringBuffer styles = new StringBuffer();
+            for ( StyleInfo s : map.getStyles() ) {
+                styles.append( s.getName() ).append( "," );
+            }
+            styles.setLength( styles.length() - 1 );
+            baseMapStyles.put( map.getName(), styles.toString() );
+        }
+        return baseMapStyles;
+        //return baseMapStyles != null ? baseMapStyles : Collections.EMPTY_MAP;
     }
 
     public void setBaseMapStyles(Map styles) {
-        baseMapStyles = styles;
+        for ( Iterator e = styles.entrySet().iterator(); e.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) e.next();
+            String name = (String) entry.getKey();
+            String[] styleNames = ((String) entry.getValue()).split(",");
+            
+            LayerGroupInfo map = gs.getCatalog().getLayerGroupByName( name );
+            map.getStyles().clear();
+            for ( String styleName : styleNames ) {
+                StyleInfo style = gs.getCatalog().getStyleByName( styleName );
+                if ( style == null ) {
+                    throw new RuntimeException( "No such style: " + styleName );
+                }
+                map.getStyles().add( style );
+            }
+            
+            gs.getCatalog().save( map );
+        }
+        //baseMapStyles = styles;
     }
 
     public Map getBaseMapEnvelopes() {
-        return baseMapEnvelopes != null ? baseMapEnvelopes : Collections.EMPTY_MAP;
+        HashMap baseMapEnvelopes = new HashMap();
+        for ( LayerGroupInfo map : gs.getCatalog().getLayerGroups() ) {
+            baseMapEnvelopes.put( map.getName(), new GeneralEnvelope( map.getBounds() ) );
+        }
+        return baseMapEnvelopes;
+        //return baseMapEnvelopes != null ? baseMapEnvelopes : Collections.EMPTY_MAP;
     }
 
     public void getBaseMapEnvelopes(Map envelopes) {
-        baseMapEnvelopes = envelopes;
+        setBaseMapEnvelopes(envelopes);
+        //baseMapEnvelopes = envelopes;
+    }
+    
+    public void setBaseMapEnvelopes(Map envelopes) {
+        for ( Iterator e = envelopes.entrySet().iterator(); e.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) e.next();
+            String name = (String) entry.getKey();
+            GeneralEnvelope env = (GeneralEnvelope) entry.getValue();
+            
+            LayerGroupInfo map = gs.getCatalog().getLayerGroupByName( name );
+            map.setBounds( new ReferencedEnvelope( env ) );
+            gs.getCatalog().save( map );
+        }
+        //baseMapEnvelopes = envelopes;
     }
 
     public boolean isGlobalWatermarking() {
-        return globalWatermarking;
+        return wms.getWatermark().isEnabled();
+        //return globalWatermarking;
     }
 
     public void setGlobalWatermarking(boolean globalWatermarking) {
-        this.globalWatermarking = globalWatermarking;
+        wms.getWatermark().setEnabled(globalWatermarking);
+        //this.globalWatermarking = globalWatermarking;
     }
 
     public String getGlobalWatermarkingURL() {
-        return globalWatermarkingURL;
+        return wms.getWatermark().getURL();
+        //return globalWatermarkingURL;
     }
 
     public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
-        this.globalWatermarkingURL = globalWatermarkingURL;
+        wms.getWatermark().setURL( globalWatermarkingURL );
+        //this.globalWatermarkingURL = globalWatermarkingURL;
     }
 
     public int getWatermarkTransparency() {
-        return watermarkTransparency;
+        return wms.getWatermark().getTransparency();
+        //return watermarkTransparency;
     }
 
     public void setWatermarkTransparency(int watermarkTransparency) {
-        this.watermarkTransparency = watermarkTransparency;
+        wms.getWatermark().setTransparency(watermarkTransparency);
+        //this.watermarkTransparency = watermarkTransparency;
     }
 
     public int getWatermarkPosition() {
-        return watermarkPosition;
+        return wms.getWatermark().getPosition().getCode();
+        //return watermarkPosition;
     }
 
     public void setWatermarkPosition(int watermarkPosition) {
-        this.watermarkPosition = watermarkPosition;
+        WatermarkInfo.Position p = WatermarkInfo.Position.get( watermarkPosition );
+        wms.getWatermark().setPosition(p);
+        //this.watermarkPosition = watermarkPosition;
     }
 
     public Set getCapabilitiesCrsList() {
-        return new TreeSet(capabilitiesCrsList);
+        return new TreeSet(wms.getSRS());
+        //return new TreeSet(capabilitiesCrsList);
     }
 
     public void setCapabilitiesCrsList(Set epsgCodes) {
-        this.capabilitiesCrsList = epsgCodes == null ? Collections.EMPTY_SET : new TreeSet(
-                epsgCodes);
+        wms.getSRS().clear();
+        if ( epsgCodes != null ) {
+            wms.getSRS().addAll( epsgCodes );    
+        }
+        
+        //this.capabilitiesCrsList = epsgCodes == null ? Collections.EMPTY_SET : new TreeSet(
+        //        epsgCodes);
     }
 }

@@ -3,18 +3,19 @@
 
 <beans>
 
-	<!-- declare the wms service. -->
-	<bean id="wms"
+	<!-- wms configuration bean -->
+	<!--bean id="wms"
 		class="org.vfny.geoserver.global.WMS" depends-on="config">
-        <!-- the depends-on attribute ensures config was initialized before
-          trying to instantiate this bean.
-         -->
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="data"/>
 		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="wfs"/>
-	</bean>
-		
+	</bean-->
+	<bean id="wmsLoader" class="org.geoserver.wms.WMSLoader"/>
+    <bean id="wms" class="org.vfny.geoserver.global.WMS">
+      <constructor-arg ref="geoServer2"/>
+    </bean>
+    
 	<bean id="wmsConfig"
 		class="org.vfny.geoserver.config.WMSConfig">
 		<constructor-arg ref="wms"/>
