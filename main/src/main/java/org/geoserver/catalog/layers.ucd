@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="layers" size="1741,2411" id="org.geoserver.catalog" metadata="uml2-1.0" initialized="true" scrolledY="365" tag="1000" key="323030373031323220636F6E66696775726174696F6E2F6A64656F6C697665">
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.1/@sourceConnections.2 //@children.1/@sourceConnections.1" name="StyleInfo" location="1050,1020" size="116,134" id="org.geoserver.catalog/StyleInfo" runTimeClassModel="getId(),title,abstract,name">
+    <children xsi:type="editmodel:CompartmentEditModel" size="93,54">
+      <children xsi:type="editmodel:AttributeEditModel" name="abstract" id="org.geoserver.catalog/StyleInfo#abstract"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="name" id="org.geoserver.catalog/StyleInfo#name"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="title" id="org.geoserver.catalog/StyleInfo#title"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="53,18">
+      <children xsi:type="editmodel:MethodEditModel" name="getId" id="org.geoserver.catalog/StyleInfo#getId()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.2/@sourceConnections.0" name="LayerInfo" location="810,823" size="126,134" id="org.geoserver.catalog/LayerInfo" runTimeClassModel="getId(),enabled,metadata,path">
+    <children xsi:type="editmodel:CompartmentEditModel" size="103,54">
+      <children xsi:type="editmodel:AttributeEditModel" name="enabled" id="org.geoserver.catalog/LayerInfo#enabled"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="path" id="org.geoserver.catalog/LayerInfo#path"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="metadata" id="org.geoserver.catalog/LayerInfo#metadata"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="53,18">
+      <children xsi:type="editmodel:MethodEditModel" name="getId" id="org.geoserver.catalog/LayerInfo#getId()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" autoLocated="true" id="org.geoserver.catalog/ResourceInfo@resource+org.geoserver.catalog/LayerInfo@layerInfo" source="//@children.1" target="//@children.3" targetEnd="//@children.1/@sourceConnections.0/@children.2" label="//@children.1/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@sourceConnections.0/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,13" fontInfo="Arial-8-0" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="layerInfo" location="0,67" id="org.geoserver.catalog/ResourceInfo@resource+org.geoserver.catalog/LayerInfo@layerInfo|org.geoserver.catalog/LayerInfo#layerInfo" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="resource" location="212,140" id="org.geoserver.catalog/ResourceInfo@resource+org.geoserver.catalog/LayerInfo@layerInfo|org.geoserver.catalog/ResourceInfo#resource" multiplicityLabel="//@children.1/@sourceConnections.0/@children.2/@children.1" roleLabel="//@children.1/@sourceConnections.0/@children.2/@children.0" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" + resource" location="669,870" size="54,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="0..1" location="669,897" size="17,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+      </children>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" id="org.geoserver.catalog/StyleInfo@defaultStyle+org.geoserver.catalog/LayerInfo@resourceInfo" source="//@children.1" target="//@children.0" targetEnd="//@children.1/@sourceConnections.1/@children.2" label="//@children.1/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@sourceConnections.1/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,13" fontInfo="Arial-8-0" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="resourceInfo" location="126,33" id="org.geoserver.catalog/StyleInfo@defaultStyle+org.geoserver.catalog/LayerInfo@resourceInfo|org.geoserver.catalog/LayerInfo#resourceInfo" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="defaultStyle" location="84,0" id="org.geoserver.catalog/StyleInfo@defaultStyle+org.geoserver.catalog/LayerInfo@resourceInfo|org.geoserver.catalog/StyleInfo#defaultStyle" multiplicityLabel="//@children.1/@sourceConnections.1/@children.2/@children.1" roleLabel="//@children.1/@sourceConnections.1/@children.2/@children.0" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" + defaultStyle" location="1141,1000" size="72,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="0..1" location="1110,1000" size="17,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+      </children>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" id="org.geoserver.catalog/StyleInfo@styles+org.geoserver.catalog/LayerInfo@resourceInfo" source="//@children.1" target="//@children.0" targetEnd="//@children.1/@sourceConnections.2/@children.2" label="//@children.1/@sourceConnections.2/@children.0" sourceEnd="//@children.1/@sourceConnections.2/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,13" fontInfo="Arial-8-0" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="resourceInfo" location="71,134" id="org.geoserver.catalog/StyleInfo@styles+org.geoserver.catalog/LayerInfo@resourceInfo|org.geoserver.catalog/LayerInfo#resourceInfo" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="styles" location="0,10" id="org.geoserver.catalog/StyleInfo@styles+org.geoserver.catalog/LayerInfo@resourceInfo|org.geoserver.catalog/StyleInfo#styles" multiplicityLabel="//@children.1/@sourceConnections.2/@children.2/@children.1" roleLabel="//@children.1/@sourceConnections.2/@children.2/@children.0" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" + styles" location="1005,1037" size="38,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="*" location="1038,1010" size="5,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+      </children>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" name="LegendInfo" location="780,585" size="155,152" id="org.geoserver.catalog/LegendInfo" runTimeClassModel="getId(),width,height,onlineResource,format">
+    <children xsi:type="editmodel:CompartmentEditModel" size="132,72">
+      <children xsi:type="editmodel:AttributeEditModel" name="format" id="org.geoserver.catalog/LegendInfo#format"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="height" id="org.geoserver.catalog/LegendInfo#height"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="onlineResource" id="org.geoserver.catalog/LegendInfo#onlineResource"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="width" id="org.geoserver.catalog/LegendInfo#width"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="53,18">
+      <children xsi:type="editmodel:MethodEditModel" name="getId" id="org.geoserver.catalog/LegendInfo#getId()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" autoLocated="true" id="org.geoserver.catalog/LegendInfo@legend+org.geoserver.catalog/LayerInfo@legend" source="//@children.2" target="//@children.1" targetEnd="//@children.2/@sourceConnections.0/@children.2" label="//@children.2/@sourceConnections.0/@children.0" sourceEnd="//@children.2/@sourceConnections.0/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,13" fontInfo="Arial-8-0" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="legend" location="92,152" id="org.geoserver.catalog/LegendInfo@legend+org.geoserver.catalog/LayerInfo@legend|org.geoserver.catalog/LegendInfo#legend" attachSource="true" multiplicityLabel="//@children.2/@sourceConnections.0/@children.1/@children.1" roleLabel="//@children.2/@sourceConnections.0/@children.1/@children.0" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" + legend" location="879,744" size="47,13" fontInfo="Arial-8-0" anchorKind="FirstPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="*" location="860,744" size="5,13" fontInfo="Arial-8-0" anchorKind="FirstPart"/>
+      </children>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="legend" location="62,0" id="org.geoserver.catalog/LegendInfo@legend+org.geoserver.catalog/LayerInfo@legend|org.geoserver.catalog/LayerInfo#legend"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.1/@sourceConnections.0" name="ResourceInfo" location="450,750" size="212,314" id="org.geoserver.catalog/ResourceInfo" runTimeClassModel="getId(),sRS,metadataLinks,title,keywords,metadata,getAdapter(Ljava.lang.Class;Ljava.util.Map;),boundingBox,abstract,enabled,description,name,latLonBoundingBox">
+    <children xsi:type="editmodel:CompartmentEditModel" size="189,216">
+      <children xsi:type="editmodel:AttributeEditModel" name="abstract" id="org.geoserver.catalog/ResourceInfo#abstract"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="boundingBox" id="org.geoserver.catalog/ResourceInfo#boundingBox"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="description" id="org.geoserver.catalog/ResourceInfo#description"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="enabled" id="org.geoserver.catalog/ResourceInfo#enabled"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="keywords" id="org.geoserver.catalog/ResourceInfo#keywords"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="latLonBoundingBox" id="org.geoserver.catalog/ResourceInfo#latLonBoundingBox"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="metadata" id="org.geoserver.catalog/ResourceInfo#metadata"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="metadataLinks" id="org.geoserver.catalog/ResourceInfo#metadataLinks"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="name" id="org.geoserver.catalog/ResourceInfo#name"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="sRS" id="org.geoserver.catalog/ResourceInfo#sRS"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="title" id="org.geoserver.catalog/ResourceInfo#title"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="82,36">
+      <children xsi:type="editmodel:MethodEditModel" name="getAdapter" id="org.geoserver.catalog/ResourceInfo#getAdapter(Ljava.lang.Class;Ljava.util.Map;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getId" id="org.geoserver.catalog/ResourceInfo#getId()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" properties="wireOptions=3" autoName="false"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showInterfaceStereotype="true" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>

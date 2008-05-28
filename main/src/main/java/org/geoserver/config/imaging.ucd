@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="imaging" size="825,499" id="org.geoserver.config" metadata="uml2-1.0" initialized="true" tag="1000" key="323030373031323220636F6E66696775726174696F6E2F6A64656F6C697665">
+  <children xsi:type="editmodel:InterfaceEditModel" name="ImagingInfo" location="286,186" size="172,188" id="org.geoserver.config/ImagingInfo">
+    <children xsi:type="editmodel:CompartmentEditModel" size="149,90">
+      <children xsi:type="editmodel:AttributeEditModel" name="allowInterpolation" id="org.geoserver.config/ImagingInfo#allowInterpolation"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="metadata" id="org.geoserver.config/ImagingInfo#metadata"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="recycling" id="org.geoserver.config/ImagingInfo#recycling"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="tilePriority" id="org.geoserver.config/ImagingInfo#tilePriority"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="tileThreads" id="org.geoserver.config/ImagingInfo#tileThreads"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="122,36">
+      <children xsi:type="editmodel:MethodEditModel" name="getClientProperties" id="org.geoserver.config/ImagingInfo#getClientProperties()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getId" id="org.geoserver.config/ImagingInfo#getId()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" autoLocated="true" id="org.geoserver.config/ImageFormatInfo@imageFormats+org.geoserver.config/ImagingInfo@imagingInfo" source="//@children.0" target="//@children.1" targetEnd="//@children.0/@sourceConnections.0/@children.2" label="//@children.0/@sourceConnections.0/@children.0" sourceEnd="//@children.0/@sourceConnections.0/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,13" fontInfo="Arial-8-0" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="imagingInfo" location="172,94" id="org.geoserver.config/ImageFormatInfo@imageFormats+org.geoserver.config/ImagingInfo@imagingInfo|org.geoserver.config/ImagingInfo#imagingInfo" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="imageFormats" location="0,76" id="org.geoserver.config/ImageFormatInfo@imageFormats+org.geoserver.config/ImagingInfo@imagingInfo|org.geoserver.config/ImageFormatInfo#imageFormats" multiplicityLabel="//@children.0/@sourceConnections.0/@children.2/@children.1" roleLabel="//@children.0/@sourceConnections.0/@children.2/@children.0" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" + imageFormats" location="497,260" size="81,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="*" location="573,287" size="5,13" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+      </children>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.0/@sourceConnections.0" name="ImageFormatInfo" location="585,204" size="176,152" id="org.geoserver.config/ImageFormatInfo">
+    <children xsi:type="editmodel:CompartmentEditModel" size="153,54">
+      <children xsi:type="editmodel:AttributeEditModel" name="antiAliasing" id="org.geoserver.config/ImageFormatInfo#antiAliasing"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="metadata" id="org.geoserver.config/ImageFormatInfo#metadata"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="nativeAcceleration" id="org.geoserver.config/ImageFormatInfo#nativeAcceleration"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="122,36">
+      <children xsi:type="editmodel:MethodEditModel" name="getClientProperties" id="org.geoserver.config/ImageFormatInfo#getClientProperties()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getId" id="org.geoserver.config/ImageFormatInfo#getId()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" properties="wireOptions=3" autoName="false"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showInterfaceStereotype="true" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>

@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.geoserver.catalog.MetadataLinkInfo;
 
 
 /**
@@ -13,45 +14,65 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id$
+ * 
+ * @deprecated use {@link MetadataLinkInfo}.
  */
 public class MetaDataLink extends GlobalLayerSupertype {
-    /**
-     *
-     * @uml.property name="type" multiplicity="(0 1)"
-     */
-    private String type;
+    ///**
+    // *
+    // * @uml.property name="type" multiplicity="(0 1)"
+    // */
+    //private String type;
+    //
+    ///**
+    // *
+    // * @uml.property name="about" multiplicity="(0 1)"
+    // */
+    //private String about;
+    //
+    ///**
+    // *
+    // * @uml.property name="metadataType" multiplicity="(0 1)"
+    // */
+    //private String metadataType;
+    //
+    ///**
+    // *
+    // * @uml.property name="content" multiplicity="(0 1)"
+    // */
+    //private String content;
 
-    /**
-     *
-     * @uml.property name="about" multiplicity="(0 1)"
-     */
-    private String about;
+    MetadataLinkInfo link;
+    
+    ///**
+    // * Builds an empty metadata link
+    // */
+    //public MetaDataLink() {
+    //}
+    
+    //public MetaDataLink(MetaDataLink other) {
+    //    setType( other.getType() );
+    //    setAbout( other.getAbout() );
+    //    setMetadataType( other.getMetadataType() );
+    //    setContent( other.getContent() );
+    //}
 
-    /**
-     *
-     * @uml.property name="metadataType" multiplicity="(0 1)"
-     */
-    private String metadataType;
-
-    /**
-     *
-     * @uml.property name="content" multiplicity="(0 1)"
-     */
-    private String content;
-
-    /**
-     * Builds an empty metadata link
-     */
-    public MetaDataLink() {
+    public MetadataLinkInfo getMetadataLink() {
+        return link;
+    }
+    
+    public MetaDataLink(MetadataLinkInfo link) {
+        this.link = link;
     }
 
-    public MetaDataLink(MetaDataLink other) {
-        this.type = other.type;
-        this.about = other.about;
-        this.metadataType = other.metadataType;
-        this.content = other.content;
+    public MetaDataLink load( MetaDataLink other ) {
+        setType( other.getType() );
+        setAbout( other.getAbout() );
+        setMetadataType( other.getMetadataType() );
+        setContent( other.getContent() );
+        return this;
     }
-
+    
     /* (non-Javadoc)
      * @see org.vfny.geoserver.global.GlobalLayerSupertype#toDTO()
      */
@@ -65,7 +86,8 @@ public class MetaDataLink extends GlobalLayerSupertype {
      * @uml.property name="about"
      */
     public String getAbout() {
-        return about;
+        return link.getAbout();
+        //return about;
     }
 
     /**
@@ -74,7 +96,8 @@ public class MetaDataLink extends GlobalLayerSupertype {
      * @uml.property name="about"
      */
     public void setAbout(String about) {
-        this.about = about;
+        link.setAbout(about);
+        //this.about = about;
     }
 
     /**
@@ -83,7 +106,8 @@ public class MetaDataLink extends GlobalLayerSupertype {
      * @uml.property name="metadataType"
      */
     public String getMetadataType() {
-        return metadataType;
+        return link.getMetadataType();
+        //return metadataType;
     }
 
     /**
@@ -92,7 +116,8 @@ public class MetaDataLink extends GlobalLayerSupertype {
      * @uml.property name="metadataType"
      */
     public void setMetadataType(String metadataType) {
-        this.metadataType = metadataType;
+        link.setMetadataType(metadataType);
+        //this.metadataType = metadataType;
     }
 
     /**
@@ -101,7 +126,8 @@ public class MetaDataLink extends GlobalLayerSupertype {
      * @uml.property name="type"
      */
     public String getType() {
-        return type;
+        return link.getType();
+        //return type;
     }
 
     /**
@@ -110,7 +136,8 @@ public class MetaDataLink extends GlobalLayerSupertype {
      * @uml.property name="type"
      */
     public void setType(String type) {
-        this.type = type;
+        link.setType(type);
+        //this.type = type;
     }
 
     /**
@@ -119,7 +146,8 @@ public class MetaDataLink extends GlobalLayerSupertype {
      * @uml.property name="content"
      */
     public String getContent() {
-        return content;
+        return link.getContent();
+        //return content;
     }
 
     /**
@@ -128,11 +156,12 @@ public class MetaDataLink extends GlobalLayerSupertype {
      * @uml.property name="content"
      */
     public void setContent(String content) {
-        this.content = content;
+        link.setContent(content);
+        //this.content = content;
     }
 
     public String toString() {
-        return new ToStringBuilder(this).append(content).append(type).append(metadataType)
-                                        .append(about).toString();
+        return new ToStringBuilder(this).append(getContent()).append(getType()).append(getMetadataType())
+                                        .append(getAbout()).toString();
     }
 }

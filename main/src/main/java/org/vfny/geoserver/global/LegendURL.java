@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.catalog.LegendInfo;
 import org.vfny.geoserver.global.dto.LegendURLDTO;
 
 
@@ -12,20 +13,24 @@ import org.vfny.geoserver.global.dto.LegendURLDTO;
  *
  * @author Charles Kolbowicz
  * @version $Id$
+ * 
+ * @deprecated use {@link LegendInfo}.
  */
 public class LegendURL extends GlobalLayerSupertype {
-    /** Holds value of legend icon width. */
-    private int width;
+    ///** Holds value of legend icon width. */
+    //private int width;
+    //
+    ///** Holds value of legend icon height. */
+    //private int height;
+    //
+    ///** Holds value of legend icon format. */
+    //private String format;
+    //
+    ///** Holds value of legend icon onlineResource. */
+    //private String onlineResource;
 
-    /** Holds value of legend icon height. */
-    private int height;
-
-    /** Holds value of legend icon format. */
-    private String format;
-
-    /** Holds value of legend icon onlineResource. */
-    private String onlineResource;
-
+    LegendInfo legend;
+    
     /**
      * Legend constructor.
      *
@@ -37,17 +42,20 @@ public class LegendURL extends GlobalLayerSupertype {
      *
      * @throws NullPointerException when the param is null
      */
-    public LegendURL(LegendURLDTO dto) {
-        if (dto == null) {
-            throw new NullPointerException();
-        }
+    //public LegendURL(LegendURLDTO dto) {
+    //    if (dto == null) {
+    //        throw new NullPointerException();
+    //    }
+    //
+    //    onlineResource = dto.getOnlineResource();
+    //    format = dto.getFormat();
+    //    width = dto.getWidth();
+    //    height = dto.getHeight();
+    //}
 
-        onlineResource = dto.getOnlineResource();
-        format = dto.getFormat();
-        width = dto.getWidth();
-        height = dto.getHeight();
+    public LegendURL(LegendInfo legend) {
+        this.legend = legend;
     }
-
     /**
      * load purpose.
      *
@@ -63,19 +71,30 @@ public class LegendURL extends GlobalLayerSupertype {
         if (dto == null) {
             throw new NullPointerException();
         }
-
-        onlineResource = dto.getOnlineResource();
-        format = dto.getFormat();
-        width = dto.getWidth();
-        height = dto.getHeight();
+        
+        legend.setOnlineResource( dto.getOnlineResource() );
+        legend.setFormat( dto.getFormat() );
+        legend.setWidth( dto.getWidth() );
+        legend.setHeight( dto.getHeight() );
+        
+        //onlineResource = dto.getOnlineResource();
+        //format = dto.getFormat();
+        //width = dto.getWidth();
+        //height = dto.getHeight();
     }
 
-    Object toDTO() {
+    LegendURLDTO toDTO() {
         LegendURLDTO dto = new LegendURLDTO();
-        dto.setOnlineResource(onlineResource);
-        dto.setFormat(format);
-        dto.setWidth(width);
-        dto.setHeight(height);
+        
+        dto.setOnlineResource( legend.getOnlineResource() );
+        dto.setFormat( legend.getFormat() );
+        dto.setWidth( legend.getWidth() );
+        dto.setHeight( legend.getHeight() );
+        
+        //dto.setOnlineResource(onlineResource);
+        //dto.setFormat(format);
+        //dto.setWidth(width);
+        //dto.setHeight(height);
 
         return dto;
     }
@@ -86,7 +105,8 @@ public class LegendURL extends GlobalLayerSupertype {
      * @return Value of property width.
      */
     public int getWidth() {
-        return this.width;
+        return legend.getWidth();
+        //return this.width;
     }
 
     /**
@@ -95,7 +115,8 @@ public class LegendURL extends GlobalLayerSupertype {
      * @return Value of  legend icon height.
      */
     public int getHeight() {
-        return this.height;
+        return legend.getHeight();
+        //return this.height;
     }
 
     /**
@@ -104,7 +125,8 @@ public class LegendURL extends GlobalLayerSupertype {
      * @return Value of  legend icon format.
      */
     public String getFormat() {
-        return this.format;
+        return legend.getFormat();
+        //return this.format;
     }
 
     /**
@@ -113,6 +135,7 @@ public class LegendURL extends GlobalLayerSupertype {
      * @return Value of  legend icon onlineResource.
      */
     public String getOnlineResource() {
-        return this.onlineResource;
+        return legend.getOnlineResource();
+        //return this.onlineResource;
     }
 }

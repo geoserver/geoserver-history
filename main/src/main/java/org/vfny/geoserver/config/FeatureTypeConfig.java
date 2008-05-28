@@ -320,7 +320,7 @@ public class FeatureTypeConfig {
 
         dataStoreId = dto.getDataStoreId();
         latLongBBox = new Envelope(dto.getLatLongBBox());
-        nativeBBox = new Envelope(dto.getNativeBBox());
+        nativeBBox = dto.getNativeBBox() != null ? new Envelope(dto.getNativeBBox()) : null;
         SRS = dto.getSRS();
         SRSHandling = dto.getSRSHandling();
 

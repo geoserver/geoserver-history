@@ -9,9 +9,15 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
+
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,69 +38,85 @@ import java.util.Set;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id$
+ * 
+ * @deprecated use {@link NamespaceInfo}
  */
 public class NameSpaceInfo extends GlobalLayerSupertype {
-    private String prefix;
-    private String uri;
-    private boolean _default;
+    //private String prefix;
+    //private String uri;
+    //private boolean _default;
+    //
+    ///** ref to parent set of datastores. */
+    //private Data data;
+    //
+    ///** metadata */
+    //private Map meta;
+    //
+    ///**
+    // * NameSpaceConfig constructor.
+    // *
+    // * <p>
+    // * Creates a NameSpaceConfig based on the data provided. All the data
+    // * structures are cloned.
+    // * </p>
+    // *
+    // * @param data DOCUMENT ME!
+    // * @param ns The namespace to copy.
+    // *
+    // * @throws NullPointerException when the param is null
+    // */
+    //public NameSpaceInfo(Data data, NameSpaceInfoDTO ns) {
+    //    if (ns == null) {
+    //        throw new NullPointerException("Non null NameSpaceInfoDTO required");
+    //    }
+    //
+    //    if (data == null) {
+    //        throw new NullPointerException("Non null Data required");
+    //    }
+    //
+    //    this.data = data;
+    //
+    //    prefix = ns.getPrefix();
+    //    uri = ns.getUri();
+    //    _default = ns.isDefault();
+    //}
+    //
+    ///**
+    // * NameSpaceConfig constructor.
+    // *
+    // * <p>
+    // * Creates a copy of the NameSpaceConfig provided. All the data structures
+    // * are cloned.
+    // * </p>
+    // *
+    // * @param ns The namespace to copy.
+    // *
+    // * @throws NullPointerException when the param is null
+    // */
+    //public NameSpaceInfo(NameSpaceInfo ns) {
+    //    if (ns == null) {
+    //        throw new NullPointerException();
+    //    }
+    //
+    //    setPrefix(ns.getPrefix());
+    //    setUri(ns.getUri());
+    //    setDefault(ns.isDefault());
+    //}
 
-    /** ref to parent set of datastores. */
-    private Data data;
-
-    /** metadata */
-    private Map meta;
-
-    /**
-     * NameSpaceConfig constructor.
-     *
-     * <p>
-     * Creates a NameSpaceConfig based on the data provided. All the data
-     * structures are cloned.
-     * </p>
-     *
-     * @param data DOCUMENT ME!
-     * @param ns The namespace to copy.
-     *
-     * @throws NullPointerException when the param is null
-     */
-    public NameSpaceInfo(Data data, NameSpaceInfoDTO ns) {
-        if (ns == null) {
-            throw new NullPointerException("Non null NameSpaceInfoDTO required");
-        }
-
-        if (data == null) {
-            throw new NullPointerException("Non null Data required");
-        }
-
-        this.data = data;
-
-        prefix = ns.getPrefix();
-        uri = ns.getUri();
-        _default = ns.isDefault();
+    NamespaceInfo namespace;
+    Catalog catalog;
+    
+    public NameSpaceInfo(NamespaceInfo namespace, Catalog catalog) {
+        this.namespace = namespace;
+        this.catalog = catalog;
     }
-
-    /**
-     * NameSpaceConfig constructor.
-     *
-     * <p>
-     * Creates a copy of the NameSpaceConfig provided. All the data structures
-     * are cloned.
-     * </p>
-     *
-     * @param ns The namespace to copy.
-     *
-     * @throws NullPointerException when the param is null
-     */
-    public NameSpaceInfo(NameSpaceInfo ns) {
-        if (ns == null) {
-            throw new NullPointerException();
-        }
-
-        setPrefix(ns.getPrefix());
-        setUri(ns.getUri());
-        setDefault(ns.isDefault());
+    
+    public void load(NameSpaceInfoDTO dto) {
+        setPrefix(dto.getPrefix());
+        setUri(dto.getUri());
+        //setDefault(dto.isDefault());
     }
-
+    
     /**
      * Implement toDTO.
      *
@@ -131,7 +153,7 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new NameSpaceInfo(this);
+        return new NameSpaceInfo(namespace,catalog);
     }
 
     /**
@@ -165,7 +187,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @return true when this is the default namespace.
      */
     public boolean isDefault() {
-        return _default;
+        return namespace.equals( catalog.getDefaultNamespace() );
+        //return _default;
     }
 
     /**
@@ -178,7 +201,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @return String the namespace's prefix
      */
     public String getPrefix() {
-        return prefix;
+        return namespace.getPrefix();
+        //return prefix;
     }
 
     /**
@@ -191,7 +215,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @return String the namespace's uri.
      */
     public String getUri() {
-        return uri;
+        return namespace.getURI();
+        //return uri;
     }
 
     /**
@@ -202,7 +227,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @return
      */
     public String getURI() {
-        return uri;
+        return namespace.getURI();
+        //return uri;
     }
 
     /**
@@ -215,7 +241,17 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @param b this is the default namespace.
      */
     public void setDefault(boolean b) {
-        _default = b;
+        if ( b ) {
+            catalog.setDefaultNamespace(namespace);    
+        }
+        else {
+            if (namespace.equals( catalog.getDefaultNamespace() ) ) {
+                catalog.setDefaultNamespace(null);
+            }    
+        }
+        
+        
+        //_default = b;
     }
 
     /**
@@ -228,7 +264,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @param string the namespace's prefix.
      */
     public void setPrefix(String string) {
-        prefix = string;
+        namespace.setPrefix(string);
+        //prefix = string;
     }
 
     /**
@@ -241,7 +278,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @param string the namespace's uri.
      */
     public void setUri(String string) {
-        uri = string;
+        namespace.setURI(string);
+        //uri = string;
     }
 
     /**
@@ -254,7 +292,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
      */
     public boolean containsMetaData(String key) {
-        return meta.containsKey(key);
+        return namespace.getMetadata().get( key ) != null;
+        //return meta.containsKey(key);
     }
 
     /**
@@ -267,7 +306,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      *      java.lang.Object)
      */
     public void putMetaData(String key, Object value) {
-        meta.put(key, value);
+        namespace.getMetadata().put( key, (Serializable) value );
+        //meta.put(key, value);
     }
 
     /**
@@ -280,7 +320,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
      */
     public Object getMetaData(String key) {
-        return meta.get(key);
+        return namespace.getMetadata().get( key );
+        //return meta.get(key);
     }
 
     /**
@@ -299,13 +340,19 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     public Set getTypeNames() {
         Set set = new HashSet();
 
-        for (Iterator i = data.getFeatureTypeInfos().values().iterator(); i.hasNext();) {
-            FeatureTypeInfo type = (FeatureTypeInfo) i.next();
-
-            if (type.getNameSpace() == this) {
-                set.add(type.getName());
-            }
+        List<org.geoserver.catalog.FeatureTypeInfo> resources = catalog.getResourcesByNamespace(namespace, org.geoserver.catalog.FeatureTypeInfo.class);
+        for ( org.geoserver.catalog.FeatureTypeInfo ft : resources ) {
+            set.add( ft.getPrefixedName() );
         }
+        
+        //for (Iterator i = data.getFeatureTypeInfos().values().iterator(); i.hasNext();) {
+        //    FeatureTypeInfo type = (FeatureTypeInfo) i.next();
+        //
+        //    if (type.getNameSpace() == this) {
+        //        
+        //        set.add(type.getName());
+        //    }
+        //}
 
         return set;
     }
@@ -324,7 +371,19 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
      * @see org.geotools.data.NamespaceMetaData#getFeatureTypeMetaData(java.lang.String)
      */
     public FeatureTypeInfo getFeatureTypeInfo(String typeName) {
-        return data.getFeatureTypeInfo(typeName, uri);
+        org.geoserver.catalog.FeatureTypeInfo ft = 
+            catalog.getResourceByName(namespace.getURI(), typeName, org.geoserver.catalog.FeatureTypeInfo.class);
+        if ( ft == null ) {
+            return null;
+        }
+        for ( LayerInfo layer : catalog.getLayers() ) {
+            if ( ft.equals( layer.getResource() ) ) {
+                return new FeatureTypeInfo( layer, catalog );        
+            }
+        }
+        return null;
+        
+        //return data.getFeatureTypeInfo(typeName, uri);
     }
 
     public String toString() {
