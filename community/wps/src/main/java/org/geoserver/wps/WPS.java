@@ -9,13 +9,8 @@
 
 package org.geoserver.wps;
 
-import org.vfny.geoserver.global.Config;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoValidator;
-import org.vfny.geoserver.global.dto.ServiceDTO;
-import org.vfny.geoserver.global.dto.WPSDTO;
 
 public class WPS extends org.vfny.geoserver.global.Service
 {
@@ -23,32 +18,9 @@ public class WPS extends org.vfny.geoserver.global.Service
 
     private GeoValidator geoValidator;
 
-    public WPS()
+    public WPS(org.geoserver.config.GeoServer geoServer) throws ConfigurationException
     {
-        super(new ServiceDTO());
-        this.setId("wps");
-    }
-
-    public WPS(WPSDTO config)
-    {
-        super(config.getService());
-        this.setId("wps");
-    }
-
-    public WPS(Config config, Data data, GeoServer geoServer, GeoValidator validator) throws ConfigurationException
-    {
-        this(config.getWps());
-        this.setData(data);
-        this.setGeoServer(geoServer);
-        this.setValidation(validator);
-    }
-
-    public Object toDTO()
-    {
-        WPSDTO dto = new WPSDTO();
-        dto.setService((ServiceDTO) super.toDTO());
-
-        return dto;
+    	super(geoServer.getService(WPSInfo.class), geoServer);
     }
 
     public void setValidation(GeoValidator validator)
