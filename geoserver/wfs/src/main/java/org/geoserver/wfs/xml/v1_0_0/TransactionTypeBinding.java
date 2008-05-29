@@ -5,7 +5,11 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
 import net.opengis.wfs.AllSomeType;
+import net.opengis.wfs.DeleteElementType;
+import net.opengis.wfs.InsertElementType;
+import net.opengis.wfs.NativeType;
 import net.opengis.wfs.TransactionType;
+import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
@@ -136,16 +140,16 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
         //transactions, need to maintain order
         for (Iterator itr = node.getChildren().iterator(); itr.hasNext();) {
             Node child = (Node) itr.next();
-            String name = child.getComponent().getName();
+            Object cv = child.getValue();
 
-            if ("Insert".equals(name)) {
-                transaction.getInsert().add(child.getValue());
-            } else if ("Update".equals(name)) {
-                transaction.getUpdate().add(child.getValue());
-            } else if ("Delete".equals(name)) {
-                transaction.getDelete().add(child.getValue());
-            } else if ("Native".equals(name)) {
-                transaction.getNative().add(child.getValue());
+            if (cv instanceof InsertElementType) {
+                transaction.getInsert().add(cv);
+            } else if (cv instanceof UpdateElementType) {
+                transaction.getUpdate().add(cv);
+            } else if (cv instanceof DeleteElementType) {
+                transaction.getDelete().add(cv);
+            } else if (cv instanceof NativeType) {
+                transaction.getNative().add(cv);
             }
         }
 
