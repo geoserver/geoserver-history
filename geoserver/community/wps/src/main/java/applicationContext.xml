@@ -88,7 +88,7 @@
         class="org.geotools.wps.WPSConfiguration" />
 
     <!-- XML Readers -->
-    <bean id="xmlReader-1.0.0"
+    <bean id="wpsXmlReader-1.0.0"
         class="org.geoserver.wps.xml.v1_0_0.WpsXmlReader" abstract="true">
         <constructor-arg ref="wps" />
         <constructor-arg ref="wpsXmlConfiguration-1.0.0" />
