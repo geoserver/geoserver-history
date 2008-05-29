@@ -159,6 +159,15 @@ public class LegacyFeatureTypeInfoReader {
         return false;
     }
     
+    public String regionateAttribute() {
+        Element regionateAttribute = ReaderUtils.getChildElement( featureType, "regionateAttribute");
+        if ( regionateAttribute != null ) {
+            return regionateAttribute.getAttribute( "value" );
+        }
+        
+        return null;
+    }
+    
     public String parentDirectoryName() {
         return parentDirectory.getName();
     }

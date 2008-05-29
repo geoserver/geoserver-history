@@ -409,7 +409,8 @@ public class LegacyCatalogImporter {
         featureType.setEnabled(true);
         featureType.getMetadata().put( "dirName", ftInfoReader.parentDirectoryName() );
         featureType.getMetadata().put( "indexingEnabled", ftInfoReader.searchable() );
-        
+        featureType.getMetadata().put( "kml.regionateAttribute", ftInfoReader.regionateAttribute() );
+
         //link to datastore
         String dataStoreName = ftInfoReader.dataStore();
         DataStoreInfo dataStore = catalog.getDataStoreByName( dataStoreName );
