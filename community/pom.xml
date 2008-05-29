@@ -66,5 +66,17 @@
         <module>dds</module>
       </modules>
     </profile>
+    <profile>
+      <id>web2</id>
+      <modules>
+        <module>web2</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>wps</id>
+      <modules>
+        <module>wps</module>
+      </modules>
+    </profile>
   </profiles>
 </project>
