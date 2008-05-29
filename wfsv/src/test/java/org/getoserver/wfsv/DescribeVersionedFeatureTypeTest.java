@@ -25,12 +25,12 @@ public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
         		"  service=\"WFSV\" versioned=\"true\"\r\n" + 
         		"  xmlns=\"http://www.opengis.net/wfsv\"\r\n" + 
         		"  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n" + 
-        		"  xmlns:topp=\"http://www.openplans.org/topp\"\r\n" + 
-        		"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
-        		"  xsi:schemaLocation=\"http://www.opengis.net/wfsv http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n" + 
-        		"    <wfs:TypeName>topp:archsites</wfs:TypeName>\r\n" + 
+        		"  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n" +
+        		"  xmlns:topp=\"http://www.openplans.org/topp\"\r\n>\r\n" + 
+        		"    <wfsv:TypeName>topp:archsites</wfsv:TypeName>\r\n" + 
         		"</DescribeVersionedFeatureType>";
         Document dom = postAsDOM(root(), request);
+        print(dom);
         assertXpathEvaluatesTo("http://www.opengis.net/wfsv", "/xs:schema/xs:import/@namespace", dom);
         assertXpathEvaluatesTo("wfsv:AbstractVersionedFeatureType", "/xs:schema/xs:complexType/xs:complexContent/xs:extension/@base", dom);
     }
