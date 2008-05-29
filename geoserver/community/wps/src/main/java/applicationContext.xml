@@ -29,6 +29,8 @@
         <constructor-arg ref="wpsConfig" />
     </bean>
 
+	<bean id="wpsLoader" class="org.geoserver.wps.WPSLoader" />
+
     <!-- WPS Service -->
     <bean id="wpsServiceTarget"
         class="org.geoserver.wps.DefaultWebProcessingService">
