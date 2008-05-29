@@ -66,19 +66,20 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                     new String[] {"xmlns:atom", "http://purl.org/atom/ns#" }));
             element("name", mapLayer.getTitle());
 
-            String linkbase = "";
-            try {
-                linkbase = getFeatureTypeURL();
-                linkbase += ".kml";
-            } catch (IOException ioe) {
-                throw new RuntimeException(ioe);
-            }
-
             String relLinks = (String)mapContext.getRequest().getFormatOptions().get("relLinks");
 
 
             if (mapContext.getRequest().getMaxFeatures() != null &&
                 relLinks != null && relLinks.equalsIgnoreCase("true") ){
+
+                String linkbase = "";
+                try {
+                    linkbase = getFeatureTypeURL();
+                    linkbase += ".kml";
+                } catch (IOException ioe) {
+                    throw new RuntimeException(ioe);
+                }
+
                 int maxFeatures = mapContext.getRequest().getMaxFeatures();
                 int startIndex =
                     (mapContext.getRequest().getStartIndex() == null)
