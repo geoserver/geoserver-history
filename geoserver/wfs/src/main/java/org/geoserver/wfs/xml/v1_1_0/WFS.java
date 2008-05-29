@@ -273,6 +273,10 @@ public class WFS extends XSD {
         this.schemaBuilder = schemaBuilder;
     }
     
+    public FeatureTypeSchemaBuilder getSchemaBuilder() {
+        return schemaBuilder;
+    }
+    
     protected void addDependencies(Set dependencies) {
         super.addDependencies(dependencies);
         
