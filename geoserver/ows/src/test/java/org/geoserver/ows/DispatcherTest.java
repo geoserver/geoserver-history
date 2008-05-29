@@ -227,6 +227,57 @@ public class DispatcherTest extends TestCase {
         assertEquals("Hello world!", response.getOutputStreamContents());
     }
     
+    /**
+     * Tests mixed get/post situations for cases in which there is no kvp parser
+     * @throws Exception
+     */
+    public void testHelloOperationMixed() throws Exception {
+        URL url = getClass().getResource("applicationContextOnlyXml.xml");
+
+        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(url.toString());
+
+        Dispatcher dispatcher = (Dispatcher) context.getBean("dispatcher");
+
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+                String encoding;
+
+                public int getServerPort() {
+                    return 8080;
+                }
+
+                public String getCharacterEncoding() {
+                    return encoding;
+                }
+
+                public void setCharacterEncoding(String encoding) {
+                    this.encoding = encoding;
+                }
+            };
+
+        request.setupScheme("http");
+        request.setupServerName("localhost");
+        request.setupGetContextPath("/geoserver");
+        request.setupGetMethod("POST");
+        request.setupGetRequestURI("http://localhost/geoserver/ows");
+        request.setupGetContentType("application/xml");
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        response.setupOutputStream(new MockServletOutputStream());
+
+        Map params = new HashMap();
+        params.put("strict", "true");
+        request.setupGetParameterMap(params);
+
+        String body = "<Hello service=\"hello\" message=\"Hello world!\" version=\"1.0.0\" />";
+        MockServletInputStream input = new MockServletInputStream();
+        input.setupRead(body.getBytes());
+
+        request.setupGetInputStream(input);
+
+        dispatcher.handleRequest(request, response);
+        assertEquals("Hello world!", response.getOutputStreamContents());
+    }
+    
     public void testHttpErrorCodeException() throws Exception {
         URL url = getClass().getResource("applicationContext.xml");
 
