@@ -2,7 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wfsv.xml.v1_1_0;
+package org.geoserver.wfsv.xml.v1_0_0;
+
+import java.io.Reader;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wfs.WFS;
@@ -11,11 +17,6 @@ import org.geotools.util.Version;
 import org.geotools.xml.Parser;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.InputSource;
-import java.io.Reader;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
 
 /**
  * Readers for plain WFS queries that need to use versioning extended elements
@@ -28,7 +29,7 @@ public class WfsXmlReader extends XmlRequestReader {
     private WFSVConfiguration configuration;
 
     public WfsXmlReader(String element, WFS wfs, WFSVConfiguration configuration) {
-        super(new QName(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, element), new Version("1.1.0"),
+        super(new QName(org.geoserver.wfs.xml.v1_0_0.WFS.NAMESPACE, element), new Version("1.0.0"),
                 "wfsv");
         this.wfs = wfs;
         this.configuration = configuration;

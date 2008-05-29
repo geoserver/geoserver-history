@@ -68,47 +68,26 @@
   </bean>
 
 
-  <!-- xml configuration 
-  <bean id="wfsvXmlConfiguration-1.0"
-    class="org.geoserver.wfsv.xml.v1_0_0.WFSConfiguration">
-    <constructor-arg ref="catalog" />
-    <constructor-arg ref="gml2SchemaBuilder" />
-  </bean>
-  --> 
+  <!-- xml configuration --> 
   <bean id="wfsvXsd-1.1" class="org.geoserver.wfsv.xml.v1_1_0.WFSV">
     <constructor-arg ref="wfsXsd-1.1"/>
   </bean>
-  <!-- 
-  <bean id="versionedGml3SchemaBuilder" class="org.geoserver.wfsv.response.v1_1_0.VersionedSchemaBuilder">
-      <constructor-arg ref="wfs"/>
-      <constructor-arg ref="catalog"/>
-      <constructor-arg ref="resourceLoader"/>
-      <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
+  
+  <bean id="wfsvXsd-1.0" class="org.geoserver.wfsv.xml.v1_0_0.WFSV">
+    <constructor-arg ref="wfsXsd-1.0"/>
   </bean>
-   -->
-    
-    <!-- xml configuration
-    <bean id="xmlConfiguration-1.0" class="org.geoserver.wfs.xml.v1_0_0.WFSConfiguration">
-        <constructor-arg ref="catalog"/>
-        <constructor-arg ref="gml2SchemaBuilder"/>
-    </bean>
-     
-    <bean id="xmlConfiguration-1.1" class="org.geoserver.wfs.xml.v1_1_0.WFSConfiguration">
-        <constructor-arg ref="catalog"/>
-        <constructor-arg ref="gml3SchemaBuilder"/>
-    </bean>
-    -->
-    <!-- 
-    <bean id="xmlConfiguration-1.1-vfc" class="org.geoserver.wfs.xml.v1_1_0.WFSConfiguration">
-        <constructor-arg ref="catalog"/>
-        <constructor-arg ref="versionedGml3SchemaBuilder"/>
-    </bean>
-     -->
   
   <bean id="wfsvXmlConfiguration-1.1"
     class="org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration">
     <constructor-arg ref="wfsXmlConfiguration-1.1" />
     <constructor-arg ref="wfsvXsd-1.1"/>
+    <constructor-arg ref="catalog"/>
+  </bean>
+  
+  <bean id="wfsvXmlConfiguration-1.0"
+    class="org.geoserver.wfsv.xml.v1_0_0.WFSVConfiguration">
+    <constructor-arg ref="wfsXmlConfiguration-1.0" />
+    <constructor-arg ref="wfsvXsd-1.0"/>
     <constructor-arg ref="catalog"/>
   </bean>
   
@@ -165,6 +144,42 @@
     <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
   </bean>
   <bean id="wfs-x-TransactionXmlReader-1.1.0" parent="wfs-x-xmlReader-1.1.0">
+    <constructor-arg value="Transaction"/>
+  </bean>
+  
+  <!-- 1.0 wfsv xml readers -->
+  <bean id="wfsv-xmlReader-1.0.0" class="org.geoserver.wfsv.xml.v1_0_0.WfsvXmlReader" abstract="true">
+    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="wfsvXmlConfiguration-1.0"/>
+  </bean>
+  <bean id="wfsvDescribeFeatureTypeXmlReader-1.0.0" parent="wfsv-xmlReader-1.0.0">
+    <constructor-arg value="DescribeVersionedFeatureType"/>
+  </bean>
+  <bean id="wfsvGetVersionedFeatureXmlReader-1.0.0" parent="wfsv-xmlReader-1.0.0">
+    <constructor-arg value="GetVersionedFeature"/>
+  </bean>
+  <bean id="wfsvGetLogXmlReader-1.0.0" parent="wfsv-xmlReader-1.0.0">
+    <constructor-arg value="GetLog"/>
+  </bean>
+  <bean id="wfsvGetDiffXmlReader-1.0.0" parent="wfsv-xmlReader-1.0.0">
+    <constructor-arg value="GetDiff"/>
+  </bean>
+  <bean id="wfsvRollbackXmlReader-1.0.0" parent="wfsv-xmlReader-1.0.0">
+    <constructor-arg value="Rollback"/>
+  </bean>
+  <bean id="wfsvVersionedUpdateXmlReader-1.0.0" parent="wfsv-xmlReader-1.0.0">
+    <constructor-arg value="VersionedUpdateElement"/>
+  </bean>
+  <bean id="wfsvDeleteElementXmlReader-1.0.0" parent="wfsv-xmlReader-1.0.0">
+    <constructor-arg value="VersionedDeleteElement"/>
+  </bean>
+  
+  <!-- 1.0 wfs readers handling extended elements -->
+  <bean id="wfs-x-xmlReader-1.0.0" class="org.geoserver.wfsv.xml.v1_0_0.WfsXmlReader" abstract="true">
+    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="wfsvXmlConfiguration-1.0"/>
+  </bean>
+  <bean id="wfs-x-TransactionXmlReader-1.0.0" parent="wfs-x-xmlReader-1.0.0">
     <constructor-arg value="Transaction"/>
   </bean>
   
