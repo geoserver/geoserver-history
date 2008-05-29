@@ -455,5 +455,15 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>wps</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>wps</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>
