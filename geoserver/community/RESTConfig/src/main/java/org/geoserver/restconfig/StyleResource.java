@@ -40,7 +40,7 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
  *
  * @author David Winslow <dwinslow@openplans.org> , The Open Planning Project
  */
-class StyleResource extends Resource {
+public class StyleResource extends Resource {
     private DataConfig myDC;
     private Data myData;
     protected static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
@@ -129,49 +129,46 @@ class StyleResource extends Resource {
                 return;
             }
 
-            // StyleFactory factory = CommonFactoryFinder.getStyleFactory(new Hints());
-            // SLDParser styleReader = new SLDParser(factory, newSLDFile.toURL());
-//            Style[] readStyles = null;
-//            Style newStyle;
-//
-//            try{
-//                readStyles = styleReader.readXML();
-//
-//                if (readStyles.length == 0){
-//                    // TODO: This should have an HTTP error code
-//                    LOG.severe("XML was valid, but no styles were found.  Please ensure that the submitted SLD validates against the SLD schema.");
-//                    return;
-//                }
-//
-//                newStyle = readStyles[0];
-//                LOG.fine("SLD is " + newStyle);
-//            } catch (Exception e){
-//                LOG.severe("Error while trying to parse SLD file; bailing out");
-//                return;
-//            }
-//
-//            StyleConfig style = null;
-//
-//            if (myDC.getStyles().containsKey(styleName)){
-//                style = myDC.getStyle(styleName);
-//                myDC.removeStyle(styleName);
-//            } else {
-//                style = new StyleConfig();
-//            }
-//            style.setFilename(newSLDFile);
-//
-//            style.setId(styleName);
-//            myDC.addStyle(style.getId(), style);
+            try{
+
+                StyleFactory factory = CommonFactoryFinder.getStyleFactory(null);
+                SLDParser styleReader = new SLDParser(factory, newSLDFile.toURL());
+                Style[] readStyles = null;
+                Style newStyle;
+
+                readStyles = styleReader.readXML();
+
+                if (readStyles.length == 0){
+                    // TODO: This should have an HTTP error code
+                    LOG.severe("XML was valid, but no styles were found.  Please ensure that the submitted SLD validates against the SLD schema.");
+                    return;
+                }
+
+                newStyle = readStyles[0];
+                LOG.fine("SLD is " + newStyle);
+            } catch (Exception e){
+                LOG.severe("Error while trying to parse SLD file; bailing out");
+                return;
+            }
+
+            StyleConfig style = null;
+
+            if (myDC.getStyles().containsKey(styleName)){
+                style = myDC.getStyle(styleName);
+                myDC.removeStyle(styleName);
+            } else {
+                style = new StyleConfig();
+            }
+            style.setFilename(newSLDFile);
+
+            style.setId(styleName);
+            myDC.addStyle(style.getId(), style);
 
             saveConfiguration();
         } catch (ConfigurationException ce){
             LOG.severe("Couldn't find config directory!!" + ce);
             // TODO: These should have an HTTP error code.
-        }/* catch (MalformedURLException mue){
-            LOG.severe(mue.getMessage());
-        } catch (IOException ioe){
-            LOG.severe(ioe.getMessage());
-        } */
+        } 
 
         getResponse().setEntity(new StringRepresentation("AOK, style " + styleName + " created.", MediaType.TEXT_PLAIN));
     }
