@@ -14,14 +14,7 @@
         <!-- the depends-on attribute ensures config was initialized before
             trying to instantiate this bean.
         -->
-        <constructor-arg ref="config" />
-        <constructor-arg ref="data" />
         <constructor-arg ref="geoServer" />
-        <constructor-arg ref="validation" />
-    </bean>
-
-    <bean id="wpsConfig" class="org.vfny.geoserver.config.WPSConfig">
-        <constructor-arg ref="wps" />
     </bean>
 
     <bean id="wpsRegisterar"
