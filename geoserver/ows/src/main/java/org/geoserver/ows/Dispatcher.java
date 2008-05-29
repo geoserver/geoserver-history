@@ -381,7 +381,7 @@ public class Dispatcher extends AbstractController {
                 //TODO: we may wish to make this configurable, as perhaps there
                 // might be cases when the service prefers that null be passed in?
                 if ( requestBean == null ) {
-                    throw new ServiceException( "Could not find request reader for: " + parameterType.getName() );
+                    throw new ServiceException( "Could not find request reader (either kvp or xml) for: " + parameterType.getName() );
                 }
                 
                 // GEOS-934  and GEOS-1288
@@ -729,9 +729,7 @@ public class Dispatcher extends AbstractController {
         }
 
         if (matches.isEmpty()) {
-            //try to instantiate one
-            String msg = "No kvp reader: ( " + type + " )";
-            throw new RuntimeException(msg);
+            return null;
         }
 
         if (matches.size() > 1) {
