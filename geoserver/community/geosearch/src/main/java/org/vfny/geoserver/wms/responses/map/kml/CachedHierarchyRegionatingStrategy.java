@@ -43,30 +43,34 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * Strategy for regionating based on algorithmic stuff related to the actual
- * data. This strategy is fairly ill-defined and should be considered highly
- * experimental.
+ * Abstract class to provide 'automagic' caching of a TileLevel hierarchy and use it for a 
+ * regionating strategy.
  * 
  * @author David Winslow
  */
-public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy {
+public abstract class CachedHierarchyRegionatingStrategy implements RegionatingStrategy {
 
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
-    private static long MAX_LEVELS = 5;
-    private static long FEATURES_PER_TILE = 100;
-    private static String myAttributeName;
 
     private Set myAcceptableFeatures;
-    private Number myMin;
-    private Number myMax;
     private long myZoomLevel;
 
-    /**
-     * Create a data regionating strategy that uses the specified attribute.
-     * @param attname the name of the attribute to use.  The attribute must be numeric.
-     */
-    public DataRegionatingStrategy(String attname){
-        myAttributeName = attname;
+    public final void preProcess(WMSMapContext con, MapLayer layer) {
+        myZoomLevel = getZoomLevel(con, layer);
+        try{
+            myAcceptableFeatures = getRangesFromDB(con, layer);
+        } catch (Exception e){
+            LOGGER.log(Level.INFO, "No cached tile hierarchy found; constructing quad tree from data.", e);
+            TileLevel root = createTileHierarchy(con, layer);
+            TileLevel requestTile = (root != null ? root.findTile(con.getAreaOfInterest()) : null);
+            myAcceptableFeatures = ((requestTile != null && requestTile.getZoomLevel() == myZoomLevel) ? requestTile.getFeatureSet() : root.getFeatureSet());
+            LOGGER.info("Created tile hierarchy: " + root);
+            addRangesToDB(con, layer, root);
+        }
+
+        if (myAcceptableFeatures.size() == 0){
+            throw new HttpErrorCodeException(204); 
+        }
     }
 
     private void addRangesToDB(WMSMapContext con, MapLayer layer, TileLevel ranges){
@@ -117,32 +121,48 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
     }
 
     protected String findCacheTable(WMSMapContext con, MapLayer layer){
-        return super.findCacheTable(con, layer) + "_" + myAttributeName;
+        try{
+            FeatureSource source = layer.getFeatureSource();
+            MapLayerInfo[] config = con.getRequest().getLayers();
+            for (int i = 0; i < config.length; i++){
+                MapLayerInfo theLayer = config[i];
+                if (theLayer.getName().equals(layer.getTitle())){
+                    return theLayer.getDirName();
+                } 
+            }
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Exception while finding the location for the cachefile!", e);
+        }
+        return null;
     }
 
-    protected TileLevel createTileHierarchy(WMSMapContext con, MapLayer layer){
-        LOGGER.info("Getting ready to do the hierarchy thing!");
+    protected abstract TileLevel createTileHierarchy(WMSMapContext con, MapLayer layer);
+
+    protected final long getZoomLevel(WMSMapContext context, MapLayer layer){
         try{
             FeatureSource<SimpleFeatureType, SimpleFeature> source = 
                 (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
-            CoordinateReferenceSystem nativeCRS = source.getSchema().getDefaultGeometry().getCRS();
             ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
-            fullBounds = fullBounds.transform(nativeCRS, true);
-            TileLevel root = TileLevel.makeRootLevel(fullBounds, FEATURES_PER_TILE);
-            
-            FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
-            DefaultQuery query = new DefaultQuery(Query.ALL);
-            SortBy sortBy = ff.sort(myAttributeName, SortOrder.DESCENDING);
-            query.setSortBy(new SortBy[]{sortBy});
-            FeatureCollection col = source.getFeatures(query);
-
-            root.populate(col);
-            
-            return root;
+            ReferencedEnvelope requestBounds = context.getAreaOfInterest();
+            requestBounds = requestBounds.transform(fullBounds.getCoordinateReferenceSystem(), true);
+            long level = 0 - Math.round(
+                    Math.log(requestBounds.getWidth() / fullBounds.getWidth()) / 
+                    Math.log(2)
+                    );
+            if (level < 0) throw new Exception ("Request bounds " + requestBounds + " larger than the world apparently!");
+            return level;
         } catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Error while trying to regionate by data (hierarchical)): ", e);
+            LOGGER.log(Level.SEVERE, "Zoom Level calculation failed, error was: ", e);
+            return 1;
         }
+    }
 
-        return null;
+    public final boolean include(SimpleFeature feature) {
+        try {
+            return myAcceptableFeatures.contains(feature.getID());
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Encountered problem while trying to apply data regionating filter: ", e);
+        }
+        return false;
     }
 }
