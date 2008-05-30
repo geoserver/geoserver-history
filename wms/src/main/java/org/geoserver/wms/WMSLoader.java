@@ -1,35 +1,39 @@
 package org.geoserver.wms;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
+import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.LegacyServicesReader;
-import org.geoserver.config.util.ServiceLoader;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
 
-public class WMSLoader extends ServiceLoader {
+public class WMSLoader extends LegacyServiceLoader {
 
     static Logger LOGGER = Logging.getLogger( "org.geoserver.wms" );
     
+    public String getServiceId() {
+        return "wms";
+    }
+    
     public ServiceInfo load(LegacyServicesReader reader, GeoServer geoServer)
             throws Exception {
-        WMSInfo wms = new WMSInfoImpl();
+        WMSInfoImpl wms = new WMSInfoImpl();
+        wms.setId( "wms" );
         
         Map<String,Object> props = reader.wms();
-        load( wms, props, geoServer );
+        readCommon( wms, props, geoServer );
         
         WatermarkInfo wm = new WatermarkInfoImpl();
         wm.setEnabled( (Boolean) props.get( "globalWatermarking" ) );
