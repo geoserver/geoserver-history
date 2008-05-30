@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ import com.vividsolutions.jts.geom.Geometry;
 public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy {
 
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
-    private static long FEATURES_PER_TILE = 100;
+    private static int FEATURES_PER_TILE = 100;
     private static String myAttributeName;
 
     /**
@@ -122,12 +123,10 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
             CoordinateReferenceSystem nativeCRS = source.getSchema().getDefaultGeometry().getCRS();
             ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
             fullBounds = fullBounds.transform(nativeCRS, true);
-            TileLevel root = TileLevel.makeRootLevel(fullBounds, FEATURES_PER_TILE);
+            TileLevel root = TileLevel.makeRootLevel(fullBounds, FEATURES_PER_TILE, new DataComparator());
             
             FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
             DefaultQuery query = new DefaultQuery(Query.ALL);
-            SortBy sortBy = ff.sort(myAttributeName, SortOrder.DESCENDING);
-            query.setSortBy(new SortBy[]{sortBy});
             FeatureCollection col = source.getFeatures(query);
 
             root.populate(col);
@@ -136,6 +135,23 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "Error while trying to regionate by data (hierarchical)): ", e);
             throw new HttpErrorCodeException(500, "Error while trying to regionate by " + myAttributeName, e);
+        }
+    }
+
+    private class DataComparator implements Comparator{
+        public int compare(Object a, Object b){
+            SimpleFeature fa = (SimpleFeature)a;
+            SimpleFeature fb = (SimpleFeature)b;
+
+            Object attrA = fa.getAttribute(myAttributeName);
+            Object attrB = fb.getAttribute(myAttributeName);
+
+            if (attrA instanceof Comparable) 
+                return ((Comparable)attrA).compareTo(attrB);
+
+            if (attrA instanceof Number)
+                return (int)Math.signum(((Number)attrA).doubleValue() - ((Number)attrB).doubleValue());
+            return 0;
         }
     }
 }

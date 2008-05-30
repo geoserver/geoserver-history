@@ -7,7 +7,9 @@ import org.opengis.feature.simple.SimpleFeature;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import java.util.Comparator;
 import java.util.TreeSet;
+import java.util.PriorityQueue;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -28,31 +30,31 @@ public class TileLevel implements Serializable {
     static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
 
     ReferencedEnvelope myBBox;
-    long myFeaturesPerTile;
+    int myFeaturesPerTile;
     long myZoomLevel;
 
-    Set myFeatures;
+    PriorityQueue myFeatures;
 
     private List myChildren;
     private int roundRobinCounter;
 
-    public TileLevel(ReferencedEnvelope bbox, long featuresPerTile, long zoomLevel){
+    public TileLevel(ReferencedEnvelope bbox, int featuresPerTile, long zoomLevel, Comparator comp){
         myBBox = bbox;
         myFeaturesPerTile = featuresPerTile;
         myZoomLevel = zoomLevel;
-        myFeatures = new TreeSet();
+        myFeatures = new PriorityQueue(featuresPerTile, comp);
         myChildren = null;
     }
 
-    private TileLevel(ReferencedEnvelope bbox, List childTiles){
+    private TileLevel(ReferencedEnvelope bbox, List childTiles, Comparator comp){
         myBBox = bbox;
         myFeaturesPerTile = 0;
         myZoomLevel = 0;
-        myFeatures = new TreeSet();
+        myFeatures = new PriorityQueue(1, comp);
         myChildren = childTiles;
     }
 
-    public static TileLevel makeRootLevel(ReferencedEnvelope fullBounds, long featuresPerTile){
+    public static TileLevel makeRootLevel(ReferencedEnvelope fullBounds, int featuresPerTile, Comparator comp){
         ReferencedEnvelope western = new ReferencedEnvelope(
                 fullBounds.getMinimum(0),
                 fullBounds.getCenter(0),
@@ -70,9 +72,9 @@ public class TileLevel implements Serializable {
 
         LOGGER.info("Creating root tilelevel with bboxes: "  + western + "; " + eastern);
         List children = new ArrayList();
-        children.add(new TileLevel(western, featuresPerTile, 1));
-        children.add(new TileLevel(eastern, featuresPerTile, 1));
-        return new TileLevel(fullBounds, children);
+        children.add(new TileLevel(western, featuresPerTile, 1, comp));
+        children.add(new TileLevel(eastern, featuresPerTile, 1, comp));
+        return new TileLevel(fullBounds, children, comp);
     }
     
     public void populate(FeatureCollection collection){
@@ -92,10 +94,9 @@ public class TileLevel implements Serializable {
     }
 
     public void add(SimpleFeature f){
-        if (myFeatures.size() < myFeaturesPerTile) {
-            myFeatures.add(f.getID());
-        } else {
-            addToChild(f);
+        myFeatures.add(f);
+        if (myFeatures.size() > myFeaturesPerTile) {
+            addToChild((SimpleFeature)myFeatures.poll());
         }
     }
 
@@ -105,7 +106,7 @@ public class TileLevel implements Serializable {
         }
 
         roundRobinCounter = (roundRobinCounter + 1) % myChildren.size();
-        for (int i = 0; i< myChildren.size(); i++){
+        for (int i = 0; i < myChildren.size(); i++){
             int index = (roundRobinCounter + i) % myChildren.size();
             TileLevel child = (TileLevel)myChildren.get(index);
 
@@ -156,10 +157,10 @@ public class TileLevel implements Serializable {
                 myBBox.getCoordinateReferenceSystem()
                 );
 
-        children.add(new TileLevel(topLeft, myFeaturesPerTile, myZoomLevel + 1));
-        children.add(new TileLevel(topRight, myFeaturesPerTile, myZoomLevel + 1));
-        children.add(new TileLevel(bottomLeft, myFeaturesPerTile, myZoomLevel + 1));
-        children.add(new TileLevel(bottomRight, myFeaturesPerTile, myZoomLevel + 1));
+        children.add(new TileLevel(topLeft, myFeaturesPerTile, myZoomLevel + 1, myFeatures.comparator()));
+        children.add(new TileLevel(topRight, myFeaturesPerTile, myZoomLevel + 1, myFeatures.comparator()));
+        children.add(new TileLevel(bottomLeft, myFeaturesPerTile, myZoomLevel + 1, myFeatures.comparator()));
+        children.add(new TileLevel(bottomRight, myFeaturesPerTile, myZoomLevel + 1, myFeatures.comparator()));
         return children;
     }
 
@@ -192,10 +193,6 @@ public class TileLevel implements Serializable {
         return this;
     }
 
-    public boolean include(SimpleFeature feature){
-        return myFeatures.contains(feature.getID());
-    }
-
     public int depth(){
         int d = 0;
 
@@ -219,7 +216,15 @@ public class TileLevel implements Serializable {
     }
 
     public Set getFeatureSet(){
-        return myFeatures;
+        Set fids = new TreeSet();
+        
+        Iterator it = myFeatures.iterator();
+        while (it.hasNext()){
+            SimpleFeature f = (SimpleFeature)it.next();
+            fids.add(f.getID());
+        }
+
+        return fids;
     }
 
     public int getFeatureCount(){
@@ -262,7 +267,8 @@ public class TileLevel implements Serializable {
         Iterator it = myFeatures.iterator();
         while (it.hasNext()){
             try{
-            st.execute("INSERT INTO " + tableName + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + it.next() + "\' )");
+                String fid = ((SimpleFeature)it.next()).getID();
+                st.execute("INSERT INTO " + tableName + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + fid + "\' )");
             } catch (Exception e){
                 LOGGER.log(Level.SEVERE, "SQL Error while trying to store tile hierarchy!", e);
             }
