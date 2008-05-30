@@ -135,8 +135,7 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
             return root;
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "Error while trying to regionate by data (hierarchical)): ", e);
+            throw new HttpErrorCodeException(500, "Error while trying to regionate by " + myAttributeName, e);
         }
-
-        return null;
     }
 }
