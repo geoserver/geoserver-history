@@ -14,22 +14,19 @@
         <!-- the depends-on attribute ensures config was initialized before
             trying to instantiate this bean.
         -->
-        <constructor-arg ref="geoServer" />
+        <constructor-arg ref="geoServer2" />
     </bean>
+    
+    <bean id="wpsServiceLoader" class="org.geoserver.wps.WPSLoader">
+    	<constructor-arg ref="resourceLoader"/>
+    </bean>
+    
 
     <bean id="wpsRegisterar"
         class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
         <constructor-arg type="java.lang.String" value="WPS" />
         <constructor-arg ref="wps" />
     </bean>
-
-    <bean id="wpsConfigRegisterar"
-        class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
-        <constructor-arg type="java.lang.String" value="Config.WPS" />
-        <constructor-arg ref="wpsConfig" />
-    </bean>
-
-	<bean id="wpsLoader" class="org.geoserver.wps.WPSLoader" />
 
     <!-- WPS Service -->
     <bean id="wpsServiceTarget"
