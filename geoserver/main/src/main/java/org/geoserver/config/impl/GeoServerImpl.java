@@ -16,7 +16,6 @@ import org.geoserver.config.ServiceInfo;
 
 public class GeoServerImpl implements GeoServer {
 
-    
     GeoServerFactory factory = new GeoServerFactoryImpl();
     GeoServerInfo global;
     Catalog catalog;
@@ -53,6 +52,17 @@ public class GeoServerImpl implements GeoServer {
     }
     
     public void add(ServiceInfo service) {
+        if ( service.getId() == null ) {
+            throw new NullPointerException( "service id must not be null" );
+        }
+        for ( ServiceInfo s : services ) {
+            if ( s.getId().equals( service.getId() ) ) {
+                throw new IllegalArgumentException( "service with id '" + s.getId() + "' already exists" );
+            }
+        }
+        
+        //may be adding a proxy, need to unwrap
+        service = ModificationProxy.unwrap(service);
         services.add( service );
     }
 
@@ -93,7 +103,7 @@ public class GeoServerImpl implements GeoServer {
             }
         };
     }
-
+    
     public void remove(ServiceInfo service) {
         services.remove( service );
     }

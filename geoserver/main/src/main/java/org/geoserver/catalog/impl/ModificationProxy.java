@@ -232,4 +232,24 @@ public class ModificationProxy implements InvocationHandler {
             }
         };
     }
+    
+    /**
+     * Wraps a proxy instance.
+     * <p>
+     * This method is safe in that if the object passed in is not a proxy it is
+     * simply returned. If the proxy is not an instance of {@link ModificationProxy}
+     * it is also returned untouched. 
+     *</p>
+     * 
+     */
+    public static <T> T unwrap( T object ) {
+        if ( object instanceof Proxy ) {
+            InvocationHandler h = Proxy.getInvocationHandler( object );
+            if ( h instanceof ModificationProxy ) {
+               return (T) ((ModificationProxy)h).getProxyObject();
+            }
+        }
+        
+        return object;
+    }
 }
