@@ -2,12 +2,16 @@ package org.geoserver.security;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.management.relation.RoleStatus;
 
 import org.acegisecurity.Authentication;
 import org.geoserver.catalog.Catalog;
@@ -140,23 +144,16 @@ public class DefaultDataAccessManager extends DataAccessManager {
                         + "', the standard form is [namespace].[layer].[mode]=[role]+ "
                         + "Rule has been ignored");
 
-            if (catalog.getWorkspace(workspace) == null)
+            if (!"*".equals(workspace) && catalog.getWorkspace(workspace) == null)
                 LOGGER.warning("Namespace/Workspace " + workspace + " is unknown in rule " + rule);
 
-            if (catalog.getLayer(layerName) == null)
+            if (!"*".equals(layerName) && catalog.getLayer(layerName) == null)
                 LOGGER.warning("Layer " + workspace + " is unknown in rule + " + rule);
 
             // check the access mode
             AccessMode mode = AccessMode.getByAlias(modeAlias);
             if (mode == null) {
                 LOGGER.warning("Unknown access mode " + modeAlias + " in " + entry.getKey()
-                        + ", skipping rule " + rule);
-                continue;
-            }
-
-            // check we have enough roles
-            if (roles.size() == 0) {
-                LOGGER.warning("No roles specified for " + entry.getKey() + " in " + entry.getKey()
                         + ", skipping rule " + rule);
                 continue;
             }
@@ -194,7 +191,7 @@ public class DefaultDataAccessManager extends DataAccessManager {
             }
 
             // actually set the rule
-            if (node.getAuthorizedRoles(mode) != null) {
+            if (node.getAuthorizedRoles(mode).size() > 0) {
                 LOGGER.warning("Rule " + rule
                         + " is overriding another rule targetting the same resource");
             }
@@ -205,11 +202,15 @@ public class DefaultDataAccessManager extends DataAccessManager {
     }
 
     Set<String> parseRoles(String roleCsv) {
+        // like having no definition at all, empty role set
+        if("*".equals(roleCsv))
+            return Collections.emptySet();
+        
         // regexp: treat extra spaces as separators, ignore extra commas
         // "a,,b, ,, c" --> ["a","b","c"]
         String[] rolesArray = roleCsv.split("[\\s,]+");
         Set<String> roles = new HashSet<String>(rolesArray.length);
-        roles.addAll(roles);
+        roles.addAll(Arrays.asList(rolesArray));
 
         return roles;
     }
