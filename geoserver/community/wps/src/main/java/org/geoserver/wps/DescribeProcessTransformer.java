@@ -73,14 +73,10 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 }
 
                 AttributesImpl attributes = new AttributesImpl();
-                attributes.addAttribute("", "xmlns:xsi", "xmlns:xsi", "",
-                        DescribeProcessTransformer.XSI_URI);
-                attributes.addAttribute("", "xmlns", "xmlns", "",
-                        DescribeProcessTransformer.WPS_URI);
-                attributes.addAttribute("", "xmlns:wps", "xmlns:wps", "",
-                        DescribeProcessTransformer.WPS_URI);
-                attributes.addAttribute("", "xmlns:ows", "xmlns:ows", "",
-                        OWS.NAMESPACE);
+                attributes.addAttribute("", "xmlns:xsi", "xmlns:xsi", "", DescribeProcessTransformer.XSI_URI);
+                attributes.addAttribute("", "xmlns", "xmlns", "", DescribeProcessTransformer.WPS_URI);
+                attributes.addAttribute("", "xmlns:wps", "xmlns:wps", "", DescribeProcessTransformer.WPS_URI);
+                attributes.addAttribute("", "xmlns:ows", "xmlns:ows", "", OWS.NAMESPACE);
                 attributes.addAttribute("", "version", "version", "", "1.0.0");
 
                 start("wps:ProcessDescriptions", attributes);
@@ -106,9 +102,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
 
                 if (null == pf)
                 {
-                    throw new WPSException("Invalid identifier",
-                            "InvalidParameterValue"); // TODO fix exception
-                                                        // message
+                    throw new WPSException("Invalid identifier", "InvalidParameterValue");
                 }
 
                 this.processDescription(pf);
@@ -119,11 +113,10 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 AttributesImpl attributes = new AttributesImpl();
 
                 start("ProcessDescription", attributes);
-                element("ows:Identifier", pf.getName());
-                element("ows:Title", pf.getTitle().toString(this.locale));
-                element("ows:Abstract", pf.getDescription().toString(
-                        this.locale));
-                this.processOutputs(pf);
+	                element("ows:Identifier", pf.getName());
+	                element("ows:Title",      pf.getTitle().toString(this.locale));
+	                element("ows:Abstract",   pf.getDescription().toString(this.locale));
+	                this.processOutputs(pf);
                 end("ProcessDescription");
             }
 
@@ -151,14 +144,21 @@ public abstract class DescribeProcessTransformer extends TransformerBase
             private void processOutputs(ProcessFactory pf)
             {
                 start("ProcessOutputs");
-                for (Parameter inputIdentifier : pf.getResultInfo(null)
-                        .values())
+                for (Parameter inputIdentifier : pf.getResultInfo(null).values())
                 {
                     start("Output");
-                    element("ows:Identifier", inputIdentifier.key);
-                    element("ows:Title", "XXX Missing in Parameter.java");
-                    element("ows:Abstract", inputIdentifier.description
-                            .toString(this.locale));
+	                    element("ows:Identifier", inputIdentifier.key);
+	                    element("ows:Title",      "XXX Missing in Parameter.java");
+	                    element("ows:Abstract",   inputIdentifier.description.toString(this.locale));
+	                    start("ComplexOutput");
+	                    	start("Default");
+	                    		start("Format");
+	                    			element("MimeType", "text/xml");
+	                    			element("Encoding", "utf-8");
+	                    			element("Schema",   "XXX/polygon.xsd");
+	                    		end("Format");
+	                    	end("Default");
+	                    end("ComplexOutput");
                     end("Output");
                 }
                 end("ProcessOutputs");
