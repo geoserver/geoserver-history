@@ -64,53 +64,6 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
         myAttributeName = attname;
     }
 
-    private void addRangesToDB(WMSMapContext con, MapLayer layer, TileLevel ranges){
-        try{
-            Class.forName("org.h2.Driver");
-            String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
-            Connection connection = 
-            	DriverManager.getConnection(
-            			"jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
-            			);
-            String tableName = findCacheTable(con, layer);
-
-            Statement statement = connection.createStatement();
-            statement.execute("DROP TABLE IF EXISTS " + tableName);
-            statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar(50))");
-            statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
-
-            ranges.writeTo(statement, tableName);
-            statement.close();
-            connection.close();
-        } catch (Exception e){
-            LOGGER.log(Level.WARNING, "Unable to store range information in database.", e);
-        }
-    }
-
-    private Set getRangesFromDB(WMSMapContext con, MapLayer layer) throws Exception{
-        Class.forName("org.h2.Driver");
-        String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
-        Connection connection = 
-        	DriverManager.getConnection(
-        			"jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
-        			);
-        String tableName = findCacheTable(con, layer);
-
-        long[] coords = TileLevel.getTileCoords(con.getAreaOfInterest(), TileLevel.getWorldBounds());
-
-        Statement statement = connection.createStatement();
-        String sql = "SELECT fid FROM " + tableName + " WHERE x = " + coords[0] + " AND y = " + coords[1] + " AND z = " + coords[2];
-        statement.execute( sql );
-
-        ResultSet results = statement.getResultSet();
-        Set returnable = new TreeSet();
-        while (results.next()){
-            returnable.add(results.getString(1));
-        }
-
-        return returnable;
-    }
-
     protected String findCacheTable(WMSMapContext con, MapLayer layer){
         return super.findCacheTable(con, layer) + "_" + myAttributeName;
     }
