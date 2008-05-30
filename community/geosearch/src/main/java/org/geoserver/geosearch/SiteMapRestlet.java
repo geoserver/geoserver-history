@@ -28,6 +28,7 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
     private DataConfig myDataConfig;
     private String GEOSERVER_ROOT;
     private Namespace SITEMAP = Namespace.getNamespace("http://www.sitemaps.org/schemas/sitemap/0.9");
+    private Namespace GEOSITEMAP = Namespace.getNamespace("geo","http://www.google.com/geo/schemas/sitemap/1.0");
 
     public Data getData(){
         return myData;
@@ -65,6 +66,7 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
     public void doGet(Request request, Response response){
         Document d = new Document();
         Element urlset = new Element("urlset", SITEMAP);
+	urlset.addNamespaceDeclaration(GEOSITEMAP);
         d.setRootElement(urlset);
 
         NameSpaceInfo[] namespaces = getData().getNameSpaces();
@@ -95,6 +97,13 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
         Element loc = new Element("loc", SITEMAP);
         loc.setText(url);
         urlElement.addContent(loc);
+
+        Element geo = new Element("geo",GEOSITEMAP);
+	Element geoformat = new Element("format",GEOSITEMAP);
+        geoformat.setText("kml");    
+	geo.addContent(geoformat);
+        urlElement.addContent(geo);
+
         urlset.addContent(urlElement);
     }
 
