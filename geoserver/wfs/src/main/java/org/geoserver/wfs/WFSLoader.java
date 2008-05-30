@@ -4,20 +4,28 @@ import java.util.Map;
 
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
+import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.LegacyServicesReader;
-import org.geoserver.config.util.ServiceLoader;
 import org.geoserver.wfs.GMLInfo.SrsNameStyle;
 
-public class WFSLoader extends ServiceLoader {
+public class WFSLoader extends LegacyServiceLoader {
 
+    public String getServiceId() {
+        return "wfs";
+    }
+    
+    public Class getServiceClass() {
+        return WFSInfo.class;
+    }
     
     public ServiceInfo load(LegacyServicesReader reader, GeoServer geoServer)
             throws Exception {
         
-        WFSInfo wfs = new WFSInfoImpl();
+        WFSInfoImpl wfs = new WFSInfoImpl();
+        wfs.setId( getServiceId() );
         
         Map<String,Object> properties = reader.wfs();
-        load( wfs, properties, geoServer );
+        readCommon( wfs, properties, geoServer );
         
         wfs.setServiceLevel( WFSInfo.ServiceLevel.get( (Integer) properties.get( "serviceLevel") ) );
         
