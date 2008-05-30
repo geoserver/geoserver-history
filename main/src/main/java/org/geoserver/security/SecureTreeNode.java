@@ -1,5 +1,6 @@
 package org.geoserver.security;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,11 +16,11 @@ import org.acegisecurity.GrantedAuthority;
  * 
  */
 class SecureTreeNode {
-    private Map<String, SecureTreeNode> children = new HashMap<String, SecureTreeNode>();
+    Map<String, SecureTreeNode> children = new HashMap<String, SecureTreeNode>();
 
-    private SecureTreeNode parent;
+    SecureTreeNode parent;
 
-    private Map<AccessMode, Set<String>> authorizedRoles = new HashMap<AccessMode, Set<String>>();
+    Map<AccessMode, Set<String>> authorizedRoles = new HashMap<AccessMode, Set<String>>();
 
     /**
      * Builds a child of the specified parent node
@@ -90,6 +91,8 @@ class SecureTreeNode {
 
         // let's scan thru the the authorities granted to the user and
         // see if he matches any of the write roles
+        if(user.getAuthorities() == null)
+            return false;
         for (GrantedAuthority authority : user.getAuthorities()) {
             if (roles.contains(authority.getAuthority()))
                 return true;
@@ -98,10 +101,17 @@ class SecureTreeNode {
     }
 
     /**
-     * Returns the authorized roles for the specified access mode
+     * Returns the authorized roles for the specified access mode. If the collection is empty,
+     * we assume everybody can access this node (a non accessible node is of no interest, and
+     * there is no way to specify that explicitly in the property file either, the way is
+     * to make it accessible only to a role that no user is assigned to)
      */
     Set<String> getAuthorizedRoles(AccessMode mode) {
-        return authorizedRoles.get(mode);
+        Set<String> roles = authorizedRoles.get(mode);
+        if(roles == null)
+            return Collections.emptySet();
+        else
+            return roles;
     }
 
     /**
