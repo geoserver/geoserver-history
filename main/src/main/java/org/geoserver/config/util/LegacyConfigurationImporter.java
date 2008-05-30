@@ -16,6 +16,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.ServiceInfo;
+import org.geoserver.config.ServiceLoader;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
@@ -162,19 +163,23 @@ public class LegacyConfigurationImporter {
         // read services
         for ( ServiceLoader sl : GeoServerExtensions.extensions( ServiceLoader.class ) ) {
             try {
-                ServiceInfo service = sl.load( reader, geoServer );
+                //special case for legacy stuff
+                if ( sl instanceof LegacyServiceLoader ) {
+                    ((LegacyServiceLoader)sl).setReader(reader);
+                }
+                
+                ServiceInfo service = sl.load( geoServer );
                 if ( service != null ) {
-                    LOGGER.info( "Loading service '" + service.getName()  + "'");
+                    LOGGER.info( "Loading service '" + service.getId()  + "'");
                     geoServer.add( service );
                 }
             }
             catch( Exception e ) {
-                String msg = "Error occured loading service: " + sl.toString();
+                String msg = "Error occured loading service: " + sl.getServiceId();
                 LOGGER.warning( msg );
                 LOGGER.log( Level.INFO, "", e );
             }
         }
-        
     }
     
     Object value( Object value, Object def ) {
