@@ -2,6 +2,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Comparator;
 
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
@@ -16,6 +17,18 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @author David Winslow <dwinslow@openplans.org>
  */
 public class TileLevelTest extends RegionatingTestSupport {
+	/**
+     * Simple comparator to ensure that the order of features in the priority queue is consistent
+     */
+	private static Comparator dummyComp = new Comparator() {
+	    public int compare(Object o1, Object o2){
+            int value1 = (Integer)((SimpleFeature)o1).getAttribute("value");
+            int value2 = (Integer)((SimpleFeature)o2).getAttribute("value");
+
+            return value2 - value1;
+	    }
+	};
+	
     /**
      * Verify that TileLevels fill in appropriately when data is tightly clustered geographically 
      */
@@ -23,7 +36,7 @@ public class TileLevelTest extends RegionatingTestSupport {
         FeatureSource source = getFeatureSource(STACKED_FEATURES);
         FeatureCollection collection = source.getFeatures();
 
-        TileLevel root = TileLevel.makeRootLevel(TileLevel.getWorldBounds(), 1);
+        TileLevel root = TileLevel.makeRootLevel(TileLevel.getWorldBounds(), 1, dummyComp);
         root.populate(collection);
 
         assertEquals("Found unexpected depth for tree: " + root, 11, root.depth());
@@ -59,7 +72,7 @@ public class TileLevelTest extends RegionatingTestSupport {
         FeatureSource source = getFeatureSource(DISPERSED_FEATURES);
         FeatureCollection collection = source.getFeatures();
 
-        TileLevel root = TileLevel.makeRootLevel(TileLevel.getWorldBounds(), 1);
+        TileLevel root = TileLevel.makeRootLevel(TileLevel.getWorldBounds(), 1, dummyComp);
         root.populate(collection);
 
         assertEquals("Expected 3 but found " + root.depth() + " for depth of tree: " + root, 3, root.depth());
@@ -71,7 +84,7 @@ public class TileLevelTest extends RegionatingTestSupport {
         FeatureSource source = getFeatureSource(DISPERSED_FEATURES);
         FeatureCollection collection = source.getFeatures();
 
-        TileLevel root = TileLevel.makeRootLevel(TileLevel.getWorldBounds(), 1);
+        TileLevel root = TileLevel.makeRootLevel(TileLevel.getWorldBounds(), 1, dummyComp);
         root.populate(collection);
 
         CoordinateReferenceSystem crs = CRS.decode("EPSG:4326");
