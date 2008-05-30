@@ -34,8 +34,9 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
             "&featureid=BasicPolygons.1107531493643" +
             "&format_options=regionateBy:data;regionateAttr:NUM_LANES";
 
-        MockHttpServletResponse response = getAsServletResponse(path);
-        assertEquals(500, response.getErrorCode()); //TODO: Regionating does not work on non-postgis layers.   
+        Document document = getAsDOM(path);
+        assertEquals("kml", document.getDocumentElement().getTagName());
+        // assertEquals(500, response.getErrorCode()); //TODO: Regionating does not work on non-postgis layers.   
     }
     
 }
