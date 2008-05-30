@@ -99,9 +99,9 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
         urlElement.addContent(loc);
 
         Element geo = new Element("geo",GEOSITEMAP);
-	Element geoformat = new Element("format",GEOSITEMAP);
+        Element geoformat = new Element("format",GEOSITEMAP);
         geoformat.setText("kml");    
-	geo.addContent(geoformat);
+        geo.addContent(geoformat);
         urlElement.addContent(geo);
 
         urlset.addContent(urlElement);
