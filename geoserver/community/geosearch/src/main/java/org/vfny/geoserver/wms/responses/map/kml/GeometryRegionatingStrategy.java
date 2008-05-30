@@ -18,6 +18,8 @@ import org.geoserver.ows.HttpErrorCodeException;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.geotools.map.MapLayer;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 
 public class GeometryRegionatingStrategy extends CachedHierarchyRegionatingStrategy{
     Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
@@ -54,7 +56,19 @@ public class GeometryRegionatingStrategy extends CachedHierarchyRegionatingStrat
             SimpleFeature fa = (SimpleFeature) a;
             SimpleFeature fb = (SimpleFeature) b;
             
-            return 0;
+            double valueA = findValue(fa);
+            double valueB = findValue(fb);
+            
+            return (int)Math.signum(valueA - valueB);
+        }
+        
+        private double findValue(SimpleFeature f){
+            Geometry geom = (Geometry)f.getDefaultGeometry();
+            
+            double area = geom.getArea();
+            if (area > 0) return area;
+            
+            return geom.getLength();
         }
     }
 }
