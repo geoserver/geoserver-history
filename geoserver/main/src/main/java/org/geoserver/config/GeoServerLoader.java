@@ -1,11 +1,16 @@
 package org.geoserver.config;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.util.logging.Logging;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -34,6 +39,8 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 public final class GeoServerLoader implements BeanPostProcessor, DisposableBean, 
     ApplicationContextAware {
 
+    static Logger LOGGER = Logging.getLogger( "org.geoserver" );
+    
     GeoServerResourceLoader resourceLoader;
     GeoServer geoserver;
     
@@ -104,7 +111,28 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     }
     
     public void destroy() throws Exception {
-        //TODO: persist
+        //TODO: persist catalog
+        //TODO: persist global
+
+        //persist services
+        Collection services = geoserver.getServices();
+        List<ServiceLoader> loaders = GeoServerExtensions.extensions( ServiceLoader.class );
+        
+        for ( Iterator s = services.iterator(); s.hasNext(); ) {
+            ServiceInfo service = (ServiceInfo) s.next();
+            for ( ServiceLoader loader : loaders ) {
+                if ( loader.getServiceId().equals(service.getId()) ) {
+                    try {
+                        loader.save( service, geoserver );
+                        break;
+                    }
+                    catch( Throwable t ) {
+                        LOGGER.warning( "Error persisting service: " + service.getId() );
+                        LOGGER.log( Level.INFO, "", t );
+                    }
+                }
+            }
+        }
         
         //dispose
         geoserver.dispose();
