@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geoserver.config.impl.GeoServerImpl;
+import org.geoserver.config.impl.ServiceInfoImpl;
 
 import junit.framework.TestCase;
 
@@ -45,7 +46,23 @@ public class GeoServerImplTest extends TestCase {
         ServiceInfo service = geoServer.getFactory().createService();
         service.setName( "foo" );
         
+        try {
+            geoServer.add( service );
+            fail( "adding without id should throw exception" );
+        }
+        catch( Exception e ) {};
+        
+        ((ServiceInfoImpl)service).setId( "id" );
         geoServer.add( service );
+        
+        ServiceInfo s2 = geoServer.getFactory().createService();
+        ((ServiceInfoImpl)s2).setId( "id" );
+        
+        try {
+            geoServer.add( s2 );
+            fail( "adding service with duplicate id should throw exception" );
+        }
+        catch( Exception e ) {}
         
         ServiceInfo s = geoServer.getServiceByName( "foo", ServiceInfo.class );
         assertTrue( s != service );
@@ -54,6 +71,7 @@ public class GeoServerImplTest extends TestCase {
     
     public void testModifyService() throws Exception {
         ServiceInfo service = geoServer.getFactory().createService();
+        ((ServiceInfoImpl)service).setId( "id" );
         service.setName( "foo" );
         service.setTitle( "bar" );
         
