@@ -52,14 +52,8 @@ import com.vividsolutions.jts.geom.Geometry;
 public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy {
 
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
-    private static long MAX_LEVELS = 5;
     private static long FEATURES_PER_TILE = 100;
     private static String myAttributeName;
-
-    private Set myAcceptableFeatures;
-    private Number myMin;
-    private Number myMax;
-    private long myZoomLevel;
 
     /**
      * Create a data regionating strategy that uses the specified attribute.
