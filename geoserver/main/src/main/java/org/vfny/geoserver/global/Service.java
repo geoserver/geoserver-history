@@ -30,6 +30,8 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  *
  * @see WMS
  * @see WFS
+ * 
+ * @deprecated use {@link ServiceInfo}
  */
 public class Service  implements OWS /* extends GlobalLayerSupertype*/ {
     //    private boolean enabled;
