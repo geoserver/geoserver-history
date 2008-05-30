@@ -138,6 +138,10 @@
 			<artifactId>spring-aop</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>data</artifactId>
                         <version>1.7.0-SNAPSHOT</version>
