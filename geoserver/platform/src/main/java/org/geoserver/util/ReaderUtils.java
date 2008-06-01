@@ -178,9 +178,8 @@ public class ReaderUtils {
      */
     public static Element[] getChildElements(Element root, String name, boolean mandatory)
         throws Exception {
-        ArrayList elements = new ArrayList();
+        final List<Element> elements = new ArrayList<Element>();
         Node child = root.getFirstChild();
-
         while (child != null) {
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 if (name.equals(child.getNodeName())) {
@@ -727,4 +726,34 @@ public class ReaderUtils {
 		}
     	return s;
     }
+
+	public static List<String> stringToList(String keywords, String delimiter) {
+		////
+		//
+		// In the following cases we return an empty string:
+		// - empty or null keyword
+		// - empty or null delimiter
+		// -delimiter not found at all
+		//
+		/////
+		if(keywords==null||keywords.length()==0||delimiter==null||delimiter.length()==0|keywords.indexOf(delimiter)<0)
+			return Collections.emptyList();
+		
+		////
+		//
+		// We know that the delimiter is used at least once, let's spli this string and create the corresponding list.
+		//
+		/////
+		final List<String> elements= new ArrayList<String>();
+		int index=-1;
+		while((index=keywords.indexOf(delimiter))>=0)
+		{
+			if(index>0)
+				elements.add(keywords.substring(0,index));
+			keywords=keywords.substring(index);
+		}
+		if(keywords.length()>0)
+			elements.add(keywords);
+		return elements;
+	}
 }
