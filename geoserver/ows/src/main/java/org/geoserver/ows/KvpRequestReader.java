@@ -117,7 +117,7 @@ public class KvpRequestReader {
      * @param kvp The kvp set, map of String,Object.
      * @param rawKvp The raw kvp set (unparsed), map of String,String
      * 
-     * @return A new request object, or the ori
+     * @return A new request object, or the original
      */
     public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         for (Iterator e = kvp.entrySet().iterator(); e.hasNext();) {
