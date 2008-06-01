@@ -226,58 +226,6 @@ public class ImageUtils {
                 image = new ImageWorker(originalImage)
                         .forceComponentColorModel().getRenderedImage();
 
-//              if (originalImage.getColorModel().hasAlpha()) {
-//                  // //
-//                  //
-//                  // We want to use the CustomPaletteBuilder but to do so we
-//                  // have first to reduce the image to either opaque or
-//                  // bitmask because otherwise the CustomPaletteBuilder will
-//                  // fail to address transparency.
-//                  //
-//                  // //
-//                  // I am exploiting the clamping property of the JAI
-//                  // MultiplyCOnst operation.
-//                  // TODO make this code parametric since people might want to
-//                  // use a different transparency threshold. Right now we are
-//                  // thresholding the transparency band using a fixed
-//                  // threshold of 255, which means that anything that was not
-//                  // transparent will become opaque.
-//                  //
-//                  ////
-//                  final RenderedImage alpha = new ImageWorker(originalImage)
-//                          .retainLastBand().multiplyConst(
-//                                  new double[] { 255.0 }).retainFirstBand()
-//                          .getRenderedImage();
-//
-//                  final int numBands = originalImage.getSampleModel()
-//                          .getNumBands();
-//                  originalImage = new ImageWorker(originalImage).retainBands(
-//                          numBands - 1).getRenderedImage();
-//
-//                  final ImageLayout layout = new ImageLayout();
-//
-//                  if (numBands == 4) {
-//                      layout.setColorModel(new ComponentColorModel(ColorSpace
-//                              .getInstance(ColorSpace.CS_sRGB), true, false,
-//                              Transparency.BITMASK, DataBuffer.TYPE_BYTE));
-//                  } else {
-//                      layout.setColorModel(new ComponentColorModel(ColorSpace
-//                              .getInstance(ColorSpace.CS_GRAY), true, false,
-//                              Transparency.BITMASK, DataBuffer.TYPE_BYTE));
-//                  }
-//
-//                  image = BandMergeDescriptor.create(originalImage, alpha,
-//                          new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout))
-//                          .getNewRendering();
-//              } else {
-//                  // //
-//                  //
-//                  // Everything is fine
-//                  //
-//                  // //
-//                  image = originalImage;
-//              }
-
                 // //
                 //
                 // Build the CustomPaletteBuilder doing some good subsampling.
