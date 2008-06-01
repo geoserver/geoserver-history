@@ -298,13 +298,11 @@ public final class CoveragesEditorAction extends ConfigAction {
          */
         final Map params = new HashMap();
         Iterator it = form.getParamKeys().iterator();
-        String paramKey;
-        String paramValue;
         int index = 0;
 
         while (it.hasNext()) {
-            paramKey = (String) it.next();
-            paramValue = (String) form.getParamValues().get(index);
+            final String paramKey = (String) it.next();
+            final String paramValue = (String) form.getParamValues().get(index);
             params.put(paramKey, paramValue);
             index++;
         }
