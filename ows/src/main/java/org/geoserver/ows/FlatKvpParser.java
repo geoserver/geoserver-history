@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * A kvp parser which parses a value consisting of tokens in a flat list.
  * <p>
- * A value in flat form is a list of tokens seperated by a single delimiter.
+ * A value in flat form is a list of tokens separated by a single delimiter.
  * The default delimiter is a comma ( , ). Example:
  *         <pre>
  *         <code>
@@ -70,8 +70,8 @@ public class FlatKvpParser extends KvpParser {
     public final Object parse(String value) throws Exception {
         List tokens = KvpUtils.readFlat(value, delimiter);
         List parsed = new ArrayList(tokens.size());
-
-        for (int i = 0; i < tokens.size(); i++) {
+        final int size=tokens.size();
+        for (int i = 0; i < size; i++) {
             String token = (String) tokens.get(i);
             parsed.add(parseToken(token));
         }
