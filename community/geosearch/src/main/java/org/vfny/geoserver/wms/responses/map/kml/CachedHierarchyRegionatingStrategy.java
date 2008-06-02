@@ -62,8 +62,11 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         } catch (Exception e){
             LOGGER.log(Level.INFO, "No cached tile hierarchy found; constructing quad tree from data.", e);
             TileLevel root = createTileHierarchy(con, layer);
-            TileLevel requestTile = (root != null ? root.findTile(con.getAreaOfInterest()) : null);
-            myAcceptableFeatures = ((requestTile != null && requestTile.getZoomLevel() == myZoomLevel) ? requestTile.getFeatureSet() : root.getFeatureSet());
+            TileLevel requestTile = root.findTile(con.getAreaOfInterest());
+            myAcceptableFeatures = 
+                ((requestTile != null && requestTile.getZoomLevel() == myZoomLevel) 
+                 ? requestTile.getFeatureSet() 
+                 : root.getFeatureSet());
             LOGGER.info("Created tile hierarchy: " + root);
             addRangesToDB(con, layer, root);
         }
