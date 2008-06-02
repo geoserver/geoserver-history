@@ -93,17 +93,21 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
 
     private class DataComparator implements Comparator{
         public int compare(Object a, Object b){
+            if ((a == null) || (b == null))
+                return 0;
+
             SimpleFeature fa = (SimpleFeature)a;
             SimpleFeature fb = (SimpleFeature)b;
 
             Object attrA = fa.getAttribute(myAttributeName);
             Object attrB = fb.getAttribute(myAttributeName);
 
+            if ((attrA == null) || (attrB == null))
+                return 0;
+
             if (attrA instanceof Comparable) 
                 return ((Comparable)attrA).compareTo(attrB);
 
-            if (attrA instanceof Number)
-                return (int)Math.signum(((Number)attrA).doubleValue() - ((Number)attrB).doubleValue());
             return 0;
         }
     }
