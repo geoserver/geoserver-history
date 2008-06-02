@@ -28,12 +28,8 @@ public class SecureTreeNodeTest extends TestCase {
 
         // smoke tests
         assertNull(root.getChild("NotThere"));
-        Set<String> roles = root.getAuthorizedRoles(AccessMode.READ);
-        assertNotNull(roles);
-        assertEquals(0, roles.size());
-        roles = root.getAuthorizedRoles(AccessMode.WRITE);
-        assertNotNull(roles);
-        assertEquals(0, roles.size());
+        assertEquals(SecureTreeNode.EVERYBODY, root.getAuthorizedRoles(AccessMode.READ));
+        assertEquals(SecureTreeNode.EVERYBODY, root.getAuthorizedRoles(AccessMode.WRITE));
 
         // empty, deepest node is itself
         SecureTreeNode node = root.getDeepestNode(new String[] { "a", "b" });
