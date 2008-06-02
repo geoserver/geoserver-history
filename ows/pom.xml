@@ -46,7 +46,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools.xsd</groupId>
-			<artifactId>gt-core</artifactId>
+			<artifactId>gt-xsd-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
