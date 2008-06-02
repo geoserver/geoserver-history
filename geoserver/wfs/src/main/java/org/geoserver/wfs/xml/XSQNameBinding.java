@@ -5,11 +5,11 @@
 
 package org.geoserver.wfs.xml;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.geotools.xml.InstanceComponent;
+import org.geotools.xml.impl.DatatypeConverterImpl;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.NameSpaceInfo;
 
@@ -37,9 +37,14 @@ public class XSQNameBinding extends org.geotools.xs.bindings.XSQNameBinding {
     public Object parse(InstanceComponent instance, Object value)
         throws Exception {
         
-        QName qName = DatatypeConverter.parseQName((String) value,
-                namespaceContext);
-
+        QName qName = null;
+        try {
+            qName = DatatypeConverterImpl.getInstance()
+                .parseQName((String) value, namespaceContext);
+        }
+        catch( Exception e ) {
+        }
+            
         if (qName != null) {
             return qName;
         }

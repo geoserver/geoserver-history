@@ -4,8 +4,8 @@
  */
 package org.geoserver.ows.kvp;
 
-import com.sun.xml.bind.DatatypeConverterImpl;
 import org.geoserver.ows.KvpParser;
+import org.geotools.xml.impl.DatatypeConverterImpl;
 
 
 /**
@@ -27,6 +27,6 @@ public class BooleanKvpParser extends KvpParser {
     }
 
     public Object parse(String value) throws Exception {
-        return Boolean.valueOf(DatatypeConverterImpl.theInstance.parseBoolean(value.toLowerCase()));
+        return Boolean.valueOf(DatatypeConverterImpl.getInstance().parseBoolean(value.toLowerCase()));
     }
 }
