@@ -44,7 +44,7 @@
   </dependency>
   <dependency>
    <groupId>org.geotools.xsd</groupId>
-   <artifactId>gt-gml2</artifactId>
+   <artifactId>gt-xsd-gml2</artifactId>
   </dependency>
   <dependency>
    <groupId>junit</groupId>
