@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -191,7 +192,7 @@ public class DefaultDataAccessManager extends DataAccessManager {
             }
 
             // actually set the rule
-            if (node.getAuthorizedRoles(mode).size() > 0) {
+            if (node.getAuthorizedRoles(mode) != null && node.getAuthorizedRoles(mode).size() > 0) {
                 LOGGER.warning("Rule " + rule
                         + " is overriding another rule targetting the same resource");
             }
@@ -202,15 +203,17 @@ public class DefaultDataAccessManager extends DataAccessManager {
     }
 
     Set<String> parseRoles(String roleCsv) {
-        // like having no definition at all, empty role set
-        if("*".equals(roleCsv))
-            return Collections.emptySet();
-        
         // regexp: treat extra spaces as separators, ignore extra commas
         // "a,,b, ,, c" --> ["a","b","c"]
         String[] rolesArray = roleCsv.split("[\\s,]+");
         Set<String> roles = new HashSet<String>(rolesArray.length);
         roles.addAll(Arrays.asList(rolesArray));
+        
+        // if any of the roles is * we just remove all of the others
+        for (String role : roles) {
+            if("*".equals(role))
+                return Collections.singleton("*");
+        }
 
         return roles;
     }
