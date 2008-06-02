@@ -16,10 +16,29 @@ import org.acegisecurity.GrantedAuthority;
  * 
  */
 class SecureTreeNode {
+
+    /**
+     * Special role set used to mean every possible role in the system
+     */
+    static final Set<String> EVERYBODY = Collections.singleton("*");
+
     Map<String, SecureTreeNode> children = new HashMap<String, SecureTreeNode>();
 
     SecureTreeNode parent;
 
+    /**
+     * A map from access mode to set of roles that can perform that kind of
+     * access. Given a certain access mode, the intepretation of the associated
+     * set of roles is:
+     * <ul>
+     * <li>roles set null: no local rule, fall back on the parent of this node</li>
+     * <li>roles set empty: nobody can perform this kind of access</li>
+     * <li>roles list equals to {@link #EVERYBODY}: everybody can perform
+     * accesses in that mode</li>
+     * <li>otherwise: only users having at least one granted authority matching
+     * one of the roles in the set can access</li>
+     * </ul>
+     */
     Map<AccessMode, Set<String>> authorizedRoles = new HashMap<AccessMode, Set<String>>();
 
     /**
@@ -29,13 +48,19 @@ class SecureTreeNode {
      */
     private SecureTreeNode(SecureTreeNode parent) {
         this.parent = parent;
+        // no rule specified, full fall back on the node's parent
     }
 
     /**
      * Builds the root of a security tree
      */
     SecureTreeNode() {
-        // nothing to do
+        // by default we allow access for everybody in all modes for the root
+        // node,
+        // since we have no parent to fall back onto
+        for (AccessMode mode : AccessMode.values()) {
+            authorizedRoles.put(mode, EVERYBODY);
+        }
     }
 
     /**
@@ -78,20 +103,21 @@ class SecureTreeNode {
      * @return
      */
     boolean canAccess(Authentication user, AccessMode mode) {
-        Set<String> roles = authorizedRoles.get(mode);
+        Set<String> roles = getAuthorizedRoles(mode);
 
         // if we don't know, we ask the parent, otherwise we assume
         // the object is unsecured
-        if (roles == null || roles.isEmpty()) {
-            if (parent == null)
-                return true;
-            else
-                return parent.canAccess(user, mode);
+        if (roles == null) {
+            return parent.canAccess(user, mode);
         }
+
+        // if the roles is just "*" any granted authority will match
+        if (roles.equals(EVERYBODY))
+            return true;
 
         // let's scan thru the the authorities granted to the user and
         // see if he matches any of the write roles
-        if(user.getAuthorities() == null)
+        if (user.getAuthorities() == null)
             return false;
         for (GrantedAuthority authority : user.getAuthorities()) {
             if (roles.contains(authority.getAuthority()))
@@ -101,17 +127,12 @@ class SecureTreeNode {
     }
 
     /**
-     * Returns the authorized roles for the specified access mode. If the collection is empty,
-     * we assume everybody can access this node (a non accessible node is of no interest, and
-     * there is no way to specify that explicitly in the property file either, the way is
-     * to make it accessible only to a role that no user is assigned to)
+     * Returns the authorized roles for the specified access mode. The
+     * collection can be null if we don't have a rule, meaning the rule will
+     * have to searched in the parent node
      */
     Set<String> getAuthorizedRoles(AccessMode mode) {
-        Set<String> roles = authorizedRoles.get(mode);
-        if(roles == null)
-            return Collections.emptySet();
-        else
-            return roles;
+        return authorizedRoles.get(mode);
     }
 
     /**
