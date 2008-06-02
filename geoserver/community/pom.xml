@@ -25,6 +25,12 @@
   <!-- profiles for individual modules -->
   <profiles>
     <profile>
+      <id>openplans-authentication</id>
+      <modules>
+        <module>openplans-authentication</module>
+      </modules>
+    </profile>
+    <profile>
       <id>geosearch</id>
       <modules>
         <module>geosearch</module>
@@ -34,6 +40,12 @@
       <id>geosync</id>
       <modules>
         <module>geosync</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>upload</id>
+      <modules>
+        <module>upload</module>
       </modules>
     </profile>
     <profile>
