@@ -396,12 +396,12 @@
       </dependencies>
     </profile>
     <profile>
-      <id>geosearch</id>
+      <id>openplans-authentication</id>
       <dependencies>
          <dependency>
           <groupId>org.geoserver</groupId>
-          <artifactId>geosearch</artifactId>
-          <version>0.1</version>
+          <artifactId>OpenPlans-Auth</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -436,6 +436,16 @@
       </dependencies>
     </profile>
      <profile>
+      <id>upload</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>upload</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+      <profile>
       <id>RESTConfig</id>
       <dependencies>
         <dependency>
