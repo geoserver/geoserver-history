@@ -190,6 +190,10 @@ public final class WFS extends XSD {
         this.schemaBuilder = schemaBuilder;
     }
     
+    public FeatureTypeSchemaBuilder getSchemaBuilder() {
+        return schemaBuilder;
+    }
+    
     
     /**
      * Adds dependencies on the filter and gml schemas.
@@ -233,5 +237,8 @@ public final class WFS extends XSD {
     public void flush() {
         schema = null;
     }
+
+
+    
     
 }
