@@ -88,6 +88,9 @@ public class RollbackElementHandler implements TransactionElementHandler {
         RollbackType rollback = (RollbackType) element;
         final QName layerName = rollback.getTypeName();
         VersioningFeatureStore vstore = (VersioningFeatureStore) featureStores.get(layerName);
+        if(vstore == null)
+            throw new WFSTransactionException("Could not locate feature type " + layerName);
+        
         long inserted = response.getTransactionSummary().getTotalInserted().longValue();
         long updated = response.getTransactionSummary().getTotalUpdated().longValue();
         long deleted = response.getTransactionSummary().getTotalDeleted().longValue();

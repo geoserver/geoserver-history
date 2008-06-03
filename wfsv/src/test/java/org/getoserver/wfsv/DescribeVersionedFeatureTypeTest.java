@@ -29,15 +29,18 @@ public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
         		"  xmlns:topp=\"http://www.openplans.org/topp\"\r\n>\r\n" + 
         		"    <wfsv:TypeName>topp:archsites</wfsv:TypeName>\r\n" + 
         		"</DescribeVersionedFeatureType>";
-        Document dom = postAsDOM(root(), request);
+        Document dom = postAsDOM(root(true), request);
         print(dom);
+        assertXpathEvaluatesTo("1", "count(//xs:schema)", dom);
         assertXpathEvaluatesTo("http://www.opengis.net/wfsv", "/xs:schema/xs:import/@namespace", dom);
         assertXpathEvaluatesTo("wfsv:AbstractVersionedFeatureType", "/xs:schema/xs:complexType/xs:complexContent/xs:extension/@base", dom);
     }
     
     public void testDescribeArcsitesGet10() throws Exception {
-        String request = root() + "?service=wfsv&version=1.0.0&request=DescribeVersionedFeatureType&typeName=topp:archsites";
+        String request = root(false) + "?service=wfsv&version=1.0.0&request=DescribeVersionedFeatureType&typeName=topp:archsites";
         Document dom = getAsDOM(request);
+        print(dom);
+        assertXpathEvaluatesTo("1", "count(//xs:schema)", dom);
         assertXpathEvaluatesTo("http://www.opengis.net/wfsv", "/xs:schema/xs:import/@namespace", dom);
         assertXpathEvaluatesTo("wfsv:AbstractVersionedFeatureType", "/xs:schema/xs:complexType/xs:complexContent/xs:extension/@base", dom);
     }
@@ -53,13 +56,14 @@ public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
                 "  xsi:schemaLocation=\"http://www.opengis.net/wfsv http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfsv.xsd\">\r\n" + 
                 "    <wfs:TypeName>topp:archsites</wfs:TypeName>\r\n" + 
                 "</DescribeVersionedFeatureType>";
-        Document dom = postAsDOM(root(), request);
+        Document dom = postAsDOM(root(true), request);
+        print(dom);
         assertXpathEvaluatesTo("http://www.opengis.net/wfsv", "/xs:schema/xs:import/@namespace", dom);
         assertXpathEvaluatesTo("wfsv:AbstractVersionedFeatureType", "/xs:schema/xs:complexType/xs:complexContent/xs:extension/@base", dom);
     }
     
     public void testDescribeArcsitesGet11() throws Exception {
-        String request = root() + "?service=wfsv&version=1.1.0&request=DescribeVersionedFeatureType&typeName=topp:archsites";
+        String request = root(false) + "?service=wfsv&version=1.1.0&request=DescribeVersionedFeatureType&typeName=topp:archsites";
         Document dom = getAsDOM(request);
         assertXpathEvaluatesTo("http://www.opengis.net/wfsv", "/xs:schema/xs:import/@namespace", dom);
         assertXpathEvaluatesTo("wfsv:AbstractVersionedFeatureType", "/xs:schema/xs:complexType/xs:complexContent/xs:extension/@base", dom);

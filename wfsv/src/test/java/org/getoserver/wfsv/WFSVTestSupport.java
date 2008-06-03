@@ -54,8 +54,8 @@ public class WFSVTestSupport extends GeoServerAbstractTestSupport {
      * Returns the url of the WFSV entry point
      * @return
      */
-    protected String root() {
-        return "wfsv";
+    protected String root(boolean strict) {
+        return "wfsv" + (strict ? "?strict=true" : "");
     }
 
 //    public void testCatalogLoaded() {
