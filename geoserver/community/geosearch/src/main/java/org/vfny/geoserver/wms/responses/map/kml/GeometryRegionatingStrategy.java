@@ -16,6 +16,7 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geoserver.ows.HttpErrorCodeException;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.geotools.map.MapLayer;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -23,13 +24,17 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public class GeometryRegionatingStrategy extends CachedHierarchyRegionatingStrategy{
     Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
-    public static int FEATURES_PER_TILE = 100;
+    public static int myFeaturesPerTile;
 
     protected String findCacheTable(WMSMapContext con, MapLayer layer){
         return super.findCacheTable(con, layer) + "_geometry_regionator";
     }
 
     protected TileLevel createTileHierarchy(WMSMapContext con, MapLayer layer){
+        FeatureTypeInfo fti = con.getRequest().getWMS().getData().
+            getFeatureTypeInfo(layer.getFeatureSource().getName());
+        myFeaturesPerTile = fti.getRegionateFeatureLimit();
+
         LOGGER.info("About to build the geometry hierarchy");
         try{
             FeatureSource<SimpleFeatureType, SimpleFeature> source = 
@@ -37,7 +42,11 @@ public class GeometryRegionatingStrategy extends CachedHierarchyRegionatingStrat
             CoordinateReferenceSystem nativeCRS = source.getSchema().getDefaultGeometry().getCRS();
             ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
             fullBounds = fullBounds.transform(nativeCRS, true);
-            TileLevel root = TileLevel.makeRootLevel(fullBounds, FEATURES_PER_TILE, new GeometryComparator());
+            TileLevel root = TileLevel.makeRootLevel(
+                    fullBounds,
+                    myFeaturesPerTile,
+                    new GeometryComparator()
+                    );
             FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
             DefaultQuery query = new DefaultQuery(Query.ALL);
             FeatureCollection col = source.getFeatures(query);

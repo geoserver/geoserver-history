@@ -121,6 +121,9 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             if (attname == null)
                 attname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateAttribute();
 
+            if (("auto").equals(stratname))
+                stratname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateStrategy();
+
             if (stratname == null) {
                 // LOGGER.info("No regionating strategy specified, using default data-based strategy");
                 setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
@@ -131,8 +134,8 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             } else if (stratname.equalsIgnoreCase("geo")) { 
                 setRegionatingStrategy(new GeometryRegionatingStrategy());
             } else {
-                LOGGER.info("Bogus regionating strategy [" + stratname + "] specified, using default data-based strategy.");
-                setRegionatingStrategy(new DataRegionatingStrategy(attname));
+                LOGGER.info("Bogus regionating strategy [" + stratname + "] specified, using default style-based strategy.");
+                setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
             }
             
             myStrategy.preProcess(mapContext, mapLayer);

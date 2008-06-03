@@ -407,6 +407,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         setCachingEnabled( dto.isCachingEnabled() );
         setIndexingEnabled( dto.isIndexingEnabled() );
         setRegionateAttribute( dto.getRegionateAttribute() );
+        setRegionateStrategy( dto.getRegionateStrategy());
+        setRegionateFeatureLimit( dto.getRegionateFeatureLimit() );
         featureType.setMaxFeatures( dto.getMaxFeatures() );
         featureType.setTitle( dto.getTitle() );
         featureType.setEnabled( ds.isEnabled() );
@@ -498,6 +500,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setCachingEnabled(isCachingEnabled());
     	dto.setIndexingEnabled(isIndexingEnabled());
     	dto.setRegionateAttribute(getRegionateAttribute());
+        dto.setRegionateStrategy(getRegionateStrategy());
+        dto.setRegionateFeatureLimit(getRegionateFeatureLimit());
     	
         //
         //dto.setAbstract(_abstract);
@@ -1653,6 +1657,14 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         //return regionateAttribute;
     }
 
+    public String getRegionateStrategy() {
+        return (String) featureType.getMetadata().get("kml.regionateStrategy");
+    }
+
+    public int getRegionateFeatureLimit() {
+        return (Integer)featureType.getMetadata().get("kml.regionateFeatureLimit");
+    }
+
     /**
      * Sets whether we should add the cache-control: max-age header to maps containing this layer
      * @param cachingEnabled true if we should add the header, false if we should omit the header
@@ -1678,6 +1690,14 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     public void setRegionateAttribute(String attr){
         featureType.getMetadata().put( "kml.regionateAttribute", attr );
         //this.regionateAttribute = attr;
+    }
+
+    public void setRegionateStrategy(String strategy){
+        featureType.getMetadata().put( "kml.regionateStrategy", strategy);
+    }
+
+    public void setRegionateFeatureLimit(int limit){
+        featureType.getMetadata().put("kml.regionateFeatureLimit", limit);
     }
     
     /**

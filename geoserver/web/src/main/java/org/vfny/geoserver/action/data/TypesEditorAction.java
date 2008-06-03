@@ -390,6 +390,14 @@ public class TypesEditorAction extends ConfigAction {
         config.setIndexingEnabled(form.isIndexingEnabled());
         config.setMaxFeatures(Integer.parseInt(form.getMaxFeatures()));
         config.setRegionateAttribute(form.getRegionateAttribute());
+        config.setRegionateStrategy(form.getRegionateStrategy());
+
+        try{
+            config.setRegionateFeatureLimit(Integer.valueOf(form.getRegionateFeatureLimit()));
+        } catch (NumberFormatException nfe){
+            // leave the previous value
+        }
+
         config.setSRSHandling(form.getSrsHandlingCode());
 
         if (!form.isCachingEnabledChecked()) {

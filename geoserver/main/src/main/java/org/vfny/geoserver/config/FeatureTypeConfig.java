@@ -189,6 +189,10 @@ public class FeatureTypeConfig {
      * The name of the property to use when regionating using the attribute strategy.
      */
     private String regionateAttribute;
+
+    private String regionateStrategy;
+
+    private int regionateFeatureLimit;
     
     /**
      * The maximum number of features to be served for this feature type (it's understood
@@ -255,6 +259,8 @@ public class FeatureTypeConfig {
 
         indexingEnabled = false;
         regionateAttribute = "";
+        regionateStrategy = "sld";
+        regionateFeatureLimit = 50;
     }
 
     /**
@@ -368,6 +374,8 @@ public class FeatureTypeConfig {
 
         indexingEnabled = dto.isIndexingEnabled();
         regionateAttribute = dto.getRegionateAttribute();
+        regionateStrategy = dto.getRegionateStrategy();
+        regionateFeatureLimit = dto.getRegionateFeatureLimit();
     }
 
     /**
@@ -441,6 +449,8 @@ public class FeatureTypeConfig {
 
         f.setIndexingEnabled(indexingEnabled);
         f.setRegionateAttribute(regionateAttribute);
+        f.setRegionateStrategy(regionateStrategy);
+        f.setRegionateFeatureLimit(regionateFeatureLimit);
 
         return f;
     }
@@ -822,6 +832,14 @@ public class FeatureTypeConfig {
         return regionateAttribute;
     }
 
+    public String getRegionateStrategy(){
+        return regionateStrategy;
+    }
+
+    public int getRegionateFeatureLimit(){
+        return regionateFeatureLimit;
+    }
+
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
     }
@@ -836,6 +854,14 @@ public class FeatureTypeConfig {
      */
     public void setRegionateAttribute(String attr){
         this.regionateAttribute = attr;
+    }
+
+    public void setRegionateStrategy(String strategy){
+        this.regionateStrategy = strategy;
+    }
+
+    public void setRegionateFeatureLimit(int limit){
+        this.regionateFeatureLimit = limit;
     }
 
     public String getCacheMaxAge() {

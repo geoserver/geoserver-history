@@ -35,6 +35,7 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -53,8 +54,8 @@ import com.vividsolutions.jts.geom.Geometry;
 public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy {
 
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
-    private static int FEATURES_PER_TILE = 100;
-    private static String myAttributeName;
+    private int myFeaturesPerTile;
+    private String myAttributeName;
 
     /**
      * Create a data regionating strategy that uses the specified attribute.
@@ -69,6 +70,11 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
     }
 
     protected TileLevel createTileHierarchy(WMSMapContext con, MapLayer layer){
+        FeatureTypeInfo fti = con.getRequest().getWMS().getData().
+            getFeatureTypeInfo(layer.getFeatureSource().getName());
+        myAttributeName = fti.getRegionateAttribute();
+        myFeaturesPerTile = fti.getRegionateFeatureLimit();
+
         LOGGER.info("Getting ready to do the hierarchy thing!");
         try{
             FeatureSource<SimpleFeatureType, SimpleFeature> source = 
@@ -76,9 +82,12 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
             CoordinateReferenceSystem nativeCRS = source.getSchema().getCRS();
             ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
             fullBounds = fullBounds.transform(nativeCRS, true);
-            TileLevel root = TileLevel.makeRootLevel(fullBounds, FEATURES_PER_TILE, new DataComparator());
+            TileLevel root = TileLevel.makeRootLevel(
+                    fullBounds,
+                    myFeaturesPerTile, 
+                    new DataComparator()
+                    );
             
-            FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
             DefaultQuery query = new DefaultQuery(Query.ALL);
             FeatureCollection col = source.getFeatures(query);
 

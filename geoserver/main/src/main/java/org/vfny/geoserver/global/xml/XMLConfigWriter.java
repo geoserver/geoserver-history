@@ -1198,6 +1198,8 @@ public class XMLConfigWriter {
             cw.attrTag("cacheinfo", m);
             cw.attrTag("searchable", Collections.singletonMap("enabled", Boolean.toString(ft.isIndexingEnabled())));
             cw.attrTag("regionateAttribute", Collections.singletonMap("value", ft.getRegionateAttribute()));
+            cw.attrTag("regionateStrategy", Collections.singletonMap("value", ft.getRegionateStrategy()));
+            cw.attrTag("regionateFeatureLimit", Collections.singletonMap("value", Integer.toString(ft.getRegionateFeatureLimit())));
 
             if (ft.getDefinitionQuery() != null) {
                 cw.openTag("definitionQuery");
