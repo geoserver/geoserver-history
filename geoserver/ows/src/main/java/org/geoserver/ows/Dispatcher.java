@@ -1135,7 +1135,11 @@ public class Dispatcher extends AbstractController {
             //set the error code
             HttpErrorCodeException ece = (HttpErrorCodeException) cause;
             try {
-                request.httpResponse.sendError(ece.getErrorCode());
+            	if(ece.getMessage() != null) {
+                	request.httpResponse.sendError(ece.getErrorCode(),ece.getMessage());
+            	} else {
+            		request.httpResponse.sendError(ece.getErrorCode());
+            	}
             } 
             catch (IOException e) {
                 //means the resposne was already commited
