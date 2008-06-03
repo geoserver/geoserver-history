@@ -111,7 +111,9 @@ public abstract class DescribeProcessTransformer extends TransformerBase
             private void processDescription(ProcessFactory pf)
             {
                 AttributesImpl attributes = new AttributesImpl();
-
+                attributes.addAttribute("", "wps:processVersion", "wps:processVersion", "", pf.getVersion());
+                attributes.addAttribute("", "statusSupported",    "statusSupported",    "", Boolean.toString(pf.supportsProgress()));
+                
                 start("ProcessDescription", attributes);
 	                element("ows:Identifier", pf.getName());
 	                element("ows:Title",      pf.getTitle().toString(this.locale));
@@ -148,7 +150,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 {
                     start("Output");
 	                    element("ows:Identifier", inputIdentifier.key);
-	                    element("ows:Title",      "XXX Missing in Parameter.java");
+	                    element("ows:Title",      inputIdentifier.title.toString(this.locale));
 	                    element("ows:Abstract",   inputIdentifier.description.toString(this.locale));
 	                    start("ComplexOutput");
 	                    	start("Default");
