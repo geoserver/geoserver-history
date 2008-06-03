@@ -42,8 +42,8 @@ public class RollbackTest extends WFSVTestSupport {
         "  </wfs:Delete>\r\n" + 
         "</wfs:Transaction>\r\n" + 
         "";
-        Document doc = postAsDOM(root(), transaction);
-        print(doc);
+        Document doc = postAsDOM(root(true), transaction);
+//        print(doc);
 
         // let's just ensure the transaction was successful
         assertXpathEvaluatesTo("1", "count(/wfs:TransactionResponse)", doc);
@@ -61,7 +61,7 @@ public class RollbackTest extends WFSVTestSupport {
                 + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
                 + "  xmlns:ogc=\"http://www.opengis.net/ogc\">\r\n"
                 + "  <wfs:Query typeName=\"topp:archsites\"/>\r\n" + "</wfs:GetFeature>\r\n";
-        doc = postAsDOM(root(), current);
+        doc = postAsDOM(root(true), current);
         assertXpathEvaluatesTo("4", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
         assertXpathEvaluatesTo("Signature Rock, updated",
                 "//topp:archsites[@fid=\"archsites.1\"]/topp:str1", doc);
@@ -79,8 +79,8 @@ public class RollbackTest extends WFSVTestSupport {
         		"  handle=\"Rolling back previous changes\">\r\n" + 
         		"  <wfsv:Rollback safeToIgnore=\"false\" vendorId=\"TOPP\" typeName=\"topp:archsites\" toFeatureVersion=\"1\"/>\r\n" + 
         		"</wfs:Transaction>\r\n";
-        doc = postAsDOM(root(), rollback);
-        print(doc);
+        doc = postAsDOM(root(true), rollback);
+//        print(doc);
         
         // let's ensure the rollback was successful
         assertXpathEvaluatesTo("1", "count(/wfs:TransactionResponse)", doc);
@@ -127,8 +127,8 @@ public class RollbackTest extends WFSVTestSupport {
         "  </wfs:Delete>\r\n" + 
         "</wfs:Transaction>\r\n" + 
         "";
-        Document doc = postAsDOM(root(), transaction);
-        print(doc);
+        Document doc = postAsDOM(root(true), transaction);
+//        print(doc);
         // let's just ensure the transaction was successful
         assertXpathEvaluatesTo("1", "count(/wfs:WFS_TransactionResponse)", doc);
         assertXpathEvaluatesTo("archsites.5",
@@ -137,13 +137,15 @@ public class RollbackTest extends WFSVTestSupport {
 
 
         // ask the current state, make sure the updates do show
-        String current = "<wfs:GetFeature service=\"WFSV\" version=\"1.0.0\"\r\n"
+        String current = "<wfs:GetFeature service=\"WFS\" version=\"1.0.0\"\r\n"
                 + "  outputFormat=\"GML2\"\r\n"
                 + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
                 + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
                 + "  xmlns:ogc=\"http://www.opengis.net/ogc\">\r\n"
                 + "  <wfs:Query typeName=\"topp:archsites\"/>\r\n" + "</wfs:GetFeature>\r\n";
-        doc = postAsDOM(root(), current);
+        doc = postAsDOM(root(true), current);
+//        print(doc);
+        assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection)", doc);
         assertXpathEvaluatesTo("4", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
         assertXpathEvaluatesTo("Signature Rock, updated",
                 "//topp:archsites[@fid=\"archsites.1\"]/topp:str1", doc);
@@ -151,7 +153,7 @@ public class RollbackTest extends WFSVTestSupport {
         assertXpathEvaluatesTo("1", "count(//topp:archsites[@fid=\"archsites.5\"])", doc);
         
         // perform the rollback
-        String rollback = "<wfs:Transaction service=\"WFSV\" version=\"1.0.0\"\r\n" + 
+        String rollback = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\"\r\n" + 
                 "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n" + 
                 "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n" + 
                 "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
@@ -161,8 +163,8 @@ public class RollbackTest extends WFSVTestSupport {
                 "  handle=\"Rolling back previous changes\">\r\n" + 
                 "  <wfsv:Rollback safeToIgnore=\"false\" vendorId=\"TOPP\" typeName=\"topp:archsites\" toFeatureVersion=\"1\"/>\r\n" + 
                 "</wfs:Transaction>\r\n";
-        doc = postAsDOM(root(), rollback);
-        print(doc);
+        doc = postAsDOM(root(true), rollback);
+//        print(doc);
         
         // let's ensure the rollback was successful
         assertXpathEvaluatesTo("1", "count(/wfs:WFS_TransactionResponse)", doc);

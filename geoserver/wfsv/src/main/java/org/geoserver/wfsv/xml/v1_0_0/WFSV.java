@@ -4,8 +4,10 @@
  */
 package org.geoserver.wfsv.xml.v1_0_0;
 
+import java.io.IOException;
 import java.util.Set;
 
+import org.eclipse.xsd.XSDSchema;
 import org.geoserver.wfs.xml.v1_0_0.WFS;
 import org.geotools.xml.XSD;
 
@@ -39,6 +41,12 @@ public class WFSV extends XSD {
     
     public String getSchemaLocation() {
         return getClass().getResource("WFS-versioning.xsd").toString();
+    }
+    
+    protected XSDSchema buildSchema() throws IOException {
+        XSDSchema wfsvSchema = super.buildSchema();
+        wfsvSchema = wfs.getSchemaBuilder().addApplicationTypes(wfsvSchema);
+        return wfsvSchema;
     }
 
 }
