@@ -63,7 +63,7 @@ public class SaveXMLAction extends ConfigAction {
             XMLConfigWriter.store((WCSDTO) getWCS(request).toDTO(),
                 (WMSDTO) getWMS(request).toDTO(), (WFSDTO) getWFS(request).toDTO(),
                 (GeoServerDTO) getWFS(request).getGeoServer().toDTO(),
-                (DataDTO) getWFS(request).getData().toDTO(), rootDir);
+                (DataDTO) getWFS(request).getRawData().toDTO(), rootDir);
         } catch (ConfigurationException e) {
             e.printStackTrace();
             throw new ServletException(e);
