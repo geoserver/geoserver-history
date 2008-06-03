@@ -73,7 +73,9 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
         try{
             FeatureSource<SimpleFeatureType, SimpleFeature> source = 
                 (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
-            CoordinateReferenceSystem nativeCRS = source.getSchema().getDefaultGeometry().getCRS();
+            // source.getSchema().getDefaultGeometry().getCRS() and source.getInfo().getCRS() return null
+            // for Massgis tiger, may be related to user defined projection)
+            CoordinateReferenceSystem nativeCRS = layer.getBounds().getCoordinateReferenceSystem();
             ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
             fullBounds = fullBounds.transform(nativeCRS, true);
             TileLevel root = TileLevel.makeRootLevel(fullBounds, FEATURES_PER_TILE, new DataComparator());
