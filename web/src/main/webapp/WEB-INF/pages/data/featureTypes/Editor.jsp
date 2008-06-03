@@ -417,6 +417,25 @@ function prepareFormData(){
              <html:text property="regionateAttribute"/>
          </td>
     </tr>
+    <tr> <td class="label">
+             <span class="help" title="<bean:message key="help.type.regionateStrategy" />">
+                  <bean:message key="label.regionateStrategy"/>:
+             </span>
+         </td>
+         <td class="datum">
+             <html:text property="regionateStrategy"/>
+         </td>
+     </tr>
+     <tr>
+         <td class="label">
+              <span class="help" title="<bean:message key="help.type.regionateStrategy"/>">
+              <bean:message key="label.regionateFeatureLimit"/>:
+              </span>
+         </td>
+         <td class="datum">
+            <html:text property="regionateFeatureLimit"/>
+         </td>
+     </tr>
     <tr>
     	<td class="label">
     		<span class="help" title="<bean:message key="help.type.cacheMaxAge" />">

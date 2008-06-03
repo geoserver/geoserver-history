@@ -167,6 +167,24 @@ public class LegacyFeatureTypeInfoReader {
         
         return null;
     }
+
+    public String regionateStrategy() {
+        Element regionateStrategy = ReaderUtils.getChildElement( featureType, "regionateStrategy");
+        if ( regionateStrategy != null ) {
+            return regionateStrategy.getAttribute("value");
+        }
+
+        return null;
+    }
+
+    public int regionateFeatureLimit() {
+        Element regionateFeatureLimit = ReaderUtils.getChildElement(featureType, "regionateFeatureLimit");
+        try{
+            return Integer.valueOf(regionateFeatureLimit.getAttribute("value"));
+        } catch (Exception e) {
+            return 50;
+        }
+    }
     
     public String parentDirectoryName() {
         return parentDirectory.getName();

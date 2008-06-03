@@ -410,6 +410,8 @@ public class LegacyCatalogImporter {
         featureType.getMetadata().put( "dirName", ftInfoReader.parentDirectoryName() );
         featureType.getMetadata().put( "indexingEnabled", ftInfoReader.searchable() );
         featureType.getMetadata().put( "kml.regionateAttribute", ftInfoReader.regionateAttribute() );
+        featureType.getMetadata().put( "kml.regionateStrategy", ftInfoReader.regionateStrategy() );
+        featureType.getMetadata().put( "kml.regionateFeatureLimit", ftInfoReader.regionateFeatureLimit());
 
         //link to datastore
         String dataStoreName = ftInfoReader.dataStore();
