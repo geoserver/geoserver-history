@@ -239,7 +239,9 @@ public class TileLevel implements Serializable {
 
     static ReferencedEnvelope getWorldBounds(){
     	try{
-    	    return new ReferencedEnvelope(-180.0, 180.0, -90.0, 90.0, CRS.decode("EPSG:4326"));
+    		// To avoid Caused by: org.geotools.referencing.operation.projection.ProjectionException: 
+    		// Latitude 90°00.0'S is too close to a pole.
+    	    return new ReferencedEnvelope(-179.9, 179.9, -89.95, 89.95, CRS.decode("EPSG:4326"));
     	} catch (Exception e){
     	    LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
     	}
