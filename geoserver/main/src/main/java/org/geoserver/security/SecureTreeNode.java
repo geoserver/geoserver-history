@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.security;
 
 import java.util.Collections;
@@ -117,7 +121,7 @@ class SecureTreeNode {
 
         // let's scan thru the the authorities granted to the user and
         // see if he matches any of the write roles
-        if (user.getAuthorities() == null)
+        if (user == null || user.getAuthorities() == null)
             return false;
         for (GrantedAuthority authority : user.getAuthorities()) {
             if (roles.contains(authority.getAuthority()))

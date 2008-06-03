@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.security;
 
 import org.acegisecurity.Authentication;
@@ -7,7 +11,7 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 
 /**
- * Data access manager provides the {@link SecureCatalog} with directives on
+ * Data access manager provides the {@link SecureCatalogImpl} with directives on
  * what the specified user can access.
  * TODO: decide if this is going to be an abstract class or an interface (i.e. how likely
  * is it that we'll need to add a new kind of object to be put under security control?)
