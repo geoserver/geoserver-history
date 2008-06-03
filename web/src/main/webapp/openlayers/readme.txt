@@ -5,8 +5,9 @@ but now we're shipping with the compressed OpenLayers.js
 that can be found here:
 http://trac.openlayers.org/wiki/HowToDownload
 
-The img/ and themes/ directories are verbatim copies of
-the OpenLayers distribution.
+The themes/ directory is verbatim copy of
+the OpenLayers distribution, img/ comes from the OL distribution
+but also contains two extra images, cancel.png and options.png.
 
 At the time of writing we're shipping with OpenLayers 2.5.
 

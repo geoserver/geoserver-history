@@ -151,7 +151,7 @@ public class LoadXMLAction extends ConfigAction {
         getGlobalConfig().update(gs.toDTO());
         
         Data data = getData();
-        data.init();
+//        data.init();
         getDataConfig().update(data.toDTO());
         
         getWCS(request).init();

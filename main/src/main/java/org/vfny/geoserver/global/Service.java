@@ -10,8 +10,12 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.Wrapper;
+import org.geoserver.catalog.util.WrapperUtils;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.ows.OWS;
+import org.geoserver.security.SecureCatalog;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 
 
@@ -220,6 +224,14 @@ public class Service  implements OWS /* extends GlobalLayerSupertype*/ {
     public Data getData() {
         return new Data( gs );
         //return dt;
+    }
+    
+    public Data getRawData() {
+        Catalog catalog = gs.getCatalog();
+        if(catalog instanceof Wrapper && ((Wrapper) catalog).isWrapperFor(Catalog.class)) {
+            catalog = WrapperUtils.deepUnwrap((Wrapper<Catalog>) catalog);
+        }
+        return new Data(gs, catalog);
     }
 
     /**

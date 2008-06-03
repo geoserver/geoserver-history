@@ -70,9 +70,9 @@ public class UpdateGSAction extends ConfigAction {
             geoserverDTO.setUpdateSequence(gsUs + 1);
             
             //load the data bean from the modified config DTO
-            getWCS(request).getData().load(dataDTO);
+            getWFS(request).getRawData().load(dataDTO);
             //load the main geoserver bean from the modified config DTO
-            getWCS(request).getGeoServer().load(geoserverDTO);
+            getWFS(request).getGeoServer().load(geoserverDTO);
             
             //load each service global bean from the modified config DTO
             getWCS(request).load(wcsDTO);

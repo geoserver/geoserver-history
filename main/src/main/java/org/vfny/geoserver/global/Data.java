@@ -6,9 +6,7 @@ package org.vfny.geoserver.global;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,10 +36,8 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
 import org.springframework.beans.factory.DisposableBean;
-import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -204,15 +200,21 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     //    this(config.getData(), config.dataDirectory(), g);
     //}
 
-    public Data( org.geoserver.config.GeoServer gs) {
+    public Data( org.geoserver.config.GeoServer gs, Catalog catalog) {
         this.gs = gs;
-        init();
+        this.catalog = catalog;
         //errors = new HashMap();
     }
     
-    public void init() {
+    public Data( org.geoserver.config.GeoServer gs) {
+        this.gs = gs;
         this.catalog = gs.getCatalog();
+        //errors = new HashMap();
     }
+    
+//    public void init() {
+//        this.catalog = gs.getCatalog();
+//    }
     
     public Catalog getCatalog() {
         return catalog;
