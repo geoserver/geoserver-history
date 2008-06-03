@@ -1,25 +1,15 @@
 package org.geoserver.security;
 
-import java.util.Set;
-
 import junit.framework.TestCase;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.providers.TestingAuthenticationToken;
 
 public class SecureTreeNodeTest extends TestCase {
 
-    private TestingAuthenticationToken rwUser;
-    private TestingAuthenticationToken roUser;
     private TestingAuthenticationToken anonymous;
 
     @Override
     protected void setUp() throws Exception {
-        rwUser = new TestingAuthenticationToken("lullaby", "supersecret", new GrantedAuthority[] {
-                new GrantedAuthorityImpl("reader"), new GrantedAuthorityImpl("writer") });
-        roUser = new TestingAuthenticationToken("lullaby", "supersecret", new GrantedAuthority[] {
-                new GrantedAuthorityImpl("reader")});
         anonymous = new TestingAuthenticationToken("anonymous", null, null);
     }
 
@@ -38,6 +28,10 @@ public class SecureTreeNodeTest extends TestCase {
         // allows access to everyone
         assertTrue(root.canAccess(anonymous, AccessMode.WRITE));
         assertTrue(root.canAccess(anonymous, AccessMode.READ));
+        
+        // make sure this includes not having a current user as well
+        assertTrue(root.canAccess(null, AccessMode.WRITE));
+        assertTrue(root.canAccess(null, AccessMode.READ));
     }
     
     
