@@ -21,7 +21,7 @@ import org.geoserver.catalog.WorkspaceInfo;
 
 import junit.framework.TestCase;
 
-public class AbstractAuthorizationTest extends TestCase {
+public abstract class AbstractAuthorizationTest extends TestCase {
 
     Authentication rwUser;
     Authentication roUser;
