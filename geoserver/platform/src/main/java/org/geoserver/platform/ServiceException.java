@@ -5,6 +5,7 @@
 package org.geoserver.platform;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -24,6 +25,8 @@ public class ServiceException extends RuntimeException {
      * Serial UID
      */
     private static final long serialVersionUID = 7254349181794561723L;
+    
+    public static final String NEW_LINE = System.getProperty("line.separator");
 
     /**
      * Application specfic code.
@@ -186,5 +189,18 @@ public class ServiceException extends RuntimeException {
      */
     public List getExceptionText() {
         return exceptionText;
+    }
+    
+    public String toString() {
+        String msg = super.toString();
+        if(exceptionText == null || exceptionText.size() == 0)
+            return msg;
+        
+        StringBuffer sb = new StringBuffer(msg);
+        for (Iterator it = exceptionText.iterator(); it.hasNext();) {
+            String extraMessage = (String) it.next();
+            sb.append(NEW_LINE).append(extraMessage);
+        }
+        return sb.toString();
     }
 }
