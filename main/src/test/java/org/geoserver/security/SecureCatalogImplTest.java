@@ -9,9 +9,12 @@ import java.util.List;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.security.decorators.ReadOnlyDataStoreInfo;
 import org.geoserver.security.decorators.ReadOnlyFeatureTypeInfo;
 import org.geoserver.security.decorators.ReadOnlyLayerInfo;
 
@@ -37,13 +40,22 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
 
     private FeatureTypeInfo bases;
 
+    private DataStoreInfo statesStore;
+
+    private DataStoreInfo roadsStore;
+
+    private CoverageStoreInfo arcGridStore;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         states = (FeatureTypeInfo) statesLayer.getResource();
+        statesStore = states.getStore();
         arcGrid = (CoverageInfo) arcGridLayer.getResource();
+        arcGridStore = (CoverageStoreInfo) arcGrid.getStore();
         roads = (FeatureTypeInfo) roadsLayer.getResource();
+        roadsStore = roads.getStore();
         landmarks = (FeatureTypeInfo) landmarksLayer.getResource();
         bases = (FeatureTypeInfo) basesLayer.getResource();
 
@@ -76,6 +88,12 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
                 (FeatureTypeInfo) landmarks).anyTimes();
         expect(catalog.getFeatureTypeByName("topp:bases")).andReturn((FeatureTypeInfo) bases)
                 .anyTimes();
+        expect(catalog.getDataStoreByName("states")).andReturn((DataStoreInfo) statesStore)
+                .anyTimes();
+        expect(catalog.getDataStoreByName("roads")).andReturn((DataStoreInfo) roadsStore)
+                .anyTimes();
+        expect(catalog.getCoverageStoreByName("arcGrid")).andReturn(
+                (CoverageStoreInfo) arcGridStore).anyTimes();
         expect(catalog.getLayers()).andReturn(layers).anyTimes();
         expect(catalog.getFeatureTypes()).andReturn(featureTypes).anyTimes();
         expect(catalog.getCoverages()).andReturn(coverages).anyTimes();
@@ -98,6 +116,9 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         assertEquals(coverages, sc.getCoverages());
         assertEquals(workspaces, sc.getWorkspaces());
         assertEquals(toppWs, sc.getWorkspaceByName("topp"));
+        assertSame(statesStore, sc.getDataStoreByName("states"));
+        assertSame(roadsStore, sc.getDataStoreByName("roads"));
+        assertSame(arcGridStore, sc.getCoverageStoreByName("arcGrid"));
     }
 
     public void testLockedDown() throws Exception {
@@ -114,6 +135,9 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         assertEquals(0, sc.getCoverages().size());
         assertEquals(0, sc.getWorkspaces().size());
         assertNull(sc.getWorkspaceByName("topp"));
+        assertNull(sc.getDataStoreByName("states"));
+        assertNull(sc.getDataStoreByName("roads"));
+        assertNull(sc.getCoverageStoreByName("arcGrid"));
 
         // try with write enabled user
         SecurityContextHolder.getContext().setAuthentication(rwUser);
@@ -125,6 +149,9 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         assertEquals(coverages, sc.getCoverages());
         assertEquals(workspaces, sc.getWorkspaces());
         assertEquals(toppWs, sc.getWorkspaceByName("topp"));
+        assertSame(statesStore, sc.getDataStoreByName("states"));
+        assertSame(roadsStore, sc.getDataStoreByName("roads"));
+        assertSame(arcGridStore, sc.getCoverageStoreByName("arcGrid"));
     }
 
     public void testPublicRead() throws Exception {
@@ -138,6 +165,7 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         assertEquals(coverages, sc.getCoverages());
         assertEquals(workspaces, sc.getWorkspaces());
         assertEquals(toppWs, sc.getWorkspaceByName("topp"));
+        assertSame(arcGridStore, sc.getCoverageStoreByName("arcGrid"));
         // .. the following should have been wrapped
         assertNotNull(sc.getFeatureTypeByName("topp:states"));
         assertTrue(sc.getFeatureTypeByName("topp:states") instanceof ReadOnlyFeatureTypeInfo);
@@ -148,6 +176,8 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         }
         assertNotNull(sc.getLayerByName("topp:states"));
         assertTrue(sc.getLayerByName("topp:states") instanceof ReadOnlyLayerInfo);
+        assertTrue(sc.getDataStoreByName("states") instanceof ReadOnlyDataStoreInfo);
+        assertTrue(sc.getDataStoreByName("roads") instanceof ReadOnlyDataStoreInfo);
 
         // try with write enabled user (nothing has been wrapped)
         SecurityContextHolder.getContext().setAuthentication(rwUser);
@@ -159,6 +189,9 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         assertEquals(coverages, sc.getCoverages());
         assertEquals(workspaces, sc.getWorkspaces());
         assertEquals(toppWs, sc.getWorkspaceByName("topp"));
+        assertSame(statesStore, sc.getDataStoreByName("states"));
+        assertSame(roadsStore, sc.getDataStoreByName("roads"));
+        assertSame(arcGridStore, sc.getCoverageStoreByName("arcGrid"));
     }
 
     public void testComplex() throws Exception {
@@ -167,33 +200,42 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
 
         // try with anonymous user
         SecurityContextHolder.getContext().setAuthentication(anonymous);
-        // ... roads follows generic namespace rule, it's read only, nobody can write it
+        // ... roads follows generic ns rule, read only, nobody can write it
         assertTrue(sc.getFeatureTypeByName("topp:roads") instanceof ReadOnlyFeatureTypeInfo);
+        assertTrue(sc.getDataStoreByName("roads") instanceof ReadOnlyDataStoreInfo);
         // ... states requires READER role
         assertNull(sc.getFeatureTypeByName("topp:states"));
+        // ... but the datastore is visible since the namespace rules do apply instead
+        assertTrue(sc.getDataStoreByName("states") instanceof ReadOnlyDataStoreInfo);
         // ... landmarks requires WRITER role to be written
         assertTrue(sc.getFeatureTypeByName("topp:landmarks") instanceof ReadOnlyFeatureTypeInfo);
         // ... bases requires one to be in the military
         assertNull(sc.getFeatureTypeByName("topp:bases"));
-        
+
         // ok, let's try the same with read only user
         SecurityContextHolder.getContext().setAuthentication(roUser);
         assertTrue(sc.getFeatureTypeByName("topp:roads") instanceof ReadOnlyFeatureTypeInfo);
+        assertTrue(sc.getDataStoreByName("roads") instanceof ReadOnlyDataStoreInfo);
         assertTrue(sc.getFeatureTypeByName("topp:states") instanceof ReadOnlyFeatureTypeInfo);
+        assertTrue(sc.getDataStoreByName("states") instanceof ReadOnlyDataStoreInfo);
         assertTrue(sc.getFeatureTypeByName("topp:landmarks") instanceof ReadOnlyFeatureTypeInfo);
         assertNull(sc.getFeatureTypeByName("topp:bases"));
-        
+
         // now with the write enabled user
         SecurityContextHolder.getContext().setAuthentication(rwUser);
         assertTrue(sc.getFeatureTypeByName("topp:roads") instanceof ReadOnlyFeatureTypeInfo);
+        assertTrue(sc.getDataStoreByName("roads") instanceof ReadOnlyDataStoreInfo);
         assertSame(states, sc.getFeatureTypeByName("topp:states"));
+        assertTrue(sc.getDataStoreByName("states") instanceof ReadOnlyDataStoreInfo);
         assertSame(landmarks, sc.getFeatureTypeByName("topp:landmarks"));
         assertNull(sc.getFeatureTypeByName("topp:bases"));
-        
+
         // finally let's try the military type
         SecurityContextHolder.getContext().setAuthentication(milUser);
         assertTrue(sc.getFeatureTypeByName("topp:roads") instanceof ReadOnlyFeatureTypeInfo);
+        assertTrue(sc.getDataStoreByName("roads") instanceof ReadOnlyDataStoreInfo);
         assertNull(sc.getFeatureTypeByName("topp:states"));
+        assertTrue(sc.getDataStoreByName("states") instanceof ReadOnlyDataStoreInfo);
         assertTrue(sc.getFeatureTypeByName("topp:landmarks") instanceof ReadOnlyFeatureTypeInfo);
         // ... bases requires one to be in the military
         assertSame(bases, sc.getFeatureTypeByName("topp:bases"));
