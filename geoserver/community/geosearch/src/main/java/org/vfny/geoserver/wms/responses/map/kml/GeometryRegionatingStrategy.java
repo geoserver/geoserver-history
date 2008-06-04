@@ -60,6 +60,10 @@ public class GeometryRegionatingStrategy extends CachedHierarchyRegionatingStrat
         }
     }
 
+    public Comparator getComparator(){
+        return new GeometryComparator();
+    }
+
     private class GeometryComparator implements Comparator {
         public int compare(Object a, Object b){
             SimpleFeature fa = (SimpleFeature) a;

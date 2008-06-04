@@ -6,10 +6,13 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -19,6 +22,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.SQLException;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -30,7 +34,8 @@ import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.Filter;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -61,14 +66,12 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             myAcceptableFeatures = getRangesFromDB(con, layer);
         } catch (Exception e){
             LOGGER.log(Level.INFO, "No cached tile hierarchy found; constructing quad tree from data.", e);
-            TileLevel root = createTileHierarchy(con, layer);
-            TileLevel requestTile = root.findTile(con.getAreaOfInterest());
-            myAcceptableFeatures = 
-                ((requestTile != null && requestTile.getZoomLevel() == myZoomLevel) 
-                 ? requestTile.getFeatureSet() 
-                 : root.getFeatureSet());
-            LOGGER.info("Created tile hierarchy: " + root);
-            addRangesToDB(con, layer, root);
+            populateDB(con, layer);
+            try{
+                myAcceptableFeatures = getRangesFromDB(con, layer);
+            } catch (Exception e2){
+                throw new HttpErrorCodeException(500, "Unexpected error while determining tile contents.", e2);
+            }
         }
 
         if (myAcceptableFeatures.size() == 0){
@@ -92,6 +95,49 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
 
             ranges.writeTo(statement, tableName);
+            statement.close();
+            connection.close();
+        } catch (Exception e){
+            LOGGER.log(Level.WARNING, "Unable to store range information in database.", e);
+        }
+    }
+
+    private void populateDB(WMSMapContext con, MapLayer layer){
+        try{
+            Class.forName("org.h2.Driver");
+            String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
+            Connection connection = 
+                DriverManager.getConnection(
+                    "jdbc:h2:file:" + dataDir + "/h2database/regionate","geoserver", "geopass"
+                    );
+
+            String tableName = findCacheTable(con, layer);
+
+            Statement statement = connection.createStatement();
+            statement.execute("DROP TABLE IF EXISTS " + tableName);
+            statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar (50))");
+            statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
+
+            ReferencedEnvelope worldBounds = TileLevel.getWorldBounds();
+            ReferencedEnvelope western = new ReferencedEnvelope(
+                    worldBounds.getMinimum(0),
+                    worldBounds.getCenter(0),
+                    worldBounds.getMinimum(1),
+                    worldBounds.getMaximum(1),
+                    worldBounds.getCoordinateReferenceSystem()
+                    );
+            ReferencedEnvelope eastern = new ReferencedEnvelope(
+                    worldBounds.getCenter(0),
+                    worldBounds.getMaximum(0),
+                    worldBounds.getMinimum(1),
+                    worldBounds.getMaximum(1),
+                    worldBounds.getCoordinateReferenceSystem()
+                    );
+
+
+            buildDB(statement, tableName, layer.getFeatureSource(), western, new TreeSet<String>());
+            buildDB(statement, tableName, layer.getFeatureSource(), western, new TreeSet<String>());
+
             statement.close();
             connection.close();
         } catch (Exception e){
@@ -167,5 +213,104 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             LOGGER.log(Level.WARNING, "Encountered problem while trying to apply data regionating filter: ", e);
         }
         return false;
+    }
+
+    public abstract Comparator getComparator();
+
+    public final void buildDB(Statement st, String tablename, FeatureSource source, ReferencedEnvelope bbox, Set<String> parents) throws IOException{
+        int featuresPerTile = 75; // TODO: you know
+        PriorityQueue<SimpleFeature> pq = new PriorityQueue<SimpleFeature>(featuresPerTile, getComparator());
+        FeatureCollection col = getFeatures(source, bbox);
+        Iterator<SimpleFeature> it = col.iterator();
+        try{
+            while (it.hasNext()){
+                SimpleFeature f = it.next();
+                if (!parents.contains(f.getID())){
+                    pq.add(f);
+                    if (pq.size() > featuresPerTile) pq.poll();
+                }
+            } 
+        } finally {
+            col.close(it);
+        }
+
+        if (pq.size() > 0){
+            for (SimpleFeature feature : pq) writeToDB(st, tablename, bbox, feature);
+            for (SimpleFeature feature : pq) parents.add(feature.getID());
+            for (ReferencedEnvelope box : quadSplit(bbox)) buildDB(st, tablename, source, box, parents);
+            for (SimpleFeature feature : pq) parents.remove(feature.getID());
+        }
+    }
+
+    private FeatureCollection getFeatures(FeatureSource source, ReferencedEnvelope bbox) throws IOException{
+        FilterFactory2 factory = CommonFactoryFinder.getFilterFactory2(null);
+        String crsName = "EPSG:4326";
+        try{
+            crsName = CRS.lookupIdentifier(bbox.getCoordinateReferenceSystem(), false);
+        } catch (Exception e){
+            LOGGER.log(Level.WARNING, "Couldn't find id for crs: " + bbox.getCoordinateReferenceSystem().getName(), e);
+        }
+        Filter filter = factory.bbox(
+                factory.property(source.getSchema().getDefaultGeometry().getName()), 
+                bbox.getMinimum(0),
+                bbox.getMinimum(1), 
+                bbox.getMaximum(0), 
+                bbox.getMaximum(1),
+                crsName
+                );
+
+        LOGGER.info("Filtering by: " + filter);
+        return source.getFeatures(filter);
+    }
+
+    private void writeToDB(Statement st, String tablename, ReferencedEnvelope bbox, SimpleFeature f){
+        long[] coords = TileLevel.getTileCoords(bbox, TileLevel.getWorldBounds());
+        try{
+            String SQL = "INSERT INTO " + tablename + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + f.getID() + "\' )"; 
+            st.execute(SQL);
+        } catch (SQLException sqle){
+            LOGGER.log(Level.SEVERE, "Problem while storing regionated hierarchy in database: ", sqle);
+        }
+    }
+
+    private List<ReferencedEnvelope> quadSplit(ReferencedEnvelope bbox){
+        List<ReferencedEnvelope> results = new ArrayList<ReferencedEnvelope>();
+        results.add(new ReferencedEnvelope(
+                bbox.getCenter(0),
+                bbox.getMinimum(0),
+                bbox.getMaximum(1),
+                bbox.getCenter(1),
+                bbox.getCoordinateReferenceSystem()
+                )
+        );
+
+        results.add(new ReferencedEnvelope(
+                bbox.getMaximum(0),
+                bbox.getCenter(0),
+                bbox.getMaximum(1),
+                bbox.getCenter(1),
+                bbox.getCoordinateReferenceSystem()
+                )
+        );
+
+        results.add(new ReferencedEnvelope(
+                bbox.getCenter(0),
+                bbox.getMinimum(0),
+                bbox.getCenter(1),
+                bbox.getMinimum(1),
+                bbox.getCoordinateReferenceSystem()
+                )
+        );
+
+        results.add(new ReferencedEnvelope(
+                bbox.getMaximum(0),
+                bbox.getCenter(0),
+                bbox.getCenter(1),
+                bbox.getMinimum(1),
+                bbox.getCoordinateReferenceSystem()
+                )
+        );
+
+        return results;
     }
 }

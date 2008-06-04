@@ -100,6 +100,10 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
         }
     }
 
+    public Comparator getComparator() {
+        return new DataComparator();
+    }
+
     private class DataComparator implements Comparator{
         public int compare(Object a, Object b){
             if ((a == null) || (b == null))
