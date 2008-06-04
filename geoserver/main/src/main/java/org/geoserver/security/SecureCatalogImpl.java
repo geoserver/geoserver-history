@@ -27,6 +27,10 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.security.decorators.ReadOnlyDataStoreInfo;
+import org.geoserver.security.decorators.ReadOnlyFeatureTypeInfo;
+import org.geoserver.security.decorators.ReadOnlyLayerGroup;
+import org.geoserver.security.decorators.ReadOnlyLayerInfo;
 
 /**
  * 
@@ -251,8 +255,9 @@ public class SecureCatalogImpl implements SecureCatalog {
     }
 
     /**
-     * Given a resource and a user, returns it back if the user can access it in
-     * the specified mode, null otherwise
+     * Given a {@link FeatureTypeInfo} and a user, returns it back if the user
+     * can access it in write mode, makes it read only if the user can access it
+     * in read only mode, returns null otherwise
      * 
      * @return
      */
@@ -260,17 +265,24 @@ public class SecureCatalogImpl implements SecureCatalog {
         if (info == null)
             return null;
 
-        // return the resource if the user can read it, it's not really there
-        // otherwise
+        // return the resource if the user can read and write it, 
         if (accessManager.canAccess(user, info, AccessMode.READ))
-            return info;
+            if (accessManager.canAccess(user, info, AccessMode.WRITE)) {
+                return info;
+            } else if(info instanceof FeatureTypeInfo) { 
+                return (T) new ReadOnlyFeatureTypeInfo((FeatureTypeInfo) info);
+            } else if(info instanceof CoverageInfo) {
+                return info; // coverages are read only so far
+            } else {
+                throw new RuntimeException("Unknown resource type " + info.getClass());
+            }
         else
             return null;
     }
 
     /**
      * Given a store and a user, returns it back if the user can access its
-     * workspace in the specified mode, null otherwise
+     * workspace in read mode, null otherwise
      * 
      * @return
      */
@@ -281,7 +293,15 @@ public class SecureCatalogImpl implements SecureCatalog {
         // return the store if the user can read in its workspace, it's not
         // really there otherwise
         if (accessManager.canAccess(user, store.getWorkspace(), AccessMode.READ))
-            return store;
+            if (accessManager.canAccess(user, store.getWorkspace(), AccessMode.WRITE)) {
+                return store;
+            } else if(store instanceof DataStoreInfo) { 
+                return (T) new ReadOnlyDataStoreInfo((DataStoreInfo) store);
+            } else if(store instanceof CoverageStoreInfo) {
+                return store; // coverages stores are read only so far
+            } else {
+                throw new RuntimeException("Unknown store type " + store.getClass());
+            }
         else
             return null;
     }
@@ -292,14 +312,18 @@ public class SecureCatalogImpl implements SecureCatalog {
      * 
      * @return
      */
-    protected <T extends LayerInfo> T checkAccess(Authentication user, T layer) {
+    protected LayerInfo checkAccess(Authentication user, LayerInfo layer) {
         if (layer == null)
             return null;
 
         // return the layer if the user can read in its workspace, it's not
         // really there otherwise
         if (accessManager.canAccess(user, layer, AccessMode.READ))
-            return layer;
+            if (accessManager.canAccess(user, layer, AccessMode.WRITE)) {
+                return layer;
+            } else {
+                return new ReadOnlyLayerInfo(layer);
+            }
         else
             return null;
     }
@@ -310,16 +334,28 @@ public class SecureCatalogImpl implements SecureCatalog {
      * 
      * @return
      */
-    protected <T extends LayerGroupInfo> T checkAccess(Authentication user, T group) {
+    protected LayerGroupInfo checkAccess(Authentication user, LayerGroupInfo group) {
         if (group == null)
             return null;
 
-        // return the layer if the user can read in its workspace, it's not
-        // really there otherwise
-        if (accessManager.canAccess(user, group, AccessMode.READ))
-            return group;
+        // scan thru the layers, if any cannot be accessed, we hide the group, otherwise
+        // we return the group back, eventually wrapping the read only layers
+        final List<LayerInfo> layers = group.getLayers();
+        ArrayList<LayerInfo> wrapped = new ArrayList<LayerInfo>(layers.size());
+        boolean needsWrapping = false;
+        for (LayerInfo layer : layers) {
+            LayerInfo checked = checkAccess(user, layer);
+            if(checked == null)
+                return null;
+            else if(checked != null) 
+                needsWrapping = true;
+            wrapped.add(checked);
+        }
+        
+        if(needsWrapping)
+            return new ReadOnlyLayerGroup(group, wrapped);
         else
-            return null;
+            return group;
     }
 
     /**
@@ -328,13 +364,13 @@ public class SecureCatalogImpl implements SecureCatalog {
      * 
      * @return
      */
-    protected <T extends NamespaceInfo> T checkAccess(Authentication user, T group) {
+    protected <T extends NamespaceInfo> T checkAccess(Authentication user, T ns) {
         // route the security check thru the associated workspace info
-        WorkspaceInfo info = checkAccess(user, catalog.getWorkspace(group.getPrefix()));
+        WorkspaceInfo info = checkAccess(user, catalog.getWorkspace(ns.getPrefix()));
         if (info == null)
             return null;
         else
-            return group;
+            return ns;
     }
 
     /**
@@ -402,10 +438,10 @@ public class SecureCatalogImpl implements SecureCatalog {
      * 
      * @return
      */
-    protected <T extends LayerGroupInfo> List<T> filterGroups(Authentication user, List<T> groups) {
-        List<T> result = new ArrayList<T>();
-        for (T original : groups) {
-            T secured = checkAccess(user, original);
+    protected List<LayerGroupInfo> filterGroups(Authentication user, List<LayerGroupInfo> groups) {
+        List<LayerGroupInfo> result = new ArrayList<LayerGroupInfo>();
+        for (LayerGroupInfo original : groups) {
+            LayerGroupInfo secured = checkAccess(user, original);
             if (secured != null)
                 result.add(secured);
         }
@@ -421,10 +457,10 @@ public class SecureCatalogImpl implements SecureCatalog {
      * 
      * @return
      */
-    protected <T extends LayerInfo> List<T> filterLayers(Authentication user, List<T> layers) {
-        List<T> result = new ArrayList<T>();
-        for (T original : layers) {
-            T secured = checkAccess(user, original);
+    protected List<LayerInfo> filterLayers(Authentication user, List<LayerInfo> layers) {
+        List<LayerInfo> result = new ArrayList<LayerInfo>();
+        for (LayerInfo original : layers) {
+            LayerInfo secured = checkAccess(user, original);
             if (secured != null)
                 result.add(secured);
         }
