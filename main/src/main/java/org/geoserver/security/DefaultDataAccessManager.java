@@ -45,7 +45,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * &#064;author Andrea Aime - TOPP
  * 
  */
-public class DefaultDataAccessManager extends DataAccessManager {
+public class DefaultDataAccessManager implements DataAccessManager {
     static final Logger LOGGER = Logging.getLogger(DataAccessManager.class);
 
     SecureTreeNode root;
@@ -65,11 +65,11 @@ public class DefaultDataAccessManager extends DataAccessManager {
         File security = GeoserverDataDirectory.findConfigDir(GeoserverDataDirectory
                 .getGeoserverDataDirectory(), "security");
 
-        // no security config, let's work against an empty one
-        if (security == null)
+        // no security folder, let's work against an empty properties then
+        if (security == null || !security.exists())
             return new Properties();
 
-        // no security config, let's work against an empty one
+        // no security config, let's work against an empty properties then
         File layers = new File(security, "layers.properties");
         if (!layers.exists())
             return new Properties();
@@ -80,13 +80,11 @@ public class DefaultDataAccessManager extends DataAccessManager {
         return props;
     }
 
-    @Override
     public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {
         SecureTreeNode node = root.getDeepestNode(new String[] { workspace.getName() });
         return node.canAccess(user, mode);
     }
 
-    @Override
     public boolean canAccess(Authentication user, LayerInfo layer, AccessMode mode) {
         if (layer.getResource() == null) {
             LOGGER.log(Level.FINE, "Layer " + layer + " has no attached resource, "
@@ -99,7 +97,6 @@ public class DefaultDataAccessManager extends DataAccessManager {
 
     }
 
-    @Override
     public boolean canAccess(Authentication user, ResourceInfo resource, AccessMode mode) {
         String workspace;
         try {

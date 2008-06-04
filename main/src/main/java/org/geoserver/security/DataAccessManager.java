@@ -12,31 +12,23 @@ import org.geoserver.catalog.WorkspaceInfo;
 /**
  * Data access manager provides the {@link SecureCatalogImpl} with directives on
  * what the specified user can access.
- * TODO: decide if this is going to be an abstract class or an interface (i.e. how likely
- * is it that we'll need to add a new kind of object to be put under security control?)
  * @author Andrea Aime - TOPP
  *
  */
-public abstract class DataAccessManager {
+public interface DataAccessManager {
 
     /**
      * Returns true if user can access the workspace in the specified mode
      */
-    public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {
-        return true;
-    }
+    public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode);
     
     /**
      * Returns true if user can access the layer in the specified mode
      */
-    public boolean canAccess(Authentication user, LayerInfo layer, AccessMode mode) {
-        return true;
-    }
+    public boolean canAccess(Authentication user, LayerInfo layer, AccessMode mode);
     
     /**
      * Returns true if user can access the resource in the specified mode
      */
-    public boolean canAccess(Authentication user, ResourceInfo resource, AccessMode mode) {
-        return true;
-    }
+    public boolean canAccess(Authentication user, ResourceInfo resource, AccessMode mode);
 }
