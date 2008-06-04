@@ -1413,7 +1413,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             void keywords(List keywords) {
-                keywords((String[]) keywords.toArray(new String[keywords.size()]));
+                if(keywords != null){
+                    keywords((String[]) keywords.toArray(new String[keywords.size()]));
+                }
             }
 
             /**
