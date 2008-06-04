@@ -23,18 +23,18 @@ import junit.framework.TestCase;
 
 public abstract class AbstractAuthorizationTest extends TestCase {
 
-    Authentication rwUser;
-    Authentication roUser;
-    Authentication anonymous;
-    Authentication milUser;
-    Catalog catalog;
-    WorkspaceInfo toppWs;
-    WorkspaceInfo nurcWs;
-    LayerInfo statesLayer;
-    LayerInfo landmarksLayer;
-    LayerInfo basesLayer;
-    LayerInfo arcGridLayer;
-    LayerInfo roadsLayer;
+    protected Authentication rwUser;
+    protected Authentication roUser;
+    protected Authentication anonymous;
+    protected Authentication milUser;
+    protected Catalog catalog;
+    protected WorkspaceInfo toppWs;
+    protected WorkspaceInfo nurcWs;
+    protected LayerInfo statesLayer;
+    protected LayerInfo landmarksLayer;
+    protected LayerInfo basesLayer;
+    protected LayerInfo arcGridLayer;
+    protected LayerInfo roadsLayer;
 
     @Override
     protected void setUp() throws Exception {
@@ -65,7 +65,7 @@ public abstract class AbstractAuthorizationTest extends TestCase {
         arcGridLayer = buildLayer("arcgrid", nurcWs, CoverageInfo.class);
     }
     
-    LayerInfo buildLayer(String name, WorkspaceInfo ws, Class<? extends ResourceInfo> resourceClass) {
+    protected LayerInfo buildLayer(String name, WorkspaceInfo ws, Class<? extends ResourceInfo> resourceClass) {
         StoreInfo store;
         if(resourceClass.equals(CoverageInfo.class))
           store = createNiceMock(CoverageStoreInfo.class);
@@ -87,7 +87,7 @@ public abstract class AbstractAuthorizationTest extends TestCase {
         return layer;
     }
     
-    DefaultDataAccessManager buildManager(String propertyFile) throws IOException {
+    protected DefaultDataAccessManager buildManager(String propertyFile) throws IOException {
         Properties props = new Properties();
         props.load(getClass().getResourceAsStream(propertyFile));
         return new DefaultDataAccessManager(catalog, props);
