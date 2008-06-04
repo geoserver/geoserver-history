@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 
 import org.acegisecurity.Authentication;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -98,15 +97,6 @@ public class DefaultDataAccessManager extends DataAccessManager {
             return canAccess(user, layer.getResource(), mode);
         }
 
-    }
-
-    @Override
-    public boolean canAccess(Authentication user, LayerGroupInfo group, AccessMode mode) {
-        for (LayerInfo layer : group.getLayers()) {
-            if (!canAccess(user, layer, mode))
-                return false;
-        }
-        return true;
     }
 
     @Override

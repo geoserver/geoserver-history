@@ -5,7 +5,6 @@
 package org.geoserver.security;
 
 import org.acegisecurity.Authentication;
-import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -31,13 +30,6 @@ public abstract class DataAccessManager {
      * Returns true if user can access the layer in the specified mode
      */
     public boolean canAccess(Authentication user, LayerInfo layer, AccessMode mode) {
-        return true;
-    }
-    
-    /**
-     * Returns true if user can access the layer group in the specified mode
-     */
-    public boolean canAccess(Authentication user, LayerGroupInfo group, AccessMode mode) {
         return true;
     }
     
