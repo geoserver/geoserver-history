@@ -16,6 +16,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
@@ -377,6 +378,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         else {
             featureType.setName( dto.getName() );    
         }
+        
+        NamespaceInfo ns = catalog.getNamespaceByPrefix( ds.getWorkspace().getName() );
+        featureType.setNamespace( ns );
         
         layer.setName( featureType.getName() );
         layer.setPath( dto.getWmsPath() );
