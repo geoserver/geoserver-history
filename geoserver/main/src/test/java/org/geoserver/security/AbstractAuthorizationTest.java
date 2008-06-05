@@ -35,6 +35,16 @@ public abstract class AbstractAuthorizationTest extends TestCase {
     protected LayerInfo basesLayer;
     protected LayerInfo arcGridLayer;
     protected LayerInfo roadsLayer;
+    
+    protected FeatureTypeInfo states;
+    protected CoverageInfo arcGrid;
+    protected FeatureTypeInfo roads;
+    protected FeatureTypeInfo landmarks;
+    protected FeatureTypeInfo bases;
+    protected DataStoreInfo statesStore;
+    protected DataStoreInfo roadsStore;
+    protected CoverageStoreInfo arcGridStore;
+
 
     @Override
     protected void setUp() throws Exception {
@@ -63,6 +73,17 @@ public abstract class AbstractAuthorizationTest extends TestCase {
         landmarksLayer = buildLayer("landmarks", toppWs, FeatureTypeInfo.class);
         basesLayer = buildLayer("bases", toppWs, FeatureTypeInfo.class);
         arcGridLayer = buildLayer("arcgrid", nurcWs, CoverageInfo.class);
+        
+        // resources
+        states = (FeatureTypeInfo) statesLayer.getResource();
+        statesStore = states.getStore();
+        arcGrid = (CoverageInfo) arcGridLayer.getResource();
+        arcGridStore = (CoverageStoreInfo) arcGrid.getStore();
+        roads = (FeatureTypeInfo) roadsLayer.getResource();
+        roadsStore = roads.getStore();
+        landmarks = (FeatureTypeInfo) landmarksLayer.getResource();
+        bases = (FeatureTypeInfo) basesLayer.getResource();
+
     }
     
     protected LayerInfo buildLayer(String name, WorkspaceInfo ws, Class<? extends ResourceInfo> resourceClass) {

@@ -20,10 +20,6 @@ import org.geoserver.security.decorators.ReadOnlyLayerInfo;
 
 public class SecureCatalogImplTest extends AbstractAuthorizationTest {
 
-    private FeatureTypeInfo states;
-
-    private CoverageInfo arcGrid;
-
     private List<LayerInfo> layers;
 
     private List<FeatureTypeInfo> featureTypes;
@@ -34,30 +30,9 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
 
     private List<WorkspaceInfo> workspaces;
 
-    private FeatureTypeInfo roads;
-
-    private FeatureTypeInfo landmarks;
-
-    private FeatureTypeInfo bases;
-
-    private DataStoreInfo statesStore;
-
-    private DataStoreInfo roadsStore;
-
-    private CoverageStoreInfo arcGridStore;
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-
-        states = (FeatureTypeInfo) statesLayer.getResource();
-        statesStore = states.getStore();
-        arcGrid = (CoverageInfo) arcGridLayer.getResource();
-        arcGridStore = (CoverageStoreInfo) arcGrid.getStore();
-        roads = (FeatureTypeInfo) roadsLayer.getResource();
-        roadsStore = roads.getStore();
-        landmarks = (FeatureTypeInfo) landmarksLayer.getResource();
-        bases = (FeatureTypeInfo) basesLayer.getResource();
 
         // build resource collections
         layers = Arrays.asList(statesLayer, roadsLayer, landmarksLayer, basesLayer, arcGridLayer);
