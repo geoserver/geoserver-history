@@ -54,7 +54,6 @@ import com.vividsolutions.jts.geom.Geometry;
 public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy {
 
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
-    private int myFeaturesPerTile;
     private String myAttributeName;
 
     /**
@@ -69,51 +68,17 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
         return super.findCacheTable(con, layer) + "_" + myAttributeName;
     }
 
-    protected TileLevel createTileHierarchy(WMSMapContext con, MapLayer layer){
-        FeatureTypeInfo fti = con.getRequest().getWMS().getData().
-            getFeatureTypeInfo(layer.getFeatureSource().getName());
-        myAttributeName = fti.getRegionateAttribute();
-        myFeaturesPerTile = fti.getRegionateFeatureLimit();
-
-        LOGGER.info("Getting ready to do the hierarchy thing!");
-        try{
-            FeatureSource<SimpleFeatureType, SimpleFeature> source = 
-                (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
-            CoordinateReferenceSystem nativeCRS = source.getSchema().getCRS();
-            ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
-            fullBounds = fullBounds.transform(nativeCRS, true);
-            TileLevel root = TileLevel.makeRootLevel(
-                    fullBounds,
-                    myFeaturesPerTile, 
-                    new DataComparator()
-                    );
-            
-            DefaultQuery query = new DefaultQuery(Query.ALL);
-            FeatureCollection col = source.getFeatures(query);
-
-            root.populate(col);
-            
-            return root;
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Error while trying to regionate by data (hierarchical)): ", e);
-            throw new HttpErrorCodeException(500, "Error while trying to regionate by " + myAttributeName, e);
-        }
-    }
-
-    public Comparator getComparator() {
+    public Comparator<SimpleFeature> getComparator() {
         return new DataComparator();
     }
 
-    private class DataComparator implements Comparator{
-        public int compare(Object a, Object b){
+    private class DataComparator implements Comparator<SimpleFeature>{
+        public int compare(SimpleFeature a, SimpleFeature b){
             if ((a == null) || (b == null))
                 return 0;
 
-            SimpleFeature fa = (SimpleFeature)a;
-            SimpleFeature fb = (SimpleFeature)b;
-
-            Object attrA = fa.getAttribute(myAttributeName);
-            Object attrB = fb.getAttribute(myAttributeName);
+            Object attrA = a.getAttribute(myAttributeName);
+            Object attrB = b.getAttribute(myAttributeName);
 
             if ((attrA == null) || (attrB == null))
                 return 0;
