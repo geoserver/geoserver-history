@@ -58,10 +58,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
 
     private Set myAcceptableFeatures;
-    private long myZoomLevel;
 
     public final void preProcess(WMSMapContext con, MapLayer layer) {
-        myZoomLevel = getZoomLevel(con, layer);
         try{
             myAcceptableFeatures = getRangesFromDB(con, layer);
         } catch (Exception e){
@@ -76,29 +74,6 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
         if (myAcceptableFeatures.size() == 0){
             throw new HttpErrorCodeException(204); 
-        }
-    }
-
-    private void addRangesToDB(WMSMapContext con, MapLayer layer, TileLevel ranges){
-        try{
-            Class.forName("org.h2.Driver");
-            String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
-            Connection connection = 
-            	DriverManager.getConnection(
-            			"jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
-            			);
-            String tableName = findCacheTable(con, layer);
-
-            Statement statement = connection.createStatement();
-            statement.execute("DROP TABLE IF EXISTS " + tableName);
-            statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar(50))");
-            statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
-
-            ranges.writeTo(statement, tableName);
-            statement.close();
-            connection.close();
-        } catch (Exception e){
-            LOGGER.log(Level.WARNING, "Unable to store range information in database.", e);
         }
     }
 
@@ -185,27 +160,6 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         return null;
     }
 
-    protected abstract TileLevel createTileHierarchy(WMSMapContext con, MapLayer layer);
-
-    protected final long getZoomLevel(WMSMapContext context, MapLayer layer){
-        try{
-            FeatureSource<SimpleFeatureType, SimpleFeature> source = 
-                (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
-            ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
-            ReferencedEnvelope requestBounds = context.getAreaOfInterest();
-            requestBounds = requestBounds.transform(fullBounds.getCoordinateReferenceSystem(), true);
-            long level = 0 - Math.round(
-                    Math.log(requestBounds.getWidth() / fullBounds.getWidth()) / 
-                    Math.log(2)
-                    );
-            if (level < 0) throw new Exception ("Request bounds " + requestBounds + " larger than the world apparently!");
-            return level;
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Zoom Level calculation failed, error was: ", e);
-            return 1;
-        }
-    }
-
     public final boolean include(SimpleFeature feature) {
         try {
             return myAcceptableFeatures.contains(feature.getID());
@@ -215,7 +169,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         return false;
     }
 
-    public abstract Comparator getComparator();
+    public abstract Comparator<SimpleFeature> getComparator();
 
     public final void buildDB(Statement st, String tablename, FeatureSource source, ReferencedEnvelope bbox, Set<String> parents) throws IOException{
         int featuresPerTile = 75; // TODO: you know
@@ -259,7 +213,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 crsName
                 );
 
-        LOGGER.info("Filtering by: " + filter);
+        // LOGGER.info("Filtering by: " + filter);
         return source.getFeatures(filter);
     }
 

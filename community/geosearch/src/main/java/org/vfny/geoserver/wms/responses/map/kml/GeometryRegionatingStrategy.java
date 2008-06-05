@@ -24,53 +24,19 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public class GeometryRegionatingStrategy extends CachedHierarchyRegionatingStrategy{
     Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
-    public static int myFeaturesPerTile;
 
     protected String findCacheTable(WMSMapContext con, MapLayer layer){
         return super.findCacheTable(con, layer) + "_geometry_regionator";
     }
 
-    protected TileLevel createTileHierarchy(WMSMapContext con, MapLayer layer){
-        FeatureTypeInfo fti = con.getRequest().getWMS().getData().
-            getFeatureTypeInfo(layer.getFeatureSource().getName());
-        myFeaturesPerTile = fti.getRegionateFeatureLimit();
-
-        LOGGER.info("About to build the geometry hierarchy");
-        try{
-            FeatureSource<SimpleFeatureType, SimpleFeature> source = 
-                (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
-            CoordinateReferenceSystem nativeCRS = source.getSchema().getDefaultGeometry().getCRS();
-            ReferencedEnvelope fullBounds = TileLevel.getWorldBounds();
-            fullBounds = fullBounds.transform(nativeCRS, true);
-            TileLevel root = TileLevel.makeRootLevel(
-                    fullBounds,
-                    myFeaturesPerTile,
-                    new GeometryComparator()
-                    );
-            FilterFactory ff = (FilterFactory)CommonFactoryFinder.getFilterFactory(null);
-            DefaultQuery query = new DefaultQuery(Query.ALL);
-            FeatureCollection col = source.getFeatures(query);
-
-            root.populate(col);
-
-            return root;
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Error while trying to regionate by geometry.", e);
-            throw new HttpErrorCodeException(500, "Error while trying to regionate by geometry.", e);
-        }
-    }
-
-    public Comparator getComparator(){
+    public Comparator<SimpleFeature> getComparator(){
         return new GeometryComparator();
     }
 
-    private class GeometryComparator implements Comparator {
-        public int compare(Object a, Object b){
-            SimpleFeature fa = (SimpleFeature) a;
-            SimpleFeature fb = (SimpleFeature) b;
-            
-            double valueA = findValue(fa);
-            double valueB = findValue(fb);
+    private class GeometryComparator implements Comparator<SimpleFeature> {
+        public int compare(SimpleFeature a, SimpleFeature b){
+            double valueA = findValue(a);
+            double valueB = findValue(b);
             
             return (int)Math.signum(valueA - valueB);
         }
