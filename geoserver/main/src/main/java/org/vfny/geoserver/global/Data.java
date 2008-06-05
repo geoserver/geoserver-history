@@ -2057,20 +2057,26 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     public synchronized Map getFeatureTypeInfos() {
         Map map = new HashMap();
         for ( org.geoserver.catalog.FeatureTypeInfo ft : catalog.getFeatureTypes() ) {
-            map.put( ft.getPrefixedName(), new FeatureTypeInfo( layer( ft ), catalog ) );
+            if(ft.isEnabled())
+                map.put( ft.getPrefixedName(), new FeatureTypeInfo( layer( ft ), catalog ) );
         }
         return map;
         //return Collections.unmodifiableMap(featureTypes);
     }
 
     LayerInfo layer( ResourceInfo r ) {
-        return catalog.getLayers(r).get( 0 );
+        final List<LayerInfo> layers = catalog.getLayers(r);
+        if(layers.size() > 0)
+            return layers.get( 0 );
+        else
+            return null;
     }
     
     public synchronized Map getCoverageInfos() {
         Map map = new HashMap();
         for ( org.geoserver.catalog.CoverageInfo c : catalog.getCoverages() ) {
-            map.put( c.getPrefixedName(), new CoverageInfo( layer(c), catalog ) );
+            if(c.isEnabled())
+                map.put( c.getPrefixedName(), new CoverageInfo( layer(c), catalog ) );
         }
         return map;
         //return Collections.unmodifiableMap(coverages);

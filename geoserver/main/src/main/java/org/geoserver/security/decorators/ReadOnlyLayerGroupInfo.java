@@ -6,7 +6,7 @@ import java.util.List;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 
-public class ReadOnlyLayerGroupInfo extends DecoratingLayerGroupInfo {
+public class ReadOnlyLayerGroupInfo extends DecoratingLayerGroupINfo {
 
     private List<LayerInfo> layers;
 
