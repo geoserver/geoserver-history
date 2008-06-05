@@ -41,6 +41,7 @@ import org.opengis.filter.sort.SortOrder;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.geoserver.ows.HttpErrorCodeException;
 
@@ -58,8 +59,14 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
 
     private Set myAcceptableFeatures;
+    private int myFeaturesPerTile;
 
     public final void preProcess(WMSMapContext con, MapLayer layer) {
+        myFeaturesPerTile = 100;
+        
+        FeatureTypeInfo fti = con.getRequest().getWMS().getData().getFeatureTypeInfo(layer.getFeatureSource().getName());
+        myFeaturesPerTile = fti.getRegionateFeatureLimit();
+
         try{
             myAcceptableFeatures = getRangesFromDB(con, layer);
         } catch (Exception e){
@@ -172,8 +179,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     public abstract Comparator<SimpleFeature> getComparator();
 
     public final void buildDB(Statement st, String tablename, FeatureSource source, ReferencedEnvelope bbox, Set<String> parents) throws IOException{
-        int featuresPerTile = 75; // TODO: you know
-        PriorityQueue<SimpleFeature> pq = new PriorityQueue<SimpleFeature>(featuresPerTile, getComparator());
+        PriorityQueue<SimpleFeature> pq = new PriorityQueue<SimpleFeature>(myFeaturesPerTile, getComparator());
         FeatureCollection col = getFeatures(source, bbox);
         Iterator<SimpleFeature> it = col.iterator();
         try{
@@ -181,7 +187,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 SimpleFeature f = it.next();
                 if (!parents.contains(f.getID())){
                     pq.add(f);
-                    if (pq.size() > featuresPerTile) pq.poll();
+                    if (pq.size() > myFeaturesPerTile) pq.poll();
                 }
             } 
         } finally {
