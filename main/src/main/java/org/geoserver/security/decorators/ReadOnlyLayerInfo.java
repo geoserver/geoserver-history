@@ -14,7 +14,9 @@ public class ReadOnlyLayerInfo extends DecoratingLayerInfo {
     @Override
     public ResourceInfo getResource() {
         ResourceInfo r = super.getResource();
-        if (r instanceof FeatureTypeInfo)
+        if (r == null)
+            return null;
+        else if (r instanceof FeatureTypeInfo)
             return new ReadOnlyFeatureTypeInfo((FeatureTypeInfo) r);
         else if (r instanceof CoverageInfo)
             return r;

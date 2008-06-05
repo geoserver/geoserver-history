@@ -33,21 +33,35 @@ public class ReadOnlyFeatureSource<T extends FeatureType, F extends Feature> ext
 
     public DataAccess<T, F> getDataStore() {
         final DataAccess<T, F> store = delegate.getDataStore();
-        if (store instanceof DataStore)
+        if(store == null)
+            return null;
+        else if (store instanceof DataStore)
             return (DataAccess) new ReadOnlyDataStore((DataStore) store);
         else
             return new ReadOnlyDataAccess(store);
     }
 
     public FeatureCollection<T, F> getFeatures() throws IOException {
-        return new ReadOnlyFeatureCollection<T, F>(delegate.getFeatures());
+        final FeatureCollection<T, F> fc = delegate.getFeatures();
+        if(fc == null)
+            return null;
+        else
+            return new ReadOnlyFeatureCollection<T, F>(fc);
     }
 
     public FeatureCollection<T, F> getFeatures(Filter filter) throws IOException {
-        return new ReadOnlyFeatureCollection<T, F>(delegate.getFeatures(filter));
+        final FeatureCollection<T, F> fc = delegate.getFeatures(filter);
+        if(fc == null)
+            return null;
+        else
+            return new ReadOnlyFeatureCollection<T, F>(fc);
     }
 
     public FeatureCollection<T, F> getFeatures(Query query) throws IOException {
-        return new ReadOnlyFeatureCollection<T, F>(delegate.getFeatures(query));
+        final FeatureCollection<T, F> fc = delegate.getFeatures(query);
+        if(fc == null)
+            return null;
+        else
+            return new ReadOnlyFeatureCollection<T, F>(fc);
     }
 }

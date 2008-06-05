@@ -29,15 +29,27 @@ public class ReadOnlyFeatureCollection<T extends FeatureType, F extends Feature>
     }
 
     public Iterator iterator() {
-        return new ReadOnlyIterator(delegate.iterator());
+        final Iterator<F> it = delegate.iterator();
+        if (it == null)
+            return null;
+        else
+            return new ReadOnlyIterator(it);
     }
 
     public FeatureCollection<T, F> sort(SortBy order) {
-        return new ReadOnlyFeatureCollection<T, F>(delegate.sort(order));
+        final FeatureCollection<T, F> fc = delegate.sort(order);
+        if(fc == null)
+            return null;
+        else
+            return new ReadOnlyFeatureCollection<T, F>(fc);
     }
 
     public FeatureCollection<T, F> subCollection(Filter filter) {
-        return new ReadOnlyFeatureCollection<T, F>(delegate.subCollection(filter));
+        final FeatureCollection<T, F> fc = delegate.subCollection(filter);
+        if(fc == null)
+            return null;
+        else
+            return new ReadOnlyFeatureCollection<T, F>(fc);
     }
 
     // ---------------------------------------------------------------------

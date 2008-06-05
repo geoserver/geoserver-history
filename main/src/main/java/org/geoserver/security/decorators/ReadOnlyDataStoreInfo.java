@@ -23,7 +23,11 @@ public class ReadOnlyDataStoreInfo extends DecoratingDataStoreInfo {
 
     @Override
     public DataStore getDataStore(ProgressListener listener) throws IOException {
-        return new ReadOnlyDataStore(super.getDataStore(listener));
+        final DataStore ds = super.getDataStore(listener);
+        if (ds == null)
+            return null;
+        else
+            return new ReadOnlyDataStore(ds);
     }
 
 }

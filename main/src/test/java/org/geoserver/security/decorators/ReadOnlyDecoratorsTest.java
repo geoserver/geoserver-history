@@ -54,7 +54,11 @@ public class ReadOnlyDecoratorsTest extends AbstractAuthorizationTest {
         DataStore ds = createNiceMock(DataStore.class);
         replay(ds);
         FeatureSource fs = createNiceMock(FeatureSource.class);
+        FeatureCollection fc = createNiceMock(FeatureCollection.class);
         expect(fs.getDataStore()).andReturn(ds);
+        expect(fs.getFeatures()).andReturn(fc);
+        expect(fs.getFeatures(Filter.INCLUDE)).andReturn(fc);
+        expect(fs.getFeatures(new DefaultQuery())).andReturn(fc);
         replay(fs);
         ReadOnlyFeatureSource ro = new ReadOnlyFeatureSource(fs);
         assertTrue(ro.getDataStore() instanceof ReadOnlyDataStore); 
@@ -157,8 +161,12 @@ public class ReadOnlyDecoratorsTest extends AbstractAuthorizationTest {
         replay(feature);
         Iterator it = createNiceMock(Iterator.class);
         replay(it);
+        final SortBy sort = createNiceMock(SortBy.class);
+        replay(sort);
         FeatureCollection fc = createNiceMock(FeatureCollection.class);
         expect(fc.iterator()).andReturn(it).anyTimes();
+        expect(fc.sort(sort)).andReturn(fc).anyTimes();
+        expect(fc.subCollection(Filter.INCLUDE)).andReturn(fc).anyTimes();
         replay(fc);
         
         ReadOnlyFeatureCollection ro = new ReadOnlyFeatureCollection(fc);
@@ -214,7 +222,7 @@ public class ReadOnlyDecoratorsTest extends AbstractAuthorizationTest {
         }
         
         // check derived collections are still read only
-        assertTrue(ro.sort(createNiceMock(SortBy.class)) instanceof ReadOnlyFeatureCollection);
+        assertTrue(ro.sort(sort) instanceof ReadOnlyFeatureCollection);
         assertTrue(ro.subCollection(Filter.INCLUDE) instanceof ReadOnlyFeatureCollection);
     }
     

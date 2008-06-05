@@ -28,13 +28,21 @@ public class ReadOnlyDataStore extends DecoratingDataStore {
     @Override
     public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(Name typeName)
             throws IOException {
-        return new ReadOnlyFeatureSource(super.getFeatureSource(typeName));
+        final FeatureSource<SimpleFeatureType, SimpleFeature> fs = super.getFeatureSource(typeName);
+        if (fs == null)
+            return null;
+        else
+            return new ReadOnlyFeatureSource(fs);
     }
 
     @Override
     public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(String typeName)
             throws IOException {
-        return new ReadOnlyFeatureSource(super.getFeatureSource(typeName));
+        final FeatureSource<SimpleFeatureType, SimpleFeature> fs = super.getFeatureSource(typeName);
+        if (fs == null)
+            return null;
+        else
+            return new ReadOnlyFeatureSource(fs);
     }
 
     @Override
