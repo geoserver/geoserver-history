@@ -7,6 +7,7 @@ import java.util.Map;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.catalog.Wrapper;
 import org.geotools.data.DataStore;
 import org.opengis.util.ProgressListener;
 
@@ -16,7 +17,7 @@ import org.opengis.util.ProgressListener;
  * 
  * @author Andrea Aime
  */
-public class DecoratingDataStoreInfo implements DataStoreInfo {
+public class DecoratingDataStoreInfo implements DataStoreInfo, Wrapper<DataStoreInfo> {
     protected DataStoreInfo delegate;
 
     public DecoratingDataStoreInfo(DataStoreInfo delegate) {
@@ -89,6 +90,14 @@ public class DecoratingDataStoreInfo implements DataStoreInfo {
 
     public void setWorkspace(WorkspaceInfo workspace) {
         delegate.setWorkspace(workspace);
+    }
+
+    public boolean isWrapperFor(Class<?> iface) {
+        return DecoratingDataStore.class.equals(iface);
+    }
+
+    public DataStoreInfo unwrap() {
+        return delegate;
     }
 
 }

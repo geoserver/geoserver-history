@@ -26,10 +26,11 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogListener;
+import org.geoserver.catalog.util.WrapperUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.security.decorators.ReadOnlyDataStoreInfo;
 import org.geoserver.security.decorators.ReadOnlyFeatureTypeInfo;
-import org.geoserver.security.decorators.ReadOnlyLayerGroup;
+import org.geoserver.security.decorators.ReadOnlyLayerGroupInfo;
 import org.geoserver.security.decorators.ReadOnlyLayerInfo;
 
 /**
@@ -177,7 +178,7 @@ public class SecureCatalogImpl implements SecureCatalog {
     }
 
     public List<LayerInfo> getLayers(ResourceInfo resource) {
-        return filterLayers(user(), catalog.getLayers(resource));
+        return filterLayers(user(), catalog.getLayers(unwrap(resource)));
     }
 
     public NamespaceInfo getNamespace(String id) {
@@ -353,7 +354,7 @@ public class SecureCatalogImpl implements SecureCatalog {
         }
         
         if(needsWrapping)
-            return new ReadOnlyLayerGroup(group, wrapped);
+            return new ReadOnlyLayerGroupInfo(group, wrapped);
         else
             return group;
     }
@@ -506,6 +507,35 @@ public class SecureCatalogImpl implements SecureCatalog {
         }
         return result;
     }
+    
+    // -------------------------------------------------------------------
+    // Unwrappers, used to make sure the lower level does not get hit by
+    // read only wrappers
+    // -------------------------------------------------------------------
+    
+    LayerGroupInfo unwrap(LayerGroupInfo layerGroup) {
+        if(layerGroup instanceof ReadOnlyLayerGroupInfo)
+            return WrapperUtils.deepUnwrap((ReadOnlyLayerGroupInfo) layerGroup);
+        return layerGroup;
+    }
+    
+    LayerInfo unwrap(LayerInfo layer) {
+        if(layer instanceof ReadOnlyLayerInfo)
+            return WrapperUtils.deepUnwrap((ReadOnlyLayerInfo) layer);
+        return layer;
+    }
+    
+    ResourceInfo unwrap(ResourceInfo info) {
+        if(info instanceof ReadOnlyFeatureTypeInfo)
+            return WrapperUtils.deepUnwrap((ReadOnlyFeatureTypeInfo) info);
+        return info;
+    }
+    
+    StoreInfo unwrap(StoreInfo info) {
+        if(info instanceof ReadOnlyDataStoreInfo)
+            return WrapperUtils.deepUnwrap((ReadOnlyDataStoreInfo) info);
+        return info;
+    }
 
     // -------------------------------------------------------------------
     // PURE DELEGATING METHODS
@@ -526,11 +556,13 @@ public class SecureCatalogImpl implements SecureCatalog {
     }
 
     public void add(LayerGroupInfo layerGroup) {
-        catalog.add(layerGroup);
+        catalog.add(unwrap(layerGroup));
     }
 
+    
+
     public void add(LayerInfo layer) {
-        catalog.add(layer);
+        catalog.add(unwrap(layer));
     }
 
     public void add(MapInfo map) {
@@ -542,11 +574,11 @@ public class SecureCatalogImpl implements SecureCatalog {
     }
 
     public void add(ResourceInfo resource) {
-        catalog.add(resource);
+        catalog.add(unwrap(resource));
     }
 
     public void add(StoreInfo store) {
-        catalog.add(store);
+        catalog.add(unwrap(store));
     }
 
     public void add(StyleInfo style) {
@@ -591,11 +623,11 @@ public class SecureCatalogImpl implements SecureCatalog {
     }
 
     public void remove(LayerGroupInfo layerGroup) {
-        catalog.remove(layerGroup);
+        catalog.remove(unwrap(layerGroup));
     }
 
     public void remove(LayerInfo layer) {
-        catalog.remove(layer);
+        catalog.remove(unwrap(layer));
     }
 
     public void remove(MapInfo map) {
@@ -607,11 +639,11 @@ public class SecureCatalogImpl implements SecureCatalog {
     }
 
     public void remove(ResourceInfo resource) {
-        catalog.remove(resource);
+        catalog.remove(unwrap(resource));
     }
 
     public void remove(StoreInfo store) {
-        catalog.remove(store);
+        catalog.remove(unwrap(store));
     }
 
     public void remove(StyleInfo style) {
@@ -627,11 +659,11 @@ public class SecureCatalogImpl implements SecureCatalog {
     }
 
     public void save(LayerGroupInfo layerGroup) {
-        catalog.save(layerGroup);
+        catalog.save(unwrap(layerGroup));
     }
 
     public void save(LayerInfo layer) {
-        catalog.save(layer);
+        catalog.save(unwrap(layer));
     }
 
     public void save(MapInfo map) {
@@ -643,11 +675,11 @@ public class SecureCatalogImpl implements SecureCatalog {
     }
 
     public void save(ResourceInfo resource) {
-        catalog.save(resource);
+        catalog.save(unwrap(resource));
     }
 
     public void save(StoreInfo store) {
-        catalog.save(store);
+        catalog.save(unwrap(store));
     }
 
     public void save(StyleInfo style) {

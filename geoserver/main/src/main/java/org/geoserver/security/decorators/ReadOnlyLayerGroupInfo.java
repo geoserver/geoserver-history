@@ -6,7 +6,7 @@ import java.util.List;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 
-public class ReadOnlyLayerGroup extends DecoratingLayerGroup {
+public class ReadOnlyLayerGroupInfo extends DecoratingLayerGroupInfo {
 
     private List<LayerInfo> layers;
 
@@ -18,12 +18,12 @@ public class ReadOnlyLayerGroup extends DecoratingLayerGroup {
      * @param delegate
      * @param layers
      */
-    public ReadOnlyLayerGroup(LayerGroupInfo delegate, List<LayerInfo> layers) {
+    public ReadOnlyLayerGroupInfo(LayerGroupInfo delegate, List<LayerInfo> layers) {
         super(delegate);
         this.layers = layers;
     }
 
-    public ReadOnlyLayerGroup(LayerGroupInfo delegate) {
+    public ReadOnlyLayerGroupInfo(LayerGroupInfo delegate) {
         super(delegate);
 
         // wrap all layers in read only mode

@@ -229,7 +229,7 @@ public class ReadOnlyDecoratorsTest extends AbstractAuthorizationTest {
     public void testReadOnlyLayerGroup() {
         LayerGroupInfo group = new LayerGroupInfoImpl();
         group.getLayers().addAll(Arrays.asList(statesLayer, roadsLayer));
-        ReadOnlyLayerGroup ro = new ReadOnlyLayerGroup(group);
+        ReadOnlyLayerGroupInfo ro = new ReadOnlyLayerGroupInfo(group);
         
         assertEquals(group.getLayers().size(), ro.getLayers().size());
         for (LayerInfo layer : ro.getLayers()) {
