@@ -35,6 +35,8 @@ public abstract class AbstractAuthorizationTest extends TestCase {
     protected Authentication anonymous;
 
     protected Authentication milUser;
+    
+    protected TestingAuthenticationToken root;
 
     protected Catalog catalog;
 
@@ -77,6 +79,7 @@ public abstract class AbstractAuthorizationTest extends TestCase {
         anonymous = new TestingAuthenticationToken("anonymous", null, null);
         milUser = new TestingAuthenticationToken("military", "supersecret",
                 new GrantedAuthority[] { new GrantedAuthorityImpl("MILITARY") });
+        root = new TestingAuthenticationToken("admin", "geoserver", new GrantedAuthority[] { new GrantedAuthorityImpl(SecureTreeNode.ROOT_ROLE) });
 
         catalog = createNiceMock(Catalog.class);
         expect(catalog.getWorkspace((String) anyObject())).andReturn(
