@@ -29,7 +29,7 @@
         <constructor-arg index="0" ref="rawCatalog" />
     </bean>
     <!-- Switch this when you want to enable the secure catalog by default -->
-    <alias name="rawCatalog" alias="catalog2"/> 
+    <alias name="secureCatalog" alias="catalog2"/> 
     
     <bean id="geoServer2" class="org.geoserver.config.impl.GeoServerImpl">
       <property name="catalog" ref="catalog2"/>
