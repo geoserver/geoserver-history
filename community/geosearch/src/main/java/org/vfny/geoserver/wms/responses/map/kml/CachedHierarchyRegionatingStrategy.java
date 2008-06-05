@@ -93,7 +93,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar (50))");
             statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
 
-            ReferencedEnvelope worldBounds = TileLevel.getWorldBounds();
+            ReferencedEnvelope worldBounds = getWorldBounds();
             ReferencedEnvelope western = new ReferencedEnvelope(
                     worldBounds.getMinimum(0),
                     worldBounds.getCenter(0),
@@ -129,7 +129,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         			);
         String tableName = findCacheTable(con, layer);
 
-        long[] coords = TileLevel.getTileCoords(con.getAreaOfInterest(), TileLevel.getWorldBounds());
+        long[] coords = getTileCoords(con.getAreaOfInterest(), getWorldBounds());
 
         Statement statement = connection.createStatement();
         String sql = "SELECT fid FROM " + tableName + " WHERE x = " + coords[0] + " AND y = " + coords[1] + " AND z = " + coords[2];
@@ -218,7 +218,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     }
 
     private void writeToDB(Statement st, String tablename, ReferencedEnvelope bbox, SimpleFeature f){
-        long[] coords = TileLevel.getTileCoords(bbox, TileLevel.getWorldBounds());
+        long[] coords = getTileCoords(bbox, getWorldBounds());
         try{
             String SQL = "INSERT INTO " + tablename + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + f.getID() + "\' )"; 
             st.execute(SQL);
@@ -267,4 +267,31 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
         return results;
     }
+
+    public static ReferencedEnvelope getWorldBounds(){
+        try{
+            // To avoid Caused by: org.geotools.referencing.operation.projection.ProjectionException: 
+            // Latitude 90°00.0'S is too close to a pole.
+            return new ReferencedEnvelope(-179.9, 179.9, -89.95, 89.95, CRS.decode("EPSG:4326"));
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
+        }
+
+        return null;
+    }
+
+    public static long[] getTileCoords(ReferencedEnvelope requestBBox, ReferencedEnvelope worldBounds){
+        try{
+            requestBBox = requestBBox.transform(worldBounds.getCoordinateReferenceSystem(), true);
+        } catch (Exception e){
+            LOGGER.log(Level.WARNING, "Couldn't reproject while acquiring tile coordinates", e);
+        }
+
+        long z = Math.round(Math.log(worldBounds.getWidth() / requestBBox.getWidth())/Math.log(2));
+        long x = Math.round(((requestBBox.getMinimum(0) - worldBounds.getMinimum(0)) / worldBounds.getLength(0)) * Math.pow(2, z));
+        long y = Math.round(((worldBounds.getMaximum(1) - requestBBox.getMaximum(1)) / worldBounds.getLength(1)) * Math.pow(2, z-1));
+
+        return new long[]{x,y,z};
+    }
+
 }
