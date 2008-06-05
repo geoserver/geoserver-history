@@ -8,6 +8,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.Wrapper;
 
 /**
  * Delegates every method to the wrapped {@link LayerInfo}. Subclasses will
@@ -15,7 +16,7 @@ import org.geoserver.catalog.StyleInfo;
  * 
  * @author Andrea Aime
  */
-public class DecoratingLayerInfo implements LayerInfo {
+public class DecoratingLayerInfo implements LayerInfo, Wrapper<LayerInfo> {
     LayerInfo delegate;
 
     public DecoratingLayerInfo(LayerInfo delegate) {
@@ -88,6 +89,14 @@ public class DecoratingLayerInfo implements LayerInfo {
 
     public void setType(Type type) {
         delegate.setType(type);
+    }
+
+    public boolean isWrapperFor(Class<?> iface) {
+        return LayerInfo.class.equals(iface);
+    }
+
+    public LayerInfo unwrap() {
+        return delegate;
     }
 
 }

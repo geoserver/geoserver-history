@@ -5,6 +5,7 @@ import java.util.List;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.Wrapper;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
 /**
@@ -13,10 +14,10 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
  * 
  * @author Andrea Aime
  */
-public class DecoratingLayerGroup implements LayerGroupInfo {
+public class DecoratingLayerGroupINfo implements LayerGroupInfo, Wrapper<LayerGroupInfo> {
     LayerGroupInfo delegate;
 
-    public DecoratingLayerGroup(LayerGroupInfo delegate) {
+    public DecoratingLayerGroupINfo(LayerGroupInfo delegate) {
         this.delegate = delegate;
     }
 
@@ -46,6 +47,14 @@ public class DecoratingLayerGroup implements LayerGroupInfo {
 
     public void setName(String name) {
         delegate.setName(name);
+    }
+
+    public boolean isWrapperFor(Class<?> iface) {
+        return LayerGroupInfo.class.isAssignableFrom(iface);
+    }
+
+    public LayerGroupInfo unwrap() {
+        return delegate;
     }
 
 }

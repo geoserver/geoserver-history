@@ -6,6 +6,8 @@ package org.geoserver.security;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -25,7 +27,8 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * Default implementation of {@link DataAccessManager}, loads simple access
- * rules from a Properties objects. The format of each property is:<br>
+ * rules from a properties file or a Properties object. The format of each
+ * property is:<br>
  * <code>workspace.layer.mode=[role]*</code><br>
  * where:
  * <ul>
@@ -41,9 +44,12 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * href=&quot;http://geoserver.org/display/GEOS/GSIP+19+-+Per+layer+security&quot;/&gt;per
  * layer security proposal&lt;/a&gt; on the &lt;a
  * href=&quot;www.geoserver.org&quot;&gt;GeoServer&lt;/a&gt; web site.
+ * <p>
+ * If no {@link Properties} is provided, one will be looked upon in
+ * <code>GEOSERVER_DATA_DIR/security/layers.properties, and the class will
+ * keep up to date vs changes in the file</code>
  * 
- * &#064;author Andrea Aime - TOPP
- * 
+ * @author Andrea Aime - TOPP
  */
 public class DefaultDataAccessManager implements DataAccessManager {
     static final Logger LOGGER = Logging.getLogger(DataAccessManager.class);
@@ -52,36 +58,52 @@ public class DefaultDataAccessManager implements DataAccessManager {
 
     Catalog catalog;
 
+    PropertyFileWatcher watcher;
+
+    File layers;
+
     DefaultDataAccessManager(Catalog catalog, Properties layers) {
         this.catalog = catalog;
         this.root = buildAuthorizationTree(layers);
     }
 
     DefaultDataAccessManager(Catalog catalog) throws Exception {
-        this(catalog, getLayerProperties());
-    }
-
-    private static Properties getLayerProperties() throws Exception {
+        this.catalog = catalog;
         File security = GeoserverDataDirectory.findConfigDir(GeoserverDataDirectory
                 .getGeoserverDataDirectory(), "security");
 
         // no security folder, let's work against an empty properties then
-        if (security == null || !security.exists())
-            return new Properties();
-
-        // no security config, let's work against an empty properties then
-        File layers = new File(security, "layers.properties");
-        if (!layers.exists())
-            return new Properties();
-
-        // ok, something is there, let's load it
-        Properties props = new Properties();
-        props.load(new FileInputStream(layers));
-        return props;
+        if (security == null || !security.exists()) {
+            this.root = new SecureTreeNode();
+        } else {
+            // no security config, let's work against an empty properties then
+            layers = new File(security, "layers.properties");
+            if (!layers.exists()) {
+                this.root = new SecureTreeNode();
+            } else {
+                // ok, something is there, let's load it
+                this.root = buildAuthorizationTree(layers);
+                watcher = new PropertyFileWatcher(layers);
+            }
+        }
     }
 
     public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {
         SecureTreeNode node = root.getDeepestNode(new String[] { workspace.getName() });
+        return canAccess(user, mode, node);
+    }
+
+    /**
+     * 
+     */
+    boolean canAccess(Authentication user, AccessMode mode, SecureTreeNode node) {
+        try {
+            if (watcher != null && watcher.isStale())
+                root = buildAuthorizationTree(layers);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Failed to reload data access rules from " + layers
+                    + ", keeping old rules", e);
+        }
         return node.canAccess(user, mode);
     }
 
@@ -109,7 +131,14 @@ public class DefaultDataAccessManager implements DataAccessManager {
         }
 
         SecureTreeNode node = root.getDeepestNode(new String[] { workspace, resource.getName() });
-        return node.canAccess(user, mode);
+        return canAccess(user, mode, node);
+    }
+
+    private SecureTreeNode buildAuthorizationTree(File layers) throws IOException,
+            FileNotFoundException {
+        Properties props = new Properties();
+        props.load(new FileInputStream(layers));
+        return buildAuthorizationTree(props);
     }
 
     SecureTreeNode buildAuthorizationTree(Properties props) {
@@ -196,10 +225,10 @@ public class DefaultDataAccessManager implements DataAccessManager {
         String[] rolesArray = roleCsv.split("[\\s,]+");
         Set<String> roles = new HashSet<String>(rolesArray.length);
         roles.addAll(Arrays.asList(rolesArray));
-        
+
         // if any of the roles is * we just remove all of the others
         for (String role : roles) {
-            if("*".equals(role))
+            if ("*".equals(role))
                 return Collections.singleton("*");
         }
 

@@ -15,7 +15,7 @@ import java.util.Properties;
  * A simple class to support reloadable property files. Watches last modified
  * date on the specified file, and allows to read a Properties out of it.
  *
- * @author Administrator
+ * @author Andrea Aime
  *
  */
 public class PropertyFileWatcher {
