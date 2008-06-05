@@ -25,6 +25,11 @@ class SecureTreeNode {
      * Special role set used to mean every possible role in the system
      */
     static final Set<String> EVERYBODY = Collections.singleton("*");
+    
+    /**
+     * The role given to the administrators
+     */
+    static final String ROOT_ROLE = "ROLE_ADMINISTRATOR";
 
     Map<String, SecureTreeNode> children = new HashMap<String, SecureTreeNode>();
 
@@ -123,8 +128,10 @@ class SecureTreeNode {
         // see if he matches any of the write roles
         if (user == null || user.getAuthorities() == null)
             return false;
+        // look for a match on the roles, using the "root" rules as well (root can do everything)
         for (GrantedAuthority authority : user.getAuthorities()) {
-            if (roles.contains(authority.getAuthority()))
+            final String userRole = authority.getAuthority();
+            if (roles.contains(userRole) || ROOT_ROLE.equals(userRole))
                 return true;
         }
         return false;

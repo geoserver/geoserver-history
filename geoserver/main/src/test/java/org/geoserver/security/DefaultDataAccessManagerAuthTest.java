@@ -15,6 +15,7 @@ public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest 
         checkUserAccessFlat(manager, anonymous, false, false);
         checkUserAccessFlat(manager, roUser, false, false);
         checkUserAccessFlat(manager, rwUser, true, true);
+        checkUserAccessFlat(manager, root, true, true);
     }
     
     public void testPublicRead() throws Exception {
@@ -22,6 +23,7 @@ public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest 
         checkUserAccessFlat(manager, anonymous, true, false);
         checkUserAccessFlat(manager, roUser, true, false);
         checkUserAccessFlat(manager, rwUser, true, true);
+        checkUserAccessFlat(manager, root, true, true);
     }
     
     private void checkUserAccessFlat(DefaultDataAccessManager manager, Authentication user, boolean expectedRead, boolean expectedWrite) {
@@ -45,12 +47,14 @@ public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest 
         assertFalse(wo.canAccess(anonymous, nurcWs, AccessMode.WRITE));
         assertTrue(wo.canAccess(roUser, nurcWs, AccessMode.READ));
         assertFalse(wo.canAccess(rwUser, nurcWs, AccessMode.WRITE));
+        assertTrue(wo.canAccess(root, nurcWs, AccessMode.WRITE));
         
         // check the same goes for a layer in that namespace
         assertFalse(wo.canAccess(anonymous, arcGridLayer, AccessMode.READ));
         assertFalse(wo.canAccess(anonymous, arcGridLayer, AccessMode.WRITE));
         assertTrue(wo.canAccess(roUser, arcGridLayer, AccessMode.READ));
         assertFalse(wo.canAccess(rwUser, arcGridLayer, AccessMode.WRITE));
+        assertTrue(wo.canAccess(root, arcGridLayer, AccessMode.WRITE));
         
         // check access to the topp workspace (everybody read, nobody for write)
         assertTrue(wo.canAccess(anonymous, toppWs, AccessMode.READ));
