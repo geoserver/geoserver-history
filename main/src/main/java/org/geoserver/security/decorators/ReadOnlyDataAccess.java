@@ -20,7 +20,7 @@ import org.opengis.feature.type.Name;
 public class ReadOnlyDataAccess<T extends FeatureType, F extends Feature> extends
         DecoratingDataAccess<T, F> {
 
-    private static final String READ_ONLY = "This data access is read only";
+    static final String READ_ONLY = "This data access is read only";
 
     public ReadOnlyDataAccess(DataAccess<T, F> delegate) {
         super(delegate);

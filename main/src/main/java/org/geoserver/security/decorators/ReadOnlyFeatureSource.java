@@ -40,14 +40,14 @@ public class ReadOnlyFeatureSource<T extends FeatureType, F extends Feature> ext
     }
 
     public FeatureCollection<T, F> getFeatures() throws IOException {
-        return delegate.getFeatures();
+        return new ReadOnlyFeatureCollection<T, F>(delegate.getFeatures());
     }
 
     public FeatureCollection<T, F> getFeatures(Filter filter) throws IOException {
-        return delegate.getFeatures(filter);
+        return new ReadOnlyFeatureCollection<T, F>(delegate.getFeatures(filter));
     }
 
     public FeatureCollection<T, F> getFeatures(Query query) throws IOException {
-        return delegate.getFeatures(query);
+        return new ReadOnlyFeatureCollection<T, F>(delegate.getFeatures(query));
     }
 }
