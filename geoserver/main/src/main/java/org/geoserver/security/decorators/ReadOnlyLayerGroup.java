@@ -30,7 +30,10 @@ public class ReadOnlyLayerGroup extends DecoratingLayerGroup {
         List<LayerInfo> original = delegate.getLayers();
         layers = new ArrayList<LayerInfo>(original.size());
         for (LayerInfo layer : original) {
-            layers.add(new ReadOnlyLayerInfo(layer));
+            if(layer == null)
+                layers.add(null);
+            else
+                layers.add(new ReadOnlyLayerInfo(layer));
         }
     }
 

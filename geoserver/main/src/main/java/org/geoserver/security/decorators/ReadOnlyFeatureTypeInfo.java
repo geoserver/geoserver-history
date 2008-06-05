@@ -30,10 +30,18 @@ public class ReadOnlyFeatureTypeInfo extends DecoratingFeatureTypeInfo {
 
     public FeatureSource getFeatureSource(ProgressListener listener, Hints hints)
             throws IOException {
-        return new ReadOnlyFeatureSource(wrapped.getFeatureSource(listener, hints));
+        final FeatureSource fs = wrapped.getFeatureSource(listener, hints);
+        if(fs == null)
+            return null;
+        else
+            return new ReadOnlyFeatureSource(fs);
     }
 
     public DataStoreInfo getStore() {
-        return new ReadOnlyDataStoreInfo(wrapped.getStore());
+        final DataStoreInfo store = wrapped.getStore();
+        if(store == null)
+            return null;
+        else
+            return new ReadOnlyDataStoreInfo(store);
     }
 }

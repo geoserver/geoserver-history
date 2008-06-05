@@ -28,7 +28,11 @@ public class ReadOnlyDataAccess<T extends FeatureType, F extends Feature> extend
 
     @Override
     public FeatureSource<T, F> getFeatureSource(Name typeName) throws IOException {
-        return new ReadOnlyFeatureSource(super.getFeatureSource(typeName));
+        final FeatureSource<T, F> fs = super.getFeatureSource(typeName);
+        if(fs != null)
+            return new ReadOnlyFeatureSource(fs);
+        else
+            return null;
     }
 
     @Override
