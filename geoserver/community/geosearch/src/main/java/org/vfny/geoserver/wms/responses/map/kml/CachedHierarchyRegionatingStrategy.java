@@ -1,52 +1,38 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.SQLException;
 
-import org.geotools.data.DefaultQuery;
+import org.geoserver.ows.HttpErrorCodeException;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.Filter;
-import org.opengis.filter.sort.SortBy;
-import org.opengis.filter.sort.SortOrder;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.geoserver.ows.HttpErrorCodeException;
 
 import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Abstract class to provide 'automagic' caching of a TileLevel hierarchy and use it for a 
@@ -59,7 +45,11 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
 
     private Set myAcceptableFeatures;
+    
+    private static ReferencedEnvelope worldBounds;
+
     private int myFeaturesPerTile;
+
 
     public final void preProcess(WMSMapContext con, MapLayer layer) {
         myFeaturesPerTile = 100;
@@ -99,26 +89,38 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             statement.execute("DROP TABLE IF EXISTS " + tableName);
             statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar (50))");
             statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
-
-            ReferencedEnvelope worldBounds = getWorldBounds();
-            ReferencedEnvelope western = new ReferencedEnvelope(
-                    worldBounds.getMinimum(0),
-                    worldBounds.getCenter(0),
-                    worldBounds.getMinimum(1),
-                    worldBounds.getMaximum(1),
-                    worldBounds.getCoordinateReferenceSystem()
-                    );
-            ReferencedEnvelope eastern = new ReferencedEnvelope(
-                    worldBounds.getCenter(0),
-                    worldBounds.getMaximum(0),
-                    worldBounds.getMinimum(1),
-                    worldBounds.getMaximum(1),
-                    worldBounds.getCoordinateReferenceSystem()
-                    );
-
-
-            buildDB(statement, tableName, layer.getFeatureSource(), western, new TreeSet<String>());
-            buildDB(statement, tableName, layer.getFeatureSource(), western, new TreeSet<String>());
+            
+            CoordinateReferenceSystem epsg4326 = null;
+            try { 
+            	epsg4326 = CRS.decode("EPSG:4326"); 
+            } catch (Exception e){ 
+            	LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
+            }
+            
+            
+            // GeoWebCache will try to start with the best tile that covers all the data, 
+            // so we need to start at the same point
+            ReferencedEnvelope layerBounds = layer.getBounds().transform(epsg4326,false);
+            
+            // ... but if it crosses the centra meridien we need to get two world tiles anyway
+	        if(layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
+	            ReferencedEnvelope worldBounds = getWorldBounds();
+	            // Western
+	        	Envelope tmp = new Envelope(0.0, -180.0, 90.0, -90.0);
+            	buildDB(statement, tableName, layer.getFeatureSource(),
+            			new ReferencedEnvelope(tmp, epsg4326), 
+            			new TreeSet<String>());
+            	// Eastern
+            	tmp = new Envelope(180.0, 0.0, 90.0, -90.0);
+            	buildDB(statement, tableName, layer.getFeatureSource(),
+            			new ReferencedEnvelope(tmp, epsg4326), 
+            			new TreeSet<String>());
+	        } else {
+	        	// Figure out what the closest tile would be, then use that
+            	buildDB(statement, tableName, layer.getFeatureSource(), 
+            			expandToTile(layerBounds), 
+            			new TreeSet<String>());
+	        }
 
             statement.close();
             connection.close();
@@ -204,19 +206,14 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
     private FeatureCollection getFeatures(FeatureSource source, ReferencedEnvelope bbox) throws IOException{
         FilterFactory2 factory = CommonFactoryFinder.getFilterFactory2(null);
-        String crsName = "EPSG:4326";
-        try{
-            crsName = CRS.lookupIdentifier(bbox.getCoordinateReferenceSystem(), false);
-        } catch (Exception e){
-            LOGGER.log(Level.WARNING, "Couldn't find id for crs: " + bbox.getCoordinateReferenceSystem().getName(), e);
-        }
+        
         Filter filter = factory.bbox(
                 factory.property(source.getSchema().getDefaultGeometry().getName()), 
                 bbox.getMinimum(0),
                 bbox.getMinimum(1), 
                 bbox.getMaximum(0), 
                 bbox.getMaximum(1),
-                crsName
+                getWorldBounds().getCoordinateReferenceSystem().toString()
                 );
 
         // LOGGER.info("Filtering by: " + filter);
@@ -233,8 +230,14 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         }
     }
 
-    private List<ReferencedEnvelope> quadSplit(ReferencedEnvelope bbox){
+    /**
+     * @param bbox
+     * @return the given bbox split into four equal tiles, as bboxes
+     */
+    private static List<ReferencedEnvelope> quadSplit(ReferencedEnvelope bbox){
         List<ReferencedEnvelope> results = new ArrayList<ReferencedEnvelope>();
+        
+        //top left
         results.add(new ReferencedEnvelope(
                 bbox.getCenter(0),
                 bbox.getMinimum(0),
@@ -243,7 +246,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 bbox.getCoordinateReferenceSystem()
                 )
         );
-
+        //top right
         results.add(new ReferencedEnvelope(
                 bbox.getMaximum(0),
                 bbox.getCenter(0),
@@ -253,6 +256,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 )
         );
 
+        // bottom left
         results.add(new ReferencedEnvelope(
                 bbox.getCenter(0),
                 bbox.getMinimum(0),
@@ -262,6 +266,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 )
         );
 
+        // bottom right
         results.add(new ReferencedEnvelope(
                 bbox.getMaximum(0),
                 bbox.getCenter(0),
@@ -274,28 +279,90 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         return results;
     }
 
+    // To avoid Caused by: org.geotools.referencing.operation.projection.ProjectionException: 
+    // Latitude 90°00.0'S is too close to a pole.
+    // we use an envelope
     public static ReferencedEnvelope getWorldBounds(){
-        try{
-            // To avoid Caused by: org.geotools.referencing.operation.projection.ProjectionException: 
-            // Latitude 90°00.0'S is too close to a pole.
-            return new ReferencedEnvelope(-179.9, 179.9, -89.95, 89.95, CRS.decode("EPSG:4326"));
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
-        }
+    	if(worldBounds == null) {
+    		try{
+        		Envelope tmp = new Envelope(180.0, -180.0, 90.0, -90.0);
+   
+    			worldBounds = new ReferencedEnvelope(tmp, CRS.decode("EPSG:4326"));
+    		} catch (Exception e){
+    			LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
+    		}
+    	}
+        return worldBounds;
+    }
+    
+    /**
+     * Finds the BBOX of one tile that best encompasses the given origBounds 
+     * 
+     * @param origBounds, cannot cross the central meridie
+     * @return
+     */
+    protected static ReferencedEnvelope expandToTile(ReferencedEnvelope origBounds) {
+    	if(origBounds.getMaxX() > 0.0 && origBounds.getMinX() < 0.0 ) {
+    		return null; // We warned you...
+    	}
 
-        return null;
+    	ReferencedEnvelope outerBounds;
+    	Envelope tmp;
+    	
+    	// Find starting point (western or eastern hemisphere)
+    	if(origBounds.getMaxX() > 0.0) {
+    		tmp = new Envelope(180.0, 0.0, 90.0, -90.0);
+    	} else {
+    		tmp = new Envelope(0.0, -180.0, 90.0, -90.0);
+    	}
+    	outerBounds = new ReferencedEnvelope(tmp, getWorldBounds().getCoordinateReferenceSystem());
+    	
+    	// Make a copy
+    	origBounds = new ReferencedEnvelope(origBounds);
+    	// Tighten up a little
+    	origBounds.expandBy(-1 * origBounds.getWidth()*0.01);
+    	
+    	// Now keep zooming in until no new tile covers the original bounds
+    	boolean zoomIn = true;
+    	
+    	while(zoomIn) {
+    		zoomIn = false;
+    		Iterator<ReferencedEnvelope> iter = quadSplit(outerBounds).iterator();
+    		while(iter.hasNext()) {
+    			ReferencedEnvelope env = iter.next();
+    			
+    			if(env.covers((Envelope) origBounds)) {
+    				outerBounds = env;
+    				zoomIn = true;
+    			}
+    		}
+    	}
+    		
+    	return outerBounds;
     }
 
-    public static long[] getTileCoords(ReferencedEnvelope requestBBox, ReferencedEnvelope worldBounds){
+    /**
+     * Finds the grid location of the given requestBBox, in relation to worldBounds
+     * 
+     * @param requestBBox
+     * @param worldBounds
+     * @return {x,y,z}
+     */
+    public static long[] getTileCoords(ReferencedEnvelope requestBBox, ReferencedEnvelope worldBounds) {
         try{
             requestBBox = requestBBox.transform(worldBounds.getCoordinateReferenceSystem(), true);
         } catch (Exception e){
             LOGGER.log(Level.WARNING, "Couldn't reproject while acquiring tile coordinates", e);
         }
+        
+        // EPSG4326 is special, in that at at zoomlevel 0 it has two tiles
+        // -> introduce notion of maxTileWidth, which is 180ish
+        
+        double maxTileWidth = worldBounds.getWidth() / 2.0;
 
-        long z = Math.round(Math.log(worldBounds.getWidth() / requestBBox.getWidth())/Math.log(2));
-        long x = Math.round(((requestBBox.getMinimum(0) - worldBounds.getMinimum(0)) / worldBounds.getLength(0)) * Math.pow(2, z));
-        long y = Math.round(((worldBounds.getMaximum(1) - requestBBox.getMaximum(1)) / worldBounds.getLength(1)) * Math.pow(2, z-1));
+        long z = Math.round(Math.log( maxTileWidth/ requestBBox.getWidth())/Math.log(2));
+        long x = Math.round(((requestBBox.getMinimum(0) - worldBounds.getMinimum(0)) / maxTileWidth) * Math.pow(2, z));
+        long y = Math.round(((worldBounds.getMaximum(1) - requestBBox.getMaximum(1)) / maxTileWidth) * Math.pow(2, z));
 
         return new long[]{x,y,z};
     }
