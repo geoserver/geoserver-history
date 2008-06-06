@@ -11,6 +11,7 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.Wrapper;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.util.LegacyServiceLoader;
@@ -46,8 +47,12 @@ public class WMSLoader extends LegacyServiceLoader {
         wms.getMetadata().put( "svgRenderer", (Serializable) props.get( "svgRenderer") );
         wms.getMetadata().put( "svgAntiAlias",(Serializable) props.get( "svgAntiAlias") );
         
-        //base maps
+        // base maps
         Catalog catalog = geoServer.getCatalog();
+        // ... we need access to the actual catalog, not a filtered out view of the
+        // layers accessible to the current user
+        if(catalog instanceof Wrapper)
+            catalog = ((Wrapper) catalog).unwrap(Catalog.class);
         CatalogFactory factory = catalog.getFactory();
         
         List<Map> baseMaps = (List<Map>) props.get( "BaseMapGroups");
