@@ -1099,7 +1099,8 @@ public class Dispatcher extends AbstractController {
                 return;
             }
         }
-        logger.log(Level.SEVERE, "", t);
+        if (!(t instanceof HttpErrorCodeException))
+            logger.log(Level.SEVERE, "", t);
 
         //unwind the exception stack until we find one we know about 
         Throwable cause = t;
