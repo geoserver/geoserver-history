@@ -10,7 +10,6 @@
 package org.geoserver.wps;
 
 import net.opengis.wps.GetCapabilitiesType;
-import org.vfny.geoserver.global.Data;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 import org.geoserver.ows.xml.v1_0.OWS;
@@ -25,24 +24,22 @@ import java.util.Locale;
 public abstract class CapabilitiesTransformer extends TransformerBase
 {
     protected WPS  wps;
-    protected Data data;
 
     protected static final String WPS_URI = "http://www.opengis.net/wps";
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    public CapabilitiesTransformer(WPS wps, Data data)
+    public CapabilitiesTransformer(WPS wps)
     {
         super();
 
         this.wps  = wps;
-        this.data = data;
     }
 
     public static class WPS1_0 extends CapabilitiesTransformer
     {
-        public WPS1_0(WPS wps, Data data)
+        public WPS1_0(WPS wps)
         {
-            super(wps, data);
+            super(wps);
         }
 
         public Translator createTranslator(ContentHandler handler)
@@ -53,7 +50,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase
         public class CapabilitiesTranslator1_0 extends TranslatorSupport
         {
             public GetCapabilitiesType request;
-            
+
             private Locale locale;
 
             public CapabilitiesTranslator1_0(ContentHandler handler)
@@ -173,7 +170,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase
             }
 
             // Utility methods
-            
+
             private void keywords(String[] keywords)
             {
                 if ((null == keywords) || (0 == keywords.length))

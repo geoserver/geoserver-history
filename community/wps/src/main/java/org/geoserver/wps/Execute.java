@@ -10,24 +10,21 @@
 package org.geoserver.wps;
 
 import net.opengis.wps.ExecuteType;
-import org.vfny.geoserver.global.Data;
 
 public class Execute
 {
     public WPS  wps;
-    public Data data;
 
-    public Execute(WPS wps, Data data)
+    public Execute(WPS wps)
     {
         this.wps  = wps;
-        this.data = data;
 
         return;
     }
 
     public ExecuteTransformer run(ExecuteType request) throws WPSException
     {
-        ExecuteTransformer executeTransformer = new ExecuteTransformer.WPS1_0(this.wps, this.data);
+        ExecuteTransformer executeTransformer = new ExecuteTransformer.WPS1_0(this.wps);
 
         executeTransformer.setEncoding(this.wps.getCharSet());
 

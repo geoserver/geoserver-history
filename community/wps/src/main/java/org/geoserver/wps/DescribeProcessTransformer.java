@@ -12,9 +12,9 @@ package org.geoserver.wps;
 import java.util.Locale;
 import net.opengis.ows11.CodeType;
 import net.opengis.wps.DescribeProcessType;
-import org.vfny.geoserver.global.Data;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
 import org.geotools.process.Parameter;
 import org.geotools.process.ProcessFactory;
@@ -25,24 +25,22 @@ import org.geotools.xml.transform.Translator;
 public abstract class DescribeProcessTransformer extends TransformerBase
 {
     protected WPS wps;
-    protected Data data;
 
     protected static final String WPS_URI = "http://www.opengis.net/wps";
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    public DescribeProcessTransformer(WPS wps, Data data)
+    public DescribeProcessTransformer(WPS wps)
     {
         super();
 
         this.wps  = wps;
-        this.data = data;
     }
 
     public static class WPS1_0 extends DescribeProcessTransformer
     {
-        public WPS1_0(WPS wps, Data data)
+        public WPS1_0(WPS wps)
         {
-            super(wps, data);
+            super(wps);
         }
 
         public Translator createTranslator(ContentHandler handler)
@@ -74,10 +72,10 @@ public abstract class DescribeProcessTransformer extends TransformerBase
 
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "xmlns:xsi", "xmlns:xsi", "", DescribeProcessTransformer.XSI_URI);
-                attributes.addAttribute("", "xmlns", "xmlns", "", DescribeProcessTransformer.WPS_URI);
+                attributes.addAttribute("", "xmlns",     "xmlns",     "", DescribeProcessTransformer.WPS_URI);
                 attributes.addAttribute("", "xmlns:wps", "xmlns:wps", "", DescribeProcessTransformer.WPS_URI);
                 attributes.addAttribute("", "xmlns:ows", "xmlns:ows", "", OWS.NAMESPACE);
-                attributes.addAttribute("", "version", "version", "", "1.0.0");
+                attributes.addAttribute("", "version",   "version",   "", "1.0.0");
 
                 start("wps:ProcessDescriptions", attributes);
 
@@ -113,7 +111,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "wps:processVersion", "wps:processVersion", "", pf.getVersion());
                 attributes.addAttribute("", "statusSupported",    "statusSupported",    "", Boolean.toString(pf.supportsProgress()));
-                
+
                 start("ProcessDescription", attributes);
 	                element("ows:Identifier", pf.getName());
 	                element("ows:Title",      pf.getTitle().toString(this.locale));
@@ -144,7 +142,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
             }
 
             private void processOutputs(ProcessFactory pf)
-            {
+            {            	
                 start("ProcessOutputs");
                 for (Parameter inputIdentifier : pf.getResultInfo(null).values())
                 {
@@ -155,9 +153,9 @@ public abstract class DescribeProcessTransformer extends TransformerBase
 	                    start("ComplexOutput");
 	                    	start("Default");
 	                    		start("Format");
-	                    			element("MimeType", "text/xml");
+	                    			element("MimeType", "text/xml; subtype=gml/2.1.2");
 	                    			element("Encoding", "utf-8");
-	                    			element("Schema",   "XXX/polygon.xsd");
+	                    			element("Schema",   "http://schemas.opengis.net/gml/2.1.2/geometry.xsd");
 	                    		end("Format");
 	                    	end("Default");
 	                    end("ComplexOutput");

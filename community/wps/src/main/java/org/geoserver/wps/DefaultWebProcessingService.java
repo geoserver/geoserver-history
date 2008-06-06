@@ -17,34 +17,31 @@ import org.geotools.xml.transform.TransformerBase;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.vfny.geoserver.global.Data;
 
 public class DefaultWebProcessingService implements WebProcessingService, ApplicationContextAware
 {
     protected WPS  wps;
-    protected Data data;
 
     protected ApplicationContext context;
 
-    public DefaultWebProcessingService(WPS wps, Data data)
+    public DefaultWebProcessingService(WPS wps)
     {
         this.wps  = wps;
-        this.data = data;
     }
 
     public TransformerBase getCapabilities(GetCapabilitiesType request) throws WPSException
     {
-        return new GetCapabilities(this.wps, this.data).run(request);
+        return new GetCapabilities(this.wps).run(request);
     }
 
     public TransformerBase describeProcess(DescribeProcessType request) throws WPSException
     {
-        return new DescribeProcess(this.wps, this.data).run(request);
+        return new DescribeProcess(this.wps).run(request);
     }
 
     public TransformerBase execute(ExecuteType request) throws WPSException
     {
-        return new Execute(this.wps, this.data).run(request);
+        return new Execute(this.wps).run(request);
     }
 
     public void setApplicationContext(ApplicationContext context) throws BeansException
