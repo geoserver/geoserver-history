@@ -20,6 +20,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -835,22 +838,19 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
             request.setupAddParameter(keyValuePair[0], keyValuePair.length > 1 ?  keyValuePair[1]: "");
         }
     }
-    
-    /*
-     * Helper method for dispatching an executing an ows request. 
-     */
-    private MockHttpServletResponse dispatch( MockHttpServletRequest request ) throws Exception {
-        //create the response
-        //final MockServletOutputStream output = new MockServletOutputStream();
+
+    private MockHttpServletResponse dispatch( HttpServletRequest request ) throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse() {
             public void setCharacterEncoding( String encoding ) {
                     
             }
-//            public ServletOutputStream getOutputStream() throws IOException {
-//                return output;
-//            }
         };
-        
+
+        dispatch(request, response);
+        return response;
+    } 
+ 
+    private void dispatch(HttpServletRequest request, HttpServletResponse response) throws Exception{
         //create an instance of the spring dispatcher
         ServletContext context = applicationContext.getServletContext();
         
@@ -886,7 +886,96 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
             HandlerInterceptor interceptor = (HandlerInterceptor) i.next();
             interceptor.postHandle( request, response, dispatcher, null );
         }
+    }
+
+    /**
+     * Assert that a GET request to a path will have a particular status code for the response.
+     * @param code the number of the HTTP status code that is expected
+     * @param path the path to which a GET request should be made, without the protocol, server and servlet context.
+     * For example, to make a request to "http://localhost:8080/geoserver/ows" the path would be "ows"
+     *
+     * @throws Exception on test failure
+     */
+    protected void assertStatusCodeForGet(int code, String path) throws Exception{
+        assertStatusCodeForRequest(code, "GET", path, "", "");
+    }
+
+    /**
+     * Assert that a POST request to a path will have a particular status code for the response.
+     * @param code the number of the HTTP status code that is expected
+     * @param path the path to which a POST request should be made, without the protocol, server and servlet context.
+     * For example, to make a request to "http://localhost:8080/geoserver/ows" the path would be "ows"
+     * @param body the body to send with the request. May be empty, but must not be null.
+     * @param type the mimetype to report for the body
+     *
+     * @throws Exception on test failure
+     */
+    protected void assertStatusCodeForPost(int code, String path, String body, String type) throws Exception {
+        assertStatusCodeForRequest(code, "POST", path, body, type);
+    }
+
+    /**
+     * Assert that a PUT request to a path will have a particular status code for the response.
+     * @param code the number of the HTTP status code that is expected
+     * @param path the path to which a PUT request should be made, without the protocol, server and servlet context.
+     * For example, to make a request to "http://localhost:8080/geoserver/ows" the path would be "ows"
+     * @param body the body to send with the request. May be empty, but must not be null.
+     * @param type the mimetype to report for the body
+     *
+     * @throws Exception on test failure
+     */
+    protected void assertStatusCodeForPut(int code, String path, String body, String type) throws Exception {
+        assertStatusCodeForRequest(code, "PUT", path, body, type);
+    }
+
+    /**
+     * Assert that an HTTP request will have a particular status code for the response.
+     * @param code the number of the HTTP status code that is expected
+     * @param method the HTTP method for the request (eg, GET, PUT)
+     * @param path the path for the request, excluding the protocol, server, port, and servlet context.
+     * For example, to make a request to "http://localhost:8080/geoserver/ows" the path would be "ows"
+     * @param body the body for the request.  May be empty, but must not be null.
+     * @param type the mimetype for the request.
+     */
+    protected void assertStatusCodeForRequest(int code, String method, String path, String body, String type) throws Exception {
+        MockHttpServletRequest request = createRequest(path);
+        request.setMethod(method);
+        request.setBodyContent(body);
+        request.setContentType(type);
+
+        HttpServletResponse response = new CodeExpectingHttpServletResponse(new MockHttpServletResponse(), code);
+        dispatch(request, response);
+    }
+
+    /**
+     * HttpServletResponse wrapper to help in making assertions about expected status codes.
+     */
+    private class CodeExpectingHttpServletResponse extends HttpServletResponseWrapper{
+        private int myExpectedCode;
+
+        protected CodeExpectingHttpServletResponse (HttpServletResponse req, int expectedCode){
+            super(req);
+            myExpectedCode = expectedCode;
+        }
         
-        return response;
+        public void setStatus(int sc){
+            assertEquals(myExpectedCode, sc);
+            super.setStatus(sc);
+        }
+
+        public void setStatus(int sc, String sm){
+            assertEquals(myExpectedCode, sc);
+            super.setStatus(sc, sm);
+        }
+
+        public void sendError(int sc) throws IOException {
+            assertEquals(myExpectedCode, sc);
+            super.sendError(sc);
+        }
+
+        public void sendError(int sc, String sm) throws IOException {
+            assertEquals(myExpectedCode, sc);
+            super.sendError(sc, sm);
+        }
     }
 }
