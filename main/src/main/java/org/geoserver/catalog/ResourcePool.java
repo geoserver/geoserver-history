@@ -143,6 +143,11 @@ public class ResourcePool {
                     if ( dataStore == null ) {
                         //create data store
                         Map connectionParameters = info.getConnectionParameters();
+                        
+                        //call this methdo to execute the hack which recognizes 
+                        // urls which are relative to the data directory
+                        // TODO: find a better way to do this
+                        connectionParameters = DataStoreUtils.getParams(connectionParameters,null);
                         dataStore = DataStoreUtils.getDataStore(connectionParameters);
                         
                         if ( dataStore == null ) {
