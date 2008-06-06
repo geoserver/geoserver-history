@@ -943,39 +943,44 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         request.setBodyContent(body);
         request.setContentType(type);
 
-        HttpServletResponse response = new CodeExpectingHttpServletResponse(new MockHttpServletResponse(), code);
+        CodeExpectingHttpServletResponse response = new CodeExpectingHttpServletResponse(new MockHttpServletResponse());
         dispatch(request, response);
+        assertEquals(code, response.getError());
     }
 
     /**
      * HttpServletResponse wrapper to help in making assertions about expected status codes.
      */
     private class CodeExpectingHttpServletResponse extends HttpServletResponseWrapper{
-        private int myExpectedCode;
+        private int myErrorCode;
 
-        protected CodeExpectingHttpServletResponse (HttpServletResponse req, int expectedCode){
+        protected CodeExpectingHttpServletResponse (HttpServletResponse req){
             super(req);
-            myExpectedCode = expectedCode;
+            myErrorCode = 200;
         }
         
         public void setStatus(int sc){
-            assertEquals(myExpectedCode, sc);
+            myErrorCode = sc;
             super.setStatus(sc);
         }
 
         public void setStatus(int sc, String sm){
-            assertEquals(myExpectedCode, sc);
+            myErrorCode = sc;
             super.setStatus(sc, sm);
         }
 
         public void sendError(int sc) throws IOException {
-            assertEquals(myExpectedCode, sc);
+            myErrorCode = sc;
             super.sendError(sc);
         }
 
         public void sendError(int sc, String sm) throws IOException {
-            assertEquals(myExpectedCode, sc);
+            myErrorCode = sc;
             super.sendError(sc, sm);
+        }
+
+        public int getError(){
+            return myErrorCode;
         }
     }
 }
