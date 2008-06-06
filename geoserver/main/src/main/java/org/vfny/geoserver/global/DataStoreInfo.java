@@ -161,7 +161,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         Map params = new HashMap(dataStore.getConnectionParameters());
         params.put("namespace", getNameSpace().getURI());
 
-        return getParams(params, GeoserverDataDirectory.getGeoserverDataDirectory().toString());
+        return params;
         
         //Map params = new HashMap(connectionParams);
         //params.put("namespace", getNameSpace().getURI());

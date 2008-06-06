@@ -283,20 +283,6 @@ public class LegacyCatalogImporter {
                 String key = (String) entry.getKey();
                 Serializable value = (Serializable) entry.getValue();
                 
-                //special case check, check for a relative url which starts 
-                // with "data/", and resolve to full path under data directory
-                try {
-                    //is it a url?
-                    URL url = new URL( value.toString() );
-                    File file = new File( url.getFile() );
-                    if ( !file.isAbsolute() && file.getPath().startsWith("data" + File.separator) ) {
-                        //make absolute
-                        value = new File( resourceLoader.getBaseDirectory(), file.getPath() ).toURL();
-                    }
-                }
-                catch( MalformedURLException ex) {
-                    //ignore
-                }
                 dataStore.getConnectionParameters().put(key,value);
             }
             //set the namespace parameter
