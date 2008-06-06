@@ -30,12 +30,14 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
             "&format=" + KMLMapProducerFactory.MIME_TYPE + 
             "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
-            "&height=1024&width=1024&bbox=-180,-90,0,90&srs=EPSG:4326" +  
-            "&featureid=BasicPolygons.1107531493643" +
+            "&height=1024&width=1024&srs=EPSG:4326" +  
             "&format_options=regionateBy:data;regionateAttr:NUM_LANES";
 
-        Document document = getAsDOM(path);
+        Document document = getAsDOM(path + "&bbox=-180,-90,0,90");
         assertEquals("kml", document.getDocumentElement().getTagName());
+        int westCount = document.getDocumentElement().getElementsByTagName("Placemark").getLength();
+
+        assertEquals(1, westCount);
     }
 
      public void testGeometryRegionator() throws Exception{
@@ -45,10 +47,10 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
             "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&height=1024&width=1024&bbox=-180,-90,0,90&srs=EPSG:4326" +  
-            "&featureid=BasicPolygons.1107531493643" +
             "&format_options=regionateBy:geo";
         Document document = getAsDOM(path);
         assertEquals("kml", document.getDocumentElement().getTagName());
+        assertEquals(1, document.getDocumentElement().getElementsByTagName("Placemark").getLength());
     }
 
 }
