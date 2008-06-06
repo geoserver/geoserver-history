@@ -6,9 +6,12 @@ import org.geoserver.data.test.MockData;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
-
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.util.Iterator;
 import java.util.List;
+import java.io.IOException;
 
 public class GeoSearchKMLTest extends GeoServerTestSupport {
     public void testOutput() throws Exception {
@@ -37,6 +40,8 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
         assertEquals("kml", document.getDocumentElement().getTagName());
         int westCount = document.getDocumentElement().getElementsByTagName("Placemark").getLength();
 
+        assertStatusCodeForGet(204, path + "&bbox=0,-90,180,90");
+
         assertEquals(1, westCount);
     }
 
@@ -46,11 +51,12 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
             "&format=" + KMLMapProducerFactory.MIME_TYPE + 
             "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
-            "&height=1024&width=1024&bbox=-180,-90,0,90&srs=EPSG:4326" +  
+            "&height=1024&width=1024&srs=EPSG:4326" +  
             "&format_options=regionateBy:geo";
-        Document document = getAsDOM(path);
+        Document document = getAsDOM(path + "&bbox=-180,-90,0,90");
         assertEquals("kml", document.getDocumentElement().getTagName());
         assertEquals(1, document.getDocumentElement().getElementsByTagName("Placemark").getLength());
-    }
 
+        assertStatusCodeForGet(204, path + "&bbox=0,-90,180,90");
+    }
 }
