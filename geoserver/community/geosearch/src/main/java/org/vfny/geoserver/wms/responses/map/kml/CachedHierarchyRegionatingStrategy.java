@@ -28,6 +28,7 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.ReferenceIdentifier;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -48,12 +49,12 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     
     private static ReferencedEnvelope worldBounds;
 
+    private static String WORLD_SRS = "EPSG:4326";
+
     private int myFeaturesPerTile;
 
 
     public final void preProcess(WMSMapContext con, MapLayer layer) {
-        myFeaturesPerTile = 100;
-        
         FeatureTypeInfo fti = con.getRequest().getWMS().getData().getFeatureTypeInfo(layer.getFeatureSource().getName());
         myFeaturesPerTile = fti.getRegionateFeatureLimit();
 
@@ -213,7 +214,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 bbox.getMinimum(1), 
                 bbox.getMaximum(0), 
                 bbox.getMaximum(1),
-                getWorldBounds().getCoordinateReferenceSystem().toString()
+                WORLD_SRS
                 );
 
         // LOGGER.info("Filtering by: " + filter);
@@ -287,7 +288,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     		try{
         		Envelope tmp = new Envelope(180.0, -180.0, 90.0, -90.0);
    
-    			worldBounds = new ReferencedEnvelope(tmp, CRS.decode("EPSG:4326"));
+    			worldBounds = new ReferencedEnvelope(tmp, CRS.decode(WORLD_SRS));
     		} catch (Exception e){
     			LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
     		}

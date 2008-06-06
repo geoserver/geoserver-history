@@ -24,19 +24,31 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
         assertEquals("kml", document.getDocumentElement().getTagName());;
     }
 
-//    public void testDataRegionator() throws Exception{
-//        final String path = 
-//            "wms?request=getmap&service=wms&version=1.1.1" + 
-//            "&format=" + KMLMapProducerFactory.MIME_TYPE + 
-//            "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
-//            "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
-//            "&height=1024&width=1024&bbox=-180,-90,0,90&srs=EPSG:4326" +  
-//            "&featureid=BasicPolygons.1107531493643" +
-//            "&format_options=regionateBy:data;regionateAttr:NUM_LANES";
-//
-//        Document document = getAsDOM(path);
-//        assertEquals("kml", document.getDocumentElement().getTagName());
-//        // assertEquals(500, response.getErrorCode()); //TODO: Regionating does not work on non-postgis layers.   
-//    }
-    
+    public void testDataRegionator() throws Exception{
+        final String path = 
+            "wms?request=getmap&service=wms&version=1.1.1" + 
+            "&format=" + KMLMapProducerFactory.MIME_TYPE + 
+            "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
+            "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
+            "&height=1024&width=1024&bbox=-180,-90,0,90&srs=EPSG:4326" +  
+            "&featureid=BasicPolygons.1107531493643" +
+            "&format_options=regionateBy:data;regionateAttr:NUM_LANES";
+
+        Document document = getAsDOM(path);
+        assertEquals("kml", document.getDocumentElement().getTagName());
+    }
+
+     public void testGeometryRegionator() throws Exception{
+        final String path = 
+            "wms?request=getmap&service=wms&version=1.1.1" + 
+            "&format=" + KMLMapProducerFactory.MIME_TYPE + 
+            "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
+            "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
+            "&height=1024&width=1024&bbox=-180,-90,0,90&srs=EPSG:4326" +  
+            "&featureid=BasicPolygons.1107531493643" +
+            "&format_options=regionateBy:geo";
+        Document document = getAsDOM(path);
+        assertEquals("kml", document.getDocumentElement().getTagName());
+    }
+
 }
