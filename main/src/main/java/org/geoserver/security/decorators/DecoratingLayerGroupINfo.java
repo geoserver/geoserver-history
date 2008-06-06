@@ -5,7 +5,7 @@ import java.util.List;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.catalog.Wrapper;
+import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
 /**
@@ -14,11 +14,10 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
  * 
  * @author Andrea Aime
  */
-public class DecoratingLayerGroupINfo implements LayerGroupInfo, Wrapper<LayerGroupInfo> {
-    LayerGroupInfo delegate;
+public class DecoratingLayerGroupINfo extends AbstractDecorator<LayerGroupInfo> implements LayerGroupInfo {
 
     public DecoratingLayerGroupINfo(LayerGroupInfo delegate) {
-        this.delegate = delegate;
+        super(delegate);
     }
 
     public ReferencedEnvelope getBounds() {
@@ -48,13 +47,4 @@ public class DecoratingLayerGroupINfo implements LayerGroupInfo, Wrapper<LayerGr
     public void setName(String name) {
         delegate.setName(name);
     }
-
-    public boolean isWrapperFor(Class<?> iface) {
-        return LayerGroupInfo.class.isAssignableFrom(iface);
-    }
-
-    public LayerGroupInfo unwrap() {
-        return delegate;
-    }
-
 }

@@ -82,32 +82,33 @@ public class DefaultDataAccessManager implements DataAccessManager {
                 this.root = new SecureTreeNode();
             } else {
                 // ok, something is there, let's load it
-                this.root = buildAuthorizationTree(layers);
                 watcher = new PropertyFileWatcher(layers);
+                this.root = buildAuthorizationTree(watcher.getProperties());
             }
         }
     }
-
-    public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {
-        SecureTreeNode node = root.getDeepestNode(new String[] { workspace.getName() });
-        return canAccess(user, mode, node);
-    }
-
+    
     /**
-     * 
+     * Checks the property file is up to date, eventually rebuilds the tree
      */
-    boolean canAccess(Authentication user, AccessMode mode, SecureTreeNode node) {
+    void checkPropertyFile() {
         try {
             if (watcher != null && watcher.isStale())
-                root = buildAuthorizationTree(layers);
+                root = buildAuthorizationTree(watcher.getProperties());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to reload data access rules from " + layers
                     + ", keeping old rules", e);
         }
+    }
+
+    public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {
+        checkPropertyFile();
+        SecureTreeNode node = root.getDeepestNode(new String[] { workspace.getName() });
         return node.canAccess(user, mode);
     }
 
     public boolean canAccess(Authentication user, LayerInfo layer, AccessMode mode) {
+        checkPropertyFile();
         if (layer.getResource() == null) {
             LOGGER.log(Level.FINE, "Layer " + layer + " has no attached resource, "
                     + "assuming it's possible to access it");
@@ -120,6 +121,7 @@ public class DefaultDataAccessManager implements DataAccessManager {
     }
 
     public boolean canAccess(Authentication user, ResourceInfo resource, AccessMode mode) {
+        checkPropertyFile();
         String workspace;
         try {
             workspace = resource.getStore().getWorkspace().getName();
@@ -131,7 +133,7 @@ public class DefaultDataAccessManager implements DataAccessManager {
         }
 
         SecureTreeNode node = root.getDeepestNode(new String[] { workspace, resource.getName() });
-        return canAccess(user, mode, node);
+        return node.canAccess(user, mode);
     }
 
     private SecureTreeNode buildAuthorizationTree(File layers) throws IOException,

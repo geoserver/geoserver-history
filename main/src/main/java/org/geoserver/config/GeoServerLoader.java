@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.Wrapper;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
-import org.geoserver.catalog.util.WrapperUtils;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -77,7 +76,7 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         catalogImporter.setResourceLoader(resourceLoader);
         Catalog catalog = geoserver.getCatalog();
         if(catalog instanceof Wrapper && ((Wrapper) catalog).isWrapperFor(Catalog.class)) {
-            catalog = WrapperUtils.deepUnwrap((Wrapper<Catalog>) catalog);
+            catalog = ((Wrapper) catalog).unwrap(Catalog.class);
         }
         catalogImporter.setCatalog(catalog);
         
