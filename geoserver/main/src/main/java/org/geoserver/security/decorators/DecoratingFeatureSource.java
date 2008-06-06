@@ -8,6 +8,7 @@ import java.awt.RenderingHints.Key;
 import java.io.IOException;
 import java.util.Set;
 
+import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.data.DataAccess;
 import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureSource;
@@ -25,14 +26,13 @@ import org.opengis.filter.Filter;
  * Delegates every method to the wrapped feature source. Subclasses will
  * override selected methods to perform their "decoration" job
  * 
- * @author Andrea Aime - TOPP TODO: Move this class to gt2
+ * @author Andrea Aime
  */
-public abstract class DecoratingFeatureSource<T extends FeatureType, F extends Feature> implements
-        FeatureSource<T, F> {
-    FeatureSource<T, F> delegate;
-    
-    public DecoratingFeatureSource(FeatureSource delegate) {
-        this.delegate = delegate;
+public abstract class DecoratingFeatureSource<T extends FeatureType, F extends Feature> extends
+        AbstractDecorator<FeatureSource<T, F>> implements FeatureSource<T, F> {
+
+    public DecoratingFeatureSource(FeatureSource<T, F> delegate) {
+        super(delegate);
     }
 
     public void addFeatureListener(FeatureListener listener) {
@@ -90,7 +90,5 @@ public abstract class DecoratingFeatureSource<T extends FeatureType, F extends F
     public void removeFeatureListener(FeatureListener listener) {
         delegate.removeFeatureListener(listener);
     }
-    
-    
 
 }

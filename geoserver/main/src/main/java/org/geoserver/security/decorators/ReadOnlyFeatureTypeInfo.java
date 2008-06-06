@@ -30,7 +30,7 @@ public class ReadOnlyFeatureTypeInfo extends DecoratingFeatureTypeInfo {
 
     public FeatureSource getFeatureSource(ProgressListener listener, Hints hints)
             throws IOException {
-        final FeatureSource fs = wrapped.getFeatureSource(listener, hints);
+        final FeatureSource fs = delegate.getFeatureSource(listener, hints);
         if(fs == null)
             return null;
         else
@@ -38,7 +38,7 @@ public class ReadOnlyFeatureTypeInfo extends DecoratingFeatureTypeInfo {
     }
 
     public DataStoreInfo getStore() {
-        final DataStoreInfo store = wrapped.getStore();
+        final DataStoreInfo store = delegate.getStore();
         if(store == null)
             return null;
         else

@@ -7,6 +7,7 @@ package org.geoserver.security.decorators;
 import java.io.IOException;
 import java.util.List;
 
+import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.data.DataAccess;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.ServiceInfo;
@@ -23,12 +24,11 @@ import org.opengis.feature.type.Name;
  * @param <T>
  * @param <F>
  */
-public abstract class DecoratingDataAccess<T extends FeatureType, F extends Feature> implements
-        DataAccess<T, F> {
-    DataAccess<T, F> delegate;
+public abstract class DecoratingDataAccess<T extends FeatureType, F extends Feature> extends
+        AbstractDecorator<DataAccess<T, F>> implements DataAccess<T, F> {
     
     public DecoratingDataAccess(DataAccess<T, F> delegate) {
-        this.delegate = delegate;
+        super(delegate);
     }
 
     public void createSchema(T featureType) throws IOException {

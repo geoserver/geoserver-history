@@ -26,7 +26,7 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogListener;
-import org.geoserver.catalog.util.WrapperUtils;
+import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.security.decorators.ReadOnlyDataStoreInfo;
 import org.geoserver.security.decorators.ReadOnlyFeatureTypeInfo;
@@ -44,9 +44,7 @@ import org.geoserver.security.decorators.ReadOnlyLayerInfo;
  *         users get a special role that make them uber-powerful (root like) and
  *         everything goes thru the secured catalog
  */
-public class SecureCatalogImpl implements SecureCatalog {
-    protected Catalog catalog;
-
+public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Catalog {
     protected DataAccessManager accessManager;
 
     public SecureCatalogImpl(Catalog catalog) throws Exception {
@@ -62,19 +60,8 @@ public class SecureCatalogImpl implements SecureCatalog {
     }
 
     public SecureCatalogImpl(Catalog catalog, DataAccessManager manager) {
-        this.catalog = catalog;
+        super(catalog);
         this.accessManager = manager;
-    }
-
-    /**
-     * Returns the unsecured catalog
-     */
-    public Catalog unwrap() {
-        return catalog;
-    }
-
-    public boolean isWrapperFor(Class<?> iface) {
-        return Catalog.class.isAssignableFrom(iface);
     }
 
     // -------------------------------------------------------------------
@@ -82,169 +69,169 @@ public class SecureCatalogImpl implements SecureCatalog {
     // -------------------------------------------------------------------
 
     public CoverageInfo getCoverage(String id) {
-        return (CoverageInfo) checkAccess(user(), catalog.getCoverage(id));
+        return (CoverageInfo) checkAccess(user(), delegate.getCoverage(id));
     }
 
     public CoverageInfo getCoverageByName(String ns, String name) {
-        return (CoverageInfo) checkAccess(user(), catalog.getCoverageByName(ns, name));
+        return (CoverageInfo) checkAccess(user(), delegate.getCoverageByName(ns, name));
     }
 
     public CoverageInfo getCoverageByName(String name) {
-        return (CoverageInfo) checkAccess(user(), catalog.getCoverageByName(name));
+        return (CoverageInfo) checkAccess(user(), delegate.getCoverageByName(name));
     }
 
     public List<CoverageInfo> getCoverages() {
-        return filterResources(user(), catalog.getCoverages());
+        return filterResources(user(), delegate.getCoverages());
     }
 
     public List<CoverageInfo> getCoveragesByNamespace(NamespaceInfo namespace) {
-        return filterResources(user(), catalog.getCoveragesByNamespace(namespace));
+        return filterResources(user(), delegate.getCoveragesByNamespace(namespace));
     }
 
     public CoverageStoreInfo getCoverageStore(String id) {
-        return checkAccess(user(), catalog.getCoverageStore(id));
+        return checkAccess(user(), delegate.getCoverageStore(id));
     }
 
     public CoverageStoreInfo getCoverageStoreByName(String name) {
-        return checkAccess(user(), catalog.getCoverageStoreByName(name));
+        return checkAccess(user(), delegate.getCoverageStoreByName(name));
     }
 
     public List<CoverageStoreInfo> getCoverageStores() {
-        return filterStores(user(), catalog.getCoverageStores());
+        return filterStores(user(), delegate.getCoverageStores());
     }
 
     public DataStoreInfo getDataStore(String id) {
-        return checkAccess(user(), catalog.getDataStore(id));
+        return checkAccess(user(), delegate.getDataStore(id));
     }
 
     public DataStoreInfo getDataStoreByName(String name) {
-        return checkAccess(user(), catalog.getDataStoreByName(name));
+        return checkAccess(user(), delegate.getDataStoreByName(name));
     }
 
     public List<DataStoreInfo> getDataStores() {
-        return filterStores(user(), catalog.getDataStores());
+        return filterStores(user(), delegate.getDataStores());
     }
 
     public NamespaceInfo getDefaultNamespace() {
-        return catalog.getDefaultNamespace();
+        return delegate.getDefaultNamespace();
     }
 
     public WorkspaceInfo getDefaultWorkspace() {
-        return catalog.getDefaultWorkspace();
+        return delegate.getDefaultWorkspace();
     }
 
     public FeatureTypeInfo getFeatureType(String id) {
-        return checkAccess(user(), catalog.getFeatureType(id));
+        return checkAccess(user(), delegate.getFeatureType(id));
     }
 
     public FeatureTypeInfo getFeatureTypeByName(String ns, String name) {
-        return checkAccess(user(), catalog.getFeatureTypeByName(ns, name));
+        return checkAccess(user(), delegate.getFeatureTypeByName(ns, name));
     }
 
     public FeatureTypeInfo getFeatureTypeByName(String name) {
-        return checkAccess(user(), catalog.getFeatureTypeByName(name));
+        return checkAccess(user(), delegate.getFeatureTypeByName(name));
     }
 
     public List<FeatureTypeInfo> getFeatureTypes() {
-        return filterResources(user(), catalog.getFeatureTypes());
+        return filterResources(user(), delegate.getFeatureTypes());
     }
 
     public List<FeatureTypeInfo> getFeatureTypesByNamespace(NamespaceInfo namespace) {
-        return filterResources(user(), catalog.getFeatureTypesByNamespace(namespace));
+        return filterResources(user(), delegate.getFeatureTypesByNamespace(namespace));
     }
 
     public LayerInfo getLayer(String id) {
-        return checkAccess(user(), catalog.getLayer(id));
+        return checkAccess(user(), delegate.getLayer(id));
     }
 
     public LayerInfo getLayerByName(String name) {
-        return checkAccess(user(), catalog.getLayerByName(name));
+        return checkAccess(user(), delegate.getLayerByName(name));
     }
 
     public LayerGroupInfo getLayerGroup(String id) {
-        return checkAccess(user(), catalog.getLayerGroup(id));
+        return checkAccess(user(), delegate.getLayerGroup(id));
     }
 
     public LayerGroupInfo getLayerGroupByName(String name) {
-        return checkAccess(user(), catalog.getLayerGroupByName(name));
+        return checkAccess(user(), delegate.getLayerGroupByName(name));
     }
 
     public List<LayerGroupInfo> getLayerGroups() {
-        return filterGroups(user(), catalog.getLayerGroups());
+        return filterGroups(user(), delegate.getLayerGroups());
     }
 
     public List<LayerInfo> getLayers() {
-        return filterLayers(user(), catalog.getLayers());
+        return filterLayers(user(), delegate.getLayers());
     }
 
     public List<LayerInfo> getLayers(ResourceInfo resource) {
-        return filterLayers(user(), catalog.getLayers(unwrap(resource)));
+        return filterLayers(user(), delegate.getLayers(unwrap(resource)));
     }
 
     public NamespaceInfo getNamespace(String id) {
-        return checkAccess(user(), catalog.getNamespace(id));
+        return checkAccess(user(), delegate.getNamespace(id));
     }
 
     public NamespaceInfo getNamespaceByPrefix(String prefix) {
-        return checkAccess(user(), catalog.getNamespaceByPrefix(prefix));
+        return checkAccess(user(), delegate.getNamespaceByPrefix(prefix));
     }
 
     public NamespaceInfo getNamespaceByURI(String uri) {
-        return checkAccess(user(), catalog.getNamespaceByURI(uri));
+        return checkAccess(user(), delegate.getNamespaceByURI(uri));
     }
 
     public List<NamespaceInfo> getNamespaces() {
-        return filterNamespaces(user(), catalog.getNamespaces());
+        return filterNamespaces(user(), delegate.getNamespaces());
     }
 
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
-        return checkAccess(user(), catalog.getResource(id, clazz));
+        return checkAccess(user(), delegate.getResource(id, clazz));
     }
 
     public <T extends ResourceInfo> T getResourceByName(String name, Class<T> clazz) {
-        return checkAccess(user(), catalog.getResourceByName(name, clazz));
+        return checkAccess(user(), delegate.getResourceByName(name, clazz));
     }
 
     public <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
-        return checkAccess(user(), catalog.getResourceByName(ns, name, clazz));
+        return checkAccess(user(), delegate.getResourceByName(ns, name, clazz));
     }
 
     public <T extends ResourceInfo> List<T> getResources(Class<T> clazz) {
-        return filterResources(user(), catalog.getResources(clazz));
+        return filterResources(user(), delegate.getResources(clazz));
     }
 
     public <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace,
             Class<T> clazz) {
-        return filterResources(user(), catalog.getResourcesByNamespace(namespace, clazz));
+        return filterResources(user(), delegate.getResourcesByNamespace(namespace, clazz));
     }
 
     public <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
-        return checkAccess(user(), catalog.getStore(id, clazz));
+        return checkAccess(user(), delegate.getStore(id, clazz));
     }
 
     public <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz) {
-        return checkAccess(user(), catalog.getStoreByName(name, clazz));
+        return checkAccess(user(), delegate.getStoreByName(name, clazz));
     }
 
     public <T extends StoreInfo> List<T> getStores(Class<T> clazz) {
-        return filterStores(user(), catalog.getStores(clazz));
+        return filterStores(user(), delegate.getStores(clazz));
     }
 
     public <T extends StoreInfo> List<T> getStoresByWorkspace(WorkspaceInfo workspace,
             Class<T> clazz) {
-        return filterStores(user(), catalog.getStoresByWorkspace(workspace, clazz));
+        return filterStores(user(), delegate.getStoresByWorkspace(workspace, clazz));
     }
 
     public WorkspaceInfo getWorkspace(String id) {
-        return checkAccess(user(), catalog.getWorkspace(id));
+        return checkAccess(user(), delegate.getWorkspace(id));
     }
 
     public WorkspaceInfo getWorkspaceByName(String name) {
-        return checkAccess(user(), catalog.getWorkspaceByName(name));
+        return checkAccess(user(), delegate.getWorkspaceByName(name));
     }
 
     public List<WorkspaceInfo> getWorkspaces() {
-        return filterWorkspaces(user(), catalog.getWorkspaces());
+        return filterWorkspaces(user(), delegate.getWorkspaces());
     }
 
     // -------------------------------------------------------------------
@@ -367,7 +354,7 @@ public class SecureCatalogImpl implements SecureCatalog {
      */
     protected <T extends NamespaceInfo> T checkAccess(Authentication user, T ns) {
         // route the security check thru the associated workspace info
-        WorkspaceInfo info = checkAccess(user, catalog.getWorkspace(ns.getPrefix()));
+        WorkspaceInfo info = checkAccess(user, delegate.getWorkspace(ns.getPrefix()));
         if (info == null)
             return null;
         else
@@ -515,25 +502,25 @@ public class SecureCatalogImpl implements SecureCatalog {
     
     LayerGroupInfo unwrap(LayerGroupInfo layerGroup) {
         if(layerGroup instanceof ReadOnlyLayerGroupInfo)
-            return WrapperUtils.deepUnwrap((ReadOnlyLayerGroupInfo) layerGroup);
+            return ((ReadOnlyLayerGroupInfo) layerGroup).unwrap(LayerGroupInfo.class);
         return layerGroup;
     }
     
     LayerInfo unwrap(LayerInfo layer) {
         if(layer instanceof ReadOnlyLayerInfo)
-            return WrapperUtils.deepUnwrap((ReadOnlyLayerInfo) layer);
+            return ((ReadOnlyLayerInfo) layer).unwrap(LayerInfo.class);
         return layer;
     }
     
     ResourceInfo unwrap(ResourceInfo info) {
         if(info instanceof ReadOnlyFeatureTypeInfo)
-            return WrapperUtils.deepUnwrap((ReadOnlyFeatureTypeInfo) info);
+            return ((ReadOnlyFeatureTypeInfo) info).unwrap(ResourceInfo.class);
         return info;
     }
     
     StoreInfo unwrap(StoreInfo info) {
         if(info instanceof ReadOnlyDataStoreInfo)
-            return WrapperUtils.deepUnwrap((ReadOnlyDataStoreInfo) info);
+            return ((ReadOnlyDataStoreInfo) info).unwrap(StoreInfo.class);
         return info;
     }
 
@@ -544,162 +531,162 @@ public class SecureCatalogImpl implements SecureCatalog {
     // -------------------------------------------------------------------
 
     public MapInfo getMap(String id) {
-        return catalog.getMap(id);
+        return delegate.getMap(id);
     }
 
     public MapInfo getMapByName(String name) {
-        return catalog.getMapByName(name);
+        return delegate.getMapByName(name);
     }
 
     public List<MapInfo> getMaps() {
-        return catalog.getMaps();
+        return delegate.getMaps();
     }
 
     public void add(LayerGroupInfo layerGroup) {
-        catalog.add(unwrap(layerGroup));
+        delegate.add(unwrap(layerGroup));
     }
 
     
 
     public void add(LayerInfo layer) {
-        catalog.add(unwrap(layer));
+        delegate.add(unwrap(layer));
     }
 
     public void add(MapInfo map) {
-        catalog.add(map);
+        delegate.add(map);
     }
 
     public void add(NamespaceInfo namespace) {
-        catalog.add(namespace);
+        delegate.add(namespace);
     }
 
     public void add(ResourceInfo resource) {
-        catalog.add(unwrap(resource));
+        delegate.add(unwrap(resource));
     }
 
     public void add(StoreInfo store) {
-        catalog.add(unwrap(store));
+        delegate.add(unwrap(store));
     }
 
     public void add(StyleInfo style) {
-        catalog.add(style);
+        delegate.add(style);
     }
 
     public void add(WorkspaceInfo workspace) {
-        catalog.add(workspace);
+        delegate.add(workspace);
     }
 
     public void addListener(CatalogListener listener) {
-        catalog.addListener(listener);
+        delegate.addListener(listener);
     }
 
     public void dispose() {
-        catalog.dispose();
+        delegate.dispose();
     }
 
     public CatalogFactory getFactory() {
-        return catalog.getFactory();
+        return delegate.getFactory();
     }
 
     public Collection<CatalogListener> getListeners() {
-        return catalog.getListeners();
+        return delegate.getListeners();
     }
 
     // TODO: why is resource pool being exposed???
     public ResourcePool getResourcePool() {
-        return catalog.getResourcePool();
+        return delegate.getResourcePool();
     }
 
     public StyleInfo getStyle(String id) {
-        return catalog.getStyle(id);
+        return delegate.getStyle(id);
     }
 
     public StyleInfo getStyleByName(String name) {
-        return catalog.getStyleByName(name);
+        return delegate.getStyleByName(name);
     }
 
     public List<StyleInfo> getStyles() {
-        return catalog.getStyles();
+        return delegate.getStyles();
     }
 
     public void remove(LayerGroupInfo layerGroup) {
-        catalog.remove(unwrap(layerGroup));
+        delegate.remove(unwrap(layerGroup));
     }
 
     public void remove(LayerInfo layer) {
-        catalog.remove(unwrap(layer));
+        delegate.remove(unwrap(layer));
     }
 
     public void remove(MapInfo map) {
-        catalog.remove(map);
+        delegate.remove(map);
     }
 
     public void remove(NamespaceInfo namespace) {
-        catalog.remove(namespace);
+        delegate.remove(namespace);
     }
 
     public void remove(ResourceInfo resource) {
-        catalog.remove(unwrap(resource));
+        delegate.remove(unwrap(resource));
     }
 
     public void remove(StoreInfo store) {
-        catalog.remove(unwrap(store));
+        delegate.remove(unwrap(store));
     }
 
     public void remove(StyleInfo style) {
-        catalog.remove(style);
+        delegate.remove(style);
     }
 
     public void remove(WorkspaceInfo workspace) {
-        catalog.remove(workspace);
+        delegate.remove(workspace);
     }
 
     public void removeListener(CatalogListener listener) {
-        catalog.removeListener(listener);
+        delegate.removeListener(listener);
     }
 
     public void save(LayerGroupInfo layerGroup) {
-        catalog.save(unwrap(layerGroup));
+        delegate.save(unwrap(layerGroup));
     }
 
     public void save(LayerInfo layer) {
-        catalog.save(unwrap(layer));
+        delegate.save(unwrap(layer));
     }
 
     public void save(MapInfo map) {
-        catalog.save(map);
+        delegate.save(map);
     }
 
     public void save(NamespaceInfo namespace) {
-        catalog.save(namespace);
+        delegate.save(namespace);
     }
 
     public void save(ResourceInfo resource) {
-        catalog.save(unwrap(resource));
+        delegate.save(unwrap(resource));
     }
 
     public void save(StoreInfo store) {
-        catalog.save(unwrap(store));
+        delegate.save(unwrap(store));
     }
 
     public void save(StyleInfo style) {
-        catalog.save(style);
+        delegate.save(style);
     }
 
     public void save(WorkspaceInfo workspace) {
-        catalog.save(workspace);
+        delegate.save(workspace);
     }
 
     public void setDefaultNamespace(NamespaceInfo defaultNamespace) {
-        catalog.setDefaultNamespace(defaultNamespace);
+        delegate.setDefaultNamespace(defaultNamespace);
     }
 
     public void setDefaultWorkspace(WorkspaceInfo workspace) {
-        catalog.setDefaultWorkspace(workspace);
+        delegate.setDefaultWorkspace(workspace);
     }
 
     public void setResourcePool(ResourcePool resourcePool) {
-        catalog.setResourcePool(resourcePool);
+        delegate.setResourcePool(resourcePool);
     }
 
 }

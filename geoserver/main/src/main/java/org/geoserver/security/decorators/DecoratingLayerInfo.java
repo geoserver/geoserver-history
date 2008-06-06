@@ -8,7 +8,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.catalog.Wrapper;
+import org.geoserver.catalog.impl.AbstractDecorator;
 
 /**
  * Delegates every method to the wrapped {@link LayerInfo}. Subclasses will
@@ -16,11 +16,10 @@ import org.geoserver.catalog.Wrapper;
  * 
  * @author Andrea Aime
  */
-public class DecoratingLayerInfo implements LayerInfo, Wrapper<LayerInfo> {
-    LayerInfo delegate;
+public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements LayerInfo {
 
     public DecoratingLayerInfo(LayerInfo delegate) {
-        this.delegate = delegate;
+        super(delegate);
     }
 
     public StyleInfo getDefaultStyle() {
@@ -90,13 +89,4 @@ public class DecoratingLayerInfo implements LayerInfo, Wrapper<LayerInfo> {
     public void setType(Type type) {
         delegate.setType(type);
     }
-
-    public boolean isWrapperFor(Class<?> iface) {
-        return LayerInfo.class.equals(iface);
-    }
-
-    public LayerInfo unwrap() {
-        return delegate;
-    }
-
 }

@@ -17,7 +17,7 @@ import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StoreInfo;
-import org.geoserver.catalog.Wrapper;
+import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -27,206 +27,196 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.ProgressListener;
 
 /**
- * Delegates every method to the wrapped feature type info. Subclasses will
+ * Delegates every method to the delegate feature type info. Subclasses will
  * override selected methods to perform their "decoration" job
  * 
  * @author Andrea Aime
  */
-public abstract class DecoratingFeatureTypeInfo implements FeatureTypeInfo,
-        Wrapper<FeatureTypeInfo> {
-    FeatureTypeInfo wrapped;
+public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<FeatureTypeInfo> implements FeatureTypeInfo {
 
     public DecoratingFeatureTypeInfo(FeatureTypeInfo info) {
-        this.wrapped = info;
-    }
-
-    public boolean isWrapperFor(Class<?> iface) {
-        return FeatureTypeInfo.class.equals(iface);
-    }
-
-    public FeatureTypeInfo unwrap() {
-        return wrapped;
+        super(info);
     }
 
     public FeatureSource getFeatureSource(ProgressListener listener, Hints hints)
             throws IOException {
-        return wrapped.getFeatureSource(listener, hints);
+        return delegate.getFeatureSource(listener, hints);
     }
 
     public DataStoreInfo getStore() {
-        return wrapped.getStore();
+        return delegate.getStore();
     }
 
     public String getAbstract() {
-        return wrapped.getAbstract();
+        return delegate.getAbstract();
     }
 
     public <T> T getAdapter(Class<T> adapterClass, Map<?, ?> hints) {
-        return wrapped.getAdapter(adapterClass, hints);
+        return delegate.getAdapter(adapterClass, hints);
     }
 
     public List<String> getAlias() {
-        return wrapped.getAlias();
+        return delegate.getAlias();
     }
 
     public List<AttributeTypeInfo> getAttributes() {
-        return wrapped.getAttributes();
+        return delegate.getAttributes();
     }
 
     public ReferencedEnvelope getBoundingBox() throws Exception {
-        return wrapped.getBoundingBox();
+        return delegate.getBoundingBox();
     }
 
     public Catalog getCatalog() {
-        return wrapped.getCatalog();
+        return delegate.getCatalog();
     }
 
     public CoordinateReferenceSystem getCRS() throws Exception {
-        return wrapped.getCRS();
+        return delegate.getCRS();
     }
 
     public String getDescription() {
-        return wrapped.getDescription();
+        return delegate.getDescription();
     }
 
     public SimpleFeatureType getFeatureType() throws IOException {
-        return wrapped.getFeatureType();
+        return delegate.getFeatureType();
     }
 
     public Filter getFilter() {
-        return wrapped.getFilter();
+        return delegate.getFilter();
     }
 
     public String getId() {
-        return wrapped.getId();
+        return delegate.getId();
     }
 
     public List<String> getKeywords() {
-        return wrapped.getKeywords();
+        return delegate.getKeywords();
     }
 
     public ReferencedEnvelope getLatLonBoundingBox() {
-        return wrapped.getLatLonBoundingBox();
+        return delegate.getLatLonBoundingBox();
     }
 
     public int getMaxFeatures() {
-        return wrapped.getMaxFeatures();
+        return delegate.getMaxFeatures();
     }
 
     public Map<String, Serializable> getMetadata() {
-        return wrapped.getMetadata();
+        return delegate.getMetadata();
     }
 
     public List<MetadataLinkInfo> getMetadataLinks() {
-        return wrapped.getMetadataLinks();
+        return delegate.getMetadataLinks();
     }
 
     public String getName() {
-        return wrapped.getName();
+        return delegate.getName();
     }
 
     public NamespaceInfo getNamespace() {
-        return wrapped.getNamespace();
+        return delegate.getNamespace();
     }
 
     public ReferencedEnvelope getNativeBoundingBox() {
-        return wrapped.getNativeBoundingBox();
+        return delegate.getNativeBoundingBox();
     }
 
     public CoordinateReferenceSystem getNativeCRS() {
-        return wrapped.getNativeCRS();
+        return delegate.getNativeCRS();
     }
 
     public String getNativeName() {
-        return wrapped.getNativeName();
+        return delegate.getNativeName();
     }
 
     public int getNumDecimals() {
-        return wrapped.getNumDecimals();
+        return delegate.getNumDecimals();
     }
 
     public String getPrefixedName() {
-        return wrapped.getPrefixedName();
+        return delegate.getPrefixedName();
     }
 
     public ProjectionPolicy getProjectionPolicy() {
-        return wrapped.getProjectionPolicy();
+        return delegate.getProjectionPolicy();
     }
 
     public String getSRS() {
-        return wrapped.getSRS();
+        return delegate.getSRS();
     }
 
     public String getTitle() {
-        return wrapped.getTitle();
+        return delegate.getTitle();
     }
 
     public boolean isEnabled() {
-        return wrapped.isEnabled();
+        return delegate.isEnabled();
     }
 
     public void setAbstract(String _abstract) {
-        wrapped.setAbstract(_abstract);
+        delegate.setAbstract(_abstract);
     }
 
     public void setDescription(String description) {
-        wrapped.setDescription(description);
+        delegate.setDescription(description);
     }
 
     public void setEnabled(boolean enabled) {
-        wrapped.setEnabled(enabled);
+        delegate.setEnabled(enabled);
     }
 
     public void setFilter(Filter filter) {
-        wrapped.setFilter(filter);
+        delegate.setFilter(filter);
     }
 
     public void setLatLonBoundingBox(ReferencedEnvelope box) {
-        wrapped.setLatLonBoundingBox(box);
+        delegate.setLatLonBoundingBox(box);
     }
 
     public void setMaxFeatures(int maxFeatures) {
-        wrapped.setMaxFeatures(maxFeatures);
+        delegate.setMaxFeatures(maxFeatures);
     }
 
     public void setName(String name) {
-        wrapped.setName(name);
+        delegate.setName(name);
     }
 
     public void setNamespace(NamespaceInfo namespace) {
-        wrapped.setNamespace(namespace);
+        delegate.setNamespace(namespace);
     }
 
     public void setNativeBoundingBox(ReferencedEnvelope box) {
-        wrapped.setNativeBoundingBox(box);
+        delegate.setNativeBoundingBox(box);
     }
 
     public void setNativeCRS(CoordinateReferenceSystem nativeCRS) {
-        wrapped.setNativeCRS(nativeCRS);
+        delegate.setNativeCRS(nativeCRS);
     }
 
     public void setNativeName(String nativeName) {
-        wrapped.setNativeName(nativeName);
+        delegate.setNativeName(nativeName);
     }
 
     public void setNumDecimals(int numDecimals) {
-        wrapped.setNumDecimals(numDecimals);
+        delegate.setNumDecimals(numDecimals);
     }
 
     public void setProjectionPolicy(ProjectionPolicy policy) {
-        wrapped.setProjectionPolicy(policy);
+        delegate.setProjectionPolicy(policy);
     }
 
     public void setSRS(String srs) {
-        wrapped.setSRS(srs);
+        delegate.setSRS(srs);
     }
 
     public void setStore(StoreInfo store) {
-        wrapped.setStore(store);
+        delegate.setStore(store);
     }
 
     public void setTitle(String title) {
-        wrapped.setTitle(title);
+        delegate.setTitle(title);
     }
 
 }

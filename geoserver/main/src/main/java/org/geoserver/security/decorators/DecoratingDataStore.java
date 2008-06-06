@@ -4,6 +4,7 @@ package org.geoserver.security.decorators;
 import java.io.IOException;
 import java.util.List;
 
+import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
@@ -24,11 +25,10 @@ import org.opengis.filter.Filter;
  * 
  * @author Andrea Aime - TOPP TODO: Move this class to gt2
  */
-public abstract class DecoratingDataStore implements DataStore {
-    DataStore delegate;
+public abstract class DecoratingDataStore extends AbstractDecorator<DataStore> implements DataStore {
     
     public DecoratingDataStore(DataStore delegate) {
-        this.delegate = delegate;
+        super(delegate);
     }
 
     public void createSchema(SimpleFeatureType featureType) throws IOException {
