@@ -24,18 +24,18 @@ public class DescribeProcessResponse extends Response
     {
         super(TransformerBase.class);
     }
-    
+
     public boolean canHandle(Operation operation)
     {
         // is this a wps capabilities request?
         return "DescribeProcess".equalsIgnoreCase(operation.getId()) && operation.getService().getId().equals("wps");
     }
-    
+
     public String getMimeType(Object value, Operation operation)
     {
         return "application/xml";
     }
-    
+
     public void write(Object value, OutputStream output, Operation operation) throws IOException
     {
         TransformerBase tx = (TransformerBase)value;

@@ -24,7 +24,7 @@ public class IdentifierKvpParser extends KvpParser
     public IdentifierKvpParser()
     {
         super("identifier", CodeType.class);
-        
+
         this.setService("wps");
     }
 
@@ -34,7 +34,7 @@ public class IdentifierKvpParser extends KvpParser
         List<CodeType> values = new ArrayList<CodeType>();
 
         Ows11Factory owsFactory = new Ows11FactoryImpl();
-        
+
         for(String str : (List<String>)KvpUtils.readFlat(value))
         {
             CodeType codeType = owsFactory.createCodeType();

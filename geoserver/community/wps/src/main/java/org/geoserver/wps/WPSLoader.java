@@ -16,7 +16,7 @@ import org.geoserver.platform.GeoServerResourceLoader;
 
 /**
  * Service loader for the Web Processing Service.
- * 
+ *
  * @author Lucas Reed, Refractions Research
  * @author Justin Deoliveira, The Open Planning Project
  *
@@ -30,11 +30,11 @@ public class WPSLoader extends XStreamServiceLoader
     public String getServiceId() {
         return "wps";
     }
-    
+
     protected ServiceInfo createServiceFromScratch(GeoServer gs) {
         WPSInfoImpl wps = new WPSInfoImpl();
         wps.setId( getServiceId() );
-        
+
         return wps;
     }
 }

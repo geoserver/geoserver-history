@@ -11,25 +11,21 @@ package org.geoserver.wps;
 
 import net.opengis.wps.DescribeProcessType;
 
-import org.vfny.geoserver.global.Data;
-
 public class DescribeProcess
 {
-    public WPS  wps;
-    public Data data;
+    public WPS wps;
 
-    public DescribeProcess(WPS wps, Data data)
+    public DescribeProcess(WPS wps)
     {
         this.wps  = wps;
-        this.data = data;
     }
 
     public DescribeProcessTransformer run(DescribeProcessType request)
     {
-        DescribeProcessTransformer describeProcessTransformer = new DescribeProcessTransformer.WPS1_0(this.wps, this.data);
+        DescribeProcessTransformer describeProcessTransformer = new DescribeProcessTransformer.WPS1_0(this.wps);
 
         describeProcessTransformer.setEncoding(this.wps.getCharSet());
-        
+
         return describeProcessTransformer;
     }
 }

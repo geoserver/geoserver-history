@@ -9,46 +9,55 @@
 
 package org.geoserver.wps;
 
+import java.util.Map;
+
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.global.Data;
 import org.xml.sax.ContentHandler;
+
+import net.opengis.wps.ExecuteType;
 
 public abstract class ExecuteTransformer extends TransformerBase
 {
     protected WPS  wps;
-    protected Data data;
-    
-    public ExecuteTransformer(WPS wps, Data data)
+
+    public ExecuteTransformer(WPS wps)
     {
         super();
-        
+
         this.wps  = wps;
-        this.data = data;
     }
-    
+
     public static class WPS1_0 extends ExecuteTransformer
     {
-        public WPS1_0(WPS wps, Data data)
+        public WPS1_0(WPS wps)
         {
-            super(wps, data);
+            super(wps);
         }
 
         public Translator createTranslator(ContentHandler handler)
         {
             return new ExecuteTranslator1_0(handler);
         }
-        
+
         public class ExecuteTranslator1_0 extends TranslatorSupport
         {
             public ExecuteTranslator1_0(ContentHandler handler)
             {
                 super(handler, null, null);
             }
-            
+
             public void encode(Object object) throws IllegalArgumentException
             {
-                // TODO
+            	// TODO XXX
+
+            	Executor executor = new Executor((ExecuteType)object);
+
+            	Map<String, Object> outputs = executor.execute();
+            	
+            	start("wps:ExecuteResponse");
+
+            	end("wps:ExecuteResponse");
             }
         }
     }
