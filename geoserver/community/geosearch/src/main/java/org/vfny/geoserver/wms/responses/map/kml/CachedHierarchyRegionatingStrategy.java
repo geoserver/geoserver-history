@@ -34,6 +34,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Abstract class to provide 'automagic' caching of a TileLevel hierarchy and use it for a 
@@ -143,6 +144,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
         Statement statement = connection.createStatement();
         String sql = "SELECT fid FROM " + tableName + " WHERE x = " + coords[0] + " AND y = " + coords[1] + " AND z = " + coords[2];
+        System.out.println(sql);
         statement.execute( sql );
 
         ResultSet results = statement.getResultSet();
@@ -188,7 +190,9 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         try{
             while (it.hasNext()){
                 SimpleFeature f = it.next();
-                if (!parents.contains(f.getID())){
+                if (!parents.contains(f.getID()) &&
+                    containsCentroid(bbox, (Geometry)f.getDefaultGeometry())
+                    ){
                     pq.add(f);
                     if (pq.size() > myFeaturesPerTile) pq.poll();
                 }
@@ -203,6 +207,16 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             for (ReferencedEnvelope box : quadSplit(bbox)) buildDB(st, tablename, source, box, parents);
             for (SimpleFeature feature : pq) parents.remove(feature.getID());
         }
+    }
+
+    private boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom){
+        Envelope e = geom.getEnvelopeInternal();
+        double centerX = (e.getMaxX() + e.getMinX()) / 2;
+        double centerY = (e.getMaxY() + e.getMinY()) / 2;
+
+        return bbox.contains(centerX, centerY) 
+            && centerX != bbox.getMinX() 
+            && centerY != bbox.getMinY();
     }
 
     private FeatureCollection getFeatures(FeatureSource source, ReferencedEnvelope bbox) throws IOException{
@@ -225,6 +239,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         long[] coords = getTileCoords(bbox, getWorldBounds());
         try{
             String SQL = "INSERT INTO " + tablename + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + f.getID() + "\' )"; 
+            System.out.println(SQL);
             st.execute(SQL);
         } catch (SQLException sqle){
             LOGGER.log(Level.SEVERE, "Problem while storing regionated hierarchy in database: ", sqle);

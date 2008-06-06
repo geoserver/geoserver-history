@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.io.IOException;
 
-public class GeoSearchKMLTest extends GeoServerTestSupport {
+public class GeoSearchKMLTest extends RegionatingTestSupport {
     public void testOutput() throws Exception {
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
@@ -27,6 +27,9 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
         assertEquals("kml", document.getDocumentElement().getTagName());;
     }
 
+    /**
+     * Test that requests regionated by data actually return stuff.
+     */
     public void testDataRegionator() throws Exception{
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
@@ -45,6 +48,9 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
         assertEquals(1, westCount);
     }
 
+     /**
+      * Test that requests regionated by geometry actually return stuff.
+      */
      public void testGeometryRegionator() throws Exception{
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
@@ -53,6 +59,25 @@ public class GeoSearchKMLTest extends GeoServerTestSupport {
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&height=1024&width=1024&srs=EPSG:4326" +  
             "&format_options=regionateBy:geo";
+        Document document = getAsDOM(path + "&bbox=-180,-90,0,90");
+        assertEquals("kml", document.getDocumentElement().getTagName());
+        assertEquals(1, document.getDocumentElement().getElementsByTagName("Placemark").getLength());
+
+        assertStatusCodeForGet(204, path + "&bbox=0,-90,180,90");
+    }
+
+    /**
+     * Test whether geometries that cross tiles get put into both of them.
+     */
+    public void testBigGeometries() throws Exception {
+        final String path = 
+            "wms?request=getmap&service=wms&version=1.1.1" + 
+            "&format=" + KMLMapProducerFactory.MIME_TYPE + 
+            "&layers=" + CENTERED_POLY.getPrefix() + ":" + CENTERED_POLY.getLocalPart() + 
+            "&styles=" + 
+            "&height=1024&width=1024&srs=EPSG:4326" +  
+            "&format_options=regionateBy:geo";
+
         Document document = getAsDOM(path + "&bbox=-180,-90,0,90");
         assertEquals("kml", document.getDocumentElement().getTagName());
         assertEquals(1, document.getDocumentElement().getElementsByTagName("Placemark").getLength());
