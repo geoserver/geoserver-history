@@ -7,6 +7,7 @@
     <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="gwcCacheFactory"/>
     <constructor-arg value="image/png,image/png8,image/jpeg,image/gif,geosearch-kml"/>
     <constructor-arg value="4x4"/>
+    <constructor-arg value="format_options=regionateby:auto"/>
   </bean>
 
   <!-- controller for handling all incoming requests -->
