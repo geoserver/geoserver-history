@@ -24,6 +24,7 @@ public abstract class RegionatingTestSupport extends GeoServerTestSupport {
     public static QName STACKED_FEATURES = new QName(MockData.SF_URI, "Stacked", MockData.SF_PREFIX);
     public static QName DISPERSED_FEATURES = new QName(MockData.SF_URI, "Dispersed", MockData.SF_PREFIX);
     public static QName TILE_TESTS = new QName(MockData.SF_URI, "Tiles", MockData.SF_PREFIX);
+    public static QName CENTERED_POLY = new QName(MockData.SF_URI, "CenteredPoly", MockData.SF_PREFIX);
 
     public void populateDataDirectory(MockData data) throws Exception{
         super.populateDataDirectory(data);
@@ -41,6 +42,11 @@ public abstract class RegionatingTestSupport extends GeoServerTestSupport {
         data.addPropertiesType(
                 TILE_TESTS,
                 getClass().getResource("TileTests.properties"),
+                Collections.EMPTY_MAP
+                );
+        data.addPropertiesType(
+                CENTERED_POLY,
+                getClass().getResource("CenteredPoly.properties"),
                 Collections.EMPTY_MAP
                 );
     }
