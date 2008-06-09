@@ -115,27 +115,22 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
                     mapLayer.getStyle(), featureType);
 
             String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
-            String attname = (String)mapContext.getRequest().getFormatOptions().get("regionateAttr");
             
-            
-            if (attname == null)
-                attname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateAttribute();
-
             if (("auto").equals(stratname))
                 stratname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateStrategy();
 
             if (stratname == null) {
                 // LOGGER.info("No regionating strategy specified, using default data-based strategy");
-                setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
+                setRegionatingStrategy(new SLDRegionatingStrategy());
             } else if (stratname.equalsIgnoreCase("sld")) {
-                setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
+                setRegionatingStrategy(new SLDRegionatingStrategy());
             } else if (stratname.equalsIgnoreCase("data")) { 
-                setRegionatingStrategy(new DataRegionatingStrategy(attname));
+                setRegionatingStrategy(new DataRegionatingStrategy());
             } else if (stratname.equalsIgnoreCase("geo")) { 
                 setRegionatingStrategy(new GeometryRegionatingStrategy());
             } else {
                 LOGGER.info("Bogus regionating strategy [" + stratname + "] specified, using default style-based strategy.");
-                setRegionatingStrategy(new SLDRegionatingStrategy(featureTypeStyles));
+                setRegionatingStrategy(new SLDRegionatingStrategy());
             }
             
             myStrategy.preProcess(mapContext, mapLayer);

@@ -3,21 +3,20 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
+import org.geotools.styling.Style;
 import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 public class SLDRegionatingStrategy implements RegionatingStrategy {
     private FeatureTypeStyle[] styles;
     private static Logger LOGGER  = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
-
-    public SLDRegionatingStrategy(FeatureTypeStyle[] styles){
-        this.styles = styles;
-    }
 
     static final double TOLERANCE = 1e-6;
 
@@ -26,6 +25,8 @@ public class SLDRegionatingStrategy implements RegionatingStrategy {
     public void preProcess(WMSMapContext con, MapLayer layer){
         scaleDenominator = 1; 
         // TODO: Perhaps we should actually do some calculations to figure this out? 
+        
+        styles = filterFeatureTypeStyles(layer.getStyle(), (SimpleFeatureType)layer.getFeatureSource().getSchema());
     }
 
     public boolean include(SimpleFeature feature){
@@ -115,6 +116,34 @@ public class SLDRegionatingStrategy implements RegionatingStrategy {
         }
 
         return (Rule[]) filtered.toArray(new Rule[filtered.size()]);
+    }
+ 
+    protected FeatureTypeStyle[] filterFeatureTypeStyles(Style style, SimpleFeatureType featureType) {
+        FeatureTypeStyle[] featureTypeStyles = style.getFeatureTypeStyles();
+
+        if ((featureTypeStyles == null) || (featureTypeStyles.length == 0)) {
+            return new FeatureTypeStyle[0];
+        }
+
+        ArrayList filtered = new ArrayList(featureTypeStyles.length);
+
+        for (int i = 0; i < featureTypeStyles.length; i++) {
+            FeatureTypeStyle featureTypeStyle = featureTypeStyles[i];
+            String featureTypeName = featureTypeStyle.getFeatureTypeName();
+
+            //does this style have any rules
+            if (featureTypeStyle.getRules() == null || featureTypeStyle.getRules().length == 0 ) {
+                continue;
+            }
+
+            //does this style apply to the feature collection
+            if (featureType.getTypeName().equalsIgnoreCase(featureTypeName)
+                    || FeatureTypes.isDecendedFrom(featureType, null, featureTypeName)) {
+                filtered.add(featureTypeStyle);
+            }
+        }
+
+        return (FeatureTypeStyle[]) filtered.toArray(new FeatureTypeStyle[filtered.size()]);
     }
 
     private boolean isWithinScale(Rule rule, double scaleDenominator){
