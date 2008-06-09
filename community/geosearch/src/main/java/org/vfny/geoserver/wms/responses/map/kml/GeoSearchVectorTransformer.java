@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
@@ -122,10 +123,9 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             if (("auto").equals(stratname))
                 stratname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateStrategy();
 
-            List<RegionatingStrategyFactory> strategies = new ArrayList<RegionatingStrategyFactory>();
-            strategies.add(new ReflectiveRegionatingStrategyFactory("sld", "org.vfny.geoserver.wms.responses.map.kml.SLDRegionatingStrategy"));
-            strategies.add(new ReflectiveRegionatingStrategyFactory("data", "org.vfny.geoserver.wms.responses.map.kml.DataRegionatingStrategy"));
-            strategies.add(new ReflectiveRegionatingStrategyFactory("geo", "org.vfny.geoserver.wms.responses.map.kml.GeometryRegionatingStrategy"));
+            List<RegionatingStrategyFactory> strategies = GeoServerExtensions.extensions(RegionatingStrategyFactory.class);
+            LOGGER.log(Level.FINE, strategies.size() + " strategies found from spring context");
+
             Iterator<RegionatingStrategyFactory> it = strategies.iterator();
             while (it.hasNext()){
                 RegionatingStrategyFactory factory = it.next();
