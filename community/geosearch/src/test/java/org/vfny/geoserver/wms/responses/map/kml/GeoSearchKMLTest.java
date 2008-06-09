@@ -70,6 +70,23 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
     }
 
     /**
+     * Test that when a bogus regionating strategy is requested things still work.
+     * TODO: Evaluate whether an error message should be returned instead.
+     */
+    public void testBogusRegionator() throws Exception {
+        final String path = 
+            "wms?request=getmap&service=wms&version=1.1.1" + 
+            "&format=" + KMLMapProducerFactory.MIME_TYPE + 
+            "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
+            "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
+            "&height=1024&width=1024&srs=EPSG:4326" +  
+            "&format_options=regionateBy:bogus";
+         Document document = getAsDOM(path + "&bbox=0,-90,180,90");
+         assertEquals("kml", document.getDocumentElement().getTagName());
+    }
+
+
+    /**
      * Test whether geometries that cross tiles get put into both of them.
      */
     public void testBigGeometries() throws Exception {
