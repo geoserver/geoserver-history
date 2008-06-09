@@ -46,4 +46,14 @@
     <constructor-arg ref="catalog"/>
 </bean>
 
+<bean id="DataRegionatingStrategy"
+    class="org.vfny.geoserver.wms.responses.map.kml.DataRegionatingStrategy"
+/>
+<bean id="GeometryRegionatingStrategy"
+    class="org.vfny.geoserver.wms.responses.map.kml.GeometryRegionatingStrategy"
+/>
+<bean id="SLDRegionatingStrategy"
+    class="org.vfny.geoserver.wms.responses.map.kml.SLDRegionatingStrategy"
+/>
+
 </beans>

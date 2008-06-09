@@ -57,21 +57,23 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
     private Comparator<SimpleFeature> myComparator;
     private String myAttributeName;
 
-    /**
-     * Create a data regionating strategy that uses the specified attribute.
-     * @param attname the name of the attribute to use.  The attribute must be numeric.
-     */
-    public DataRegionatingStrategy(String attname){
-        myAttributeName = attname;
-        myComparator = new DataComparator();
+    public DataRegionatingStrategy(){
     }
 
     protected String findCacheTable(WMSMapContext con, MapLayer layer){
+        myAttributeName = (String)con.getRequest().getFormatOptions().get("regionateAttr");
+        if (myAttributeName == null)
+            myAttributeName = 
+                con.getRequest().getWMS().getData().getFeatureTypeInfo(
+                        layer.getFeatureSource().getSchema().getName()
+                        ).getRegionateAttribute();
+
+        myComparator = new DataComparator();
         return super.findCacheTable(con, layer) + "_" + myAttributeName;
     }
 
     public Comparator<SimpleFeature> getComparator() {
-        return new DataComparator();
+        return myComparator;
     }
 
     private class DataComparator implements Comparator<SimpleFeature>{
