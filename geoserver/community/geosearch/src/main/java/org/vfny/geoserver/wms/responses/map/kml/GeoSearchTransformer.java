@@ -12,10 +12,8 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 
 public class GeoSearchTransformer extends KMLTransformer {
-    Data catalog;
 
-    public GeoSearchTransformer(Data catalog) {
-        this.catalog = catalog;
+    public GeoSearchTransformer() {
     }
 
     public Translator createTranslator(ContentHandler handler){
@@ -29,7 +27,7 @@ public class GeoSearchTransformer extends KMLTransformer {
 
         protected KMLVectorTransformer createVectorTransformer(WMSMapContext mapContext,
                 MapLayer layer){
-            return new GeoSearchVectorTransformer(mapContext, layer, catalog);
+            return new GeoSearchVectorTransformer(mapContext, layer);
         }
     }
 }

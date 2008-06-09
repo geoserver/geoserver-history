@@ -16,7 +16,6 @@ public class GeoSearchMapProducerFactory implements GetMapProducerFactorySpi {
     Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
 
     public GeoSearchMapProducerFactory(Data catalog){
-        this.catalog = catalog;
         LOG.info("Created a " + getClass() + ".");
 
     }
@@ -44,9 +43,6 @@ public class GeoSearchMapProducerFactory implements GetMapProducerFactorySpi {
     */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(PRODUCE_TYPE);
 
-    /** catalog */
-    Data catalog;
-    
     public boolean canProduce(String mapFormat) {
         return PRODUCE_TYPE.equals(mapFormat) || MIME_TYPE.equals(mapFormat)
             || mapFormat.startsWith(FORMAT);
@@ -55,7 +51,7 @@ public class GeoSearchMapProducerFactory implements GetMapProducerFactorySpi {
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
             if (canProduce(mapFormat)) {
-                return new GeoSearchMapProducer(mapFormat, MIME_TYPE, catalog);
+                return new GeoSearchMapProducer(mapFormat, MIME_TYPE);
             } else {
                 System.out.println("Can't produce GeoSearchMapProducer!");
             }
