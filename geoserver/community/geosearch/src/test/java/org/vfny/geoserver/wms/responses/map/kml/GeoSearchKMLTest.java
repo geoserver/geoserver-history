@@ -2,8 +2,11 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import org.geoserver.test.GeoServerTestSupport;
 import org.geoserver.data.test.MockData;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpServletRequest;
@@ -83,5 +86,41 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
         assertEquals(1, document.getDocumentElement().getElementsByTagName("Placemark").getLength());
 
         assertStatusCodeForGet(204, path + "&bbox=0,-90,180,90");
+    }
+
+    /**
+     * Test whether specifying different regionating strategies changes the results.
+     */
+    public void testStrategyChangesStuff() throws Exception {
+        final String path = 
+            "wms?request=getmap&service=wms&version=1.1.1" + 
+            "&format=" + KMLMapProducerFactory.MIME_TYPE + 
+            "&layers=" + TILE_TESTS.getPrefix() + ":" + TILE_TESTS.getLocalPart() + 
+            "&bbox=-180,-90,0,90&styles=" + 
+            "&height=1024&width=1024&srs=EPSG:4326";
+
+        FeatureTypeInfo fti = getFeatureTypeInfo(TILE_TESTS);
+        fti.setRegionateFeatureLimit(2);
+
+        Document geo = getAsDOM(path + "&format_options=regionateBy:geo");
+        assertEquals("kml", geo.getDocumentElement().getTagName());
+
+        NodeList geoPlacemarks = geo.getDocumentElement().getElementsByTagName("Placemark");
+        assertEquals(2, geoPlacemarks.getLength());
+
+        Document data = getAsDOM(path + "&format_options=regionateBy:data;regionateAttr:z");
+        assertEquals("kml", data.getDocumentElement().getTagName());
+
+        NodeList dataPlacemarks = data.getDocumentElement().getElementsByTagName("Placemark");
+        assertEquals(2, dataPlacemarks.getLength());
+
+        for (int i = 0; i < geoPlacemarks.getLength(); i++){
+            String geoName = ((Element)geoPlacemarks.item(i)).getAttribute("id");
+            String dataName = ((Element)dataPlacemarks.item(i)).getAttribute("id");
+
+            assertTrue(geoName + " and " + dataName + " should not be the same!", 
+                    !geoName.equals(dataName)
+                    );
+        }
     }
 }
