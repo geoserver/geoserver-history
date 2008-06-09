@@ -33,12 +33,9 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
     Logger LOGGER = org.geotools.util.logging.Logging
         .getLogger("org.geoserver.geosearch");
 
-    Data catalog;
-
     public GeoSearchVectorTransformer(WMSMapContext mapContext,
-            MapLayer mapLayer, Data catalog) {
+            MapLayer mapLayer) {
         super(mapContext, mapLayer);
-        this.catalog = catalog;
     }
 
     public Translator createTranslator(ContentHandler handler) {
@@ -60,6 +57,7 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
         public void encode(Object o) throws IllegalArgumentException {
             FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) o;
             SimpleFeatureType featureType = features.getSchema();
+            Data catalog = mapContext.getRequest().getWMS().getData(); 
 
             if (isStandAlone()) {
                 start("kml");
@@ -291,7 +289,7 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
 
         private String getFeatureTypeURL() throws IOException {
             String nsUri = mapLayer.getFeatureSource().getSchema().getName().getNamespaceURI();
-            NameSpaceInfo ns = catalog.getNameSpaceFromURI(nsUri);
+            NameSpaceInfo ns = mapContext.getRequest().getWMS().getData().getNameSpaceFromURI(nsUri);
             String featureTypeName = mapLayer.getFeatureSource().getSchema().getName().getLocalPart();
             GetMapRequest request = mapContext.getRequest();
             
