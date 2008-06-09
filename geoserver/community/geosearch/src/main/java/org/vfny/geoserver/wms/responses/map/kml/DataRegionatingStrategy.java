@@ -54,6 +54,7 @@ import com.vividsolutions.jts.geom.Geometry;
 public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy {
 
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
+    private Comparator<SimpleFeature> myComparator;
     private String myAttributeName;
 
     /**
@@ -62,6 +63,7 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
      */
     public DataRegionatingStrategy(String attname){
         myAttributeName = attname;
+        myComparator = new DataComparator();
     }
 
     protected String findCacheTable(WMSMapContext con, MapLayer layer){
