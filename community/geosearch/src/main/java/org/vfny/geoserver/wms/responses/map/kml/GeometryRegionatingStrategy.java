@@ -24,16 +24,17 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public class GeometryRegionatingStrategy extends CachedHierarchyRegionatingStrategy{
     Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
+    private Comparator<SimpleFeature> myComparator = new GeometryComparator();
 
     protected String findCacheTable(WMSMapContext con, MapLayer layer){
         return super.findCacheTable(con, layer) + "_geometry_regionator";
     }
 
     public Comparator<SimpleFeature> getComparator(){
-        return new GeometryComparator();
+        return myComparator;
     }
 
-    private class GeometryComparator implements Comparator<SimpleFeature> {
+    private static class GeometryComparator implements Comparator<SimpleFeature> {
         public int compare(SimpleFeature a, SimpleFeature b){
             double valueA = findValue(a);
             double valueB = findValue(b);

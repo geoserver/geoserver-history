@@ -21,6 +21,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
@@ -29,6 +30,7 @@ import org.opengis.filter.FilterFactory2;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.ReferenceIdentifier;
+import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -77,17 +79,24 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     }
 
     private void populateDB(WMSMapContext con, MapLayer layer){
+        Connection connection;
+        Statement statement;
         try{
             Class.forName("org.h2.Driver");
             String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
-            Connection connection = 
+            connection = 
                 DriverManager.getConnection(
-                    "jdbc:h2:file:" + dataDir + "/h2database/regionate","geoserver", "geopass"
+                    "jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
                     );
+            statement = connection.createStatement();
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Couldn't connect to embedded h2 database.", e);
+            return;
+        }
 
+        try{
             String tableName = findCacheTable(con, layer);
 
-            Statement statement = connection.createStatement();
             statement.execute("DROP TABLE IF EXISTS " + tableName);
             statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar (50))");
             statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
@@ -128,29 +137,60 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             connection.close();
         } catch (Exception e){
             LOGGER.log(Level.WARNING, "Unable to store range information in database.", e);
+        } finally {
+            try{
+                statement.close(); 
+            } catch (SQLException sqle) {
+                LOGGER.log(Level.SEVERE, "Error while closing connection to h2 database.", sqle);
+            }
+            try{
+                connection.close();
+            } catch (SQLException sqle) {
+                LOGGER.log(Level.SEVERE, "Error while closing connection to h2 database.", sqle);
+            }
         }
     }
 
-    private Set getRangesFromDB(WMSMapContext con, MapLayer layer) throws Exception{
-        Class.forName("org.h2.Driver");
-        String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
-        Connection connection = 
-        	DriverManager.getConnection(
-        			"jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
-        			);
-        String tableName = findCacheTable(con, layer);
+    private Set<String> getRangesFromDB(WMSMapContext con, MapLayer layer) throws Exception{
+        Connection connection;
+        Statement statement;
+        Set<String> returnable = new TreeSet<String>();
+        try{
+            Class.forName("org.h2.Driver");
+            String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
+            connection = 
+                DriverManager.getConnection(
+                        "jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
+                        );
+            statement = connection.createStatement();
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Couldn't connect to embedded h2 database.", e);
+            throw e;
+        }
 
-        long[] coords = getTileCoords(con.getAreaOfInterest(), getWorldBounds());
+        try{
+            String tableName = findCacheTable(con, layer);
 
-        Statement statement = connection.createStatement();
-        String sql = "SELECT fid FROM " + tableName + " WHERE x = " + coords[0] + " AND y = " + coords[1] + " AND z = " + coords[2];
-        System.out.println(sql);
-        statement.execute( sql );
+            long[] coords = getTileCoords(con.getAreaOfInterest(), getWorldBounds());
 
-        ResultSet results = statement.getResultSet();
-        Set returnable = new TreeSet();
-        while (results.next()){
-            returnable.add(results.getString(1));
+            String sql = "SELECT fid FROM " + tableName + " WHERE x = " + coords[0] + " AND y = " + coords[1] + " AND z = " + coords[2];
+            statement.execute( sql );
+
+            ResultSet results = statement.getResultSet();
+            while (results.next()){
+                returnable.add(results.getString(1));
+            }
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException sqle){
+                LOGGER.log(Level.SEVERE, "Error while closing connection to h2 database.", sqle);
+            }
+            try {
+                connection.close();
+            } catch (SQLException sqle) {
+                LOGGER.log(Level.SEVERE, "Error while closing connection to h2 database.", sqle);
+            }
         }
 
         return returnable;
@@ -191,8 +231,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             while (it.hasNext()){
                 SimpleFeature f = it.next();
                 if (!parents.contains(f.getID()) &&
-                    containsCentroid(bbox, (Geometry)f.getDefaultGeometry())
-                    ){
+                        containsCentroid(bbox, (Geometry)f.getDefaultGeometry(), source.getBounds().getCoordinateReferenceSystem())
+                   ) {
                     pq.add(f);
                     if (pq.size() > myFeaturesPerTile) pq.poll();
                 }
@@ -209,14 +249,31 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         }
     }
 
-    private boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom){
-        Envelope e = geom.getEnvelopeInternal();
+    private boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom, CoordinateReferenceSystem nativeCRS){
+        Envelope e = convertBBoxFromLatLon(geom.getEnvelopeInternal(), nativeCRS);
         double centerX = (e.getMaxX() + e.getMinX()) / 2;
         double centerY = (e.getMaxY() + e.getMinY()) / 2;
 
         return bbox.contains(centerX, centerY) 
             && centerX != bbox.getMinX() 
             && centerY != bbox.getMinY();
+    }
+    
+    private Envelope convertBBoxFromLatLon(Envelope bbox, CoordinateReferenceSystem nativeCRS) {
+        CoordinateReferenceSystem latLon = getWorldBounds().getCoordinateReferenceSystem();;
+
+        Envelope env = bbox;
+        if (!CRS.equalsIgnoreMetadata(latLon, nativeCRS)){
+            try{
+            MathTransform xform = CRS.findMathTransform(nativeCRS, latLon, true);
+            env = JTS.transform(bbox, null, xform, 10); // convert databbox to native CRS
+            } catch (Exception e) {
+                // default to provided envelope
+                LOGGER.log(Level.WARNING, "Couldn't transform bbox!!", e);
+            }
+        } 
+
+        return env;
     }
 
     private FeatureCollection getFeatures(FeatureSource source, ReferencedEnvelope bbox) throws IOException{
@@ -239,7 +296,6 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         long[] coords = getTileCoords(bbox, getWorldBounds());
         try{
             String SQL = "INSERT INTO " + tablename + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + f.getID() + "\' )"; 
-            System.out.println(SQL);
             st.execute(SQL);
         } catch (SQLException sqle){
             LOGGER.log(Level.SEVERE, "Problem while storing regionated hierarchy in database: ", sqle);
