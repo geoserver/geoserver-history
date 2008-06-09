@@ -20,13 +20,15 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.map.MapLayer;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.ProjectedCRS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
@@ -45,10 +47,10 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 	 * Set of parameters that we can ignore, since they are not part of the
 	 * OpenLayers WMS request
 	 */
-	private static final Set ignoredParameters;
+	private static final Set<String> ignoredParameters;
 
 	static {
-		ignoredParameters = new HashSet();
+		ignoredParameters = new HashSet<String>();
 		ignoredParameters.add("REQUEST");
 		ignoredParameters.add("TILED");
 		ignoredParameters.add("BBOX");
@@ -95,14 +97,11 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 			Template template = cfg.getTemplate("OpenLayersMapTemplate.ftl");
 			HashMap map = new HashMap();
 			map.put("context", mapContext);
+			map.put("pureCoverage", hasOnlyCoverages(mapContext));
 			map.put("request", mapContext.getRequest());
 			map.put("maxResolution", new Double(getMaxResolution(mapContext
 					.getAreaOfInterest())));
 
-			//We no longer use proxified urls for html stuff at the application level.
-            // String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(
-            // mapContext.getRequest().getBaseUrl(),
-            // mapContext.getRequest().getWMS().getGeoServer().getProxyBaseUrl());
 			String baseUrl = mapContext.getRequest().getBaseUrl();
 			map.put("baseUrl", canonicUrl(baseUrl));
 			map.put("parameters", getLayerParameter(mapContext.getRequest()
@@ -126,6 +125,26 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 	}
 
 	/**
+	 * Guesses if the map context is made only of coverage layers by looking
+	 * at the wrapping feature type. Ugly, if you come up with better means of doing
+	 * so, fix it.
+	 * @param mapContext
+	 * @return
+	 */
+	private boolean hasOnlyCoverages(WMSMapContext mapContext) {
+        for (MapLayer layer : mapContext.getLayers()) {
+            FeatureType schema = layer.getFeatureSource().getSchema();
+            boolean grid = schema.getName().getLocalPart().equals("GridCoverage")
+                    && schema.getProperty("geom") != null && schema.getProperty("grid") != null;
+            if(!grid)
+                return false;
+        }
+        return true;
+    }
+
+
+
+    /**
 	 * OL does support only a limited number of unit types, we have to try and
 	 * return one of those, otherwise the scale won't be shown. From the OL
 	 * guide: possible values are "degrees" (or "dd"), "m", "ft", "km", "mi",
@@ -186,8 +205,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 			}
 
 			// this won't work for multi-valued parameters, but we have none so
-			// far (they
-			// are common just in HTML forms...)
+			// far (they are common just in HTML forms...)
 			Map map = new HashMap();
 			map.put("name", paramName);
 			map.put("value", request.getParameter(paramName));
