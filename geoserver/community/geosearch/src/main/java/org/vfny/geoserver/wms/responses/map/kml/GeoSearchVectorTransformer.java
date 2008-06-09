@@ -3,6 +3,9 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.feature.FeatureCollection;
@@ -119,20 +122,23 @@ public class GeoSearchVectorTransformer extends KMLVectorTransformer {
             if (("auto").equals(stratname))
                 stratname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateStrategy();
 
-            if (stratname == null) {
-                // LOGGER.info("No regionating strategy specified, using default data-based strategy");
-                setRegionatingStrategy(new SLDRegionatingStrategy());
-            } else if (stratname.equalsIgnoreCase("sld")) {
-                setRegionatingStrategy(new SLDRegionatingStrategy());
-            } else if (stratname.equalsIgnoreCase("data")) { 
-                setRegionatingStrategy(new DataRegionatingStrategy());
-            } else if (stratname.equalsIgnoreCase("geo")) { 
-                setRegionatingStrategy(new GeometryRegionatingStrategy());
-            } else {
-                LOGGER.info("Bogus regionating strategy [" + stratname + "] specified, using default style-based strategy.");
+            List<RegionatingStrategyFactory> strategies = new ArrayList<RegionatingStrategyFactory>();
+            strategies.add(new ReflectiveRegionatingStrategyFactory("sld", "org.vfny.geoserver.wms.responses.map.kml.SLDRegionatingStrategy"));
+            strategies.add(new ReflectiveRegionatingStrategyFactory("data", "org.vfny.geoserver.wms.responses.map.kml.DataRegionatingStrategy"));
+            strategies.add(new ReflectiveRegionatingStrategyFactory("geo", "org.vfny.geoserver.wms.responses.map.kml.GeometryRegionatingStrategy"));
+            Iterator<RegionatingStrategyFactory> it = strategies.iterator();
+            while (it.hasNext()){
+                RegionatingStrategyFactory factory = it.next();
+                if (factory.canHandle(stratname)){
+                    setRegionatingStrategy(factory.createStrategy());
+                    break;
+                }
+            }
+
+            if (myStrategy == null){
                 setRegionatingStrategy(new SLDRegionatingStrategy());
             }
-            
+
             myStrategy.preProcess(mapContext, mapLayer);
 
             // encode the schemas (kml 2.2)
