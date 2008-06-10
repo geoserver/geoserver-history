@@ -1,6 +1,8 @@
 package org.geoserver.catalog;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
@@ -47,4 +49,19 @@ public interface LayerGroupInfo {
      * Sets the bounds for the base map.
      */
     void setBounds( ReferencedEnvelope bounds );
+    
+    /**
+     * A persistent map of metadata.
+     * <p>
+     * Data in this map is intended to be persisted. Common case of use is to
+     * have services associate various bits of data with a particular layer group. 
+     * An example might include caching information.
+     * </p>
+     * <p>
+     * The key values of this map are of type {@link String} and values are of
+     * type {@link Serializable}.
+     * </p>
+     * 
+     */
+    Map<String,Serializable> getMetadata();
 }
