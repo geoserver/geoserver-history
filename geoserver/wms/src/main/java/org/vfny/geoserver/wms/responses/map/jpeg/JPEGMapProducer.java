@@ -24,11 +24,6 @@ import java.util.logging.Logger;
  *
  */
 public final class JPEGMapProducer extends DefaultRasterMapProducer {
-    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette, boolean transparent) {
-        //there is no transparency in JPEG anyway :-)
-        transparent = false;
-        return super.prepareImage(width, height, palette, transparent);
-    }
     /** Logger. */
     private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(JPEGMapProducer.class.toString());
 
@@ -59,5 +54,15 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
     public String getContentDisposition() {
         // can be null
         return null;
+    }
+    
+    protected boolean supportsTransparency() {
+        // JPEG does not support output transparency
+        return false;
+    }
+    
+    protected boolean supportsPalette() {
+        // JPEG does not support a paletted output
+        return super.supportsPalette();
     }
 }

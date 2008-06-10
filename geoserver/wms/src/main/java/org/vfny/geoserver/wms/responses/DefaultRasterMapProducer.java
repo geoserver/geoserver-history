@@ -32,6 +32,7 @@ import org.geotools.feature.Feature;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
@@ -184,26 +185,30 @@ public abstract class DefaultRasterMapProducer extends
         String antialias = (String) request.getFormatOptions().get("antialias");
         if (antialias != null)
             antialias = antialias.toUpperCase();
+        
+        // check if the user asked for transparency, and if the output format does support it
+        final boolean transparent = mapContext.isTransparent() && supportsTransparency();
+        final Color bgColor = mapContext.getBgColor();
 
         // figure out a palette for buffered image creation
         IndexColorModel palette = null;
-        final InverseColorMapOp paletteInverter = mapContext
-                .getPaletteInverter();
-        final boolean transparent = mapContext.isTransparent();
-        final Color bgColor = mapContext.getBgColor();
-        if (paletteInverter != null && AA_NONE.equals(antialias)) {
-            palette = paletteInverter.getIcm();
-        } else if (AA_NONE.equals(antialias)) {
-            PaletteExtractor pe = new PaletteExtractor(transparent ? null
-                    : bgColor);
-            MapLayer[] layers = mapContext.getLayers();
-            for (int i = 0; i < layers.length; i++) {
-                pe.visit(layers[i].getStyle());
-                if (!pe.canComputePalette())
-                    break;
+        if(supportsPalette()) {
+            final InverseColorMapOp paletteInverter = mapContext
+                    .getPaletteInverter();
+            if (paletteInverter != null && AA_NONE.equals(antialias)) {
+                palette = paletteInverter.getIcm();
+            } else if (AA_NONE.equals(antialias)) {
+                PaletteExtractor pe = new PaletteExtractor(transparent ? null
+                        : bgColor);
+                MapLayer[] layers = mapContext.getLayers();
+                for (int i = 0; i < layers.length; i++) {
+                    pe.visit(layers[i].getStyle());
+                    if (!pe.canComputePalette())
+                        break;
+                }
+                if (pe.canComputePalette())
+                    palette = pe.getPalette();
             }
-            if (pe.canComputePalette())
-                palette = pe.getPalette();
         }
 
         // we use the alpha channel if the image is transparent or if the meta
@@ -359,6 +364,22 @@ public abstract class DefaultRasterMapProducer extends
     protected RenderedImage forceIndexed8Bitmask(RenderedImage originalImage) {
         return ImageUtils.forceIndexed8Bitmask(originalImage, mapContext
                 .getPaletteInverter());
+    }
+    
+    /**
+     * Returns true if this format supports transparency, false otherwise
+     * @return
+     */
+    protected boolean supportsTransparency() {
+        return true;
+    }
+    
+    /**
+     * Returns true if this format supports output palettes, false otherwise
+     * @return
+     */
+    protected boolean supportsPalette() {
+        return true;
     }
 
     /**
