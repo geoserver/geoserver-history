@@ -431,7 +431,7 @@ abstract public class KvpRequestReader {
      * @param fid
      * @return
      */
-    protected List readFidFilters(String fid) {
+    protected List readFidFilter(String fid) {
         List filters = new ArrayList();
         List unparsed;
         ListIterator i;
@@ -439,19 +439,18 @@ abstract public class KvpRequestReader {
         unparsed = readNested(fid);
         i = unparsed.listIterator();
 
+        HashSet set = new HashSet();
         while (i.hasNext()) {
             List ids = (List) i.next();
             ListIterator innerIterator = ids.listIterator();
 
             while (innerIterator.hasNext()) {
-                HashSet set = new HashSet();
                 set.add(factory.featureId((String) innerIterator.next()));
-
-                Id fidFilter = factory.id(set);
-                filters.add(fidFilter);
-                LOGGER.finest("added fid filter: " + fidFilter);
             }
         }
+        Id fidFilter = factory.id(set);
+        filters.add(fidFilter);
+        LOGGER.finest("added fid filter: " + fidFilter);
 
         return filters;
     }

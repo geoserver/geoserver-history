@@ -996,7 +996,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 						+ ", fid: " + rawFilter);
 			}
 
-			filters = readFidFilters(rawIdFilter);
+			filters = readFidFilter(rawIdFilter);
 		}
 
 		if ((rawCqlFilter != null) && !rawCqlFilter.equals("")) {
