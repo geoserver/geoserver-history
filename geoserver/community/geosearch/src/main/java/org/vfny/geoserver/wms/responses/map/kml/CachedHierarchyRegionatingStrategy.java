@@ -227,11 +227,18 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         PriorityQueue<SimpleFeature> pq = new PriorityQueue<SimpleFeature>(myFeaturesPerTile, getComparator());
         FeatureCollection col = getFeatures(source, bbox);
         Iterator<SimpleFeature> it = col.iterator();
+        ReferencedEnvelope reprojectedBBox;
+        try{
+            reprojectedBBox = bbox.transform(source.getBounds().getCoordinateReferenceSystem(), true);
+        } catch (Exception e){
+            reprojectedBBox = bbox;
+            LOGGER.log(Level.WARNING, "Couldn't transform bbox to native CRS; using lat/lon bbox instead.", e);
+        }
         try{
             while (it.hasNext()){
                 SimpleFeature f = it.next();
                 if (!parents.contains(f.getID()) &&
-                        containsCentroid(bbox, (Geometry)f.getDefaultGeometry(), source.getBounds().getCoordinateReferenceSystem())
+                        containsCentroid(reprojectedBBox, (Geometry)f.getDefaultGeometry())
                    ) {
                     pq.add(f);
                     if (pq.size() > myFeaturesPerTile) pq.poll();
@@ -249,8 +256,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         }
     }
 
-    private boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom, CoordinateReferenceSystem nativeCRS){
-        Envelope e = convertBBoxFromLatLon(geom.getEnvelopeInternal(), nativeCRS);
+    private boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom){
+        Envelope e = geom.getEnvelopeInternal();
         double centerX = (e.getMaxX() + e.getMinX()) / 2;
         double centerY = (e.getMaxY() + e.getMinY()) / 2;
 
