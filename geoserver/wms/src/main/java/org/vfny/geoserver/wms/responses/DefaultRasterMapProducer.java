@@ -257,7 +257,7 @@ public abstract class DefaultRasterMapProducer extends
 
 		Rectangle paintArea = new Rectangle(width, height);
 		RenderingHints hints = new RenderingHints(hintsMap);
-		renderer = new StreamingRenderer();
+		renderer = new ShapefileRenderer();
 		renderer.setContext(mapContext);
 		renderer.setJava2DHints(hints);
 		// shapefile renderer won't log rendering errors, sigh, we have to do it manually
