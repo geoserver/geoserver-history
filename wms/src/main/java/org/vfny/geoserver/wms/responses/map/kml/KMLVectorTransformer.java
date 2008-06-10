@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureTypes;
@@ -50,8 +51,11 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.expression.Expression;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
 import org.xml.sax.ContentHandler;
@@ -190,6 +194,11 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
     protected class KMLTranslator extends KMLTranslatorSupport {
         /**
+         * Store the regionating strategy being applied
+         */
+        private RegionatingStrategy myStrategy;
+
+        /**
          * Geometry transformer
          */
         Translator geometryTranslator;
@@ -208,21 +217,89 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             geometryTranslator = geometryTransformer.createTranslator(contentHandler);
         }
 
+        public void setRegionatingStrategy(RegionatingStrategy rs){
+            myStrategy = rs;
+        }
+
         public void encode(Object o) throws IllegalArgumentException {
             FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) o;
             SimpleFeatureType featureType = features.getSchema();
+            Data catalog = mapContext.getRequest().getWMS().getData();
 
             if (isStandAlone()) {
                 start( "kml" );
             }
 
             //start the root document, name it the name of the layer
-            start("Document");
+            start("Document", KMLUtils.attributes(
+                    new String[] {"xmlns:atom", "http://purl.org/atom/ns#" }));
             element("name", mapLayer.getTitle());
 
-            //get the styles for hte layer
+            String relLinks = (String)mapContext.getRequest().getFormatOptions().get("relLinks");
+            // Add prev/next links if requested
+            if (mapContext.getRequest().getMaxFeatures() != null &&
+                relLinks != null && relLinks.equalsIgnoreCase("true") ){
+
+                String linkbase = "";
+                try {
+                    linkbase = getFeatureTypeURL();
+                    linkbase += ".kml";
+                } catch (IOException ioe) {
+                    throw new RuntimeException(ioe);
+                }
+
+                int maxFeatures = mapContext.getRequest().getMaxFeatures();
+                int startIndex =
+                    (mapContext.getRequest().getStartIndex() == null)
+                    ? 0 
+                    : mapContext.getRequest().getStartIndex().intValue();
+                int prevStart = startIndex - maxFeatures;
+                int nextStart = startIndex + maxFeatures;
+
+                // Previous page, if any
+                if (prevStart >= 0) {
+                    String prevLink = linkbase + "?startindex=" 
+                        + prevStart + "&maxfeatures=" + maxFeatures;
+                    element("atom:link", null, KMLUtils.attributes(new String[] {
+                                "rel", "prev", "href", prevLink }));
+                    encodeSequentialNetworkLink(linkbase, prevStart,
+                            maxFeatures, "prev", "Previous page");
+                }
+
+                // Next page, if any
+                if (features.size() >= maxFeatures) {
+                    String nextLink = linkbase + "?startindex=" + nextStart
+                        + "&maxfeatures=" + maxFeatures;
+                    element("atom:link", null, KMLUtils.attributes(new String[] {
+                                "rel", "next", "href", nextLink }));
+                    encodeSequentialNetworkLink(linkbase, nextStart,
+                            maxFeatures, "next", "Next page");
+                }
+            }
+
+            //get the styles for the layer
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer.getStyle(),
                     featureType);
+
+            //Determine which strategy to use to regionate the results
+            String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
+            if (("auto").equals(stratname))
+                stratname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateStrategy();
+            List<RegionatingStrategyFactory> factories = GeoServerExtensions.extensions(RegionatingStrategyFactory.class);
+            Iterator<RegionatingStrategyFactory> it = factories.iterator();
+            while (it.hasNext()){
+                RegionatingStrategyFactory factory = it.next();
+                if (factory.canHandle(stratname)){
+                    setRegionatingStrategy(factory.createStrategy());
+                    break;
+                }
+            }
+
+            if (myStrategy == null){
+                setRegionatingStrategy(new SLDRegionatingStrategy());
+            }
+
+            myStrategy.preProcess(mapContext, mapLayer);
             
             // encode the schemas (kml 2.2)
             encodeSchemas(features);
@@ -237,6 +314,30 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             if ( isStandAlone() ) {
                 end( "kml" );
             }
+        }
+
+        /**
+         * 
+         * Encodes a networklink for previous or next document in a sequence
+         * 
+         * Note that in KML 2.2 atom:link is supported and may be better.
+         *
+         * @param linkbase the base fore creating URLs
+         * @param prevStart previous start value
+         * @param maxFeatures maximum number of features to return
+         * @param id attribute to use for this NetworkLink
+         * @param readableName goes into linkName
+         */
+        private void encodeSequentialNetworkLink(String linkbase, int prevStart,
+                int maxFeatures, String id, String readableName) {
+            String link = linkbase + "?startindex=" + prevStart
+                    + "&maxfeatures=" + maxFeatures;
+            start("NetworkLink", KMLUtils.attributes(new String[] {"id", id}));
+            element("linkName",readableName);
+            start("Link");
+            element("href",link);
+            end("Link");
+            end("NetworkLink");
         }
 
         /**
@@ -275,17 +376,9 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
         protected void encode(SimpleFeature feature, FeatureTypeStyle[] styles) {
             //get the feature id
-            String featureId = featureId(feature);
 
-            //start the document
-            //start("Document");
-
-//            element("name", featureId);
-//            element("title", mapLayer.getTitle());
-
-            //encode the styles, keep track of any labels provided by the 
-            // styles
-            if ( encodeStyle(feature, styles) ) {
+            if ( myStrategy.include(feature) ) {
+                encodeStyle(feature, styles);
                 encodePlacemark(feature,styles);    
             }
             
@@ -636,6 +729,25 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                         LOGGER.log( Level.WARNING, msg, e );
                 }
             }
+           
+            String selfLinks = (String)mapContext.getRequest().getFormatOptions().get("selfLinks");
+            if (selfLinks != null && selfLinks.equalsIgnoreCase("true")){
+                GetMapRequest request = mapContext.getRequest(); 
+                String link = "";
+
+                try {
+                    link = getFeatureTypeURL();
+                } catch (IOException ioe) {
+                    /* what could *possibly* go wrong? */
+                    throw new RuntimeException(ioe);
+                }
+                String[] id = feature.getID().split("\\.");
+
+                link = link + "/" + id[1] + ".kml";
+
+                element("atom:link", null, KMLUtils.attributes(new String[] {
+                            "rel", "self", "href", link }));
+            }
             
             //look at
             encodePlacemarkLookAt(centroid);
@@ -668,6 +780,37 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         protected void encodeExtendedData(SimpleFeature feature) {
             // code at the moment is in KML3VectorTransfomer
         }
+        
+        private String getFeatureTypeURL() throws IOException {
+            String nsUri = mapLayer.getFeatureSource().getSchema().getName().getNamespaceURI();
+            NameSpaceInfo ns = mapContext.getRequest().getWMS().getData().getNameSpaceFromURI(nsUri);
+            String featureTypeName = mapLayer.getFeatureSource().getSchema().getName().getLocalPart();
+            GetMapRequest request = mapContext.getRequest();
+            
+            //TODO The old code, commented out below, results in
+            // link = http://localhost:8080/geoserver/rest/geosearch/topp/states.kml?st
+            // due to getBaseUrl()
+            //
+            //String link = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+            //        request.getGeoServer().getProxyBaseUrl());
+            //
+
+            // If you prefer pretty code, this is a good point to close your eyes:
+            String baseUrl = request.getHttpServletRequest().getRequestURL().toString();
+            int searchIdx = baseUrl.indexOf("rest/geosearch");
+            if(searchIdx < 0) {
+//              LOGGER.log(Level.WARNING, "Unable to find rest/geosearch in URL " + baseUrl);
+            } else {
+                baseUrl = baseUrl.substring(0,searchIdx);
+            }
+            baseUrl = RequestUtils.proxifiedBaseURL(baseUrl,
+                    request.getGeoServer().getProxyBaseUrl());
+                    
+            return baseUrl + "rest/geosearch/" + ns.getPrefix()
+                    + "/" + featureTypeName;
+        }
+
+
 
         /**
          * Encodes a KML Placemark name from a feature by processing a

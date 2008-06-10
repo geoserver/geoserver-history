@@ -41,28 +41,4 @@
     <property name="catalog"><ref bean="catalog"/></property>
 </bean>
 
-<bean id="KMLGeosearchMapProducerFactory" 
-    class="org.vfny.geoserver.wms.responses.map.kml.GeoSearchMapProducerFactory">
-    <constructor-arg ref="catalog"/>
-</bean>
-
-<bean id="dataRegionator"
-    class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory"
->
-    <constructor-arg value="data"/>
-    <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.DataRegionatingStrategy"/>
-</bean>
-<bean id="geometryRegionator"
-    class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory"
->
-    <constructor-arg value="geo"/>
-    <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.GeometryRegionatingStrategy"/>
-</bean>
-<bean id="sldRegionator"
-    class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory"
->   
-    <constructor-arg value="sld"/>
-    <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.SLDRegionatingStrategy"/>
-</bean>
-
 </beans>
