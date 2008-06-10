@@ -23,16 +23,17 @@ import org.opengis.util.ProgressListener;
 import net.opengis.wps.ExecuteType;
 import net.opengis.wps.DataInputsType1;
 import net.opengis.wps.InputType;
-import net.opengis.wps.DataType;
 import net.opengis.ows11.CodeType;
 
 public class Executor
 {
 	private Process             process;
 	private Map<String, Object> inputs;
+	private WPS                 wps;
 	
-	public Executor(ExecuteType request)
+	public Executor(ExecuteType request, WPS wps)
 	{
+		this.wps                  = wps;
 		CodeType       identifier = request.getIdentifier();
 		ProcessFactory factory    = this.findProcessFactory(identifier);
 
@@ -55,13 +56,18 @@ public class Executor
 		this.process = factory.create();
 	}
 
+	private String packageUrl()
+	{
+		return "http://192.168.50.77:8080/geoserver/wps/";	// XXX HARDCODE
+	}
+	
 	public Map<String, Object> execute()
 	{
 		ProgressListener progress = null;
 
 		return process.execute(this.inputs, progress);
 	}
-	
+
 	private void checkInputs(Map<String, Parameter<?>> processParameters, DataInputsType1 requestInputs)
 	{
 		List<String> requestInputNames = new ArrayList<String>();

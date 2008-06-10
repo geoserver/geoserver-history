@@ -9,6 +9,8 @@
 
 package org.geoserver.wps;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,10 +39,12 @@ public class InputTransformer
 
 		for(InputType input : inputs)
 		{
+			String identifier = input.getIdentifier().getValue();
+
 			if (null != input.getData())
 			{
 				// Parse Data into java object
-				inputMap.put(input.getIdentifier().getValue(), this.parseInputData(input));
+				inputMap.put(identifier, this.parseInputData(input));
 
 				continue;
 			}
@@ -48,7 +52,7 @@ public class InputTransformer
 			if (null != input.getReference())
 			{
 				// Fetch external resource
-				inputMap.put(input.getIdentifier().getValue(), this.parseReferenceData(input.getReference()));
+				inputMap.put(identifier, this.parseReferenceData(identifier, input.getReference()));
 			}
 		}
 
@@ -59,12 +63,11 @@ public class InputTransformer
 	{
 		return this.parameters.get(name);
 	}
-	
+
 	private Object parseInputData(final InputType input)
 	{
-		Object output = null;
-
-		DataType data = input.getData();
+		Object   output = null;
+		DataType data   = input.getData();
 
 		if (null != data.getLiteralData())
 		{
@@ -86,12 +89,26 @@ public class InputTransformer
 		return output;
 	}
 
-	private Object parseReferenceData(final InputReferenceType reference)
+	private Object parseReferenceData(final String identifier, final InputReferenceType reference)
 	{
-		Object data = null;
+		Object    data   = null;
+		Parameter param  = this.getParameter(identifier);
+		String    schema = null;
+		URL       url    = null;
 
-		// XXX
-		
+		/*
+			0: Find schema.
+			1: Find the XML configuration in the map.
+			2: Download the document.
+		*/
+
+		try
+		{
+			url = new URL(reference.getHref());
+		} catch(MalformedURLException e) {
+			throw new WPSException("NoApplicableCode", "Malformed parameter URL.");
+		}
+
 		return data;
 	}
 
