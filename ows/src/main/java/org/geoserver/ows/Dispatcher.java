@@ -1099,9 +1099,6 @@ public class Dispatcher extends AbstractController {
                 return;
             }
         }
-        if (!(t instanceof HttpErrorCodeException))
-            logger.log(Level.SEVERE, "", t);
-
         //unwind the exception stack until we find one we know about 
         Throwable cause = t;
         while( cause != null ) {
@@ -1120,6 +1117,19 @@ public class Dispatcher extends AbstractController {
             // by default
             cause = new ServiceException(t);
         }
+
+        if (!(cause instanceof HttpErrorCodeException)) {
+            logger.log(Level.SEVERE, "", t);
+        } else {
+            int errorCode = ((HttpErrorCodeException)cause).getErrorCode();
+            if (errorCode < 199 || errorCode > 299) {
+                logger.log(Level.FINE, "", t);
+            }
+            else{
+                logger.log(Level.FINER, "", t);
+            }
+        }
+
         
         if ( cause instanceof ServiceException ) {
             ServiceException se = (ServiceException) cause;
