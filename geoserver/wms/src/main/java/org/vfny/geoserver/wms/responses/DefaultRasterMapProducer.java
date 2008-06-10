@@ -11,9 +11,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +32,7 @@ import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.config.WMSConfig;
@@ -258,7 +257,7 @@ public abstract class DefaultRasterMapProducer extends
 
 		Rectangle paintArea = new Rectangle(width, height);
 		RenderingHints hints = new RenderingHints(hintsMap);
-		renderer = new ShapefileRenderer();
+		renderer = new StreamingRenderer();
 		renderer.setContext(mapContext);
 		renderer.setJava2DHints(hints);
 		// shapefile renderer won't log rendering errors, sigh, we have to do it manually

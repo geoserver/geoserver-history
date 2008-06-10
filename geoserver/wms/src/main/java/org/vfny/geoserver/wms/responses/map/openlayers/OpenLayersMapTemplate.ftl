@@ -246,6 +246,7 @@
                 untiled.mergeNewParams({
                     format: mime
                 });
+                /*
                 var paletteSelector = document.getElementById('paletteSelector')
                 if (mime == 'image/jpeg') {
                     paletteSelector.selectedIndex = 0;
@@ -255,6 +256,7 @@
                 else {
                     paletteSelector.disabled = false;
                 }
+                */
             }
             
             function setAntialiasMode(mode){
