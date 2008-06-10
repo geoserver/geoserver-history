@@ -1320,6 +1320,9 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             s.setFilename( styleDTO.getFilename().getName() );
             
             catalog.add( s );
+            
+            //clear the resource pool
+            catalog.getResourcePool().clear( s );
         }
         
         return null;
