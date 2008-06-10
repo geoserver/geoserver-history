@@ -29,6 +29,7 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
+import org.geoserver.catalog.ResourcePool;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerInfo;
 
@@ -1201,38 +1202,13 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * by the server at server shutdown, such as JDBC connection pools and ArcSDE
      * connection pools.
      * <p>
-     * Note this process would greately benefit if {@link DataStoreFactorySpi} API
-     * had some sort of resource releasing method, so we could just traverse
-     * the available datastore factories asking them to release any resource
-     * needed.
+     * Note since 1.7.x this seems not to be needed anymore, as {@link ResourcePool}
+     * takes care of disposing datastores.
      * </p>
+     * @deprecated {@link ResourcePool#dispose()} takes care of releasing resources now
      */
     public void destroy() throws Exception {
-        /*
-         *  HACK: we must get a standard API way for releasing resources...
-         *  UPDATE: now we do have a standard API to release resources, though ArcSDE does not
-         *  properly implements DataStore.dispose() yet.
-         */
-        try {
-            Class sdepfClass = Class.forName("org.geotools.arcsde.pool.ArcSDEConnectionPoolFactory");
-
-            LOGGER.fine("SDE datasource found, releasing resources");
-
-            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance", new Class[0]);
-            Object pfInstance = m.invoke(sdepfClass, new Object[0]);
-
-            LOGGER.fine("got sde connection pool factory instance: " + pfInstance);
-
-            java.lang.reflect.Method closeMethod = pfInstance.getClass()
-                                                             .getMethod("clear", new Class[0]);
-
-            closeMethod.invoke(pfInstance, new Object[0]);
-            LOGGER.info("Asking ArcSDE datasource to release connections.");
-        } catch (ClassNotFoundException cnfe) {
-            LOGGER.fine("No ArcSDE datasource found.");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        //nothing to do
     }
     
     /**
