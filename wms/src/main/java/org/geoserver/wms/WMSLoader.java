@@ -98,8 +98,18 @@ public class WMSLoader extends LegacyServiceLoader {
                     }
                 }
                 else {
-                    for ( String styleName : styleNames ) {
-                        StyleInfo style = catalog.getStyleByName( styleName );
+                    for ( int i = 0; i < styleNames.size(); i++ ) {
+                        String styleName = styleNames.get( i );
+                        styleName = styleName.trim();
+                        
+                        StyleInfo style = null;
+                        if ( "".equals( styleName ) ) {
+                            style = bm.getLayers().get(i).getDefaultStyle();
+                        }
+                        else {
+                            style = catalog.getStyleByName( styleName );    
+                        }
+                        
                         if ( style == null ) {
                             LOGGER.warning( "Ignoring layer group '" + bm.getName() + 
                                     "', style '" + styleName + "' does not exist.");
@@ -108,7 +118,7 @@ public class WMSLoader extends LegacyServiceLoader {
                         bm.getStyles().add( style );
                     }    
                 }
-                
+                bm.getMetadata().put( "rawStyleList", (String)baseMap.get("rawBaseMapStyles"));
                 
                 //base map enveloper
                 ReferencedEnvelope e = (ReferencedEnvelope) baseMap.get( "baseMapEnvelope");
