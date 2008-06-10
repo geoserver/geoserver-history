@@ -116,6 +116,19 @@
             OpenLayers.DOTS_PER_INCH = 25.4 / 0.28;
         
             function init(){
+                // if this is just a coverage or a group of them, disable a few items,
+                // and default to jpeg format
+                format = 'image/png';
+                if(pureCoverage) {
+                    document.getElementById('filterType').disabled = true;
+                    document.getElementById('filter').disabled = true;
+                    document.getElementById('antialiasSelector').disabled = true;
+                    document.getElementById('updateFilterButton').disabled = true;
+                    document.getElementById('resetFilterButton').disabled = true;
+                    document.getElementById('jpeg').selected = true;
+                    format = "image/jpeg";
+                }
+            
                 var bounds = new OpenLayers.Bounds(
                     ${request.bbox.minX?c}, ${request.bbox.minY?c},
                     ${request.bbox.maxX?c}, ${request.bbox.maxY?c}
@@ -136,7 +149,7 @@
                         <#list parameters as param>            
                         ${param.name}: '${param.value?js_string}',
                         </#list>
-                        format: 'image/png',
+                        format: format,
                         tiled: 'true',
                         tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
                     },
@@ -150,7 +163,7 @@
                         <#list parameters as param>            
                         ${param.name}: '${param.value?js_string}',
                         </#list>
-                        format: 'image/png'
+                        format: format
                     },
                     {singleTile: true, ratio: 1} 
                 );
@@ -169,16 +182,6 @@
                 // wire up the option button
                 var options = document.getElementById("options");
                 options.onclick = toggleControlPanel;
-                
-                // if this is just a coverage or a group of them, disable a few items
-                if(pureCoverage) {
-                    document.getElementById('filterType').disabled = true;
-                    document.getElementById('filter').disabled = true;
-                    document.getElementById('antialiasSelector').disabled = true;
-                    document.getElementById('updateFilterButton').disabled = true;
-                    document.getElementById('resetFilterButton').disabled = true;
-                } 
-                
                 
                 // support GetFeatureInfo
                 map.events.register('click', map, function (e) {
@@ -240,6 +243,10 @@
             
             // changes the current tile format
             function setImageFormat(mime){
+                // we may be switching format on setup
+                if(tiled == null)
+                  return;
+                  
                 tiled.mergeNewParams({
                     format: mime
                 });
@@ -381,7 +388,7 @@
                         <option value="image/png">PNG 24bit</option>
                         <option value="image/png8">PNG 8bit</option>
                         <option value="image/gif">GIF</option>
-                        <option value="image/jpeg">JPEG</option>
+                        <option id="jpeg" value="image/jpeg">JPEG</option>
                     </select>
                 </li>
                 <!-- Commented out for the moment, some code needs to be extended in 
