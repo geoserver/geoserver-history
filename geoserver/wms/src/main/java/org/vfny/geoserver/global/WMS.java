@@ -17,9 +17,12 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -475,12 +478,19 @@ public class WMS extends Service {
     public Map getBaseMapStyles() {
         HashMap baseMapStyles = new HashMap();
         for ( LayerGroupInfo map : gs.getCatalog().getLayerGroups() ) {
-            StringBuffer styles = new StringBuffer();
-            for ( StyleInfo s : map.getStyles() ) {
-                styles.append( s.getName() ).append( "," );
+            String rawStyleList = (String) map.getMetadata().get( "rawStyleList");
+            if ( rawStyleList != null ) {
+                baseMapStyles.put( map.getName(), rawStyleList );
             }
-            styles.setLength( styles.length() - 1 );
-            baseMapStyles.put( map.getName(), styles.toString() );
+            else {
+                //generate it from the actual style list
+                StringBuffer styles = new StringBuffer();
+                for ( StyleInfo s : map.getStyles() ) {
+                    styles.append( s.getName() ).append( "," );
+                }
+                styles.setLength( styles.length() - 1 );
+                baseMapStyles.put( map.getName(), styles.toString() );
+            }
         }
         return baseMapStyles;
         //return baseMapStyles != null ? baseMapStyles : Collections.EMPTY_MAP;
@@ -490,12 +500,38 @@ public class WMS extends Service {
         for ( Iterator e = styles.entrySet().iterator(); e.hasNext(); ) {
             Map.Entry entry = (Map.Entry) e.next();
             String name = (String) entry.getKey();
-            String[] styleNames = ((String) entry.getValue()).split(",");
+            String styleNamesRaw = ((String)entry.getValue()).trim();
+            List<String> styleNames = null;
+            if ( "".equals( styleNamesRaw ) ) {
+                styleNames = new ArrayList();
+            }
+            else {
+                styleNames = new ArrayList( Arrays.asList( styleNamesRaw.split(",") ) );    
+            }
             
             LayerGroupInfo map = gs.getCatalog().getLayerGroupByName( name );
+            
+            //save the original raw style list
+            map.getMetadata().put( "rawStyleList", styleNamesRaw );
+            
+            //if there were less styles specified than base layers, pad with 
+            // defaults
+            for ( int i = styleNames.size(); i < map.getLayers().size(); i++ ) {
+                styleNames.add( "" );
+            }
+            
             map.getStyles().clear();
-            for ( String styleName : styleNames ) {
-                StyleInfo style = gs.getCatalog().getStyleByName( styleName );
+            for ( int i = 0; i < styleNames.size(); i++ ) {
+                String styleName = styleNames.get( i );
+                StyleInfo style = null;
+                if ( "".equals( styleName ) ) {
+                    //use the default style for the layer
+                    style = map.getLayers().get(i).getDefaultStyle();
+                }
+                else {
+                    style = gs.getCatalog().getStyleByName( styleName );
+                }
+                
                 if ( style == null ) {
                     throw new RuntimeException( "No such style: " + styleName );
                 }
