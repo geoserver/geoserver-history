@@ -1,6 +1,8 @@
 package org.geoserver.security.decorators;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -46,5 +48,9 @@ public class DecoratingLayerGroupINfo extends AbstractDecorator<LayerGroupInfo> 
 
     public void setName(String name) {
         delegate.setName(name);
+    }
+    
+    public Map<String, Serializable> getMetadata() {
+        return delegate.getMetadata();
     }
 }
