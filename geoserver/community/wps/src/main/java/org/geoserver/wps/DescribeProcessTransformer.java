@@ -81,7 +81,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
 
                 for (Object identifier : this.request.getIdentifier())
                 {
-                    this.processDescription(((CodeType) identifier).getValue());
+                    this.processDescription(((CodeType)identifier).getValue());
                 }
 
                 end("wps:ProcessDescriptions");
@@ -142,7 +142,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
             }
 
             private void processOutputs(ProcessFactory pf)
-            {            	
+            {
                 start("ProcessOutputs");
                 for (Parameter inputIdentifier : pf.getResultInfo(null).values())
                 {

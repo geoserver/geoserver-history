@@ -30,33 +30,39 @@ public abstract class ExecuteTransformer extends TransformerBase
 
     public static class WPS1_0 extends ExecuteTransformer
     {
+    	private WPS wps;
+    	
         public WPS1_0(WPS wps)
         {
             super(wps);
+            this.wps = wps;
         }
 
         public Translator createTranslator(ContentHandler handler)
         {
-            return new ExecuteTranslator1_0(handler);
+            return new ExecuteTranslator1_0(handler, this.wps);
         }
 
         public class ExecuteTranslator1_0 extends TranslatorSupport
         {
-            public ExecuteTranslator1_0(ContentHandler handler)
+        	private WPS wps;
+        	
+            public ExecuteTranslator1_0(ContentHandler handler, WPS wps)
             {
                 super(handler, null, null);
+                this.wps = wps;
             }
 
             public void encode(Object object) throws IllegalArgumentException
             {
-            	// TODO XXX
-
-            	Executor executor = new Executor((ExecuteType)object);
+            	Executor executor = new Executor((ExecuteType)object, this.wps);
 
             	Map<String, Object> outputs = executor.execute();
-            	
+
             	start("wps:ExecuteResponse");
 
+            	OutputTransformer outputTransformer = new OutputTransformer();
+            	
             	end("wps:ExecuteResponse");
             }
         }
