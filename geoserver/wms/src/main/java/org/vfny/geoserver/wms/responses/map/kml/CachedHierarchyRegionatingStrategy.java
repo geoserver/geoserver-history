@@ -56,6 +56,13 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
     private int myFeaturesPerTile;
 
+    /**
+     * When the number of features within the bbox currently being processed is below this threshold,
+     * go ahead and build the rest of the tile hierarchy in memory.  (This is a performance thing; 
+     * sweeping over the database for each tile can really bog things down.)
+     */
+    private static int DB_SWEEP_CUTOFF = 100000; 
+
 
     public final void preProcess(WMSMapContext con, MapLayer layer) {
         FeatureTypeInfo fti = con.getRequest().getWMS().getData().getFeatureTypeInfo(layer.getFeatureSource().getName());
@@ -115,19 +122,28 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             
             // ... but if it crosses the centra meridien we need to get two world tiles anyway
 	        if(layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
-	            ReferencedEnvelope worldBounds = getWorldBounds();
 	            // Western
-	        	Envelope tmp = new Envelope(0.0, -180.0, 90.0, -90.0);
+	        	ReferencedEnvelope tmp = new ReferencedEnvelope(0.0, -180.0, 90.0, -90.0, epsg4326);
+                long[] c = getTileCoords(tmp, getWorldBounds());
+                LOGGER.info("Starting at " + tmp + "; " + c[0] +  ", " + c[1] + ", " + c[2]);
+
             	buildDB(statement, tableName, layer.getFeatureSource(),
-            			new ReferencedEnvelope(tmp, epsg4326), 
+            			tmp, 
             			new TreeSet<String>());
             	// Eastern
-            	tmp = new Envelope(180.0, 0.0, 90.0, -90.0);
+            	tmp = new ReferencedEnvelope(180.0, 0.0, 90.0, -90.0, epsg4326);
+                c = getTileCoords(tmp, getWorldBounds());
+                LOGGER.info("Starting at " + tmp + "; " + c[0] +  ", " + c[1] + ", " + c[2]);
+
             	buildDB(statement, tableName, layer.getFeatureSource(),
-            			new ReferencedEnvelope(tmp, epsg4326), 
+            			tmp,
             			new TreeSet<String>());
 	        } else {
 	        	// Figure out what the closest tile would be, then use that
+                ReferencedEnvelope tmp = expandToTile(layerBounds);
+                long[] c = getTileCoords(tmp, getWorldBounds());
+                
+                LOGGER.info("Starting at " + tmp + "; " + c[0] +  ", " + c[1] + ", " + c[2]);
             	buildDB(statement, tableName, layer.getFeatureSource(), 
             			expandToTile(layerBounds), 
             			new TreeSet<String>());
@@ -224,9 +240,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     public abstract Comparator<SimpleFeature> getComparator();
 
     public final void buildDB(Statement st, String tablename, FeatureSource source, ReferencedEnvelope bbox, Set<String> parents) throws IOException{
-        PriorityQueue<SimpleFeature> pq = new PriorityQueue<SimpleFeature>(myFeaturesPerTile, getComparator());
         FeatureCollection col = getFeatures(source, bbox);
-        Iterator<SimpleFeature> it = col.iterator();
         ReferencedEnvelope reprojectedBBox;
         try{
             reprojectedBBox = bbox.transform(source.getBounds().getCoordinateReferenceSystem(), true);
@@ -234,29 +248,46 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             reprojectedBBox = bbox;
             LOGGER.log(Level.WARNING, "Couldn't transform bbox to native CRS; using lat/lon bbox instead.", e);
         }
-        try{
-            while (it.hasNext()){
-                SimpleFeature f = it.next();
-                if (!parents.contains(f.getID()) &&
-                        containsCentroid(reprojectedBBox, (Geometry)f.getDefaultGeometry())
-                   ) {
-                    pq.add(f);
-                    if (pq.size() > myFeaturesPerTile) pq.poll();
-                }
-            } 
-        } finally {
-            col.close(it);
-        }
 
-        if (pq.size() > 0){
-            for (SimpleFeature feature : pq) writeToDB(st, tablename, bbox, feature);
-            for (SimpleFeature feature : pq) parents.add(feature.getID());
-            for (ReferencedEnvelope box : quadSplit(bbox)) buildDB(st, tablename, source, box, parents);
-            for (SimpleFeature feature : pq) parents.remove(feature.getID());
+        if (col.size() > DB_SWEEP_CUTOFF){
+            PriorityQueue<SimpleFeature> pq = new PriorityQueue<SimpleFeature>(myFeaturesPerTile, getComparator());
+            Iterator<SimpleFeature> it = col.iterator();
+            try{
+                while (it.hasNext()){
+                    SimpleFeature f = it.next();
+                    if (!parents.contains(f.getID()) &&
+                            containsCentroid(reprojectedBBox, (Geometry)f.getDefaultGeometry())
+                       ) {
+                        pq.add(f);
+                        if (pq.size() > myFeaturesPerTile) pq.poll();
+                    }
+                } 
+            } finally {
+                col.close(it);
+            }
+
+            if (pq.size() > 0){
+                for (SimpleFeature feature : pq) writeToDB(st, tablename, bbox, feature);
+                for (SimpleFeature feature : pq) parents.add(feature.getID());
+                for (ReferencedEnvelope box : quadSplit(bbox)) buildDB(st, tablename, source, box, parents);
+                for (SimpleFeature feature : pq) parents.remove(feature.getID());
+            }
+        } else {
+            LOGGER.info("Down to " + col.size() + " features in region; doing it all in memory now!" );
+            TileLevel root = new TileLevel(reprojectedBBox, myFeaturesPerTile, getComparator());
+            root.populateExcluding(col, parents);
+            ReferencedEnvelope world = getWorldBounds();
+            try{
+                world.transform(source.getBounds().getCoordinateReferenceSystem(), true);
+            } catch (Exception e){
+                // ignore, just use untransformed value
+                LOGGER.log(Level.WARNING, "Couldn't convert world bounds to native coords", e);
+            }
+            root.writeTo(st, tablename, world);
         }
     }
 
-    private boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom){
+    public static boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom){
         Envelope e = geom.getEnvelopeInternal();
         double centerX = (e.getMaxX() + e.getMinX()) / 2;
         double centerY = (e.getMaxY() + e.getMinY()) / 2;
@@ -313,7 +344,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
      * @param bbox
      * @return the given bbox split into four equal tiles, as bboxes
      */
-    private static List<ReferencedEnvelope> quadSplit(ReferencedEnvelope bbox){
+    protected static List<ReferencedEnvelope> quadSplit(ReferencedEnvelope bbox){
         List<ReferencedEnvelope> results = new ArrayList<ReferencedEnvelope>();
         
         //top left
