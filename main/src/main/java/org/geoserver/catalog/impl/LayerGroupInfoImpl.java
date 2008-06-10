@@ -1,7 +1,10 @@
 package org.geoserver.catalog.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -16,7 +19,8 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
     List<LayerInfo> layers = new ArrayList<LayerInfo>();
     List<StyleInfo> styles = new ArrayList<StyleInfo>();
     ReferencedEnvelope bounds;
-  
+    Map<String,Serializable> metadata = new HashMap<String, Serializable>();
+    
     public LayerGroupInfoImpl() {
     }
     
@@ -59,4 +63,7 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
         this.bounds = bounds;
     }
     
+    public Map<String, Serializable> getMetadata() {
+        return metadata;
+    }
 }
