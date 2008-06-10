@@ -441,7 +441,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
         long z = Math.round(Math.log( maxTileWidth/ requestBBox.getWidth())/Math.log(2));
         long x = Math.round(((requestBBox.getMinimum(0) - worldBounds.getMinimum(0)) / maxTileWidth) * Math.pow(2, z));
-        long y = Math.round(((worldBounds.getMaximum(1) - requestBBox.getMaximum(1)) / maxTileWidth) * Math.pow(2, z));
+        long y = Math.round(((requestBBox.getMinimum(1) - worldBounds.getMinimum(1)) / maxTileWidth) * Math.pow(2, z));
 
         return new long[]{x,y,z};
     }
