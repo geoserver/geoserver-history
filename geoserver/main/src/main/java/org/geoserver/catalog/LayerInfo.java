@@ -160,7 +160,6 @@ public interface LayerInfo {
      * type {@link Serializable}.
      * </p>
      * 
-     * @uml.property name="metadata"
      */
     Map<String,Serializable> getMetadata();
 }
