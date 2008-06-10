@@ -177,9 +177,11 @@ public class LegacyServicesReader {
                 if ( baseMapStyles != null && !"".equals( baseMapStyles ) ) {
                     baseMap.put( "baseMapStyles", 
                             Arrays.asList( baseMapStyles.split( ",") ) );
+                    baseMap.put( "rawBaseMapStyles", baseMapStyles );
                 }
                 else {
                     baseMap.put( "baseMapStyles", Collections.EMPTY_LIST );
+                    baseMap.put( "rawBaseMapStyles", "" );
                 }
                   
                 Element baseMapEnvelopeElement = ReaderUtils.getChildElement( baseMapGroupElement, "baseMapEnvelope");
