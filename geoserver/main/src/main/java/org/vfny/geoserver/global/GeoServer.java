@@ -1044,33 +1044,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
                         + dataStoreInfo.getId(), e);
             }
         }
-        LOGGER.info("Done disposing datastores.");
-        
-        /*
-         *  HACK: we must get a standard API way for releasing resources...
-         *  UPDATE: now we do have a standard API to release resources, though ArcSDE does not
-         *  properly implements DataStore.dispose() yet.
-         */
-        try {
-            Class sdepfClass = Class.forName("org.geotools.arcsde.pool.ArcSDEConnectionPoolFactory");
-
-            LOGGER.fine("SDE datasource found, releasing resources");
-
-            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance", new Class[0]);
-            Object pfInstance = m.invoke(sdepfClass, new Object[0]);
-
-            LOGGER.fine("got sde connection pool factory instance: " + pfInstance);
-
-            java.lang.reflect.Method closeMethod = pfInstance.getClass()
-                                                             .getMethod("clear", new Class[0]);
-
-            closeMethod.invoke(pfInstance, new Object[0]);
-            LOGGER.info("Asking ArcSDE datasource to release connections.");
-        } catch (ClassNotFoundException cnfe) {
-            LOGGER.fine("No ArcSDE datasource found.");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        LOGGER.info("Done disposing datastores.");        
     }
     
     /**
