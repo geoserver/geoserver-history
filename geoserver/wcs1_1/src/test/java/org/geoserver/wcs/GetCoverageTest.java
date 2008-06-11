@@ -1,12 +1,20 @@
 package org.geoserver.wcs;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.opengis.wcs.v1_1_1.GetCoverageType;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+
+import junit.framework.Test;
+import junit.textui.TestRunner;
+
+import net.opengis.wcs11.GetCoverageType;
 
 import org.geoserver.wcs.kvp.GetCoverageRequestReader;
 import org.geoserver.wcs.test.WCSTestSupport;
@@ -18,6 +26,7 @@ import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.opengis.coverage.grid.GridCoverage;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
+import org.w3c.dom.Document;
 
 public class GetCoverageTest extends WCSTestSupport {
 
@@ -32,10 +41,17 @@ public class GetCoverageTest extends WCSTestSupport {
     private WCSConfiguration configuration;
 
     private WcsXmlReader xmlReader;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetCoverageTest());
+    }
 
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
         kvpreader = (GetCoverageRequestReader) applicationContext
                 .getBean("wcs111GetCoverageRequestReader");
         service = (WebCoverageService111) applicationContext.getBean("wcs111ServiceTarget");
@@ -44,10 +60,10 @@ public class GetCoverageTest extends WCSTestSupport {
         xmlReader = new WcsXmlReader("GetCoverage", "1.1.1", configuration);
     }
 
-//    @Override
-//    protected String getDefaultLogConfiguration() {
-//        return "/DEFAULT_LOGGING.properties";
-//    }
+    @Override
+    protected String getLogConfiguration() {
+        return "/DEFAULT_LOGGING.properties";
+    }
     
     
 
@@ -271,13 +287,13 @@ public class GetCoverageTest extends WCSTestSupport {
 
         // extract all bands. We had two bugs here, one related to the case sensitiveness
         // and the other about the inability to extract bands at all (with exception of the red one) 
-        String[] bands = new String[] {"red", "grEEN", "Blue"};
+        String[] bands = new String[] {"red_band", "grEEN_band", "Blue_band"};
         for (int i = 0; i < bands.length; i++) {
             raw.put("rangeSubset", "contents:nearest[Bands[" + bands[i] + "]]");
             GridCoverage[] coverages = executeGetCoverageKvp(raw);
             assertEquals(1, coverages[0].getNumSampleDimensions());
             final String coverageBand = coverages[0].getSampleDimension(0).getDescription().toString();
-            assertEquals(bands[i].replace('_', ' ').toLowerCase(), coverageBand.toLowerCase());
+            assertEquals(bands[i].toLowerCase(), coverageBand.toLowerCase());
         }
     }
     
@@ -288,11 +304,11 @@ public class GetCoverageTest extends WCSTestSupport {
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
 
-        raw.put("rangeSubset", "contents:nearest[Bands[RED,BLUE]]");
+        raw.put("rangeSubset", "contents:nearest[Bands[RED_BAND,BLUE_BAND]]");
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         assertEquals(2, coverages[0].getNumSampleDimensions());
-        assertEquals("RED", coverages[0].getSampleDimension(0).getDescription().toString());
-        assertEquals("BLUE", coverages[0].getSampleDimension(1).getDescription().toString());
+        assertEquals("RED_BAND", coverages[0].getSampleDimension(0).getDescription().toString());
+        assertEquals("BLUE_BAND", coverages[0].getSampleDimension(1).getDescription().toString());
     }
     
     public void testRangeSubsetSwap() throws Exception {
@@ -302,11 +318,11 @@ public class GetCoverageTest extends WCSTestSupport {
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
 
-        raw.put("rangeSubset", "contents:nearest[Bands[BLUE,GREEN]]");
+        raw.put("rangeSubset", "contents:nearest[Bands[BLUE_BAND,GREEN_BAND]]");
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         assertEquals(2, coverages[0].getNumSampleDimensions());
-        assertEquals("BLUE", coverages[0].getSampleDimension(0).getDescription().toString());
-        assertEquals("GREEN", coverages[0].getSampleDimension(1).getDescription().toString());
+        assertEquals("BLUE_BAND", coverages[0].getSampleDimension(0).getDescription().toString());
+        assertEquals("GREEN_BAND", coverages[0].getSampleDimension(1).getDescription().toString());
     }
     
     public void testRangeSubsetOnlyInterpolation() throws Exception {
@@ -359,6 +375,34 @@ public class GetCoverageTest extends WCSTestSupport {
         GridCoverage[] coverages = executeGetCoverageXml(request);
     }
     
+    public void testStoreSupported() throws Exception {
+        String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
+                + layerId(WCSTestSupport.TASMANIA_BM)
+                + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
+                + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=geotiff&store=true";
+        Document dom = getAsDOM(request);
+//        print(dom);
+        checkValidationErrors(dom, WCS11_SCHEMA);
+        assertXpathEvaluatesTo(WCSTestSupport.TASMANIA_BM.getLocalPart(),
+                "wcs:Coverages/wcs:Coverage/ows:Title", dom);
+        
+        // grab the file path
+        String path = xpath.evaluate("//ows:Reference/@xlink:href", dom);
+        File temp = new File(getTestData().getDataDirectoryRoot(), "temp");
+        if(!temp.exists())
+            temp.mkdir();
+        File wcsTemp = new File(temp, "wcs");
+            wcsTemp.mkdir();
+        File coverageFile = new File(wcsTemp, path.substring(path.lastIndexOf("/") + 1)).getAbsoluteFile();
+        System.out.println(coverageFile);
+        
+        // make sure the tiff can be actually read
+        ImageReader reader = ImageIO.getImageReadersByFormatName("tiff").next();
+        reader.setInput(ImageIO.createImageInputStream(coverageFile));
+        reader.read(0);
+        reader.dispose();
+    }
+    
     /**
      * Runs GetCoverage on the specified parameters and returns an array of coverages
      */
@@ -377,6 +421,8 @@ public class GetCoverageTest extends WCSTestSupport {
         return service.getCoverage(getCoverage);
     }
     
-    
+    public static void main(String[] args) {
+        TestRunner.run(suite());
+    }
 
 }

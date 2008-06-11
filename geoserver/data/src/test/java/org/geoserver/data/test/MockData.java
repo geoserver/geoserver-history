@@ -37,6 +37,8 @@ import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.CoordinateSystem;
 
+import com.vividsolutions.jts.geom.Envelope;
+
 
 /**
  * Class used to build a mock GeoServer data directory.
@@ -53,9 +55,27 @@ public class MockData implements TestData {
      * Use FeatureTypeInfo constants for srs handling as values
      */
     public static final String KEY_SRS_HANDLINGS = "srsHandling";
+    /**
+     * The feature type alias, a string
+     */
     public static final String KEY_ALIAS = "alias";
-    public static final String KEY_STYLE = "style"; 
+    /**
+     * The style name
+     */
+    public static final String KEY_STYLE = "style";
+    /**
+     * The srs code (a number) for this layer
+     */
     public static final String KEY_SRS_NUMBER = "srs";
+    /**
+     * The lon/lat envelope as a JTS Envelope
+     */
+    public static final String KEY_LL_ENVELOPE = "ll_envelope";
+    /**
+     * The native envelope as a JTS Envelope
+     */
+    public static final String KEY_NATIVE_ENVELOPE = "native_envelope";
+    static final Envelope DEFAULT_ENVELOPE = new Envelope(-180,180,-90,90);
     
     // //// WMS 1.1.1
     /**
@@ -172,7 +192,6 @@ public class MockData implements TestData {
     // Extra types
     public static QName GEOMETRYLESS = new QName(CITE_URI, "Geometryless", CITE_PREFIX);
     
-
     /**
      * List of all cite types names
      */
@@ -207,6 +226,19 @@ public class MockData implements TestData {
     public static QName[] WFS11_TYPENAMES = new QName[] {
             PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, GENERICENTITY /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
         };
+    
+    /**
+     * map of qname to srs
+     */
+    public static HashMap<QName,Integer> SRS = new HashMap<QName, Integer>();
+    static {
+        for ( int i = 0; i < WFS10_TYPENAMES.length; i++ ) {
+            SRS.put( WFS10_TYPENAMES[i], 32615);
+        }
+        for ( int i = 0; i < WFS11_TYPENAMES.length; i++ ) {
+            SRS.put( WFS11_TYPENAMES[i], 4326 );
+        }
+    }
 
     /** the base of the data directory */
     File data;
@@ -407,6 +439,10 @@ public class MockData implements TestData {
      * @throws IOException
      */
     public void addPropertiesType(QName name, URL properties, Map extraParams) throws IOException {
+        // sanitize input params
+        if(extraParams == null)
+            extraParams = Collections.EMPTY_MAP;
+        
         // setup the type directory if needed
         File directory = new File(data, name.getPrefix());
         if ( !directory.exists() ) {
@@ -508,7 +544,13 @@ public class MockData implements TestData {
         params.put(KEY_STYLE, "Default");
         params.put(KEY_SRS_HANDLINGS, 2);
         params.put(KEY_ALIAS, null);
-        params.put(KEY_SRS_NUMBER, 4326);
+        
+        Integer srs = SRS.get( name );
+        if ( srs == null ) {
+            srs = 4326;
+        }
+        params.put(KEY_SRS_NUMBER, srs);
+        
         // override with whatever the user provided
         params.putAll(extraParams);
 
@@ -532,8 +574,19 @@ public class MockData implements TestData {
         writer.write("<abstract>abstract about " + type + "</abstract>");
         writer.write("<numDecimals value=\"8\"/>");
         writer.write("<keywords>" + type + "</keywords>");
-        writer.write(
-            "<latLonBoundingBox dynamic=\"false\" minx=\"-180\" miny=\"-90\" maxx=\"180\" maxy=\"90\"/>");
+        Envelope llEnvelope = (Envelope) params.get(KEY_LL_ENVELOPE);
+        if(llEnvelope == null)
+            llEnvelope = DEFAULT_ENVELOPE;
+        writer.write("<latLonBoundingBox dynamic=\"false\" minx=\"" + llEnvelope.getMinX()
+                + "\" miny=\"" + llEnvelope.getMinY() + "\" maxx=\"" + llEnvelope.getMaxX()
+                + "\" maxy=\"" + llEnvelope.getMaxY() + "\"/>");
+
+        Envelope nativeEnvelope = (Envelope) params.get(KEY_NATIVE_ENVELOPE);
+        if(nativeEnvelope != null)
+            writer.write("<nativeBBox dynamic=\"false\" minx=\"" + llEnvelope.getMinX()
+                    + "\" miny=\"" + llEnvelope.getMinY() + "\" maxx=\"" + llEnvelope.getMaxX()
+                    + "\" maxy=\"" + llEnvelope.getMaxY() + "\"/>");
+
 
         String style = (String) params.get(KEY_STYLE);
         if(style == null)

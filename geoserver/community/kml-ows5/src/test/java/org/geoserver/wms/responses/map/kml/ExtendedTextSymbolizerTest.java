@@ -5,9 +5,10 @@ import static org.custommonkey.xmlunit.XMLAssert.*;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 
 import javax.xml.namespace.QName;
+
+import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
@@ -22,6 +23,14 @@ public class ExtendedTextSymbolizerTest extends WMSTestSupport {
     public static String OWS5_URI = "http://www.opengis.net/ows5";
 
     public static QName DATES = new QName(OWS5_URI, "Dates", OWS5_PREFIX);
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new ExtendedTextSymbolizerTest());
+    }
+
 
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
@@ -36,7 +45,7 @@ public class ExtendedTextSymbolizerTest extends WMSTestSupport {
                 .addStyle("KmlTimespan", ExtendedDataTest.class.getResource("KmlTimespan.sld"));
 
         dataDirectory.addPropertiesType(DATES, ExtendedTextSymbolizerTest.class
-                .getResource("Dates.properties"), Collections.singletonMap(MockData.STYLE, "KmlTimestamp"));
+                .getResource("Dates.properties"), Collections.singletonMap(MockData.KEY_STYLE, "KmlTimestamp"));
     }
 
     protected String getLogConfiguration() {

@@ -36,6 +36,7 @@ import org.geoserver.rest.MapResource;
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.RestletException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -187,14 +188,16 @@ class LayerGroupResource extends MapResource {
         return true;
     }
 
-    @Override
-    protected void putMap(Map details) throws Exception {
+     @Override
+    protected void putMap(Object details) throws RestletException {
+        try{
     	String group = (String)getRequest().getAttributes().get("group");
+        Map m = (Map)details;
     	
-    	List layers = (List)details.get("Members");
-    	List styles = (List)details.get("Styles");
-        String srsName = (String)details.get("SRS");
-        List coords = (List)details.get("Envelope");
+    	List layers = (List)m.get("Members");
+    	List styles = (List)m.get("Styles");
+        String srsName = (String)m.get("SRS");
+        List coords = (List)m.get("Envelope");
         GeneralEnvelope env = null;
         try{
         env = listAsEnvelope(coords, srsName);
@@ -248,6 +251,9 @@ class LayerGroupResource extends MapResource {
                     MediaType.TEXT_PLAIN)
                 );
         getResponse().setStatus(Status.SUCCESS_OK);
+        } catch (Exception e){
+            throw new RestletException("Failure while putting layergroup", Status.SERVER_ERROR_INTERNAL, e);
+        }
     }
 
     public boolean allowDelete(){

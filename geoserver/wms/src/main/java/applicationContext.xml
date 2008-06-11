@@ -3,18 +3,19 @@
 
 <beans>
 
-	<!-- declare the wms service. -->
-	<bean id="wms"
+	<!-- wms configuration bean -->
+	<!--bean id="wms"
 		class="org.vfny.geoserver.global.WMS" depends-on="config">
-        <!-- the depends-on attribute ensures config was initialized before
-          trying to instantiate this bean.
-         -->
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="data"/>
 		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="wfs"/>
-	</bean>
-		
+	</bean-->
+	<bean id="wmsLoader" class="org.geoserver.wms.WMSLoader"/>
+    <bean id="wms" class="org.vfny.geoserver.global.WMS">
+      <constructor-arg ref="geoServer2"/>
+    </bean>
+    
 	<bean id="wmsConfig"
 		class="org.vfny.geoserver.config.WMSConfig">
 		<constructor-arg ref="wms"/>
@@ -43,18 +44,14 @@
 	<!-- the abstract base bean -->
 	<bean id="wmsAbstractService" abstract="true"
 		class="org.vfny.geoserver.servlets.AbstractService">
-		<!--  reference to geoserver bean defined in the 'main' context -->
 		<property name="geoServer" ref="geoServer"/>
 		<property name="catalog" ref="data"/>
 	</bean>
 
-	<!-- the abstract wms specific bean  -->
 	<bean id="wmsService" abstract="true"
 		class="org.vfny.geoserver.wms.servlets.WMService"
 		parent="wmsAbstractService">
-		<!-- reference to wms bean in this context -->
 		<constructor-arg ref="wms"/>
-		<!-- property name="WMS" ref="wms"/-->
 	</bean>
 		
 	<bean id="wmsGetCapabilities" 
@@ -96,6 +93,8 @@
 	
 	<!-- wms service + descriptor -->
  	<bean id="wmsService2" class="org.geoserver.wms.DefaultWebMapService"/>
+ 	<alias name="wmsService2" alias="webMapService"/>
+ 	
  	<bean id="wmsServiceDescriptor" class="org.geoserver.platform.Service">
 		<constructor-arg index="0" value="wms"/>
 		<constructor-arg index="1" ref="wmsService2"/>
@@ -145,51 +144,53 @@
     <bean id="sldKvpParser" class="org.geoserver.ows.kvp.URLKvpParser">
         <constructor-arg value="sld"/>
     </bean>
+ 	<bean id="startIndexKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+ 	    <constructor-arg value="startIndex"/>
+ 	</bean>
  	
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
  		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.CapabilitiesKvpReader" />
-      	<constructor-arg index="2" ref="wmsGetCapabilities" />
+      	<constructor-arg index="2" ref="wms" />
 	</bean>
 
 	<bean id="describeLayerKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.DescribeLayerRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.DescribeLayerKvpRequestReader" />
-      	<constructor-arg index="2" ref="wmsDescribeLayer" />
+      	<constructor-arg index="2" ref="wms" />
 	</bean>
 	
 	<!-- bean id="getMapKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetMapRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetMapKvpReader" />
-      	<constructor-arg index="2" ref="wmsGetMap" />
+      	<constructor-arg index="2" ref="wms" />
 	</bean-->
 	<bean id="getMapKvpReader"
 		class="org.geoserver.wms.kvp.GetMapKvpRequestReader">
-        <constructor-arg ref="wmsGetMap"/>
         <constructor-arg ref="wms"/>
 	</bean>
 	<bean id="getFeatureInfoKvpReader"
 			class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetFeatureInfoRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetFeatureInfoKvpReader" />
-      	<constructor-arg index="2" ref="wmsGetFeatureInfo" />
+      	<constructor-arg index="2" ref="wms" />
 	</bean>
 	<bean id="getLegendGraphicKvpReader"
 			class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetLegendGraphicRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader" />
-      	<constructor-arg index="2" ref="wmsGetLegendGraphic" />
+      	<constructor-arg index="2" ref="wms" />
 	</bean>
   <!-- 
 	<bean id="putStylesKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.sld.requests.PutStylesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.sld.requests.PutStylesKvpReader" />
-      	<constructor-arg index="2" ref="wmsPutStyles" />
+      	<constructor-arg index="2" ref="wms" />
 	</bean>
    -->
 		
@@ -198,14 +199,14 @@
     	class="org.geoserver.ows.adapters.XmlRequestReaderAdapter">
     	<constructor-arg index="0" value="http://www.opengis.net/ows"/> 
  	    <constructor-arg index="1" value="GetCapabilities"/> 
-    	<constructor-arg index="2" ref="wmsGetCapabilities"/>
+    	<constructor-arg index="2" ref="wms"/>
     	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.CapabilitiesXmlReader"/>
     </bean>
      <bean id="getMapXmlReader" 
     	class="org.geoserver.ows.adapters.XmlRequestReaderAdapter">
     	<constructor-arg index="0" value="http://www.opengis.net/ows"/> 
  	    <constructor-arg index="1" value="GetMap"/> 
-    	<constructor-arg index="2" ref="wmsGetMap"/>
+    	<constructor-arg index="2" ref="wms"/>
     	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.GetMapXmlReader"/>
     </bean>
    	<bean id="sldXmlReader"
@@ -347,4 +348,23 @@
     <bean id="metaTileCache" class="org.vfny.geoserver.wms.responses.map.metatile.QuickTileCache">
       <constructor-arg ref="geoServer"/>
     </bean>
+    <bean id="dataRegionator"
+        class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory"
+    >
+      <constructor-arg value="data"/>
+      <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.DataRegionatingStrategy"/>
+    </bean>
+    <bean id="geometryRegionator"
+        class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory"
+    >
+      <constructor-arg value="geo"/>
+      <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.GeometryRegionatingStrategy"/>
+    </bean>
+    <bean id="sldRegionator"
+        class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory"
+    >   
+      <constructor-arg value="sld"/>
+      <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.SLDRegionatingStrategy"/>
+    </bean>
+
 </beans>

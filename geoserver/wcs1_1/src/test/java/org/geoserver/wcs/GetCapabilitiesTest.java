@@ -1,6 +1,7 @@
 package org.geoserver.wcs;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
+import junit.framework.Test;
 
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.GeoServer;
@@ -12,11 +13,18 @@ import org.w3c.dom.Node;
 
 public class GetCapabilitiesTest extends WCSTestSupport {
     
-    private GeoServer geoServer;
-
+    private static GeoServer geoServer;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetCapabilitiesTest());
+    }
+    
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         geoServer = (GeoServer) applicationContext.getBean("geoServer");
     }
     

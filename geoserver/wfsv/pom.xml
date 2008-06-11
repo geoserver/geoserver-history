@@ -22,13 +22,12 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.geoserver</groupId>
+      <groupId>org.geotools.ogc</groupId>
       <artifactId>net.opengis.wfsv</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-postgis-versioned</artifactId>
+      <artifactId>gt-postgis-versioned</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -82,7 +81,7 @@
       <!-- Binding generation -->
       <!--plugin>
         <groupId>org.geotools.maven</groupId>
-        <artifactId>gt2-xmlcodegen</artifactId>
+        <artifactId>xmlcodegen</artifactId>
 	<version>${gt.version}</version>
         <configuration>
           <schemaLocation>wfsv.xsd</schemaLocation>

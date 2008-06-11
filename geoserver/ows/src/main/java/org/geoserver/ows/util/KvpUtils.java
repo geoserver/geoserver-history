@@ -6,6 +6,7 @@ package org.geoserver.ows.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +17,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.ows.KvpParser;
+import org.geoserver.platform.GeoServerExtensions;
 
 /**
  * Utility class for reading Key Value Pairs from a http query string.
@@ -367,5 +370,119 @@ public class KvpUtils {
         LOGGER.finest("cleaned request: " + raw);
 
         return clean;
+    }
+    
+    /**
+     * @param kvp unparsed/unormalized kvp set
+     */
+    public static KvpMap normalize( Map kvp ) {
+        if ( kvp == null ) {
+            return null;
+        }
+       
+        //create a normalied map
+        KvpMap normalizedKvp = new KvpMap();
+        
+        for (Iterator itr = kvp.entrySet().iterator(); itr.hasNext();) {
+            Map.Entry entry = (Map.Entry) itr.next();
+            String key = (String) entry.getKey();
+            String value = null;
+
+            if (entry.getValue() instanceof String) {
+                value = (String) entry.getValue();
+            } else if (entry.getValue() instanceof String[]) {
+                //TODO: perhaps handle multiple values for a key
+                value = (String) ((String[]) entry.getValue())[0];
+            }
+
+            //trim the string
+            if ( value != null ) {
+                value = value.trim(); 
+            }
+            
+            //convert key to lowercase 
+            normalizedKvp.put(key.toLowerCase(), value);
+        }
+        
+        return normalizedKvp;
+    }
+    
+    /**
+     * Parses a map of key value pairs.
+     * <p>
+     * Important: This method modifies the map, overriding original values with
+     * parsed values.  
+     * </p>
+     * <p>
+     * This routine performs a lookup of {@link KvpParser} to parse the kvp 
+     * entries.
+     * </p>
+     * <p>
+     * If an individual parse fails, this method saves the exception, and adds
+     * it to the list that is returned.
+     * </p>
+     * 
+     * @param rawKvp raw or unparsed kvp.
+     * 
+     * @return A list of errors that occured.
+     */
+    public static List<Throwable> parse( Map kvp ) {
+
+        //look up parser objects
+        Collection parsers = GeoServerExtensions.extensions(KvpParser.class);
+       
+        //strip out parsers which do not match current service/request/version
+        String service = (String) kvp.get( "service" );
+        String version = (String) kvp.get( "version" );
+        String request = (String) kvp.get( "request" );
+        for (Iterator p = parsers.iterator(); p.hasNext(); ) {
+            KvpParser parser = (KvpParser) p.next();
+            
+            if ( parser.getService() != null && !parser.getService().equalsIgnoreCase(service) ) {
+                p.remove();
+                continue;
+            }
+            
+            if ( parser.getVersion() != null && !parser.getVersion().toString().equals(version) ) {
+                p.remove();
+                continue;
+            }
+            
+            if ( parser.getRequest() != null && !parser.getRequest().equalsIgnoreCase(request) ) {
+                p.remove();
+            }
+        }
+        
+        //parser the kvp's
+        ArrayList<Throwable> errors = new ArrayList<Throwable>();
+        for (Iterator itr = kvp.entrySet().iterator(); itr.hasNext();) {
+            Map.Entry entry = (Map.Entry) itr.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            
+            //find the parser for this key value pair
+            Object parsed = null;
+
+            for (Iterator pitr = parsers.iterator(); pitr.hasNext() && parsed == null;) {
+                KvpParser parser = (KvpParser) pitr.next();
+
+                if (key.equalsIgnoreCase(parser.getKey())) {
+                    try {
+                        parsed = parser.parse(value);
+                    } catch (Throwable t) {
+                        //dont throw any exceptions yet, befor the service is
+                        // known
+                        errors.add( t );
+                    }
+                }
+            }
+
+            //if noone could parse, just set to string value
+            if (parsed != null) {
+                entry.setValue(parsed);
+            }
+        }
+        
+        return errors;
     }
 }

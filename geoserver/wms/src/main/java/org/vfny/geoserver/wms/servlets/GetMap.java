@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -46,48 +46,6 @@ public class GetMap extends WMService {
         super(id, wms);
     }
 
-    // TODO: check is this override adds any value compared to the superclass one,
-    // remove otherwise
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        //If the post is of mime-type application/x-www-form-urlencoded
-        //Then the get system can handle it. For all other requests the
-        //post code must handle it.
-        if (isURLEncoded(request)) {
-            doGet(request, response);
-
-            return;
-        }
-
-        //DJB: added post support
-        Request serviceRequest = null;
-
-        //        this.curRequest = request;
-        if (!isServiceEnabled(request)) {
-            sendDisabledServiceError(response);
-
-            return;
-        }
-
-        //we need to construct an approriate serviceRequest from the GetMap XML POST.
-        try {
-            GetMapXmlReader xmlPostReader = new GetMapXmlReader(this);
-
-            Reader xml = request.getReader();
-            serviceRequest = xmlPostReader.read(xml, request);
-        } catch (ServiceException se) {
-            sendError(request, response, se);
-
-            return;
-        } catch (Throwable e) {
-            sendError(request, response, e);
-
-            return;
-        }
-
-        doService(request, response, serviceRequest);
-    }
-
     /**
      * DOCUMENT ME!
      *
@@ -105,7 +63,7 @@ public class GetMap extends WMService {
      * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
-        return new GetMapXmlReader(this);
+        return new GetMapXmlReader(getWMS());
     }
 
     /**
@@ -119,7 +77,7 @@ public class GetMap extends WMService {
         Map layers = this.getWMS().getBaseMapLayers();
         Map styles = this.getWMS().getBaseMapStyles();
 
-        GetMapKvpReader kvp = new GetMapKvpReader(params, this);
+        GetMapKvpReader kvp = new GetMapKvpReader(params, getWMS());
 
         // filter layers and styles if the user specified "layers=basemap"
         // This must happen after the kvp reader has been initially called

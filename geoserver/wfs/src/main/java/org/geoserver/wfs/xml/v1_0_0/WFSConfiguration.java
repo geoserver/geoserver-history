@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.opengis.ows.OwsFactory;
+import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.WfsFactory;
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
@@ -109,7 +109,7 @@ public class WFSConfiguration extends Configuration {
     public void configureContext(MutablePicoContainer context) {
         super.configureContext(context);
 
-        context.registerComponentInstance(OwsFactory.eINSTANCE);
+        context.registerComponentInstance(Ows10Factory.eINSTANCE);
         context.registerComponentInstance(WfsFactory.eINSTANCE);
         context.registerComponentInstance(new WFSHandlerFactory(catalog, schemaBuilder));
         context.registerComponentInstance(catalog);

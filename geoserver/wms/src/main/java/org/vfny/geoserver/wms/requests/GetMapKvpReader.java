@@ -27,6 +27,7 @@ import java.util.zip.InflaterInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
@@ -52,7 +53,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.PaletteManager;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
@@ -163,18 +163,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 */
 	private boolean stylesRequired = true;
 
-	/**
-	 * Creates a new GetMapKvpReader object.
-	 * 
-	 * @param kvpPairs
-	 *            Key Values pairs of the request
-	 * @param service
-	 *            The service handling the request
-	 */
-	public GetMapKvpReader(Map kvpPairs, WMService service) {
-		super(kvpPairs, service);
-	}
-
+        /**
+         * Creates a new GetMapKvpReader object.
+         * 
+         * @param kvpPairs
+         *            Key Values pairs of the request
+         * @param wms
+         *            The WMS config object.
+         */
+        public GetMapKvpReader(Map kvpPairs, WMS wms) {
+                super(kvpPairs, wms);
+        }
+        
 	/**
 	 * Sets wether the STYLES parameter must be parsed
 	 * 
@@ -209,7 +209,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 */
 	public Request getRequest(HttpServletRequest httpRequest)
 			throws ServiceException {
-		GetMapRequest request = new GetMapRequest((WMService) service);
+		GetMapRequest request = new GetMapRequest(getWMS());
 		request.setHttpServletRequest(httpRequest);
 
 		String version = getRequestVersion();
@@ -998,7 +998,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 						+ ", fid: " + rawFilter);
 			}
 
-			filters = readFidFilters(rawIdFilter);
+			filters = readFidFilter(rawIdFilter);
 		}
 
 		if ((rawCqlFilter != null) && !rawCqlFilter.equals("")) {

@@ -69,7 +69,7 @@
     <responseCRSs>EPSG:4326</responseCRSs>
   </supportedCRSs>
   <supportedFormats nativeFormat = "GeoTIFF" >
-    <formats>ARCGRID,IMAGEMOSAIC,GIF,PNG,JPEG,TIFF,GEOTIFF,GTOPO30,DEBUG</formats>
+    <formats>GEOTIFF,TIFF,GIF,PNG,JPEG,DEBUG</formats>
   </supportedFormats>
   <supportedInterpolations default = "nearest neighbor" >
     <interpolationMethods>nearest neighbor,bilinear,bicubic</interpolationMethods>

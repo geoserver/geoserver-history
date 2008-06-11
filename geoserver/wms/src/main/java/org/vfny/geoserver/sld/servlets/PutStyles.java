@@ -5,13 +5,14 @@
 package org.vfny.geoserver.sld.servlets;
 
 import org.geoserver.ows.util.XmlCharsetDetector;
+import org.geoserver.platform.ServiceException;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.StyledLayerDescriptor;
-import org.vfny.geoserver.ExceptionHandler;
+
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.ServiceException;
+
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
@@ -63,8 +64,8 @@ public class PutStyles extends AbstractService {
     public final String success_mime_type = "application/vnd.ogc.success+xml";
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
-    public PutStyles() {
-        super("WMS", "PutStyles", null);
+    public PutStyles( WMS wms ) {
+        super("WMS", "PutStyles", wms);
     }
 
     protected boolean isServiceEnabled(HttpServletRequest req) {
@@ -76,20 +77,10 @@ public class PutStyles extends AbstractService {
     }
 
     protected KvpRequestReader getKvpReader(Map params) {
-        return new PutStylesKvpReader(params, this);
+        return new PutStylesKvpReader(params,(WMS) getServiceRef());
     }
 
     protected XmlRequestReader getXmlRequestReader() {
-        /**
-        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-        *       abstract method
-        */
-        throw new java.lang.UnsupportedOperationException(
-            "Method getXmlRequestReader() not yet implemented.");
-    }
-
-    protected ExceptionHandler getExceptionHandler() {
-        // TODO Auto-generated method stub
         /**
         * @todo Implement this org.vfny.geoserver.servlets.AbstractService
         *       abstract method
@@ -118,7 +109,7 @@ public class PutStyles extends AbstractService {
             requestParams.put(paramName.toUpperCase(), paramValue);
         }
 
-        PutStylesKvpReader requestReader = new PutStylesKvpReader(requestParams, this);
+        PutStylesKvpReader requestReader = new PutStylesKvpReader(requestParams, (WMS) getServiceRef());
 
         PutStylesRequest serviceRequest; // the request object we will deal with
 
@@ -179,7 +170,7 @@ public class PutStyles extends AbstractService {
         out.close();
         requestXml = new BufferedReader(new FileReader(temp)); // pretend like nothing has happened
 
-        PutStylesRequest serviceRequest = new PutStylesRequest(this);
+        PutStylesRequest serviceRequest = new PutStylesRequest((WMS) getServiceRef());
         serviceRequest.setSldBody(sb.toString()); // save the SLD body in the request object
 
         ServletContext context = request.getSession().getServletContext();

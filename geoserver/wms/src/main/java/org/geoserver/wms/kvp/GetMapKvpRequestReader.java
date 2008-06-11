@@ -72,7 +72,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	/**
 	 * get map
 	 */
-	GetMap getMap;
+	//GetMap getMap;
 
 	/**
 	 * current request
@@ -111,14 +111,12 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	 */
 	boolean laxStyleMatchAllowed = true;
 
-	public GetMapKvpRequestReader(GetMap getMap, WMS wms) {
-		super(GetMapRequest.class);
-
-		this.getMap = getMap;
-		this.wms = wms;
-		this.catalog = wms.getData();
-	}
-
+	public GetMapKvpRequestReader( WMS wms ) {
+            super( GetMapRequest.class );
+            this.wms = wms;
+            this.catalog = wms.getData();
+        }
+        
 	public void setHttpRequest(HttpServletRequest httpRequest) {
 		this.httpRequest = httpRequest;
 	}
@@ -140,7 +138,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	}
 
 	public Object createRequest() throws Exception {
-		GetMapRequest request = new GetMapRequest(getMap);
+		GetMapRequest request = new GetMapRequest(wms);
 		request.setHttpServletRequest(httpRequest);
 
 		return request;
@@ -162,7 +160,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 			} catch (Exception e) {
 				// couldnt make it - we send off a service exception with the
 				// correct info
-				throw new WmsException(e.getLocalizedMessage(), "InvalidSRS");
+			    throw new WmsException("Error occurred decoding the espg code " + epsgCode, "InvalidSRS", e);
 			}
 		}
 		

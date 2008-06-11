@@ -19,10 +19,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +34,8 @@ import javax.servlet.ServletContext;
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.ows.xml.v1_0.UpdateSequenceTypeBinding;
@@ -127,6 +131,8 @@ public class XMLConfigReader {
     /** the servlet context * */
     ServletContext context;
 
+    Catalog catalog;
+    
     /**
      * XMLConfigReader constructor.
      * 
@@ -143,7 +149,7 @@ public class XMLConfigReader {
         data = new DataDTO();
         root = new File(".");
     }
-
+    
     /**
      * <p>
      * This method loads the config files from the specified directory into a
@@ -166,9 +172,10 @@ public class XMLConfigReader {
      * @throws ConfigurationException
      *             When an error occurs.
      */
-    public XMLConfigReader(File root, ServletContext context) throws ConfigurationException {
+    public XMLConfigReader(File root, ServletContext context, Catalog catalog) throws ConfigurationException {
         this.root = root;
         this.context = context;
+        this.catalog = catalog;
         wms = new WMSDTO();
         wfs = new WFSDTO();
         wcs = new WCSDTO();
@@ -301,7 +308,7 @@ public class XMLConfigReader {
         keyWords.add("GEOSERVER");
         service.setKeywords(keyWords);
 
-        MetaDataLink mdl = new MetaDataLink();
+        MetaDataLink mdl = new MetaDataLink(catalog.getFactory().createMetadataLink());
         mdl.setAbout("http://geoserver.org");
         mdl.setType("undef");
         mdl.setMetadataType("other");
@@ -314,7 +321,8 @@ public class XMLConfigReader {
         try {
             service.setOnlineResource(new URL("http://geoserver.org"));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            if(LOGGER.isLoggable(Level.FINE))
+            	LOGGER.log(Level.FINE,e.getLocalizedMessage(),e);
         }
 
         dto.setService(service);
@@ -905,6 +913,23 @@ public class XMLConfigReader {
         wms = new WMSDTO();
         wms.setService(loadService(wmsElement));
 
+        final String spaceSeparatedListOfCrsCodes = ReaderUtils.getChildText(wmsElement, "capabilitiesCrsList");
+        if(spaceSeparatedListOfCrsCodes != null){
+            final String[] codes = spaceSeparatedListOfCrsCodes.split(",");
+            Set capabilitiesCrsCodes = new HashSet();
+            for(int i = 0; i < codes.length; i++){
+                String code = codes[i].toUpperCase().trim();
+                try{
+                    CRS.decode(code);
+                    capabilitiesCrsCodes.add(code);
+                }catch(Exception e){
+                    LOGGER.warning("Invalid CRS code found in capabilitiesCrsList: '" + code
+                            + "' is not a known CRS identifier");
+                }
+            }
+            wms.setCapabilitiesCrs(capabilitiesCrsCodes);
+        }
+        
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
         wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
 
@@ -1001,7 +1026,7 @@ public class XMLConfigReader {
             s.setKeywords(ReaderUtils.getKeyWords(ReaderUtils.getChildElement(serviceRoot,
                     "keywords")));
             s.setMetadataLink(getMetaDataLink(ReaderUtils.getChildElement(serviceRoot,
-                    "metadataLink")));
+                    "metadataLink"),catalog));
             s.setFees(ReaderUtils.getChildText(serviceRoot, "fees"));
             s.setAccessConstraints(ReaderUtils.getChildText(serviceRoot, "accessConstraints"));
             s.setMaintainer(ReaderUtils.getChildText(serviceRoot, "maintainer"));
@@ -1618,7 +1643,7 @@ public class XMLConfigReader {
                 List l = new LinkedList();
 
                 for (int i = 0; i < childs.length; i++) {
-                    l.add(getMetaDataLink(childs[i]));
+                    l.add(getMetaDataLink(childs[i],catalog));
                 }
 
                 ft.setMetadataLinks(l);
@@ -1661,6 +1686,17 @@ public class XMLConfigReader {
                                                                                             // mandatory
                 ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(cacheInfo, "enabled",
                         true))).booleanValue());
+            }
+
+            Element searchInfo = ReaderUtils.getChildElement(fTypeRoot, "searchable");
+            ft.setIndexingEnabled(false); // disable indexing by default
+            if (searchInfo != null) {
+                ft.setIndexingEnabled((new Boolean(ReaderUtils.getAttribute(searchInfo, "enabled", true))).booleanValue());
+            }
+
+            Element regionateInfo = ReaderUtils.getChildElement(fTypeRoot, "regionateAttribute");
+            if (regionateInfo != null) {
+                ft.setRegionateAttribute(ReaderUtils.getAttribute(regionateInfo, "value", false));
             }
 
             // Modif C. Kolbowicz - 06/10/2004
@@ -1718,7 +1754,7 @@ public class XMLConfigReader {
      * @return
      * @throws ConfigurationException
      */
-    protected Map loadCoverages(File coverageRoot) throws ConfigurationException {
+    protected Map<String,CoverageInfoDTO> loadCoverages(File coverageRoot) throws ConfigurationException {
         if (LOGGER.isLoggable(Level.FINEST) && (coverageRoot != null)) {
             LOGGER.finest(new StringBuffer("examining: ").append(coverageRoot.getAbsolutePath())
                     .toString());
@@ -1726,38 +1762,37 @@ public class XMLConfigReader {
                     .toString());
         }
 
-        if (coverageRoot == null) { // no coverages have been specified by the
+        if (coverageRoot == null) { 
+        	// no coverages have been specified by the
             // user (that is ok)
-
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
 
         if (!coverageRoot.isDirectory()) {
             throw new IllegalArgumentException("coverageRoot must be a directoy");
         }
 
-        File[] directories = coverageRoot.listFiles(new FileFilter() {
+        final File[] directories = coverageRoot.listFiles(new FileFilter() {
             public boolean accept(File pathname) {
                 return pathname.isDirectory();
             }
         });
 
-        Map map = new HashMap();
-        File info;
-        CoverageInfoDTO dto;
-        final int numDirectories = directories.length;
-
-        for (int i = 0, n = numDirectories; i < n; i++) {
-            info = new File(directories[i], "info.xml");
-
+        final Map<String,CoverageInfoDTO> map = new HashMap<String,CoverageInfoDTO>();
+        for (int i = 0, n = directories.length; i < n; i++) {
+            final File info = new File(directories[i], "info.xml");
             if (info.exists() && info.isFile()) {
                 if (LOGGER.isLoggable(Level.FINER)) {
                     LOGGER.finer(new StringBuffer("Info dir:").append(info).toString());
                 }
 
                 try {
-                    dto = loadCoverage(info);
-                    map.put(dto.getKey(), dto);
+                    final CoverageInfoDTO dto = loadCoverage(info);
+                    if(dto!=null)
+                    	map.put(dto.getKey(), dto);
+                    else
+                        LOGGER
+                        .warning("Skipped misconfigured coverage " + info.getPath());
                 } catch (ConfigurationException e) {
                     LOGGER
                             .log(Level.WARNING, "Skipped misconfigured coverage " + info.getPath(),
@@ -1819,7 +1854,7 @@ public class XMLConfigReader {
      * Creation of a DTo cfron an info.xml file for a coverage.
      * 
      * @param coverageRoot
-     * @return
+     * @return a {@link CoverageInfoDTO} which maps the provided XML information.
      * @throws ConfigurationException
      */
     protected CoverageInfoDTO loadCoverageDTOFromXML(Element coverageRoot)
@@ -1827,10 +1862,6 @@ public class XMLConfigReader {
         final CoverageInfoDTO cv = new CoverageInfoDTO();
 
         try {
-            int length = 0;
-            List l = null;
-            int i = 0;
-            String[] ss = null;
             // /////////////////////////////////////////////////////////////////////
             //
             // COVERAGEINFO DTO INITIALIZATION
@@ -1838,10 +1869,7 @@ public class XMLConfigReader {
             // /////////////////////////////////////////////////////////////////////
             cv.setFormatId(ReaderUtils.getAttribute(coverageRoot, "format", true));
             cv.setName(ReaderUtils.getChildText(coverageRoot, "name", true));
-            cv.setWmsPath(ReaderUtils.getChildText(coverageRoot, "wmspath" /*
-                                                                             * ,
-                                                                             * true
-                                                                             */));
+            cv.setWmsPath(ReaderUtils.getChildText(coverageRoot, "wmspath"));
             cv.setLabel(ReaderUtils.getChildText(coverageRoot, "label", true));
             cv.setDescription(ReaderUtils.getChildText(coverageRoot, "description"));
 
@@ -1851,18 +1879,11 @@ public class XMLConfigReader {
             //
             // /////////////////////////////////////////////////////////////////////
             final String keywords = ReaderUtils.getChildText(coverageRoot, "keywords");
-
-            if (keywords != null) {
-                l = new ArrayList(10);
-                ss = keywords.split(",");
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setKeywords(l);
+            List<String> list = ReaderUtils.stringToList(keywords, ",");
+            if (list != null&&list.size()>0) {
+                cv.setKeywords(list);
             }
-
+            //TODO more robust code here
             cv.setMetadataLink(loadMetaDataLink(ReaderUtils.getChildElement(coverageRoot,
                     "metadataLink")));
 
@@ -1872,17 +1893,12 @@ public class XMLConfigReader {
             //
             // /////////////////////////////////////////////////////////////////////
             final Element tmp = ReaderUtils.getChildElement(coverageRoot, "styles");
-
             if (tmp != null) {
                 cv.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
-
                 final NodeList childrens = tmp.getChildNodes();
                 final int numChildNodes = childrens.getLength();
-                Node child;
-
                 for (int n = 0; n < numChildNodes; n++) {
-                    child = childrens.item(n);
-
+                    final Node child = childrens.item(n);
                     if (child.getNodeType() == Node.ELEMENT_NODE) {
                         if (child.getNodeName().equals("style")) {
                             cv.addStyle(ReaderUtils.getElementText((Element) child));
@@ -1898,9 +1914,7 @@ public class XMLConfigReader {
             // /////////////////////////////////////////////////////////////////////
             final Element envelope = ReaderUtils.getChildElement(coverageRoot, "envelope");
             cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
-
             final CoordinateReferenceSystem crs;
-
             try {
                 crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs", false).replaceAll("'",
                         "\""));
@@ -1909,7 +1923,6 @@ public class XMLConfigReader {
             } catch (ConfigurationException e) {
                 throw new ConfigurationException(e);
             }
-
             cv.setCrs(crs);
             cv.setSrsWKT(crs.toWKT());
 
@@ -1918,9 +1931,8 @@ public class XMLConfigReader {
             // ENVELOPE
             //
             // /////////////////////////////////////////////////////////////////////
-            GeneralEnvelope gcEnvelope = loadEnvelope(envelope, crs);
+            final GeneralEnvelope gcEnvelope = loadEnvelope(envelope, crs);
             cv.setEnvelope(gcEnvelope);
-
             try {
                 cv.setLonLatWGS84Envelope(CoverageStoreUtils.getWGS84LonLatEnvelope(gcEnvelope));
             } catch (MismatchedDimensionException e) {
@@ -1949,7 +1961,6 @@ public class XMLConfigReader {
             //
             // /////////////////////////////////////////////////////////////////////
             cv.setDimensionNames(loadDimensionNames(grid));
-
             final NodeList dims = coverageRoot.getElementsByTagName("CoverageDimension");
             cv.setDimensions(loadDimensions(dims));
 
@@ -1961,31 +1972,16 @@ public class XMLConfigReader {
             final Element supportedCRSs = ReaderUtils
                     .getChildElement(coverageRoot, "supportedCRSs");
             final String requestCRSs = ReaderUtils.getChildText(supportedCRSs, "requestCRSs");
-
-            if (requestCRSs != null) {
-                l = new LinkedList();
-                ss = requestCRSs.split(",");
-
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setRequestCRSs(l);
+            list = ReaderUtils.stringToList(requestCRSs, ",");
+            if (list != null&&list.size()>0) {
+            	cv.setRequestCRSs(list);
             }
-
             final String responseCRSs = ReaderUtils.getChildText(supportedCRSs, "responseCRSs");
-
-            if (responseCRSs != null) {
-                l = new LinkedList();
-                ss = responseCRSs.split(",");
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setResponseCRSs(l);
+            list = ReaderUtils.stringToList(responseCRSs, ",");
+            if (list != null&&list.size()>0) {
+            	cv.setResponseCRSs(list);
             }
+
 
             // /////////////////////////////////////////////////////////////////////
             //
@@ -1995,19 +1991,12 @@ public class XMLConfigReader {
             final Element supportedFormats = ReaderUtils.getChildElement(coverageRoot,
                     "supportedFormats");
             cv.setNativeFormat(ReaderUtils.getAttribute(supportedFormats, "nativeFormat", true));
-
             final String formats = ReaderUtils.getChildText(supportedFormats, "formats");
-
-            if (formats != null) {
-                l = new LinkedList();
-                ss = formats.split(",");
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setSupportedFormats(l);
+            list = ReaderUtils.stringToList(formats, ",");
+            if (list != null&&list.size()>0) {
+            	cv.setSupportedFormats(list);
             }
+
 
             // /////////////////////////////////////////////////////////////////////
             //
@@ -2021,17 +2010,11 @@ public class XMLConfigReader {
 
             final String interpolations = ReaderUtils.getChildText(supportedInterpolations,
                     "interpolationMethods");
-
-            if (interpolations != null) {
-                l = new LinkedList();
-                ss = interpolations.split(",");
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setInterpolationMethods(l);
+            list = ReaderUtils.stringToList(interpolations, ",");
+            if (list != null&&list.size()>0) {
+            	cv.setInterpolationMethods(list);
             }
+
 
             // /////////////////////////////////////////////////////////////////////
             //
@@ -2247,9 +2230,9 @@ public class XMLConfigReader {
 
         if ((dimElems != null) && (dimElems.getLength() > 0)) {
             dimensions = new CoverageDimension[dimElems.getLength()];
-
-            for (int dim = 0; dim < dimElems.getLength(); dim++) {
-                dimensions[dim] = new CoverageDimension();
+            final int length=dimElems.getLength();
+            for (int dim = 0; dim < length; dim++) {
+                dimensions[dim] = new CoverageDimension(catalog.getFactory().createCoverageDimension());
                 dimensions[dim].setName(ReaderUtils.getElementText((Element) ((Element) dimElems
                         .item(dim)).getElementsByTagName("name").item(0)));
                 dimensions[dim].setDescription(ReaderUtils
@@ -2290,7 +2273,7 @@ public class XMLConfigReader {
     }
 
     protected MetaDataLink loadMetaDataLink(Element metalinkRoot) {
-        MetaDataLink ml = new MetaDataLink();
+        MetaDataLink ml = new MetaDataLink(catalog.getFactory().createMetadataLink());
 
         try {
             ml.setAbout(ReaderUtils.getAttribute(metalinkRoot, "about", false));
@@ -2682,8 +2665,8 @@ public class XMLConfigReader {
      * @return The MetaDataLink that was found.
      * @throws Exception
      */
-    public static MetaDataLink getMetaDataLink(Element metadataElem) throws Exception {
-        MetaDataLink mdl = new MetaDataLink();
+    public static MetaDataLink getMetaDataLink(Element metadataElem, Catalog catalog) throws Exception {
+        MetaDataLink mdl = new MetaDataLink(catalog.getFactory().createMetadataLink());
         String tmp;
 
         if (metadataElem != null) {

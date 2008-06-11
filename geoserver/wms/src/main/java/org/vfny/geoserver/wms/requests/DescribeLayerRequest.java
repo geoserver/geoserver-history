@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,14 +24,15 @@ import java.util.List;
  * @version $Id$
  */
 public class DescribeLayerRequest extends WMSRequest {
+
     /**
      * Creates a new DescribeLayerRequest
-     * @param service the service that handles the request
+     * @param wms The WMS config object.
      */
-    public DescribeLayerRequest(WMService service) {
-        super("DescribeLayer", service);
+    public DescribeLayerRequest(WMS wms) {
+        super("DescribeLayer", wms );
     }
-
+    
     /**
      * Holds the FeatureTypes parsed from the
      * request's <code>LAYERS</code> parameter.

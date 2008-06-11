@@ -1,3 +1,119 @@
+GeoServer 1.7.0-alpha1 
+----------------------
+
+The first release of the 1.7.x branch. This release is experimental and marked
+as an alpha. The major developments of 1.7 are Xlink support for WFS 1.1 and a
+full implementation of WCS 1.1.1.
+
+This release is based on GeoTools 2.5.x:
+  revision = 29730, 
+  svn tag = 'geoserver-1.7.0-alpha1'
+
+
+GeoServer 1.6.3
+---------------
+This release contains over 30 patches and improvements since 1.6.2.  In particular, this new version has:
+
+* Watermarking
+* Ability to limit the SRS list in the WMS capabilities
+* Better coverage reprojection
+* Optimized KML generation
+
+Check out the entire 1.6.3 changelog:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=14102
+
+This release is based off of Geotools 2.4.2.
+
+
+GeoServer 1.6.2a
+----------------
+Fixed path parsing issue in demo section.
+
+
+GeoServer 1.6.2
+---------------
+This release contains one small but important patch since 1.6.1:
+
+* Data_dir inside .war distribution is now hidden by default
+
+See http://jira.codehaus.org/browse/GEOS-1785
+
+This release is based off of Geotools 2.4.1
+
+
+Changes:
+http://jira.codehaus.org/browse/GEOS-1785
+
+
+GeoServer 1.6.1
+---------------
+This release has over 40 patches and improvements since 1.6.0. They include
+
+* Feature type aliases
+* Max features support, defined per feature type
+* GetFeatureInfo on coverages
+* Generate PDFs from coverages
+* UpdateSequence support in WMS and WCS
+
+And many many more. Check out the entire 1.6.x changelog:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=14070&pid=10311&sorter/field=issuekey&sorter/order=DESC
+
+This release is based off of Geotools 2.4.1. 
+
+GeoServer 1.6.0
+---------------
+
+The official 1.6.0 release of GeoServer. The 1.6 branch contians new features not present in 1.5. The highlights include:
+
+* WFS 1.1 
+* WMS performance enhancements
+* Security
+* WFS Versioning Extension (experimental)
+* WFS reprojection 
+* KML Superoverlays, Templates, and general improvements 
+* GeoJSON and GeoRSS output formats
+
+And many many more. Check out the entire 1.6.x changelog:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=12871&fixfor=13993&fixfor=13874&fixfor=13631&fixfor=13619&fixfor=13675&fixfor=13547&fixfor=13250&fixfor=13200&pid=10311&sorter/field=issuekey&sorter/order=DESC
+
+This release is based off of Geotools 2.4.0. 
+
+GeoServer 1.6.0-RC3
+-------------------
+
+This release is the third release candidate for 1.6.0. It addresses some very 
+important performance and scalability issues regarding memory leaks. With a 
+few other odds and ends. The changlog is available here:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?version=13993&styleName=Text&projectId=10311
+
+This release is based off of Geotools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc3,
+revision = 28790
+
+GeoServer 1.6.0-RC2
+-------------------
+
+This release is the second release candidate for 1.6.0. It includes some key
+bug fixes since RC1. Notable fixes since RC1 include:
+
+* KML / SLD rule processing
+* better error reporting for invalid XML requests
+* request parameter to enable XML validation
+* datastore fixes including PostGIS reprojection and Oracle permissions
+* SVG rendering improvements
+
+Also in this release are some notable improvements to the experimental
+Versioning WFS support, which includes the addition of
+VersionedFeatureCollection.
+
+The entire changelog can be found here:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?version=13874&styleName=Text&projectId=10311
+
+This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc2,
+revision = 28406
+
 GeoServer 1.6-rc1
 ---------------------
 

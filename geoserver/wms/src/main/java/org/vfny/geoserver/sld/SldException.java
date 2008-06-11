@@ -4,14 +4,10 @@
  */
 package org.vfny.geoserver.sld;
 
-import org.vfny.geoserver.ServiceException;
-
+import org.geoserver.platform.ServiceException;
 
 public class SldException extends ServiceException {
-    public SldException() {
-        super();
-    }
-
+    
     public SldException(String error) {
         super(error);
     }

@@ -46,13 +46,16 @@ public class WFSTestSupport extends GeoServerTestSupport {
     }
     
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         
         // init xmlunit
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("wfs", "http://www.opengis.net/wfs");
         namespaces.put("ows", "http://www.opengis.net/ows");
+        namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
+        namespaces.put("xsd", "http://www.w3.org/2001/XMLSchema");
+        namespaces.put("gml", "http://www.opengis.net/gml");
         namespaces.put(MockData.CITE_PREFIX, MockData.CITE_URI); 
         namespaces.put(MockData.CDF_PREFIX, MockData.CDF_URI);
         namespaces.put(MockData.CGF_PREFIX, MockData.CGF_URI);

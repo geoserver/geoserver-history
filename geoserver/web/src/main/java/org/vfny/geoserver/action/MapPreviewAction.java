@@ -87,8 +87,7 @@ public class MapPreviewAction extends GeoServerAction {
 
         // 1) get the capabilities info so we can find out our feature types
         WMS wms = getWMS(request);
-        Capabilities caps = new Capabilities(wms);
-        CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS", caps);
+        CapabilitiesRequest capRequest = new CapabilitiesRequest("WMS", wms);
         capRequest.setHttpServletRequest(request);
 
         Data catalog = wms.getData();
@@ -168,13 +167,8 @@ public class MapPreviewAction extends GeoServerAction {
             ReferencedEnvelope bbox = new ReferencedEnvelope(orig_bbox, latLonCrs);
 
             if (!CRS.equalsIgnoreMetadata(layerCrs, latLonCrs)) {
-                try { // reproject the bbox to the layer crs
-                    bbox = bbox.transform(layerCrs, true);
-                } catch (TransformException e) {
-                    e.printStackTrace();
-                } catch (FactoryException e) {
-                    e.printStackTrace();
-                }
+                // first check if we have a native bbox
+                bbox = layer.getBoundingBox();
             }
 
             // we now have a bounding box in the same CRS as the layer
@@ -279,10 +273,10 @@ public class MapPreviewAction extends GeoServerAction {
         myForm.set("HeightList", heightList.toArray(new String[heightList.size()]));
         myForm.set("FTNamespaceList", ftnsList.toArray(new String[ftnsList.size()]));
         myForm.set("CoverageStatus", coverageStatus.toArray(new Integer[coverageStatus.size()]));
-        String proxifiedBaseUrl = RequestUtils.baseURL(request);
+        //String proxifiedBaseUrl = RequestUtils.baseURL(request);
         GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class).get(0);
-        proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl, gs.getProxyBaseUrl());
-        myForm.set("BaseUrl", proxifiedBaseUrl );
+        //proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl, gs.getProxyBaseUrl());
+        myForm.set("BaseUrl", "" );
 
         return mapping.findForward("success");
     }

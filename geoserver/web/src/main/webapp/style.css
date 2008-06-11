@@ -333,7 +333,8 @@ color:rgb(150,150,150)
 }
 
 td.greyedout2  {
-font-family: serif;
+font-family: "Courier New", Courier, monospace;
+font-size: 11px;
 color:rgb(150,150,150)
 }
 .code { 

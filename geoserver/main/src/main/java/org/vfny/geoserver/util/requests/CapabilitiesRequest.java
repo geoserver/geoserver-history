@@ -5,6 +5,7 @@
 package org.vfny.geoserver.util.requests;
 
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 
 
@@ -18,17 +19,17 @@ import org.vfny.geoserver.servlets.AbstractService;
 public class CapabilitiesRequest extends Request {
 	
 	private String updateSequence;
-	
-	/**
+
+    /**
      * Creates a new capabilities request object.
      *
      * @param serviceType The id of the service being handled.
      * @param service The service handing the request.
      */
-    public CapabilitiesRequest(String serviceType, AbstractService service) {
-    	this(serviceType, service, null);
+    public CapabilitiesRequest(String serviceType, Service service) {
+        this(serviceType, service, null);
     }
-	
+        
     /**
      * Creates a new capabilities request object.
      *
@@ -36,7 +37,7 @@ public class CapabilitiesRequest extends Request {
      * @param service The service handing the request.
      * @param updateSequence The updateSequence number from the GetCapabilities request
      */
-    public CapabilitiesRequest(String serviceType, AbstractService service, String updateSequence) {
+    public CapabilitiesRequest(String serviceType, Service service, String updateSequence) {
         super(serviceType, "GetCapabilities", service);
         this.updateSequence = updateSequence;
     }
@@ -53,7 +54,7 @@ public class CapabilitiesRequest extends Request {
     /**
      * Override of equals.  Just calls super.equals, since there are no extra
      * fields here that aren't in Request.
-     *
+     *`
      * @param o the object to test against.
      *
      * @return <tt>true</tt> if o is equal to this request.

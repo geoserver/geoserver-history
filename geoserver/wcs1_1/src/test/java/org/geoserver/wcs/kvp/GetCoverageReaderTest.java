@@ -1,15 +1,16 @@
 package org.geoserver.wcs.kvp;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.opengis.wcs.v1_1_1.AxisSubsetType;
-import net.opengis.wcs.v1_1_1.FieldSubsetType;
-import net.opengis.wcs.v1_1_1.GetCoverageType;
-import net.opengis.wcs.v1_1_1.RangeSubsetType;
+import junit.framework.Test;
+import net.opengis.wcs11.AxisSubsetType;
+import net.opengis.wcs11.FieldSubsetType;
+import net.opengis.wcs11.GetCoverageType;
+import net.opengis.wcs11.RangeSubsetType;
 
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.Data;
@@ -17,11 +18,18 @@ import org.vfny.geoserver.wcs.WcsException;
 
 public class GetCoverageReaderTest extends WCSTestSupport {
 
-    GetCoverageRequestReader reader;
+    static GetCoverageRequestReader reader;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetCoverageReaderTest());
+    }
 
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         Data catalog = (Data) applicationContext.getBean("catalog");
         reader = new GetCoverageRequestReader(catalog);
     }

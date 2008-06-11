@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
+import net.opengis.wcs11.GetCapabilitiesType;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.geometry.GeneralEnvelope;

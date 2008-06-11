@@ -17,6 +17,11 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+/**
+ * Readers for plain WFS queries that need to use versioning extended elements
+ * @author Andrea Aime - TOPP
+ *
+ */
 public class WfsXmlReader extends XmlRequestReader {
     private WFS wfs;
 

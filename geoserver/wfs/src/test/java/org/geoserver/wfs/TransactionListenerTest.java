@@ -1,11 +1,7 @@
 package org.geoserver.wfs;
 
-import java.io.InputStream;
-
 import org.geoserver.data.test.MockData;
-import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
-import org.w3c.dom.Document;
 
 /**
  * This test must be run with the server configured with the wfs 1.0 cite
@@ -27,8 +23,8 @@ public class TransactionListenerTest extends WFSTestSupport {
     }
     
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
         listener = (TransactionListenerTester) applicationContext.getBean("transactionListenerTester");
         listener.clear();
     }

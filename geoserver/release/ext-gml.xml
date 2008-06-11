@@ -16,7 +16,7 @@
 			<directory>release/target/dependency</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
-				<include>gt2-gml*.jar</include>
+				<include>gt-gml*.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>

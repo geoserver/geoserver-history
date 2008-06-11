@@ -4,22 +4,17 @@
  */
 package org.geoserver.filters;
 
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletInputStream;
-import java.io.Reader;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Iterator;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+
+import junit.framework.Test;
 
 import org.geoserver.test.GeoServerTestSupport;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletContext;
 
@@ -30,6 +25,13 @@ public class BufferedRequestWrapperTest extends GeoServerTestSupport{
 		"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong",
 		""
 	};
+	
+	/**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new BufferedRequestWrapperTest());
+    }
 
 	protected HttpServletRequest makeRequest(String body){
 		MockHttpServletRequest request = new MockHttpServletRequest();

@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.media.jai.Interpolation;
 
 import org.geoserver.data.util.CoverageUtils;
+import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -36,7 +37,7 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.ServiceException;
+
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -72,14 +73,6 @@ public class CoverageResponse implements Response {
         hints.add(LENIENT_HINT);
         hints.add(IGNORE_OVERVIEWS);
     }
-
-    /**
-     * Tolerance for NOT drawing a coverage.
-     *
-     * If after a scaling a coverage has all dimensions smaller than
-     * {@link GridCoverageRenderer#MIN_DIM_TOLERANCE} we just do not draw it.
-     */
-    private static final int MIN_DIM_TOLERANCE = 1;
 
     /**
      *

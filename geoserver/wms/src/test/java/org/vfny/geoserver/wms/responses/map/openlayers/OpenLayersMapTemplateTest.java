@@ -4,33 +4,42 @@
  */
 package org.vfny.geoserver.wms.responses.map.openlayers;
 
-import freemarker.ext.beans.BeansWrapper;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import junit.framework.TestCase;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.responses.map.openlayers.OpenLayersMapProducer;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 
 public class OpenLayersMapTemplateTest extends WMSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new OpenLayersMapTemplateTest());
+    }
+    
     public void test() throws Exception {
         Configuration cfg = new Configuration();
         cfg.setClassForTemplateLoading(OpenLayersMapProducer.class, "");
@@ -55,6 +64,7 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
         map.put("parameters", new ArrayList());
         map.put("layerName", "layer");
         map.put("units", "degrees");
+        map.put("pureCoverage", "false");
         template.process(map, new OutputStreamWriter(output));
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

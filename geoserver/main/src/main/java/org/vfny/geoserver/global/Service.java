@@ -4,13 +4,17 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geoserver.ows.OWS;
-import org.vfny.geoserver.global.dto.ServiceDTO;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.Wrapper;
+import org.geoserver.config.ServiceInfo;
+import org.geoserver.ows.OWS;
+import org.vfny.geoserver.global.dto.ServiceDTO;
 
 
 /**
@@ -28,8 +32,10 @@ import java.util.Map;
  *
  * @see WMS
  * @see WFS
+ * 
+ * @deprecated use {@link ServiceInfo}
  */
-public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
+public class Service  implements OWS /* extends GlobalLayerSupertype*/ {
     //    private boolean enabled;
     //    private URL onlineResource;
     //    private String name;
@@ -39,42 +45,49 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
     //    private String fees;
     //    private String accessConstraints;
     //    private String maintainer;
-    private String strategy;
-    private MetaDataLink metadataLink;
-    private int partialBufferSize;
-    private GeoServer gs;
-    private Data dt;
+    //private String strategy;
+    //private MetaDataLink metadataLink;
+    //private int partialBufferSize;
+    //private GeoServer gs;
+    //private Data dt;
 
-    /**
-     * Service constructor.
-     *
-     * <p>
-     * Stores the new ServiceDTO data for this service.
-     * </p>
-     *
-     * @param config
-     *
-     * @throws NullPointerException when the param is null
-     */
-    public Service(ServiceDTO dto) {
-        if (dto == null) {
-            throw new NullPointerException();
-        }
-
-        setEnabled(dto.isEnabled());
-        setName(dto.getName());
-        setTitle(dto.getTitle());
-        setAbtract(dto.getAbstract());
-        setKeywords(dto.getKeywords());
-        setFees(dto.getFees());
-        setAccessConstraints(dto.getAccessConstraints());
-        setMaintainer(dto.getMaintainer());
-        setOnlineResource(dto.getOnlineResource());
-        metadataLink = dto.getMetadataLink();
-        strategy = dto.getStrategy();
-        partialBufferSize = dto.getPartialBufferSize();
+    protected ServiceInfo service;
+    protected org.geoserver.config.GeoServer gs;
+    
+    ///**
+    // * Service constructor.
+    // *
+    // * <p>
+    // * Stores the new ServiceDTO data for this service.
+    // * </p>
+    // *
+    // * @param config
+    // *
+    // * @throws NullPointerException when the param is null
+    // */
+    //public Service(ServiceDTO dto) {
+    //    if (dto == null) {
+    //        throw new NullPointerException();
+    //    }
+    //
+    //    setEnabled(dto.isEnabled());
+    //    setName(dto.getName());
+    //    setTitle(dto.getTitle());
+    //    setAbtract(dto.getAbstract());
+    //    setKeywords(dto.getKeywords());
+    //    setFees(dto.getFees());
+    //    setAccessConstraints(dto.getAccessConstraints());
+    //    setMaintainer(dto.getMaintainer());
+    //    setOnlineResource(dto.getOnlineResource());
+    //    metadataLink = dto.getMetadataLink();
+    //    strategy = dto.getStrategy();
+    //    partialBufferSize = dto.getPartialBufferSize();
+    //}
+    public Service( ServiceInfo service, org.geoserver.config.GeoServer gs ) {
+        this.service = service;
+        this.gs = gs;
     }
-
+    
     /**
      * load purpose.
      * <p>
@@ -87,18 +100,39 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
             throw new NullPointerException();
         }
 
-        setEnabled(dto.isEnabled());
-        setName(dto.getName());
-        setTitle(dto.getTitle());
-        setAbtract(dto.getAbstract());
-        setKeywords(dto.getKeywords());
-        setFees(dto.getFees());
-        setAccessConstraints(dto.getAccessConstraints());
-        setMaintainer(dto.getMaintainer());
-        setOnlineResource(dto.getOnlineResource());
-        metadataLink = dto.getMetadataLink();
-        strategy = dto.getStrategy();
-        partialBufferSize = dto.getPartialBufferSize();
+        service.setEnabled( dto.isEnabled() );
+        service.setName( dto.getName() );
+        service.setTitle( dto.getTitle() );
+        service.setAbstract( dto.getAbstract() );
+        service.getKeywords().clear();
+        service.getKeywords().addAll( dto.getKeywords() );
+        service.setFees(dto.getFees());
+        service.setAccessConstraints(dto.getAccessConstraints());
+        service.setOnlineResource(
+            dto.getOnlineResource() != null ? dto.getOnlineResource().toString() : null );
+        
+        if ( dto.getMetadataLink() != null ) {
+            service.setMetadataLink(dto.getMetadataLink().getMetadataLink());
+        }
+        else {
+            service.setMetadataLink(null);
+        }
+        
+        setStrategy(dto.getStrategy());
+        setPartialBufferSize( dto.getPartialBufferSize() );
+        
+        //setEnabled(dto.isEnabled());
+        //setName(dto.getName());
+        //setTitle(dto.getTitle());
+        //setAbtract(dto.getAbstract());
+        //setKeywords(dto.getKeywords());
+        //setFees(dto.getFees());
+        //setAccessConstraints(dto.getAccessConstraints());
+        //setMaintainer(dto.getMaintainer());
+        //setOnlineResource(dto.getOnlineResource());
+        //metadataLink = dto.getMetadataLink();
+        //stategy = dto.getStrategy();
+        //partialBufferSize = dto.getPartialBufferSize();
     }
 
     /**
@@ -106,14 +140,16 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      *
      */
     public void setStrategy(String strategy) {
-        this.strategy = strategy;
+        service.setOutputStrategy(strategy);
+        //this.strategy = strategy;
     }
 
     /**
      * @return The strategy used by the service when performing a response.
      */
     public String getStrategy() {
-        return strategy;
+        return service.getOutputStrategy();
+        //return strategy;
     }
 
     /**
@@ -121,7 +157,9 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      * TODO: this should be factored out when config is splittable among modules.
      */
     public int getPartialBufferSize() {
-        return partialBufferSize;
+        Integer i = (Integer) service.getMetadata().get( "partialBufferSize" );
+        return i != null ? i : -1;
+        //return partialBufferSize;
     }
 
     /**
@@ -129,23 +167,49 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      * TODO: this should be factored out when config is splittable among modules.
      */
     public void setPartialBufferSize(int partialBufferSize) {
-        this.partialBufferSize = partialBufferSize;
+        service.getMetadata().put( "partialBufferSize", partialBufferSize );
+        //this.partialBufferSize = partialBufferSize;
     }
 
     protected Object toDTO() {
         ServiceDTO dto = new ServiceDTO();
-        dto.setAccessConstraints(getAccessConstraints());
-        dto.setEnabled(isEnabled());
-        dto.setFees(getFees());
-        dto.setKeywords(getKeywords());
-        dto.setMaintainer(getMaintainer());
-        dto.setName(getName());
-        dto.setOnlineResource(getOnlineResource());
-        dto.setAbstract(getAbstract());
-        dto.setTitle(getTitle());
-        dto.setMetadataLink(metadataLink);
-        dto.setStrategy(strategy);
-        dto.setPartialBufferSize(partialBufferSize);
+        
+        dto.setAccessConstraints(service.getAccessConstraints());
+        dto.setEnabled(service.isEnabled());
+        dto.setFees(service.getFees());
+        
+        dto.setKeywords(service.getKeywords());
+        dto.setMaintainer(service.getMaintainer());
+        dto.setName(service.getName());
+        
+        if ( service.getOnlineResource() != null ) {
+            try {
+                dto.setOnlineResource(new URL( service.getOnlineResource() ));
+            } 
+            catch (MalformedURLException e) {
+                throw new RuntimeException( e );
+            }    
+        }
+        
+        dto.setAbstract(service.getAbstract());
+        dto.setTitle(service.getTitle());
+        
+        dto.setMetadataLink(getMetadataLink());    
+        dto.setStrategy(getStrategy());
+        dto.setPartialBufferSize(getPartialBufferSize());
+        
+        //dto.setAccessConstraints(getAccessConstraints());
+        //dto.setEnabled(isEnabled());
+        //dto.setFees(getFees());
+        //dto.setKeywords(getKeywords());
+        //dto.setMaintainer(getMaintainer());
+        //dto.setName(getName());
+        //dto.setOnlineResource(getOnlineResource());
+        //dto.setAbstract(getAbstract());
+        //dto.setTitle(getTitle());
+        //dto.setMetadataLink(metadataLink);
+        //dto.setStrategy(strategy);
+        //dto.setPartialBufferSize(partialBufferSize);
 
         return dto;
     }
@@ -156,7 +220,16 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      * @return Returns the dt.
      */
     public Data getData() {
-        return dt;
+        return new Data( gs );
+        //return dt;
+    }
+    
+    public Data getRawData() {
+        Catalog catalog = gs.getCatalog();
+        if(catalog instanceof Wrapper && ((Wrapper) catalog).isWrapperFor(Catalog.class)) {
+            catalog = ((Wrapper) catalog).unwrap(Catalog.class);
+        }
+        return new Data(gs, catalog);
     }
 
     /**
@@ -165,7 +238,7 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      * @param dt The dt to set.
      */
     public void setData(Data dt) {
-        this.dt = dt;
+        //this.dt = dt;
     }
 
     /**
@@ -174,7 +247,8 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      * @return Returns the gs.
      */
     public GeoServer getGeoServer() {
-        return gs;
+        return new GeoServer( gs );
+        //return gs;
     }
 
     /**
@@ -183,7 +257,7 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      * @param gs The gs to set.
      */
     public void setGeoServer(GeoServer gs) {
-        this.gs = gs;
+        //this.gs = gs;
     }
 
     /**
@@ -191,6 +265,115 @@ public abstract class Service extends OWS /*extends GlobalLayerSupertype*/ {
      *
      */
     public MetaDataLink getMetadataLink() {
-        return metadataLink;
+        if ( service.getMetadataLink() != null ) {
+            return new MetaDataLink( service.getMetadataLink() );
+        }
+        return null;
+        //return metadataLink;
     }
+  
+    /**
+     * Returns the character encoding scheme the service shall use to encode all its XML responses in.
+     * 
+     * @return the character set for the service to encode XML responses in.
+     */
+    public Charset getCharSet() {
+        return getGeoServer().getCharSet();
+    }
+
+    public String getAbstract() {
+        return service.getAbstract();
+    }
+
+    public void setAbstract(String serverAbstract) {
+    }
+    
+    public String getAccessConstraints() {
+        return service.getAccessConstraints();
+    }
+
+    public void setAccessConstraints(String accessConstraints) {
+        service.setAccessConstraints(accessConstraints);
+    }
+
+    public String getFees() {
+        return service.getFees();
+    }
+    
+    public void setFees(String fees) {
+        service.setFees(fees);
+    }
+
+    public String getId() {
+        return service.getId();
+    }
+
+    public List getKeywords() {
+        return service.getKeywords();
+    }
+
+    public String getMaintainer() {
+        return service.getMaintainer();
+    }
+
+    public void setMaintainer(String maintainer) {
+        service.setMaintainer(maintainer);
+    }
+    
+    public String getName() {
+        return service.getName();
+    }
+    
+    public void setName(String name) {
+        service.setName( name );
+    }
+
+    public URL getOnlineResource() {
+        try {
+            return new URL( service.getOnlineResource() );
+        } catch (MalformedURLException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public void setOnlineResource(URL onlineResource) {
+        service.setOnlineResource( onlineResource != null ? onlineResource.toString() : null );
+    }
+    
+    public String getTitle() {
+        return service.getTitle();
+    }
+
+    public boolean isEnabled() {
+        return service.isEnabled();
+    }
+
+    public void setTitle(String title) {
+        service.setTitle( title );
+    }
+    
+    public void setEnabled(boolean enabled) {
+        service.setEnabled(enabled);
+    }
+
+    public String getSchemaBaseURL() {
+        return service.getSchemaBaseURL();
+    }
+    
+    public void setSchemaBaseURL(String schemaBaseURL) {
+        service.setSchemaBaseURL(schemaBaseURL);
+    }
+    
+    public boolean isVerbose() {
+        return service.isVerbose();
+    }
+    
+    public void setVerbose(boolean verbose) {
+        service.setVerbose(verbose);
+    }
+    
+    public Map getClientProperties() {
+        return service.getClientProperties();
+    }
+
 }

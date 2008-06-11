@@ -426,6 +426,12 @@ public final class CustomPaletteBuilder {
 		if (transparency == Transparency.BITMASK) {
 			size++; // we need place for transparent color;
 		}
+		
+		// if the palette size happens to be just one (happens with a fully transparent image)
+		// then increase the size to two, otherwise the png encoders will go mad
+		if(size < 2)
+		    size = 2;
+
 
 		final byte[] red = new byte[size];
 		final byte[] green = new byte[size];

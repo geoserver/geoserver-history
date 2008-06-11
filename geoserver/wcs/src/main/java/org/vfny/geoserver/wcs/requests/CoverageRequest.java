@@ -5,6 +5,8 @@
 package org.vfny.geoserver.wcs.requests;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.servlets.WCService;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -81,8 +83,8 @@ public class CoverageRequest extends WCSRequest {
     private Double[] gridOrigin;
     private Map parameters;
 
-    public CoverageRequest(WCService service) {
-        super("GetCoverage", service);
+    public CoverageRequest(WCS wcs) {
+        super("GetCoverage", wcs);
     }
 
     /**

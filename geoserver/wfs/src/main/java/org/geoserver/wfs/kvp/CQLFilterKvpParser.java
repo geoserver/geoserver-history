@@ -5,9 +5,9 @@
 package org.geoserver.wfs.kvp;
 
 import org.geoserver.ows.KvpParser;
+import org.geoserver.platform.ServiceException;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
-import org.vfny.geoserver.ServiceException;
 import java.util.List;
 
 

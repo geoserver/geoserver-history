@@ -11,16 +11,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.QueryCapabilities;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
@@ -28,6 +32,7 @@ import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -35,7 +40,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.ServiceException;
+
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
@@ -64,6 +69,8 @@ public class GetMapResponse implements Response {
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(GetMapResponse.class
 			.getPackage().getName());
 
+	private static FilterFactory filterFac = CommonFactoryFinder.getFilterFactory(null);
+	
 	/**
 	 * The map producer that will be used for the production of a map in the
 	 * requested format.
@@ -97,29 +104,34 @@ public class GetMapResponse implements Response {
 	public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
 		this.wms = wms;
 		this.applicationContext = applicationContext;
-		responseHeaders = new HashMap(10);
+		responseHeaders = new HashMap();
 	}
 
 	/**
 	 * Returns any extra headers that this service might want to set in the HTTP
 	 * response object.
+	 * 
 	 */
 	public HashMap getResponseHeaders() {
-		return responseHeaders;
+		return new HashMap(responseHeaders);
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Implements the map production logic for a WMS GetMap request, delegating the encoding
+	 * to the appropriate output format to a {@link GetMapProducer} appropriate for the required format.
 	 * 
 	 * @param req
-	 *            DOCUMENT ME!
+	 *           a {@link GetMapRequest}
 	 * 
 	 * @throws ServiceException
-	 *             DOCUMENT ME!
-	 * @throws WmsException
-	 *             DOCUMENT ME!
+	 *             if an error occurs creating the map from the provided request
+	 *             
+	 * TODO: This method have become a 300+ lines monster, refactore it to 
+	 * private methods from which names one can inferr what's going on... but get
+	 * a decent test coverage on it first as to avoid regressions as much as possible
 	 */
-	public void execute(Request req) throws ServiceException {
+	@SuppressWarnings("unchecked")
+    public void execute(Request req) throws ServiceException {
 		GetMapRequest request = (GetMapRequest) req;
 
 		final String outputFormat = request.getFormat();
@@ -145,9 +157,7 @@ public class GetMapResponse implements Response {
 		final MapLayerInfo[] layers = request.getLayers();
 		final Style[] styles = (Style[]) request.getStyles().toArray(
 				new Style[] {});
-		final Filter[] filters = ((request.getFilter() != null) ? (Filter[]) request
-				.getFilter().toArray(new Filter[] {})
-				: null);
+        final Filter[] filters = buildLayersFilters(request.getFilter(), layers);
 
 
 
@@ -195,7 +205,7 @@ public class GetMapResponse implements Response {
 				|| (map.getAreaOfInterest().getLength(1) <= 0)) {
 			if (LOGGER.isLoggable(Level.FINE)) {
 				LOGGER
-						.fine("We are not going to render anything because either the are is null ar the dimensions are not positive.");
+						.fine("We are not going to render anything because either the area is null or the dimensions are not positive.");
 			}
 
 			return;
@@ -212,43 +222,28 @@ public class GetMapResponse implements Response {
 			// track the external caching strategy for any map layers
 			boolean cachingPossible = request.getHttpServletRequest()
 					.getMethod().equals("GET");
-			String featureVersion = request.getFeatureVersion();
+			final String featureVersion = request.getFeatureVersion();
 			int maxAge = Integer.MAX_VALUE;
-
-			final int length = layers.length;
-
-			for (int i = 0; i < length; i++) {
-				final Style style = styles[i];
-				Filter optionalFilter;
-				try {
-					optionalFilter = filters[i];
-				} catch (Exception e) {
-					optionalFilter = null;
-				}
+			for (int i = 0; i < layers.length; i++) {
+				final Style layerStyle = styles[i];
+				final Filter layerFilter = filters[i];
 
 				final DefaultMapLayer layer;
 				if(layers[i].getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
 				    cachingPossible = false;
 				    
 				    final FeatureSource<SimpleFeatureType, SimpleFeature> source = layers[i].getRemoteFeatureSource();
-                    layer = new DefaultMapLayer(source, style);
+                    layer = new DefaultMapLayer(source, layerStyle);
                     layer.setTitle(layers[i].getName());
                     
-                    final DefaultQuery definitionQuery;
-                    if (optionalFilter != null) {
-                        definitionQuery = new DefaultQuery(source.getSchema()
-                                .getTypeName(), optionalFilter);
-                        definitionQuery.setVersion(featureVersion);
+                    final DefaultQuery definitionQuery = new DefaultQuery(source.getSchema().getTypeName());
+                    definitionQuery.setFilter(layerFilter);
+                    definitionQuery.setVersion(featureVersion);
+                    int maxFeatures = request.getMaxFeatures() != null ? request.getMaxFeatures()
+                            : Integer.MAX_VALUE;
+                    definitionQuery.setMaxFeatures(maxFeatures);
 
-                        layer.setQuery(definitionQuery);
-                    } else if (featureVersion != null) {
-                        definitionQuery = new DefaultQuery(source.getSchema()
-                                .getTypeName());
-                        definitionQuery.setVersion(featureVersion);
-
-                        layer.setQuery(definitionQuery);
-                    }
-
+                    layer.setQuery(definitionQuery);
                     map.addLayer(layer);
 				} else if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
 					if (cachingPossible) {
@@ -270,7 +265,7 @@ public class GetMapResponse implements Response {
 						}
 					}
 
-					final FeatureSource<SimpleFeatureType, SimpleFeature> source;
+					FeatureSource<SimpleFeatureType, SimpleFeature> source;
 					// /////////////////////////////////////////////////////////
 					//
 					// Adding a feature layer
@@ -278,7 +273,7 @@ public class GetMapResponse implements Response {
 					// /////////////////////////////////////////////////////////
 					try {
 						source = layers[i].getFeature().getFeatureSource(true);
-
+						
 						// NOTE for the feature. Here there was some code that
 						// sounded like:
 						// * get the bounding box from feature source
@@ -305,32 +300,31 @@ public class GetMapResponse implements Response {
 								.toString());
 					}
 
-					layer = new DefaultMapLayer(source, style);
+					layer = new DefaultMapLayer(source, layerStyle);
 					layer.setTitle(layers[i].getName());
 
-					final Filter definitionFilter = layers[i].getFeature()
-							.getDefinitionQuery();
-					final DefaultQuery definitionQuery;
-					if (definitionFilter != null) {
-						definitionQuery = new DefaultQuery(source.getSchema()
-								.getTypeName(), definitionFilter);
-						definitionQuery.setVersion(featureVersion);
+					final DefaultQuery definitionQuery = new DefaultQuery(source.getSchema().getTypeName());
+                    definitionQuery.setVersion(featureVersion);
+                    definitionQuery.setFilter(layerFilter);
 
-						layer.setQuery(definitionQuery);
-					} else if (optionalFilter != null) {
-						definitionQuery = new DefaultQuery(source.getSchema()
-								.getTypeName(), optionalFilter);
-						definitionQuery.setVersion(featureVersion);
+                    // check for startIndex + offset
+                    final Integer startIndex = request.getStartIndex();
+                    if (startIndex != null) {
+                        QueryCapabilities queryCapabilities = source.getQueryCapabilities();
+                        if(queryCapabilities.isOffsetSupported()){
+                            //fsource is required to support SortBy.NATURAL_ORDER so we don't bother checking
+                            definitionQuery.setStartIndex(startIndex);
+                        }else{
+                            //source = new PagingFeatureSource(source, request.getStartIndex(), limit);
+                            throw new WmsException("startIndex is not supported for the " + layers[i].getName() + " layer");
+                        }
+                    }
 
-						layer.setQuery(definitionQuery);
-					} else if (featureVersion != null) {
-						definitionQuery = new DefaultQuery(source.getSchema()
-								.getTypeName());
-						definitionQuery.setVersion(featureVersion);
+                    int maxFeatures = request.getMaxFeatures() != null ? request.getMaxFeatures()
+                            : Integer.MAX_VALUE;
+                    definitionQuery.setMaxFeatures(maxFeatures);
 
-						layer.setQuery(definitionQuery);
-					}
-
+                    layer.setQuery(definitionQuery);
 					map.addLayer(layer);
 				} else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
 					// /////////////////////////////////////////////////////////
@@ -388,7 +382,7 @@ public class GetMapResponse implements Response {
 									.wrapGridCoverageReader(reader, CoverageUtils
 											.getParameters(params, layers[i]
 													.getCoverage()
-													.getParameters())), style);
+													.getParameters())), layerStyle);
 							
 							layer.setTitle(layers[i].getName());
 							layer.setQuery(Query.ALL);
@@ -447,6 +441,50 @@ public class GetMapResponse implements Response {
 	}
 
 	/**
+     * Returns the list of filters resulting of comining the layers definition filters with the per
+     * layer filters made by the user.
+     * <p>
+     * If <code>requestFilters != null</code>, it shall contain the same number of elements than
+     * <code>layers</code>, as filters are requested one per layer.
+     * </p>
+     * 
+     * @param requestFilters the list of filters sent by the user, or <code>null</code>
+     * @param layers the layers requested in the GetMap request, where to get the per layer
+     *            definition filters from.
+     * @return a list of filters, one per layer, resulting of anding the user requested filter and
+     *         the layer definition filter
+     */
+    private Filter[] buildLayersFilters(List<Filter> requestFilters, MapLayerInfo[] layers) {
+        final int nLayers = layers.length;
+        if (requestFilters == null || requestFilters.size() == 0) {
+            requestFilters = Collections.nCopies(layers.length, (Filter) Filter.INCLUDE);
+        } else if (requestFilters.size() != nLayers) {
+            throw new IllegalArgumentException(
+                    "requested filters and number of layers do not match");
+        }
+        Filter[] combinedList = new Filter[nLayers];
+        Filter layerDefinitionFilter;
+        Filter userRequestedFilter;
+        Filter combined;
+
+        MapLayerInfo layer;
+        for (int i = 0; i < nLayers; i++) {
+            layer = layers[i];
+            userRequestedFilter = requestFilters.get(i);
+            if(layer.getType()!=MapLayerInfo.TYPE_RASTER){
+                layerDefinitionFilter = layer.getFeature().getDefinitionQuery();
+                // heck, how I wish we use the null objects more
+                if (layerDefinitionFilter == null) {
+                    layerDefinitionFilter = Filter.INCLUDE;
+                }
+                combined = filterFac.and(layerDefinitionFilter, userRequestedFilter);
+                combinedList[i] = combined;
+            }
+        }
+        return combinedList;
+    }
+
+    /**
 	 * asks the internal GetMapDelegate for the MIME type of the map that it
 	 * will generate or is ready to, and returns it
 	 * 
@@ -568,7 +606,7 @@ public class GetMapResponse implements Response {
 	 */
 	private GetMapProducer getDelegate(String outputFormat, WMS wms)
 			throws WmsException {
-		final Collection producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class);	
+		final Collection producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class, applicationContext);	
 
 		for (Iterator iter = producers.iterator(); iter.hasNext();) {
 			final GetMapProducerFactorySpi factory = (GetMapProducerFactorySpi) iter.next();
@@ -591,6 +629,7 @@ public class GetMapResponse implements Response {
 	 * formats' MIME types that the producers can handle
 	 * 
 	 * @return a Set&lt;String&gt; with the supported mime types.
+	 * @deprecated seems not to be used
 	 */
 	public Set getMapFormats() {
 		Set wmsGetMapFormats = loadImageFormats(applicationContext);
@@ -626,5 +665,13 @@ public class GetMapResponse implements Response {
 	@Override
 	protected void finalize() throws Throwable {
 	    clearMapContext();
+	}
+
+	/**
+	 * This is package visible only to allow getting to the delegate from inside unit tests
+	 * @return
+	 */
+	GetMapProducer getDelegate(){
+	    return delegate;
 	}
 }

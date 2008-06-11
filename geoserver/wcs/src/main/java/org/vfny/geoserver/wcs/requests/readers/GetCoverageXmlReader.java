@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wcs.requests.readers;
 
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageHandler;
@@ -28,8 +29,8 @@ import javax.xml.parsers.SAXParserFactory;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class GetCoverageXmlReader extends XmlRequestReader {
-    public GetCoverageXmlReader(WCService service) {
-        super(service);
+    public GetCoverageXmlReader(WCS wcs) {
+        super(wcs);
     }
 
     public Request read(Reader reader, HttpServletRequest req)
@@ -38,7 +39,7 @@ public class GetCoverageXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        CoverageHandler contentHandler = new CoverageHandler((WCService) getServiceRef());
+        CoverageHandler contentHandler = new CoverageHandler((WCS)getService());
 
         // read in XML file and parse to content handler
         try {

@@ -7,6 +7,7 @@ package org.vfny.geoserver.util.requests.readers;
 import com.vividsolutions.jts.geom.Envelope;
 
 import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.platform.ServiceException;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFilter;
@@ -15,11 +16,13 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
+
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.ServiceException;
+
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.FilterHandlerImpl;
 import org.xml.sax.InputSource;
@@ -89,19 +92,20 @@ abstract public class KvpRequestReader {
     protected Map kvpPairs = new HashMap(10);
 
     /** Reference to the service using the reader */
-    protected AbstractService service;
-
+    //protected AbstractService service;
+    protected Service serviceConfig;
+    
     /**
-     * Creates a reader from paramters and a service.
+     * Creates a reader from paramters and a service configuration.
      *
      * @param kvpPairs The key-value pairs.
-     * @param service The service using the reader.
+     * @param service The service configuration.
      */
-    public KvpRequestReader(Map kvpPairs, AbstractService service) {
+    public KvpRequestReader(Map kvpPairs, Service service) {
         this.kvpPairs = kvpPairs;
-        this.service = service;
+        this.serviceConfig = service;
     }
-
+    
     /**
      * returns the value asociated with <code>key</code> on the set of
      * key/value pairs of this request reader
@@ -322,19 +326,19 @@ abstract public class KvpRequestReader {
         return clean;
     }
 
-    /**
-     * Returns the service handling request.
-     */
-    public AbstractService getServiceRef() {
-        return service;
-    }
-
-    /**
-     * sets the service handling request.
-     */
-    public void setServiceRef(AbstractService service) {
-        this.service = service;
-    }
+//    /**
+//     * Returns the service handling request.
+//     */
+//    public AbstractService getServiceRef() {
+//        return service;
+//    }
+//
+//    /**
+//     * sets the service handling request.
+//     */
+//    public void setServiceRef(AbstractService service) {
+//        this.service = service;
+//    }
 
     /**
      * parses the BBOX parameter, wich must be a String of the form
@@ -431,7 +435,7 @@ abstract public class KvpRequestReader {
      * @param fid
      * @return
      */
-    protected List readFidFilters(String fid) {
+    protected List readFidFilter(String fid) {
         List filters = new ArrayList();
         List unparsed;
         ListIterator i;
@@ -439,19 +443,18 @@ abstract public class KvpRequestReader {
         unparsed = readNested(fid);
         i = unparsed.listIterator();
 
+        HashSet set = new HashSet();
         while (i.hasNext()) {
             List ids = (List) i.next();
             ListIterator innerIterator = ids.listIterator();
 
             while (innerIterator.hasNext()) {
-                HashSet set = new HashSet();
                 set.add(factory.featureId((String) innerIterator.next()));
-
-                Id fidFilter = factory.id(set);
-                filters.add(fidFilter);
-                LOGGER.finest("added fid filter: " + fidFilter);
             }
         }
+        Id fidFilter = factory.id(set);
+        filters.add(fidFilter);
+        LOGGER.finest("added fid filter: " + fidFilter);
 
         return filters;
     }

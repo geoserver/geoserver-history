@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wms;
 
-import org.vfny.geoserver.ServiceException;
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.Requests;
 import javax.servlet.http.HttpServletRequest;
@@ -45,13 +45,6 @@ public class WmsException extends ServiceException {
     public static final ExceptionCodeEnum MissingDimensionValue = new ExceptionCodeEnum("MissingDimensionValue");
     public static final ExceptionCodeEnum InvalidDimensionValue = new ExceptionCodeEnum("InvalidDimensionValue");
      */
-
-    /**
-     * Empty constructor.
-     */
-    public WmsException() {
-        super();
-    }
 
     /**
      * constructor with exception message
@@ -111,36 +104,6 @@ public class WmsException extends ServiceException {
     public WmsException(Throwable e, String preMessage, String locator, String code) {
         this(e, preMessage, locator);
         setCode(code);
-    }
-
-    /**
-     * Return request type.
-     *
-     * @param printStackTrace whether the stack trace should be included.
-     *
-     * @return The ServiceExceptionReport of this error.
-     *
-     * @task REVISIT: adapt it to handle WMS too
-     */
-    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request,
-        GeoServer geoserver) {
-        StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\"");
-        returnXml.append(" encoding=\"UTF-8\" standalone=\"no\" ?>");
-
-        String dtdUrl = Requests.getSchemaBaseUrl(request, geoserver)
-            + "/wms/1.1.1/WMS_exception_1_1_1.dtd";
-        returnXml.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + dtdUrl + "\"> ");
-        returnXml.append("<ServiceExceptionReport version=\"1.1.1\">");
-
-        // Write exception code
-        returnXml.append("    <ServiceException"
-            + ((getCode() != null) ? (" code=\"" + getCode() + "\"") : "") + ">"
-            + getXmlMessage(printStackTrace) + "</ServiceException>");
-
-        // Write footer
-        returnXml.append("  </ServiceExceptionReport>");
-
-        return returnXml.toString();
     }
 
     /**

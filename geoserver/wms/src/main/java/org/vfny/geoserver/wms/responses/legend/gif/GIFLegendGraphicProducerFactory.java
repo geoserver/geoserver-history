@@ -23,7 +23,6 @@ public class GIFLegendGraphicProducerFactory implements GetLegendGraphicProducer
      * Empty constructor, as required by the factory strategy.
      */
     public GIFLegendGraphicProducerFactory() {
-        super();
     }
 
     /**

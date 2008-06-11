@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,6 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
 import org.apache.struts.util.MessageResources;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -378,6 +378,7 @@ public final class WMSContentAction extends ConfigAction {
             HashMap layerMap = new HashMap();
             HashMap styleMap = new HashMap();
             HashMap envelopeMap = new HashMap();
+            Set capabilitiesCrsList =  contentForm.getCapabilitiesCrsList();
 
             int bmi;
             Iterator it;
@@ -405,7 +406,7 @@ public final class WMSContentAction extends ConfigAction {
                     if (layerType == null) {
                         ActionErrors errors = new ActionErrors();
                         errors.add(ActionErrors.GLOBAL_ERROR,
-                            new ActionError("errors.invalid", new ActionMessage("Layer " + layerName)));
+                            new ActionError("errors.invalid", "Layer " + layerName));
                         saveErrors(request, errors);
 
                         return mapping.findForward("config.wms.content");
@@ -420,7 +421,7 @@ public final class WMSContentAction extends ConfigAction {
                     if ((style == null) && !"".equals(styleName)) {
                         ActionErrors errors = new ActionErrors();
                         errors.add(ActionErrors.GLOBAL_ERROR,
-                            new ActionError("error.styleId.notFound", new ActionMessage(styleName)));
+                            new ActionError("error.styleId.notFound", styleName));
                         saveErrors(request, errors);
 
                         return mapping.findForward("config.wms.content");
@@ -435,6 +436,7 @@ public final class WMSContentAction extends ConfigAction {
             config.setBaseMapLayers(layerMap);
             config.setBaseMapStyles(styleMap);
             config.setBaseMapEnvelopes(envelopeMap);
+            config.setCapabilitiesCrs(capabilitiesCrsList);
 
             getApplicationState().notifyConfigChanged();
 

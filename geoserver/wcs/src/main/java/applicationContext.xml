@@ -3,15 +3,16 @@
 
 <beans>
 
-	<!-- the wcs service. -->
-	<bean id="wcs"
+	<!-- the wcs configuration bean. -->
+	<!--bean id="wcs"
 		class="org.vfny.geoserver.global.WCS" depends-on="config">
-        <!-- the depends-on attribute ensures config was initialized before
-          trying to instantiate this bean.
-         -->
-		<constructor-arg ref="config"/>
+       <constructor-arg ref="config"/>
 		<constructor-arg ref="data"/>
 		<constructor-arg ref="geoServer"/>
+	</bean-->
+	<bean id="wcsLoader" class="org.geoserver.wcs.WCSLoader"/>
+	<bean id="wcs" class="org.vfny.geoserver.global.WCS">
+	  <constructor-arg ref="geoServer2"/>
 	</bean>
 	
 	<!-- the wcs service config -->
@@ -94,28 +95,28 @@
  		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.WCSCapabilitiesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.CapabilitiesKvpReader" />
-      	<constructor-arg index="2" ref="wcsGetCapabilities" />
+      	<constructor-arg index="2" ref="wcs" />
 	</bean>
 
 	<bean id="describeCoverageKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.DescribeRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.DescribeKvpReader" />
-      	<constructor-arg index="2" ref="wcsDescribeCoverage" />
+      	<constructor-arg index="2" ref="wcs" />
 	</bean>
 	
 	<bean id="getCoverageKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.CoverageRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.GetCoverageKvpReader" />
-      	<constructor-arg index="2" ref="wcsGetCoverage" />
+      	<constructor-arg index="2" ref="wcs" />
 	</bean>
 	
 	<!--  xml request readers -->
 	<bean id="wcsXmlReader" class="org.geoserver.ows.adapters.XmlRequestReaderAdapter"
 		abstract="true">
 		<constructor-arg index="0" value="http://www.opengis.net/wcs"/>
-		<constructor-arg index="2" ref="wcsGetCapabilities"/>
+		<constructor-arg index="2" ref="wcs"/>
 	</bean>
 	
 	<bean id="wcsGetCapabilitiesXmlReader" parent="wcsXmlReader">

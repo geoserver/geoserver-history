@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
@@ -64,7 +65,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
      *             DOCUMENT ME!
      */
     public void writeTo(OutputStream out)
-        throws org.vfny.geoserver.ServiceException, java.io.IOException {
+        throws ServiceException, java.io.IOException {
         Charset charSet = getRequest().getGeoServer().getCharSet();
         OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
 

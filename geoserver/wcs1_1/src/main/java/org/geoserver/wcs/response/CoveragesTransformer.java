@@ -6,7 +6,7 @@ package org.geoserver.wcs.response;
 
 import java.util.logging.Logger;
 
-import net.opengis.wcs.v1_1_1.GetCoverageType;
+import net.opengis.wcs11.GetCoverageType;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.util.logging.Logging;

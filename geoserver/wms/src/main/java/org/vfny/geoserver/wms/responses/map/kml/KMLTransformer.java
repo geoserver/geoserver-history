@@ -273,6 +273,7 @@ public class KMLTransformer extends TransformerBase {
         
         protected void initTransformer(KMLTransformerBase delegate) {
             delegate.setIndentation( getIndentation() );
+            delegate.setEncoding(getEncoding());
             delegate.setStandAlone(false);
         }
 
@@ -371,6 +372,9 @@ public class KMLTransformer extends TransformerBase {
                 }
             }
 
+            //handle startIndex requested by client query
+            q.setStartIndex(definitionQuery.getStartIndex());
+            
             // make sure we output in 4326 since that's what KML mandates
             if (sourceCrs != null && !CRS.equalsIgnoreMetadata(WGS84, sourceCrs)) {
                 return new ReprojectFeatureResults( featureSource.getFeatures(q), WGS84 );

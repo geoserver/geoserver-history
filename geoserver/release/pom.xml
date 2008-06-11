@@ -81,43 +81,48 @@
 			</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-gml</artifactId>
+			<artifactId>gt-gml</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-db2</artifactId>
+			<artifactId>gt-db2</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-mysql</artifactId>
+			<artifactId>gt-mysql</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-oracle-spatial</artifactId>
+			<artifactId>gt-oracle-spatial</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-vpf</artifactId>
+			<artifactId>gt-vpf</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-arcsde</artifactId>
+			<artifactId>gt-arcsde</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-imagepyramid</artifactId>
+			<artifactId>gt-imagepyramid</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wfsv</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>gwc</artifactId>
+			<version>0.1</version>
 		</dependency>
   </dependencies>
 

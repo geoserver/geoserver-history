@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.servlets.WMService;
 
@@ -24,31 +25,18 @@ public class WMSRequest extends Request {
      * handling the request.
      *
      * @param requestType name of hte request, (Example, GetCapabiliites)
-     * @param service The servlet handling the WMS request.
+     * @param wms The wms configuration object.
+     * 
      */
-    public WMSRequest(String requestType, WMService service) {
-        super(WMS_SERVICE_TYPE, requestType, service);
-    }
-
-    /**
-     * Sets the wms service object.
-     */
-    public void setWMService(WMService wms) {
-        setServiceRef(wms);
-    }
-
-    /**
-     * Returns the wms service object..
-     */
-    public WMService getWMService() {
-        return (WMService) getServiceRef();
+    public WMSRequest(String request, WMS wms) {
+        super(WMS_SERVICE_TYPE,request,wms);
     }
 
     /**
      * Convenience method for obtaining the global wms service instance.
      */
     public WMS getWMS() {
-        return getWMService().getWMS();
+        return (WMS) getServiceConfig();
     }
 
     /**

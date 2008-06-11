@@ -4,6 +4,18 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.awt.geom.AffineTransform;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.logging.Logger;
+
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.ReferencingFactoryFinder;
@@ -22,18 +34,10 @@ import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WCS;
+import org.vfny.geoserver.util.ResponseUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
 import org.vfny.geoserver.wcs.requests.WCSRequest;
-
-import java.awt.geom.AffineTransform;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.logging.Logger;
 
 
 /**
@@ -84,6 +88,15 @@ public class DescribeResponse implements Response {
      * @uml.associationEnd multiplicity="(1 1)"
      */
     protected final DatumFactory datumFactory = ReferencingFactoryFinder.getDatumFactory(null);
+
+    /**
+     * The service configuration bean this response works upon
+     */
+    private WCS wcs;
+
+    public DescribeResponse(final WCS wcs) {
+        this.wcs = wcs;
+    }
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
@@ -163,8 +176,10 @@ public class DescribeResponse implements Response {
 
     public void writeTo(OutputStream out) throws WcsException {
         try {
-            byte[] content = xmlResponse.getBytes();
-            out.write(content);
+            final Charset encoding = wcs.getCharSet();
+            Writer writer = new OutputStreamWriter(out, encoding);
+            writer.write(xmlResponse);
+            writer.flush();
         } catch (IOException ex) {
             throw new WcsException(ex, "", getClass().getName());
         }
@@ -184,7 +199,7 @@ public class DescribeResponse implements Response {
         }
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\"")
-                    .append(wcsRequest.getGeoServer().getCharSet().name()).append("\"?>")
+                    .append(wcs.getCharSet().name()).append("\"?>")
                     .append("\n<CoverageDescription version=").append(CURR_VER).append(" ")
                     .toString();
 

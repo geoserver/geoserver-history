@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
@@ -42,12 +42,12 @@
   </ciManagement>
 
  <repositories>
-  <repository>
+  <!--repository>
    <id>opengeo</id>
    <name>OpenGeo Maven Repository</name>
    <url>http://repo.opengeo.org/</url>
    <layout>default</layout>
-  </repository>
+  </repository-->
   <repository>
    <id>geotools</id>
    <name>geotools</name>
@@ -64,7 +64,7 @@
    <snapshots>
     <enabled>true</enabled>
    </snapshots>
-  </repository>
+  </repository> 
   <repository>
    <id>mortbay</id>
    <name>mortbay</name>
@@ -73,6 +73,14 @@
     <enabled>false</enabled>
    </snapshots>
   </repository>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   <!--
   <repository>
     <id>geo-solutions</id>
@@ -119,157 +127,182 @@
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2</artifactId>
+    <artifactId>gt-geotools</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-arcgrid</artifactId>
+    <artifactId>gt-arcgrid</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-geotiff</artifactId>
+    <artifactId>gt-geotiff</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-gtopo30</artifactId>
+    <artifactId>gt-gtopo30</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-image</artifactId>
+    <artifactId>gt-image</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-imagemosaic</artifactId>
+    <artifactId>gt-imagemosaic</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-imagepyramid</artifactId>
+    <artifactId>gt-imagepyramid</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-api</artifactId>
+    <artifactId>gt-api</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-main</artifactId>
+    <artifactId>gt-main</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-validation</artifactId>
+    <artifactId>gt-validation</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-render</artifactId>
+    <artifactId>gt-render</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-shapefile-renderer</artifactId>
-    <version>${gt.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geotools.demo</groupId>
-    <artifactId>gt2-demo-property</artifactId>
+    <artifactId>gt-shapefile-renderer</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-epsg-hsql</artifactId>
+    <artifactId>gt-property</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-epsg-extension</artifactId>
+    <artifactId>gt-epsg-hsql</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-coverage</artifactId>
+    <artifactId>gt-epsg-extension</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-referencing</artifactId>
+    <artifactId>gt-coverage</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-xml-core</artifactId>
+    <artifactId>gt-referencing</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>gt-xsd-core</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>gt-xsd-gml2</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>gt-xsd-gml3</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>gt-xsd-gml3</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>gt-xsd-filter</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-xml-gml2</artifactId>
+    <artifactId>gt-shapefile</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-xml-gml3</artifactId>
+    <artifactId>gt-data</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-xml-filter</artifactId>
+    <artifactId>gt-jdbc</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-shapefile</artifactId>
+    <artifactId>gt-postgis</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-data</artifactId>
+    <artifactId>gt-h2</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-jdbc</artifactId>
+    <artifactId>gt-wfs</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-postgis</artifactId>
+    <artifactId>gt-wms</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-h2</artifactId>
+    <artifactId>gt-postgis-versioned</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-wfs</artifactId>
-    <version>${gt.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geotools</groupId>
-    <artifactId>gt2-wms</artifactId>
-    <version>${gt.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geotools</groupId>
-    <artifactId>gt2-postgis-versioned</artifactId>
-    <version>${gt.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geotools</groupId>
-    <artifactId>gt2-metadata</artifactId>
+    <artifactId>gt-metadata</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
      <groupId>org.geotools</groupId>
-     <artifactId>gt2-cql</artifactId>
+     <artifactId>gt-cql</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+     <groupId>org.geotools.ogc</groupId>
+     <artifactId>net.opengis.ows</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+     <groupId>org.geotools.ogc</groupId>
+     <artifactId>net.opengis.wfs</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+     <groupId>org.geotools.ogc</groupId>
+     <artifactId>net.opengis.wfsv</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+     <groupId>org.geotools.ogc</groupId>
+     <artifactId>net.opengis.wcs</artifactId>
      <version>${gt.version}</version>
    </dependency>
    <dependency>
@@ -370,7 +403,12 @@
    <dependency>
     <groupId>commons-fileupload</groupId>
     <artifactId>commons-fileupload</artifactId>
-    <version>1.0</version>
+    <version>1.2.1</version>
+   </dependency>
+   <dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>1.3.2</version>
    </dependency>
    <dependency>
     <groupId>commons-httpclient</groupId>
@@ -415,27 +453,47 @@
    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-beans</artifactId>
-    <version>1.2.5</version>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-core</artifactId>
-    <version>1.2.5</version>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-context</artifactId>
-    <version>1.2.5</version>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-webmvc</artifactId>
-    <version>1.2.5</version>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
-    <groupId>org.acegisecurity</groupId>
-    <artifactId>acegi-security</artifactId>
-    <version>1.0.3</version>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc-struts</artifactId>
+    <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc-struts</artifactId>
+    <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aop</artifactId>
+    <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-tx</artifactId>
+    <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>${spring.version}</version>
    </dependency>
    <dependency>
     <groupId>log4j</groupId>
@@ -608,7 +666,7 @@
    <dependency>
     <groupId>org.freemarker</groupId>
     <artifactId>freemarker</artifactId>
-    <version>2.3.9</version>
+    <version>2.3.13</version>
    </dependency>
    <dependency> 
      <groupId>net.sf.json-lib</groupId> 
@@ -632,6 +690,36 @@
      <artifactId>jsqlparser</artifactId> 
      <version>0.3.14</version> 
    </dependency>
+     <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.fileupload</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.freemarker</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.spring</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.noelios.restlet</groupId>
+      <artifactId>com.noelios.restlet.ext.servlet</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.3</version>
+    </dependency>
   </dependencies>
  </dependencyManagement>
 
@@ -654,11 +742,11 @@
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt2-api</artifactId>
+   <artifactId>gt-api</artifactId>
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt2-main</artifactId>
+   <artifactId>gt-main</artifactId>
   </dependency>
   <dependency>
    <groupId>junit</groupId>
@@ -680,7 +768,7 @@
   </pluginManagement>
  
   <!-- TODO: the resources stuff hardcodes paths to source + test directories,
-			we should be able to use some properties here -->
+      we should be able to use some properties here -->
   <resources>
    <resource>
     <directory>${basedir}/src/main/java</directory>
@@ -702,8 +790,8 @@
     <excludes>
      <exclude>**/doc-files/**</exclude>
      <exclude>
-						org/geotools/resources/i18n/**/*.properties
-					</exclude>
+            org/geotools/resources/i18n/**/*.properties
+          </exclude>
     </excludes>
    </resource>
   </resources>
@@ -810,6 +898,7 @@
       <descriptor>release/ext-arcsde.xml</descriptor>
       <descriptor>release/ext-pyramid.xml</descriptor>
       <descriptor>release/ext-wfsv.xml</descriptor>
+      <descriptor>release/ext-gwc.xml</descriptor>
      </descriptors>
      <finalName>geoserver-1.7.0-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
@@ -885,7 +974,7 @@
    <plugin>
     <artifactId>maven-javadoc-plugin</artifactId>
     <configuration>
-     <source>1.4</source>
+     <source>1.5</source>
      <version>false</version>
      <noqualifier>all</noqualifier>
      <quiet>true</quiet>
@@ -1010,18 +1099,14 @@
   <module>wms</module>
   <module>validation</module>
   <module>web</module>
-  <module>test</module>
   <module>ows</module>
-  <module>net.opengis.ows</module>
-  <module>net.opengis.ows.1_1</module>
-  <module>net.opengis.wfs</module>
-  <module>net.opengis.wfsv</module>
-  <module>net.opengis.wcs.1_1</module>
+  <module>community</module>
  </modules>
 
  <properties>
   <gs.version>1.7.0-SNAPSHOT</gs.version>
   <gt.version>2.5-SNAPSHOT</gt.version>
+  <spring.version>2.5.2</spring.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
@@ -1029,20 +1114,6 @@
  </properties>
 
  <profiles>
-
-  <!-- community profile, include community module -->
-  <profile>
-    <id>community</id>
-   <activation>
-    <property>
-     <name>community</name>
-    </property>
-   </activation>
-   <modules>
-    <module>community</module>
-   </modules>
-  </profile>
-  
   <!-- uml graphing -->
   <profile>
    <id>uml</id>
@@ -1063,27 +1134,27 @@
         <version>4.4</version>
        </docletArtifact>
        <additionalparam>
-								-inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify
-								-postfixpackage -nodefontsize 9
-								-nodefontpackagesize 7
-								-link http://java.sun.com/j2se/1.5/docs/api
-								-link http://java.sun.com/j2ee/1.4/docs/api
-								-link http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs
-								-link http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi
-								-link http://jsr-108.sourceforge.net/javadoc
-								-link http://geoapi.sourceforge.net/snapshot/javadoc
-								-link http://geoapi.sourceforge.net/pending/javadoc
-								-link http://geoapi.sourceforge.net/legacy/javadoc
-								-link http://www.jump-project.org/docs/jts/1.7/api
-								-link http://www.geotools.fr/javadoc/2.2/
-								-link http://xmlgraphics.apache.org/batik/javadoc
-								-link http://itextdocs.lowagie.com/docs
-								-tag todo:tfmc:TODO:
-								-tag task:tfmc:TODO:
-								-tag revisit:tfmc:TODO:
-								-tag source:Xt:Source:
-								-tag tutorial:Xt:Tutorial:
-							</additionalparam>
+          -inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify
+          -postfixpackage -nodefontsize 9
+          -nodefontpackagesize 7
+          -link http://java.sun.com/j2se/1.5/docs/api
+          -link http://java.sun.com/j2ee/1.4/docs/api
+          -link http://java.sun.com/products/java-media/jai/forDevelopers/jai-apidocs
+           -link http://java.sun.com/products/java-media/3D/forDevelopers/j3dapi
+           -link http://jsr-108.sourceforge.net/javadoc
+           -link http://geoapi.sourceforge.net/snapshot/javadoc
+           -link http://geoapi.sourceforge.net/pending/javadoc
+           -link http://geoapi.sourceforge.net/legacy/javadoc
+           -link http://www.jump-project.org/docs/jts/1.7/api
+           -link http://www.geotools.fr/javadoc/2.2/
+           -link http://xmlgraphics.apache.org/batik/javadoc
+           -link http://itextdocs.lowagie.com/docs
+           -tag todo:tfmc:TODO:
+           -tag task:tfmc:TODO:
+           -tag revisit:tfmc:TODO:
+           -tag source:Xt:Source:
+           -tag tutorial:Xt:Tutorial:
+         </additionalparam>
       </configuration>
      </plugin>
     </plugins>
@@ -1119,17 +1190,17 @@
     </plugins>
    </build>
   </profile>
-  	<profile>
-		  <id>release</id>
-			<activation>
-				<property>
-					<name>release</name>
-				</property>
-			</activation>
-			<modules>
-			  <module>release</module>
-			</modules>
-		</profile>
+  <profile>
+    <id>release</id>
+    <activation>
+      <property>
+        <name>release</name>
+      </property>
+    </activation>
+    <modules>
+      <module>release</module>
+    </modules>
+  </profile>
  </profiles>
 
 </project>

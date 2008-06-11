@@ -11,10 +11,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipOutputStream;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.gtopo30.GTopo30Writer;
 import org.opengis.coverage.grid.GridCoverageWriter;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 

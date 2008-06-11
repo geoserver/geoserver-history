@@ -35,7 +35,6 @@ public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
 	 * Creates a new PdfMapProducerFactory object.
 	 */
 	public PDFMapProducerFactory() {
-		super();
 	}
 
 	/**

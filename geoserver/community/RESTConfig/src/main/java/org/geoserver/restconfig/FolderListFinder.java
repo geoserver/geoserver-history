@@ -134,7 +134,7 @@ public class FolderListFinder extends Finder {
             LOG.info("Folder posted, mediatype is:" + type);
             DataFormat format = (DataFormat)myPostFormats.get(type);
             LOG.info("Using post format: " + format);
-            Map m = format.readRepresentation(getRequest().getEntity());
+            Map m = (Map)format.readRepresentation(getRequest().getEntity());
             LOG.info("Read data as: " + m);
         }
     }

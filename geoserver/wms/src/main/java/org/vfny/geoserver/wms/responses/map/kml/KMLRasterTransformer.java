@@ -6,8 +6,6 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-import net.opengis.ows.WGS84BoundingBoxType;
-
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;

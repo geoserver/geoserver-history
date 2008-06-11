@@ -1,5 +1,7 @@
 package org.vfny.geoserver.wms;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
@@ -7,10 +9,17 @@ import org.w3c.dom.Document;
 
 public class DescribeLayerTest extends WMSTestSupport {
     
-    protected void setUp() throws Exception {
-        super.setUp();
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new DescribeLayerTest());
+    }
+    
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
         GeoServerDTO dto =  (GeoServerDTO) getGeoServer().toDTO();
-        dto.setProxyBaseUrl("src/test/resources");
+        dto.setProxyBaseUrl("src/test/resources/geoserver");
         getGeoServer().load(dto);
     }
 
@@ -18,7 +27,7 @@ public class DescribeLayerTest extends WMSTestSupport {
         String layer = MockData.FORESTS.getPrefix() + ":" + MockData.FORESTS.getLocalPart();
         String request = "wms?service=wms&version=1.1.1&request=DescribeLayer&layers=" + layer;
         Document dom = getAsDOM(request);
-        print(dom);
+        
         assertEquals("1.1.1", dom.getDocumentElement().getAttributes().getNamedItem("version").getNodeValue());
     }
     

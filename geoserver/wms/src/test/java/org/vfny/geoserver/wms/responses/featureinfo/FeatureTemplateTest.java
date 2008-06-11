@@ -2,6 +2,8 @@ package org.vfny.geoserver.wms.responses.featureinfo;
 
 import java.util.Iterator;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -12,6 +14,14 @@ import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.featureinfo.dummy.Dummy;
 
 public class FeatureTemplateTest extends WMSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new FeatureTemplateTest());
+    }
+    
 
     public void testWithDateAndBoolean() throws Exception {
 

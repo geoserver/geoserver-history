@@ -179,6 +179,20 @@ public class FeatureTypeConfig {
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
+
+    /**
+     * Should we list this layer when crawlers request the sitemap?
+     */
+    private boolean indexingEnabled;
+
+    /**
+     * The name of the property to use when regionating using the attribute strategy.
+     */
+    private String regionateAttribute;
+
+    private String regionateStrategy;
+
+    private int regionateFeatureLimit;
     
     /**
      * The maximum number of features to be served for this feature type (it's understood
@@ -242,6 +256,11 @@ public class FeatureTypeConfig {
 
         cachingEnabled = false;
         cacheMaxAge = null;
+
+        indexingEnabled = false;
+        regionateAttribute = "";
+        regionateStrategy = "sld";
+        regionateFeatureLimit = 50;
     }
 
     /**
@@ -307,7 +326,7 @@ public class FeatureTypeConfig {
 
         dataStoreId = dto.getDataStoreId();
         latLongBBox = new Envelope(dto.getLatLongBBox());
-        nativeBBox = new Envelope(dto.getNativeBBox());
+        nativeBBox = dto.getNativeBBox() != null ? new Envelope(dto.getNativeBBox()) : null;
         SRS = dto.getSRS();
         SRSHandling = dto.getSRSHandling();
 
@@ -352,6 +371,11 @@ public class FeatureTypeConfig {
         cachingEnabled = dto.isCachingEnabled();
         cacheMaxAge = dto.getCacheMaxAge();
         maxFeatures = dto.getMaxFeatures();
+
+        indexingEnabled = dto.isIndexingEnabled();
+        regionateAttribute = dto.getRegionateAttribute();
+        regionateStrategy = dto.getRegionateStrategy();
+        regionateFeatureLimit = dto.getRegionateFeatureLimit();
     }
 
     /**
@@ -422,6 +446,11 @@ public class FeatureTypeConfig {
         f.setCachingEnabled(cachingEnabled);
         f.setCacheMaxAge(cacheMaxAge);
         f.setMaxFeatures(maxFeatures);
+
+        f.setIndexingEnabled(indexingEnabled);
+        f.setRegionateAttribute(regionateAttribute);
+        f.setRegionateStrategy(regionateStrategy);
+        f.setRegionateFeatureLimit(regionateFeatureLimit);
 
         return f;
     }
@@ -791,8 +820,48 @@ public class FeatureTypeConfig {
         return cachingEnabled;
     }
 
+    public boolean isIndexingEnabled() {
+        return indexingEnabled;
+    }
+
+    /**
+     * Which property should we use when regionating using the attribute strategy?
+     * @return the name of the property
+     */
+    public String getRegionateAttribute(){
+        return regionateAttribute;
+    }
+
+    public String getRegionateStrategy(){
+        return regionateStrategy;
+    }
+
+    public int getRegionateFeatureLimit(){
+        return regionateFeatureLimit;
+    }
+
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
+    }
+
+    public void setIndexingEnabled(boolean indexingEnabled){
+        this.indexingEnabled = indexingEnabled;
+    }
+
+    /**
+     * Set which property to use when regionating using the attribute strategy.
+     * @param attr the name of the property
+     */
+    public void setRegionateAttribute(String attr){
+        this.regionateAttribute = attr;
+    }
+
+    public void setRegionateStrategy(String strategy){
+        this.regionateStrategy = strategy;
+    }
+
+    public void setRegionateFeatureLimit(int limit){
+        this.regionateFeatureLimit = limit;
     }
 
     public String getCacheMaxAge() {

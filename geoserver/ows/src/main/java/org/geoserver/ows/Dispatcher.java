@@ -36,6 +36,8 @@ import org.acegisecurity.AcegiSecurityException;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.ows.security.OperationInterceptor;
 import org.geoserver.ows.util.EncodingInfo;
+import org.geoserver.ows.util.KvpMap;
+import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.XmlCharsetDetector;
@@ -379,7 +381,7 @@ public class Dispatcher extends AbstractController {
                 //TODO: we may wish to make this configurable, as perhaps there
                 // might be cases when the service prefers that null be passed in?
                 if ( requestBean == null ) {
-                    throw new ServiceException( "Could not find request reader for: " + parameterType.getName() );
+                    throw new ServiceException( "Could not find request reader (either kvp or xml) for: " + parameterType.getName() );
                 }
                 
                 // GEOS-934  and GEOS-1288
@@ -727,9 +729,7 @@ public class Dispatcher extends AbstractController {
         }
 
         if (matches.isEmpty()) {
-            //try to instantiate one
-            String msg = "No kvp reader: ( " + type + " )";
-            throw new RuntimeException(msg);
+            return null;
         }
 
         if (matches.size() > 1) {
@@ -934,31 +934,9 @@ public class Dispatcher extends AbstractController {
         }
 
         //track parsed kvp and unparsd
-        Map parsedKvp = new KvpMap();
-        Map rawKvp = new KvpMap();
+        Map parsedKvp = KvpUtils.normalize(kvp);
+        Map rawKvp = new KvpMap( parsedKvp );
         
-        for (Iterator itr = kvp.entrySet().iterator(); itr.hasNext();) {
-            Map.Entry entry = (Map.Entry) itr.next();
-            String key = (String) entry.getKey();
-            String value = null;
-
-            if (entry.getValue() instanceof String) {
-                value = (String) entry.getValue();
-            } else if (entry.getValue() instanceof String[]) {
-                //TODO: perhaps handle multiple values for a key
-                value = (String) ((String[]) entry.getValue())[0];
-            }
-
-            //trim the string
-            if ( value != null ) {
-                value = value.trim(); 
-            }
-            
-            //convert key to lowercase 
-            parsedKvp.put(key.toLowerCase(), value);
-            rawKvp.put(key.toLowerCase(), value );
-        }
-
         req.kvp = parsedKvp;
         req.rawKvp = rawKvp;
     }
@@ -966,59 +944,9 @@ public class Dispatcher extends AbstractController {
     void parseKVP(Request req) throws ServiceException {
         
         preParseKVP( req );
-        
-        //look up parser objects
-        Collection parsers = GeoServerExtensions.extensions(KvpParser.class);
-       
-        //strip out parsers which do not match current service/request/version
-        String service = (String) req.kvp.get( "service" );
-        String version = (String) req.kvp.get( "version" );
-        String request = (String) req.kvp.get( "request" );
-        for (Iterator p = parsers.iterator(); p.hasNext(); ) {
-            KvpParser parser = (KvpParser) p.next();
-            
-            if ( parser.getService() != null && !parser.getService().equals(service) ) {
-                p.remove();
-                continue;
-            }
-            
-            if ( parser.getVersion() != null && !parser.getVersion().equals(version) ) {
-                p.remove();
-                continue;
-            }
-            
-            if ( parser.getRequest() != null && !parser.getRequest().equals(request) ) {
-                p.remove();
-            }
-        }
-        
-        //parser the kvp's
-        for (Iterator itr = req.kvp.entrySet().iterator(); itr.hasNext();) {
-            Map.Entry entry = (Map.Entry) itr.next();
-            String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
-            
-            //find the parser for this key value pair
-            Object parsed = null;
-
-            for (Iterator pitr = parsers.iterator(); pitr.hasNext() && parsed == null;) {
-                KvpParser parser = (KvpParser) pitr.next();
-
-                if (key.equalsIgnoreCase(parser.getKey())) {
-                    try {
-                        parsed = parser.parse(value);
-                    } catch (Throwable t) {
-                        //dont throw any exceptions yet, befor the service is
-                        // known
-                        req.error = t;
-                    }
-                }
-            }
-
-            //if noone could parse, just set to string value
-            if (parsed != null) {
-                entry.setValue(parsed);
-            }
+        List<Throwable> errors = KvpUtils.parse( req.kvp );
+        if ( !errors.isEmpty() ) {
+            req.error = errors.get(0);
         }
     }
 
@@ -1171,34 +1099,67 @@ public class Dispatcher extends AbstractController {
                 return;
             }
         }
-        logger.log(Level.SEVERE, "", t);
+        //unwind the exception stack until we find one we know about 
+        Throwable cause = t;
+        while( cause != null ) {
+            if ( cause instanceof ServiceException ) {
+                break;
+            }
+            if ( cause instanceof HttpErrorCodeException ) {
+                break;
+            }
+            
+            cause = cause.getCause();
+        }
+        
+        if ( cause == null ) {
+            //did not fine a "special" exception, create a service exception
+            // by default
+            cause = new ServiceException(t);
+        }
 
-        //wrap in service exception if necessary
-        ServiceException se = null;
-
-        if (t instanceof ServiceException) {
-            se = (ServiceException) t;
+        if (!(cause instanceof HttpErrorCodeException)) {
+            logger.log(Level.SEVERE, "", t);
         } else {
-            //unwind the exception stack, look for a service exception
-            Throwable cause = t.getCause();
-
-            while (cause != null) {
-                if (cause instanceof ServiceException) {
-                    ServiceException cse = (ServiceException) cause;
-                    se = new ServiceException(cse.getMessage(), t, cse.getCode(), cse.getLocator());
-
-                    break;
-                }
-
-                cause = cause.getCause();
+            int errorCode = ((HttpErrorCodeException)cause).getErrorCode();
+            if (errorCode < 199 || errorCode > 299) {
+                logger.log(Level.FINE, "", t);
+            }
+            else{
+                logger.log(Level.FINER, "", t);
             }
         }
 
-        if (se == null) {
-            //couldn't find one, just wrap in one
-            se = new ServiceException(t);
+        
+        if ( cause instanceof ServiceException ) {
+            ServiceException se = (ServiceException) cause;
+            if ( cause != t ) {
+                //copy the message, code + locator, but set cause equal to root
+                se = new ServiceException( se.getMessage(), t, se.getCode(), se.getLocator() ); 
+            }
+            
+            handleServiceException(se,service,request);
         }
+        else if ( cause instanceof HttpErrorCodeException ) {
+            //TODO: log the exception stack trace
+            
+            //set the error code
+            HttpErrorCodeException ece = (HttpErrorCodeException) cause;
+            try {
+            	if(ece.getMessage() != null) {
+                	request.httpResponse.sendError(ece.getErrorCode(),ece.getMessage());
+            	} else {
+            		request.httpResponse.sendError(ece.getErrorCode());
+            	}
+            } 
+            catch (IOException e) {
+                //means the resposne was already commited
+                //TODO: something
+            }
+        }
+    }
 
+    void handleServiceException( ServiceException se, Service service, Request request ) {
         //find an exception handler
         ServiceExceptionHandler handler = null;
 
@@ -1225,35 +1186,7 @@ public class Dispatcher extends AbstractController {
         handler.handleServiceException(se, service, request.httpRequest, request.httpResponse);
     }
 
-    /**
-     * Map which makes keys case insensitive.
-     *
-     * @author Justin Deoliveira, The Open Planning Project
-     *
-     */
-    private static class KvpMap extends HashMap {
-        private static final long serialVersionUID = 1L;
-
-        public boolean containsKey(Object key) {
-            return super.containsKey(upper(key));
-        }
-
-        public Object get(Object key) {
-            return super.get(upper(key));
-        }
-
-        public Object put(Object key, Object value) {
-            return super.put(upper(key), value);
-        }
-
-        Object upper(Object key) {
-            if ((key != null) && key instanceof String) {
-                return ((String) key).toUpperCase();
-            }
-
-            return key;
-        }
-    }
+   
 
     /**
      * Helper class to hold attributes of hte request
@@ -1306,7 +1239,7 @@ public class Dispatcher extends AbstractController {
             return service + " " + version + " " + request;
         }
     }
-
+    
     /**
      * Allows setting up a security interceptor that will allow security checks around
      * service invocations

@@ -18,6 +18,18 @@
     <dependency>
       <groupId>org.acegisecurity</groupId>
       <artifactId>acegi-security</artifactId>
+      <version>1.0.3</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-remoting</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-support</artifactId>
+        </exclusion>
+     </exclusions>
     </dependency>
         <dependency>
 			<groupId>commons-lang</groupId>
@@ -29,13 +41,12 @@
       <version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.geoserver</groupId>
+			<groupId>org.geotools.ogc</groupId>
 			<artifactId>net.opengis.ows</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-xml-core</artifactId>
+			<groupId>org.geotools.xsd</groupId>
+			<artifactId>gt-xsd-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -72,7 +83,7 @@
 		<plugins>
 			<!--plugin>
         <groupId>org.geotools.maven</groupId>
-        <artifactId>gt2-xmlcodegen</artifactId>
+        <artifactId>xmlcodegen</artifactId>
         <configuration>
           <schemaLocation>owsAll.xsd</schemaLocation>
           <schemaSourceDirectory>/home/jdeolive/devel/geoserver/ows4/community/ows/src/main/java/org/geoserver/xml/ows/v1_0_0</schemaSourceDirectory>

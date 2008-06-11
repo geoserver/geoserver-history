@@ -35,10 +35,10 @@ public class Coverage extends WCService {
     }
 
     protected KvpRequestReader getKvpReader(Map params) {
-        return new GetCoverageKvpReader(params, this);
+        return new GetCoverageKvpReader(params, getWCS());
     }
 
     protected XmlRequestReader getXmlRequestReader() {
-        return new GetCoverageXmlReader(this);
+        return new GetCoverageXmlReader(getWCS());
     }
 }

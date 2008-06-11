@@ -146,32 +146,46 @@
       <artifactId>spring-context</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt2-api</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc-struts</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <version>1.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-main</artifactId>
+      <artifactId>gt-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-coverage</artifactId>
+      <artifactId>gt-main</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-shapefile</artifactId>
+      <artifactId>gt-coverage</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-postgis</artifactId>
+      <artifactId>gt-shapefile</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-wfs</artifactId>
+      <artifactId>gt-postgis</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-validation</artifactId>
+      <artifactId>gt-wfs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-validation</artifactId>
     </dependency>
 
     <!-- Test dependencies -->
@@ -361,7 +375,7 @@
       <dependencies>
         <dependency>
           <groupId>org.geotools</groupId>
-          <artifactId>gt2-arcsde</artifactId>
+          <artifactId>gt-arcsde</artifactId>
           <version>${gt.version}</version>
         </dependency>
       </dependencies>
@@ -382,18 +396,82 @@
       </dependencies>
     </profile>
     <profile>
-      <id>community</id>
-      <activation>
-         <property>
-           <name>community</name>
-           <value>true</value>
-         </property>
-      </activation>
+      <id>openplans-authentication</id>
+      <dependencies>
+         <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>OpenPlans-Auth</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>rest</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>rest</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>geosearch</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>geosearch</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>geosync</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>geosync</artifactId>
+          <version>0.1</version>
+        </dependency>
+      </dependencies>
+    </profile>
+     <profile>
+      <id>upload</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>upload</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+      <profile>
+      <id>RESTConfig</id>
       <dependencies>
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>RESTConfig</artifactId>
-          <version>1.0</version>
+          <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>gwc</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>gwc</artifactId>
+          <version>0.1</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>wps</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>wps</artifactId>
+          <version>1.7.0-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>

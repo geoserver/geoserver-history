@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wcs.requests.readers;
 
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.CapabilitiesHandler;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.WcsException;
@@ -34,8 +35,8 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
      *
      * @param service The WFS service handling the request.
      */
-    public CapabilitiesXmlReader(WCService service) {
-        super(service);
+    public CapabilitiesXmlReader(WCS wcs) {
+        super(wcs);
     }
 
     /**
@@ -53,7 +54,7 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
 
         // instantiante parsers and content handlers
         CapabilitiesHandler currentRequest = new CapabilitiesHandler(new WCSCapabilitiesRequest(
-                    getServiceRef()));
+                    (WCS) getService()));
 
         // read in XML file and parse to content handler
         try {

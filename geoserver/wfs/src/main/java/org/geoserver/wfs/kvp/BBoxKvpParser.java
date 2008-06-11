@@ -7,10 +7,10 @@ package org.geoserver.wfs.kvp;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.ServiceException;
 
 import java.util.List;
 

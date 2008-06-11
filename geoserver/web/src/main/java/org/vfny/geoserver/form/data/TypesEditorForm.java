@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
+import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
 import org.geotools.data.DataStore;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -148,15 +149,23 @@ public class TypesEditorForm extends ActionForm {
     /** FeatureType abstract */
     private String description;
 
+    private String regionateAttribute;
+    private String regionateStrategy;
+    private String regionateFeatureLimit;
+
     /** The amount of time to use for the CacheControl: max-age parameter in maps generated from this featuretype **/
     private String cacheMaxAge;
     
     /** The optional max amount of features to be served over wfs */ 
     private String maxFeatures = "";
 
-    /** Should we add the CacheControl: max-age header to maps generated from this featureType? **/
+    /** Should we add the CacheControl: max-age header to maps generated from this featureType? */
     private boolean cachingEnabled;
     private boolean cachingEnabledChecked = false;
+
+    /** Should we list this layer when crawlers request the sitemap? */
+    private boolean indexingEnabled;
+    private boolean indexingEnabledChecked = false;
 
     /**
      * One of a select list - simplest is AbstractBaseClass.
@@ -246,12 +255,19 @@ public class TypesEditorForm extends ActionForm {
         this.styleId = type.getDefaultStyle();
 
         description = type.getAbstract();
+        regionateAttribute = type.getRegionateAttribute();
+        regionateStrategy = type.getRegionateStrategy();
+        regionateFeatureLimit = Integer.toString(type.getRegionateFeatureLimit());
         
         this.maxFeatures = type.getMaxFeatures() == 0? String.valueOf(type.getMaxFeatures()) : "";
 
         this.cacheMaxAge = type.getCacheMaxAge();
         this.cachingEnabled = type.isCachingEnabled();
         cachingEnabledChecked = false;
+
+        this.indexingEnabled = type.isIndexingEnabled();
+        indexingEnabledChecked = false;
+
         this.maxFeatures = String.valueOf(type.getMaxFeatures());
 
         Envelope bounds = type.getLatLongBBox();
@@ -333,41 +349,50 @@ public class TypesEditorForm extends ActionForm {
             if(dataStore != null) dataStore.dispose();
         }
 
-        if (((type.getSchemaBase() == null) || "--".equals(type.getSchemaBase()))
-                || (type.getSchemaAttributes() == null)) {
+        if ( featureType == null ) {
             //We are using the generated attributes
             this.schemaBase = "--";
             this.schemaName = typeName + "_Type";
             this.attributes = new LinkedList();
-
-            // Generate ReadOnly list of Attributes
-            //
-            List generated = DataTransferObjectFactory.generateAttributes(featureType);
-            this.attributes = attributesDisplayList(generated);
             addList = Collections.EMPTY_LIST;
-        } else {
-            this.schemaBase = type.getSchemaBase();
-            this.schemaName = type.getSchemaName();
-            this.attributes = new LinkedList();
-
-            //
-            // Need to add read only AttributeDisplay for each required attribute
-            // defined by schemaBase
-            //
-            List schemaAttributes = DataTransferObjectFactory.generateRequiredAttributes(schemaBase);
-            attributes.addAll(attributesDisplayList(schemaAttributes));
-            attributes.addAll(attributesFormList(type.getSchemaAttributes(), featureType));
-            addList = new ArrayList(featureType.getAttributeCount());
-
-            for (int i = 0; i < featureType.getAttributeCount(); i++) {
-                String attributeName = featureType.getAttribute(i).getLocalName();
-
-                if (lookUpAttribute(attributeName) == null) {
-                    addList.add(attributeName);
+        }
+        else {
+            if (((type.getSchemaBase() == null) || "--".equals(type.getSchemaBase()))
+                    || (type.getSchemaAttributes() == null)) {
+                //We are using the generated attributes
+                this.schemaBase = "--";
+                this.schemaName = typeName + "_Type";
+                this.attributes = new LinkedList();
+    
+                // Generate ReadOnly list of Attributes
+                //
+                List generated = DataTransferObjectFactory.generateAttributes(featureType);
+                this.attributes = attributesDisplayList(generated);
+                addList = Collections.EMPTY_LIST;
+            } else {
+                this.schemaBase = type.getSchemaBase();
+                this.schemaName = type.getSchemaName();
+                this.attributes = new LinkedList();
+    
+                //
+                // Need to add read only AttributeDisplay for each required attribute
+                // defined by schemaBase
+                //
+                List schemaAttributes = DataTransferObjectFactory.generateRequiredAttributes(schemaBase);
+                attributes.addAll(attributesDisplayList(schemaAttributes));
+                attributes.addAll(attributesFormList(type.getSchemaAttributes(), featureType));
+                addList = new ArrayList(featureType.getAttributeCount());
+    
+                for (int i = 0; i < featureType.getAttributeCount(); i++) {
+                    String attributeName = featureType.getAttribute(i).getLocalName();
+    
+                    if (lookUpAttribute(attributeName) == null) {
+                        addList.add(attributeName);
+                    }
                 }
             }
         }
-
+        
         StringBuffer buf = new StringBuffer();
 
         for (Iterator i = type.getKeywords().iterator(); i.hasNext();) {
@@ -382,19 +407,20 @@ public class TypesEditorForm extends ActionForm {
         this.keywords = buf.toString();
 
         metadataLinks = new MetaDataLink[2];
-        metadataLinks[0] = new MetaDataLink();
+        metadataLinks[0] = new MetaDataLink(new MetadataLinkInfoImpl());
         metadataLinks[0].setType("text/plain");
-        metadataLinks[1] = new MetaDataLink();
+        metadataLinks[1] = new MetaDataLink(new MetadataLinkInfoImpl());
         metadataLinks[1].setType("text/plain");
 
         if ((type.getMetadataLinks() != null) && (type.getMetadataLinks().size() > 0)) {
             List links = new ArrayList(type.getMetadataLinks());
             MetaDataLink link = (MetaDataLink) links.get(0);
-            metadataLinks[0] = new MetaDataLink(link);
+            
+            metadataLinks[0] = new MetaDataLink(new MetadataLinkInfoImpl()).load( link ); 
 
             if (links.size() > 1) {
                 link = (MetaDataLink) links.get(1);
-                metadataLinks[1] = new MetaDataLink(link);
+                metadataLinks[1] = new MetaDataLink(new MetadataLinkInfoImpl()).load( link );
             }
         }
 
@@ -669,6 +695,18 @@ public class TypesEditorForm extends ActionForm {
         return description;
     }
 
+    public String getRegionateAttribute(){
+        return regionateAttribute;
+    }
+
+    public String getRegionateStrategy(){
+        return regionateStrategy;
+    }
+
+    public String getRegionateFeatureLimit(){
+        return regionateFeatureLimit;
+    }
+
     /**
      * Set abstact (or description) to description.
      *
@@ -676,6 +714,18 @@ public class TypesEditorForm extends ActionForm {
      */
     public void setAbstract(String description) {
         this.description = description;
+    }
+
+    public void setRegionateAttribute(String attr){
+        this.regionateAttribute = attr;
+    }
+
+    public void setRegionateStrategy(String strat){
+        this.regionateStrategy = strat;
+    }
+
+    public void setRegionateFeatureLimit(String limit){
+        this.regionateFeatureLimit = limit;
     }
 
     /**
@@ -1066,13 +1116,26 @@ public class TypesEditorForm extends ActionForm {
         return cachingEnabled;
     }
 
+    public boolean isIndexingEnabled(){
+        return indexingEnabled;
+    }
+
     public void setCachingEnabled(boolean cachingEnabled) {
         cachingEnabledChecked = true;
         this.cachingEnabled = cachingEnabled;
     }
 
+    public void setIndexingEnabled(boolean indexingEnabled){
+        indexingEnabledChecked = true;
+        this.indexingEnabled = true;
+    }
+
     public boolean isCachingEnabledChecked() {
         return cachingEnabledChecked;
+    }
+
+    public boolean isIndexingEnabledChecked(){
+        return indexingEnabledChecked;
     }
 
     public String[] getOtherSelectedStyles() {

@@ -4,6 +4,8 @@ import java.util.Collections;
 
 import javax.xml.namespace.QName;
 
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.vfny.geoserver.wms.responses.map.kml.OWS5MapProducerFactory;
@@ -14,6 +16,13 @@ public class ExtendedDataTest extends WMSTestSupport {
     private static final QName ONLYGEOM = new QName(MockData.CITE_URI, "OnlyGeom",
                     MockData.CITE_PREFIX);
 
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new ExtendedDataTest());
+    }
+    
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         dataDirectory.addWellKnownTypes(new QName[] { MockData.BUILDINGS });

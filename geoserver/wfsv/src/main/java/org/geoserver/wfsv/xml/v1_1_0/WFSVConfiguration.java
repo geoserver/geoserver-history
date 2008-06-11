@@ -5,8 +5,7 @@
 package org.geoserver.wfsv.xml.v1_1_0;
 
 import net.opengis.wfsv.WfsvFactory;
-import org.eclipse.xsd.util.XSDSchemaLocationResolver;
-import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
+
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Configuration;
 import org.picocontainer.MutablePicoContainer;
@@ -49,9 +48,9 @@ public class WFSVConfiguration extends Configuration {
         container.registerComponentImplementation(WFSV.VersionedUpdateElementType,VersionedUpdateElementTypeBinding.class);
     }
     
-    public void configureContext(MutablePicoContainer context) {
-        super.configureContext(context);
-        context.registerComponentInstance(WfsvFactory.eINSTANCE);
-        context.registerComponentInstance(new VersionedFeaturePropertyExtractor(catalog));
+    public void configureContext(MutablePicoContainer bindings) {
+        super.configureContext(bindings);
+        bindings.registerComponentInstance(WfsvFactory.eINSTANCE);
+        bindings.registerComponentInstance(new VersionedFeaturePropertyExtractor(catalog));
     }
 }

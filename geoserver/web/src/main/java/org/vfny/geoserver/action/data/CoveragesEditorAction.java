@@ -164,8 +164,12 @@ public final class CoveragesEditorAction extends ConfigAction {
         CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
 
         if (cvStoreInfo == null) {
-            cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
-                    catalog);
+            org.geoserver.catalog.CoverageStoreInfo cvStore = 
+                getCatalog().getFactory().createCoverageStore();
+            cvStoreInfo = new CoverageStoreInfo( cvStore, getCatalog() );
+            cvStoreInfo.load( getDataConfig().getDataFormat(formatID).toDTO() );
+            //cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
+            //        catalog);
         }
 
         final Format format = cvStoreInfo.getFormat();
@@ -294,13 +298,11 @@ public final class CoveragesEditorAction extends ConfigAction {
          */
         final Map params = new HashMap();
         Iterator it = form.getParamKeys().iterator();
-        String paramKey;
-        String paramValue;
         int index = 0;
 
         while (it.hasNext()) {
-            paramKey = (String) it.next();
-            paramValue = (String) form.getParamValues().get(index);
+            final String paramKey = (String) it.next();
+            final String paramValue = (String) form.getParamValues().get(index);
             params.put(paramKey, paramValue);
             index++;
         }
@@ -415,8 +417,12 @@ public final class CoveragesEditorAction extends ConfigAction {
         CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
 
         if (cvStoreInfo == null) {
-            cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
-                    catalog);
+            org.geoserver.catalog.CoverageStoreInfo cvStore = 
+                getCatalog().getFactory().createCoverageStore();
+            cvStoreInfo = new CoverageStoreInfo( cvStore, getCatalog() );
+            cvStoreInfo.load( getDataConfig().getDataFormat(formatID).toDTO() );
+            //cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
+            //        catalog);
         }
 
         final Format format = cvStoreInfo.getFormat();
@@ -449,7 +455,8 @@ public final class CoveragesEditorAction extends ConfigAction {
     }
 
     private MetaDataLink metadataLink(CoveragesEditorForm coverageForm) {
-        MetaDataLink ml = new MetaDataLink();
+        
+        MetaDataLink ml = new MetaDataLink(getCatalog().getFactory().createMetadataLink());
 
         if ((coverageForm.getMetadataLink() != null)
                 && (coverageForm.getMetadataLink().length() > 0)) {

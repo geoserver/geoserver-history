@@ -77,13 +77,18 @@ public final class CoverageStoresEditorAction extends ConfigAction {
         getUserContainer(request).setDataFormatConfig(null);
         getApplicationState().notifyConfigChanged();
 
-        CoverageStoreInfo cvStoreInfo = new CoverageStoreInfo(config.toDTO(), getData());
+        
+        CoverageStoreInfo cvStoreInfo = new CoverageStoreInfo(
+            getCatalog().getFactory().createCoverageStore(), getCatalog()
+        );
+        cvStoreInfo.load( config.toDTO() );
+        //CoverageStoreInfo cvStoreInfo = new CoverageStoreInfo(config.toDTO(), getData());
 
         if (newCoverageFlag) {
             //if we're making a new coverage store, then go ahead and create the new coverage and
             //forward to the editor
             CoverageConfig coverageConfig = DataCoveragesNewAction.newCoverageConfig(cvStoreInfo,
-                    dataFormatID, request);
+                    dataFormatID, request, getCatalog());
             user.setCoverageConfig(coverageConfig);
 
             return mapping.findForward("config.data.coverage.editor");

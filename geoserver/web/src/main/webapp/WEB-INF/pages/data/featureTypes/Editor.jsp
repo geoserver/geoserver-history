@@ -90,7 +90,7 @@ function prepareFormData(){
         <table>
         	<tr>
         		<td>
-        			<html:select property="panelStyleIds" multiple="multiple">
+        			<html:select property="panelStyleIds" multiple="multiple" size="8">
           				<html:options property="styles"/>
         			</html:select>
         		</td>
@@ -100,7 +100,7 @@ function prepareFormData(){
         			<input type="button" value="<<" style="width:30" onClick="removeStyle()">
         		</td>
         		<td>
-        			<html:select property="otherSelectedStyles" style="width:130" multiple="multiple">
+        			<html:select property="otherSelectedStyles" style="width:130" multiple="multiple" size="8">
         				<html:options property="typeStyles"/>
         			</html:select>
         		</td>
@@ -132,7 +132,7 @@ function prepareFormData(){
         </td>
         <td>
         &nbsp;-&nbsp;
-        <a href="../../../srsHelp.do">
+        <a href="srsHelp.do">
               <bean:message key="label.SRSList"/>
             </a>
         </td>
@@ -308,7 +308,7 @@ function prepareFormData(){
 		</span>
 	  </td>
 	  <td class="datum">
-		<html:textarea property="keywords" cols="90" rows="10"/>
+		<html:textarea property="keywords" cols="60" rows="2"/>
 	  </td>
     </tr>
 
@@ -399,7 +399,43 @@ function prepareFormData(){
     		<html:checkbox property="cachingEnabled" />
     	</td>
     </tr>
-    
+    <tr> <td class="label">
+             <span class="help" title="<bean:message key="help.type.searchingEnabled" />">
+                 <bean:message key="label.searchingEnabled"/>:
+             </span>
+         </td>
+         <td class="datum">
+             <html:checkbox property="indexingEnabled"/>
+         </td>
+    </tr>
+    <tr> <td class="label">
+             <span class="help" title="<bean:message key="help.type.regionateAttribute" />">
+                   <bean:message key="label.regionateAttribute"/>:
+             </span>
+         </td>
+         <td class="datum">
+             <html:text property="regionateAttribute"/>
+         </td>
+    </tr>
+    <tr> <td class="label">
+             <span class="help" title="<bean:message key="help.type.regionateStrategy" />">
+                  <bean:message key="label.regionateStrategy"/>:
+             </span>
+         </td>
+         <td class="datum">
+             <html:text property="regionateStrategy"/>
+         </td>
+     </tr>
+     <tr>
+         <td class="label">
+              <span class="help" title="<bean:message key="help.type.regionateStrategy"/>">
+              <bean:message key="label.regionateFeatureLimit"/>:
+              </span>
+         </td>
+         <td class="datum">
+            <html:text property="regionateFeatureLimit"/>
+         </td>
+     </tr>
     <tr>
     	<td class="label">
     		<span class="help" title="<bean:message key="help.type.cacheMaxAge" />">
@@ -491,7 +527,7 @@ function prepareFormData(){
             <td><bean:message key="label.max"/>:<html:text size="2" property='<%= "attributes[" + index + "].maxOccurs"%>'/></td>
             <td width=16>
               <% if (first == false) { %>
-          	  <html:image src="../../../images/up.png" 
+          	  <html:image src="images/up.png" 
           	  	          titleKey="type.title.up" 
           	  	          property="action" 
           	  	          value='<%= "up_"+ index%>'/>
@@ -500,7 +536,7 @@ function prepareFormData(){
           	</td>
           	<td width=16>
           	  <% if (attributesSize-1 != index.intValue()) { %>
-          	  <html:image src="../../../images/down.png" 
+          	  <html:image src="images/down.png" 
           	              titleKey="type.title.down" 
           	              property="action" 
           	              value='<%= "down_"+ index%>'/>

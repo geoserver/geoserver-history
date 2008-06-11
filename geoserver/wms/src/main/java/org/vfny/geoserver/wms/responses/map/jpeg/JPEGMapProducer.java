@@ -27,6 +27,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
     protected RenderedImage prepareImage(int width, int height, IndexColorModel palette, boolean transparent) {
         //there is no transparency in JPEG anyway :-)
         transparent = false;
+        palette = null;
         return super.prepareImage(width, height, palette, transparent);
     }
     /** Logger. */

@@ -65,12 +65,17 @@ public final class Requests {
      * Get base url used - it is not any more assumed to be
      * http://server:port/geoserver
      *
+     * GRR: it is not any more assumed the context path is /geoserver. If a proxyBaseUrl
+     * was provided, then that's the full context path and thus the proxyBaseUrl is returned as is,
+     * instead of appending /geosverver to it.
+     *
      * Removed the hardcoded "http://" and replaced it with
      * httpServletRequest.getScheme() because the https case was not being
      * handled.
      *
      * @param httpServletRequest
      * @return http://server:port/path-defined-context
+     * @deprecated use {@link RequestUtils#proxifiedBaseURL(String, String)} instead
      */
     public static String getBaseUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
         // try with the web interface configuration, if it fails, look into
@@ -78,9 +83,9 @@ public final class Requests {
         // and finally, if nothing is found, give up and return the default base URL
         String url = ((geoserver != null) ? geoserver.getProxyBaseUrl() : null);
 
-        if ((geoserver != null) && (url != null)) {
-            url = appendContextPath(url, httpServletRequest.getContextPath());
-        }
+        //if ((geoserver != null) && (url != null)) {
+        //    url = appendContextPath(url, httpServletRequest.getContextPath());
+        //}
 
         if ((url == null) || (url.trim().length() == 0)) {
             if (httpServletRequest != null) {
@@ -105,6 +110,9 @@ public final class Requests {
         return url;
     }
 
+    /**
+     * @deprecated of no use
+     */
     public static String getBaseJspUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
         // try with the web interface configuration, if it fails, look into
         // web.xml just to keep compatibility (should be removed next version)

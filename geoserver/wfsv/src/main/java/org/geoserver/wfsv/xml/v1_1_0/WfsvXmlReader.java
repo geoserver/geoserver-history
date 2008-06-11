@@ -4,6 +4,12 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
+import java.io.Reader;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
@@ -11,11 +17,6 @@ import org.geotools.util.Version;
 import org.geotools.xml.Parser;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.InputSource;
-import java.io.Reader;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
 
 /**
  * (JD) TODO: This class copies too much code from teh normal XML reader, we

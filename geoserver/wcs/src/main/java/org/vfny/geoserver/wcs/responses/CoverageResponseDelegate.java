@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.io.OutputStream;

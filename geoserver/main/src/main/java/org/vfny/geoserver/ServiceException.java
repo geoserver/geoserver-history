@@ -72,6 +72,8 @@ import javax.servlet.http.HttpServletRequest;
  *       do this we need the request, as that's how we figure out the baseUrl.
  *       Would probably not be that hard to get the request included, and
  *       would lead to better  error reporting...
+ *       
+ *       @deprecated use {@link org.geoserver.platform.ServiceException}
  */
 public class ServiceException extends org.geoserver.platform.ServiceException {
     /** Class logger */

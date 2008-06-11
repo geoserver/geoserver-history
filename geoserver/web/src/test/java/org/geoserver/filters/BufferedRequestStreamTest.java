@@ -4,28 +4,19 @@
  */
 package org.geoserver.filters;
 
-import org.geoserver.test.GeoServerTestSupport; 
-import javax.servlet.ServletInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.Reader;
-
-import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpServletResponse;
-import com.mockrunner.mock.web.MockHttpSession;
-import com.mockrunner.mock.web.MockServletContext;
+import org.geoserver.test.GeoServerTestSupport;
 
 /**
  * Wrap a String up as a ServletInputStream so we can read it multiple times.
  * @author David Winslow <dwinslow@openplans.org>
  */
-public class BufferedRequestStreamTest extends GeoServerTestSupport{
+public class BufferedRequestStreamTest extends GeoServerTestSupport {
     BufferedRequestStream myBRS;
 	String myTestString;
 
-    public void setUp() throws Exception{
-		super.setUp();
+	@Override
+    public void setUpInternal() throws Exception{
+		super.setUpInternal();
 		myTestString = "Hello, this is a test";
 		myBRS = new BufferedRequestStream(myTestString);
 	}

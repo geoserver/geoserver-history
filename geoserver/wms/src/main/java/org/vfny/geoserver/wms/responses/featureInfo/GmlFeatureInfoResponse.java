@@ -11,6 +11,7 @@ import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wfs.xml.GML2OutputFormat;
@@ -18,7 +19,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.ServiceException;
+
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -92,11 +93,11 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         GetFeatureInfoRequest fInfoReq = (GetFeatureInfoRequest) getRequest();
-        WMS wms = (WMS) fInfoReq.getServiceRef().getServiceRef();
+        WMS wms = (WMS) fInfoReq.getWMS();
         WFS wfs = wms.getWFS();
         GeoServer gs = wms.getGeoServer();
 
-        Data catalog = fInfoReq.getServiceRef().getCatalog();
+        Data catalog = fInfoReq.getWMS().getData();
 
         //the 'response' object we'll pass to our OutputFormat
         FeatureCollectionType features = WfsFactory.eINSTANCE.createFeatureCollectionType();

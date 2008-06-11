@@ -73,7 +73,7 @@ public final class LegendURLDTO implements DataTransferObject {
         height = legend.getHeight();
         onlineResource = legend.getOnlineResource();
     }
-
+    
     /**
      * Implement clone.
      *

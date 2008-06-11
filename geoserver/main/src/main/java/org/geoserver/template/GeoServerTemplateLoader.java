@@ -10,6 +10,7 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;
@@ -66,9 +67,16 @@ public class GeoServerTemplateLoader implements TemplateLoader {
     ClassTemplateLoader classTemplateLoader;
 
     /**
-     * Feature type directory to load template against
+     * Feature type directory to load template against. Its presence is mutually
+     * exclusive with coverageName
      */
     SimpleFeatureType featureType;
+
+    /**
+     * Coverage info directory to load template against. Its presence is mutually
+     * exclusive with featureTypeInfo
+     */
+    private String coverageName;
 
     /**
      * Constructs the template loader.
@@ -99,34 +107,55 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         this.featureType = featureType;
     }
 
+    /**
+     * Sets the coverage info
+     * 
+     * @param coverageName
+     */
+    public void setCoverageName(String coverageName){
+        this.coverageName = coverageName;
+    }
+    
     public Object findTemplateSource(String path) throws IOException {
         File template = null;
 
+        
         //first check relative to set feature type
+        String baseDirName;
         try {
+            final String dirName;
             if (featureType != null) {
-                String dirName = GeoserverDataDirectory.findFeatureTypeDirName(featureType);
-                template = (File) fileTemplateLoader.findTemplateSource("featureTypes" + File.separator
-                        + dirName + File.separator + path);
-    
-                if (template != null) {
-                    return template;
-                }
-            } 
+                baseDirName = "featureTypes";
+                dirName = GeoserverDataDirectory.findFeatureTypeDirName(featureType);
+            } else if (coverageName != null) {
+                baseDirName = "coverages";
+                dirName = GeoserverDataDirectory.findCoverageDirName(coverageName);
+            } else {
+                baseDirName = "featureTypes";
+                dirName = "";
+            }
+            
+            template = (File) fileTemplateLoader.findTemplateSource(baseDirName + File.separator
+                    + dirName + File.separator + path);
+
+            if (template != null) {
+                return template;
+            }
+
+            // next, try relative to featureTypes or coverages directory, as appropriate
+            template = (File) fileTemplateLoader.findTemplateSource(baseDirName + File.separator
+                    + path);
+
+            if (template != null) {
+                return template;
+            }
+
         } catch(NoSuchElementException e) {
             // this one is thrown if the feature type is not found, and happens whenever
             // the feature type is a remote one
             // No problem, we just go on, there won't be any specific template for it
         }
     
-
-        // next, try relative to feature types
-        template = (File) fileTemplateLoader.findTemplateSource("featureTypes" + File.separator
-                + path);
-
-        if (template != null) {
-            return template;
-        }
 
         //next, check the templates directory
         template = (File) fileTemplateLoader.findTemplateSource("templates" + File.separator + path);

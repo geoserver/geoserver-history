@@ -4,6 +4,14 @@
  */
 package org.vfny.geoserver.wms.responses.map.georss;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.Query;
@@ -11,17 +19,20 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 
 public class AtomGeoRSSTransformerTest extends WMSTestSupport {
-    WMSMapContext map;
+    static WMSMapContext map;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new AtomGeoRSSTransformerTest());
+    }
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
 
         map = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
         map.addLayer(createMapLayer(MockData.BASIC_POLYGONS));

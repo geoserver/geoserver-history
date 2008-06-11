@@ -7,10 +7,14 @@ package org.vfny.geoserver.action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.geoserver.config.GeoServerLoader;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wfs.WFS;
 import org.geotools.validation.xml.XMLReader;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.DataDTO;
@@ -73,72 +77,92 @@ public class LoadXMLAction extends ConfigAction {
         //UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-        ServletContext sc = request.getSession().getServletContext();
-
-        WMSDTO wmsDTO = null;
-        WFSDTO wfsDTO = null;
-        WCSDTO wcsDTO = null;
-        GeoServerDTO geoserverDTO = null;
-        DataDTO dataDTO = null;
-
-        //DJB: changed for geoserver_data_dir    
-        // File rootDir = new File(sc.getRealPath("/"));
-        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
-
-        XMLConfigReader configReader;
-
+        
+        GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class );
         try {
-            configReader = new XMLConfigReader(rootDir, sc);
-        } catch (ConfigurationException configException) {
-            configException.printStackTrace();
-
-            return mapping.findForward("welcome");
-
-            //throw new ServletException( configException );
+            loader.reload();
+        } 
+        catch (Exception e) {
+            throw new RuntimeException( e );
         }
 
-        if (configReader.isInitialized()) {
-            // These are on separate lines so we can tell with the
-            // stack trace/debugger where things go wrong
-            wmsDTO = configReader.getWms();
-            wfsDTO = configReader.getWfs();
-            wcsDTO = configReader.getWcs();
-            geoserverDTO = configReader.getGeoServer();
-            dataDTO = configReader.getData();
-        } else {
-            System.err.println("Config Reader not initialized for LoadXMLAction.execute().");
-
-            return mapping.findForward("welcome");
-
-            // throw new ServletException( new ConfigurationException( "An error occured loading the initial configuration" ));
-        }
-
-        // Update GeoServer
-        try {
-            getWCS(request).load(wcsDTO);
-            getWFS(request).load(wfsDTO);
-            getWMS(request).load(wmsDTO);
-            getWCS(request).getGeoServer().load(geoserverDTO);
-            getWCS(request).getData().load(dataDTO);
-            getWFS(request).getGeoServer().load(geoserverDTO);
-            getWFS(request).getData().load(dataDTO);
-        } catch (ConfigurationException configException) {
-            configException.printStackTrace();
-
-            return mapping.findForward("welcome");
-
-            //			throw new ServletException( configException );			
-        }
-
+        //ServletContext sc = request.getSession().getServletContext();
+        //
+        //WMSDTO wmsDTO = null;
+        //WFSDTO wfsDTO = null;
+        //WCSDTO wcsDTO = null;
+        //GeoServerDTO geoserverDTO = null;
+        //DataDTO dataDTO = null;
+        //
+        ////DJB: changed for geoserver_data_dir    
+        //// File rootDir = new File(sc.getRealPath("/"));
+        //File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
+        //
+        //XMLConfigReader configReader;
+        //
+        //try {
+        //    configReader = new XMLConfigReader(rootDir, sc, getCatalog());
+        //} catch (ConfigurationException configException) {
+        //    configException.printStackTrace();
+        //
+        //    return mapping.findForward("welcome");
+        //
+        //    //throw new ServletException( configException );
+        //}
+        //
+        //if (configReader.isInitialized()) {
+        //    // These are on separate lines so we can tell with the
+        //    // stack trace/debugger where things go wrong
+        //    wmsDTO = configReader.getWms();
+        //    wfsDTO = configReader.getWfs();
+        //    wcsDTO = configReader.getWcs();
+        //    geoserverDTO = configReader.getGeoServer();
+        //    dataDTO = configReader.getData();
+        //} else {
+        //    System.err.println("Config Reader not initialized for LoadXMLAction.execute().");
+        //
+        //    return mapping.findForward("welcome");
+        //
+        //    // throw new ServletException( new ConfigurationException( "An error occured loading the initial configuration" ));
+        //}
+        //
+        //// Update GeoServer
+        //try {
+        //    getWCS(request).load(wcsDTO);
+        //    getWFS(request).load(wfsDTO);
+        //    getWMS(request).load(wmsDTO);
+        //    getWCS(request).getGeoServer().load(geoserverDTO);
+        //    getWCS(request).getData().load(dataDTO);
+        //    getWFS(request).getGeoServer().load(geoserverDTO);
+        //    getWFS(request).getData().load(dataDTO);
+        //} catch (ConfigurationException configException) {
+        //    configException.printStackTrace();
+        //
+        //    return mapping.findForward("welcome");
+        //
+        //    //			throw new ServletException( configException );			
+        //}
+        //
+        
+        
         // Update Config
-        getGlobalConfig().update(geoserverDTO);
-        getDataConfig().update(dataDTO);
-        getWCSConfig().update(wcsDTO);
-        getWFSConfig().update(wfsDTO);
-        getWMSConfig().update(wmsDTO);
+        GeoServer gs = getGeoServer();
+        gs.init();
+        getGlobalConfig().update(gs.toDTO());
+        
+        Data data = getData();
+//        data.init();
+        getDataConfig().update(data.toDTO());
+        
+        getWCS(request).init();
+        getWCSConfig().update(getWCS(request).toDTO());
+        getWFS(request).init();
+        getWFSConfig().update(getWFS(request).toDTO());
+        getWMS(request).init();
+        getWMSConfig().update(getWMS(request).toDTO());
 
         getApplicationState(request).notifyLoadXML();
-
+        
         // We need to stash the current page?
         // or can we use null or something?
         //

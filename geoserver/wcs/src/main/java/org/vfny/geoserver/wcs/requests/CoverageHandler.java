@@ -5,6 +5,8 @@
 package org.vfny.geoserver.wcs.requests;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.servlets.WCService;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -28,7 +30,6 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.wcs");
 
     /** Service handling the request */
-    private WCService service = null;
     private CoverageRequest request = null;
     private String currentTag = new String();
     private Double[] coordinates = new Double[4];
@@ -47,10 +48,9 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     /**
      * Empty constructor.
      */
-    public CoverageHandler(WCService service) {
+    public CoverageHandler(WCS wcs) {
         super();
-        this.service = service;
-        request = new CoverageRequest(service);
+        request = new CoverageRequest(wcs);
     }
 
     public CoverageRequest getRequest(HttpServletRequest req) {

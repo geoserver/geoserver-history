@@ -11,9 +11,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +28,11 @@ import javax.media.jai.JAI;
 import javax.media.jai.LookupTableJAI;
 import javax.media.jai.operator.LookupDescriptor;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.config.WMSConfig;
@@ -155,7 +155,7 @@ public abstract class DefaultRasterMapProducer extends
 	 *             DOCUMENT ME!
 	 */
 	public void writeTo(OutputStream out)
-			throws org.vfny.geoserver.ServiceException, java.io.IOException {
+			throws ServiceException, java.io.IOException {
 		formatImageOutputStream(this.image, out);
 	}
 

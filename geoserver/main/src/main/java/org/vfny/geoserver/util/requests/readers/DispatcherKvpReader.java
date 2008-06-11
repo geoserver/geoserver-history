@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
-import org.vfny.geoserver.ServiceException;
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.servlets.Dispatcher;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

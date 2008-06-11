@@ -20,6 +20,7 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
+import org.geotools.data.QueryCapabilities;
 import org.geotools.data.ResourceInfo;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
@@ -454,31 +455,36 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
         
         Query newQuery = makeDefinitionQuery(query, schema);
 
-        // see if the CRS got xfered over
-        // a. old had a CRS, new doesnt
-        boolean requireXferCRS = (newQuery.getCoordinateSystem() == null)
-            && (query.getCoordinateSystem() != null);
-
-        if ((newQuery.getCoordinateSystem() != null) && (query.getCoordinateSystem() != null)) {
-            //b. both have CRS, but they're different
-            requireXferCRS = !(newQuery.getCoordinateSystem().equals(query.getCoordinateSystem()));
-        }
-
-        if (requireXferCRS) {
-            //carry along the CRS
-            if (!(newQuery instanceof DefaultQuery)) {
-                newQuery = new DefaultQuery(newQuery);
-            }
-
-            ((DefaultQuery) newQuery).setCoordinateSystem(query.getCoordinateSystem());
-        }
+//        // see if the CRS got xfered over
+//        // a. old had a CRS, new doesnt
+//        boolean requireXferCRS = (newQuery.getCoordinateSystem() == null)
+//            && (query.getCoordinateSystem() != null);
+//
+//        if ((newQuery.getCoordinateSystem() != null) && (query.getCoordinateSystem() != null)) {
+//            //b. both have CRS, but they're different
+//            requireXferCRS = !(newQuery.getCoordinateSystem().equals(query.getCoordinateSystem()));
+//        }
+//
+//        if (requireXferCRS) {
+//            //carry along the CRS
+//            if (!(newQuery instanceof DefaultQuery)) {
+//                newQuery = new DefaultQuery(newQuery);
+//            }
+//
+//            ((DefaultQuery) newQuery).setCoordinateSystem(query.getCoordinateSystem());
+//        }
         
         //JD: this is a huge hack... but its the only way to ensure that we 
         // we get what we ask for ... which is not reprojection, since 
         // datastores are unreliable in this aspect we dont know if they will
         // reproject or not.
+        // AA: added force coordinate system reset as well, since we cannot
+        // trust GT2 datastores there neither.
         if ( newQuery.getCoordinateSystemReproject() != null ) {
             ((DefaultQuery)newQuery).setCoordinateSystemReproject(null);
+        }
+        if ( newQuery.getCoordinateSystem() != null ) {
+            ((DefaultQuery)newQuery).setCoordinateSystem(null);
         }
         return newQuery;
     }
@@ -601,5 +607,9 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
 
     public ResourceInfo getInfo() {
         return source.getInfo();
+    }
+
+    public QueryCapabilities getQueryCapabilities() {
+        return source.getQueryCapabilities();
     }   
 }

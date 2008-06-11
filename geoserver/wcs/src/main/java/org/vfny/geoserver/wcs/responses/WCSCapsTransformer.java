@@ -175,7 +175,7 @@ public class WCSCapsTransformer extends TransformerBase {
             }
 
             this.request = (CapabilitiesRequest) o;
-			final WCS wcs = (WCS) request.getServiceRef().getServiceRef();
+			final WCS wcs = (WCS) request.getServiceConfig();
 
             final AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
@@ -217,7 +217,7 @@ public class WCSCapsTransformer extends TransformerBase {
          *             For any errors.
          */
         private void handleService() {
-            final WCS wcs = (WCS) request.getServiceRef().getServiceRef();
+            final WCS wcs = (WCS) request.getServiceConfig();
             AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
             start("Service", attributes);
@@ -256,7 +256,7 @@ public class WCSCapsTransformer extends TransformerBase {
          *             DOCUMENT ME!
          */
         private void handleCapabilities() {
-            final WCS wcs = (WCS) request.getServiceRef().getServiceRef();
+            final WCS wcs = (WCS) request.getServiceConfig();
             start("Capability");
             handleRequest(wcs);
             handleExceptions(wcs);
@@ -291,24 +291,15 @@ public class WCSCapsTransformer extends TransformerBase {
             start("DCPType");
             start("HTTP");
 
-            String url = "";
             String baseUrl = RequestUtils.proxifiedBaseURL(
-					request.getBaseUrl(), request.getServiceRef()
+					request.getBaseUrl(), request.getServiceConfig()
 							.getGeoServer().getProxyBaseUrl());
             baseUrl = ResponseUtils.appendPath(baseUrl, "wcs");
             
             //ensure ends in "?" or "&"
             baseUrl = ResponseUtils.appendQueryString(baseUrl, "");
 
-            if (request.isDispatchedRequest()) {
-                url = baseUrl;
-            }
-            else {
-                url = new StringBuffer(baseUrl).append("/").append(capabilityName).append("?")
-                .toString();    
-            }
-
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseUrl);
 
             start("Get");
             start("OnlineResource", attributes);
@@ -318,14 +309,7 @@ public class WCSCapsTransformer extends TransformerBase {
             end("DCPType");
 
             attributes = new AttributesImpl();
-
-            if (request.isDispatchedRequest()) {
-                url = baseUrl;
-            } else {
-                url = new StringBuffer(baseUrl).append("/").append(capabilityName).toString();
-            }
-
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseUrl);
 
             start("DCPType");
             start("HTTP");

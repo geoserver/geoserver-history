@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wcs.requests.readers;
 
 import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeHandler;
@@ -33,8 +34,8 @@ public class DescribeXmlReader extends XmlRequestReader {
     /**
      * Creates a new DescribeXmlReader object.
      */
-    public DescribeXmlReader(WCService service) {
-        super(service);
+    public DescribeXmlReader(WCS wcs) {
+        super(wcs);
     }
 
     /**
@@ -52,7 +53,7 @@ public class DescribeXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        DescribeHandler contentHandler = new DescribeHandler((WCService) getServiceRef());
+        DescribeHandler contentHandler = new DescribeHandler((WCS)getService());
 
         // read in XML file and parse to content handler
         try {

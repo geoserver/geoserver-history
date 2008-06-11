@@ -5,6 +5,8 @@ import static org.custommonkey.xmlunit.XMLAssert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Test;
+
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -12,6 +14,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class DescribeCoverageTest extends WCSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new DescribeCoverageTest());
+    }
 
 //    @Override
 //    protected String getDefaultLogConfiguration() {

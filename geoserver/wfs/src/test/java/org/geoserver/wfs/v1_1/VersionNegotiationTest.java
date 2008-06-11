@@ -1,6 +1,7 @@
 package org.geoserver.wfs.v1_1;
 
-import net.opengis.ows.OwsFactory;
+import junit.framework.Test;
+import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.GetCapabilitiesType;
 import net.opengis.wfs.WfsFactory;
 
@@ -11,19 +12,26 @@ import org.geotools.xml.transform.TransformerBase;
 
 public class VersionNegotiationTest extends WFSTestSupport {
 
-    GetCapabilities getCaps;
+    static GetCapabilities getCaps;
 
-    WfsFactory factory;
+    static WfsFactory factory;
 
-    OwsFactory owsFactory;
+    static Ows10Factory owsFactory;
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new VersionNegotiationTest());
+    }
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
 
         getCaps = new GetCapabilities(getWFS(), getCatalog());
 
         factory = WfsFactory.eINSTANCE;
-        owsFactory = OwsFactory.eINSTANCE;
+        owsFactory = Ows10Factory.eINSTANCE;
     }
 
     public void test0() throws Exception {

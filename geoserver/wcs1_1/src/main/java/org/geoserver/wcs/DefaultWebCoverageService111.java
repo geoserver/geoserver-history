@@ -4,6 +4,7 @@ import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,16 +18,16 @@ import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
-import net.opengis.ows.v1_1_0.BoundingBoxType;
-import net.opengis.wcs.v1_1_1.AxisSubsetType;
-import net.opengis.wcs.v1_1_1.DescribeCoverageType;
-import net.opengis.wcs.v1_1_1.DomainSubsetType;
-import net.opengis.wcs.v1_1_1.FieldSubsetType;
-import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
-import net.opengis.wcs.v1_1_1.GetCoverageType;
-import net.opengis.wcs.v1_1_1.GridCrsType;
-import net.opengis.wcs.v1_1_1.OutputType;
-import net.opengis.wcs.v1_1_1.RangeSubsetType;
+import net.opengis.ows11.BoundingBoxType;
+import net.opengis.wcs11.AxisSubsetType;
+import net.opengis.wcs11.DescribeCoverageType;
+import net.opengis.wcs11.DomainSubsetType;
+import net.opengis.wcs11.FieldSubsetType;
+import net.opengis.wcs11.GetCapabilitiesType;
+import net.opengis.wcs11.GetCoverageType;
+import net.opengis.wcs11.GridCrsType;
+import net.opengis.wcs11.OutputType;
+import net.opengis.wcs11.RangeSubsetType;
 
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.util.RequestUtils;
@@ -101,7 +102,9 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         // TODO: add support for 1.0.0 in here
 
         if ("1.1.0".equals(version) || "1.1.1".equals(version)) {
-            return new WCSCapsTransformer(wcs, catalog);
+            WCSCapsTransformer capsTransformer = new WCSCapsTransformer(wcs, catalog);
+            capsTransformer.setEncoding(wcs.getCharSet());
+            return capsTransformer;
         }
 
         throw new WcsException("Could not understand version:" + version);
@@ -110,7 +113,9 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
     public DescribeCoverageTransformer describeCoverage(DescribeCoverageType request) {
         final String version = request.getVersion();
         if ("1.1.0".equals(version) || "1.1.1".equals(version)) {
-            return new DescribeCoverageTransformer(wcs, catalog);
+            DescribeCoverageTransformer describeTransformer = new DescribeCoverageTransformer(wcs, catalog);
+            describeTransformer.setEncoding(wcs.getCharSet());
+            return describeTransformer;
         }
 
         throw new WcsException("Could not understand version:" + version);
@@ -237,8 +242,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     .getReadParameters());
             final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
             intersected.intersect(originalEnvelope);
-            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(gridToCRS,
-                    intersected);
+            final GridGeometry2D destinationGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersected, null);
             parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
                     destinationGridGeometry);
             coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat()

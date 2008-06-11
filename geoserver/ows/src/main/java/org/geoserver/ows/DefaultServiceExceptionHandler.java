@@ -4,15 +4,6 @@
  */
 package org.geoserver.ows;
 
-import net.opengis.ows.ExceptionReportType;
-import net.opengis.ows.ExceptionType;
-import net.opengis.ows.OwsFactory;
-import org.apache.xml.serialize.OutputFormat;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.xml.v1_0.OWSConfiguration;
-import org.geoserver.platform.Service;
-import org.geoserver.platform.ServiceException;
-import org.geotools.xml.Encoder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -22,6 +13,16 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.opengis.ows10.ExceptionReportType;
+import net.opengis.ows10.ExceptionType;
+import net.opengis.ows10.Ows10Factory;
+
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.xml.v1_0.OWSConfiguration;
+import org.geoserver.platform.Service;
+import org.geoserver.platform.ServiceException;
+import org.geotools.xml.Encoder;
 
 
 /**
@@ -60,7 +61,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
      */
     public void handleServiceException(ServiceException exception, Service service,
         HttpServletRequest request, HttpServletResponse response) {
-        OwsFactory factory = OwsFactory.eINSTANCE;
+        Ows10Factory factory = Ows10Factory.eINSTANCE;
 
         ExceptionType e = factory.createExceptionType();
 
@@ -97,13 +98,10 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
         //response.setCharacterEncoding( "UTF-8" );
         OWSConfiguration configuration = new OWSConfiguration();
 
-        OutputFormat format = new OutputFormat();
-        format.setIndenting(true);
-        format.setIndent(2);
-        format.setLineWidth(60);
-
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setOutputFormat(format);
+        encoder.setIndenting(true);
+        encoder.setIndentSize(2);
+        encoder.setLineWidth(60);
 
         encoder.setSchemaLocation(org.geoserver.ows.xml.v1_0.OWS.NAMESPACE,
             RequestUtils.schemaBaseURL(request) + "ows/1.0.0/owsExceptionReport.xsd");

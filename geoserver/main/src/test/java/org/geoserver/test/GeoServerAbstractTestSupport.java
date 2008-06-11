@@ -2,21 +2,27 @@ package org.geoserver.test;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -33,6 +39,8 @@ import javax.xml.validation.Validator;
 
 import junit.framework.TestCase;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServerLoader;
 import org.geoserver.data.test.TestData;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
@@ -47,8 +55,11 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.NameSpaceInfo;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -61,6 +72,7 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletConfig;
 import com.mockrunner.mock.web.MockServletContext;
+import com.mockrunner.mock.web.MockServletOutputStream;
 
 /**
  * Base test class for GeoServer unit tests.
@@ -75,7 +87,7 @@ import com.mockrunner.mock.web.MockServletContext;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  * @author Andrea Aime, The Open Planning Project
  */
-public abstract class GeoServerAbstractTestSupport extends TestCase {
+public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     /**
      * Common logger for test cases
      */
@@ -84,14 +96,20 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
     /**
      * Application context
      */
-    protected GeoServerTestApplicationContext applicationContext;
+    protected static GeoServerTestApplicationContext applicationContext;
+
+    protected static TestData testData;
     
     /**
      * Returns a test data instance
      * 
      * @return
      */
-    public abstract TestData getTestData() throws Exception;
+    protected abstract TestData buildTestData() throws Exception;
+    
+    public TestData getTestData() {
+        return testData;
+    }
 
     /**
      * Override runTest so that the test will be skipped if the TestData is not
@@ -107,13 +125,16 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
     }
 
     /**
-     * If subclasses overide they *must* call super.setUp() first.
+     * If subclasses override they *must* call super.setUp() first.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
-        Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
+    @Override
+    protected void oneTimeSetUp() throws Exception {
+        if (System.getProperty("org.geotools.referencing.forceXY") == null) {
+            System.setProperty("org.geotools.referencing.forceXY", "true");
+        }
+        if (Boolean.TRUE.equals(Hints.getSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER))) {
+            Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
+        }
 
         // setup quiet logging (we need to to this here because Data
         // is loaded before GoeServer has a chance to setup logging for good)
@@ -126,7 +147,7 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         GeoServer.configureGeoServerLogging(getClass().getResourceAsStream(getLogConfiguration()), false, true, null);
 
         // set up test data and, if succeeds, create a mock servlet context and start up the spring configuration
-        final TestData testData = getTestData();
+        testData = buildTestData();
         testData.setUp();
         if (testData.isTestDataAvailable()) {
             MockServletContext servletContext = new MockServletContext();
@@ -175,7 +196,7 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * @return
      */
     protected URL getServicesFile() {
-        return GeoServerTestSupport.class.getResource("services.xml");
+        return GeoServerAbstractTestSupport.class.getResource("services.xml");
     }
 
     /**
@@ -192,29 +213,43 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
     /**
      * If subclasses overide they *must* call super.tearDown() first.
      */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        
+    @Override
+    protected void oneTimeTearDown() throws Exception {
         if(getTestData().isTestDataAvailable()) {
-            //kill the context
-            applicationContext.destroy();
-            applicationContext = null;
-    
-            if(isMemoryCleanRequired()) {
-                System.gc(); 
-                System.runFinalization();
-            }
-            
-            if(getTestData() != null) {
-                // this cleans up the data directory static loader, if we don't the next test
-                // will keep on running on the current data dir
-                GeoserverDataDirectory.destroy();
-                getTestData().tearDown();
+            try {
+                //kill the context
+                applicationContext.destroy();
+        
+                if(isMemoryCleanRequired()) {
+                    System.gc(); 
+                    System.runFinalization();
+                }
+                
+                if(getTestData() != null) {
+                    // this cleans up the data directory static loader, if we don't the next test
+                    // will keep on running on the current data dir
+                    GeoserverDataDirectory.destroy();
+                    getTestData().tearDown();
+                }
+            } finally {
+                applicationContext = null;
+                testData = null;
             }
         }
     }
-        
-
+     
+    /**
+     * Reloads the catalog and configuration from disk.
+     * <p>
+     * This method can be used by subclasses from a test method after they have
+     * changed the configuration on disk.
+     * </p>
+     */
+    protected void reloadCatalogAndConfiguration() throws Exception {
+        GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class , applicationContext );
+        loader.reload();
+    }
+    
     /**
      * Accessor for global catalog instance from the test application context.
      */
@@ -246,6 +281,44 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         throws IOException {
         return getCatalog().getFeatureSource(typeName.getPrefix(), typeName.getLocalPart());
     }
+
+    /**
+     * Get the FeatureTypeInfo for a featuretype to allow configuration tweaks for tests.
+     *
+     * @param typename the QName for the type
+     */
+    protected FeatureTypeInfo getFeatureTypeInfo(QName typename){
+        return getCatalog().getFeatureTypeInfo(typename);
+    }
+
+    /**
+     * Get the FeatureTypeInfo for a featuretype by the layername that would be used in a request.
+     *
+     * @param typename the layer name for the type
+     */
+    protected FeatureTypeInfo getFeatureTypeInfo(String typename){
+        return getFeatureTypeInfo(resolveLayerName(typename));
+    }
+
+    /**
+     * Get the QName for a layer specified by the layername that would be used in a request.
+     * @param typename the layer name for the type
+     */
+    protected QName resolveLayerName(String typename){
+        int i = typename.indexOf(":");
+        String prefix = typename.substring(0, i);
+        String name = typename.substring(i + 1);
+        NameSpaceInfo ns = getCatalog().getNamespaceMetaData(prefix);
+        QName qname = new QName(ns.getUri(), name, ns.getPrefix());
+        return qname;
+    }
+
+    /**
+     * @deprecated use {@link #getLayerId(QName)}.
+     */
+    public final String layerId(QName layerName) {
+        return getLayerId( layerName );
+    }
     
     /**
      * Given a qualified layer name returns a string in the form "prefix:localPart" if prefix
@@ -253,7 +326,7 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * @param layerName
      * @return
      */
-    public String layerId(QName layerName) {
+    public String getLayerId(QName layerName) {
         if(layerName.getPrefix() != null)
             return layerName.getPrefix() + ":" + layerName.getLocalPart();
         else
@@ -299,6 +372,36 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         return request;
     }
 
+    /**
+     * Convenience method for subclasses to create mock http servlet requests.
+     * <p>
+     * Examples of using this method are:
+     * <pre>
+     * <code>
+     *   Map kvp = new HashMap();
+     *   kvp.put( "service", "wfs" );
+     *   kvp.put( "request", "GetCapabilities" );
+     *   
+     *   createRequest( "wfs", kvp );
+     * </code>
+     * </pre>
+     * </p>
+     * @param path The path for the request, minus any query string parameters.
+     * @param kvp The key value pairs to be put in teh query string. 
+     * 
+     */
+    protected MockHttpServletRequest createRequest( String path, Map kvp ) {
+        StringBuffer q = new StringBuffer();
+        for ( Iterator e = kvp.entrySet().iterator(); e.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) e.next();
+            q.append( entry.getKey() ).append("=").append( entry.getValue() );
+            q.append( "&" );
+        }
+        q.setLength(q.length()-1);
+        
+        return createRequest( ResponseUtils.appendQueryString(path, q.toString() ) );
+    }
+    
     /**
      * Executes an ows request using the GET method.
      *
@@ -430,23 +533,68 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * @throws Exception
      */
     protected InputStream post( String path , String xml ) throws Exception {
-        MockHttpServletRequest request = createRequest( path );
-        request.setMethod( "POST" );
-        request.setContentType( "application/xml" );
-        request.setBodyContent(xml);
-        
-        MockHttpServletResponse response = dispatch( request );
-        return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+        MockHttpServletResponse response = postAsServletResponse(path, xml);
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
     }
 
     /**
      * Executes an ows request using the POST method.
-     *
-     * @param path The porition of the request after the context ( no query string ), 
-     *      example: 'wms'. 
-     *
-     * @param body the body of the request
-     * @param contentType the mimetype to set for the request
+     * <p>
+     * 
+     * </p>
+     * 
+     * @param path
+     *            The porition of the request after the context ( no query
+     *            string ), example: 'wms'.
+     * 
+     * @return the servlet response
+     * 
+     * @throws Exception
+     */
+    protected MockHttpServletResponse postAsServletResponse(String path, String xml)
+            throws Exception {
+        MockHttpServletRequest request = createRequest(path);
+        request.setMethod("POST");
+        request.setContentType("application/xml");
+        request.setBodyContent(xml);
+
+        MockHttpServletResponse response = dispatch(request);
+        return response;
+    }
+
+    /**
+     * Extracts the true binary stream out of the response. The usual way (going
+     * thru {@link MockHttpServletResponse#getOutputStreamContent()}) mangles
+     * bytes if the content is not made of chars.
+     * 
+     * @param response
+     * @return
+     */
+    protected InputStream getBinaryInputStream(MockHttpServletResponse response) {
+        try {
+            MockServletOutputStream os = (MockServletOutputStream) response.getOutputStream();
+            final Field field = os.getClass().getDeclaredField("buffer");
+            field.setAccessible(true);
+            ByteArrayOutputStream bos = (ByteArrayOutputStream) field.get(os);
+            return new ByteArrayInputStream(bos.toByteArray());
+        } catch (Exception e) {
+            throw new RuntimeException("Whoops, did you change the MockRunner version? "
+                    + "If so, you might want to change this method too");
+        }
+    }
+            
+            
+    /**
+     * Executes an ows request using the POST method.
+     * 
+     * @param path
+     *            The porition of the request after the context ( no query
+     *            string ), example: 'wms'.
+     * 
+     * @param body
+     *            the body of the request
+     * @param contentType
+     *            the mimetype to set for the request
      * 
      * @return An input stream which is the result of the request.
      * 
@@ -690,22 +838,19 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
             request.setupAddParameter(keyValuePair[0], keyValuePair.length > 1 ?  keyValuePair[1]: "");
         }
     }
-    
-    /*
-     * Helper method for dispatching an executing an ows request. 
-     */
-    private MockHttpServletResponse dispatch( MockHttpServletRequest request ) throws Exception {
-        //create the response
-        //final MockServletOutputStream output = new MockServletOutputStream();
+
+    private MockHttpServletResponse dispatch( HttpServletRequest request ) throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse() {
             public void setCharacterEncoding( String encoding ) {
                     
             }
-//            public ServletOutputStream getOutputStream() throws IOException {
-//                return output;
-//            }
         };
-        
+
+        dispatch(request, response);
+        return response;
+    } 
+ 
+    private void dispatch(HttpServletRequest request, HttpServletResponse response) throws Exception{
         //create an instance of the spring dispatcher
         ServletContext context = applicationContext.getServletContext();
         
@@ -741,7 +886,101 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
             HandlerInterceptor interceptor = (HandlerInterceptor) i.next();
             interceptor.postHandle( request, response, dispatcher, null );
         }
+    }
+
+    /**
+     * Assert that a GET request to a path will have a particular status code for the response.
+     * @param code the number of the HTTP status code that is expected
+     * @param path the path to which a GET request should be made, without the protocol, server and servlet context.
+     * For example, to make a request to "http://localhost:8080/geoserver/ows" the path would be "ows"
+     *
+     * @throws Exception on test failure
+     */
+    protected void assertStatusCodeForGet(int code, String path) throws Exception{
+        assertStatusCodeForRequest(code, "GET", path, "", "");
+    }
+
+    /**
+     * Assert that a POST request to a path will have a particular status code for the response.
+     * @param code the number of the HTTP status code that is expected
+     * @param path the path to which a POST request should be made, without the protocol, server and servlet context.
+     * For example, to make a request to "http://localhost:8080/geoserver/ows" the path would be "ows"
+     * @param body the body to send with the request. May be empty, but must not be null.
+     * @param type the mimetype to report for the body
+     *
+     * @throws Exception on test failure
+     */
+    protected void assertStatusCodeForPost(int code, String path, String body, String type) throws Exception {
+        assertStatusCodeForRequest(code, "POST", path, body, type);
+    }
+
+    /**
+     * Assert that a PUT request to a path will have a particular status code for the response.
+     * @param code the number of the HTTP status code that is expected
+     * @param path the path to which a PUT request should be made, without the protocol, server and servlet context.
+     * For example, to make a request to "http://localhost:8080/geoserver/ows" the path would be "ows"
+     * @param body the body to send with the request. May be empty, but must not be null.
+     * @param type the mimetype to report for the body
+     *
+     * @throws Exception on test failure
+     */
+    protected void assertStatusCodeForPut(int code, String path, String body, String type) throws Exception {
+        assertStatusCodeForRequest(code, "PUT", path, body, type);
+    }
+
+    /**
+     * Assert that an HTTP request will have a particular status code for the response.
+     * @param code the number of the HTTP status code that is expected
+     * @param method the HTTP method for the request (eg, GET, PUT)
+     * @param path the path for the request, excluding the protocol, server, port, and servlet context.
+     * For example, to make a request to "http://localhost:8080/geoserver/ows" the path would be "ows"
+     * @param body the body for the request.  May be empty, but must not be null.
+     * @param type the mimetype for the request.
+     */
+    protected void assertStatusCodeForRequest(int code, String method, String path, String body, String type) throws Exception {
+        MockHttpServletRequest request = createRequest(path);
+        request.setMethod(method);
+        request.setBodyContent(body);
+        request.setContentType(type);
+
+        CodeExpectingHttpServletResponse response = new CodeExpectingHttpServletResponse(new MockHttpServletResponse());
+        dispatch(request, response);
+        assertEquals(code, response.getError());
+    }
+
+    /**
+     * HttpServletResponse wrapper to help in making assertions about expected status codes.
+     */
+    private class CodeExpectingHttpServletResponse extends HttpServletResponseWrapper{
+        private int myErrorCode;
+
+        protected CodeExpectingHttpServletResponse (HttpServletResponse req){
+            super(req);
+            myErrorCode = 200;
+        }
         
-        return response;
+        public void setStatus(int sc){
+            myErrorCode = sc;
+            super.setStatus(sc);
+        }
+
+        public void setStatus(int sc, String sm){
+            myErrorCode = sc;
+            super.setStatus(sc, sm);
+        }
+
+        public void sendError(int sc) throws IOException {
+            myErrorCode = sc;
+            super.sendError(sc);
+        }
+
+        public void sendError(int sc, String sm) throws IOException {
+            myErrorCode = sc;
+            super.sendError(sc, sm);
+        }
+
+        public int getError(){
+            return myErrorCode;
+        }
     }
 }

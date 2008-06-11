@@ -4,22 +4,18 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.data.util.CoverageStoreUtils;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageReader;
-import org.opengis.parameter.InvalidParameterValueException;
-import org.opengis.parameter.ParameterNotFoundException;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
-import java.io.File;
-import java.io.IOException;
-import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -29,85 +25,104 @@ import java.util.logging.Logger;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
+ *         
+ *  @deprecated use {@link org.geoserver.catalog.CoverageStoreInfo}
  */
 public final class CoverageStoreInfo extends GlobalLayerSupertype {
     /** for logging */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CoverageStoreInfo.class.toString());
 
-    /**
-     * CoverageStoreInfo we are representing
-     */
-    private Format format = null;
+    ///**
+    // * CoverageStoreInfo we are representing
+    // */
+    //private Format format = null;
+    //
+    ///**
+    // * ref to the parent class's collection
+    // */
+    //private Data data;
+    //
+    ///**
+    // *
+    // */
+    //private String id;
+    //private SoftReference reader = null;
+    //private SoftReference hintReader = null;
+    //
+    ///**
+    // *
+    // */
+    //private String nameSpaceId;
+    //
+    ///**
+    // *
+    // */
+    //private String type;
+    //
+    ///**
+    // *
+    // */
+    //private String url;
+    //private boolean enabled;
+    //
+    ///**
+    // *
+    // */
+    //private String title;
+    //private String _abstract;
+    //
+    ///**
+    // * Storage for metadata
+    // */
+    //private Map meta;
 
-    /**
-     * ref to the parent class's collection
-     */
-    private Data data;
-
-    /**
-     *
-     */
-    private String id;
-    private SoftReference reader = null;
-    private SoftReference hintReader = null;
-
-    /**
-     *
-     */
-    private String nameSpaceId;
-
-    /**
-     *
-     */
-    private String type;
-
-    /**
-     *
-     */
-    private String url;
-    private boolean enabled;
-
-    /**
-     *
-     */
-    private String title;
-    private String _abstract;
-
-    /**
-     * Storage for metadata
-     */
-    private Map meta;
-
-    /**
-     * CoverageStoreInfo constructor.
-     *
-     * <p>
-     * Stores the specified data for later use.
-     * </p>
-     *
-     * @param config
-     *            CoverageStoreInfoDTO the current configuration to use.
-     * @param data
-     *            Data a ref to use later to look up related informtion
-     */
-    public CoverageStoreInfo(CoverageStoreInfoDTO config, Data data) {
-        this.data = data;
-        meta = new HashMap(10);
-        enabled = config.isEnabled();
-        id = config.getId();
-        nameSpaceId = config.getNameSpaceId();
-        type = config.getType();
-        url = config.getUrl();
-        title = config.getTitle();
-        _abstract = config.getAbstract();
-        format = lookupFormat();
+    org.geoserver.catalog.CoverageStoreInfo cs;
+    Catalog catalog;
+    
+    ///**
+    // * CoverageStoreInfo constructor.
+    // *
+    // * <p>
+    // * Stores the specified data for later use.
+    // * </p>
+    // *
+    // * @param config
+    // *            CoverageStoreInfoDTO the current configuration to use.
+    // * @param data
+    // *            Data a ref to use later to look up related informtion
+    // */
+    //public CoverageStoreInfo(CoverageStoreInfoDTO config, Data data) {
+    //    this.data = data;
+    //    meta = new HashMap(10);
+    //    enabled = config.isEnabled();
+    //    id = config.getId();
+    //    nameSpaceId = config.getNameSpaceId();
+    //    type = config.getType();
+    //    url = config.getUrl();
+    //    title = config.getTitle();
+    //    _abstract = config.getAbstract();
+    //    format = lookupFormat();
+    //}
+    
+    public CoverageStoreInfo(org.geoserver.catalog.CoverageStoreInfo cs, Catalog catalog ) {
+        this.cs = cs;
+        this.catalog = catalog;
+    }
+    
+    public void load(CoverageStoreInfoDTO dto ) {
+        cs.setEnabled( dto.isEnabled() );
+        cs.setName( dto.getId() );
+        cs.setWorkspace( catalog.getWorkspaceByName( dto.getNameSpaceId() ));
+        cs.setType( dto.getType() );
+        cs.setURL( dto.getUrl() );
+        cs.setDescription( dto.getTitle() );
     }
 
     private Format lookupFormat() {
         final int length = CoverageStoreUtils.formats.length;
 
         for (int i = 0; i < length; i++) {
-            if (CoverageStoreUtils.formats[i].getName().equals(type)) {
+            if (CoverageStoreUtils.formats[i].getName().equals(getType())) {
                 return CoverageStoreUtils.formats[i];
             }
         }
@@ -128,13 +143,21 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      */
     Object toDTO() {
         CoverageStoreInfoDTO dto = new CoverageStoreInfoDTO();
-        dto.setAbstract(_abstract);
-        dto.setEnabled(enabled);
-        dto.setId(id);
-        dto.setNameSpaceId(nameSpaceId);
-        dto.setType(type);
-        dto.setUrl(url);
-        dto.setTitle(title);
+        dto.setAbstract(getAbstract());
+        dto.setEnabled(isEnabled());
+        dto.setId(getId());
+        dto.setNameSpaceId(getNamesSpacePrefix());
+        dto.setType(getType());
+        dto.setTitle(getTitle());
+        dto.setUrl(getUrl());
+        
+        //dto.setAbstract(_abstract);
+        //dto.setEnabled(enabled);
+        //dto.setId(id);
+        //dto.setNameSpaceId(nameSpaceId);
+        //dto.setType(type);
+        //dto.setUrl(url);
+        //dto.setTitle(title);
 
         return dto;
     }
@@ -149,59 +172,9 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @return String the id.
      */
     public String getId() {
-        return id;
+        return cs.getName();
+        //return id;
     }
-
-    //	/**
-    //	 * Get Connect params.
-    //	 * 
-    //	 * @return DOCUMENT ME!
-    //	 */
-    //
-    //	public static Map getParams(Map m, String baseDir) {
-    //		Map params = Collections.synchronizedMap(new HashMap(m));
-    //
-    //		for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
-    //			Map.Entry entry = (Map.Entry) i.next();
-    //			String key = (String) entry.getKey();
-    //			Object value = entry.getValue();
-    //
-    //			try {
-    //				if ("url".equals(key) && value instanceof String) {
-    //					String path = (String) value;
-    //					if (LOGGER.isLoggable(Level.INFO)) {
-    //						LOGGER.info("in string url");
-    //					}
-    //					if (path.startsWith("file:data/")) {
-    //						path = path.substring(5); // remove 'file:' prefix
-    //
-    //						File file = new File(baseDir, path);
-    //						entry.setValue(file.toURL().toExternalForm());
-    //					}
-    //					// Not sure about this
-    //				} else if (value instanceof URL
-    //						&& ((URL) value).getProtocol().equals("file")) {
-    //					if (LOGGER.isLoggable(Level.INFO)) {
-    //						LOGGER.info("in URL url");
-    //					}
-    //					URL url = (URL) value;
-    //					String path = url.getPath();
-    //					if (LOGGER.isLoggable(Level.INFO)) {
-    //						LOGGER.info(new StringBuffer("path is ").append(path)
-    //								.toString());
-    //					}
-    //					if (path.startsWith("data/")) {
-    //						File file = new File(baseDir, path);
-    //						entry.setValue(file.toURL());
-    //					}
-    //				}
-    //			} catch (MalformedURLException ignore) {
-    //				// ignore attempt to fix relative paths
-    //			}
-    //		}
-    //
-    //		return params;
-    //	}
 
     /**
      * DOCUMENT ME !
@@ -218,6 +191,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
             throw new IllegalStateException("this format is not enabled, check your configuration");
         }
 
+        Format format = cs.getFormat();
         if (format == null) {
             LOGGER.warning("failed to establish connection with " + toString());
             throw new NoSuchElementException("No format found capable of managing " + toString());
@@ -236,7 +210,8 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @return String the title.
      */
     public String getTitle() {
-        return title;
+        return cs.getName();
+        //return title;
     }
 
     /**
@@ -249,7 +224,8 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @return String the abstract.
      */
     public String getAbstract() {
-        return _abstract;
+        return cs.getDescription();
+        //return _abstract;
     }
 
     /**
@@ -262,7 +238,8 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @return true when the data store is enabled.
      */
     public boolean isEnabled() {
-        return enabled;
+        return cs.isEnabled();
+        //return enabled;
     }
 
     /**
@@ -288,7 +265,8 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @see org.geotools.data.MetaData#containsMetaData(java.lang.String)
      */
     public boolean containsMetaData(String key) {
-        return meta.containsKey(key);
+        return cs.getMetadata().get( key ) != null;
+        //return meta.containsKey(key);
     }
 
     /**
@@ -301,7 +279,8 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      *      java.lang.Object)
      */
     public void putMetaData(String key, Object value) {
-        meta.put(key, value);
+        cs.getMetadata().put( key, (Serializable) value);
+        //meta.put(key, value);
     }
 
     /**
@@ -314,21 +293,24 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @see org.geotools.data.MetaData#getMetaData(java.lang.String)
      */
     public Object getMetaData(String key) {
-        return meta.get(key);
+        return cs.getMetadata().get( key );
+        //return meta.get(key);
     }
 
     /**
      * @return Returns the type.
      */
     public String getType() {
-        return type;
+        return cs.getType();
+        //return type;
     }
 
     /**
      * @return Returns the url.
      */
     public String getUrl() {
-        return url;
+        return cs.getURL();
+        //return url;
     }
 
     /**
@@ -337,7 +319,9 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @return NameSpaceInfo the namespace for this format.
      */
     public NameSpaceInfo getNameSpace() {
-        return (NameSpaceInfo) data.getNameSpace(getNamesSpacePrefix());
+        NamespaceInfo ns = catalog.getNamespaceByPrefix( cs.getWorkspace().getName() );
+        return new NameSpaceInfo( ns, catalog );
+        //return (NameSpaceInfo) data.getNameSpace(getNamesSpacePrefix());
     }
 
     /**
@@ -346,116 +330,133 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @return DOCUMENT ME!
      */
     public String getNamesSpacePrefix() {
-        return nameSpaceId;
+        return cs.getWorkspace().getName();
+        //return nameSpaceId;
     }
 
     public synchronized GridCoverageReader getReader() {
-        if ((reader != null) && (reader.get() != null)) {
-            return (GridCoverageReader) reader.get();
-        }
-
         try {
-            // /////////////////////////////////////////////////////////
-            //
-            // Getting coverage config
-            //
-            // /////////////////////////////////////////////////////////
-            final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
-
-            if (gcInfo == null) {
-                return null;
-            }
-
-            // /////////////////////////////////////////////////////////
-            //
-            // Getting coverage reader using the format and the real path.
-            //
-            // /////////////////////////////////////////////////////////
-            final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
-
-            // XXX CACHING READERS HERE
-            reader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(obj));
-
-            return (GridCoverageReader) reader.get();
-        } catch (InvalidParameterValueException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        } catch (ParameterNotFoundException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        } catch (IllegalArgumentException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        } catch (SecurityException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            return catalog.getResourcePool().getGridCoverageReader(cs, null);
+        } 
+        catch (IOException e) {
+            throw new RuntimeException( e );
         }
-
-        return null;
+        //return DataStoreCache.getInstance().getGridCoverageReader(cs, null);
+        
+        //if ((reader != null) && (reader.get() != null)) {
+        //    return (GridCoverageReader) reader.get();
+        //}
+        //
+        //try {
+        //    // /////////////////////////////////////////////////////////
+        //    //
+        //    // Getting coverage config
+        //    //
+        //    // /////////////////////////////////////////////////////////
+        //    final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
+        //
+        //    if (gcInfo == null) {
+        //        return null;
+        //    }
+        //
+        //    // /////////////////////////////////////////////////////////
+        //    //
+        //    // Getting coverage reader using the format and the real path.
+        //    //
+        //    // /////////////////////////////////////////////////////////
+        //    final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
+        //
+        //    // XXX CACHING READERS HERE
+        //    reader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(obj));
+        //
+        //    return (GridCoverageReader) reader.get();
+        //} catch (InvalidParameterValueException e) {
+        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        //} catch (ParameterNotFoundException e) {
+        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        //} catch (IllegalArgumentException e) {
+        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        //} catch (SecurityException e) {
+        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        //}
+        //
+        //return null;
     }
 
     public synchronized GridCoverageReader createReader(Hints hints) {
-        if ((hintReader != null) && (hintReader.get() != null)) {
-            return (GridCoverageReader) hintReader.get();
-        } else if ((hints == null) && ((reader != null) && (reader.get() != null))) {
-            return (GridCoverageReader) reader.get();
-        }
-
         try {
-            // /////////////////////////////////////////////////////////
-            //
-            // Getting coverage config
-            //
-            // /////////////////////////////////////////////////////////
-            final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
-
-            if (gcInfo == null) {
-                return null;
-            }
-
-            // /////////////////////////////////////////////////////////
-            //
-            // Getting coverage reader using the format and the real path.
-            //
-            // /////////////////////////////////////////////////////////
-            final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
-
-            // XXX CACHING READERS HERE
-            hintReader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(
-                        obj, hints));
-
-            return (GridCoverageReader) hintReader.get();
-        } catch (InvalidParameterValueException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        } catch (ParameterNotFoundException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        } catch (IllegalArgumentException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        } catch (SecurityException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            return catalog.getResourcePool().getGridCoverageReader(cs,hints);
+        } 
+        catch (IOException e) {
+            throw new RuntimeException( e );
         }
-
-        return null;
+        //if ((hintReader != null) && (hintReader.get() != null)) {
+        //    return (GridCoverageReader) hintReader.get();
+        //} else if ((hints == null) && ((reader != null) && (reader.get() != null))) {
+        //    return (GridCoverageReader) reader.get();
+        //}
+        //
+        //try {
+        //    // /////////////////////////////////////////////////////////
+        //    //
+        //    // Getting coverage config
+        //    //
+        //    // /////////////////////////////////////////////////////////
+        //    final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
+        //
+        //    if (gcInfo == null) {
+        //        return null;
+        //    }
+        //
+        //    // /////////////////////////////////////////////////////////
+        //    //
+        //    // Getting coverage reader using the format and the real path.
+        //    //
+        //    // /////////////////////////////////////////////////////////
+        //    final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
+        //
+        //    // XXX CACHING READERS HERE
+        //    hintReader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(
+        //                obj, hints));
+        //
+        //    return (GridCoverageReader) hintReader.get();
+        //} catch (InvalidParameterValueException e) {
+        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        //} catch (ParameterNotFoundException e) {
+        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        //} catch (IllegalArgumentException e) {
+        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        //} catch (SecurityException e) {
+        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        //}
+        //
+        //return null;
     }
     
     public void dispose() {
-        try {
-            if ((hintReader != null) && (hintReader.get() != null)) {
-                GridCoverageReader gcr = (GridCoverageReader) (hintReader.get());
-                gcr.dispose();
-                hintReader = null;
-            }
-        } catch(IOException e) {
-            LOGGER.log(Level.FINE, "Exception occurred trying to dispose the coverage reader", e);
-            // ok, we tried...
-        }
-        
-        try {
-            if ((reader != null) && (reader.get() != null)) {
-                GridCoverageReader gcr = (GridCoverageReader) (reader.get());
-                gcr.dispose();
-                reader = null;
-            }
-        } catch(IOException e) {
-            LOGGER.log(Level.FINE, "Exception occurred trying to dispose the coverage reader", e);
-            // ok, we tried...
-        }
+        catalog.getResourcePool().clear( cs );
+        //
+        //try {
+        //    if ((hintReader != null) && (hintReader.get() != null)) {
+        //        GridCoverageReader gcr = (GridCoverageReader) (hintReader.get());
+        //        gcr.dispose();
+        //        hintReader = null;
+        //    }
+        //} catch(IOException e) {
+        //    LOGGER.log(Level.FINE, "Exception occurred trying to dispose the coverage reader", e);
+        //    // ok, we tried...
+        //}
+        //
+        //try {
+        //    if ((reader != null) && (reader.get() != null)) {
+        //        GridCoverageReader gcr = (GridCoverageReader) (reader.get());
+        //        gcr.dispose();
+        //        reader = null;
+        //    }
+        //} catch(IOException e) {
+        //    LOGGER.log(Level.FINE, "Exception occurred trying to dispose the coverage reader", e);
+        //    // ok, we tried...
+        //}
 
         
     }

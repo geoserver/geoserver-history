@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.sld.requests;
 
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.sld.SldException;
@@ -15,13 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 
 
 public class PutStylesKvpReader extends KvpRequestReader {
-    public PutStylesKvpReader(Map kvpPairs, AbstractService service) {
+
+
+    public PutStylesKvpReader(Map kvpPairs, WMS service) {
         super(kvpPairs, service);
     }
 
     public Request getRequest(HttpServletRequest httpRequest)
         throws ServiceException {
-        PutStylesRequest request = new PutStylesRequest(getServiceRef());
+        PutStylesRequest request = new PutStylesRequest((WMS) serviceConfig);
         request.setHttpServletRequest(httpRequest);
 
         String version = getRequestVersion();

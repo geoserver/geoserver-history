@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
-import org.vfny.geoserver.ServiceException;
+import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WmsException;

@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import javax.xml.namespace.QName;
 
+import junit.framework.Test;
 import junit.textui.TestRunner;
 
 import org.geoserver.data.test.MockData;
@@ -14,6 +15,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class GetFeatureTest extends WFSTestSupport {
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetFeatureTest());
+    }
     
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
@@ -335,7 +343,7 @@ public class GetFeatureTest extends WFSTestSupport {
                 new QName( MockData.SF_URI, "new", MockData.SF_PREFIX ), 
                 getClass().getResource("new.properties"), Collections.EMPTY_MAP 
             );
-        applicationContext.refresh();
+        reloadCatalogAndConfiguration();
         
         dom = getAsDOM( "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:new");
         assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );

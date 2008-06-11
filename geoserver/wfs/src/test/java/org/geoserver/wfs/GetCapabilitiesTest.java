@@ -4,12 +4,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
+import junit.framework.Test;
+
 import org.geoserver.platform.GeoServerExtensions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class GetCapabilitiesTest extends WFSTestSupport {
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new GetCapabilitiesTest());
+    }
 
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities");
