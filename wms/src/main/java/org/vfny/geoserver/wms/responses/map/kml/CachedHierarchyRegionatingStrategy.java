@@ -136,8 +136,6 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             			new TreeSet<String>());
 	        } else {
 	        	// Figure out what the closest tile would be, then use that
-                ReferencedEnvelope tmp = expandToTile(layerBounds);
-                
             	buildDB(statement, tableName, layer.getFeatureSource(), 
             			expandToTile(layerBounds), 
             			new TreeSet<String>());
@@ -180,9 +178,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
         try{
             String tableName = findCacheTable(con, layer);
-
             long[] coords = getTileCoords(con.getAreaOfInterest(), getWorldBounds());
-
+            
             String sql = "SELECT fid FROM " + tableName + " WHERE x = " + coords[0] + " AND y = " + coords[1] + " AND z = " + coords[2];
             statement.execute( sql );
 
@@ -271,7 +268,15 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             root.populateExcluding(col, parents);
             ReferencedEnvelope world = getWorldBounds();
             try{
-                world.transform(source.getBounds().getCoordinateReferenceSystem(), true);
+            	// This will *always* fail with the curren version of GT,
+            	// because world -> ReferencedEnvelope[-180.0 : 180.0, -90.0 : 90.0] -> TransformException
+                //world.transform(source.getBounds().getCoordinateReferenceSystem(), true);
+            	
+            	// Instead try
+        		Envelope tmp = new Envelope(179.99, -179.99, 89.995, -89.995);
+        		world = new ReferencedEnvelope(tmp, getWorldBounds().getCoordinateReferenceSystem());
+        		world.transform(source.getBounds().getCoordinateReferenceSystem(), true);
+        		
             } catch (Exception e){
                 // ignore, just use untransformed value
                 LOGGER.log(Level.WARNING, "Couldn't convert world bounds to native coords", e);
@@ -421,8 +426,9 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     	
     	// Make a copy
     	origBounds = new ReferencedEnvelope(origBounds);
-    	// Tighten up a little
-    	origBounds.expandBy(-1 * origBounds.getWidth()*0.01);
+    	
+    	// Tighten up a little, we're expanding in the next step
+    	origBounds.expandBy(-1 * origBounds.getWidth()*0.000001);
     	
     	// Now keep zooming in until no new tile covers the original bounds
     	boolean zoomIn = true;
@@ -451,7 +457,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
      * @return {x,y,z}
      */
     public static long[] getTileCoords(ReferencedEnvelope requestBBox, ReferencedEnvelope worldBounds) {
-        try{
+    	
+    	try{
             requestBBox = requestBBox.transform(worldBounds.getCoordinateReferenceSystem(), true);
         } catch (Exception e){
             LOGGER.log(Level.WARNING, "Couldn't reproject while acquiring tile coordinates", e);
