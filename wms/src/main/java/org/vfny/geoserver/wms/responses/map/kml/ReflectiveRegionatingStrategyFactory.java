@@ -26,6 +26,10 @@ public class ReflectiveRegionatingStrategyFactory implements RegionatingStrategy
         return (myName != null) && myName.equalsIgnoreCase(strategyName);
     }
 
+    public String getName(){
+        return myName;
+    }
+
     public RegionatingStrategy createStrategy(){
         try{
             return (RegionatingStrategy)getStrategyClass().newInstance();
