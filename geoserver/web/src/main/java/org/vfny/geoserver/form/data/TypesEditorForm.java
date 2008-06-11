@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataStore;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -31,6 +32,7 @@ import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
+import org.vfny.geoserver.wms.responses.map.kml.RegionatingStrategyFactory;
 import org.vfny.geoserver.util.Requests;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -153,6 +155,8 @@ public class TypesEditorForm extends ActionForm {
     private String regionateStrategy;
     private String regionateFeatureLimit;
 
+    private SortedSet availableStrategies;
+
     /** The amount of time to use for the CacheControl: max-age parameter in maps generated from this featuretype **/
     private String cacheMaxAge;
     
@@ -258,6 +262,14 @@ public class TypesEditorForm extends ActionForm {
         regionateAttribute = type.getRegionateAttribute();
         regionateStrategy = type.getRegionateStrategy();
         regionateFeatureLimit = Integer.toString(type.getRegionateFeatureLimit());
+
+        this.availableStrategies = new TreeSet();
+        List<RegionatingStrategyFactory> factories = GeoServerExtensions.extensions(RegionatingStrategyFactory.class);
+        Iterator<RegionatingStrategyFactory> it = factories.iterator();
+        while (it.hasNext()){
+            this.availableStrategies.add(it.next().getName());
+        }
+
         
         this.maxFeatures = type.getMaxFeatures() == 0? String.valueOf(type.getMaxFeatures()) : "";
 
@@ -707,6 +719,10 @@ public class TypesEditorForm extends ActionForm {
         return regionateFeatureLimit;
     }
 
+    public SortedSet getAvailableStrategies(){
+        return availableStrategies;
+    }
+
     /**
      * Set abstact (or description) to description.
      *
@@ -726,6 +742,10 @@ public class TypesEditorForm extends ActionForm {
 
     public void setRegionateFeatureLimit(String limit){
         this.regionateFeatureLimit = limit;
+    }
+
+    public void setAvailableStrategies(SortedSet strategies){
+        this.availableStrategies = strategies;
     }
 
     /**
