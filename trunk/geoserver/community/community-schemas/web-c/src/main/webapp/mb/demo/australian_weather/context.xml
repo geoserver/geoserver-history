@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<ViewContext version="1.0.0" id="terrapages_aus" xmlns="http://www.opengis.net/context" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+  <General>
+    <Window width="500" height="500"/>
+    <BoundingBox SRS="EPSG:4326" minx="110" miny="-50" maxx="160" maxy="0"/>
+    <Title>BOM, Australia</Title>
+    <KeywordList>
+      <Keyword>australia</Keyword>
+    </KeywordList>
+    <Abstract>BOM</Abstract>
+    <LogoURL width="187" height="48" format="image/gif">
+      <OnlineResource xlink:type="simple" xlink:href="http://www.bom.gov.au/images/bom_logo.gif"/>
+    </LogoURL>
+    <DescriptionURL format="text/html">
+      <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+    </DescriptionURL>
+  </General>
+  <LayerList>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>coast</Name>
+<Title>Australian Coast</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>satirgif</Name>
+<Title>Satellite IR</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>radarseaus</Name>
+<Title>Radar for SE Australia</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>radarnsw</Name>
+<Title>Radar for New South Wales</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>radarqld</Name>
+<Title>Radar for Queensland</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>radarnt</Name>
+<Title>Radar for Northern Territory</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>radarwa</Name>
+<Title>Radar for Western Australia</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>radarsa</Name>
+<Title>Radar for South Australia</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>hotspots</Name>
+<Title>Hotspots from CSIRO Sentinel</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>windanalysis</Name>
+<Title>Wind Analysis</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>forecasts_icon</Name>
+<Title>Precis Forecast (icon)</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>forecast_text</Name>
+<Title>Temperature Forecast</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+   <Layer queryable="1" hidden="0">
+      <Server service="wms" version="1.1.1" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://www4.bom.gov.au/cgi-bin/mapserver/mapserv?map=/web/htdocs/mapserver/weather.map"/>
+      </Server>
+<Name>coastline</Name>
+<Title>GA 100k Coastline</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+        <Format current="0">image/png</Format>
+      </FormatList>
+    </Layer>
+  </LayerList>
+</ViewContext>

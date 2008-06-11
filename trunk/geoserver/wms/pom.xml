@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.geoserver</groupId>
+    <artifactId>geoserver</artifactId>
+    <version>1.7.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.geoserver</groupId>
+  <artifactId>wms</artifactId>
+  <packaging>jar</packaging>
+  <name>Web Map Service Module</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>main</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wfs</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wcs</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-render</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-shapefile-renderer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-geotiff</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-wfs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-svggen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-awt-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-util</artifactId>
+    </dependency>
+    		<!-- SVG rendering markers support
+			These dependencies need to be declared here as they're marked
+			as optional in the geotools renderer module and thus are not
+			transitive
+		 -->
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-dom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-bridge</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-gvt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-svg-dom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-css</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-ext</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-xml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-script</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-parser</artifactId>
+    </dependency>
+    <!-- end of SVG rendering markers support -->
+    <dependency>
+      <groupId>com.lowagie</groupId>
+      <artifactId>itext</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>data</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>main</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.mockrunner</groupId>
+      <artifactId>mockrunner</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!-- =========================================================== -->
+  <!--     Build Configuration                                     -->
+  <!-- =========================================================== -->
+  <build>
+    <plugins>
+      <!-- ====    Code Formatting  ============================== -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jalopy-maven-plugin</artifactId>
+        <configuration>
+          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>format</goal>
+            </goals>
+            <phase>${jalopy.phase}</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

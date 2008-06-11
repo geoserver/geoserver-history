@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+<head>
+<title wicket:id="title">This is the page title</title>
+<meta content="text/html; charset=iso-8859-1" http-equiv="content-type" />
+<meta content="text/css" http-equiv="content-style-type" />
+<meta wicket:id="metaDescription" name="description"
+	content="description" />
+<meta wicket:id="metaKeywords" name="keywords"
+	content="(GeoServer)(GIS) (GeographicInformationSystems)" />
+<meta name="author"
+	content="Dave Blasby, Chris Holmes, Brent Owens, Justin Deoliveira, Jody Garnett, Richard Gould, David Zwiers" />
+<!-- 
+<link rel="stylesheet" type="text/css" href="./style.css" />
+ -->
+</head>
+<body>
+<table class="page">
+	<tbody>
+		<tr class="header">
+			<td class="gutter"><span class="project"> <a
+				href="http://geoserver.sourceforge.net/"> GeoServer </a> </span> <span
+				class="license"> <a
+				href="http://geoserver.sourceforge.net/documentation/developer/license.htm">&copy;</a>
+
+			</span></td>
+			<td style="width: 1em"></td>
+			<td style="vertical-align: bottom; white-space: nowrap;"><img
+				wicket:id="logo" /></td>
+			<td
+				style="vertical-align: bottom; white-space: nowrap; text-align: right;">
+
+			<span class="contact"> <a
+				href="http://docs.codehaus.org/display/GEOS/Contributors">Credits</a>
+			</span></td>
+		</tr>
+
+		<tr>
+			<td class="sidebar">
+			<table class="status">
+
+				<!--  module state, to be filled in dynamically -->
+				<tr>
+					<td class="module">WFS:</td>
+					<td style="health">
+					<table class="progress">
+						<tbody>
+							<tr>
+								<td class="good" width="100%" title="100%"></td>
+							</tr>
+						</tbody>
+					</table>
+					</td>
+				</tr>
+			</table>
+
+			<span class="messages" wicket:id="messages"> </span></td>
+			<td style="width: 1em"></td>
+			<td style="vertical-align: top;" rowspan="1" colspan="2">
+
+			<table class="main">
+				<tbody>
+					<tr class="bar">
+						<td class="locator"><span class="locator" wicket:id="breadcrumb"> Breadcrumbs
+						here </span></td>
+						<td class="loginStatus"><span class="loginStatus"> <a
+							href="/geoserver/admin/login.do">Login</a> </span></td>
+					</tr>
+
+					<tr>
+						<td class="application" rowspan="1" colspan="2">
+						<table class="title">
+							<tbody>
+								<tr>
+									<td class="menu">
+									<table class="menu">
+										<tbody>
+											<tr wicket:id="menu">
+												<td><a wicket:id="link" href="/geoserver/admin/index.do" style="item"
+													title="Administration of running GeoServer application"><span wicket:id="linkText">Link text</span></a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+
+									</td>
+									<td class="title">
+									<h1 class="title" wicket:id="pageTitle">Page title</h1>
+									<p class="abstract" wicket:id="pageAbstract">Page abstract</p>
+									</td>
+									<td class="icon"></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<wicket:child>
+						</wicket:child>
+						
+						</td>
+					</tr>
+				</tbody>
+
+			</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+<featureType datastore="timeseries">
+  <name>SiteSinglePhenomTimeSeries</name>
+  <!--
+    native wich EPGS code for the FeatureTypeInfoDTO
+  -->
+  <SRS>27700</SRS>
+  <title>SiteSinglePhenomTimeSeries</title>
+  <abstract>SiteSinglePhenomTimeSeries generated from a property datastore</abstract>
+  <numDecimals value="8" />
+  <keywords>SiteSinglePhenomTimeSeries</keywords>
+  <!-- latLonBoundingBox dynamic="false" miny="-90.0" maxy="90.0" maxx="180.0" minx="-180.0" /-->
+  <latLonBoundingBox dynamic="true" />
+  <!--
+    the default style this FeatureTypeInfoDTO can be represented by.
+    at least must contain the "default" attribute 
+  -->
+  <styles default="poi" />
+</featureType>

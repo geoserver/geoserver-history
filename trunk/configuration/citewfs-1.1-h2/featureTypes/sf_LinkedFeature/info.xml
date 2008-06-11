@@ -1,0 +1,10 @@
+<featureType datastore = "sf" >
+<name>LinkedFeature</name>
+<SRS>4326</SRS>
+<title>LinkedFeatureType</title>
+<abstract>Generated from sf</abstract>
+<numDecimals value = "8" />
+<keywords>sf LinkedFeature</keywords>
+<latLonBoundingBox dynamic = "false" miny = "-90" maxy = "90" maxx = "180" minx = "-180"  />
+<styles/>
+</featureType>

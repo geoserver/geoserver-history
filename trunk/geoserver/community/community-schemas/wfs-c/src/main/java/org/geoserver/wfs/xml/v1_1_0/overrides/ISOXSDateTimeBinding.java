@@ -1,0 +1,70 @@
+/*
+ *    GeoTools - OpenSource mapping toolkit
+ *    http://geotools.org
+ *    (C) 2002-2006, GeoTools Project Managment Committee (PMC)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ */
+package org.geoserver.wfs.xml.v1_1_0.overrides;
+
+import com.sun.xml.bind.DatatypeConverterImpl;
+import org.geoserver.wfs.xml.xs.DateBinding;
+import org.geotools.xml.InstanceComponent;
+import org.geotools.xml.SimpleBinding;
+import org.geotools.xs.bindings.XS;
+import org.geotools.xs.bindings.XSDateTimeBinding;
+import org.opengis.feature.Attribute;
+import java.util.Calendar;
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.namespace.QName;
+
+
+/**
+ * Binding object for the type http://www.w3.org/2001/XMLSchema:dateTime.
+ *
+ * @generated
+ */
+public class ISOXSDateTimeBinding extends XSDateTimeBinding {
+    static {
+        DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * This binding returns objects of type {@link Calendar}.
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public Class getType() {
+        return Attribute.class;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated modifiable
+     */
+    public String encode(Object object, String value) {
+        Attribute att = (Attribute) object;
+
+        Calendar datetime = (Calendar) att.getValue();
+
+        String printDateTime = null;
+
+        if (datetime != null) {
+            printDateTime = DatatypeConverter.printDateTime(datetime);
+        }
+
+        return printDateTime;
+    }
+}

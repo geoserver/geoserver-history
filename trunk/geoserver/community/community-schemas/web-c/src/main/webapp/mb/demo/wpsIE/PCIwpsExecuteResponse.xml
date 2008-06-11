@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExecuteResponse xmlns="http://www.opengis.net/wps" xmlns:gml="http://www.opengs.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XLSchema-instance"
+xsi:schemaLocation="http://www.opengis.net/wps http://gws2.pcigeomatics.com:80/sdlocation/ogc/wps/0.2.4/wpsExecute.xsd" version="0.2.4" statusLocation="http://gws2.pcigeomatics.com/wps/wps?service=WPS&amp;request=QuryProcessStatus&amp;processID=b26856d0-4415-4500-a751-9280b3d52959">
+        <ProcessName>CoordinateTransform</ProcessName>
+        <Status>
+                <ProcessAccepted/>
+        </Status>
+</ExecuteResponse>
+

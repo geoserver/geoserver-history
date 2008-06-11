@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean class="org.vfny.geoserver.ui.plugin.DataConfigurationPageInfo">
+		<constructor-arg>
+			<value type="java.lang.Class">org.vfny.geoserver.one.ui.ModuleOneConfigurationPage</value>
+		</constructor-arg>
+		<constructor-arg>
+			<value>Module one</value>
+		</constructor-arg>
+		<constructor-arg>
+			<value>Module one configuratio page</value>
+		</constructor-arg>
+	</bean>
+</beans>

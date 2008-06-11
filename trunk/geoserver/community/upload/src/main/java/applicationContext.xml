@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <bean id="uploadRestletMapping" class="org.geoserver.rest.RESTMapping">
+  <property name="routes">
+    <map>
+      <entry>
+        <key><value>/upload</value></key>
+        <value>uploadRestlet</value>
+      </entry>
+      <entry>
+        <key><value>/upload/{file}</value></key>
+        <value>uploadRestlet</value>
+      </entry>
+    </map>
+  </property>
+  </bean>
+  <bean id="uploadRestlet" class="org.geoserver.rest.upload.UploadRestlet">
+  <property name="typeMap">
+    <map>
+      <entry>
+          <key><value>image/jpeg</value></key>
+          <value>jpg</value>
+      </entry>
+      <entry>
+          <key><value>image/png</value></key>
+          <value>png</value>
+      </entry>
+    </map>
+  </property>
+  </bean>
+</beans>

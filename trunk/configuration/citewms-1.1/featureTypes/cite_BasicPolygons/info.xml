@@ -1,0 +1,17 @@
+<featureType datastore = "BasicPolygons" >
+<name>BasicPolygons</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>cite:BasicPolygons</title>
+<abstract>Generated from cite</abstract>
+<numDecimals value = "8" />
+<keywords>BasicPolygons cite</keywords>
+<latLonBoundingBox dynamic = "false" miny = "-1.0" maxy = "6.0" maxx = "2.0" minx = "-2.0"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "basicpolygon"  />
+</featureType>
