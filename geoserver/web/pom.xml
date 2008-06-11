@@ -381,6 +381,16 @@
       </dependencies>
     </profile>
     <profile>
+      <id>oracle</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt-oracle-spatial</artifactId>
+          <version>${gt.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>wfsv</id>
       <activation>
         <property>
