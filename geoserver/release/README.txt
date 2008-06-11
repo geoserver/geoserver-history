@@ -1,3 +1,18 @@
+GeoServer 1.7.0-beta1
+---------------------
+
+The first beta release of 1.7. This release is a unstable release. Major functionality include:
+
+ * per layer security
+ * WCS 1.1.1 support
+ * WFS Xlink support
+ * GDAL integration with support for MrSID and ECW formats
+ * new configuration backend
+
+This release is based on geotools 2.5.x:
+  revision = 30605
+  svn tag = 'geoserver-1.7.0-beta1'
+
 GeoServer 1.7.0-alpha1 
 ----------------------
 
