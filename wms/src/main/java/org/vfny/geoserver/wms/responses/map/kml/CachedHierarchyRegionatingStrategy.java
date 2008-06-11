@@ -123,13 +123,13 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             // ... but if it crosses the centra meridien we need to get two world tiles anyway
 	        if(layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
 	            // Western
-	        	ReferencedEnvelope tmp = new ReferencedEnvelope(0.0, -180.0, 90.0, -90.0, epsg4326);
+	        	ReferencedEnvelope tmp = new ReferencedEnvelope(new Envelope(0.0, -180.0, 90.0, -90.0), epsg4326);
 
             	buildDB(statement, tableName, layer.getFeatureSource(),
             			tmp, 
             			new TreeSet<String>());
             	// Eastern
-            	tmp = new ReferencedEnvelope(180.0, 0.0, 90.0, -90.0, epsg4326);
+            	tmp = new ReferencedEnvelope(new Envelope(180.0, 0.0, 90.0, -90.0), epsg4326);
 
             	buildDB(statement, tableName, layer.getFeatureSource(),
             			tmp,
