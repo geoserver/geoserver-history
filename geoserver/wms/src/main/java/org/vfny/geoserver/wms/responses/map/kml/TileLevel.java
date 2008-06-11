@@ -219,14 +219,11 @@ public class TileLevel implements Serializable {
     public void writeTo(Statement st, String tableName, ReferencedEnvelope worldBounds){
         long[] coords = CachedHierarchyRegionatingStrategy.getTileCoords(myBBox, worldBounds);
 
-        LOGGER.info("TileLevel.writeTo() called with " + myFeatures.size() + " features in tile." );
-
         Iterator it = myFeatures.iterator();
         while (it.hasNext()){
             try{
                 String fid = ((SimpleFeature)it.next()).getID();
                 String SQL = "INSERT INTO " + tableName + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + fid + "\' )";
-                LOGGER.info(SQL);
                 st.execute(SQL);
             } catch (Exception e){
                 LOGGER.log(Level.SEVERE, "SQL Error while trying to store tile hierarchy!", e);

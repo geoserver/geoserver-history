@@ -124,16 +124,12 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 	        if(layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
 	            // Western
 	        	ReferencedEnvelope tmp = new ReferencedEnvelope(0.0, -180.0, 90.0, -90.0, epsg4326);
-                long[] c = getTileCoords(tmp, getWorldBounds());
-                LOGGER.info("Starting at " + tmp + "; " + c[0] +  ", " + c[1] + ", " + c[2]);
 
             	buildDB(statement, tableName, layer.getFeatureSource(),
             			tmp, 
             			new TreeSet<String>());
             	// Eastern
             	tmp = new ReferencedEnvelope(180.0, 0.0, 90.0, -90.0, epsg4326);
-                c = getTileCoords(tmp, getWorldBounds());
-                LOGGER.info("Starting at " + tmp + "; " + c[0] +  ", " + c[1] + ", " + c[2]);
 
             	buildDB(statement, tableName, layer.getFeatureSource(),
             			tmp,
@@ -141,9 +137,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 	        } else {
 	        	// Figure out what the closest tile would be, then use that
                 ReferencedEnvelope tmp = expandToTile(layerBounds);
-                long[] c = getTileCoords(tmp, getWorldBounds());
                 
-                LOGGER.info("Starting at " + tmp + "; " + c[0] +  ", " + c[1] + ", " + c[2]);
             	buildDB(statement, tableName, layer.getFeatureSource(), 
             			expandToTile(layerBounds), 
             			new TreeSet<String>());
@@ -273,7 +267,6 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 for (SimpleFeature feature : pq) parents.remove(feature.getID());
             }
         } else {
-            LOGGER.info("Down to " + col.size() + " features in region; doing it all in memory now!" );
             TileLevel root = new TileLevel(reprojectedBBox, myFeaturesPerTile, getComparator());
             root.populateExcluding(col, parents);
             ReferencedEnvelope world = getWorldBounds();
@@ -326,7 +319,6 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 WORLD_SRS
                 );
 
-        // LOGGER.info("Filtering by: " + filter);
         return source.getFeatures(filter);
     }
 
