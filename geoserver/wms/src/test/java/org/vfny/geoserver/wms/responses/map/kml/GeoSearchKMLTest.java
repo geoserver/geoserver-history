@@ -61,7 +61,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
             "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&height=1024&width=1024&srs=EPSG:4326" +  
-            "&format_options=regionateBy:geo";
+            "&format_options=regionateBy:data;regionateAttr:the_geom";
         Document document = getAsDOM(path + "&bbox=-180,-90,0,90");
         assertEquals("kml", document.getDocumentElement().getTagName());
         assertEquals(1, document.getDocumentElement().getElementsByTagName("Placemark").getLength());
@@ -96,7 +96,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
             "&layers=" + CENTERED_POLY.getPrefix() + ":" + CENTERED_POLY.getLocalPart() + 
             "&styles=" + 
             "&height=1024&width=1024&srs=EPSG:4326" +  
-            "&format_options=regionateBy:geo";
+            "&format_options=regionateBy:data;regionateattr:foo";
 
         Document document = getAsDOM(path + "&bbox=-180,-90,0,90");
         assertEquals("kml", document.getDocumentElement().getTagName());
@@ -119,7 +119,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
         FeatureTypeInfo fti = getFeatureTypeInfo(TILE_TESTS);
         fti.setRegionateFeatureLimit(2);
 
-        Document geo = getAsDOM(path + "&format_options=regionateBy:geo");
+        Document geo = getAsDOM(path + "&format_options=regionateBy:data;regionateattr:location");
         assertEquals("kml", geo.getDocumentElement().getTagName());
 
         NodeList geoPlacemarks = geo.getDocumentElement().getElementsByTagName("Placemark");
@@ -137,7 +137,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
 
             assertTrue(geoName + " and " + dataName + " should not be the same!", 
                     !geoName.equals(dataName)
-                    );
+            );
         }
     }
 }

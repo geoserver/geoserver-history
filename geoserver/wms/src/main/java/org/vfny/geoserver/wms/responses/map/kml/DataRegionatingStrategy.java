@@ -57,16 +57,22 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
     private Comparator<SimpleFeature> myComparator;
     private String myAttributeName;
 
-    public DataRegionatingStrategy(){
-    }
-
     protected String findCacheTable(WMSMapContext con, MapLayer layer){
         myAttributeName = (String)con.getRequest().getFormatOptions().get("regionateAttr");
-        if (myAttributeName == null)
+        SimpleFeatureType type = (SimpleFeatureType)layer.getFeatureSource().getSchema();
+ 
+        if (myAttributeName == null){
             myAttributeName = 
                 con.getRequest().getWMS().getData().getFeatureTypeInfo(
-                        layer.getFeatureSource().getSchema().getName()
+                        type.getName()
                         ).getRegionateAttribute();
+        }
+
+        if (Geometry.class.isAssignableFrom(type.getType(myAttributeName).getBinding())){
+            myComparator = new GeometryComparator();
+        } else {
+            myComparator = new DataComparator();
+        }
 
         myComparator = new DataComparator();
         return super.findCacheTable(con, layer) + "_" + myAttributeName;
@@ -91,6 +97,24 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
                 return ((Comparable)attrA).compareTo(attrB);
 
             return 0;
+        }
+    }
+
+    private class GeometryComparator implements Comparator<SimpleFeature> {
+        public int compare(SimpleFeature a, SimpleFeature b){
+            double valueA = findValue(a);
+            double valueB = findValue(b);
+            
+            return (int)Math.signum(valueA - valueB);
+        }
+        
+        private double findValue(SimpleFeature f){
+            Geometry geom = (Geometry)f.getAttribute(myAttributeName);
+            
+            double area = geom.getArea();
+            if (area > 0) return area;
+            
+            return geom.getLength();
         }
     }
 }
