@@ -428,7 +428,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     	origBounds = new ReferencedEnvelope(origBounds);
     	
     	// Tighten up a little, we're expanding in the next step
-    	origBounds.expandBy(-1 * origBounds.getWidth()*0.000001);
+    	origBounds.expandBy(-1 * origBounds.getWidth()*0.01);
     	
     	// Now keep zooming in until no new tile covers the original bounds
     	boolean zoomIn = true;
