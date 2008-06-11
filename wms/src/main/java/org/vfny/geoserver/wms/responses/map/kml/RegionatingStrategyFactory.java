@@ -9,6 +9,11 @@ public interface RegionatingStrategyFactory {
     public boolean canHandle(String strategyName);
 
     /**
+     * Get a string for which this.canHandle will return true.
+     */
+    public String getName();
+
+    /**
      * Create a strategy to handle the request.
      * @return the RegionatingStrategy to handle the request.
      */
