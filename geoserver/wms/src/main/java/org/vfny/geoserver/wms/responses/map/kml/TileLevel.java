@@ -237,7 +237,6 @@ public class TileLevel implements Serializable {
                 child.writeTo(st, tableName, worldBounds);
             }
         } else {
-            LOGGER.info("Leaf: " + coords[0] + ", " + coords[1] + ", " + coords[2] );
         }
     }
 
