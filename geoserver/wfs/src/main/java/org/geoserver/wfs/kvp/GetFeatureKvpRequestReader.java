@@ -118,6 +118,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
                 }
 
                 querySet(eObject, "typeName", typeNames);
+            } else {
+                throw new WFSException("The query should specify either typeName or a featureId filter", "MissingParameterValue");
             }
         }
 
