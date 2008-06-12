@@ -68,13 +68,13 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
                         ).getRegionateAttribute();
         }
 
-        if (Geometry.class.isAssignableFrom(type.getType(myAttributeName).getBinding())){
+        Class binding = type.getType(myAttributeName).getBinding();
+        if (Geometry.class.isAssignableFrom(binding)){
             myComparator = new GeometryComparator();
         } else {
             myComparator = new DataComparator();
         }
 
-        myComparator = new DataComparator();
         return super.findCacheTable(con, layer) + "_" + myAttributeName;
     }
 
@@ -105,7 +105,7 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
             double valueA = findValue(a);
             double valueB = findValue(b);
             
-            return (int)Math.signum(valueB - valueA);
+            return (int)Math.signum(valueA - valueB);
         }
         
         private double findValue(SimpleFeature f){
