@@ -82,16 +82,6 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-  <!--
-  <repository>
-    <id>geo-solutions</id>
-    <name>geo-solutions</name>
-    <url>http://www.geo-solutions.it/gt2_nightly/</url>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-  </repository>
-  -->
  </repositories>
 
  <pluginRepositories>
