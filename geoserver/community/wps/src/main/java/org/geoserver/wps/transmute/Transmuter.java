@@ -7,11 +7,9 @@
  * @author lreed@refractions.net
  */
 
-package org.geoserver.wps;
+package org.geoserver.wps.transmute;
 
-import org.geoserver.config.ServiceInfo;
-
-public interface WPSInfo extends ServiceInfo
+public interface Transmuter
 {
 
 }

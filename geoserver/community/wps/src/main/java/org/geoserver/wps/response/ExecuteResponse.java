@@ -4,8 +4,8 @@
  */
 
 /**
-    @author lreed@refractions.net
-*/
+ *	@author lreed@refractions.net
+ */
 
 package org.geoserver.wps.response;
 

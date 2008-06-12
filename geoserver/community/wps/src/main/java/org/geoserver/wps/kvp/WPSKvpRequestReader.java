@@ -14,7 +14,7 @@ import org.geoserver.ows.kvp.EMFKvpRequestReader;
 
 public class WPSKvpRequestReader extends EMFKvpRequestReader
 {
-    public WPSKvpRequestReader(Class requestBean)
+    public WPSKvpRequestReader(Class<?> requestBean)
     {
         super(requestBean, WpsFactory.eINSTANCE);
     }

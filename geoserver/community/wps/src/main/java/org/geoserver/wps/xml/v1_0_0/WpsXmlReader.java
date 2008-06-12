@@ -39,8 +39,6 @@ public class WpsXmlReader extends XmlRequestReader
         Parser parser = new Parser(configuration);
         parser.setValidating(true);
 
-        // Namespace 'injection' ?
-
         InputSource source = new InputSource(reader);
 
         Object parsed;
