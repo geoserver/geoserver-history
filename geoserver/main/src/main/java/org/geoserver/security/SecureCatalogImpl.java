@@ -353,6 +353,9 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
      * @return
      */
     protected <T extends NamespaceInfo> T checkAccess(Authentication user, T ns) {
+        if(ns == null)
+            return null;
+        
         // route the security check thru the associated workspace info
         WorkspaceInfo info = checkAccess(user, delegate.getWorkspace(ns.getPrefix()));
         if (info == null)
