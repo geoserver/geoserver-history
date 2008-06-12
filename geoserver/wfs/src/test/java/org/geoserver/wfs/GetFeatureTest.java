@@ -2,6 +2,7 @@ package org.geoserver.wfs;
 
 import junit.framework.Test;
 
+import org.custommonkey.xmlunit.XMLAssert;
 import org.geoserver.data.test.MockData;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -34,6 +35,15 @@ public class GetFeatureTest extends WFSTestSupport {
 
         NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
         assertFalse(featureMembers.getLength() == 0);
+    }
+    
+    // see GEOS-1893
+    public void testGetMissingParams() throws Exception {
+        Document doc = getAsDOM("wfs?request=GetFeature&typeNameWrongParam=cdf:Fifteen&version=1.0.0&service=wfs");
+        // trick: the document specifies a namespace with schema reference, as a result xpath expressions
+        // do work only if fully qualified
+        XMLAssert.assertXpathEvaluatesTo("1", "count(//ogc:ServiceException)", doc);
+        XMLAssert.assertXpathEvaluatesTo("MissingParameterValue", "//ogc:ServiceException/@code", doc);
     }
     
     public void testAlienNamespace() throws Exception {

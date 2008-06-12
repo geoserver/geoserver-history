@@ -53,6 +53,7 @@ public class WFSTestSupport extends GeoServerTestSupport {
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("wfs", "http://www.opengis.net/wfs");
         namespaces.put("ows", "http://www.opengis.net/ows");
+        namespaces.put("ogc", "http://www.opengis.net/ogc");
         namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
         namespaces.put("xsd", "http://www.w3.org/2001/XMLSchema");
         namespaces.put("gml", "http://www.opengis.net/gml");
