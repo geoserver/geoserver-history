@@ -4,7 +4,7 @@
  */
 
 /**
- *  @author lreed@refractions.net
+ *  @author Lucas Reed, Refractions Research, lreed@refractions.net
  */
 
 package org.geoserver.wps;
@@ -12,6 +12,7 @@ package org.geoserver.wps;
 import net.opengis.wps.GetCapabilitiesType;
 import net.opengis.wps.DescribeProcessType;
 import net.opengis.wps.ExecuteType;
+import net.opengis.wps.RequestBaseType;
 
 import org.geoserver.wps.WPSException;
 import org.geotools.xml.transform.TransformerBase;
@@ -23,4 +24,6 @@ public interface WebProcessingService
     TransformerBase describeProcess(DescribeProcessType request) throws WPSException;
 
     TransformerBase execute(ExecuteType request) throws WPSException;
+
+    void getSchema(RequestBaseType request) throws WPSException;
 }

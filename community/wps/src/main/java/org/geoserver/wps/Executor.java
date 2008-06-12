@@ -10,14 +10,13 @@
 package org.geoserver.wps;
 
 import java.util.Map;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
 import org.geotools.process.Process;
-import org.geotools.process.Parameter;
+import org.geotools.data.Parameter;
 import org.opengis.util.ProgressListener;
 
 import net.opengis.wps.ExecuteType;
@@ -27,91 +26,92 @@ import net.opengis.ows11.CodeType;
 
 public class Executor
 {
-	private Process             process;
-	private Map<String, Object> inputs;
-	private WPS                 wps;
-	
-	public Executor(ExecuteType request, WPS wps)
-	{
-		this.wps                  = wps;
-		CodeType       identifier = request.getIdentifier();
-		ProcessFactory factory    = this.findProcessFactory(identifier);
+    private Process             process;
+    private Map<String, Object> inputs;
+    private WPS                 wps;
+    private ProcessFactory      factory;
 
-		if (null == factory)
-		{
-			throw new WPSException("InvalidParameterValue", "Identifier");	// TODO
-		}
+    public Executor(ExecuteType request, WPS wps)
+    {
+        this.wps            = wps;
+        CodeType identifier = request.getIdentifier();
+        this.factory        = this.findProcessFactory(identifier);
 
-		// Check inputs
-		Map<String, Parameter<?>> parameterInfo = factory.getParameterInfo();
-		DataInputsType1           requestInputs = request.getDataInputs();
+        if (null == factory)
+        {
+            throw new WPSException("InvalidParameterValue", "Identifier");    // TODO
+        }
 
-		this.checkInputs(parameterInfo, requestInputs);
+        // Check inputs
+        Map<String, Parameter<?>> parameterInfo = factory.getParameterInfo();
+        DataInputsType1           requestInputs = request.getDataInputs();
 
-		// Parse inputs
-		InputTransformer inputTransformer = new InputTransformer(request.getDataInputs().getInput(), parameterInfo);
-		this.inputs = inputTransformer.transform();
+        this.checkInputs(parameterInfo, requestInputs);
 
-		// Get it ready to execute
-		this.process = factory.create();
-	}
+        // Parse inputs
+        DataTransformer dataTransformer = new DataTransformer();
+        this.inputs = dataTransformer.decodeInputs(request.getDataInputs().getInput(), parameterInfo);
 
-	private String packageUrl()
-	{
-		return "http://192.168.50.77:8080/geoserver/wps/";	// XXX HARDCODE
-	}
-	
-	public Map<String, Object> execute()
-	{
-		ProgressListener progress = null;
+        // Get it ready to execute
+        this.process = factory.create();
+    }
 
-		return process.execute(this.inputs, progress);
-	}
+    public ProcessFactory getProcessFactory()
+    {
+        return this.factory;
+    }
 
-	private void checkInputs(Map<String, Parameter<?>> processParameters, DataInputsType1 requestInputs)
-	{
-		List<String> requestInputNames = new ArrayList<String>();
-		List<String> processInputNames = new ArrayList<String>();
+    public Map<String, Object> execute()
+    {
+        ProgressListener progress = null;
 
-		for(InputType input : (List<InputType>)requestInputs.getInput())
-		{
-			requestInputNames.add(input.getIdentifier().getValue());
-		}
+        return process.execute(this.inputs, progress);
+    }
 
-		processInputNames.addAll(processParameters.keySet());
+    private void checkInputs(Map<String, Parameter<?>> processParameters, DataInputsType1 requestInputs)
+    {
+        List<String> requestInputNames = new ArrayList<String>();
+        List<String> processInputNames = new ArrayList<String>();
 
-		// Check for missing input parameters
-		for(String processInputName : processInputNames)
-		{
-			if (false == requestInputNames.contains(processInputName))
-			{
-				throw new WPSException("MissingParameterValue", processInputName);
-			}
-		}
+        for(InputType input : (List<InputType>)requestInputs.getInput())
+        {
+            requestInputNames.add(input.getIdentifier().getValue());
+        }
 
-		requestInputNames.removeAll(processInputNames);
+        processInputNames.addAll(processParameters.keySet());
 
-		// Check for unknown input types
-		String unknownParameters = new String("");
-		for(String unknownName : requestInputNames)
-		{
-			if (false == "".equals(unknownParameters))
-			{
-				unknownParameters += ", ";
-			}
+        // Check for missing input parameters
+        for(String processInputName : processInputNames)
+        {
+            if (false == requestInputNames.contains(processInputName))
+            {
+                throw new WPSException("MissingParameterValue", processInputName);
+            }
+        }
 
-			unknownParameters += unknownName;
-		}
+        requestInputNames.removeAll(processInputNames);
 
-		if (false == "".equals(unknownParameters))
-		{
-			throw new WPSException("NoApplicableCode", "Uknown input parameters: " + unknownParameters);
-		}
+        // Check for unknown input types
+        String unknownParameters = new String("");
+        for(String unknownName : requestInputNames)
+        {
+            if (false == "".equals(unknownParameters))
+            {
+                unknownParameters += ", ";
+            }
 
-		return;
-	}
+            unknownParameters += unknownName;
+        }
 
-	private ProcessFactory findProcessFactory(CodeType name)
+        if (false == "".equals(unknownParameters))
+        {
+            throw new WPSException("NoApplicableCode", "Uknown input parameters: " + unknownParameters);
+        }
+
+        return;
+    }
+
+    private ProcessFactory findProcessFactory(CodeType name)
     {
         for(ProcessFactory pf : Processors.getProcessFactories())
         {

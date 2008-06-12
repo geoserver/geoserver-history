@@ -4,14 +4,15 @@
  */
 
 /**
-    @author lreed@refractions.net
-*/
+ *	@author lreed@refractions.net
+ */
 
 package org.geoserver.wps;
 
 import net.opengis.wps.GetCapabilitiesType;
 import net.opengis.wps.DescribeProcessType;
 import net.opengis.wps.ExecuteType;
+import net.opengis.wps.RequestBaseType;
 
 import org.geotools.xml.transform.TransformerBase;
 import org.springframework.beans.BeansException;
@@ -42,6 +43,11 @@ public class DefaultWebProcessingService implements WebProcessingService, Applic
     public TransformerBase execute(ExecuteType request) throws WPSException
     {
         return new Execute(this.wps).run(request);
+    }
+
+    public void getSchema(RequestBaseType a) throws WPSException
+    {
+
     }
 
     public void setApplicationContext(ApplicationContext context) throws BeansException

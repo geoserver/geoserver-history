@@ -4,7 +4,7 @@
  */
 
 /**
- @author lreed@refractions.net
+ *	@author lreed@refractions.net
  */
 
 package org.geoserver.wps;
@@ -14,13 +14,16 @@ import net.opengis.ows11.CodeType;
 import net.opengis.wps.DescribeProcessType;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
-import org.geotools.process.Parameter;
+import org.geotools.data.Parameter;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+
+import org.geoserver.wps.transmute.ComplexTransmuter;
+import org.geoserver.wps.transmute.LiteralTransmuter;
+import org.geoserver.wps.transmute.Transmuter;
 
 public abstract class DescribeProcessTransformer extends TransformerBase
 {
@@ -54,14 +57,18 @@ public abstract class DescribeProcessTransformer extends TransformerBase
 
             private Locale locale;
 
+            private DataTransformer dataTransformer;
+
             public DescribeProcessTranslator1_0(ContentHandler handler)
             {
                 super(handler, null, null);
+
+                this.dataTransformer = new DataTransformer();
             }
 
             public void encode(Object object) throws IllegalArgumentException
             {
-                this.request = (DescribeProcessType) object;
+                this.request = (DescribeProcessType)object;
 
                 if (null == this.request.getLanguage())
                 {
@@ -113,10 +120,11 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 attributes.addAttribute("", "statusSupported",    "statusSupported",    "", Boolean.toString(pf.supportsProgress()));
 
                 start("ProcessDescription", attributes);
-	                element("ows:Identifier", pf.getName());
-	                element("ows:Title",      pf.getTitle().toString(this.locale));
-	                element("ows:Abstract",   pf.getDescription().toString(this.locale));
-	                this.processOutputs(pf);
+                    element("ows:Identifier", pf.getName());
+                    element("ows:Title",      pf.getTitle().toString(this.locale));
+                    element("ows:Abstract",   pf.getDescription().toString(this.locale));
+                    this.dataInputs(pf);
+                    this.processOutputs(pf);
                 end("ProcessDescription");
             }
 
@@ -141,27 +149,85 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 return null;
             }
 
+            private void dataInputs(ProcessFactory pf)
+            {
+                start("DataInputs");
+                for(Parameter<?> inputIdentifier : pf.getParameterInfo().values())
+                {
+                    AttributesImpl attributes = new AttributesImpl();
+                    attributes.addAttribute("", "minOccurs", "minOccurs", "", "" + inputIdentifier.minOccurs);
+                    attributes.addAttribute("", "maxOccurs", "maxOccurs", "", "" + inputIdentifier.maxOccurs);
+
+                    start("Input", attributes);
+                        element("ows:Identifier", inputIdentifier.key);
+                        element("ows:Title",      inputIdentifier.title.toString(      this.locale));
+                        element("ows:Abstract",   inputIdentifier.description.toString(this.locale));
+                        Transmuter transmuter = this.dataTransformer.getTransmuter(inputIdentifier.type);
+                        if (transmuter instanceof ComplexTransmuter)
+                        {
+                            start("ComplexData");
+                                this.complexParameter((ComplexTransmuter)transmuter);
+                            end("ComplexData");
+                        } else {
+                            this.literalData((LiteralTransmuter)transmuter);
+                        }
+                    end("Input");
+                }
+                end("DataInputs");
+            }
+
             private void processOutputs(ProcessFactory pf)
             {
                 start("ProcessOutputs");
-                for (Parameter inputIdentifier : pf.getResultInfo(null).values())
+                for (Parameter<?> outputIdentifier : pf.getResultInfo(null).values())
                 {
                     start("Output");
-	                    element("ows:Identifier", inputIdentifier.key);
-	                    element("ows:Title",      inputIdentifier.title.toString(this.locale));
-	                    element("ows:Abstract",   inputIdentifier.description.toString(this.locale));
-	                    start("ComplexOutput");
-	                    	start("Default");
-	                    		start("Format");
-	                    			element("MimeType", "text/xml; subtype=gml/2.1.2");
-	                    			element("Encoding", "utf-8");
-	                    			element("Schema",   "http://schemas.opengis.net/gml/2.1.2/geometry.xsd");
-	                    		end("Format");
-	                    	end("Default");
-	                    end("ComplexOutput");
+                        element("ows:Identifier", outputIdentifier.key);
+                        element("ows:Title",      outputIdentifier.title.toString(      this.locale));
+                        element("ows:Abstract",   outputIdentifier.description.toString(this.locale));
+                        Transmuter transmuter = this.dataTransformer.getTransmuter(outputIdentifier.type);
+                        if (transmuter instanceof ComplexTransmuter)
+                        {
+                            start("ComplexOutput");
+                                this.complexParameter((ComplexTransmuter)transmuter);
+                            end("ComplexOutput");
+                        } else {
+                            this.literalData((LiteralTransmuter)transmuter);
+                        }
                     end("Output");
                 }
                 end("ProcessOutputs");
+            }
+
+            private void literalData(LiteralTransmuter transmuter)
+            {
+                AttributesImpl attributes = new AttributesImpl();
+                attributes.addAttribute("", "ows:reference", "ows:reference", "", transmuter.getType());
+
+                start("LiteralData");
+                    start("ows:DataType", attributes);
+                    end("ows:DataType");
+                end("LiteralData");
+            }
+
+            private void complexParameter(ComplexTransmuter transmuter)
+            {
+                start("Default");
+                    this.format(transmuter);    // In future, this should select the default format
+                end("Default");
+                start("Supported");
+                    this.format(transmuter);    // In future, this should iterate over all formats
+                end("Supported");
+            }
+
+            private void format(ComplexTransmuter transmuter)
+            {
+                String schemaURL = this.request.getBaseUrl() + "ows?service=WPS&request=getSchema&identifier=";
+
+                start("Format");
+                    element("MimeType", transmuter.getMimeType());
+                    element("Schema",   schemaURL + transmuter.getSchema());
+                end("Format");
             }
         }
     }
