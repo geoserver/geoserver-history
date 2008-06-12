@@ -105,7 +105,7 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
             double valueA = findValue(a);
             double valueB = findValue(b);
             
-            return (int)Math.signum(valueA - valueB);
+            return (int)Math.signum(valueB - valueA);
         }
         
         private double findValue(SimpleFeature f){
