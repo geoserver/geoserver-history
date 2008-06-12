@@ -122,6 +122,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             
             // ... but if it crosses the centra meridien we need to get two world tiles anyway
 	        if(layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
+	        	LOGGER.log(Level.SEVERE, "Regionating strategy for layer "+layer.getTitle()+" will use world bounds.");
 	            // Western
 	        	ReferencedEnvelope tmp = new ReferencedEnvelope(new Envelope(0.0, -180.0, 90.0, -90.0), epsg4326);
 
@@ -136,8 +137,13 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             			new TreeSet<String>());
 	        } else {
 	        	// Figure out what the closest tile would be, then use that
+	        	ReferencedEnvelope outerBounds = expandToTile(layerBounds);
+	        	long[] coords = getTileCoords(outerBounds, getWorldBounds());
+	        	LOGGER.log(Level.SEVERE, "Regionating strategy for layer "+layer.getTitle()
+	        			+" will start at " + outerBounds.toString() + " , "
+	        			+ coords[0]+ "," + coords[1] + "," + coords[2]);
             	buildDB(statement, tableName, layer.getFeatureSource(), 
-            			expandToTile(layerBounds), 
+            			outerBounds, 
             			new TreeSet<String>());
 	        }
 
@@ -264,6 +270,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 for (SimpleFeature feature : pq) parents.remove(feature.getID());
             }
         } else {
+        	// We're  trying to be clever here, not loop over the entire dataset for each tile
             TileLevel root = new TileLevel(reprojectedBBox, myFeaturesPerTile, getComparator());
             root.populateExcluding(col, parents);
             ReferencedEnvelope world = getWorldBounds();
