@@ -8,6 +8,7 @@ import org.geoserver.ows.util.KvpMap;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
+import org.geotools.data.wms.response.GetFeatureInfoResponse;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -96,6 +97,12 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
             //we want to allow users to be able to set it then we can put
             //it as a config parameter in the WMS service section. -ch
             format = "text/plain";
+        } else {
+            final List formats = org.vfny.geoserver.wms.responses.GetFeatureInfoResponse.getFormats();
+            if(!formats.contains(format)) {
+                throw new WmsException("Invalid format '" + format + "', supported formats are " 
+                        + formats, "InvalidParameterValue", "info_format");
+            }
         }
 
         request.setInfoFormat(format);
