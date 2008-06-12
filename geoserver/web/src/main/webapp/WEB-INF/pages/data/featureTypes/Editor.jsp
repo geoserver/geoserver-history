@@ -415,11 +415,7 @@ function prepareFormData(){
          </td>
          <td class="datum">
              <html:select property="regionateAttribute">
-                <logic:iterate id="attribute" indexId="index" name="typesEditorForm" property="attributes">
-                    <option value="<bean:write name="attribute" property="name"/>">
-                        <bean:write name="attribute" property="name"/>:<bean:write name="attribute" property="type"/>
-                    </option>
-                </logic:iterate>
+                <html:options property="attributeNames" labelProperty="attributeDescriptions"/>
              </html:select>
          </td>
     </tr>
