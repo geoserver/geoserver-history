@@ -64,7 +64,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     private static int DB_SWEEP_CUTOFF = 100000; 
 
 
-    public final void preProcess(WMSMapContext con, MapLayer layer) {
+    public synchronized final void  preProcess(WMSMapContext con, MapLayer layer) {
         FeatureTypeInfo fti = con.getRequest().getWMS().getData().getFeatureTypeInfo(layer.getFeatureSource().getName());
         myFeaturesPerTile = fti.getRegionateFeatureLimit();
 
