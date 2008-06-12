@@ -671,6 +671,23 @@ public class TypesEditorForm extends ActionForm {
         return attributes;
     }
 
+    public SortedSet getAttributeNames(){
+        SortedSet names = new TreeSet();
+        for (Object o : attributes){
+            names.add(((AttributeDisplay)o).getName());
+        }
+        return names;
+    }
+
+    public SortedSet getAttributeDescriptions() {
+        SortedSet descriptions = new TreeSet();
+        for (Object o : attributes){
+            AttributeDisplay ad = (AttributeDisplay)o;
+            descriptions.add(ad.getName() + ": " + ad.getType());
+        }
+        return descriptions;
+    }
+
     /**
      * Set attributes to attributes.
      *
