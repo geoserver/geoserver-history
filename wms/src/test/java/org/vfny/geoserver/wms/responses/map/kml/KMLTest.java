@@ -16,6 +16,17 @@ public class KMLTest extends WMSTestSupport {
         return new OneTimeTestSetup(new KMLTest());
     }
     
+    @Override
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
+    }
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.addStyle("notthere", KMLTest.class.getResource("notthere.sld"));
+    }
+    
 
     public void testVector() throws Exception {
         
@@ -66,5 +77,18 @@ public class KMLTest extends WMSTestSupport {
         
         assertEquals( 1, doc.getElementsByTagName("Placemark").getLength());
         
+    }
+    
+    // see GEOS-1948
+    public void testMissingGraphic() throws Exception {
+        Document doc = getAsDOM(
+                "wms?request=getmap&service=wms&version=1.1.1" + 
+                "&format=" + KMLMapProducerFactory.MIME_TYPE + 
+                "&layers=" + getLayerId(MockData.BRIDGES) +  
+                "&styles=notthere" + 
+                "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326"
+            );
+        print(doc);
+        assertEquals( 1, doc.getElementsByTagName("Placemark").getLength());
     }
 }
