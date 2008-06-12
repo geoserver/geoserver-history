@@ -110,7 +110,10 @@ public class TileLevel implements Serializable {
         if (withinTileBounds(f)){
             myFeatures.add(f);
             if (myFeatures.size() > myFeaturesPerTile) {
-                addToChild((SimpleFeature)myFeatures.poll());
+            	SimpleFeature child = (SimpleFeature) myFeatures.poll();
+                addToChild(child);
+                //System.out.println(child.getProperty("STATE_NAME") +"(" +  ((Geometry) child.getDefaultGeometry()).getArea() + ") got bumped " 
+                //		+ "for " + f.getProperty("STATE_NAME") + " (" +((Geometry) f.getDefaultGeometry()).getArea()+ ")");
             }
         }
     }
@@ -134,7 +137,7 @@ public class TileLevel implements Serializable {
         LOGGER.log(Level.SEVERE, "EEK! No child found to accept feature! Bounds are: ");
         for (int i = 0; i < myChildren.size(); i++){
             TileLevel child = (TileLevel) myChildren.get(i);
-            System.out.println(child.myBBox);
+            //System.out.println(child.myBBox);
         }
     }
 

@@ -182,10 +182,15 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             throw e;
         }
 
+        long[] coords = null;
+        String tableName = null;
         try{
-            String tableName = findCacheTable(con, layer);
-            long[] coords = getTileCoords(con.getAreaOfInterest(), getWorldBounds());
+            tableName = findCacheTable(con, layer);
+            coords = getTileCoords(con.getAreaOfInterest(), getWorldBounds());
             
+            //LOGGER.log(Level.SEVERE, "Received request for "+layer.getTitle() + " " +
+            //		con.getAreaOfInterest().toString() + " " + coords[0] + ","
+            //		+ coords[1] + "," + coords[2]);
             String sql = "SELECT fid FROM " + tableName + " WHERE x = " + coords[0] + " AND y = " + coords[1] + " AND z = " + coords[2];
             statement.execute( sql );
 
@@ -206,6 +211,9 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             }
         }
 
+        //LOGGER.log(Level.SEVERE, "Returning "+returnable.size()
+        //		+ " features from " + tableName + " for " 
+        //		+ coords[0] + ","+ coords[1] + "," + coords[2]);
         return returnable;
     }
 
