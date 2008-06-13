@@ -63,26 +63,32 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
      */
     private static int DB_SWEEP_CUTOFF = 100000; 
 
+    public static long featureCounter = 0;
 
     public synchronized final void  preProcess(WMSMapContext con, MapLayer layer) {
         FeatureTypeInfo fti = con.getRequest().getWMS().getData().getFeatureTypeInfo(layer.getFeatureSource().getName());
         myFeaturesPerTile = fti.getRegionateFeatureLimit();
 
         try{
-            myAcceptableFeatures = getRangesFromDB(con, layer);
+            myAcceptableFeatures = getRangesFromDB(con, layer);            
         } catch (Exception e){
-            LOGGER.log(Level.INFO, "No cached tile hierarchy found; constructing quad tree from data.", e);
+            LOGGER.log(Level.INFO, "No cached tile hierarchy found; constructing quad tree from data: " + e.getMessage());
+            
             populateDB(con, layer);
+            
             try{
                 myAcceptableFeatures = getRangesFromDB(con, layer);
             } catch (Exception e2){
                 throw new HttpErrorCodeException(500, "Unexpected error while determining tile contents.", e2);
             }
         }
-
+        
+        // This okay, just means the tile is empty
         if (myAcceptableFeatures.size() == 0){
             throw new HttpErrorCodeException(204); 
         }
+
+
     }
 
     private void populateDB(WMSMapContext con, MapLayer layer){
@@ -101,8 +107,10 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             return;
         }
 
+        String tableName = null;
+        
         try{
-            String tableName = findCacheTable(con, layer);
+            tableName = findCacheTable(con, layer);
 
             statement.execute("DROP TABLE IF EXISTS " + tableName);
             statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar (50))");
@@ -122,7 +130,10 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             
             // ... but if it crosses the centra meridien we need to get two world tiles anyway
 	        if(layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
-	        	LOGGER.log(Level.SEVERE, "Regionating strategy for layer "+layer.getTitle()+" will use world bounds.");
+	        	LOGGER.log(Level.SEVERE, "Regionating strategy for layer "+layer.getTitle()
+	        			+" will use world bounds. Starting to build database now.");
+	        	this.featureCounter = 0; // global
+	        	
 	            // Western
 	        	ReferencedEnvelope tmp = new ReferencedEnvelope(new Envelope(0.0, -180.0, 90.0, -90.0), epsg4326);
 
@@ -141,14 +152,17 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 	        	long[] coords = getTileCoords(outerBounds, getWorldBounds());
 	        	LOGGER.log(Level.SEVERE, "Regionating strategy for layer "+layer.getTitle()
 	        			+" will start at " + outerBounds.toString() + " , "
-	        			+ coords[0]+ "," + coords[1] + "," + coords[2]);
-            	buildDB(statement, tableName, layer.getFeatureSource(), 
+	        			+ coords[0]+ "," + coords[1] + "," + coords[2] 
+	        			+ ".  Starting to build database now.");
+	        	this.featureCounter = 0; // global 
+	        	
+	        	buildDB(statement, tableName, layer.getFeatureSource(), 
             			outerBounds, 
             			new TreeSet<String>());
 	        }
-
             statement.close();
             connection.close();
+            
         } catch (Exception e){
             LOGGER.log(Level.WARNING, "Unable to store range information in database.", e);
         } finally {
@@ -163,6 +177,11 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 LOGGER.log(Level.SEVERE, "Error while closing connection to h2 database.", sqle);
             }
         }
+        
+        // Check how much we actually stored 
+        //(yeah, that repoens everything, but that's the point):
+        long dbRows = getRowsInDB(con, tableName);
+        LOGGER.log(Level.SEVERE, "Table " + tableName + " contains " + Long.toString(dbRows) + " rows after populateDB()");
     }
 
     private Set<String> getRangesFromDB(WMSMapContext con, MapLayer layer) throws Exception{
@@ -214,6 +233,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         //LOGGER.log(Level.SEVERE, "Returning "+returnable.size()
         //		+ " features from " + tableName + " for " 
         //		+ coords[0] + ","+ coords[1] + "," + coords[2]);
+        
         return returnable;
     }
 
@@ -245,7 +265,9 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     public abstract Comparator<SimpleFeature> getComparator();
 
     public final void buildDB(Statement st, String tablename, FeatureSource source, ReferencedEnvelope bbox, Set<String> parents) throws IOException{
-        FeatureCollection col = getFeatures(source, bbox);
+
+    	
+    	FeatureCollection col = getFeatures(source, bbox);
         ReferencedEnvelope reprojectedBBox;
         try{
             reprojectedBBox = bbox.transform(source.getBounds().getCoordinateReferenceSystem(), true);
@@ -264,6 +286,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                             containsCentroid(reprojectedBBox, (Geometry)f.getDefaultGeometry())
                        ) {
                         pq.add(f);
+                        featureCounter++;
                         if (pq.size() > myFeaturesPerTile) pq.poll();
                     }
                 } 
@@ -298,6 +321,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             }
             root.writeTo(st, tablename, world);
         }
+        
+        LOGGER.log(Level.SEVERE, "builDB of " + tablename + " completed after " + Long.toString(this.featureCounter) + " features.");
     }
 
     public static boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom){
@@ -489,6 +514,39 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         long y = Math.round(((requestBBox.getMinimum(1) - worldBounds.getMinimum(1)) / maxTileWidth) * Math.pow(2, z));
 
         return new long[]{x,y,z};
+    }
+    
+    private long getRowsInDB(WMSMapContext con, String tableName) {
+    	long result = -1;
+    	
+        Connection connection;
+        Statement statement;
+        
+        try{
+            Class.forName("org.h2.Driver");
+            String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
+            connection = 
+                DriverManager.getConnection(
+                    "jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
+                    );
+            statement = connection.createStatement();
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Couldn't connect to embedded h2 database.", e);
+            return result;
+        }
+        
+        try {
+        	statement.execute("SELECT COUNT(x) FROM " + tableName);
+        	ResultSet results = statement.getResultSet();
+        	results.first();
+        	result = results.getInt(1);
+        	statement.close();
+        	connection.close();
+        
+        } catch (SQLException sqle) {
+        	LOGGER.log(Level.SEVERE, sqle.getMessage());
+        }
+        return result;
     }
 
 }
