@@ -3,16 +3,19 @@ package org.geoserver.csv.rest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.geotools.util.logging.Logging;
 import org.restlet.Transformer;
 import org.restlet.data.MediaType;
+import org.restlet.data.Status;
 import org.restlet.resource.InputRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 
-import com.noelios.restlet.http.HttpRequest;
-
 public class TileLayersResource extends Resource {
+    final static Logger LOGGER = Logging.getLogger("TileLayersResource");
 
     /**
      * Grabs the GWC capabilities and performs an XSLT transformation to
@@ -33,7 +36,9 @@ public class TileLayersResource extends Resource {
                     new InputRepresentation(xsl, MediaType.TEXT_XML));
             getResponse().setEntity(tx.transform(input));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error occurred during capabilities generation", e);
+            getResponse().setEntity("Error occurred during capabilities generation" + e.getMessage());
+            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
         }
     }
 }
