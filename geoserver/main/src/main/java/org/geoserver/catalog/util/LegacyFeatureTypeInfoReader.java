@@ -182,7 +182,7 @@ public class LegacyFeatureTypeInfoReader {
         try{
             return Integer.valueOf(regionateFeatureLimit.getAttribute("value"));
         } catch (Exception e) {
-            return 50;
+            return 10;
         }
     }
     
