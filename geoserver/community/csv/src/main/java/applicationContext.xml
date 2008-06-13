@@ -33,6 +33,10 @@
           <key><value>/csv/dataLayers/{layerName}</value></key>
           <value>dataLayerResource</value>
         </entry>
+        <entry>
+          <key><value>/csv/tileLayers</value></key>
+          <value>tileLayersResource</value>
+        </entry>
       </map>
     </property>
   </bean>
@@ -53,6 +57,10 @@
     <constructor-arg index="0" ref="csvGeoserverService" />
     <constructor-arg index="1" ref="catalog" />
     <constructor-arg index="2" ref="dataConfig" />
+  </bean>
+  
+  <bean id="tileLayersResource"
+    class="org.geoserver.csv.rest.TileLayersResource">
   </bean>
   
 </beans>
