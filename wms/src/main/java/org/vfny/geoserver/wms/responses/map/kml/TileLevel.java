@@ -123,10 +123,8 @@ public class TileLevel implements Serializable {
             myChildren = createChildTiles();
         }
 
-        roundRobinCounter = (roundRobinCounter + 1) % myChildren.size();
         for (int i = 0; i < myChildren.size(); i++){
-            int index = (roundRobinCounter + i) % myChildren.size();
-            TileLevel child = (TileLevel)myChildren.get(index);
+            TileLevel child = (TileLevel)myChildren.get(i);
 
             if (child.withinTileBounds(f)){
                 child.add(f);
