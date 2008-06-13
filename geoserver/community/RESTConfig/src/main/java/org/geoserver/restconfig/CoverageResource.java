@@ -31,6 +31,7 @@ import org.restlet.resource.StringRepresentation;
 
 import org.springframework.context.ApplicationContext;
 
+import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.AutoXMLFormat;
@@ -226,10 +227,10 @@ public class CoverageResource extends MapResource {
     }
 
     private MetaDataLink makeLink(String s) {
-        MetaDataLink mdl = new MetaDataLink();
-        mdl.setAbout(s);
-        mdl.setType("other");
-        return mdl;
+        MetadataLinkInfoImpl linkInfo = new MetadataLinkInfoImpl();
+        linkInfo.setAbout(s);
+        linkInfo.setType("other");
+        return new MetaDataLink(linkInfo);
     }
 
     private GeneralEnvelope listAsEnvelope(List coords, String srsName) throws Exception{
