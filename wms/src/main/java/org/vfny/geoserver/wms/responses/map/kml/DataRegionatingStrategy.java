@@ -68,6 +68,9 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
                         ).getRegionateAttribute();
         }
 
+
+        LOGGER.log(Level.SEVERE, type.getName() + " == " + myAttributeName);
+
         if(type == null) {
         	LOGGER.log(Level.SEVERE, "DataRegionatingStrategy.findCacheTAble(): type is null");
         }
