@@ -225,6 +225,7 @@ public class TileLevel implements Serializable {
         Iterator it = myFeatures.iterator();
         while (it.hasNext()){
             try{
+            	CachedHierarchyRegionatingStrategy.featureCounter++;
                 String fid = ((SimpleFeature)it.next()).getID();
                 String SQL = "INSERT INTO " + tableName + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + fid + "\' )";
                 st.execute(SQL);

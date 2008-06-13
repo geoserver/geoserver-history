@@ -68,6 +68,18 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
                         ).getRegionateAttribute();
         }
 
+        if(type == null) {
+        	LOGGER.log(Level.SEVERE, "DataRegionatingStrategy.findCacheTAble(): type is null");
+        }
+        
+        if(myAttributeName == null) {
+        	LOGGER.log(Level.SEVERE, "DataRegionatingStrategy.findCacheTAble(): myAttributeName is null");
+        }
+        
+        if(type.getType(myAttributeName) == null) {
+        	LOGGER.log(Level.SEVERE, "DataRegionatingStrategy.findCacheTAble(): "+type.toString()+".getType("+myAttributeName+") is null");
+        }
+        
         Class binding = type.getType(myAttributeName).getBinding();
         if (Geometry.class.isAssignableFrom(binding)){
             myComparator = new GeometryComparator();
