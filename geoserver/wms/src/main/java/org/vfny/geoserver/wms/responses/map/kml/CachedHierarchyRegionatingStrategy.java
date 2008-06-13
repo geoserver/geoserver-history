@@ -56,6 +56,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
     private int myFeaturesPerTile;
 
+    private String myCacheTable;
+
     /**
      * When the number of features within the bbox currently being processed is below this threshold,
      * go ahead and build the rest of the tile hierarchy in memory.  (This is a performance thing; 
@@ -110,7 +112,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         String tableName = null;
         
         try{
-            tableName = findCacheTable(con, layer);
+            tableName = getCacheTable(con, layer);
 
             statement.execute("DROP TABLE IF EXISTS " + tableName);
             statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar (50))");
@@ -204,7 +206,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         long[] coords = null;
         String tableName = null;
         try{
-            tableName = findCacheTable(con, layer);
+            tableName = getCacheTable(con, layer);
             coords = getTileCoords(con.getAreaOfInterest(), getWorldBounds());
             
             //LOGGER.log(Level.SEVERE, "Received request for "+layer.getTitle() + " " +
@@ -237,6 +239,13 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         return returnable;
     }
 
+    private final String getCacheTable(WMSMapContext con, MapLayer layer){
+        if (myCacheTable == null){
+            myCacheTable = findCacheTable(con, layer);
+        }
+        return myCacheTable;
+    }
+
     protected String findCacheTable(WMSMapContext con, MapLayer layer){
         try{
             FeatureSource source = layer.getFeatureSource();
@@ -265,8 +274,6 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     public abstract Comparator<SimpleFeature> getComparator();
 
     public final void buildDB(Statement st, String tablename, FeatureSource source, ReferencedEnvelope bbox, Set<String> parents) throws IOException{
-
-    	
     	FeatureCollection col = getFeatures(source, bbox);
         ReferencedEnvelope reprojectedBBox;
         try{
@@ -364,7 +371,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 WORLD_SRS
                 );
 
-        return source.getFeatures(filter);
+        return  source.getFeatures(filter);
     }
 
     private void writeToDB(Statement st, String tablename, ReferencedEnvelope bbox, SimpleFeature f){
