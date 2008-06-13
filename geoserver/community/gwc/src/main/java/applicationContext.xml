@@ -5,7 +5,7 @@
   <!-- Configuration -->
   <bean id="gwcGSConfig" class="org.geowebcache.util.GeoServerConfiguration">
     <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="gwcCacheFactory"/>
-    <constructor-arg value="image/png,image/png8,image/jpeg,image/gif,geosearch-kml"/>
+    <constructor-arg value="image/png,image/jpeg,image/gif"/>
     <constructor-arg value="4x4"/>
   </bean>
 
