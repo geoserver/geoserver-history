@@ -380,7 +380,7 @@ public class UserStyleResource extends BaseResource {
                 || !params.getFirst("open").getValue().toLowerCase().equals("true")) {
             open = false;
         } else {
-            open= true;
+            open = true;
         }
         
         /*
