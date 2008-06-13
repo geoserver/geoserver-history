@@ -1183,63 +1183,11 @@ public class Dispatcher extends AbstractController {
             handler = new DefaultServiceExceptionHandler();
         }
 
-        handler.handleServiceException(se, service, request.httpRequest, request.httpResponse);
+        handler.handleServiceException(se, request);
     }
 
    
 
-    /**
-     * Helper class to hold attributes of hte request
-     *
-     */
-    static class Request {
-        /**
-         * Http request / response
-         */
-        HttpServletRequest httpRequest;
-        HttpServletResponse httpResponse;
-
-        /**
-         * flag indicating if the request is get
-         */
-        boolean get;
-
-        /**
-         * Kvp parameters, only non-null if get = true
-         */
-        Map kvp;
-
-        /**
-         * raw kvp parameters, unparsed
-         */
-        Map rawKvp;
-        /**
-         * buffered input stream, only non-null if get = false
-         */
-        BufferedReader input;
-
-        /**
-         * The ows service,request,version
-         */
-        String service;
-        String request;
-        String version;
-
-        /**
-         * The output format of hte request
-         */
-        String outputFormat;
-
-        /**
-         * Any errors that occur tryinng to determine the service
-         */
-        Throwable error;
-
-        public String toString() {
-            return service + " " + version + " " + request;
-        }
-    }
-    
     /**
      * Allows setting up a security interceptor that will allow security checks around
      * service invocations

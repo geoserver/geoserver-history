@@ -98,7 +98,7 @@ public class DispatcherTest extends TestCase {
         request.setupGetParameterMap(params);
         request.setupQueryString("service=hello&request=hello&message=Hello World!");
 
-        Dispatcher.Request req = new Dispatcher.Request();
+        Request req = new Request();
         req.httpRequest = request;
 
         dispatcher.parseKVP(req);
@@ -127,7 +127,7 @@ public class DispatcherTest extends TestCase {
 
         input.mark(8192);
 
-        Dispatcher.Request req = new Dispatcher.Request();
+        Request req = new Request();
         req.input = input;
 
         Object object = dispatcher.parseRequestXML(null,input, req);

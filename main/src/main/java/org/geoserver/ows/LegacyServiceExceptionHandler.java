@@ -55,32 +55,32 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
     /**
      * The configuration of hte service.
      */
-    OWS ows;
+    protected OWS ows;
 
     /**
      * the version of the service exceptoin report.
      */
-    String version = "1.2.0";
+    protected String version = "1.2.0";
 
     /**
      * Location of document type defintion for document
      */
-    String dtdLocation = null;
+    protected String dtdLocation = null;
 
     /**
      * Location of schema for document.
      */
-    String schemaLocation = null;
+    protected String schemaLocation = null;
 
     /**
      * The content type of the produced document
      */
-    String contentType = "text/xml";
+    protected String contentType = "text/xml";
 
     /**
      * The central configuration, used to decide whether to dump a verbose stack trace, or not
      */
-    GeoServer geoServer;
+    protected GeoServer geoServer;
 
     public LegacyServiceExceptionHandler(List services, OWS ows, GeoServer geoServer) {
         super(services);
@@ -110,8 +110,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         this.contentType = contentType;
     }
 
-    public void handleServiceException(ServiceException exception, Service service,
-        HttpServletRequest request, HttpServletResponse response) {
+    public void handleServiceException(ServiceException exception, Request request) {
         String tab = "   ";
         StringBuffer sb = new StringBuffer();
 
@@ -165,7 +164,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         //message
         if ((exception.getMessage() != null)) {
             sb.append("\n" + tab + tab);
-            dumpExceptionMessages(exception, sb);
+            dumpExceptionMessages(exception, sb, true);
 
             if(geoServer.isVerboseExceptions()) {
                 ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
@@ -179,6 +178,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         sb.append("\n</ServiceException>");
         sb.append("</ServiceExceptionReport>");
 
+        HttpServletResponse response = request.getHttpResponse();
         response.setContentType(contentType);
 
         //TODO: server encoding?

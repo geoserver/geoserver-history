@@ -81,29 +81,40 @@ public abstract class ServiceExceptionHandler {
      * Handles the service exception.
      *
      * @param exception The service exception.
-     * @param service The service that generated the exception
-     * @param request The original request to which the service generated the exception.
-     * @param response The response to report the exception to.
+     * @param request The informations collected by the dispatcher about the request
      */
-    public abstract void handleServiceException(ServiceException exception, Service service,
-        HttpServletRequest request, HttpServletResponse response);
+    public abstract void handleServiceException(ServiceException exception, Request request);
     
     /**
      * Dumps an exception message along all its causes messages (since more often
      * than not the real cause, such as "unknown property xxx" is a few levels down)
      * @param e
      * @param s
+     * @param xmlEscape 
      */
-    protected void dumpExceptionMessages(ServiceException e, StringBuffer s) {
+    protected void dumpExceptionMessages(ServiceException e, StringBuffer s, boolean xmlEscape) {
         Throwable ex = e;
         do {
             Throwable cause = ex.getCause();
             final String message = ex.getMessage();
+            String lastMessage = message;
             if(!"".equals(message)) {
-                s.append(ResponseUtils.encodeXML(message));
+                if(xmlEscape)
+                    s.append(ResponseUtils.encodeXML(message));
+                else
+                    s.append(message);
                 if(ex instanceof ServiceException) {
                     for ( Iterator t = ((ServiceException) ex).getExceptionText().iterator(); t.hasNext(); ) {
-                        s.append("\n").append( t.next() );
+                        s.append("\n");
+                        String msg = (String) t.next();
+                        if(!lastMessage.equals(msg)) {
+                            if(xmlEscape)
+                                s.append(ResponseUtils.encodeXML(msg));
+                            else
+                                s.append( t.next() );
+                            lastMessage = msg;
+                        }
+                        
                     }
                 }
                 if(cause != null)

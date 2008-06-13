@@ -5,6 +5,7 @@
 package org.geoserver.wfs.response;
 
 import org.geoserver.ows.DefaultServiceExceptionHandler;
+import org.geoserver.ows.Request;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
@@ -41,15 +42,12 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
     /**
      * Encodes a ogc:ServiceExceptionReport to output.
      */
-    public void handleServiceException(ServiceException e, Service service,
-        HttpServletRequest request, HttpServletResponse response) {
-        Version version = service.getVersion();
-
+    public void handleServiceException(ServiceException e, Request request) {
         verboseExceptions = wfs.getGeoServer().isVerboseExceptions();
-        if (new Version("1.0.0").equals(version)) {
-            handle1_0(e, response);
+        if ("1.0.0".equals(request.getVersion())) {
+            handle1_0(e, request.getHttpResponse());
         } else {
-            super.handleServiceException(e, service, request, response);
+            super.handleServiceException(e, request);
         }
     }
 
@@ -82,7 +80,7 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
 
             if (e.getMessage() != null) {
                 s.append("\n" + tab + tab);
-                dumpExceptionMessages(e, s);
+                dumpExceptionMessages(e, s, true);
 
                 if(verboseExceptions) {
                   ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();

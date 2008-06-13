@@ -70,8 +70,7 @@ public class OWS11ServiceExceptionHandler extends ServiceExceptionHandler {
     /**
      * Writes out an OWS ExceptionReport document.
      */
-    public void handleServiceException(ServiceException exception, Service service,
-        HttpServletRequest request, HttpServletResponse response) {
+    public void handleServiceException(ServiceException exception, Request request) {
         Ows11Factory factory = Ows11Factory.eINSTANCE;
 
         ExceptionType e = factory.createExceptionType();
@@ -87,7 +86,7 @@ public class OWS11ServiceExceptionHandler extends ServiceExceptionHandler {
 
         //add the message
         StringBuffer sb = new StringBuffer();
-        dumpExceptionMessages(exception, sb);
+        dumpExceptionMessages(exception, sb, true);
         e.getExceptionText().add(sb.toString());
         e.getExceptionText().addAll(exception.getExceptionText());
 
@@ -104,6 +103,7 @@ public class OWS11ServiceExceptionHandler extends ServiceExceptionHandler {
         report.setVersion("1.1.0");
         report.getException().add(e);
 
+        HttpServletResponse response = request.getHttpResponse();
         response.setContentType("application/xml");
 
         //response.setCharacterEncoding( "UTF-8" );
@@ -115,7 +115,7 @@ public class OWS11ServiceExceptionHandler extends ServiceExceptionHandler {
         encoder.setLineWidth(60);
 
         encoder.setSchemaLocation(OWS.NAMESPACE,
-            RequestUtils.schemaBaseURL(request) + "ows/1.1.0/owsAll.xsd");
+            RequestUtils.schemaBaseURL(request.getHttpRequest()) + "ows/1.1.0/owsAll.xsd");
 
         try {
             encoder.encode(report, OWS.ExceptionReport,

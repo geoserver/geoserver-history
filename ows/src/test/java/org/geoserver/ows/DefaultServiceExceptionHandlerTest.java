@@ -27,15 +27,16 @@ import com.mockobjects.servlet.MockServletOutputStream;
 public class DefaultServiceExceptionHandlerTest extends TestCase {
     
     private DefaultServiceExceptionHandler handler;
-    private Service service;
+//    private Service service;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
+    private Request requestInfo;
 
     protected void setUp() throws Exception {
         super.setUp();
         
         HelloWorld helloWorld = new HelloWorld();
-        service = new Service("hello", helloWorld, new Version("1.0.0"));
+        Service service = new Service("hello", helloWorld, new Version("1.0.0"));
 
         request = new MockHttpServletRequest() {
                 public int getServerPort() {
@@ -53,6 +54,12 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         response.setupOutputStream(output);
 
         handler = new DefaultServiceExceptionHandler();
+        
+        requestInfo = new Request();
+        requestInfo.httpRequest = request;
+        requestInfo.httpResponse = response;
+        requestInfo.service = "hello";
+        requestInfo.version = "1.0.0";
     }
 
     public void testHandleServiceException() throws Exception {
@@ -60,7 +67,7 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         exception.setCode("helloCode");
         exception.setLocator("helloLocator");
         exception.getExceptionText().add("helloText");
-        handler.handleServiceException(exception, service, request, response);
+        handler.handleServiceException(exception, requestInfo);
 
         InputStream input = new ByteArrayInputStream(response.getOutputStreamContents().getBytes());
 
@@ -82,10 +89,10 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         serviceException.setLocator("helloLocator");
         serviceException.getExceptionText().add("helloText");
         serviceException.initCause(ioException);
-        handler.handleServiceException(serviceException, service, request, response);
+        handler.handleServiceException(serviceException, requestInfo);
 
         InputStream input = new ByteArrayInputStream(response.getOutputStreamContents().getBytes());
-        System.out.println(response.getOutputStreamContents());
+        // System.out.println(response.getOutputStreamContents());
 
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setNamespaceAware(true);
