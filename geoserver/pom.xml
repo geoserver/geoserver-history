@@ -685,6 +685,7 @@
      <include>**/*.sql</include>
      <include>**/*.html</include>
      <include>**/*.xml</include>
+     <include>**/*.xsl</include>
      <include>**/*.utf</include>
      <include>**/*.properties</include>
      <include>**/*.serialized</include>
