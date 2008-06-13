@@ -53,6 +53,9 @@ public abstract class MapResource extends Resource {
     public void handleGet() {
         try {
 			Object details = getMap();
+            if (details instanceof Map){
+                ((Map)details).put("page", getPageDetails());
+            }
 
 			String formatName = (String)getRequest().getAttributes().get("type");
 			myRequestFormat = (DataFormat) myFormatMap.get(formatName);
