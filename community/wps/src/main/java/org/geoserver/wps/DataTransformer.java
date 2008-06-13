@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.opengis.wps.ComplexDataType;
 import net.opengis.wps.DataType;
 import net.opengis.wps.InputReferenceType;
 import net.opengis.wps.InputType;
@@ -101,16 +102,17 @@ public class DataTransformer
         Object   output = null;
         DataType data   = input.getData();
 
+        String       parameterName = input.getIdentifier().getValue();
+        Parameter<?> parameter     = this.inputParameters.get(parameterName);
+        
         if (null != data.getLiteralData())
         {
-            String       parameterName = input.getIdentifier().getValue();
-            Parameter<?> parameter     = this.inputParameters.get(parameterName);
-            output                     = this.decodeLiteralData(data.getLiteralData(), parameter.type);
+            output = this.decodeLiteralData(data.getLiteralData(), parameter.type);
         }
 
         if (null != data.getComplexData())
         {
-            // Parse complex data
+            output = this.decodeComplexData(data.getComplexData(), parameter.type);
         }
 
         if (null != data.getBoundingBoxData())
@@ -119,6 +121,15 @@ public class DataTransformer
         }
 
         return output;
+    }
+
+    private Object decodeComplexData(final ComplexDataType input, final Class<?> type)
+    {
+    	Object data = null;
+
+    	
+    	
+    	return data;
     }
 
     private Object decodeLiteralData(final LiteralDataType input, final Class<?> type)
@@ -165,7 +176,27 @@ public class DataTransformer
         return parameter.getClass();
     }
 
-    // Return a transmuter for a given Java type
+    public Transmuter getComplexTransmuter(final Class<?> type, final String schema)
+    {
+    	for(Transmuter transmuter : this.transmuters)
+    	{
+    		if (false == transmuter instanceof ComplexTransmuter)
+    		{
+    			continue;
+    		}
+
+    		if (false == schema.equals(((ComplexTransmuter)transmuter).getSchema()))
+    		{
+    			continue;
+    		}
+    		
+    		if (type )
+    	}
+    	
+    	return ;
+    }
+    
+    // Return default a transmuter for a given Java type
     public Transmuter getTransmuter(Class<?> type)
     {
         Class<?> transmuterClass = this.transmuters.get(type);
