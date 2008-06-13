@@ -12,6 +12,7 @@ package org.geoserver.wps;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,18 +30,22 @@ import org.geotools.data.Parameter;
 import org.geoserver.wps.transmute.ComplexTransmuter;
 import org.geoserver.wps.transmute.DoubleTransmuter;
 import org.geoserver.wps.transmute.LiteralTransmuter;
-import org.geoserver.wps.transmute.PolygonTransmuter;
+import org.geoserver.wps.transmute.PolygonGML2Transmuter;
 import org.geoserver.wps.transmute.Transmuter;
 
 public class DataTransformer
 {
-    private Map<Class<?>, Class<?>>     transmuters      = new HashMap<Class<?>,  Class<?>>();
+    private List<Transmuter>            transmuters        = new ArrayList<Transmuter>();
+    private Map<Class<?>, Transmuter>   defaultTransmuters = new HashMap<Class<?>, Transmuter>();
     private Map<String,   Parameter<?>> inputParameters;
 
     public DataTransformer()
     {
-        this.transmuters.put(Double.class,   DoubleTransmuter.class);
-        this.transmuters.put(Geometry.class, PolygonTransmuter.class);
+        this.defaultTransmuters.put(Double.class,   new DoubleTransmuter());
+        this.defaultTransmuters.put(Geometry.class, new PolygonGML2Transmuter());
+
+        // Add all default transmuters to master transmuters list
+        this.transmuters.addAll(this.defaultTransmuters.values());
     }
 
     // Returns Map ready for execution.
@@ -78,7 +83,7 @@ public class DataTransformer
         Object            data       = null;
         Parameter<?>      param      = this.inputParameters.get(identifier);
         URL               url        = null;
-        ComplexTransmuter transmuter = (ComplexTransmuter)this.getTransmuter(param.type);
+        ComplexTransmuter transmuter = (ComplexTransmuter)this.getDefaultTransmuter(param.type);
 
         try
         {
@@ -125,18 +130,18 @@ public class DataTransformer
 
     private Object decodeComplexData(final ComplexDataType input, final Class<?> type)
     {
-    	Object data = null;
+        Object data = null;
 
-    	
-    	
-    	return data;
+        
+        
+        return data;
     }
 
     private Object decodeLiteralData(final LiteralDataType input, final Class<?> type)
     {
         Object data = null;
 
-        LiteralTransmuter transmuter = (LiteralTransmuter)this.getTransmuter(type);
+        LiteralTransmuter transmuter = (LiteralTransmuter)this.getDefaultTransmuter(type);
 
         data = transmuter.decode(input.getValue());
 
@@ -152,12 +157,12 @@ public class DataTransformer
 
         for(String name : outputs.keySet())
         {
-            transmuter = this.transmuters.get(this.getParameterType(name, resultInfo));
+            //transmuter = this.transmuters.get(this.getParameterType(name, resultInfo));
 
-            if (null == transmuter)
-            {
-                throw new WPSException("NoApplicableCode", "XXX");
-            }
+            //if (null == transmuter)
+            //{
+            //    throw new WPSException("NoApplicableCode", "XXX");
+            //}
         }
 
         return obj;
@@ -176,43 +181,39 @@ public class DataTransformer
         return parameter.getClass();
     }
 
-    public Transmuter getComplexTransmuter(final Class<?> type, final String schema)
+    public ComplexTransmuter getComplexTransmuter(final Class<?> type, final String schema)
     {
-    	for(Transmuter transmuter : this.transmuters)
-    	{
-    		if (false == transmuter instanceof ComplexTransmuter)
-    		{
-    			continue;
-    		}
-
-    		if (false == schema.equals(((ComplexTransmuter)transmuter).getSchema()))
-    		{
-    			continue;
-    		}
-    		
-    		if (type )
-    	}
-    	
-    	return ;
-    }
-    
-    // Return default a transmuter for a given Java type
-    public Transmuter getTransmuter(Class<?> type)
-    {
-        Class<?> transmuterClass = this.transmuters.get(type);
-
-        if (null == transmuterClass)
+        for(Transmuter transmuter : this.transmuters)
         {
-            throw new WPSException("NoApplicableCode", "No transmuter registered for type " + type.toString() + "'.");
+            if (false == transmuter instanceof ComplexTransmuter)
+            {
+                continue;
+            }
+
+            if (false == schema.equals(((ComplexTransmuter)transmuter).getSchema()))
+            {
+                continue;
+            }
+            
+            if (type != transmuter.getType())
+            {
+                continue;
+            }
+            
+            return (ComplexTransmuter)transmuter;
         }
 
-        Transmuter transmuter;
+        throw new WPSException("NoApplicableCode", "Could not find ComplexTransmuter for '" + schema + "'.");
+    }
 
-        try
+    // Return default a transmuter for a given Java type
+    public Transmuter getDefaultTransmuter(Class<?> type)
+    {
+        Transmuter transmuter = this.defaultTransmuters.get(type);
+
+        if (null == transmuter)
         {
-            transmuter = (Transmuter)transmuterClass.getConstructor().newInstance();
-        } catch(Exception e) {
-            throw new WPSException("NoApplicableCode", "Could not instantiate transmuter.");
+            throw new WPSException("NoApplicableCode", "No transmuter default registered for type " + type.toString() + "'.");
         }
 
         return transmuter;

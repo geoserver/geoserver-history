@@ -16,7 +16,7 @@ public interface ComplexTransmuter extends Transmuter
     String   getSchema();
 
     Class<?> getXMLConfiguration();
-    
+
     String   getMimeType();
 
     Object   decode(InputStream stream);

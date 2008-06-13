@@ -4,11 +4,13 @@
  */
 
 /**
- *	@author lreed@refractions.net
+ *  @author lreed@refractions.net
  */
 
 package org.geoserver.wps;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -112,7 +114,9 @@ public abstract class ExecuteTransformer extends TransformerBase
 
             private void status()
             {
-                String time = null;
+                SimpleDateFormat fmt  = new SimpleDateFormat("yyyy-MM-dd:'T'HH:mm:ss");
+                Date             date = new Date();
+                String           time = fmt.format(date);
 
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "creationTime", "creationTime", "", time);

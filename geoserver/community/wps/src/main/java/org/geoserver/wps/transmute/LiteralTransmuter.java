@@ -11,7 +11,7 @@ package org.geoserver.wps.transmute;
 
 public interface LiteralTransmuter extends Transmuter
 {
-    String getType();
+    String getEncodedType();
 
     Object decode(String str);
 
