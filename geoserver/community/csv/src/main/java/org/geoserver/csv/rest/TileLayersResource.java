@@ -19,7 +19,7 @@ import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 
 public class TileLayersResource extends Resource {
-    final static Logger LOGGER = Logging.getLogger("TileLayersResource");
+    final static Logger LOGGER = Logging.getLogger("org.geoserver.csv.rest.TileLayerResource");
 
     /**
      * Grabs the GWC capabilities and performs an XSLT transformation to
@@ -39,7 +39,7 @@ public class TileLayersResource extends Resource {
             Transformer tx = new Transformer(Transformer.MODE_RESPONSE,
                     new InputRepresentation(xsl, MediaType.TEXT_XML));
             getResponse().setEntity(tx.transform(input));
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error occurred during capabilities generation", e);
             getResponse().setEntity("Error occurred during capabilities generation" + e.getMessage());
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
