@@ -11,16 +11,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import net.opengis.ows10.ExceptionReportType;
 import net.opengis.ows10.ExceptionType;
 import net.opengis.ows10.Ows10Factory;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
-import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import org.geotools.xml.Encoder;
 
@@ -59,8 +55,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
     /**
      * Writes out an OWS ExceptionReport document.
      */
-    public void handleServiceException(ServiceException exception, Service service,
-        HttpServletRequest request, HttpServletResponse response) {
+    public void handleServiceException(ServiceException exception, Request request) {
         Ows10Factory factory = Ows10Factory.eINSTANCE;
 
         ExceptionType e = factory.createExceptionType();
@@ -76,7 +71,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
 
         //add the message
         StringBuffer sb = new StringBuffer();
-        dumpExceptionMessages(exception, sb);
+        dumpExceptionMessages(exception, sb, true);
         e.getExceptionText().add(sb.toString());
         e.getExceptionText().addAll(exception.getExceptionText());
 
@@ -93,7 +88,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
         report.setVersion("1.0.0");
         report.getException().add(e);
 
-        response.setContentType("application/xml");
+        request.getHttpResponse().setContentType("application/xml");
 
         //response.setCharacterEncoding( "UTF-8" );
         OWSConfiguration configuration = new OWSConfiguration();
@@ -104,18 +99,18 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
         encoder.setLineWidth(60);
 
         encoder.setSchemaLocation(org.geoserver.ows.xml.v1_0.OWS.NAMESPACE,
-            RequestUtils.schemaBaseURL(request) + "ows/1.0.0/owsExceptionReport.xsd");
+            RequestUtils.schemaBaseURL(request.getHttpRequest()) + "ows/1.0.0/owsExceptionReport.xsd");
 
         try {
             encoder.encode(report, org.geoserver.ows.xml.v1_0.OWS.EXCEPTIONREPORT,
-                response.getOutputStream());
+                    request.getHttpResponse().getOutputStream());
         } catch (Exception ex) {
             //throw new RuntimeException(ex);
             // Hmm, not much we can do here.  I guess log the fact that we couldn't write out the exception and be done with it...
             LOGGER.log(Level.INFO, "Problem writing exception information back to calling client:", e);
         } finally {
             try {
-                response.getOutputStream().flush();
+                request.getHttpResponse().getOutputStream().flush();
             } catch (IOException ioe) {
             }
         }

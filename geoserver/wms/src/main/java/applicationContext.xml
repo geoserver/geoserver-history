@@ -101,7 +101,7 @@
 		<constructor-arg index="2" value="1.1.1"/>
  	</bean>
  	<!-- service exception handler -->
-	<bean id="wmsExceptionHandler" class="org.geoserver.ows.LegacyServiceExceptionHandler">
+	<bean id="wmsExceptionHandler" class="org.geoserver.wms.WmsExceptionHandler">
 		<constructor-arg ref="wmsServiceDescriptor"/>
 		<constructor-arg ref="wms"/>
         <constructor-arg ref="geoServer"/>
