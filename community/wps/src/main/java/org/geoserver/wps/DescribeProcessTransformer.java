@@ -162,7 +162,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                         element("ows:Identifier", inputIdentifier.key);
                         element("ows:Title",      inputIdentifier.title.toString(      this.locale));
                         element("ows:Abstract",   inputIdentifier.description.toString(this.locale));
-                        Transmuter transmuter = this.dataTransformer.getTransmuter(inputIdentifier.type);
+                        Transmuter transmuter = this.dataTransformer.getDefaultTransmuter(inputIdentifier.type);
                         if (transmuter instanceof ComplexTransmuter)
                         {
                             start("ComplexData");
@@ -185,7 +185,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                         element("ows:Identifier", outputIdentifier.key);
                         element("ows:Title",      outputIdentifier.title.toString(      this.locale));
                         element("ows:Abstract",   outputIdentifier.description.toString(this.locale));
-                        Transmuter transmuter = this.dataTransformer.getTransmuter(outputIdentifier.type);
+                        Transmuter transmuter = this.dataTransformer.getDefaultTransmuter(outputIdentifier.type);
                         if (transmuter instanceof ComplexTransmuter)
                         {
                             start("ComplexOutput");
@@ -202,7 +202,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
             private void literalData(LiteralTransmuter transmuter)
             {
                 AttributesImpl attributes = new AttributesImpl();
-                attributes.addAttribute("", "ows:reference", "ows:reference", "", transmuter.getType());
+                attributes.addAttribute("", "ows:reference", "ows:reference", "", transmuter.getEncodedType());
 
                 start("LiteralData");
                     start("ows:DataType", attributes);

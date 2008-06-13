@@ -27,12 +27,17 @@ public class DoubleTransmuter implements LiteralTransmuter
         return decoded;
     }
 
+    public Class<?> getType()
+    {
+    	return Double.class;
+    }
+
     public String encode(Object value)
     {
         return ((Double)value).toString();
     }
 
-    public String getType()
+    public String getEncodedType()
     {
         return "xs:double";
     }

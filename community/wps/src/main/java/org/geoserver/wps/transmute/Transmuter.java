@@ -11,5 +11,5 @@ package org.geoserver.wps.transmute;
 
 public interface Transmuter
 {
-
+	Class<?> getType();
 }
