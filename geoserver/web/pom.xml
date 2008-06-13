@@ -372,6 +372,16 @@
           <artifactId>csv</artifactId>
           <version>${project.version}</version>
         </dependency>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>RESTConfig</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>gwc</artifactId>
+          <version>0.1</version>
+        </dependency>
       </dependencies>
     </profile>
     <profile>
@@ -417,6 +427,15 @@
           <artifactId>gwc</artifactId>
           <version>0.1</version>
         </dependency>
+      </dependencies>
+    </profile>
+	<profile>
+      <id>mysql</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt2-mysql</artifactId>
+          </dependency>
       </dependencies>
     </profile>
   </profiles>
