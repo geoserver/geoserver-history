@@ -72,8 +72,10 @@ public class WmsExceptionHandler extends LegacyServiceExceptionHandler {
             return;
         }
         if (exceptions == null || !"application/vnd.ogc.se_inimage".equals(exceptions)
-                || width <= 0 || height <= 0 || !FORMATS.contains(format))
+                || width <= 0 || height <= 0 || !FORMATS.contains(format)) {
             super.handleServiceException(exception, request);
+            return;
+        }
 
         // ok, it's image, then we have to build a text representing the
         // exception and lay it out in the image
