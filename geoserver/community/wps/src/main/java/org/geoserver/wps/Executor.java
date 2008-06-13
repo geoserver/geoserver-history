@@ -28,12 +28,10 @@ public class Executor
 {
     private Process             process;
     private Map<String, Object> inputs;
-    private WPS                 wps;
     private ProcessFactory      factory;
 
     public Executor(ExecuteType request, WPS wps)
     {
-        this.wps            = wps;
         CodeType identifier = request.getIdentifier();
         this.factory        = this.findProcessFactory(identifier);
 
