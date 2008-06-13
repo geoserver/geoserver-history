@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
+import org.geotools.data.Parameter;
 import org.geotools.process.ProcessFactory;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
@@ -55,10 +56,11 @@ public abstract class ExecuteTransformer extends TransformerBase
 
         public class ExecuteTranslator1_0 extends TranslatorSupport
         {
-            private WPS         wps;
-            private ExecuteType request;
-            private Locale      locale;
-            private Executor    executor;
+            private WPS             wps;
+            private ExecuteType     request;
+            private Locale          locale;
+            private Executor        executor;
+            private DataTransformer dataTransformer;
 
             public ExecuteTranslator1_0(ContentHandler handler, WPS wps)
             {
@@ -68,9 +70,9 @@ public abstract class ExecuteTransformer extends TransformerBase
 
             public void encode(Object object) throws IllegalArgumentException
             {
-                this.executor                       = new Executor((ExecuteType)object, this.wps);
-                Map<String, Object> outputs         = executor.execute();
-                DataTransformer     dataTransformer = new DataTransformer();
+                this.executor               = new Executor((ExecuteType)object, this.wps);
+                Map<String, Object> outputs = executor.execute();
+                this.dataTransformer        = new DataTransformer();
 
                 this.request = (ExecuteType)object;
 
@@ -89,7 +91,7 @@ public abstract class ExecuteTransformer extends TransformerBase
                 attributes.addAttribute("", "xmlns",           "xmlns",           "", DescribeProcessTransformer.WPS_URI);
                 attributes.addAttribute("", "xmlns:wps",       "xmlns:wps",       "", DescribeProcessTransformer.WPS_URI);
                 attributes.addAttribute("", "xmlns:ows",       "xmlns:ows",       "", OWS.NAMESPACE);
-                attributes.addAttribute("", "version",          "version",         "", "1.0.0");
+                attributes.addAttribute("", "version",         "version",         "", "1.0.0");
                 attributes.addAttribute("", "service",         "service",         "", "WPS");
                 attributes.addAttribute("", "lang",            "lang",            "", this.locale.toString());
                 attributes.addAttribute("", "serviceInstance", "serviceInstance", "", serviceInstance);
@@ -97,7 +99,30 @@ public abstract class ExecuteTransformer extends TransformerBase
                 start("wps:ExecuteResponse", attributes);
                     this.processBrief();
                     this.status();
+                    this.outputs(outputs);
                 end("wps:ExecuteResponse");
+            }
+
+            private void outputs(Map<String, Object> outputs)
+            {
+            	ProcessFactory pf = this.executor.getProcessFactory();
+
+            	Map<String, Object> encoded = this.dataTransformer.encodeOutputs(outputs, pf.getResultInfo(null));
+
+            	start("wps:ProcessOutputs");
+            	for(String outputName : outputs.keySet())
+            	{
+            		Parameter<?> param = (pf.getResultInfo(null)).get(outputName);	// TODO remove null argument when no longer needed
+
+            		start("wps:Output");
+            			element("ows:Identifier", param.key);
+            			element("ows:Identifier", param.title.toString(this.locale));
+            			start("wps:Data");
+            				
+            			end("wps:Data");
+            		end("wps:Output");
+            	}
+            	end("wps:ProcessOutputs");
             }
 
             private void processBrief()
@@ -114,7 +139,7 @@ public abstract class ExecuteTransformer extends TransformerBase
 
             private void status()
             {
-                SimpleDateFormat fmt  = new SimpleDateFormat("yyyy-MM-dd:'T'HH:mm:ss");
+                SimpleDateFormat fmt  = new SimpleDateFormat("yyyy-MM-dd:'T'HH:mm:ss");	// TODO UTC
                 Date             date = new Date();
                 String           time = fmt.format(date);
 

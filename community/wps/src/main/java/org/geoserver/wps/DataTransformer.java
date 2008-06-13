@@ -149,9 +149,9 @@ public class DataTransformer
     }
 
     // Encode process results for transmission back to client.
-    public Object encodeOutputs(final Map<String, Object> outputs, final Map<String, Parameter<?>> resultInfo)
+    public Map<String, Object> encodeOutputs(final Map<String, Object> outputs, final Map<String, Parameter<?>> resultInfo)
     {
-        Object obj = null;
+        Map<String, Object> encoded = new HashMap<String, Object>();
 
         Class<?> transmuter;
 
@@ -165,7 +165,7 @@ public class DataTransformer
             //}
         }
 
-        return obj;
+        return encoded;
     }
 
     // Given a parameter name and the man in which it is defined, return the Class used to represent its data.
@@ -207,7 +207,7 @@ public class DataTransformer
     }
 
     // Return default a transmuter for a given Java type
-    public Transmuter getDefaultTransmuter(Class<?> type)
+    public Transmuter getDefaultTransmuter(final Class<?> type)
     {
         Transmuter transmuter = this.defaultTransmuters.get(type);
 
