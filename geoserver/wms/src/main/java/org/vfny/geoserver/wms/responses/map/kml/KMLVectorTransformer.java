@@ -398,23 +398,27 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 LOGGER.finer(new StringBuffer("Applying symbolizer ").append(symbolizer).toString());
 
                 //create a 2-D style
-                Style2D style = styleFactory.createStyle(feature, symbolizer, scaleRange);
-
-                //split out each type of symbolizer
-                if (symbolizer instanceof TextSymbolizer) {
-                    encodeTextStyle((TextStyle2D) style, (TextSymbolizer) symbolizer);
-                }
-
-                if (symbolizer instanceof PolygonSymbolizer) {
-                    encodePolygonStyle((PolygonStyle2D) style, (PolygonSymbolizer) symbolizer, forceOutline);
-                }
-
-                if (symbolizer instanceof LineSymbolizer) {
-                    encodeLineStyle((LineStyle2D) style, (LineSymbolizer) symbolizer);
-                }
-
-                if (symbolizer instanceof PointSymbolizer) {
-                    encodePointStyle(style, (PointSymbolizer) symbolizer);
+                try {
+                    Style2D style = styleFactory.createStyle(feature, symbolizer, scaleRange);
+    
+                    //split out each type of symbolizer
+                    if (symbolizer instanceof TextSymbolizer) {
+                        encodeTextStyle((TextStyle2D) style, (TextSymbolizer) symbolizer);
+                    }
+    
+                    if (symbolizer instanceof PolygonSymbolizer) {
+                        encodePolygonStyle((PolygonStyle2D) style, (PolygonSymbolizer) symbolizer, forceOutline);
+                    }
+    
+                    if (symbolizer instanceof LineSymbolizer) {
+                        encodeLineStyle((LineStyle2D) style, (LineSymbolizer) symbolizer);
+                    }
+    
+                    if (symbolizer instanceof PointSymbolizer) {
+                        encodePointStyle(style, (PointSymbolizer) symbolizer);
+                    }
+                } catch(Exception e) {
+                    LOGGER.log(Level.WARNING, "Error occurred during style encoding", e);
                 }
             }
         }
