@@ -50,6 +50,7 @@
         <module>csv</module>
         <module>RESTConfig</module>
         <module>sldService</module>
+        <module>gwc</module>
       </modules>
     </profile>
     <profile>
