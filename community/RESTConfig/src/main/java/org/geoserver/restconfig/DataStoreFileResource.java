@@ -20,7 +20,9 @@ import java.util.zip.ZipFile;
 
 import javax.servlet.ServletContext;
 
+import org.geoserver.config.GeoServerLoader;
 import org.geoserver.feature.FeatureSourceUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.FeatureSource;
@@ -39,8 +41,10 @@ import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
@@ -52,6 +56,8 @@ import com.vividsolutions.jts.geom.Envelope;
 public class DataStoreFileResource extends Resource{
     private DataConfig myDataConfig;
     private Data myData;
+    private GeoServer myGeoServer;
+    private GlobalConfig myGlobalConfig; 
     protected static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
 
     /**
@@ -67,10 +73,12 @@ public class DataStoreFileResource extends Resource{
         myFormats.put("shp", "Shapefile");
     }
 
-    public DataStoreFileResource(Data data, DataConfig dataConfig) {
+    public DataStoreFileResource(Data data, DataConfig dataConfig, GeoServer gs, GlobalConfig gc) {
         this();
         setData(data);
         setDataConfig(dataConfig);
+        setGeoServer(gs);
+        setGlobalConfig(gc);
     }
 
     public void setDataConfig(DataConfig dc){
@@ -87,6 +95,22 @@ public class DataStoreFileResource extends Resource{
 
     public Data getData(){
         return myData;
+    }
+
+    public void setGeoServer(GeoServer geoserver) {
+        myGeoServer = geoserver;
+    }
+
+    public GeoServer getGeoServer(){
+        return myGeoServer;
+    }
+
+    public void setGlobalConfig(GlobalConfig gc){
+        myGlobalConfig = gc;
+    }
+
+    public GlobalConfig getGlobalConfig(){
+        return myGlobalConfig;
     }
 
     public boolean allowGet(){
@@ -328,10 +352,22 @@ public class DataStoreFileResource extends Resource{
     }
     
     private void reloadConfiguration() throws Exception{
-        XMLConfigReader reader = new XMLConfigReader(GeoserverDataDirectory.getGeoserverDataDirectory(), null);
-        if (reader.isInitialized()){
-        	getData().load(reader.getData());
+        GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class );
+        try {
+            loader.reload();
+        } 
+        catch (Exception e) {
+            throw new RuntimeException( e );
         }
+        
+        // Update Config
+        GeoServer gs = getGeoServer();
+        gs.init();
+        getGlobalConfig().update(gs.toDTO());
+        
+        Data data = getData();
+//        data.init();
+        getDataConfig().update(data.toDTO());
     }
 
     private FeatureTypeConfig autoConfigure(DataStore store, String storeName, String featureTypeName) throws Exception{

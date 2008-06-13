@@ -100,8 +100,10 @@
     <property name="data"><ref bean="data"/></property>
 </bean>
 <bean id="folderFileFinder" class="org.geoserver.restconfig.FolderFileFinder">
-    <!-- <property name="dataConfig"><ref bean="dataConfig"/></property>
-    <property name="data"><ref bean="data"/></property> -->
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+    <property name="geoServer"><ref bean="geoServer"/></property>
+    <property name="globalConfig"><ref bean="globalConfig"/></property>
 </bean>
 <bean id="folderConfigFinder" class="org.geoserver.restconfig.FolderConfigFinder">
     <property name="dataConfig"><ref bean="dataConfig"/></property>
