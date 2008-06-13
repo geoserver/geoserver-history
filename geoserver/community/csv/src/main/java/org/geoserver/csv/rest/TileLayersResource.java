@@ -19,7 +19,7 @@ import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 
 public class TileLayersResource extends Resource {
-    final static Logger LOGGER = Logging.getLogger("org.geoserver.csv.rest.TileLayerResource");
+    final static Logger LOGGER = Logging.getLogger("org.geoserver.csv.rest");
 
     /**
      * Grabs the GWC capabilities and performs an XSLT transformation to
@@ -30,8 +30,9 @@ public class TileLayersResource extends Resource {
         try {
             // ugly way to get to the context path... it seems restlet does not expose it???
             String base = getRequest().getResourceRef().getIdentifier().replaceAll("/rest/csv/tileLayers", "");
-            URL capsUrl = new URL(
-                    base + "/ows?service=WMS&request=GetCapabilities&version=1.1.1");
+            final String fullUrl = base + "/ows?service=WMS&request=GetCapabilities&version=1.1.1";
+            LOGGER.info("About to grab capabilities from " + fullUrl);
+            URL capsUrl = new URL(fullUrl);
             Representation input = new InputRepresentation(
                     capsUrl.openStream(), MediaType.TEXT_XML);
             InputStream xsl = TileLayersResource.class
