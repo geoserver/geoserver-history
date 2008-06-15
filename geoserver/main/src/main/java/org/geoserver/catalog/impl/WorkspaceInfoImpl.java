@@ -3,21 +3,14 @@ package org.geoserver.catalog.impl;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.WorkspaceInfo;
 
-public class WorkspaceInfoImpl implements WorkspaceInfo {
+public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
 
-    Catalog catalog;
-    
     String id;
     String name;
     
     Map<String,Serializable> metadata;
-    
-    public WorkspaceInfoImpl( Catalog catalog ) {
-        this.catalog = catalog;
-    }
     
     public String getId() {
         return id;
