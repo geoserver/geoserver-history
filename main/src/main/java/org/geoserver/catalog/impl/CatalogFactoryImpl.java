@@ -73,7 +73,7 @@ public class CatalogFactoryImpl implements CatalogFactory {
     }
     
     public WorkspaceInfo createWorkspace() {
-        return new WorkspaceInfoImpl(catalog);
+        return new WorkspaceInfoImpl();
     }
 
     public StyleInfo createStyle() {
