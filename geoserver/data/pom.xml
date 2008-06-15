@@ -5,18 +5,18 @@
  <parent>
   <groupId>org.geoserver</groupId>
   <artifactId>geoserver</artifactId>
-  <version>1.7.0-SNAPSHOT</version>
+  <version>1.8.0-SNAPSHOT</version>
  </parent>
  <groupId>org.geoserver</groupId>
  <artifactId>data</artifactId>
  <packaging>jar</packaging>
- <version>1.7.0-SNAPSHOT</version>
+ <version>1.8.0-SNAPSHOT</version>
  <name>Data Module</name>
  <dependencies>
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>platform</artifactId>
-   <version>1.7.0-SNAPSHOT</version>
+   <version>1.8.0-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
