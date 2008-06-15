@@ -5,6 +5,7 @@
 package org.geoserver.catalog.util;
 
 import org.geoserver.ows.util.XmlCharsetDetector;
+import org.geotools.util.logging.Logging;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import java.io.File;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -38,6 +41,12 @@ import java.util.Map;
  *
  */
 public class LegacyCatalogReader {
+    
+    /**
+     * logger
+     */
+    static Logger LOGGER = Logging.getLogger("org.geoserver.catalog");
+    
     /**
      * Root catalog element.
      */
@@ -102,7 +111,8 @@ public class LegacyCatalogReader {
                 dataStore.put( "connectionParams", params );
                 
             } catch (Exception e) {
-                //TODO: log this
+                LOGGER.warning( "Error reading data store paramaters: " + e.getMessage() );
+                LOGGER.log( Level.INFO, "", e );
                 continue;
             }
             
