@@ -112,6 +112,9 @@ public class NamespaceInfoImpl implements NamespaceInfo {
         if ( obj == null ) {
             return false;
         }
+        if ( !( obj instanceof NamespaceInfo ) ) {
+            return false;
+        }
         
         final NamespaceInfo other = (NamespaceInfo) obj;
         if (prefix == null) {
