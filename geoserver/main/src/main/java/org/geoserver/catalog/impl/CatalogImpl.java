@@ -595,6 +595,11 @@ public class CatalogImpl implements Catalog {
     // Workspace methods
     public void add(WorkspaceInfo workspace) {
         validate(workspace);
+        
+        if ( workspaces.containsKey( workspace.getName() ) ) {
+            throw new IllegalArgumentException( "Workspace with name '" + workspace.getName() + "' already exists.");
+        }
+        
         ((WorkspaceInfoImpl)workspace).setId( workspace.getName());
         synchronized (workspaces) {
             workspaces.put( workspace.getName(), workspace );

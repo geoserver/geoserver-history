@@ -230,7 +230,7 @@ public class CatalogImplTest extends TestCase {
         assertEquals( 1, catalog.getWorkspaces().size() );
         
         try {
-            assertFalse( catalog.getWorkspaces().remove( ns ) );
+            assertFalse( catalog.getWorkspaces().remove( ws ) );
             fail( "removing directly should throw an exception" );
         }
         catch( Exception e ) {
