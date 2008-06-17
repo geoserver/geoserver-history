@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <bean id="webApplication"
+      class="org.geoserver.web.GeoServerApplication">
+  </bean>
+  
+  <bean id="wicket" class="org.springframework.web.servlet.mvc.ServletWrappingController" lazy-init="true">
+   <property name="servletClass">
+     <value>org.apache.wicket.protocol.http.WicketServlet</value>
+   </property>
+   <property name="servletName">
+     <value>wicket</value>
+   </property>
+   <property name="initParameters">
+     <props>
+       <prop key="configuration">development</prop>
+       <prop key="applicationClassName">org.geoserver.web.GeoServerApplication</prop>
+       <prop key="applicationFactoryClassName">org.apache.wicket.spring.SpringWebApplicationFactory</prop>
+     </props>
+   </property>
+  </bean>
+
+  <bean id="webDispatcherMapping" 
+     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" lazy-init="true">
+     <property name="alwaysUseFullPath" value="true"/>
+     <property name="mappings">
+      <props>
+        <prop key="/web">wicket</prop>
+        <prop key="/web/**">wicket</prop>
+        <prop key="/web/resources/**">wicket</prop>
+        <prop key="/**/*.css">filePublisher</prop>
+        <prop key="/**/*.png">filePublisher</prop>
+        <prop key="/**/*.gif">filePublisher</prop>
+        <prop key="/**/*.jpg">filePublisher</prop>
+      </props>
+    </property>
+  </bean>
+  
+  <!--  main application pages -->
+  <!--bean id="dataPage" class="org.geoserver.web.MainPageInfo">
+    <property name="id" value="data"/>
+    <property name="title" value="Data"/>
+    <property name="componentClass" value="org.geoserver.web.data.DataPage"/>
+  </bean>
+    <bean id="servicesPage" class="org.geoserver.web.MainPageInfo">
+    <property name="id" value="services"/>
+    <property name="title" value="Services"/>
+    <property name="componentClass" value="org.geoserver.web.services.ServicesPage"/>
+  </bean-->
+  
+  <!-- data store wizards -->
+  <!--bean id="shapefileWizard" class="org.geoserver.web.data.wizard.ShapefileWizardDelegate"/-->
+</beans>
