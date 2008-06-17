@@ -39,12 +39,12 @@
   </bean>
   
   <!--  main application pages -->
-  <!--bean id="dataPage" class="org.geoserver.web.MainPageInfo">
+  <bean id="dataPage" class="org.geoserver.web.MainPageInfo">
     <property name="id" value="data"/>
-    <property name="title" value="Data"/>
+    <property name="titleKey" value="Data"/>
     <property name="componentClass" value="org.geoserver.web.data.DataPage"/>
   </bean>
-    <bean id="servicesPage" class="org.geoserver.web.MainPageInfo">
+  <!-- bean id="servicesPage" class="org.geoserver.web.MainPageInfo">
     <property name="id" value="services"/>
     <property name="title" value="Services"/>
     <property name="componentClass" value="org.geoserver.web.services.ServicesPage"/>
