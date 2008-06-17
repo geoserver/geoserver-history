@@ -155,4 +155,10 @@
     
   <!-- jai initializer -->
   <bean id="jaiInitializer" class="org.geoserver.jai.JAIInitializer"/>
+  
+  <!-- logging initializer -->
+  <bean id="loggingInitializer" class="org.geoserver.logging.LoggingInitializer">
+    <property name="resourceLoader" ref="resourceLoader"/>
+  </bean>
+  
 </beans>

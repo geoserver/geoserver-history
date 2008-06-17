@@ -129,9 +129,6 @@ public class LoggingInitializer implements GeoServerInitializer, ExtensionPriori
             
             //this forces the data_dir/logs directory to be present (if it wasn't already)
             File lcdir = resourceLoader.find( "logs" );
-            if ( lcdir == null ) {
-                lcdir = resourceLoader.createDirectory( "logs" );
-            }
             
             //now we copy in the various logging config files from the base repo location on the classpath
             final String[] lcfiles = new String[] { "DEFAULT_LOGGING.properties",
