@@ -207,7 +207,7 @@ public class ModificationProxy implements InvocationHandler {
         InvocationHandler h = new ModificationProxy( proxyObject );
         
         Class proxyClass = 
-            Proxy.getProxyClass( clazz.getClassLoader(), new Class[] { clazz } );
+            Proxy.getProxyClass( clazz.getClassLoader(), proxyObject.getClass().getInterfaces() );
         
         T proxy;
         try {
@@ -226,11 +226,7 @@ public class ModificationProxy implements InvocationHandler {
      *
      */
     public static <T> List<T> createList( List<T> proxyList, Class<T> clazz ) {
-        return new ProxyList( proxyList, clazz ) {
-            protected <T> T createProxy(T proxyObject, Class<T> proxyInterface) {
-                return ModificationProxy.create( proxyObject, proxyInterface );
-            }
-        };
+        return new list( proxyList, clazz );
     }
     
     /**
@@ -251,5 +247,16 @@ public class ModificationProxy implements InvocationHandler {
         }
         
         return object;
+    }
+    
+    static class list<T> extends ProxyList implements Serializable {
+
+        list( List<T> list, Class<T> clazz ) {
+            super( list, clazz );
+        }
+        
+        protected <T> T createProxy(T proxyObject, Class<T> proxyInterface) {
+            return ModificationProxy.create( proxyObject, proxyInterface );
+        }
     }
 }
