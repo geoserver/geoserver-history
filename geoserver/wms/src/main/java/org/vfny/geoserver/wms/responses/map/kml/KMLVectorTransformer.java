@@ -587,8 +587,10 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor(colorToHex((Color) style.getContour(), opacity));
-
+                if(style != null) {
+                    encodeColor(colorToHex((Color) style.getContour(), opacity));
+                }
+                
                 //width
                 int width = SLD.width(symbolizer.getStroke());
 
@@ -616,8 +618,10 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor((Color) style.getContour(), opacity);
-
+                if(style != null) {
+                    encodeColor((Color) style.getContour(), opacity);
+                }
+                
                 //width
                 int width = SLD.width(symbolizer.getStroke());
 
