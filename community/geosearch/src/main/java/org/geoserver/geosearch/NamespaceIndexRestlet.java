@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.vfny.geoserver.global.GeoServer;
@@ -195,9 +196,10 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
     private List getLayers(String namespace){
         List results = new ArrayList();
 
-        Iterator it = getData().getLayerNames().iterator();
+        Iterator it = getData().getFeatureTypeInfos().entrySet().iterator();
         while (it.hasNext()){
-            String name = it.next().toString();
+            Entry entry = (Entry) it.next();
+            String name = ((org.vfny.geoserver.global.FeatureTypeInfo) entry.getValue()).getName();
             if (name.startsWith(namespace)){
                 results.add(getData().getMapLayerInfo(name));
             }

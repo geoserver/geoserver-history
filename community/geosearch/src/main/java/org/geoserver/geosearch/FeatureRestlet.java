@@ -117,7 +117,7 @@ public class FeatureRestlet extends Restlet {
         //create some kvp and pass through to GetMapKvpreader
         KvpMap raw = new KvpMap();
         raw.put("layers", namespace + ":" + layer);
-        raw.put("format", "geosearch-kml");
+        raw.put("format", "kml");
         raw.put("startIndex", Integer.toString(startIndex));
         raw.put("maxfeatures", Integer.toString(maxFeatures));
         raw.put("format_options", "selfLinks:true;relLinks:true;regionateby:" + regionateBy + (regionateAttr != null ? ";regionateAttr:" + regionateAttr : ""));
