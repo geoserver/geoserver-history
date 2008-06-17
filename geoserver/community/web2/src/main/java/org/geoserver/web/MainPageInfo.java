@@ -11,5 +11,6 @@ package org.geoserver.web;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public abstract class MainPageInfo extends ComponentInfo<GeoServerBasePage> {
+public class MainPageInfo extends ComponentInfo<GeoServerBasePage> {
+	private static final long serialVersionUID = 1L;
 }
