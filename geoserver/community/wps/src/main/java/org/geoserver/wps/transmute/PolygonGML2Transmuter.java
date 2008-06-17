@@ -21,19 +21,19 @@ public class PolygonGML2Transmuter implements ComplexTransmuter
 {
     public String getSchema()
     {
-        return "Polygon.xsd";
+        return "Polygon.xsd";    // XXX TODO may need to append server root
     }
 
     public Class<?> getType()
     {
-    	return Geometry.class;
+        return Geometry.class;
     }
 
     public Class<?> getXMLConfiguration()
     {
         return GMLConfiguration.class;
     }
-    
+
     public String getMimeType()
     {
         return "text/xml; subtype=gml/2.1.2";
@@ -41,7 +41,7 @@ public class PolygonGML2Transmuter implements ComplexTransmuter
 
     public String encode(Object obj)
     {
-        return "XXX";
+        throw new WPSException("NoApplicableCode", "XXX Yet to be implemented.");    // XXX TODO
     }
 
     public Object decode(InputStream stream)

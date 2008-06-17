@@ -9,10 +9,12 @@
 
 package org.geoserver.wps;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import net.opengis.wps.GetCapabilitiesType;
 import net.opengis.wps.DescribeProcessType;
 import net.opengis.wps.ExecuteType;
-import net.opengis.wps.RequestBaseType;
 
 import org.geoserver.wps.WPSException;
 import org.geotools.xml.transform.TransformerBase;
@@ -25,5 +27,5 @@ public interface WebProcessingService
 
     TransformerBase execute(ExecuteType request) throws WPSException;
 
-    void getSchema(RequestBaseType request) throws WPSException;
+    void getSchema(HttpServletRequest request, HttpServletResponse response) throws WPSException;
 }

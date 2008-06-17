@@ -109,7 +109,7 @@ public class DataTransformer
 
         String       parameterName = input.getIdentifier().getValue();
         Parameter<?> parameter     = this.inputParameters.get(parameterName);
-        
+
         if (null != data.getLiteralData())
         {
             output = this.decodeLiteralData(data.getLiteralData(), parameter.type);
@@ -130,10 +130,15 @@ public class DataTransformer
 
     private Object decodeComplexData(final ComplexDataType input, final Class<?> type)
     {
-        Object data = null;
+        Object data   = null;
 
-        
-        
+        ComplexTransmuter transmuter = (ComplexTransmuter)this.getComplexTransmuter(type, input.getSchema());
+
+        // XXX get data to parse
+        Object feature0 = input.getMixed().getValue(0);
+
+        //data = transmuter.decode(XXX);
+
         return data;
     }
 
@@ -190,16 +195,16 @@ public class DataTransformer
                 continue;
             }
 
-            if (false == schema.equals(((ComplexTransmuter)transmuter).getSchema()))
+            if (false == ((ComplexTransmuter)transmuter).getSchema().equals(schema))
             {
                 continue;
             }
-            
+
             if (type != transmuter.getType())
             {
                 continue;
             }
-            
+
             return (ComplexTransmuter)transmuter;
         }
 

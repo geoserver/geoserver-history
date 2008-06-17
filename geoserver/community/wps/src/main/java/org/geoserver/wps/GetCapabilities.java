@@ -4,7 +4,7 @@
  */
 
 /**
- *	@author lreed@refractions.net
+ *  @author lreed@refractions.net
  */
 
 package org.geoserver.wps;
@@ -19,8 +19,6 @@ public class GetCapabilities
     public GetCapabilities(WPS wps)
     {
         this.wps  = wps;
-
-        return;
     }
 
     public CapabilitiesTransformer run(GetCapabilitiesType request) throws WPSException

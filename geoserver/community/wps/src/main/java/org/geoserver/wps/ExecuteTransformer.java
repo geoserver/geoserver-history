@@ -105,24 +105,24 @@ public abstract class ExecuteTransformer extends TransformerBase
 
             private void outputs(Map<String, Object> outputs)
             {
-            	ProcessFactory pf = this.executor.getProcessFactory();
+                ProcessFactory pf = this.executor.getProcessFactory();
 
-            	Map<String, Object> encoded = this.dataTransformer.encodeOutputs(outputs, pf.getResultInfo(null));
+                Map<String, Object> encoded = this.dataTransformer.encodeOutputs(outputs, pf.getResultInfo(null));
 
-            	start("wps:ProcessOutputs");
-            	for(String outputName : outputs.keySet())
-            	{
-            		Parameter<?> param = (pf.getResultInfo(null)).get(outputName);	// TODO remove null argument when no longer needed
+                start("wps:ProcessOutputs");
+                for(String outputName : outputs.keySet())
+                {
+                    Parameter<?> param = (pf.getResultInfo(null)).get(outputName);    // TODO remove null argument when no longer needed
 
-            		start("wps:Output");
-            			element("ows:Identifier", param.key);
-            			element("ows:Identifier", param.title.toString(this.locale));
-            			start("wps:Data");
-            				
-            			end("wps:Data");
-            		end("wps:Output");
-            	}
-            	end("wps:ProcessOutputs");
+                    start("wps:Output");
+                        element("ows:Identifier", param.key);
+                        element("ows:Identifier", param.title.toString(this.locale));
+                        start("wps:Data");
+                        	// XXX TODO
+                        end("wps:Data");
+                    end("wps:Output");
+                }
+                end("wps:ProcessOutputs");
             }
 
             private void processBrief()
@@ -139,7 +139,7 @@ public abstract class ExecuteTransformer extends TransformerBase
 
             private void status()
             {
-                SimpleDateFormat fmt  = new SimpleDateFormat("yyyy-MM-dd:'T'HH:mm:ss");	// TODO UTC
+                SimpleDateFormat fmt  = new SimpleDateFormat("yyyy-MM-dd:'T'HH:mm:ss");    // TODO UTC
                 Date             date = new Date();
                 String           time = fmt.format(date);
 

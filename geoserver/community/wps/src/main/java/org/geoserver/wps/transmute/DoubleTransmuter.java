@@ -29,7 +29,7 @@ public class DoubleTransmuter implements LiteralTransmuter
 
     public Class<?> getType()
     {
-    	return Double.class;
+        return Double.class;
     }
 
     public String encode(Object value)

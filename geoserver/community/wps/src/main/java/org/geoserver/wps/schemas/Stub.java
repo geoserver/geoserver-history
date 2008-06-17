@@ -4,12 +4,11 @@
  */
 
 /**
- * @author lreed@refractions.net
+ *  @author lreed@refractions.net
  */
 
-package org.geoserver.wps.transmute;
+package org.geoserver.wps.schemas;
 
-public interface Transmuter
+public class Stub
 {
-    Class<?> getType();
 }
