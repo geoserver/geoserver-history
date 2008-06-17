@@ -1,15 +1,35 @@
 package org.geoserver.web;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.StringBufferInputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
+import org.apache.wicket.request.IRequestCodingStrategy;
 import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
 import org.apache.wicket.spring.SpringWebApplication;
+import org.apache.wicket.util.resource.AbstractResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
+import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
+import org.apache.wicket.util.resource.StringBufferResourceStream;
+import org.apache.wicket.util.resource.locator.ResourceStreamLocator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
@@ -17,6 +37,7 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.web.util.CompositeConverterLocator;
 import org.geoserver.web.util.DataDirectoryConverterLocator;
 import org.geoserver.web.util.GeoToolsConverterLocator;
+import org.geotools.util.logging.Logging;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -26,7 +47,15 @@ import org.springframework.context.ApplicationContext;
  */
 public class GeoServerApplication extends SpringWebApplication {
 
-    public Class<?> getHomePage() {
+    /**
+     * logger for web application
+     */
+    public static Logger LOGGER = Logging.getLogger( "org.geoserver.web" );
+    
+    /**
+     * The {@link GeoServerHomePage}.
+     */
+    public Class<GeoServerHomePage> getHomePage() {
         return GeoServerHomePage.class;
     }
 
@@ -80,6 +109,61 @@ public class GeoServerApplication extends SpringWebApplication {
      */
     public <T> List<T> getBeansOfType( Class<T> type ) {
         return GeoServerExtensions.extensions( type, getApplicationContext() );
+    }
+    
+    /**
+     * Initialization override which sets up a locator for i18n resources. 
+     */
+    protected void init() {
+        getResourceSettings().setResourceStreamLocator(
+            new ResourceStreamLocator() {
+                public IResourceStream locate(Class clazz, String path) {
+                    
+                    int i = path.lastIndexOf( "/" );
+                    if ( i != -1 ) {
+                        String p = path.substring( i + 1);
+                        if (p.matches( "GeoServerApplication.*.properties")) {
+                            try {
+                                //process the classpath for property files
+                                Enumeration<URL> urls = getClass().getClassLoader().getResources(p);
+                                
+                                //build up a single properties file
+                                Properties properties = new Properties();
+                                
+                                while( urls.hasMoreElements() ) {
+                                    URL url = urls.nextElement();
+                                    
+                                    InputStream in = url.openStream() ;
+                                    properties.load( in );
+                                    in.close();
+                                }
+                                
+                                //transform the propeties to a stream
+                                final ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                properties.store( out, "" );
+                                
+                                return new AbstractResourceStream() {
+                                    public InputStream getInputStream() throws ResourceStreamNotFoundException {
+                                        return new ByteArrayInputStream( out.toByteArray() );
+                                    }
+                                    public void close() throws IOException {
+                                        out.close();
+                                    }
+                                };
+                            } 
+                            catch (IOException e) {
+                                LOGGER.log( Level.WARNING, "", e );
+                            }    
+                        }
+                    }
+                    
+                    
+                    
+                    return super.locate(clazz, path);
+                }
+            }
+        );
+        
     }
     
     /*
