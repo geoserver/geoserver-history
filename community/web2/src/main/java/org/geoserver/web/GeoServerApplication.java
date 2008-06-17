@@ -26,7 +26,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class GeoServerApplication extends SpringWebApplication {
 
-    public Class getHomePage() {
+    public Class<?> getHomePage() {
         return GeoServerHomePage.class;
     }
 

@@ -15,7 +15,9 @@ public class GeoServerHomePage extends GeoServerBasePage {
         // processing any remaining pages
         final List<MainPageInfo> pages = ((GeoServerApplication) getApplication()).getBeansOfType(MainPageInfo.class);
         ListView view = new ListView( "pages", pages ) {
-            protected void populateItem(ListItem item) {
+			private static final long serialVersionUID = 8943715788283282175L;
+
+			protected void populateItem(ListItem item) {
                 MainPageInfo page = (MainPageInfo) item.getModelObject();
                 
                 BookmarkablePageLink link = new BookmarkablePageLink( "page", page.getComponentClass() ) ;
