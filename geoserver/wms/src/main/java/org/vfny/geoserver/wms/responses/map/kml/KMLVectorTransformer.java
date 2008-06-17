@@ -7,8 +7,6 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -391,7 +389,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          */
         protected boolean encodeStyle(SimpleFeature feature, FeatureTypeStyle[] styles) {
            
-            //encode hte Line/Poly styles
+            //encode the Line/Poly styles
             List symbolizerList = new ArrayList();
             for ( int j = 0; j < styles.length ; j++ ) {
                Rule[] rules = filterRules(styles[j], feature);
@@ -405,9 +403,6 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 //start the style
                 start("Style",
                     KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
-
-                //encode the icon
-                encodeIconStyle(feature, styles);
 
                 Symbolizer[] symbolizers = (Symbolizer[]) symbolizerList.toArray(new Symbolizer[symbolizerList.size()]);
                 encodeStyle(feature, symbolizers);
@@ -428,51 +423,50 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes an IconStyle for a feature.
          */
-        protected void encodeIconStyle(SimpleFeature feature, FeatureTypeStyle[] styles ) {
-            //encode the style for the icon
-            //start IconStyle
+        protected void encodeDefaultIconStyle(SimpleFeature feature) {
+            // encode the style for the icon
+
+            // figure out if line or polygon
+            boolean line = feature.getDefaultGeometry() != null
+                    && (feature.getDefaultGeometry() instanceof LineString || feature
+                            .getDefaultGeometry() instanceof MultiLineString);
+            boolean poly = feature.getDefaultGeometry() != null
+                    && (feature.getDefaultGeometry() instanceof Polygon || feature
+                            .getDefaultGeometry() instanceof MultiPolygon);
+
+            // Final pre-flight check
+            if (!line && !poly) {
+                LOGGER.log(Level.FINER, "Unexpectedly entered encodeDefaultIconStyle() "
+                           + "with something that does not have a multipoint geometry.");
+                return;
+            }
+
+            // start IconStyle
             start("IconStyle");
 
-            //make transparent if they didn't ask for attributes
+            // make transparent if they didn't ask for attributes
             if (!mapContext.getRequest().getKMattr()) {
                 encodeColor("00ffffff");
             }
 
-            //figure out if line or polygon
-            boolean line = feature.getDefaultGeometry() != null && 
-                (feature.getDefaultGeometry() instanceof LineString
-                    || feature.getDefaultGeometry() instanceof MultiLineString);
-            boolean poly = feature.getDefaultGeometry() != null && 
-            	(feature.getDefaultGeometry() instanceof Polygon
-                    || feature.getDefaultGeometry() instanceof MultiPolygon);
-            
-            //if line or polygon scale the label
-            if ( line || poly) {
-            	element( "scale", "0.4");
+            // if line or polygon scale the label
+            if (line || poly) {
+                element("scale", "0.4");
             }
-            //start Icon
+
+            // start Icon
             start("Icon");
-            
-            if ( line || poly ) {
-            	String imageURL;
-            	try {
-            		URL requestURL = new URL(mapContext.getRequest().getBaseUrl());
-            		imageURL = requestURL.getProtocol() + "://" + requestURL.getHost() + ":" + requestURL.getPort();
-            		imageURL += "/geoserver/" + (poly ? "icon-poly.png" : "icon-line.png");
-            	} catch (MalformedURLException mue){
-            		imageURL = "http://maps.google.com/mapfiles/kml/pal3/icon61.png";
-            	}
-                element("href", imageURL); 
-            }
-            else {
-                //do nothing, this is handled by encodePointStyle
-            }
-            
+
+            // Note the version number in case we want to replace the icon
+            String imageURL = "http://icons.opengeo.org/markers/icon-"
+                    + (poly ? "poly.1" : "line.1") + ".png";
+            element("href", imageURL);
+
             end("Icon");
 
-            //end IconStyle
+            // end IconStyle
             end("IconStyle");
-            
+
         }
         /**
          * Encodes the provided set of symbolizers as KML styles.
@@ -488,33 +482,64 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 }
             }
 
-            for (int i = 0; i < symbolizers.length; i++) {
-                Symbolizer symbolizer = symbolizers[i];
-                LOGGER.finer(new StringBuffer("Applying symbolizer ").append(symbolizer).toString());
+            // if this is a polygon or line, it should also be given a point
+            boolean lacksPointSymbolizer = true;
+            Symbolizer multiPointSymbolizer = null;
 
-                //create a 2-D style
-                try {
-                    Style2D style = styleFactory.createStyle(feature, symbolizer, scaleRange);
-    
-                    //split out each type of symbolizer
+            // create a 2-D style
+            try {
+
+                for (int i = 0; i < symbolizers.length; i++) {
+                    Symbolizer symbolizer = symbolizers[i];
+                    LOGGER.finer(new StringBuffer("Applying symbolizer ")
+                            .append(symbolizer).toString());
+
+                    // Used for custom placemark icon, sometimes even the smallest 
+                    // placemarks will cover up the underlying polygons.
+                    
+                    // But ff we pass a PointSymbolizer to something that is essentially
+                    // a polygon this throws up, so we catch it?
+                    Style2D style = null;
+                    try {
+                        styleFactory.createStyle(feature, symbolizer, scaleRange);
+                    } catch (IllegalArgumentException iae) {
+                        // Do nothing
+                    }
+
+                    // split out each type of symbolizer
                     if (symbolizer instanceof TextSymbolizer) {
-                        encodeTextStyle((TextStyle2D) style, (TextSymbolizer) symbolizer);
+                        encodeTextStyle((TextStyle2D) style,
+                                (TextSymbolizer) symbolizer);
                     }
-    
+
                     if (symbolizer instanceof PolygonSymbolizer) {
-                        encodePolygonStyle((PolygonStyle2D) style, (PolygonSymbolizer) symbolizer, forceOutline);
+                        encodePolygonStyle((PolygonStyle2D) style,
+                                (PolygonSymbolizer) symbolizer, forceOutline);
+                        multiPointSymbolizer = symbolizer;
                     }
-    
+
                     if (symbolizer instanceof LineSymbolizer) {
-                        encodeLineStyle((LineStyle2D) style, (LineSymbolizer) symbolizer);
+                        encodeLineStyle((LineStyle2D) style,
+                                (LineSymbolizer) symbolizer);
+                        multiPointSymbolizer = symbolizer;
                     }
-    
+
                     if (symbolizer instanceof PointSymbolizer) {
                         encodePointStyle(style, (PointSymbolizer) symbolizer);
+                        lacksPointSymbolizer = false;
                     }
-                } catch(Exception e) {
-                    LOGGER.log(Level.WARNING, "Error occurred during style encoding", e);
+
                 }
+                
+                // Add a default point symbolizer, so people have something
+                // to click on in the Google Earth
+                if (multiPointSymbolizer != null && lacksPointSymbolizer) {
+                    encodeDefaultIconStyle(feature);
+                }
+
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING,
+                        "Error occurred during style encoding", e);
             }
         }
 
