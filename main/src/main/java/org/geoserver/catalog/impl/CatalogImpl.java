@@ -290,9 +290,22 @@ public class CatalogImpl implements Catalog {
             }
         }
 
-        return matches;
+        return ModificationProxy.createList( matches, clazz );
     }
 
+    public <T extends ResourceInfo> List<T> getResourcesByStore(StoreInfo store) {
+        List all = lookup(ResourceInfo.class, resources);
+        List matches = new ArrayList();
+        for ( Iterator r = all.iterator(); r.hasNext(); ) {
+            ResourceInfo resource = (ResourceInfo) r.next();
+            if ( store.equals( resource.getStore() ) ) {
+                matches.add( resource );
+            }
+        }
+        
+        return ModificationProxy.createList( matches, ResourceInfo.class );
+    }
+    
     public FeatureTypeInfo getFeatureType(String id) {
         return (FeatureTypeInfo) getResource(id, FeatureTypeInfo.class);
     }
@@ -313,6 +326,10 @@ public class CatalogImpl implements Catalog {
     public List getFeatureTypesByNamespace(NamespaceInfo namespace) {
         return getResourcesByNamespace(namespace, FeatureTypeInfo.class);
     }
+    
+    public List<FeatureTypeInfo> getFeatureTypesByStore(DataStoreInfo store) {
+        return getResourcesByStore(store);
+    }
 
     public CoverageInfo getCoverage(String id) {
         return (CoverageInfo) getResource(id, CoverageInfo.class);
@@ -332,6 +349,10 @@ public class CatalogImpl implements Catalog {
 
     public List getCoveragesByNamespace(NamespaceInfo namespace) {
         return getResourcesByNamespace(namespace, CoverageInfo.class);
+    }
+    
+    public List<CoverageInfo> getCoveragesByStore(CoverageStoreInfo store) {
+        return getResourcesByStore(store);
     }
 
     // Layer methods

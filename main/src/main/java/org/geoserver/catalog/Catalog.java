@@ -382,6 +382,11 @@ public interface Catalog {
     <T extends ResourceInfo> List<T> getResources(Class<T> clazz);
 
     /**
+     * All resoures in the catalog which are part of the specified store.
+     */
+    <T extends ResourceInfo> List<T> getResourcesByStore( StoreInfo store );
+    
+     /**
      * All resources in the specified namespace of the specified type.
      * <p>
      * The <tt>clazz</tt> parameter is used to filter the types of resources
@@ -495,6 +500,13 @@ public interface Catalog {
     List<FeatureTypeInfo> getFeatureTypesByNamespace(NamespaceInfo namespace);
 
     /**
+     * All feature types which are part of the specified datastore.
+     * 
+     * @param store The datastore
+     */
+    List<FeatureTypeInfo> getFeatureTypesByStore( DataStoreInfo store );
+    
+    /**
      * Returns the coverage matching a particular id, or <code>null</code> if
      * no such coverage could be found.
      * <p>
@@ -605,6 +617,11 @@ public interface Catalog {
      */
     List<CoverageInfo> getCoveragesByNamespace(NamespaceInfo namespace);
 
+    /**
+     * All coverages which are part of the specified store.
+     */
+    List<CoverageInfo> getCoveragesByStore(CoverageStoreInfo store);
+    
     /**
      * Returns the layer matching a particular id, or <code>null</code> if no
      * such layer could be found.

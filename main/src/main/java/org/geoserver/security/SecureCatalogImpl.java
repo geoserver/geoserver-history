@@ -88,6 +88,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return filterResources(user(), delegate.getCoveragesByNamespace(namespace));
     }
 
+    public List<CoverageInfo> getCoveragesByStore(CoverageStoreInfo store) {
+        return filterResources(user(), delegate.getCoveragesByStore(store));
+    }
+    
     public CoverageStoreInfo getCoverageStore(String id) {
         return checkAccess(user(), delegate.getCoverageStore(id));
     }
@@ -138,6 +142,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
 
     public List<FeatureTypeInfo> getFeatureTypesByNamespace(NamespaceInfo namespace) {
         return filterResources(user(), delegate.getFeatureTypesByNamespace(namespace));
+    }
+    
+    public List<FeatureTypeInfo> getFeatureTypesByStore(DataStoreInfo store) {
+        return filterResources(user(), delegate.getFeatureTypesByStore(store));
     }
 
     public LayerInfo getLayer(String id) {
@@ -203,6 +211,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     public <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace,
             Class<T> clazz) {
         return filterResources(user(), delegate.getResourcesByNamespace(namespace, clazz));
+    }
+    
+    public <T extends ResourceInfo> List<T> getResourcesByStore(StoreInfo store) {
+        return (List<T>) filterResources(user(), delegate.getResourcesByStore(store));
     }
 
     public <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
