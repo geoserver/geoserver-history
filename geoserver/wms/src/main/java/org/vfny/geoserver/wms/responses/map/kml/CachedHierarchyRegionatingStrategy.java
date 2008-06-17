@@ -31,6 +31,7 @@ import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -63,7 +64,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
      * go ahead and build the rest of the tile hierarchy in memory.  (This is a performance thing; 
      * sweeping over the database for each tile can really bog things down.)
      */
-    private static int DB_SWEEP_CUTOFF = 100000; 
+    private static int DB_SWEEP_CUTOFF = 25000; 
 
     public static long featureCounter = 0;
 
@@ -126,12 +127,31 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
                 LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
             }
 
-            // GeoWebCache will try to start with the best tile that covers all
-            // the data,
-            // so we need to start at the same point
-            ReferencedEnvelope layerBounds = layer.getBounds().transform(
-                    epsg4326, false);
+            /**
+             * GeoWebCache will try to start with the best tile that covers all
+             * the data, so we need to start at the same point
+             **/
+            
 
+            ReferencedEnvelope layerBounds = null;
+            
+            if(layer.getBounds().crs().equals(epsg4326)) {
+                layerBounds = layer.getBounds();
+            } else {
+                LOGGER.log(Level.SEVERE, "Transforming " + layer.getBounds().toString() + " to EPSG:4326.");
+                try {
+                    layerBounds = layer.getBounds().transform(epsg4326, false);
+                } catch (NullPointerException npe) {
+                    LOGGER.log(Level.SEVERE, "Caught NPE, presumably from transform, reverting to world bounds.");
+                } catch (TransformException te) { 
+                    LOGGER.log(Level.SEVERE, "Encountered transform exception, reverting to world bounds: "
+                            + te.getMessage());
+                }
+                
+                if(layerBounds == null) {
+                    layerBounds = getWorldBounds();
+                }
+            }
             // ... but if it crosses the central meridien we need to get two
             // world tiles anyway
             if (layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
