@@ -4,6 +4,11 @@
  */
 package org.geoserver.wfs.xml.v1_1_0.overrides;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.geotools.feature.iso.UserData;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.util.Converters;
 import org.opengis.feature.Attribute;
@@ -14,15 +19,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 
 public class EncodingUtils {
     public static Element encodeAttribute(Attribute attribute, Document document) {
-        AttributeDescriptor descriptor = attribute.getDescriptor();
-        Name name = descriptor.getName();
+        Name name = attribute.getDescriptor().getName();
         String namespace = name.getNamespaceURI();
         String localName = name.getLocalPart();
 
@@ -34,7 +35,7 @@ public class EncodingUtils {
             encoding.setAttributeNS(GML.NAMESPACE, "id", id);
         }
 
-        Map definedAttributes = (Map) descriptor.getUserData(Attributes.class);
+        Map definedAttributes = (Map) ((UserData) attribute).getUserData(Attributes.class);
 
         if (definedAttributes != null) {
             Map.Entry entry;

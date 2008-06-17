@@ -34,6 +34,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testPost() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.1.0\" "
             + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
             + "xmlns:ogc=\"http://www.opengis.net/ogc\" "

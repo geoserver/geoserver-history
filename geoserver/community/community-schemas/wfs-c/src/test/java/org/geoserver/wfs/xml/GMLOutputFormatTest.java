@@ -61,6 +61,9 @@ public class GMLOutputFormatTest extends WFSTestSupport {
     }
 
     public void testGML3() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         Document dom = getAsDOM("wfs?request=getfeature&version=1.0.0&outputFormat=gml3&typename="
                 + MockData.BASIC_POLYGONS.getPrefix() + ":"
                 + MockData.BASIC_POLYGONS.getLocalPart());

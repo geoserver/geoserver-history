@@ -22,6 +22,7 @@ import javax.units.BaseUnit;
 import javax.xml.namespace.QName;
 
 import org.geotools.feature.Name;
+import org.geotools.feature.iso.UserData;
 import org.geotools.gml3.bindings.MeasureTypeBinding;
 import org.geotools.measure.Measure;
 import org.opengis.feature.Attribute;
@@ -38,7 +39,7 @@ public class ISOMeasureTypeBinding extends MeasureTypeBinding {
         if (UOM.toString().equals(name.getLocalPart())) {
             Attribute attribute = (Attribute) object;
             /* first look for a client property and use it if it is set */
-            Map clientProperties = (Map) attribute.getDescriptor().getUserData(
+            Map clientProperties = (Map) ((UserData) attribute).getUserData(
                     Attributes.class);
             if (clientProperties != null) {
                 String uom = (String) clientProperties.get(UOM);

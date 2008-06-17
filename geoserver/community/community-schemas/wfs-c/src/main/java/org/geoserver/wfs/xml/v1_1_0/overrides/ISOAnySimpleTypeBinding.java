@@ -4,6 +4,13 @@
  */
 package org.geoserver.wfs.xml.v1_1_0.overrides;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.namespace.QName;
+
+import org.geotools.feature.iso.UserData;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.util.Converters;
 import org.geotools.xml.AbstractComplexBinding;
@@ -11,16 +18,11 @@ import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.geotools.xs.bindings.XS;
 import org.opengis.feature.Attribute;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -64,8 +66,7 @@ public class ISOAnySimpleTypeBinding extends AbstractComplexBinding {
         throws Exception {
         Attribute attribute = (Attribute) object;
 
-        AttributeDescriptor descriptor = attribute.getDescriptor();
-        Name name = descriptor.getName();
+        Name name = attribute.getDescriptor().getName();
         String namespace = name.getNamespaceURI();
         String localName = name.getLocalPart();
 
@@ -77,7 +78,7 @@ public class ISOAnySimpleTypeBinding extends AbstractComplexBinding {
             encoding.setAttributeNS(GML.NAMESPACE, "id", id);
         }
 
-        Map definedAttributes = (Map) descriptor.getUserData(Attributes.class);
+        Map definedAttributes = (Map) ((UserData) attribute).getUserData(Attributes.class);
 
         if (definedAttributes != null) {
             Map.Entry entry;

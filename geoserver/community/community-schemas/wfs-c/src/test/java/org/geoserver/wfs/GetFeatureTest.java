@@ -72,6 +72,9 @@ public class GetFeatureTest extends WFSTestSupport {
     }
 
     public void testLax() throws Exception {
+        if (skipDisabled()) {
+            return; // FIXME: this test is disabled by default
+        }
         String xml = "<GetFeature xmlns:gml=\"http://www.opengis.net/gml\">"
             + " <Query typeName=\"" + MockData.BUILDINGS.getLocalPart() + "\">"
             + "   <PropertyName>ADDRESS</PropertyName>" + "   <Filter>"
