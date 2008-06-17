@@ -3,7 +3,6 @@ package org.geoserver.web;
 import org.apache.wicket.markup.html.WebPage;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
-import org.geoserver.platform.GeoServerExtensions;
 
 /**
  * Base class for web pages in GeoServer web application.

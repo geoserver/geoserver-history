@@ -11,5 +11,5 @@ package org.geoserver.web;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class MainPageInfo extends ComponentInfo<GeoServerBasePage> {
+public abstract class MainPageInfo extends ComponentInfo<GeoServerBasePage> {
 }
