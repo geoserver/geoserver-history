@@ -618,7 +618,10 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                     opacity = 1.0;
                 }
 
-                if(style != null) {
+
+                if(symbolizer.getStroke().getColor() != null) {
+                    encodeW3CColor(symbolizer.getStroke().getColor().toString(),"ff");
+                } else if(style != null) {
                     encodeColor((Color) style.getContour(), opacity);
                 }
                 
@@ -1135,6 +1138,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         void encodeColor(Color color, double opacity) {
             encodeColor(colorToHex(color, opacity));
         }
+        
+        
 
         /**
          * Encodes a color element from its hex representation.
@@ -1144,6 +1149,20 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          */
         void encodeColor(String hex) {
             element("color", hex);
+        }
+        
+        /**
+         * Converts web (CSS / HTML) color code to KML equivalent.
+         * rrggbb + aa -> aabbggrr
+         * 
+         * @param w3cHex the web representation, like #rrggbb
+         * @param opacity as string, ff for 1.0
+         */
+        void encodeW3CColor(String w3cHex, String opacity) {
+            element("color", opacity 
+                    + w3cHex.substring(5,7)
+                    + w3cHex.substring(3,5)
+                    + w3cHex.substring(1,3));
         }
 
        /**
