@@ -8,6 +8,7 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
@@ -521,6 +522,48 @@ public class CatalogImplTest extends TestCase {
         assertEquals( ft3, ft4 );
     }
     
+    public void testGetFeatureTypesByStore() {
+        catalog.add( ns );
+        catalog.add( ws );
+        
+        catalog.setDefaultNamespace( ns );
+        catalog.setDefaultWorkspace( ws );
+        
+        DataStoreInfo ds1 = catalog.getFactory().createDataStore();
+        ds1.setName( "ds1" );
+        catalog.add( ds );
+        
+        FeatureTypeInfo ft1 = catalog.getFactory().createFeatureType();
+        ft1.setName( "ft1" );
+        ft1.setStore(ds1);
+        catalog.add( ft1 );
+        
+        FeatureTypeInfo ft2 = catalog.getFactory().createFeatureType();
+        ft2.setName( "ft2" );
+        ft2.setStore(ds1);
+        catalog.add( ft2 );
+        
+        DataStoreInfo ds2 = catalog.getFactory().createDataStore();
+        ds2.setName( "ds2" );
+        catalog.add( ds2 );
+        
+        FeatureTypeInfo ft3 = catalog.getFactory().createFeatureType();
+        ft3.setName( "ft3" );
+        ft3.setStore( ds2 );
+        catalog.add( ft3 );
+        
+        List<FeatureTypeInfo> ft = catalog.getFeatureTypesByStore( ds1 );
+        assertEquals( 2, ft.size() );
+        
+        ft = catalog.getFeatureTypesByStore( ds2 );
+        assertEquals( 1, ft.size() );
+        
+        List<ResourceInfo> r = catalog.getResourcesByStore(ds1);
+        assertEquals( 2, r.size() );
+        assertEquals( ft1, r.get(0) );
+        assertEquals( ft2, r.get(1) );
+    }
+    
     public void testModifyFeatureType() {
         catalog.add( ft );
         
@@ -539,6 +582,7 @@ public class CatalogImplTest extends TestCase {
         assertEquals( "ft2Description", ft3.getDescription() );
         assertEquals( 1, ft3.getKeywords().size() );
     }
+    
     
     public void testFeatureTypeEvents() {
         TestListener l = new TestListener();
