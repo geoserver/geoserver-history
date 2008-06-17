@@ -4,6 +4,7 @@
  */
 package org.geoserver.platform;
 
+import org.geotools.factory.FactoryRegistry;
 import org.geotools.util.SoftValueHashMap;
 import org.geotools.util.logging.Logging;
 import org.springframework.beans.BeansException;
@@ -18,6 +19,7 @@ import sun.reflect.annotation.ExceptionProxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -111,6 +113,10 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
         for (int i = 0; i < names.length; i++) {
             result.add(context.getBean(names[i]));
         }
+        
+        //load from factory spi
+        Iterator i = FactoryRegistry.lookupProviders(extensionPoint);
+        while( i.hasNext() ) result.add( i.next() );
         
         //sort the results based on ExtensionPriority
         Collections.sort( result, new Comparator() {
