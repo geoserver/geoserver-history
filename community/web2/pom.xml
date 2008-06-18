@@ -62,6 +62,11 @@
       <artifactId>jetty</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <!-- this dependency should be removed. Adding it by now for the sake of testing datastore setup -->
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-postgis</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
