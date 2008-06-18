@@ -44,6 +44,11 @@
     <property name="titleKey" value="Data"/>
     <property name="componentClass" value="org.geoserver.web.data.DataPage"/>
   </bean>
+  <bean id="basicResourceConfig" class="org.geoserver.web.data.ResourceConfigurationInfo">
+    <property name="id" value="basic"/>
+    <property name="titleKey" value="data.resource.config.basic"/>
+    <property name="componentClass" value="org.geoserver.web.data.BasicResourceConfig"/>
+  </bean>
   <!-- bean id="servicesPage" class="org.geoserver.web.MainPageInfo">
     <property name="id" value="services"/>
     <property name="title" value="Services"/>
