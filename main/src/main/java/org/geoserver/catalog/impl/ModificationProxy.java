@@ -249,7 +249,7 @@ public class ModificationProxy implements InvocationHandler {
         return object;
     }
     
-    static class list<T> extends ProxyList implements Serializable {
+    static class list<T> extends ProxyList {
 
         list( List<T> list, Class<T> clazz ) {
             super( list, clazz );
