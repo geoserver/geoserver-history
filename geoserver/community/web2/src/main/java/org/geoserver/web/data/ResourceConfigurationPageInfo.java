@@ -8,6 +8,6 @@ import org.geoserver.web.ComponentInfo;
  * 
  * @author David Winslow <dwinslow@openplans.org>
  */
-public class ResourceConfigurationInfo extends ComponentInfo<ResourceConfigurationPanel> {
+public class ResourceConfigurationPanelInfo extends ComponentInfo<ResourceConfigurationPanel> {
     public static final long serialVersionUID = -1l;
 }
