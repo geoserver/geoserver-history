@@ -1,13 +1,23 @@
 package org.geoserver.web.data.datastore;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
+import org.geoserver.web.data.datastore.panel.PasswordParamPanel;
+import org.geoserver.web.data.datastore.panel.TextParamPanel;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.data.postgis.PostgisDataStoreFactory;
 
@@ -21,26 +31,22 @@ public class DataStoreConfiguration extends GeoServerBasePage {
     public DataStoreConfiguration() {
         Param[] paramInfo = new PostgisDataStoreFactory().getParametersInfo();
 
+        List<Param> parameterPanels = Arrays.asList(paramInfo);
+
         Form paramsForm = new Form("form");
         add(paramsForm);
 
-        RepeatingView rv = new RepeatingView("parameter");
-        paramsForm.add(rv);
-
-        for (int i = 0; i < paramInfo.length; i++) {
-            Param param = paramInfo[i];
-            String paramName = param.key;
-            String paramValue = param.sample == null ? "" : String.valueOf(param.sample);
-
-            WebMarkupContainer parent = new WebMarkupContainer(rv.newChildId());
-            rv.add(parent);
-
-            parent.add(new Label("paramName", paramName));
-
-            Component inputComponent = getInputComponent("paramValue", param);
-            parent.add(inputComponent);
-        }
-
+        ListView paramsList = new ListView("parameters", parameterPanels) {
+            @Override
+            protected void populateItem(ListItem item) {
+                Param parameter = (Param) item.getModelObject();
+                Component inputComponent = getInputComponent("parameterPanel", parameter);
+                item.add(inputComponent);
+            }
+        };
+        // needed for form components not to loose state
+        paramsList.setReuseItems(true);
+        paramsForm.add(paramsList);
     }
 
     /**
@@ -50,30 +56,16 @@ public class DataStoreConfiguration extends GeoServerBasePage {
      * @param param
      * @return
      */
-    private FormComponent getInputComponent(final String componentId, final Param param) {
-        String paramValue = String.valueOf(param.sample);
-        return new TextField(componentId);
-        /*
-        FormComponent component;
-
+    private Panel getInputComponent(final String componentId, final Param param) {
         final Class binding = param.type;
+        Panel parameterPanel;
         if (Boolean.class == binding) {
-            component = new CheckBox(componentId);
-            component.add(new SimpleAttributeModifier("type", "checkbox"));
-            
-        } else if (String.class == binding) {
-            if (param.isPassword()) {
-                component = new PasswordTextField(componentId);
-            } else {
-                component = new TextField(componentId);
-            }
-            component.add(new SimpleAttributeModifier("type", "text"));
+            parameterPanel = new CheckBoxParamPanel(componentId, param);
+        } else if (String.class == binding && param.isPassword()) {
+            parameterPanel = new PasswordParamPanel(componentId, param);
         } else {
-            component = new TextField(componentId);
-            component.add(new SimpleAttributeModifier("type", "text"));
+            parameterPanel = new TextParamPanel(componentId, param);
         }
-
-        return component;
-        */
+        return parameterPanel;
     }
 }
