@@ -49,6 +49,17 @@
     <property name="titleKey" value="data.resource.config.basic"/>
     <property name="componentClass" value="org.geoserver.web.data.BasicResourceConfig"/>
   </bean>
+  
+  <!-- 
+  	added for simple access to the datastore configuration prototype page. This page should
+  	be removed from the home page and integrated where it belongs
+   -->
+  <bean id="dataStorePage" class="org.geoserver.web.MainPageInfo">
+    <property name="id" value="dataStore"/>
+    <property name="titleKey" value="Add Vector Data"/>
+    <property name="componentClass" value="org.geoserver.web.data.datastore.DataStoreConfiguration"/>
+  </bean>
+  
   <!-- bean id="servicesPage" class="org.geoserver.web.MainPageInfo">
     <property name="id" value="services"/>
     <property name="title" value="Services"/>
