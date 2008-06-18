@@ -4,8 +4,12 @@ import java.util.List;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StoreInfo;
+import org.geoserver.web.data.ResourceConfigurationPage;
 
 public class GeoServerHomePage extends GeoServerBasePage {
 
@@ -27,5 +31,22 @@ public class GeoServerHomePage extends GeoServerBasePage {
         };
         
         add( view );
+        
+        List<ResourceInfo> resources = getGeoServer().getCatalog().getResources(ResourceInfo.class);
+        view = new ListView("resources", resources){
+        	@Override
+        	protected void populateItem(ListItem item) {
+        		final ResourceInfo info = (ResourceInfo)item.getModelObject();
+        		Link link = new Link("resourcelink"){
+        			@Override
+        			public void onClick() {
+        				setResponsePage(new ResourceConfigurationPage(info));
+        			}
+        		};
+        		link.add(new Label("resourcelabel", info.getId()));
+        		item.add(link);
+        	}
+        };
+        add(view);
     }
 }
