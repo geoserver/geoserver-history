@@ -7,15 +7,9 @@
   <input type="button" wicket:id="collapseAll" value="Collapse All"/>
 </form>
 
+<div wicket:id="treeParent">
 <div wicket:id="dataTree"></div>
-
-<!-- The newDataStoreFragment -->
-<wicket:fragment wicket:id="newDataStoreFragment">
-    <form wicket:id="newDataStoreForm">
-    <span wicket:id="indent"></span><a wicket:id="link"><span wicket:id="image"/></a>			
-	Add new store:  <select wicket:id="stores"></select>
-	</form>
-</wicket:fragment>
+</div>
 
 </wicket:extend>
 </body>

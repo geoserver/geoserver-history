@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 
-public class UnconfiguredFeatureTypesNode extends AbstgractPlaceholderNode {
+public class UnconfiguredFeatureTypesNode extends AbstractPlaceholderNode {
 
     public UnconfiguredFeatureTypesNode(String id, AbstractCatalogNode parent) {
         super(id, parent);
@@ -28,7 +28,7 @@ public class UnconfiguredFeatureTypesNode extends AbstgractPlaceholderNode {
                     getModel())) {
                 typeNames.remove(ft.getName());
             }
-            return typeNames.size() + " unconfigured layers";
+            return typeNames.size() + " unconfigured layers ...";
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,
                     "Error trying to compute unconfigured types");
