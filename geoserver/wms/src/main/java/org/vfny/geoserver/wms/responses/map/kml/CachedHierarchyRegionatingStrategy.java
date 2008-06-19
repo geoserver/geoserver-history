@@ -31,6 +31,7 @@ import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -63,7 +64,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
      * go ahead and build the rest of the tile hierarchy in memory.  (This is a performance thing; 
      * sweeping over the database for each tile can really bog things down.)
      */
-    private static int DB_SWEEP_CUTOFF = 100000; 
+    private static int DB_SWEEP_CUTOFF = 25000; 
 
     public static long featureCounter = 0;
 
@@ -93,97 +94,124 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
     }
 
-    private void populateDB(WMSMapContext con, MapLayer layer){
+    private void populateDB(WMSMapContext con, MapLayer layer) {
         Connection connection;
         Statement statement;
-        try{
+        try {
             Class.forName("org.h2.Driver");
-            String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
-            connection = 
-                DriverManager.getConnection(
-                    "jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
-                    );
+            String dataDir = con.getRequest().getWMS().getData()
+                    .getDataDirectory().getCanonicalPath();
+            connection = DriverManager.getConnection("jdbc:h2:file:" + dataDir
+                    + "/h2database/regionate", "geoserver", "geopass");
             statement = connection.createStatement();
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Couldn't connect to embedded h2 database.", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE,
+                    "Couldn't connect to embedded h2 database.", e);
             return;
         }
 
         String tableName = null;
-        
-        try{
+
+        try {
             tableName = getCacheTable(con, layer);
 
             statement.execute("DROP TABLE IF EXISTS " + tableName);
-            statement.execute("CREATE TABLE " + tableName + " ( x integer, y integer, z integer, fid varchar (50))");
+            statement.execute("CREATE TABLE " + tableName
+                    + " ( x integer, y integer, z integer, fid varchar (50))");
             statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
-            
+
             CoordinateReferenceSystem epsg4326 = null;
-            try { 
-            	epsg4326 = CRS.decode("EPSG:4326"); 
-            } catch (Exception e){ 
-            	LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
+            try {
+                epsg4326 = CRS.decode("EPSG:4326");
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
             }
-            
-            
-            // GeoWebCache will try to start with the best tile that covers all the data, 
-            // so we need to start at the same point
-            ReferencedEnvelope layerBounds = layer.getBounds().transform(epsg4326,false);
-            
-            // ... but if it crosses the centra meridien we need to get two world tiles anyway
-	        if(layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
-	        	LOGGER.log(Level.SEVERE, "Regionating strategy for layer "+layer.getTitle()
-	        			+" will use world bounds. Starting to build database now.");
-	        	this.featureCounter = 0; // global
-	        	
-	            // Western
-	        	ReferencedEnvelope tmp = new ReferencedEnvelope(new Envelope(0.0, -180.0, 90.0, -90.0), epsg4326);
 
-            	buildDB(statement, tableName, layer.getFeatureSource(),
-            			tmp, 
-            			new TreeSet<String>());
-            	// Eastern
-            	tmp = new ReferencedEnvelope(new Envelope(180.0, 0.0, 90.0, -90.0), epsg4326);
+            /**
+             * GeoWebCache will try to start with the best tile that covers all
+             * the data, so we need to start at the same point
+             **/
+            
 
-            	buildDB(statement, tableName, layer.getFeatureSource(),
-            			tmp,
-            			new TreeSet<String>());
-	        } else {
-	        	// Figure out what the closest tile would be, then use that
-	        	ReferencedEnvelope outerBounds = expandToTile(layerBounds);
-	        	long[] coords = getTileCoords(outerBounds, getWorldBounds());
-	        	LOGGER.log(Level.SEVERE, "Regionating strategy for layer "+layer.getTitle()
-	        			+" will start at " + outerBounds.toString() + " , "
-	        			+ coords[0]+ "," + coords[1] + "," + coords[2] 
-	        			+ ".  Starting to build database now.");
-	        	this.featureCounter = 0; // global 
-	        	
-	        	buildDB(statement, tableName, layer.getFeatureSource(), 
-            			outerBounds, 
-            			new TreeSet<String>());
-	        }
+            ReferencedEnvelope layerBounds = null;
+            
+            if(layer.getBounds().crs().equals(epsg4326)) {
+                layerBounds = layer.getBounds();
+            } else {
+                LOGGER.log(Level.SEVERE, "Transforming " + layer.getBounds().toString() + " to EPSG:4326.");
+                try {
+                    layerBounds = layer.getBounds().transform(epsg4326, false);
+                } catch (NullPointerException npe) {
+                    LOGGER.log(Level.SEVERE, "Caught NPE, presumably from transform, reverting to world bounds.");
+                } catch (TransformException te) { 
+                    LOGGER.log(Level.SEVERE, "Encountered transform exception, reverting to world bounds: "
+                            + te.getMessage());
+                }
+                
+                if(layerBounds == null) {
+                    layerBounds = getWorldBounds();
+                }
+            }
+            // ... but if it crosses the central meridien we need to get two
+            // world tiles anyway
+            if (layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
+                LOGGER.log(Level.SEVERE,
+                        "Regionating strategy for layer "+ layer.getTitle()
+                      + " will use world bounds. Starting to build database now.");
+                this.featureCounter = 0; // global
+
+                // Western
+                ReferencedEnvelope tmp = new ReferencedEnvelope(new Envelope(
+                        0.0, -180.0, 90.0, -90.0), epsg4326);
+
+                buildDB(statement, tableName, layer.getFeatureSource(), tmp,
+                        new TreeSet<String>());
+                // Eastern
+                tmp = new ReferencedEnvelope(new Envelope(180.0, 0.0, 90.0,
+                        -90.0), epsg4326);
+
+                buildDB(statement, tableName, layer.getFeatureSource(), tmp,
+                        new TreeSet<String>());
+            } else {
+                // Figure out what the closest tile would be, then use that
+                ReferencedEnvelope outerBounds = expandToTile(layerBounds);
+                long[] coords = getTileCoords(outerBounds, getWorldBounds());
+                LOGGER.log(Level.SEVERE, "Regionating strategy for layer "
+                        + layer.getTitle() + " will start at "
+                        + outerBounds.toString() + " , " + coords[0] + ","
+                        + coords[1] + "," + coords[2]
+                        + ".  Starting to build database now.");
+                this.featureCounter = 0; // global
+
+                buildDB(statement, tableName, layer.getFeatureSource(),
+                        outerBounds, new TreeSet<String>());
+            }
             statement.close();
             connection.close();
-            
-        } catch (Exception e){
-            LOGGER.log(Level.WARNING, "Unable to store range information in database.", e);
+
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING,
+                    "Unable to store range information in database.", e);
         } finally {
-            try{
-                statement.close(); 
+            try {
+                statement.close();
             } catch (SQLException sqle) {
-                LOGGER.log(Level.SEVERE, "Error while closing connection to h2 database.", sqle);
+                LOGGER.log(Level.SEVERE,
+                        "Error while closing connection to h2 database.", sqle);
             }
-            try{
+            try {
                 connection.close();
             } catch (SQLException sqle) {
-                LOGGER.log(Level.SEVERE, "Error while closing connection to h2 database.", sqle);
+                LOGGER.log(Level.SEVERE,
+                        "Error while closing connection to h2 database.", sqle);
             }
         }
-        
+
         // Check how much we actually stored 
-        //(yeah, that repoens everything, but that's the point):
+        //(yeah, that reopens everything, but that's the point):
         long dbRows = getRowsInDB(con, tableName);
-        LOGGER.log(Level.SEVERE, "Table " + tableName + " contains " + Long.toString(dbRows) + " rows after populateDB()");
+        LOGGER.log(Level.SEVERE, "Table " + tableName + " contains "
+                + Long.toString(dbRows) + " rows after populateDB()");
     }
 
     private Set<String> getRangesFromDB(WMSMapContext con, MapLayer layer) throws Exception{
@@ -313,7 +341,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             root.populateExcluding(col, parents);
             ReferencedEnvelope world = getWorldBounds();
             try{
-            	// This will *always* fail with the curren version of GT,
+            	// This will *always* fail with the current version of GT,
             	// because world -> ReferencedEnvelope[-180.0 : 180.0, -90.0 : 90.0] -> TransformException
                 //world.transform(source.getBounds().getCoordinateReferenceSystem(), true);
             	
