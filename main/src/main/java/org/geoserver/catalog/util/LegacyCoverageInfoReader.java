@@ -236,28 +236,8 @@ public class LegacyCoverageInfoReader {
     	for ( int i = 0; i < parameter.length; i++ ) {
     		String name = parameter[i].getAttribute("name");
     		String value = parameter[i].getAttribute( "value" );
-    		Serializable o;
     		
-    		//try to parse as boolean -> double -> integer -> string
-    		try {
-    			o = Boolean.parseBoolean( value );
-    		}
-    		catch( Exception e1 ) {
-    			try { 
-    				o = Integer.parseInt( value );
-    			}
-    			catch( Exception e2 ) {
-    				try {
-    					o = Double.parseDouble( value );	
-    				}
-    				catch( Exception e3 ) {
-    					o = value;
-    				}
-    				
-    			}
-    		}
-    		
-    		map.put( name, o );
+    		map.put( name, value );
     	}
     	
     	return map;
