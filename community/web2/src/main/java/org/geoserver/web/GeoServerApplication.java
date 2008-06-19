@@ -8,13 +8,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.IRequestTarget;
+import org.apache.wicket.Localizer;
 import org.apache.wicket.RequestCycle;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
 import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
@@ -108,56 +112,82 @@ public class GeoServerApplication extends SpringWebApplication {
      * Initialization override which sets up a locator for i18n resources. 
      */
     protected void init() {
-        getResourceSettings().setResourceStreamLocator(
-            new ResourceStreamLocator() {
-                public IResourceStream locate(Class clazz, String path) {
-                    
-                    int i = path.lastIndexOf( "/" );
-                    if ( i != -1 ) {
-                        String p = path.substring( i + 1);
-                        if (p.matches( "GeoServerApplication.*.properties")) {
-                            try {
-                                //process the classpath for property files
-                                Enumeration<URL> urls = getClass().getClassLoader().getResources(p);
-                                
-                                //build up a single properties file
-                                Properties properties = new Properties();
-                                
-                                while( urls.hasMoreElements() ) {
-                                    URL url = urls.nextElement();
-                                    
-                                    InputStream in = url.openStream() ;
-                                    properties.load( in );
-                                    in.close();
-                                }
-                                
-                                //transform the propeties to a stream
-                                final ByteArrayOutputStream out = new ByteArrayOutputStream();
-                                properties.store( out, "" );
-                                
-                                return new AbstractResourceStream() {
-                                    public InputStream getInputStream() throws ResourceStreamNotFoundException {
-                                        return new ByteArrayInputStream( out.toByteArray() );
-                                    }
-                                    public void close() throws IOException {
-                                        out.close();
-                                    }
-                                };
-                            } 
-                            catch (IOException e) {
-                                LOGGER.log( Level.WARNING, "", e );
-                            }    
-                        }
-                    }
-                    
-                    
-                    
-                    return super.locate(clazz, path);
-                }
-            }
-        );
+        getResourceSettings().setResourceStreamLocator( new GeoServerResourceStreamLocator() );
+        getResourceSettings().setLocalizer( new GeoServerLocalizer() );
         
     }
+    
+    /**
+     * A custom resource stream locator which supports loading i18n properties
+     * files on a single file per module basis.
+     */
+    static class GeoServerResourceStreamLocator extends ResourceStreamLocator {
+    	public IResourceStream locate(Class clazz, String path) {
+            int i = path.lastIndexOf( "/" );
+            if ( i != -1 ) {
+                String p = path.substring( i + 1);
+                if (p.matches( "GeoServerApplication.*.properties")) {
+                    try {
+                        //process the classpath for property files
+                        Enumeration<URL> urls = getClass().getClassLoader().getResources(p);
+                        
+                        //build up a single properties file
+                        Properties properties = new Properties();
+                        
+                        while( urls.hasMoreElements() ) {
+                            URL url = urls.nextElement();
+                            
+                            InputStream in = url.openStream() ;
+                            properties.load( in );
+                            in.close();
+                        }
+                        
+                        //transform the propeties to a stream
+                        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        properties.store( out, "" );
+                        
+                        return new AbstractResourceStream() {
+                            public InputStream getInputStream() throws ResourceStreamNotFoundException {
+                                return new ByteArrayInputStream( out.toByteArray() );
+                            }
+                            public void close() throws IOException {
+                                out.close();
+                            }
+                        };
+                    } 
+                    catch (IOException e) {
+                        LOGGER.log( Level.WARNING, "", e );
+                    }    
+                }
+            }
+            
+            
+            
+            return super.locate(clazz, path);
+        }
+    }
+    
+    /**
+     * A custom localizer which prepends the name of the component to the key being accessed in 
+     * some markup.
+     * <p>
+     * Consider a page class called 'ExamplePage'. In the markup for ExamplePage you can 
+     * reference a localization key named 'page.title'. This will be look up in the i18n 
+     * file as 'ExamplePage.page.title'.
+     * </p>
+     */
+    static class GeoServerLocalizer extends Localizer {
+    	public String getString(String key, Component component, IModel model,
+				String defaultValue) throws MissingResourceException {
+
+			return super.getString(key(key,component), component, model, defaultValue);
+		}
+    	
+    	String key( String key, Component component ) {
+    		String name = component.getClass().getSimpleName();
+    		return name + "." + key;
+    	}
+	}
     
     /*
      * Overrides to return a custom request cycle processor. This is done in 
