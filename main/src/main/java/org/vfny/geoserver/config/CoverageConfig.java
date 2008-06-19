@@ -14,8 +14,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.measure.unit.Unit;
 import javax.servlet.http.HttpServletRequest;
-import javax.units.Unit;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.MetadataLinkInfo;
