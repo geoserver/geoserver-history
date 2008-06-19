@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -22,6 +23,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
 import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
+import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -47,8 +49,8 @@ public class GeoServerApplication extends SpringWebApplication {
     /**
      * logger for web application
      */
-    public static Logger LOGGER = Logging.getLogger( "org.geoserver.web" );
-    
+    public static Logger LOGGER = Logging.getLogger("org.geoserver.web");
+
     /**
      * The {@link GeoServerHomePage}.
      */
@@ -62,165 +64,187 @@ public class GeoServerApplication extends SpringWebApplication {
     public ApplicationContext getApplicationContext() {
         return internalGetApplicationContext();
     }
-    
+
     /**
      * Returns the geoserver configuration instance.
      */
     public GeoServer getGeoServer() {
-        return getBeanOfType( GeoServer.class );
+        return getBeanOfType(GeoServer.class);
     }
-    
+
     /**
      * Returns the catalog.
      */
     public Catalog getCatalog() {
         return getGeoServer().getCatalog();
     }
-    
+
     /**
      * Returns the geoserver resource loader.
      */
     public GeoServerResourceLoader getResourceLoader() {
-        return getBeanOfType( GeoServerResourceLoader.class );
+        return getBeanOfType(GeoServerResourceLoader.class);
     }
-    
+
     /**
      * Loads a bean from the spring application context of a specific type.
      * <p>
-     * If there are multiple beans of the specfied type in the context an 
+     * If there are multiple beans of the specfied type in the context an
      * exception is thrown.
      * </p>
-     * @param type The class of the bean to return.
+     * 
+     * @param type
+     *                The class of the bean to return.
      */
-    public <T> T getBeanOfType( Class<T> type ) {
-        return GeoServerExtensions.bean( type, getApplicationContext() );
+    public <T> T getBeanOfType(Class<T> type) {
+        return GeoServerExtensions.bean(type, getApplicationContext());
     }
-    
+
     /**
      * Loads beans from the spring application context of a specific type.
-     *
-     * @param type The type of beans to return.
-     *
+     * 
+     * @param type
+     *                The type of beans to return.
+     * 
      * @return A list of objects of the specified type, possibly empty.
      * @see {@link GeoServerExtensions#extensions(Class, ApplicationContext)}
      */
-    public <T> List<T> getBeansOfType( Class<T> type ) {
-        return GeoServerExtensions.extensions( type, getApplicationContext() );
+    public <T> List<T> getBeansOfType(Class<T> type) {
+        return GeoServerExtensions.extensions(type, getApplicationContext());
     }
-    
+
     /**
-     * Initialization override which sets up a locator for i18n resources. 
+     * Initialization override which sets up a locator for i18n resources.
      */
     protected void init() {
-        getResourceSettings().setResourceStreamLocator( new GeoServerResourceStreamLocator() );
-        getResourceSettings().setLocalizer( new GeoServerLocalizer() );
-        
+        getResourceSettings().setResourceStreamLocator(
+                new GeoServerResourceStreamLocator());
+        getResourceSettings().setLocalizer(new GeoServerLocalizer());
+
     }
-    
+
     /**
      * A custom resource stream locator which supports loading i18n properties
      * files on a single file per module basis.
      */
     static class GeoServerResourceStreamLocator extends ResourceStreamLocator {
-    	public IResourceStream locate(Class clazz, String path) {
-            int i = path.lastIndexOf( "/" );
-            if ( i != -1 ) {
-                String p = path.substring( i + 1);
-                if (p.matches( "GeoServerApplication.*.properties")) {
+        public IResourceStream locate(Class clazz, String path) {
+            int i = path.lastIndexOf("/");
+            if (i != -1) {
+                String p = path.substring(i + 1);
+                if (p.matches("GeoServerApplication.*.properties")) {
                     try {
-                        //process the classpath for property files
-                        Enumeration<URL> urls = getClass().getClassLoader().getResources(p);
-                        
-                        //build up a single properties file
+                        // process the classpath for property files
+                        Enumeration<URL> urls = getClass().getClassLoader()
+                                .getResources(p);
+
+                        // build up a single properties file
                         Properties properties = new Properties();
-                        
-                        while( urls.hasMoreElements() ) {
+
+                        while (urls.hasMoreElements()) {
                             URL url = urls.nextElement();
-                            
-                            InputStream in = url.openStream() ;
-                            properties.load( in );
+
+                            InputStream in = url.openStream();
+                            properties.load(in);
                             in.close();
                         }
-                        
-                        //transform the propeties to a stream
+
+                        // transform the propeties to a stream
                         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        properties.store( out, "" );
-                        
+                        properties.store(out, "");
+
                         return new AbstractResourceStream() {
-                            public InputStream getInputStream() throws ResourceStreamNotFoundException {
-                                return new ByteArrayInputStream( out.toByteArray() );
+                            public InputStream getInputStream()
+                                    throws ResourceStreamNotFoundException {
+                                return new ByteArrayInputStream(out
+                                        .toByteArray());
                             }
+
                             public void close() throws IOException {
                                 out.close();
                             }
                         };
-                    } 
-                    catch (IOException e) {
-                        LOGGER.log( Level.WARNING, "", e );
-                    }    
+                    } catch (IOException e) {
+                        LOGGER.log(Level.WARNING, "", e);
+                    }
                 }
             }
-            
-            
-            
+
             return super.locate(clazz, path);
         }
     }
-    
+
     /**
-     * A custom localizer which prepends the name of the component to the key being accessed in 
-     * some markup.
+     * A custom localizer which prepends the name of the component to the key
+     * being accessed in some markup.
      * <p>
-     * Consider a page class called 'ExamplePage'. In the markup for ExamplePage you can 
-     * reference a localization key named 'page.title'. This will be look up in the i18n 
-     * file as 'ExamplePage.page.title'.
+     * Consider a page class called 'ExamplePage'. In the markup for ExamplePage
+     * you can reference a localization key named 'page.title'. This will be
+     * look up in the i18n file as 'ExamplePage.page.title'.
      * </p>
      */
     static class GeoServerLocalizer extends Localizer {
-    	public String getString(String key, Component component, IModel model,
-				String defaultValue) throws MissingResourceException {
+        public String getString(String key, Component component, IModel model,
+                String defaultValue) throws MissingResourceException {
+            Class clazz = component.getClass();
+            while (Component.class.isAssignableFrom(clazz)) {
+                try {
+                    return super.getString(key(key, clazz), component, model,
+                            defaultValue);
+                } catch (MissingResourceException e) {
+                    clazz = clazz.getSuperclass();
+                }
+            }
+        
+            try {
+                return super.getString(key,null, model,
+                        defaultValue);
+            } catch (MissingResourceException e) {
+                
+            }
+            
+            return super.getString( key, component, model, defaultValue );
+        }
 
-			return super.getString(key(key,component), component, model, defaultValue);
-		}
-    	
-    	String key( String key, Component component ) {
-    		String name = component.getClass().getSimpleName();
-    		return name + "." + key;
-    	}
-	}
+        String key(String key, Class clazz) {
+            String name = clazz.getSimpleName();
+            return name + "." + key;
+        }
+    }
     
     /*
-     * Overrides to return a custom request cycle processor. This is done in 
+     * Overrides to return a custom request cycle processor. This is done in
      * order to support "dynamic dispatching" from web.xml.
      */
     protected IRequestCycleProcessor newRequestCycleProcessor() {
         return new RequestCycleProcessor();
     }
-    
+
     /*
-     * Overrides to return a custom converter locator which loads converters 
-     * from teh GeoToools converter subsystem. 
+     * Overrides to return a custom converter locator which loads converters
+     * from teh GeoToools converter subsystem.
      */
     protected IConverterLocator newConverterLocator() {
-        //TODO: load converters from application context
-        
+        // TODO: load converters from application context
+
         List<IConverterLocator> converters = new ArrayList<IConverterLocator>();
-        
-        converters.add( new DataDirectoryConverterLocator( getResourceLoader()) );
-        converters.add( super.newConverterLocator() );
-        converters.add( new GeoToolsConverterLocator() );
-        
-        return new CompositeConverterLocator( converters );
+
+        converters.add(new DataDirectoryConverterLocator(getResourceLoader()));
+        converters.add(super.newConverterLocator());
+        converters.add(new GeoToolsConverterLocator());
+
+        return new CompositeConverterLocator(converters);
     }
-    
+
     static class RequestCycleProcessor extends WebRequestCycleProcessor {
         public IRequestTarget resolve(RequestCycle requestCycle,
                 RequestParameters requestParameters) {
-            IRequestTarget target = super.resolve(requestCycle, requestParameters);
-            if ( target != null ) {
+            IRequestTarget target = super.resolve(requestCycle,
+                    requestParameters);
+            if (target != null) {
                 return target;
             }
-            
+
             return resolveHomePageTarget(requestCycle, requestParameters);
         }
     }
