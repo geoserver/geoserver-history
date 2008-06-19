@@ -29,159 +29,162 @@ import org.vfny.geoserver.util.DataStoreUtils;
 
 public class DataTreeTable extends TreeTable {
 
-	MarkupContainer container;
-	
-	public DataTreeTable(String id, MarkupContainer container) {
-		super(id, new CatalogTreeModel(), new IColumn[] {
-				new CatalogNameColumn(), new ItemActionColumn() });
-		
-		setRootLess(true);
+    MarkupContainer container;
+
+    public DataTreeTable(String id, MarkupContainer container) {
+        super(id, new CatalogTreeModel(), new IColumn[] {
+                new CatalogNameColumn(), new ItemActionColumn() });
+
+        setRootLess(true);
         getTreeState().setAllowSelectMultiple(false);
         getTreeState().addTreeStateListener(new TreeListener(this));
-        
-		this.container = container;
-	}
-	
-	@Override
-	protected Component newTreePanel(MarkupContainer parent, String id,
-			TreeNode node, int level, IRenderNodeCallback renderNodeCallback) {
-		if (node instanceof NewDatastoreNode) {
-			return new NewDataStoreFragment(id, newIndentation(parent,
-					"indent", node, level), newJunctionLink(parent, "link",
-					"image", node));
-		} else {
-			return super.newTreePanel(parent, id, node, level,
-					renderNodeCallback);
-		}
-	}
-	
-	static class CatalogTreeModel extends LoadableDetachableModel {
 
-		@Override
-		protected Object load() {
-			return new DefaultTreeModel(new CatalogRootNode());
-		}
+        this.container = container;
+    }
 
-	}
+    @Override
+    protected Component newTreePanel(MarkupContainer parent, String id,
+            TreeNode node, int level, IRenderNodeCallback renderNodeCallback) {
+        if (node instanceof NewDatastoreNode) {
+            return new NewDataStoreFragment(id, newIndentation(parent,
+                    "indent", node, level), newJunctionLink(parent, "link",
+                    "image", node));
+        } else {
+            return super.newTreePanel(parent, id, node, level,
+                    renderNodeCallback);
+        }
+    }
 
-	static class CatalogNameColumn extends AbstractTreeColumn implements IColumn {
+    static class CatalogTreeModel extends LoadableDetachableModel {
 
-		public CatalogNameColumn() {
-			super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL),
-					"Catalog");
-		}
+        @Override
+        protected Object load() {
+            return new DefaultTreeModel(new CatalogRootNode());
+        }
 
-		@Override
-		public String renderNode(TreeNode node) {
-			return ((AbstractCatalogNode) node).getNodeLabel();
-		}
-	}
+    }
 
-	static class ItemActionColumn extends AbstractRenderableColumn implements
-			IColumn {
+    static class CatalogNameColumn extends AbstractTreeColumn implements
+            IColumn {
 
-		public ItemActionColumn() {
-			super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL),
-					"Action");
-		}
+        public CatalogNameColumn() {
+            super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL),
+                    "Catalog");
+        }
 
-		@Override
-		public String getNodeValue(TreeNode node) {
-			return "Edit controls should be here for node "
-					+ ((AbstractCatalogNode) node).getNodeLabel();
-		}
-	}
-	
-	/**
-    * This fragment holds the "new datastore" drop down   
-    *  
-    */
-   class NewDataStoreFragment extends Fragment {
+        @Override
+        public String renderNode(TreeNode node) {
+            return ((AbstractCatalogNode) node).getNodeLabel();
+        }
+    }
 
-       public NewDataStoreFragment(String id, Component indent, Component link) {
-           super(id, "newDataStoreFragment", container);
-           Form form = new Form("newDataStoreForm");
-           add(form);
-           
-           List<String> stores = new ArrayList<String>(DataStoreUtils.listDataStoresDescriptions());
-           Collections.sort(stores);
+    static class ItemActionColumn extends AbstractRenderableColumn implements
+            IColumn {
 
-           DropDownChoice storeChoice = new DropDownChoice("stores", new Model(), stores) {
-               @Override
-               protected boolean wantOnSelectionChangedNotifications() {
-                   return true;
-               }
-               
-               @Override
-               protected void onSelectionChanged(Object newSelection) {
-                   setResponsePage(DataStoreConfiguration.class);
-               }
-           };
-           form.add(storeChoice);
-           form.add(indent);
-           form.add(link);
-       }
-   }
-   
-   final class TreeListener implements ITreeStateListener, Serializable {
-       private final TreeTable tree;
+        public ItemActionColumn() {
+            super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL),
+                    "Action");
+        }
 
-       private TreeListener(TreeTable tree) {
-           this.tree = tree;
-       }
+        @Override
+        public String getNodeValue(TreeNode node) {
+            return "Edit controls should be here for node "
+                    + ((AbstractCatalogNode) node).getNodeLabel();
+        }
+    }
 
-       public void nodeUnselected(TreeNode node) {
-           // TODO Auto-generated method stub
+    /**
+     * This fragment holds the "new datastore" drop down
+     * 
+     */
+    class NewDataStoreFragment extends Fragment {
 
-       }
+        public NewDataStoreFragment(String id, Component indent, Component link) {
+            super(id, "newDataStoreFragment", container);
+            Form form = new Form("newDataStoreForm");
+            add(form);
 
-       public void nodeSelected(TreeNode selected) {
-           if(selected instanceof UnconfiguredFeatureTypesNode) {
-               
-           }
-           TreeNode node = getWorkspaceNode(selected);
-           if (node != null) {
-               if (!tree.getTreeState().isNodeSelected(node))
-                   tree.getTreeState().selectNode(node, true);
-           }
-           if (!tree.getTreeState().isNodeExpanded(selected))
-               tree.getTreeState().expandNode(selected);
-       }
+            List<String> stores = new ArrayList<String>(DataStoreUtils
+                    .listDataStoresDescriptions());
+            Collections.sort(stores);
 
-       public void nodeExpanded(TreeNode node) {
-           if (node instanceof WorkspaceNode) {
-               Enumeration children = node.getParent().children();
-               while (children.hasMoreElements()) {
-                   WorkspaceNode ws = (WorkspaceNode) children.nextElement();
-                   if (!ws.equals(node))
-                       tree.getTreeState().collapseNode(ws);
-               }
-               tree.getTreeState().selectNode(node, true);
-           }
+            DropDownChoice storeChoice = new DropDownChoice("stores",
+                    new Model(), stores) {
+                @Override
+                protected boolean wantOnSelectionChangedNotifications() {
+                    return true;
+                }
 
-       }
+                @Override
+                protected void onSelectionChanged(Object newSelection) {
+                    setResponsePage(DataStoreConfiguration.class);
+                }
+            };
+            form.add(storeChoice);
+            form.add(indent);
+            form.add(link);
+        }
+    }
 
-       public void nodeCollapsed(TreeNode node) {
-           // TODO Auto-generated method stub
+    final class TreeListener implements ITreeStateListener, Serializable {
+        private final TreeTable tree;
 
-       }
+        private TreeListener(TreeTable tree) {
+            this.tree = tree;
+        }
 
-       public void allNodesExpanded() {
-           // TODO Auto-generated method stub
+        public void nodeUnselected(TreeNode node) {
+            // TODO Auto-generated method stub
 
-       }
+        }
 
-       public void allNodesCollapsed() {
-           // TODO Auto-generated method stub
+        public void nodeSelected(TreeNode selected) {
+            if (selected instanceof UnconfiguredFeatureTypesNode) {
 
-       }
-       
-       protected TreeNode getWorkspaceNode(TreeNode selected) {
-           TreeNode node = selected;
-           while (node != null && !(node instanceof WorkspaceNode)) {
-               node = node.getParent();
-           }
-           return node;
-       }
-   }
+            }
+            TreeNode node = getWorkspaceNode(selected);
+            if (node != null) {
+                if (!tree.getTreeState().isNodeSelected(node))
+                    tree.getTreeState().selectNode(node, true);
+            }
+            if (!tree.getTreeState().isNodeExpanded(selected))
+                tree.getTreeState().expandNode(selected);
+        }
+
+        public void nodeExpanded(TreeNode node) {
+            if (node instanceof WorkspaceNode) {
+                Enumeration children = node.getParent().children();
+                while (children.hasMoreElements()) {
+                    WorkspaceNode ws = (WorkspaceNode) children.nextElement();
+                    if (!ws.equals(node))
+                        tree.getTreeState().collapseNode(ws);
+                }
+                tree.getTreeState().selectNode(node, true);
+            }
+
+        }
+
+        public void nodeCollapsed(TreeNode node) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void allNodesExpanded() {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void allNodesCollapsed() {
+            // TODO Auto-generated method stub
+
+        }
+
+        protected TreeNode getWorkspaceNode(TreeNode selected) {
+            TreeNode node = selected;
+            while (node != null && !(node instanceof WorkspaceNode)) {
+                node = node.getParent();
+            }
+            return node;
+        }
+    }
 }
