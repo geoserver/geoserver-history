@@ -1,7 +1,9 @@
 package org.geoserver.web.data.datastore;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,16 +12,26 @@ import org.apache.wicket.Component;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.ValidationError;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.data.DataPage;
 import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.datastore.panel.LabelParamPanel;
 import org.geoserver.web.data.datastore.panel.PasswordParamPanel;
 import org.geoserver.web.data.datastore.panel.TextParamPanel;
+import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
 import org.vfny.geoserver.util.DataStoreUtils;
@@ -31,15 +43,13 @@ import org.vfny.geoserver.util.DataStoreUtils;
  */
 public class DataStoreConfiguration extends GeoServerBasePage {
 
-    private static final String dataStoreIdPropertyName = "Wicket_Data_Source_Name";
+    private static final String DATASTORE_ID_PROPERTY_NAME = "Wicket_Data_Source_Name";
 
     /**
      * Holds datastore parameters. Properties will be settled by the form input
      * fields.
      */
     private final Map<String, Serializable> parametersMap;
-
-    private String dataStoreInfoId;
 
     /**
      * Creates a new datastore configuration page to edit the properties of the
@@ -66,6 +76,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
         }
 
         parametersMap = new HashMap<String, Serializable>(connectionParameters);
+        parametersMap.put(DATASTORE_ID_PROPERTY_NAME, dataStoreInfoId);
 
         init(workspaceId, dataStoreInfoId, dsFactory);
     }
@@ -87,12 +98,14 @@ public class DataStoreConfiguration extends GeoServerBasePage {
 
         parametersMap = new HashMap<String, Serializable>();
         // pre-populate map with default values
+
         Param[] parametersInfo = dsFact.getParametersInfo();
         for (int i = 0; i < parametersInfo.length; i++) {
             Serializable value;
-            if(parametersInfo[i].sample == null || parametersInfo[i].sample instanceof Serializable){
-                value = (Serializable)parametersInfo[i].sample;
-            }else{
+            if (parametersInfo[i].sample == null
+                    || parametersInfo[i].sample instanceof Serializable) {
+                value = (Serializable) parametersInfo[i].sample;
+            } else {
                 value = String.valueOf(parametersInfo[i].sample);
             }
             parametersMap.put(parametersInfo[i].key, value);
@@ -130,11 +143,39 @@ public class DataStoreConfiguration extends GeoServerBasePage {
 
         Panel dataStoreIdPanel;
         if (dataStoreInfoId == null) {
+            IValidator dsIdValidator = new AbstractValidator() {
+                @Override
+                protected void onValidate(IValidatable validatable) {
+                    String value = (String) validatable.getValue();
+                    if (value == null || value.trim().length() == 0) {
+                        ValidationError error = new ValidationError();
+                        error.setMessage("The Data Source name is mandatory");
+                        validatable.error(error);
+                        return;
+                    }
+
+                    value = value.trim();
+
+                    List<DataStoreInfo> dataStores = getCatalog().getDataStores();
+                    for (DataStoreInfo dsi : dataStores) {
+                        String name = dsi.getName();
+                        if (name.equals(value)) {
+                            ValidationError error = new ValidationError();
+                            error
+                                    .setMessage("The Data Source name '" + value
+                                            + "' is already used");
+                            validatable.error(error);
+                            break;
+                        }
+                    }
+                }
+            };
             dataStoreIdPanel = new TextParamPanel("dataStoreIdPanel", parametersMap,
-                    dataStoreIdPropertyName, "Data Source Name", true);
+                    DATASTORE_ID_PROPERTY_NAME, "Data Source Name", true, Collections
+                            .singletonList(dsIdValidator));
         } else {
             dataStoreIdPanel = new LabelParamPanel("dataStoreIdPanel", parametersMap,
-                    dataStoreIdPropertyName);
+                    DATASTORE_ID_PROPERTY_NAME);
         }
 
         paramsForm.add(dataStoreIdPanel);
@@ -156,21 +197,35 @@ public class DataStoreConfiguration extends GeoServerBasePage {
 
         paramsForm.add(paramsList);
 
-        paramsForm.add(new Button("cancel") {
-            @Override
-            public void onSubmit() {
-                setResponsePage(DataPage.class);
-            }
-        });
+        paramsForm.add(new BookmarkablePageLink("cancel", DataPage.class));
 
         paramsForm.add(new Button("submit") {
             @Override
             public void onSubmit() {
-                Catalog catalog = getCatalog();
+                final Catalog catalog = getCatalog();
+                final Map<String, Serializable> dsParams = parametersMap;
+                // dataStoreId already validated, so its safe to use
+                final String dataStoreId = (String) dsParams.get(DATASTORE_ID_PROPERTY_NAME);
+
+                DataStore dataStore = null;
+                try {
+                    dataStore = DataStoreUtils.getDataStore(parametersMap);
+                } catch (IOException e) {
+                    paramsForm.error("Error instantiating data source with the provided parameters:\n" + e.getMessage());
+                    return;
+                }
+                if (dataStore == null) {
+                    paramsForm
+                            .error("Can't create a Vector Data Source with the provided parameters");
+                    return;
+                }
+                CatalogFactory factory = catalog.getFactory();
+                DataStoreInfo dataStoreInfo = factory.createDataStore();
                 setResponsePage(DataPage.class);
             }
         });
 
+        paramsForm.add(new FeedbackPanel("feedback"));
     }
 
     /**
@@ -195,7 +250,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
             parameterPanel = new PasswordParamPanel(componentId, paramsMap, paramName, paramLabel);
         } else {
             parameterPanel = new TextParamPanel(componentId, paramsMap, paramName, paramLabel,
-                    required);
+                    required, null);
         }
         return parameterPanel;
     }

@@ -4,8 +4,8 @@ import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.geoserver.web.data.datastore.ParamInfo;
 import org.geoserver.web.util.MapModel;
 
 /**
@@ -20,7 +20,16 @@ public class PasswordParamPanel extends Panel {
             final String paramName, final String paramLabel) {
         super(id);
         add(new Label("paramName", paramLabel));
-        add(new PasswordTextField("paramValue", new MapModel(paramsMap, paramName)));
+
+        PasswordTextField passwordField;
+        passwordField = new PasswordTextField("paramValue", new MapModel(paramsMap, paramName));
+
+        FormComponentFeedbackBorder requiredFieldFeedback;
+        requiredFieldFeedback = new FormComponentFeedbackBorder("border");
+        
+        requiredFieldFeedback.add(passwordField);
+
+        add(requiredFieldFeedback);
     }
 
 }
