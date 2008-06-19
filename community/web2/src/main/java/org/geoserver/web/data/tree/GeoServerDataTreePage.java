@@ -29,9 +29,9 @@ import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.vfny.geoserver.util.DataStoreUtils;
 
-public class GeoServerDataTable extends GeoServerBasePage {
+public class GeoServerDataTreePage extends GeoServerBasePage {
 
-    public GeoServerDataTable() {
+    public GeoServerDataTreePage() {
         final TreeTable tree = new TreeTable(
                 "catalog",
                 new CatalogTreeModel(),
@@ -86,6 +86,9 @@ public class GeoServerDataTable extends GeoServerBasePage {
         }
 
         public void nodeSelected(TreeNode selected) {
+            if(selected instanceof UnconfiguredFeatureTypesNode) {
+                
+            }
             TreeNode node = getWorkspaceNode(selected);
             if (node != null) {
                 if (!tree.getTreeState().isNodeSelected(node))
@@ -172,7 +175,7 @@ public class GeoServerDataTable extends GeoServerBasePage {
     class NewDataStoreFragment extends Fragment {
 
         public NewDataStoreFragment(String id, Component indent, Component link) {
-            super(id, "newDataStoreFragment", GeoServerDataTable.this);
+            super(id, "newDataStoreFragment", GeoServerDataTreePage.this);
             Form form = new Form("newDataStoreForm");
             add(form);
             List stores = new ArrayList(DataStoreUtils.listDataStoresDescriptions());
