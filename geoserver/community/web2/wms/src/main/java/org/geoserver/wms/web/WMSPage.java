@@ -1,4 +1,4 @@
-package org.geoserver.web.services;
+package org.geoserver.wms.web;
 
 import org.geoserver.web.GeoServerBasePage;
 
