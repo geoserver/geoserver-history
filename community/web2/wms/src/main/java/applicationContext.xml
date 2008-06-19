@@ -7,7 +7,7 @@
     <property name="id" value="wms"/>
     <property name="titleKey" value="wms.title"/>
     <property name="descriptionKey" value="wms.description"/>
-    <property name="componentClass" value="org.geoserver.web.services.WMSPage"/>
+    <property name="componentClass" value="org.geoserver.wms.web.WMSPage"/>
     <property name="icon" value="wms_obj.gif"/>
   </bean>
     
