@@ -4,6 +4,8 @@
 package org.geoserver.web.data.tree;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -91,6 +93,12 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable, IDetachabl
             synchronized (this) {
                 if (childNodes == null) {
                     childNodes = buildChildNodes();
+                    Collections.sort(childNodes, new Comparator<TreeNode>(){
+                        public int compare(TreeNode o1, TreeNode o2) {
+                            String label1 = ((AbstractCatalogNode)o1).getNodeLabel();
+                            String label2 = ((AbstractCatalogNode)o2).getNodeLabel();
+                            return label1.compareTo(label2);
+                        }});
                 }
             }
         }
