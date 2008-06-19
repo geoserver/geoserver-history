@@ -19,11 +19,13 @@
   <dependencies>
     <dependency>
       <groupId>org.geoserver</groupId>
-      <groupId>wms</groupId>
+      <artifactId>wms</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver.web</groupId>
-      <groupId>core</groupId>
+      <artifactId>web-core</artifactId>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 
