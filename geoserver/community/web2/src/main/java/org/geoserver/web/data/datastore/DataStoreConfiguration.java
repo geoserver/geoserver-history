@@ -20,7 +20,7 @@ import org.geoserver.web.data.DataPage;
 import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.datastore.panel.PasswordParamPanel;
 import org.geoserver.web.data.datastore.panel.TextParamPanel;
-import org.geoserver.web.data.tree.GeoServerDataTreePage;
+
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
@@ -96,7 +96,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
             @Override
             public void onSubmit() {
                 Catalog catalog = getCatalog();
-                setResponsePage(GeoServerDataTreePage.class);
+                setResponsePage(DataPage.class);
             }
         });
     }
