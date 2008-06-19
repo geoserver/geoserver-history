@@ -10,7 +10,7 @@ import javax.swing.tree.TreeNode;
 
 import org.geoserver.catalog.WorkspaceInfo;
 
-class CatalogRootNode extends CatalogNode {
+class CatalogRootNode extends AbstractCatalogNode {
 
     public CatalogRootNode() {
         super("", null);

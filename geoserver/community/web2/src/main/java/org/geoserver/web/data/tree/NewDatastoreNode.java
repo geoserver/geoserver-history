@@ -7,9 +7,9 @@ import javax.swing.tree.TreeNode;
 
 import org.geoserver.catalog.WorkspaceInfo;
 
-public class NewDatastoreNode extends PlaceholderNode {
+public class NewDatastoreNode extends AbstgractPlaceholderNode {
 
-    public NewDatastoreNode(String name, CatalogNode parent) {
+    public NewDatastoreNode(String name, AbstractCatalogNode parent) {
         super(name, parent);
     }
 

@@ -16,9 +16,9 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
 
-abstract class CatalogNode implements TreeNode, Serializable, IDetachable {
+abstract class AbstractCatalogNode implements TreeNode, Serializable, IDetachable {
     
-    static final Logger LOGGER = Logging.getLogger(CatalogNode.class);
+    static final Logger LOGGER = Logging.getLogger(AbstractCatalogNode.class);
 
     String name;
 
@@ -28,7 +28,7 @@ abstract class CatalogNode implements TreeNode, Serializable, IDetachable {
     
     transient Catalog catalog;
     
-    public CatalogNode(String id, CatalogNode parent) {
+    public AbstractCatalogNode(String id, AbstractCatalogNode parent) {
         if (id == null)
             throw new NullPointerException("Id cannot be null");
         this.name = id;
@@ -42,7 +42,7 @@ abstract class CatalogNode implements TreeNode, Serializable, IDetachable {
         return catalog;
     }
 
-    protected CatalogNode setParent(TreeNode parent) {
+    protected AbstractCatalogNode setParent(TreeNode parent) {
         this.parent = parent;
         return this;
     }
@@ -105,11 +105,11 @@ abstract class CatalogNode implements TreeNode, Serializable, IDetachable {
     }
 
     public boolean equals(Object obj) {
-        if (!(obj instanceof CatalogNode)) {
+        if (!(obj instanceof AbstractCatalogNode)) {
             return false;
         }
 
-        CatalogNode other = (CatalogNode) obj;
+        AbstractCatalogNode other = (AbstractCatalogNode) obj;
         return getModel().equals(other.getModel());
     }
 

@@ -12,9 +12,9 @@ import javax.swing.tree.TreeNode;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 
-class DataStoreNode extends CatalogNode {
+class DataStoreNode extends AbstractCatalogNode {
 
-    public DataStoreNode(String id, CatalogNode parent) {
+    public DataStoreNode(String id, AbstractCatalogNode parent) {
         super(id, parent);
     }
 

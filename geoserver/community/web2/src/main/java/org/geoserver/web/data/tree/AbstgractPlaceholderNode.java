@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.swing.tree.TreeNode;
 
-public abstract class PlaceholderNode extends CatalogNode {
+public abstract class AbstgractPlaceholderNode extends AbstractCatalogNode {
 
-    public PlaceholderNode(String id, CatalogNode parent) {
+    public AbstgractPlaceholderNode(String id, AbstractCatalogNode parent) {
         super(id, parent);
     }
 
