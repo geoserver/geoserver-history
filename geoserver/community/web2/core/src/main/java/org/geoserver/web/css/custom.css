@@ -106,3 +106,7 @@ span.command {
   margin-left: 2px;
   font-style: italic;
 }
+
+span.unconfiguredLayer {
+  font-style: italic;
+}

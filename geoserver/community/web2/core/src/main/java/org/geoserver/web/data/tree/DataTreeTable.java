@@ -117,7 +117,7 @@ public class DataTreeTable extends TreeTable {
         public UnconfiguredFeatureTypePanel(String id, DataTreeTable tree,
                 MarkupContainer parent, AbstractCatalogNode node, int level) {
             super(id, tree, parent, node, level);
-            label.add(new AttributeModifier("class", true, new Model("command")));
+            label.add(new AttributeModifier("class", true, new Model("unconfiguredLayer")));
         }
 
         @Override
