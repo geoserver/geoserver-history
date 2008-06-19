@@ -1,8 +1,22 @@
 package org.geoserver.web;
 
+import java.util.List;
+
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.ResourceReference;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
+import org.geoserver.web.services.ServicePageInfo;
 
 /**
  * Base class for web pages in GeoServer web application.
@@ -13,10 +27,10 @@ import org.geoserver.config.GeoServer;
  * creating links</li>
  * </ul>
  * 
- * TODO: breadcrumb automated cration.
- * This can be done by using a list of {@link BookmarkablePageInfo} instances
- * that needs to be passed to each page, a custom PageLink subclass that provides
- * that information, and some code coming from {@link BreadCrumbBar}. <br>
+ * TODO: breadcrumb automated cration. This can be done by using a list of
+ * {@link BookmarkablePageInfo} instances that needs to be passed to each page,
+ * a custom PageLink subclass that provides that information, and some code
+ * coming from {@link BreadCrumbBar}. <br>
  * See also this discussion on the wicket users mailing list:
  * http://www.nabble.com/Bread-crumbs-based-on-pages%2C-not-panels--tf2244730.html#a6225855
  * 
@@ -25,20 +39,44 @@ import org.geoserver.config.GeoServer;
  */
 public class GeoServerBasePage extends WebPage {
 
+    public GeoServerBasePage() {
+
+        // list of services to administer
+        List<ServicePageInfo> pages = getGeoServerApplication().getBeansOfType(
+                ServicePageInfo.class);
+
+        ListView nav = new ListView("services", pages) {
+            protected void populateItem(ListItem item) {
+                ServicePageInfo page = (ServicePageInfo) item.getModelObject();
+
+                //add a link
+                BookmarkablePageLink link = new BookmarkablePageLink("service",
+                        page.getComponentClass());
+                link.add(new Image( "serviceIcon", new ResourceReference( page.getComponentClass(), page.getIcon() ) ) );
+                link.add(new Label("serviceLabel", new StringResourceModel( page.getTitleKey(), (Component) null, null ) ));
+                link.add(new AttributeModifier( "title", new StringResourceModel( page.getDescriptionKey(), (Component) null, null ) ) );
+                
+                item.add(link);
+            }
+        };
+        add( nav );
+    }
+
     /**
-     * Returns the application instance. 
+     * Returns the application instance.
      */
     protected GeoServerApplication getGeoServerApplication() {
         return (GeoServerApplication) getApplication();
     }
-    
+
     /**
-     * Convenience method for pages to get access to the geoserver configuration. 
+     * Convenience method for pages to get access to the geoserver
+     * configuration.
      */
     protected GeoServer getGeoServer() {
         return getGeoServerApplication().getGeoServer();
     }
-    
+
     /**
      * Convenience method for pages to get access to the catalog.
      */
