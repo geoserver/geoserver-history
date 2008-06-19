@@ -20,6 +20,8 @@
     <module>core</module>
     <module>app</module>
     <module>wms</module>
+    <module>wfs</module>
+    <module>wcs</module>
   </modules>
 
 </project>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+  <bean id="wfsServicePage" class="org.geoserver.web.services.ServicePageInfo">
+    <property name="id" value="wfs"/>
+    <property name="titleKey" value="wfs.title"/>
+    <property name="descriptionKey" value="wfs.description"/>
+    <property name="componentClass" value="org.geoserver.wfs.web.WFSPage"/>
+    <property name="icon" value="wfs_obj.gif"/>
+  </bean>
+    
+</beans>
