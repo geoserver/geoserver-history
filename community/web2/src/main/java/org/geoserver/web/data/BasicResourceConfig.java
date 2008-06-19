@@ -39,7 +39,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
             }
         });
 		add(new TextField("SRS"));
-		// add(new TextField("nativeBoundingBox"));
+		add(new TextField("nativeBoundingBox"));
 		// add(new TextField("boundingBox"));
 	}
 	
