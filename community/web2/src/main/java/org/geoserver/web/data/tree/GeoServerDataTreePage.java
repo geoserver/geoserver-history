@@ -2,6 +2,7 @@ package org.geoserver.web.data.tree;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -32,17 +33,15 @@ import org.vfny.geoserver.util.DataStoreUtils;
 public class GeoServerDataTreePage extends GeoServerBasePage {
 
     public GeoServerDataTreePage() {
-        final TreeTable tree = new TreeTable(
-                "catalog",
-                new CatalogTreeModel(),
-                new IColumn[] { new CatalogNameColumn(), new ItemActionColumn() }) {
-            
+        final TreeTable tree = new TreeTable("catalog", new CatalogTreeModel(), new IColumn[] {
+                new CatalogNameColumn(), new ItemActionColumn() }) {
+
             @Override
-            protected Component newTreePanel(MarkupContainer parent,
-                    String id, TreeNode node, int level,
-                    IRenderNodeCallback renderNodeCallback) {
-                if(node instanceof NewDatastoreNode) {
-                    return new NewDataStoreFragment(id, newIndentation(parent, "indent", node, level), newJunctionLink(parent, "link", "image", node));
+            protected Component newTreePanel(MarkupContainer parent, String id, TreeNode node,
+                    int level, IRenderNodeCallback renderNodeCallback) {
+                if (node instanceof NewDatastoreNode) {
+                    return new NewDataStoreFragment(id, newIndentation(parent, "indent", node,
+                            level), newJunctionLink(parent, "link", "image", node));
                 } else {
                     return super.newTreePanel(parent, id, node, level, renderNodeCallback);
                 }
@@ -86,8 +85,8 @@ public class GeoServerDataTreePage extends GeoServerBasePage {
         }
 
         public void nodeSelected(TreeNode selected) {
-            if(selected instanceof UnconfiguredFeatureTypesNode) {
-                
+            if (selected instanceof UnconfiguredFeatureTypesNode) {
+
             }
             TreeNode node = getWorkspaceNode(selected);
             if (node != null) {
@@ -127,12 +126,10 @@ public class GeoServerDataTreePage extends GeoServerBasePage {
         }
     }
 
-    public class ItemActionColumn extends AbstractRenderableColumn implements
-            IColumn {
+    public class ItemActionColumn extends AbstractRenderableColumn implements IColumn {
 
         public ItemActionColumn() {
-            super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL),
-                    "Action");
+            super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL), "Action");
         }
 
         @Override
@@ -143,14 +140,11 @@ public class GeoServerDataTreePage extends GeoServerBasePage {
 
     }
 
-    public class CatalogNameColumn extends AbstractTreeColumn implements
-            IColumn {
+    public class CatalogNameColumn extends AbstractTreeColumn implements IColumn {
 
         public CatalogNameColumn() {
-            super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL),
-                    "Catalog");
+            super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL), "Catalog");
         }
-        
 
         @Override
         public String renderNode(TreeNode node) {
@@ -167,9 +161,10 @@ public class GeoServerDataTreePage extends GeoServerBasePage {
         }
 
     }
-    
+
     /**
      * This fragment holds the "new datastore" drop down
+     * 
      * @author aaime
      */
     class NewDataStoreFragment extends Fragment {
@@ -178,23 +173,30 @@ public class GeoServerDataTreePage extends GeoServerBasePage {
             super(id, "newDataStoreFragment", GeoServerDataTreePage.this);
             Form form = new Form("newDataStoreForm");
             add(form);
-            List stores = new ArrayList(DataStoreUtils.listDataStoresDescriptions());
+            List<String> stores = new ArrayList<String>(DataStoreUtils.listDataStoresDescriptions());
+            Collections.sort(stores);
+            
             DropDownChoice storeChoice = new DropDownChoice("stores", new Model(), stores) {
                 @Override
                 protected boolean wantOnSelectionChangedNotifications() {
                     return true;
                 }
-                
+
                 @Override
-                protected void onSelectionChanged(Object newSelection) {
-                    setResponsePage(DataStoreConfiguration.class);
+                protected void onSelectionChanged(final Object newSelection) {
+                    if(newSelection == null){
+                        //nothing to do, user selected the "choose one" item
+                        return;
+                    }
+                    final String dataStoreFactDisplayName = (String) newSelection;
+                    setResponsePage(new DataStoreConfiguration(dataStoreFactDisplayName));
                 }
             };
             form.add(storeChoice);
             form.add(indent);
             form.add(link);
         }
-        
+
     }
 
 }
