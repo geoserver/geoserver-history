@@ -2,9 +2,9 @@ package org.geoserver.web.data.tree;
 
 import org.geoserver.catalog.DataStoreInfo;
 
-public class UnconfiguredFeatureTypesNode extends PlaceholderNode {
+public class UnconfiguredFeatureTypesNode extends AbstgractPlaceholderNode {
 
-    public UnconfiguredFeatureTypesNode(String id, CatalogNode parent) {
+    public UnconfiguredFeatureTypesNode(String id, AbstractCatalogNode parent) {
         super(id, parent);
     }
 

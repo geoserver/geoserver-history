@@ -11,9 +11,9 @@ import javax.swing.tree.TreeNode;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 
-class CoverageStoreNode extends CatalogNode {
+class CoverageStoreNode extends AbstractCatalogNode {
 
-    public CoverageStoreNode(String id, CatalogNode parent) {
+    public CoverageStoreNode(String id, AbstractCatalogNode parent) {
         super(id, parent);
     }
 

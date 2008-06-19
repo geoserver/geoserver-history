@@ -15,9 +15,9 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 
-class WorkspaceNode extends CatalogNode {
+class WorkspaceNode extends AbstractCatalogNode {
 
-    public WorkspaceNode(String id, CatalogNode parent) {
+    public WorkspaceNode(String id, AbstractCatalogNode parent) {
         super(id, parent);
     }
 

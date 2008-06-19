@@ -137,7 +137,7 @@ public class GeoServerDataTable extends GeoServerBasePage {
         @Override
         public String getNodeValue(TreeNode node) {
             return "Edit controls should be here for node "
-                    + ((CatalogNode) node).getNodeLabel();
+                    + ((AbstractCatalogNode) node).getNodeLabel();
         }
 
     }
@@ -153,7 +153,7 @@ public class GeoServerDataTable extends GeoServerBasePage {
 
         @Override
         public String renderNode(TreeNode node) {
-            return ((CatalogNode) node).getNodeLabel();
+            return ((AbstractCatalogNode) node).getNodeLabel();
         }
 
     }

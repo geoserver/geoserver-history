@@ -8,11 +8,11 @@ import java.util.List;
 
 import org.geoserver.catalog.ResourceInfo;
 
-class ResourceNode extends CatalogNode {
+class ResourceNode extends AbstractCatalogNode {
 
     private Class clazz;
 
-    public ResourceNode(String id, CatalogNode parent, Class clazz) {
+    public ResourceNode(String id, AbstractCatalogNode parent, Class clazz) {
         super(id, parent);
         this.clazz = clazz;
     }
