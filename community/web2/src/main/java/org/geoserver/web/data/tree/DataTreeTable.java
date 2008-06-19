@@ -25,7 +25,6 @@ import org.apache.wicket.markup.html.tree.ITreeStateListener;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
-import org.geoserver.web.data.tree.GeoServerDataTreePage.TreeListener;
 import org.vfny.geoserver.util.DataStoreUtils;
 
 public class DataTreeTable extends TreeTable {
