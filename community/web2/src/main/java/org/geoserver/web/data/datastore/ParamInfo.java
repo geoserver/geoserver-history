@@ -26,11 +26,18 @@ public class ParamInfo implements Serializable {
 
     public ParamInfo(Param param) {
         this.name = param.key;
-        this.title = param.title == null? null : param.title.toString();
+        this.title = param.title == null ? null : param.title.toString();
         this.password = param.isPassword();
-        this.binding = param.type;
+        if (Serializable.class.isAssignableFrom(param.type)) {
+            this.binding = param.type;
+            this.value = param.sample;
+        } else {
+            // handle the parameter as a string and let the DataStoreFactory
+            // convert it to the appropriate type
+            this.binding = String.class;
+            this.value = param.sample == null? null : String.valueOf(param.sample);
+        }
         this.required = param.required;
-        this.value = param.sample;
     }
 
     public Object getValue() {
