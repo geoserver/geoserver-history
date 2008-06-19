@@ -17,10 +17,10 @@ public class PasswordParamPanel extends Panel {
     private static final long serialVersionUID = -7801141820174575611L;
 
     public PasswordParamPanel(final String id, final Map<String, ?> paramsMap,
-            final ParamInfo parameter) {
+            final String paramName, final String paramLabel) {
         super(id);
-        add(new Label("paramName", parameter.getName()));
-        add(new PasswordTextField("paramValue", new MapModel(paramsMap, parameter.getName())));
+        add(new Label("paramName", paramLabel));
+        add(new PasswordTextField("paramValue", new MapModel(paramsMap, paramName)));
     }
 
 }

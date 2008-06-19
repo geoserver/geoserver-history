@@ -101,6 +101,7 @@ public class DataTreeTable extends TreeTable {
 
         public NewDataStoreFragment(String id, Component indent, Component link) {
             super(id, "newDataStoreFragment", container);
+
             Form form = new Form("newDataStoreForm");
             add(form);
 
@@ -117,7 +118,14 @@ public class DataTreeTable extends TreeTable {
 
                 @Override
                 protected void onSelectionChanged(Object newSelection) {
-                    setResponsePage(DataStoreConfiguration.class);
+                    final String dataStoreFactoryName = (String)newSelection;
+                    if(dataStoreFactoryName == null){
+                        //nothing to do, no datastore type selected
+                    }
+                    
+                    //TODO: grab workspace id
+                    String workspaceId = null;
+                    setResponsePage(new DataStoreConfiguration(workspaceId, dataStoreFactoryName));
                 }
             };
             form.add(storeChoice);
