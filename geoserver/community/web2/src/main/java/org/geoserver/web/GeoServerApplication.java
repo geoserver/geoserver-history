@@ -25,6 +25,7 @@ import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.apache.wicket.spring.SpringWebApplication;
+import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
@@ -36,6 +37,9 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.web.util.CompositeConverterLocator;
 import org.geoserver.web.util.DataDirectoryConverterLocator;
 import org.geoserver.web.util.GeoToolsConverterLocator;
+import org.geoserver.web.util.GeoToolsConverterAdapter;
+import org.geoserver.web.util.converters.StringBBoxConverter;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
 import org.springframework.context.ApplicationContext;
 
@@ -230,8 +234,8 @@ public class GeoServerApplication extends SpringWebApplication {
         List<IConverterLocator> converters = new ArrayList<IConverterLocator>();
 
         converters.add(new DataDirectoryConverterLocator(getResourceLoader()));
+        converters.add(buildConverterLocator());
         converters.add(super.newConverterLocator());
-        converters.add(new GeoToolsConverterLocator());
 
         return new CompositeConverterLocator(converters);
     }
@@ -247,5 +251,14 @@ public class GeoServerApplication extends SpringWebApplication {
 
             return resolveHomePageTarget(requestCycle, requestParameters);
         }
+    }
+
+    private IConverterLocator buildConverterLocator(){
+        ConverterLocator locator = new ConverterLocator();
+        locator.set(ReferencedEnvelope.class, 
+                new GeoToolsConverterAdapter(new StringBBoxConverter(), ReferencedEnvelope.class)
+                );
+
+        return locator;
     }
 }
