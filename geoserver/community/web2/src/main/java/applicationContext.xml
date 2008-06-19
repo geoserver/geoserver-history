@@ -47,7 +47,7 @@
   <bean id="dataTreeTablePage" class="org.geoserver.web.MainPageInfo">
     <property name="id" value="dataTable"/>
     <property name="titleKey" value="DataTreeTable"/>
-    <property name="componentClass" value="org.geoserver.web.data.tree.GeoServerDataTable"/>
+    <property name="componentClass" value="org.geoserver.web.data.tree.GeoServerDataTreePage"/>
   </bean>
   <bean id="basicResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
     <property name="id" value="basic"/>
