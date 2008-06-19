@@ -1,10 +1,5 @@
 package org.geoserver.web.data.tree;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.swing.tree.TreeNode;
-
 import org.geoserver.catalog.WorkspaceInfo;
 
 public class NewDatastoreNode extends AbstgractPlaceholderNode {
