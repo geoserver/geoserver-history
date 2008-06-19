@@ -3,10 +3,16 @@
 <wicket:extend>
 	<h3>Add Vector Data Source</h3>
 Parameters:	
-    <form wicket:id="form">
+    <form wicket:id="dataStoreForm">
+
+ 		<span>Data Source Identifier: </span>
+		<input wicket:id="dataStoreId" type="text"/>
+    	
     	<div wicket:id="parameters">
 		<span wicket:id="parameterPanel">x</span>
 		</div>
+		<input type="submit" wicket:id="cancel" value="Cancel"/>
+		<input type="submit" wicket:id="submit" value="Submit"/>
 	</form>
 </wicket:extend>
 </body>
