@@ -63,27 +63,14 @@ ul#navigation a:hover {
   border-top: none;
 }
 
-a#nav-administer-server,
-a#nav-administer-wfs,
-a#nav-administer-wcs,
-a#nav-administer-wms {
-  padding-left: 20px;
-}     
-
-a#nav-administer-server {
-  background: url(../img/icons/server_obj.gif) center left no-repeat;
+a.nav-administer-service {
 }
 
-a#nav-administer-wfs {
-  background: url(../img/icons/wfs_obj.gif) center left no-repeat;
-}
-
-a#nav-administer-wms {
-  background: url(../img/icons/wms_obj.gif) center left no-repeat;
-}
-
-a#nav-administer-wcs {
-  background: url(../img/icons/wcs_obj.gif) center left no-repeat;
+a.nav-administer-service img {
+  float: left;
+  margin-right: 0.5em;
+  height: 16px;
+  width: 16px;
 }
 
 /* Page */

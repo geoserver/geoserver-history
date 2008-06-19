@@ -31,9 +31,9 @@
         <div class="navigation-tab-content">
           <ul class="plain">
             <li><a id="nav-administer-server" href="#">Server</a></li>
-            <li><a id="nav-administer-wfs" title="Web Feature Service" href="#">WFS</a></li>
-            <li><a id="nav-administer-wms" title="Web Map Service" href="#">WMS</a></li>
-            <li><a id="nav-administer-wcs" title="Web Coverage Service" href="#">WCS</a></li>
+          </ul>
+          <ul wicket:id="services" class="plain">
+            <li><a class="nav-administer-service" wicket:id="service" title="title"><img wicket:id="serviceIcon"></img><span wicket:id="serviceLabel"></span></a></li>
           </ul>
         </div>
       </li>
