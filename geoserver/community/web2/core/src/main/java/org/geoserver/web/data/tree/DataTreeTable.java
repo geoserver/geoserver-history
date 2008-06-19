@@ -51,6 +51,8 @@ public class DataTreeTable extends TreeTable {
             return new UnconfiguredFeatureTypesPanel(id, this, parent, (AbstractCatalogNode) node, level);
         }  if (node instanceof UnconfiguredFeatureTypeNode) {
             return new UnconfiguredFeatureTypePanel(id, this, parent, (AbstractCatalogNode) node, level);
+        }  if (node instanceof ResourceNode) {
+            return new LabelPanel(id, this, parent, (AbstractCatalogNode) node, level);    
         } else {
             return super.newTreePanel(parent, id, node, level,
                     renderNodeCallback);
@@ -112,21 +114,15 @@ public class DataTreeTable extends TreeTable {
 
     }
     
-    class UnconfiguredFeatureTypePanel extends LinkPanel {
+    class UnconfiguredFeatureTypePanel extends LabelPanel {
 
         public UnconfiguredFeatureTypePanel(String id, DataTreeTable tree,
                 MarkupContainer parent, AbstractCatalogNode node, int level) {
             super(id, tree, parent, node, level);
             label.add(new AttributeModifier("class", true, new Model("unconfiguredLayer")));
         }
-
-        @Override
-        protected void onClick(AjaxRequestTarget target) {
-            // nothing to do, this should really be a label
-            
-        }
-
     }
+    
 
 //    static class CatalogTreeModel extends LoadableDetachableModel {
 //
