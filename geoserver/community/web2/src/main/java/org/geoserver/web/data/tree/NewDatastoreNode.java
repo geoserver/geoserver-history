@@ -2,7 +2,7 @@ package org.geoserver.web.data.tree;
 
 import org.geoserver.catalog.WorkspaceInfo;
 
-public class NewDatastoreNode extends AbstgractPlaceholderNode {
+public class NewDatastoreNode extends AbstractPlaceholderNode {
 
     public NewDatastoreNode(String name, AbstractCatalogNode parent) {
         super(name, parent);

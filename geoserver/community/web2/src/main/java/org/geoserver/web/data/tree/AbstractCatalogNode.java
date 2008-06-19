@@ -18,8 +18,9 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
 
-abstract class AbstractCatalogNode implements TreeNode, Serializable, IDetachable {
-    
+abstract class AbstractCatalogNode implements TreeNode, Serializable,
+        IDetachable {
+
     static final Logger LOGGER = Logging.getLogger(AbstractCatalogNode.class);
 
     String name;
@@ -27,18 +28,18 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable, IDetachabl
     TreeNode parent;
 
     transient List<TreeNode> childNodes;
-    
+
     transient Catalog catalog;
-    
+
     public AbstractCatalogNode(String id, AbstractCatalogNode parent) {
         if (id == null)
             throw new NullPointerException("Id cannot be null");
         this.name = id;
         this.parent = parent;
     }
-    
+
     protected Catalog getCatalog() {
-        if(catalog == null) {
+        if (catalog == null) {
             catalog = (Catalog) GeoServerExtensions.bean("catalog2");
         }
         return catalog;
@@ -93,12 +94,19 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable, IDetachabl
             synchronized (this) {
                 if (childNodes == null) {
                     childNodes = buildChildNodes();
-                    Collections.sort(childNodes, new Comparator<TreeNode>(){
+                    Collections.sort(childNodes, new Comparator<TreeNode>() {
                         public int compare(TreeNode o1, TreeNode o2) {
-                            String label1 = ((AbstractCatalogNode)o1).getNodeLabel();
-                            String label2 = ((AbstractCatalogNode)o2).getNodeLabel();
+                            String label1 = ((AbstractCatalogNode) o1)
+                                    .getNodeLabel();
+                            String label2 = ((AbstractCatalogNode) o2)
+                                    .getNodeLabel();
+                            if(o1 instanceof AbstractPlaceholderNode && !(o2 instanceof AbstractPlaceholderNode))
+                                return 1;
+                            else if(o2 instanceof AbstractPlaceholderNode && !(o1 instanceof AbstractPlaceholderNode)) 
+                                return -1;
                             return label1.compareTo(label2);
-                        }});
+                        }
+                    });
                 }
             }
         }
@@ -126,8 +134,13 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable, IDetachabl
     }
 
     public void detach() {
-        childNodes = null;
+//        childNodes = null;
         catalog = null;
+    }
+
+    @Override
+    public String toString() {
+        return getNodeLabel();
     }
 
     protected abstract Object getModel();

@@ -100,3 +100,9 @@ ul.plain {
   margin-right: 0;
   list-style-type: none;
 }
+
+/** Data page styles */
+span.command {
+  margin-left: 2px;
+  font-style: italic;
+}
