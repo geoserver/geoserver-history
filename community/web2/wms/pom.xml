@@ -6,7 +6,7 @@
 
   <parent>
     <groupId>org.geoserver</groupId>    
-    <artifactId>web2/artifactId>
+    <artifactId>web2</artifactId>
     <version>1.8.0-SNAPSHOT</version>
   </parent>
 
