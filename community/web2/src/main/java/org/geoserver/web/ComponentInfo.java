@@ -27,6 +27,10 @@ public abstract class ComponentInfo<C extends Component> implements Serializable
      */
     String title;
     /**
+     * The description of the component
+     */
+    String description;
+    /**
      * the class of the component
      */
     Class<C> componentClass;
@@ -62,6 +66,24 @@ public abstract class ComponentInfo<C extends Component> implements Serializable
         this.title = title;
     }
     
+    /**
+     * The i18n key for the description of the component.
+     * <p>
+     * This description is often used as a tooltip, or some contextual help.
+     * </p>
+     * 
+     */
+    public String getDescriptionKey() {
+        return description;
+    }
+    
+    /**
+     * Sets the description of the component.
+     */
+    public void setDescriptionKey( String description ) {
+        this.description = description;
+    }
+
     /**
      * The implementation class of the component.
      */
