@@ -38,7 +38,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
                 myNewKeyword = "";
             }
         });
-		// add(new TextField("SRS"));
+		add(new TextField("SRS"));
 		// add(new TextField("nativeBoundingBox"));
 		// add(new TextField("boundingBox"));
 	}
