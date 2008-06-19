@@ -25,13 +25,7 @@ class DataStoreNode extends AbstractCatalogNode {
             childNodes.add(new ResourceNode(type.getName(), this,
                     FeatureTypeInfo.class));
         }
-//        try {
-//           
-//            if(getModel().getDataStore(null).getTypeNames().length > childNodes.size())
-//               childNodes.add(new NewDatastoreNode(name, this)); 
-//        } catch(Exception e) {
-//            LOGGER.log(Level.SEVERE, "Could not aquire type names from data store", e);
-//        }
+        childNodes.add(new UnconfiguredFeatureTypesNode(name, this));
         return childNodes;
     }
 
