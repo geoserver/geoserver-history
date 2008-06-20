@@ -24,6 +24,8 @@ public class PasswordParamPanel extends Panel {
         PasswordTextField passwordField;
         passwordField = new PasswordTextField("paramValue", new MapModel(paramsMap, paramName));
         passwordField.setRequired(required);
+        //we want to password to stay there if already is
+        passwordField.setResetPassword(false);
 
         FormComponentFeedbackBorder requiredFieldFeedback;
         requiredFieldFeedback = new FormComponentFeedbackBorder("border");
