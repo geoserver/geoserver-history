@@ -188,7 +188,7 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
      * during the process
      */
     public AbstractCatalogNode checkPartialSelection() {
-        List<AbstractCatalogNode> children = childNodes();
+        List<AbstractCatalogNode> children = childNodes;
         if(children == null || children.size() == 0)
             return this;
         
@@ -202,8 +202,10 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
             SelectionState childState =  child.getSelectionState();
             selected = selected || childState == SelectionState.SELECTED;
             unselected = unselected || childState == SelectionState.UNSELECTED;
-            if((selected && unselected) || childState == SelectionState.PARTIAL)
+            if((selected && unselected) || childState == SelectionState.PARTIAL) {
                 result = SelectionState.PARTIAL;
+                break;
+            }
         }
         if(result == null && unselected)
             result = selectionState.UNSELECTED;

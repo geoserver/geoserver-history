@@ -28,5 +28,10 @@ public class UnconfiguredFeatureTypeNode extends AbstractPlaceholderNode {
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
+    
+    @Override
+    public boolean isSelectable() {
+        return true;
+    }
 
 }
