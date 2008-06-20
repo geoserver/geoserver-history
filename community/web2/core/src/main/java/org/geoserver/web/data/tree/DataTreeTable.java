@@ -53,6 +53,8 @@ public class DataTreeTable extends TreeTable {
             return new UnconfiguredFeatureTypePanel(id, this, parent, (AbstractCatalogNode) node, level);
         }  if (node instanceof ResourceNode) {
             return new LabelPanel(id, this, parent, (AbstractCatalogNode) node, level);    
+        }  if (node instanceof NewDatastoreNode) {
+            return new NewDataStorePanel(id, this, parent, (AbstractCatalogNode) node, level);
         } else {
             return super.newTreePanel(parent, id, node, level,
                     renderNodeCallback);
@@ -114,6 +116,26 @@ public class DataTreeTable extends TreeTable {
 
     }
     
+    class NewDataStorePanel extends LinkPanel {
+
+        public NewDataStorePanel(String id, DataTreeTable tree,
+                MarkupContainer parent, AbstractCatalogNode node, int level) {
+            super(id, tree, parent, node, level);
+            label.add(new AttributeModifier("class", true, new Model("command")));
+        }
+
+        @Override
+        protected void onClick(AjaxRequestTarget target) {
+            System.out.println("Hello Gabriel!");
+        }
+        
+        @Override
+        protected ResourceReference getNodeIcon(DataTreeTable tree,
+                TreeNode node) {
+            return null;
+        }
+    }
+    
     class UnconfiguredFeatureTypePanel extends LabelPanel {
 
         public UnconfiguredFeatureTypePanel(String id, DataTreeTable tree,
@@ -159,6 +181,13 @@ public class DataTreeTable extends TreeTable {
         public String getNodeValue(TreeNode node) {
             return "Edit controls should be here for node "
                     + ((AbstractCatalogNode) node).getNodeLabel();
+        }
+        
+        @Override
+        public Component newCell(MarkupContainer parent, String id,
+                TreeNode node, int level) {
+            // TODO Auto-generated method stub
+            return super.newCell(parent, id, node, level);
         }
     }
 
