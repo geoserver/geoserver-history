@@ -12,10 +12,13 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
+import org.geoserver.web.admin.ServerAdminPage;
+import org.geoserver.web.data.DataPage;
 import org.geoserver.web.services.ServicePageInfo;
 
 /**
@@ -41,16 +44,23 @@ public class GeoServerBasePage extends WebPage {
 
     public GeoServerBasePage() {
 
+        // welcome page link
+        add( new BookmarkablePageLink( "welcome", GeoServerHomePage.class )
+            .add( new Label( "label", new StringResourceModel( "welcome", (Component)null, null ) )  ) );
+        
+        // server admin link
+        add( new BookmarkablePageLink( "admin.server", ServerAdminPage.class ) 
+            .add( new Label( "label", new StringResourceModel( "server", (Component)null, null ) ) ) );
+        
         // list of services to administer
         List<ServicePageInfo> pages = getGeoServerApplication().getBeansOfType(
                 ServicePageInfo.class);
-
-        ListView nav = new ListView("services", pages) {
+        ListView services = new ListView("admin.services", pages) {
             protected void populateItem(ListItem item) {
                 ServicePageInfo page = (ServicePageInfo) item.getModelObject();
 
                 //add a link
-                BookmarkablePageLink link = new BookmarkablePageLink("service",
+                BookmarkablePageLink link = new BookmarkablePageLink("admin.service",
                         page.getComponentClass());
                 link.add(new Image( "serviceIcon", new ResourceReference( page.getComponentClass(), page.getIcon() ) ) );
                 link.add(new Label("serviceLabel", new StringResourceModel( page.getTitleKey(), (Component) null, null ) ));
@@ -59,7 +69,11 @@ public class GeoServerBasePage extends WebPage {
                 item.add(link);
             }
         };
-        add( nav );
+        add( services );
+        
+        //data link
+        add( new BookmarkablePageLink( "data", DataPage.class ) 
+            .add( new Label( "label", new StringResourceModel( "data", (Component) null, null ) ) ) );
     }
 
     /**

@@ -23,22 +23,31 @@
     <ul id="navigation">
       <li class="navigation-tab">
         <div class="navigation-tab-single">
-          <a href="#">Welcome</a>
+          <a wicket:id="welcome" href="#"><span wicket:id="label">Welcome</span></a>
         </div>
       </li>
       <li class="navigation-tab selected" id="nav-administer">
-        <div class="navigation-tab-header"><a href="#">Administer</a></div>
+        <div class="navigation-tab-header"><wicket:message key="admin">Administration</wicket:message></div>
         <div class="navigation-tab-content">
           <ul class="plain">
-            <li><a id="nav-administer-server" href="#">Server</a></li>
+            <li class="nav-administer-service">
+              <a wicket:id="admin.server">
+                <wicket:link>
+                  <img src="img/icons/silk/server.png"></img>
+                </wicket:link>
+                <span wicket:id="label">Server</span>
+              </a>
+            </li>
           </ul>
           <ul class="plain">
-            <li class="nav-administer-service" wicket:id="services"><a wicket:id="service" title="title"><img wicket:id="serviceIcon"></img><span wicket:id="serviceLabel"></span></a></li>
+            <li class="nav-administer-service" wicket:id="admin.services"><a wicket:id="admin.service" title="title"><img wicket:id="serviceIcon"></img><span wicket:id="serviceLabel"></span></a></li>
           </ul>
         </div>
       </li>
       <li class="navigation-tab">
-        <div class="navigation-tab-single"><a href="#">Data</a></div>
+        <div class="navigation-tab-single">
+           <a wicket:id="data" href="#"><span wicket:id="label">Data</span></a>
+        </div>
       </li>
       <li class="navigation-tab">
         <div class="navigation-tab-single"><a href="#">Styles</a></div>
