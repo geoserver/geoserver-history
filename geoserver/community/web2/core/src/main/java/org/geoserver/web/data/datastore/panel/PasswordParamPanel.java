@@ -17,16 +17,17 @@ public class PasswordParamPanel extends Panel {
     private static final long serialVersionUID = -7801141820174575611L;
 
     public PasswordParamPanel(final String id, final Map<String, ?> paramsMap,
-            final String paramName, final String paramLabel) {
+            final String paramName, final String paramLabel, final boolean required) {
         super(id);
         add(new Label("paramName", paramLabel));
 
         PasswordTextField passwordField;
         passwordField = new PasswordTextField("paramValue", new MapModel(paramsMap, paramName));
+        passwordField.setRequired(required);
 
         FormComponentFeedbackBorder requiredFieldFeedback;
         requiredFieldFeedback = new FormComponentFeedbackBorder("border");
-        
+
         requiredFieldFeedback.add(passwordField);
 
         add(requiredFieldFeedback);

@@ -5,7 +5,12 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
+import org.geoserver.web.data.ResourceConfigurationPage;
+import org.geoserver.web.data.datastore.DataStoreConfiguration;
 
 /**
  * A simple component that can be used to edit/remove items from the tree
@@ -15,7 +20,7 @@ import org.geoserver.web.GeoServerApplication;
  */
 public class EditRemovePanel extends Panel {
 
-    private AbstractCatalogNode node;
+    private final AbstractCatalogNode node;
 
     public EditRemovePanel(String id, AbstractCatalogNode node) {
         super(id);
@@ -28,8 +33,7 @@ public class EditRemovePanel extends Panel {
                 onEditClick(target);
             }
         };
-        link.add(new Image("editIcon", new ResourceReference(
-                GeoServerApplication.class,
+        link.add(new Image("editIcon", new ResourceReference(GeoServerApplication.class,
                 "img/icons/silk/pencil.png")));
         add(link);
 
@@ -40,8 +44,7 @@ public class EditRemovePanel extends Panel {
                 onRemoveClick(target);
             }
         };
-        link.add(new Image("removeIcon", new ResourceReference(
-                GeoServerApplication.class,
+        link.add(new Image("removeIcon", new ResourceReference(GeoServerApplication.class,
                 "img/icons/silk/delete.png")));
         add(link);
     }
@@ -52,7 +55,26 @@ public class EditRemovePanel extends Panel {
     }
 
     protected void onEditClick(AjaxRequestTarget target) {
-        System.out.println("Edit!");
+        if (node instanceof WorkspaceNode) {
+            System.out.println("Edit workspace node " + node.getNodeLabel());
+        } else if (node instanceof DataStoreNode) {
+            final String datastoreUniqueName = node.getNodeLabel();
 
+            final Catalog catalog = node.getCatalog();
+            final DataStoreInfo dataStore = catalog.getDataStoreByName(datastoreUniqueName);
+            final String dataStoreInfoId = dataStore.getId();
+
+            setResponsePage(new DataStoreConfiguration(dataStoreInfoId));
+
+        } else if (node instanceof CoverageStoreNode) {
+            System.out.println("Edit coverage node " + node.getNodeLabel());
+        } else if (node instanceof ResourceNode) {
+            System.out.println("Edit resource " + node.getNodeLabel());
+            ResourceInfo resourceInfo = (ResourceInfo)node.getModel();
+            setResponsePage(new ResourceConfigurationPage(resourceInfo));
+        } else {
+            throw new IllegalStateException("Don't know how to edit a "
+                    + node.getClass().getSimpleName());
+        }
     }
 }
