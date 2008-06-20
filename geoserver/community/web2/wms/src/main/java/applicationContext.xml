@@ -12,4 +12,9 @@
     <property name="icon" value="server_picture.png"/>
   </bean>
     
+  <bean id="wmsLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
+    <property name="id" value="wmsLayerConfig"/>
+    <property name="titleKey" value="data.resource.config.wms"/>
+    <property name="componentClass" value="org.geoserver.wms.web.publish.WMSLayerConfig"/>
+  </bean>
 </beans>
