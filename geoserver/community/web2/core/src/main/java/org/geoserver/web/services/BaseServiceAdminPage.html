@@ -1,0 +1,36 @@
+<html>
+  <body>
+    <wicket:extend>
+    <form wicket:id="form">
+     <ul>
+      <li>
+        <span>
+          <input wicket:id="enabled" class="field checkbox" type="checkbox"></input>
+          <label class="choice"><wicket:message key="enabled">Enabled</wicket:message></label>
+        </span>
+        <p class="instruct">
+        </p>
+      </li>
+      <li>
+        <label><wicket:message key="title">Title</wicket:message></label>
+        <span>
+          <input wicket:id="title" class="field text large"></input>          
+        </span>
+        <p class="instruct">
+        </p>
+      </li>
+      <li>
+         <label><wicket:message key="abstract">Abstract</wicket:message></label>
+         <span>
+           <textarea wicket:id="abstract" class="field textarea medium" cols="50" rows="10"></textarea> 
+         </span>
+         <p class="instruct">
+         </p>
+      </li>
+      <wicket:child>
+      </wicket:child>
+     </ul>
+      </form>
+    </wicket:extend>
+  </body>
+</html>
