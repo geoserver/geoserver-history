@@ -8,7 +8,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.geoserver.web.GeoServerApplication;
 
 /**
- * A simple component that lines up
+ * A simple component that can be used to edit/remove items from the tree
  * 
  * @author aaime
  * 
