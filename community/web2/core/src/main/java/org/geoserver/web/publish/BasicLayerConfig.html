@@ -4,8 +4,9 @@
 <form>
     <wicket:panel>
         <h3 wicket:id="section">Basic</h3>
-        Title: <input type="text" wicket:id="title"></input> <br/>
-        Abstract: <input type="text" wicket:id="abstract"></input> <br/>
+        Name: <input type="text" wicket:id="name"></input> <br/>
+        Enabled: <input type="checkbox" wicket:id="enabled"></input> <br/>
+        <!-- Options which should be exposed eventually.  These aren't there on the backend yet so...
         Keywords: <select wicket:id="keywords" multiple="multiple"></select> <br/>
         <button wicket:id="removeKeywords" type="submit">Remove selected</button> <br/>
         New Keyword <input type="text" wicket:id="newKeyword"></input>
@@ -13,7 +14,8 @@
         Native SRS: <input type="text" wicket:id="SRS"></input> <br/>
         Native BBox: <input type="text" wicket:id="nativeBoundingBox"></input> <br/>
         Published BBox:  <span style="border:1px; border-color:black; text-color: gray" wicket:id="boundingBox"></span> <br/>
-        Lat/Lon BBox: <input type="text" wicket:id="latLonBoundingBox"></input> <br/>
+        Lat/Lon BBox: <input type="text" wicket:id="latLonBoundingBox"></input> <br/> 
+        -->
     </wicket:panel>
     <input type="submit" value="Save Changes"></input>
 </form>

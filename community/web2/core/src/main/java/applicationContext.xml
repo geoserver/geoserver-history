@@ -44,10 +44,18 @@
     <property name="titleKey" value="Data"/>
     <property name="componentClass" value="org.geoserver.web.data.tree.DataPage"/>
   </bean>
+  <!-- Resource configuration pages -->
   <bean id="basicResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
     <property name="id" value="basic"/>
     <property name="titleKey" value="data.resource.config.basic"/>
     <property name="componentClass" value="org.geoserver.web.data.BasicResourceConfig"/>
+  </bean>
+
+  <!-- Layer configuration pages -->
+  <bean id="basicLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
+    <property name="id" value="basic"/>
+    <property name="titleKey" value="publish.layer.config.basic"/>
+    <property name="componentClass" value="org.geoserver.web.publish.BasicLayerConfig"/>
   </bean>
     
   <!-- bean id="servicesPage" class="org.geoserver.web.MainPageInfo">
