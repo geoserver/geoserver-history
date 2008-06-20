@@ -8,7 +8,8 @@
     <property name="titleKey" value="wfs.title"/>
     <property name="descriptionKey" value="wfs.description"/>
     <property name="componentClass" value="org.geoserver.wfs.web.WFSPage"/>
-    <property name="icon" value="wfs_obj.gif"/>
+    <!--property name="icon" value="wfs_obj.gif"/-->
+    <property name="icon" value="server_vector.png"/>
   </bean>
     
 </beans>
