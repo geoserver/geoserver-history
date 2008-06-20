@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +50,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
 
-    private Set myAcceptableFeatures;
+    private Set myAcceptableFeatures = null;
     
     private static ReferencedEnvelope worldBounds;
 
@@ -59,16 +60,18 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
 
     private String myCacheTable;
 
+    private static final ReentrantLock lock = new ReentrantLock();
+
     /**
      * When the number of features within the bbox currently being processed is below this threshold,
      * go ahead and build the rest of the tile hierarchy in memory.  (This is a performance thing; 
      * sweeping over the database for each tile can really bog things down.)
      */
-    private static int DB_SWEEP_CUTOFF = 25000; 
+    private static int DB_SWEEP_CUTOFF = 50000; 
 
     public static long featureCounter = 0;
 
-    public synchronized final void  preProcess(WMSMapContext con, MapLayer layer) {
+    public final void preProcess(WMSMapContext con, MapLayer layer) {
         FeatureTypeInfo fti = con.getRequest().getWMS().getData().getFeatureTypeInfo(layer.getFeatureSource().getName());
         myFeaturesPerTile = fti.getRegionateFeatureLimit();
 
@@ -77,12 +80,24 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         } catch (Exception e){
             LOGGER.log(Level.INFO, "No cached tile hierarchy found; constructing quad tree from data: " + e.getMessage());
             
-            populateDB(con, layer);
-            
-            try{
-                myAcceptableFeatures = getRangesFromDB(con, layer);
-            } catch (Exception e2){
-                throw new HttpErrorCodeException(500, "Unexpected error while determining tile contents.", e2);
+            lock.lock();
+            try {
+                // Try again, may have been populated while we waited
+                try{
+                    myAcceptableFeatures = getRangesFromDB(con, layer);
+                } catch (Exception e2) {
+                    // Okay, this is a new one, lets populate it
+                    populateDB(con, layer);
+                    
+                    // It *really* should work now
+                    try{
+                        myAcceptableFeatures = getRangesFromDB(con, layer);
+                    } catch (Exception e3){
+                        throw new HttpErrorCodeException(500, "Unexpected error while determining tile contents.", e3);
+                    }
+                }
+            } finally {
+              lock.unlock();
             }
         }
         
@@ -97,12 +112,16 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
     private void populateDB(WMSMapContext con, MapLayer layer) {
         Connection connection;
         Statement statement;
+        
+        String tableName = null;
         try {
+            tableName = getCacheTable(con, layer);
+            
             Class.forName("org.h2.Driver");
             String dataDir = con.getRequest().getWMS().getData()
                     .getDataDirectory().getCanonicalPath();
             connection = DriverManager.getConnection("jdbc:h2:file:" + dataDir
-                    + "/h2database/regionate", "geoserver", "geopass");
+                    + "/h2database/regionate_"+tableName, "geoserver", "geopass");
             statement = connection.createStatement();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,
@@ -110,14 +129,12 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             return;
         }
 
-        String tableName = null;
+        
 
         try {
-            tableName = getCacheTable(con, layer);
-
             statement.execute("DROP TABLE IF EXISTS " + tableName);
             statement.execute("CREATE TABLE " + tableName
-                    + " ( x integer, y integer, z integer, fid varchar (50))");
+                    + " ( x BIGINT, y BIGINT, z INT, fid varchar (64))");
             statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
 
             CoordinateReferenceSystem epsg4326 = null;
@@ -218,12 +235,16 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         Connection connection;
         Statement statement;
         Set<String> returnable = new TreeSet<String>();
+        String tableName = null;
+        
         try{
+            tableName = getCacheTable(con, layer);
+            
             Class.forName("org.h2.Driver");
             String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
             connection = 
                 DriverManager.getConnection(
-                        "jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
+                        "jdbc:h2:file:" + dataDir + "/h2database/regionate_"+tableName, "geoserver", "geopass"
                         );
             statement = connection.createStatement();
         } catch (Exception e){
@@ -232,9 +253,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         }
 
         long[] coords = null;
-        String tableName = null;
+        
         try{
-            tableName = getCacheTable(con, layer);
             coords = getTileCoords(con.getAreaOfInterest(), getWorldBounds());
             
             //LOGGER.log(Level.SEVERE, "Received request for "+layer.getTitle() + " " +
@@ -357,7 +377,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             root.writeTo(st, tablename, world);
         }
         
-        LOGGER.log(Level.SEVERE, "builDB of " + tablename + " completed after " + Long.toString(this.featureCounter) + " features.");
+        LOGGER.log(Level.SEVERE, "builDB of " + tablename + " completed after " 
+                + Long.toString(this.featureCounter) + " features. (Number may not be accurate.)");
     }
 
     public static boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom){
@@ -562,7 +583,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
             String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
             connection = 
                 DriverManager.getConnection(
-                    "jdbc:h2:file:" + dataDir + "/h2database/regionate", "geoserver", "geopass"
+                    "jdbc:h2:file:" + dataDir + "/h2database/regionate_"+tableName, "geoserver", "geopass"
                     );
             statement = connection.createStatement();
         } catch (Exception e){
