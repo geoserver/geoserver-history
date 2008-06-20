@@ -35,6 +35,7 @@ import org.geoserver.web.data.datastore.panel.TextParamPanel;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
+import org.geotools.util.NullProgressListener;
 import org.vfny.geoserver.util.DataStoreUtils;
 
 /**
@@ -52,7 +53,15 @@ public class DataStoreConfiguration extends GeoServerBasePage {
      */
     private final Map<String, Serializable> parametersMap;
 
+    /**
+     * Id of the workspace the datastore is or is going to be attached to
+     */
     private final String workspaceId;
+
+    /**
+     * Id of the datastore, null if creating a new datastore
+     */
+    private String dataStoreInfoId;
 
     /**
      * Creates a new datastore configuration page to edit the properties of the
@@ -71,8 +80,9 @@ public class DataStoreConfiguration extends GeoServerBasePage {
             throw new IllegalArgumentException("DataStore " + dataStoreInfoId + " not found");
         }
 
-        final Map<String, Serializable> connectionParameters = dataStoreInfo
-                .getConnectionParameters();
+        final Map<String, Serializable> connectionParameters;
+        connectionParameters = dataStoreInfo.getConnectionParameters();
+        
         final DataStoreFactorySpi dsFactory = DataStoreUtils.aquireFactory(connectionParameters);
         if (null == dsFactory) {
             throw new IllegalArgumentException(
@@ -141,6 +151,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
      *            the datastore factory to use
      */
     private void init(final String dataStoreInfoId, final DataStoreFactorySpi dsFactory) {
+        this.dataStoreInfoId = dataStoreInfoId;
 
         Catalog catalog = getCatalog();
         WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
@@ -240,34 +251,69 @@ public class DataStoreConfiguration extends GeoServerBasePage {
     private void onSaveDataStore(final Form paramsForm) {
         final Catalog catalog = getCatalog();
         final Map<String, Serializable> dsParams = parametersMap;
-        // dataStoreId already validated, so its safe to use
-        final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_ID_PROPERTY_NAME);
 
-        DataStore dataStore = null;
-        try {
-            dataStore = DataStoreUtils.getDataStore(parametersMap);
-        } catch (IOException e) {
-            paramsForm.error("Error instantiating data source with the provided parameters:\n"
-                    + e.getMessage());
-            return;
-        }
-        if (dataStore == null) {
-            paramsForm.error("Can't create a Vector Data Source with the provided parameters");
-            return;
-        }
-        DataStoreInfo dataStoreInfo;
-        {
-            CatalogFactory factory = catalog.getFactory();
-            dataStoreInfo = factory.createDataStore();
-            dataStoreInfo.setName(dataStoreUniqueName);
-            WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
-            dataStoreInfo.setWorkspace(workspace);
+        if (null == dataStoreInfoId) {
+            // it is a new datastore
+
+            // dataStoreId already validated, so its safe to use
+            final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_ID_PROPERTY_NAME);
+
+            DataStore dataStore = null;
+            try {
+                dataStore = DataStoreUtils.getDataStore(parametersMap);
+            } catch (IOException e) {
+                paramsForm.error("Error instantiating data source with the provided parameters:\n"
+                        + e.getMessage());
+                return;
+            }
+            if (dataStore == null) {
+                paramsForm.error("Can't create a Vector Data Source with the provided parameters");
+                return;
+            }
+            DataStoreInfo dataStoreInfo;
+            {
+                CatalogFactory factory = catalog.getFactory();
+                dataStoreInfo = factory.createDataStore();
+                dataStoreInfo.setName(dataStoreUniqueName);
+                WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
+                dataStoreInfo.setWorkspace(workspace);
+                Map<String, Serializable> connectionParameters;
+                connectionParameters = dataStoreInfo.getConnectionParameters();
+                connectionParameters.clear();
+                connectionParameters.putAll(dsParams);
+            }
+            catalog.add(dataStoreInfo);
+        } else {
+            // it is an existing datastore that's being modified
+            DataStoreInfo dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
+            try {
+                DataStore dataStore = dataStoreInfo.getDataStore(new NullProgressListener());
+                dataStore.dispose();
+            } catch (IOException e) {
+                // hmmm... ignore?
+            }
             Map<String, Serializable> connectionParameters;
             connectionParameters = dataStoreInfo.getConnectionParameters();
+            final Map<String, Serializable> oldParams = new HashMap<String, Serializable>(
+                    connectionParameters);
+
             connectionParameters.clear();
             connectionParameters.putAll(dsParams);
+
+            catalog.getResourcePool().clear(dataStoreInfo);
+
+            // try and grab the datastore with the new configuration
+            // parameters...
+            try {
+                dataStoreInfo.getDataStore(new NullProgressListener());
+            } catch (Exception e) {
+                catalog.getResourcePool().clear(dataStoreInfo);
+                connectionParameters.clear();
+                connectionParameters.putAll(oldParams);
+                paramsForm.error("Error setting the new data store parameters: " + e.getMessage());
+                return;
+            }
         }
-        catalog.add(dataStoreInfo);
 
         setResponsePage(DataPage.class);
 
