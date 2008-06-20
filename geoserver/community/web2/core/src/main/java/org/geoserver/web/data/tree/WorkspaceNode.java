@@ -6,8 +6,6 @@ package org.geoserver.web.data.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.tree.TreeNode;
-
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -21,10 +19,10 @@ class WorkspaceNode extends AbstractCatalogNode {
         super(id, parent);
     }
 
-    protected List<TreeNode> buildChildNodes() {
+    protected List<AbstractCatalogNode> buildChildNodes() {
         List<StoreInfo> stores = getCatalog().getStoresByWorkspace(
                 ((WorkspaceInfo) getModel()), StoreInfo.class);
-        List<TreeNode> childNodes = new ArrayList<TreeNode>();
+        List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
         for (StoreInfo store : stores) {
             // hack here: if the node is a datastore that has just one
             // possible child

@@ -42,7 +42,7 @@
   <bean id="dataPage" class="org.geoserver.web.MainPageInfo">
     <property name="id" value="data"/>
     <property name="titleKey" value="Data"/>
-    <property name="componentClass" value="org.geoserver.web.data.DataPage"/>
+    <property name="componentClass" value="org.geoserver.web.data.tree.DataPage"/>
   </bean>
   <bean id="basicResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
     <property name="id" value="basic"/>
