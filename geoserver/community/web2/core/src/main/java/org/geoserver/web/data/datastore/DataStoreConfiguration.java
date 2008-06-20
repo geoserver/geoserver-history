@@ -61,7 +61,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
     /**
      * Id of the datastore, null if creating a new datastore
      */
-    private String dataStoreInfoId;
+    private final String dataStoreInfoId;
 
     /**
      * Creates a new datastore configuration page to edit the properties of the
@@ -72,9 +72,10 @@ public class DataStoreConfiguration extends GeoServerBasePage {
      *            {@link DataStoreInfo#getId()}
      */
     public DataStoreConfiguration(final String dataStoreInfoId) {
-
         final Catalog catalog = getCatalog();
         final DataStoreInfo dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
+
+        this.dataStoreInfoId = dataStoreInfoId;
 
         if (null == dataStoreInfo) {
             throw new IllegalArgumentException("DataStore " + dataStoreInfoId + " not found");
@@ -82,7 +83,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
 
         final Map<String, Serializable> connectionParameters;
         connectionParameters = dataStoreInfo.getConnectionParameters();
-        
+
         final DataStoreFactorySpi dsFactory = DataStoreUtils.aquireFactory(connectionParameters);
         if (null == dsFactory) {
             throw new IllegalArgumentException(
@@ -93,7 +94,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
         parametersMap.put(DATASTORE_ID_PROPERTY_NAME, dataStoreInfoId);
 
         this.workspaceId = dataStoreInfo.getWorkspace().getId();
-        init(dataStoreInfoId, dsFactory);
+        init(dsFactory);
     }
 
     /**
@@ -113,6 +114,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
             throw new NullPointerException("workspaceId can't be null");
         }
         this.workspaceId = workspaceId;
+        this.dataStoreInfoId = null;
 
         final DataStoreFactorySpi dsFact = DataStoreUtils.aquireFactory(dataStoreFactDisplayName);
         if (dsFact == null) {
@@ -135,7 +137,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
             parametersMap.put(parametersInfo[i].key, value);
         }
 
-        init(null, dsFact);
+        init(dsFact);
     }
 
     /**
@@ -143,16 +145,11 @@ public class DataStoreConfiguration extends GeoServerBasePage {
      * @param workspaceId
      *            the id for the workspace to attach the new datastore or the
      *            current datastore is attached to
-     * @param dataStoreInfoId
-     *            the id of the data store to edit, or {@code null} if about to
-     *            configure a new data store
      * 
      * @param dsFactory
      *            the datastore factory to use
      */
-    private void init(final String dataStoreInfoId, final DataStoreFactorySpi dsFactory) {
-        this.dataStoreInfoId = dataStoreInfoId;
-
+    private void init(final DataStoreFactorySpi dsFactory) {
         Catalog catalog = getCatalog();
         WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
         if (workspace == null) {
@@ -252,40 +249,35 @@ public class DataStoreConfiguration extends GeoServerBasePage {
         final Catalog catalog = getCatalog();
         final Map<String, Serializable> dsParams = parametersMap;
 
+        DataStoreInfo dataStoreInfo;
+
         if (null == dataStoreInfoId) {
             // it is a new datastore
 
             // dataStoreId already validated, so its safe to use
             final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_ID_PROPERTY_NAME);
+            final WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
 
-            DataStore dataStore = null;
+            CatalogFactory factory = catalog.getFactory();
+            dataStoreInfo = factory.createDataStore();
+            dataStoreInfo.setName(dataStoreUniqueName);
+            dataStoreInfo.setWorkspace(workspace);
+
+            Map<String, Serializable> connectionParameters;
+            connectionParameters = dataStoreInfo.getConnectionParameters();
+            connectionParameters.clear();
+            connectionParameters.putAll(dsParams);
+
             try {
-                dataStore = DataStoreUtils.getDataStore(parametersMap);
-            } catch (IOException e) {
-                paramsForm.error("Error instantiating data source with the provided parameters:\n"
+                catalog.add(dataStoreInfo);
+            } catch (Exception e) {
+                paramsForm.error("Error creating data store with the provided parameters: "
                         + e.getMessage());
                 return;
             }
-            if (dataStore == null) {
-                paramsForm.error("Can't create a Vector Data Source with the provided parameters");
-                return;
-            }
-            DataStoreInfo dataStoreInfo;
-            {
-                CatalogFactory factory = catalog.getFactory();
-                dataStoreInfo = factory.createDataStore();
-                dataStoreInfo.setName(dataStoreUniqueName);
-                WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
-                dataStoreInfo.setWorkspace(workspace);
-                Map<String, Serializable> connectionParameters;
-                connectionParameters = dataStoreInfo.getConnectionParameters();
-                connectionParameters.clear();
-                connectionParameters.putAll(dsParams);
-            }
-            catalog.add(dataStoreInfo);
         } else {
             // it is an existing datastore that's being modified
-            DataStoreInfo dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
+            dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
             try {
                 DataStore dataStore = dataStoreInfo.getDataStore(new NullProgressListener());
                 dataStore.dispose();
@@ -313,10 +305,10 @@ public class DataStoreConfiguration extends GeoServerBasePage {
                 paramsForm.error("Error setting the new data store parameters: " + e.getMessage());
                 return;
             }
+            // it worked, save it
+            catalog.save(dataStoreInfo);
         }
-
         setResponsePage(DataPage.class);
-
     }
 
     /**
