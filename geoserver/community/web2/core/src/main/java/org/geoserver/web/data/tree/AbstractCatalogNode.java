@@ -16,9 +16,11 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
 
 abstract class AbstractCatalogNode implements TreeNode, Serializable,
-        IDetachable {
-    
-    public enum SelectionState { SELECTED, UNSELECTED, PARTIAL};
+        IDetachable, Comparable<AbstractCatalogNode> {
+
+    public enum SelectionState {
+        SELECTED, UNSELECTED, PARTIAL
+    };
 
     static final Logger LOGGER = Logging.getLogger(AbstractCatalogNode.class);
 
@@ -29,9 +31,9 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
     transient List<AbstractCatalogNode> childNodes;
 
     transient Catalog catalog;
-    
+
     SelectionState selectionState;
-    
+
     public AbstractCatalogNode(String id, AbstractCatalogNode parent) {
         if (id == null)
             throw new NullPointerException("Id cannot be null");
@@ -96,22 +98,9 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
                 if (childNodes == null) {
                     childNodes = buildChildNodes();
                     // sort child nodes
-                    Collections.sort(childNodes, new Comparator<TreeNode>() {
-                        public int compare(TreeNode o1, TreeNode o2) {
-                            String label1 = ((AbstractCatalogNode) o1)
-                                    .getNodeLabel();
-                            String label2 = ((AbstractCatalogNode) o2)
-                                    .getNodeLabel();
-                            if(o1 instanceof AbstractPlaceholderNode && !(o2 instanceof AbstractPlaceholderNode))
-                                return 1;
-                            else if(o2 instanceof AbstractPlaceholderNode && !(o1 instanceof AbstractPlaceholderNode)) 
-                                return -1;
-                            return label1.compareTo(label2);
-                        }
-                    });
-                    
+                    Collections.sort(childNodes);
                     // manage selection
-                    if(selectionState == SelectionState.SELECTED)
+                    if (selectionState == SelectionState.SELECTED)
                         for (AbstractCatalogNode child : childNodes) {
                             child.setSelectionState(SelectionState.SELECTED);
                         }
@@ -146,7 +135,7 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
     }
 
     public void detach() {
-//        childNodes = null;
+        // childNodes = null;
         catalog = null;
     }
 
@@ -156,65 +145,79 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
     }
 
     protected abstract Object getModel();
-    
+
     public void nextSelectionState() {
-        if(selectionState == SelectionState.SELECTED || selectionState == SelectionState.PARTIAL)
+        if (selectionState == SelectionState.SELECTED
+                || selectionState == SelectionState.PARTIAL)
             setSelectionState(SelectionState.UNSELECTED);
         else
             setSelectionState(SelectionState.SELECTED);
     }
-    
+
     public void setSelectionState(SelectionState state) {
-        if(isSelectable()) {
+        if (isSelectable()) {
             this.selectionState = state;
-            if(state != SelectionState.PARTIAL && childNodes != null)
+            if (state != SelectionState.PARTIAL && childNodes != null)
                 for (AbstractCatalogNode child : childNodes) {
                     child.setSelectionState(state);
                 }
         }
     }
-    
+
     public SelectionState getSelectionState() {
         return selectionState;
     }
-    
+
     public boolean isSelectable() {
         return true;
     }
 
     /**
-     * Updates the partial selection state of node and recurses
-     * up to the root, and returns the higher node that got updated
-     * during the process
+     * Updates the partial selection state of node and recurses up to the root,
+     * and returns the higher node that got updated during the process
      */
     public AbstractCatalogNode checkPartialSelection() {
         List<AbstractCatalogNode> children = childNodes;
-        if(children == null || children.size() == 0)
+        if (children == null || children.size() == 0)
             return this;
-        
+
         boolean selected = false;
         boolean unselected = false;
         SelectionState result = null;
         for (AbstractCatalogNode child : children) {
-            if(!child.isSelectable())
+            if (!child.isSelectable())
                 continue;
-            
-            SelectionState childState =  child.getSelectionState();
+
+            SelectionState childState = child.getSelectionState();
             selected = selected || childState == SelectionState.SELECTED;
             unselected = unselected || childState == SelectionState.UNSELECTED;
-            if((selected && unselected) || childState == SelectionState.PARTIAL) {
+            if ((selected && unselected)
+                    || childState == SelectionState.PARTIAL) {
                 result = SelectionState.PARTIAL;
                 break;
             }
         }
-        if(result == null && unselected)
+        if (result == null && unselected)
             result = selectionState.UNSELECTED;
-        if(result != null && result != selectionState) {
+        if (result != null && result != selectionState) {
             selectionState = result;
         }
-        if(parent != null)
+        if (parent != null)
             return parent.checkPartialSelection();
         return this;
+    }
+
+    public int compareTo(AbstractCatalogNode other) {
+        if (this instanceof AbstractPlaceholderNode
+                && !(other instanceof AbstractPlaceholderNode))
+            return 1;
+        else if (other instanceof AbstractPlaceholderNode
+                && !(this instanceof AbstractPlaceholderNode))
+            return -1;
+        String label1 = this.getNodeLabel();
+        String label2 = other.getNodeLabel();
+        return label1.compareTo(label2);
+
     }
 
 }
