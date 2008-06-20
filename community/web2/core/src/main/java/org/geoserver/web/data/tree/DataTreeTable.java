@@ -14,15 +14,17 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.tree.table.AbstractRenderableColumn;
+import org.apache.wicket.extensions.markup.html.tree.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.AbstractTreeColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation;
 import org.apache.wicket.extensions.markup.html.tree.table.IColumn;
+import org.apache.wicket.extensions.markup.html.tree.table.IRenderable;
 import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignment;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.tree.ITreeStateListener;
 import org.apache.wicket.model.Model;
@@ -40,6 +42,7 @@ public class DataTreeTable extends TreeTable {
         setRootLess(true);
         getTreeState().setAllowSelectMultiple(false);
         getTreeState().addTreeStateListener(new TreeListener(this));
+        
 
         this.container = container;
     }
@@ -169,26 +172,26 @@ public class DataTreeTable extends TreeTable {
         }
     }
 
-    static class ItemActionColumn extends AbstractRenderableColumn implements
-            IColumn {
+    static class ItemActionColumn extends AbstractColumn {
 
         public ItemActionColumn() {
-            super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL),
+            super(new ColumnLocation(Alignment.MIDDLE, 1, Unit.PROPORTIONAL),
                     "Action");
         }
-
-        @Override
-        public String getNodeValue(TreeNode node) {
-            return "Edit controls should be here for node "
-                    + ((AbstractCatalogNode) node).getNodeLabel();
-        }
         
-        @Override
         public Component newCell(MarkupContainer parent, String id,
                 TreeNode node, int level) {
-            // TODO Auto-generated method stub
-            return super.newCell(parent, id, node, level);
+            if(!(node instanceof AbstractPlaceholderNode))
+                return new EditRemovePanel(id, (AbstractCatalogNode) node);
+            else
+                return new EmptyPanel(id);
         }
+
+        public IRenderable newCell(TreeNode node, int level) {
+            return null;
+        }
+        
+        
     }
 
     /**
