@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.geoserver.web.data.tree;
 
 import java.io.Serializable;
@@ -27,7 +24,7 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
 
     String name;
 
-    TreeNode parent;
+    AbstractCatalogNode parent;
 
     transient List<AbstractCatalogNode> childNodes;
 
@@ -49,7 +46,7 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
         return catalog;
     }
 
-    protected AbstractCatalogNode setParent(TreeNode parent) {
+    protected AbstractCatalogNode setParent(AbstractCatalogNode parent) {
         this.parent = parent;
         return this;
     }
@@ -85,7 +82,7 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
         return childNodes().indexOf(node);
     }
 
-    public TreeNode getParent() {
+    public AbstractCatalogNode getParent() {
         return parent;
     }
 
@@ -98,6 +95,7 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
             synchronized (this) {
                 if (childNodes == null) {
                     childNodes = buildChildNodes();
+                    // sort child nodes
                     Collections.sort(childNodes, new Comparator<TreeNode>() {
                         public int compare(TreeNode o1, TreeNode o2) {
                             String label1 = ((AbstractCatalogNode) o1)
@@ -111,6 +109,16 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
                             return label1.compareTo(label2);
                         }
                     });
+                    
+                    // manage selection
+                    if(selectionState == SelectionState.SELECTED)
+                        for (AbstractCatalogNode child : childNodes) {
+                            child.setSelectionState(SelectionState.SELECTED);
+                        }
+                    else
+                        for (AbstractCatalogNode child : childNodes) {
+                            child.setSelectionState(SelectionState.UNSELECTED);
+                        }
                 }
             }
         }
@@ -159,9 +167,10 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
     public void setSelectionState(SelectionState state) {
         if(isSelectable()) {
             this.selectionState = state;
-            for (AbstractCatalogNode child : childNodes()) {
-                child.setSelectionState(state);
-            }
+            if(state != SelectionState.PARTIAL && childNodes != null)
+                for (AbstractCatalogNode child : childNodes) {
+                    child.setSelectionState(state);
+                }
         }
     }
     
@@ -171,6 +180,39 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
     
     public boolean isSelectable() {
         return true;
+    }
+
+    /**
+     * Updates the partial selection state of node and recurses
+     * up to the root, and returns the higher node that got updated
+     * during the process
+     */
+    public AbstractCatalogNode checkPartialSelection() {
+        List<AbstractCatalogNode> children = childNodes();
+        if(children == null || children.size() == 0)
+            return this;
+        
+        boolean selected = false;
+        boolean unselected = false;
+        SelectionState result = null;
+        for (AbstractCatalogNode child : children) {
+            if(!child.isSelectable())
+                continue;
+            
+            SelectionState childState =  child.getSelectionState();
+            selected = selected || childState == SelectionState.SELECTED;
+            unselected = unselected || childState == SelectionState.UNSELECTED;
+            if((selected && unselected) || childState == SelectionState.PARTIAL)
+                result = SelectionState.PARTIAL;
+        }
+        if(result == null && unselected)
+            result = selectionState.UNSELECTED;
+        if(result != null && result != selectionState) {
+            selectionState = result;
+        }
+        if(parent != null)
+            return parent.checkPartialSelection();
+        return this;
     }
 
 }

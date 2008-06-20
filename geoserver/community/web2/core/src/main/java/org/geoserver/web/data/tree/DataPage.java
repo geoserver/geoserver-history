@@ -217,12 +217,16 @@ public class DataPage extends GeoServerBasePage {
     class SelectionColumn extends AbstractColumn {
 
         public SelectionColumn() {
-            super(new ColumnLocation(Alignment.LEFT, 50, Unit.PX), "");
+            super(new ColumnLocation(Alignment.LEFT, 32, Unit.PX), "");
         }
 
         public Component newCell(MarkupContainer parent, String id,
                 TreeNode node, int level) {
-            return new EmptyPanel(id);
+            AbstractCatalogNode cn = (AbstractCatalogNode) node;
+            if(!cn.isSelectable())
+                return new EmptyPanel(id);
+            else
+                return new SelectionPanel(id, node, tree);
         }
 
         public IRenderable newCell(TreeNode node, int level) {
