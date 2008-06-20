@@ -6,6 +6,7 @@ package org.geoserver.web.data.tree;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -56,6 +57,7 @@ class DataStoreNode extends AbstractCatalogNode {
                 node.setSelectionState(state);
                 result.add(node);
             }
+            Collections.sort(result);
         } catch(IOException e) {
             LOGGER.log(Level.SEVERE, "Problem occurred while computing unconfigured elements");
         }
