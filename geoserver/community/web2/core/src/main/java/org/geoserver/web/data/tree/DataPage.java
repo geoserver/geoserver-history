@@ -2,6 +2,7 @@ package org.geoserver.web.data.tree;
 
 import java.io.Serializable;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -21,7 +22,12 @@ import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignment;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.tree.ITreeStateListener;
 import org.apache.wicket.model.Model;
@@ -30,7 +36,9 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.MainPageInfo;
 import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 
@@ -63,6 +71,23 @@ public class DataPage extends GeoServerBasePage {
             }
         });
         add(form);
+        
+        List<ResourceInfo> resources = getGeoServer().getCatalog().getResources(ResourceInfo.class);
+        ListView view = new ListView("resources", resources){
+                @Override
+                protected void populateItem(ListItem item) {
+                        final ResourceInfo info = (ResourceInfo)item.getModelObject();
+                        Link link = new Link("resourcelink"){
+                                @Override
+                                public void onClick() {
+                                        setResponsePage(new ResourceConfigurationPage(info));
+                                }
+                        };
+                        link.add(new Label("resourcelabel", info.getId()));
+                        item.add(link);
+                }
+        };
+        add(view);
     }
 
     class UnconfiguredFeatureTypesPanel extends LinkPanel {
