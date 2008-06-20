@@ -28,6 +28,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.tree.ITreeStateListener;
 import org.apache.wicket.model.Model;
+import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.vfny.geoserver.util.DataStoreUtils;
 
@@ -129,7 +130,8 @@ public class DataTreeTable extends TreeTable {
 
         @Override
         protected void onClick(AjaxRequestTarget target) {
-            System.out.println("Hello Gabriel!");
+            final String workspaceId = getParent().getId();
+            setResponsePage(new NewDataPage(workspaceId));
         }
         
         @Override

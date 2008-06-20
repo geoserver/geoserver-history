@@ -18,7 +18,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -110,6 +109,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
             }
             parametersMap.put(parametersInfo[i].key, value);
         }
+        parametersMap.put(DATASTORE_ID_PROPERTY_NAME, dataStoreFactDisplayName);
         init(workspaceId, null, dsFact);
     }
 
@@ -175,7 +175,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
                             .singletonList(dsIdValidator));
         } else {
             dataStoreIdPanel = new LabelParamPanel("dataStoreIdPanel", parametersMap,
-                    DATASTORE_ID_PROPERTY_NAME);
+                    DATASTORE_ID_PROPERTY_NAME, "Data Source Name");
         }
 
         paramsForm.add(dataStoreIdPanel);

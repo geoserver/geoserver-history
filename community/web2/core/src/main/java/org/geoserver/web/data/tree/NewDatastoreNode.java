@@ -17,7 +17,7 @@ public class NewDatastoreNode extends AbstractPlaceholderNode {
 
     @Override
     protected String getNodeLabel() {
-        return "Add new datastore";
+        return "Add Data";
     }
 
 }
