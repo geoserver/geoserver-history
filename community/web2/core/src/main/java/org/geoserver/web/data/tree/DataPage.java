@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.tree.ITreeStateListener;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.data.NewDataPage;
 
@@ -97,7 +98,8 @@ public class DataPage extends GeoServerBasePage {
 
         @Override
         protected void onClick(AjaxRequestTarget target) {
-            final String workspaceId = getParent().getId();
+            final WorkspaceInfo workspace = ((NewDatastoreNode)node).getModel();
+            final String workspaceId = workspace.getId();
             setResponsePage(new NewDataPage(workspaceId));
         }
 
