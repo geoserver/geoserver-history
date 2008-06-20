@@ -25,5 +25,10 @@ public abstract class AbstractPlaceholderNode extends AbstractCatalogNode {
     protected List<AbstractCatalogNode> buildChildNodes() {
         return Collections.emptyList();
     }
+    
+    @Override
+    public boolean isSelectable() {
+        return false;
+    }
 
 }

@@ -37,5 +37,15 @@ public class DataTreeTable extends TreeTable {
     public ResourceReference getNodeIcon(TreeNode node) {
         return super.getNodeIcon(node);
     }
+    
+    /**
+     * Forces a refresh of the tree from the specified node downwards
+     * @param node
+     */
+    public void refresh(TreeNode node) {
+        // crude hack... I could not find a real "refresh" method, but this one
+        // works as one...
+        getTreeState().expandNode(node);
+    }
 
 }
