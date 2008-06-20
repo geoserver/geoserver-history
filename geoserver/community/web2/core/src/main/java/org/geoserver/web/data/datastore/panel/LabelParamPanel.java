@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.geoserver.web.data.datastore.ParamInfo;
 import org.geoserver.web.util.MapModel;
 
 /**
@@ -17,9 +16,10 @@ public class LabelParamPanel extends Panel {
 
     private static final long serialVersionUID = -1816280754831848070L;
 
-    public LabelParamPanel(final String id, final Map<String, ?> paramsMap, final String paramName) {
+    public LabelParamPanel(final String id, final Map<String, ?> paramsMap, final String paramName,
+            final String paramLabel) {
         super(id);
-        Label label = new Label("paramName", paramName);
+        Label label = new Label("paramName", paramLabel);
         Label valueLabel = new Label("paramValue", new MapModel(paramsMap, paramName));
 
         add(label);
