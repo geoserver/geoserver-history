@@ -16,9 +16,9 @@ class CatalogRootNode extends AbstractCatalogNode {
         super("", null);
     }
 
-    protected List<TreeNode> buildChildNodes() {
+    protected List<AbstractCatalogNode> buildChildNodes() {
         List<WorkspaceInfo> workspaces = getCatalog().getWorkspaces();
-        List<TreeNode> childNodes = new ArrayList<TreeNode>();
+        List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
         for (WorkspaceInfo ws : workspaces) {
             childNodes.add(new WorkspaceNode(ws.getName(), this));
         }

@@ -5,20 +5,17 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.extensions.breadcrumb.BreadCrumbBar;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.Fragment;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.web.admin.ServerAdminPage;
-import org.geoserver.web.data.DataPage;
 import org.geoserver.web.services.ServicePageInfo;
 
 /**
@@ -72,7 +69,7 @@ public class GeoServerBasePage extends WebPage {
         add( services );
         
         //data link
-        add( new BookmarkablePageLink( "data", DataPage.class ) 
+        add( new BookmarkablePageLink( "data", org.geoserver.web.data.tree.DataPage.class ) 
             .add( new Label( "label", new StringResourceModel( "data", (Component) null, null ) ) ) );
     }
 

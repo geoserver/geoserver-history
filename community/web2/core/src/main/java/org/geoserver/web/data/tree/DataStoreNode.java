@@ -25,10 +25,10 @@ class DataStoreNode extends AbstractCatalogNode {
         super(id, parent);
     }
 
-    protected List<TreeNode> buildChildNodes() {
+    protected List<AbstractCatalogNode> buildChildNodes() {
         List<FeatureTypeInfo> types = getCatalog().getFeatureTypesByStore(
                 getModel());
-        List<TreeNode> childNodes = new ArrayList<TreeNode>();
+        List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
         for (FeatureTypeInfo type : types) {
             childNodes.add(new ResourceNode(type.getName(), this,
                     FeatureTypeInfo.class));

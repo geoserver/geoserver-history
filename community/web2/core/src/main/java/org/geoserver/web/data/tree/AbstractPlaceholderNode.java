@@ -22,7 +22,7 @@ public abstract class AbstractPlaceholderNode extends AbstractCatalogNode {
     }
 
     @Override
-    protected List<TreeNode> buildChildNodes() {
+    protected List<AbstractCatalogNode> buildChildNodes() {
         return Collections.emptyList();
     }
 

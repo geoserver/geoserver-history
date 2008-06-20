@@ -20,6 +20,8 @@ import org.geotools.util.logging.Logging;
 
 abstract class AbstractCatalogNode implements TreeNode, Serializable,
         IDetachable {
+    
+    public enum SelectionState { SELECTED, UNSELECTED, PARTIAL};
 
     static final Logger LOGGER = Logging.getLogger(AbstractCatalogNode.class);
 
@@ -27,10 +29,12 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
 
     TreeNode parent;
 
-    transient List<TreeNode> childNodes;
+    transient List<AbstractCatalogNode> childNodes;
 
     transient Catalog catalog;
-
+    
+    SelectionState selectionState;
+    
     public AbstractCatalogNode(String id, AbstractCatalogNode parent) {
         if (id == null)
             throw new NullPointerException("Id cannot be null");
@@ -89,7 +93,7 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
         return getChildCount() <= 0;
     }
 
-    List<TreeNode> childNodes() {
+    List<AbstractCatalogNode> childNodes() {
         if (childNodes == null) {
             synchronized (this) {
                 if (childNodes == null) {
@@ -114,7 +118,7 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
         return childNodes;
     }
 
-    protected abstract List<TreeNode> buildChildNodes();
+    protected abstract List<AbstractCatalogNode> buildChildNodes();
 
     protected String getNodeLabel() {
         return getModel().toString();
@@ -144,5 +148,29 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
     }
 
     protected abstract Object getModel();
+    
+    public void nextSelectionState() {
+        if(selectionState == SelectionState.SELECTED || selectionState == SelectionState.PARTIAL)
+            setSelectionState(SelectionState.UNSELECTED);
+        else
+            setSelectionState(SelectionState.SELECTED);
+    }
+    
+    public void setSelectionState(SelectionState state) {
+        if(isSelectable()) {
+            this.selectionState = state;
+            for (AbstractCatalogNode child : childNodes()) {
+                child.setSelectionState(state);
+            }
+        }
+    }
+    
+    public SelectionState getSelectionState() {
+        return selectionState;
+    }
+    
+    public boolean isSelectable() {
+        return true;
+    }
 
 }
