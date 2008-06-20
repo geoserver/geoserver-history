@@ -1,6 +1,33 @@
 <html xmlns:wicket="http://wicket.apache.org/">
   <body>
     <wicket:extend>
+      <li>
+         <label><wicket:message key="serviceLevel">Service Level</wicket:message></label>
+         <span wicket:id="serviceLevel">
+           <input wicket:id="basic" class="field radio" type="radio"></input>
+           <label class="choice">
+             <wicket:message key="basic.title">Basic</wicket:message>
+           </label>
+           <input wicket:id="transactional" class="field radio" type="radio"></input>
+           <label class="choice">
+             <wicket:message key="transactional.title">Transactional</wicket:message>
+           </label>
+           <input wicket:id="complete" class="field radio" type="radio"></input> 
+           <label class="choice">
+             <wicket:message key="complete.title">Complete</wicket:message>
+           </label>
+         </span>
+         <p class="instruct">
+         </p>
+      </li>
+      <li>
+        <span>
+          <label><wicket:message key="maxFeatures.title">Maximum Features</wicket:message></label>
+          <input wicket:id="maxFeatures" class="field text" type="text"></input>
+        </span>
+        <p class="instruct">
+        </p>
+      </li>
     </wicket:extend>
   </body>
 </html>
