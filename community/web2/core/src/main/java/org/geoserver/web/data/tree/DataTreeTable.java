@@ -177,8 +177,8 @@ public class DataTreeTable extends TreeTable {
     static class ItemActionColumn extends AbstractColumn {
 
         public ItemActionColumn() {
-            super(new ColumnLocation(Alignment.MIDDLE, 1, Unit.PROPORTIONAL),
-                    "Action");
+            super(new ColumnLocation(Alignment.LEFT, 50, Unit.PX),
+                    "");
         }
         
         public Component newCell(MarkupContainer parent, String id,
@@ -253,11 +253,11 @@ public class DataTreeTable extends TreeTable {
             if (selected instanceof UnconfiguredFeatureTypesNode) {
 
             }
-            TreeNode node = getWorkspaceNode(selected);
-            if (node != null) {
-                if (!tree.getTreeState().isNodeSelected(node))
-                    tree.getTreeState().selectNode(node, true);
-            }
+//            TreeNode node = getWorkspaceNode(selected);
+//            if (node != null) {
+//                if (!tree.getTreeState().isNodeSelected(node))
+//                    tree.getTreeState().selectNode(node, true);
+//            }
             if (!tree.getTreeState().isNodeExpanded(selected))
                 tree.getTreeState().expandNode(selected);
         }
