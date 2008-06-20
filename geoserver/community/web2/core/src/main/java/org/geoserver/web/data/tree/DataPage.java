@@ -93,7 +93,7 @@ public class DataPage extends GeoServerBasePage {
     class UnconfiguredFeatureTypesPanel extends LinkPanel {
 
         public UnconfiguredFeatureTypesPanel(String id, DataTreeTable tree,
-                MarkupContainer parent, AbstractCatalogNode node, int level) {
+                MarkupContainer parent, UnconfiguredFeatureTypesNode node, int level) {
             super(id, tree, parent, node, level);
             label
                     .add(new AttributeModifier("class", true, new Model(
@@ -104,7 +104,7 @@ public class DataPage extends GeoServerBasePage {
         protected void onClick(AjaxRequestTarget target) {
             ((DataStoreNode) node.getParent())
                     .setUnconfiguredChildrenVisible(true);
-            tree.getTreeState().expandNode(node.getParent());
+            tree.getTreeState().expandNode((((DataStoreNode) node.getParent()).checkPartialSelection()));
             target.addComponent(tree.getParent());
         }
 
@@ -194,7 +194,7 @@ public class DataPage extends GeoServerBasePage {
                 TreeNode node, int level) {
             if (node instanceof UnconfiguredFeatureTypesNode) {
                 return new UnconfiguredFeatureTypesPanel(id, tree, parent,
-                        (AbstractCatalogNode) node, level);
+                        (UnconfiguredFeatureTypesNode) node, level);
             }
             if (node instanceof UnconfiguredFeatureTypeNode) {
                 return new UnconfiguredFeatureTypePanel(id, tree, parent,

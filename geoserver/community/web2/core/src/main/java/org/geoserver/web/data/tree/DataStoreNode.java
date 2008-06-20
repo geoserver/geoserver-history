@@ -36,19 +36,30 @@ class DataStoreNode extends AbstractCatalogNode {
         if(!unconfiguredChildrenVisible) {      
             childNodes.add(new UnconfiguredFeatureTypesNode(name, this));
         } else {
-            try {
-                Set<String> typeNames = new HashSet<String>(Arrays.asList(getModel().getDataStore(null).getTypeNames()));
-                for (FeatureTypeInfo type : types) {
-                    typeNames.remove(type.getName());
-                }
-                for (String typeName : typeNames) {
-                    childNodes.add(new UnconfiguredFeatureTypeNode(name, typeName, this));
-                }
-            } catch(IOException e) {
-                LOGGER.log(Level.SEVERE, "Problem occurred while computing unconfigured elements");
-            }
+            childNodes.addAll(buildUnconfiguredChildren());
         }
         return childNodes;
+    }
+
+    private List<AbstractCatalogNode> buildUnconfiguredChildren() {
+        List<AbstractCatalogNode> result = new ArrayList<AbstractCatalogNode>();
+        List<FeatureTypeInfo> types = getCatalog().getFeatureTypesByStore(
+                getModel());
+        try {
+            Set<String> typeNames = new HashSet<String>(Arrays.asList(getModel().getDataStore(null).getTypeNames()));
+            for (FeatureTypeInfo type : types) {
+                typeNames.remove(type.getName());
+            }
+            SelectionState state = selectionState != SelectionState.PARTIAL ? selectionState : SelectionState.UNSELECTED;
+            for (String typeName : typeNames) {
+                UnconfiguredFeatureTypeNode node = new UnconfiguredFeatureTypeNode(name, typeName, this);
+                node.setSelectionState(state);
+                result.add(node);
+            }
+        } catch(IOException e) {
+            LOGGER.log(Level.SEVERE, "Problem occurred while computing unconfigured elements");
+        }
+        return result;
     }
 
     @Override
@@ -63,6 +74,11 @@ class DataStoreNode extends AbstractCatalogNode {
 
     public void setUnconfiguredChildrenVisible(boolean unconfiguredChildren) {
         this.unconfiguredChildrenVisible = unconfiguredChildren;
-        this.childNodes = null;
+        if(childNodes != null) {
+            if(childNodes.get(childNodes.size() - 1) instanceof UnconfiguredFeatureTypesNode)
+                childNodes.remove(childNodes.size() - 1);
+            childNodes.addAll(buildUnconfiguredChildren());
+            checkPartialSelection();
+        }
     }
 }
