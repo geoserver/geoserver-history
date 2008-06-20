@@ -111,3 +111,83 @@ span.command {
 span.unconfiguredLayer {
   font-style: italic;
 }
+
+/* forms */
+form li {
+    width:62%;
+    display:block;
+    clear:both;
+    margin:0pt;
+    padding:4px 5px 2px 9px;
+    position:relative;
+}
+
+form ul {
+    list-style-type:none;
+}
+
+label {
+    border:medium none;
+    color:#222222;
+    display:block;
+    font-size:95%;
+    font-weight:bold;
+    line-height:150%;
+    padding:0pt 0pt 1px;
+}
+
+label.choice {
+    color:#222222;
+    display:block;
+    font-weight: normal;
+    font-size:100%;
+    line-height:1.5em;
+    margin:-1.65em 0pt 0pt 25px;
+    padding:0.44em 0pt 0.5em;
+    width:90%;
+}
+label.choice {
+    color:#222222;
+    display:block;
+    font-size:100%;
+    line-height:1.5em;
+    margin:-1.65em 0pt 0pt 25px;
+    padding:0.44em 0pt 0.5em;
+    width:90%;
+}
+
+textarea.medium {
+    height:10em;
+}
+
+textarea.textarea {
+    font-family:"Lucida Grande",Tahoma,Arial,sans-serif;
+}
+
+input.large, select.large, textarea.textarea {
+    width:100%;
+}
+input.text, input.file {
+    padding:2px 0pt;
+}
+input.text, textarea.textarea, .firefox select.select {
+    background:#FFFFFF url(../img/fieldbg.gif) repeat-x scroll center top;
+    border-color:#7C7C7C rgb(195, 195, 195) rgb(221, 221, 221);
+    border-style:solid;
+    border-width:1px;
+    padding:0px;
+}
+
+input.text, input.file, textarea.textarea, select.select {
+    color:#333333;
+    font-size:100%;
+    margin:0pt;
+}
+
+input.checkbox, input.radio {
+    display:block;
+    height:13px;
+    line-height:1.5em;
+    margin:0.6em 0pt 0pt 3px;
+    width:13px;
+}
