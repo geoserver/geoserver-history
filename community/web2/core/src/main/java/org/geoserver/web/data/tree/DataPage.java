@@ -25,9 +25,14 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.tree.ITreeStateListener;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.data.NewDataPage;
+import org.geoserver.web.data.ResourceConfigurationPage;
 
 public class DataPage extends GeoServerBasePage {
 
@@ -110,13 +115,31 @@ public class DataPage extends GeoServerBasePage {
         }
     }
 
-    class UnconfiguredFeatureTypePanel extends LabelPanel {
+    class UnconfiguredFeatureTypePanel extends LinkPanel {
 
         public UnconfiguredFeatureTypePanel(String id, DataTreeTable tree,
                 MarkupContainer parent, AbstractCatalogNode node, int level) {
             super(id, tree, parent, node, level);
             label.add(new AttributeModifier("class", true, new Model(
                     "unconfiguredLayer")));
+        }
+        
+        /**
+         * Creates a new, detached from the catalog, {@link FeatureTypeInfo} and pass it 
+         * through to {@link ResourceConfigurationPage}
+         */
+        @Override
+        protected void onClick(AjaxRequestTarget target) {
+            UnconfiguredFeatureTypeNode unconfiguredFeatureTypeNode = ((UnconfiguredFeatureTypeNode)node);
+            String typeName = unconfiguredFeatureTypeNode.getTypeName();
+            DataStoreInfo dataStore = unconfiguredFeatureTypeNode.getModel();
+            
+            CatalogFactory factory = getCatalog().getFactory();
+            FeatureTypeInfo featureTypeInfo = factory.createFeatureType();
+            featureTypeInfo.setName(typeName);
+            featureTypeInfo.setStore(dataStore);
+
+            setResponsePage(new ResourceConfigurationPage(featureTypeInfo));
         }
     }
 
