@@ -3,7 +3,6 @@ package org.geoserver.wfs;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.wfs.GMLInfo.SrsNameStyle;
 
 /**
  * Loads and persist the {@link WFSInfo} object to and from xstream 
