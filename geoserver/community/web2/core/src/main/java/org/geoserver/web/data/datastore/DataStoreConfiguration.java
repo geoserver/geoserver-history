@@ -47,6 +47,10 @@ public class DataStoreConfiguration extends GeoServerBasePage {
 
     private static final String DATASTORE_ID_PROPERTY_NAME = "Wicket_Data_Source_Name";
 
+    private static final String DATASTORE_DESCRIPTION_PROPERTY_NAME = "Wicket_Data_Source_Description";
+
+    private static final String DATASTORE_ENABLED_PROPERTY_NAME = "Wicket_Data_Source_Enabled";
+
     /**
      * Holds datastore parameters. Properties will be settled by the form input
      * fields.
@@ -92,6 +96,9 @@ public class DataStoreConfiguration extends GeoServerBasePage {
 
         parametersMap = new HashMap<String, Serializable>(connectionParameters);
         parametersMap.put(DATASTORE_ID_PROPERTY_NAME, dataStoreInfoId);
+        parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, dataStoreInfo.getDescription());
+        parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.valueOf(dataStoreInfo
+                .isEnabled()));
 
         this.workspaceId = dataStoreInfo.getWorkspace().getId();
         init(dsFactory);
@@ -136,6 +143,9 @@ public class DataStoreConfiguration extends GeoServerBasePage {
             }
             parametersMap.put(parametersInfo[i].key, value);
         }
+        parametersMap.put(DATASTORE_ID_PROPERTY_NAME, null);
+        parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, null);
+        parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.TRUE);
 
         init(dsFact);
     }
@@ -209,6 +219,12 @@ public class DataStoreConfiguration extends GeoServerBasePage {
 
         paramsForm.add(dataStoreIdPanel);
 
+        paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", parametersMap,
+                DATASTORE_DESCRIPTION_PROPERTY_NAME, "Description", false, null));
+
+        paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel", parametersMap,
+                DATASTORE_ENABLED_PROPERTY_NAME, "Enabled"));
+
         ListView paramsList = new ListView("parameters", paramsInfo) {
             @Override
             protected void populateItem(ListItem item) {
@@ -251,17 +267,22 @@ public class DataStoreConfiguration extends GeoServerBasePage {
 
         DataStoreInfo dataStoreInfo;
 
+        // dataStoreId already validated, so its safe to use
+        final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_ID_PROPERTY_NAME);
+        final String description = (String) dsParams.get(DATASTORE_DESCRIPTION_PROPERTY_NAME);
+        final Boolean enabled = (Boolean) dsParams.get(DATASTORE_ENABLED_PROPERTY_NAME);
+
         if (null == dataStoreInfoId) {
             // it is a new datastore
 
-            // dataStoreId already validated, so its safe to use
-            final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_ID_PROPERTY_NAME);
             final WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
 
             CatalogFactory factory = catalog.getFactory();
             dataStoreInfo = factory.createDataStore();
             dataStoreInfo.setName(dataStoreUniqueName);
             dataStoreInfo.setWorkspace(workspace);
+            dataStoreInfo.setDescription(description);
+            dataStoreInfo.setEnabled(enabled.booleanValue());
 
             Map<String, Serializable> connectionParameters;
             connectionParameters = dataStoreInfo.getConnectionParameters();
@@ -278,6 +299,10 @@ public class DataStoreConfiguration extends GeoServerBasePage {
         } else {
             // it is an existing datastore that's being modified
             dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
+            dataStoreInfo.setName(dataStoreUniqueName);
+            dataStoreInfo.setDescription(description);
+            dataStoreInfo.setEnabled(enabled.booleanValue());
+
             try {
                 DataStore dataStore = dataStoreInfo.getDataStore(new NullProgressListener());
                 dataStore.dispose();
