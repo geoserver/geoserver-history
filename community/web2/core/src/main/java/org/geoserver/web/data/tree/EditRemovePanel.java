@@ -16,8 +16,11 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerApplication;
+import org.geoserver.web.data.NamespaceEditPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 
@@ -140,7 +143,14 @@ public class EditRemovePanel extends Panel {
     private static class WorkspaceAddRemoveStrategy implements AddRemoveStrategy {
 
         public void edit(final Component callingComponent, final AbstractCatalogNode node) {
-            System.out.println("Edit workspace node " + node.getNodeLabel());
+            final WorkspaceNode wsNode = (WorkspaceNode) node;
+            final WorkspaceInfo model = wsNode.getModel();
+            final Catalog catalog = node.getCatalog();
+
+            String prefix = model.getName();
+            NamespaceInfo namespace = catalog.getNamespaceByPrefix(prefix);
+            String nsId = namespace.getId();
+            callingComponent.setResponsePage(new NamespaceEditPage(nsId));
         }
 
         public void remove(final Component callingComponent, final AbstractCatalogNode node) {
