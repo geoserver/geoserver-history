@@ -43,9 +43,10 @@ public class DataPage extends GeoServerBasePage {
     public DataPage() {
         WebMarkupContainer treeContainer = new WebMarkupContainer("treeParent");
         treeContainer.setOutputMarkupId(true);
-        tree = new DataTreeTable("dataTree", new DefaultTreeModel(
-                new CatalogRootNode()), new IColumn[] { new SelectionColumn(),
-                new CatalogNameColumn(), new ActionColumn() });
+        tree = new DataTreeTable(
+                "dataTree",
+                new DefaultTreeModel(new CatalogRootNode()),
+                new IColumn[] { new SelectionColumn(), new CatalogNameColumn(), new ActionColumn() });
 
         tree.setRootLess(true);
         tree.getTreeState().setAllowSelectMultiple(false);
@@ -74,25 +75,25 @@ public class DataPage extends GeoServerBasePage {
             }
         });
         add(form);
-        
+
         List<ResourceInfo> resources = getGeoServer().getCatalog().getResources(ResourceInfo.class);
-        ListView view = new ListView("resources", resources){
-                @Override
-                protected void populateItem(ListItem item) {
-                        final ResourceInfo info = (ResourceInfo)item.getModelObject();
-                        Link link = new Link("resourcelink"){
-                                @Override
-                                public void onClick() {
-                                        setResponsePage(new ResourceConfigurationPage(info, false));
-                                }
-                        };
-                        link.add(new Label("resourcelabel", info.getId()));
-                        item.add(link);
-                }
+        ListView view = new ListView("resources", resources) {
+            @Override
+            protected void populateItem(ListItem item) {
+                final ResourceInfo info = (ResourceInfo) item.getModelObject();
+                Link link = new Link("resourcelink") {
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new ResourceConfigurationPage(info, false));
+                    }
+                };
+                link.add(new Label("resourcelabel", info.getId()));
+                item.add(link);
+            }
         };
         add(view);
     }
-    
+
     protected void configureChecked(AjaxRequestTarget target, Form form) {
         // TODO Auto-generated method stub
         
@@ -111,8 +112,7 @@ public class DataPage extends GeoServerBasePage {
     class CatalogNameColumn extends AbstractTreeColumn implements IColumn {
 
         public CatalogNameColumn() {
-            super(new ColumnLocation(Alignment.MIDDLE, 88, Unit.PROPORTIONAL),
-                    "Catalog");
+            super(new ColumnLocation(Alignment.MIDDLE, 88, Unit.PROPORTIONAL), "Catalog");
         }
 
         @Override
@@ -121,8 +121,7 @@ public class DataPage extends GeoServerBasePage {
         }
 
         @Override
-        public Component newCell(MarkupContainer parent, String id,
-                TreeNode node, int level) {
+        public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
             if (node instanceof UnconfiguredFeatureTypesNode) {
                 return new UnconfiguredFeatureTypesPanel(id, tree, parent,
                         (UnconfiguredFeatureTypesNode) node, level);
@@ -132,12 +131,10 @@ public class DataPage extends GeoServerBasePage {
                         (AbstractCatalogNode) node, level);
             }
             if (node instanceof ResourceNode) {
-                return new LabelPanel(id, tree, parent,
-                        (AbstractCatalogNode) node, level);
+                return new LabelPanel(id, tree, parent, (AbstractCatalogNode) node, level);
             }
             if (node instanceof NewDatastoreNode) {
-                return new NewDataStorePanel(id, tree, parent,
-                        (AbstractCatalogNode) node, level);
+                return new NewDataStorePanel(id, tree, parent, (AbstractCatalogNode) node, level);
             } else {
                 return super.newCell(parent, id, node, level);
             }
@@ -151,10 +148,9 @@ public class DataPage extends GeoServerBasePage {
             super(new ColumnLocation(Alignment.LEFT, 24, Unit.PX), "");
         }
 
-        public Component newCell(MarkupContainer parent, String id,
-                TreeNode node, int level) {
+        public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
             AbstractCatalogNode cn = (AbstractCatalogNode) node;
-            if(!cn.isSelectable())
+            if (!cn.isSelectable())
                 return new EmptyPanel(id);
             else
                 return new SelectionPanel(id, node, tree);
@@ -165,18 +161,17 @@ public class DataPage extends GeoServerBasePage {
         }
 
     }
-    
+
     class ActionColumn extends AbstractColumn {
 
         public ActionColumn() {
             super(new ColumnLocation(Alignment.MIDDLE, 12, Unit.PROPORTIONAL), "");
         }
 
-        public Component newCell(MarkupContainer parent, String id,
-                TreeNode node, int level) {
-            if(node instanceof UnconfiguredFeatureTypeNode)
+        public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
+            if (node instanceof UnconfiguredFeatureTypeNode)
                 return new AddConfigPanel(id, (AbstractCatalogNode) node);
-            else if(node instanceof AbstractPlaceholderNode)
+            else if (node instanceof AbstractPlaceholderNode)
                 return new EmptyPanel(id);
             else
                 return new EditRemovePanel(id, (AbstractCatalogNode) node);
@@ -189,25 +184,25 @@ public class DataPage extends GeoServerBasePage {
     }
 
     final class DataTreeListener extends TreeAdapter implements Serializable {
-        
+
         @Override
         public void nodeUnselected(TreeNode node) {
             if (!tree.getTreeState().isNodeExpanded(node))
                 tree.getTreeState().expandNode(node);
-            else 
+            else
                 tree.getTreeState().collapseNode(node);
         }
 
         public void nodeSelected(TreeNode selected) {
-            
+
             if (!tree.getTreeState().isNodeExpanded(selected))
                 tree.getTreeState().expandNode(selected);
-            else 
+            else
                 tree.getTreeState().collapseNode(selected);
-            }
+        }
 
     }
-    
+
     protected TreeNode getWorkspaceNode(TreeNode selected) {
         TreeNode node = selected;
         while (node != null && !(node instanceof WorkspaceNode)) {
@@ -218,25 +213,22 @@ public class DataPage extends GeoServerBasePage {
 
     class UnconfiguredFeatureTypesPanel extends LinkPanel {
 
-        public UnconfiguredFeatureTypesPanel(String id, DataTreeTable tree,
-                MarkupContainer parent, UnconfiguredFeatureTypesNode node, int level) {
+        public UnconfiguredFeatureTypesPanel(String id, DataTreeTable tree, MarkupContainer parent,
+                UnconfiguredFeatureTypesNode node, int level) {
             super(id, tree, parent, node, level);
-            label
-                    .add(new AttributeModifier("class", true, new Model(
-                            "command")));
+            label.add(new AttributeModifier("class", true, new Model("command")));
         }
 
         @Override
         protected void onClick(AjaxRequestTarget target) {
-            ((DataStoreNode) node.getParent())
-                    .setUnconfiguredChildrenVisible(true);
-            tree.getTreeState().expandNode((((DataStoreNode) node.getParent()).checkPartialSelection()));
+            ((DataStoreNode) node.getParent()).setUnconfiguredChildrenVisible(true);
+            tree.getTreeState().expandNode(
+                    (((DataStoreNode) node.getParent()).checkPartialSelection()));
             target.addComponent(tree.getParent());
         }
 
         @Override
-        protected ResourceReference getNodeIcon(DataTreeTable tree,
-                TreeNode node) {
+        protected ResourceReference getNodeIcon(DataTreeTable tree, TreeNode node) {
             return null;
         }
 
@@ -244,56 +236,41 @@ public class DataPage extends GeoServerBasePage {
 
     class NewDataStorePanel extends LinkPanel {
 
-        public NewDataStorePanel(String id, DataTreeTable tree,
-                MarkupContainer parent, AbstractCatalogNode node, int level) {
+        public NewDataStorePanel(String id, DataTreeTable tree, MarkupContainer parent,
+                AbstractCatalogNode node, int level) {
             super(id, tree, parent, node, level);
-            label
-                    .add(new AttributeModifier("class", true, new Model(
-                            "command")));
+            label.add(new AttributeModifier("class", true, new Model("command")));
         }
 
         @Override
         protected void onClick(AjaxRequestTarget target) {
-            final WorkspaceInfo workspace = ((NewDatastoreNode)node).getModel();
+            final WorkspaceInfo workspace = ((NewDatastoreNode) node).getModel();
             final String workspaceId = workspace.getId();
             setResponsePage(new NewDataPage(workspaceId));
         }
 
         @Override
-        protected ResourceReference getNodeIcon(DataTreeTable tree,
-                TreeNode node) {
+        protected ResourceReference getNodeIcon(DataTreeTable tree, TreeNode node) {
             return null;
         }
     }
 
     class UnconfiguredFeatureTypePanel extends LinkPanel {
 
-        public UnconfiguredFeatureTypePanel(String id, DataTreeTable tree,
-                MarkupContainer parent, AbstractCatalogNode node, int level) {
+        public UnconfiguredFeatureTypePanel(String id, DataTreeTable tree, MarkupContainer parent,
+                AbstractCatalogNode node, int level) {
             super(id, tree, parent, node, level);
-            label.add(new AttributeModifier("class", true, new Model(
-                    "unconfiguredLayer")));
+            label.add(new AttributeModifier("class", true, new Model("unconfiguredLayer")));
         }
-        
+
         /**
-         * Creates a new, detached from the catalog, {@link FeatureTypeInfo} and pass it 
-         * through to {@link ResourceConfigurationPage}
+         * Creates a new, detached from the catalog, {@link FeatureTypeInfo} and
+         * pass it through to {@link ResourceConfigurationPage}
          */
         @Override
         protected void onClick(AjaxRequestTarget target) {
-            UnconfiguredFeatureTypeNode unconfiguredFeatureTypeNode = ((UnconfiguredFeatureTypeNode)node);
-            String typeName = unconfiguredFeatureTypeNode.getTypeName();
-            DataStoreInfo dataStore = unconfiguredFeatureTypeNode.getModel();
-            
-            CatalogFactory factory = getCatalog().getFactory();
-            FeatureTypeInfo featureTypeInfo = factory.createFeatureType();
-            featureTypeInfo.setName(typeName);
-            featureTypeInfo.setStore(dataStore);
-
-            setResponsePage(new ResourceConfigurationPage(featureTypeInfo, false));
+            EditRemovePanel.edit(this, (AbstractCatalogNode) node);
         }
     }
-    
-   
 
 }
