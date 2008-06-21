@@ -6,14 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
+import org.geoserver.web.data.tree.DataPage;
 import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.data.DataAccessFactory;
@@ -21,6 +20,16 @@ import org.geotools.data.DataAccessFinder;
 import org.geotools.factory.Hints;
 import org.vfny.geoserver.util.DataStoreUtils;
 
+/**
+ * Page that presents a list of vector and raster store types available in the
+ * classpath in order to choose what kind of data source to create.
+ * <p>
+ * Meant to be called by {@link DataPage} when about to add a new datastore or
+ * coverage.
+ * </p>
+ * 
+ * @author Gabriel Roldan
+ */
 public class NewDataPage extends GeoServerBasePage {
 
     private final String workspaceId;
@@ -45,11 +54,12 @@ public class NewDataPage extends GeoServerBasePage {
                 };
                 link.add(new Label("resourcelabel", dataStoreFactoryName));
                 item.add(link);
-                String description = DataStoreUtils.aquireFactory(dataStoreFactoryName).getDescription();
+                String description = DataStoreUtils.aquireFactory(dataStoreFactoryName)
+                        .getDescription();
                 item.add(new Label("resourceDescription", description));
             }
         };
-        
+
         final ListView coverageLinks = new ListView("rasterResources", availableCoverageStores) {
             @Override
             protected void populateItem(ListItem item) {
@@ -58,7 +68,7 @@ public class NewDataPage extends GeoServerBasePage {
                 link = new Link("resourcelink") {
                     @Override
                     public void onClick() {
-                        //TODO
+                        // TODO
                     }
                 };
                 link.add(new Label("resourcelabel", coverageFactoryName));
@@ -67,7 +77,7 @@ public class NewDataPage extends GeoServerBasePage {
                 item.add(new Label("resourceDescription", description));
             }
         };
-        
+
         add(dataStoreLinks);
         add(coverageLinks);
     }
