@@ -3,18 +3,18 @@
 <body>
 <form name="theForm">
     <wicket:panel> 
-    <h3> WMS Settings </h3>
-        <div>Default Style</div>
+    <h3><wicket:message key="page.title">Default Title</wicket:message></h3>
+        <div><wicket:message key="page.defaultStyle">Default Style</wicket:message></div>
         <select wicket:id="defaultStyle"></select>
         
-        <div>Additional Styles</div>
+        <div><wicket:message key="page.addStyles">Additional Styles</wicket:message></div>
         <select wicket:id="extraStyles" multiple="multiple"></select> <br/>
         <button wicket:id="addStyles" type="submit">Add Styles</button>
         <button wicket:id="removeStyles" type="submit">Remove Styles</button> <br />
-        <div>Available Styles</div>
+        <div><wicket:message key="page.availStyles">Default Available Styles</wicket:message></div>
         <select wicket:id="availableStyles" multiple="multiple"></select> <br/>
 
-        <div>WMS Path</div>
+        <div><wicket:message key="page.wmsPath">Default WMS Path</wicket:message></div>
         <input  wicket:id="wmsPath" type="text"></input>
     </wicket:panel>
     <input type="submit" value="Submit!"></input>

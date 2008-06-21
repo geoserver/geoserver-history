@@ -9,7 +9,6 @@ import org.geoserver.web.util.MapModel;
 public class HTTPLayerConfig extends LayerConfigurationPanel {
     public HTTPLayerConfig(String id, IModel model){
         super(id, model);
-        add(new Label("section", "HTTP Settings"));
         add(new CheckBox("cachingEnabled", new MapModel(getLayerInfo().getResource().getMetadata(), "cachingEnabled")));
         add(new TextField("cacheAgeMax", new MapModel(getLayerInfo().getResource().getMetadata(), "cacheAgeMax")));
     }

@@ -3,18 +3,16 @@
 <body>
 <form>
     <wicket:panel>
-        <h3 wicket:id="section">Basic</h3>
-        Name: <input type="text" wicket:id="name"></input> <br/>
-        Enabled: <input type="checkbox" wicket:id="enabled"></input> <br/>
+        <h3><wicket:message key="page.title">Default Title</wicket:message></h3>
+        <wicket:message key="name">Default Name</wicket:message>: <input type="text" wicket:id="name"></input> <br/>
+        <wicket:message key="enabled">Default Enabled</wicket:message>: <input type="checkbox" wicket:id="enabled"></input> <br/>
         <!-- Options which should be exposed eventually.  These aren't there on the backend yet so...
         Keywords: <select wicket:id="keywords" multiple="multiple"></select> <br/>
         <button wicket:id="removeKeywords" type="submit">Remove selected</button> <br/>
         New Keyword <input type="text" wicket:id="newKeyword"></input>
         <button wicket:id="addKeyword" type="submit"> Add </button> <br/>
-        Native SRS: <input type="text" wicket:id="SRS"></input> <br/>
-        Native BBox: <input type="text" wicket:id="nativeBoundingBox"></input> <br/>
-        Published BBox:  <span style="border:1px; border-color:black; text-color: gray" wicket:id="boundingBox"></span> <br/>
-        Lat/Lon BBox: <input type="text" wicket:id="latLonBoundingBox"></input> <br/> 
+        <wicket:message key="page.publishBbox">Default Published BBox</wicket:message>:  <span style="border:1px; border-color:black; text-color: gray" wicket:id="boundingBox"></span> <br/>
+        
         -->
     </wicket:panel>
     <input type="submit" value="Save Changes"></input>
