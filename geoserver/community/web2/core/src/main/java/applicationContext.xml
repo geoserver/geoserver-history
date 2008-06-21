@@ -64,6 +64,53 @@
     <property name="titleKey" value="publish.layer.config.http"/>
     <property name="componentClass" value="org.geoserver.web.publish.HTTPLayerConfig"/>
   </bean>
+  
+  <bean id="h2Config" class="org.geoserver.web.data.DataStorePanelInfo">
+    <property name="id" value="h2"/>
+    <property name="factoryClass" value="org.geotools.data.h2.H2DataStoreFactory"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+  </bean>
+  
+  <bean id="postgisConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+    <property name="id" value="postgis"/>
+    <property name="factoryClass" value="org.geotools.data.postgis.PostgisDataStoreFactory"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+  </bean>
+  
+  <bean id="shapefileConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+    <property name="id" value="property"/>
+    <property name="factoryClass" value="org.geotools.data.shapefile.ShapefileDataStoreFactory"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/page_white_vector.png"/>
+  </bean>
+  
+  <!-- 
+  <bean id="mySqlConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+    <property name="id" value="MySql"/>
+    <property name="storeClassName" value="org.geotools.data.mysql.MySQLDataStore"/>
+    <property name="factoryClassName" value="org.geotools.data.mysql.MySQLDataStoreFactory"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+  </bean>
+  
+  <bean id="propertyConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+    <property name="id" value="property"/>
+    <property name="storeDisplayName" value="Properties"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+  </bean>
+  
+  
+  
+  <bean id="wfsConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+    <property name="id" value="wfs"/>
+    <property name="storeDisplayName" value="Web Feature Server"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+  </bean>
+  -->
     
   <!-- bean id="servicesPage" class="org.geoserver.web.MainPageInfo">
     <property name="id" value="services"/>

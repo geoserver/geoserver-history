@@ -25,16 +25,15 @@ class WorkspaceNode extends AbstractCatalogNode {
         List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
         for (StoreInfo store : stores) {
             // hack here: if the node is a datastore that has just one
-            // possible child
-            // we're replacing it with its child, that we have to reparent
-            // to this node as well
+            // possible child we're replacing it with its child, that we have to
+            // reparent to this node as well
             if (store instanceof DataStoreInfo) {
                 DataStoreNode dsn = new DataStoreNode(store.getName(), this);
                 DataStoreInfo ds = ((DataStoreInfo) store);
                 try {
                     if (ds.getDataStore(null).getTypeNames().length == 1
                             && getCatalog().getFeatureTypesByStore(ds).size() == 1)
-                        childNodes.add(new ResourceNode(getCatalog()
+                        childNodes.add(new ResourceNode(dsn.name, getCatalog()
                                 .getFeatureTypesByStore(ds).get(0).getName(),
                                 this, FeatureTypeInfo.class));
                     else
@@ -43,12 +42,12 @@ class WorkspaceNode extends AbstractCatalogNode {
                     childNodes.add(dsn);
                 }
             } else {
-                CoverageStoreNode cs = new CoverageStoreNode(store.getName(),
+                CoverageStoreNode csn = new CoverageStoreNode(store.getName(),
                         this);
-                if (cs.getChildCount() != 1)
-                    childNodes.add(cs);
+                if (csn.getChildCount() != 1)
+                    childNodes.add(csn);
                 else
-                    childNodes.add(new ResourceNode(getCatalog()
+                    childNodes.add(new ResourceNode(csn.name, getCatalog()
                             .getCoveragesByStore((CoverageStoreInfo) store)
                             .get(0).getName(), this, CoverageInfo.class));
             }

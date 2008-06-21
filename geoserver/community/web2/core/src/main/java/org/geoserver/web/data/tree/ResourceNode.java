@@ -10,11 +10,15 @@ import org.geoserver.catalog.ResourceInfo;
 
 class ResourceNode extends AbstractCatalogNode {
 
-    private Class clazz;
+    private Class resourceType;
 
-    public ResourceNode(String id, AbstractCatalogNode parent, Class clazz) {
-        super(id, parent);
-        this.clazz = clazz;
+    private String storeName;
+
+    public ResourceNode(String storeName, String name,
+            AbstractCatalogNode parent, Class clazz) {
+        super(name, parent);
+        this.storeName = storeName;
+        this.resourceType = clazz;
     }
 
     protected List buildChildNodes() {
@@ -23,11 +27,20 @@ class ResourceNode extends AbstractCatalogNode {
 
     @Override
     protected ResourceInfo getModel() {
-        return getCatalog().getResourceByName(name, clazz);
+        return getCatalog().getResourceByName(name, resourceType);
     }
 
     @Override
     protected String getNodeLabel() {
         return getModel().getName();
     }
+
+    protected Class getResourceType() {
+        return resourceType;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
 }
