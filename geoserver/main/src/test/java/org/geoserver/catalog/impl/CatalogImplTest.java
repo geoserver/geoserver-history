@@ -271,6 +271,8 @@ public class CatalogImplTest extends TestCase {
         catch( Exception e) {
         }
         
+        final String ws2Id = ws2.getId();
+        
         ws2.setName( "ws2");
         
         WorkspaceInfo ws3 = catalog.getWorkspaceByName(ws.getName());
@@ -280,6 +282,10 @@ public class CatalogImplTest extends TestCase {
         ws3 = catalog.getWorkspace(ws2.getName());
         assertEquals(ws2, ws3);
         assertEquals( "ws2", ws3.getName() );
+        
+        WorkspaceInfo ws2ById = catalog.getWorkspace(ws2Id);
+        assertNotNull(ws2ById);
+        assertEquals(ws2, ws2ById);
     }
     
     public void testWorkspaceEvents() {
@@ -314,6 +320,8 @@ public class CatalogImplTest extends TestCase {
         assertTrue( catalog.getDataStores().isEmpty() );
         catalog.add( ds );
         assertEquals( 1, catalog.getDataStores().size() );
+        
+        DataStoreInfo retrieved = catalog.getDataStore(ds.getId());
         
         DataStoreInfo ds2 = catalog.getFactory().createDataStore();
         try {
