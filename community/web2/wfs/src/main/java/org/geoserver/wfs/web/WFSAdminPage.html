@@ -2,19 +2,19 @@
   <body>
     <wicket:extend>
       <li>
-         <label><wicket:message key="serviceLevel">Service Level</wicket:message></label>
+         <label><wicket:message key="page.serviceLevel">Service Level</wicket:message></label>
          <span wicket:id="serviceLevel">
            <input wicket:id="basic" class="field radio" type="radio"></input>
            <label class="choice">
-             <wicket:message key="basic.title">Basic</wicket:message>
+             <wicket:message key="page.basic">Basic</wicket:message>
            </label>
            <input wicket:id="transactional" class="field radio" type="radio"></input>
            <label class="choice">
-             <wicket:message key="transactional.title">Transactional</wicket:message>
+             <wicket:message key="page.transactional">Transactional</wicket:message>
            </label>
            <input wicket:id="complete" class="field radio" type="radio"></input> 
            <label class="choice">
-             <wicket:message key="complete.title">Complete</wicket:message>
+             <wicket:message key="page.complete">Complete</wicket:message>
            </label>
          </span>
          <p class="instruct">
@@ -22,7 +22,7 @@
       </li>
       <li>
         <span>
-          <label><wicket:message key="maxFeatures.title">Maximum Features</wicket:message></label>
+          <label><wicket:message key="wfs.maxFeatures">Maximum Features</wicket:message></label>
           <input wicket:id="maxFeatures" class="field text" type="text"></input>
         </span>
         <p class="instruct">

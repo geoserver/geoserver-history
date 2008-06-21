@@ -5,17 +5,17 @@
     <wicket:panel>
     <!-- Once things are working well we can remove the word 'default' from the default
          messages.  Leaving them in now so we can tell if i18n is being picked up   -->
-        <h3>Basic</h3>
-        <wicket:message key="title">Default Title</wicket:message>: <input type="text" wicket:id="title"></input> <br/>
-        <wicket:message key="abstract">Default Abstract</wicket:message>: <input type="text" wicket:id="abstract"></input> <br/>
-        <wicket:message key="keywords">Default Keywords</wicket:message>: <select wicket:id="keywords" multiple="multiple"></select> <br/>
-        <button wicket:id="removeKeywords" type="submit"><wicket:message key="removeSelected">Default Remove selected</wicket:message></button> <br/>
-        <wicket:message key="newKeyword">Default New Keyword</wicket:message>: <input type="text" wicket:id="newKeyword"></input>
-        <button wicket:id="addKeyword" type="submit"> <wicket:message key="add">Default Add</wicket:message> </button> <br/>
-        <wicket:message key="page.nativeSrs">Default Native SRS</wicket:message>: <input type="text" wicket:id="SRS"></input> <br/>
-        <wicket:message key="page.nativeBbox">Default Native BBox</wicket:message>: <input type="text" wicket:id="nativeBoundingBox"></input> <br/>
-        <wicket:message key="page.publishBbox">Default Published BBox</wicket:message>:  <span style="border:1px; border-color:black; text-color: gray" wicket:id="boundingBox"></span> <br/>        
-        <wicket:message key="page.latLonBbox">Default Lat/Lon BBox</wicket:message>: <input type="text" wicket:id="latLonBoundingBox"></input> <br/>
+        <h3> <wicket:message key="page.title">Basic</wicket:message></h3>
+        <wicket:message key="title">Title</wicket:message>: <input type="text" wicket:id="title"></input> <br/>
+        <wicket:message key="abstract">Abstract</wicket:message>: <input type="text" wicket:id="abstract"></input> <br/>
+        <wicket:message key="keywords">Keywords</wicket:message>: <select wicket:id="keywords" multiple="multiple"></select> <br/>
+        <button wicket:id="removeKeywords" type="submit"><wicket:message key="removeSelected">Remove selected</wicket:message></button> <br/>
+        <wicket:message key="newKeyword">New Keyword</wicket:message>: <input type="text" wicket:id="newKeyword"></input>
+        <button wicket:id="addKeyword" type="submit"> <wicket:message key="add">Add</wicket:message> </button> <br/>
+        <wicket:message key="page.nativeSrs">Native SRS</wicket:message>: <input type="text" wicket:id="SRS"></input> <br/>
+        <wicket:message key="page.nativeBbox">Native BBox</wicket:message>: <input type="text" wicket:id="nativeBoundingBox"></input> <br/>
+        <wicket:message key="page.publishBbox">Published BBox</wicket:message>:  <span style="border:1px; border-color:black; text-color: gray" wicket:id="boundingBox"></span> <br/>        
+        <wicket:message key="page.latLonBbox">Lat/Lon BBox</wicket:message>: <input type="text" wicket:id="latLonBoundingBox"></input> <br/>
     </wicket:panel>
     <input type="submit" value="Save Changes"></input>
 </form>
