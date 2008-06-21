@@ -15,7 +15,6 @@ public class BasicLayerConfig extends LayerConfigurationPanel {
 	public BasicLayerConfig(String id, IModel model) {
 		super(id, model);
 		init();
-		add(new Label("section", "Basic"));
 		add(new TextField("name"));
 		add(new CheckBox("enabled"));
 	}

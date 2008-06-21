@@ -3,9 +3,9 @@
 <body>
 <form>
     <wicket:panel>
-        <h3 wicket:id="section">HTTP Settings</h3>
-        Cache Responses: <input type="checkbox" wicket:id="cachingEnabled"></input> <br/>
-        Cache Time: <input type="text" wicket:id="cacheAgeMax"></input> <br/>
+        <h3><wicket:message key="page.title">Default HTTP Settings</wicket:message></h3>
+        <wicket:message key="page.cache">Cache Responses</wicket:message>: <input type="checkbox" wicket:id="cachingEnabled"></input> <br/>
+        <wicket:message key="page.cacheTime">Cache Time</wicket:message>: <input type="text" wicket:id="cacheAgeMax"></input> <br/>
     </wicket:panel>
     <input type="submit" value="Save Changes"></input>
 </form>

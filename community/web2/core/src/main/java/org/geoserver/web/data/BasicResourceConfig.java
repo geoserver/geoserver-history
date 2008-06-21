@@ -19,7 +19,6 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
 	public BasicResourceConfig(String id, IModel model) {
 		super(id, model);
 		init();
-		add(new Label("section", "Basic"));
 		add(new TextField("title"));
 		add(new TextField("abstract"));
 		add(new ListMultipleChoice("keywords", new PropertyModel(this, "mySelectedKeywords"), new ComponentPropertyModel("keywords")));
