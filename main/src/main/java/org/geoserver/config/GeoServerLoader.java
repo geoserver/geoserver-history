@@ -116,8 +116,9 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         initialize();
     }
     
-    public void destroy() throws Exception {
+    public void persist() throws Exception {
         //TODO: persist catalog
+        
         //TODO: persist global
 
         //persist services
@@ -127,7 +128,7 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         for ( Iterator s = services.iterator(); s.hasNext(); ) {
             ServiceInfo service = (ServiceInfo) s.next();
             for ( ServiceLoader loader : loaders ) {
-                if ( loader.getServiceId().equals(service.getId()) ) {
+                if (loader.getServiceClass().isInstance( service ) ) {
                     try {
                         loader.save( service, geoserver );
                         break;
@@ -139,6 +140,11 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 }
             }
         }
+    }
+    
+    public void destroy() throws Exception {
+        //persist
+        persist();
         
         //dispose
         geoserver.dispose();
