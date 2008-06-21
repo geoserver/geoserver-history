@@ -22,11 +22,21 @@
     <property name="id" value="geosearchLayerConfig"/>
     <property name="titleKey" value="publish.layer.config.geosearch"/>
     <property name="componentClass" value="org.geoserver.wms.web.publish.GeoSearchLayerConfigPanel"/>
+    <property name="supportedTypes">
+      <list>
+        <value>org.geoserver.catalog.FeatureTypeInfo</value>
+      </list>
+    </property>
   </bean>
 
   <bean id="kmlLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
     <property name="id" value="kmlLayerConfig"/>
     <property name="titleKey" value="publish.layer.config.kml"/>
     <property name="componentClass" value="org.geoserver.wms.web.publish.KMLLayerConfigPanel"/>
+    <property name="supportedTypes">
+      <list>
+        <value>org.geoserver.catalog.FeatureTypeInfo</value>
+      </list>
+    </property>
   </bean>
 </beans>
