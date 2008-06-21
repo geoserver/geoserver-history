@@ -45,7 +45,12 @@ public class LegacyServicesReader {
      * Root serverConfiguration element.
      */
     Element serverConfiguration;
-
+    
+    /**
+     * cached parameters 
+     */
+    Map<String,Object> global, contact, wfs, wms, wcs;
+    
     /**
      * Parses the servivces.xml file into a DOM.
      * <p>
@@ -63,6 +68,11 @@ public class LegacyServicesReader {
 
         try {
             serverConfiguration = ReaderUtils.parse(reader);
+            global = null;
+            contact = null;
+            wfs = null;
+            wms = null;
+            wcs = null;
         } finally {
             reader.close();
         }
@@ -76,9 +86,14 @@ public class LegacyServicesReader {
      * 
      */
     public Map<String,Object> global() throws Exception {
+        if ( global != null ) {
+            return global;
+        }
+        
+        
         Element globalElement = ReaderUtils.getChildElement(
                 serverConfiguration, "global");
-        HashMap global = new HashMap();
+        global = new HashMap();
 
         value("verbose", globalElement, global, Boolean.class);
         value("verboseExceptions", globalElement, global, Boolean.class);
@@ -105,10 +120,14 @@ public class LegacyServicesReader {
     }
 
     public Map<String,Object> contact() throws Exception {
+        if ( contact != null ) {
+            return contact;
+        }
+        
         Element globalElement = ReaderUtils.getChildElement(
                 serverConfiguration, "global");
         
-        HashMap<String,Object> contact = new HashMap();
+        contact = new HashMap();
         
         Element contactElement = ReaderUtils.getChildElement(globalElement, "ContactInformation");
         if ( contactElement != null ) {
@@ -137,10 +156,14 @@ public class LegacyServicesReader {
     }
     
     public Map<String,Object> wfs() throws Exception {
+        if ( wfs != null ) {
+            return wfs;
+        }
+        
         Element servicesElement = ReaderUtils.getChildElement(serverConfiguration, "services", true);
         Element wfsElement = service( servicesElement, "WFS" );
         
-        Map<String,Object> wfs = readService( wfsElement );
+        wfs = readService( wfsElement );
         value( "serviceLevel", wfsElement, wfs, Integer.class );
         value( "srsXmlStyle", wfsElement, wfs, Boolean.class, false, Boolean.TRUE );
         value( "featureBounding", wfsElement, wfs, Boolean.class, false, Boolean.FALSE );
@@ -149,10 +172,14 @@ public class LegacyServicesReader {
     }
     
     public Map<String,Object> wms() throws Exception {
+        if ( wms != null ) {
+            return wms;
+        }
+        
         Element servicesElement = ReaderUtils.getChildElement(serverConfiguration, "services", true);
         Element wmsElement = service( servicesElement, "WMS" );
         
-        Map<String,Object> wms = readService( wmsElement );
+        wms = readService( wmsElement );
         text( "globalWatermarking", wmsElement, wms, Boolean.class,false, Boolean.FALSE );
         text( "globalWatermarkingURL", wmsElement, wms, String.class, false, null );
         text( "globalWatermarkingTransparency", wmsElement, wms, Integer.class, false, 0 );
@@ -206,10 +233,14 @@ public class LegacyServicesReader {
     }
     
     public Map<String,Object> wcs() throws Exception {
+        if ( wcs != null ) {
+            return wcs;
+        }
+        
         Element servicesElement = ReaderUtils.getChildElement(serverConfiguration, "services", true);
         Element wcsElement = service( servicesElement, "WCS" );
         
-        Map<String,Object> wcs = readService( wcsElement );
+        wcs = readService( wcsElement );
         
         return wcs;
     }

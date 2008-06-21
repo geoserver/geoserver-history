@@ -19,17 +19,19 @@ import com.thoughtworks.xstream.XStream;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public abstract class XStreamServiceLoader implements ServiceLoader {
+public abstract class XStreamServiceLoader<T extends ServiceInfo> implements ServiceLoader<T> {
     
     GeoServerResourceLoader resourceLoader;
+    String filenameBase;
     
-    public XStreamServiceLoader(GeoServerResourceLoader resourceLoader) {
+    public XStreamServiceLoader(GeoServerResourceLoader resourceLoader, String filenameBase) {
         this.resourceLoader = resourceLoader;
+        this.filenameBase = filenameBase;
     }
     
-    public final ServiceInfo load( GeoServer gs ) throws Exception {
+    public final T load( GeoServer gs ) throws Exception {
         //look for file matching classname
-        String filename = getServiceId() + ".xml";
+        String filename = this.filenameBase + ".xml";
         File file = resourceLoader.find( filename );
         
         if ( file != null && file.exists() ) {
@@ -38,7 +40,7 @@ public abstract class XStreamServiceLoader implements ServiceLoader {
                 new BufferedInputStream( new FileInputStream( file ) );
             try {
                 XStream xstream = new XStream();
-                return (ServiceInfo) xstream.fromXML(in);
+                return (T) xstream.fromXML(in);
             }
             finally {
                 in.close();    
@@ -50,8 +52,8 @@ public abstract class XStreamServiceLoader implements ServiceLoader {
         }
     }
 
-    public void save(ServiceInfo service, GeoServer gs) throws Exception {
-        String filename = getServiceId() + ".xml";
+    public void save(T service, GeoServer gs) throws Exception {
+        String filename = filenameBase + ".xml";
         File file = resourceLoader.find( filename );
         if ( file == null ) {
             file = resourceLoader.createFile(filename);
@@ -69,5 +71,5 @@ public abstract class XStreamServiceLoader implements ServiceLoader {
         }
     }
     
-    protected abstract ServiceInfo createServiceFromScratch(GeoServer gs);
+    protected abstract T createServiceFromScratch(GeoServer gs);
 }
