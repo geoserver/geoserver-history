@@ -199,6 +199,8 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
         }
         if (result == null && unselected)
             result = selectionState.UNSELECTED;
+        if (result == null && selected)
+            result = selectionState.PARTIAL;
         if (result != null && result != selectionState) {
             selectionState = result;
         }
