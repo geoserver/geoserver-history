@@ -228,10 +228,6 @@ input.btTxt
 
 /* Tree Table (for overriding the Wicket tree-table.css) */
 
-div.wicket-tree-table span.b_ span.d_ {
-  padding-top: 3px;
-}
-
 div.wicket-tree-table {
   border: none;
 }
@@ -244,4 +240,13 @@ div.wicket-tree-table div.header {
 
 div.wicket-tree-table div.wicket-tree-table-body {
   border: 1px solid #D0D0D0;
+}
+
+div.wicket-tree-table div.row:last-child,
+div.wicket-tree-table div.row-selected:last-child {
+  background: none;
+}
+
+div.wicket-tree-table span.b_ span.d_ {
+  padding-top: 3px;
 }
