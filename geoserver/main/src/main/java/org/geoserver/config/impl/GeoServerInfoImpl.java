@@ -18,8 +18,6 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     String title;
 
-    int maxFeatures = Integer.MAX_VALUE;
-
     int numDecimals = 4;
 
     String onlineResource;
@@ -85,14 +83,6 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     public void setCharset(String charset) {
         this.charset = charset;
-    }
-
-    public int getMaxFeatures() {
-        return maxFeatures;
-    }
-
-    public void setMaxFeatures(int maxFeatures) {
-        this.maxFeatures = maxFeatures;
     }
 
     public int getNumDecimals() {
@@ -228,7 +218,6 @@ public class GeoServerInfoImpl implements GeoServerInfo {
                 + ((loggingLevel == null) ? 0 : loggingLevel.hashCode());
         result = prime * result
                 + ((loggingLocation == null) ? 0 : loggingLocation.hashCode());
-        result = prime * result + maxFeatures;
         result = prime * result
                 + ((metadata == null) ? 0 : metadata.hashCode());
         result = prime * result + numDecimals;
@@ -289,8 +278,6 @@ public class GeoServerInfoImpl implements GeoServerInfo {
             if (other.getLoggingLocation() != null)
                 return false;
         } else if (!loggingLocation.equals(other.getLoggingLocation()))
-            return false;
-        if (maxFeatures != other.getMaxFeatures())
             return false;
         if (numDecimals != other.getNumDecimals())
             return false;

@@ -97,7 +97,6 @@ public class GeoServerImplTest extends TestCase {
        
         global = geoServer.getGlobal();
         global.setAdminPassword( "foo" );
-        global.setMaxFeatures( 100 );
         global.setOnlineResource( "bar" );
         
         assertEquals( 0, tl.gPropertyNames.size() );
@@ -105,7 +104,6 @@ public class GeoServerImplTest extends TestCase {
         
         assertEquals( 3, tl.gPropertyNames.size() );
         assertTrue( tl.gPropertyNames.contains( "adminPassword" ) );
-        assertTrue( tl.gPropertyNames.contains( "maxFeatures" ) );
         assertTrue( tl.gPropertyNames.contains( "onlineResource" ) );
     }
     

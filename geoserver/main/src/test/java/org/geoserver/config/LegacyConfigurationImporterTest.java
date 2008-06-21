@@ -31,7 +31,6 @@ public class LegacyConfigurationImporterTest extends TestCase {
         assertEquals( "DEFAULT_LOGGING.properties", info.getLoggingLevel() );
         assertTrue( info.isStdOutLogging() );
         assertEquals( "logs/geoserver.log", info.getLoggingLocation() );
-        assertEquals( 1000000, info.getMaxFeatures() );
         assertFalse( info.isVerbose() );
         assertFalse( info.isVerboseExceptions() );  
         assertEquals( 8, info.getNumDecimals() );
