@@ -3,8 +3,6 @@ package org.geoserver.web.data.tree;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.tree.TreeNode;
-
 public abstract class AbstractPlaceholderNode extends AbstractCatalogNode {
 
     public AbstractPlaceholderNode(String id, AbstractCatalogNode parent) {
