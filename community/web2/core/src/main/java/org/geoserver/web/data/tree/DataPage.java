@@ -178,27 +178,7 @@ public class DataPage extends GeoServerBasePage {
                 tree.getTreeState().expandNode(selected);
             else 
                 tree.getTreeState().collapseNode(selected);
-            
-            // make sure 
-//            TreeNode node = getWorkspaceNode(selected);
-//            if (node != null) {
-//                if (!tree.getTreeState().isNodeSelected(node))
-//                    tree.getTreeState().selectNode(node, true);
-//            }
-        }
-
-        public void nodeExpanded(TreeNode node) {
-//            if (node instanceof WorkspaceNode) {
-//                Enumeration children = node.getParent().children();
-//                while (children.hasMoreElements()) {
-//                    WorkspaceNode ws = (WorkspaceNode) children.nextElement();
-//                    if (!ws.equals(node))
-//                        tree.getTreeState().collapseNode(ws);
-//                }
-//                tree.getTreeState().selectNode(node, true);
-//            }
-
-        }
+            }
 
     }
     
