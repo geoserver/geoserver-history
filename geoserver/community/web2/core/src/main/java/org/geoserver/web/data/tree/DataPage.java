@@ -163,30 +163,40 @@ public class DataPage extends GeoServerBasePage {
     }
 
     final class DataTreeListener extends TreeAdapter implements Serializable {
+        
+        @Override
+        public void nodeUnselected(TreeNode node) {
+            if (!tree.getTreeState().isNodeExpanded(node))
+                tree.getTreeState().expandNode(node);
+            else 
+                tree.getTreeState().collapseNode(node);
+        }
 
         public void nodeSelected(TreeNode selected) {
-            if (selected instanceof UnconfiguredFeatureTypesNode) {
-
-            }
-             TreeNode node = getWorkspaceNode(selected);
-            if (node != null) {
-                if (!tree.getTreeState().isNodeSelected(node))
-                    tree.getTreeState().selectNode(node, true);
-            }
+            
             if (!tree.getTreeState().isNodeExpanded(selected))
                 tree.getTreeState().expandNode(selected);
+            else 
+                tree.getTreeState().collapseNode(selected);
+            
+            // make sure 
+//            TreeNode node = getWorkspaceNode(selected);
+//            if (node != null) {
+//                if (!tree.getTreeState().isNodeSelected(node))
+//                    tree.getTreeState().selectNode(node, true);
+//            }
         }
 
         public void nodeExpanded(TreeNode node) {
-            if (node instanceof WorkspaceNode) {
-                Enumeration children = node.getParent().children();
-                while (children.hasMoreElements()) {
-                    WorkspaceNode ws = (WorkspaceNode) children.nextElement();
-                    if (!ws.equals(node))
-                        tree.getTreeState().collapseNode(ws);
-                }
-                tree.getTreeState().selectNode(node, true);
-            }
+//            if (node instanceof WorkspaceNode) {
+//                Enumeration children = node.getParent().children();
+//                while (children.hasMoreElements()) {
+//                    WorkspaceNode ws = (WorkspaceNode) children.nextElement();
+//                    if (!ws.equals(node))
+//                        tree.getTreeState().collapseNode(ws);
+//                }
+//                tree.getTreeState().selectNode(node, true);
+//            }
 
         }
 
