@@ -55,13 +55,13 @@ public class DataPage extends GeoServerBasePage {
         add(treeContainer);
 
         Form form = new Form("controlForm");
-        form.add(new AjaxButton("collapseAll") {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form form) {
-                tree.getTreeState().collapseAll();
-                target.addComponent(tree);
-            }
-        });
+//        form.add(new AjaxButton("collapseAll") {
+//            @Override
+//            protected void onSubmit(AjaxRequestTarget target, Form form) {
+//                tree.getTreeState().collapseAll();
+//                target.addComponent(tree);
+//            }
+//        });
         add(form);
         
         List<ResourceInfo> resources = getGeoServer().getCatalog().getResources(ResourceInfo.class);
