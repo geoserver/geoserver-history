@@ -4,6 +4,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -18,31 +19,49 @@ import org.geoserver.web.publish.LayerConfigurationPanelInfo;
 public class ResourceConfigurationPage extends GeoServerBasePage {
 
     private ResourceInfo myResourceInfo;
+    private LayerInfo myLayerInfo;
     private IModel myResourceModel;
     private IModel myLayerModel;
 
-    public ResourceConfigurationPage(ResourceInfo info){
+    private boolean isNew;
+
+    public ResourceConfigurationPage(ResourceInfo info, boolean isNew){
         myResourceInfo = info;
         myResourceModel = new CompoundPropertyModel(myResourceInfo);
-        myLayerModel = new CompoundPropertyModel(info.getCatalog().getLayers(info).get(0));
+        myLayerInfo  = info.getCatalog().getLayers(info).get(0);
+        myLayerModel = new CompoundPropertyModel(myLayerInfo);
+        this.isNew = isNew;
 
-        add(new Label("resourcename", myResourceInfo.getId()));
-        Form theForm = new Form("resource", myResourceModel);
-        add(theForm);
-        theForm.add(new ResourceConfigurationSectionListView("resources"));
-        theForm.add(new LayerConfigurationSectionListView("layers"));
+        initComponents();
     }
 
-    public ResourceConfigurationPage(LayerInfo info) {
+    public ResourceConfigurationPage(LayerInfo info, boolean isNew) {
         myResourceInfo = info.getResource();
         myResourceModel = new CompoundPropertyModel(myResourceInfo);
+        myLayerInfo = info;
         myLayerModel = new CompoundPropertyModel(info);
+        this.isNew = isNew;
 
+        initComponents();
+    }
+
+    private void initComponents(){
         add(new Label("resourcename", myResourceInfo.getId()));
         Form theForm = new Form("resource", myResourceModel);
         add(theForm);
         theForm.add(new ResourceConfigurationSectionListView("resources"));
         theForm.add(new LayerConfigurationSectionListView("layers"));
+        theForm.add(new Button("saveButton"){
+            public void onSubmit(){
+                if (isNew){
+                    myResourceInfo.getCatalog().add(myResourceInfo);
+                    myResourceInfo.getCatalog().add(myLayerInfo);
+                } else {
+                    myResourceInfo.getCatalog().save(myResourceInfo);
+                    myResourceInfo.getCatalog().save(myLayerInfo);
+                }
+            }
+        });
     }
 
     private class ResourceConfigurationSectionListView extends ListView {

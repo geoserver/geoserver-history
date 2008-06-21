@@ -77,7 +77,7 @@ public class EditRemovePanel extends Panel {
         } else if (node instanceof ResourceNode) {
             System.out.println("Edit resource " + node.getNodeLabel());
             ResourceInfo resourceInfo = (ResourceInfo)node.getModel();
-            setResponsePage(new ResourceConfigurationPage(resourceInfo));
+            setResponsePage(new ResourceConfigurationPage(resourceInfo, false));
         } else {
             throw new IllegalStateException("Don't know how to edit a "
                     + node.getClass().getSimpleName());

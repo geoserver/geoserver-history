@@ -72,7 +72,7 @@ public class DataPage extends GeoServerBasePage {
                         Link link = new Link("resourcelink"){
                                 @Override
                                 public void onClick() {
-                                        setResponsePage(new ResourceConfigurationPage(info));
+                                        setResponsePage(new ResourceConfigurationPage(info, false));
                                 }
                         };
                         link.add(new Label("resourcelabel", info.getId()));
@@ -264,7 +264,7 @@ public class DataPage extends GeoServerBasePage {
             featureTypeInfo.setName(typeName);
             featureTypeInfo.setStore(dataStore);
 
-            setResponsePage(new ResourceConfigurationPage(featureTypeInfo));
+            setResponsePage(new ResourceConfigurationPage(featureTypeInfo, false));
         }
     }
     
