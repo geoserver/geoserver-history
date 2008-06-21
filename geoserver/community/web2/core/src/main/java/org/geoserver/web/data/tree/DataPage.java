@@ -90,38 +90,38 @@ public class DataPage extends GeoServerBasePage {
         
         updateButtonState();
 
-        final Catalog catalog = getCatalog();
-        final List<ResourceInfo> resources = catalog.getResources(ResourceInfo.class);
-        // feed the ListView with a list whose elements are serializable. The
-        // index in the resources list is ok.
-        final int size = resources.size();
-        List<Integer> resourceIndexes = new ArrayList<Integer>(size);
-        for (int index = 0; index < size; index++) {
-            resourceIndexes.add(Integer.valueOf(index));
-        }
-
-        ListView view = new ListView("resources", resourceIndexes) {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void populateItem(ListItem item) {
-                final Integer index = (Integer) item.getModelObject();
-                final ResourceInfo info = resources.get(index.intValue());
-
-                Link link = new Link("resourcelink") {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new ResourceConfigurationPage(info, false));
-                    }
-                };
-                link.add(new Label("resourcelabel", info.getId()));
-                item.add(link);
-            }
-        };
-        add(view);
+//        final Catalog catalog = getCatalog();
+//        final List<ResourceInfo> resources = catalog.getResources(ResourceInfo.class);
+//        // feed the ListView with a list whose elements are serializable. The
+//        // index in the resources list is ok.
+//        final int size = resources.size();
+//        List<Integer> resourceIndexes = new ArrayList<Integer>(size);
+//        for (int index = 0; index < size; index++) {
+//            resourceIndexes.add(Integer.valueOf(index));
+//        }
+//
+//        ListView view = new ListView("resources", resourceIndexes) {
+//
+//            private static final long serialVersionUID = 1L;
+//
+//            @Override
+//            protected void populateItem(ListItem item) {
+//                final Integer index = (Integer) item.getModelObject();
+//                final ResourceInfo info = resources.get(index.intValue());
+//
+//                Link link = new Link("resourcelink") {
+//                    private static final long serialVersionUID = 1L;
+//
+//                    @Override
+//                    public void onClick() {
+//                        setResponsePage(new ResourceConfigurationPage(info, false));
+//                    }
+//                };
+//                link.add(new Label("resourcelabel", info.getId()));
+//                item.add(link);
+//            }
+//        };
+//        add(view);
     }
 
     protected void configureButtonClicked(AjaxRequestTarget target, Form form) {
