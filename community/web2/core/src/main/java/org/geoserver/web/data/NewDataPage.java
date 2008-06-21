@@ -2,23 +2,23 @@ package org.geoserver.web.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.data.coverage.RasterCoverageConfiguration;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.data.tree.DataPage;
-import org.geotools.coverage.CoverageFactoryFinder;
-import org.geotools.coverage.grid.GridCoverageFactory;
+import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
-import org.geotools.factory.Hints;
-import org.vfny.geoserver.util.DataStoreUtils;
+import org.opengis.coverage.grid.Format;
 
 /**
  * Page that presents a list of vector and raster store types available in the
@@ -32,18 +32,26 @@ import org.vfny.geoserver.util.DataStoreUtils;
  */
 public class NewDataPage extends GeoServerBasePage {
 
-    private final String workspaceId;
-
+    /**
+     * Creates the page components to present the list of available vector and
+     * raster data source types
+     * 
+     * @param workspaceId
+     *            the id of the workspace to attach the new resource store to.
+     */
     public NewDataPage(final String workspaceId) {
-        this.workspaceId = workspaceId;
 
-        final List<String> availableDataStores = getAvailableDataStoreNames();
-        final List<String> availableCoverageStores = getAvailableCoverageStoreNames();
+        final Map<String, String> dataStoreNames = getAvailableDataStoreNames();
+        final Map<String, String> coverageNames = getAvailableCoverageStoreNames();
 
-        final ListView dataStoreLinks = new ListView("vectorResources", availableDataStores) {
+        final ArrayList<String> sortedDsNames = new ArrayList<String>(dataStoreNames.keySet());
+        Collections.sort(sortedDsNames);
+
+        final ListView dataStoreLinks = new ListView("vectorResources", sortedDsNames) {
             @Override
             protected void populateItem(ListItem item) {
                 final String dataStoreFactoryName = item.getModelObjectAsString();
+                final String description = dataStoreNames.get(dataStoreFactoryName);
                 Link link;
                 link = new Link("resourcelink") {
                     @Override
@@ -54,26 +62,27 @@ public class NewDataPage extends GeoServerBasePage {
                 };
                 link.add(new Label("resourcelabel", dataStoreFactoryName));
                 item.add(link);
-                String description = DataStoreUtils.aquireFactory(dataStoreFactoryName)
-                        .getDescription();
                 item.add(new Label("resourceDescription", description));
             }
         };
 
-        final ListView coverageLinks = new ListView("rasterResources", availableCoverageStores) {
+        final List<String> sortedCoverageNames = new ArrayList<String>(coverageNames.keySet());
+        Collections.sort(sortedCoverageNames);
+
+        final ListView coverageLinks = new ListView("rasterResources", sortedCoverageNames) {
             @Override
             protected void populateItem(ListItem item) {
                 final String coverageFactoryName = item.getModelObjectAsString();
+                final String description = coverageNames.get(coverageFactoryName);
                 Link link;
                 link = new Link("resourcelink") {
                     @Override
                     public void onClick() {
-                        // TODO
+                        setResponsePage(new RasterCoverageConfiguration(workspaceId, coverageFactoryName));
                     }
                 };
                 link.add(new Label("resourcelabel", coverageFactoryName));
                 item.add(link);
-                String description = " TODO: coverage description goes here...";
                 item.add(new Label("resourceDescription", description));
             }
         };
@@ -82,29 +91,32 @@ public class NewDataPage extends GeoServerBasePage {
         add(coverageLinks);
     }
 
-    private List<String> getAvailableDataStoreNames() {
+    /**
+     * @return the name/description set of available datastore factories
+     */
+    private Map<String, String> getAvailableDataStoreNames() {
         final Iterator<DataAccessFactory> availableDataStores;
         availableDataStores = DataAccessFinder.getAvailableDataStores();
 
-        List<String> storeNames = new ArrayList<String>();
+        Map<String, String> storeNames = new HashMap<String, String>();
+
         while (availableDataStores.hasNext()) {
             DataAccessFactory factory = availableDataStores.next();
-            storeNames.add(factory.getDisplayName());
+            storeNames.put(factory.getDisplayName(), factory.getDescription());
         }
-        Collections.sort(storeNames);
         return storeNames;
     }
 
-    private List<String> getAvailableCoverageStoreNames() {
-        final Set<GridCoverageFactory> gridCoverageFactories;
-        gridCoverageFactories = CoverageFactoryFinder.getGridCoverageFactories((Hints) null);
-
-        List<String> coverageNames = new ArrayList<String>();
-        for (GridCoverageFactory factory : gridCoverageFactories) {
-            // TODO
+    /**
+     * @return the name/description set of available raster formats
+     */
+    private Map<String, String> getAvailableCoverageStoreNames() {
+        Format[] availableFormats = GridFormatFinder.getFormatArray();
+        Map<String, String> formatNames = new HashMap<String, String>();
+        for (Format format : availableFormats) {
+            formatNames.put(format.getName(), format.getDescription());
         }
-
-        return Collections.emptyList();
+        return formatNames;
     }
 
 }
