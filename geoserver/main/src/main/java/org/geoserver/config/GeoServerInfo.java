@@ -100,20 +100,6 @@ public interface GeoServerInfo {
     void setTitle(String title);
 
     /**
-     * A global cap on the number of features to allow when processing a request.
-     * 
-     * @uml.property name="maxFeatures"
-     */
-    int getMaxFeatures();
-
-    /**
-     * Sets the global cap on the number of features to allow when processing a 
-     * request.
-     * @uml.property name="maxFeatures"
-     */
-    void setMaxFeatures(int maxFeatures);
-
-    /**
      * A global cap on the number of decimals to use when encoding floating 
      * point numbers.
      * 
