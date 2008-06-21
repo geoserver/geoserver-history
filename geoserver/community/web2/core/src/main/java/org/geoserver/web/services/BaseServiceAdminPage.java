@@ -1,13 +1,18 @@
 package org.geoserver.web.services;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.GeoServerHomePage;
 
 /**
  * Base page for service administration pages.
@@ -39,15 +44,30 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
         
         T info = getGeoServer().getService( getServiceClass() );
         
-        Form form = new Form( "form", new CompoundPropertyModel( info ) );
+        Form form = new Form( "form", new CompoundPropertyModel( info ) ) {
+            protected void onSubmit() {
+                handleSubmit((T)getModelObject());
+                setResponsePage(GeoServerHomePage.class);
+            }
+        };
         add( form );
         
         form.add( new CheckBox( "enabled" ) );
-        
         form.add( new TextField( "title" ) );
         form.add( new TextArea( "abstract" ) );
         
         build(info, form);
+        
+        Button submit = new Button("submit",new StringResourceModel( "save", (Component)null, null) );
+        form.add(submit);
+        
+        Button cancel = new Button( "cancel", new StringResourceModel( "cancel", (Component)null, null) ) {
+            public void onSubmit() {
+                setResponsePage(GeoServerHomePage.class);
+            }
+        };
+        form.add( cancel );
+        cancel.setDefaultFormProcessing( false );
     }
     
     /**
@@ -72,5 +92,17 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
      */
     protected void build( T info, Form form ) {
         
+    }
+    
+    /**
+     * Callback for submit.
+     * <p>
+     * This implementation simply saves the service. Subclasses may 
+     * extend / override if need be.
+     * </p>
+     * @param info
+     */
+    protected void handleSubmit( T info ) {
+        getGeoServer().save( info );
     }
 }
