@@ -232,7 +232,12 @@ div.wicket-tree-table span.b_ span.d_ {
   padding-top: 3px;
 }
 
+div.wicket-tree-table {
+  border: none;
+}
+
 div.wicket-tree-table div.header {
+  margin-bottom: 0;
   background: transparent url(../img/ext/panel/white-top-bottom.gif) repeat-x 0 -1px;
   color: #333333;
 }
