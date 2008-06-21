@@ -174,6 +174,8 @@ public class DataStoreConfiguration extends GeoServerBasePage {
             }
         }
 
+        add(new Label("storeType", dsFactory.getDisplayName()));
+        add(new Label("storeTypeDescription", dsFactory.getDescription()));
         add(new Label("workspaceName", workspace.getName()));
 
         final Form paramsForm = new Form("dataStoreForm");
