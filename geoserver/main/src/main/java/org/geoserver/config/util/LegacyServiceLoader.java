@@ -17,7 +17,7 @@ import org.geoserver.config.ServiceLoader;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public abstract class LegacyServiceLoader implements ServiceLoader {
+public abstract class LegacyServiceLoader<T extends ServiceInfo> implements ServiceLoader<T> {
 
     /**
      * reader pointing to services.xml
@@ -41,7 +41,7 @@ public abstract class LegacyServiceLoader implements ServiceLoader {
      * This method calls through to {@link #load(LegacyServicesReader, GeoServer)} 
      * </p>
      */
-    public final ServiceInfo load(GeoServer gs) throws Exception {
+    public final T load(GeoServer gs) throws Exception {
         return load( reader, gs );
     }
     
@@ -55,7 +55,7 @@ public abstract class LegacyServiceLoader implements ServiceLoader {
      * @param reader The services.xml reader.
      * 
      */
-    abstract public ServiceInfo load( LegacyServicesReader reader, GeoServer geoServer ) throws Exception;
+    abstract public T load( LegacyServicesReader reader, GeoServer geoServer ) throws Exception;
     
     /**
      * Reads all the common attributes from the service info class.
@@ -108,7 +108,7 @@ public abstract class LegacyServiceLoader implements ServiceLoader {
         service.setSchemaBaseURL((String)properties.get("SchemaBaseUrl"));
     }
     
-    public void save(ServiceInfo service, GeoServer gs) throws Exception {
+    public void save(T service, GeoServer gs) throws Exception {
         //do nothing, saving implemented elsewhere
     }
     

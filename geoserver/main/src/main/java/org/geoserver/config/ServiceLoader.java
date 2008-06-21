@@ -11,7 +11,7 @@ package org.geoserver.config;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public interface ServiceLoader {
+public interface ServiceLoader<T extends ServiceInfo> {
 
     /**
      * The id of the service.
@@ -19,7 +19,8 @@ public interface ServiceLoader {
      * Examples: "wfs","wms","wcs",etc...
      * </p>
      */
-    String getServiceId();
+    //String getServiceId();
+    Class<T> getServiceClass();
     
     /**
      * Loads the service.
@@ -28,7 +29,7 @@ public interface ServiceLoader {
      *
      * @throws Exception Any errors that occur while loading the service.
      */
-    ServiceInfo load( GeoServer gs ) throws Exception;
+    T load( GeoServer gs ) throws Exception;
     
     /**
      * Saves the service.
@@ -38,5 +39,5 @@ public interface ServiceLoader {
      * 
      * @throws Exception Any errors that occur while saving the service.
      */
-    void save( ServiceInfo service, GeoServer gs ) throws Exception;
+    void save( T service, GeoServer gs ) throws Exception;
 }

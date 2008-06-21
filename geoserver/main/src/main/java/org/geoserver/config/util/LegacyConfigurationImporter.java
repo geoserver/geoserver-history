@@ -117,7 +117,7 @@ public class LegacyConfigurationImporter {
             info.setStdOutLogging(true);
         }
 
-        info.setMaxFeatures( get( global, "maxFeatures", Integer.class ) );
+        //info.setMaxFeatures( get( global, "maxFeatures", Integer.class ) );
         info.setVerbose( get( global, "verbose", Boolean.class ) );
         info.setVerboseExceptions( get( global, "verboseExceptions", Boolean.class ) );
         info.setNumDecimals( get( global, "numDecimals", Integer.class ) );
@@ -175,7 +175,7 @@ public class LegacyConfigurationImporter {
                 }
             }
             catch( Exception e ) {
-                String msg = "Error occured loading service: " + sl.getServiceId();
+                String msg = "Error occured loading service: " + sl.getServiceClass().getSimpleName();
                 LOGGER.warning( msg );
                 LOGGER.log( Level.INFO, "", e );
             }
