@@ -27,6 +27,12 @@ body {
 
 #global h1 {
   font-size: 2em;
+  line-height: 1.5em;
+  font-weight: bold;
+}
+
+#global a.user {
+  padding-left: 20px;
 }
 
 ul#navigation {
