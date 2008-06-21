@@ -8,7 +8,7 @@ import org.apache.wicket.model.Model;
 import org.geoserver.web.services.BaseServiceAdminPage;
 import org.geoserver.wfs.WFSInfo;
 
-public class WFSPage extends BaseServiceAdminPage<WFSInfo> {
+public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
 
     protected Class<WFSInfo> getServiceClass() {
         return WFSInfo.class;
