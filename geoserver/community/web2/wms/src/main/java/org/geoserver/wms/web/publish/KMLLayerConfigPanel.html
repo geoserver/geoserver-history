@@ -3,13 +3,15 @@
 <body>
 <form name="theForm">
 <wicket:panel>
-  <h3><wicket:message key="kml.section">KML Format Settings</wicket:message></h3>
-  <wicket:message key="kml.defaultAttribute">Default Regionating Attribute</wicket:message>
-  <input wicket:id="kml.regionateAttribute"></input> <br/>
-  <wicket:message key="kml.defaultStrategy">Default Regionating Method</wicket:message>
-  <input wicket:id="kml.regionateStrategy"></input> <br/>
-  <wicket:message key="kml.featureLimit">Features Per Regionated Tile</wicket:message>
-  <input wicket:id="kml.regionateFeatureLimit"></input>
+  <h3> <wicket:message key="kml.section">KML Format Settings</wicket:message> </h3>
+  <ul>
+  <li> <wicket:message key="kml.defaultAttribute">Default Regionating Attribute</wicket:message>
+  <input wicket:id="kml.regionateAttribute"></input> </li>
+  <li> <wicket:message key="kml.defaultStrategy">Default Regionating Method</wicket:message>
+  <input wicket:id="kml.regionateStrategy"></input> </li>
+  <li> <wicket:message key="kml.featureLimit">Features Per Regionated Tile</wicket:message>
+  <input wicket:id="kml.regionateFeatureLimit"></input> </li>
+  </ul>
 </wicket:panel>
 </form>
 </body>
