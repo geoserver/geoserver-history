@@ -36,7 +36,10 @@
 		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="validation"/>
 	</bean-->
-	<bean id="wfsLoader" class="org.geoserver.wfs.WFSLoader"/>
+	<!--bean id="wfsLoader" class="org.geoserver.wfs.WFSLoader"/-->
+	<bean id="wfsLoader" class="org.geoserver.wfs.WFSXStreamLoader">
+	  <constructor-arg ref="resourceLoader"/>
+	</bean>
     <bean id="wfs" class="org.geoserver.wfs.WFS">
       <constructor-arg ref="geoServer2"/>
     </bean>
