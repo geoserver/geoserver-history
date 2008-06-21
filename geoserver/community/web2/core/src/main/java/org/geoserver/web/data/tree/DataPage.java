@@ -1,7 +1,6 @@
 package org.geoserver.web.data.tree;
 
 import java.io.Serializable;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.tree.DefaultTreeModel;
@@ -36,7 +35,6 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
-import org.opengis.geometry.coordinate.Placement;
 
 public class DataPage extends GeoServerBasePage {
 
@@ -150,7 +148,9 @@ public class DataPage extends GeoServerBasePage {
 
         public Component newCell(MarkupContainer parent, String id,
                 TreeNode node, int level) {
-            if(node instanceof AbstractPlaceholderNode)
+            if(node instanceof UnconfiguredFeatureTypeNode)
+                return new AddConfigPanel(id, (AbstractCatalogNode) node);
+            else if(node instanceof AbstractPlaceholderNode)
                 return new EmptyPanel(id);
             else
                 return new EditRemovePanel(id, (AbstractCatalogNode) node);
