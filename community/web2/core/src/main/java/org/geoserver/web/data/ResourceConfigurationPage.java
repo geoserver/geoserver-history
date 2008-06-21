@@ -24,7 +24,13 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
     public ResourceConfigurationPage(ResourceInfo info){
         myResourceInfo = info;
         myResourceModel = new CompoundPropertyModel(myResourceInfo);
-        myLayerModel = new CompoundPropertyModel(info.getCatalog().getLayers(info));
+        myLayerModel = new CompoundPropertyModel(info.getCatalog().getLayers(info).get(0));
+
+        add(new Label("resourcename", myResourceInfo.getId()));
+        Form theForm = new Form("resource", myResourceModel);
+        add(theForm);
+        theForm.add(new ResourceConfigurationSectionListView("resources"));
+        theForm.add(new LayerConfigurationSectionListView("layers"));
     }
 
     public ResourceConfigurationPage(LayerInfo info) {
