@@ -1,8 +1,8 @@
 package org.geoserver.web.data.tree;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -170,6 +170,21 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
 
     public boolean isSelectable() {
         return true;
+    }
+    
+    /**
+     * Returns all selected nodes (including children)
+     * @return
+     */
+    public List<AbstractCatalogNode> getSelectedNodes() {
+        List<AbstractCatalogNode> result = new ArrayList<AbstractCatalogNode>();
+        if(selectionState == SelectionState.SELECTED)
+            result.add(this);
+        if(childNodes != null)
+            for (AbstractCatalogNode child : childNodes) {
+                result.addAll(child.getSelectedNodes());
+            }
+        return result;
     }
 
     /**

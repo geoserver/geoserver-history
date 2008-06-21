@@ -18,7 +18,6 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.GeoServerHomePage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 

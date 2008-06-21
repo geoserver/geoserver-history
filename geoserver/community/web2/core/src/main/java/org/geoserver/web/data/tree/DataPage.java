@@ -13,6 +13,7 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.tree.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.AbstractTreeColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation;
@@ -39,14 +40,19 @@ import org.geoserver.web.data.ResourceConfigurationPage;
 public class DataPage extends GeoServerBasePage {
 
     DataTreeTable tree;
+    CatalogRootNode root;
+    private Form buttonForm;
+    private AjaxButton addButton;
+    private AjaxButton removeButton;
+    private AjaxButton configureButton;
 
     public DataPage() {
         WebMarkupContainer treeContainer = new WebMarkupContainer("treeParent");
         treeContainer.setOutputMarkupId(true);
-        tree = new DataTreeTable(
-                "dataTree",
-                new DefaultTreeModel(new CatalogRootNode()),
-                new IColumn[] { new SelectionColumn(), new CatalogNameColumn(), new ActionColumn() });
+        root = new CatalogRootNode();
+        tree = new DataTreeTable("dataTree", new DefaultTreeModel(
+                root), new IColumn[] { new SelectionColumn(),
+                new CatalogNameColumn(), new ActionColumn() });
 
         tree.setRootLess(true);
         tree.getTreeState().setAllowSelectMultiple(false);
@@ -55,26 +61,34 @@ public class DataPage extends GeoServerBasePage {
         treeContainer.add(tree);
         add(treeContainer);
 
-        Form form = new Form("controlForm");
-        form.add(new AjaxButton("addChecked") {
+        buttonForm = new Form("controlForm");
+        addButton = new AjaxButton("addChecked") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-                addChecked(target, form);
+                addButtonClicked(target, form);
             }
-        });
-        form.add(new AjaxButton("removeChecked") {
+        };
+        buttonForm.add(addButton);
+        removeButton = new AjaxButton("removeChecked") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-                removeChecked(target, form);
+                removeButtonClicked(target, form);
             }
-        });
-        form.add(new AjaxButton("configureChecked") {
+        };
+        buttonForm.add(removeButton);
+        configureButton = new AjaxButton("configureChecked") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-                configureChecked(target, form);
+                configureButtonClicked(target, form);
             }
-        });
-        add(form);
+        };
+        configureButton.add(new SimpleAttributeModifier("onclick",
+        "alert('This will allow you mass configure multiple feature types'); return false;"));
+
+        buttonForm.add(configureButton);
+        add(buttonForm);
+        
+        updateButtonState();
 
         final Catalog catalog = getCatalog();
         final List<ResourceInfo> resources = catalog.getResources(ResourceInfo.class);
@@ -110,17 +124,17 @@ public class DataPage extends GeoServerBasePage {
         add(view);
     }
 
-    protected void configureChecked(AjaxRequestTarget target, Form form) {
+    protected void configureButtonClicked(AjaxRequestTarget target, Form form) {
         // TODO Auto-generated method stub
 
     }
 
-    protected void removeChecked(AjaxRequestTarget target, Form form) {
+    protected void removeButtonClicked(AjaxRequestTarget target, Form form) {
         // TODO Auto-generated method stub
 
     }
 
-    protected void addChecked(AjaxRequestTarget target, Form form) {
+    protected void addButtonClicked(AjaxRequestTarget target, Form form) {
         // TODO Auto-generated method stub
 
     }
@@ -169,7 +183,7 @@ public class DataPage extends GeoServerBasePage {
             if (!cn.isSelectable())
                 return new EmptyPanel(id);
             else
-                return new SelectionPanel(id, node, tree);
+                return new DataPageSelectionPanel(id, node, tree);
         }
 
         public IRenderable newCell(TreeNode node, int level) {
@@ -288,5 +302,54 @@ public class DataPage extends GeoServerBasePage {
             EditRemovePanel.edit(this, (AbstractCatalogNode) node);
         }
     }
+    
+    class DataPageSelectionPanel extends SelectionPanel {
+
+        public DataPageSelectionPanel(String id, TreeNode node,
+                DataTreeTable tree) {
+            super(id, node, tree);
+        }
+
+        @Override
+        protected void onCheckboxClick(AjaxRequestTarget target) {
+            // change the state of the current node
+            catalogNode.nextSelectionState();
+            icon.setImageResourceReference(getImageResource(catalogNode));
+            
+            AbstractCatalogNode lastChangedParent = catalogNode.getParent().checkPartialSelection();
+
+            // force the tree refresh
+            tree.refresh(lastChangedParent);
+            target.addComponent(tree.getParent());
+            
+            updateButtonState();
+            target.addComponent(removeButton);
+            target.addComponent(configureButton);
+            target.addComponent(addButton);
+        }
+
+       
+        
+    }
+    
+    void updateButtonState() {
+        // button state update
+        List<AbstractCatalogNode> selection =  root.getSelectedNodes();
+        boolean configured = false;
+        boolean unconfigured = false;
+        for (AbstractCatalogNode node : selection) {
+            if(node instanceof UnconfiguredFeatureTypeNode) {
+                unconfigured = true;
+            } else {
+                configured = true;
+            }
+            
+        }
+        removeButton.setEnabled(configured);
+        configureButton.setEnabled(unconfigured);
+        addButton.setEnabled(unconfigured);
+    }
+    
+   
 
 }
