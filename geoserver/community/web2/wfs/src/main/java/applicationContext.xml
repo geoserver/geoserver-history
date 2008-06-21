@@ -12,4 +12,9 @@
     <property name="icon" value="server_vector.png"/>
   </bean>
     
+  <bean id="wfsLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
+    <property name="id" value="wfsLayerConfig"/>
+    <property name="titleKey" value="data.resource.config.wfs"/>
+    <property name="componentClass" value="org.geoserver.wfs.web.publish.WFSLayerConfig"/>
+  </bean>
 </beans>
