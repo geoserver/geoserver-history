@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -424,10 +426,41 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the max number of features supported.
      */
     public int getMaxFeatures() {
-        return info.getMaxFeatures();
+        Object wfs = wfs();
+        if ( wfs != null ) {
+            try {
+                Method g = wfs.getClass().getMethod( "getMaxFeatures", null );
+                return (Integer) g.invoke( wfs, null );
+            }
+            catch (Exception e) {}
+        }
+        
+        return -1;
+        //return info.getMaxFeatures();
         //return maxFeatures;
     }
 
+    void setMaxFeatures( int maxFeatures ) {
+        Object wfs = wfs();
+        if ( wfs != null ) {
+            try {
+                Method s = wfs.getClass().getMethod( "setMaxFeatures", int.class );
+                s.invoke( wfs, maxFeatures );
+            }
+            catch (Exception e) {}
+        }
+    }
+    
+    Object wfs() {
+        try {
+            Class c = Class.forName( "org.geoserver.wfs.WFSInfo" );
+            return gs.getService( c );
+        } 
+        catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
+    
     /**
      * getMimeType purpose.
      *
@@ -604,7 +637,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             
             //initJAI(memoryCapacity, memoryThreshold, recycling, imageIOCache);
 
-            info.setMaxFeatures( dto.getMaxFeatures() );
+            //info.setMaxFeatures( dto.getMaxFeatures() );
+            setMaxFeatures( dto.getMaxFeatures() );
             info.setNumDecimals( dto.getNumDecimals() );
             info.setSchemaBaseUrl( dto.getSchemaBaseUrl() );
             info.setProxyBaseUrl( dto.getProxyBaseUrl() );
