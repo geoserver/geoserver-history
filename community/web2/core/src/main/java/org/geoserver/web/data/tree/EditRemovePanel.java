@@ -235,7 +235,7 @@ public class EditRemovePanel extends Panel {
             featureTypeInfo.setName(typeName);
             featureTypeInfo.setStore(dataStore);
 
-            Page responsePage = new ResourceConfigurationPage(featureTypeInfo, false);
+            Page responsePage = new ResourceConfigurationPage(featureTypeInfo, true);
             callingComponent.setResponsePage(responsePage);
         }
 
