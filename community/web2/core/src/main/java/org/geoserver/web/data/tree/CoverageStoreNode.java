@@ -20,7 +20,7 @@ class CoverageStoreNode extends AbstractCatalogNode {
                 getModel());
         List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
         for (CoverageInfo coverage : coverages) {
-            childNodes.add(new ResourceNode(coverage.getName(), this,
+            childNodes.add(new ResourceNode(name, coverage.getName(), this,
                     CoverageInfo.class));
         }
         return childNodes;

@@ -2,6 +2,8 @@ package org.geoserver.web.data.tree;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -24,13 +26,22 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.data.DataStorePanelInfo;
 import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
+import org.geoserver.web.util.WebUtils;
+import org.geotools.data.DataAccessFactory;
+import org.geotools.util.logging.Logging;
 
 public class DataPage extends GeoServerBasePage {
+    
+    static final Logger LOGGER = Logging.getLogger(DataPage.class);
 
     DataTreeTable tree;
     CatalogRootNode root;
@@ -45,7 +56,16 @@ public class DataPage extends GeoServerBasePage {
         root = new CatalogRootNode();
         tree = new DataTreeTable("dataTree", new DefaultTreeModel(
                 root), new IColumn[] { new SelectionColumn(),
-                new CatalogNameColumn(), new ActionColumn() });
+                new DataPageTreeColumn(), new ActionColumn() }) {
+            @Override
+            public ResourceReference getNodeIcon(TreeNode node) {
+                if(node instanceof DataStoreNode) {
+                    return getStoreIcon(((DataStoreNode) node).getModel());
+                } else {
+                    return super.getNodeIcon(node);
+                }
+            }
+        };
 
         tree.setRootLess(true);
         tree.getTreeState().setAllowSelectMultiple(false);
@@ -84,6 +104,38 @@ public class DataPage extends GeoServerBasePage {
         updateButtonState();
     }
 
+    protected ResourceReference getStoreIcon(StoreInfo info) {
+        if (info instanceof DataStoreInfo) {
+            DataStoreInfo ds = (DataStoreInfo) info;
+
+            // look for the associated panel info if there is one
+            List<DataStorePanelInfo> infos = getGeoServerApplication()
+                    .getBeansOfType(DataStorePanelInfo.class);
+            for (DataStorePanelInfo panelInfo : infos) {
+                try {
+                    // we know if a factory is the right one if it can process the params
+                    DataAccessFactory factory = (DataAccessFactory) panelInfo
+                            .getFactoryClass().newInstance();
+                    if (factory.canProcess(ds.getConnectionParameters())) {
+                        return new ResourceReference(panelInfo.getIconBase(),
+                                panelInfo.getIcon());
+                    }
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING,
+                            "Could not create an instance of the data store factory "
+                                    + panelInfo.getFactoryClass());
+                }
+            }
+
+            // fall back on generic vector icon otherwise
+            return new ResourceReference(GeoServerApplication.class,
+                    "img/icons/geosilk/vector.png");
+
+        } else {
+            return null;
+        }
+    }
+
     protected void configureButtonClicked(AjaxRequestTarget target, Form form) {
         // TODO Auto-generated method stub
 
@@ -99,9 +151,9 @@ public class DataPage extends GeoServerBasePage {
 
     }
 
-    class CatalogNameColumn extends AbstractTreeColumn implements IColumn {
+    class DataPageTreeColumn extends AbstractTreeColumn implements IColumn {
 
-        public CatalogNameColumn() {
+        public DataPageTreeColumn() {
             super(new ColumnLocation(Alignment.MIDDLE, 88, Unit.PROPORTIONAL), "Catalog");
         }
 
@@ -121,7 +173,7 @@ public class DataPage extends GeoServerBasePage {
                         (AbstractCatalogNode) node, level);
             }
             if (node instanceof ResourceNode) {
-                return new LabelPanel(id, tree, parent, (AbstractCatalogNode) node, level);
+                return new ResourcePanel(id, tree, parent, (AbstractCatalogNode) node, level);
             }
             if (node instanceof NewDatastoreNode) {
                 return new NewDataStorePanel(id, tree, parent, (AbstractCatalogNode) node, level);
@@ -287,8 +339,30 @@ public class DataPage extends GeoServerBasePage {
             target.addComponent(configureButton);
             target.addComponent(addButton);
         }
+    }
+    
+    class ResourcePanel extends LabelPanel {
 
-       
+        public ResourcePanel(String id, DataTreeTable tree,
+                MarkupContainer parent, AbstractCatalogNode node, int level) {
+            super(id, tree, parent, node, level);
+        }
+        
+        @Override
+        protected ResourceReference getNodeIcon(DataTreeTable tree,
+                TreeNode node) {
+            // a regular resource does not need an icon
+            if(node.getParent() instanceof DataStoreNode || node.getParent() instanceof CoverageStoreNode) {
+                return null;
+            } else {
+                ResourceNode rn = (ResourceNode) node;
+                if(rn.getResourceType() == FeatureTypeInfo.class) {
+                    return getStoreIcon(getCatalog().getDataStoreByName(rn.getStoreName()));
+                } else {
+                    return null;
+                }
+            }
+        }
         
     }
     

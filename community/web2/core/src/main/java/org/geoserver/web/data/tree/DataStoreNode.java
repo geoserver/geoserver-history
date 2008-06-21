@@ -28,7 +28,7 @@ class DataStoreNode extends AbstractCatalogNode {
                 getModel());
         List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
         for (FeatureTypeInfo type : types) {
-            childNodes.add(new ResourceNode(type.getName(), this,
+            childNodes.add(new ResourceNode(name, type.getName(), this,
                     FeatureTypeInfo.class));
         }
         if(!unconfiguredChildrenVisible) {      
