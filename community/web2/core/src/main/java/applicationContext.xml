@@ -86,27 +86,25 @@
     <property name="icon" value="img/icons/geosilk/page_white_vector.png"/>
   </bean>
   
+  <bean id="propertyConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+    <property name="id" value="property"/>
+    <property name="factoryClass" value="org.geotools.data.property.PropertyDataStoreFactory"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+  </bean>
+  
+  <bean id="wfsConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+    <property name="id" value="wfs"/>
+    <property name="factoryClass" value="org.geotools.wfs.WFSDataStoreFactory"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/server_vector.png"/>
+  </bean>
+  
   <!-- 
   <bean id="mySqlConfig" class="org.geoserver.web.data.DataStorePanelInfo">
     <property name="id" value="MySql"/>
     <property name="storeClassName" value="org.geotools.data.mysql.MySQLDataStore"/>
     <property name="factoryClassName" value="org.geotools.data.mysql.MySQLDataStoreFactory"/>
-    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
-    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
-  </bean>
-  
-  <bean id="propertyConfig" class="org.geoserver.web.data.DataStorePanelInfo">
-    <property name="id" value="property"/>
-    <property name="storeDisplayName" value="Properties"/>
-    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
-    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
-  </bean>
-  
-  
-  
-  <bean id="wfsConfig" class="org.geoserver.web.data.DataStorePanelInfo">
-    <property name="id" value="wfs"/>
-    <property name="storeDisplayName" value="Web Feature Server"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/database_vector.png"/>
   </bean>
