@@ -55,13 +55,24 @@ public class DataPage extends GeoServerBasePage {
         add(treeContainer);
 
         Form form = new Form("controlForm");
-//        form.add(new AjaxButton("collapseAll") {
-//            @Override
-//            protected void onSubmit(AjaxRequestTarget target, Form form) {
-//                tree.getTreeState().collapseAll();
-//                target.addComponent(tree);
-//            }
-//        });
+        form.add(new AjaxButton("addChecked") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                addChecked(target, form);
+            }
+        });
+        form.add(new AjaxButton("removeChecked") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                removeChecked(target, form);
+            }
+        });
+        form.add(new AjaxButton("configureChecked") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                configureChecked(target, form);
+            }
+        });
         add(form);
         
         List<ResourceInfo> resources = getGeoServer().getCatalog().getResources(ResourceInfo.class);
@@ -82,6 +93,21 @@ public class DataPage extends GeoServerBasePage {
         add(view);
     }
     
+    protected void configureChecked(AjaxRequestTarget target, Form form) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    protected void removeChecked(AjaxRequestTarget target, Form form) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    protected void addChecked(AjaxRequestTarget target, Form form) {
+        // TODO Auto-generated method stub
+        
+    }
+
     class CatalogNameColumn extends AbstractTreeColumn implements IColumn {
 
         public CatalogNameColumn() {
