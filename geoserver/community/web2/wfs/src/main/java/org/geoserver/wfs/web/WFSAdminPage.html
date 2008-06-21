@@ -1,6 +1,14 @@
 <html xmlns:wicket="http://wicket.apache.org/">
   <body>
     <wicket:extend>
+       <li>
+        <span>
+          <label><wicket:message key="maxFeatures.title">Maximum Features</wicket:message></label>
+          <input wicket:id="maxFeatures" class="field text" type="text"></input>
+        </span>
+        <p class="instruct">
+        </p>
+      </li>
       <li>
          <label><wicket:message key="page.serviceLevel">Service Level</wicket:message></label>
          <span wicket:id="serviceLevel">
@@ -22,8 +30,16 @@
       </li>
       <li>
         <span>
-          <label><wicket:message key="wfs.maxFeatures">Maximum Features</wicket:message></label>
-          <input wicket:id="maxFeatures" class="field text" type="text"></input>
+          <label><wicket:message key="gml2.title">GML 2</wicket:message></label>
+          <div wicket:id="gml2"></div>
+        </span>
+        <p class="instruct">
+        </p>
+      </li>
+        <li>
+        <span>
+          <label><wicket:message key="gml3.title">GML 3</wicket:message></label>
+          <div wicket:id="gml3"></div>
         </span>
         <p class="instruct">
         </p>
