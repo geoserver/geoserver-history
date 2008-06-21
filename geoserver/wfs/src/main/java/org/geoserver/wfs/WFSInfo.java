@@ -112,7 +112,27 @@ public interface WFSInfo extends ServiceInfo {
      */
     Map<Version,GMLInfo> getGML();
     
-    ServiceLevel getServiceLevel();
+    /**
+     * A global cap on the number of features to allow when processing a request.
+     * 
+     * @uml.property name="maxFeatures"
+     */
+    int getMaxFeatures();
+
+    /**
+     * Sets the global cap on the number of features to allow when processing a 
+     * request.
+     * @uml.property name="maxFeatures"
+     */
+    void setMaxFeatures(int maxFeatures);
     
+    /**
+     * The level of service provided by the WFS.
+     */
+    ServiceLevel getServiceLevel();
+
+    /**
+     * Sets the level of service provided by the WFS. 
+     */
     void setServiceLevel( ServiceLevel serviceLevel );
 }
