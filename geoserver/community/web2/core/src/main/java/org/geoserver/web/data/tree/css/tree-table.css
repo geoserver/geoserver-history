@@ -244,7 +244,7 @@ div.wicket-tree-table {
 div.wicket-tree-table div.header {
   padding-left: 1px;
   margin-bottom: 0;
-  background: url(../../../img/ext/panel/white-top-bottom.gif) repeat-x 0 -1px;
+  background: url(white-top-bottom.gif) repeat-x 0 -1px;
   color: #333333;
 }
 
