@@ -85,55 +85,85 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
             }
         });
     }
+    
+    private List<ResourceConfigurationPanelInfo> filterResourcePanels(
+            List<ResourceConfigurationPanelInfo> list
+            ){
+        for (int i = 0; i < list.size(); i++){
+            if (!list.get(i).canHandle(myResourceInfo.getClass())){
+                list.remove(i);
+                i--;
+            }
+        }
+        return list;
+    }
+
+    private List<LayerConfigurationPanelInfo> filterLayerPanels(
+            List<LayerConfigurationPanelInfo> list
+            ){
+        for (int i = 0; i < list.size(); i++){
+            if (!list.get(i).canHandle(myLayerInfo)){
+                list.remove(i);
+                i--;
+            }
+        }
+        return list;
+    }
+
+
 
     private class ResourceConfigurationSectionListView extends ListView {
         private static final long serialVersionUID = -6575960326680386479L;
 
         public ResourceConfigurationSectionListView(String id) {
             super(id, 
-                    ((GeoServerApplication)getGeoServerApplication())
-                    .getBeansOfType(ResourceConfigurationPanelInfo.class)
+                    filterResourcePanels(
+                        ((GeoServerApplication)getGeoServerApplication())
+                        .getBeansOfType(ResourceConfigurationPanelInfo.class)
+                        )
                  );
         }
 
         @Override
-            protected void populateItem(ListItem item) {
-                ResourceConfigurationPanelInfo panelInfo = (ResourceConfigurationPanelInfo) item
-                    .getModelObject();
-                try {
-                    ResourceConfigurationPanel panel = panelInfo
-                        .getComponentClass()
-                        .getConstructor(String.class, IModel.class)
-                        .newInstance("content", myResourceModel);
-                    item.add((Component) panel);
-                } catch (Exception e) {
-                    throw new WicketRuntimeException("Failed to add pluggable resource configuration panels", e);
-                }
+        protected void populateItem(ListItem item) {
+            ResourceConfigurationPanelInfo panelInfo = (ResourceConfigurationPanelInfo) item
+                .getModelObject();
+            try {
+                ResourceConfigurationPanel panel = panelInfo
+                    .getComponentClass()
+                    .getConstructor(String.class, IModel.class)
+                    .newInstance("content", myResourceModel);
+                item.add((Component) panel);
+            } catch (Exception e) {
+                throw new WicketRuntimeException("Failed to add pluggable resource configuration panels", e);
             }
+        }
     }
     private class LayerConfigurationSectionListView extends ListView {
         private static final long serialVersionUID = -6575960326680386479L;
 
         public LayerConfigurationSectionListView(String id) {
             super(id, 
-                    ((GeoServerApplication)getGeoServerApplication())
-                    .getBeansOfType(LayerConfigurationPanelInfo.class)
+                    filterLayerPanels(
+                        ((GeoServerApplication)getGeoServerApplication())
+                        .getBeansOfType(LayerConfigurationPanelInfo.class)
+                        )
                  );
         }
 
         @Override
-            protected void populateItem(ListItem item) {
-                LayerConfigurationPanelInfo panelInfo = (LayerConfigurationPanelInfo) item
-                    .getModelObject();
-                try {
-                    LayerConfigurationPanel panel = panelInfo
-                        .getComponentClass()
-                        .getConstructor(String.class, IModel.class)
-                        .newInstance("content", myLayerModel);
-                    item.add((Component) panel);
-                } catch (Exception e) {
-                    throw new WicketRuntimeException("Failed to add pluggable layer configuration panels", e);
-                }
+        protected void populateItem(ListItem item) {
+            LayerConfigurationPanelInfo panelInfo = (LayerConfigurationPanelInfo) item
+                .getModelObject();
+            try {
+                LayerConfigurationPanel panel = panelInfo
+                    .getComponentClass()
+                    .getConstructor(String.class, IModel.class)
+                    .newInstance("content", myLayerModel);
+                item.add((Component) panel);
+            } catch (Exception e) {
+                throw new WicketRuntimeException("Failed to add pluggable layer configuration panels", e);
             }
+        }
     }
 }

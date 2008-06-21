@@ -16,5 +16,10 @@
     <property name="id" value="wfsLayerConfig"/>
     <property name="titleKey" value="data.resource.config.wfs"/>
     <property name="componentClass" value="org.geoserver.wfs.web.publish.WFSLayerConfig"/>
+    <property name="supportedTypes">
+      <list>
+        <value>org.geoserver.catalog.FeatureTypeInfo</value>
+      </list>
+    </property>
   </bean>
 </beans>
