@@ -2,7 +2,7 @@
   width:100%;
   margin: 0;
   padding: 0;
-  background:#FFFFFF url(../img/globalbg.gif) repeat-y -100px;  
+  background:#FFFFFF url(../img/globalbg.gif) repeat-y center -100px;  
 }
 
 #global, 
@@ -230,6 +230,9 @@ input.btTxt
 
 div.wicket-tree-table {
   border: none;
+  margin-top: none;
+  margin-left: none;
+  margin-right: none;
 }
 
 div.wicket-tree-table div.header {
