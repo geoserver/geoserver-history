@@ -9,6 +9,39 @@
         <p class="instruct">
         </p>
       </li>
+      <li>
+        <span>
+          <wicket:message key="page.watermarkEnabled">Watermark Enabled</wicket:message>:
+          <input type="checkbox" wicket:id="watermark.enabled"></input> Global Watermarking
+         </span>
+        <p class="instruct">
+        </p>
+      </li>
+      <li>
+        <span> 
+          <label><wicket:message key="page.watermarkUrl">Watermark URL</wicket:message></label>
+          <input wicket:id="watermark.uRL" class="field text" type="text"></input>
+        </span>
+        <p class="instruct">
+        </p>
+      </li>
+      <li>
+        <span>                
+          <label><wicket:message key="page.watermarkTransparency">Watermark Transparency</wicket:message></label>
+          <input wicket:id="watermark.transparency" class="field text" type="text"></input><br/>
+        </span>
+        <p class="instruct">
+        </p>
+      </li>
+      <li><span>
+         <label><wicket:message key="page.watermarkPosition">Watermark Position</wicket:message></label>
+         <select wicket:id="watermark.position"></select>
+         
+        </span>
+        <p class="instruct">
+        </p>
+      </li>
+      
     </wicket:extend>
   </body>
 </html>
