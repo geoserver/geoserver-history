@@ -18,29 +18,25 @@ import org.apache.wicket.extensions.markup.html.tree.table.AbstractTreeColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation;
 import org.apache.wicket.extensions.markup.html.tree.table.IColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.IRenderable;
-import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignment;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.tree.ITreeStateListener;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.web.MainPageInfo;
 import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
+import org.opengis.geometry.coordinate.Placement;
 
 public class DataPage extends GeoServerBasePage {
 
@@ -49,11 +45,9 @@ public class DataPage extends GeoServerBasePage {
     public DataPage() {
         WebMarkupContainer treeContainer = new WebMarkupContainer("treeParent");
         treeContainer.setOutputMarkupId(true);
-        SelectionColumn selectionColumn = new SelectionColumn();
-        CatalogNameColumn catalogNameColumn = new CatalogNameColumn();
         tree = new DataTreeTable("dataTree", new DefaultTreeModel(
-                new CatalogRootNode()), new IColumn[] { selectionColumn,
-                catalogNameColumn });
+                new CatalogRootNode()), new IColumn[] { new SelectionColumn(),
+                new CatalogNameColumn(), new ActionColumn() });
 
         tree.setRootLess(true);
         tree.getTreeState().setAllowSelectMultiple(false);
@@ -88,6 +82,122 @@ public class DataPage extends GeoServerBasePage {
                 }
         };
         add(view);
+    }
+    
+    class CatalogNameColumn extends AbstractTreeColumn implements IColumn {
+
+        public CatalogNameColumn() {
+            super(new ColumnLocation(Alignment.MIDDLE, 88, Unit.PROPORTIONAL),
+                    "Catalog");
+        }
+
+        @Override
+        public String renderNode(TreeNode node) {
+            return ((AbstractCatalogNode) node).getNodeLabel();
+        }
+
+        @Override
+        public Component newCell(MarkupContainer parent, String id,
+                TreeNode node, int level) {
+            if (node instanceof UnconfiguredFeatureTypesNode) {
+                return new UnconfiguredFeatureTypesPanel(id, tree, parent,
+                        (UnconfiguredFeatureTypesNode) node, level);
+            }
+            if (node instanceof UnconfiguredFeatureTypeNode) {
+                return new UnconfiguredFeatureTypePanel(id, tree, parent,
+                        (AbstractCatalogNode) node, level);
+            }
+            if (node instanceof ResourceNode) {
+                return new LabelPanel(id, tree, parent,
+                        (AbstractCatalogNode) node, level);
+            }
+            if (node instanceof NewDatastoreNode) {
+                return new NewDataStorePanel(id, tree, parent,
+                        (AbstractCatalogNode) node, level);
+            } else {
+                return super.newCell(parent, id, node, level);
+            }
+
+        }
+    }
+
+    class SelectionColumn extends AbstractColumn {
+
+        public SelectionColumn() {
+            super(new ColumnLocation(Alignment.LEFT, 24, Unit.PX), "");
+        }
+
+        public Component newCell(MarkupContainer parent, String id,
+                TreeNode node, int level) {
+            AbstractCatalogNode cn = (AbstractCatalogNode) node;
+            if(!cn.isSelectable())
+                return new EmptyPanel(id);
+            else
+                return new SelectionPanel(id, node, tree);
+        }
+
+        public IRenderable newCell(TreeNode node, int level) {
+            return null;
+        }
+
+    }
+    
+    class ActionColumn extends AbstractColumn {
+
+        public ActionColumn() {
+            super(new ColumnLocation(Alignment.MIDDLE, 12, Unit.PROPORTIONAL), "");
+        }
+
+        public Component newCell(MarkupContainer parent, String id,
+                TreeNode node, int level) {
+            if(node instanceof AbstractPlaceholderNode)
+                return new EmptyPanel(id);
+            else
+                return new EditRemovePanel(id, (AbstractCatalogNode) node);
+        }
+
+        public IRenderable newCell(TreeNode node, int level) {
+            return null;
+        }
+
+    }
+
+    final class DataTreeListener extends TreeAdapter implements Serializable {
+
+        public void nodeSelected(TreeNode selected) {
+            if (selected instanceof UnconfiguredFeatureTypesNode) {
+
+            }
+             TreeNode node = getWorkspaceNode(selected);
+            if (node != null) {
+                if (!tree.getTreeState().isNodeSelected(node))
+                    tree.getTreeState().selectNode(node, true);
+            }
+            if (!tree.getTreeState().isNodeExpanded(selected))
+                tree.getTreeState().expandNode(selected);
+        }
+
+        public void nodeExpanded(TreeNode node) {
+            if (node instanceof WorkspaceNode) {
+                Enumeration children = node.getParent().children();
+                while (children.hasMoreElements()) {
+                    WorkspaceNode ws = (WorkspaceNode) children.nextElement();
+                    if (!ws.equals(node))
+                        tree.getTreeState().collapseNode(ws);
+                }
+                tree.getTreeState().selectNode(node, true);
+            }
+
+        }
+
+    }
+    
+    protected TreeNode getWorkspaceNode(TreeNode selected) {
+        TreeNode node = selected;
+        while (node != null && !(node instanceof WorkspaceNode)) {
+            node = node.getParent();
+        }
+        return node;
     }
 
     class UnconfiguredFeatureTypesPanel extends LinkPanel {
@@ -167,102 +277,7 @@ public class DataPage extends GeoServerBasePage {
             setResponsePage(new ResourceConfigurationPage(featureTypeInfo));
         }
     }
-
-    // static class CatalogTreeModel extends LoadableDetachableModel {
-    //
-    // @Override
-    // protected Object load() {
-    // return new DefaultTreeModel(new CatalogRootNode());
-    // }
-    //
-    // }
-
-    class CatalogNameColumn extends AbstractTreeColumn implements IColumn {
-
-        public CatalogNameColumn() {
-            super(new ColumnLocation(Alignment.MIDDLE, 20, Unit.PROPORTIONAL),
-                    "Catalog");
-        }
-
-        @Override
-        public String renderNode(TreeNode node) {
-            return ((AbstractCatalogNode) node).getNodeLabel();
-        }
-
-        @Override
-        public Component newCell(MarkupContainer parent, String id,
-                TreeNode node, int level) {
-            if (node instanceof UnconfiguredFeatureTypesNode) {
-                return new UnconfiguredFeatureTypesPanel(id, tree, parent,
-                        (UnconfiguredFeatureTypesNode) node, level);
-            }
-            if (node instanceof UnconfiguredFeatureTypeNode) {
-                return new UnconfiguredFeatureTypePanel(id, tree, parent,
-                        (AbstractCatalogNode) node, level);
-            }
-            if (node instanceof ResourceNode) {
-                return new LabelPanel(id, tree, parent,
-                        (AbstractCatalogNode) node, level);
-            }
-            if (node instanceof NewDatastoreNode) {
-                return new NewDataStorePanel(id, tree, parent,
-                        (AbstractCatalogNode) node, level);
-            } else {
-                return super.newCell(parent, id, node, level);
-            }
-
-        }
-    }
-
-    class SelectionColumn extends AbstractColumn {
-
-        public SelectionColumn() {
-            super(new ColumnLocation(Alignment.LEFT, 32, Unit.PX), "");
-        }
-
-        public Component newCell(MarkupContainer parent, String id,
-                TreeNode node, int level) {
-            AbstractCatalogNode cn = (AbstractCatalogNode) node;
-            if(!cn.isSelectable())
-                return new EmptyPanel(id);
-            else
-                return new SelectionPanel(id, node, tree);
-        }
-
-        public IRenderable newCell(TreeNode node, int level) {
-            return null;
-        }
-
-    }
-
-    final class DataTreeListener extends TreeAdapter implements Serializable {
-
-        public void nodeSelected(TreeNode selected) {
-            if (selected instanceof UnconfiguredFeatureTypesNode) {
-
-            }
-            // TreeNode node = getWorkspaceNode(selected);
-            // if (node != null) {
-            // if (!tree.getTreeState().isNodeSelected(node))
-            // tree.getTreeState().selectNode(node, true);
-            // }
-            if (!tree.getTreeState().isNodeExpanded(selected))
-                tree.getTreeState().expandNode(selected);
-        }
-
-        public void nodeExpanded(TreeNode node) {
-            if (node instanceof WorkspaceNode) {
-                Enumeration children = node.getParent().children();
-                while (children.hasMoreElements()) {
-                    WorkspaceNode ws = (WorkspaceNode) children.nextElement();
-                    if (!ws.equals(node))
-                        tree.getTreeState().collapseNode(ws);
-                }
-                tree.getTreeState().selectNode(node, true);
-            }
-
-        }
-
-    }
+    
+   
 
 }
