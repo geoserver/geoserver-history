@@ -20,15 +20,15 @@ import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
 
-public class WMSLoader extends LegacyServiceLoader {
+public class WMSLoader extends LegacyServiceLoader<WMSInfo> {
 
     static Logger LOGGER = Logging.getLogger( "org.geoserver.wms" );
     
-    public String getServiceId() {
-        return "wms";
+    public Class<WMSInfo> getServiceClass() {
+        return WMSInfo.class;
     }
     
-    public ServiceInfo load(LegacyServicesReader reader, GeoServer geoServer)
+    public WMSInfo load(LegacyServicesReader reader, GeoServer geoServer)
             throws Exception {
         WMSInfoImpl wms = new WMSInfoImpl();
         wms.setId( "wms" );

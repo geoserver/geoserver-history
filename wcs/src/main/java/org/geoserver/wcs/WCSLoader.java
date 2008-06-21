@@ -3,7 +3,6 @@ package org.geoserver.wcs;
 import java.util.Map;
 
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.LegacyServicesReader;
 
@@ -13,16 +12,16 @@ import org.geoserver.config.util.LegacyServicesReader;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class WCSLoader extends LegacyServiceLoader {
+public class WCSLoader extends LegacyServiceLoader<WCSInfo> {
 
-    public String getServiceId() {
-        return "wcs";
+    public Class<WCSInfo> getServiceClass() {
+        return WCSInfo.class;
     }
     
-    public ServiceInfo load(LegacyServicesReader reader, GeoServer gs) throws Exception {
+    public WCSInfo load(LegacyServicesReader reader, GeoServer gs) throws Exception {
         
         WCSInfoImpl wcs = new WCSInfoImpl();
-        wcs.setId( getServiceId() );
+        wcs.setId( "wcs" );
         
         Map<String,Object> map = reader.wcs();
         readCommon( wcs, map, gs );
@@ -32,4 +31,6 @@ public class WCSLoader extends LegacyServiceLoader {
         return wcs;
     }
 
+    public void save(WCSInfo service, GeoServer gs) throws Exception {
+    }
 }
