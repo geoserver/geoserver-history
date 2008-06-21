@@ -174,13 +174,27 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
 
     /**
      * Updates the partial selection state of node and recurses up to the root,
-     * and returns the higher node that got updated during the process
+     * and returns the higher node that got updated during the process. The
+     * rules are as follows:
+     * <ul>
+     * <li>if any of the children is partially selected, this node is partially
+     * selected as well</li>
+     * <li>if all of the children are unselected, this node is unselected as
+     * well</li>
+     * <li>if any of the children is selected, this node goes into partial
+     * selection (even if all the children are selected, since this root was not
+     * explicitly selected... what if the user presses the delete button after
+     * the selection?)</li>
+     * </ul>
      */
     public AbstractCatalogNode checkPartialSelection() {
+        // check if we have children
         List<AbstractCatalogNode> children = childNodes;
         if (children == null || children.size() == 0)
             return this;
 
+        // scan the children checking if we have any in selected or unselected
+        // state
         boolean selected = false;
         boolean unselected = false;
         SelectionState result = null;
@@ -197,6 +211,8 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
                 break;
             }
         }
+
+        // apply the above rules
         if (result == null && unselected)
             result = selectionState.UNSELECTED;
         if (result == null && selected)
@@ -204,6 +220,9 @@ abstract class AbstractCatalogNode implements TreeNode, Serializable,
         if (result != null && result != selectionState) {
             selectionState = result;
         }
+
+        // recurse up (maybe we could avoid this if the selection change of this
+        // node did not change...)
         if (parent != null)
             return parent.checkPartialSelection();
         return this;
