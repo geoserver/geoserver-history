@@ -68,6 +68,10 @@ public class GeoServerBasePage extends WebPage {
         };
         add( services );
         
+        //namespaces link
+        add( new BookmarkablePageLink( "namespaces", org.geoserver.web.data.NamespacesConfigurationPage.class ) 
+            .add( new Label( "label", new StringResourceModel( "namespaces", (Component) null, null ) ) ) );
+
         //data link
         add( new BookmarkablePageLink( "data", org.geoserver.web.data.tree.DataPage.class ) 
             .add( new Label( "label", new StringResourceModel( "data", (Component) null, null ) ) ) );
