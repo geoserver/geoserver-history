@@ -10,10 +10,6 @@ import org.apache.wicket.extensions.markup.html.tree.table.IColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 
 public class DataTreeTable extends TreeTable {
-    
-    /** Reference to the css file. */
-    private static final ResourceReference CSS = new ResourceReference(DataTreeTable.class,
-                    "css/tree-table.css");
 
     public DataTreeTable(String id, TreeModel model, IColumn[] columns) {
         super(id, model, columns);
@@ -41,26 +37,16 @@ public class DataTreeTable extends TreeTable {
     public ResourceReference getNodeIcon(TreeNode node) {
         return super.getNodeIcon(node);
     }
-    
+
     /**
      * Forces a refresh of the tree from the specified node downwards
+     * 
      * @param node
      */
     public void refresh(TreeNode node) {
         // crude hack... I could not find a real "refresh" method, but this one
         // works as one...
         getTreeState().expandNode(node);
-    }
-    
-
-    /**
-     * Returns the resource reference of default stylesheet.
-     * 
-     * @return The package resource reference
-     */
-    protected ResourceReference getCSS()
-    {
-       return CSS;
     }
 
 }
