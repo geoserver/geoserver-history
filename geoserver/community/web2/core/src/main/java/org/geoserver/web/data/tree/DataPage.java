@@ -155,7 +155,7 @@ public class DataPage extends GeoServerBasePage {
     class ActionColumn extends AbstractColumn {
 
         public ActionColumn() {
-            super(new ColumnLocation(Alignment.MIDDLE, 12, Unit.PROPORTIONAL), "");
+            super(new ColumnLocation(Alignment.RIGHT, 50, Unit.PX), "");
         }
 
         public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
