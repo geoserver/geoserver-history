@@ -58,6 +58,12 @@
     <property name="componentClass" value="org.geoserver.web.publish.BasicLayerConfig"/>
   </bean>
     
+  <bean id="httpLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
+    <property name="id" value="http"/>
+    <property name="titleKey" value="publish.layer.config.http"/>
+    <property name="componentClass" value="org.geoserver.web.publish.HTTPLayerConfig"/>
+  </bean>
+    
   <!-- bean id="servicesPage" class="org.geoserver.web.MainPageInfo">
     <property name="id" value="services"/>
     <property name="title" value="Services"/>
