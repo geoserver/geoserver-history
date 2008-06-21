@@ -198,6 +198,11 @@ input.text, textarea.textarea, .firefox select.select {
     border-style:solid;
     border-width:1px;
     padding:0px;
+    width: 300px;
+}
+
+textarea.textarea {
+    height:150px;
 }
 
 input.text, input.file, textarea.textarea, select.select {
