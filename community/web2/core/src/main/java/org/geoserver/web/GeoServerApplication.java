@@ -190,23 +190,39 @@ public class GeoServerApplication extends SpringWebApplication {
     static class GeoServerLocalizer extends Localizer {
         public String getString(String key, Component component, IModel model,
                 String defaultValue) throws MissingResourceException {
-            Class clazz = component.getClass();
-            while (Component.class.isAssignableFrom(clazz)) {
-                try {
-                    return super.getString(key(key, clazz), component, model,
-                            defaultValue);
-                } catch (MissingResourceException e) {
-                    clazz = clazz.getSuperclass();
+            
+            //walk up the component hierarchy
+            Component c = component;
+            while( c != null ) {
+                //walk up the class hierachy of the component looking for a key
+                Class clazz = c.getClass();
+                while (Component.class.isAssignableFrom(clazz)) {
+                    try {
+                        String value = super.getString(key(key, clazz), component, model,defaultValue);
+                        
+                        //if resolved to default value, dont return, continue on
+                        if ( value != null && value != defaultValue ) {
+                            return value;
+                        }
+                        
+                        clazz = clazz.getSuperclass();
+                    } catch (MissingResourceException e) {
+                        clazz = clazz.getSuperclass();
+                    }
                 }
+                
+                c = c.getParent();
             }
-        
+            
             try {
+                //try to resolve against no component
                 return super.getString(key,null, model,
                         defaultValue);
             } catch (MissingResourceException e) {
                 
             }
             
+            //fall back on default behaviour
             return super.getString( key, component, model, defaultValue );
         }
 
