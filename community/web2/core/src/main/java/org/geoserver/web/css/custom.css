@@ -312,3 +312,32 @@ span.command {
 span.unconfiguredLayer {
   font-style: italic;
 }
+
+/* Utility Classes */
+
+.selfclear:after,
+.buttons:after {
+content: ".";
+display: block;
+height: 0;
+clear: both;
+visibility: hidden;
+}
+
+.selfclear,
+.buttons {
+display: inline-block; /*silly IE 7 */
+}
+
+.selfclear,
+.buttons {
+display: block;
+}
+
+.nobreak {
+white-space: nowrap;
+}
+
+.noshow {
+display: none;
+}
