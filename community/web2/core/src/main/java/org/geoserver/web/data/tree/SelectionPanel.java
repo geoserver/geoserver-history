@@ -10,33 +10,30 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.tree.AbstractCatalogNode.SelectionState;
 
-public class SelectionPanel extends Panel {
+public abstract class SelectionPanel extends Panel {
+
+    AbstractCatalogNode catalogNode;
+    Image icon;
 
     public SelectionPanel(String id, final TreeNode node,
             final DataTreeTable tree) {
         super(id);
-        final AbstractCatalogNode catalogNode = ((AbstractCatalogNode) node);
-        final Image icon = new Image("icon", getImageResource(catalogNode));
+        catalogNode = ((AbstractCatalogNode) node);
+        icon = new Image("icon", getImageResource(catalogNode));
         AjaxLink link = new AjaxLink("link") {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                // change the state of the current node
-                catalogNode.nextSelectionState();
-                icon.setImageResourceReference(getImageResource(catalogNode));
-                
-                AbstractCatalogNode lastChangedParent = catalogNode.getParent().checkPartialSelection();
-
-                // force the tree refresh
-                tree.refresh(lastChangedParent);
-                target.addComponent(tree.getParent());
+                onCheckboxClick(target);
             }
         };
         link.add(icon);
         add(link);
     }
 
-    ResourceReference getImageResource(AbstractCatalogNode node) {
+    protected abstract void onCheckboxClick(AjaxRequestTarget target);
+
+    protected ResourceReference getImageResource(AbstractCatalogNode node) {
         if (node.getSelectionState() == SelectionState.SELECTED)
             return new ResourceReference(GeoServerApplication.class,
                     "img/icons/checkbox_checked.png");
