@@ -11,15 +11,19 @@
 #global {
   position: fixed;
   float: left;
-  width: 240px;
-  background: #fcfcfc;
-  border: 1px solid #eee;
+  width: 200px;
+  background:#F9F9F9 url(../img/globalbg.gif) repeat-y right;  
+  border: 1px solid #D0D0D0;
 }
 #page {
-  margin-left: 280px;
+  margin-left: 240px;
 }
 
 /* Global Pane */
+
+#global h1 {
+  font-size: 2em;
+}
 
 ul#navigation {
   margin-left: 0;
@@ -42,14 +46,19 @@ ul#navigation a:hover {
 .navigation-tab-single,
 .navigation-tab-header,
 .navigation-tab-content {
-  padding: 8px;
-  background: #eee;
-  border: 1px solid #ccc;
+  padding: 5px;
+  border: 1px solid #D0D0D0;
 }
 
 .navigation-tab-single,
 .navigation-tab-header {
   font-weight: bold;
+  background: transparent url(../img/ext/panel/white-top-bottom.gif) repeat-x 0 -1px;
+}
+
+.navigation-tab-content {
+  border-top: none;
+  background: #F9F9F9;
 }
 
 .navigation-tab-single a,
@@ -57,10 +66,7 @@ ul#navigation a:hover {
 .navigation-tab-content a {
   display: block;
   width: 100%;
-}
-
-.navigation-tab-content {
-  border-top: none;
+  color: #333333;
 }
 
 .buttons {
@@ -181,9 +187,11 @@ textarea.textarea {
 input.large, select.large, textarea.textarea {
     width:100%;
 }
+
 input.text, input.file {
     padding:2px 0pt;
 }
+
 input.text, textarea.textarea, .firefox select.select {
     background:#FFFFFF url(../img/fieldbg.gif) repeat-x scroll center top;
     border-color:#7C7C7C rgb(195, 195, 195) rgb(221, 221, 221);
@@ -210,4 +218,16 @@ input.btTxt
     overflow:visible;
     padding:0pt 7px;
     width:auto;
+}
+
+/* Tree Table (for overriding the Wicket tree-table.css) */
+
+div.wicket-tree-table span.b_ span.d_ {
+  padding-top: 3px;
+}
+
+div.wicket-tree-table div.header {
+  background: transparent url(../img/ext/panel/white-top-bottom.gif) repeat-x 0 -1px;
+  border: 1px solid #D0D0D0;
+  color: #333333;
 }
