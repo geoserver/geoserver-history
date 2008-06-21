@@ -1,6 +1,7 @@
 package org.geoserver.web.data.tree;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.tree.DefaultTreeModel;
@@ -27,8 +28,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.Model;
-import org.geoserver.catalog.CatalogFactory;
-import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -76,12 +76,28 @@ public class DataPage extends GeoServerBasePage {
         });
         add(form);
 
-        List<ResourceInfo> resources = getGeoServer().getCatalog().getResources(ResourceInfo.class);
-        ListView view = new ListView("resources", resources) {
+        final Catalog catalog = getCatalog();
+        final List<ResourceInfo> resources = catalog.getResources(ResourceInfo.class);
+        // feed the ListView with a list whose elements are serializable. The
+        // index in the resources list is ok.
+        final int size = resources.size();
+        List<Integer> resourceIndexes = new ArrayList<Integer>(size);
+        for (int index = 0; index < size; index++) {
+            resourceIndexes.add(Integer.valueOf(index));
+        }
+
+        ListView view = new ListView("resources", resourceIndexes) {
+
+            private static final long serialVersionUID = 1L;
+
             @Override
             protected void populateItem(ListItem item) {
-                final ResourceInfo info = (ResourceInfo) item.getModelObject();
+                final Integer index = (Integer) item.getModelObject();
+                final ResourceInfo info = resources.get(index.intValue());
+
                 Link link = new Link("resourcelink") {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void onClick() {
                         setResponsePage(new ResourceConfigurationPage(info, false));
@@ -96,17 +112,17 @@ public class DataPage extends GeoServerBasePage {
 
     protected void configureChecked(AjaxRequestTarget target, Form form) {
         // TODO Auto-generated method stub
-        
+
     }
 
     protected void removeChecked(AjaxRequestTarget target, Form form) {
         // TODO Auto-generated method stub
-        
+
     }
 
     protected void addChecked(AjaxRequestTarget target, Form form) {
         // TODO Auto-generated method stub
-        
+
     }
 
     class CatalogNameColumn extends AbstractTreeColumn implements IColumn {
