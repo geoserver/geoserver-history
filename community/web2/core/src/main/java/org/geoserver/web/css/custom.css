@@ -2,8 +2,9 @@
   width:100%;
   margin: 0;
   padding: 0;
-  background:#F9F9F9 url(../img/globalbg.gif) repeat-y -100px;  
+  background:#FFFFFF url(../img/globalbg.gif) repeat-y -100px;  
 }
+
 #global, 
 #page {
   padding: 20px;
@@ -233,6 +234,9 @@ div.wicket-tree-table span.b_ span.d_ {
 
 div.wicket-tree-table div.header {
   background: transparent url(../img/ext/panel/white-top-bottom.gif) repeat-x 0 -1px;
-  border: 1px solid #D0D0D0;
   color: #333333;
+}
+
+div.wicket-tree-table div.wicket-tree-table-body {
+  border: 1px solid #D0D0D0;
 }
