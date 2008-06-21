@@ -2,14 +2,18 @@
 <body>
 <wicket:extend>
 
-<!-- The actual tree -->
-<form wicket:id="controlForm">
-  <input type="button" wicket:id="collapseAll" value="Collapse All"/>
-</form>
-
+<!-- A Wicket tree table and its parent that specifies the width and allows for 
+    AJAX updates -->
 <div wicket:id="treeParent" style="width: 550px">
 <div wicket:id="dataTree"></div>
 </div>
+
+<!-- Some control buttons -->
+<form wicket:id="controlForm">
+	<button><wicket:message key="addChecked">Add</wicket:message></button>
+	<button><wicket:message key="removeChecked">Remove</wicket:message></button>
+	<button><wicket:message key="configureChecked">Configure</wicket:message></button> 
+</form>
 
 <div wicket:id="resources">
  <a wicket:id="resourcelink">
