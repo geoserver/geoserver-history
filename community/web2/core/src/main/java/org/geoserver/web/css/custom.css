@@ -2,6 +2,7 @@
   width:100%;
   margin: 0;
   padding: 0;
+  background:#F9F9F9 url(../img/globalbg.gif) repeat-y -100px;  
 }
 #global, 
 #page {
@@ -12,9 +13,8 @@
   position: fixed;
   float: left;
   width: 200px;
-  background:#F9F9F9 url(../img/globalbg.gif) repeat-y right;  
-  border: 1px solid #D0D0D0;
 }
+
 #page {
   margin-left: 240px;
 }
