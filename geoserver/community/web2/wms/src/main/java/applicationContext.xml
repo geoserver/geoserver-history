@@ -14,7 +14,19 @@
     
   <bean id="wmsLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
     <property name="id" value="wmsLayerConfig"/>
-    <property name="titleKey" value="data.resource.config.wms"/>
+    <property name="titleKey" value="publish.layer.config.wms"/>
     <property name="componentClass" value="org.geoserver.wms.web.publish.WMSLayerConfig"/>
+  </bean>
+
+  <bean id="geosearchLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
+    <property name="id" value="geosearchLayerConfig"/>
+    <property name="titleKey" value="publish.layer.config.geosearch"/>
+    <property name="componentClass" value="org.geoserver.wms.web.publish.GeoSearchLayerConfigPanel"/>
+  </bean>
+
+  <bean id="kmlLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
+    <property name="id" value="kmlLayerConfig"/>
+    <property name="titleKey" value="publish.layer.config.kml"/>
+    <property name="componentClass" value="org.geoserver.wms.web.publish.KMLLayerConfigPanel"/>
   </bean>
 </beans>
