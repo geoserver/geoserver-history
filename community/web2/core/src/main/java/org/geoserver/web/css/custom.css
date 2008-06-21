@@ -63,6 +63,11 @@ ul#navigation a:hover {
   border-top: none;
 }
 
+.buttons {
+    clear:both;
+    margin-top:10px;
+}
+
 li.nav-administer-service {
   clear: left;
 }
@@ -94,6 +99,11 @@ li.nav-administer-service img {
   border: 1px solid #ccc;
 }
 
+.buttons input {
+    font-size:120%;
+    margin-right:5px;
+}
+
 /* Universal styles */
 
 ul.plain {
@@ -120,6 +130,10 @@ form li {
     margin:0pt;
     padding:4px 5px 2px 9px;
     position:relative;
+}
+
+form li, .buttons {
+    display:block;
 }
 
 form ul {
@@ -190,4 +204,10 @@ input.checkbox, input.radio {
     line-height:1.5em;
     margin:0.6em 0pt 0pt 3px;
     width:13px;
+}
+
+input.btTxt 
+    overflow:visible;
+    padding:0pt 7px;
+    width:auto;
 }
