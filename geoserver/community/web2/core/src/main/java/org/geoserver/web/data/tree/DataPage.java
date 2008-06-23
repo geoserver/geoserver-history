@@ -163,7 +163,7 @@ public class DataPage extends GeoServerBasePage {
 
         @Override
         public String renderNode(TreeNode node) {
-            return ((AbstractCatalogNode) node).getNodeLabel();
+            return ((CatalogNode) node).getNodeLabel();
         }
 
         @Override
@@ -174,13 +174,13 @@ public class DataPage extends GeoServerBasePage {
             }
             if (node instanceof UnconfiguredFeatureTypeNode) {
                 return new UnconfiguredFeatureTypePanel(id, tree, parent,
-                        (AbstractCatalogNode) node, level);
+                        (CatalogNode) node, level);
             }
             if (node instanceof ResourceNode) {
-                return new ResourcePanel(id, tree, parent, (AbstractCatalogNode) node, level);
+                return new ResourcePanel(id, tree, parent, (CatalogNode) node, level);
             }
             if (node instanceof NewDatastoreNode) {
-                return new NewDataStorePanel(id, tree, parent, (AbstractCatalogNode) node, level);
+                return new NewDataStorePanel(id, tree, parent, (CatalogNode) node, level);
             } else {
                 return super.newCell(parent, id, node, level);
             }
@@ -195,7 +195,7 @@ public class DataPage extends GeoServerBasePage {
         }
 
         public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
-            AbstractCatalogNode cn = (AbstractCatalogNode) node;
+            CatalogNode cn = (CatalogNode) node;
             if (!cn.isSelectable())
                 return new EmptyPanel(id);
             else
@@ -216,11 +216,11 @@ public class DataPage extends GeoServerBasePage {
 
         public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
             if (node instanceof UnconfiguredFeatureTypeNode)
-                return new AddConfigPanel(id, (AbstractCatalogNode) node);
-            else if (node instanceof AbstractPlaceholderNode)
+                return new AddConfigPanel(id, (CatalogNode) node);
+            else if (node instanceof PlaceholderNode)
                 return new EmptyPanel(id);
             else
-                return new EditRemovePanel(id, (AbstractCatalogNode) node);
+                return new EditRemovePanel(id, (CatalogNode) node);
         }
 
         public IRenderable newCell(TreeNode node, int level) {
@@ -283,7 +283,7 @@ public class DataPage extends GeoServerBasePage {
     class NewDataStorePanel extends LinkPanel {
 
         public NewDataStorePanel(String id, DataTreeTable tree, MarkupContainer parent,
-                AbstractCatalogNode node, int level) {
+                CatalogNode node, int level) {
             super(id, tree, parent, node, level);
             label.add(new AttributeModifier("class", true, new Model("command")));
         }
@@ -304,7 +304,7 @@ public class DataPage extends GeoServerBasePage {
     class UnconfiguredFeatureTypePanel extends LinkPanel {
 
         public UnconfiguredFeatureTypePanel(String id, DataTreeTable tree, MarkupContainer parent,
-                AbstractCatalogNode node, int level) {
+                CatalogNode node, int level) {
             super(id, tree, parent, node, level);
             label.add(new AttributeModifier("class", true, new Model("unconfiguredLayer")));
         }
@@ -315,7 +315,7 @@ public class DataPage extends GeoServerBasePage {
          */
         @Override
         protected void onClick(AjaxRequestTarget target) {
-            EditRemovePanel.edit(this, (AbstractCatalogNode) node);
+            EditRemovePanel.edit(this, (CatalogNode) node);
         }
     }
     
@@ -332,7 +332,7 @@ public class DataPage extends GeoServerBasePage {
             catalogNode.nextSelectionState();
             icon.setImageResourceReference(getImageResource(catalogNode));
             
-            AbstractCatalogNode lastChangedParent = catalogNode.getParent().checkPartialSelection();
+            CatalogNode lastChangedParent = catalogNode.getParent().checkPartialSelection();
 
             // force the tree refresh
             tree.refresh(lastChangedParent);
@@ -348,7 +348,7 @@ public class DataPage extends GeoServerBasePage {
     class ResourcePanel extends LabelPanel {
 
         public ResourcePanel(String id, DataTreeTable tree,
-                MarkupContainer parent, AbstractCatalogNode node, int level) {
+                MarkupContainer parent, CatalogNode node, int level) {
             super(id, tree, parent, node, level);
         }
         
@@ -372,10 +372,10 @@ public class DataPage extends GeoServerBasePage {
     
     void updateButtonState() {
         // button state update
-        List<AbstractCatalogNode> selection =  root.getSelectedNodes();
+        List<CatalogNode> selection =  root.getSelectedNodes();
         boolean configured = false;
         boolean unconfigured = false;
-        for (AbstractCatalogNode node : selection) {
+        for (CatalogNode node : selection) {
             if(node instanceof UnconfiguredFeatureTypeNode) {
                 unconfigured = true;
             } else {

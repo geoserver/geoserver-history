@@ -6,9 +6,9 @@ package org.geoserver.web.data.tree;
 
 import org.geoserver.catalog.WorkspaceInfo;
 
-public class NewDatastoreNode extends AbstractPlaceholderNode {
+public class NewDatastoreNode extends PlaceholderNode {
 
-    public NewDatastoreNode(String name, AbstractCatalogNode parent) {
+    public NewDatastoreNode(String name, CatalogNode parent) {
         super(name, parent);
     }
 

@@ -21,9 +21,9 @@ import org.geoserver.web.GeoServerApplication;
  */
 public class AddConfigPanel extends Panel {
 
-    private final AbstractCatalogNode node;
+    private final CatalogNode node;
 
-    public AddConfigPanel(String id, AbstractCatalogNode node) {
+    public AddConfigPanel(String id, CatalogNode node) {
         super(id);
         this.node = node;
 

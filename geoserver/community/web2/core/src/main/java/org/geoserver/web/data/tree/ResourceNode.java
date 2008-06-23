@@ -12,14 +12,14 @@ import java.util.List;
 
 import org.geoserver.catalog.ResourceInfo;
 
-class ResourceNode extends AbstractCatalogNode {
+class ResourceNode extends CatalogNode {
 
     private Class resourceType;
 
     private String storeName;
 
     public ResourceNode(String storeName, String name,
-            AbstractCatalogNode parent, Class clazz) {
+            CatalogNode parent, Class clazz) {
         super(name, parent);
         this.storeName = storeName;
         this.resourceType = clazz;

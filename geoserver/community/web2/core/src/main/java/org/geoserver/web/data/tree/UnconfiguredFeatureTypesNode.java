@@ -12,9 +12,9 @@ import java.util.logging.Level;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 
-public class UnconfiguredFeatureTypesNode extends AbstractPlaceholderNode {
+public class UnconfiguredFeatureTypesNode extends PlaceholderNode {
 
-    public UnconfiguredFeatureTypesNode(String id, AbstractCatalogNode parent) {
+    public UnconfiguredFeatureTypesNode(String id, CatalogNode parent) {
         super(id, parent);
     }
 

@@ -16,7 +16,7 @@ public class LabelPanel extends AbstractTreePanel {
     Label label;
 
     public LabelPanel(String id, DataTreeTable tree, MarkupContainer parent,
-            AbstractCatalogNode node, int level) {
+            CatalogNode node, int level) {
         super(id, tree, parent, node, level);
 
         label = new org.apache.wicket.markup.html.basic.Label("label",

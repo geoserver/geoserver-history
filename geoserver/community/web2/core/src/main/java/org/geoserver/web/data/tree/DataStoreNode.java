@@ -19,18 +19,18 @@ import java.util.logging.Level;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 
-class DataStoreNode extends AbstractCatalogNode {
+class DataStoreNode extends CatalogNode {
     
     boolean unconfiguredChildrenVisible;
 
-    public DataStoreNode(String id, AbstractCatalogNode parent) {
+    public DataStoreNode(String id, CatalogNode parent) {
         super(id, parent);
     }
 
-    protected List<AbstractCatalogNode> buildChildNodes() {
+    protected List<CatalogNode> buildChildNodes() {
         List<FeatureTypeInfo> types = getCatalog().getFeatureTypesByStore(
                 getModel());
-        List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
+        List<CatalogNode> childNodes = new ArrayList<CatalogNode>();
         for (FeatureTypeInfo type : types) {
             childNodes.add(new ResourceNode(name, type.getName(), this,
                     FeatureTypeInfo.class));
@@ -43,8 +43,8 @@ class DataStoreNode extends AbstractCatalogNode {
         return childNodes;
     }
 
-    private List<AbstractCatalogNode> buildUnconfiguredChildren() {
-        List<AbstractCatalogNode> result = new ArrayList<AbstractCatalogNode>();
+    private List<CatalogNode> buildUnconfiguredChildren() {
+        List<CatalogNode> result = new ArrayList<CatalogNode>();
         List<FeatureTypeInfo> types = getCatalog().getFeatureTypesByStore(
                 getModel());
         try {
