@@ -13,6 +13,12 @@ import org.apache.wicket.ResourceReference;
 import org.apache.wicket.extensions.markup.html.tree.table.IColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 
+/**
+ * Customized tree table object exposing enough methods to allow the implementation of
+ * tree elements as external panels that not necessarily use links as the presentation
+ * @author Andrea Aime - TOPP
+ *
+ */
 public class DataTreeTable extends TreeTable {
     
     /** Reference to the css file. */
