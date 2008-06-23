@@ -17,16 +17,16 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 
-class WorkspaceNode extends AbstractCatalogNode {
+class WorkspaceNode extends CatalogNode {
 
-    public WorkspaceNode(String id, AbstractCatalogNode parent) {
+    public WorkspaceNode(String id, CatalogNode parent) {
         super(id, parent);
     }
 
-    protected List<AbstractCatalogNode> buildChildNodes() {
+    protected List<CatalogNode> buildChildNodes() {
         List<StoreInfo> stores = getCatalog().getStoresByWorkspace(
                 ((WorkspaceInfo) getModel()), StoreInfo.class);
-        List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
+        List<CatalogNode> childNodes = new ArrayList<CatalogNode>();
         for (StoreInfo store : stores) {
             // hack here: if the node is a datastore that has just one
             // possible child we're replacing it with its child, that we have to

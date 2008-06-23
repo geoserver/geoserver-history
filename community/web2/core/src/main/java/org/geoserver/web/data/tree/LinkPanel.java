@@ -15,7 +15,7 @@ public abstract class LinkPanel extends AbstractTreePanel {
     Label label;
 
     public LinkPanel(String id, DataTreeTable tree, MarkupContainer parent,
-            AbstractCatalogNode node, int level) {
+            CatalogNode node, int level) {
         super(id, tree, parent, node, level);
         AjaxLink link = new AjaxLink("ajaxLink") {
 

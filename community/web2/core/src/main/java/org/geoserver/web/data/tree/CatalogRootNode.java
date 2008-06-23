@@ -12,15 +12,15 @@ import java.util.List;
 
 import org.geoserver.catalog.WorkspaceInfo;
 
-class CatalogRootNode extends AbstractCatalogNode {
+class CatalogRootNode extends CatalogNode {
 
     public CatalogRootNode() {
         super("", null);
     }
 
-    protected List<AbstractCatalogNode> buildChildNodes() {
+    protected List<CatalogNode> buildChildNodes() {
         List<WorkspaceInfo> workspaces = getCatalog().getWorkspaces();
-        List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
+        List<CatalogNode> childNodes = new ArrayList<CatalogNode>();
         for (WorkspaceInfo ws : workspaces) {
             childNodes.add(new WorkspaceNode(ws.getName(), this));
         }

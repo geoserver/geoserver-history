@@ -37,10 +37,10 @@ import org.geoserver.web.data.datastore.DataStoreConfiguration;
 public class EditRemovePanel extends Panel {
 
     /**
-     * Per {@link AbstractCatalogNode} concrete subclass class type map of
+     * Per {@link CatalogNode} concrete subclass class type map of
      * strategies to handle edit and remove
      * 
-     * @see #getAddRemoveStrategy(AbstractCatalogNode)
+     * @see #getAddRemoveStrategy(CatalogNode)
      */
     private static final Map<Class, AddRemoveStrategy> ADD_REMOVE_STRATEGIES = new HashMap<Class, AddRemoveStrategy>();
     static {
@@ -52,9 +52,9 @@ public class EditRemovePanel extends Panel {
                 new UnconfiguredFeatureTypeAddRemoveStrategy());
     }
 
-    private final AbstractCatalogNode node;
+    private final CatalogNode node;
 
-    public EditRemovePanel(String id, AbstractCatalogNode node) {
+    public EditRemovePanel(String id, CatalogNode node) {
         super(id);
         this.node = node;
 
@@ -95,12 +95,12 @@ public class EditRemovePanel extends Panel {
         edit(this, node);
     }
 
-    public static void edit(final Component callingComponent, final AbstractCatalogNode node) {
+    public static void edit(final Component callingComponent, final CatalogNode node) {
         final AddRemoveStrategy strategy = getAddRemoveStrategy(node);
         strategy.edit(callingComponent, node);
     }
 
-    public static void remove(final Component callingComponent, final AbstractCatalogNode node) {
+    public static void remove(final Component callingComponent, final CatalogNode node) {
         final AddRemoveStrategy strategy = getAddRemoveStrategy(node);
         strategy.remove(callingComponent, node);
     }
@@ -112,8 +112,8 @@ public class EditRemovePanel extends Panel {
      * @return the strategy to handle edit and remove operations over the given
      *         node class type
      */
-    private static AddRemoveStrategy getAddRemoveStrategy(final AbstractCatalogNode node) {
-        final Class<? extends AbstractCatalogNode> nodeClass = node.getClass();
+    private static AddRemoveStrategy getAddRemoveStrategy(final CatalogNode node) {
+        final Class<? extends CatalogNode> nodeClass = node.getClass();
         final AddRemoveStrategy strategy = ADD_REMOVE_STRATEGIES.get(nodeClass);
         if (strategy == null) {
             throw new IllegalArgumentException("Unknown node type, don't know how to handle it: "
@@ -125,7 +125,7 @@ public class EditRemovePanel extends Panel {
 
     /**
      * Defines a strategy to get the edit and remove pages for a specific
-     * {@link AbstractCatalogNode} subclass.
+     * {@link CatalogNode} subclass.
      * <p>
      * Implementations shall be stateless and are meant to be per node type
      * singletons.
@@ -135,9 +135,9 @@ public class EditRemovePanel extends Panel {
      */
     private static interface AddRemoveStrategy {
 
-        public void edit(Component callingComponent, AbstractCatalogNode node);
+        public void edit(Component callingComponent, CatalogNode node);
 
-        public void remove(Component callingComponent, AbstractCatalogNode node);
+        public void remove(Component callingComponent, CatalogNode node);
     }
 
     /**
@@ -146,7 +146,7 @@ public class EditRemovePanel extends Panel {
      */
     private static class WorkspaceAddRemoveStrategy implements AddRemoveStrategy {
 
-        public void edit(final Component callingComponent, final AbstractCatalogNode node) {
+        public void edit(final Component callingComponent, final CatalogNode node) {
             final WorkspaceNode wsNode = (WorkspaceNode) node;
             final WorkspaceInfo model = wsNode.getModel();
             final Catalog catalog = node.getCatalog();
@@ -157,7 +157,7 @@ public class EditRemovePanel extends Panel {
             callingComponent.setResponsePage(new NamespaceEditPage(nsId));
         }
 
-        public void remove(final Component callingComponent, final AbstractCatalogNode node) {
+        public void remove(final Component callingComponent, final CatalogNode node) {
             System.out.println("remove " + node.getClass());
         }
     }
@@ -168,7 +168,7 @@ public class EditRemovePanel extends Panel {
      */
     private static class DataStoreAddRemoveStrategy implements AddRemoveStrategy {
 
-        public void edit(final Component callingComponent, final AbstractCatalogNode node) {
+        public void edit(final Component callingComponent, final CatalogNode node) {
             final String datastoreUniqueName = node.getNodeLabel();
 
             final Catalog catalog = node.getCatalog();
@@ -178,7 +178,7 @@ public class EditRemovePanel extends Panel {
             callingComponent.setResponsePage(new DataStoreConfiguration(dataStoreInfoId));
         }
 
-        public void remove(final Component callingComponent, final AbstractCatalogNode node) {
+        public void remove(final Component callingComponent, final CatalogNode node) {
             System.out.println("remove " + node.getClass());
         }
     }
@@ -189,11 +189,11 @@ public class EditRemovePanel extends Panel {
      */
     private static class CoverageStoreAddRemoveStrategy implements AddRemoveStrategy {
 
-        public void edit(final Component callingComponent, final AbstractCatalogNode node) {
+        public void edit(final Component callingComponent, final CatalogNode node) {
             System.out.println("edit " + node.getClass());
         }
 
-        public void remove(final Component callingComponent, final AbstractCatalogNode node) {
+        public void remove(final Component callingComponent, final CatalogNode node) {
             System.out.println("remove " + node.getClass());
         }
     }
@@ -204,12 +204,12 @@ public class EditRemovePanel extends Panel {
      */
     private static class ResourceAddRemoveStrategy implements AddRemoveStrategy {
 
-        public void edit(final Component callingComponent, final AbstractCatalogNode node) {
+        public void edit(final Component callingComponent, final CatalogNode node) {
             ResourceInfo resourceInfo = (ResourceInfo) node.getModel();
             callingComponent.setResponsePage(new ResourceConfigurationPage(resourceInfo, false));
         }
 
-        public void remove(final Component callingComponent, final AbstractCatalogNode node) {
+        public void remove(final Component callingComponent, final CatalogNode node) {
             System.out.println("remove " + node.getClass());
         }
     }
@@ -226,7 +226,7 @@ public class EditRemovePanel extends Panel {
          *            shall be an instance of
          *            {@link UnconfiguredFeatureTypeNode}
          */
-        public void edit(final Component callingComponent, final AbstractCatalogNode node) {
+        public void edit(final Component callingComponent, final CatalogNode node) {
 
             final UnconfiguredFeatureTypeNode unconfiguredFTypeNode = ((UnconfiguredFeatureTypeNode) node);
             final String typeName = unconfiguredFTypeNode.getTypeName();
@@ -243,7 +243,7 @@ public class EditRemovePanel extends Panel {
             callingComponent.setResponsePage(responsePage);
         }
 
-        public void remove(final Component callingComponent, final AbstractCatalogNode node) {
+        public void remove(final Component callingComponent, final CatalogNode node) {
             System.out.println("remove " + node.getClass());
         }
     }

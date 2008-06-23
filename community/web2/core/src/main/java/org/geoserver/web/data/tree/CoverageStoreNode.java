@@ -13,16 +13,16 @@ import java.util.List;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 
-class CoverageStoreNode extends AbstractCatalogNode {
+class CoverageStoreNode extends CatalogNode {
 
-    public CoverageStoreNode(String id, AbstractCatalogNode parent) {
+    public CoverageStoreNode(String id, CatalogNode parent) {
         super(id, parent);
     }
 
-    protected List<AbstractCatalogNode> buildChildNodes() {
+    protected List<CatalogNode> buildChildNodes() {
         List<CoverageInfo> coverages = getCatalog().getCoveragesByStore(
                 getModel());
-        List<AbstractCatalogNode> childNodes = new ArrayList<AbstractCatalogNode>();
+        List<CatalogNode> childNodes = new ArrayList<CatalogNode>();
         for (CoverageInfo coverage : coverages) {
             childNodes.add(new ResourceNode(name, coverage.getName(), this,
                     CoverageInfo.class));

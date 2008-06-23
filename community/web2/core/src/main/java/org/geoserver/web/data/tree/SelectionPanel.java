@@ -12,17 +12,17 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.data.tree.AbstractCatalogNode.SelectionState;
+import org.geoserver.web.data.tree.CatalogNode.SelectionState;
 
 public abstract class SelectionPanel extends Panel {
 
-    AbstractCatalogNode catalogNode;
+    CatalogNode catalogNode;
     Image icon;
 
     public SelectionPanel(String id, final TreeNode node,
             final DataTreeTable tree) {
         super(id);
-        catalogNode = ((AbstractCatalogNode) node);
+        catalogNode = ((CatalogNode) node);
         icon = new Image("icon", getImageResource(catalogNode));
         AjaxLink link = new AjaxLink("link") {
 
@@ -37,7 +37,7 @@ public abstract class SelectionPanel extends Panel {
 
     protected abstract void onCheckboxClick(AjaxRequestTarget target);
 
-    protected ResourceReference getImageResource(AbstractCatalogNode node) {
+    protected ResourceReference getImageResource(CatalogNode node) {
         if (node.getSelectionState() == SelectionState.SELECTED)
             return new ResourceReference(GeoServerApplication.class,
                     "img/icons/checkbox_checked.png");
