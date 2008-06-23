@@ -263,12 +263,12 @@ div.wicket-tree-table span.b_ span.d_ {
   padding-top: 3px;
 }
 
-span.silk_icon
-{
-    width: 16px;
-    float: left;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    margin-left: 2px;
-    margin-top: -1px;
+div.wicket-tree-table span.silk_icon {
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	float:left;
+	height:1.6em;
+	margin-right:4px;
+	min-height:18px;
+	width:16px;
 }

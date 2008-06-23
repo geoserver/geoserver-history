@@ -78,28 +78,8 @@ public class DataPage extends GeoServerBasePage {
         tree = new DataTreeTable("dataTree", new DefaultTreeModel(root), new IColumn[] {
                 new SelectionColumn(), new DataPageTreeColumn(), new ActionColumn() }) {
             @Override
-            public ResourceReference getNodeIcon(TreeNode node) {
-                if (node instanceof DataStoreNode) {
-                    return getStoreIcon(((DataStoreNode) node).getModel());
-                } else {
-                    return super.getNodeIcon(node);
-                }
-            }
-
-            @Override
             protected void onNodeLinkClicked(AjaxRequestTarget target, TreeNode node) {
-                ITreeState ts = getTreeState();
-                if (ts.isNodeExpanded(node))
-                    ts.collapseNode(node);
-                else
-                    ts.expandNode(node);
-
-                TreeNode ws = getWorkspaceNode(node);
-                for (CatalogNode child : root.childNodes()) {
-                    if (!(child.equals(ws)))
-                        ts.collapseNode(child);
-                }
-                ts.selectNode(ws, true);
+                DataPage.this.onNodeLinkClicked(target, node);
             }
         };
         tree.setRootLess(true);
@@ -136,6 +116,22 @@ public class DataPage extends GeoServerBasePage {
 
         // refresh the state of the button based on the current selection
         updateButtonState();
+    }
+    
+    protected void onNodeLinkClicked(AjaxRequestTarget target, TreeNode node) {
+        ITreeState ts = tree.getTreeState();
+        if (ts.isNodeExpanded(node))
+            ts.collapseNode(node);
+        else
+            ts.expandNode(node);
+
+        TreeNode ws = getWorkspaceNode(node);
+        for (CatalogNode child : root.childNodes()) {
+            if (!(child.equals(ws)))
+                ts.collapseNode(child);
+        }
+        ts.selectNode(ws, true);
+        target.addComponent(tree.getParent());
     }
 
     protected ResourceReference getStoreIcon(StoreInfo info) {
@@ -225,22 +221,19 @@ public class DataPage extends GeoServerBasePage {
 
         @Override
         public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
-            if (node instanceof UnconfiguredFeatureTypesNode) {
+            if (node instanceof UnconfiguredFeatureTypesNode) 
                 return new UnconfiguredFeatureTypesPanel(id, tree, parent,
                         (UnconfiguredFeatureTypesNode) node, level);
-            }
-            if (node instanceof UnconfiguredFeatureTypeNode) {
+            if (node instanceof UnconfiguredFeatureTypeNode)
                 return new UnconfiguredFeatureTypePanel(id, tree, parent, (CatalogNode) node, level);
-            }
-            if (node instanceof ResourceNode) {
+            if (node instanceof ResourceNode)
                 return new ResourcePanel(id, tree, parent, (CatalogNode) node, level);
-            }
-            if (node instanceof NewDatastoreNode) {
+            if (node instanceof NewDatastoreNode)
                 return new NewDataStorePanel(id, tree, parent, (CatalogNode) node, level);
-            } else {
-                return super.newCell(parent, id, node, level);
-            }
-
+            if (node instanceof DataStoreNode) 
+                return new DataStorePanel(id, tree, parent, (CatalogNode) node, level);
+            // else
+            return super.newCell(parent, id, node, level);
         }
     }
 
@@ -297,27 +290,6 @@ public class DataPage extends GeoServerBasePage {
         }
 
     }
-
-    // final class DataTreeListener extends TreeAdapter implements Serializable
-    // {
-    //
-    // @Override
-    // public void nodeUnselected(TreeNode node) {
-    // if (!tree.getTreeState().isNodeExpanded(node))
-    // tree.getTreeState().expandNode(node);
-    // else
-    // tree.getTreeState().collapseNode(node);
-    // }
-    //
-    // public void nodeSelected(TreeNode selected) {
-    //
-    // if (!tree.getTreeState().isNodeExpanded(selected))
-    // tree.getTreeState().expandNode(selected);
-    // else
-    // tree.getTreeState().collapseNode(selected);
-    // }
-    //
-    // }
 
     protected TreeNode getWorkspaceNode(TreeNode selected) {
         TreeNode node = selected;
@@ -380,6 +352,35 @@ public class DataPage extends GeoServerBasePage {
         @Override
         protected void onClick(AjaxRequestTarget target) {
             EditRemovePanel.edit(this, (CatalogNode) node);
+        }
+    }
+    
+    /**
+     * The custom component handles the datastores (with proper icon)
+     * 
+     * @author Andrea Aime - TOPP
+     * @TODO change this back to a {@link LabelPanel}, we have the buttons to
+     *       handle this
+     */
+    class DataStorePanel extends LinkPanel {
+
+        public DataStorePanel(String id, DataTreeTable tree, MarkupContainer parent,
+                CatalogNode node, int level) {
+            super(id, tree, parent, node, level);
+        }
+        
+        @Override
+        protected ResourceReference getNodeIcon(DataTreeTable tree, TreeNode node) {
+            return getStoreIcon(((DataStoreNode) node).getModel());
+        }
+
+        /**
+         * Creates a new, detached from the catalog, {@link FeatureTypeInfo} and
+         * pass it through to {@link ResourceConfigurationPage}
+         */
+        @Override
+        protected void onClick(AjaxRequestTarget target) {
+            onNodeLinkClicked(target, node);
         }
     }
 

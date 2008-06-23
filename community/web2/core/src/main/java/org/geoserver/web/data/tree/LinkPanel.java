@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.tree;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -28,6 +29,10 @@ public abstract class LinkPanel extends CatalogTreePanel {
         };
         label = new org.apache.wicket.markup.html.basic.Label("label", new Model(node));
         link.add(label);
+        Component icon = newNodeIcon(tree, this, "icon", node);
+        link.add(icon);
+        if(getNodeIcon(tree, node) == null)
+            icon.setVisible(false);
         add(link);
     }
 
