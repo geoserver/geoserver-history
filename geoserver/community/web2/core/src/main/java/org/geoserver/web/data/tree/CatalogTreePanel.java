@@ -25,11 +25,6 @@ public class CatalogTreePanel extends Panel {
         this.node = node;
         add(tree.newIndentation(this, "indent", node, level));
         add(tree.newJunctionLink(this, "link", "image", node));
-        Component icon = newNodeIcon(tree, this, "icon", node);
-        add(icon);
-        if(getNodeIcon(tree, node) == null)
-            icon.setVisible(false);
-        
     }
     
     /**
