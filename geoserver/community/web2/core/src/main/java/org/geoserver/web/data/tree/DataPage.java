@@ -4,7 +4,6 @@
  */
 package org.geoserver.web.data.tree;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,54 +43,60 @@ import org.geotools.data.DataAccessFactory;
 import org.geotools.util.logging.Logging;
 
 /**
- * The one stop shop UI for data configuration, handles all data oriented resources in a single
- * tree and allows for modification of it thru the various sub-panels nested into this one
+ * The one stop shop UI for data configuration, handles all data oriented
+ * resources in a single tree and allows for modification of it thru the various
+ * sub-panels nested into this one
+ * 
  * @author Andrea Aime - TOPP
- *
+ * 
  */
 public class DataPage extends GeoServerBasePage {
-    
+
     static final Logger LOGGER = Logging.getLogger(DataPage.class);
 
     DataTreeTable tree;
+
     CatalogRootNode root;
+
     private Form buttonForm;
+
     private AjaxButton addButton;
+
     private AjaxButton removeButton;
+
     private AjaxButton configureButton;
 
     public DataPage() {
-        // build a parent so that ajax requests can update the tree 
+        // build a parent so that ajax requests can update the tree
         // (repeater like objects cannot act as refresh targets
         WebMarkupContainer treeContainer = new WebMarkupContainer("treeParent");
         treeContainer.setOutputMarkupId(true);
         add(treeContainer);
-        
+
         // build the tree
         root = new CatalogRootNode();
-        tree = new DataTreeTable("dataTree", new DefaultTreeModel(
-                root), new IColumn[] { new SelectionColumn(),
-                new DataPageTreeColumn(), new ActionColumn() }) {
+        tree = new DataTreeTable("dataTree", new DefaultTreeModel(root), new IColumn[] {
+                new SelectionColumn(), new DataPageTreeColumn(), new ActionColumn() }) {
             @Override
             public ResourceReference getNodeIcon(TreeNode node) {
-                if(node instanceof DataStoreNode) {
+                if (node instanceof DataStoreNode) {
                     return getStoreIcon(((DataStoreNode) node).getModel());
                 } else {
                     return super.getNodeIcon(node);
                 }
             }
-            
+
             @Override
             protected void onNodeLinkClicked(AjaxRequestTarget target, TreeNode node) {
                 ITreeState ts = getTreeState();
-                if(ts.isNodeExpanded(node))
+                if (ts.isNodeExpanded(node))
                     ts.collapseNode(node);
                 else
                     ts.expandNode(node);
-                
+
                 TreeNode ws = getWorkspaceNode(node);
                 for (CatalogNode child : root.childNodes()) {
-                    if(!(child.equals(ws)))
+                    if (!(child.equals(ws)))
                         ts.collapseNode(child);
                 }
                 ts.selectNode(ws, true);
@@ -123,8 +128,9 @@ public class DataPage extends GeoServerBasePage {
                 configureButtonClicked(target, form);
             }
         };
-        configureButton.add(new SimpleAttributeModifier("onclick",
-        "alert('This will allow you mass configure multiple feature types'); return false;"));
+        configureButton
+                .add(new SimpleAttributeModifier("onclick",
+                        "alert('This will allow you mass configure multiple feature types'); return false;"));
         buttonForm.add(configureButton);
         add(buttonForm);
 
@@ -137,16 +143,16 @@ public class DataPage extends GeoServerBasePage {
             DataStoreInfo ds = (DataStoreInfo) info;
 
             // look for the associated panel info if there is one
-            List<DataStorePanelInfo> infos = getGeoServerApplication()
-                    .getBeansOfType(DataStorePanelInfo.class);
+            List<DataStorePanelInfo> infos = getGeoServerApplication().getBeansOfType(
+                    DataStorePanelInfo.class);
             for (DataStorePanelInfo panelInfo : infos) {
                 try {
-                    // we know if a factory is the right one if it can process the params
-                    DataAccessFactory factory = (DataAccessFactory) panelInfo
-                            .getFactoryClass().newInstance();
+                    // we know if a factory is the right one if it can process
+                    // the params
+                    DataAccessFactory factory = (DataAccessFactory) panelInfo.getFactoryClass()
+                            .newInstance();
                     if (factory.canProcess(ds.getConnectionParameters())) {
-                        return new ResourceReference(panelInfo.getIconBase(),
-                                panelInfo.getIcon());
+                        return new ResourceReference(panelInfo.getIconBase(), panelInfo.getIcon());
                     }
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING,
@@ -156,8 +162,7 @@ public class DataPage extends GeoServerBasePage {
             }
 
             // fall back on generic vector icon otherwise
-            return new ResourceReference(GeoServerApplication.class,
-                    "img/icons/geosilk/vector.png");
+            return new ResourceReference(GeoServerApplication.class, "img/icons/geosilk/vector.png");
 
         } else {
             return null;
@@ -178,22 +183,22 @@ public class DataPage extends GeoServerBasePage {
         // TODO Auto-generated method stub
 
     }
-    
+
     /**
-     * Updates the state of the buttons in the bar below the 
+     * Updates the state of the buttons in the bar below the
      */
     void updateButtonState() {
         // button state update
-        List<CatalogNode> selection =  root.getSelectedNodes();
+        List<CatalogNode> selection = root.getSelectedNodes();
         boolean configured = false;
         boolean unconfigured = false;
         for (CatalogNode node : selection) {
-            if(node instanceof UnconfiguredFeatureTypeNode) {
+            if (node instanceof UnconfiguredFeatureTypeNode) {
                 unconfigured = true;
             } else {
                 configured = true;
             }
-            
+
         }
         removeButton.setEnabled(configured);
         configureButton.setEnabled(unconfigured);
@@ -201,9 +206,11 @@ public class DataPage extends GeoServerBasePage {
     }
 
     /**
-     * The column with the actual tree. It will insert all our custom components into it.
+     * The column with the actual tree. It will insert all our custom components
+     * into it.
+     * 
      * @author Andrea Aime - TOPP
-     *
+     * 
      */
     class DataPageTreeColumn extends AbstractTreeColumn implements IColumn {
 
@@ -223,8 +230,7 @@ public class DataPage extends GeoServerBasePage {
                         (UnconfiguredFeatureTypesNode) node, level);
             }
             if (node instanceof UnconfiguredFeatureTypeNode) {
-                return new UnconfiguredFeatureTypePanel(id, tree, parent,
-                        (CatalogNode) node, level);
+                return new UnconfiguredFeatureTypePanel(id, tree, parent, (CatalogNode) node, level);
             }
             if (node instanceof ResourceNode) {
                 return new ResourcePanel(id, tree, parent, (CatalogNode) node, level);
@@ -239,10 +245,11 @@ public class DataPage extends GeoServerBasePage {
     }
 
     /**
-     * The column with the check marks used for selection. Uses a selection panel for selectable
-     * nodes, an empty one of the others.
+     * The column with the check marks used for selection. Uses a selection
+     * panel for selectable nodes, an empty one of the others.
+     * 
      * @author Andrea Aime - TOPP
-     *
+     * 
      */
     class SelectionColumn extends AbstractColumn {
 
@@ -266,8 +273,9 @@ public class DataPage extends GeoServerBasePage {
 
     /**
      * The column that contains per row action buttons
+     * 
      * @author Andrea Aime - TOPP
-     *
+     * 
      */
     class ActionColumn extends AbstractColumn {
 
@@ -290,25 +298,26 @@ public class DataPage extends GeoServerBasePage {
 
     }
 
-//    final class DataTreeListener extends TreeAdapter implements Serializable {
-//
-//        @Override
-//        public void nodeUnselected(TreeNode node) {
-//            if (!tree.getTreeState().isNodeExpanded(node))
-//                tree.getTreeState().expandNode(node);
-//            else
-//                tree.getTreeState().collapseNode(node);
-//        }
-//
-//        public void nodeSelected(TreeNode selected) {
-//
-//            if (!tree.getTreeState().isNodeExpanded(selected))
-//                tree.getTreeState().expandNode(selected);
-//            else
-//                tree.getTreeState().collapseNode(selected);
-//        }
-//
-//    }
+    // final class DataTreeListener extends TreeAdapter implements Serializable
+    // {
+    //
+    // @Override
+    // public void nodeUnselected(TreeNode node) {
+    // if (!tree.getTreeState().isNodeExpanded(node))
+    // tree.getTreeState().expandNode(node);
+    // else
+    // tree.getTreeState().collapseNode(node);
+    // }
+    //
+    // public void nodeSelected(TreeNode selected) {
+    //
+    // if (!tree.getTreeState().isNodeExpanded(selected))
+    // tree.getTreeState().expandNode(selected);
+    // else
+    // tree.getTreeState().collapseNode(selected);
+    // }
+    //
+    // }
 
     protected TreeNode getWorkspaceNode(TreeNode selected) {
         TreeNode node = selected;
@@ -319,10 +328,12 @@ public class DataPage extends GeoServerBasePage {
     }
 
     /**
-     * The tree item that handles the "add data" link and forces the expansion of the unconfigured
-     * feature types for data stores that do have one or more unconfigured elements
+     * The tree item that handles the "add data" link and forces the expansion
+     * of the unconfigured feature types for data stores that do have one or
+     * more unconfigured elements
+     * 
      * @author Andrea Aime - TOPP
-     *
+     * 
      */
     class UnconfiguredFeatureTypesPanel extends LinkPanel {
 
@@ -348,9 +359,11 @@ public class DataPage extends GeoServerBasePage {
     }
 
     /**
-     * The custom component handling the unconfigured feature types 
+     * The custom component handling the unconfigured feature types
+     * 
      * @author Andrea Aime - TOPP
-     * @TODO change this back to a {@link LabelPanel}, we have the buttons to handle this
+     * @TODO change this back to a {@link LabelPanel}, we have the buttons to
+     *       handle this
      */
     class UnconfiguredFeatureTypePanel extends LinkPanel {
 
@@ -370,12 +383,12 @@ public class DataPage extends GeoServerBasePage {
         }
     }
 
-
     /**
-     * The custom tree components handling the addition of a new datastore in the current 
-     * workspace
+     * The custom tree components handling the addition of a new datastore in
+     * the current workspace
+     * 
      * @author Andrea Aime - TOPP
-     *
+     * 
      */
     class NewDataStorePanel extends LinkPanel {
 
@@ -399,16 +412,17 @@ public class DataPage extends GeoServerBasePage {
     }
 
     /**
-     * The {@link SelectionPanel} actually interacting with this page. Computes the new state
-     * of the clicked item, propagates the selection state updates, changes the button
-     * selection state configuration and notifies ajax of what components need repainting.
+     * The {@link SelectionPanel} actually interacting with this page. Computes
+     * the new state of the clicked item, propagates the selection state
+     * updates, changes the button selection state configuration and notifies
+     * ajax of what components need repainting.
+     * 
      * @author Andrea Aime - TOPP
-     *
+     * 
      */
     class DataPageSelectionPanel extends SelectionPanel {
 
-        public DataPageSelectionPanel(String id, TreeNode node,
-                DataTreeTable tree) {
+        public DataPageSelectionPanel(String id, TreeNode node, DataTreeTable tree) {
             super(id, node, tree);
         }
 
@@ -417,43 +431,45 @@ public class DataPage extends GeoServerBasePage {
             // change the state of the current node
             catalogNode.nextSelectionState();
             icon.setImageResourceReference(getImageResource(catalogNode));
-            
+
             CatalogNode lastChangedParent = catalogNode.getParent().checkPartialSelection();
 
             // force the tree refresh
             tree.refresh(lastChangedParent);
             target.addComponent(tree.getParent());
-            
+
             updateButtonState();
             target.addComponent(removeButton);
             target.addComponent(configureButton);
             target.addComponent(addButton);
         }
     }
-    
+
     /**
      * A plain resource, just handles the icon integration
+     * 
      * @author Andrea Aime - TOPP
-     *
+     * 
      */
     class ResourcePanel extends LabelPanel {
 
-        public ResourcePanel(String id, DataTreeTable tree,
-                MarkupContainer parent, CatalogNode node, int level) {
+        public ResourcePanel(String id, DataTreeTable tree, MarkupContainer parent,
+                CatalogNode node, int level) {
             super(id, tree, parent, node, level);
         }
-        
+
         @Override
-        protected ResourceReference getNodeIcon(DataTreeTable tree,
-                TreeNode node) {
+        protected ResourceReference getNodeIcon(DataTreeTable tree, TreeNode node) {
             // a regular resource does not need an icon
-            if(node.getParent() instanceof DataStoreNode || node.getParent() instanceof CoverageStoreNode) {
+            if (node.getParent() instanceof DataStoreNode
+                    || node.getParent() instanceof CoverageStoreNode) {
                 return null;
             } else {
-                // but if the resource it's a collapsed datastore or coverage store then yes,
+                // but if the resource it's a collapsed datastore or coverage
+                // store then yes,
                 // we need to get the proper icon
                 ResourceNode rn = (ResourceNode) node;
-                if(rn.getResourceType() == FeatureTypeInfo.class) {
+                if (rn.getResourceType() == FeatureTypeInfo.class) {
                     return getStoreIcon(getCatalog().getDataStoreByName(rn.getStoreName()));
                 } else {
                     return null;
