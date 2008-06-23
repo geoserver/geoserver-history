@@ -250,15 +250,17 @@ public class GeoserverDataDirectory {
 
     /**
      * Initializes the data directory lookup service.
+     * 
      * @param servContext
      */
     public static void init(WebApplicationContext context) {
         ServletContext servContext = context.getServletContext();
-        
+
         // Oh, this is really sad. We need a reference to Data in order to
         // resolve feature type dirs, but gathering it here triggers the loading
-        // of Geoserver (on whose Catalog depends on), which depends on having 
-        // DataDirectory and Config initialized, but this is not possible here...
+        // of Geoserver (on whose Catalog depends on), which depends on having
+        // DataDirectory and Config initialized, but this is not possible
+        // here...
         // So we keep a reference to context in order to resolve Data later
         appContext = context;
 
@@ -272,70 +274,134 @@ public class GeoserverDataDirectory {
         // so it should always get a ServletContext in the startup routine.
         // If this assumption can't be made, then we can't allow data_dir
         // _and_ webapp options with relative data/ links -ch
+        
         if (loader == null) {
-            //get the loader from the context
-            loader = (GeoServerResourceLoader) context.getBean("resourceLoader");
+            // get the loader from the context
+            loader = (GeoServerResourceLoader) context
+                    .getBean("resourceLoader");
 
             File dataDir = null;
 
-            // see if there's a system property
-            try {
-                String prop = System.getProperty("GEOSERVER_DATA_DIR");
+            String dataDirStr = findGeoServerDataDir(servContext);
 
-                if ((prop != null) && !prop.equals("")) {
-                    // its defined!!
-                    isTrueDataDir = true;
-                    dataDir = new File(prop);
-                    loader.setBaseDirectory(dataDir);
-                    loader.addSearchLocation(new File(dataDir, "data"));
-                    loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                    
-                    LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                        + dataDir.getAbsolutePath() + "\n----------------------------------");
-
-                    return;
-                }
-            } catch (SecurityException e) {
-                // gobble exception
-                LOGGER.fine("Security exception occurred. This is usually not a big deal.\n"
-                    + e.getMessage());
-            }
-
-            // try the webxml
-            String loc = servContext.getInitParameter("GEOSERVER_DATA_DIR");
-
-            if (loc != null) {
+            if (dataDirStr != null) {
                 // its defined!!
                 isTrueDataDir = true;
-                dataDir = new File(loc);
+                dataDir = new File(dataDirStr);
                 loader.setBaseDirectory(dataDir);
                 loader.addSearchLocation(new File(dataDir, "data"));
                 loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                    + dataDir.getAbsolutePath() + "\n----------------------------------");
+                LOGGER
+                        .severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                                + dataDir.getAbsolutePath()
+                                + "\n----------------------------------");
 
                 return;
+            } else {
+
+                // Return default
+                isTrueDataDir = false;
+
+                String rootDir = servContext.getRealPath("/data");
+                dataDir = new File(rootDir);
+
+                // set the base directory of the loader
+                loader.setBaseDirectory(dataDir);
+                loader.addSearchLocation(new File(dataDir, "data"));
+                loader.addSearchLocation(new File(dataDir, "WEB-INF"));
+                LOGGER
+                        .severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                                + dataDir.getAbsolutePath()
+                                + "\n----------------------------------");
+                // loader.addSearchLocation(new
+                // File(servContext.getRealPath("WEB-INF")));
+                //loader.addSearchLocation(new File(servContext.getRealPath("data")));
             }
 
-            // return default
-            isTrueDataDir = false;
-
-            String rootDir = servContext.getRealPath("/data");
-            dataDir = new File(rootDir);
-
-            //set the base directory of hte loader
-            loader.setBaseDirectory(dataDir);
-            loader.addSearchLocation(new File(dataDir, "data"));
-            loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-            LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                + dataDir.getAbsolutePath() + "\n----------------------------------");
-            //loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
-            //loader.addSearchLocation(new File(servContext.getRealPath("data")));
-            
-            
         }
     }
 
+    
+    /**
+     * Loops over a list of variables that can represent the path to the
+     * GeoServer data directory and attempts to resolve the value by looking at
+     * 1) Java environment variable
+     * 2) Servlet context variable
+     * 3) System variable 
+     *
+     * For each of these, the methods checks that
+     * 1) The path exists
+     * 2) Is a directory
+     * 3) Is writable
+     * 
+     * @param servContext
+     * @return String representation of path, null otherwise
+     */
+    private static String findGeoServerDataDir(ServletContext servContext) {
+        final String[] typeStrs = { "Java environment variable ",
+                "Servlet context parameter ", "System environment variable " };
+
+        String dataDirStr = null;
+        
+        final String[] varStrs = { "GEOSERVER_DATA_DIR", "GEOSERVER_DATA_ROOT" };
+
+        String msgPrefix = null;
+        int iVar = 0;
+        // Loop over variable names
+        for (int i = 0; i < varStrs.length && dataDirStr == null; i++) {
+            
+            // Loop over variable access methods
+            for (int j = 0; j < typeStrs.length && dataDirStr == null; j++) {
+                String value = null;
+                String varStr = new String(varStrs[i]);
+                String typeStr = typeStrs[j];
+
+                // Lookup section
+                switch (j) {
+                case 1:
+                    value = System.getProperty(varStr);
+                    break;
+                case 2:
+                    value = servContext.getInitParameter(varStr);
+                    break;
+                case 3:
+                    value = System.getenv(varStr);
+                    break;
+                }
+
+                if (value == null || value.equalsIgnoreCase("")) {
+                    LOGGER.finer("Found " + typeStr + varStr + " to be unset");
+                    continue;
+                }
+
+                
+                // Verify section
+                File fh = new File(value);
+
+                // Being a bit pessimistic here
+                msgPrefix = "Found " + typeStr + varStr + " set to " + value;
+
+                if (!fh.exists()) {
+                    LOGGER.fine(msgPrefix + " , but this path does not exist");
+                    continue;
+                }
+                if (!fh.isDirectory()) {
+                    LOGGER.fine(msgPrefix + " , which is not a directory");
+                    continue;
+                }
+                if (!fh.canWrite()) {
+                    LOGGER.fine(msgPrefix + " , which is not writeable");
+                    continue;
+                }
+
+                // Sweet, we can work with this
+                dataDirStr = value;
+                iVar = i;
+            }
+        }
+        
+        return dataDirStr;
+    }
     /**
      * Signals the data directory to throw away all global state.
      * <p>
