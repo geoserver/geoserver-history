@@ -10,7 +10,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.Model;
 
-public abstract class LinkPanel extends AbstractTreePanel {
+public abstract class LinkPanel extends CatalogTreePanel {
 
     Label label;
 

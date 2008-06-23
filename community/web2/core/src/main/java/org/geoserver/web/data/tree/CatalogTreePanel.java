@@ -15,11 +15,11 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 
-public class AbstractTreePanel extends Panel {
+public class CatalogTreePanel extends Panel {
 
     TreeNode node;
 
-    public AbstractTreePanel(String id, DataTreeTable tree,
+    public CatalogTreePanel(String id, DataTreeTable tree,
             MarkupContainer parent, TreeNode node, int level) {
         super(id);
         this.node = node;
