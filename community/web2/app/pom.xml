@@ -27,9 +27,13 @@
       <artifactId>web-wms</artifactId>
       <version>${project.version}</version>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-postgis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-wfs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geoserver.web</groupId>
