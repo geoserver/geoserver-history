@@ -253,7 +253,7 @@ public class LegacyCatalogReader {
         for (int i = 0; i < paramList.getLength(); i++) {
             Element paramElement = (Element) paramList.item(i);
             String key = ReaderUtils.getAttribute(paramElement, "name", true);
-            String value = ReaderUtils.getAttribute(paramElement, "value", true);
+            String value = ReaderUtils.getAttribute(paramElement, "value", false);
 
             params.put(key, value);
         }
