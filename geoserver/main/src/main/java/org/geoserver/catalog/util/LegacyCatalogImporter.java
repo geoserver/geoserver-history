@@ -607,6 +607,9 @@ public class LegacyCatalogImporter {
         coverage.getMetadata().put( "dirName", cInfoReader.parentDirectoryName());
         coverage.setEnabled( coverageStore.isEnabled() );
         
+        //parameters
+        coverage.getParameters().putAll( cInfoReader.parameters() );
+        
         // link to namespace
         String prefix = catalog.getCoverageStore(coverageStoreName).getWorkspace().getId();
         coverage.setNamespace(catalog.getNamespaceByPrefix(prefix));

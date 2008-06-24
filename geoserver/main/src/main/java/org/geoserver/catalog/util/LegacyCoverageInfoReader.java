@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -224,7 +225,25 @@ public class LegacyCoverageInfoReader {
         return Arrays.asList(interpolations);
     }
 
-
+    
+    public Map<String,Serializable> parameters() {
+           Element parameters = ReaderUtils.getChildElement(coverage, "parameters");
+           if ( parameters == null ) {
+                   return Collections.EMPTY_MAP;
+           }
+           
+           HashMap<String,Serializable> map = new HashMap<String, Serializable>();
+           Element[] parameter = ReaderUtils.getChildElements( parameters, "parameter" );
+           for ( int i = 0; i < parameter.length; i++ ) {
+                   String name = parameter[i].getAttribute("name");
+                   String value = parameter[i].getAttribute( "value" );
+                   
+                   map.put( name, value );
+           }
+           
+           return map;
+    }
+    
     public String parentDirectoryName() {
         return parentDirectory.getName();
     }
