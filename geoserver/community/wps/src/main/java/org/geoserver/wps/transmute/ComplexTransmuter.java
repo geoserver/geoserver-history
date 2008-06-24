@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 public interface ComplexTransmuter extends Transmuter
 {
-    String   getSchema();
+    String   getSchema(String urlBase);
 
     Class<?> getXMLConfiguration();
 

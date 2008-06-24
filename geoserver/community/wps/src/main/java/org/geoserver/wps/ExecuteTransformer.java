@@ -72,7 +72,7 @@ public abstract class ExecuteTransformer extends TransformerBase
             {
                 this.executor               = new Executor((ExecuteType)object, this.wps);
                 Map<String, Object> outputs = executor.execute();
-                this.dataTransformer        = new DataTransformer();
+                this.dataTransformer        = new DataTransformer(request.getBaseUrl());
 
                 this.request = (ExecuteType)object;
 

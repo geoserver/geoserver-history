@@ -19,9 +19,11 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public class PolygonGML2Transmuter implements ComplexTransmuter
 {
-    public String getSchema()
+    public String getSchema(String urlBase)
     {
-        return "Polygon.xsd";    // XXX TODO may need to append server root
+    	String a = urlBase + "ows?service=WPS&request=GetSchema&Identifier=Polygon.xsd";
+
+        return a;
     }
 
     public Class<?> getType()

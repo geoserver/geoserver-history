@@ -12,9 +12,12 @@ package org.geoserver.wps;
 import net.opengis.wps.GetCapabilitiesType;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
+import org.geotools.xlink.XLINK;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.geotools.filter.v1_1.OGC;
 import org.geotools.process.Processors;
 import org.geotools.process.ProcessFactory;
 
@@ -69,8 +72,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase
                     this.locale = new Locale(this.request.getLanguage());
                 }
 
-                // WFS' GetCapabilitiesType extends ows.GetCapabilities, whereas WPS extendes ECore.
-                //String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wps.getGeoServer().getProxyBaseUrl());
+                // WFS' GetCapabilitiesType extends ows.GetCapabilities, whereas WPS extends ECore.
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wps.getGeoServer().getProxyBaseUrl());
 
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "xmlns:xsi",          "xmlns:xsi",   "", CapabilitiesTransformer.XSI_URI);
@@ -78,8 +81,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase
                 attributes.addAttribute("", "xmlns:wps",          "xmlns:wps",   "", CapabilitiesTransformer.WPS_URI);
                 attributes.addAttribute("", "xmlns:ows",          "xmlns:ows",   "", OWS.NAMESPACE);
                 attributes.addAttribute("", "version",            "version",     "", "1.0.0");
-                //attributes.addAttribute("", "xmlns:ogc",          "xmlns:ogc",   "", OGC.NAMESPACE);
-                //attributes.addAttribute("", "xmlns:xlink",        "xmlns:xlink", "", XLINK.NAMESPACE);
+                attributes.addAttribute("", "xmlns:ogc",          "xmlns:ogc",   "", OGC.NAMESPACE);
+                attributes.addAttribute("", "xmlns:xlink",        "xmlns:xlink", "", XLINK.NAMESPACE);
+                // XXX Have proper GetSchema reference
                 //attributes.addAttribute("", "xsi:schemaLocation", "xsi:schemaLocation", "", org.geoserver.wps.xml.v1_0_0.WPS.NAMESPACE + " " + ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wps/1.0.0/wps.xsd"));
 
                 start("wps:Capabilities", attributes);

@@ -38,9 +38,12 @@ public class DataTransformer
     private List<Transmuter>            transmuters        = new ArrayList<Transmuter>();
     private Map<Class<?>, Transmuter>   defaultTransmuters = new HashMap<Class<?>, Transmuter>();
     private Map<String,   Parameter<?>> inputParameters;
+    private String                      urlBase            = null;
 
-    public DataTransformer()
+    public DataTransformer(String urlBase)
     {
+    	this.urlBase = urlBase;
+
         this.defaultTransmuters.put(Double.class,   new DoubleTransmuter());
         this.defaultTransmuters.put(Geometry.class, new PolygonGML2Transmuter());
 
@@ -135,7 +138,7 @@ public class DataTransformer
         ComplexTransmuter transmuter = (ComplexTransmuter)this.getComplexTransmuter(type, input.getSchema());
 
         // XXX get data to parse
-        Object feature0 = input.getMixed().getValue(0);
+        Object feature0 = input.getMixed();//.getValue(0);
 
         //data = transmuter.decode(XXX);
 
@@ -195,7 +198,7 @@ public class DataTransformer
                 continue;
             }
 
-            if (false == ((ComplexTransmuter)transmuter).getSchema().equals(schema))
+            if (false == ((ComplexTransmuter)transmuter).getSchema(this.urlBase).equalsIgnoreCase(schema))
             {
                 continue;
             }

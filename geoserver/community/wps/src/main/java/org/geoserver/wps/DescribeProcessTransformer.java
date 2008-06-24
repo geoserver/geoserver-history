@@ -63,7 +63,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
             {
                 super(handler, null, null);
 
-                this.dataTransformer = new DataTransformer();
+                
             }
 
             public void encode(Object object) throws IllegalArgumentException
@@ -76,6 +76,8 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 } else {
                     this.locale = new Locale(this.request.getLanguage());
                 }
+
+                this.dataTransformer = new DataTransformer(request.getBaseUrl());
 
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "xmlns:xsi", "xmlns:xsi", "", DescribeProcessTransformer.XSI_URI);
@@ -222,11 +224,9 @@ public abstract class DescribeProcessTransformer extends TransformerBase
 
             private void format(ComplexTransmuter transmuter)
             {
-                String schemaURL = this.request.getBaseUrl() + "ows?service=WPS&request=getSchema&identifier=";
-
                 start("Format");
                     element("MimeType", transmuter.getMimeType());
-                    element("Schema",   schemaURL + transmuter.getSchema());
+                    element("Schema",   transmuter.getSchema(this.request.getBaseUrl()));
                 end("Format");
             }
         }

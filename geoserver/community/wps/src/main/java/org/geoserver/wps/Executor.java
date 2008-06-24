@@ -47,7 +47,7 @@ public class Executor
         this.checkInputs(parameterInfo, requestInputs);
 
         // Parse inputs
-        DataTransformer dataTransformer = new DataTransformer();
+        DataTransformer dataTransformer = new DataTransformer(request.getBaseUrl());
         this.inputs = dataTransformer.decodeInputs(request.getDataInputs().getInput(), parameterInfo);
 
         // Get it ready to execute
