@@ -407,6 +407,11 @@
           <artifactId>RESTConfig</artifactId>
           <version>${project.version}</version>
         </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>sldService</id>
+      <dependencies>
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>sldService</artifactId>
