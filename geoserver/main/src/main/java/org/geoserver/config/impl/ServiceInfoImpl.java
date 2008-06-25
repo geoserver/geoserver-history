@@ -42,7 +42,7 @@ public class ServiceInfoImpl implements ServiceInfo {
 
     String onlineResource;
 
-    String schemaBaseURL;
+    String schemaBaseURL = "http://schemas.opengis.net";
 
     boolean verbose;
 
