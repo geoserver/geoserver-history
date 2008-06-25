@@ -15,6 +15,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.PropertyType;
@@ -26,6 +27,7 @@ import net.opengis.wfsv.GetDiffType;
 import org.eclipse.emf.common.util.EList;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -169,10 +171,14 @@ public class GetDiffTransactionOutputFormat extends Response {
                 transaction.getDelete().add(delete);
             }
         }
+        
+        //declare wfs schema location
+        BaseRequestType gft = (BaseRequestType) operation.getParameters()[0];
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-            ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd"));
+            ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
 
         encoder.setIndenting(true);
         encoder.setEncoding(wfs.getCharSet());
@@ -221,7 +227,7 @@ public class GetDiffTransactionOutputFormat extends Response {
 
             // set the schema location
             encoder.setSchemaLocation(namespaceURI,
-                ResponseUtils.appendQueryString(wfs.getOnlineResource().toString(),
+                ResponseUtils.appendQueryString(proxifiedBaseUrl + "wfs",
                     "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
                     + typeNames.toString()));
         }
