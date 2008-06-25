@@ -143,7 +143,7 @@ public class LegacyConfigurationImporter {
         contactInfo.setAddressCountry( (String) contact.get( "Country") );
         contactInfo.setAddressState( (String) contact.get( "StateOrProvince") );
         contactInfo.setAddressPostalCode( (String) contact.get( "PostCode") );
-        info.setContactInfo( contactInfo );
+        info.setContact( contactInfo );
         
         //jai
         JAIInfo jai = new JAIInfo();
