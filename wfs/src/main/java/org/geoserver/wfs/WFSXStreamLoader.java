@@ -22,9 +22,13 @@ public class WFSXStreamLoader extends XStreamServiceLoader<WFSInfo> {
         wfs.setId( "wfs" );
         
         //gml2
-        wfs.getGML().put( WFSInfo.Version.V_10 , new GMLInfoImpl() );
+        GMLInfoImpl gml2 = new GMLInfoImpl();
+        gml2.setSrsNameStyle( GMLInfo.SrsNameStyle.XML );
+        wfs.getGML().put( WFSInfo.Version.V_10 , gml2 );
         
         //gml3
+        GMLInfoImpl gml3 = new GMLInfoImpl();
+        gml3.setSrsNameStyle( GMLInfo.SrsNameStyle.URN );
         wfs.getGML().put( WFSInfo.Version.V_11 , new GMLInfoImpl() );
         
         return wfs;
