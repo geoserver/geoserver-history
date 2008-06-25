@@ -40,7 +40,7 @@ public class LogOrderTest extends WFSVTestSupport {
                     + "      </topp:the_geom>\r\n" + "    </topp:archsites>\r\n" // 
                     + "  </wfs:Insert>\r\n" + "</wfs:Transaction>\r\n";
             // let's just ensure the transaction was successful
-            Document doc = postAsDOM(root(true), transaction);
+            Document doc = postAsDOM(root(), transaction);
             assertXpathEvaluatesTo("1", "count(/wfs:WFS_TransactionResponse)", doc);
             assertXpathEvaluatesTo("archsites.5",
                     "/wfs:WFS_TransactionResponse/wfs:InsertResult/ogc:FeatureId/@fid", doc);
@@ -65,7 +65,7 @@ public class LogOrderTest extends WFSVTestSupport {
                     + "    </ogc:Filter>\r\n" // 
                     + "  </wfs:Update>\r\n" // 
                     + "</wfs:Transaction>\r\n";
-            doc = postAsDOM(root(true), transaction);
+            doc = postAsDOM(root(), transaction);
             assertXpathEvaluatesTo("1", "count(/wfs:WFS_TransactionResponse)", doc);
             assertXpathEvaluatesTo(
                     "1",
@@ -83,7 +83,7 @@ public class LogOrderTest extends WFSVTestSupport {
                 + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n"
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
         XpathEngine xpath = XMLUnit.newXpathEngine();
         NodeList nodes = xpath.getMatchingNodes("//wfs:FeatureCollection/gml:featureMember/topp:changesets/@fid", doc);
         assertEquals(3, nodes.getLength());
@@ -101,7 +101,7 @@ public class LogOrderTest extends WFSVTestSupport {
                 + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n"
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"100\" toFeatureVersion=\"0\"/>\r\n"
                 + "</wfsv:GetLog>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
         XpathEngine xpath = XMLUnit.newXpathEngine();
         NodeList nodes = xpath.getMatchingNodes("//wfs:FeatureCollection/gml:featureMember/topp:changesets/@fid", doc);
         assertEquals(3, nodes.getLength());
