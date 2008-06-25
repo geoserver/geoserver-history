@@ -7,41 +7,45 @@
 <property name="routes">
   <map>
         <entry>
-          <key><value>/datastores/{datastore}/featuretypes/{featuretype}.{type}</value></key>
+          <!-- key><value>/datastores/{datastore}/featuretypes/{featuretype}.{type}</value></key -->
+          <key><value>/folders/{datastore}/layers/{featuretype}.{type}</value></key>
           <value>featureTypeFinder</value>
         </entry>
-        <entry>
+        <!-- entry>
           <key><value>/datastores/{datastore}/featuretypes/{featuretype}</value></key>
           <value>featureTypeFinder</value>
-        </entry>
+        </entry -->
         <entry>
-          <key><value>/datastores/{datastore}/featuretypes.{type}</value></key>
+          <!-- key><value>/datastores/{datastore}/featuretypes.{type}</value></key -->
+          <key><value>/folders/{datastore}/layers.{type}</value></key>
           <value>featureTypeListFinder</value>
         </entry>
-        <entry>
+        <!-- entry>
           <key><value>/datastores/{datastore}/featuretypes</value></key>
           <value>featureTypeListFinder</value>
-        </entry>
+        </entry -->
         <entry>
-          <key><value>/datastores/{datastore}.{type}</value></key>
+          <!-- key><value>/datastores/{datastore}.{type}</value></key -->
+          <key><value>/folders/{datastore}.{type}</value></key>
           <value>datastoreFinder</value>
         </entry>
-        <entry>
+        <!-- entry>
           <key><value>/datastores/{datastore}</value></key>
           <value>datastoreFinder</value>
-        </entry>
+        </entry -->
         <entry>
-          <key><value>/datastores/{datastore}/file.{type}</value></key>
+          <key><value>/folders/{datastore}/file.{type}</value></key>
           <value>datastoreFileFinder</value>
         </entry>
         <entry>
-          <key><value>/datastores.{type}</value></key>
+          <!-- key><value>/datastores.{type}</value></key -->
+          <key><value>/folders.{type}</value></key>
           <value>datastoreListFinder</value>
         </entry>
-        <entry>
+        <!-- entry>
           <key><value>/datastores</value></key>
           <value>datastoreListFinder</value>
-        </entry>
+        </entry -->
         <entry>
           <key><value>/styles/{style}.{type}</value></key>
           <value>styleFinder</value>
@@ -91,6 +95,14 @@
           <value>coverageStoreListFinder</value>
         </entry>
         <entry>
+          <key><value>/coveragestores/{coveragestore}/{coverage}/file.{type}</value></key>
+          <value>coveragestoreFileFinder</value>
+        </entry>
+        <entry>
+          <key><value>/coveragestores/{coveragestore}/{coverage}/url.{type}</value></key>
+          <value>coveragestoreURLFinder</value>
+        </entry>
+        <entry>
           <key><value>/layergroups/{group}.{type}</value></key>
           <value>layerGroupFinder</value>
         </entry>
@@ -121,7 +133,6 @@
   </map>
 </property>
 </bean>
-
     <bean id="featureTypeFinder" class="org.geoserver.restconfig.FeatureTypeResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
       <property name="data"><ref bean="data"/></property>
@@ -153,6 +164,22 @@
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreListResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="coveragestoreFileFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.CoverageStoreFileResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"><ref bean="data"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="coveragestoreURLFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.CoverageStoreURLResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"><ref bean="data"/></property>
     </bean>
   </property>
 </bean>
@@ -220,6 +247,5 @@
   </property>
 </bean>
 <bean id="dummyRestlet" class="org.geoserver.restconfig.DummyRestlet"/>
-
 
 </beans>

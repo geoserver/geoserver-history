@@ -35,33 +35,15 @@
           <value>listAttributesRestlet</value>
         </entry>
         <entry>
-          <key><value>/sldservice/{featureType}/quantile/{property}/{classNum}</value></key>
-          <value>quantileGeneratorRestlet</value>
-        </entry>
-        <entry>
-          <key><value>/sldservice/{featureType}/equalInterval/{property}/{classNum}</value></key>
-          <value>equalIntervalGeneratorRestlet</value>
-        </entry>
-        <entry>
-          <key><value>/sldservice/{featureType}/uniqueInterval/{property}/{classNum}</value></key>
-          <value>uniqueIntervalGeneratorRestlet</value>
+          <key><value>/sldservice/{featureType}/classify</value></key>
+          <value>classifierRestlet</value>
         </entry>
       </map>
     </property>
   </bean>
 
-  <bean id="uniqueIntervalGeneratorRestlet"
-    class="org.geoserver.sldservice.resource.UniqueIntervalGenerator">
-    <constructor-arg index="0" ref="catalog" />
-  </bean>
-
-  <bean id="equalIntervalGeneratorRestlet"
-    class="org.geoserver.sldservice.resource.EqualIntervalGenerator">
-    <constructor-arg index="0" ref="catalog" />
-  </bean>
-
-  <bean id="quantileGeneratorRestlet"
-    class="org.geoserver.sldservice.resource.QuantileGenerator">
+  <bean id="classifierRestlet"
+    class="org.geoserver.sldservice.resource.ClessifierResource">
     <constructor-arg index="0" ref="catalog" />
   </bean>
 

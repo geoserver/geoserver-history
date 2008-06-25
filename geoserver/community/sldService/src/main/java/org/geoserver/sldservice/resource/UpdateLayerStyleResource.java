@@ -53,6 +53,14 @@ public class UpdateLayerStyleResource extends MapResource {
 			
 			if (foundLayer instanceof CoverageInfo) {
 				CoverageInfo coverageInfo = (CoverageInfo) foundLayer;
+				String coverageName = coverageInfo.getName();
+				       coverageName = coverageName.indexOf(":") > 0 ? coverageName.substring(coverageName.indexOf(":") + 1, coverageName.length()) : coverageName;
+				String qualifiedName = coverageInfo.getFormatInfo().getId() + ":" + coverageName;
+				dc.getCoverageConfig(qualifiedName).setDefaultStyle((String) m.get("Style"));
+				
+				dt.load(dc.toDTO());
+				
+				saveConfiguration();
 			}
 		}
 

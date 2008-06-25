@@ -226,8 +226,7 @@ public class CoverageConfig {
      * @param gc
      * @throws ConfigurationException
      */
-    public CoverageConfig(String formatId, Format format, AbstractGridCoverage2DReader reader,
-        HttpServletRequest request) throws ConfigurationException {
+    public CoverageConfig(String formatId, Format format, AbstractGridCoverage2DReader reader, DataConfig dataConfig) throws ConfigurationException {
     	///////////////////////////////////////////////////////////////////////
     	//
     	// Initial checks
@@ -251,7 +250,6 @@ public class CoverageConfig {
     	//
     	///////////////////////////////////////////////////////////////////////
         this.formatId = formatId;
-        final DataConfig dataConfig = getDataConfig(request);
         final CoverageStoreConfig cvConfig = dataConfig.getDataFormat(formatId);
         if (cvConfig == null) {
             // something is horribly wrong no FormatID selected!
@@ -350,7 +348,6 @@ public class CoverageConfig {
         }
         dimentionNames = getDimensionNames(gc);
 
-        final DataConfig config = ConfigRequests.getDataConfig(request);
         StringBuffer cvName =null;
         int count = 0;
         while (true) {
@@ -359,7 +356,7 @@ public class CoverageConfig {
                 key.append("_").append(count);
             }
 
-            Map coverages = config.getCoverages();
+            Map coverages = dataConfig.getCoverages();
             Set cvKeySet = coverages.keySet();
             boolean key_exists = false;
             for (Iterator it = cvKeySet.iterator(); it.hasNext();) {
@@ -587,8 +584,7 @@ public class CoverageConfig {
      * @return Configuration model for Catalog information.
      */
     protected DataConfig getDataConfig(HttpServletRequest request) {
-        return (DataConfig) request.getSession().getServletContext()
-                                   .getAttribute(DataConfig.CONFIG_KEY);
+        return (DataConfig) request.getSession().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
     }
 
     public String getKey() {
@@ -596,8 +592,7 @@ public class CoverageConfig {
     }
 
     public String toString() {
-        return "CoverageConfig[name: " + name + " dewcription: " + description + " srsName: "
-        + srsName + "]";
+        return "CoverageConfig[name: " + name + " dewcription: " + description + " srsName: " + srsName + "]";
     }
 
     /**

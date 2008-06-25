@@ -55,8 +55,7 @@ public class UserStyleResource extends BaseResource {
     }
 
     public void handleGet() {
-        this.userStyleID = getRequest().getAttributes().get("userStyleID")
-                .toString();
+        this.userStyleID = getRequest().getAttributes().get("userStyleID").toString();
         style = this.dt.getStyle(this.userStyleID);
         try {
             getResponse().setEntity(
@@ -400,8 +399,7 @@ public class UserStyleResource extends BaseResource {
             else if (classMethod.equals("unique"))
                 rulesL = ruBuild.uniqueIntervalClassification(ftInf
                         .getFeatureSource().getFeatures(), property);
-            Class geomT = ftInf.getFeatureType().getDefaultGeometry()
-                    .getBinding();
+            Class geomT = ftInf.getFeatureType().getDefaultGeometry().getBinding();
 
             /*
              * Check the number of class if more then 100 refuse to produce
