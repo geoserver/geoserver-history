@@ -164,8 +164,7 @@ public final class CoveragesEditorAction extends ConfigAction {
         CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
 
         if (cvStoreInfo == null) {
-            org.geoserver.catalog.CoverageStoreInfo cvStore = 
-                getCatalog().getFactory().createCoverageStore();
+            org.geoserver.catalog.CoverageStoreInfo cvStore = getCatalog().getFactory().createCoverageStore();
             cvStoreInfo = new CoverageStoreInfo( cvStore, getCatalog() );
             cvStoreInfo.load( getDataConfig().getDataFormat(formatID).toDTO() );
             //cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
@@ -176,8 +175,7 @@ public final class CoveragesEditorAction extends ConfigAction {
         AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
 
         if (reader == null) {
-            reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory
-                    .findDataFile(cvStoreInfo.getUrl()));
+            reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
         }
 
         try {

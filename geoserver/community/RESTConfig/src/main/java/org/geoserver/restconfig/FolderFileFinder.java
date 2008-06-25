@@ -5,14 +5,16 @@
 package org.geoserver.restconfig;
 
 import org.restlet.Finder;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.data.Status;
 import org.restlet.resource.Resource;
-
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
+import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.GlobalConfig;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoServer;
 
 public class FolderFileFinder extends Finder {
 
@@ -54,14 +56,19 @@ public class FolderFileFinder extends Finder {
     }
 
     public Resource findTarget(Request request, Response response){
-        String folder = (String)request.getAttributes().get("folder");
+        String type = (String)request.getAttributes().get("type");
         Resource r;
 
-        if (getDataConfig().getDataFormatIds().contains(folder)){
-            return null; // TODO: Rewrite the coveragestore file resource :(
-            // r = new CoverageFileResource(getData(), getDataConfig());           
-        } else {
+        if ( /* getDataConfig().getDataFormatIds().contains(type) */ 
+        	CoverageStoreFileResource.getAllowedFormats().containsKey(type)) {
+            r = new CoverageStoreFileResource(getData(), getDataConfig(), getGeoServer(), getGlobalConfig());           
+        } else if (DataStoreFileResource.getAllowedFormats().containsKey(type)) {
             r = new DataStoreFileResource(getData(), getDataConfig(), getGeoServer(), getGlobalConfig());
+        } else {
+        	response.setEntity(new StringRepresentation("Failure while setting up folder: type not allowed!",MediaType.TEXT_PLAIN));
+        	response.setStatus(Status.SERVER_ERROR_INTERNAL);
+        	
+        	return null;
         }
 
         r.init(getContext(), request, response);

@@ -114,12 +114,7 @@ public class CoverageStoreResource extends MapResource {
 
         saveConfiguration();
 
-        getResponse().setEntity(
-                new StringRepresentation(
-                    "Successfully stored " + storeName + ".",
-                    MediaType.TEXT_PLAIN
-                    )
-                );
+        getResponse().setEntity(new StringRepresentation("Successfully stored " + storeName + ".", MediaType.TEXT_PLAIN));
         getResponse().setStatus(Status.SUCCESS_OK);
     }
 
@@ -130,11 +125,7 @@ public class CoverageStoreResource extends MapResource {
     public void handleDelete(){
         String storeName = (String) getRequest().getAttributes().get("coveragestore");
         if (myDataConfig.getDataFormat(storeName) == null){
-            getResponse().setEntity(
-                    new StringRepresentation("Couldn't find datastore " + storeName + " to delete.",
-                        MediaType.TEXT_PLAIN
-                        )
-                    );
+            getResponse().setEntity(new StringRepresentation("Couldn't find datastore " + storeName + " to delete.", MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
         }
 
@@ -143,20 +134,11 @@ public class CoverageStoreResource extends MapResource {
         try{
             saveConfiguration();
         } catch (Exception e){
-            getResponse().setEntity(
-                    new StringRepresentation("Error while saving configuration changes: " + e,
-                        MediaType.TEXT_PLAIN
-                        )
-                    );
+            getResponse().setEntity(new StringRepresentation("Error while saving configuration changes: " + e, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
         }
 
-        getResponse().setEntity(
-                new StringRepresentation(
-                    "Successfully deleted " + storeName + ".",
-                    MediaType.TEXT_PLAIN
-                    )
-                );
+        getResponse().setEntity(new StringRepresentation("Successfully deleted " + storeName + ".", MediaType.TEXT_PLAIN));
         getResponse().setStatus(Status.SUCCESS_OK);
     }
     
@@ -198,8 +180,6 @@ public class CoverageStoreResource extends MapResource {
 
     private void saveConfiguration() throws ConfigurationException{
         getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(),
-            GeoserverDataDirectory.getGeoserverDataDirectory()
-            );
+        XMLConfigWriter.store((DataDTO)getData().toDTO(), GeoserverDataDirectory.getGeoserverDataDirectory());
     }
 }

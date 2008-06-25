@@ -1765,25 +1765,21 @@ public class XMLConfigWriter {
         public static File initFile(File f, boolean isDir) throws ConfigurationException {
             if (!f.exists()) {
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer("Creating File: ").append(f.toString())
-                            .toString());
+                    LOGGER.finer(new StringBuffer("Creating File: ").append(f.toString()).toString());
                 }
 
                 if (isDir) {
                     if (!f.mkdir()) {
-                        throw new ConfigurationException(
-                                "Path specified does not have a valid file.\n" + f + "\n\n");
+                        throw new ConfigurationException("Path specified does not have a valid file.\n" + f + "\n\n");
                     }
                 } else {
                     try {
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.severe(new StringBuffer("Attempting to create file:").append(
-                                    f.getAbsolutePath()).toString());
+                        if (LOGGER.isLoggable(Level.FINER)) {
+                            LOGGER.finer(new StringBuffer("Attempting to create file:").append(f.getAbsolutePath()).toString());
                         }
 
                         if (!f.createNewFile()) {
-                            throw new ConfigurationException(
-                                    "Path specified does not have a valid file.\n" + f + "\n\n");
+                            throw new ConfigurationException("Path specified does not have a valid file.\n" + f + "\n\n");
                         }
                     } catch (IOException e) {
                         throw new ConfigurationException(e);
@@ -1792,13 +1788,11 @@ public class XMLConfigWriter {
             }
 
             if (isDir && !f.isDirectory()) {
-                throw new ConfigurationException("Path specified does not have a valid file.\n" + f
-                        + "\n\n");
+                throw new ConfigurationException("Path specified does not have a valid file.\n" + f + "\n\n");
             }
 
             if (!isDir && !f.isFile()) {
-                throw new ConfigurationException("Path specified does not have a valid file.\n" + f
-                        + "\n\n");
+                throw new ConfigurationException("Path specified does not have a valid file.\n" + f + "\n\n");
             }
 
             if (LOGGER.isLoggable(Level.FINER)) {

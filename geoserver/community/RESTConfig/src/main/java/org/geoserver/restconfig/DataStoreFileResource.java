@@ -47,7 +47,6 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.xml.XMLConfigReader;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.vfny.geoserver.util.DataStoreUtils;
 
@@ -66,11 +65,14 @@ public class DataStoreFileResource extends Resource{
      * to instances of some class that knows how to autoconfigure datastores.
      * But you know, baby steps.
      */
-    private Map myFormats; 
-
-    public DataStoreFileResource(){
-        myFormats = new HashMap();
-        myFormats.put("shp", "Shapefile");
+    private static Map myFormats = new HashMap();
+    static {
+    	myFormats.put("shp", "Shapefile");
+    }
+    
+    private DataStoreFileResource(){
+        //myFormats = new HashMap();
+        //myFormats.put("shp", "Shapefile");
     }
 
     public DataStoreFileResource(Data data, DataConfig dataConfig, GeoServer gs, GlobalConfig gc) {
@@ -118,29 +120,17 @@ public class DataStoreFileResource extends Resource{
     }
 
     public void handleGet(){
-        String storeName = 
-            (String)getRequest().getAttributes().get("datastore");
+        String storeName = (String)getRequest().getAttributes().get("datastore");
 
-        DataStoreConfig dsc = 
-            (DataStoreConfig)getDataConfig().getDataStores().get(storeName);
+        DataStoreConfig dsc = (DataStoreConfig)getDataConfig().getDataStores().get(storeName);
 
         if (dsc == null){
-            getResponse().setEntity(
-                    new StringRepresentation(
-                        "Giving up because datastore " + storeName + " does not exist.",
-                        MediaType.TEXT_PLAIN
-                        )
-                    );
+            getResponse().setEntity(new StringRepresentation("Giving up because datastore " + storeName + " does not exist.", MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
             return;
         }
 
-        getResponse().setEntity(
-                new StringRepresentation(
-                    "Handling GET on a DataStoreFileResource",
-                    MediaType.TEXT_PLAIN
-                    )
-                );
+        getResponse().setEntity(new StringRepresentation("Handling GET on a DataStoreFileResource", MediaType.TEXT_PLAIN));
         getResponse().setStatus(Status.SUCCESS_OK);
     }
 
@@ -158,12 +148,7 @@ public class DataStoreFileResource extends Resource{
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
 
         if (format == null){
-            getResponse().setEntity(
-                    new StringRepresentation(
-                        "Unrecognized extension: " + extension,
-                        MediaType.TEXT_PLAIN
-                        )
-                    );
+            getResponse().setEntity(new StringRepresentation("Unrecognized extension: " + extension, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                     
             return;
@@ -173,18 +158,12 @@ public class DataStoreFileResource extends Resource{
         try {
             uploadedFile = handleUpload(storeName, extension, getRequest());
         } catch (Exception e){
-            getResponse().setEntity(
-                    new StringRepresentation(
-                        "Error while storing uploaded file: " + e,
-                        MediaType.TEXT_PLAIN
-                        )
-                    );
+            getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             return;
         }
 
-        DataStoreConfig dsc = 
-            (DataStoreConfig)myDataConfig.getDataStores().get(storeName);
+        DataStoreConfig dsc = (DataStoreConfig)myDataConfig.getDataStores().get(storeName);
 
         if (dsc == null){
             dsc = new DataStoreConfig(storeName, format);
@@ -212,11 +191,7 @@ public class DataStoreFileResource extends Resource{
                             // uploadedFile.toURL());
                     		"file:data/" + storeName + "/" + storeName + ".shp");
                 } catch(Exception mue){
-                    getResponse().setEntity(
-                            new StringRepresentation("Failure while setting up datastore: " + mue,
-                                MediaType.TEXT_PLAIN
-                                )
-                            );
+                    getResponse().setEntity(new StringRepresentation("Failure while setting up datastore: " + mue,MediaType.TEXT_PLAIN));
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                 }
             }
@@ -236,19 +211,12 @@ public class DataStoreFileResource extends Resource{
 
         try{
             Map params = new HashMap(dsc.getConnectionParams());
-            DataStore theData = 
-                DataStoreUtils.acquireDataStore(
-                        dsc.getConnectionParams(),
-                        (ServletContext)null
-                        );
+            DataStore theData = DataStoreUtils.acquireDataStore(dsc.getConnectionParams(), (ServletContext)null);
 
             String[] typeNames = theData.getTypeNames();
             if (typeNames.length == 1){
                 System.out.println("Auto-configuring featuretype: " + storeName + ":" + typeNames[0]);
-                myDataConfig.addFeatureType(
-                        storeName + ":" + typeNames[0],
-                        autoConfigure(theData, storeName, typeNames[0])
-                        );
+                myDataConfig.addFeatureType(storeName + ":" + typeNames[0], autoConfigure(theData, storeName, typeNames[0]));
             }
         } catch (Exception e){
             LOG.severe("Failure while autoconfiguring uploaded datastore of type " + format);
@@ -260,22 +228,12 @@ public class DataStoreFileResource extends Resource{
             saveConfiguration();
             reloadConfiguration();
         } catch (Exception e){
-            getResponse().setEntity(
-                    new StringRepresentation(
-                        "Failure while saving configuration: " + e,
-                        MediaType.TEXT_PLAIN
-                        )
-                    );
+            getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             return;
         }
 
-        getResponse().setEntity(
-                new StringRepresentation(
-                    "Handling PUT on a DataStoreFileResource",
-                    MediaType.TEXT_PLAIN
-                    )
-                );
+        getResponse().setEntity(new StringRepresentation("Handling PUT on a DataStoreFileResource", MediaType.TEXT_PLAIN));
         getResponse().setStatus(Status.SUCCESS_OK);
     }
 
@@ -297,11 +255,7 @@ public class DataStoreFileResource extends Resource{
     private void unpackZippedShapefileSet(String storeName, File zipFile) throws Exception{
         ZipFile archive = new ZipFile(zipFile);
         Enumeration entries = archive.entries();
-        File outputDirectory = 
-            new File(
-                    GeoserverDataDirectory.findCreateConfigDir("data"),
-                    storeName
-                    );
+        File outputDirectory = new File(GeoserverDataDirectory.findCreateConfigDir("data"), storeName);
         if (!outputDirectory.exists()){
             outputDirectory.mkdir();
         }
@@ -346,9 +300,7 @@ public class DataStoreFileResource extends Resource{
 
     private void saveConfiguration() throws ConfigurationException{
         getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(),
-        		GeoserverDataDirectory.getGeoserverDataDirectory()
-        		);
+        XMLConfigWriter.store((DataDTO)getData().toDTO(), GeoserverDataDirectory.getGeoserverDataDirectory());
     }
     
     private void reloadConfiguration() throws Exception{
@@ -371,11 +323,7 @@ public class DataStoreFileResource extends Resource{
     }
 
     private FeatureTypeConfig autoConfigure(DataStore store, String storeName, String featureTypeName) throws Exception{
-        FeatureTypeConfig ftc = new FeatureTypeConfig(
-                storeName,
-                store.getSchema(featureTypeName),
-                true
-                );
+        FeatureTypeConfig ftc = new FeatureTypeConfig(storeName, store.getSchema(featureTypeName), true);
 
         ftc.setDefaultStyle("polygon");
 
@@ -425,4 +373,11 @@ public class DataStoreFileResource extends Resource{
 
             return env;
     }
+    
+	/**
+	 * @return the myFormats
+	 */
+	public static Map getAllowedFormats() {
+		return myFormats;
+	}
 }

@@ -6,6 +6,10 @@
 <property name="routes">
   <map>
         <entry>
+          <key><value>/folders/{folder}/layers/{layer}/file.{type}</value></key>
+          <value>folderFileFinder</value>
+        </entry>  
+        <entry>
           <key><value>/folders/{folder}/layers/{layer}.{type}</value></key>
           <value>layerFinder</value>
         </entry>
@@ -28,10 +32,6 @@
         <entry>
           <key><value>/folders/{folder}</value></key>
           <value>folderConfigFinder</value>
-        </entry>
-        <entry>
-          <key><value>/folders/{folder}/file.{type}</value></key>
-          <value>folderFileFinder</value>
         </entry>
         <entry>
           <key><value>/folders.{type}</value></key>

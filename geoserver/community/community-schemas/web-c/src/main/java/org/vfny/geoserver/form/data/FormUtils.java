@@ -15,7 +15,15 @@ import java.io.IOException;
  * Utility class for common operations used by forms.
  */
 public class FormUtils {
-    public static ActionErrors checkFileExistsAndCanRead(File file, ActionErrors errors) {
+    public static ActionErrors checkFileExistsAndCanRead(File fileCheck, ActionErrors errors) {
+        final String path = fileCheck.getAbsolutePath();
+        final int imageSpecifierIndex = path.lastIndexOf(":");
+        final File file;
+        if (path.length()-imageSpecifierIndex+1<=3 && path.length()-imageSpecifierIndex+1>=0){
+            file = new File(path.substring(0,imageSpecifierIndex));
+        }
+        else file = fileCheck;
+        
         if (!file.exists()) {
             String actionKey = "error.file.NotExists";
             Object[] params = new Object[] { file };

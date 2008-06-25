@@ -61,6 +61,12 @@
       </modules>
     </profile>
     <profile>
+      <id>sldService</id>
+      <modules>
+        <module>sldService</module>
+      </modules>
+    </profile>
+    <profile>
       <id>gwc</id>
       <modules> 
         <module>gwc</module>
