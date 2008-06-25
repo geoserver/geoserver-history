@@ -120,7 +120,7 @@ public class DataStoreFileResource extends Resource{
     }
 
     public void handleGet(){
-        String storeName = (String)getRequest().getAttributes().get("datastore");
+        String storeName = (String)getRequest().getAttributes().get("folder");
 
         DataStoreConfig dsc = (DataStoreConfig)getDataConfig().getDataStores().get(storeName);
 
@@ -139,7 +139,7 @@ public class DataStoreFileResource extends Resource{
     }
 
     public void handlePut(){
-        String storeName = (String)getRequest().getAttributes().get("datastore");
+        String storeName = (String)getRequest().getAttributes().get("folder");
         String extension = (String)getRequest().getAttributes().get("type");
         String format = (String) myFormats.get(extension);
 

@@ -152,7 +152,8 @@ public class CoverageStoreFileResource extends Resource {
     
     public void handlePut(){
     	String coverageStore = (String) getRequest().getAttributes().get("folder");        
-        String coverageName = (String) getRequest().getAttributes().get("layer");        
+        String coverageName = (String) getRequest().getAttributes().get("layer");
+               coverageName = coverageName == null ? coverageStore : coverageName;
         String extension = (String)getRequest().getAttributes().get("type");
         
         String formatId = (String) myFormats.get(extension);
