@@ -39,7 +39,7 @@ public interface GeoServerInfo {
      * @uml.property name="contactInfo"
      * @uml.associationEnd inverse="geoServer:org.geoserver.config.ContactInfo"
      */
-    ContactInfo getContactInfo();
+    ContactInfo getContact();
 
     /**
      * Sets the contact information.
@@ -48,7 +48,7 @@ public interface GeoServerInfo {
      *                The contactInfo to set.
      * @uml.property name="contactInfo"
      */
-    void setContactInfo(ContactInfo contactInfo);
+    void setContact(ContactInfo contactInfo);
 
     /**
      * The default character set.
