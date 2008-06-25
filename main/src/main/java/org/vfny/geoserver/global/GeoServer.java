@@ -34,6 +34,7 @@ import org.apache.log4j.helpers.LogLog;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.ServiceInfo;
 
 import org.geoserver.jai.JAIInfo;
 import org.geotools.data.DataStoreFactorySpi;
@@ -446,8 +447,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             try {
                 Method s = wfs.getClass().getMethod( "setMaxFeatures", int.class );
                 s.invoke( wfs, maxFeatures );
+                
+                gs.save( (ServiceInfo) wfs );
             }
             catch (Exception e) {}
+            
         }
     }
     

@@ -102,7 +102,7 @@ public class GeoServerImplTest extends TestCase {
         assertEquals( 0, tl.gPropertyNames.size() );
         geoServer.save( global );
         
-        assertEquals( 3, tl.gPropertyNames.size() );
+        assertEquals( 2, tl.gPropertyNames.size() );
         assertTrue( tl.gPropertyNames.contains( "adminPassword" ) );
         assertTrue( tl.gPropertyNames.contains( "onlineResource" ) );
     }
