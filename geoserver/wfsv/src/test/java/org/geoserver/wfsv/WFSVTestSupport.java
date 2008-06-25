@@ -1,4 +1,4 @@
-package org.getoserver.wfsv;
+package org.geoserver.wfsv;
 
 import java.io.File;
 import java.util.HashMap;

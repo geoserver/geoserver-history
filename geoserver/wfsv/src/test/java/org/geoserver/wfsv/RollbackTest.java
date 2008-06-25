@@ -1,4 +1,4 @@
-package org.getoserver.wfsv;
+package org.geoserver.wfsv;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
 
