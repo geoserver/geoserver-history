@@ -330,6 +330,10 @@ public class Service  implements OWS /* extends GlobalLayerSupertype*/ {
 
     public URL getOnlineResource() {
         try {
+            if ( service.getOnlineResource() == null ) {
+                return null;
+            }
+            
             return new URL( service.getOnlineResource() );
         } catch (MalformedURLException e) {
             throw new RuntimeException( e );
