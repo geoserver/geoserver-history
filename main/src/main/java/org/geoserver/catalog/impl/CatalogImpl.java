@@ -35,6 +35,7 @@ import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.catalog.event.impl.CatalogAddEventImpl;
 import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
+import org.geoserver.ows.util.OwsUtils;
 
 /**
  * A default catalog implementation that is memory based.
@@ -105,21 +106,36 @@ public class CatalogImpl implements Catalog {
             store.setWorkspace( getDefaultWorkspace() );
         }
         
-        if ( store.getWorkspace() == null ) {
-            throw new IllegalArgumentException( "no workspace set and no default available");
-        }
+        validate(store);
         
         ((StoreInfoImpl)store).setId( store.getName() );
         stores.put(store.getClass(), store);
         added(store);
     }
 
+    void validate(StoreInfo store) {
+        if ( store.getName() == null ) {
+            throw new IllegalArgumentException( "Store name must not be null");
+        }
+        if ( store.getWorkspace() == null ) {
+            throw new IllegalArgumentException( "Store must be part of a workspace");
+        }
+    }
+    
     public void remove(StoreInfo store) {
         stores.remove(store.getClass(), store);
         removed(store);
     }
 
     public void save(StoreInfo store) {
+        validate(store);
+        
+        if ( store.getId() == null ) {
+            //add it instead of saving
+            add( store );
+            return;
+        }
+        
         saved(store);
     }
 
@@ -194,21 +210,24 @@ public class CatalogImpl implements Catalog {
 
     // Resource methods
     public void add(ResourceInfo resource) {
-        validate(resource);
-        
         if ( resource.getNamespace() == null ) {
             //default to default namespace
             resource.setNamespace( getDefaultNamespace() );
         }
         
-        ((ResourceInfoImpl)resource).setId( resource.getName() );
+        validate(resource);
+        
+       ((ResourceInfoImpl)resource).setId( resource.getName() );
         resources.put(resource.getClass(), resource);
         added(resource);
     }
 
     void validate(ResourceInfo resource) {
         if ( resource.getStore() == null ) {
-            throw new IllegalArgumentException( "source must be part of a store");
+            throw new IllegalArgumentException( "Resource must be part of a store");
+        }
+        if ( resource.getNamespace() == null ) {
+            throw new IllegalArgumentException( "Resource must be part of a namespace");
         }
     }
     
@@ -219,7 +238,6 @@ public class CatalogImpl implements Catalog {
 
     public void save(ResourceInfo resource) {
         validate(resource);
-        
         saved(resource);
     }
 
@@ -255,7 +273,8 @@ public class CatalogImpl implements Catalog {
         if ( getDefaultNamespace() != null ) {
             ResourceInfo resource = getResourceByName( getDefaultNamespace().getPrefix(), name, clazz );
             if ( resource != null ) {
-                return ModificationProxy.create( (T) resource, clazz );
+                //return ModificationProxy.create( (T) resource, clazz );
+                return (T) resource;
             }    
         }
         
@@ -685,7 +704,13 @@ public class CatalogImpl implements Catalog {
     }
     
     public WorkspaceInfo getWorkspace(String id) {
-        return getWorkspaceByName(id);
+        for ( WorkspaceInfo ws : workspaces.values() ) {
+            if ( id.equals( ws.getId() ) ) {
+                return ModificationProxy.create(ws,WorkspaceInfo.class);
+            }
+        }
+        
+        return null;
     }
     
     public WorkspaceInfo getWorkspaceByName(String name) {
@@ -810,7 +835,25 @@ public class CatalogImpl implements Catalog {
         event(event);
     }
 
+    protected void sync(Object object) {
+//        try {
+//            String id = (String) OwsUtils.get( object, "id" );
+//            String name = (String) OwsUtils.get( object, "name" );
+//            
+//            if ( !id.equals(name) ) {
+//                //set the id to be the name
+//                OwsUtils.set( object, "id", name );
+//            }
+//        } 
+//        catch (Exception e) {
+//            
+//        }
+    }
+    
     protected void saved(Object object) {
+        //synchronize the id and the name of the object
+        sync(object);
+        
         //this object is a proxy
         ModificationProxy h = 
             (ModificationProxy) Proxy.getInvocationHandler(object);

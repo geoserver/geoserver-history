@@ -279,7 +279,7 @@ public class CatalogImplTest extends TestCase {
         assertEquals( "wsName", ws3.getName() );
         
         catalog.save( ws2 );
-        ws3 = catalog.getWorkspace(ws2.getName());
+        ws3 = catalog.getWorkspaceByName(ws2.getName());
         assertEquals(ws2, ws3);
         assertEquals( "ws2", ws3.getName() );
         
@@ -447,6 +447,9 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testAddFeatureType() {
+        //set a default namespace
+        catalog.add( ns );
+        
         assertTrue( catalog.getFeatureTypes().isEmpty() );
         
         catalog.add( ft );
@@ -593,6 +596,10 @@ public class CatalogImplTest extends TestCase {
     
     
     public void testFeatureTypeEvents() {
+        
+        //set default namespace
+        catalog.add( ns );
+        
         TestListener l = new TestListener();
         catalog.addListener( l );
         
