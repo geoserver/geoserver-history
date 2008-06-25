@@ -11,7 +11,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     String id;
 
-    ContactInfo contactInfo;
+    ContactInfo contact;
 
     // Charset charSet = Charset.forName("UTF-8");
     String charset = "UTF-8";
@@ -61,12 +61,12 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 //        this.catalog = catalog;
 //    }
 
-    public void setContactInfo(ContactInfo contactInfo) {
-        this.contactInfo = contactInfo;
+    public void setContact(ContactInfo contactInfo) {
+        this.contact = contactInfo;
     }
 
-    public ContactInfo getContactInfo() {
-        return contactInfo;
+    public ContactInfo getContact() {
+        return contact;
     }
 
     public void setTitle(String title) {
@@ -212,7 +212,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
                 * result
                 + ((clientProperties == null) ? 0 : clientProperties.hashCode());
         result = prime * result
-                + ((contactInfo == null) ? 0 : contactInfo.hashCode());
+                + ((contact == null) ? 0 : contact.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result
                 + ((loggingLevel == null) ? 0 : loggingLevel.hashCode());
@@ -259,10 +259,10 @@ public class GeoServerInfoImpl implements GeoServerInfo {
                 return false;
         } else if (!charset.equals(other.getCharset()))
             return false;
-        if (contactInfo == null) {
-            if (other.getContactInfo() != null)
+        if (contact == null) {
+            if (other.getContact() != null)
                 return false;
-        } else if (!contactInfo.equals(other.getContactInfo()))
+        } else if (!contact.equals(other.getContact()))
             return false;
         if (id == null) {
             if (other.getId() != null)
