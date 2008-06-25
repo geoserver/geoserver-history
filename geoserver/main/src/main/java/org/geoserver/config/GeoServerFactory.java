@@ -1,5 +1,7 @@
 package org.geoserver.config;
 
+import org.geoserver.catalog.MetadataLinkInfo;
+
 /**
  * Factory used to create geoserver configuration objects.
  * 
@@ -18,6 +20,11 @@ public interface GeoServerFactory {
      */
     ContactInfo createContact();
 
+    /**
+     * Creates a new metadata link. 
+     */
+    MetadataLinkInfo createMetadataLink();
+    
     /**
      * Creates a new Imaging.
      */
