@@ -51,7 +51,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                     + "      <ogc:FeatureId fid=\"archsites.2\" />\r\n"// 
                     + "    </ogc:Filter>\r\n" // 
                     + "  </wfs:Delete>\r\n" + "</wfs:Transaction>\r\n";
-            Document doc = postAsDOM(root(true), transaction);
+            Document doc = postAsDOM(root(), transaction);
 
             // let's just ensure the transaction was successful
             assertXpathEvaluatesTo("1", "count(/wfs:WFS_TransactionResponse)", doc);
@@ -76,7 +76,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "                      http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd\">\r\n"
                 + "  <wfs:Query typeName=\"topp:archsites\" featureVersion=\"1\"/>\r\n"
                 + "</wfs:GetFeature>\r\n";
-        Document doc = postAsDOM(root(true), before);
+        Document doc = postAsDOM(root(), before);
         print(doc);
         assertXpathEvaluatesTo("4", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
         assertXpathEvaluatesTo("Signature Rock",
@@ -94,7 +94,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  xsi:schemaLocation=\"http://www.opengis.net/wfs\r\n"
                 + "                      http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd\">\r\n"
                 + "  <wfs:Query typeName=\"topp:archsites\"/>\r\n" + "</wfs:GetFeature>\r\n";
-        doc = postAsDOM(root(true), current);
+        doc = postAsDOM(root(), current);
         assertXpathEvaluatesTo("4", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
         assertXpathEvaluatesTo("Signature Rock, updated",
                 "//topp:archsites[@fid=\"archsites.1\"]/topp:str1", doc);
@@ -115,7 +115,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfs:Query typeName=\"topp:archsites\">\r\n" + "    <ogc:Filter>\r\n"
                 + "       <ogc:FeatureId fid=\"archsites.5\"/>\r\n" + "    </ogc:Filter>\r\n"
                 + "  </wfs:Query>\r\n" + "</wfsv:GetVersionedFeature>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
         assertXpathEvaluatesTo("1", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
         assertXpathEvaluatesTo("1", "count(//topp:archsites[@fid=\"archsites.5\"])", doc);
         assertXpathEvaluatesTo("1", "count(//topp:createdBy)", doc);
@@ -141,7 +141,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfs:Query typeName=\"topp:archsites\">\r\n" + "    <ogc:Filter>\r\n"
                 + "       <ogc:FeatureId fid=\"archsites.5\"/>\r\n" + "    </ogc:Filter>\r\n"
                 + "  </wfs:Query>\r\n" + "</wfsv:GetVersionedFeature>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
         print(doc);
         assertXpathEvaluatesTo("1", "count(/wfs:FeatureCollection/gml:featureMembers/topp:archsites)", doc);
         assertXpathEvaluatesTo("1", "count(//topp:archsites[@gml:id=\"archsites.5\"])", doc);
@@ -169,7 +169,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "                      http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n"
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
         print(doc);
         assertXpathEvaluatesTo("2", "count(//topp:changesets)", doc);
         // version 2 and 3 are taken to version enable roads and restricted
@@ -187,7 +187,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n>\r\n"
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
         print(doc);
         assertXpathEvaluatesTo("2", "count(//topp:changesets)", doc);
         // version 2 and 3 are taken to version enable roads and restricted
@@ -209,7 +209,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "                      http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n"
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
         // test it's html and there are 2 history rows in the table (tr owning a
         // td, not tr owning a th)
         assertXpathEvaluatesTo("2", "count(/html/body/table/tr[td])", doc);
@@ -226,7 +226,8 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd\">\r\n"
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"1\"/>\r\n"
                 + "</wfsv:GetDiff>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
+        print(doc);
         assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Insert)", doc);
         assertXpathEvaluatesTo("archsites.5", "/wfs:Transaction/wfs:Insert/topp:archsites/@gml:id",
                 doc);
@@ -250,7 +251,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n"
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"1\"/>\r\n"
                 + "</wfsv:GetDiff>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
         assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Insert)", doc);
         assertXpathEvaluatesTo("archsites.5", "/wfs:Transaction/wfs:Insert/topp:archsites/@gml:id",
                 doc);
@@ -278,7 +279,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"1\"/>\r\n"
                 + "</wfsv:GetDiff>";
         // just make sure html is valid xml as well
-        postAsDOM(root(true), request);
+        postAsDOM(root(), request);
     }
 
     public void testGetDiff11Reverse() throws Exception {
@@ -292,7 +293,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "                      http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfsv.xsd\">\r\n"
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"CURRENT\"  "
                 + "toFeatureVersion=\"1\"/>\r\n" + "</wfsv:GetDiff>";
-        Document doc = postAsDOM(root(true), request);
+        Document doc = postAsDOM(root(), request);
         assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Insert)", doc);
         assertXpathEvaluatesTo("archsites.2", "/wfs:Transaction/wfs:Insert/topp:archsites/@gml:id",
                 doc);

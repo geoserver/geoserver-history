@@ -6,13 +6,9 @@ import java.util.Map;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.geoserver.data.test.LiveData;
 import org.geoserver.data.test.LiveDbmsData;
-import org.geoserver.data.test.MockData;
 import org.geoserver.data.test.TestData;
-import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerAbstractTestSupport;
-import org.vfny.geoserver.global.Data;
 
 /**
  * Base class for WFSV functional testing, sets up a proper testing enviroment
@@ -54,16 +50,11 @@ public class WFSVTestSupport extends GeoServerAbstractTestSupport {
      * Returns the url of the WFSV entry point
      * @return
      */
-    protected String root(boolean strict) {
-        return "wfsv" + (strict ? "?strict=true" : "");
+    protected String root() {
+        return "wfsv";
+        // return "wfsv?strict=true";
     }
 
-//    public void testCatalogLoaded() {
-//        Data data = (Data) GeoServerExtensions.bean("catalog");
-//        assertTrue(data.getFeatureTypeInfo("topp:archsites").isEnabled());
-//        assertTrue(data.getFeatureTypeInfo("topp:restricted").isEnabled());
-//        assertTrue(data.getFeatureTypeInfo("topp:roads").isEnabled());
-//    }
 
     
 }

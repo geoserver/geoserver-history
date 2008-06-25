@@ -42,7 +42,7 @@ public class RollbackTest extends WFSVTestSupport {
         "  </wfs:Delete>\r\n" + 
         "</wfs:Transaction>\r\n" + 
         "";
-        Document doc = postAsDOM(root(true), transaction);
+        Document doc = postAsDOM(root(), transaction);
 //        print(doc);
 
         // let's just ensure the transaction was successful
@@ -61,7 +61,7 @@ public class RollbackTest extends WFSVTestSupport {
                 + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
                 + "  xmlns:ogc=\"http://www.opengis.net/ogc\">\r\n"
                 + "  <wfs:Query typeName=\"topp:archsites\"/>\r\n" + "</wfs:GetFeature>\r\n";
-        doc = postAsDOM(root(true), current);
+        doc = postAsDOM(root(), current);
         assertXpathEvaluatesTo("4", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
         assertXpathEvaluatesTo("Signature Rock, updated",
                 "//topp:archsites[@fid=\"archsites.1\"]/topp:str1", doc);
@@ -79,7 +79,7 @@ public class RollbackTest extends WFSVTestSupport {
         		"  handle=\"Rolling back previous changes\">\r\n" + 
         		"  <wfsv:Rollback safeToIgnore=\"false\" vendorId=\"TOPP\" typeName=\"topp:archsites\" toFeatureVersion=\"1\"/>\r\n" + 
         		"</wfs:Transaction>\r\n";
-        doc = postAsDOM(root(true), rollback);
+        doc = postAsDOM(root(), rollback);
 //        print(doc);
         
         // let's ensure the rollback was successful
@@ -127,7 +127,7 @@ public class RollbackTest extends WFSVTestSupport {
         "  </wfs:Delete>\r\n" + 
         "</wfs:Transaction>\r\n" + 
         "";
-        Document doc = postAsDOM(root(true), transaction);
+        Document doc = postAsDOM(root(), transaction);
 //        print(doc);
         // let's just ensure the transaction was successful
         assertXpathEvaluatesTo("1", "count(/wfs:WFS_TransactionResponse)", doc);
@@ -143,7 +143,7 @@ public class RollbackTest extends WFSVTestSupport {
                 + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
                 + "  xmlns:ogc=\"http://www.opengis.net/ogc\">\r\n"
                 + "  <wfs:Query typeName=\"topp:archsites\"/>\r\n" + "</wfs:GetFeature>\r\n";
-        doc = postAsDOM(root(true), current);
+        doc = postAsDOM(root(), current);
 //        print(doc);
         assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection)", doc);
         assertXpathEvaluatesTo("4", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
@@ -163,7 +163,7 @@ public class RollbackTest extends WFSVTestSupport {
                 "  handle=\"Rolling back previous changes\">\r\n" + 
                 "  <wfsv:Rollback safeToIgnore=\"false\" vendorId=\"TOPP\" typeName=\"topp:archsites\" toFeatureVersion=\"1\"/>\r\n" + 
                 "</wfs:Transaction>\r\n";
-        doc = postAsDOM(root(true), rollback);
+        doc = postAsDOM(root(), rollback);
 //        print(doc);
         
         // let's ensure the rollback was successful
