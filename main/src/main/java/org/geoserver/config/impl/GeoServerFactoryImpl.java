@@ -3,6 +3,8 @@ package org.geoserver.config.impl;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
@@ -30,6 +32,10 @@ public class GeoServerFactoryImpl implements GeoServerFactory,
         return new ContactInfoImpl();
     }
 
+    public MetadataLinkInfo createMetadataLink() {
+        return new MetadataLinkInfoImpl();
+    }
+    
     public ServiceInfo createService() {
         return new ServiceInfoImpl();
     }
