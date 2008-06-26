@@ -33,6 +33,8 @@ public abstract class PlaceholderNode extends CatalogNode {
      * Overrides hash code so that it does not clash with the ones in Catalog
      */
     public int hashCode() {
+        if(getModel() == null)
+            throw new RuntimeException("No model for placeholder "  + getClass() + " name: " + name);
         return 17 + 3 * getModel().hashCode();
     }
 

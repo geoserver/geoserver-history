@@ -8,12 +8,13 @@
 package org.geoserver.web.data.tree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 
-class CoverageStoreNode extends CatalogNode {
+class CoverageStoreNode extends StoreNode {
 
     public CoverageStoreNode(String id, CatalogNode parent) {
         super(id, parent);
@@ -32,7 +33,10 @@ class CoverageStoreNode extends CatalogNode {
             childNodes.add(new ResourceNode(name, coverages.get(0).getName(), this,
                     CoverageInfo.class));
         } else {
-            childNodes.add(new UnconfiguredResourcesNode(name, this, CoverageStoreInfo.class));
+            if(unconfiguredChildrenVisible)
+                childNodes.add(new UnconfiguredResourceNode(name, name, this));
+            else
+                childNodes.add(new UnconfiguredResourcesNode(name, this, CoverageStoreInfo.class));
         }
         return childNodes;
 
@@ -46,5 +50,10 @@ class CoverageStoreNode extends CatalogNode {
     @Override
     protected String getNodeLabel() {
         return getModel().getName();
+    }
+
+    @Override
+    protected List<CatalogNode> buildUnconfiguredChildren() {
+        return Arrays.asList((CatalogNode) new UnconfiguredResourceNode(name, name, this));
     }
 }

@@ -230,7 +230,7 @@ public class EditRemovePanel extends Panel {
 
             final UnconfiguredResourceNode unconfiguredFTypeNode = ((UnconfiguredResourceNode) node);
             final String typeName = unconfiguredFTypeNode.getResourceName();
-            final DataStoreInfo dataStore = unconfiguredFTypeNode.getModel();
+            final DataStoreInfo dataStore = (DataStoreInfo) unconfiguredFTypeNode.getModel();
 
             final Catalog catalog = node.getCatalog();
             CatalogFactory factory = catalog.getFactory();

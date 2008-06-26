@@ -17,10 +17,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 public class CatalogTreePanel extends Panel {
 
-    TreeNode node;
+    CatalogNode node;
 
     public CatalogTreePanel(String id, DataTreeTable tree,
-            MarkupContainer parent, TreeNode node, int level) {
+            MarkupContainer parent, CatalogNode node, int level) {
         super(id);
         this.node = node;
         add(tree.newIndentation(this, "indent", node, level));

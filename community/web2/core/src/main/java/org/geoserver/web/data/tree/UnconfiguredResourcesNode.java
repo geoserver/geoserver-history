@@ -21,6 +21,8 @@ public class UnconfiguredResourcesNode extends PlaceholderNode {
 
     public UnconfiguredResourcesNode(String name, CatalogNode parent, Class storeType) {
         super(name, parent);
+        if(storeType == null)
+            throw new NullPointerException("StoreType argument cannot be null");
         this.storeType = storeType;
     }
 
