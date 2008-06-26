@@ -232,15 +232,15 @@ public class DataPage extends GeoServerBasePage {
         @Override
         public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
             if (node instanceof UnconfiguredResourcesNode) 
-                return new UnconfiguredFeatureTypesPanel(id, tree, parent,
+                return new UnconfiguredResourcesPanel(id, tree, parent,
                         (UnconfiguredResourcesNode) node, level);
             if (node instanceof UnconfiguredResourceNode)
-                return new UnconfiguredFeatureTypePanel(id, tree, parent, (CatalogNode) node, level);
+                return new UnconfiguredResourcePanel(id, tree, parent, (CatalogNode) node, level);
             if (node instanceof ResourceNode)
                 return new ResourcePanel(id, tree, parent, (CatalogNode) node, level);
             if (node instanceof NewDatastoreNode)
                 return new NewDataStorePanel(id, tree, parent, (CatalogNode) node, level);
-            if (node instanceof DataStoreNode || node instanceof CoverageStoreNode) 
+            if (node instanceof StoreNode) 
                 return new StorePanel(id, tree, parent, (CatalogNode) node, level);
             // else
             return super.newCell(parent, id, node, level);
@@ -317,9 +317,9 @@ public class DataPage extends GeoServerBasePage {
      * @author Andrea Aime - TOPP
      * 
      */
-    class UnconfiguredFeatureTypesPanel extends LinkPanel {
+    class UnconfiguredResourcesPanel extends LinkPanel {
 
-        public UnconfiguredFeatureTypesPanel(String id, DataTreeTable tree, MarkupContainer parent,
+        public UnconfiguredResourcesPanel(String id, DataTreeTable tree, MarkupContainer parent,
                 UnconfiguredResourcesNode node, int level) {
             super(id, tree, parent, node, level);
             label.add(new AttributeModifier("class", true, new Model("command")));
@@ -327,9 +327,9 @@ public class DataPage extends GeoServerBasePage {
 
         @Override
         protected void onClick(AjaxRequestTarget target) {
-            ((DataStoreNode) node.getParent()).setUnconfiguredChildrenVisible(true);
-            tree.getTreeState().expandNode(
-                    (((DataStoreNode) node.getParent()).checkPartialSelection()));
+            ((StoreNode) node.getParent()).setUnconfiguredChildrenVisible(true);
+            tree.refresh(node.getParent());
+            tree.refresh((node.getParent().checkPartialSelection()));
             target.addComponent(tree.getParent());
         }
 
@@ -347,9 +347,9 @@ public class DataPage extends GeoServerBasePage {
      * @TODO change this back to a {@link LabelPanel}, we have the buttons to
      *       handle this
      */
-    class UnconfiguredFeatureTypePanel extends LinkPanel {
+    class UnconfiguredResourcePanel extends LinkPanel {
 
-        public UnconfiguredFeatureTypePanel(String id, DataTreeTable tree, MarkupContainer parent,
+        public UnconfiguredResourcePanel(String id, DataTreeTable tree, MarkupContainer parent,
                 CatalogNode node, int level) {
             super(id, tree, parent, node, level);
             label.add(new AttributeModifier("class", true, new Model("unconfiguredLayer")));
@@ -362,6 +362,11 @@ public class DataPage extends GeoServerBasePage {
         @Override
         protected void onClick(AjaxRequestTarget target) {
             EditRemovePanel.edit(this, (CatalogNode) node);
+        }
+        
+        @Override
+        protected ResourceReference getNodeIcon(DataTreeTable tree, TreeNode node) {
+            return null;
         }
     }
     

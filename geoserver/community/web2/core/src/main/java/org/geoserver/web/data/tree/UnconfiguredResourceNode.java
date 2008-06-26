@@ -5,23 +5,27 @@
 package org.geoserver.web.data.tree;
 
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.StoreInfo;
 
 /**
  * Represents a data resource that's waiting to be configured into GeoServer
  * @author Andrea Aime - TOPP
  */
 public class UnconfiguredResourceNode extends PlaceholderNode {
+    String resourceName;
+    
     public UnconfiguredResourceNode(String storeName, String resourceName,
             CatalogNode parent) {
         super(storeName, parent);
         this.resourceName = resourceName;
     }
 
-    String resourceName;
-
     @Override
-    protected DataStoreInfo getModel() {
-        return getCatalog().getDataStore(name);
+    protected StoreInfo getModel() {
+        if(parent instanceof DataStoreNode)
+            return getCatalog().getDataStore(name);
+        else
+            return getCatalog().getCoverageStore(name);
     }
 
     @Override
@@ -33,7 +37,7 @@ public class UnconfiguredResourceNode extends PlaceholderNode {
         return resourceName;
     }
 
-    public void setResouirceName(String resourceName) {
+    public void setResourceName(String resourceName) {
         this.resourceName = resourceName;
     }
     
