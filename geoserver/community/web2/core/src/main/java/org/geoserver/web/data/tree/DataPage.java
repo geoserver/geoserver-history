@@ -119,19 +119,23 @@ public class DataPage extends GeoServerBasePage {
     }
     
     protected void onNodeLinkClicked(AjaxRequestTarget target, TreeNode node) {
+        // toggle expansion
         ITreeState ts = tree.getTreeState();
         if (ts.isNodeExpanded(node))
             ts.collapseNode(node);
         else
             ts.expandNode(node);
 
+        // select the current workspace to provide some context
         TreeNode ws = getWorkspaceNode(node);
         for (CatalogNode child : root.childNodes()) {
             if (!(child.equals(ws)))
                 ts.collapseNode(child);
         }
         ts.selectNode(ws, true);
-        target.addComponent(tree.getParent());
+        
+        // make the proper ajax repaint
+        tree.updateTree(target);
     }
 
     /**
