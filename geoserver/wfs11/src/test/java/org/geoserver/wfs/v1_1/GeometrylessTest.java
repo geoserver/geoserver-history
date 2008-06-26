@@ -1,7 +1,8 @@
-package org.geoserver.wfs;
+package org.geoserver.wfs.v1_1;
 
 import junit.framework.Test;
 
+import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -14,38 +15,33 @@ public class GeometrylessTest extends WFSTestSupport {
         return new OneTimeTestSetup(new GeometrylessTest());
     }
     
-//    protected String getLogConfiguration() {
-//        return "/DEFAULT_LOGGING.properties";
-//    }
-    
-    public void testGetFeature10() throws Exception {
-        Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.0.0&service=wfs");
+    public void testGetFeature11() throws Exception {
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.1.0&service=wfs");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());
 //        print(doc);
 
-        NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
+        NodeList featureMembers = doc.getElementsByTagName("gml:featureMembers");
         assertFalse(featureMembers.getLength() == 0);
         NodeList features = doc.getElementsByTagName("cite:Geometryless");
-        assertEquals(3, featureMembers.getLength());
+        assertEquals(3, features.getLength());
     }
     
-    public void testGetFeatureReproject10() throws Exception {
+    public void testGetFeatureReproject11() throws Exception {
         getWFS().setFeatureBounding(true);
-        Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.0.0&service=wfs&srsName=EPSG:900913");
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.1.0&service=wfs&srsName=EPSG:900913");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());
-//        print(doc);
 
-        NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
+        NodeList featureMembers = doc.getElementsByTagName("gml:featureMembers");
         assertFalse(featureMembers.getLength() == 0);
         NodeList features = doc.getElementsByTagName("cite:Geometryless");
-        assertEquals(3, featureMembers.getLength());
+        assertEquals(3, features.getLength());
     }
     
     public void testGetFeatureReprojectPost() throws Exception {
         String request = "<wfs:GetFeature service=\"WFS\" xmlns:wfs=\"http://www.opengis.net/wfs\" " +
-        		"version=\"1.0.0\"  outputFormat=\"GML2\" " +
+        		"version=\"1.1.0\"  outputFormat=\"GML2\" " +
         		"xmlns:topp=\"http://www.openplans.org/topp\" " +
         		"xmlns:ogc=\"http://www.opengis.net/ogc\" " +
         		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +

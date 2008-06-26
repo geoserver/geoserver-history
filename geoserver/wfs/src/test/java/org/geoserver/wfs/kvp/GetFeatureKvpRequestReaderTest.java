@@ -6,8 +6,10 @@ import java.util.Map;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WebFeatureService;
 import org.geotools.factory.CommonFactoryFinder;
 
 public class GetFeatureKvpRequestReaderTest extends KvpRequestReaderTestSupport {
@@ -16,8 +18,10 @@ public class GetFeatureKvpRequestReaderTest extends KvpRequestReaderTestSupport 
 
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
+
+        WebFeatureService wfs = (WebFeatureService) GeoServerExtensions.bean( "wfsService" );
         reader = new GetFeatureKvpRequestReader(GetFeatureType.class,
-                getCatalog(), CommonFactoryFinder.getFilterFactory(null));
+                getCatalog(), CommonFactoryFinder.getFilterFactory(null), wfs);
     }
     
     /**

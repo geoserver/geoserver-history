@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfs;
 
+import java.util.List;
+
 import net.opengis.wfs.DescribeFeatureTypeType;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetCapabilitiesType;
@@ -14,6 +16,8 @@ import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
+
+import org.geotools.util.Version;
 import org.geotools.xml.transform.TransformerBase;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 
@@ -30,6 +34,11 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  *
  */
 public interface WebFeatureService {
+    /**
+     * The list of wfs versions supported.
+     */
+    List<Version> getVersions();
+    
     /**
      * WFS GetCapabilities operation.
      *

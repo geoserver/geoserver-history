@@ -389,7 +389,8 @@ public class GetFeature {
             lockRequest.setExpiry(withLockRequest.getExpiry());
             lockRequest.setHandle(withLockRequest.getHandle());
             lockRequest.setLockAction(AllSomeType.ALL_LITERAL);
-
+            lockRequest.setProvidedVersion( withLockRequest.getProvidedVersion() );
+            
             for (int i = 0; i < request.getQuery().size(); i++) {
                 QueryType query = (QueryType) request.getQuery().get(i);
 
@@ -464,7 +465,7 @@ public class GetFeature {
     public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures,
         FeatureSource<SimpleFeatureType, SimpleFeature> source, GetFeatureType request) throws WFSException {
         
-        String wfsVersion = request.getVersion();
+        String wfsVersion = request.getProvidedVersion();
         
         if (maxFeatures <= 0) {
             maxFeatures = DefaultQuery.DEFAULT_MAX;

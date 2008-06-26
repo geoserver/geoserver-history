@@ -1,4 +1,4 @@
-package org.geoserver.wfs.response;
+package org.geoserver.wfs.response.v1_1_0;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,7 +23,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class FeatureResponse extends Response {
+public class FeatureResponse extends WFS11Response {
 
     Data catalog;
     WFSConfiguration configuration;

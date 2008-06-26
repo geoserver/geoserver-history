@@ -1,4 +1,4 @@
-package org.geoserver.wfs;
+package org.geoserver.wfs.v1_1;
 
 import junit.framework.Test;
 
@@ -16,19 +16,19 @@ public class SrsNameTest extends GeoServerTestSupport {
         return new OneTimeTestSetup(new SrsNameTest());
     }
 
-    public void testWfs10() throws Exception {
-        String q = "wfs?request=getfeature&service=wfs&version=1.0.0"
+    public void testWfs11() throws Exception {
+        String q = "wfs?request=getfeature&service=wfs&version=1.1.0"
                 + "&typename=cgf:Points";
         Document d = getAsDOM(q);
         
         assertEquals("wfs:FeatureCollection", d.getDocumentElement()
                 .getNodeName());
 
-        NodeList boxes = d.getElementsByTagName("gml:Box");
+        NodeList boxes = d.getElementsByTagName("gml:Envelope");
         assertFalse(boxes.getLength() == 0);
         for (int i = 0; i < boxes.getLength(); i++) {
             Element box = (Element) boxes.item(i);
-            assertEquals("http://www.opengis.net/gml/srs/epsg.xml#32615", box
+            assertEquals("urn:x-ogc:def:crs:EPSG:32615", box
                     .getAttribute("srsName"));
         }
 
@@ -36,9 +36,8 @@ public class SrsNameTest extends GeoServerTestSupport {
         assertFalse(points.getLength() == 0);
         for (int i = 0; i < points.getLength(); i++) {
             Element point = (Element) points.item(i);
-            assertEquals("http://www.opengis.net/gml/srs/epsg.xml#32615", point
+            assertEquals("urn:x-ogc:def:crs:EPSG:32615", point
                     .getAttribute("srsName"));
         }
-
     }
 }

@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import net.opengis.wfs.GetCapabilitiesType;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.CapabilitiesTransformer.WFS1_0;
 import org.geotools.util.Version;
@@ -42,14 +43,20 @@ public class GetCapabilities {
     Data catalog;
 
     /**
+     * wfs versions
+     */
+    List<Version> versions;
+    
+    /**
      * Creates a new wfs GetCapabilitis operation.
      *
      * @param wfs The wfs configuration
      * @param catalog The geoserver catalog.
      */
-    public GetCapabilities(WFS wfs, Data catalog) {
+    public GetCapabilities(WFS wfs, Data catalog, List<Version> versions) {
         this.wfs = wfs;
         this.catalog = catalog;
+        this.versions = versions;
     }
 
     public CapabilitiesTransformer run(GetCapabilitiesType request)
@@ -78,8 +85,10 @@ public class GetCapabilities {
 
         //do the version negotiation dance
         List<String> provided = new ArrayList<String>();
-        provided.add("1.0.0");
-        provided.add("1.1.0");
+        for (Version v : versions) {
+            provided.add( v.toString() );
+        }
+        
         List<String> accepted = null;
         if(request.getAcceptVersions() != null)
             accepted = request.getAcceptVersions().getVersion();

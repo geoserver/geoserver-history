@@ -163,7 +163,7 @@ public class LockFeature {
                     // make sure all geometric elements in the filter have a crs, and that the filter
                     // is reprojected to store's native crs as well
                     CoordinateReferenceSystem declaredCRS = WFSReprojectionUtil.getDeclaredCrs(
-                            source.getSchema(), request.getVersion());
+                            source.getSchema(), request.getProvidedVersion());
                     filter = WFSReprojectionUtil.normalizeFilterCRS(filter, source.getSchema(), declaredCRS);
                     
                     // now gather the features

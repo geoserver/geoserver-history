@@ -222,6 +222,14 @@ public class RequestUtils {
     }
 
     /**
+     * Determines if the specified string is a valid "major,minor,patch"
+     * version number. 
+     */
+    public static boolean isValidVersionNumber(String v) {
+        return v.matches("[0-99]\\.[0-99]\\.[0-99]");
+    }
+    
+    /**
      * Checks the validity of a version number (the specification version numbers, three dot
      * separated integers between 0 and 99). Throws a ServiceException if the version number
      * is not valid.
@@ -229,9 +237,38 @@ public class RequestUtils {
      * @param the locator for the service exception (may be null)
      */
     public static void checkVersionNumber(String v, String locator) throws ServiceException {
-        if (!v.matches("[0-99]\\.[0-99]\\.[0-99]")) {
+        if (!isValidVersionNumber(v)) {
             String msg = v + " is an invalid version number";
             throw new ServiceException(msg, "VersionNegotiationFailed", locator);
         }
+    }
+    
+    /**
+     * Parses the specified string as a "major.minor.patch" version number.
+     * <p>
+     * This method will append 0 for minor and patch parts of the version number
+     * in the event they are not specified. ie: 1.0 -> 1.0.0 and 1 -> 1.0.0
+     * </p>
+     * <p>
+     * In the event of a null or empty string this method returns null.
+     * </p>
+     * @param v The version number string. 
+     */
+    public static Version version( String v ) {
+        if (v == null || "".equals( v ) ) {
+            return null;
+        }
+        
+        if (!isValidVersionNumber(v)) {
+            String[] parts = v.split("\\.");
+            switch( parts.length ) {
+                case 1: v = parts[0] + ".0.0"; break;
+                case 2: v = parts[0] + "." + parts[1] + ".0"; break;
+                default:
+                    throw new IllegalArgumentException( "Invalid version number: " + v + "");
+            }
+        }
+        
+        return new Version( v );
     }
 }

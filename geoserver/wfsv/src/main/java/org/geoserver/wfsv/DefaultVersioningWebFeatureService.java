@@ -4,6 +4,9 @@
  */
 package org.geoserver.wfsv;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetCapabilitiesType;
 import net.opengis.wfs.GetFeatureType;
@@ -26,6 +29,7 @@ import org.geoserver.wfs.LockFeature;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.data.postgis.FeatureDiffReader;
+import org.geotools.util.Version;
 import org.geotools.xml.transform.TransformerBase;
 import org.opengis.filter.FilterFactory;
 import org.springframework.beans.BeansException;
@@ -62,12 +66,25 @@ public class DefaultVersioningWebFeatureService
      * element handlers
      */
     protected ApplicationContext context;
+    
+    /**
+     * list of available versions
+     */
+    protected List<Version> versions; 
 
     public DefaultVersioningWebFeatureService(WFS wfs, Data catalog) {
         this.wfs = wfs;
         this.catalog = catalog;
+        
+        versions = new ArrayList();
+        versions.add( new Version("1.0.0" ) );
+        versions.add( new Version("1.1.0" ) );
     }
 
+    public List<Version> getVersions() {
+        return versions;
+    }
+    
     /**
      * Sets the fitler factory.
      */
@@ -87,7 +104,7 @@ public class DefaultVersioningWebFeatureService
      */
     public TransformerBase getCapabilities(GetCapabilitiesType request)
         throws WFSException {
-        return new GetCapabilities(wfs, catalog).run(request);
+        return new GetCapabilities(wfs, catalog, versions).run(request);
     }
 
     /**

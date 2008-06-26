@@ -21,7 +21,7 @@ public class GetCapabilitiesTest extends WFSTestSupport {
 
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities");
-        assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement()
+        assertEquals("WFS_Capabilities", doc.getDocumentElement()
                 .getNodeName());
     }
 

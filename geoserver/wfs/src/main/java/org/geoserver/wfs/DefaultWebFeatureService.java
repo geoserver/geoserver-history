@@ -4,6 +4,10 @@
  */
 package org.geoserver.wfs;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.opengis.wfs.DescribeFeatureTypeType;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetCapabilitiesType;
@@ -14,6 +18,10 @@ import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
+
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.Service;
+import org.geotools.util.Version;
 import org.geotools.xml.transform.TransformerBase;
 import org.opengis.filter.FilterFactory;
 import org.springframework.beans.BeansException;
@@ -51,11 +59,23 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     protected ApplicationContext context;
 
+    /**
+     * Versions of wfs supported
+     */
+    protected List<Version> versions;
+    
     public DefaultWebFeatureService(WFS wfs, Data catalog) {
         this.wfs = wfs;
         this.catalog = catalog;
     }
 
+    /**
+     * The list of verions of wfs supported.
+     */
+    public List<Version> getVersions() {
+        return versions;
+    }
+    
     /**
      * Sets the fitler factory.
      */
@@ -75,7 +95,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     public TransformerBase getCapabilities(GetCapabilitiesType request)
         throws WFSException {
-        return new GetCapabilities(wfs, catalog).run(request);
+        return new GetCapabilities(wfs, catalog, versions).run(request);
     }
 
     /**
@@ -187,5 +207,15 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     public void setApplicationContext(ApplicationContext context)
         throws BeansException {
         this.context = context;
+        
+        //load versions from service descriptors in application context
+        versions = new ArrayList<Version>();
+        List<Service> services = GeoServerExtensions.extensions(Service.class,context);
+        for (Service s : services ) {
+            if ( s.getService() instanceof WebFeatureService ) {
+                versions.add( s.getVersion() );    
+            }
+        }
+        Collections.sort( versions );
     }
 }

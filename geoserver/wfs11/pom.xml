@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?<xm=l version"1.0" encoding="ISO-8859-1"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -11,28 +11,15 @@
   </parent>
 
   <groupId>org.geoserver</groupId>
-  <artifactId>wfsv</artifactId>
+  <artifactId>wfs11</artifactId>
   <packaging>jar</packaging>
-  <name>Versioned Web Feature Service Module</name>
+  <name>Web Feature Service Module</name>
 
   <dependencies>
     <dependency>
       <groupId>org.geoserver</groupId>
-      <artifactId>wfs11</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools.ogc</groupId>
-      <artifactId>net.opengis.wfsv</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-postgis-versioned</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
+      <artifactId>wfs</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
@@ -41,9 +28,16 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wfs</artifactId>
       <version>1.7.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -54,10 +48,16 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>net.sf.json-lib</groupId>
+      <artifactId>json-lib</artifactId>
+      <classifier>jdk13</classifier>
+    </dependency>
+    <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <!-- =========================================================== -->
@@ -69,6 +69,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jalopy-maven-plugin</artifactId>
+        <configuration>
+          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -78,36 +82,17 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Binding generation -->
-      <!--plugin>
-        <groupId>org.geotools.maven</groupId>
-        <artifactId>xmlcodegen</artifactId>
-	<version>${gt.version}</version>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <schemaLocation>wfsv.xsd</schemaLocation>
-          <schemaSourceDirectory>
-            ${basedir}/../net.opengis.vwfs/schemas/wfs/1.1.0
-          </schemaSourceDirectory>
-          <schemaLookupDirectories>
-            <schemaLookupDirectory>
-              ${basedir}/../web/src/main/webapp/schemas/filter/1.0.0
-            </schemaLookupDirectory>
-          </schemaLookupDirectories>
-          <destinationPackage>org.geoserver.wfsv.xml.v1_1_0</destinationPackage>
-          <generateConfiguration>true</generateConfiguration>
-          <generateBindingConfiguration>true</generateBindingConfiguration>
-          <generateBindingInterface>true</generateBindingInterface>
-          <generateSchemaLocationResolver>true</generateSchemaLocationResolver>
-          <bindingConstructorArguments>
-            <bindingConstructorArgument>
-              <name>factory</name>
-              <type>net.opengis.wfsv.WfsvFactory</type>
-            </bindingConstructorArgument>
-          </bindingConstructorArguments>
+          <!-- Disable all tests for the moment. 
+            <excludes>
+            <exclude>**/*.java</exclude>
+            </excludes>
+          -->
         </configuration>
-      </plugin-->
+      </plugin>
     </plugins>
   </build>
-
-
 </project>

@@ -730,7 +730,13 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                         });
 
                 while (it.hasNext()) {
-                    sortedFunctions.add(it.next());
+                    try {
+                        sortedFunctions.add(it.next());
+                    }
+                    catch( Throwable t ) {
+                        LOGGER.warning( "Function failed to load (set logging to FINE to view stack trace)" );
+                        LOGGER.log( Level.FINE, "", t );
+                    }
                 }
 
                 //write them now that functions are sorted by name
@@ -1399,7 +1405,13 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                             });
 
                     while (itr.hasNext()) {
-                        sortedFunctions.add(itr.next());
+                        try {
+                            sortedFunctions.add(itr.next());
+                        }
+                        catch( Throwable t ) {
+                            LOGGER.warning( "Function failed to load (set logging to FINE to view stack trace)" );
+                            LOGGER.log( Level.FINE, "", t );
+                        }
                     }
 
                     //write them now that functions are sorted by name
