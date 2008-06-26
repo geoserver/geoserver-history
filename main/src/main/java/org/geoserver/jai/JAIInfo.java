@@ -42,7 +42,7 @@ public class JAIInfo implements Serializable {
     /**
      * @uml.property name="recycling"
      */
-    public boolean getRecycling() {
+    public boolean isRecycling() {
         return recycling;
     }
 
@@ -109,19 +109,19 @@ public class JAIInfo implements Serializable {
         this.memoryThreshold = memoryThreshold;
     }
     
-    public boolean getPNGAcceleration() {
+    public boolean isPngAcceleration() {
         return pngAcceleration;
     }
     
-    public void setPNGAcceleration( boolean pngAcceleration ) {
+    public void setPngAcceleration( boolean pngAcceleration ) {
         this.pngAcceleration = pngAcceleration;
     }
     
-    public boolean getJPEGAcceleration() {
+    public boolean isJpegAcceleration() {
         return jpegAcceleration;
     }
     
-    public void setJPEGAcceleration( boolean jpegAcceleration ) {
+    public void setJpegAcceleration( boolean jpegAcceleration ) {
         this.jpegAcceleration = jpegAcceleration;
     }
     
@@ -129,7 +129,7 @@ public class JAIInfo implements Serializable {
         this.imageIOCache = imageIOCache;
     }
     
-    public boolean getImageIOCache() {
+    public boolean isImageIOCache() {
         return imageIOCache;
     }
     

@@ -623,8 +623,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             jai.setTilePriority( dto.getJaiTilePriority() );
             jai.setRecycling( dto.getJaiRecycling() );
             jai.setImageIOCache( dto.getImageIOCache() );
-            jai.setPNGAcceleration( dto.getJaiPNGNative() );
-            jai.setJPEGAcceleration( dto.getJaiJPEGNative() );
+            jai.setPngAcceleration( dto.getJaiPNGNative() );
+            jai.setJpegAcceleration( dto.getJaiJPEGNative() );
             //initJAI(jai);
             info.getMetadata().put( JAIInfo.KEY, jai );
             
@@ -1169,17 +1169,17 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     public Boolean getRecycling() {
-        return jai().getRecycling();
+        return jai().isRecycling();
         //return recycling;
     }
 
     public Boolean getJPEGNativeAcceleration() {
-        return jai().getJPEGAcceleration();
+        return jai().isJpegAcceleration();
         //return JPEGnativeAcc;
     }
 
     public Boolean getPNGNativeAcceleration() {
-        return jai().getPNGAcceleration();
+        return jai().isPngAcceleration();
         //return PNGnativeAcc;
     }
 
@@ -1192,7 +1192,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return Returns the imageIOCache.
      */
     public Boolean getImageIOCache() {
-        return jai().getImageIOCache();
+        return jai().isImageIOCache();
         //return imageIOCache;
     }
 

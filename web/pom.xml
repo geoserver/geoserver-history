@@ -347,12 +347,12 @@
           <contextPath>geoserver</contextPath>
           <webApp>${project.build.directory}/geoserver</webApp>
           <!-- uncomment following to set a GEOSERVER_DATA_DIR -->
-          <!-- <systemProperties>
+          <systemProperties>
             <systemProperty>
             <name>GEOSERVER_DATA_DIR</name>
-            <value>/home/ak/geoserver_data</value>
+            <value>/home/ak/gs_trunk/configuration/release</value>
             </systemProperty>
-            </systemProperties> -->
+            </systemProperties>
         </configuration>
       </plugin>
 

@@ -143,6 +143,7 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
             }
         }
     }
+    
     private class LayerConfigurationSectionListView extends ListView {
         private static final long serialVersionUID = -6575960326680386479L;
 

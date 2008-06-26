@@ -253,5 +253,4 @@ public interface GeoServerInfo {
      * Disposes the global configuration object.
      */
     void dispose();
-
 }
