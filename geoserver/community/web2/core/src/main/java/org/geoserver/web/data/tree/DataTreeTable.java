@@ -58,8 +58,10 @@ public class DataTreeTable extends TreeTable {
      */
     public void refresh(TreeNode node) {
         // crude hack... I could not find a real "refresh" method, but this one
-        // works as one...
-        getTreeState().expandNode(node);
+        // works as one... Also make sure we don't try to expand the root node,
+        // it seems tree table does not appreciate much that...
+        if(node.getParent() != null)
+            getTreeState().expandNode(node);
     }
     
 
