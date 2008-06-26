@@ -36,7 +36,7 @@ class DataStoreNode extends CatalogNode {
                     FeatureTypeInfo.class));
         }
         if(!unconfiguredChildrenVisible) {      
-            childNodes.add(new UnconfiguredFeatureTypesNode(name, this));
+            childNodes.add(new UnconfiguredResourcesNode(name, this, DataStoreInfo.class));
         } else {
             childNodes.addAll(buildUnconfiguredChildren());
         }
@@ -54,7 +54,7 @@ class DataStoreNode extends CatalogNode {
             }
             SelectionState state = selectionState != SelectionState.PARTIAL ? selectionState : SelectionState.UNSELECTED;
             for (String typeName : typeNames) {
-                UnconfiguredFeatureTypeNode node = new UnconfiguredFeatureTypeNode(name, typeName, this);
+                UnconfiguredResourceNode node = new UnconfiguredResourceNode(name, typeName, this);
                 node.setSelectionState(state);
                 result.add(node);
             }
@@ -78,7 +78,7 @@ class DataStoreNode extends CatalogNode {
     public void setUnconfiguredChildrenVisible(boolean unconfiguredChildren) {
         this.unconfiguredChildrenVisible = unconfiguredChildren;
         if(childNodes != null) {
-            if(childNodes.get(childNodes.size() - 1) instanceof UnconfiguredFeatureTypesNode)
+            if(childNodes.get(childNodes.size() - 1) instanceof UnconfiguredResourcesNode)
                 childNodes.remove(childNodes.size() - 1);
             childNodes.addAll(buildUnconfiguredChildren());
             checkPartialSelection();

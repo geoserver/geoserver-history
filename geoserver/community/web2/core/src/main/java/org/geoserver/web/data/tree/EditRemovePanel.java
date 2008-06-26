@@ -48,7 +48,7 @@ public class EditRemovePanel extends Panel {
         ADD_REMOVE_STRATEGIES.put(DataStoreNode.class, new DataStoreAddRemoveStrategy());
         ADD_REMOVE_STRATEGIES.put(CoverageStoreNode.class, new CoverageStoreAddRemoveStrategy());
         ADD_REMOVE_STRATEGIES.put(ResourceNode.class, new ResourceAddRemoveStrategy());
-        ADD_REMOVE_STRATEGIES.put(UnconfiguredFeatureTypeNode.class,
+        ADD_REMOVE_STRATEGIES.put(UnconfiguredResourceNode.class,
                 new UnconfiguredFeatureTypeAddRemoveStrategy());
     }
 
@@ -224,12 +224,12 @@ public class EditRemovePanel extends Panel {
          * @param callingComponent
          * @param node
          *            shall be an instance of
-         *            {@link UnconfiguredFeatureTypeNode}
+         *            {@link UnconfiguredResourceNode}
          */
         public void edit(final Component callingComponent, final CatalogNode node) {
 
-            final UnconfiguredFeatureTypeNode unconfiguredFTypeNode = ((UnconfiguredFeatureTypeNode) node);
-            final String typeName = unconfiguredFTypeNode.getTypeName();
+            final UnconfiguredResourceNode unconfiguredFTypeNode = ((UnconfiguredResourceNode) node);
+            final String typeName = unconfiguredFTypeNode.getResourceName();
             final DataStoreInfo dataStore = unconfiguredFTypeNode.getModel();
 
             final Catalog catalog = node.getCatalog();
