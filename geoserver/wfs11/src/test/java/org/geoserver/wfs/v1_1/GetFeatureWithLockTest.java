@@ -16,7 +16,7 @@ public class GetFeatureWithLockTest extends WFSTestSupport {
                 + "	</wfs:GetFeatureWithLock>";
 
         Document dom = postAsDOM("wfs", xml);
-        //print( dom );
+        
         assertEquals( "wfs:FeatureCollection", dom.getDocumentElement().getNodeName() );
         assertNotNull( dom.getDocumentElement().getAttribute("lockId") );
     }

@@ -402,6 +402,16 @@ public class Dispatcher extends AbstractController {
                     setBaseUrl.invoke(requestBean, new String[] { RequestUtils.baseURL(req.httpRequest)});
                 }
 
+                //if the request object has a 'providedVersion' property set it 
+                // to the version of the service that was dispatched to the 
+                // request. Note this may not match the requested version 
+                Method setProvidedVersion = 
+                    OwsUtils.setter(requestBean.getClass(), "providedVersion", String.class);
+                if ( setProvidedVersion != null ) {
+                    String providedVersion = serviceDescriptor.getVersion().toString();
+                    setProvidedVersion.invoke(requestBean, new String[]{ providedVersion } );
+                }
+                
                 // another couple of thos of those lovley cite things, version+service has to specified for 
                 // non capabilities request, so if we dont have either thus far, check the request
                 // objects to try and find one

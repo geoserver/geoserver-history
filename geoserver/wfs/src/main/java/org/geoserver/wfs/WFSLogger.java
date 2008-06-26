@@ -23,7 +23,7 @@ public class WFSLogger implements MethodInterceptor {
         StringBuffer log = new StringBuffer();
         log.append("\n" + "Request: " + invocation.getMethod().getName());
 
-        if (invocation.getArguments().length > 0) {
+        if (invocation.getArguments() != null && invocation.getArguments().length > 0) {
             EObject requestBean = null;
 
             for (int i = 0; i < invocation.getArguments().length; i++) {

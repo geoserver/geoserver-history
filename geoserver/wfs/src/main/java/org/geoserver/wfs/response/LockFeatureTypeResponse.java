@@ -29,16 +29,14 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class LockFeatureTypeResponse extends Response {
+public class LockFeatureTypeResponse extends WFS10Response {
     WFS wfs;
     Data catalog;
-    WFSConfiguration configuration;
-
-    public LockFeatureTypeResponse(WFS wfs, Data catalog, WFSConfiguration configuration) {
+    
+    public LockFeatureTypeResponse(WFS wfs, Data catalog) {
         super(LockFeatureResponseType.class);
         this.wfs = wfs;
         this.catalog = catalog;
-        this.configuration = configuration;
     }
 
     public String getMimeType(Object value, Operation operation)
@@ -49,12 +47,6 @@ public class LockFeatureTypeResponse extends Response {
     public void write(Object value, OutputStream output, Operation operation)
         throws IOException, ServiceException {
         LockFeatureResponseType lockResponse = (LockFeatureResponseType) value;
-
-        if (new Version("1.1.0").equals(operation.getService().getVersion())) {
-            write1_1(lockResponse, output, operation);
-
-            return;
-        }
 
         String indent = wfs.isVerbose() ? "   " : "";
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output, wfs.getCharSet()));
@@ -118,30 +110,5 @@ public class LockFeatureTypeResponse extends Response {
 
         writer.write("</WFS_LockFeatureResponse>");
         writer.flush();
-    }
-
-    void write1_1(LockFeatureResponseType lockResponse, OutputStream output, Operation operation)
-        throws IOException {
-        Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setEncoding(wfs.getCharSet());
-        
-        LockFeatureType req = (LockFeatureType)operation.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
-        
-        encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-                ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
-
-        try {
-            encoder.encode(lockResponse, org.geoserver.wfs.xml.v1_1_0.WFS.LOCKFEATURERESPONSE,
-                output);
-        } catch (SAXException e) {
-            //SAXException does not sets initCause(). Instead, it holds its own "exception" field.
-            if(e.getException() != null && e.getCause() == null){
-                e.initCause(e.getException());
-            }
-            throw (IOException) new IOException().initCause(e);
-        }
-
-        output.flush();
     }
 }

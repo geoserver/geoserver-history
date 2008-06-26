@@ -134,6 +134,7 @@
         class="org.geoserver.wfsv.kvp.GetVersionedFeatureRequestReader">
     <constructor-arg ref="catalog"/>
     <constructor-arg ref="filterFactory"/>
+    <constructor-arg ref="wfsvService"/>
   </bean>
   
   <!-- 1.1 wfsv xml readers -->

@@ -7,10 +7,13 @@ package org.geoserver.wfs.kvp;
 import com.vividsolutions.jts.geom.Envelope;
 import net.opengis.wfs.QueryType;
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WebFeatureService;
 import org.geotools.feature.FeatureType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
+import org.geotools.util.Version;
 import org.geotools.xml.EMFUtils;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -40,11 +43,17 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
      * Factory used in filter parsing
      */
     FilterFactory filterFactory;
+    
+    /**
+     * web feature service
+     */
+    WebFeatureService wfs;
 
-    public GetFeatureKvpRequestReader(Class requestBean, Data catalog, FilterFactory filterFactory) {
+    public GetFeatureKvpRequestReader(Class requestBean, Data catalog, FilterFactory filterFactory,WebFeatureService wfs) {
         super(requestBean);
         this.catalog = catalog;
         this.filterFactory = filterFactory;
+        this.wfs = wfs;
     }
 
     /**
@@ -62,9 +71,32 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         //outputFormat
         if (!EMFUtils.isSet(eObject, "outputFormat")) {
             //set the default
-            String version = (String) EMFUtils.get(eObject, "version");
-
-            if ((version != null) && version.startsWith("1.0")) {
+            Version version = RequestUtils.version((String) EMFUtils.get(eObject, "version"));
+            
+            //match the version to the highest version provided by service
+            // that is less than or equal to the "specified" version
+            if ( version != null ) {
+                Version last = null;
+                for ( Iterator i = wfs.getVersions().iterator(); i.hasNext(); ) {
+                    Version v = (Version) i.next();
+                    if (version.compareTo( v ) < 0 ) {
+                        break;
+                    }
+                    last = v;
+                }
+                
+                if ( last == null ) {
+                    version = (Version) wfs.getVersions().get(0);
+                }
+                else {
+                    version = last;
+                }
+            }
+            else {
+                version = (Version) wfs.getVersions().get( wfs.getVersions().size() -1 );
+            }
+            
+            if ((version != null) && version.toString().startsWith("1.0")) {
                 EMFUtils.set(eObject, "outputFormat", "GML2");
             } else {
                 EMFUtils.set(eObject, "outputFormat", "text/xml; subtype=gml/3.1.1");

@@ -253,7 +253,7 @@ public class GetFeature {
                 int queryMaxFeatures = maxFeatures - count;
                 if(meta.getMaxFeatures() > 0 && meta.getMaxFeatures() < queryMaxFeatures)
                     queryMaxFeatures = meta.getMaxFeatures();
-                org.geotools.data.Query gtQuery = toDataQuery(query, queryMaxFeatures, source, request.getVersion());
+                org.geotools.data.Query gtQuery = toDataQuery(query, queryMaxFeatures, source, request.getProvidedVersion());
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
                 FeatureCollection features = getFeatures(request, source, gtQuery);
@@ -295,7 +295,8 @@ public class GetFeature {
             lockRequest.setExpiry(withLockRequest.getExpiry());
             lockRequest.setHandle(withLockRequest.getHandle());
             lockRequest.setLockAction(AllSomeType.ALL_LITERAL);
-
+            lockRequest.setProvidedVersion(withLockRequest.getProvidedVersion());
+            
             for (int i = 0; i < request.getQuery().size(); i++) {
                 QueryType query = (QueryType) request.getQuery().get(i);
 

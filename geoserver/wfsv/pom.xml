@@ -18,7 +18,7 @@
   <dependencies>
     <dependency>
       <groupId>org.geoserver</groupId>
-      <artifactId>wfs</artifactId>
+      <artifactId>wfs11</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

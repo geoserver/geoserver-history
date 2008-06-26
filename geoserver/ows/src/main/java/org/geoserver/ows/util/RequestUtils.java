@@ -9,6 +9,8 @@ import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geotools.util.Version;
+
 
 /**
  * Utility class performing operations related to http requests.
@@ -83,5 +85,43 @@ public class RequestUtils {
 //            throw new RuntimeException(
 //                    "Invalid Proxy Base URL property is set in your GeoServer installation.", urise);
 //        }
+    }
+    
+    /**
+     * Determines if the specified string is a valid "major,minor,patch"
+     * version number. 
+     */
+    public static boolean isValidVersionNumber(String v) {
+        return v.matches("[0-99]\\.[0-99]\\.[0-99]");
+    }
+    
+    
+    /**
+     * Parses the specified string as a "major.minor.patch" version number.
+     * <p>
+     * This method will append 0 for minor and patch parts of the version number
+     * in the event they are not specified. ie: 1.0 -> 1.0.0 and 1 -> 1.0.0
+     * </p>
+     * <p>
+     * In the event of a null or empty string this method returns null.
+     * </p>
+     * @param v The version number string. 
+     */
+    public static Version version( String v ) {
+        if (v == null || "".equals( v ) ) {
+            return null;
+        }
+        
+        if (!isValidVersionNumber(v)) {
+            String[] parts = v.split("\\.");
+            switch( parts.length ) {
+                case 1: v = parts[0] + ".0.0"; break;
+                case 2: v = parts[0] + "." + parts[1] + ".0"; break;
+                default:
+                    throw new IllegalArgumentException( "Invalid version number: " + v + "");
+            }
+        }
+        
+        return new Version( v );
     }
 }

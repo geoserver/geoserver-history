@@ -53,30 +53,4 @@ public class GMLOutputFormatTest extends WFSTestSupport {
 //        assertNotNull( getFirstElementByTagName(dom, "gml:outerBoundaryIs"));
 //        assertNull( getFirstElementByTagName(dom, "gml:exterior")); 
     }
-    
-    public void testGML3() throws Exception {
-        Document dom = getAsDOM( "wfs?request=getfeature&version=1.0.0&outputFormat=gml3&typename=" + 
-            MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
-        assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );
-        assertNull( getFirstElementByTagName(dom, "gml:outerBoundaryIs"));
-        assertNotNull( getFirstElementByTagName(dom, "gml:exterior")); 
-        
-        dom = getAsDOM( "wfs?request=getfeature&version=1.1.0&outputFormat=gml3&typename=" + 
-                MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
-        assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );
-        assertNull( getFirstElementByTagName(dom, "gml:outerBoundaryIs"));
-        assertNotNull( getFirstElementByTagName(dom, "gml:exterior")); 
-        
-        dom = getAsDOM( "wfs?request=getfeature&version=1.0.0&outputFormat=text/xml; subtype%3Dgml/3.1.1&typename=" + 
-                MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
-        assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );
-        assertNull( getFirstElementByTagName(dom, "gml:outerBoundaryIs"));
-        assertNotNull( getFirstElementByTagName(dom, "gml:exterior")); 
-        
-        dom = getAsDOM( "wfs?request=getfeature&version=1.1.0&outputFormat=text/xml; subtype%3Dgml/3.1.1&typename=" + 
-                MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
-        assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );
-        assertNull( getFirstElementByTagName(dom, "gml:outerBoundaryIs"));
-        assertNotNull( getFirstElementByTagName(dom, "gml:exterior")); 
-    }
 }

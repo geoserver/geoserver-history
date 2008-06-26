@@ -33,19 +33,17 @@ import java.io.Writer;
 import java.util.Iterator;
 
 
-public class TransactionResponse extends Response {
+public class TransactionResponse extends WFS10Response {
     private boolean verbose = false;
     private String indent = " ";
     private String offset = "";
     WFS wfs;
     Data catalog;
-    WFSConfiguration configuration;
-
-    public TransactionResponse(WFS wfs, Data catalog, WFSConfiguration configuration) {
+    
+    public TransactionResponse(WFS wfs, Data catalog) {
         super(TransactionResponseType.class);
         this.wfs = wfs;
         this.catalog = catalog;
-        this.configuration = configuration;
     }
 
     public String getMimeType(Object value, Operation operation)
@@ -57,11 +55,7 @@ public class TransactionResponse extends Response {
         throws IOException, ServiceException {
         TransactionResponseType response = (TransactionResponseType) value;
 
-        if (new Version("1.0.0").equals(operation.getService().getVersion())) {
-            v_1_0(response, output, operation);
-        } else {
-            v_1_1(response, output, operation);
-        }
+        v_1_0(response, output, operation);
     }
 
     public void v_1_0(TransactionResponseType response, OutputStream output, Operation operation)
@@ -183,35 +177,5 @@ public class TransactionResponse extends Response {
 
         writer.write("</wfs:WFS_TransactionResponse>");
         writer.flush();
-    }
-
-    public void v_1_1(TransactionResponseType response, OutputStream output, Operation operation)
-        throws IOException, ServiceException {
-        if (!response.getTransactionResults().getAction().isEmpty()) {
-            //since we do atomic transactions, an action failure means all we rolled back
-            // spec says to throw exception
-            ActionType action = (ActionType) response.getTransactionResults().getAction().iterator()
-                                                     .next();
-            throw new WFSException(action.getMessage(), action.getCode(), action.getLocator());
-        }
-
-        Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setEncoding(wfs.getCharSet());
-
-        TransactionType req = (TransactionType)operation.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
-        
-        encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-            ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
-
-        try {
-            encoder.encode(response, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTIONRESPONSE, output);
-        } catch (SAXException e) {
-            //SAXException does not sets initCause(). Instead, it holds its own "exception" field.
-            if(e.getException() != null && e.getCause() == null){
-                e.initCause(e.getException());
-            }
-            throw (IOException) new IOException().initCause(e);
-        }
     }
 }

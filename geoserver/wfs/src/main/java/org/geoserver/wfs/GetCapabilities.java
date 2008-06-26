@@ -8,6 +8,7 @@ import net.opengis.wfs.GetCapabilitiesType;
 import org.geotools.util.Version;
 import org.vfny.geoserver.global.Data;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
 
@@ -34,14 +35,20 @@ public class GetCapabilities {
     Data catalog;
 
     /**
+     * wfs versions
+     */
+    List versions;
+    
+    /**
      * Creates a new wfs GetCapabilitis operation.
      *
      * @param wfs The wfs configuration
      * @param catalog The geoserver catalog.
      */
-    public GetCapabilities(WFS wfs, Data catalog) {
+    public GetCapabilities(WFS wfs, Data catalog, List versions) {
         this.wfs = wfs;
         this.catalog = catalog;
+        this.versions = versions;
     }
 
     public CapabilitiesTransformer run(GetCapabilitiesType request)
@@ -69,12 +76,18 @@ public class GetCapabilities {
         }
 
         //do the version negotiation dance
-
         //any accepted versions
         if ((request.getAcceptVersions() == null)
                 || request.getAcceptVersions().getVersion().isEmpty()) {
             //no, respond with highest
-            return new CapabilitiesTransformer.WFS1_1(wfs, catalog);
+            Version highest = (Version) versions.get(versions.size()-1);
+            if ( "1.0.0".equals( highest.toString() ) ) {
+                return new CapabilitiesTransformer.WFS1_0(wfs, catalog);
+            }
+            else {
+                return new CapabilitiesTransformer.WFS1_1(wfs, catalog);    
+            }
+            
         }
 
         //first check the format of each of the version numbers
@@ -88,10 +101,10 @@ public class GetCapabilities {
         }
 
         //first figure out which versions are provided
-        //TODO: use an extension point?
         TreeSet provided = new TreeSet();
-        provided.add(new Version("1.0.0"));
-        provided.add(new Version("1.1.0"));
+        for ( Iterator v = versions.iterator(); v.hasNext(); ) {
+            provided.add( v.next() );
+        }
 
         //next figure out what the client accepts
         TreeSet accepted = new TreeSet();

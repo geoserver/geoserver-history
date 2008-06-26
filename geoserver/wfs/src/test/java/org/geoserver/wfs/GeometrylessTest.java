@@ -20,6 +20,7 @@ public class GeometrylessTest extends WFSTestSupport {
     
     public void testGetFeature10() throws Exception {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.0.0&service=wfs");
+        print(doc);
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());
 //        print(doc);
@@ -41,30 +42,6 @@ public class GeometrylessTest extends WFSTestSupport {
         assertFalse(featureMembers.getLength() == 0);
         NodeList features = doc.getElementsByTagName("cite:Geometryless");
         assertEquals(3, featureMembers.getLength());
-    }
-    
-    public void testGetFeature11() throws Exception {
-        Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.1.0&service=wfs");
-        assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
-                .getNodeName());
-//        print(doc);
-
-        NodeList featureMembers = doc.getElementsByTagName("gml:featureMembers");
-        assertFalse(featureMembers.getLength() == 0);
-        NodeList features = doc.getElementsByTagName("cite:Geometryless");
-        assertEquals(3, features.getLength());
-    }
-    
-    public void testGetFeatureReproject11() throws Exception {
-        getWFS().setFeatureBounding(true);
-        Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.1.0&service=wfs&srsName=EPSG:900913");
-        assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
-                .getNodeName());
-
-        NodeList featureMembers = doc.getElementsByTagName("gml:featureMembers");
-        assertFalse(featureMembers.getLength() == 0);
-        NodeList features = doc.getElementsByTagName("cite:Geometryless");
-        assertEquals(3, features.getLength());
     }
     
     public void testGetFeatureReprojectPost() throws Exception {

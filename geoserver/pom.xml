@@ -992,6 +992,7 @@
   <module>main</module>
   <module>wcs</module>
   <module>wfs</module>
+  <module>wfs11</module>
   <module>wfsv</module>
   <module>wms</module>
   <module>validation</module>

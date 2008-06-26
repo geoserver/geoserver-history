@@ -139,7 +139,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
             // make sure all geometric elements in the filter have a crs, and that the filter
             // is reprojected to store's native crs as well
             CoordinateReferenceSystem declaredCRS = WFSReprojectionUtil.getDeclaredCrs(
-                    store.getSchema(), request.getVersion());
+                    store.getSchema(), request.getProvidedVersion());
             filter = WFSReprojectionUtil.normalizeFilterCRS(filter, store.getSchema(), declaredCRS);
 
 

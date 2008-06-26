@@ -39,10 +39,6 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="AllSomeType">
-    <eLiterals name="ALL"/>
-    <eLiterals name="SOME" value="1"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BaseRequestType" abstract="true">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="BaseRequestType"/>
@@ -82,7 +78,8 @@
         <details key="documentation" value="&#xA;               The version attribute is used to indicate the version of the&#xA;               WFS specification that a request conforms to.  All requests in&#xA;               this schema conform to V1.1 of the WFS specification.&#xA;               For WFS implementations that support more than one version of&#xA;               a WFS sepcification ... if the version attribute is not&#xA;               specified then the service should assume that the request&#xA;               conforms to greatest available specification version."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="baseUrl" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="baseUrl" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/XMLType.ecore#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="providedVersion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DeleteElementType">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -828,23 +825,6 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="IdentifierGenerationOptionType">
-    <eLiterals name="UseExisting">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="&#xA;                  The UseExsiting value indicates that WFS should not&#xA;                  generate a new feature identifier for the feature&#xA;                  being inserted into the repositry.  Instead, the WFS&#xA;                  should use the identifier encoded if the feature.&#xA;                  If a duplicate exists then the WFS should raise an&#xA;                  exception."/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="ReplaceDuplicate" value="1">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="&#xA;                  The ReplaceDuplicate value indicates that WFS should&#xA;                  not generate a new feature identifier for the feature&#xA;                  being inserted into the repositry.  Instead, the WFS&#xA;                  should use the identifier encoded if the feature.&#xA;                  If a duplicate exists then the WFS should replace the&#xA;                  existing feature instance with the one encoded in the&#xA;                  Insert action."/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="GenerateNew" value="2">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="&#xA;                  The GenerateNew value indicates that WFS should&#xA;                  generate a new unique feature identifier for the&#xA;                  feature being inserted into the repositry."/>
-      </eAnnotations>
-    </eLiterals>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InsertElementType">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="InsertElementType"/>
@@ -1101,21 +1081,13 @@
       <details key="kind" value="empty"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="OperationType">
-    <eLiterals name="Insert"/>
-    <eLiterals name="Update" value="1"/>
-    <eLiterals name="Delete" value="2"/>
-    <eLiterals name="Query" value="3"/>
-    <eLiterals name="Lock" value="4"/>
-    <eLiterals name="GetGmlObject" value="5"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OperationsType">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="OperationsType"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operation" unique="false"
-        lowerBound="1" upperBound="-1" eType="#//OperationType" defaultValueLiteral="Insert">
+        lowerBound="1" eType="#//OperationType" defaultValueLiteral="Insert">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
         <details key="name" value="Operation"/>
@@ -1245,18 +1217,6 @@
         <details key="documentation" value="&#xA;              The typeName attribute is a list of one or more&#xA;              feature type names that indicate which types&#xA;              of feature instances should be included in the&#xA;              reponse set.  Specifying more than one typename&#xA;              indicates that a join operation is being performed.&#xA;              All the names in the typeName list must be valid&#xA;              types that belong to this query's feature content&#xA;              as defined by the GML Application Schema."/>
       </eAnnotations>
     </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="ResultTypeType">
-    <eLiterals name="results">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="&#xA;                  Indicates that a complete response should be generated&#xA;                  by the WFS.  That is, all response feature instances&#xA;                  should be returned to the client."/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="hits" value="1">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="&#xA;                  Indicates that an empty response should be generated with&#xA;                  the &quot;numberOfFeatures&quot; attribute set (i.e. no feature&#xA;                  instances should be returned).  In this manner a client may&#xA;                  determine the number of feature instances that a GetFeature&#xA;                  request will return without having to actually get the&#xA;                  entire result set back."/>
-      </eAnnotations>
-    </eLiterals>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TransactionResponseType">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -1567,6 +1527,47 @@
         <details key="documentation" value="&#xA;                  The traverseXlinkExpiry attribute value is specified in&#xA;                  minutes It indicates how long a Web Feature Service should&#xA;                  wait to receive a response to a nested GetGmlObject request."/>
       </eAnnotations>
     </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AllSomeType">
+    <eLiterals name="ALL"/>
+    <eLiterals name="SOME" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="IdentifierGenerationOptionType">
+    <eLiterals name="UseExisting">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xA;                  The UseExsiting value indicates that WFS should not&#xA;                  generate a new feature identifier for the feature&#xA;                  being inserted into the repositry.  Instead, the WFS&#xA;                  should use the identifier encoded if the feature.&#xA;                  If a duplicate exists then the WFS should raise an&#xA;                  exception."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ReplaceDuplicate" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xA;                  The ReplaceDuplicate value indicates that WFS should&#xA;                  not generate a new feature identifier for the feature&#xA;                  being inserted into the repositry.  Instead, the WFS&#xA;                  should use the identifier encoded if the feature.&#xA;                  If a duplicate exists then the WFS should replace the&#xA;                  existing feature instance with the one encoded in the&#xA;                  Insert action."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="GenerateNew" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xA;                  The GenerateNew value indicates that WFS should&#xA;                  generate a new unique feature identifier for the&#xA;                  feature being inserted into the repositry."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="OperationType">
+    <eLiterals name="Insert"/>
+    <eLiterals name="Update" value="1"/>
+    <eLiterals name="Delete" value="2"/>
+    <eLiterals name="Query" value="3"/>
+    <eLiterals name="Lock" value="4"/>
+    <eLiterals name="GetGmlObject" value="5"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ResultTypeType">
+    <eLiterals name="results">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xA;                  Indicates that a complete response should be generated&#xA;                  by the WFS.  That is, all response feature instances&#xA;                  should be returned to the client."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="hits" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xA;                  Indicates that an empty response should be generated with&#xA;                  the &quot;numberOfFeatures&quot; attribute set (i.e. no feature&#xA;                  instances should be returned).  In this manner a client may&#xA;                  determine the number of feature instances that a GetFeature&#xA;                  request will return without having to actually get the&#xA;                  entire result set back."/>
+      </eAnnotations>
+    </eLiterals>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="ServiceType" instanceClassName="java.lang.String"/>
   <eClassifiers xsi:type="ecore:EDataType" name="Filter" instanceClassName="org.opengis.filter.Filter"/>

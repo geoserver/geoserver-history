@@ -21,7 +21,7 @@ public class GetCapabilitiesTest extends WFSTestSupport {
 
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities");
-        assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement()
+        assertEquals("WFS_Capabilities", doc.getDocumentElement()
                 .getNodeName());
     }
 
@@ -32,7 +32,7 @@ public class GetCapabilitiesTest extends WFSTestSupport {
                 + " xsi:schemaLocation=\"http://www.opengis.net/wfs "
                 + " http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd\"/>";
         Document doc = postAsDOM("wfs", xml);
-
+        
         assertEquals("WFS_Capabilities", doc.getDocumentElement().getNodeName());
 
     }
