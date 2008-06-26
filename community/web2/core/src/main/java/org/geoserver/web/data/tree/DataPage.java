@@ -330,7 +330,7 @@ public class DataPage extends GeoServerBasePage {
             ((StoreNode) node.getParent()).setUnconfiguredChildrenVisible(true);
             tree.refresh(node.getParent());
             tree.refresh((node.getParent().checkPartialSelection()));
-            target.addComponent(tree.getParent());
+            tree.updateTree(target);
         }
 
         @Override
