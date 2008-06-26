@@ -4,11 +4,13 @@
  */
 package org.geoserver.wms.web;
 
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.geoserver.web.services.BaseServiceAdminPage;
+import org.geoserver.wms.web.data.StylesPage;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WatermarkInfo;
 
@@ -22,6 +24,7 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     }
     
     protected void build(WMSInfo info, Form form) {
+        form.add(new BookmarkablePageLink("styles", StylesPage.class));
         
     	form.add( new TextField("interpolation"));
     	form.add( new CheckBox("watermark.enabled"));
@@ -29,8 +32,6 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     	form.add( new TextField("watermark.transparency"));
 
     	form.add(new DropDownChoice("watermark.position", Arrays.asList(WatermarkInfo.Position.values())));
-        
-
     }
     
 }

@@ -1,0 +1,21 @@
+<html>
+   <head><title>Styles Editor</title></head>
+   <body>
+   <wicket:extend>
+   <h2> <wicket:message key="wms.data.styles.title"> Style Manager </wicket:message> </h2>
+   <table>
+   <th> <td> Style </td> <td> Actions </td> </th>
+   <tr wicket:id="styles">
+     <td> <span wicket:id="name"/> </td> 
+     <td> <a href="#" wicket:id="edit"><wicket:message key="wms.data.styles.edit">Edit</wicket:message></a> 
+          <a href="#" wicket:id="delete"><wicket:message key="wms.data.styles.delete">Delete</wicket:message></a>
+     </td>
+   </tr>
+   <tr>
+     <td> <span wicket:id="name"/> <!-- input type="file" wicket:id="theFile"/ --> </td>
+     <td> <a href="#" wicket:id="add"><wicket:message key="wms.data.styles.add">Add Style</wicket:message></a> </td>
+   </tr>
+   </table>
+   </wicket:extend>
+   </body>
+</html>
