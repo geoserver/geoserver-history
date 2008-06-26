@@ -31,8 +31,8 @@ import org.geoserver.web.data.datastore.DataStoreConfiguration;
 /**
  * A simple component that can be used to edit/remove items from the tree
  * 
- * @author aaime
- * 
+ * @author Andrea Aime
+ * @author Gabriel Roldan
  */
 public class EditRemovePanel extends Panel {
 
@@ -42,14 +42,14 @@ public class EditRemovePanel extends Panel {
      * 
      * @see #getAddRemoveStrategy(CatalogNode)
      */
-    private static final Map<Class, AddRemoveStrategy> ADD_REMOVE_STRATEGIES = new HashMap<Class, AddRemoveStrategy>();
+    private static final Map<Class, EditRemoveStrategy> EDIT_REMOVE_STRATEGIES = new HashMap<Class, EditRemoveStrategy>();
     static {
-        ADD_REMOVE_STRATEGIES.put(WorkspaceNode.class, new WorkspaceAddRemoveStrategy());
-        ADD_REMOVE_STRATEGIES.put(DataStoreNode.class, new DataStoreAddRemoveStrategy());
-        ADD_REMOVE_STRATEGIES.put(CoverageStoreNode.class, new CoverageStoreAddRemoveStrategy());
-        ADD_REMOVE_STRATEGIES.put(ResourceNode.class, new ResourceAddRemoveStrategy());
-        ADD_REMOVE_STRATEGIES.put(UnconfiguredResourceNode.class,
-                new UnconfiguredFeatureTypeAddRemoveStrategy());
+        EDIT_REMOVE_STRATEGIES.put(WorkspaceNode.class, new WorkspaceEditRemoveStrategy());
+        EDIT_REMOVE_STRATEGIES.put(DataStoreNode.class, new DataStoreEditRemoveStrategy());
+        EDIT_REMOVE_STRATEGIES.put(CoverageStoreNode.class, new CoverageStoreEditRemoveStrategy());
+        EDIT_REMOVE_STRATEGIES.put(ResourceNode.class, new ResourceEditRemoveStrategy());
+        EDIT_REMOVE_STRATEGIES.put(UnconfiguredResourceNode.class,
+                new UnconfiguredFeatureTypeEditRemoveStrategy());
     }
 
     private final CatalogNode node;
@@ -86,22 +86,18 @@ public class EditRemovePanel extends Panel {
     }
 
     protected void onRemoveClick(AjaxRequestTarget target) {
-        final AddRemoveStrategy strategy = getAddRemoveStrategy(node);
+        final EditRemoveStrategy strategy = getEditRemoveStrategy(node);
 
         strategy.remove(this, node);
     }
 
     protected void onEditClick(AjaxRequestTarget target) {
-        edit(this, node);
-    }
-
-    public static void edit(final Component callingComponent, final CatalogNode node) {
-        final AddRemoveStrategy strategy = getAddRemoveStrategy(node);
-        strategy.edit(callingComponent, node);
+        final EditRemoveStrategy strategy = getEditRemoveStrategy(node);
+        strategy.edit(this, node);
     }
 
     public static void remove(final Component callingComponent, final CatalogNode node) {
-        final AddRemoveStrategy strategy = getAddRemoveStrategy(node);
+        final EditRemoveStrategy strategy = getEditRemoveStrategy(node);
         strategy.remove(callingComponent, node);
     }
 
@@ -112,9 +108,9 @@ public class EditRemovePanel extends Panel {
      * @return the strategy to handle edit and remove operations over the given
      *         node class type
      */
-    private static AddRemoveStrategy getAddRemoveStrategy(final CatalogNode node) {
+    private static EditRemoveStrategy getEditRemoveStrategy(final CatalogNode node) {
         final Class<? extends CatalogNode> nodeClass = node.getClass();
-        final AddRemoveStrategy strategy = ADD_REMOVE_STRATEGIES.get(nodeClass);
+        final EditRemoveStrategy strategy = EDIT_REMOVE_STRATEGIES.get(nodeClass);
         if (strategy == null) {
             throw new IllegalArgumentException("Unknown node type, don't know how to handle it: "
                     + nodeClass.getName());
@@ -133,18 +129,20 @@ public class EditRemovePanel extends Panel {
      * 
      * @author Gabriel Roldan
      */
-    private static interface AddRemoveStrategy {
+    private static interface EditRemoveStrategy {
 
         public void edit(Component callingComponent, CatalogNode node);
 
         public void remove(Component callingComponent, CatalogNode node);
     }
+    
+    
 
     /**
      * 
      * @author Gabriel Roldan
      */
-    private static class WorkspaceAddRemoveStrategy implements AddRemoveStrategy {
+    private static class WorkspaceEditRemoveStrategy implements EditRemoveStrategy {
 
         public void edit(final Component callingComponent, final CatalogNode node) {
             final WorkspaceNode wsNode = (WorkspaceNode) node;
@@ -166,7 +164,7 @@ public class EditRemovePanel extends Panel {
      * 
      * @author Gabriel Roldan
      */
-    private static class DataStoreAddRemoveStrategy implements AddRemoveStrategy {
+    private static class DataStoreEditRemoveStrategy implements EditRemoveStrategy {
 
         public void edit(final Component callingComponent, final CatalogNode node) {
             final String datastoreUniqueName = node.getNodeLabel();
@@ -187,7 +185,7 @@ public class EditRemovePanel extends Panel {
      * 
      * @author Gabriel Roldan
      */
-    private static class CoverageStoreAddRemoveStrategy implements AddRemoveStrategy {
+    private static class CoverageStoreEditRemoveStrategy implements EditRemoveStrategy {
 
         public void edit(final Component callingComponent, final CatalogNode node) {
             System.out.println("edit " + node.getClass());
@@ -202,7 +200,7 @@ public class EditRemovePanel extends Panel {
      * 
      * @author Gabriel Roldan
      */
-    private static class ResourceAddRemoveStrategy implements AddRemoveStrategy {
+    private static class ResourceEditRemoveStrategy implements EditRemoveStrategy {
 
         public void edit(final Component callingComponent, final CatalogNode node) {
             ResourceInfo resourceInfo = (ResourceInfo) node.getModel();
@@ -218,7 +216,7 @@ public class EditRemovePanel extends Panel {
      * 
      * @author Gabriel Roldan
      */
-    private static class UnconfiguredFeatureTypeAddRemoveStrategy implements AddRemoveStrategy {
+    private static class UnconfiguredFeatureTypeEditRemoveStrategy implements EditRemoveStrategy {
 
         /**
          * @param callingComponent
