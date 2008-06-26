@@ -347,7 +347,7 @@ public class DataPage extends GeoServerBasePage {
      * @TODO change this back to a {@link LabelPanel}, we have the buttons to
      *       handle this
      */
-    class UnconfiguredResourcePanel extends LinkPanel {
+    class UnconfiguredResourcePanel extends LabelPanel {
 
         public UnconfiguredResourcePanel(String id, DataTreeTable tree, MarkupContainer parent,
                 CatalogNode node, int level) {
@@ -355,15 +355,6 @@ public class DataPage extends GeoServerBasePage {
             label.add(new AttributeModifier("class", true, new Model("unconfiguredLayer")));
         }
 
-        /**
-         * Creates a new, detached from the catalog, {@link FeatureTypeInfo} and
-         * pass it through to {@link ResourceConfigurationPage}
-         */
-        @Override
-        protected void onClick(AjaxRequestTarget target) {
-            EditRemovePanel.edit(this, (CatalogNode) node);
-        }
-        
         @Override
         protected ResourceReference getNodeIcon(DataTreeTable tree, TreeNode node) {
             return null;
