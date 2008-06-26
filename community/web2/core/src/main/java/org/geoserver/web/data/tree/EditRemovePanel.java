@@ -48,8 +48,6 @@ public class EditRemovePanel extends Panel {
         EDIT_REMOVE_STRATEGIES.put(DataStoreNode.class, new DataStoreEditRemoveStrategy());
         EDIT_REMOVE_STRATEGIES.put(CoverageStoreNode.class, new CoverageStoreEditRemoveStrategy());
         EDIT_REMOVE_STRATEGIES.put(ResourceNode.class, new ResourceEditRemoveStrategy());
-        EDIT_REMOVE_STRATEGIES.put(UnconfiguredResourceNode.class,
-                new UnconfiguredFeatureTypeEditRemoveStrategy());
     }
 
     private final CatalogNode node;
@@ -211,38 +209,5 @@ public class EditRemovePanel extends Panel {
             System.out.println("remove " + node.getClass());
         }
     }
-
-    /**
-     * 
-     * @author Gabriel Roldan
-     */
-    private static class UnconfiguredFeatureTypeEditRemoveStrategy implements EditRemoveStrategy {
-
-        /**
-         * @param callingComponent
-         * @param node
-         *            shall be an instance of
-         *            {@link UnconfiguredResourceNode}
-         */
-        public void edit(final Component callingComponent, final CatalogNode node) {
-
-            final UnconfiguredResourceNode unconfiguredFTypeNode = ((UnconfiguredResourceNode) node);
-            final String typeName = unconfiguredFTypeNode.getResourceName();
-            final DataStoreInfo dataStore = (DataStoreInfo) unconfiguredFTypeNode.getModel();
-
-            final Catalog catalog = node.getCatalog();
-            CatalogFactory factory = catalog.getFactory();
-
-            FeatureTypeInfo featureTypeInfo = factory.createFeatureType();
-            featureTypeInfo.setName(typeName);
-            featureTypeInfo.setStore(dataStore);
-
-            Page responsePage = new ResourceConfigurationPage(featureTypeInfo, true);
-            callingComponent.setResponsePage(responsePage);
-        }
-
-        public void remove(final Component callingComponent, final CatalogNode node) {
-            System.out.println("remove " + node.getClass());
-        }
-    }
+    
 }
