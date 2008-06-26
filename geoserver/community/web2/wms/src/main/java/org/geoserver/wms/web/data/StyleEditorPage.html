@@ -1,0 +1,20 @@
+<html>
+<head>
+</head>
+<body>
+<wicket:extend>
+    <h2> <wicket:message key="wms.data.style.editorTitle">Style Editor</wicket:message> </h2>
+    <form wicket:id="theForm">
+    <li>
+        <label for="name"><wicket:message key="wms.data.style.name">Name</wicket:message></label>
+        <input wicket:id="name" type="text" />
+    </li>
+    <li>
+        <label for="sld"><wicket:message key="wms.data.style.raw">SLD Text</wicket:message></label>
+        <textarea wicket:id="sld"> </textarea>
+    </li>
+    <button type="submit"><wicket:message key="wms.data.style.editorSubmit">Save Changes</wicket:message></button>
+    </form>
+</wicket:extend>
+</body>
+</html>
