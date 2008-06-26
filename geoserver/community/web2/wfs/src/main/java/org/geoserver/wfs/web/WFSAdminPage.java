@@ -13,10 +13,12 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.web.services.BaseServiceAdminPage;
+import org.geoserver.wfs.web.publish.NamespaceManagerPage;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.GMLInfo.SrsNameStyle;
@@ -28,6 +30,7 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
     }
     
     protected void build(WFSInfo info, Form form) {
+        form.add(new BookmarkablePageLink("namespaces", NamespaceManagerPage.class));
         //max features
         form.add( new TextField( "maxFeatures" ) );
         
