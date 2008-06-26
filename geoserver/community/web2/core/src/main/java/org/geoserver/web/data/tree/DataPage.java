@@ -134,6 +134,11 @@ public class DataPage extends GeoServerBasePage {
         target.addComponent(tree.getParent());
     }
 
+    /**
+     * Returns the proper icon for the specified store
+     * @param info
+     * @return
+     */
     protected ResourceReference getStoreIcon(StoreInfo info) {
         if (info instanceof DataStoreInfo) {
             DataStoreInfo ds = (DataStoreInfo) info;
@@ -161,7 +166,8 @@ public class DataPage extends GeoServerBasePage {
             return new ResourceReference(GeoServerApplication.class, "img/icons/geosilk/vector.png");
 
         } else {
-            return null;
+            // use a generic raster icon for the moment
+            return new ResourceReference(GeoServerApplication.class, "img/icons/geosilk/raster.png");
         }
     }
 
@@ -470,11 +476,7 @@ public class DataPage extends GeoServerBasePage {
                 // store then yes,
                 // we need to get the proper icon
                 ResourceNode rn = (ResourceNode) node;
-                if (rn.getResourceType() == FeatureTypeInfo.class) {
-                    return getStoreIcon(getCatalog().getDataStoreByName(rn.getStoreName()));
-                } else {
-                    return null;
-                }
+                return getStoreIcon(getCatalog().getDataStoreByName(rn.getStoreName()));
             }
         }
     }
