@@ -1,0 +1,21 @@
+<html>
+<head>
+</head>
+<wicket:extend>
+    <h2> <wicket:message key="wfs.publish.namespace.title">Namespace Manager</wicket:message> </h2>
+    <wicket:message key="wfs.publish.namespace.instruction">Click on a prefix or URI to edit, press Enter to save when you're done.</wicket:message>
+    <table>
+    <th> <td> <wicket:message key="wfs.publish.namespace.prefix"> Prefix </wicket:message> </td> <td> <wicket:message key="wfs.publish.namespace.uri"> URI </wicket:message> </td> <td></td> </th>
+    <tr wicket:id="namespaces">
+        <td wicket:id="prefix"/>
+        <td wicket:id="URI"/>
+        <td><a href="#" wicket:id="delete"><wicket:message key="wfs.publish.namespace.delete">Delete</wicket:message></a></td>
+    </tr>
+    <tr>
+        <td wicket:id="newPrefix"/>
+        <td wicket:id="newURI"/>
+        <td><a href="#" wicket:id="add"><wicket:message key="wfs.publish.namespace.add">Add Namespace</wicket:message></a></td>
+    </tr>
+    </table>
+</wicket:extend>
+</html>

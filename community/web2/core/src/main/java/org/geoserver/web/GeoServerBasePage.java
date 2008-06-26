@@ -43,6 +43,7 @@ import org.geoserver.web.services.ServicePageInfo;
  */
 public class GeoServerBasePage extends WebPage {
 
+	@SuppressWarnings("serial")
     public GeoServerBasePage() {
 
         // welcome page link
