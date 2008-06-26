@@ -195,7 +195,7 @@ public class DataPage extends GeoServerBasePage {
         boolean configured = false;
         boolean unconfigured = false;
         for (CatalogNode node : selection) {
-            if (node instanceof UnconfiguredFeatureTypeNode) {
+            if (node instanceof UnconfiguredResourceNode) {
                 unconfigured = true;
             } else {
                 configured = true;
@@ -227,17 +227,17 @@ public class DataPage extends GeoServerBasePage {
 
         @Override
         public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
-            if (node instanceof UnconfiguredFeatureTypesNode) 
+            if (node instanceof UnconfiguredResourcesNode) 
                 return new UnconfiguredFeatureTypesPanel(id, tree, parent,
-                        (UnconfiguredFeatureTypesNode) node, level);
-            if (node instanceof UnconfiguredFeatureTypeNode)
+                        (UnconfiguredResourcesNode) node, level);
+            if (node instanceof UnconfiguredResourceNode)
                 return new UnconfiguredFeatureTypePanel(id, tree, parent, (CatalogNode) node, level);
             if (node instanceof ResourceNode)
                 return new ResourcePanel(id, tree, parent, (CatalogNode) node, level);
             if (node instanceof NewDatastoreNode)
                 return new NewDataStorePanel(id, tree, parent, (CatalogNode) node, level);
-            if (node instanceof DataStoreNode) 
-                return new DataStorePanel(id, tree, parent, (CatalogNode) node, level);
+            if (node instanceof DataStoreNode || node instanceof CoverageStoreNode) 
+                return new StorePanel(id, tree, parent, (CatalogNode) node, level);
             // else
             return super.newCell(parent, id, node, level);
         }
@@ -283,7 +283,7 @@ public class DataPage extends GeoServerBasePage {
         }
 
         public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
-            if (node instanceof UnconfiguredFeatureTypeNode)
+            if (node instanceof UnconfiguredResourceNode)
                 return new AddConfigPanel(id, (CatalogNode) node);
             else if (node instanceof PlaceholderNode)
                 return new EmptyPanel(id);
@@ -316,7 +316,7 @@ public class DataPage extends GeoServerBasePage {
     class UnconfiguredFeatureTypesPanel extends LinkPanel {
 
         public UnconfiguredFeatureTypesPanel(String id, DataTreeTable tree, MarkupContainer parent,
-                UnconfiguredFeatureTypesNode node, int level) {
+                UnconfiguredResourcesNode node, int level) {
             super(id, tree, parent, node, level);
             label.add(new AttributeModifier("class", true, new Model("command")));
         }
@@ -368,16 +368,17 @@ public class DataPage extends GeoServerBasePage {
      * @TODO change this back to a {@link LabelPanel}, we have the buttons to
      *       handle this
      */
-    class DataStorePanel extends LinkPanel {
+    class StorePanel extends LinkPanel {
 
-        public DataStorePanel(String id, DataTreeTable tree, MarkupContainer parent,
+        public StorePanel(String id, DataTreeTable tree, MarkupContainer parent,
                 CatalogNode node, int level) {
             super(id, tree, parent, node, level);
         }
         
         @Override
         protected ResourceReference getNodeIcon(DataTreeTable tree, TreeNode node) {
-            return getStoreIcon(((DataStoreNode) node).getModel());
+            final CatalogNode cn = (CatalogNode) node;
+            return getStoreIcon((StoreInfo) cn.getModel());
         }
 
         /**

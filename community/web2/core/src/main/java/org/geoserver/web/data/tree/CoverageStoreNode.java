@@ -20,12 +20,19 @@ class CoverageStoreNode extends CatalogNode {
     }
 
     protected List<CatalogNode> buildChildNodes() {
+        List<CatalogNode> childNodes = new ArrayList<CatalogNode>();
         List<CoverageInfo> coverages = getCatalog().getCoveragesByStore(
                 getModel());
-        List<CatalogNode> childNodes = new ArrayList<CatalogNode>();
-        for (CoverageInfo coverage : coverages) {
-            childNodes.add(new ResourceNode(name, coverage.getName(), this,
+        
+        // STRONG assumption here: each coverage store has just one possible
+        // coverage inside with the same name as the store. Works for now
+        // but will have to be replaced with code similar to DataStoreNode
+        // when we'll have a real CoverageStore
+        if(coverages.size() == 1) {
+            childNodes.add(new ResourceNode(name, coverages.get(0).getName(), this,
                     CoverageInfo.class));
+        } else {
+            childNodes.add(new UnconfiguredResourcesNode(name, this, CoverageStoreInfo.class));
         }
         return childNodes;
 

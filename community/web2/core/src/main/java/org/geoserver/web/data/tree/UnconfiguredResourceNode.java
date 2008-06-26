@@ -6,14 +6,18 @@ package org.geoserver.web.data.tree;
 
 import org.geoserver.catalog.DataStoreInfo;
 
-public class UnconfiguredFeatureTypeNode extends PlaceholderNode {
-    public UnconfiguredFeatureTypeNode(String storeName, String typeName,
+/**
+ * Represents a data resource that's waiting to be configured into GeoServer
+ * @author Andrea Aime - TOPP
+ */
+public class UnconfiguredResourceNode extends PlaceholderNode {
+    public UnconfiguredResourceNode(String storeName, String resourceName,
             CatalogNode parent) {
         super(storeName, parent);
-        this.typeName = typeName;
+        this.resourceName = resourceName;
     }
 
-    String typeName;
+    String resourceName;
 
     @Override
     protected DataStoreInfo getModel() {
@@ -22,15 +26,15 @@ public class UnconfiguredFeatureTypeNode extends PlaceholderNode {
 
     @Override
     protected String getNodeLabel() {
-        return typeName;
+        return resourceName;
     }
 
-    public String getTypeName() {
-        return typeName;
+    public String getResourceName() {
+        return resourceName;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setResouirceName(String resourceName) {
+        this.resourceName = resourceName;
     }
     
     @Override

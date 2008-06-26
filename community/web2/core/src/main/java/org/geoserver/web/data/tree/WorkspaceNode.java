@@ -48,7 +48,7 @@ class WorkspaceNode extends CatalogNode {
             } else {
                 CoverageStoreNode csn = new CoverageStoreNode(store.getName(),
                         this);
-                if (csn.getChildCount() != 1)
+                if (catalog.getCoveragesByStore(csn.getModel()).size() != 1)
                     childNodes.add(csn);
                 else
                     childNodes.add(new ResourceNode(csn.name, getCatalog()
