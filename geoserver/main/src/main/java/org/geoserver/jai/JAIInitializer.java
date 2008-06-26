@@ -53,7 +53,7 @@ public class JAIInitializer implements GeoServerInitializer {
         jai.setJAI( jaiDef );
         
         // setting JAI wide hints
-        jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED, jai.getRecycling());
+        jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED, jai.isRecycling());
         
         // tile factory and recycler
         final RecyclingTileFactory recyclingFactory = new RecyclingTileFactory();
@@ -67,7 +67,7 @@ public class JAIInitializer implements GeoServerInitializer {
         long jaiMemory = (long) (jai.getMemoryCapacity() * Runtime.getRuntime().maxMemory());
         jaiCache.setMemoryCapacity(jaiMemory);
         
-        // Setting up Cahce Threshold
+        // Setting up Cache Threshold
         jaiCache.setMemoryThreshold((float) jai.getMemoryThreshold());
         
         jaiDef.getTileScheduler().setParallelism(jai.getTileThreads());
@@ -76,6 +76,6 @@ public class JAIInitializer implements GeoServerInitializer {
         jaiDef.getTileScheduler().setPrefetchPriority(jai.getTilePriority());
         
         // ImageIO Caching
-        ImageIO.setUseCache(jai.getImageIOCache());
+        ImageIO.setUseCache(jai.isImageIOCache());
     }
 }

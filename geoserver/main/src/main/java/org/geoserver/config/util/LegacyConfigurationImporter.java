@@ -152,8 +152,8 @@ public class LegacyConfigurationImporter {
         jai.setTileThreads( (Integer) value( global.get( "JaiTileThreads"), 7 ) );
         jai.setTilePriority( (Integer) value( global.get( "JaiTilePriority"), 5 ) );
         jai.setImageIOCache( (Boolean) value( global.get( "ImageIOCache" ), false) );
-        jai.setJPEGAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ), true) );
-        jai.setPNGAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), true)  );
+        jai.setJpegAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ), true) );
+        jai.setPngAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), true)  );
         jai.setRecycling( (Boolean) value( global.get( "JaiRecycling" ), true)  );
         
         info.getMetadata().put( JAIInfo.KEY, jai );

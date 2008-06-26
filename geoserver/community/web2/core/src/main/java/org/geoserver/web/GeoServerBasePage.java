@@ -99,4 +99,5 @@ public class GeoServerBasePage extends WebPage {
     protected Catalog getCatalog() {
         return getGeoServerApplication().getCatalog();
     }
+
 }

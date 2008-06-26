@@ -690,13 +690,13 @@ public class XMLConfigReader {
                         false, true));
             }
 
-            String tileCache = ReaderUtils.getChildText(globalElem, "tileCache", false);
+            //String tileCache = ReaderUtils.getChildText(globalElem, "tileCache", false);
 
-            if (tileCache != null) {
-                geoServer.setTileCache(tileCache);
-            } else {
-                geoServer.setTileCache(null);
-            }
+            //if (tileCache != null) {
+            //    geoServer.setTildpleCache(tileCache);
+            //} else {
+            //    geoServer.setTileCache(null);
+            //}
             
             String gsUpdateSequence = ReaderUtils.getChildText(globalElem, "updateSequence");
             if (gsUpdateSequence == null) {

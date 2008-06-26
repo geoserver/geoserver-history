@@ -296,10 +296,10 @@ public class XMLConfigWriter {
                 storeContact(g.getContact(), cw);
             }
 
-            if ((g.getTileCache() != null) && !"".equals(g.getTileCache().trim())) {
-                cw.comment("Defines hte location of a tile cache (full url or relative path)");
-                cw.textTag("tileCache", g.getTileCache());
-            }
+            //if ((g.getTileCache() != null) && !"".equals(g.getTileCache().trim())) {
+            //    cw.comment("Defines hte location of a tile cache (full url or relative path)");
+            //    cw.textTag("tileCache", g.getTileCache());
+            //}
 
             cw.comment("Stores the current updateSequence");
             cw.textTag("updateSequence", g.getUpdateSequence() + "");
