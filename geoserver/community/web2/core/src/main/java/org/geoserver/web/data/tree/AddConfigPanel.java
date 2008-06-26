@@ -4,14 +4,28 @@
  */
 package org.geoserver.web.data.tree;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StoreInfo;
 import org.geoserver.web.GeoServerApplication;
+import org.geoserver.web.data.ResourceConfigurationPage;
 
 /**
  * A simple component that can be used to edit/remove items from the tree
@@ -20,6 +34,17 @@ import org.geoserver.web.GeoServerApplication;
  * 
  */
 public class AddConfigPanel extends Panel {
+    
+    /**
+     * Per {@link CatalogNode} concrete subclass class type map of
+     * strategies to handle add and config
+     * 
+     * @see #getAddRemoveStrategy(CatalogNode)
+     */
+    private static final Map<Class, AddConfigStrategy> ADD_CONFIG_STRATEGIES = new HashMap<Class, AddConfigStrategy>();
+    static {
+        ADD_CONFIG_STRATEGIES.put(UnconfiguredResourceNode.class, new UnconfiguredResourceStrategy());
+    }
 
     private final CatalogNode node;
 
@@ -61,7 +86,91 @@ public class AddConfigPanel extends Panel {
     }
 
     protected void onConfigClick(AjaxRequestTarget target) {
-        System.out.println("Config clicked!");
+        getAddConfigStrategy(node).config(this, node);
+    }
+    
+    /**
+     * Grabs the most appropriate behavior for the  
+     * @param node
+     *            the node currently selected on the tree panel
+     * @return the strategy to handle edit and remove operations over the given
+     *         node class type
+     */
+    private static AddConfigStrategy getAddConfigStrategy(final CatalogNode node) {
+        final Class<? extends CatalogNode> nodeClass = node.getClass();
+        final AddConfigStrategy strategy = ADD_CONFIG_STRATEGIES.get(nodeClass);
+        if (strategy == null) {
+            throw new IllegalArgumentException("Unknown node type, don't know how to handle it: "
+                    + nodeClass.getName());
+        }
+
+        return strategy;
+    }
+    
+    
+    /**
+     * Defines a strategy to get the configure and add pages for a specific
+     * {@link CatalogNode} subclass.
+     * <p>
+     * Implementations shall be stateless and are meant to be per node type
+     * singletons.
+     * </p>
+     * 
+     * @author Gabriel Roldan
+     */
+    private static interface AddConfigStrategy {
+
+        public void add(Component callingComponent, CatalogNode node);
+
+        public void config(Component callingComponent, CatalogNode node);
+    }
+    
+    /**
+     * 
+     * @author Gabriel Roldan
+     */
+    private static class UnconfiguredResourceStrategy implements AddConfigStrategy {
+
+        /**
+         * @param callingComponent
+         * @param node
+         *            shall be an instance of
+         *            {@link UnconfiguredResourceNode}
+         */
+        public void config(final Component callingComponent, final CatalogNode node) {
+            final UnconfiguredResourceNode unconfiguredNode = ((UnconfiguredResourceNode) node);
+            final String resourceName = unconfiguredNode.getResourceName();
+            final StoreInfo store = unconfiguredNode.getModel();
+
+            final Catalog catalog = node.getCatalog();
+            CatalogFactory factory = catalog.getFactory();
+            
+            ResourceInfo ri;
+            LayerInfo.Type type;
+            if(store instanceof DataStoreInfo) {
+                FeatureTypeInfo featureTypeInfo = factory.createFeatureType();
+                featureTypeInfo.setName(resourceName);
+                featureTypeInfo.setStore(store);
+                ri = featureTypeInfo;
+                type = LayerInfo.Type.VECTOR;
+            } else {
+                CoverageInfo coverageInfo = factory.createCoverage();
+                coverageInfo.setName(resourceName);
+                coverageInfo.setStore(store);
+                ri = coverageInfo;
+                type = LayerInfo.Type.RASTER;
+            }
+            LayerInfo li = factory.createLayer();
+            li.setName(ri.getName());
+            li.setType(type);
+            li.setResource(ri);
+            Page responsePage = new ResourceConfigurationPage(li, true);
+            callingComponent.setResponsePage(responsePage);
+        }
+
+        public void add(final Component callingComponent, final CatalogNode node) {
+            System.out.println("Meh, we still haven't coded this one");
+        }
     }
 
 }
