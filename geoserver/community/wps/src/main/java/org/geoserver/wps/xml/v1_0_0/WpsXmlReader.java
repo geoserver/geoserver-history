@@ -12,11 +12,13 @@ package org.geoserver.wps.xml.v1_0_0;
 import java.io.Reader;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import org.geoserver.ows.XmlRequestReader;
 import org.geotools.util.Version;
+import org.geotools.util.logging.Logging;
 import org.geotools.wps.WPSConfiguration;
 import org.geotools.xml.Parser;
 import org.xml.sax.InputSource;
@@ -25,6 +27,8 @@ import org.geoserver.wps.WPS;
 
 public class WpsXmlReader extends XmlRequestReader
 {
+    Logger LOGGER = Logging.getLogger( "org.geoserver.wps");
+    
     private WPS              wps;
     private WPSConfiguration configuration;
 
@@ -55,10 +59,11 @@ public class WpsXmlReader extends XmlRequestReader
 
             for(Exception error : (List<Exception>)parser.getValidationErrors())
             {
+                LOGGER.warning( error.getLocalizedMessage() );
                 exception.getExceptionText().add(error.getLocalizedMessage());
             }
 
-            throw exception;
+            //throw exception;
         }
 
         return parsed;
