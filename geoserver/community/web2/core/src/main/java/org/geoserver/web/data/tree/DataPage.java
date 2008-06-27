@@ -94,6 +94,8 @@ public class DataPage extends GeoServerBasePage {
                 addButtonClicked(target, form);
             }
         };
+        configureButton.add(new SimpleAttributeModifier("onclick",
+                "alert('This will allow to auto configure multiple layers'); return false;"));
         buttonForm.add(addButton);
         removeButton = new AjaxButton("removeChecked") {
             @Override
@@ -101,6 +103,9 @@ public class DataPage extends GeoServerBasePage {
                 removeButtonClicked(target, form);
             }
         };
+        removeButton
+        .add(new SimpleAttributeModifier("onclick",
+                "alert('This will allow you mass configure delete multiple resources'); return false;"));
         buttonForm.add(removeButton);
         configureButton = new AjaxButton("configureChecked") {
             @Override
