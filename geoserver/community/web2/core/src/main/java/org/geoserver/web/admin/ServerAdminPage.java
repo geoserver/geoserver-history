@@ -77,8 +77,6 @@ public class ServerAdminPage extends GeoServerBasePage {
 
         // add the new tabbed panel
         add(new TabbedPanel("tabs", tabs));
-        //add(new TabbedPanel("tabs", tabs).add(new AttributeModifier("class",
-        //        true, ServerAdminPage.this.getModel())));
     }
     
     protected void handleSubmit(Object obj) {
@@ -104,7 +102,6 @@ public class ServerAdminPage extends GeoServerBasePage {
             Form form = new Form( "form", new CompoundPropertyModel( gsi ) ) {
                 protected void onSubmit() {
                     gs.save(gsi);
-                    setResponsePage(ServerAdminPage.class);
                 }
             };
             add( form );
@@ -153,7 +150,6 @@ public class ServerAdminPage extends GeoServerBasePage {
             Form form = new Form( "form", new CompoundPropertyModel( jai ) ) {
                 protected void onSubmit() {
                     gs.getGlobal().getMetadata().put(JAIInfo.KEY,jai);
-                    setResponsePage(ServerAdminPage.class);
                 }
             };
             
@@ -188,7 +184,6 @@ public class ServerAdminPage extends GeoServerBasePage {
             Form form = new Form( "form", new CompoundPropertyModel( contact ) ) {
                 protected void onSubmit() {
                    gs.getGlobal().setContact(contact);
-                   setResponsePage(ServerAdminPage.class);
                 }
             };
             
