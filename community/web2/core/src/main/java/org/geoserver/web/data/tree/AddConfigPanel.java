@@ -13,6 +13,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -78,6 +79,9 @@ public class AddConfigPanel extends Panel {
         icon.add(new AttributeModifier("title", true, new Model("Add "
                 + node.getNodeLabel() + " (auto config)")));
         link.add(icon);
+        // notify people we still missing this functionality
+        link.add(new SimpleAttributeModifier("onclick", "alert('Should auto configure the layer, " +
+        		"but for the moment the functionality is missing.');"));
         add(link);
     }
 
