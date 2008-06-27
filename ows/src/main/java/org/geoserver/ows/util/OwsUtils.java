@@ -4,6 +4,7 @@
  */
 package org.geoserver.ows.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
@@ -14,6 +15,33 @@ import java.lang.reflect.Method;
  *
  */
 public class OwsUtils {
+    
+    /**
+     * Reflectively sets a property on an object.
+     * <p>
+     * This method uses {@link #setter(Class, String, Class)} to locate teh setter 
+     * method for the property and then invokes it with teh specified <tt>value</tt>.
+     * </p>
+     * @param object The target object. 
+     * @param property The property to set.
+     * @param value The value to set, may be <code>null</code>.
+     * 
+     * @throws IllegalArgumentException If no such property exists.
+     * @throws RuntimeException If an error occurs setting the property
+     */
+    public static void set( Object object, String property, Object value ) throws IllegalArgumentException {
+        Method s = setter( object.getClass(), property, value != null ? value.getClass() : null );
+        if ( s == null ) {
+            throw new IllegalArgumentException( "No such property '" + property + "' for object " + object ); 
+        }
+        
+        try {
+            s.invoke( object, value );
+        } 
+        catch( Exception e ) {
+            throw new RuntimeException( e );
+        }
+    }
     
     /**
      * Returns a setter method for a property of java bean.
@@ -83,6 +111,32 @@ public class OwsUtils {
         return null;
     }
 
+    /**
+     * Reflectively gets a property from an object.
+     * <p>
+     * This method uses {@link #getter(Class, String, Class)} to locate the getter 
+     * method for the property and then invokes it.
+     * </p>
+     * @param object The target object. 
+     * @param property The property to set.
+     * 
+     * @throws IllegalArgumentException If no such property exists.
+     * @throws RuntimeException If an error occurs getting the property
+     */
+    public static Object get(Object object, String property) {
+        Method g = getter( object.getClass(), property, null );
+        if ( g == null ) {
+            throw new IllegalArgumentException("No such property '" + property + "' for object " + object );
+        }
+      
+        try {
+            return g.invoke( object, null );
+        } 
+        catch( Exception e ) {
+            throw new RuntimeException( e );
+        }
+    }
+    
     /**
      * Returns a getter method for a property of java bean.
      *
