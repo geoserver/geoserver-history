@@ -15,6 +15,7 @@
    </property>
    <property name="initParameters">
      <props>
+       <!-- either development on deployment, make sure you set it to deployment before releasing! -->
        <prop key="configuration">development</prop>
        <prop key="applicationClassName">org.geoserver.web.GeoServerApplication</prop>
        <prop key="applicationFactoryClassName">org.apache.wicket.spring.SpringWebApplicationFactory</prop>
