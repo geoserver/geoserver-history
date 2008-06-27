@@ -32,7 +32,7 @@ public class UnconfiguredResourcesNode extends PlaceholderNode {
     }
 
     @Override
-    protected String getNodeLabel() {
+    public String getNodeLabel() {
         int unconfiguredLayers = -1;
         if(DataStoreInfo.class.isAssignableFrom(storeType)) {
             try {

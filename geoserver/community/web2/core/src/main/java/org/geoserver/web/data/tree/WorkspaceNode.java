@@ -68,7 +68,7 @@ class WorkspaceNode extends CatalogNode {
     }
 
     @Override
-    protected String getNodeLabel() {
+    public String getNodeLabel() {
         return getModel().getName();
     }
 }

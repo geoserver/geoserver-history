@@ -144,7 +144,7 @@ abstract class CatalogNode implements TreeNode, Serializable, IDetachable,
 
     protected abstract List<CatalogNode> buildChildNodes();
 
-    protected String getNodeLabel() {
+    public String getNodeLabel() {
         return getModel().toString();
     }
 

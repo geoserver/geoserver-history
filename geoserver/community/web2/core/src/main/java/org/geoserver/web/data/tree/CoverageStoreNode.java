@@ -48,7 +48,7 @@ class CoverageStoreNode extends StoreNode {
     }
 
     @Override
-    protected String getNodeLabel() {
+    public String getNodeLabel() {
         return getModel().getName();
     }
 
