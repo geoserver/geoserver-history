@@ -94,7 +94,7 @@ public class DataPage extends GeoServerBasePage {
                 addButtonClicked(target, form);
             }
         };
-        configureButton.add(new SimpleAttributeModifier("onclick",
+        addButton.add(new SimpleAttributeModifier("onclick",
                 "alert('This will allow to auto configure multiple layers'); return false;"));
         buttonForm.add(addButton);
         removeButton = new AjaxButton("removeChecked") {
