@@ -379,10 +379,19 @@ public class Dispatcher extends AbstractController {
             } else {
                 //check for a request object
                 Object requestBean = null;
+                
+                //track an exception 
+                Throwable t = null;
 
                 if (req.kvp != null && req.kvp.size() > 0) {
                     //use the kvp reader mechanism
-                    requestBean = parseRequestKVP(parameterType, req);
+                    try {
+                        requestBean = parseRequestKVP(parameterType, req);
+                    } 
+                    catch (Exception e) {
+                        //dont die now, there might be a body to parse
+                        t = e;
+                    }
                 }
                 if (req.input != null) {
                     //use the xml reader mechanism
@@ -393,6 +402,11 @@ public class Dispatcher extends AbstractController {
                 //TODO: we may wish to make this configurable, as perhaps there
                 // might be cases when the service prefers that null be passed in?
                 if ( requestBean == null ) {
+                    //unable to parse request object, throw exception if we 
+                    // caught one
+                    if ( t != null ) {
+                        throw t;
+                    }
                     throw new ServiceException( "Could not find request reader (either kvp or xml) for: " + parameterType.getName() );
                 }
                 
