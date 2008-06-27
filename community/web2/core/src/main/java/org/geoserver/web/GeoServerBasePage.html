@@ -19,10 +19,14 @@
     <h1>GeoServer <small>2.0</small></h1>
     <div class="buttons">
       <button type="submit">
-        <img src="img/icons/silk/door_in.png" alt=""/> Login
+        <wicket:link>
+          <img src="img/icons/silk/door_in.png" alt=""/> Login
+        </wicket:link>
       </button>
       <button type="submit">
-        <img src="img/icons/silk/door_out.png" alt=""/> Logout
+        <wicket:link>
+          <img src="img/icons/silk/door_out.png" alt=""/> Logout
+        </wicket:link>
       </button>
     </div>
     <ul id="navigation">
@@ -63,10 +67,14 @@
     </ul>
     <div class="buttons">
       <button type="submit" class="positive">
+        <wicket:link>
         <img src="img/icons/silk/disk.png" alt=""/> Save
+        </wicket:link>
       </button>
       <button type="submit" class="negative">
+        <wicket:link>
         <img src="img/icons/silk/arrow_redo.png" alt=""/> Revert
+        </wicket:link>
       </button>
     </div>
   </div>
