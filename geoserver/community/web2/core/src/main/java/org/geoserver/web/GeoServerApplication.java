@@ -12,7 +12,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -27,7 +26,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
 import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
-import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.resource.AbstractResourceStream;
@@ -40,7 +38,6 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.web.util.CompositeConverterLocator;
 import org.geoserver.web.util.DataDirectoryConverterLocator;
-import org.geoserver.web.util.GeoToolsConverterLocator;
 import org.geoserver.web.util.GeoToolsConverterAdapter;
 import org.geoserver.web.util.converters.StringBBoxConverter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -157,7 +154,7 @@ public class GeoServerApplication extends SpringWebApplication {
                             in.close();
                         }
 
-                        // transform the propeties to a stream
+                        // transform the properties to a stream
                         final ByteArrayOutputStream out = new ByteArrayOutputStream();
                         properties.store(out, "");
 
