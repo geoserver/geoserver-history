@@ -3,6 +3,8 @@ package org.geoserver.wfsv;
 import static org.custommonkey.xmlunit.XMLAssert.*;
 import junit.framework.Test;
 
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.w3c.dom.Document;
 
 public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
@@ -37,7 +39,8 @@ public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
     }
     
     public void testDescribeArcsitesGet10() throws Exception {
-        String request = root() + "?service=wfsv&version=1.0.0&request=DescribeVersionedFeatureType&typeName=topp:archsites";
+        String request = 
+            ResponseUtils.appendQueryString(root() , "service=wfsv&version=1.0.0&request=DescribeVersionedFeatureType&typeName=topp:archsites");
         Document dom = getAsDOM(request);
         print(dom);
         assertXpathEvaluatesTo("1", "count(//xs:schema)", dom);
@@ -63,7 +66,7 @@ public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
     }
     
     public void testDescribeArcsitesGet11() throws Exception {
-        String request = root() + "?service=wfsv&version=1.1.0&request=DescribeVersionedFeatureType&typeName=topp:archsites";
+        String request = ResponseUtils.appendQueryString( root(),"service=wfsv&version=1.1.0&request=DescribeVersionedFeatureType&typeName=topp:archsites" );
         Document dom = getAsDOM(request);
         assertXpathEvaluatesTo("http://www.opengis.net/wfsv", "/xs:schema/xs:import/@namespace", dom);
         assertXpathEvaluatesTo("wfsv:AbstractVersionedFeatureType", "/xs:schema/xs:complexType/xs:complexContent/xs:extension/@base", dom);
