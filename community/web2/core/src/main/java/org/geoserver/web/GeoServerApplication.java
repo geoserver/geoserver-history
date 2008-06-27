@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -21,7 +22,10 @@ import org.apache.wicket.Component;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.Localizer;
+import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
+import org.apache.wicket.Response;
+import org.apache.wicket.Session;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
 import org.apache.wicket.request.IRequestCycleProcessor;
@@ -139,6 +143,14 @@ public class GeoServerApplication extends SpringWebApplication {
         getResourceSettings().setResourceStreamLocator(
                 new GeoServerResourceStreamLocator());
         getResourceSettings().setLocalizer(new GeoServerLocalizer());
+    }
+    
+    @Override
+    public Session newSession(Request request, Response response) {
+        Session s = super.newSession(request, response);
+        if(s.getLocale() == null)
+            s.setLocale(Locale.ENGLISH);
+        return s;
     }
     
     /**
