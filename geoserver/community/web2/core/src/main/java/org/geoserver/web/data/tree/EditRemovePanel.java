@@ -16,6 +16,7 @@ import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
@@ -63,7 +64,8 @@ public class EditRemovePanel extends Panel {
         };
         Image icon = new Image("editIcon", new ResourceReference(GeoServerApplication.class,
                 "img/icons/silk/pencil.png"));
-        icon.add(new AttributeModifier("title", true, new Model("Edit " + node.getNodeLabel())));
+        icon.add(new AttributeModifier("title", true, new StringResourceModel("edit", this, 
+                new Model(node))));
         link.add(icon);
         add(link);
 
@@ -76,7 +78,8 @@ public class EditRemovePanel extends Panel {
         };
         icon = new Image("removeIcon", new ResourceReference(GeoServerApplication.class,
                 "img/icons/silk/delete.png"));
-        icon.add(new AttributeModifier("title", true, new Model("Remove " + node.getNodeLabel())));
+        icon.add(new AttributeModifier("title", true, new StringResourceModel("remove", this, 
+                new Model(node))));
         link.add(icon);
         // notify people we still missing this functionality
         link.add(new SimpleAttributeModifier("onclick", "alert('Should auto remove the selected resource, " +
