@@ -45,6 +45,11 @@ import org.geotools.util.logging.Logging;
 import org.springframework.context.ApplicationContext;
 
 /**
+ * The GeoServer application, the main entry point for any Wicket application.
+ * In particular, this one sets up, among the others, custom resource loader,
+ * custom localizers, and custom converters (wrapping the GeoTools ones), as
+ * well as providing some convenience methods to access the GeoServer Spring
+ * context and principal GeoServer objects.
  * 
  * @author Andrea Aaime, The Open Planning Project
  * @author Justin Deoliveira, The Open Planning Project
