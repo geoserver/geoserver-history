@@ -29,7 +29,7 @@ class CatalogRootNode extends CatalogNode {
     }
 
     @Override
-    protected String getNodeLabel() {
+    public String getNodeLabel() {
         return "Data";
     }
 

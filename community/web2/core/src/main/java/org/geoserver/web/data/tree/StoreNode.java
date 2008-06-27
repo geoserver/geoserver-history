@@ -23,7 +23,7 @@ abstract class StoreNode extends CatalogNode {
     protected abstract StoreInfo getModel();
 
     @Override
-    protected String getNodeLabel() {
+    public String getNodeLabel() {
         return getModel().getName();
     }
 

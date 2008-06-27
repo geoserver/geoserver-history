@@ -29,7 +29,7 @@ public class UnconfiguredResourceNode extends PlaceholderNode {
     }
 
     @Override
-    protected String getNodeLabel() {
+    public String getNodeLabel() {
         return resourceName;
     }
 

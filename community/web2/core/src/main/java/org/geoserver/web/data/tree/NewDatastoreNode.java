@@ -20,7 +20,7 @@ public class NewDatastoreNode extends PlaceholderNode {
     }
 
     @Override
-    protected String getNodeLabel() {
+    public String getNodeLabel() {
         return "Add Data";
     }
 
