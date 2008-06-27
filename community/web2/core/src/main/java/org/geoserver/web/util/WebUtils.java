@@ -13,9 +13,12 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 import org.apache.wicket.util.time.Time;
+import org.geoserver.web.GeoServerApplication;
 import org.geotools.util.logging.Logging;
 
 import freemarker.template.Configuration;
@@ -32,6 +35,22 @@ import freemarker.template.TemplateModel;
 public class WebUtils {
 
     static final Logger LOGGER = Logging.getLogger(WebUtils.class);
+    
+    /**
+     * Utility method for localizing strings using Wicket i18n subsystem. Useful if your model
+     * needs to be localized and you don't have access to a Component instance.
+     * Use with care, in most cases you should be able to localize your messages directly in 
+     * pages or components.
+     * @param key
+     * @param model
+     * @param params
+     * @return
+     */
+    public static String localize(String key, IModel model, Object... params) {
+        StringResourceModel rm = new StringResourceModel(key, null, model, params);
+        rm.setLocalizer(GeoServerApplication.get().getResourceSettings().getLocalizer());
+        return rm.getString();
+    }
 
     /**
      * Returns a resource stream based on a freemarker template.
