@@ -17,6 +17,7 @@ import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageInfo;
@@ -62,8 +63,8 @@ public class AddConfigPanel extends Panel {
         };
         Image icon = new Image("configIcon", new ResourceReference(
                 GeoServerApplication.class, "img/icons/silk/pencil_add.png"));
-        icon.add(new AttributeModifier("title", true, new Model(
-                "Add and configure " + node.getNodeLabel())));
+        icon.add(new AttributeModifier("title", true, new StringResourceModel("addConfigure", this, 
+                new Model(node))));
         link.add(icon);
         add(link);
 
@@ -76,8 +77,8 @@ public class AddConfigPanel extends Panel {
         };
         icon = new Image("addIcon", new ResourceReference(
                 GeoServerApplication.class, "img/icons/silk/add.png"));
-        icon.add(new AttributeModifier("title", true, new Model("Add "
-                + node.getNodeLabel() + " (auto config)")));
+        icon.add(new AttributeModifier("title", true, new StringResourceModel("add", this, 
+                new Model(node))));
         link.add(icon);
         // notify people we still missing this functionality
         link.add(new SimpleAttributeModifier("onclick", "alert('Should auto configure the layer, " +
