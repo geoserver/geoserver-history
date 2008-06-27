@@ -6,12 +6,18 @@ package org.geoserver.web;
 
 import java.util.List;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.extensions.breadcrumb.BreadCrumbBar;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -76,6 +82,20 @@ public class GeoServerBasePage extends WebPage {
         //data link
         add( new BookmarkablePageLink( "data", org.geoserver.web.data.tree.DataPage.class ) 
             .add( new Label( "label", new StringResourceModel( "data", (Component) null, null ) ) ) );
+        
+        // dev buttons
+        WebMarkupContainer devButtons = new WebMarkupContainer("devButtons");
+        add(devButtons);
+        devButtons.add(new AjaxFallbackLink("clearCache"){
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                getGeoServerApplication().clearWicketCaches();
+            }
+            
+        });
+        devButtons.setVisible(Application.DEVELOPMENT.equalsIgnoreCase(
+                getApplication().getConfigurationType())); 
     }
 
     /**
