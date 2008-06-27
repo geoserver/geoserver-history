@@ -37,7 +37,12 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
         availableStyles.removeAll(extraStyles);
         availableStyles.remove(getLayerInfo().getDefaultStyle());
 
-        add(new DropDownChoice("defaultStyle", new Model(getLayerInfo().getDefaultStyle().getId()), new PropertyModel(this, "availableStyles")));
+        StyleInfo defaultStyle = getLayerInfo().getDefaultStyle();
+
+        add(new DropDownChoice("defaultStyle", 
+                    new Model(defaultStyle == null ? "No style selected" : defaultStyle.getId()),
+                    new PropertyModel(this, "availableStyles"))
+           );
 
         add(new ListMultipleChoice("extraStyles",
                     new PropertyModel(this, "stylesToRemove"),
