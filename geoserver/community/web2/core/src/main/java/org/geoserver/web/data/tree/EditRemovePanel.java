@@ -9,17 +9,15 @@ import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.Page;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -80,6 +78,9 @@ public class EditRemovePanel extends Panel {
                 "img/icons/silk/delete.png"));
         icon.add(new AttributeModifier("title", true, new Model("Remove " + node.getNodeLabel())));
         link.add(icon);
+        // notify people we still missing this functionality
+        link.add(new SimpleAttributeModifier("onclick", "alert('Should auto remove the selected resource, " +
+                "but for the moment the functionality is missing.');"));
         add(link);
     }
 
