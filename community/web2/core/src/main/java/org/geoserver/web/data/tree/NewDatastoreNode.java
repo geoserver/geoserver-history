@@ -4,15 +4,15 @@
  */
 package org.geoserver.web.data.tree;
 
+
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.web.util.WebUtils;
 
 public class NewDatastoreNode extends PlaceholderNode {
 
     public NewDatastoreNode(String name, CatalogNode parent) {
         super(name, parent);
     }
-
-    
 
     @Override
     protected WorkspaceInfo getModel() {
@@ -21,7 +21,7 @@ public class NewDatastoreNode extends PlaceholderNode {
 
     @Override
     public String getNodeLabel() {
-        return "Add Data";
+        return WebUtils.localize("addData", null);
     }
 
 }
