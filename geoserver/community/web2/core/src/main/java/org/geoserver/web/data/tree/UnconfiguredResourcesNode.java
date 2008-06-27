@@ -13,6 +13,7 @@ import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.web.util.WebUtils;
 import org.geotools.data.DataStore;
 
 public class UnconfiguredResourcesNode extends PlaceholderNode {
@@ -53,9 +54,10 @@ public class UnconfiguredResourcesNode extends PlaceholderNode {
         }   
         
         if(unconfiguredLayers != -1) {
-            return unconfiguredLayers + " unconfigured layer(s) ...";
+            return WebUtils.localize("unconfiguredLayersCount", null, unconfiguredLayers);
+
         } else {
-            return "Show unconfigured layer(s) ...";
+            return WebUtils.localize("unconfiguredLayers", null);
         }
     }
 }

@@ -4,7 +4,6 @@
  */
 package org.geoserver.web.data.tree;
 
-import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.StoreInfo;
 
 /**
