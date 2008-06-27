@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -122,6 +123,15 @@ public class GeoServerApplication extends SpringWebApplication {
     public <T> List<T> getBeansOfType(Class<T> type) {
         return GeoServerExtensions.extensions(type, getApplicationContext());
     }
+    
+    /**
+     * Clears all the wicket caches so that resources and localization files will be re-read
+     */
+    public void clearWicketCaches() {
+        getResourceSettings().getPropertiesFactory().clearCache();
+        getResourceSettings().getLocalizer().clearCache();
+    }
+
 
     /**
      * Initialization override which sets up a locator for i18n resources.
@@ -130,9 +140,8 @@ public class GeoServerApplication extends SpringWebApplication {
         getResourceSettings().setResourceStreamLocator(
                 new GeoServerResourceStreamLocator());
         getResourceSettings().setLocalizer(new GeoServerLocalizer());
-
     }
-
+    
     /**
      * A custom resource stream locator which supports loading i18n properties
      * files on a single file per module basis.
@@ -196,7 +205,6 @@ public class GeoServerApplication extends SpringWebApplication {
     static class GeoServerLocalizer extends Localizer {
         public String getString(String key, Component component, IModel model,
                 String defaultValue) throws MissingResourceException {
-            
             //walk up the component hierarchy
             Component c = component;
             while( c != null ) {
@@ -206,7 +214,7 @@ public class GeoServerApplication extends SpringWebApplication {
                     try {
                         String value = super.getString(key(key, clazz), component, model,defaultValue);
                         
-                        //if resolved to default value, dont return, continue on
+                        //if resolved to default value, don't return, continue on
                         if ( value != null && value != defaultValue ) {
                             return value;
                         }
@@ -236,6 +244,7 @@ public class GeoServerApplication extends SpringWebApplication {
             String name = clazz.getSimpleName();
             return name + "." + key;
         }
+        
     }
     
     /*
@@ -283,4 +292,7 @@ public class GeoServerApplication extends SpringWebApplication {
 
         return locator;
     }
+
+    
+   
 }
