@@ -11,5 +11,17 @@
     <!--property name="icon" value="wcs_obj.gif"/-->
     <property name="icon" value="server_raster.png"/>
   </bean>
+
+  <bean id="wcsResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
+    <property name="id" value="wcsResourceConfig"/>
+    <property name="titleKey" value="data.resource.config.wcs"/>
+    <property name="componentClass" value="org.geoserver.wcs.web.data.WCSResourceConfigurationPanel"/>
+    <property name="supportedTypes">
+      <list>
+        <value>org.geoserver.catalog.CoverageInfo</value>
+      </list>
+    </property>
+  </bean>
+
     
 </beans>

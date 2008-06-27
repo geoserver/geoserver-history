@@ -58,6 +58,7 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
         initComponents();
     }
 
+    @SuppressWarnings("serial")
     private void initComponents(){
         add(new Label("resourcename", myResourceInfo.getId()));
         Form theForm = new Form("resource", myResourceModel);
@@ -94,7 +95,7 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
             List<ResourceConfigurationPanelInfo> list
             ){
         for (int i = 0; i < list.size(); i++){
-            if (!list.get(i).canHandle(myResourceInfo.getClass())){
+            if (!list.get(i).canHandle(myResourceInfo)){
                 list.remove(i);
                 i--;
             }
