@@ -69,7 +69,7 @@ public class CatalogFactoryImpl implements CatalogFactory {
     }
 
     public NamespaceInfo createNamespace() {
-        return new NamespaceInfoImpl(catalog);
+        return new NamespaceInfoImpl();
     }
     
     public WorkspaceInfo createWorkspace() {

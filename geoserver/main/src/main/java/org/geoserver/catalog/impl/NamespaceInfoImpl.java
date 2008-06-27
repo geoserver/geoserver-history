@@ -19,21 +19,8 @@ public class NamespaceInfoImpl implements NamespaceInfo {
 
     String uri;
 
-    Set resources = new HashSet();
-
-    Catalog catalog;
-    
     HashMap<String,Serializable> metadata;
     
-    public NamespaceInfoImpl(Catalog catalog) {
-        this.catalog = catalog;
-    }
-
-    public NamespaceInfoImpl(Catalog catalog,String id) {
-        this(catalog);
-        this.id = id;
-    }
-
     public String getId() {
         return id;
     }
@@ -56,40 +43,6 @@ public class NamespaceInfoImpl implements NamespaceInfo {
 
     public void setURI(String uri) {
         this.uri = uri;
-    }
-
-    public Iterator resources() {
-        return resources.iterator();
-    }
-
-    public ResourceInfo getResource(String name) {
-        // TODO: replace this with a hibernate query?
-        for (Iterator i = resources(); i.hasNext();) {
-            ResourceInfo resource = (ResourceInfo) i.next();
-            if (name.equals(resource.getName())) {
-                return resource;
-            }
-        }
-
-        return null;
-    }
-
-    public void add(ResourceInfo resource) {
-        resource.setNamespace(this);
-        resources.add(resource);
-    }
-
-    public void remove(ResourceInfo resource) {
-        resource.setNamespace(null);
-        resources.remove(resources);
-    }
-
-    protected Set getResources() {
-        return resources;
-    }
-
-    protected void setResources(Set resources) {
-        this.resources = resources;
     }
 
     public Map<String, Serializable> getMetadata() {
