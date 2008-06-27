@@ -121,5 +121,24 @@ public class GetFeatureTest extends WFSTestSupport {
         NodeList featureMembers = doc.getElementsByTagName("cite:Buildings");
         assertEquals(1,featureMembers.getLength());
     }
+    
+    public void testMixed() throws Exception {
+        String xml = "<wfs:GetFeature " + "service=\"WFS\" "
+        + "version=\"1.0.0\" "
+        + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+        + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+        + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
+        + "<wfs:Query typeName=\"cdf:Other\"> "
+        + "<ogc:PropertyName>cdf:string2</ogc:PropertyName> "
+        + "</wfs:Query> " + "</wfs:GetFeature>";
+
+        Document doc = postAsDOM("wfs?request=GetFeature", xml);
+        
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
+                .getNodeName());
+        
+        NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
+        assertFalse(featureMembers.getLength() == 0);
+    }
 
 }
