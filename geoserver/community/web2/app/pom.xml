@@ -46,6 +46,58 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.geoserver.web</groupId>
+      <artifactId>web-demo</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>platform</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>data</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>main</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wcs</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wcs1_1</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wfs</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wms</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>validation</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wfsv</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
+
+
+    <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
       <scope>test</scope>
