@@ -19,6 +19,7 @@
   <modules>
     <module>core</module>
     <module>app</module>
+    <module>demo</module>
     <module>wms</module>
     <module>wfs</module>
     <module>wcs</module>

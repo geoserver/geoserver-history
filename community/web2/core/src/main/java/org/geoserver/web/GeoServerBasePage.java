@@ -82,6 +82,9 @@ public class GeoServerBasePage extends WebPage {
         //data link
         add( new BookmarkablePageLink( "data", org.geoserver.web.data.tree.DataPage.class ) 
             .add( new Label( "label", new StringResourceModel( "data", (Component) null, null ) ) ) );
+
+        add(new BookmarkablePageLink("demos", DemoPage.class)
+                .add(new Label("label", new StringResourceModel("demos", (Component)null, null))));
         
         // dev buttons
         WebMarkupContainer devButtons = new WebMarkupContainer("devButtons");

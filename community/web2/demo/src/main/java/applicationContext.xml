@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+  <bean id="layerListDemo" class="org.geoserver.web.DemoLinkInfo">
+    <property name="id" value="layerListDemo"/>
+    <property name="titleKey" value="demo.layerlist"/>
+    <property name="descriptionKey" value="demo.layerlist.description"/>
+    <property name="componentClass" value="org.geoserver.web.demo.MapPreviewPage"/>
+  </bean>
+    
+</beans>
