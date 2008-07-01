@@ -7,10 +7,20 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
 
+import org.geoserver.ows.util.KvpMap;
+import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.WebMapService;
+import org.geoserver.wms.kvp.GetMapKvpRequestReader;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -47,7 +57,38 @@ public class KMLReflector {
         this.wms = wms;
     }
 
+    public void http(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+        try{
+            WMS wms = (WMS)GeoServerExtensions.extensions(WMS.class).get(0);
+            GetMapKvpRequestReader reader = new GetMapKvpRequestReader(wms);
+            reader.setHttpRequest(request);
+
+            //parse into request object
+            Map raw = KvpUtils.normalize(request.getParameterMap());
+            KvpMap kvp = new KvpMap(raw);
+            KvpUtils.parse(kvp);
+            final GetMapRequest getMapRequest =  
+                (GetMapRequest) reader.read( (GetMapRequest) reader.createRequest(), kvp, raw );
+            getMapRequest.setBaseUrl(request.getRequestURI());
+
+            wms(getMapRequest, response);
+        } catch (Exception e){
+            throw new ServletException(e);
+        }
+    }
+
+
     public void wms(GetMapRequest request, HttpServletResponse response) throws Exception {
+        boolean vectorOverlay = false;
+        Boolean superoverlay = (Boolean)request.getFormatOptions().get("superoverlay");
+        if (superoverlay != null && superoverlay.booleanValue()){
+            MapLayerInfo[] layers = request.getLayers();
+            for (int i = 0; i < layers.length; i++){
+                if (layers[i].getFeature() != null){
+                    vectorOverlay = true;
+                }
+            }
+        }
         
         //first set up some of the normal wms defaults
         if ( request.getWidth() < 1 ) {
@@ -55,6 +96,12 @@ public class KMLReflector {
         }
         if ( request.getHeight() < 1 ) {
             request.setHeight( 1024 );
+        }
+
+        if (vectorOverlay) {
+            if (request.getBbox() == null){
+                request.setBbox(new Envelope(-180, -90, 180, 90)); // TODO: I guess this needs to be reprojected...
+            }
         }
         
         //set rest of the wms defaults
@@ -103,7 +150,5 @@ public class KMLReflector {
         transformer.setEncoding(encoding);
         transformer.setEncodeAsRegion( request.getSuperOverlay() );
         transformer.transform( request, response.getOutputStream() );
-        
-     
     }
 }
