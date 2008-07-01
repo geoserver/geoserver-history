@@ -48,6 +48,16 @@ public class AtomGeoRSSMapProducer implements GetMapProducer {
 	public void writeTo(OutputStream out) throws ServiceException, IOException {
 		AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer();
 		GetMapRequest request = map.getRequest();
+
+        String geometryEncoding = (String)request.getFormatOptions().get("encoding");
+        if ("simple".equals(geometryEncoding)){
+            tx.setGeometryEncoding(GeoRSSTransformerBase.GeometryEncoding.SIMPLE);
+        } else if ("latlong".equals(geometryEncoding)){
+            tx.setGeometryEncoding(GeoRSSTransformerBase.GeometryEncoding.LATLONG);
+        } else {
+            tx.setGeometryEncoding(GeoRSSTransformerBase.GeometryEncoding.GML);
+        }
+
         WMS wms = request.getWMS();
         Charset encoding = wms.getCharSet();
         tx.setEncoding(encoding);
