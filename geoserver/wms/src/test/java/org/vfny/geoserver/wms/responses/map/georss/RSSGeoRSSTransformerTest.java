@@ -43,7 +43,7 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
         return new OneTimeTestSetup(new RSSGeoRSSTransformerTest());
     }
 
-    public void testLatLong() throws Exception {
+    public void testLatLongInternal() throws Exception {
         WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
         map.addLayer(createMapLayer(MockData.BASIC_POLYGONS));
 
@@ -62,6 +62,70 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
             Element item = (Element) items.item(i);
             assertEquals(1, item.getElementsByTagName("geo:lat").getLength());
             assertEquals(1, item.getElementsByTagName("geo:long").getLength());
+        }
+    }
+    
+    public void testLatLongWMS() throws Exception {
+        Document document = getAsDOM(
+                "wms/reflect?format_options=encoding:latlong&format=application/rss+xml&layers=" 
+                + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart()
+                );
+
+        Element element = document.getDocumentElement();
+        assertEquals("rss", element.getNodeName());
+
+        NodeList items = element.getElementsByTagName("item");
+
+        int n = getFeatureSource(MockData.BASIC_POLYGONS).getCount(Query.ALL);
+
+        assertEquals(n, items.getLength());
+
+        for (int i = 0; i < items.getLength(); i++) {
+            Element item = (Element) items.item(i);
+            assertEquals(1, item.getElementsByTagName("geo:lat").getLength());
+            assertEquals(1, item.getElementsByTagName("geo:long").getLength());
+        }
+    }
+    
+    public void testSimpleInternal() throws Exception {
+        WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
+        map.addLayer(createMapLayer(MockData.BASIC_POLYGONS));
+
+        Document document = getRSSResponse(map, GeoRSSTransformerBase.GeometryEncoding.SIMPLE);
+
+        Element element = document.getDocumentElement();
+        assertEquals("rss", element.getNodeName());
+
+        NodeList entries = element.getElementsByTagName("item");
+
+        int n = getFeatureSource(MockData.BASIC_POLYGONS).getCount(Query.ALL);
+
+        assertEquals(n, entries.getLength());
+
+        for (int i = 0; i < entries.getLength(); i++) {
+            Element entry = (Element) entries.item(i);
+            assertEquals(1, entry.getElementsByTagName("georss:polygon").getLength());
+        }
+    }
+
+    public void testSimpleWMS() throws Exception {
+        Document document = getAsDOM(
+                "wms/reflect?format_options=encoding:simple&format=application/rss+xml&layers=" 
+                + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart()
+                );
+
+        Element element = document.getDocumentElement();
+        assertEquals("rss", element.getNodeName());
+
+        NodeList entries = element.getElementsByTagName("item");
+
+        int n = getFeatureSource(MockData.BASIC_POLYGONS).getCount(Query.ALL);
+
+        assertEquals(n, entries.getLength());
+
+        for (int i = 0; i < entries.getLength(); i++) {
+            Element entry = (Element) entries.item(i);
+            assertEquals(1, entry.getElementsByTagName("georss:polygon").getLength());
         }
     }
 

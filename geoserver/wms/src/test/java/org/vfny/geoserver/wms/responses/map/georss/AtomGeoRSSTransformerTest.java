@@ -38,7 +38,7 @@ public class AtomGeoRSSTransformerTest extends WMSTestSupport {
         map.addLayer(createMapLayer(MockData.BASIC_POLYGONS));
     }
 
-    public void testLatLong() throws Exception {
+    public void testLatLongInternal() throws Exception {
         AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer();
         tx.setGeometryEncoding(AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
         tx.setIndentation(2);
@@ -65,7 +65,29 @@ public class AtomGeoRSSTransformerTest extends WMSTestSupport {
         }
     }
 
-    public void testSimple() throws Exception {
+    public void testLatLongWMS() throws Exception {
+        Document document = getAsDOM(
+                "wms/reflect?format_options=encoding:latlong&format=application/atom+xml&layers=" 
+                + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart()
+                );
+
+        Element element = document.getDocumentElement();
+        assertEquals("feed", element.getNodeName());
+
+        NodeList entries = element.getElementsByTagName("entry");
+
+        int n = getFeatureSource(MockData.BASIC_POLYGONS).getCount(Query.ALL);
+
+        assertEquals(n, entries.getLength());
+
+        for (int i = 0; i < entries.getLength(); i++) {
+            Element entry = (Element) entries.item(i);
+            assertEquals(1, entry.getElementsByTagName("geo:lat").getLength());
+            assertEquals(1, entry.getElementsByTagName("geo:long").getLength());
+        }
+    }
+
+    public void testSimpleInternal() throws Exception {
         AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer();
         tx.setGeometryEncoding(AtomGeoRSSTransformer.GeometryEncoding.SIMPLE);
         tx.setIndentation(2);
@@ -75,6 +97,28 @@ public class AtomGeoRSSTransformerTest extends WMSTestSupport {
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+
+        Element element = document.getDocumentElement();
+        assertEquals("feed", element.getNodeName());
+
+        NodeList entries = element.getElementsByTagName("entry");
+
+        int n = getFeatureSource(MockData.BASIC_POLYGONS).getCount(Query.ALL);
+
+        assertEquals(n, entries.getLength());
+
+        for (int i = 0; i < entries.getLength(); i++) {
+            Element entry = (Element) entries.item(i);
+            assertEquals(1, entry.getElementsByTagName("georss:where").getLength());
+            assertEquals(1, entry.getElementsByTagName("georss:polygon").getLength());
+        }
+    }
+
+    public void testSimpleWMS() throws Exception {
+        Document document = getAsDOM(
+                "wms/reflect?format_options=encoding:simple&format=application/atom+xml&layers=" 
+                + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart()
+                );
 
         Element element = document.getDocumentElement();
         assertEquals("feed", element.getNodeName());

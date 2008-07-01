@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  * This class takes in a simple WMS request, presumably from Google Earth, and
  * produces a completed WMS request that outputs KML/KMZ. To map a request to
  * this, simple pass a "layers=myLayer" parameter to "wms/kml_reflect":
- * <b>http://localhost:8080/geoserver/wms/kml_reflect?layers=states<b>
+ * <b>http://localhost:8080/geoserver/wms/kml_reflect?layers=states</b>
  * No extra information, such as styles or EPSG code need to be passed.
  * A request to kml_reflect will return a network link for each layer
  * passed in. Each network layer makes a full WMS request with these
@@ -122,6 +122,16 @@ public class KMLReflector extends WMService {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
+            org.vfny.geoserver.wms.responses.map.kml.KMLReflector reflector =
+                (org.vfny.geoserver.wms.responses.map.kml.KMLReflector)
+                GeoServerExtensions.extensions(
+                        org.vfny.geoserver.wms.responses.map.kml.KMLReflector.class
+                        ).get(0);
+
+        reflector.http(request, response);
+        return;
+
+/*
         //set to KML mime type, so GEarth opens automatically
         response.setContentType(KMLMapProducerFactory.MIME_TYPE);
 
@@ -356,6 +366,7 @@ public class KMLReflector extends WMService {
         byte[] kml_b = sb.toString().getBytes();
         out.write(kml_b);
         out.flush();
+        */
     }
 
   private String getLookAt(Envelope e){
