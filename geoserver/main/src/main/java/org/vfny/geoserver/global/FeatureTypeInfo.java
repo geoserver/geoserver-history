@@ -268,8 +268,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     public FeatureTypeInfo( LayerInfo layer, Catalog catalog ) {
         this.layer = layer;
         this.catalog = catalog;
-        featureType = (org.geoserver.catalog.FeatureTypeInfo) layer.getResource();
-        
+        if (layer != null)
+            featureType = (org.geoserver.catalog.FeatureTypeInfo) layer.getResource();
     }
 
     /**
