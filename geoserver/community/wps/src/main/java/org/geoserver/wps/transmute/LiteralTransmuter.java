@@ -15,5 +15,5 @@ public interface LiteralTransmuter extends Transmuter
 
     Object decode(String str);
 
-    Object encode(Object obj);
+    String encode(Object obj);
 }

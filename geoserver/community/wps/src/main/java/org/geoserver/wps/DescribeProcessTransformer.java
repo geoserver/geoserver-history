@@ -62,8 +62,6 @@ public abstract class DescribeProcessTransformer extends TransformerBase
             public DescribeProcessTranslator1_0(ContentHandler handler)
             {
                 super(handler, null, null);
-
-                
             }
 
             public void encode(Object object) throws IllegalArgumentException

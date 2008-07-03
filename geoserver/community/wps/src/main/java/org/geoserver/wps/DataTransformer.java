@@ -24,6 +24,7 @@ import net.opengis.wps.InputType;
 import net.opengis.wps.LiteralDataType;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
 
 import org.geotools.data.Parameter;
 
@@ -42,9 +43,10 @@ public class DataTransformer
 
     public DataTransformer(String urlBase)
     {
-    	this.urlBase = urlBase;
+        this.urlBase = urlBase;
 
         this.defaultTransmuters.put(Double.class,   new DoubleTransmuter());
+        this.defaultTransmuters.put(Polygon.class,  new PolygonGML2Transmuter());
         this.defaultTransmuters.put(Geometry.class, new PolygonGML2Transmuter());
 
         // Add all default transmuters to master transmuters list
@@ -137,12 +139,11 @@ public class DataTransformer
 
         ComplexTransmuter transmuter = (ComplexTransmuter)this.getComplexTransmuter(type, input.getSchema());
 
-        // XXX get data to parse
-        Object feature0 = input.getMixed();//.getValue(0);
+        Object feature0 = input.getData().get(0);
 
-        //data = transmuter.decode(XXX);
+        //data = transmuter.decode(feature0);
 
-        return data;
+        return feature0;
     }
 
     private Object decodeLiteralData(final LiteralDataType input, final Class<?> type)
@@ -221,7 +222,7 @@ public class DataTransformer
 
         if (null == transmuter)
         {
-            throw new WPSException("NoApplicableCode", "No transmuter default registered for type " + type.toString() + "'.");
+            throw new WPSException("NoApplicableCode", "No default transmuter registered for type " + type.toString() + "'.");
         }
 
         return transmuter;

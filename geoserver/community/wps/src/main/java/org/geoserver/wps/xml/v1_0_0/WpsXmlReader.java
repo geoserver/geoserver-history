@@ -28,7 +28,7 @@ import org.geoserver.wps.WPS;
 public class WpsXmlReader extends XmlRequestReader
 {
     Logger LOGGER = Logging.getLogger( "org.geoserver.wps");
-    
+
     private WPS              wps;
     private WPSConfiguration configuration;
 

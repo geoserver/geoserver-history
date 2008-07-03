@@ -21,7 +21,7 @@ public class PolygonGML2Transmuter implements ComplexTransmuter
 {
     public String getSchema(String urlBase)
     {
-    	String a = urlBase + "ows?service=WPS&request=GetSchema&Identifier=Polygon.xsd";
+        String a = urlBase + "ows?service=WPS&request=GetSchema&Identifier=Polygon.xsd";
 
         return a;
     }

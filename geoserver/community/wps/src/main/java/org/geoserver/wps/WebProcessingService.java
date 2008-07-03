@@ -9,6 +9,8 @@
 
 package org.geoserver.wps;
 
+import java.io.OutputStream;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,7 +27,7 @@ public interface WebProcessingService
 
     TransformerBase describeProcess(DescribeProcessType request) throws WPSException;
 
-    TransformerBase execute(ExecuteType request) throws WPSException;
+    void execute(ExecuteType request, OutputStream output) throws WPSException;
 
     void getSchema(HttpServletRequest request, HttpServletResponse response) throws WPSException;
 }

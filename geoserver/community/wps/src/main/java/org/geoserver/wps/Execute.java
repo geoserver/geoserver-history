@@ -9,25 +9,189 @@
 
 package org.geoserver.wps;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import net.opengis.ows11.CodeType;
+import net.opengis.ows11.LanguageStringType;
+import net.opengis.ows11.Ows11Factory;
+import net.opengis.wps.WpsFactory;
+import org.geotools.wps.WPSConfiguration;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Encoder;
+
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.wps.transmute.ComplexTransmuter;
+import org.geoserver.wps.transmute.LiteralTransmuter;
+import org.geoserver.wps.transmute.Transmuter;
+import org.geotools.data.Parameter;
+import org.geotools.process.ProcessFactory;
+
+import net.opengis.wps.ComplexDataType;
+import net.opengis.wps.DataType;
+import net.opengis.wps.ExecuteResponseType;
 import net.opengis.wps.ExecuteType;
+import net.opengis.wps.LiteralDataType;
+import net.opengis.wps.OutputDataType;
+import net.opengis.wps.ProcessBriefType;
+import net.opengis.wps.ProcessOutputsType1;
+import net.opengis.wps.StatusType;
 
-public class Execute
+public abstract class Execute
 {
-    public WPS  wps;
-
-    public Execute(WPS wps)
+    public static class WPS1_0
     {
-        this.wps  = wps;
+    	private WPS                 wps;
+    	private Locale              locale;
+        private ExecuteType         request;
+        private Executor            executor;
+        private ExecuteResponseType response;
+        private DataTransformer     dataTransformer;
 
-        return;
-    }
+        public WPS1_0(WPS wps)
+        {
+            this.wps      = wps;
+            this.response = WpsFactory.eINSTANCE.createExecuteResponseType();
+        }
 
-    public ExecuteTransformer run(ExecuteType request) throws WPSException
-    {
-        ExecuteTransformer executeTransformer = new ExecuteTransformer.WPS1_0(this.wps);
+        public void run(Object object, OutputStream output) throws IllegalArgumentException
+        {
+        	this.request                = (ExecuteType)object;
+            this.executor               = new Executor(this.request, this.wps);
+            this.dataTransformer        = new DataTransformer(request.getBaseUrl());
+            Map<String, Object> outputs = executor.execute();
 
-        executeTransformer.setEncoding(this.wps.getCharSet());
+            if (null == this.request.getLanguage())
+            {
+                this.locale = new Locale("en-CA");
+            } else {
+                this.locale = new Locale(this.request.getLanguage());
+            }
 
-        return executeTransformer;
+            String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wps.getGeoServer().getProxyBaseUrl());
+            String serviceInstance  = proxifiedBaseUrl + "ows?service=WPS&request=GetCapabilities";
+
+            this.response.setService(this.request.getService());
+            this.response.setVersion(this.request.getVersion());
+
+            this.processBrief();
+            this.status();
+            this.outputs(outputs);
+
+            Configuration config  = new WPSConfiguration();
+            Encoder       encoder = new Encoder(config);
+            encoder.setIndenting(true);
+
+            try
+            {
+                encoder.encode(this.response, org.geotools.wps.WPS.ExecuteResponse, output);
+            } catch(IOException e) {
+                throw new WPSException("NoApplicableCode", "Error encoding execute response.");
+            }
+        }
+
+        private void outputs(Map<String, Object> outputs)
+        {
+            ProcessFactory      pf             = this.executor.getProcessFactory();
+            ProcessOutputsType1 processOutputs = WpsFactory.eINSTANCE.createProcessOutputsType1();
+
+            for(String outputName : outputs.keySet())
+            {
+                Parameter<?> param = (pf.getResultInfo(null)).get(outputName);
+
+                OutputDataType output = WpsFactory.eINSTANCE.createOutputDataType();
+
+                CodeType identifier = Ows11Factory.eINSTANCE.createCodeType();
+                identifier.setValue(param.key);
+                output.setIdentifier(identifier);
+
+                LanguageStringType title = Ows11Factory.eINSTANCE.createLanguageStringType();
+                title.setValue(param.title.toString(this.locale));
+                output.setTitle(title);
+
+                DataType data = WpsFactory.eINSTANCE.createDataType();
+
+                final Transmuter transmuter = this.dataTransformer.getDefaultTransmuter(outputs.get(outputName).getClass());
+
+                if (transmuter instanceof ComplexTransmuter)
+                {
+                    data.setComplexData(this.complexData((ComplexTransmuter)transmuter, outputs.get(outputName)));
+                } else {
+                    if (transmuter instanceof LiteralTransmuter)
+                    {
+                        data.setLiteralData(this.literalData((LiteralTransmuter)transmuter, outputs.get(outputName)));
+                    } else {
+                        throw new WPSException("NoApplicableCode", "Could not find transmuter for output " + outputName);
+                    }
+                }
+
+                output.setData(data);
+
+                processOutputs.getOutput().add(output);
+            }
+
+            this.response.setProcessOutputs(processOutputs);
+        }
+
+        private LiteralDataType literalData(LiteralTransmuter transmuter, Object value)
+        {
+            LiteralDataType data = WpsFactory.eINSTANCE.createLiteralDataType();
+
+            data.setValue(   transmuter.encode(value));
+            data.setDataType(transmuter.getEncodedType());
+
+            return data;
+        }
+
+        private ComplexDataType complexData(ComplexTransmuter transmuter, Object value)
+        {
+            ComplexDataType data = WpsFactory.eINSTANCE.createComplexDataType();
+
+            data.setSchema(  transmuter.getSchema(this.request.getBaseUrl()));
+            data.setMimeType(transmuter.getMimeType());
+            data.getData().add(value);
+
+            return data;
+        }
+
+        private void processBrief()
+        {
+            ProcessFactory     pf    = this.executor.getProcessFactory();
+            ProcessBriefType   brief = WpsFactory.eINSTANCE.createProcessBriefType();
+            LanguageStringType title = Ows11Factory.eINSTANCE.createLanguageStringType();
+
+            brief.setProcessVersion(pf.getVersion());
+            brief.setIdentifier(this.request.getIdentifier());
+            title.setValue(pf.getTitle().toString(this.locale));
+            brief.setTitle(title);
+
+            this.response.setProcess(brief);
+        }
+
+        private void status()
+        {
+            StatusType status = WpsFactory.eINSTANCE.createStatusType();
+
+            status.setProcessSucceeded("Process completed successfully.");
+
+            XMLGregorianCalendar calendar;
+
+            try
+            {
+                calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());    // XXX TODO verify UTC
+            } catch(Exception e) {
+                throw new WPSException("NoApplicableCode", e.getMessage());
+            }
+
+            status.setCreationTime(calendar);
+
+            this.response.setStatus(status);
+        }
     }
 }
