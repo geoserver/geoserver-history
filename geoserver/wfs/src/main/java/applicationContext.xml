@@ -204,7 +204,9 @@
 		class="org.geoserver.wfs.kvp.GetCapabilitiesKvpRequestReader"/>
 
 	<bean id="describeFeatureTypeKvpReader" 
-		class="org.geoserver.wfs.kvp.DescribeFeatureTypeKvpRequestReader"/>
+		class="org.geoserver.wfs.kvp.DescribeFeatureTypeKvpRequestReader">
+		<constructor-arg ref="wfsService"/>
+	</bean>
 
 	<bean id="getFeatureKvpReader" class="org.geoserver.wfs.kvp.GetFeatureKvpRequestReader">
 		<constructor-arg value="net.opengis.wfs.GetFeatureType"/>

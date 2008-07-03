@@ -67,6 +67,7 @@ public class RequestUtils {
      * content.
      * </p>
      * 
+     * @return proxyBase if given, baseUrl otherwise, either way ensuring it ends up with "/"
      */
     public static String proxifiedBaseURL(String baseUrl, String proxyBase) {
         if (proxyBase == null || proxyBase.trim().length() == 0) {
@@ -270,5 +271,43 @@ public class RequestUtils {
         }
         
         return new Version( v );
+    }
+    
+    /**
+     * Matches the specified version to the highest available list of versions.
+     * <p>
+     * When <tt>version</tt> is null the highest available version is returned.
+     * </p>
+     * @param version The version to match, may be null.
+     * @param versions The list of available versions, assumed to be sorted from 
+     * lowest to highest.
+     * 
+     * @return The highest matching version.
+     */
+    public static Version matchHighestVersion( Version version, List versions ) {
+        //match the version to the highest version provided by service
+        // that is less than or equal to the "specified" version
+        if ( version != null ) {
+            Version last = null;
+            for ( Iterator i = versions.iterator(); i.hasNext(); ) {
+                Version v = (Version) i.next();
+                if (version.compareTo( v ) < 0 ) {
+                    break;
+                }
+                last = v;
+            }
+            
+            if ( last == null ) {
+                version = (Version) versions.get(0);
+            }
+            else {
+                version = last;
+            }
+        }
+        else {
+            version = (Version) versions.get( versions.size() -1 );
+        }
+        
+        return version;
     }
 }

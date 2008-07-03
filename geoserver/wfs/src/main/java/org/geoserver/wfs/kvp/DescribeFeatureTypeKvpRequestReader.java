@@ -7,10 +7,17 @@ package org.geoserver.wfs.kvp;
 import net.opengis.wfs.DescribeFeatureTypeType;
 import java.util.Map;
 
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.wfs.WebFeatureService;
+import org.geotools.util.Version;
+
 
 public class DescribeFeatureTypeKvpRequestReader extends WFSKvpRequestReader {
-    public DescribeFeatureTypeKvpRequestReader() {
+    WebFeatureService wfs;
+    
+    public DescribeFeatureTypeKvpRequestReader(WebFeatureService wfs) {
         super(DescribeFeatureTypeType.class);
+        this.wfs = wfs;
     }
 
     public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
@@ -22,7 +29,10 @@ public class DescribeFeatureTypeKvpRequestReader extends WFSKvpRequestReader {
         DescribeFeatureTypeType describeFeatureType = (DescribeFeatureTypeType) request;
 
         if (!describeFeatureType.isSetOutputFormat()) {
-            if (describeFeatureType.getVersion().startsWith("1.1")) {
+            Version version = RequestUtils.version( describeFeatureType.getVersion());
+            version = RequestUtils.matchHighestVersion(version, wfs.getVersions());
+            
+            if (!version.toString().equals( "1.0.0")) {
                 //set 1.1 default
                 describeFeatureType.setOutputFormat("text/xml; subtype=gml/3.1.1");
             } else {

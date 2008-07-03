@@ -73,30 +73,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         if (!EMFUtils.isSet(eObject, "outputFormat")) {
             //set the default
             Version version = RequestUtils.version((String) EMFUtils.get(eObject, "version"));
+            version = RequestUtils.matchHighestVersion(version, wfs.getVersions());
             
-            //match the version to the highest version provided by service
-            // that is less than or equal to the "specified" version
-            if ( version != null ) {
-                Version last = null;
-                for (Version v : wfs.getVersions() ) {
-                    if (version.compareTo( v ) < 0 ) {
-                        break;
-                    }
-                    last = v;
-                }
-                
-                if ( last == null ) {
-                    version = wfs.getVersions().get(0);
-                }
-                else {
-                    version = last;
-                }
-            }
-            else {
-                version = wfs.getVersions().get( wfs.getVersions().size() -1 );
-            }
-            
-            //EMFUtils.set( eObject, "version", version.toString() );
             if ((version != null) && version.toString().startsWith("1.0")) {
                 EMFUtils.set(eObject, "outputFormat", "GML2");
             } else {
