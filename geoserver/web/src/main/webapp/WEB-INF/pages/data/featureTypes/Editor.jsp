@@ -399,6 +399,16 @@ function prepareFormData(){
     		<html:checkbox property="cachingEnabled" />
     	</td>
     </tr>
+    <tr>
+    	<td class="label">
+    		<span class="help" title="<bean:message key="help.type.cacheMaxAge" />">
+    			<bean:message key="label.cacheMaxAge" />:
+    		</span>
+    	</td>
+    	<td class="datum">
+    		<html:text property="cacheMaxAge" size="10" />
+    	</td>
+    </tr>
     <tr> <td class="label">
              <span class="help" title="<bean:message key="help.type.searchingEnabled" />">
                  <bean:message key="label.searchingEnabled"/>:
@@ -440,17 +450,7 @@ function prepareFormData(){
             <html:text property="regionateFeatureLimit"/>
          </td>
      </tr>
-    <tr>
-    	<td class="label">
-    		<span class="help" title="<bean:message key="help.type.cacheMaxAge" />">
-    			<bean:message key="label.cacheMaxAge" />:
-    		</span>
-    	</td>
-    	<td class="datum">
-    		<html:text property="cacheMaxAge" size="10" />
-    	</td>
-    </tr>
-    
+   
     <tr>
     	<td class="label">
     		<span class="help" title="<bean:message key="help.global.maxFeatures" />">
