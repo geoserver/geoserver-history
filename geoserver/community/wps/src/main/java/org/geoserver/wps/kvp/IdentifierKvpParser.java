@@ -3,10 +3,6 @@
  * application directory.
  */
 
-/**
- *    @author lreed@refractions.net
- */
-
 package org.geoserver.wps.kvp;
 
 import java.util.List;
@@ -19,6 +15,11 @@ import net.opengis.ows11.CodeType;
 import net.opengis.ows11.Ows11Factory;
 import net.opengis.ows11.impl.Ows11FactoryImpl;
 
+/**
+ * Identifier attribute KVP parser
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class IdentifierKvpParser extends KvpParser
 {
     public IdentifierKvpParser()

@@ -3,14 +3,15 @@
  * application directory.
  */
 
-/**
- *  @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
 import org.geoserver.platform.ServiceException;
 
+/**
+ * WPS Execption class
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class WPSException extends ServiceException
 {
     public WPSException(String message)
@@ -18,7 +19,7 @@ public class WPSException extends ServiceException
         super(message);
     }
 
-    public WPSException(String message, String code)
+    public WPSException(String code, String message)
     {
         super(message, code);
     }

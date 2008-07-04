@@ -3,10 +3,6 @@
  * application directory.
  */
 
-/**
- *    @author lreed@refractions.net
- */
-
 package org.geoserver.wps.response;
 
 import java.io.IOException;
@@ -18,6 +14,9 @@ import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geotools.xml.transform.TransformerBase;
 
+/**
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class GetCapabilitiesResponse extends Response
 {
     public GetCapabilitiesResponse()
@@ -28,7 +27,8 @@ public class GetCapabilitiesResponse extends Response
     public boolean canHandle(Operation operation)
     {
         // is this a wps capabilities request?
-        return "GetCapabilities".equalsIgnoreCase(operation.getId()) && operation.getService().getId().equals("wps");
+        return "GetCapabilities".equalsIgnoreCase(operation.getId()) &&
+        	operation.getService().getId().equals("wps");
     }
 
     public String getMimeType(Object value, Operation operation)

@@ -3,24 +3,19 @@
  * application directory.
  */
 
-/**
- *  @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoValidator;
+import org.vfny.geoserver.global.ConfigurationException;
 
+/**
+ * WPS state class
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class WPS extends org.vfny.geoserver.global.Service
 {
     public static final String WEB_CONTAINER_KEY = "WPS";
-
-    private Map<String, Class>  schemaConfigs = new HashMap<String, Class>();
-    private Map<Class,  String> classSchemas  = new HashMap<Class,  String>();
 
     private GeoValidator geoValidator;
 

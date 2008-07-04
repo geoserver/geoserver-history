@@ -3,15 +3,16 @@
  * application directory.
  */
 
-/**
- * @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
 import org.geoserver.config.ServiceInfo;
 
+/**
+ * Configuration related
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public interface WPSInfo extends ServiceInfo
 {
-
+    // Intentionally Empty
 }

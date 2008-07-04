@@ -3,16 +3,16 @@
  * application directory.
  */
 
-/**
-    @author lreed@refractions.net
- */
-
 package org.geoserver.wps.kvp;
 
 import java.util.Map;
-
 import net.opengis.wps.DescribeProcessType;
 
+/**
+ * DescribeProcess KVP request reader
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class DescribeProcessKvpRequestReader extends WPSKvpRequestReader
 {
     public DescribeProcessKvpRequestReader()

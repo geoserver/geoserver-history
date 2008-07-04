@@ -3,52 +3,58 @@
  * application directory.
  */
 
-/**
- *  @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
+import java.util.Map;
+import java.util.Locale;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.Map;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import net.opengis.ows11.CodeType;
-import net.opengis.ows11.LanguageStringType;
-import net.opengis.ows11.Ows11Factory;
 import net.opengis.wps.WpsFactory;
-import org.geotools.wps.WPSConfiguration;
-import org.geotools.xml.Configuration;
-import org.geotools.xml.Encoder;
+import net.opengis.ows11.CodeType;
+import net.opengis.ows11.Ows11Factory;
+import net.opengis.ows11.LanguageStringType;
 
-import org.geoserver.ows.util.RequestUtils;
+import org.geotools.xml.Encoder;
+import org.geotools.xml.Configuration;
+import org.geotools.wps.WPSConfiguration;
+
+import org.geoserver.wps.transmute.Transmuter;
 import org.geoserver.wps.transmute.ComplexTransmuter;
 import org.geoserver.wps.transmute.LiteralTransmuter;
-import org.geoserver.wps.transmute.Transmuter;
 import org.geotools.data.Parameter;
 import org.geotools.process.ProcessFactory;
 
-import net.opengis.wps.ComplexDataType;
 import net.opengis.wps.DataType;
-import net.opengis.wps.ExecuteResponseType;
+import net.opengis.wps.StatusType;
 import net.opengis.wps.ExecuteType;
-import net.opengis.wps.LiteralDataType;
 import net.opengis.wps.OutputDataType;
+import net.opengis.wps.LiteralDataType;
+import net.opengis.wps.ComplexDataType;
 import net.opengis.wps.ProcessBriefType;
 import net.opengis.wps.ProcessOutputsType1;
-import net.opengis.wps.StatusType;
+import net.opengis.wps.ExecuteResponseType;
 
+/**
+ * Main class used to handle Execute requests
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public abstract class Execute
 {
+    /**
+     * Specific implementation for WPS 1.0.0
+     *
+     * @author Lucas Reed, Refractions Research Inc
+     */
     public static class WPS1_0
     {
-    	private WPS                 wps;
-    	private Locale              locale;
+        private WPS                 wps;
+        private Locale              locale;
         private ExecuteType         request;
         private Executor            executor;
         private ExecuteResponseType response;
@@ -60,9 +66,15 @@ public abstract class Execute
             this.response = WpsFactory.eINSTANCE.createExecuteResponseType();
         }
 
+        /**
+         * Main method for performing decoding, execution, and response
+         * @param object
+         * @param output
+         * @throws IllegalArgumentException
+         */
         public void run(Object object, OutputStream output) throws IllegalArgumentException
         {
-        	this.request                = (ExecuteType)object;
+            this.request                = (ExecuteType)object;
             this.executor               = new Executor(this.request, this.wps);
             this.dataTransformer        = new DataTransformer(request.getBaseUrl());
             Map<String, Object> outputs = executor.execute();
@@ -73,9 +85,6 @@ public abstract class Execute
             } else {
                 this.locale = new Locale(this.request.getLanguage());
             }
-
-            String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wps.getGeoServer().getProxyBaseUrl());
-            String serviceInstance  = proxifiedBaseUrl + "ows?service=WPS&request=GetCapabilities";
 
             this.response.setService(this.request.getService());
             this.response.setVersion(this.request.getVersion());
@@ -117,15 +126,19 @@ public abstract class Execute
 
                 DataType data = WpsFactory.eINSTANCE.createDataType();
 
-                final Transmuter transmuter = this.dataTransformer.getDefaultTransmuter(outputs.get(outputName).getClass());
+                // Determine the output type, Complex or Literal
+                Object outputParam = outputs.get(outputName);
 
+                final Transmuter transmuter = this.dataTransformer.getDefaultTransmuter(outputParam.getClass());
+
+                // Create appropriate response document node for given type
                 if (transmuter instanceof ComplexTransmuter)
                 {
-                    data.setComplexData(this.complexData((ComplexTransmuter)transmuter, outputs.get(outputName)));
+                    data.setComplexData(this.complexData((ComplexTransmuter)transmuter, outputParam));
                 } else {
                     if (transmuter instanceof LiteralTransmuter)
                     {
-                        data.setLiteralData(this.literalData((LiteralTransmuter)transmuter, outputs.get(outputName)));
+                        data.setLiteralData(this.literalData((LiteralTransmuter)transmuter, outputParam));
                     } else {
                         throw new WPSException("NoApplicableCode", "Could not find transmuter for output " + outputName);
                     }

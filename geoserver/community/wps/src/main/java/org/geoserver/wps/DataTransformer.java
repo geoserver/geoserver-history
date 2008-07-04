@@ -3,37 +3,39 @@
  * application directory.
  */
 
-/**
- * @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+
+import java.net.URL;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import net.opengis.wps.ComplexDataType;
-import net.opengis.wps.DataType;
-import net.opengis.wps.InputReferenceType;
-import net.opengis.wps.InputType;
-import net.opengis.wps.LiteralDataType;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
 
 import org.geotools.data.Parameter;
 
-import org.geoserver.wps.transmute.ComplexTransmuter;
+import net.opengis.wps.DataType;
+import net.opengis.wps.InputType;
+import net.opengis.wps.ComplexDataType;
+import net.opengis.wps.LiteralDataType;
+import net.opengis.wps.InputReferenceType;
+
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.Geometry;
+
+import org.geoserver.wps.transmute.Transmuter;
 import org.geoserver.wps.transmute.DoubleTransmuter;
+import org.geoserver.wps.transmute.ComplexTransmuter;
 import org.geoserver.wps.transmute.LiteralTransmuter;
 import org.geoserver.wps.transmute.PolygonGML2Transmuter;
-import org.geoserver.wps.transmute.Transmuter;
 
+/**
+ * Class for parsing and encoding inputs and results to processes.
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class DataTransformer
 {
     private List<Transmuter>            transmuters        = new ArrayList<Transmuter>();
@@ -41,10 +43,15 @@ public class DataTransformer
     private Map<String,   Parameter<?>> inputParameters;
     private String                      urlBase            = null;
 
+    /**
+     * Constructor takes server base URL
+     * @param urlBase
+     */
     public DataTransformer(String urlBase)
     {
         this.urlBase = urlBase;
 
+        // Map Java types to transmuters
         this.defaultTransmuters.put(Double.class,   new DoubleTransmuter());
         this.defaultTransmuters.put(Polygon.class,  new PolygonGML2Transmuter());
         this.defaultTransmuters.put(Geometry.class, new PolygonGML2Transmuter());
@@ -53,7 +60,12 @@ public class DataTransformer
         this.transmuters.addAll(this.defaultTransmuters.values());
     }
 
-    // Returns Map ready for execution.
+    /**
+     * Returns Map of parsed inputs ready for execution.
+     * @param inputs
+     * @param parameters
+     * @return
+     */
     public Map<String, Object> decodeInputs(final List<InputType> inputs, final Map<String, Parameter<?>> parameters)
     {
         Map<String, Object> inputMap = new HashMap<String, Object>();
@@ -82,12 +94,17 @@ public class DataTransformer
         return inputMap;
     }
 
-    // We will assume that all external reference data is complex
+    /**
+     * Fetches and decodes external data references
+     * @param identifier
+     * @param reference
+     * @return
+     */
     private Object decodeReferenceData(final String identifier, final InputReferenceType reference)
     {
         Object            data       = null;
-        Parameter<?>      param      = this.inputParameters.get(identifier);
         URL               url        = null;
+        Parameter<?>      param      = this.inputParameters.get(identifier);
         ComplexTransmuter transmuter = (ComplexTransmuter)this.getDefaultTransmuter(param.type);
 
         try
@@ -128,6 +145,7 @@ public class DataTransformer
         if (null != data.getBoundingBoxData())
         {
             // Parse bounding box data
+            throw new WPSException("NoApplicableCode", "Unimplemented");
         }
 
         return output;
@@ -135,15 +153,9 @@ public class DataTransformer
 
     private Object decodeComplexData(final ComplexDataType input, final Class<?> type)
     {
-        Object data   = null;
+        Object data = input.getData().get(0);
 
-        ComplexTransmuter transmuter = (ComplexTransmuter)this.getComplexTransmuter(type, input.getSchema());
-
-        Object feature0 = input.getData().get(0);
-
-        //data = transmuter.decode(feature0);
-
-        return feature0;
+        return data;
     }
 
     private Object decodeLiteralData(final LiteralDataType input, final Class<?> type)
@@ -157,39 +169,12 @@ public class DataTransformer
         return data;
     }
 
-    // Encode process results for transmission back to client.
-    public Map<String, Object> encodeOutputs(final Map<String, Object> outputs, final Map<String, Parameter<?>> resultInfo)
-    {
-        Map<String, Object> encoded = new HashMap<String, Object>();
-
-        Class<?> transmuter;
-
-        for(String name : outputs.keySet())
-        {
-            //transmuter = this.transmuters.get(this.getParameterType(name, resultInfo));
-
-            //if (null == transmuter)
-            //{
-            //    throw new WPSException("NoApplicableCode", "XXX");
-            //}
-        }
-
-        return encoded;
-    }
-
-    // Given a parameter name and the man in which it is defined, return the Class used to represent its data.
-    private Class<?> getParameterType(final String paramName, final Map<String, Parameter<?>> parameters)
-    {
-        Parameter<?> parameter = parameters.get(paramName);
-
-        if (null == parameter)
-        {
-            throw new WPSException("NoApplicableCode", "No input or output parameter '" + paramName + "'.");
-        }
-
-        return parameter.getClass();
-    }
-
+    /**
+     * Attempt to find ComplexTransmuter for given Java type and schema
+     * @param type
+     * @param schema
+     * @return
+     */
     public ComplexTransmuter getComplexTransmuter(final Class<?> type, final String schema)
     {
         for(Transmuter transmuter : this.transmuters)
@@ -215,7 +200,11 @@ public class DataTransformer
         throw new WPSException("NoApplicableCode", "Could not find ComplexTransmuter for '" + schema + "'.");
     }
 
-    // Return default a transmuter for a given Java type
+    /**
+     * Return default a transmuter for a given Java type
+     * @param type
+     * @return
+     */
     public Transmuter getDefaultTransmuter(final Class<?> type)
     {
         Transmuter transmuter = this.defaultTransmuters.get(type);

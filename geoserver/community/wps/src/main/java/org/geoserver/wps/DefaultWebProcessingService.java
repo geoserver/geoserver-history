@@ -3,10 +3,6 @@
  * application directory.
  */
 
-/**
- *  @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
 import java.io.OutputStream;
@@ -14,15 +10,18 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.opengis.wps.ExecuteType;
 import net.opengis.wps.GetCapabilitiesType;
 import net.opengis.wps.DescribeProcessType;
-import net.opengis.wps.ExecuteType;
 
 import org.geotools.xml.transform.TransformerBase;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+/**
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class DefaultWebProcessingService implements WebProcessingService, ApplicationContextAware
 {
     protected WPS  wps;
@@ -31,7 +30,7 @@ public class DefaultWebProcessingService implements WebProcessingService, Applic
 
     public DefaultWebProcessingService(WPS wps)
     {
-        this.wps  = wps;
+        this.wps = wps;
     }
 
     public TransformerBase getCapabilities(GetCapabilitiesType request) throws WPSException

@@ -3,16 +3,16 @@
  * application directory.
  */
 
-/**
-    @author lreed@refractions.net
-*/
-
 package org.geoserver.wps.kvp;
 
+import java.util.Map;
 import net.opengis.wps.GetCapabilitiesType;
 
-import java.util.Map;
-
+/**
+ * GetCapabilities KVP request reader
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class GetCapabilitiesKvpRequestReader extends WPSKvpRequestReader
 {
     public GetCapabilitiesKvpRequestReader()
@@ -24,7 +24,7 @@ public class GetCapabilitiesKvpRequestReader extends WPSKvpRequestReader
     {
         request = super.read(request, kvp, rawKvp);
 
-     // Version arbitration could be done at this point
+        // Version arbitration could be done at this point
 
         return request;
     }

@@ -3,19 +3,20 @@
  * application directory.
  */
 
-/**
- *    @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Implements schema publishing in support of Complex data types
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class GetSchema
 {
     public WPS wps;
@@ -25,6 +26,11 @@ public class GetSchema
         this.wps = wps;
     }
 
+    /**
+     * Fetches named schema and writes it to the response stream
+     * @param request
+     * @param response
+     */
     public void run(HttpServletRequest request, HttpServletResponse response)
     {
         String name = request.getParameter("Identifier");    // XXX TODO case may be an issue

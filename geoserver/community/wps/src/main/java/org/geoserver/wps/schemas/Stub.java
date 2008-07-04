@@ -3,12 +3,14 @@
  * application directory.
  */
 
-/**
- *  @author lreed@refractions.net
- */
-
 package org.geoserver.wps.schemas;
 
+/**
+ * Used only to reference schemas in this package
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class Stub
 {
+    // Intentionally Empty
 }

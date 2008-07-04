@@ -3,29 +3,28 @@
  * application directory.
  */
 
-/**
- * @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
 import net.opengis.wps.DescribeProcessType;
 
+/**
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class DescribeProcess
 {
     public WPS wps;
 
     public DescribeProcess(WPS wps)
     {
-        this.wps  = wps;
+        this.wps = wps;
     }
 
     public DescribeProcessTransformer run(DescribeProcessType request)
     {
-        DescribeProcessTransformer describeProcessTransformer = new DescribeProcessTransformer.WPS1_0(this.wps);
+        DescribeProcessTransformer transformer = new DescribeProcessTransformer.WPS1_0(this.wps);
 
-        describeProcessTransformer.setEncoding(this.wps.getCharSet());
+        transformer.setEncoding(this.wps.getCharSet());
 
-        return describeProcessTransformer;
+        return transformer;
     }
 }

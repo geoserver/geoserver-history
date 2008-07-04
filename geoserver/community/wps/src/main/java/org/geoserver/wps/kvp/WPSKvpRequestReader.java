@@ -3,15 +3,16 @@
  * application directory.
  */
 
-/**
-    @author lreed@refractions.net
-*/
-
 package org.geoserver.wps.kvp;
 
 import net.opengis.wps.WpsFactory;
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
 
+/**
+ * WPS KVP Request Reader
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class WPSKvpRequestReader extends EMFKvpRequestReader
 {
     public WPSKvpRequestReader(Class<?> requestBean)

@@ -3,22 +3,21 @@
  * application directory.
  */
 
-/**
- *  @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
-import org.geoserver.wps.CapabilitiesTransformer;
 import net.opengis.wps.GetCapabilitiesType;
+import org.geoserver.wps.CapabilitiesTransformer;
 
+/**
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class GetCapabilities
 {
-    public WPS  wps;
+    public WPS wps;
 
     public GetCapabilities(WPS wps)
     {
-        this.wps  = wps;
+        this.wps = wps;
     }
 
     public CapabilitiesTransformer run(GetCapabilitiesType request) throws WPSException

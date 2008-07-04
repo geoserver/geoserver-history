@@ -3,30 +3,35 @@
  * application directory.
  */
 
-/**
- * @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
-
-import net.opengis.wps.GetCapabilitiesType;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.AttributesImpl;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.xml.v1_0.OWS;
-import org.geotools.xlink.XLINK;
-import org.geotools.xml.transform.TransformerBase;
-import org.geotools.xml.transform.Translator;
-import org.geotools.filter.v1_1.OGC;
-import org.geotools.process.Processors;
-import org.geotools.process.ProcessFactory;
 
 import java.util.List;
 import java.util.Locale;
 
+import org.xml.sax.ContentHandler;
+import org.xml.sax.helpers.AttributesImpl;
+
+import org.geotools.xlink.XLINK;
+import org.geotools.filter.v1_1.OGC;
+import org.geoserver.ows.xml.v1_0.OWS;
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
+
+import net.opengis.wps.GetCapabilitiesType;
+
+import org.geotools.process.Processors;
+import org.geotools.process.ProcessFactory;
+import org.geotools.xml.transform.Translator;
+import org.geotools.xml.transform.TransformerBase;
+
+/**
+ * GetCapabilities transformer
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public abstract class CapabilitiesTransformer extends TransformerBase
 {
-    protected WPS  wps;
+    protected              WPS    wps;
 
     protected static final String WPS_URI = "http://www.opengis.net/wps";
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
@@ -38,6 +43,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase
         this.wps  = wps;
     }
 
+    /**
+     * WPS 1.0.0 specific implementation
+     *
+     * @author Lucas Reed, Refractions Research Inc
+     */
     public static class WPS1_0 extends CapabilitiesTransformer
     {
         public WPS1_0(WPS wps)
@@ -72,21 +82,24 @@ public abstract class CapabilitiesTransformer extends TransformerBase
                     this.locale = new Locale(this.request.getLanguage());
                 }
 
-                // WFS' GetCapabilitiesType extends ows.GetCapabilities, whereas WPS extends ECore.
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wps.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+                		wps.getGeoServer().getProxyBaseUrl());
 
-                AttributesImpl attributes = new AttributesImpl();
-                attributes.addAttribute("", "xmlns:xsi",          "xmlns:xsi",   "", CapabilitiesTransformer.XSI_URI);
-                attributes.addAttribute("", "xmlns",              "xmlns",       "", CapabilitiesTransformer.WPS_URI);
-                attributes.addAttribute("", "xmlns:wps",          "xmlns:wps",   "", CapabilitiesTransformer.WPS_URI);
-                attributes.addAttribute("", "xmlns:ows",          "xmlns:ows",   "", OWS.NAMESPACE);
-                attributes.addAttribute("", "version",            "version",     "", "1.0.0");
-                attributes.addAttribute("", "xmlns:ogc",          "xmlns:ogc",   "", OGC.NAMESPACE);
-                attributes.addAttribute("", "xmlns:xlink",        "xmlns:xlink", "", XLINK.NAMESPACE);
-                // XXX Have proper GetSchema reference
-                //attributes.addAttribute("", "xsi:schemaLocation", "xsi:schemaLocation", "", org.geoserver.wps.xml.v1_0_0.WPS.NAMESPACE + " " + ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wps/1.0.0/wps.xsd"));
+                AttributesImpl attrs = new AttributesImpl();
+                attrs.addAttribute("", "xmlns:xsi",          "xmlns:xsi",   "",
+                		CapabilitiesTransformer.XSI_URI);
+                attrs.addAttribute("", "xmlns",              "xmlns",       "",
+                		CapabilitiesTransformer.WPS_URI);
+                attrs.addAttribute("", "xmlns:wps",          "xmlns:wps",   "",
+                		CapabilitiesTransformer.WPS_URI);
+                attrs.addAttribute("", "xmlns:ows",          "xmlns:ows",   "", OWS.NAMESPACE);
+                attrs.addAttribute("", "version",            "version",     "", "1.0.0");
+                attrs.addAttribute("", "xmlns:ogc",          "xmlns:ogc",   "", OGC.NAMESPACE);
+                attrs.addAttribute("", "xmlns:xlink",        "xmlns:xlink", "", XLINK.NAMESPACE);
+                attrs.addAttribute("", "xsi:schemaLocation", "xsi:schemaLocation", "",
+                		"http://www.opengis.net/wps/1.0.0 ../wpsGetCapabilities_request.xsd");
 
-                start("wps:Capabilities", attributes);
+                start("wps:Capabilities", attrs);
                     this.serviceIdentification();
                     this.serviceProvider();
                     this.operationsMetadata();

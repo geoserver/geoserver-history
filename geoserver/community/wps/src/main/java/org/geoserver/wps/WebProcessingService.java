@@ -3,24 +3,23 @@
  * application directory.
  */
 
-/**
- *  @author Lucas Reed, Refractions Research, lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
 import java.io.OutputStream;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import net.opengis.wps.ExecuteType;
 import net.opengis.wps.GetCapabilitiesType;
 import net.opengis.wps.DescribeProcessType;
-import net.opengis.wps.ExecuteType;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.wps.WPSException;
 import org.geotools.xml.transform.TransformerBase;
 
+/**
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public interface WebProcessingService
 {
     TransformerBase getCapabilities(GetCapabilitiesType request) throws WPSException;

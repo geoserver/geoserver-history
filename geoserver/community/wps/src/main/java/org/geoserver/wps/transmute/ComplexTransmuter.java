@@ -3,23 +3,45 @@
  * application directory.
  */
 
-/**
- * @author lreed@refractions.net
- */
-
 package org.geoserver.wps.transmute;
 
 import java.io.InputStream;
 
+/**
+ * ComplexTransmuter interface
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public interface ComplexTransmuter extends Transmuter
 {
-    String   getSchema(String urlBase);
+    /**
+     * Returns absolute URL to the schema which defines the in
+     */
+    String getSchema(String urlBase);
 
+    /**
+     * Returns the class of the XMLConfiguration used to parse/encode
+     * @return
+     */
     Class<?> getXMLConfiguration();
 
-    String   getMimeType();
+    /**
+     * Returns mime type of encoded data
+     * @return
+     */
+    String getMimeType();
 
-    Object   decode(InputStream stream);
+    /**
+     * Used to decode external XML documents for use as process inputs
+     * @param stream
+     * @return
+     */
+    Object decode(InputStream stream);
 
-    Object   encode(Object obj);
+    /**
+     * Used to encode document for server storage
+     * @param input
+     * @return
+     */
+    Object encode(Object input);
 }

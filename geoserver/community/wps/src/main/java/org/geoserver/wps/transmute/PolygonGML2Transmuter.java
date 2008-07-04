@@ -3,10 +3,6 @@
  * application directory.
  */
 
-/**
- * @author lreed@refractions.net
- */
-
 package org.geoserver.wps.transmute;
 
 import java.io.InputStream;
@@ -17,8 +13,16 @@ import org.geotools.gml2.GMLConfiguration;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+/**
+ * ComplexTransmuter for JTS Geometry to/from GML2 Polygons
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class PolygonGML2Transmuter implements ComplexTransmuter
 {
+    /**
+     * @see ComplexTransmuter#getSchema(String)
+     */
     public String getSchema(String urlBase)
     {
         String a = urlBase + "ows?service=WPS&request=GetSchema&Identifier=Polygon.xsd";
@@ -26,26 +30,33 @@ public class PolygonGML2Transmuter implements ComplexTransmuter
         return a;
     }
 
+    /**
+     * @see Transmuter#getType()
+     */
     public Class<?> getType()
     {
         return Geometry.class;
     }
 
+    /**
+     * @see ComplexTransmuter#getXMLConfiguration()
+     */
     public Class<?> getXMLConfiguration()
     {
         return GMLConfiguration.class;
     }
 
+    /**
+     * @see ComplexTransmuter#getMimeType()
+     */
     public String getMimeType()
     {
         return "text/xml; subtype=gml/2.1.2";
     }
 
-    public String encode(Object obj)
-    {
-        throw new WPSException("NoApplicableCode", "XXX Yet to be implemented.");    // XXX TODO
-    }
-
+    /**
+     * @see ComplexTransmuter#decode(InputStream)
+     */
     public Object decode(InputStream stream)
     {
         Object        decoded = null;
@@ -68,5 +79,13 @@ public class PolygonGML2Transmuter implements ComplexTransmuter
         }
 
         return decoded;
+    }
+
+    /**
+     * @see ComplexTransmuter#encode(Object)
+     */
+    public Object encode(Object input)
+    {
+        throw new WPSException("NoApplicableCode", "Unimplemented encoder for PolygonGML2Transmuter");
     }
 }

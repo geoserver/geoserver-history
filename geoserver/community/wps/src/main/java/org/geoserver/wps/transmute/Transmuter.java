@@ -3,13 +3,17 @@
  * application directory.
  */
 
-/**
- * @author lreed@refractions.net
- */
-
 package org.geoserver.wps.transmute;
 
+/**
+ * Root transmuter interface
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public interface Transmuter
 {
+    /**
+     * Returns the Java type the transmuter decodes to
+     */
     Class<?> getType();
 }

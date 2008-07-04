@@ -3,28 +3,32 @@
  * application directory.
  */
 
-/**
- *  @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
 import java.util.Locale;
-import net.opengis.ows11.CodeType;
-import net.opengis.wps.DescribeProcessType;
+
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import org.geoserver.ows.xml.v1_0.OWS;
-import org.geotools.data.Parameter;
-import org.geotools.process.ProcessFactory;
-import org.geotools.process.Processors;
-import org.geotools.xml.transform.TransformerBase;
-import org.geotools.xml.transform.Translator;
 
+import net.opengis.ows11.CodeType;
+import net.opengis.wps.DescribeProcessType;
+
+import org.geotools.data.Parameter;
+import org.geotools.process.Processors;
+import org.geotools.process.ProcessFactory;
+import org.geotools.xml.transform.Translator;
+import org.geotools.xml.transform.TransformerBase;
+
+import org.geoserver.ows.xml.v1_0.OWS;
+import org.geoserver.wps.transmute.Transmuter;
 import org.geoserver.wps.transmute.ComplexTransmuter;
 import org.geoserver.wps.transmute.LiteralTransmuter;
-import org.geoserver.wps.transmute.Transmuter;
 
+/**
+ * DescribeProcess request response transformer
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public abstract class DescribeProcessTransformer extends TransformerBase
 {
     protected WPS wps;
@@ -36,9 +40,14 @@ public abstract class DescribeProcessTransformer extends TransformerBase
     {
         super();
 
-        this.wps  = wps;
+        this.wps = wps;
     }
 
+    /**
+     * WPS 1.0.0 specific implementation
+     *
+     * @author Lucas Reed, Refractions Research Inc
+     */
     public static class WPS1_0 extends DescribeProcessTransformer
     {
         public WPS1_0(WPS wps)
@@ -77,14 +86,16 @@ public abstract class DescribeProcessTransformer extends TransformerBase
 
                 this.dataTransformer = new DataTransformer(request.getBaseUrl());
 
-                AttributesImpl attributes = new AttributesImpl();
-                attributes.addAttribute("", "xmlns:xsi", "xmlns:xsi", "", DescribeProcessTransformer.XSI_URI);
-                attributes.addAttribute("", "xmlns",     "xmlns",     "", DescribeProcessTransformer.WPS_URI);
-                attributes.addAttribute("", "xmlns:wps", "xmlns:wps", "", DescribeProcessTransformer.WPS_URI);
-                attributes.addAttribute("", "xmlns:ows", "xmlns:ows", "", OWS.NAMESPACE);
-                attributes.addAttribute("", "version",   "version",   "", "1.0.0");
+                AttributesImpl attrs = new AttributesImpl();
+                attrs.addAttribute("", "xmlns:xsi", "xmlns:xsi", "", DescribeProcessTransformer.XSI_URI);
+                attrs.addAttribute("", "xmlns",     "xmlns",     "", DescribeProcessTransformer.WPS_URI);
+                attrs.addAttribute("", "xmlns:wps", "xmlns:wps", "", DescribeProcessTransformer.WPS_URI);
+                attrs.addAttribute("", "xmlns:ows", "xmlns:ows", "", OWS.NAMESPACE);
+                attrs.addAttribute("", "version",   "version",   "", "1.0.0");
+                attrs.addAttribute("", "xsi:schemaLocation", "xsi:schemaLocation", "",
+        			"http://www.opengis.net/wps/1.0.0 ../wpsDescribeProcess_request.xsd");
 
-                start("wps:ProcessDescriptions", attributes);
+                start("wps:ProcessDescriptions", attrs);
 
                 for (Object identifier : this.request.getIdentifier())
                 {

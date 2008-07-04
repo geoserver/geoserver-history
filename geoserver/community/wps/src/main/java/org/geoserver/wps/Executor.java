@@ -3,33 +3,39 @@
  * application directory.
  */
 
-/**
- * @author lreed@refractions.net
- */
-
 package org.geoserver.wps;
 
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.geotools.process.ProcessFactory;
-import org.geotools.process.Processors;
-import org.geotools.process.Process;
 import org.geotools.data.Parameter;
-import org.opengis.util.ProgressListener;
+import org.geotools.process.Process;
+import org.geotools.process.Processors;
+import org.geotools.process.ProcessFactory;
 
+import net.opengis.ows11.CodeType;
+import net.opengis.wps.InputType;
 import net.opengis.wps.ExecuteType;
 import net.opengis.wps.DataInputsType1;
-import net.opengis.wps.InputType;
-import net.opengis.ows11.CodeType;
+import org.opengis.util.ProgressListener;
 
+/**
+ * Executes the process defined in an Execute request
+ *
+ * @author Lucas Reed, Refractions Research Inc
+ */
 public class Executor
 {
     private Process             process;
     private Map<String, Object> inputs;
     private ProcessFactory      factory;
 
+    /**
+     * Checks and decodes the process inputs from the request
+     * @param request
+     * @param wps
+     */
     public Executor(ExecuteType request, WPS wps)
     {
         CodeType identifier = request.getIdentifier();
@@ -37,7 +43,7 @@ public class Executor
 
         if (null == factory)
         {
-            throw new WPSException("InvalidParameterValue", "Identifier");    // TODO
+            throw new WPSException("InvalidParameterValue", "Identifier");
         }
 
         // Check inputs
@@ -54,11 +60,19 @@ public class Executor
         this.process = factory.create();
     }
 
+    /**
+     * Returns the ProcessFactory for the Execute request
+     * @return
+     */
     public ProcessFactory getProcessFactory()
     {
         return this.factory;
     }
 
+    /**
+     * Executes process and returns results as Java data types
+     * @return
+     */
     public Map<String, Object> execute()
     {
         ProgressListener progress = null;
@@ -66,6 +80,11 @@ public class Executor
         return process.execute(this.inputs, progress);
     }
 
+    /**
+     * Checks request inputs against those of the requested process implementation
+     * @param processParameters
+     * @param requestInputs
+     */
     private void checkInputs(Map<String, Parameter<?>> processParameters, DataInputsType1 requestInputs)
     {
         List<String> requestInputNames = new ArrayList<String>();
@@ -90,18 +109,18 @@ public class Executor
         requestInputNames.removeAll(processInputNames);
 
         // Check for unknown input types
-        String unknownParameters = new String("");
+        StringBuffer unknownParameters = new StringBuffer("");
         for(String unknownName : requestInputNames)
         {
-            if (false == "".equals(unknownParameters))
+            if (false == "".equals(unknownParameters.toString()))
             {
-                unknownParameters += ", ";
+                unknownParameters.append(", ");
             }
 
-            unknownParameters += unknownName;
+            unknownParameters.append(unknownName);
         }
 
-        if (false == "".equals(unknownParameters))
+        if (false == "".equals(unknownParameters.toString()))
         {
             throw new WPSException("NoApplicableCode", "Uknown input parameters: " + unknownParameters);
         }
