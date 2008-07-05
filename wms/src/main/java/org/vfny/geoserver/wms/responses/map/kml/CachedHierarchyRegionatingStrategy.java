@@ -412,7 +412,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements RegionatingS
         FilterFactory2 factory = CommonFactoryFinder.getFilterFactory2(null);
         
         Filter filter = factory.bbox(
-                factory.property(source.getSchema().getDefaultGeometry().getName()), 
+                factory.property(source.getSchema().getGeometryDescriptor().getName()), 
                 bbox.getMinimum(0),
                 bbox.getMinimum(1), 
                 bbox.getMaximum(0), 

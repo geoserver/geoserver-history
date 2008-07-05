@@ -14,7 +14,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <!--dependencies>
+        <dependencies>
            <dependency>
               <groupId>sun.jdk</groupId>
               <artifactId>tools</artifactId>
@@ -22,7 +22,7 @@
               <scope>system</scope>
               <systemPath>${java.home}/../lib/tools.jar</systemPath>
             </dependency>
-        </dependencies-->
+        </dependencies>
         <executions>
           <execution>
              <id>pre</id>
@@ -42,22 +42,28 @@
                   <copy todir="${basedir}/engine/components/cite1"
                       file="${basedir}/build.properties"/>
  
-                  <!-- copy over resources from test suite -->
+                  <!-- copy over resources from test suite 
                   <copy todir="${basedir}/engine/scripts/wfs-1.0.0">
                     <fileset dir="${basedir}/tests/wfs/1.0.0/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
+                  -->
                   <copy todir="${basedir}/engine/scripts/wfs-1.1.0">
                     <fileset dir="${basedir}/tests/wfs/1.1.0/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
+                  <!--
                   <copy todir="${basedir}/engine/scripts/wms-1.1.1">
                     <fileset dir="${basedir}/tests/wms/1.1.1/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
                   <copy todir="${basedir}/engine/scripts/wcs-1.0.0">
                     <fileset dir="${basedir}/tests/wcs/1.0.0/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
+                  -->
+                  <!--
                   <copy todir="${basedir}/engine/scripts/wcs-1.1.1">
                     <fileset dir="${basedir}/tests/wcs/1.1.1/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
+                   -->
+                  
 
                   <!-- create necessary directories -->
                   <mkdir dir="${basedir}/target/server/lib"/>
@@ -105,6 +111,7 @@
             <configuration>
               <tasks>
                 <property name="tomcat.dir" value="${basedir}/target"/>
+                <property name="java.dir" value="c:\programmi\java\jdk1.5.0_09"/>
                 <ant dir="${basedir}/engine/apps/engine" target="jar"/>
                 <ant dir="${basedir}/engine/apps/manager" target="jar"/>
 		<ant dir="${basedir}/engine" target="war"/>

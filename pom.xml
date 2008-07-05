@@ -798,14 +798,15 @@
      <include>applicationContext.xml</include>
      <include>**/*.ftl</include>
      <include>**/*.css</include>
+     <include>**/*.js</include>
      <include>**/*.png</include>
      <include>**/*.gif</include>
     </includes>
     <excludes>
      <exclude>**/doc-files/**</exclude>
      <exclude>
-            org/geotools/resources/i18n/**/*.properties
-          </exclude>
+       org/geotools/resources/i18n/**/*.properties
+     </exclude>
     </excludes>
    </resource>
   </resources>
@@ -827,6 +828,7 @@
      <include>**/*.sql</include>
      <include>**/*.png</include>
      <include>**/*.gif</include>
+     <include>**/*.js</include>
      <include>**/*.properties</include>
      <include>**/*.serialized</include>
      <include>**/*.ftl</include>

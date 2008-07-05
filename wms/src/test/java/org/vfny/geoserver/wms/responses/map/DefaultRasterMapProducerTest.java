@@ -132,7 +132,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         
         for (Iterator it = typeInfos.values().iterator(); it.hasNext();) {
             FeatureTypeInfo info = (FeatureTypeInfo) it.next();
-            if(info.getPrefix().equals(MockData.CITE_PREFIX) && info.getFeatureType().getDefaultGeometry() != null)
+            if(info.getPrefix().equals(MockData.CITE_PREFIX) && info.getFeatureType().getGeometryDescriptor() != null)
                 testDefaultStyle(info.getFeatureSource());
         }
     }

@@ -309,7 +309,7 @@ public class EncodeKML {
             String[] attributes;
             boolean isRaster = false;
 
-            List<AttributeDescriptor> ats = schema.getAttributes();
+            List<AttributeDescriptor> ats = schema.getAttributeDescriptors();
             final int length = ats.size();
             attributes = new String[length];
 
@@ -322,8 +322,7 @@ public class EncodeKML {
             }
 
             try {
-                CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry()
-                                                            .getCRS();
+                CoordinateReferenceSystem sourceCrs = schema.getCoordinateReferenceSystem();
                 writer.setSourceCrs(sourceCrs); // it seems to work better getting it from the schema, here
 
                 Envelope envelope = mapContext.getAreaOfInterest();
@@ -334,8 +333,8 @@ public class EncodeKML {
 
                 //ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
                 if (!CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(),
-                            schema.getDefaultGeometry().getCRS())) {
-                    aoi = aoi.transform(schema.getDefaultGeometry().getCRS(), true);
+                            schema.getCoordinateReferenceSystem())) {
+                    aoi = aoi.transform(schema.getCoordinateReferenceSystem(), true);
                 }
 
                 filter = createBBoxFilters(schema, attributes, aoi);
@@ -358,8 +357,7 @@ public class EncodeKML {
                     }
                 }
 
-                q.setCoordinateSystem(layer.getFeatureSource().getSchema().getDefaultGeometry()
-                                           .getCRS());
+                q.setCoordinateSystem(layer.getFeatureSource().getSchema().getCoordinateReferenceSystem());
 
                 FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fSource.getFeatures(q);
 
@@ -551,7 +549,7 @@ public class EncodeKML {
         List filters = new ArrayList();
         final int length = attributes.length;
         for (int j = 0; j < length; j++) {
-            AttributeDescriptor ad = schema.getAttribute(attributes[j]);
+            AttributeDescriptor ad = schema.getDescriptor(attributes[j]);
 
             //DJB: added this for better error messages!
             if (ad == null) {

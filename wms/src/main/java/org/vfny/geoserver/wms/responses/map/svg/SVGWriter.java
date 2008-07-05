@@ -308,7 +308,7 @@ public class SVGWriter extends OutputStreamWriter {
         SimpleFeature ft;
 
         try {
-            Class gtype = featureType.getDefaultGeometry().getType().getBinding();
+            Class gtype = featureType.getGeometryDescriptor().getType().getBinding();
 
             boolean doCollect = false;
             /*
@@ -628,7 +628,7 @@ public class SVGWriter extends OutputStreamWriter {
 
                 if ((value != null) && !(value instanceof Geometry)) {
                     write(' ');
-                    write(type.getAttribute(i).getName().getLocalPart());
+                    write(type.getDescriptor(i).getName().getLocalPart());
                     write("=\"");
                     encodeAttribute(String.valueOf(value));
                     write('\"');

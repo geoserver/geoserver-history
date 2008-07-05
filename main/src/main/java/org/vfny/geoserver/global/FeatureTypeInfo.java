@@ -1032,7 +1032,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         FeatureSource fs;
         try {
             fs = featureType.getFeatureSource(null, null);
-            return fs.getSchema().getDefaultGeometry() == null;
+            return fs.getSchema().getGeometryDescriptor() == null;
         } 
         catch (Exception e) {
             throw (IOException) new IOException().initCause(e);
@@ -1392,7 +1392,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         try {
             SimpleFeatureType ftype = getFeatureType();
-            List types = ftype.getAttributes();
+            List types = ftype.getAttributeDescriptors();
             list = new ArrayList(types.size());
 
             for (int i = 0; i < types.size(); i++) {

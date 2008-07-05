@@ -148,7 +148,7 @@ public class EncodeSVG {
      * @throws IOException DOCUMENT ME!
      */
     private void writeDefs(SimpleFeatureType layer) throws IOException {
-        GeometryDescriptor gtype = layer.getDefaultGeometry();
+        GeometryDescriptor gtype = layer.getGeometryDescriptor();
         Class geometryClass = gtype.getType().getBinding();
 
         if ((geometryClass == MultiPoint.class) || (geometryClass == Point.class)) {
@@ -195,7 +195,7 @@ public class EncodeSVG {
                 Expression bboxExpression = fFac.createBBoxExpression(mapContext.getAreaOfInterest());
                 GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
                 bboxFilter.addLeftGeometry(fFac.createAttributeExpression(schema,
-                        schema.getDefaultGeometry().getName().getLocalPart()));
+                        schema.getGeometryDescriptor().getName().getLocalPart()));
                 bboxFilter.addRightGeometry(bboxExpression);
 
                 Query bboxQuery = new DefaultQuery(schema.getTypeName(), bboxFilter);

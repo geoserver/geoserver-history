@@ -322,10 +322,10 @@ public class TypesEditorForm extends ActionForm {
             DataStoreConfig dsConfig = dataConfig.getDataStore(type.getDataStoreId());
             dataStore = dsConfig.findDataStore(servletContext);
             SimpleFeatureType featureType = dataStore.getSchema(type.getName());
-            GeometryDescriptor dg = featureType.getDefaultGeometry();
-            if(dg != null && dg.getCRS() != null) {
-                nativeCRS = dg.getCRS();
-                nativeSRSWKT = dg.getCRS().toString();
+            GeometryDescriptor dg = featureType.getGeometryDescriptor();
+            if(dg != null && dg.getCoordinateReferenceSystem() != null) {
+                nativeCRS = dg.getCoordinateReferenceSystem();
+                nativeSRSWKT = dg.getCoordinateReferenceSystem().toString();
             }
         } catch(Exception e) {
             // never mind
@@ -396,7 +396,7 @@ public class TypesEditorForm extends ActionForm {
                 addList = new ArrayList(featureType.getAttributeCount());
     
                 for (int i = 0; i < featureType.getAttributeCount(); i++) {
-                    String attributeName = featureType.getAttribute(i).getLocalName();
+                    String attributeName = featureType.getDescriptor(i).getLocalName();
     
                     if (lookUpAttribute(attributeName) == null) {
                         addList.add(attributeName);
@@ -514,7 +514,7 @@ public class TypesEditorForm extends ActionForm {
 
         for (Iterator i = dtoList.iterator(); i.hasNext();) {
             AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) i.next();
-            list.add(new AttributeForm(config, schema.getAttribute(config.getName())));
+            list.add(new AttributeForm(config, schema.getDescriptor(config.getName())));
         }
 
         return list;

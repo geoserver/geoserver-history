@@ -67,7 +67,7 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
         AttributeDescriptor at = (AttributeDescriptor) propertyName.evaluate(featureType);
         if (at instanceof GeometryDescriptor) {
             GeometryDescriptor gat = (GeometryDescriptor) at;
-            return gat.getCRS();
+            return gat.getCoordinateReferenceSystem();
         } else {
             return null;
         }
@@ -473,6 +473,10 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
         public <T> T evaluate(Object object, Class<T> context) {
             T value = delegate.evaluate( object, context );
             return (T) reproject(value, propertyCrs);
+        }
+
+        public Literal getFallbackValue() {
+            return null;
         }
     }
 

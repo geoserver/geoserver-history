@@ -170,7 +170,7 @@ public class DataTransferObjectFactory {
             + "_TYPE");
         Integer epsgCode = null;
         try {
-            CRS.lookupEpsgCode( schema.getCRS(), true );
+            CRS.lookupEpsgCode( schema.getCoordinateReferenceSystem(), true );
         }
         catch( FactoryException e ) {
             // log this?
@@ -193,7 +193,7 @@ public class DataTransferObjectFactory {
      * @return
      */
     public static List generateAttributes(SimpleFeatureType schema) {
-        List attributes = schema.getAttributes();
+        List attributes = schema.getAttributeDescriptors();
         
         List list = new ArrayList(attributes.size());
 

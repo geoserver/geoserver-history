@@ -88,7 +88,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         transformers = new HashMap();
 
         // cache "default" transform
-        CoordinateReferenceSystem source = delegate.getSchema().getCRS();
+        CoordinateReferenceSystem source = delegate.getSchema().getCoordinateReferenceSystem();
 
         if (source != null) {
             MathTransform2D tx = (MathTransform2D) ReferencingFactoryFinder
@@ -216,7 +216,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         Object[] attributes = new Object[schema.getAttributeCount()];
 
         for (int i = 0; i < attributes.length; i++) {
-            AttributeDescriptor type = schema.getAttribute(i);
+            AttributeDescriptor type = schema.getDescriptor(i);
             Object object = feature.getAttribute(type.getName());
 
             if (object instanceof Geometry) {

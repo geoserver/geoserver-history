@@ -123,9 +123,9 @@ public class InsertElementHandler implements TransactionElementHandler {
                     }
                     
                     // reprojection
-                    final GeometryDescriptor defaultGeometry = store.getSchema().getDefaultGeometry();
+                    final GeometryDescriptor defaultGeometry = store.getSchema().getGeometryDescriptor();
                     if(defaultGeometry != null) {
-                        CoordinateReferenceSystem target = defaultGeometry.getCRS();
+                        CoordinateReferenceSystem target = defaultGeometry.getCoordinateReferenceSystem();
                         if (target != null) {
                             collection = new ReprojectingFeatureCollection(collection, target);
                         }
@@ -214,7 +214,7 @@ public class InsertElementHandler implements TransactionElementHandler {
      */
     void checkFeatureCoordinatesRange(FeatureCollection<SimpleFeatureType, SimpleFeature> collection)
             throws PointOutsideEnvelopeException {
-        List types = collection.getSchema().getAttributes();
+        List types = collection.getSchema().getAttributeDescriptors();
         FeatureIterator<SimpleFeature> fi = collection.features();
         try {
             while(fi.hasNext()) {
@@ -222,10 +222,10 @@ public class InsertElementHandler implements TransactionElementHandler {
                 for (int i = 0; i < types.size(); i++) {
                     if(types.get(i) instanceof GeometryDescriptor) {
                         GeometryDescriptor gat = (GeometryDescriptor) types.get(i);
-                        if(gat.getCRS() != null) {
+                        if(gat.getCoordinateReferenceSystem() != null) {
                             Geometry geom = (Geometry) f.getAttribute(i);
                             if(geom != null)
-                                JTS.checkCoordinatesRange(geom, gat.getCRS());
+                                JTS.checkCoordinatesRange(geom, gat.getCoordinateReferenceSystem());
                         }
                     }
                 }

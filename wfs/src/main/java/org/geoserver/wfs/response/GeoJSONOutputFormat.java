@@ -115,12 +115,12 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                         jsonWriter.key("id").value(feature.getID());
 
                         fType = feature.getFeatureType();
-                        types = fType.getAttributes();
+                        types = fType.getAttributeDescriptors();
 
-                        GeometryDescriptor defaultGeomType = fType.getDefaultGeometry();
+                        GeometryDescriptor defaultGeomType = fType.getGeometryDescriptor();
 
                         if (crs == null && defaultGeomType != null)
-                            crs = fType.getDefaultGeometry().getCRS();
+                            crs = fType.getGeometryDescriptor().getCoordinateReferenceSystem();
 
                         jsonWriter.key("geometry");
                         Geometry aGeom = (Geometry) feature.getDefaultGeometry();

@@ -949,7 +949,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
                 else
                     type = layer.getRemoteFeatureSource().getSchema();
                 for(int i = 0; i < type.getAttributeCount(); i++) {
-                    attributes.add(type.getAttribute(i).getLocalName());
+                    attributes.add(type.getDescriptor(i).getLocalName());
                 }
             } catch (IOException ioe) {
                 throw new RuntimeException(
@@ -996,8 +996,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 		// I guess we should assume they mean their geometry to exist in the
 		// output SRS of the
 		// request they're making.
-		if (ul.getInlineFeatureType().getDefaultGeometry()
-				.getCRS() == null) {
+		if (ul.getInlineFeatureType().getCoordinateReferenceSystem() == null) {
 			LOGGER
 					.warning("No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
 

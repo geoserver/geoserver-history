@@ -85,7 +85,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 //check that valus that are non-nillable exist
                 if (property.getValue() == null) {
                     String propertyName = property.getName().getLocalPart();
-                    AttributeDescriptor attributeType = featureType.getAttribute(propertyName);
+                    AttributeDescriptor attributeType = featureType.getDescriptor(propertyName);
 
                     if ((attributeType != null) && (attributeType.getMinOccurs() > 0)) {
                         String msg = "Property '" + attributeType.getLocalName()
@@ -149,7 +149,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
             for (int j = 0; j < update.getProperty().size(); j++) {
                 PropertyType property = (PropertyType) update.getProperty().get(j);
-                types[j] = store.getSchema().getAttribute(property.getName().getLocalPart());
+                types[j] = store.getSchema().getDescriptor(property.getName().getLocalPart());
                 values[j] = property.getValue();
                 
                 // if geometry, it may be necessary to reproject it to the native CRS before
@@ -170,7 +170,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
                     // see if the geometry has a CRS other than the default one
                     CoordinateReferenceSystem target = null;
                     if (types[j] instanceof GeometryDescriptor) {
-                        target = ((GeometryDescriptor)types[j]).getCRS();
+                        target = ((GeometryDescriptor)types[j]).getCoordinateReferenceSystem();
                     }
                     
                     if(wfs.getCiteConformanceHacks())

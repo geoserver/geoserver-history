@@ -64,10 +64,10 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
         Object[] attributes = new Object[target.getAttributeCount()];
 
         for (int i = 0; i < target.getAttributeCount(); i++) {
-            AttributeDescriptor attributeType = target.getAttribute(i);
+            AttributeDescriptor attributeType = target.getDescriptor(i);
             Object value = null;
 
-            if (source.getFeatureType().getAttribute(attributeType.getName()) != null) {
+            if (source.getFeatureType().getDescriptor(attributeType.getName()) != null) {
                 value = source.getAttribute(attributeType.getName());
             }
 
@@ -209,7 +209,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
         public void write() throws IOException {
             try {
                 for (int i = 0; i < target.getAttributeCount(); i++) {
-                    AttributeDescriptor at = target.getAttribute(i);
+                    AttributeDescriptor at = target.getDescriptor(i);
                     Object value = retyped.getAttribute(i);
                     current.setAttribute(at.getLocalName(), value);
                 }

@@ -132,7 +132,7 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
                     p2 = ((ExtensionPriority)o2).getPriority();
                 }
                 
-                return new Integer(p1).compareTo(p2);
+                return p1 - p2;
             }
         });
         
