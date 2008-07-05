@@ -221,7 +221,7 @@ public class GetFeature {
                         // if we need to force feature bounds computation, we have to load 
                         // all of the geometries, but we'll have to remove them in the 
                         // returned feature type
-                        if(wfs.isFeatureBounding() && meta.getFeatureType().getAttribute(ati.getName()) instanceof GeometryDescriptor
+                        if(wfs.isFeatureBounding() && meta.getFeatureType().getDescriptor(ati.getName()) instanceof GeometryDescriptor
                                 && !properties.contains(ati.getName())) {
                             properties.add(ati.getName());
                             extraGeometries.add(ati.getName());
@@ -488,7 +488,7 @@ public class GetFeature {
         }
         
         //figure out the crs the data is in
-        CoordinateReferenceSystem crs = source.getSchema().getCRS();
+        CoordinateReferenceSystem crs = source.getSchema().getCoordinateReferenceSystem();
             
         // gather declared CRS
         CoordinateReferenceSystem declaredCRS = WFSReprojectionUtil.getDeclaredCrs(crs, wfsVersion);

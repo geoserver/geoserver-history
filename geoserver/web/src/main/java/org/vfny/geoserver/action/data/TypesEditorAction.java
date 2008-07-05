@@ -178,7 +178,7 @@ public class TypesEditorAction extends ConfigAction {
             FeatureSource<SimpleFeatureType, SimpleFeature> fs;
             fs = dataStore.getFeatureSource(featureType.getTypeName());
 
-            CoordinateReferenceSystem crs = fs.getSchema().getCRS();
+            CoordinateReferenceSystem crs = fs.getSchema().getCoordinateReferenceSystem();
             String s = CRS.lookupIdentifier(crs, true);
 
             if (s == null) {
@@ -258,8 +258,8 @@ public class TypesEditorAction extends ConfigAction {
             CoordinateReferenceSystem crsDeclared = CRS.decode(srs);
             CoordinateReferenceSystem original = null;
 
-            if (featureType.getDefaultGeometry() != null) {
-                original = featureType.getCRS();
+            if (featureType.getGeometryDescriptor() != null) {
+                original = featureType.getCoordinateReferenceSystem();
             }
 
             if (original == null) {
@@ -444,7 +444,7 @@ public class TypesEditorAction extends ConfigAction {
                 SimpleFeatureType fType = getFeatureType(form, request);
 
                 for (int i = 0; i < fType.getAttributeCount(); i++) {
-                    AttributeDescriptor attType = fType.getAttribute(i);
+                    AttributeDescriptor attType = fType.getDescriptor(i);
                     AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attType);
                     schemaAttributes.add(attributeConfig);
 
@@ -497,7 +497,7 @@ public class TypesEditorAction extends ConfigAction {
     }
 
     private AttributeForm newAttributeForm(String attributeName, SimpleFeatureType featureType) {
-        AttributeDescriptor attributeType = featureType.getAttribute(attributeName);
+        AttributeDescriptor attributeType = featureType.getDescriptor(attributeName);
         AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attributeType);
         AttributeForm newAttribute = new AttributeForm(attributeConfig, attributeType);
 

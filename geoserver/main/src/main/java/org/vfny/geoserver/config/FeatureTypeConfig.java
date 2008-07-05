@@ -225,13 +225,13 @@ public class FeatureTypeConfig {
         this.dataStoreId = dataStoreId;
         latLongBBox = new Envelope();
         nativeBBox = new Envelope();
-        SRS = lookupSRS(schema.getDefaultGeometry());
+        SRS = lookupSRS(schema.getGeometryDescriptor());
 
         if (generate) {
             this.schemaAttributes = new ArrayList();
 
             for (int i = 0; i < schema.getAttributeCount(); i++) {
-                AttributeDescriptor attrib = schema.getAttribute(i);
+                AttributeDescriptor attrib = schema.getDescriptor(i);
                 this.schemaAttributes.add(new AttributeTypeInfoConfig(attrib));
             }
         } else {
@@ -280,8 +280,8 @@ public class FeatureTypeConfig {
         //GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
         Integer epsgCode = null;
         try {
-            if(defaultGeometry.getCRS() != null)
-                epsgCode = CRS.lookupEpsgCode(defaultGeometry.getCRS(),true);
+            if(defaultGeometry.getCoordinateReferenceSystem() != null)
+                epsgCode = CRS.lookupEpsgCode(defaultGeometry.getCoordinateReferenceSystem(),true);
         } catch (FactoryException e) {
             //log this?
         }

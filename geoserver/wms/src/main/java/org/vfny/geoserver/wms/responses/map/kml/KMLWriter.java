@@ -1564,10 +1564,9 @@ public class KMLWriter extends OutputStreamWriter {
 
 		if (geomName != null) {
 			return ((GeometryDescriptor) f.getFeatureType()
-					.getAttribute(geomName)).getCRS();
+					.getDescriptor(geomName)).getCoordinateReferenceSystem();
 		} else {
-			return ((GeometryDescriptor) f.getFeatureType()
-					.getDefaultGeometry()).getCRS();
+			return f.getFeatureType().getCoordinateReferenceSystem();
 		}
 	}
 

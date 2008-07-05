@@ -165,7 +165,7 @@ public class FeatureWrapper extends BeansWrapper {
             // attributes, but at the same time, is a map keyed by name
             Map attributeMap = new LinkedHashMap();
             for (int i = 0; i < ft.getAttributeCount(); i++) {
-                AttributeDescriptor type = ft.getAttribute(i);
+                AttributeDescriptor type = ft.getDescriptor(i);
 
                 Map attribute = new HashMap();
                 attribute.put("name", type.getLocalName());
@@ -232,7 +232,7 @@ public class FeatureWrapper extends BeansWrapper {
         public Set entrySet() {
             if (entrySet == null) {
                 entrySet = new LinkedHashSet();
-                final List<AttributeDescriptor> types = feature.getFeatureType().getAttributes();
+                final List<AttributeDescriptor> types = feature.getFeatureType().getAttributeDescriptors();
                 final int attributeCount = types.size();
                 String attName;
                 Map attributesMap;
@@ -311,7 +311,7 @@ public class FeatureWrapper extends BeansWrapper {
             if (entrySet == null) {
                 entrySet = new LinkedHashSet();
                 final SimpleFeatureType featureType = feature.getFeatureType();
-                final AttributeDescriptor attributeType = featureType.getAttribute(attributeName);
+                final AttributeDescriptor attributeType = featureType.getDescriptor(attributeName);
                 final Object value = feature.getAttribute(attributeName);
 
                 entrySet.add(new DeferredValueEntry("value", value));

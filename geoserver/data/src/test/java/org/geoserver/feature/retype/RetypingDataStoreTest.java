@@ -180,7 +180,7 @@ public class RetypingDataStoreTest extends TestCase {
         SimpleFeature original = store.getFeatures(fidFilter).features().next();
         String newAddress = ((String) original.getAttribute("ADDRESS")) + " xxx";
 
-        store.modifyFeatures(original.getFeatureType().getAttribute("ADDRESS"), newAddress,
+        store.modifyFeatures(original.getFeatureType().getDescriptor("ADDRESS"), newAddress,
                 fidFilter);
         SimpleFeature modified = store.getFeatures(fidFilter).features().next();
         assertEquals(newAddress, modified.getAttribute("ADDRESS"));

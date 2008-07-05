@@ -229,7 +229,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                     FeatureSource<SimpleFeatureType, SimpleFeature> source;
                     source = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
                     
-                    GeometryDescriptor gd = source.getSchema().getDefaultGeometry();
+                    GeometryDescriptor gd = source.getSchema().getGeometryDescriptor();
                     if(gd == null) {
                         // geometryless layers...
                         features = source.getFeatures(query);
@@ -237,7 +237,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                         // make sure we are querying the source with the bbox in the right CRS, if
                         // not, reproject the bbox
                         ReferencedEnvelope env = new ReferencedEnvelope(mapArea);
-                        CoordinateReferenceSystem sourceCRS = gd.getCRS();
+                        CoordinateReferenceSystem sourceCRS = gd.getCoordinateReferenceSystem();
                         if(sourceCRS != null && 
                             !CRS.equalsIgnoreMetadata(mapArea.getCoordinateReferenceSystem(), sourceCRS)) {
                             env = env.transform(sourceCRS, true);

@@ -104,7 +104,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 
             // attempt to get a better SRS
             try {
-                CoordinateReferenceSystem crs = featureType.getCRS();
+                CoordinateReferenceSystem crs = featureType.getCoordinateReferenceSystem();
 
                 if (crs != null) {
                     Set idents = crs.getIdentifiers();

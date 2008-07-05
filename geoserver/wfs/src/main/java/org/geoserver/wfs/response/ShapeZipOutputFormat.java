@@ -225,8 +225,8 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
             store = (FeatureStore<SimpleFeatureType, SimpleFeature>) sfds.getFeatureSource(schema.getTypeName());
             store.addFeatures(c);
             try {
-                if(schema.getCRS() != null)
-                    sfds.forceSchemaCRS(schema.getCRS());
+                if(schema.getCoordinateReferenceSystem() != null)
+                    sfds.forceSchemaCRS(schema.getCoordinateReferenceSystem());
             } catch(Exception e) {
                 LOGGER.log(Level.WARNING, "Could not properly create the .prj file", e);
             }

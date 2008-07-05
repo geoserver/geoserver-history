@@ -270,7 +270,7 @@ public abstract class FeatureTypeSchemaBuilder {
         XSDModelGroup group = factory.createXSDModelGroup();
         group.setCompositor(XSDCompositor.SEQUENCE_LITERAL);
 
-        List attributes = featureType.getAttributes();
+        List attributes = featureType.getAttributeDescriptors();
 
         for (int i = 0; i < attributes.size(); i++) {
             AttributeDescriptor attribute = (AttributeDescriptor) attributes.get(i);

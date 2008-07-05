@@ -105,7 +105,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 while (reader.hasNext()) {
                     f = reader.next();
                     schema = f.getFeatureType();
-                    types = schema.getAttributes();
+                    types = schema.getAttributeDescriptors();
 
                     if (featuresPrinted < maxfeatures) {
                         writer.println("--------------------------------------------");
