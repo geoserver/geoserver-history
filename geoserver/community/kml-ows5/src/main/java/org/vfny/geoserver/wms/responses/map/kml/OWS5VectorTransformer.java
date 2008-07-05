@@ -8,8 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.FeatureTypeStyle;
@@ -17,6 +15,8 @@ import org.geotools.styling.OtherText;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer2;
+import org.geotools.xml.impl.DatatypeConverterImpl;
+import org.geotools.xml.impl.DatatypeConverterInterface;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -28,10 +28,9 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 
-import com.sun.xml.bind.DatatypeConverterImpl;
-
 public class OWS5VectorTransformer extends KMLVectorTransformer {
-
+    
+    private static DatatypeConverterInterface dataTypeConverter = DatatypeConverterImpl.getInstance(); 
     private boolean extendedDataModule;
     private boolean styleModule;
 
@@ -68,7 +67,6 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
 //            geometryTranslator = (KML3GeometryTranslator) geometryTransformer.createTranslator(contentHandler);
 
             // we need to make sure the data type converter is registered properly
-            DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
             // We need to create a unique ID for this schema. Given the
             // restrictions of the XML ID
@@ -104,7 +102,7 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
             // displayed? a PROPERTY=x,y,z like in GetFeature would be beneficial 
             // to GetFeatureInfo as well
             for (int i = 0; i < schema.getAttributeCount(); i++) {
-                AttributeDescriptor at = schema.getAttribute(i);
+                AttributeDescriptor at = schema.getDescriptor(i);
                 if (at instanceof GeometryDescriptor)
                     continue;
 
@@ -157,7 +155,7 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
             final int count = feature.getAttributeCount();
             final SimpleFeatureType schema = feature.getFeatureType();
             for (int i = 0; i < count; i++) {
-                final AttributeDescriptor at = schema.getAttribute(i);
+                final AttributeDescriptor at = schema.getDescriptor(i);
                 if(at instanceof GeometryDescriptor)
                     continue;
                 
@@ -177,7 +175,7 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
             final int count = feature.getAttributeCount();
             final SimpleFeatureType schema = feature.getFeatureType();
             for (int i = 0; i < count; i++) {
-                final AttributeDescriptor at = schema.getAttribute(i);
+                final AttributeDescriptor at = schema.getDescriptor(i);
                 if(at instanceof GeometryDescriptor)
                     continue;
                 
@@ -194,35 +192,35 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
                 return "";
             } else if (o instanceof Number) {
                 if (o instanceof Byte)
-                    return DatatypeConverter.printByte(((Byte) o).byteValue());
+                    return dataTypeConverter.printByte(((Byte) o).byteValue());
                 else if (o instanceof Short)
-                    return DatatypeConverter.printShort(((Short) o).shortValue());
+                    return dataTypeConverter.printShort(((Short) o).shortValue());
                 else if (o instanceof Integer)
-                    return DatatypeConverter.printInt((((Integer) o).intValue()));
+                    return dataTypeConverter.printInt((((Integer) o).intValue()));
                 else if (o instanceof Long)
-                    return DatatypeConverter.printLong(((Long) o).intValue());
+                    return dataTypeConverter.printLong(((Long) o).intValue());
                 else if (o instanceof Float)
-                    return DatatypeConverter.printInt((((Float) o).intValue()));
+                    return dataTypeConverter.printInt((((Float) o).intValue()));
                 else if (o instanceof Double)
-                    return DatatypeConverter.printInt(((Double) o).intValue());
+                    return dataTypeConverter.printInt(((Double) o).intValue());
                 else if (o instanceof BigDecimal)
-                    return DatatypeConverter.printDecimal((BigDecimal) o);
+                    return dataTypeConverter.printDecimal((BigDecimal) o);
                 else
-                    return DatatypeConverter.printString(o.toString());
+                    return dataTypeConverter.printString(o.toString());
             } else if (o instanceof Boolean) {
-                return DatatypeConverter.printBoolean((((Boolean) o).booleanValue()));
+                return dataTypeConverter.printBoolean((((Boolean) o).booleanValue()));
             } else if (o instanceof Date) {
                 final Date d = (Date) o;
                 final Calendar cal = Calendar.getInstance();
                 cal.setTime(d);
                 if (d instanceof java.sql.Date)
-                    return DatatypeConverter.printDate(cal);
+                    return dataTypeConverter.printDate(cal);
                 else if (d instanceof java.sql.Time)
-                    return DatatypeConverter.printTime(cal);
+                    return dataTypeConverter.printTime(cal);
                 else
-                    return DatatypeConverter.printDateTime(cal);
+                    return dataTypeConverter.printDateTime(cal);
             } else {
-                return DatatypeConverter.printString(o.toString());
+                return dataTypeConverter.printString(o.toString());
             }
 
         }

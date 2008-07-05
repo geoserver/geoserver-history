@@ -42,7 +42,7 @@ public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindi
             //go through each attribute, performing various hacks to make make sure things 
             // cocher
             for (int i = 0; i < featureType.getAttributeCount(); i++) {
-                AttributeDescriptor attributeType = featureType.getAttribute(i);
+                AttributeDescriptor attributeType = featureType.getDescriptor(i);
                 String name = attributeType.getLocalName();
                 Class type = attributeType.getType().getBinding();
 

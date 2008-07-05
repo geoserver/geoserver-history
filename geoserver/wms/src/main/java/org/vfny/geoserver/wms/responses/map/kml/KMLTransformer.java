@@ -345,7 +345,7 @@ public class KMLTransformer extends TransformerBase {
             Envelope envelope = mapContext.getAreaOfInterest();
             ReferencedEnvelope aoi = new ReferencedEnvelope(envelope,
                     mapContext.getCoordinateReferenceSystem());
-            CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCRS();
+            CoordinateReferenceSystem sourceCrs = schema.getCoordinateReferenceSystem();
 
             boolean reprojectBBox = (sourceCrs != null)
                 && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs); 
@@ -486,7 +486,7 @@ public class KMLTransformer extends TransformerBase {
             throws IllegalFilterException {
             List filters = new ArrayList();
             for (int j = 0; j < schema.getAttributeCount(); j++) {
-                AttributeDescriptor attType = schema.getAttribute(j);
+                AttributeDescriptor attType = schema.getDescriptor(j);
 
                 if (attType instanceof GeometryDescriptor) {
                     Filter gfilter = filterFactory.bbox(attType.getLocalName(), bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null);

@@ -135,7 +135,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
         for (MapLayer layer : mapContext.getLayers()) {
             FeatureType schema = layer.getFeatureSource().getSchema();
             boolean grid = schema.getName().getLocalPart().equals("GridCoverage")
-                    && schema.getProperty("geom") != null && schema.getProperty("grid") != null;
+                    && schema.getDescriptor("geom") != null && schema.getDescriptor("grid") != null;
             if(!grid)
                 return false;
         }

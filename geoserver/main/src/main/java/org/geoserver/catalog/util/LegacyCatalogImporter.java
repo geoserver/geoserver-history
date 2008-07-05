@@ -433,11 +433,11 @@ public class LegacyCatalogImporter {
             if ( error == null ) {
                 try {
                     SimpleFeatureType ft = ds.getSchema( featureType.getNativeName() );
-                    featureType.setNativeCRS(ft.getCRS());
+                    featureType.setNativeCRS(ft.getCoordinateReferenceSystem());
                     
                     //attributes
                     for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
-                        AttributeDescriptor ad = ft.getAttribute( x );
+                        AttributeDescriptor ad = ft.getDescriptor( x );
                         AttributeTypeInfo att = catalog.getFactory().createAttribute();
                         att.setName( ad.getLocalName() );
                         att.setMinOccurs( ad.getMinOccurs() );

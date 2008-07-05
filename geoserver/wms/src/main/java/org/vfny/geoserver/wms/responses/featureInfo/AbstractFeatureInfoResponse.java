@@ -218,8 +218,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
             for (int i = 0; i < layerCount; i++) {
                 if (requestedLayers[i].getType() == org.vfny.geoserver.global.Data.TYPE_VECTOR.intValue()) {
                     FeatureTypeInfo finfo = requestedLayers[i].getFeature();
-                    CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getDefaultGeometry()
-                                                         .getCRS();
+                    CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getCoordinateReferenceSystem();
 
                     // reproject the bounding box
                     Polygon pixelRect = geomFac.createPolygon(boundary, null);
@@ -238,7 +237,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                     Filter getFInfoFilter = null;
                     try {
-                        getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getDefaultGeometry().getLocalName()), filterFac.literal(pixelRect));
+                        getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getGeometryDescriptor().getLocalName()), filterFac.literal(pixelRect));
                     } catch (IllegalFilterException e) {
                         e.printStackTrace();
                         throw new WmsException(null, "Internal error : " + e.getMessage());

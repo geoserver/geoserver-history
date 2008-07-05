@@ -591,7 +591,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 							continue;
 						}
 
-						if (schema.getAttribute(attName) == null) {
+						if (schema.getDescriptor(attName) == null) {
 							throw new WmsException("Attribute '" + attName
 									+ "' requested for layer "
 									+ schema.getTypeName() + " does not exists");
@@ -782,8 +782,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		// I guess we should assume they mean their geometry to exist in the
 		// output SRS of the
 		// request they're making.
-		if (ul.getInlineFeatureType().getDefaultGeometry()
-				.getCRS() == null) {
+		if (ul.getInlineFeatureType().getCoordinateReferenceSystem() == null) {
 			LOGGER
 					.warning("No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
 
@@ -821,7 +820,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		for (int i = 0; i < length; i++) {
 			attName = styleAttributes[i];
 
-			if (fType.getAttribute(attName) == null) {
+			if (fType.getDescriptor(attName) == null) {
 				throw new WmsException(
 						"The requested Style can not be used with "
 								+ "this featureType.  The style specifies an attribute of "

@@ -204,7 +204,7 @@ public class ResourcePool {
                     tb.setName( info.getName() );
                     tb.setNamespaceURI( info.getNamespace().getURI() );
 
-                    for ( AttributeDescriptor ad : ft.getAttributes() ) {
+                    for ( AttributeDescriptor ad : ft.getAttributeDescriptors() ) {
                     //for ( AttributeTypeInfo att : info.getAttributes() ) {
                     //    String attName = att.getName();
                     //    
@@ -225,7 +225,7 @@ public class ResourcePool {
                                 // to be the declared
                                 boolean rebuild = false;
                                 
-                                if ( old.getCRS() == null ) {
+                                if ( old.getCoordinateReferenceSystem() == null ) {
                                     //(JD) TODO: this is kind of wierd... we should at least
                                     // log something here, and this is not thread safe!!
                                     info.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
@@ -339,8 +339,8 @@ public class ResourcePool {
         } 
         else {
             CoordinateReferenceSystem resultCRS = null;
-            GeometryDescriptor gd = fs.getSchema().getDefaultGeometry();
-            CoordinateReferenceSystem nativeCRS = gd != null ? gd.getCRS() : null;
+            GeometryDescriptor gd = fs.getSchema().getGeometryDescriptor();
+            CoordinateReferenceSystem nativeCRS = gd != null ? gd.getCoordinateReferenceSystem() : null;
             
             if (ppolicy == ProjectionPolicy.NONE && nativeCRS != null) {
                 resultCRS = nativeCRS;
@@ -352,7 +352,7 @@ public class ResourcePool {
             // make sure we create the appropriate schema, with the right crs
             SimpleFeatureType schema = getFeatureType(info);
             try {
-                if (!CRS.equalsIgnoreMetadata(resultCRS, schema.getCRS()))
+                if (!CRS.equalsIgnoreMetadata(resultCRS, schema.getCoordinateReferenceSystem()))
                     schema = FeatureTypes.transform(schema, resultCRS);
             } catch (Exception e) {
                 throw new DataSourceException(

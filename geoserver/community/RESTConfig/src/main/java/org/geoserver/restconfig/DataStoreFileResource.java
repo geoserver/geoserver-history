@@ -329,7 +329,7 @@ public class DataStoreFileResource extends Resource{
 
         FeatureSource<SimpleFeatureType, SimpleFeature> source = store.getFeatureSource(featureTypeName);
 
-        CoordinateReferenceSystem crs = source.getSchema().getCRS();
+        CoordinateReferenceSystem crs = source.getSchema().getCoordinateReferenceSystem();
         LOG.info("Trying to autoconfigure " + featureTypeName + "; found CRS " + crs);
         String s = CRS.lookupIdentifier(crs, true);
         if (s == null){

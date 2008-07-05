@@ -169,7 +169,7 @@ public class ClessifierResource extends Resource {
 			                }
 			            }
 			            
-			            Class geomT = ftType.getDefaultGeometry().getType().getBinding();
+			            Class geomT = ftType.getGeometryDescriptor().getType().getBinding();
 
 						/*
 						 * Line Symbolizer

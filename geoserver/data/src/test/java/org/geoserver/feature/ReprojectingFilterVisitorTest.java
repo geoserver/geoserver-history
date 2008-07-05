@@ -214,5 +214,9 @@ public class ReprojectingFilterVisitorTest extends TestCase {
         public <T> T evaluate(Object object, Class<T> context) {
             return (T) ls;
         }
+
+        public Literal getFallbackValue() {
+            return null;
+        }
     }
 }

@@ -399,7 +399,7 @@ public class UserStyleResource extends BaseResource {
             else if (classMethod.equals("unique"))
                 rulesL = ruBuild.uniqueIntervalClassification(ftInf
                         .getFeatureSource().getFeatures(), property);
-            Class geomT = ftInf.getFeatureType().getDefaultGeometry().getType().getBinding();
+            Class geomT = ftInf.getFeatureType().getGeometryDescriptor().getType().getBinding();
 
             /*
              * Check the number of class if more then 100 refuse to produce

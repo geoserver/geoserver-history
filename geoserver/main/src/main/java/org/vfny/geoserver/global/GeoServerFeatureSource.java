@@ -216,7 +216,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
             propNames = new String[schema.getAttributeCount()];
 
             for (int i = 0; i < schema.getAttributeCount(); i++) {
-                propNames[i] = schema.getAttribute(i).getLocalName();
+                propNames[i] = schema.getDescriptor(i).getLocalName();
             }
         } else {
             String[] queriedAtts = query.getPropertyNames();
@@ -224,7 +224,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
             List allowedAtts = new LinkedList();
 
             for (int i = 0; i < queriedAttCount; i++) {
-                if (schema.getAttribute(queriedAtts[i]) != null) {
+                if (schema.getDescriptor(queriedAtts[i]) != null) {
                     allowedAtts.add(queriedAtts[i]);
                 } else {
                     LOGGER.info("queried a not allowed property: " + queriedAtts[i]
@@ -344,7 +344,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
 
     private Query reprojectFilter(Query query) throws IOException {
         SimpleFeatureType nativeFeatureType = source.getSchema();
-        final GeometryDescriptor geom = nativeFeatureType.getDefaultGeometry();
+        final GeometryDescriptor geom = nativeFeatureType.getGeometryDescriptor();
         // if no geometry involved, no reprojection needed
         if(geom == null)
             return query;
@@ -357,7 +357,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
             // the native one usually, but it's the declared on in the force case (since in
             // that case we completely ignore the native one)
             CoordinateReferenceSystem targetCRS = null;
-            CoordinateReferenceSystem nativeCRS = geom.getCRS();
+            CoordinateReferenceSystem nativeCRS = geom.getCoordinateReferenceSystem();
             if(srsHandling == FeatureTypeInfo.FORCE) {
                 defaultCRS = declaredCRS;
                 targetCRS = declaredCRS;
@@ -404,11 +404,11 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
             FeatureCollection<SimpleFeatureType, SimpleFeature> fc)
             throws IOException, SchemaException, TransformException,
             OperationNotFoundException, FactoryException {
-        if ( fc.getSchema().getDefaultGeometry() == null ) {
+        if ( fc.getSchema().getGeometryDescriptor() == null ) {
             // reprojection and crs forcing do not make sense, bail out
             return fc;
         } 
-        CoordinateReferenceSystem nativeCRS = fc.getSchema().getDefaultGeometry().getCRS();
+        CoordinateReferenceSystem nativeCRS = fc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
         
         if(nativeCRS == null) {
             fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);

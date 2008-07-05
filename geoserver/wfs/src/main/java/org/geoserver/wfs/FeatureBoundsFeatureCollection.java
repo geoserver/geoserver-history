@@ -105,11 +105,11 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         }
 
         public Object getAttribute(int index) {
-            return delegate.getAttribute(type.getAttribute(index).getName());
+            return delegate.getAttribute(type.getDescriptor(index).getName());
         }
 
         public Object getAttribute(String path) {
-            if (type.getAttribute(path) == null)
+            if (type.getDescriptor(path) == null)
                 return null;
             return delegate.getAttribute(path);
         }
@@ -117,7 +117,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         public Object[] getAttributes(Object[] attributes) {
             Object[] retval = attributes != null ? attributes : new Object[type.getAttributeCount()];
             for (int i = 0; i < retval.length; i++) {
-                retval[i] = delegate.getAttribute(type.getAttribute(i).getName());
+                retval[i] = delegate.getAttribute(type.getDescriptor(i).getName());
             }
             return retval;
         }
@@ -132,7 +132,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
            return getPrimaryGeometry();
         }
         public Geometry getPrimaryGeometry() {
-        	 GeometryDescriptor defaultGeometry = type.getDefaultGeometry();
+        	 GeometryDescriptor defaultGeometry = type.getGeometryDescriptor();
              if(defaultGeometry == null)
                  return null;
              return (Geometry) delegate.getAttribute(defaultGeometry.getName());
