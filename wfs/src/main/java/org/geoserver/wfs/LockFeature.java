@@ -254,6 +254,12 @@ public class LockFeature {
                         }
                     } catch (IOException e) {
                         throw new WFSException(e);
+                    } finally {
+                        try {
+                            t.close();
+                        } catch(IOException e) {
+                            throw new WFSException(e);
+                        }
                     }
                 }
             }
