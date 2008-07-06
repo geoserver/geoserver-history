@@ -105,9 +105,9 @@ public class Transaction {
         } catch (WFSException e) {
             abort(request); // release any locks
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable t) {
             abort(request); // release any locks
-            throw new WFSException(e);
+            throw new WFSException(t);
         }
     }
 
