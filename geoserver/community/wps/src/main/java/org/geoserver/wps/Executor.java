@@ -25,8 +25,7 @@ import org.opengis.util.ProgressListener;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class Executor
-{
+public class Executor {
     private Process             process;
     private Map<String, Object> inputs;
     private ProcessFactory      factory;
@@ -36,13 +35,11 @@ public class Executor
      * @param request
      * @param wps
      */
-    public Executor(ExecuteType request, WPS wps)
-    {
+    public Executor(ExecuteType request, WPS wps) {
         CodeType identifier = request.getIdentifier();
         this.factory        = this.findProcessFactory(identifier);
 
-        if (null == factory)
-        {
+        if (null == factory) {
             throw new WPSException("InvalidParameterValue", "Identifier");
         }
 
@@ -64,8 +61,7 @@ public class Executor
      * Returns the ProcessFactory for the Execute request
      * @return
      */
-    public ProcessFactory getProcessFactory()
-    {
+    public ProcessFactory getProcessFactory() {
         return this.factory;
     }
 
@@ -73,8 +69,7 @@ public class Executor
      * Executes process and returns results as Java data types
      * @return
      */
-    public Map<String, Object> execute()
-    {
+    public Map<String, Object> execute() {
         ProgressListener progress = null;
 
         return process.execute(this.inputs, progress);
@@ -85,23 +80,20 @@ public class Executor
      * @param processParameters
      * @param requestInputs
      */
-    private void checkInputs(Map<String, Parameter<?>> processParameters, DataInputsType1 requestInputs)
-    {
+    private void checkInputs(Map<String, Parameter<?>> processParameters,
+    		DataInputsType1 requestInputs) {
         List<String> requestInputNames = new ArrayList<String>();
         List<String> processInputNames = new ArrayList<String>();
 
-        for(InputType input : (List<InputType>)requestInputs.getInput())
-        {
+        for(InputType input : (List<InputType>)requestInputs.getInput()) {
             requestInputNames.add(input.getIdentifier().getValue());
         }
 
         processInputNames.addAll(processParameters.keySet());
 
         // Check for missing input parameters
-        for(String processInputName : processInputNames)
-        {
-            if (false == requestInputNames.contains(processInputName))
-            {
+        for(String processInputName : processInputNames) {
+            if (false == requestInputNames.contains(processInputName)) {
                 throw new WPSException("MissingParameterValue", processInputName);
             }
         }
@@ -110,30 +102,24 @@ public class Executor
 
         // Check for unknown input types
         StringBuffer unknownParameters = new StringBuffer("");
-        for(String unknownName : requestInputNames)
-        {
-            if (false == "".equals(unknownParameters.toString()))
-            {
+        for(String unknownName : requestInputNames) {
+            if (false == "".equals(unknownParameters.toString())) {
                 unknownParameters.append(", ");
             }
 
             unknownParameters.append(unknownName);
         }
 
-        if (false == "".equals(unknownParameters.toString()))
-        {
+        if (false == "".equals(unknownParameters.toString())) {
             throw new WPSException("NoApplicableCode", "Uknown input parameters: " + unknownParameters);
         }
 
         return;
     }
 
-    private ProcessFactory findProcessFactory(CodeType name)
-    {
-        for(ProcessFactory pf : Processors.getProcessFactories())
-        {
-            if (pf.getName().equals(name.getValue()))
-            {
+    private ProcessFactory findProcessFactory(CodeType name) {
+        for(ProcessFactory pf : Processors.getProcessFactories()) {
+            if (pf.getName().equals(name.getValue())) {
                 return pf;
             }
         }

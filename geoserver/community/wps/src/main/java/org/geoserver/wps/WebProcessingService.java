@@ -20,8 +20,7 @@ import org.geotools.xml.transform.TransformerBase;
 /**
  * @author Lucas Reed, Refractions Research Inc
  */
-public interface WebProcessingService
-{
+public interface WebProcessingService {
     TransformerBase getCapabilities(GetCapabilitiesType request) throws WPSException;
 
     TransformerBase describeProcess(DescribeProcessType request) throws WPSException;

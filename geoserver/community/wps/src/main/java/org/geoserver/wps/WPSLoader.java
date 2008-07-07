@@ -17,8 +17,7 @@ import org.geoserver.platform.GeoServerResourceLoader;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class WPSLoader extends XStreamServiceLoader
-{
+public class WPSLoader extends XStreamServiceLoader {
     public WPSLoader(GeoServerResourceLoader resourceLoader) {
         super(resourceLoader);
     }
@@ -29,7 +28,7 @@ public class WPSLoader extends XStreamServiceLoader
 
     protected ServiceInfo createServiceFromScratch(GeoServer gs) {
         WPSInfoImpl wps = new WPSInfoImpl();
-        wps.setId( getServiceId() );
+        wps.setId(getServiceId());
 
         return wps;
     }

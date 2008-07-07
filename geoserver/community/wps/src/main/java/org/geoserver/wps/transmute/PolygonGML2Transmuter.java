@@ -18,13 +18,11 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class PolygonGML2Transmuter implements ComplexTransmuter
-{
+public class PolygonGML2Transmuter implements ComplexTransmuter {
     /**
      * @see ComplexTransmuter#getSchema(String)
      */
-    public String getSchema(String urlBase)
-    {
+    public String getSchema(String urlBase) {
         String a = urlBase + "ows?service=WPS&request=GetSchema&Identifier=Polygon.xsd";
 
         return a;
@@ -33,37 +31,32 @@ public class PolygonGML2Transmuter implements ComplexTransmuter
     /**
      * @see Transmuter#getType()
      */
-    public Class<?> getType()
-    {
+    public Class<?> getType() {
         return Geometry.class;
     }
 
     /**
      * @see ComplexTransmuter#getXMLConfiguration()
      */
-    public Class<?> getXMLConfiguration()
-    {
+    public Class<?> getXMLConfiguration() {
         return GMLConfiguration.class;
     }
 
     /**
      * @see ComplexTransmuter#getMimeType()
      */
-    public String getMimeType()
-    {
+    public String getMimeType() {
         return "text/xml; subtype=gml/2.1.2";
     }
 
     /**
      * @see ComplexTransmuter#decode(InputStream)
      */
-    public Object decode(InputStream stream)
-    {
+    public Object decode(InputStream stream) {
         Object        decoded = null;
         Configuration config  = null;
 
-        try
-        {
+        try {
             config = (Configuration)(this.getXMLConfiguration().getConstructor().newInstance());
         } catch(Exception e) {
             throw new WPSException("NoApplicableCode", "Failed to initialize XMLConfiguration");
@@ -71,8 +64,7 @@ public class PolygonGML2Transmuter implements ComplexTransmuter
 
         org.geotools.xml.Parser parser = new org.geotools.xml.Parser(config);
 
-        try
-        {
+        try {
             decoded = (Geometry)parser.parse(stream);
         } catch(Exception e) {
             throw new WPSException("NoApplicableCode", "Parsing error " + e);
@@ -84,8 +76,7 @@ public class PolygonGML2Transmuter implements ComplexTransmuter
     /**
      * @see ComplexTransmuter#encode(Object)
      */
-    public Object encode(Object input)
-    {
+    public Object encode(Object input) {
         throw new WPSException("NoApplicableCode", "Unimplemented encoder for PolygonGML2Transmuter");
     }
 }

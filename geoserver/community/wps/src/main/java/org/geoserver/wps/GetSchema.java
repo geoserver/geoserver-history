@@ -7,6 +7,7 @@ package org.geoserver.wps;
 
 import java.io.InputStream;
 import java.io.BufferedReader;
+import java.util.Enumeration;
 import java.io.InputStreamReader;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,12 +18,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class GetSchema
-{
+public class GetSchema {
     public WPS wps;
 
-    public GetSchema(WPS wps)
-    {
+    public GetSchema(WPS wps) {
         this.wps = wps;
     }
 
@@ -31,32 +30,36 @@ public class GetSchema
      * @param request
      * @param response
      */
-    public void run(HttpServletRequest request, HttpServletResponse response)
-    {
-        String name = request.getParameter("Identifier");    // XXX TODO case may be an issue
+    public void run(HttpServletRequest request, HttpServletResponse response) {
+    	String name = null;
 
-        if (null == name)
-        {
+        // Iterate over all parameters looking case insensitively for 'identifier'
+        for(Enumeration<String> a = request.getParameterNames(); a.hasMoreElements();) {
+        	String i = a.nextElement();
+
+        	if ("identifier".equalsIgnoreCase(i)) {
+        		name = request.getParameter(i);
+
+        		break;
+        	}
+        }
+
+        if (null == name) {
             throw new WPSException("NoApplicableCode", "No Identifier key and value.");
         }
 
         InputStream stream = org.geoserver.wps.schemas.Stub.class.getResourceAsStream(name);
 
-        if (null == stream)
-        {
+        if (null == stream) {
             throw new WPSException("NoApplicableCode", "No Schema '" + name + "'.");
         }
 
         BufferedReader bufReader = new BufferedReader(new InputStreamReader(stream));
+        StringBuilder  schema    = new StringBuilder();
+        String         line      = null;
 
-        StringBuilder schema = new StringBuilder();
-
-        String line = null;
-
-        try
-        {
-            while(null != (line = bufReader.readLine()))
-            {
+        try {
+            while(null != (line = bufReader.readLine())) {
                 schema.append(line + "\n");
             }
 
@@ -67,8 +70,7 @@ public class GetSchema
 
         response.setContentType("text/xml");
 
-        try
-        {
+        try {
             response.getOutputStream().print(schema.toString());
         } catch(Exception e) {
             throw new WPSException("NoApplicableCode", "Could not write schema to output.");

@@ -13,15 +13,12 @@ import net.opengis.wps.DescribeProcessType;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class DescribeProcessKvpRequestReader extends WPSKvpRequestReader
-{
-    public DescribeProcessKvpRequestReader()
-    {
+public class DescribeProcessKvpRequestReader extends WPSKvpRequestReader {
+    public DescribeProcessKvpRequestReader() {
         super(DescribeProcessType.class);
     }
 
-    public Object read(Object request, Map kvp, Map rawKvp) throws Exception
-    {
+    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         request = super.read(request, kvp, rawKvp);
 
         // Version arbitration could be done at this point

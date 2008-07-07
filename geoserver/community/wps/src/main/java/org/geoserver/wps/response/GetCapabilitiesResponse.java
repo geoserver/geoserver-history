@@ -17,27 +17,22 @@ import org.geotools.xml.transform.TransformerBase;
 /**
  * @author Lucas Reed, Refractions Research Inc
  */
-public class GetCapabilitiesResponse extends Response
-{
-    public GetCapabilitiesResponse()
-    {
+public class GetCapabilitiesResponse extends Response {
+    public GetCapabilitiesResponse() {
         super(TransformerBase.class);
     }
 
-    public boolean canHandle(Operation operation)
-    {
+    public boolean canHandle(Operation operation) {
         // is this a wps capabilities request?
         return "GetCapabilities".equalsIgnoreCase(operation.getId()) &&
         	operation.getService().getId().equals("wps");
     }
 
-    public String getMimeType(Object value, Operation operation)
-    {
+    public String getMimeType(Object value, Operation operation) {
         return "application/xml";
     }
 
-    public void write(Object value, OutputStream output, Operation operation) throws IOException
-    {
+    public void write(Object value, OutputStream output, Operation operation) throws IOException {
         TransformerBase tx = (TransformerBase)value;
 
         try {

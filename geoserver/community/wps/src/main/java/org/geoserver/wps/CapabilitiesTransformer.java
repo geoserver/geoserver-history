@@ -15,7 +15,6 @@ import org.geotools.xlink.XLINK;
 import org.geotools.filter.v1_1.OGC;
 import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.util.ResponseUtils;
 
 import net.opengis.wps.GetCapabilitiesType;
 
@@ -29,15 +28,13 @@ import org.geotools.xml.transform.TransformerBase;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public abstract class CapabilitiesTransformer extends TransformerBase
-{
+public abstract class CapabilitiesTransformer extends TransformerBase {
     protected              WPS    wps;
 
     protected static final String WPS_URI = "http://www.opengis.net/wps";
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    public CapabilitiesTransformer(WPS wps)
-    {
+    public CapabilitiesTransformer(WPS wps) {
         super();
 
         this.wps  = wps;
@@ -48,35 +45,28 @@ public abstract class CapabilitiesTransformer extends TransformerBase
      *
      * @author Lucas Reed, Refractions Research Inc
      */
-    public static class WPS1_0 extends CapabilitiesTransformer
-    {
-        public WPS1_0(WPS wps)
-        {
+    public static class WPS1_0 extends CapabilitiesTransformer {
+        public WPS1_0(WPS wps) {
             super(wps);
         }
 
-        public Translator createTranslator(ContentHandler handler)
-        {
+        public Translator createTranslator(ContentHandler handler) {
             return new CapabilitiesTranslator1_0(handler);
         }
 
-        public class CapabilitiesTranslator1_0 extends TranslatorSupport
-        {
+        public class CapabilitiesTranslator1_0 extends TranslatorSupport {
             public GetCapabilitiesType request;
 
             private Locale locale;
 
-            public CapabilitiesTranslator1_0(ContentHandler handler)
-            {
+            public CapabilitiesTranslator1_0(ContentHandler handler) {
                 super(handler, null, null);
             }
 
-            public void encode(Object object) throws IllegalArgumentException
-            {
+            public void encode(Object object) throws IllegalArgumentException {
                 this.request = (GetCapabilitiesType)object;
 
-                if (null == this.request.getLanguage())
-                {
+                if (null == this.request.getLanguage()) {
                     this.locale = new Locale("en-CA");
                 } else {
                     this.locale = new Locale(this.request.getLanguage());
@@ -108,8 +98,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase
                 end("wps:Capabilities");
             }
 
-            private void serviceIdentification()
-            {
+            private void serviceIdentification() {
                 start("ows:ServiceIdentification");
 
                 element("ows:Title", wps.getTitle());
@@ -126,8 +115,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase
                 end("ows:ServiceIdentification");
             }
 
-            private void serviceProvider()
-            {
+            private void serviceProvider() {
                 start("ows:ServiceProvider");
 
                 element("ows:ProviderName",   null);
@@ -137,19 +125,16 @@ public abstract class CapabilitiesTransformer extends TransformerBase
                 end("ows:ServiceProvider");
             }
 
-            private void operationsMetadata()
-            {
+            private void operationsMetadata() {
                 start("ows:OperationsMetadata", null);
                     this.operationGetCapabilities();
                 end("ows:OperationsMetadata");
             }
 
-            private void processOfferings()
-            {
+            private void processOfferings() {
                 start("wps:ProcessOfferings", null);
 
-                for(ProcessFactory pf : Processors.getProcessFactories())
-                {
+                for(ProcessFactory pf : Processors.getProcessFactories()) {
                     start("wps:Process", null);
                         element("ows:Identifier", pf.getName());
                         element("ows:Title",      pf.getTitle().toString(this.locale));
@@ -160,8 +145,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase
                 end("wps:ProcessOfferings");
             }
 
-            private void languages()
-            {
+            private void languages() {
                 start("wps:Languages", null);
                     start("wps:Default", null);
                         element("ows:Language", "en-CA");
@@ -175,8 +159,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase
 
             // Secondary methods
 
-            private void operationGetCapabilities()
-            {
+            private void operationGetCapabilities() {
                 AttributesImpl attributes = new AttributesImpl();
 
                 attributes.addAttribute("", "name", "name", "", "GetCapabilities");
@@ -188,27 +171,22 @@ public abstract class CapabilitiesTransformer extends TransformerBase
 
             // Utility methods
 
-            private void keywords(String[] keywords)
-            {
-                if ((null == keywords) || (0 == keywords.length))
-                {
+            private void keywords(String[] keywords) {
+                if ((null == keywords) || (0 == keywords.length)) {
                     return;
                 }
 
                 start("ows:Keywords");
 
-                for (int i = 0; i < keywords.length; i++)
-                {
+                for (int i = 0; i < keywords.length; i++) {
                     element("ows:Keyword", keywords[i]);
                 }
 
                 end("ows:Keywords");
             }
 
-            private void keywords(List<String> keywords)
-            {
-                if(null != keywords)
-                {
+            private void keywords(List<String> keywords) {
+                if(null != keywords) {
                     keywords((String[])keywords.toArray(new String[keywords.size()]));
                 }
             }

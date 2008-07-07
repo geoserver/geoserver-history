@@ -11,17 +11,14 @@ import org.geoserver.wps.CapabilitiesTransformer;
 /**
  * @author Lucas Reed, Refractions Research Inc
  */
-public class GetCapabilities
-{
+public class GetCapabilities {
     public WPS wps;
 
-    public GetCapabilities(WPS wps)
-    {
+    public GetCapabilities(WPS wps) {
         this.wps = wps;
     }
 
-    public CapabilitiesTransformer run(GetCapabilitiesType request) throws WPSException
-    {
+    public CapabilitiesTransformer run(GetCapabilitiesType request) throws WPSException {
         // Version detection and alternative invocation if being implemented.
         // Build XML document.
 

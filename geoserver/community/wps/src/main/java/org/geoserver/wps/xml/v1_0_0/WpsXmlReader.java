@@ -26,39 +26,33 @@ import org.geoserver.wps.WPSException;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class WpsXmlReader extends XmlRequestReader
-{
+public class WpsXmlReader extends XmlRequestReader {
     public Logger LOGGER = Logging.getLogger("org.geoserver.wps");
 
     private WPSConfiguration configuration;
 
-    public WpsXmlReader(String element, String version, WPSConfiguration configuration)
-    {
+    public WpsXmlReader(String element, String version, WPSConfiguration configuration) {
         super(new QName(org.geotools.wps.WPS.NAMESPACE, element), new Version("1.0.0"), "wps");
         this.configuration = configuration;
     }
 
-    public Object read(Object request, Reader reader, Map kvp) throws Exception
-    {
+    public Object read(Object request, Reader reader, Map kvp) throws Exception {
         Parser parser = new Parser(configuration);
         parser.setValidating(true);
 
         InputSource source = new InputSource(reader);
 
         Object parsed;
-        try
-        {
+        try {
             parsed = parser.parse(source);
         } catch(Exception e) {
             throw new WPSException("Could not parse XML request.", e);
         }
 
-        if (!parser.getValidationErrors().isEmpty())
-        {
+        if (!parser.getValidationErrors().isEmpty()) {
             WPSException exception = new WPSException("Invalid request", "InvalidParameterValue");
 
-            for(Exception error : (List<Exception>)parser.getValidationErrors())
-            {
+            for(Exception error : (List<Exception>)parser.getValidationErrors()) {
                 LOGGER.warning( error.getLocalizedMessage() );
                 exception.getExceptionText().add(error.getLocalizedMessage());
             }

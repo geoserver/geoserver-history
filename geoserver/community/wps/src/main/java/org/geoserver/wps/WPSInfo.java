@@ -12,7 +12,6 @@ import org.geoserver.config.ServiceInfo;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public interface WPSInfo extends ServiceInfo
-{
-    // Intentionally Empty
+public interface WPSInfo extends ServiceInfo {
+    // Intentionally left blank
 }

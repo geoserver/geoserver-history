@@ -13,15 +13,12 @@ import net.opengis.wps.GetCapabilitiesType;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class GetCapabilitiesKvpRequestReader extends WPSKvpRequestReader
-{
-    public GetCapabilitiesKvpRequestReader()
-    {
+public class GetCapabilitiesKvpRequestReader extends WPSKvpRequestReader {
+    public GetCapabilitiesKvpRequestReader() {
         super(GetCapabilitiesType.class);
     }
 
-    public Object read(Object request, Map kvp, Map rawKvp) throws Exception
-    {
+    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         request = super.read(request, kvp, rawKvp);
 
         // Version arbitration could be done at this point

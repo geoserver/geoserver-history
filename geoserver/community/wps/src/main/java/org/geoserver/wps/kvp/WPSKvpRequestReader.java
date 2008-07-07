@@ -13,15 +13,12 @@ import org.geoserver.ows.kvp.EMFKvpRequestReader;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class WPSKvpRequestReader extends EMFKvpRequestReader
-{
-    public WPSKvpRequestReader(Class<?> requestBean)
-    {
+public class WPSKvpRequestReader extends EMFKvpRequestReader {
+    public WPSKvpRequestReader(Class<?> requestBean) {
         super(requestBean, WpsFactory.eINSTANCE);
     }
 
-    protected WpsFactory getWpsFactory()
-    {
+    protected WpsFactory getWpsFactory() {
         return (WpsFactory)factory;
     }
 }

@@ -12,20 +12,16 @@ import org.geoserver.platform.ServiceException;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class WPSException extends ServiceException
-{
-    public WPSException(String message)
-    {
+public class WPSException extends ServiceException {
+    public WPSException(String message) {
         super(message);
     }
 
-    public WPSException(String code, String message)
-    {
+    public WPSException(String code, String message) {
         super(message, code);
     }
 
-    public WPSException(String message, Throwable cause)
-    {
+    public WPSException(String message, Throwable cause) {
         super(message, cause);
     }
 }

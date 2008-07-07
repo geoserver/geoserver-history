@@ -19,26 +19,21 @@ import org.geotools.xml.transform.TransformerBase;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class DescribeProcessResponse extends Response
-{
-    public DescribeProcessResponse()
-    {
+public class DescribeProcessResponse extends Response {
+    public DescribeProcessResponse() {
         super(TransformerBase.class);
     }
 
-    public boolean canHandle(Operation operation)
-    {
+    public boolean canHandle(Operation operation) {
         return "DescribeProcess".equalsIgnoreCase(operation.getId()) &&
         	operation.getService().getId().equals("wps");
     }
 
-    public String getMimeType(Object value, Operation operation)
-    {
+    public String getMimeType(Object value, Operation operation) {
         return "application/xml";
     }
 
-    public void write(Object value, OutputStream output, Operation operation) throws IOException
-    {
+    public void write(Object value, OutputStream output, Operation operation) throws IOException {
         TransformerBase tx = (TransformerBase)value;
 
         try {

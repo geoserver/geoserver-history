@@ -13,24 +13,20 @@ import org.vfny.geoserver.global.ConfigurationException;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class WPS extends org.vfny.geoserver.global.Service
-{
+public class WPS extends org.vfny.geoserver.global.Service {
     public static final String WEB_CONTAINER_KEY = "WPS";
 
     private GeoValidator geoValidator;
 
-    public WPS(org.geoserver.config.GeoServer geoServer) throws ConfigurationException
-    {
+    public WPS(org.geoserver.config.GeoServer geoServer) throws ConfigurationException {
         super(geoServer.getService(WPSInfo.class), geoServer);
     }
 
-    public void setValidation(GeoValidator validator)
-    {
+    public void setValidation(GeoValidator validator) {
         this.geoValidator = validator;
     }
 
-    public GeoValidator getValidation()
-    {
+    public GeoValidator getValidation() {
         return this.geoValidator;
     }
 }

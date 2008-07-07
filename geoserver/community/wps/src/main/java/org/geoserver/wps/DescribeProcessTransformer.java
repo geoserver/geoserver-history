@@ -29,15 +29,13 @@ import org.geoserver.wps.transmute.LiteralTransmuter;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public abstract class DescribeProcessTransformer extends TransformerBase
-{
+public abstract class DescribeProcessTransformer extends TransformerBase {
     protected WPS wps;
 
     protected static final String WPS_URI = "http://www.opengis.net/wps";
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    public DescribeProcessTransformer(WPS wps)
-    {
+    public DescribeProcessTransformer(WPS wps) {
         super();
 
         this.wps = wps;
@@ -48,37 +46,30 @@ public abstract class DescribeProcessTransformer extends TransformerBase
      *
      * @author Lucas Reed, Refractions Research Inc
      */
-    public static class WPS1_0 extends DescribeProcessTransformer
-    {
-        public WPS1_0(WPS wps)
-        {
+    public static class WPS1_0 extends DescribeProcessTransformer {
+        public WPS1_0(WPS wps) {
             super(wps);
         }
 
-        public Translator createTranslator(ContentHandler handler)
-        {
+        public Translator createTranslator(ContentHandler handler) {
             return new DescribeProcessTranslator1_0(handler);
         }
 
-        public class DescribeProcessTranslator1_0 extends TranslatorSupport
-        {
+        public class DescribeProcessTranslator1_0 extends TranslatorSupport {
             public DescribeProcessType request;
 
             private Locale locale;
 
             private DataTransformer dataTransformer;
 
-            public DescribeProcessTranslator1_0(ContentHandler handler)
-            {
+            public DescribeProcessTranslator1_0(ContentHandler handler) {
                 super(handler, null, null);
             }
 
-            public void encode(Object object) throws IllegalArgumentException
-            {
+            public void encode(Object object) throws IllegalArgumentException {
                 this.request = (DescribeProcessType)object;
 
-                if (null == this.request.getLanguage())
-                {
+                if (null == this.request.getLanguage()) {
                     this.locale = new Locale("en-CA");
                 } else {
                     this.locale = new Locale(this.request.getLanguage());
@@ -97,18 +88,15 @@ public abstract class DescribeProcessTransformer extends TransformerBase
 
                 start("wps:ProcessDescriptions", attrs);
 
-                for (Object identifier : this.request.getIdentifier())
-                {
+                for (Object identifier : this.request.getIdentifier()) {
                     this.processDescription(((CodeType)identifier).getValue());
                 }
 
                 end("wps:ProcessDescriptions");
             }
 
-            private void processDescription(String identifier)
-            {
-                if ("all".equals(identifier))
-                {
+            private void processDescription(String identifier) {
+                if ("all".equals(identifier)) {
                     this.processDescriptionAll();
 
                     return;
@@ -116,16 +104,14 @@ public abstract class DescribeProcessTransformer extends TransformerBase
 
                 ProcessFactory pf = this.findProcessFactory(identifier);
 
-                if (null == pf)
-                {
+                if (null == pf) {
                     throw new WPSException("Invalid identifier", "InvalidParameterValue");
                 }
 
                 this.processDescription(pf);
             }
 
-            private void processDescription(ProcessFactory pf)
-            {
+            private void processDescription(ProcessFactory pf) {
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "wps:processVersion", "wps:processVersion", "", pf.getVersion());
                 attributes.addAttribute("", "statusSupported",    "statusSupported",    "", Boolean.toString(pf.supportsProgress()));
@@ -139,20 +125,15 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 end("ProcessDescription");
             }
 
-            private void processDescriptionAll()
-            {
-                for (ProcessFactory pf : Processors.getProcessFactories())
-                {
+            private void processDescriptionAll() {
+                for (ProcessFactory pf : Processors.getProcessFactories()) {
                     this.processDescription(pf);
                 }
             }
 
-            private ProcessFactory findProcessFactory(String name)
-            {
-                for (ProcessFactory pf : Processors.getProcessFactories())
-                {
-                    if (pf.getName().equals(name))
-                    {
+            private ProcessFactory findProcessFactory(String name) {
+                for (ProcessFactory pf : Processors.getProcessFactories()) {
+                    if (pf.getName().equals(name)) {
                         return pf;
                     }
                 }
@@ -160,11 +141,9 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 return null;
             }
 
-            private void dataInputs(ProcessFactory pf)
-            {
+            private void dataInputs(ProcessFactory pf) {
                 start("DataInputs");
-                for(Parameter<?> inputIdentifier : pf.getParameterInfo().values())
-                {
+                for(Parameter<?> inputIdentifier : pf.getParameterInfo().values()) {
                     AttributesImpl attributes = new AttributesImpl();
                     attributes.addAttribute("", "minOccurs", "minOccurs", "", "" + inputIdentifier.minOccurs);
                     attributes.addAttribute("", "maxOccurs", "maxOccurs", "", "" + inputIdentifier.maxOccurs);
@@ -174,8 +153,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                         element("ows:Title",      inputIdentifier.title.toString(      this.locale));
                         element("ows:Abstract",   inputIdentifier.description.toString(this.locale));
                         Transmuter transmuter = this.dataTransformer.getDefaultTransmuter(inputIdentifier.type);
-                        if (transmuter instanceof ComplexTransmuter)
-                        {
+                        if (transmuter instanceof ComplexTransmuter) {
                             start("ComplexData");
                                 this.complexParameter((ComplexTransmuter)transmuter);
                             end("ComplexData");
@@ -187,18 +165,15 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 end("DataInputs");
             }
 
-            private void processOutputs(ProcessFactory pf)
-            {
+            private void processOutputs(ProcessFactory pf) {
                 start("ProcessOutputs");
-                for (Parameter<?> outputIdentifier : pf.getResultInfo(null).values())
-                {
+                for (Parameter<?> outputIdentifier : pf.getResultInfo(null).values()) {
                     start("Output");
                         element("ows:Identifier", outputIdentifier.key);
                         element("ows:Title",      outputIdentifier.title.toString(      this.locale));
                         element("ows:Abstract",   outputIdentifier.description.toString(this.locale));
                         Transmuter transmuter = this.dataTransformer.getDefaultTransmuter(outputIdentifier.type);
-                        if (transmuter instanceof ComplexTransmuter)
-                        {
+                        if (transmuter instanceof ComplexTransmuter) {
                             start("ComplexOutput");
                                 this.complexParameter((ComplexTransmuter)transmuter);
                             end("ComplexOutput");
@@ -210,8 +185,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 end("ProcessOutputs");
             }
 
-            private void literalData(LiteralTransmuter transmuter)
-            {
+            private void literalData(LiteralTransmuter transmuter) {
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "ows:reference", "ows:reference", "", transmuter.getEncodedType());
 
@@ -221,8 +195,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 end("LiteralData");
             }
 
-            private void complexParameter(ComplexTransmuter transmuter)
-            {
+            private void complexParameter(ComplexTransmuter transmuter) {
                 start("Default");
                     this.format(transmuter);    // In future, this should select the default format
                 end("Default");
@@ -231,8 +204,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase
                 end("Supported");
             }
 
-            private void format(ComplexTransmuter transmuter)
-            {
+            private void format(ComplexTransmuter transmuter) {
                 start("Format");
                     element("MimeType", transmuter.getMimeType());
                     element("Schema",   transmuter.getSchema(this.request.getBaseUrl()));

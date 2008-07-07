@@ -12,8 +12,7 @@ import java.io.InputStream;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public interface ComplexTransmuter extends Transmuter
-{
+public interface ComplexTransmuter extends Transmuter {
     /**
      * Returns absolute URL to the schema which defines the in
      */
