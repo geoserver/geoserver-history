@@ -13,9 +13,13 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Transaction;
 import org.geotools.data.property.PropertyDataStore;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.jts.JTS;
@@ -26,6 +30,9 @@ import org.geotools.test.*;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -48,6 +55,8 @@ import com.vividsolutions.jts.geom.Envelope;
 public class HTMLImageMapTest extends TestCase {
 
 	private static final StyleFactory sFac = CommonFactoryFinder.getStyleFactory(null);
+	
+	private final static FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 	
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(HTMLImageMapTest.class.getPackage().getName());
 	
@@ -165,7 +174,7 @@ public class HTMLImageMapTest extends TestCase {
 
             
         } catch (Exception e) {
-            e.printStackTrace();
+           
             fail(e.getMessage());
         }
         assertNotNull(out);
@@ -275,6 +284,32 @@ public class HTMLImageMapTest extends TestCase {
         assertTestResult("RoadSegments", this.mapProducer);
 
 	}
+	
+	public void testMapRuleWithFilters() throws Exception {
+		/*Filter f=filterFactory.equals(filterFactory.property("NAME"),filterFactory.literal("Route 5"));
+		DefaultQuery q=new DefaultQuery("RoadSegments",f);*/
+        final FeatureSource fs = testDS.getFeatureSource("RoadSegments");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+
+        LOGGER.info("about to create map ctx for RoadSegments with filter on name and bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        
+        map.setTransparent(false);
+                
+        Style basicStyle = getTestStyle("RoadSegmentsFiltered.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("RoadSegmentsFiltered", this.mapProducer);
+
+	}
+	
 	public void testMapProducePoints() throws Exception {
 		
         final FeatureSource fs = testDS.getFeatureSource("BuildingCenters");
