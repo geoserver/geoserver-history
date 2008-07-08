@@ -7,6 +7,7 @@ package org.geoserver.wps;
 
 import java.util.Map;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.GregorianCalendar;
@@ -182,7 +183,8 @@ public abstract class Execute {
             XMLGregorianCalendar calendar;
 
             try {
-                calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());    // XXX TODO verify UTC
+                calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
+                		new GregorianCalendar(TimeZone.getTimeZone("UTC")));
             } catch(Exception e) {
                 throw new WPSException("NoApplicableCode", e.getMessage());
             }

@@ -37,7 +37,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     public CapabilitiesTransformer(WPS wps) {
         super();
 
-        this.wps  = wps;
+        this.wps = wps;
     }
 
     /**
