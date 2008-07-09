@@ -1,6 +1,7 @@
 package org.geoserver.security;
 import org.acegisecurity.Authentication;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.security.DataAccessManager.CatalogMode;
 
 
 public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest {
@@ -94,4 +95,31 @@ public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest 
         assertTrue(wo.canAccess(milUser, basesLayer, AccessMode.READ));
         assertTrue(wo.canAccess(milUser, basesLayer, AccessMode.WRITE));
     }
+    
+    public void testDefaultMode() throws Exception {
+        DefaultDataAccessManager wo = buildManager("lockedDown.properties");
+        assertEquals(CatalogMode.HIDE, wo.mode);
+    }
+    
+    public void testHideMode() throws Exception {
+        DefaultDataAccessManager wo = buildManager("lockedDownHide.properties");
+        assertEquals(CatalogMode.HIDE, wo.mode);
+    }
+    
+    public void testChallengeMode() throws Exception {
+        DefaultDataAccessManager wo = buildManager("lockedDownChallenge.properties");
+        assertEquals(CatalogMode.CHALLENGE, wo.mode);
+    }
+    
+    public void testMixedMode() throws Exception {
+        DefaultDataAccessManager wo = buildManager("lockedDownMixed.properties");
+        assertEquals(CatalogMode.MIXED, wo.mode);
+    }
+    
+    public void testUnknownMode() throws Exception {
+        DefaultDataAccessManager wo = buildManager("lockedDownUnknown.properties");
+        // should fall back on the default and complain in the logger
+        assertEquals(CatalogMode.HIDE, wo.mode);
+    }
+    
 }
