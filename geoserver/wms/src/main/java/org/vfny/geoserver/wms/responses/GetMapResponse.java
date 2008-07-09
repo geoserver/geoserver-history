@@ -293,15 +293,7 @@ public class GetMapResponse implements Response {
                         // server to his knees
                         // and the client simply timed out
                     } catch (IOException exp) {
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE, new StringBuffer(
-                                    "Getting feature source: ").append(
-                                    exp.getMessage()).toString(), exp);
-                        }
-
-                        throw new WmsException(null, new StringBuffer(
-                                "Internal error : ").append(exp.getMessage())
-                                .toString());
+						throw new WmsException("Internal error", "", exp);
                     }
 
                     layer = new DefaultMapLayer(source, layerStyle);
