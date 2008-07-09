@@ -116,6 +116,8 @@ public class Dispatcher extends AbstractController {
 
     /** The security interceptor to be used for authorization checks **/
     OperationInterceptor securityInterceptor = null;
+    
+    public static final ThreadLocal<Request> REQUEST = new ThreadLocal<Request>();
 
     /**
      * Sets the flag to control wether the dispatcher is cite compliante.
@@ -166,6 +168,8 @@ public class Dispatcher extends AbstractController {
         Service service = null;
 
         try {
+            REQUEST.set(request);
+            
             //initialize the request
             init(request);
 
@@ -198,6 +202,8 @@ public class Dispatcher extends AbstractController {
             throw e;
         } catch (Throwable t) {
             exception(t, service, request);
+        } finally {
+            REQUEST.set(null);
         }
 
         return null;
@@ -1103,16 +1109,18 @@ public class Dispatcher extends AbstractController {
     }
 
     void exception(Throwable t, Service service, Request request) {
-        {
-            Throwable current = t;
-            while (current != null && !(current instanceof ClientStreamAbortedException)) {
-                current = current.getCause();
-            }
-            if (current instanceof ClientStreamAbortedException) {
-                logger.log(Level.FINER, "Client has closed stream", t);
-                return;
-            }
+        Throwable current = t;
+        while (current != null && !(current instanceof ClientStreamAbortedException) && !(current instanceof AcegiSecurityException)) {
+            current = current.getCause();
         }
+        if (current instanceof ClientStreamAbortedException) {
+            logger.log(Level.FINER, "Client has closed stream", t);
+            return;
+        }
+        if ( current instanceof AcegiSecurityException)
+            throw (AcegiSecurityException) current;
+        
+        
         //unwind the exception stack until we find one we know about 
         Throwable cause = t;
         while( cause != null ) {
@@ -1120,6 +1128,9 @@ public class Dispatcher extends AbstractController {
                 break;
             }
             if ( cause instanceof HttpErrorCodeException ) {
+                break;
+            }
+            if ( cause instanceof AcegiSecurityException ) {
                 break;
             }
             
@@ -1131,7 +1142,7 @@ public class Dispatcher extends AbstractController {
             // by default
             cause = new ServiceException(t);
         }
-
+        
         if (!(cause instanceof HttpErrorCodeException)) {
             logger.log(Level.SEVERE, "", t);
         } else {
