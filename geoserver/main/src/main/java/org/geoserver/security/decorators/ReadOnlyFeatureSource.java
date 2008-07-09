@@ -17,51 +17,58 @@ import org.opengis.filter.Filter;
 
 /**
  * Given a {@link FeatureSource} makes sure no write operations can be performed
- * through it
+ * through it or using a object that can be accessed thru it. Depending on the
+ * challenge policy, the object and the related ones will simply act as read
+ * only, or will throw Acegi security exceptions
  * 
  * @author Andrea Aime - TOPP
  * 
  * @param <T>
  * @param <F>
  */
-public class ReadOnlyFeatureSource<T extends FeatureType, F extends Feature> extends
-        DecoratingFeatureSource<T, F> {
+public class ReadOnlyFeatureSource<T extends FeatureType, F extends Feature>
+        extends DecoratingFeatureSource<T, F> {
 
-    public ReadOnlyFeatureSource(FeatureSource<T, F> delegate) {
+    boolean challenge;
+
+    public ReadOnlyFeatureSource(FeatureSource<T, F> delegate, boolean challenge) {
         super(delegate);
+        this.challenge = challenge;
     }
 
     public DataAccess<T, F> getDataStore() {
         final DataAccess<T, F> store = delegate.getDataStore();
-        if(store == null)
+        if (store == null)
             return null;
         else if (store instanceof DataStore)
-            return (DataAccess) new ReadOnlyDataStore((DataStore) store);
+            return (DataAccess) new ReadOnlyDataStore((DataStore) store,
+                    challenge);
         else
-            return new ReadOnlyDataAccess(store);
+            return new ReadOnlyDataAccess(store, challenge);
     }
 
     public FeatureCollection<T, F> getFeatures() throws IOException {
         final FeatureCollection<T, F> fc = delegate.getFeatures();
-        if(fc == null)
+        if (fc == null)
             return null;
         else
-            return new ReadOnlyFeatureCollection<T, F>(fc);
+            return new ReadOnlyFeatureCollection<T, F>(fc, challenge);
     }
 
-    public FeatureCollection<T, F> getFeatures(Filter filter) throws IOException {
+    public FeatureCollection<T, F> getFeatures(Filter filter)
+            throws IOException {
         final FeatureCollection<T, F> fc = delegate.getFeatures(filter);
-        if(fc == null)
+        if (fc == null)
             return null;
         else
-            return new ReadOnlyFeatureCollection<T, F>(fc);
+            return new ReadOnlyFeatureCollection<T, F>(fc, challenge);
     }
 
     public FeatureCollection<T, F> getFeatures(Query query) throws IOException {
         final FeatureCollection<T, F> fc = delegate.getFeatures(query);
-        if(fc == null)
+        if (fc == null)
             return null;
         else
-            return new ReadOnlyFeatureCollection<T, F>(fc);
+            return new ReadOnlyFeatureCollection<T, F>(fc, challenge);
     }
 }
