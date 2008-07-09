@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -145,90 +146,97 @@ public class MapPreviewAction extends GeoServerAction {
         // 3) Go through each *FeatureType* and collect information && write out config files
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
             FeatureTypeInfo layer = (FeatureTypeInfo) it.next();
-
-            if (!layer.isEnabled() || layer.isGeometryless()) {
-                continue; // if it isn't enabled, move to the next layer
+            try {
+                if (!layer.isEnabled() || layer.isGeometryless()) {
+                    continue; // if it isn't enabled, move to the next layer
+                }
+    
+                CoordinateReferenceSystem layerCrs = layer.getDeclaredCRS();
+    
+                /* A quick and efficient way to grab the bounding box is to get it
+                 * from the featuretype info where the lat/lon bbox is loaded
+                 * from the DTO. We do this with layer.getLatLongBoundingBox().
+                 * We need to reproject the bounding box from lat/lon to the layer crs
+                 * for display
+                 */
+                Envelope orig_bbox = layer.getLatLongBoundingBox();
+    
+                if ((orig_bbox.getWidth() == 0) || (orig_bbox.getHeight() == 0)) {
+                    orig_bbox.expandBy(0.1);
+                }
+    
+                ReferencedEnvelope bbox = new ReferencedEnvelope(orig_bbox, latLonCrs);
+    
+                if (!CRS.equalsIgnoreMetadata(layerCrs, latLonCrs)) {
+                    // first check if we have a native bbox
+                    bbox = layer.getBoundingBox();
+                }
+    
+                // we now have a bounding box in the same CRS as the layer
+                if ((bbox.getWidth() == 0) || (bbox.getHeight() == 0)) {
+                    bbox.expandBy(0.1);
+                }
+    
+                if (layer.isEnabled()) {
+                    // prepare strings for web output
+                    ftList.add(layer.getNameSpace().getPrefix() + "_"
+                        + layer.getFeatureType().getTypeName()); // FeatureType name
+                    ftnsList.add(layer.getNameSpace().getPrefix() + ":"
+                        + layer.getFeatureType().getTypeName());
+                    dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
+                                                                  // bounding box of the FeatureType
+    
+                    // expand bbox by 5% to allow large symbolizers to fit the map
+                    bbox.expandBy(bbox.getWidth() / 20, bbox.getHeight() / 20);
+                    bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
+                        + bbox.getMaxY());
+                    srsList.add("EPSG:" + layer.getSRS());
+        
+                        int[] imageBox = getMapWidthHeight(bbox);
+                        widthList.add(String.valueOf(imageBox[0]));
+                        heightList.add(String.valueOf(imageBox[1]));
+                        
+                     // not a coverage
+                    coverageStatus.add(LAYER_IS_VECTOR);
+                }
+            } catch(Exception e) {
+                LOGGER.log(Level.WARNING, "Error trying to access layer " + layer.getName(), e);
             }
-
-            CoordinateReferenceSystem layerCrs = layer.getDeclaredCRS();
-
-            /* A quick and efficient way to grab the bounding box is to get it
-             * from the featuretype info where the lat/lon bbox is loaded
-             * from the DTO. We do this with layer.getLatLongBoundingBox().
-             * We need to reproject the bounding box from lat/lon to the layer crs
-             * for display
-             */
-            Envelope orig_bbox = layer.getLatLongBoundingBox();
-
-            if ((orig_bbox.getWidth() == 0) || (orig_bbox.getHeight() == 0)) {
-                orig_bbox.expandBy(0.1);
-            }
-
-            ReferencedEnvelope bbox = new ReferencedEnvelope(orig_bbox, latLonCrs);
-
-            if (!CRS.equalsIgnoreMetadata(layerCrs, latLonCrs)) {
-                // first check if we have a native bbox
-                bbox = layer.getBoundingBox();
-            }
-
-            // we now have a bounding box in the same CRS as the layer
-            if ((bbox.getWidth() == 0) || (bbox.getHeight() == 0)) {
-                bbox.expandBy(0.1);
-            }
-
-            if (layer.isEnabled()) {
-                // prepare strings for web output
-                ftList.add(layer.getNameSpace().getPrefix() + "_"
-                    + layer.getFeatureType().getTypeName()); // FeatureType name
-                ftnsList.add(layer.getNameSpace().getPrefix() + ":"
-                    + layer.getFeatureType().getTypeName());
-                dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
-                                                              // bounding box of the FeatureType
-
-            // expand bbox by 5% to allow large symbolizers to fit the map
-            bbox.expandBy(bbox.getWidth() / 20, bbox.getHeight() / 20);
-            bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
-                + bbox.getMaxY());
-            srsList.add("EPSG:" + layer.getSRS());
-
-                int[] imageBox = getMapWidthHeight(bbox);
-                widthList.add(String.valueOf(imageBox[0]));
-                heightList.add(String.valueOf(imageBox[1]));
-            }
-            
-            // not a coverage
-            coverageStatus.add(LAYER_IS_VECTOR);
         }
 
         // 3.5) Go through each *Coverage* and collect its info
         for (Iterator it = ctypes.iterator(); it.hasNext();) {
             CoverageInfo layer = (CoverageInfo) it.next();
-
-            // upper right corner? lower left corner? Who knows?! Better naming conventions needed guys.
-            double[] lowerLeft = layer.getEnvelope().getLowerCorner().getCoordinates();
-            double[] upperRight = layer.getEnvelope().getUpperCorner().getCoordinates();
-            Envelope bbox = new Envelope(lowerLeft[0], upperRight[0], lowerLeft[1], upperRight[1]);
-
-            if (layer.isEnabled()) {
-                // prepare strings for web output
-                String shortLayerName = layer.getName().split(":")[1]; // we don't want the namespace prefix
-
-                ftList.add(layer.getNameSpace().getPrefix() + "_" + shortLayerName); // Coverage name
-                ftnsList.add(layer.getNameSpace().getPrefix() + ":" + shortLayerName);
-
-                dsList.add(layer.getFormatInfo().getId()); // DataStore info
-                                                           // bounding box of the Coverage
-
-                bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
-                    + bbox.getMaxY());
-                srsList.add(layer.getSrsName());
-
-                int[] imageBox = getMapWidthHeight(bbox);
-                widthList.add(String.valueOf(imageBox[0]));
-                heightList.add(String.valueOf(imageBox[1]));
-                
-                // this layer is a coverage, all right
-                coverageStatus.add(LAYER_IS_COVERAGE);
+            try {
+    
+                // upper right corner? lower left corner? Who knows?! Better naming conventions needed guys.
+                double[] lowerLeft = layer.getEnvelope().getLowerCorner().getCoordinates();
+                double[] upperRight = layer.getEnvelope().getUpperCorner().getCoordinates();
+                Envelope bbox = new Envelope(lowerLeft[0], upperRight[0], lowerLeft[1], upperRight[1]);
+    
+                if (layer.isEnabled()) {
+                    // prepare strings for web output
+                    String shortLayerName = layer.getName().split(":")[1]; // we don't want the namespace prefix
+    
+                    ftList.add(layer.getNameSpace().getPrefix() + "_" + shortLayerName); // Coverage name
+                    ftnsList.add(layer.getNameSpace().getPrefix() + ":" + shortLayerName);
+    
+                    dsList.add(layer.getFormatInfo().getId()); // DataStore info
+                                                               // bounding box of the Coverage
+    
+                    bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
+                        + bbox.getMaxY());
+                    srsList.add(layer.getSrsName());
+    
+                    int[] imageBox = getMapWidthHeight(bbox);
+                    widthList.add(String.valueOf(imageBox[0]));
+                    heightList.add(String.valueOf(imageBox[1]));
+                    
+                    // this layer is a coverage, all right
+                    coverageStatus.add(LAYER_IS_COVERAGE);
+                }
+            } catch(Exception e) {
+                LOGGER.log(Level.WARNING, "Error trying to access layer " + layer.getName(), e);
             }
         }
         
@@ -238,28 +246,32 @@ public class MapPreviewAction extends GeoServerAction {
         String baseMap = messages.getMessage(locale, "label.baseMap");
         for (Iterator it = bmtypes.iterator(); it.hasNext();) {
             String baseMapTitle = (String) it.next();
-            ftList.add(baseMapTitle);
-            ftnsList.add(baseMapTitle);
-            dsList.add(baseMap);
-            GeneralEnvelope bmBbox = ((GeneralEnvelope) wms.getBaseMapEnvelopes().get(baseMapTitle));
-            Envelope bbox = new Envelope(bmBbox.getMinimum(0), bmBbox.getMaximum(0), bmBbox.getMinimum(1), bmBbox.getMaximum(1));
-            bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
-                    + bbox.getMaxY());
             try {
-                Integer epsgCode = CRS.lookupEpsgCode(bmBbox.getCoordinateReferenceSystem(), false) ; 
-                if ( epsgCode != null ) {
-                    srsList.add( "EPSG:" + epsgCode );
+                ftList.add(baseMapTitle);
+                ftnsList.add(baseMapTitle);
+                dsList.add(baseMap);
+                GeneralEnvelope bmBbox = ((GeneralEnvelope) wms.getBaseMapEnvelopes().get(baseMapTitle));
+                Envelope bbox = new Envelope(bmBbox.getMinimum(0), bmBbox.getMaximum(0), bmBbox.getMinimum(1), bmBbox.getMaximum(1));
+                bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
+                        + bbox.getMaxY());
+                try {
+                    Integer epsgCode = CRS.lookupEpsgCode(bmBbox.getCoordinateReferenceSystem(), false) ; 
+                    if ( epsgCode != null ) {
+                        srsList.add( "EPSG:" + epsgCode );
+                    }
+                } catch (FactoryException e) {
+                    throw (IOException) new IOException().initCause(e);
                 }
-            } catch (FactoryException e) {
-                throw (IOException) new IOException().initCause(e);
+                int[] imageBox = getMapWidthHeight(bbox);
+                widthList.add(String.valueOf(imageBox[0]));
+                heightList.add(String.valueOf(imageBox[1]));
+                
+                // this depends on the composition, we raise the flag if the layer has at least
+                // one coverage
+               coverageStatus.add(computeGroupCoverageStatus(wms, baseMapTitle));
+            } catch(Exception e) {
+                LOGGER.log(Level.WARNING, "Error trying to access group " + baseMapTitle, e);
             }
-            int[] imageBox = getMapWidthHeight(bbox);
-            widthList.add(String.valueOf(imageBox[0]));
-            heightList.add(String.valueOf(imageBox[1]));
-            
-            // this depends on the composition, we raise the flag if the layer has at least
-            // one coverage
-           coverageStatus.add(computeGroupCoverageStatus(wms, baseMapTitle));
         }
 
         // 4) send off gathered information to the .jsp
