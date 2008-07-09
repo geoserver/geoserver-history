@@ -295,9 +295,7 @@ public class GetMapResponse implements Response {
 									exp.getMessage()).toString(), exp);
 						}
 
-						throw new WmsException(null, new StringBuffer(
-								"Internal error : ").append(exp.getMessage())
-								.toString());
+						throw new WmsException("Internal error", "", exp);
 					}
 
 					layer = new DefaultMapLayer(source, layerStyle);
