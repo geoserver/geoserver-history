@@ -39,8 +39,8 @@ public class DefaultWebProcessingService implements WebProcessingService, Applic
         return new DescribeProcess(this.wps).run(request);
     }
 
-    public void execute(ExecuteType request, OutputStream output) throws WPSException {
-        new Execute.WPS1_0(this.wps).run(request, output);
+    public void execute(ExecuteType request, HttpServletResponse response) throws WPSException {
+        new Execute.WPS1_0(this.wps).run(request, response);
     }
 
     public void getSchema(HttpServletRequest request, HttpServletResponse response)

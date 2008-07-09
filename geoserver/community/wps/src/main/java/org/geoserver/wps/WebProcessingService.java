@@ -25,7 +25,7 @@ public interface WebProcessingService {
 
     TransformerBase describeProcess(DescribeProcessType request) throws WPSException;
 
-    void execute(ExecuteType request, OutputStream output) throws WPSException;
+    void execute(ExecuteType request, HttpServletResponse response) throws WPSException;
 
     void getSchema(HttpServletRequest request, HttpServletResponse response) throws WPSException;
 }

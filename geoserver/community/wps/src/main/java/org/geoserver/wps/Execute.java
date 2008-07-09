@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.GregorianCalendar;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -70,7 +71,7 @@ public abstract class Execute {
          * @param output
          * @throws IllegalArgumentException
          */
-        public void run(Object object, OutputStream output) throws IllegalArgumentException {
+        public void run(Object object, HttpServletResponse response) throws IllegalArgumentException {
             this.request                = (ExecuteType)object;
             this.executor               = new Executor(this.request, this.wps);
             this.dataTransformer        = new DataTransformer(request.getBaseUrl());
@@ -93,8 +94,10 @@ public abstract class Execute {
             Encoder       encoder = new Encoder(config);
             encoder.setIndenting(true);
 
+            response.setContentType("application/xml");
+            
             try {
-                encoder.encode(this.response, org.geotools.wps.WPS.ExecuteResponse, output);
+                encoder.encode(this.response, org.geotools.wps.WPS.ExecuteResponse, response.getOutputStream());
             } catch(IOException e) {
                 throw new WPSException("NoApplicableCode", "Error encoding execute response.");
             }
