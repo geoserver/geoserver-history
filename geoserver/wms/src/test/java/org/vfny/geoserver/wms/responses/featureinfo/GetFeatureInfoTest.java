@@ -43,7 +43,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         String layer = MockData.FORESTS.getPrefix() + ":" + MockData.FORESTS.getLocalPart();
         String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=unknown/format&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
-        Document doc = getAsDOM(request);
+        Document doc = dom(get(request), true);
         print(doc);
         assertXpathEvaluatesTo("1", "count(//ServiceExceptionReport/ServiceException)", doc);
         assertXpathEvaluatesTo("InvalidParameterValue", "/ServiceExceptionReport/ServiceException/@code", doc);
