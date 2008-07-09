@@ -1029,16 +1029,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @throws IOException
      */
     public boolean isGeometryless() throws IOException {
-        FeatureSource fs;
         try {
-            fs = featureType.getFeatureSource(null, null);
-            return fs.getSchema().getGeometryDescriptor() == null;
+            return featureType.getFeatureType().getGeometryDescriptor() == null;
         } 
         catch (Exception e) {
             throw (IOException) new IOException().initCause(e);
         }
-        
-        //return getDefaultGeometry() == null;
     }
 
     ///**

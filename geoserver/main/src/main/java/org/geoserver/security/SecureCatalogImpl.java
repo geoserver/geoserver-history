@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.acegisecurity.AccessDeniedException;
+import org.acegisecurity.AcegiSecurityException;
 import org.acegisecurity.Authentication;
+import org.acegisecurity.InsufficientAuthenticationException;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
@@ -27,11 +30,16 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.impl.AbstractDecorator;
+import org.geoserver.ows.Dispatcher;
+import org.geoserver.ows.Request;
 import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.security.decorators.ReadOnlyDataStoreInfo;
-import org.geoserver.security.decorators.ReadOnlyFeatureTypeInfo;
-import org.geoserver.security.decorators.ReadOnlyLayerGroupInfo;
-import org.geoserver.security.decorators.ReadOnlyLayerInfo;
+import org.geoserver.security.DataAccessManager.CatalogMode;
+import org.geoserver.security.decorators.SecuredCoverageInfo;
+import org.geoserver.security.decorators.SecuredCoverageStoreInfo;
+import org.geoserver.security.decorators.SecuredDataStoreInfo;
+import org.geoserver.security.decorators.SecuredFeatureTypeInfo;
+import org.geoserver.security.decorators.SecuredLayerGroupInfo;
+import org.geoserver.security.decorators.SecuredLayerInfo;
 
 /**
  * 
@@ -45,6 +53,45 @@ import org.geoserver.security.decorators.ReadOnlyLayerInfo;
  *         everything goes thru the secured catalog
  */
 public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Catalog {
+
+    /**
+     * The kind of access we can give the user for a given resource
+     */
+    public enum AccessLevel {
+        HIDDEN,
+        METADATA,
+        READ_ONLY,
+        READ_WRITE
+    }
+
+    /**
+     * The response to be used when the user tries to go beyond the level
+     * that he's authorized to see
+     */
+    public enum Response {
+        HIDE,
+        CHALLENGE
+    }
+    
+    /** 
+     * The combination of access level granted and response policy (lists only possible cases)
+     */
+    public enum WrapperPolicy {
+        HIDE(AccessLevel.HIDDEN, Response.HIDE),
+        METADATA(AccessLevel.METADATA, Response.CHALLENGE),
+        RO_CHALLENGE(AccessLevel.READ_ONLY, Response.CHALLENGE),
+        RO_HIDE(AccessLevel.READ_ONLY, Response.HIDE),
+        RW(AccessLevel.READ_WRITE, Response.HIDE);
+        
+        public final AccessLevel level;
+        public final Response response;
+        
+        WrapperPolicy(AccessLevel level, Response response) {
+            this.level = level;
+            this.response = response;
+        }
+    }
+    
     protected DataAccessManager accessManager;
 
     public SecureCatalogImpl(Catalog catalog) throws Exception {
@@ -59,7 +106,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return manager;
     }
 
-    public SecureCatalogImpl(Catalog catalog, DataAccessManager manager) {
+    SecureCatalogImpl(Catalog catalog, DataAccessManager manager) {
         super(catalog);
         this.accessManager = manager;
     }
@@ -250,7 +297,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     // Security support method
     // -------------------------------------------------------------------
 
-    protected Authentication user() {
+    protected static Authentication user() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
@@ -258,80 +305,97 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
      * Given a {@link FeatureTypeInfo} and a user, returns it back if the user
      * can access it in write mode, makes it read only if the user can access it
      * in read only mode, returns null otherwise
-     * 
      * @return
      */
-    protected <T extends ResourceInfo> T checkAccess(Authentication user, T info) {
+    protected <T extends ResourceInfo> T checkAccess(Authentication user,
+            T info) {
+        // handle null case
         if (info == null)
             return null;
-
-        // return the resource if the user can read and write it, 
-        if (accessManager.canAccess(user, info, AccessMode.READ))
-            if (accessManager.canAccess(user, info, AccessMode.WRITE)) {
-                return info;
-            } else if(info instanceof FeatureTypeInfo) { 
-                return (T) new ReadOnlyFeatureTypeInfo((FeatureTypeInfo) info);
-            } else if(info instanceof CoverageInfo) {
-                return info; // coverages are read only so far
-            } else {
-                throw new RuntimeException("Unknown resource type " + info.getClass());
-            }
-        else
+        
+        // first off, handle the case where the user cannot even read the data
+        boolean canRead = accessManager.canAccess(user, info, AccessMode.READ);
+        boolean canWrite = accessManager.canAccess(user, info, AccessMode.WRITE);
+        WrapperPolicy policy = checkWrapperPolicy(user, canRead, canWrite, info.getName());
+        
+        // handle the modes that do not require wrapping
+        if(policy == WrapperPolicy.HIDE)
             return null;
-    }
+        else if(policy.level == AccessLevel.READ_WRITE || 
+                (policy.level == AccessLevel.READ_ONLY && info instanceof CoverageInfo))
+            return info;
+        
+        // otherwise we are in a mixed case where the user can read but not write, or
+        // cannot read but is allowed by the operation mode to access the metadata
+        if(info instanceof FeatureTypeInfo) { 
+            return (T) new SecuredFeatureTypeInfo((FeatureTypeInfo) info, policy);
+        } else if(info instanceof CoverageInfo) {
+            return (T) new SecuredCoverageInfo((CoverageInfo) info, policy);
+        } else {
+            throw new RuntimeException("Unknown resource type " + info.getClass());
+        }
+   }
 
     /**
      * Given a store and a user, returns it back if the user can access its
      * workspace in read mode, null otherwise
-     * 
      * @return
      */
     protected <T extends StoreInfo> T checkAccess(Authentication user, T store) {
         if (store == null)
             return null;
-
-        // return the store if the user can read in its workspace, it's not
-        // really there otherwise
-        if (accessManager.canAccess(user, store.getWorkspace(), AccessMode.READ))
-            if (accessManager.canAccess(user, store.getWorkspace(), AccessMode.WRITE)) {
-                return store;
-            } else if(store instanceof DataStoreInfo) { 
-                return (T) new ReadOnlyDataStoreInfo((DataStoreInfo) store);
-            } else if(store instanceof CoverageStoreInfo) {
-                return store; // coverages stores are read only so far
-            } else {
-                throw new RuntimeException("Unknown store type " + store.getClass());
-            }
-        else
+        
+        // first off, handle the case where the user cannot even read the data
+        boolean canRead = accessManager.canAccess(user, store.getWorkspace(), AccessMode.READ);
+        boolean canWrite = accessManager.canAccess(user, store.getWorkspace(), AccessMode.WRITE);
+        WrapperPolicy policy = checkWrapperPolicy(user, canRead, canWrite, store.getName());
+        
+        // handle the modes that do not require wrapping
+        if(policy == WrapperPolicy.HIDE)
             return null;
+        else if(policy.level == AccessLevel.READ_WRITE || 
+                (policy.level == AccessLevel.READ_ONLY && store instanceof CoverageStoreInfo))
+            return store;
+
+        // otherwise we are in a mixed case where the user can read but not write, or
+        // cannot read but is allowed by the operation mode to access the metadata
+        if(store instanceof DataStoreInfo) { 
+            return (T) new SecuredDataStoreInfo((DataStoreInfo) store, policy);
+        } else if(store instanceof CoverageStoreInfo) {
+            return (T) new SecuredCoverageStoreInfo((CoverageStoreInfo) store, policy);
+        } else {
+            throw new RuntimeException("Unknown store type " + store.getClass());
+        }
     }
 
     /**
      * Given a layer and a user, returns it back if the user can access it, null
      * otherwise
-     * 
      * @return
      */
     protected LayerInfo checkAccess(Authentication user, LayerInfo layer) {
         if (layer == null)
             return null;
-
-        // return the layer if the user can read in its workspace, it's not
-        // really there otherwise
-        if (accessManager.canAccess(user, layer, AccessMode.READ))
-            if (accessManager.canAccess(user, layer, AccessMode.WRITE)) {
-                return layer;
-            } else {
-                return new ReadOnlyLayerInfo(layer);
-            }
-        else
+        
+        // first off, handle the case where the user cannot even read the data
+        boolean canRead = accessManager.canAccess(user, layer, AccessMode.READ);
+        boolean canWrite = accessManager.canAccess(user, layer, AccessMode.WRITE);
+        WrapperPolicy policy = checkWrapperPolicy(user, canRead, canWrite, layer.getName());
+        
+        // handle the modes that do not require wrapping
+        if(policy == WrapperPolicy.HIDE)
             return null;
+        else if(policy.level == AccessLevel.READ_WRITE)
+            return layer;
+
+        // otherwise we are in a mixed case where the user can read but not write, or
+        // cannot read but is allowed by the operation mode to access the metadata
+        return new SecuredLayerInfo(layer, policy);
     }
 
     /**
      * Given a layer group and a user, returns it back if the user can access
      * it, null otherwise
-     * 
      * @return
      */
     protected LayerGroupInfo checkAccess(Authentication user, LayerGroupInfo group) {
@@ -353,7 +417,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         }
         
         if(needsWrapping)
-            return new ReadOnlyLayerGroupInfo(group, wrapped);
+            return new SecuredLayerGroupInfo(group, wrapped);
         else
             return group;
     }
@@ -361,7 +425,6 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     /**
      * Given a namespace and user, returns it back if the user can access it,
      * null otherwise
-     * 
      * @return
      */
     protected <T extends NamespaceInfo> T checkAccess(Authentication user, T ns) {
@@ -379,18 +442,84 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     /**
      * Given a workspace and user, returns it back if the user can access it,
      * null otherwise
-     * 
      * @return
      */
     protected <T extends WorkspaceInfo> T checkAccess(Authentication user, T ws) {
         if (ws == null)
             return null;
-
-        // return the ws if the user can access it, otherwise null
-        if (accessManager.canAccess(user, ws, AccessMode.READ))
-            return ws;
-        else
+        
+        // first off, handle the case where the user cannot even read the data
+        boolean canRead = accessManager.canAccess(user, ws, AccessMode.READ);
+        boolean canWrite = accessManager.canAccess(user, ws, AccessMode.WRITE);
+        WrapperPolicy policy = checkWrapperPolicy(user, canRead, canWrite, ws.getName());
+        
+        // if we don't need to hide it, then we can return it as is since it
+        // can only provide metadata.
+        if(policy == WrapperPolicy.HIDE)
             return null;
+        else 
+            return ws;
+    }
+    
+    /**
+     * Factors out the policy that decides what access level the current user
+     * has to a specific resource considering the read/write access, the security
+     * mode, and the filtering status
+     * @param user
+     * @param canRead
+     * @param canWrite
+     * @param resourceName
+     * @return
+     */
+    WrapperPolicy checkWrapperPolicy(Authentication user,
+            boolean canRead, boolean canWrite, String resourceName) {
+        if (!canRead) {
+            // if in hide mode, we just hide the resource
+            if (accessManager.getMode() == CatalogMode.HIDE) {
+                return WrapperPolicy.HIDE;
+            } else if (accessManager.getMode() == CatalogMode.MIXED) {
+                // if request is a get capabilities and mixed, we hide again
+                Request request = Dispatcher.REQUEST.get();
+                if(request != null && request.getRequest().equalsIgnoreCase("GetCapabilities"))
+                    return WrapperPolicy.HIDE;
+                // otherwise challenge the user for credentials
+                else
+                    throw unauthorizedAccess(resourceName);
+            } else {
+                // for challenge mode we agree to show freely only the metadata, every
+                // other access will trigger a security exception
+                return WrapperPolicy.METADATA;
+            }
+        } else if (!canWrite) {
+            if (accessManager.getMode() == CatalogMode.HIDE) {
+                return WrapperPolicy.RO_HIDE;
+            } else {
+                return WrapperPolicy.RO_CHALLENGE;
+            }
+        }
+        return WrapperPolicy.RW;
+    }
+
+    public static AcegiSecurityException unauthorizedAccess(String resourceName) {
+        // not hide, and not filtering out a list, this
+        // is an unauthorized direct resource access, complain
+        Authentication user = user();
+        if (user == null || user.getAuthorities().length == 0)
+            return new InsufficientAuthenticationException("Cannot access "
+                    + resourceName + " as anonymous");
+        else
+            return new AccessDeniedException("Cannot access "
+                    + resourceName + " with the current privileges");
+    }
+    
+    public static AcegiSecurityException unauthorizedAccess() {
+        // not hide, and not filtering out a list, this
+        // is an unauthorized direct resource access, complain
+        Authentication user = user();
+        if (user == null || user.getAuthorities().length == 0)
+            return new InsufficientAuthenticationException("Operation unallowed with the current privileges");
+        else
+            return new AccessDeniedException("Operation unallowed with the current privileges");
     }
 
     /**
@@ -516,26 +645,26 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     // -------------------------------------------------------------------
     
     LayerGroupInfo unwrap(LayerGroupInfo layerGroup) {
-        if(layerGroup instanceof ReadOnlyLayerGroupInfo)
-            return ((ReadOnlyLayerGroupInfo) layerGroup).unwrap(LayerGroupInfo.class);
+        if(layerGroup instanceof SecuredLayerGroupInfo)
+            return ((SecuredLayerGroupInfo) layerGroup).unwrap(LayerGroupInfo.class);
         return layerGroup;
     }
     
     LayerInfo unwrap(LayerInfo layer) {
-        if(layer instanceof ReadOnlyLayerInfo)
-            return ((ReadOnlyLayerInfo) layer).unwrap(LayerInfo.class);
+        if(layer instanceof SecuredLayerInfo)
+            return ((SecuredLayerInfo) layer).unwrap(LayerInfo.class);
         return layer;
     }
     
     ResourceInfo unwrap(ResourceInfo info) {
-        if(info instanceof ReadOnlyFeatureTypeInfo)
-            return ((ReadOnlyFeatureTypeInfo) info).unwrap(ResourceInfo.class);
+        if(info instanceof SecuredFeatureTypeInfo)
+            return ((SecuredFeatureTypeInfo) info).unwrap(ResourceInfo.class);
         return info;
     }
     
     StoreInfo unwrap(StoreInfo info) {
-        if(info instanceof ReadOnlyDataStoreInfo)
-            return ((ReadOnlyDataStoreInfo) info).unwrap(StoreInfo.class);
+        if(info instanceof SecuredDataStoreInfo)
+            return ((SecuredDataStoreInfo) info).unwrap(StoreInfo.class);
         return info;
     }
 

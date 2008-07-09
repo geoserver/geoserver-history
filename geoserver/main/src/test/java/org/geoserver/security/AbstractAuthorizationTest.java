@@ -137,7 +137,7 @@ public abstract class AbstractAuthorizationTest extends TestCase {
         if (resource instanceof FeatureTypeInfo) {
             expect(
                     ((FeatureTypeInfo) resource).getFeatureSource((ProgressListener) anyObject(),
-                            (Hints) anyObject())).andReturn(fs);
+                            (Hints) anyObject())).andReturn(fs).anyTimes();
         }
         replay(resource);
 

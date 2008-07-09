@@ -4,27 +4,28 @@
  */
 package org.geoserver.security.decorators;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
-import org.geotools.data.DataStore;
-import org.opengis.util.ProgressListener;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 
 /**
- * Delegates every method to the wrapped {@link DataStoreInfo}. Subclasses will
- * override selected methods to perform their "decoration" job
+ * Delegates all methods to the provided delegate. Suclasses will override
+ * methods in order to perform their decoration work
  * 
- * @author Andrea Aime
+ * @author Andrea Aime - TOPP
+ * 
+ * @param <T>
+ * @param <F>
  */
-public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> implements
-        DataStoreInfo {
-
-    public DecoratingDataStoreInfo(DataStoreInfo delegate) {
+public class DecoratingCoverageStoreInfo extends
+        AbstractDecorator<CoverageStoreInfo> implements CoverageStoreInfo {
+    
+    public DecoratingCoverageStoreInfo(CoverageStoreInfo delegate) {
         super(delegate);
     }
 
@@ -36,16 +37,16 @@ public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> im
         return delegate.getConnectionParameters();
     }
 
-    public DataStore getDataStore(ProgressListener listener) throws IOException {
-        return delegate.getDataStore(listener);
-    }
-
     public String getDescription() {
         return delegate.getDescription();
     }
 
     public Throwable getError() {
         return delegate.getError();
+    }
+
+    public AbstractGridFormat getFormat() {
+        return delegate.getFormat();
     }
 
     public String getId() {
@@ -58,6 +59,14 @@ public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> im
 
     public String getName() {
         return delegate.getName();
+    }
+
+    public String getType() {
+        return delegate.getType();
+    }
+
+    public String getURL() {
+        return delegate.getURL();
     }
 
     public WorkspaceInfo getWorkspace() {
@@ -82,6 +91,14 @@ public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> im
 
     public void setName(String name) {
         delegate.setName(name);
+    }
+
+    public void setType(String type) {
+        delegate.setType(type);
+    }
+
+    public void setURL(String url) {
+        delegate.setURL(url);
     }
 
     public void setWorkspace(WorkspaceInfo workspace) {

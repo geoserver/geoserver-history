@@ -40,6 +40,9 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * (read) or &quot;w&quot; (write) </li>
  * <li> role: a user role</li>
  * </ul>
+ * A special line is used to specify the security mode in which GeoServer operates:
+ * <code>mode=HIDE|CHALLENGE|MIDEX</code>
+ * For the meaning of these three constants see {@link CatalogMode}<p>
  * For more details on how the security rules are applied, see the &lt;a
  * href=&quot;http://geoserver.org/display/GEOS/GSIP+19+-+Per+layer+security&quot;/&gt;per
  * layer security proposal&lt;/a&gt; on the &lt;a
@@ -61,6 +64,11 @@ public class DefaultDataAccessManager implements DataAccessManager {
     PropertyFileWatcher watcher;
 
     File layers;
+
+    /**
+     * Default to the highest security mode
+     */
+    CatalogMode mode = CatalogMode.HIDE;
 
     DefaultDataAccessManager(Catalog catalog, Properties layers) {
         this.catalog = catalog;
@@ -99,6 +107,10 @@ public class DefaultDataAccessManager implements DataAccessManager {
             LOGGER.log(Level.SEVERE, "Failed to reload data access rules from " + layers
                     + ", keeping old rules", e);
         }
+    }
+    
+    public CatalogMode getMode() {
+        return mode;
     }
 
     public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {
@@ -150,6 +162,17 @@ public class DefaultDataAccessManager implements DataAccessManager {
             final String ruleKey = (String) entry.getKey();
             final String ruleValue = (String) entry.getValue();
             final String rule = ruleKey + "=" + ruleValue;
+            
+            // check for the mode
+            if("mode".equalsIgnoreCase(ruleKey)) {
+                try {
+                    mode = CatalogMode.valueOf(ruleValue.toUpperCase());
+                } catch(Exception e) {
+                    LOGGER.warning("Invalid security mode " + ruleValue 
+                            + " acceptable values are " + Arrays.asList(CatalogMode.values()));
+                }
+                continue;
+            }
 
             // parse
             String[] elements = parseElements(ruleKey);
