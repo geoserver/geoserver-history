@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -701,14 +703,51 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     
     /**
      * Parses a stream into a dom.
-     * @throws IOException 
-     * @throws SAXException 
      */
     protected Document dom(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(is);
+        return dom(is, false);
+    }
+    
+    /**
+     * Parses a stream into a dom.
+     * @param input
+     * @param skipDTD If true, will skip loading and validating against the associated DTD
+     */
+    protected Document dom(InputStream input, boolean skipDTD) throws ParserConfigurationException, SAXException, IOException {
+        if(skipDTD) {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
+            factory.setNamespaceAware( true );
+            factory.setValidating( false );
+           
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            builder.setEntityResolver(new EmptyResolver());
+            Document dom = builder.parse( input );
+    
+            return dom;
+        } else {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            return builder.parse(input);
+        }
+    }
+    
+    /**
+     * Resolves everything to an empty xml document, useful for skipping errors due to missing
+     * dtds and the like
+     * @author Andrea Aime - TOPP
+     */
+    static class EmptyResolver implements org.xml.sax.EntityResolver {
+        public InputSource resolveEntity(String publicId, String systemId)
+                throws org.xml.sax.SAXException, IOException {
+            StringReader reader = new StringReader(
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            InputSource source = new InputSource(reader);
+            source.setPublicId(publicId);
+            source.setSystemId(systemId);
+
+            return source;
+        }
     }
             
     protected void checkValidationErorrs(Document dom, String schemaLocation) throws SAXException, IOException {
