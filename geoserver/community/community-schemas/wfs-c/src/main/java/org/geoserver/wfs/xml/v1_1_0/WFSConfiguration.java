@@ -25,6 +25,7 @@ import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyExtractor;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOGeometryPropertyTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMeasureTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOEnvelopeTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiPointTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiSurfaceTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOPointTypeBinding;
@@ -167,7 +168,7 @@ public class WFSConfiguration extends Configuration {
         registerOverride(container, XS.ANYTYPE, ISOXSAnyTypeBinding.class);
         registerOverride(container, GML.CodeType, ISOCodeTypeBinding.class);
         registerOverride(container, GML.MeasureType, ISOMeasureTypeBinding.class);
-
+        registerOverride(container, GML.EnvelopeType, ISOEnvelopeTypeBinding.class);
         /*
         registerOverride(container, XS.DATE, ISOXSDateBinding.class);
         registerOverride(container, XS.DATETIME, ISOXSDateTimeBinding.class);
