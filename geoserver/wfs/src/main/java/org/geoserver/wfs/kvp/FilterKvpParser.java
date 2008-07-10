@@ -39,10 +39,6 @@ public class FilterKvpParser extends KvpParser {
     }
 
     public Object parse(String value) throws Exception {
-        //create the parser
-        Configuration configuration = new OGCConfiguration();
-        Parser parser = new Parser(configuration);
-
         //seperate the individual filter strings
         List unparsed = KvpUtils.readFlat(value, KvpUtils.OUTER_DELIMETER);
         List filters = new ArrayList();
@@ -54,27 +50,38 @@ public class FilterKvpParser extends KvpParser {
             if("".equals(string.trim())){
                 filters.add(Filter.INCLUDE);
             }else{
-                InputStream input = new ByteArrayInputStream(string.getBytes());
+            	Filter filter;
+                final byte[] rawContent = string.getBytes();
+				InputStream input = new ByteArrayInputStream(rawContent);
     
                 try {
-                    Filter filter = (Filter) parser.parse(input);
-    
-                    if (filter == null) {
-                        throw new NullPointerException();
-                    }
-    
-                    filters.add(filter);
+                    //create the parser
+                    Configuration configuration = new OGCConfiguration();
+                    Parser parser_1_0_0 = new Parser(configuration);
+                    filter = (Filter) parser_1_0_0.parse(input);
                 } catch (Exception e) {
-                    //parsing failed, fall back to old parser
-                    String msg = "Unable to parse filter: " + string;
-                    LOGGER.log(Level.WARNING, msg, e);
-    
-                    Filter filter = parseXMLFilterWithOldParser(new StringReader(string));
-    
-                    if (filter != null) {
+                	//parsing failed, try with a Filter 1.1.0 parser
+                	try{
+                		input = new ByteArrayInputStream(rawContent);
+                        Configuration configuration = new org.geotools.filter.v1_1.OGCConfiguration();
+                        Parser parser_1_1_0 = new Parser(configuration);
+                        filter = (Filter) parser_1_1_0.parse(input);
+                        
                         filters.add(filter);
-                    }
+                	}catch(Exception e2){
+	                    //parsing failed, fall back to old parser
+	                    String msg = "Unable to parse filter: " + string;
+	                    LOGGER.log(Level.WARNING, msg, e);
+	    
+	                    filter = parseXMLFilterWithOldParser(new StringReader(string));
+                	}
                 }
+                
+                if (filter == null) {
+                    throw new NullPointerException();
+                }
+
+                filters.add(filter);
             }
         }
 
