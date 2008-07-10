@@ -24,9 +24,10 @@ public class DescribeProcessResponse extends Response {
         super(TransformerBase.class);
     }
 
+    @Override
     public boolean canHandle(Operation operation) {
         return "DescribeProcess".equalsIgnoreCase(operation.getId()) &&
-        	operation.getService().getId().equals("wps");
+            operation.getService().getId().equals("wps");
     }
 
     public String getMimeType(Object value, Operation operation) {

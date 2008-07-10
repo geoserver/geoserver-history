@@ -10,7 +10,6 @@ package org.geoserver.wps.schemas;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class Stub
-{
-    // Intentionally Empty
+public class Stub {
+    // Intentionally empty
 }

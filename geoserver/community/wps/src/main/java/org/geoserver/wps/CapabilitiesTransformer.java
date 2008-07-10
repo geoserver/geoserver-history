@@ -72,22 +72,19 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     this.locale = new Locale(this.request.getLanguage());
                 }
 
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
-                		wps.getGeoServer().getProxyBaseUrl());
-
                 AttributesImpl attrs = new AttributesImpl();
                 attrs.addAttribute("", "xmlns:xsi",          "xmlns:xsi",   "",
-                		CapabilitiesTransformer.XSI_URI);
+                    CapabilitiesTransformer.XSI_URI);
                 attrs.addAttribute("", "xmlns",              "xmlns",       "",
-                		CapabilitiesTransformer.WPS_URI);
+                    CapabilitiesTransformer.WPS_URI);
                 attrs.addAttribute("", "xmlns:wps",          "xmlns:wps",   "",
-                		CapabilitiesTransformer.WPS_URI);
+                    CapabilitiesTransformer.WPS_URI);
                 attrs.addAttribute("", "xmlns:ows",          "xmlns:ows",   "", OWS.NAMESPACE);
                 attrs.addAttribute("", "version",            "version",     "", "1.0.0");
                 attrs.addAttribute("", "xmlns:ogc",          "xmlns:ogc",   "", OGC.NAMESPACE);
                 attrs.addAttribute("", "xmlns:xlink",        "xmlns:xlink", "", XLINK.NAMESPACE);
                 attrs.addAttribute("", "xsi:schemaLocation", "xsi:schemaLocation", "",
-                		"http://www.opengis.net/wps/1.0.0 ../wpsGetCapabilities_request.xsd");
+                    "http://www.opengis.net/wps/1.0.0 ../wpsGetCapabilities_request.xsd");
 
                 start("wps:Capabilities", attrs);
                     this.serviceIdentification();
@@ -101,7 +98,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             private void serviceIdentification() {
                 start("ows:ServiceIdentification");
 
-                element("ows:Title", wps.getTitle());
+                element("ows:Title",    wps.getTitle());
                 element("ows:Abstract", wps.getAbstract());
 
                 keywords((List<String>)wps.getKeywords());
@@ -109,7 +106,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 element("ows:ServiceType", "WPS");
                 element("ows:ServiceTypeVersion", "1.0.0");
 
-                element("ows:Fees", wps.getFees());
+                element("ows:Fees",              wps.getFees());
                 element("ows:AccessConstraints", wps.getAccessConstraints());
 
                 end("ows:ServiceIdentification");

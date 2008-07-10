@@ -31,17 +31,17 @@ public class GetSchema {
      * @param response
      */
     public void run(HttpServletRequest request, HttpServletResponse response) {
-    	String name = null;
+        String name = null;
 
         // Iterate over all parameters looking case insensitively for 'identifier'
         for(Enumeration<String> a = request.getParameterNames(); a.hasMoreElements();) {
-        	String i = a.nextElement();
+            String i = a.nextElement();
 
-        	if ("identifier".equalsIgnoreCase(i)) {
-        		name = request.getParameter(i);
+            if ("identifier".equalsIgnoreCase(i)) {
+                name = request.getParameter(i);
 
-        		break;
-        	}
+                break;
+            }
         }
 
         if (null == name) {

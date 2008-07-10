@@ -11,5 +11,5 @@ import org.geoserver.config.impl.ServiceInfoImpl;
  * @author Lucas Reed, Refractions Research Inc
  */
 public class WPSInfoImpl extends ServiceInfoImpl implements WPSInfo {
-	// Intentionally left blank
+    // Intentionally empty
 }

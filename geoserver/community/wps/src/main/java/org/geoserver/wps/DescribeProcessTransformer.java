@@ -84,7 +84,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
                 attrs.addAttribute("", "xmlns:ows", "xmlns:ows", "", OWS.NAMESPACE);
                 attrs.addAttribute("", "version",   "version",   "", "1.0.0");
                 attrs.addAttribute("", "xsi:schemaLocation", "xsi:schemaLocation", "",
-        			"http://www.opengis.net/wps/1.0.0 ../wpsDescribeProcess_request.xsd");
+                    "http://www.opengis.net/wps/1.0.0 ../wpsDescribeProcess_request.xsd");
 
                 start("wps:ProcessDescriptions", attrs);
 

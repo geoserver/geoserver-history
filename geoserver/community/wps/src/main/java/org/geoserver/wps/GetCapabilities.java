@@ -20,7 +20,6 @@ public class GetCapabilities {
 
     public CapabilitiesTransformer run(GetCapabilitiesType request) throws WPSException {
         // Version detection and alternative invocation if being implemented.
-        // Build XML document.
 
         CapabilitiesTransformer capabilitiesTransformer = new CapabilitiesTransformer.WPS1_0(this.wps);
 

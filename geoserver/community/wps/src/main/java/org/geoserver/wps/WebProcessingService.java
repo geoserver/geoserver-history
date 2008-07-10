@@ -5,8 +5,6 @@
 
 package org.geoserver.wps;
 
-import java.io.OutputStream;
-
 import net.opengis.wps.ExecuteType;
 import net.opengis.wps.GetCapabilitiesType;
 import net.opengis.wps.DescribeProcessType;

@@ -22,10 +22,11 @@ public class GetCapabilitiesResponse extends Response {
         super(TransformerBase.class);
     }
 
+    @Override
     public boolean canHandle(Operation operation) {
         // is this a wps capabilities request?
         return "GetCapabilities".equalsIgnoreCase(operation.getId()) &&
-        	operation.getService().getId().equals("wps");
+            operation.getService().getId().equals("wps");
     }
 
     public String getMimeType(Object value, Operation operation) {

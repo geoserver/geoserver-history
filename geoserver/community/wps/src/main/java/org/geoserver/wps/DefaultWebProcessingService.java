@@ -5,8 +5,6 @@
 
 package org.geoserver.wps;
 
-import java.io.OutputStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -44,7 +42,7 @@ public class DefaultWebProcessingService implements WebProcessingService, Applic
     }
 
     public void getSchema(HttpServletRequest request, HttpServletResponse response)
-    	throws WPSException {
+        throws WPSException {
         new GetSchema(this.wps).run(request, response);
     }
 

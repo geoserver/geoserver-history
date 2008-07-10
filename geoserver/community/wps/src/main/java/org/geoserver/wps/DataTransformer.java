@@ -49,7 +49,7 @@ public class DataTransformer {
     public DataTransformer(String urlBase) {
         this.urlBase = urlBase;
 
-        /* In order to allow true multiple output formats the container for the transmuters needs to 
+        /* In order to allow true multiple output formats the container for the transmuters needs to
          * be changed to allow many-to-many Class <-> Transmuter mappings.
          */
 
@@ -69,7 +69,7 @@ public class DataTransformer {
      * @return
      */
     public Map<String, Object> decodeInputs(final List<InputType> inputs,
-    		final Map<String, Parameter<?>> parameters) {
+        final Map<String, Parameter<?>> parameters) {
         Map<String, Object> inputMap = new HashMap<String, Object>();
 
         this.inputParameters = parameters;
@@ -172,7 +172,7 @@ public class DataTransformer {
             }
 
             if (false == ((ComplexTransmuter)transmuter).getSchema(this.urlBase)
-            		.equalsIgnoreCase(schema)) {
+                .equalsIgnoreCase(schema)) {
                 continue;
             }
 
@@ -184,7 +184,7 @@ public class DataTransformer {
         }
 
         throw new WPSException("NoApplicableCode", "Could not find ComplexTransmuter for '" +
-        		schema + "'.");
+            schema + "'.");
     }
 
     /**
@@ -197,7 +197,7 @@ public class DataTransformer {
 
         if (null == transmuter) {
             throw new WPSException("NoApplicableCode", "No default transmuter registered for type "
-            		+ type.toString() + "'.");
+                + type.toString() + "'.");
         }
 
         return transmuter;

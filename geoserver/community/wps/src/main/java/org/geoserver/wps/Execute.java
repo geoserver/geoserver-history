@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.GregorianCalendar;
 
 import javax.servlet.http.HttpServletResponse;
@@ -95,7 +94,7 @@ public abstract class Execute {
             encoder.setIndenting(true);
 
             response.setContentType("application/xml");
-            
+
             try {
                 encoder.encode(this.response, org.geotools.wps.WPS.ExecuteResponse, response.getOutputStream());
             } catch(IOException e) {
@@ -187,7 +186,7 @@ public abstract class Execute {
 
             try {
                 calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
-                		new GregorianCalendar(TimeZone.getTimeZone("UTC")));
+                    new GregorianCalendar(TimeZone.getTimeZone("UTC")));
             } catch(Exception e) {
                 throw new WPSException("NoApplicableCode", e.getMessage());
             }
