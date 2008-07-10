@@ -82,7 +82,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                 public void encode(Geometry g, GeoRSSTranslatorSupport t) {
                     if (g instanceof Point) {
                         Point p = (Point) g;
-                        t.element("georss:point", p.getX() + " " + p.getY());
+                        t.element("georss:point", p.getY() + " " + p.getX());
                     }
 
                     if (g instanceof LineString) {
@@ -92,7 +92,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
 
                         for (int i = 0; i < l.getNumPoints(); i++) {
                             Coordinate c = l.getCoordinateN(i);
-                            sb.append(c.x).append(" ").append(c.y).append(" ");
+                            sb.append(c.y).append(" ").append(c.x).append(" ");
                         }
 
                         sb.setLength(sb.length() - 1);
@@ -108,7 +108,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
 
                         for (int i = 0; i < line.getNumPoints(); i++) {
                             Coordinate c = line.getCoordinateN(i);
-                            sb.append(c.x).append(" ").append(c.y).append(" ");
+                            sb.append(c.y).append(" ").append(c.x).append(" ");
                         }
 
                         sb.setLength(sb.length() - 1);
