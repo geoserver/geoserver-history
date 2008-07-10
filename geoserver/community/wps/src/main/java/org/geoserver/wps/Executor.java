@@ -72,7 +72,31 @@ public class Executor {
     public Map<String, Object> execute() {
         ProgressListener progress = null;
 
-        return process.execute(this.inputs, progress);
+        Map<String, Object> outputs = process.execute(this.inputs, progress);
+
+        this.checkOutputs(outputs);
+
+        return outputs;
+    }
+
+    /**
+     * Partial output validation.
+     * @param outputs
+     */
+    private void checkOutputs(Map<String, Object> outputs)
+    {
+    	Map<String, Parameter<?>> resultInfo = this.factory.getResultInfo(null);
+
+    	for(String key : resultInfo.keySet())
+    	{
+    		if (0 != resultInfo.get(key).minOccurs)
+    		{
+    			if (null == outputs || false == outputs.containsKey(key))
+    			{
+    				throw new WPSException("NoApplicableCode", "Process returned null value where one is expected.");
+    			}
+    		}
+    	}
     }
 
     /**

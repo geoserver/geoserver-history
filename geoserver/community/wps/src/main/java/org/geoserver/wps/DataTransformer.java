@@ -22,14 +22,26 @@ import net.opengis.wps.ComplexDataType;
 import net.opengis.wps.LiteralDataType;
 import net.opengis.wps.InputReferenceType;
 
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.Geometry;
 
+import org.geoserver.wps.transmute.GML2LineStringTransmuter;
+import org.geoserver.wps.transmute.GML2LinearRingTransmuter;
+import org.geoserver.wps.transmute.GML2MultiLineStringTransmuter;
+import org.geoserver.wps.transmute.GML2MultiPointTransmuter;
+import org.geoserver.wps.transmute.GML2MultiPolygonTransmuter;
+import org.geoserver.wps.transmute.GML2PointTransmuter;
 import org.geoserver.wps.transmute.Transmuter;
 import org.geoserver.wps.transmute.DoubleTransmuter;
 import org.geoserver.wps.transmute.ComplexTransmuter;
 import org.geoserver.wps.transmute.LiteralTransmuter;
-import org.geoserver.wps.transmute.PolygonGML2Transmuter;
+import org.geoserver.wps.transmute.GML2PolygonTransmuter;
 
 /**
  * Class for parsing and encoding inputs and results to processes.
@@ -54,9 +66,15 @@ public class DataTransformer {
          */
 
         // Map Java types to transmuters
-        this.defaultTransmuters.put(Double.class,   new DoubleTransmuter());
-        this.defaultTransmuters.put(Polygon.class,  new PolygonGML2Transmuter());
-        this.defaultTransmuters.put(Geometry.class, new PolygonGML2Transmuter());
+        this.defaultTransmuters.put(Double.class,       	new DoubleTransmuter());
+        this.defaultTransmuters.put(MultiPolygon.class, 	new GML2MultiPolygonTransmuter());
+        this.defaultTransmuters.put(Polygon.class,      	new GML2PolygonTransmuter());
+        this.defaultTransmuters.put(Geometry.class,     	new GML2PolygonTransmuter());
+        this.defaultTransmuters.put(MultiPoint.class, 		new GML2MultiPointTransmuter());
+        this.defaultTransmuters.put(Point.class, 			new GML2PointTransmuter());
+        this.defaultTransmuters.put(LinearRing.class, 		new GML2LinearRingTransmuter());
+        this.defaultTransmuters.put(LineString.class, 		new GML2LineStringTransmuter());
+        this.defaultTransmuters.put(MultiLineString.class, 	new GML2MultiLineStringTransmuter());
 
         // Add all default transmuters to master transmuters list
         this.transmuters.addAll(this.defaultTransmuters.values());
@@ -77,17 +95,32 @@ public class DataTransformer {
         for(InputType input : inputs) {
             String identifier = input.getIdentifier().getValue();
 
-            if (null != input.getData()) {
-                // Parse Data into java object
-                inputMap.put(identifier, this.decodeInputData(input));
+            Object decoded = null;
 
-                continue;
+            if (null != input.getData()) {
+            	// Decode inline data
+            	decoded = this.decodeInputData(input);
             }
 
             if (null != input.getReference()) {
                 // Fetch external resource
-                inputMap.put(identifier, this.decodeReferenceData(identifier, input.getReference()));
+                decoded = this.decodeReferenceData(identifier, input.getReference());
             }
+
+            if (inputMap.containsKey(identifier))
+        	{
+        		if (inputMap.get(identifier) instanceof List)
+        		{
+        			List<Object> list = (List<Object>)inputMap.get(identifier);
+        			list.add(decoded);
+        		} else {
+        			List<Object> list = new ArrayList<Object>();
+        			list.add(inputMap.get(identifier));
+        			inputMap.put(identifier, list);
+        		}
+        	} else {
+        		inputMap.put(identifier, decoded);
+        	}
         }
 
         return inputMap;

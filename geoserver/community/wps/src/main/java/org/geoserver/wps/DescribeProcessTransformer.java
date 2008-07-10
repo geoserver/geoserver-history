@@ -145,8 +145,16 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
                 start("DataInputs");
                 for(Parameter<?> inputIdentifier : pf.getParameterInfo().values()) {
                     AttributesImpl attributes = new AttributesImpl();
+
+                    // WPS spec specifies non-negative for unlimited inputs, so -1 -> 0
+                    int maxOccurs = inputIdentifier.maxOccurs;
+                    if (-1 == maxOccurs)
+                    {
+                    	maxOccurs = Integer.MAX_VALUE;
+                    }
+
                     attributes.addAttribute("", "minOccurs", "minOccurs", "", "" + inputIdentifier.minOccurs);
-                    attributes.addAttribute("", "maxOccurs", "maxOccurs", "", "" + inputIdentifier.maxOccurs);
+                    attributes.addAttribute("", "maxOccurs", "maxOccurs", "", "" + maxOccurs);
 
                     start("Input", attributes);
                         element("ows:Identifier", inputIdentifier.key);
