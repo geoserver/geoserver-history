@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.Iterator;
 import java.util.zip.GZIPOutputStream;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -63,15 +64,15 @@ public class AlternativesResponseStream extends ServletOutputStream {
         if (myStream != null) return myStream;
         String type = myResponse.getContentType();
 
-        if (type == null){
-            logger.warning("Mime type was not set before first write!");
-        }
+        if (type == null)
+            logger.log(Level.FINER, "Mime type was not set before first write!");
+        
 
         if (type != null && isCompressible(type)){
-            logger.info("Compressing output for mimetype: " + type);
+            logger.log(Level.FINER, "Compressing output for mimetype: " + type);
             myStream = new GZIPResponseStream(myResponse);
         } else {
-            logger.info("Not compressing output for mimetype: " + type);
+            logger.log(Level.FINER, "Not compressing output for mimetype: " + type);
             myStream = myResponse.getOutputStream();
         }
 
