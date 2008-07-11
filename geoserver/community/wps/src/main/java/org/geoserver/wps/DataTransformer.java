@@ -66,15 +66,15 @@ public class DataTransformer {
          */
 
         // Map Java types to transmuters
-        this.defaultTransmuters.put(Double.class,       	new DoubleTransmuter());
-        this.defaultTransmuters.put(MultiPolygon.class, 	new GML2MultiPolygonTransmuter());
-        this.defaultTransmuters.put(Polygon.class,      	new GML2PolygonTransmuter());
-        this.defaultTransmuters.put(Geometry.class,     	new GML2PolygonTransmuter());
-        this.defaultTransmuters.put(MultiPoint.class, 		new GML2MultiPointTransmuter());
-        this.defaultTransmuters.put(Point.class, 			new GML2PointTransmuter());
-        this.defaultTransmuters.put(LinearRing.class, 		new GML2LinearRingTransmuter());
-        this.defaultTransmuters.put(LineString.class, 		new GML2LineStringTransmuter());
-        this.defaultTransmuters.put(MultiLineString.class, 	new GML2MultiLineStringTransmuter());
+        this.defaultTransmuters.put(Double.class,          new DoubleTransmuter());
+        this.defaultTransmuters.put(MultiPolygon.class,    new GML2MultiPolygonTransmuter());
+        this.defaultTransmuters.put(Polygon.class,         new GML2PolygonTransmuter());
+        this.defaultTransmuters.put(Geometry.class,        new GML2PolygonTransmuter());
+        this.defaultTransmuters.put(MultiPoint.class,      new GML2MultiPointTransmuter());
+        this.defaultTransmuters.put(Point.class,           new GML2PointTransmuter());
+        this.defaultTransmuters.put(LinearRing.class,      new GML2LinearRingTransmuter());
+        this.defaultTransmuters.put(LineString.class,      new GML2LineStringTransmuter());
+        this.defaultTransmuters.put(MultiLineString.class, new GML2MultiLineStringTransmuter());
 
         // Add all default transmuters to master transmuters list
         this.transmuters.addAll(this.defaultTransmuters.values());
@@ -98,8 +98,8 @@ public class DataTransformer {
             Object decoded = null;
 
             if (null != input.getData()) {
-            	// Decode inline data
-            	decoded = this.decodeInputData(input);
+                // Decode inline data
+                decoded = this.decodeInputData(input);
             }
 
             if (null != input.getReference()) {
@@ -107,20 +107,18 @@ public class DataTransformer {
                 decoded = this.decodeReferenceData(identifier, input.getReference());
             }
 
-            if (inputMap.containsKey(identifier))
-        	{
-        		if (inputMap.get(identifier) instanceof List)
-        		{
-        			List<Object> list = (List<Object>)inputMap.get(identifier);
-        			list.add(decoded);
-        		} else {
-        			List<Object> list = new ArrayList<Object>();
-        			list.add(inputMap.get(identifier));
-        			inputMap.put(identifier, list);
-        		}
-        	} else {
-        		inputMap.put(identifier, decoded);
-        	}
+            if (inputMap.containsKey(identifier)) {
+                if (inputMap.get(identifier) instanceof List) {
+                    List<Object> list = (List<Object>)inputMap.get(identifier);
+                    list.add(decoded);
+                } else {
+                    List<Object> list = new ArrayList<Object>();
+                    list.add(inputMap.get(identifier));
+                    inputMap.put(identifier, list);
+                }
+            } else {
+                inputMap.put(identifier, decoded);
+            }
         }
 
         return inputMap;

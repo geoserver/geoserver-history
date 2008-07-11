@@ -14,24 +14,24 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author Lucas Reed, Refractions Research Inc
  */
 public abstract class GML2ComplexTransmuter extends ComplexTransmuter {
-	/**
-	 * @see ComplexTransmuter#getXMLConfiguration()
-	 */
-	public Class<?> getXMLConfiguration() {
+    /**
+     * @see ComplexTransmuter#getXMLConfiguration()
+     */
+    public Class<?> getXMLConfiguration() {
         return GMLConfiguration.class;
     }
 
-	/**
-	 * @see ComplexTransmuter#getMimeType()
-	 */
-	public String getMimeType() {
+    /**
+     * @see ComplexTransmuter#getMimeType()
+     */
+    public String getMimeType() {
         return "text/xml; subtype=gml/2.1.2";
     }
 
-	/**
-	 * @see Transmuter#getType()
-	 */
-	public Class<?> getType() {
+    /**
+     * @see Transmuter#getType()
+     */
+    public Class<?> getType() {
         return Geometry.class;
     }
 }

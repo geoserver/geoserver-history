@@ -14,8 +14,8 @@ import org.geotools.process.Process;
 import org.geotools.process.Processors;
 import org.geotools.process.ProcessFactory;
 
-import net.opengis.ows11.CodeType;
 import net.opengis.wps.InputType;
+import net.opengis.ows11.CodeType;
 import net.opengis.wps.ExecuteType;
 import net.opengis.wps.DataInputsType1;
 import org.opengis.util.ProgressListener;
@@ -83,20 +83,16 @@ public class Executor {
      * Partial output validation.
      * @param outputs
      */
-    private void checkOutputs(Map<String, Object> outputs)
-    {
-    	Map<String, Parameter<?>> resultInfo = this.factory.getResultInfo(null);
+    private void checkOutputs(Map<String, Object> outputs) {
+        Map<String, Parameter<?>> resultInfo = this.factory.getResultInfo(null);
 
-    	for(String key : resultInfo.keySet())
-    	{
-    		if (0 != resultInfo.get(key).minOccurs)
-    		{
-    			if (null == outputs || false == outputs.containsKey(key))
-    			{
-    				throw new WPSException("NoApplicableCode", "Process returned null value where one is expected.");
-    			}
-    		}
-    	}
+        for(String key : resultInfo.keySet()) {
+            if (0 != resultInfo.get(key).minOccurs) {
+                if (null == outputs || false == outputs.containsKey(key)) {
+                    throw new WPSException("NoApplicableCode", "Process returned null value where one is expected.");
+                }
+            }
+        }
     }
 
     /**

@@ -148,9 +148,8 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
 
                     // WPS spec specifies non-negative for unlimited inputs, so -1 -> 0
                     int maxOccurs = inputIdentifier.maxOccurs;
-                    if (-1 == maxOccurs)
-                    {
-                    	maxOccurs = Integer.MAX_VALUE;
+                    if (-1 == maxOccurs) {
+                        maxOccurs = Integer.MAX_VALUE;
                     }
 
                     attributes.addAttribute("", "minOccurs", "minOccurs", "", "" + inputIdentifier.minOccurs);
