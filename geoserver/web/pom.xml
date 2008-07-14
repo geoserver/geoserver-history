@@ -263,6 +263,7 @@
       <plugin>
         <groupId>org.geoserver.maven</groupId>
         <artifactId>config</artifactId>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <id>configPackage</id>
