@@ -56,7 +56,7 @@ public final class AtomUtils {
      * @return the formatted date
      */
     public static String dateToRFC3339(Date d){
-        StringBuilder result = new StringBuilder(rfc3339.format(d));
+        StringBuffer result = new StringBuffer(rfc3339.format(d));
         Calendar cal = new GregorianCalendar();
         cal.setTime(d);
         cal.setTimeZone(TimeZone.getDefault());
@@ -132,7 +132,7 @@ public final class AtomUtils {
 
 
     private static String commaSeparatedLayers(WMSMapContext con){
-        StringBuilder layers = new StringBuilder();
+        StringBuffer layers = new StringBuffer();
         MapLayer[] mapLayers = con.getLayers();
         for (int i = 0; i < mapLayers.length; i++){
             layers.append(mapLayers[i].getTitle());
