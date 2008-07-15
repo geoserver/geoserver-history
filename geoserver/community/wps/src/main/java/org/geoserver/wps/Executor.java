@@ -72,7 +72,7 @@ public class Executor {
     public Map<String, Object> execute() {
         ProgressListener progress = null;
 
-        Map<String, Object> outputs = process.execute(this.inputs, progress);
+        Map<String, Object> outputs = this.process.execute(this.inputs, progress);
 
         this.checkOutputs(outputs);
 

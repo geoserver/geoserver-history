@@ -96,7 +96,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
             }
 
             private void processDescription(String identifier) {
-                if ("all".equals(identifier)) {
+                if ("all".equalsIgnoreCase(identifier)) {
                     this.processDescriptionAll();
 
                     return;
