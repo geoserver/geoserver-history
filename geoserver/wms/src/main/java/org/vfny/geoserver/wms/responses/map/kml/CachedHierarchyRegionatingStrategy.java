@@ -1,608 +1,581 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.ows.HttpErrorCodeException;
 import org.geotools.data.FeatureSource;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.jdbc.JDBCUtils;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.geometry.jts.JTS;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
+import org.geotools.util.CanonicalSet;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 
 /**
- * Abstract class to provide 'automagic' caching of a TileLevel hierarchy and use it for a 
- * regionating strategy.
+ * Base class for regionating strategies. Common functionality provided:
+ * <ul>
+ * <li>tiling based on the TMS tiling recommendation</li>
+ * <li>caching the assignment of a feature in a specific tile in an H2 database
+ * stored in the data directory</li>
+ * <li>
  * 
- * @author David Winslow
+ * @author Andrea Aime - OpenGeo
+ * @author David Winslow - OpenGeo
+ * @author Arne Kepp - OpenGeo
  */
-public abstract class CachedHierarchyRegionatingStrategy implements RegionatingStrategy {
+public abstract class CachedHierarchyRegionatingStrategy implements
+        RegionatingStrategy {
+    static Logger LOGGER = Logging.getLogger("org.geoserver.geosearch");
 
-    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
+    static final CoordinateReferenceSystem WGS84;
 
-    private Set myAcceptableFeatures = null;
-    
-    private static ReferencedEnvelope worldBounds;
+    static final ReferencedEnvelope WORLD_BOUNDS;
 
-    private static String WORLD_SRS = "EPSG:4326";
+    static final double MAX_TILE_WIDTH;
 
-    private int myFeaturesPerTile;
+    static final double MAX_ERROR = 0.02;
 
-    private String myCacheTable;
-
-    private static final ReentrantLock lock = new ReentrantLock();
+    static final Set<String> NO_FIDS = Collections.emptySet();
 
     /**
-     * When the number of features within the bbox currently being processed is below this threshold,
-     * go ahead and build the rest of the tile hierarchy in memory.  (This is a performance thing; 
-     * sweeping over the database for each tile can really bog things down.)
+     * This structure is used to make sure that multiple threads end up using
+     * the same table name object, so that we can use it as a synchonization
+     * token
      */
-    private static int DB_SWEEP_CUTOFF = 50000; 
+    static CanonicalSet<String> canonicalizer = CanonicalSet
+            .newInstance(String.class);
 
-    public static long featureCounter = 0;
+    static {
+        try {
+            // common geographic info
+            WGS84 = CRS.decode("EPSG:4326");
+            WORLD_BOUNDS = new ReferencedEnvelope(new Envelope(180.0, -180.0,
+                    90.0, -90.0), WGS84);
+            MAX_TILE_WIDTH = WORLD_BOUNDS.getWidth() / 2.0;
 
-    public final void preProcess(WMSMapContext con, MapLayer layer) {
-        FeatureTypeInfo fti = con.getRequest().getWMS().getData().getFeatureTypeInfo(layer.getFeatureSource().getName());
-        myFeaturesPerTile = fti.getRegionateFeatureLimit();
-
-        try{
-            myAcceptableFeatures = getRangesFromDB(con, layer);            
-        } catch (Exception e){
-            LOGGER.log(Level.INFO, "No cached tile hierarchy found; constructing quad tree from data: " + e.getMessage());
-            
-            lock.lock();
-            try {
-                // Try again, may have been populated while we waited
-                try{
-                    myAcceptableFeatures = getRangesFromDB(con, layer);
-                } catch (Exception e2) {
-                    // Okay, this is a new one, lets populate it
-                    populateDB(con, layer);
-                    
-                    // It *really* should work now
-                    try{
-                        myAcceptableFeatures = getRangesFromDB(con, layer);
-                    } catch (Exception e3){
-                        throw new HttpErrorCodeException(500, "Unexpected error while determining tile contents.", e3);
-                    }
-                }
-            } finally {
-              lock.unlock();
-            }
+            // make sure, once and for all, that H2 is around
+            Class.forName("org.h2.Driver");
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Could not initialize the class constants", e);
         }
-        
-        // This okay, just means the tile is empty
-        if (myAcceptableFeatures.size() == 0){
-            throw new HttpErrorCodeException(204); 
-        }
-
-
     }
 
-    private void populateDB(WMSMapContext con, MapLayer layer) {
-        Connection connection;
-        Statement statement;
-        
-        String tableName = null;
+    /**
+     * The features contained in the current tile
+     */
+    protected Set<String> featuresInTile = Collections.emptySet();
+
+    /**
+     * The original area occupied by the data
+     */
+    protected ReferencedEnvelope dataEnvelope;
+
+    /**
+     * Reference to the layer being regionated
+     */
+    protected FeatureTypeInfo typeInfo;
+
+    protected int featuresPerTile;
+
+    protected String tableName;
+
+    public boolean include(SimpleFeature feature) {
+        return featuresInTile.contains(feature.getID());
+    }
+
+    public void preProcess(WMSMapContext context, MapLayer layer) {
         try {
-            tableName = getCacheTable(con, layer);
-            
-            Class.forName("org.h2.Driver");
-            String dataDir = con.getRequest().getWMS().getData()
-                    .getDataDirectory().getCanonicalPath();
-            connection = DriverManager.getConnection("jdbc:h2:file:" + dataDir
-                    + "/h2database/regionate_"+tableName, "geoserver", "geopass");
-            statement = connection.createStatement();
-        } catch (Exception e) {
+            // grab information needed to reach the db and get a hold to a db
+            // connection
+            Data catalog = context.getRequest().getWMS().getData();
+            FeatureSource featureSource = layer.getFeatureSource();
+            typeInfo = catalog.getFeatureTypeInfo(featureSource.getName());
+            String dataDir = catalog.getDataDirectory().getCanonicalPath();
+            tableName = getDatabaseName(context, layer);
+
+            // grab the features per tile, use a default should if user did not
+            // provide a decent value
+            featuresPerTile = typeInfo.getRegionateFeatureLimit();
+            if (featuresPerTile <= 1)
+                featuresPerTile = 1000;
+
+            // sanity check, the layer is not geometryless
+            if (typeInfo.isGeometryless())
+                throw new WmsException(typeInfo.getName()
+                        + " is geometryless, cannot generate KML!");
+
+            // make sure the request is within the data bounds, allowing for a
+            // small error
+            ReferencedEnvelope requestedEnvelope = context.getAreaOfInterest()
+                    .transform(WGS84, true);
+            System.out.println("Areay of interest: " + requestedEnvelope);
+            dataEnvelope = new ReferencedEnvelope(typeInfo
+                    .getLatLongBoundingBox(), WGS84);
+
+            // decide which tile we need to load/compute, and make sure
+            // it's a valid tile request, that is, that is does fit with
+            // the general tiling scheme (minus an eventual small error)
+            Tile tile = new Tile(requestedEnvelope);
+            ReferencedEnvelope tileEnvelope = tile.getEnvelope();
+            if (!envelopeMatch(tileEnvelope, requestedEnvelope))
+                throw new WmsException(
+                        "Invalid bounding box request, it does not fit "
+                                + "the nearest regionating tile. Requested area: "
+                                + requestedEnvelope + ", " + "nearest tile: "
+                                + tileEnvelope);
+
+            // oki doki, let's compute the fids in the requested tile
+            featuresInTile = getFeaturesForTile(dataDir, tile);
+        } catch (Throwable t) {
             LOGGER.log(Level.SEVERE,
-                    "Couldn't connect to embedded h2 database.", e);
-            return;
+                    "Error occurred while pre-processing regionated features",
+                    t);
+            // shouldn't we rethrow the exception and fail with a OGC service
+            // exception or a 505?
         }
 
-        
-
-        try {
-            statement.execute("DROP TABLE IF EXISTS " + tableName);
-            statement.execute("CREATE TABLE " + tableName
-                    + " ( x BIGINT, y BIGINT, z INT, fid varchar (64))");
-            statement.execute("CREATE INDEX ON " + tableName + " (x, y, z)");
-
-            CoordinateReferenceSystem epsg4326 = null;
-            try {
-                epsg4326 = CRS.decode("EPSG:4326");
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
-            }
-
-            /**
-             * GeoWebCache will try to start with the best tile that covers all
-             * the data, so we need to start at the same point
-             **/
-            
-
-            ReferencedEnvelope layerBounds = null;
-            
-            if(layer.getBounds().crs().equals(epsg4326)) {
-                layerBounds = layer.getBounds();
-            } else {
-                LOGGER.log(Level.SEVERE, "Transforming " + layer.getBounds().toString() + " to EPSG:4326.");
-                try {
-                    layerBounds = layer.getBounds().transform(epsg4326, false);
-                } catch (NullPointerException npe) {
-                    LOGGER.log(Level.SEVERE, "Caught NPE, presumably from transform, reverting to world bounds.");
-                } catch (TransformException te) { 
-                    LOGGER.log(Level.SEVERE, "Encountered transform exception, reverting to world bounds: "
-                            + te.getMessage());
-                }
-                
-                if(layerBounds == null) {
-                    layerBounds = getWorldBounds();
-                }
-            }
-            // ... but if it crosses the central meridien we need to get two
-            // world tiles anyway
-            if (layerBounds.getMinX() < 0.0 && layerBounds.getMaxX() > 0.0) {
-                LOGGER.log(Level.SEVERE,
-                        "Regionating strategy for layer "+ layer.getTitle()
-                      + " will use world bounds. Starting to build database now.");
-                this.featureCounter = 0; // global
-
-                // Western
-                ReferencedEnvelope tmp = new ReferencedEnvelope(new Envelope(
-                        0.0, -180.0, 90.0, -90.0), epsg4326);
-
-                buildDB(statement, tableName, layer.getFeatureSource(), tmp,
-                        new TreeSet<String>());
-                // Eastern
-                tmp = new ReferencedEnvelope(new Envelope(180.0, 0.0, 90.0,
-                        -90.0), epsg4326);
-
-                buildDB(statement, tableName, layer.getFeatureSource(), tmp,
-                        new TreeSet<String>());
-            } else {
-                // Figure out what the closest tile would be, then use that
-                ReferencedEnvelope outerBounds = expandToTile(layerBounds);
-                long[] coords = getTileCoords(outerBounds, getWorldBounds());
-                LOGGER.log(Level.SEVERE, "Regionating strategy for layer "
-                        + layer.getTitle() + " will start at "
-                        + outerBounds.toString() + " , " + coords[0] + ","
-                        + coords[1] + "," + coords[2]
-                        + ".  Starting to build database now.");
-                this.featureCounter = 0; // global
-
-                buildDB(statement, tableName, layer.getFeatureSource(),
-                        outerBounds, new TreeSet<String>());
-            }
-            statement.close();
-            connection.close();
-
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING,
-                    "Unable to store range information in database.", e);
-        } finally {
-            try {
-                statement.close();
-            } catch (SQLException sqle) {
-                LOGGER.log(Level.SEVERE,
-                        "Error while closing connection to h2 database.", sqle);
-            }
-            try {
-                connection.close();
-            } catch (SQLException sqle) {
-                LOGGER.log(Level.SEVERE,
-                        "Error while closing connection to h2 database.", sqle);
-            }
-        }
-
-        // Check how much we actually stored 
-        //(yeah, that reopens everything, but that's the point):
-        long dbRows = getRowsInDB(con, tableName);
-        LOGGER.log(Level.SEVERE, "Table " + tableName + " contains "
-                + Long.toString(dbRows) + " rows after populateDB()");
-    }
-
-    private Set<String> getRangesFromDB(WMSMapContext con, MapLayer layer) throws Exception{
-        Connection connection;
-        Statement statement;
-        Set<String> returnable = new TreeSet<String>();
-        String tableName = null;
-        
-        try{
-            tableName = getCacheTable(con, layer);
-            
-            Class.forName("org.h2.Driver");
-            String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
-            connection = 
-                DriverManager.getConnection(
-                        "jdbc:h2:file:" + dataDir + "/h2database/regionate_"+tableName, "geoserver", "geopass"
-                        );
-            statement = connection.createStatement();
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Couldn't connect to embedded h2 database.", e);
-            throw e;
-        }
-
-        long[] coords = null;
-        
-        try{
-            coords = getTileCoords(con.getAreaOfInterest(), getWorldBounds());
-            
-            //LOGGER.log(Level.SEVERE, "Received request for "+layer.getTitle() + " " +
-            //		con.getAreaOfInterest().toString() + " " + coords[0] + ","
-            //		+ coords[1] + "," + coords[2]);
-            String sql = "SELECT fid FROM " + tableName + " WHERE x = " + coords[0] + " AND y = " + coords[1] + " AND z = " + coords[2];
-            statement.execute( sql );
-
-            ResultSet results = statement.getResultSet();
-            while (results.next()){
-                returnable.add(results.getString(1));
-            }
-        } finally {
-            try {
-                statement.close();
-            } catch (SQLException sqle){
-                LOGGER.log(Level.SEVERE, "Error while closing connection to h2 database.", sqle);
-            }
-            try {
-                connection.close();
-            } catch (SQLException sqle) {
-                LOGGER.log(Level.SEVERE, "Error while closing connection to h2 database.", sqle);
-            }
-        }
-
-        //LOGGER.log(Level.SEVERE, "Returning "+returnable.size()
-        //		+ " features from " + tableName + " for " 
-        //		+ coords[0] + ","+ coords[1] + "," + coords[2]);
-        
-        return returnable;
-    }
-
-    private final String getCacheTable(WMSMapContext con, MapLayer layer){
-        if (myCacheTable == null){
-            myCacheTable = findCacheTable(con, layer);
-        }
-        return myCacheTable;
-    }
-
-    protected String findCacheTable(WMSMapContext con, MapLayer layer){
-        try{
-            FeatureSource source = layer.getFeatureSource();
-            MapLayerInfo[] config = con.getRequest().getLayers();
-            for (int i = 0; i < config.length; i++){
-                MapLayerInfo theLayer = config[i];
-                if (theLayer.getName().equals(layer.getTitle())){
-                    return theLayer.getDirName();
-                } 
-            }
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Exception while finding the location for the cachefile!", e);
-        }
-        return null;
-    }
-
-    public final boolean include(SimpleFeature feature) {
-        try {
-            return myAcceptableFeatures.contains(feature.getID());
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Encountered problem while trying to apply data regionating filter: ", e);
-        }
-        return false;
-    }
-
-    public abstract Comparator<SimpleFeature> getComparator();
-
-    public final void buildDB(Statement st, String tablename, FeatureSource source, ReferencedEnvelope bbox, Set<String> parents) throws IOException{
-    	FeatureCollection col = getFeatures(source, bbox);
-        ReferencedEnvelope reprojectedBBox;
-        try{
-            reprojectedBBox = bbox.transform(source.getBounds().getCoordinateReferenceSystem(), true);
-        } catch (Exception e){
-            reprojectedBBox = bbox;
-            LOGGER.log(Level.WARNING, "Couldn't transform bbox to native CRS; using lat/lon bbox instead.", e);
-        }
-
-        if (col.size() > DB_SWEEP_CUTOFF){
-            PriorityQueue<SimpleFeature> pq = new PriorityQueue<SimpleFeature>(myFeaturesPerTile, getComparator());
-            Iterator<SimpleFeature> it = col.iterator();
-            try{
-                while (it.hasNext()){
-                    SimpleFeature f = it.next();
-                    if (!parents.contains(f.getID()) &&
-                            containsCentroid(reprojectedBBox, (Geometry)f.getDefaultGeometry())
-                       ) {
-                        pq.add(f);
-                        featureCounter++;
-                        if (pq.size() > myFeaturesPerTile) pq.poll();
-                    }
-                } 
-            } finally {
-                col.close(it);
-            }
-
-            if (pq.size() > 0){
-                for (SimpleFeature feature : pq) writeToDB(st, tablename, bbox, feature);
-                for (SimpleFeature feature : pq) parents.add(feature.getID());
-                for (ReferencedEnvelope box : quadSplit(bbox)) buildDB(st, tablename, source, box, parents);
-                for (SimpleFeature feature : pq) parents.remove(feature.getID());
-            }
-        } else {
-        	// We're  trying to be clever here, not loop over the entire dataset for each tile
-            TileLevel root = new TileLevel(reprojectedBBox, myFeaturesPerTile, getComparator());
-            root.populateExcluding(col, parents);
-            ReferencedEnvelope world = getWorldBounds();
-            try{
-            	// This will *always* fail with the current version of GT,
-            	// because world -> ReferencedEnvelope[-180.0 : 180.0, -90.0 : 90.0] -> TransformException
-                //world.transform(source.getBounds().getCoordinateReferenceSystem(), true);
-            	
-            	// Instead try
-        		Envelope tmp = new Envelope(179.99, -179.99, 89.995, -89.995);
-        		world = new ReferencedEnvelope(tmp, getWorldBounds().getCoordinateReferenceSystem());
-        		world.transform(source.getBounds().getCoordinateReferenceSystem(), true);
-        		
-            } catch (Exception e){
-                // ignore, just use untransformed value
-                LOGGER.log(Level.WARNING, "Couldn't convert world bounds to native coords", e);
-            }
-            root.writeTo(st, tablename, world);
-        }
-        
-        LOGGER.log(Level.SEVERE, "builDB of " + tablename + " completed after " 
-                + Long.toString(this.featureCounter) + " features. (Number may not be accurate.)");
-    }
-
-    public static boolean containsCentroid(ReferencedEnvelope bbox, Geometry geom){
-        Envelope e = geom.getEnvelopeInternal();
-        double centerX = (e.getMaxX() + e.getMinX()) / 2;
-        double centerY = (e.getMaxY() + e.getMinY()) / 2;
-
-        return bbox.contains(centerX, centerY) 
-            && centerX != bbox.getMinX() 
-            && centerY != bbox.getMinY();
-    }
-    
-    private Envelope convertBBoxFromLatLon(Envelope bbox, CoordinateReferenceSystem nativeCRS) {
-        CoordinateReferenceSystem latLon = getWorldBounds().getCoordinateReferenceSystem();;
-
-        Envelope env = bbox;
-        if (!CRS.equalsIgnoreMetadata(latLon, nativeCRS)){
-            try{
-            MathTransform xform = CRS.findMathTransform(nativeCRS, latLon, true);
-            env = JTS.transform(bbox, null, xform, 10); // convert databbox to native CRS
-            } catch (Exception e) {
-                // default to provided envelope
-                LOGGER.log(Level.WARNING, "Couldn't transform bbox!!", e);
-            }
-        } 
-
-        return env;
-    }
-
-    private FeatureCollection getFeatures(FeatureSource source, ReferencedEnvelope bbox) throws IOException{
-        FilterFactory2 factory = CommonFactoryFinder.getFilterFactory2(null);
-        
-        Filter filter = factory.bbox(
-                factory.property(source.getSchema().getGeometryDescriptor().getName()), 
-                bbox.getMinimum(0),
-                bbox.getMinimum(1), 
-                bbox.getMaximum(0), 
-                bbox.getMaximum(1),
-                WORLD_SRS
-                );
-
-        return  source.getFeatures(filter);
-    }
-
-    private void writeToDB(Statement st, String tablename, ReferencedEnvelope bbox, SimpleFeature f){
-        long[] coords = getTileCoords(bbox, getWorldBounds());
-        try{
-            String SQL = "INSERT INTO " + tablename + " VALUES ( " + coords[0] + ", " + coords[1] + ", " + coords[2] + ", \'" + f.getID() + "\' )"; 
-            st.execute(SQL);
-        } catch (SQLException sqle){
-            LOGGER.log(Level.SEVERE, "Problem while storing regionated hierarchy in database: ", sqle);
+        // This okay, just means the tile is empty
+        if (featuresInTile.size() == 0) {
+            throw new HttpErrorCodeException(204);
         }
     }
 
     /**
-     * @param bbox
-     * @return the given bbox split into four equal tiles, as bboxes
-     */
-    protected static List<ReferencedEnvelope> quadSplit(ReferencedEnvelope bbox){
-        List<ReferencedEnvelope> results = new ArrayList<ReferencedEnvelope>();
-        
-        //top left
-        results.add(new ReferencedEnvelope(
-                bbox.getCenter(0),
-                bbox.getMinimum(0),
-                bbox.getMaximum(1),
-                bbox.getCenter(1),
-                bbox.getCoordinateReferenceSystem()
-                )
-        );
-        //top right
-        results.add(new ReferencedEnvelope(
-                bbox.getMaximum(0),
-                bbox.getCenter(0),
-                bbox.getMaximum(1),
-                bbox.getCenter(1),
-                bbox.getCoordinateReferenceSystem()
-                )
-        );
-
-        // bottom left
-        results.add(new ReferencedEnvelope(
-                bbox.getCenter(0),
-                bbox.getMinimum(0),
-                bbox.getCenter(1),
-                bbox.getMinimum(1),
-                bbox.getCoordinateReferenceSystem()
-                )
-        );
-
-        // bottom right
-        results.add(new ReferencedEnvelope(
-                bbox.getMaximum(0),
-                bbox.getCenter(0),
-                bbox.getCenter(1),
-                bbox.getMinimum(1),
-                bbox.getCoordinateReferenceSystem()
-                )
-        );
-
-        return results;
-    }
-
-    // To avoid Caused by: org.geotools.referencing.operation.projection.ProjectionException: 
-    // Latitude 90°00.0'S is too close to a pole.
-    // we use an envelope
-    public static ReferencedEnvelope getWorldBounds(){
-    	if(worldBounds == null) {
-    		try{
-        		Envelope tmp = new Envelope(180.0, -180.0, 90.0, -90.0);
-   
-    			worldBounds = new ReferencedEnvelope(tmp, CRS.decode(WORLD_SRS));
-    		} catch (Exception e){
-    			LOGGER.log(Level.SEVERE, "Failure to find EPSG:4326!!", e);
-    		}
-    	}
-        return worldBounds;
-    }
-    
-    /**
-     * Finds the BBOX of one tile that best encompasses the given origBounds 
+     * Returns true if the two envelope roughly match, that is, they are about
+     * the same size and about the same location. The max difference allowed is
+     * {@link #MAX_ERROR}, evaluated as a percentage of the width and height of
+     * the envelope.
      * 
-     * @param origBounds, cannot cross the central meridie
+     * @param tileEnvelope
+     * @param wgs84Envelope
      * @return
      */
-    protected static ReferencedEnvelope expandToTile(ReferencedEnvelope origBounds) {
-    	if(origBounds.getMaxX() > 0.0 && origBounds.getMinX() < 0.0 ) {
-    		return null; // We warned you...
-    	}
-
-    	ReferencedEnvelope outerBounds;
-    	Envelope tmp;
-    	
-    	// Find starting point (western or eastern hemisphere)
-    	if(origBounds.getMaxX() > 0.0) {
-    		tmp = new Envelope(180.0, 0.0, 90.0, -90.0);
-    	} else {
-    		tmp = new Envelope(0.0, -180.0, 90.0, -90.0);
-    	}
-    	outerBounds = new ReferencedEnvelope(tmp, getWorldBounds().getCoordinateReferenceSystem());
-    	
-    	// Make a copy
-    	origBounds = new ReferencedEnvelope(origBounds);
-    	
-    	// Tighten up a little, we're expanding in the next step
-    	origBounds.expandBy(-1 * origBounds.getWidth()*0.01);
-    	
-    	// Now keep zooming in until no new tile covers the original bounds
-    	boolean zoomIn = true;
-    	
-    	while(zoomIn) {
-    		zoomIn = false;
-    		Iterator<ReferencedEnvelope> iter = quadSplit(outerBounds).iterator();
-    		while(iter.hasNext()) {
-    			ReferencedEnvelope env = iter.next();
-    			
-    			if(env.covers((Envelope) origBounds)) {
-    				outerBounds = env;
-    				zoomIn = true;
-    			}
-    		}
-    	}
-    		
-    	return outerBounds;
+    private boolean envelopeMatch(ReferencedEnvelope tileEnvelope,
+            ReferencedEnvelope wgs84Envelope) {
+        double widthRatio = Math.abs(1.0 - tileEnvelope.getWidth()
+                / wgs84Envelope.getWidth());
+        double heightRatio = Math.abs(1.0 - tileEnvelope.getHeight()
+                / wgs84Envelope.getHeight());
+        double xRatio = Math.abs((tileEnvelope.getMinX() - wgs84Envelope
+                .getMinX())
+                / tileEnvelope.getWidth());
+        double yRatio = Math.abs((tileEnvelope.getMinY() - wgs84Envelope
+                .getMinY())
+                / tileEnvelope.getHeight());
+        return widthRatio < MAX_ERROR && heightRatio < MAX_ERROR
+                && xRatio < MAX_ERROR && yRatio < MAX_ERROR;
     }
 
     /**
-     * Finds the grid location of the given requestBBox, in relation to worldBounds
+     * Open/creates the db and then reads/computes the tile features
      * 
-     * @param requestBBox
-     * @param worldBounds
-     * @return {x,y,z}
+     * @param dataDir
+     * @param tile
+     * @return
+     * @throws Exception
      */
-    public static long[] getTileCoords(ReferencedEnvelope requestBBox, ReferencedEnvelope worldBounds) {
-    	
-    	try{
-            requestBBox = requestBBox.transform(worldBounds.getCoordinateReferenceSystem(), true);
-        } catch (Exception e){
-            LOGGER.log(Level.WARNING, "Couldn't reproject while acquiring tile coordinates", e);
+    private Set<String> getFeaturesForTile(String dataDir, Tile tile)
+            throws Exception {
+        Connection conn = null;
+        Statement st = null;
+
+        // build the synchonization token
+        canonicalizer.add(tableName);
+        tableName = canonicalizer.get(tableName);
+
+        try {
+            // make sure no two thread in parallel can build the same db
+            synchronized (tableName) {
+                // get a hold to the database that contains the cache (this will
+                // eventually create the db)
+                conn = DriverManager.getConnection("jdbc:h2:file:" + dataDir
+                        + "/geosearch/h2cache_" + tableName, "geoserver",
+                        "geopass");
+
+                // try to create the table, if it's already there this will fail
+                st = conn.createStatement();
+                try {
+                    // st.execute("DROP TABLE IF EXISTS TILECACHE");
+                    st
+                            .execute("CREATE TABLE TILECACHE( x BIGINT, y BIGINT, z INT, fid varchar (64))");
+                    st.execute("CREATE INDEX ON TILECACHE(x, y, z)");
+                } catch (SQLException e) {
+                    // it's ok, the table was already there (the only other
+                    // cause
+                    // for an exception is a programming error, so be careful if
+                    // you need to change the sql statements)
+                }
+            }
+
+            return readFeaturesForTile(tile, conn);
+        } finally {
+            JDBCUtils.close(st);
+            JDBCUtils.close(conn, null, null);
         }
-        
-        // EPSG4326 is special, in that at at zoomlevel 0 it has two tiles
-        // -> introduce notion of maxTileWidth, which is 180ish
-        
-        double maxTileWidth = worldBounds.getWidth() / 2.0;
-
-        long z = Math.round(Math.log( maxTileWidth/ requestBBox.getWidth())/Math.log(2));
-        long x = Math.round(((requestBBox.getMinimum(0) - worldBounds.getMinimum(0)) / maxTileWidth) * Math.pow(2, z));
-        long y = Math.round(((requestBBox.getMinimum(1) - worldBounds.getMinimum(1)) / maxTileWidth) * Math.pow(2, z));
-
-        return new long[]{x,y,z};
     }
-    
-    private long getRowsInDB(WMSMapContext con, String tableName) {
-    	long result = -1;
-    	
-        Connection connection;
-        Statement statement;
-        
-        try{
-            Class.forName("org.h2.Driver");
-            String dataDir = con.getRequest().getWMS().getData().getDataDirectory().getCanonicalPath();
-            connection = 
-                DriverManager.getConnection(
-                    "jdbc:h2:file:" + dataDir + "/h2database/regionate_"+tableName, "geoserver", "geopass"
-                    );
-            statement = connection.createStatement();
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Couldn't connect to embedded h2 database.", e);
+
+    /**
+     * Reads/computes the tile feature set
+     * 
+     * @param tile
+     *            the Tile whose features we must find
+     * @param conn
+     *            the H2 connection
+     * @return
+     * @throws Exception
+     */
+    protected Set<String> readFeaturesForTile(Tile tile, Connection conn)
+            throws Exception {
+        // grab the fids and decide whether we have to compute them
+        Set<String> fids = readCachedTileFids(tile, conn);
+        if (fids != null) {
+            return fids;
+        } else {
+            // build the synchronization token
+            String tileKey = tableName + tile.x + "-" + tile.y + "-" + tile.z;
+            canonicalizer.add(tileKey);
+            tileKey = canonicalizer.get(tileKey);
+
+            synchronized (tileKey) {
+                // might have been built while we were waiting
+                fids = readCachedTileFids(tile, conn);
+                if (fids != null)
+                    return fids;
+
+                // still missing, we need to compute them
+                fids = computeFids(tile, conn);
+                storeFids(tile, fids, conn);
+
+                // optimization, if we did not manage to fill up this tile,
+                // the ones below it will be empty -> mark them as such right
+                // away
+                if (fids.size() < featuresPerTile)
+                    for (Tile child : tile.getChildren())
+                        storeFids(child, NO_FIDS, conn);
+            }
+        }
+        return fids;
+    }
+
+    /**
+     * Store the fids inside
+     * 
+     * @param t
+     * @param fids
+     * @param conn
+     * @throws SQLException
+     */
+    private void storeFids(Tile t, Set<String> fids, Connection conn)
+            throws SQLException {
+        PreparedStatement ps = null;
+        try {
+            // we are going to execute this one many times, let's prepare it so
+            // that
+            // the db engine does not have to parse it at every call
+            String stmt = "INSERT INTO TILECACHE VALUES (" + t.x + ", " + t.y
+                    + ", " + t.z + ", ?)";
+            ps = conn.prepareStatement(stmt);
+
+            if (fids.size() == 0) {
+                // we just have to mark the tile as empty
+                ps.setString(1, null);
+            } else {
+                // store all the fids
+                conn.setAutoCommit(false);
+                for (String fid : fids) {
+                    ps.setString(1, fid);
+                    ps.execute();
+                }
+                conn.commit();
+            }
+        } finally {
+            conn.setAutoCommit(true);
+            JDBCUtils.close(ps);
+        }
+    }
+
+    /**
+     * Computes the fids that will be stored in the specified tile
+     * 
+     * @param tileCoords
+     * @param st
+     * @return
+     * @throws SQLException
+     */
+    private Set<String> computeFids(Tile tile, Connection conn)
+            throws Exception {
+        Set<String> parentFids = getUpwardFids(tile.getParent(), conn);
+        Set<String> currFids = new HashSet<String>();
+        FeatureIterator fi = null;
+        try {
+            // grab the features
+            ReferencedEnvelope tileEnvelope = tile.getEnvelope();
+            fi = getSortedFeatures(tileEnvelope, conn);
+
+            // if the crs is not wgs84, we'll need to transform the point
+            MathTransform tx = null;
+            double[] coords = new double[2];
+
+            // scan counting how many fids we've collected
+            boolean first = true;
+            while (fi.hasNext() && currFids.size() < featuresPerTile) {
+                // grab the feature, skip it if it's already in a parent element
+                SimpleFeature f = (SimpleFeature) fi.next();
+                if (parentFids.contains(f.getID()))
+                    continue;
+
+                // check the need for a transformation
+                if (first) {
+                    first = false;
+                    CoordinateReferenceSystem nativeCRS = f.getType()
+                            .getCoordinateReferenceSystem();
+                    typeInfo.getFeatureType().getCoordinateReferenceSystem();
+                    if (nativeCRS != null
+                            && !CRS.equalsIgnoreMetadata(nativeCRS, WGS84)) {
+                        tx = CRS.findMathTransform(nativeCRS, WGS84);
+                    }
+                }
+
+                // see if the features is to be included in this tile
+                Point p = ((Geometry) f.getDefaultGeometry()).getCentroid();
+                coords[0] = p.getX();
+                coords[1] = p.getY();
+                if (tx != null)
+                    tx.transform(coords, 0, coords, 0, 1);
+                if (tileEnvelope.contains(coords[0], coords[1]))
+                    currFids.add(f.getID());
+            }
+        } finally {
+            if (fi != null)
+                fi.close();
+        }
+        return currFids;
+    }
+
+    /**
+     * Returns all the features in the specified envelope, sorted according to
+     * the priority used for regionating. The features returned do not have to
+     * be the feature type ones, it's sufficient that they have the same FID and
+     * a geometry whose centroid is the same as the original feature one.
+     * 
+     * @param envelope
+     * @param indexConnection
+     *            a connection to the feature id cache db
+     * @return
+     * @throws Exception
+     */
+    protected abstract FeatureIterator getSortedFeatures(
+            ReferencedEnvelope envelope, Connection indexConnection)
+            throws Exception;
+
+    /**
+     * Returns a set of all the fids in the specified tile and in the parents of
+     * it, recursing up to the root tile
+     * 
+     * @param tile
+     * @param st
+     * @return
+     * @throws SQLException
+     */
+    private Set<String> getUpwardFids(Tile tile, Connection conn)
+            throws Exception {
+        // recursion stop condition
+        if (tile == null)
+            return Collections.EMPTY_SET;
+
+        // return the curren tile fids, and recurse up to the parent
+        Set<String> fids = new HashSet();
+        fids.addAll(readFeaturesForTile(tile, conn));
+        fids.addAll(getUpwardFids(tile.getParent(), conn));
+        return fids;
+    }
+
+    /**
+     * Here we have three cases
+     * <ul>
+     * <li>the tile was already computed, and it resulted to be empty. We leave
+     * a "x,y,z,null" marker to know if that happened, and in this case the
+     * returned set will be empty</li> <li>the tile was already computed, and we
+     * have data, the returned sest will be non empty</li> <li>the tile is new,
+     * the db contains nothing, in this case we return "null"</li>
+     * <ul>
+     * 
+     * @param tileCoords
+     * @param conn
+     * @throws SQLException
+     */
+    protected Set<String> readCachedTileFids(Tile tile, Connection conn)
+            throws SQLException {
+        Set<String> fids = null;
+        Statement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT fid FROM TILECACHE where x = "
+                    + tile.x + " AND y = " + tile.y + " and z = " + tile.z);
+            // decide whether we have to collect the fids or just to
+            // return that the tile was empty
+            if (rs.next()) {
+                String fid = rs.getString(1);
+                if (fid == null) {
+                    return Collections.emptySet();
+                } else {
+                    fids = new HashSet<String>();
+                    fids.add(fid);
+                }
+            }
+            // fill the set with the collected fids
+            while (rs.next()) {
+                fids.add(rs.getString(1));
+            }
+        } finally {
+            JDBCUtils.close(rs);
+            JDBCUtils.close(st);
+        }
+
+        return fids;
+    }
+
+    /**
+     * Returns the name to be used for the database. Should be unique for this
+     * specific regionated layer.
+     * 
+     * @param con
+     * @param layer
+     * @return
+     */
+    protected String getDatabaseName(WMSMapContext con, MapLayer layer)
+            throws Exception {
+        MapLayerInfo[] config = con.getRequest().getLayers();
+        for (int i = 0; i < config.length; i++) {
+            MapLayerInfo theLayer = config[i];
+            if (theLayer.getName().equals(layer.getTitle())) {
+                return theLayer.getDirName();
+            }
+        }
+        throw new RuntimeException("Weren't able to find the layer "
+                + "inside the map context, this is most disturbing...");
+    }
+
+    /**
+     * A regionating tile identified by its coordinates
+     * 
+     * @author Andrea Aime
+     */
+    protected class Tile {
+        long x;
+
+        long y;
+
+        long z;
+
+        ReferencedEnvelope envelope;
+
+        /**
+         * Creates a new tile with the given coordinates
+         * 
+         * @param x
+         * @param y
+         * @param z
+         */
+        public Tile(long x, long y, long z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            envelope = envelope(x, y, z);
+        }
+
+        private ReferencedEnvelope envelope(long x, long y, long z) {
+            double tileSize = MAX_TILE_WIDTH / Math.pow(2, z);
+            double xMin = x * tileSize + WORLD_BOUNDS.getMinX();
+            double yMin = y * tileSize + WORLD_BOUNDS.getMinY();
+            return new ReferencedEnvelope(xMin, xMin + tileSize, yMin, yMin
+                    + tileSize, WGS84);
+        }
+
+        /**
+         * Builds the best matching tile for the specified envelope
+         */
+        public Tile(ReferencedEnvelope wgs84Envelope) {
+            z = Math.round(Math.log(MAX_TILE_WIDTH / wgs84Envelope.getWidth())
+                    / Math.log(2));
+            x = Math.round(((wgs84Envelope.getMinimum(0) - WORLD_BOUNDS
+                    .getMinimum(0)) / MAX_TILE_WIDTH)
+                    * Math.pow(2, z));
+            y = Math.round(((wgs84Envelope.getMinimum(1) - WORLD_BOUNDS
+                    .getMinimum(1)) / MAX_TILE_WIDTH)
+                    * Math.pow(2, z));
+            envelope = envelope(x, y, z);
+        }
+
+        /**
+         * Returns the parent of this tile, or null if this tile is (one of) the
+         * root of the current dataset
+         * 
+         * @return
+         */
+        public Tile getParent() {
+            // if we got to one of the root tiles for this data set, just stop
+            if (z == 0 || envelope.contains((BoundingBox) dataEnvelope))
+                return null;
+            else
+                return new Tile((long) Math.floor(x / 2.0), (long) Math
+                        .floor(y / 2.0), z - 1);
+        }
+
+        /**
+         * Returns the four direct children of this tile
+         * 
+         * @return
+         */
+        public Tile[] getChildren() {
+            Tile[] result = new Tile[4];
+            result[0] = new Tile(x * 2, y * 2, z + 1);
+            result[1] = new Tile(x * 2 + 1, y * 2, z + 1);
+            result[2] = new Tile(x * 2, y * 2 + 1, z + 1);
+            result[3] = new Tile(x * 2 + 1, y * 2 + 1, z + 1);
             return result;
         }
-        
-        try {
-        	statement.execute("SELECT COUNT(x) FROM " + tableName);
-        	ResultSet results = statement.getResultSet();
-        	results.first();
-        	result = results.getInt(1);
-        	statement.close();
-        	connection.close();
-        
-        } catch (SQLException sqle) {
-        	LOGGER.log(Level.SEVERE, sqle.getMessage());
+
+        /**
+         * Returns the WGS84 envelope of this tile
+         * 
+         * @return
+         */
+        public ReferencedEnvelope getEnvelope() {
+            return envelope;
         }
-        return result;
+
+        @Override
+        public String toString() {
+            return "Tile X: " + x + ", Y: " + y + ", Z: " + z + " (" + envelope
+                    + ")";
+        }
     }
 
 }
