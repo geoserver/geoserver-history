@@ -21,6 +21,7 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
+import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
@@ -28,8 +29,10 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.TransformedDirectPosition;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.opengis.coverage.CannotEvaluateException;
 import org.opengis.coverage.PointOutsideCoverageException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -261,11 +264,29 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 } else {
                     CoverageInfo cinfo = requestedLayers[i].getCoverage();
                     GridCoverage2D coverage = ((GridCoverage2D) cinfo.getCoverage()).geophysics(true);
-//                    MathTransform mathTrans = coverage.getGridGeometry().getGridToCRS().inverse();
-//                    DirectPosition position = mathTrans.transform(new DirectPosition2D(middle.x, middle.y), null);
                     DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
                     try {
-                        double[] pixelValues = coverage.evaluate(position, (double[]) null);
+                        double[] pixelValues = null;
+                        if (requestedCRS != null) {
+                            
+                            final CoordinateReferenceSystem targetCRS = coverage
+                                    .getCoordinateReferenceSystem2D();
+                            TransformedDirectPosition arbitraryToInternal = new TransformedDirectPosition(
+                                    requestedCRS, targetCRS, new Hints(
+                                            Hints.LENIENT_DATUM_SHIFT,
+                                            Boolean.TRUE));
+                            try {
+                                arbitraryToInternal.transform(position);
+                            } catch (TransformException exception) {
+                                throw new CannotEvaluateException(exception
+                                        .getLocalizedMessage());
+                            }
+                            Point2D point2D = arbitraryToInternal.toPoint2D();
+                            pixelValues = coverage.evaluate(point2D,
+                                    (double[]) null);
+                        } else
+                            pixelValues = coverage.evaluate(position,
+                                    (double[]) null);
                         FeatureCollection<SimpleFeatureType, SimpleFeature> pixel;
                         pixel = wrapPixelInFeatureCollection(coverage, pixelValues, cinfo.getName());
                         metas.add(requestedLayers[i]);
