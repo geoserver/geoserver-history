@@ -344,7 +344,7 @@ public class MockData implements TestData {
     /**
      * @return the "coverages" directory under the root
      */
-    public File getCoveragesirectory() {
+    public File getCoveragesDirectory() {
         return coverages;
     }
     
