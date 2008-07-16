@@ -118,11 +118,12 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             String dataDir = catalog.getDataDirectory().getCanonicalPath();
             tableName = getDatabaseName(context, layer);
 
-            // grab the features per tile, use a default should if user did not
-            // provide a decent value
+            // grab the features per tile, use a default if user did not
+            // provide a decent value. The default should fill up the
+            // tile when it shows up.
             featuresPerTile = typeInfo.getRegionateFeatureLimit();
             if (featuresPerTile <= 1)
-                featuresPerTile = 1000;
+                featuresPerTile = 64;
 
             // sanity check, the layer is not geometryless
             if (typeInfo.isGeometryless())
@@ -133,7 +134,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             // small error
             ReferencedEnvelope requestedEnvelope = context.getAreaOfInterest()
                     .transform(WGS84, true);
-            System.out.println("Areay of interest: " + requestedEnvelope);
+            LOGGER.log(Level.FINE, "Requested tile: {0}", requestedEnvelope);
             dataEnvelope = new ReferencedEnvelope(typeInfo
                     .getLatLongBoundingBox(), WGS84);
 
@@ -170,21 +171,22 @@ public abstract class CachedHierarchyRegionatingStrategy implements
      * the same size and about the same location. The max difference allowed is
      * {@link #MAX_ERROR}, evaluated as a percentage of the width and height of
      * the envelope.
+     * The method assumes both envelopes are in the same CRS
      * 
      * @param tileEnvelope
-     * @param wgs84Envelope
+     * @param expectedEnvelope 
      * @return
      */
     private boolean envelopeMatch(ReferencedEnvelope tileEnvelope,
-            ReferencedEnvelope wgs84Envelope) {
+            ReferencedEnvelope expectedEnvelope) {
         double widthRatio = Math.abs(1.0 - tileEnvelope.getWidth()
-                / wgs84Envelope.getWidth());
+                / expectedEnvelope.getWidth());
         double heightRatio = Math.abs(1.0 - tileEnvelope.getHeight()
-                / wgs84Envelope.getHeight());
-        double xRatio = Math.abs((tileEnvelope.getMinX() - wgs84Envelope
+                / expectedEnvelope.getHeight());
+        double xRatio = Math.abs((tileEnvelope.getMinX() - expectedEnvelope
                 .getMinX())
                 / tileEnvelope.getWidth());
-        double yRatio = Math.abs((tileEnvelope.getMinY() - wgs84Envelope
+        double yRatio = Math.abs((tileEnvelope.getMinY() - expectedEnvelope
                 .getMinY())
                 / tileEnvelope.getHeight());
         return widthRatio < MAX_ERROR && heightRatio < MAX_ERROR
@@ -219,17 +221,12 @@ public abstract class CachedHierarchyRegionatingStrategy implements
 
                 // try to create the table, if it's already there this will fail
                 st = conn.createStatement();
-                try {
-                    // st.execute("DROP TABLE IF EXISTS TILECACHE");
-                    st
-                            .execute("CREATE TABLE TILECACHE( x BIGINT, y BIGINT, z INT, fid varchar (64))");
-                    st.execute("CREATE INDEX ON TILECACHE(x, y, z)");
-                } catch (SQLException e) {
-                    // it's ok, the table was already there (the only other
-                    // cause
-                    // for an exception is a programming error, so be careful if
-                    // you need to change the sql statements)
-                }
+                st.execute("CREATE TABLE IF NOT EXISTS TILECACHE( " //
+                        + "x BIGINT, " //
+                        + "y BIGINT, " //
+                        + "z INT, " //
+                        + "fid varchar (64))");
+                st.execute("CREATE INDEX IF NOT EXISTS IDX_TILECACHE ON TILECACHE(x, y, z)");
             }
 
             return readFeaturesForTile(tile, conn);
@@ -294,9 +291,9 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             throws SQLException {
         PreparedStatement ps = null;
         try {
-            // we are going to execute this one many times, let's prepare it so
-            // that
-            // the db engine does not have to parse it at every call
+            // we are going to execute this one many times, 
+            // let's prepare it so that the db engine does 
+            // not have to parse it at every call
             String stmt = "INSERT INTO TILECACHE VALUES (" + t.x + ", " + t.y
                     + ", " + t.z + ", ?)";
             ps = conn.prepareStatement(stmt);
@@ -304,6 +301,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             if (fids.size() == 0) {
                 // we just have to mark the tile as empty
                 ps.setString(1, null);
+                ps.execute();
             } else {
                 // store all the fids
                 conn.setAutoCommit(false);

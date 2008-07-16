@@ -1,22 +1,17 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.jdbc.JDBCUtils;
-import org.geotools.data.store.DataFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -155,8 +150,7 @@ public class DataRegionatingStrategy extends CachedHierarchyRegionatingStrategy 
             // generation of Coordinate[] out of the sequences...
             // q.setHints(new Hints(Hints.JTS_COORDINATE_SEQUENCE_FACTORY,
             // PackedCoordinateSequenceFactory.class));
-            q
-                    .setSortBy(new SortBy[] { ff.sort(attribute,
+            q.setSortBy(new SortBy[] { ff.sort(attribute,
                             SortOrder.DESCENDING) });
 
             // return the reader
