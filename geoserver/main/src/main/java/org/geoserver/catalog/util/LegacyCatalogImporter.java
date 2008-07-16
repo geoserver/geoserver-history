@@ -133,6 +133,8 @@ public class LegacyCatalogImporter {
         
         // for each feature type file, load the info.xml into a FeatureTypeInfo
         File featureTypes = new File(dir, "featureTypes");
+        if(!featureTypes.exists())
+            featureTypes.mkdir();
         File[] featureTypeDirectories = featureTypes.listFiles();
         for (int i = 0; i < featureTypeDirectories.length; i++) {
             File featureTypeDirectory = featureTypeDirectories[i];
@@ -188,8 +190,10 @@ public class LegacyCatalogImporter {
         
         // for each coverage definition in coverage, read it
         File coverages = new File(dir, "coverages");
+        if(!coverages.exists())
+            coverages.mkdir();
         File[] coverageDirectories = coverages.listFiles();
-        for (int i = 0; coverageDirectories != null && i < coverageDirectories.length; i++) {
+        for (int i = 0; i < coverageDirectories.length; i++) {
             File coverageDirectory = coverageDirectories[i];
             if (!coverageDirectory.isDirectory() || coverageDirectory.isHidden())
                 continue;
