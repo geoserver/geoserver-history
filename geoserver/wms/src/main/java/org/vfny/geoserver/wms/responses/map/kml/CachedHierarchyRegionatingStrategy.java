@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.sql.Connection;
@@ -100,8 +104,14 @@ public abstract class CachedHierarchyRegionatingStrategy implements
      */
     protected FeatureTypeInfo typeInfo;
 
+    /**
+     * The max number of features per tile
+     */
     protected int featuresPerTile;
 
+    /**
+     * The name of the database that will contain the fid to tile cache
+     */
     protected String tableName;
 
     public boolean include(SimpleFeature feature) {
@@ -365,7 +375,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
                 coords[1] = p.getY();
                 if (tx != null)
                     tx.transform(coords, 0, coords, 0, 1);
-                if (tileEnvelope.contains(coords[0], coords[1]))
+                if (tile.contains(coords[0], coords[1]))
                     currFids.add(f.getID());
             }
         } finally {
@@ -506,6 +516,37 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             this.y = y;
             this.z = z;
             envelope = envelope(x, y, z);
+        }
+
+        /**
+         * Tile containment check is not trivial due to a couple of issues:
+         * <ul>
+         * <li>centroids sitting on the tile borders must be associated to exactly one tile,
+         *     so we have to consider only two borders as inclusive in general (S and W)
+         *     but add on occasion the other two when we reach the extent of our data set</li>
+         * <li>coordinates going beyond the natural lat/lon range</li>
+         * </ul>
+         * This code takes care of the first, whilst the second issue remains as a TODO
+         * @param x
+         * @param y
+         * @return
+         */
+        public boolean contains(double x, double y) {
+            double minx = envelope.getMinX();
+            double maxx = envelope.getMaxX();
+            double miny = envelope.getMinY();
+            double maxy = envelope.getMaxY();
+            // standard borders, N and W in, E and S out
+            if(x >= minx && x < maxx && y >= miny && y < maxy)
+                return true;
+            
+            // else check if we are on a border tile and the point
+            // happens to sit right on the border we usually don't include
+            if(x == maxx && x >= dataEnvelope.getMaxX())
+                return true;
+            if(y == maxy && y >= dataEnvelope.getMaxY())
+                return true;
+            return false;
         }
 
         private ReferencedEnvelope envelope(long x, long y, long z) {
