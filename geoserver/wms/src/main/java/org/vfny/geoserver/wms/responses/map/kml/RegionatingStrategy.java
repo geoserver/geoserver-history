@@ -1,28 +1,22 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import org.opengis.feature.simple.SimpleFeature;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.geotools.map.MapLayer;
+import org.opengis.filter.Filter;
+import org.vfny.geoserver.wms.WMSMapContext;
 
 /**
  * Common interface for classes defining a mechanism for regionating KML placemarks.  
  * @author David Winslow
+ * @author Andrea Aime
  */
 public interface RegionatingStrategy {
     /**
-     * Many (most?) regionating strategies need some global information about the dataset, this
-     * method provides a common way for them to acquire it.  Strategies can assume that the
-     * provided FeatureCollection contains all elements in the dataset, NOT just the ones matched
-     * by the bbox filter on the request.
-     * @param collection a FeatureCollection containing the entire dataset
+     * Given the KML request context, asks the strategy to return a filter matching only
+     * the features that have to be included in the output. 
+     * An SLD based strategy will use the current scale, a tiling based one the area occupied
+     * by the requested tile and some criteria to fit in features, and so on. 
+     * @param context
+     * @param layer
      */
-    public void preProcess(WMSMapContext context, MapLayer layer);
-
-    /**
-     * Decide whether a feature should be displayed at a particular scale.  This method should 
-     * not worry about the bbox, just whether the feature should be included at the current zoomlevel.
-     * @param feature the SimpleFeature to consider for inclusion
-     * @return true if the feature should be displayed, false otherwise.
-     */
-    public boolean include(SimpleFeature feature);
+    public Filter getFilter(WMSMapContext context, MapLayer layer);
 }
