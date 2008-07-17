@@ -75,13 +75,23 @@ public class PostgisDDLDelegate implements DDLDelegate {
     }
 
     public void dropTable(String tableName) throws IOException {
-        executeSql("DROP TABLE \"" + tableName + "\"");
+        try {
+            executeSql("DROP TABLE \"" + tableName + "\"");
+        } catch(Exception e) {
+            // just ignore, DROP TABLE IF EXISTS would be cleaner
+            // but it's postgis 8.2+
+        }
     }
 
     public void dropView(String viewName) throws IOException {
         executeSql("DELETE FROM geometry_columns WHERE f_table_name = '"
                 + viewName + "'");
-        executeSql("DROP VIEW \"" + viewName + "\"");
+        try {
+            executeSql("DROP VIEW \"" + viewName + "\"");
+        } catch(Exception e) {
+            // just ignore, DROP VIEW IF EXISTS would be cleaner
+            // but it's postgis 8.2+
+        }
     }
 
     public void createIndex(String tableName, String columnName)
