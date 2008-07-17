@@ -280,31 +280,6 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer.getStyle(),
                     featureType);
 
-            //Determine which strategy to use to regionate the results
-            String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
-            if (("auto").equals(stratname))
-                stratname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateStrategy();
-            if(stratname != null) {
-                List<RegionatingStrategyFactory> factories = GeoServerExtensions.extensions(RegionatingStrategyFactory.class);
-                Iterator<RegionatingStrategyFactory> it = factories.iterator();
-                while (it.hasNext()){
-                    RegionatingStrategyFactory factory = it.next();
-                    if (factory.canHandle(stratname)){
-                        setRegionatingStrategy(factory.createStrategy());
-                        break;
-                    }
-                }
-                // if a strategy was specified but we did not find it, let the user know
-                if(myStrategy == null)
-                    throw new WmsException("Unknown regionating strategy " + stratname);
-            }
-
-            if (myStrategy == null){
-                setRegionatingStrategy(new SLDRegionatingStrategy());
-            }
-
-            myStrategy.preProcess(mapContext, mapLayer);
-            
             // encode the schemas (kml 2.2)
             encodeSchemas(features);
 
@@ -379,15 +354,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         }
 
         protected void encode(SimpleFeature feature, FeatureTypeStyle[] styles) {
-            //get the feature id
-
-            if ( myStrategy.include(feature) ) {
-                encodeStyle(feature, styles);
+            if(encodeStyle(feature, styles))
                 encodePlacemark(feature,styles);    
-            }
-            
-
-            //end("Document");
         }
 
         /**
@@ -418,8 +386,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 
                 //return true to specify that the feature has a style
                 return true;
-            }
-            else {
+            } else {
                 //dont encode
                 return false;
             }

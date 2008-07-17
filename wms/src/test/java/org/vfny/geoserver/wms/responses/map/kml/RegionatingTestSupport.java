@@ -1,17 +1,11 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Collections;
+
 import javax.xml.namespace.QName;
 
-import org.geoserver.data.test.LiveData;
 import org.geoserver.data.test.MockData;
-import org.geoserver.data.test.TestData;
-import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerTestSupport;
-import org.vfny.geoserver.global.Data;
 
 /**
  * Base class for functional testing of the regionating code; sets up a proper testing enviroment

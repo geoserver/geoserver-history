@@ -3,6 +3,8 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import org.vfny.geoserver.wms.WmsException;
+
 public class ReflectiveRegionatingStrategyFactory implements RegionatingStrategyFactory {
     private static final Logger LOGGER = 
         org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");
@@ -34,12 +36,8 @@ public class ReflectiveRegionatingStrategyFactory implements RegionatingStrategy
         try{
             return (RegionatingStrategy)getStrategyClass().newInstance();
         } catch (Exception e){
-            LOGGER.log(Level.SEVERE, 
-                    "Couldn't create " + myStrategyClass + " in ReflectiveRegionatingStrategyFactory", 
-                    e
-                    );
+            throw new WmsException(e);
         }
-        return new SLDRegionatingStrategy();
     }
 
     protected Class getStrategyClass() {
