@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import org.geoserver.ows.HttpErrorCodeException;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.jdbc.JDBCUtils;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
@@ -26,6 +27,9 @@ import org.geotools.referencing.CRS;
 import org.geotools.util.CanonicalSet;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -89,10 +93,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
         }
     }
 
-    /**
-     * The features contained in the current tile
-     */
-    protected Set<String> featuresInTile = Collections.emptySet();
+ 
 
     /**
      * The original area occupied by the data
@@ -114,11 +115,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements
      */
     protected String tableName;
 
-    public boolean include(SimpleFeature feature) {
-        return featuresInTile.contains(feature.getID());
-    }
-
-    public void preProcess(WMSMapContext context, MapLayer layer) {
+    public Filter getFilter(WMSMapContext context, MapLayer layer) {
+        Set<String> featuresInTile = Collections.emptySet();
         try {
             // grab information needed to reach the db and get a hold to a db
             // connection
@@ -173,6 +171,13 @@ public abstract class CachedHierarchyRegionatingStrategy implements
         // This okay, just means the tile is empty
         if (featuresInTile.size() == 0) {
             throw new HttpErrorCodeException(204);
+        } else {
+            FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+            Set<FeatureId> ids = new HashSet<FeatureId>();
+            for (String fid : featuresInTile) {
+                ids.add(ff.featureId(fid));
+            }
+            return ff.id(ids);
         }
     }
 

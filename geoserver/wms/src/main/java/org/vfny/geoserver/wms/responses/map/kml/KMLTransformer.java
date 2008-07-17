@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -34,11 +35,14 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 
@@ -375,25 +379,45 @@ public class KMLTransformer extends TransformerBase {
             //handle startIndex requested by client query
             q.setStartIndex(definitionQuery.getStartIndex());
             
-            // make sure we output in 4326 since that's what KML mandates
+            // check the regionating strategy
+            RegionatingStrategy regionatingStrategy = null;
+            String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
+            if (("auto").equals(stratname)) {
+                Data catalog = mapContext.getRequest().getWMS().getData();
+                Name name = layer.getFeatureSource().getName();
+                stratname = catalog.getFeatureTypeInfo(name).getRegionateStrategy();
+                if(stratname == null)
+                    throw new WmsException("No default regionating strategy has been configured in " + name);
+            } 
+            if(stratname != null) {
+                List<RegionatingStrategyFactory> factories = GeoServerExtensions.extensions(RegionatingStrategyFactory.class);
+                Iterator<RegionatingStrategyFactory> it = factories.iterator();
+                while (it.hasNext()){
+                    RegionatingStrategyFactory factory = it.next();
+                    if (factory.canHandle(stratname)){
+                        regionatingStrategy = factory.createStrategy();
+                        break;
+                    }
+                }
+                // if a strategy was specified but we did not find it, let the user know
+                if(regionatingStrategy == null)
+                    throw new WmsException("Unknown regionating strategy " + stratname);
+            } 
+
+            // try to load less features by leveraging regionating strategy and the SLD
+            Filter regionatingFilter = Filter.INCLUDE;
+            if(regionatingStrategy != null)
+                regionatingFilter = regionatingStrategy.getFilter(mapContext, layer);
+            Filter ruleFilter = summarizeRuleFilters(getLayerRules(featureSource.getSchema(), layer.getStyle()));
+            Filter finalFilter = joinFilters(q.getFilter(), joinFilters(ruleFilter, regionatingFilter));
+          	q.setFilter(finalFilter);
+          	
+          	// make sure we output in 4326 since that's what KML mandates
             if (sourceCrs != null && !CRS.equalsIgnoreMetadata(WGS84, sourceCrs)) {
                 return new ReprojectFeatureResults( featureSource.getFeatures(q), WGS84 );
+            } else {
+                return featureSource.getFeatures(q);
             }
-            
-            // extract the actual rules that are going to be applied to this layer, 
-            // - if none applies (scale denominator rules) then nothing to render
-            // - if there are else rules, we have to load everything
-            // - if there are no else rules, we can try to limit the features read by summarizing
-            //   the direct filter rules
-            List[] rules = getLayerRules(featureSource.getSchema(), layer.getStyle());
-            if(rules[RULES].size() == 0 && rules[ELSE_RULES].size() == 0)
-            	return null;
-            if(rules[ELSE_RULES].size() == 0) {
-            	Filter newFilter = summarizeRuleFilters(rules[RULES], q.getFilter());
-            	q.setFilter(newFilter);
-            }
-
-            return featureSource.getFeatures(q);
         }
         
         private List[] getLayerRules(SimpleFeatureType ftype, Style style) {
@@ -431,32 +455,43 @@ public class KMLTransformer extends TransformerBase {
     		return result;
         }
         
+        private Filter joinFilters(Filter first, Filter second) {
+            if(Filter.EXCLUDE.equals(first) || Filter.EXCLUDE.equals(second))
+                return Filter.EXCLUDE;
+            
+            if(first == null || Filter.INCLUDE.equals(first))
+                return second;
+            
+            if(second == null || Filter.INCLUDE.equals(second))
+                return first;
+            
+            FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+      		return ff.and(first, second);
+        }
+
         /**
-         * Tries to build a more restrictive filter by creating a summary of filters that
-         * apply to each rule (or returns simply the original filter, if there is at least one
-         * rule that applies to all features)
+         * Summarizes, when possible, the rule filters into one. 
          * @param rules
          * @param originalFiter
          * @return
          */
-        private Filter summarizeRuleFilters(List rules, Filter originalFiter) {
-        	List filters = new ArrayList();
-        	for (Iterator it = rules.iterator(); it.hasNext();) {
-				Rule rule = (Rule) it.next();
-				// if there is a single rule asking for all filters, we have to 
-				// return everything that the original filter returned already
-				if(rule.getFilter() == null || Filter.INCLUDE.equals(rule.getFilter()))
-					return originalFiter;
-				else
-					filters.add(rule.getFilter());
-			}
-        	
-        	org.opengis.filter.FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-        	Filter summary = ff.or(filters);
-        	if(originalFiter != null && !Filter.INCLUDE.equals(originalFiter))
-        		return ff.and(originalFiter, summary);
-        	else
-        		return summary;
+       private Filter summarizeRuleFilters(List[] rules) {
+           if(rules[RULES].size() == 0 || rules[ELSE_RULES].size() > 0)
+               return Filter.INCLUDE;
+           
+            List filters = new ArrayList();
+            for (Iterator it = rules[RULES].iterator(); it.hasNext();) {
+                Rule rule = (Rule) it.next();
+                // if there is a single rule asking for all filters, we have to 
+                // return everything that the original filter returned already
+                if(rule.getFilter() == null || Filter.INCLUDE.equals(rule.getFilter()))
+                    return Filter.INCLUDE;
+                else
+                    filters.add(rule.getFilter());
+            }
+            
+            FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+            return ff.or(filters);
         }
         
         /**
