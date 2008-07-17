@@ -53,6 +53,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
@@ -283,14 +284,19 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
             if (("auto").equals(stratname))
                 stratname = catalog.getFeatureTypeInfo(featureType.getName()).getRegionateStrategy();
-            List<RegionatingStrategyFactory> factories = GeoServerExtensions.extensions(RegionatingStrategyFactory.class);
-            Iterator<RegionatingStrategyFactory> it = factories.iterator();
-            while (it.hasNext()){
-                RegionatingStrategyFactory factory = it.next();
-                if (factory.canHandle(stratname)){
-                    setRegionatingStrategy(factory.createStrategy());
-                    break;
+            if(stratname != null) {
+                List<RegionatingStrategyFactory> factories = GeoServerExtensions.extensions(RegionatingStrategyFactory.class);
+                Iterator<RegionatingStrategyFactory> it = factories.iterator();
+                while (it.hasNext()){
+                    RegionatingStrategyFactory factory = it.next();
+                    if (factory.canHandle(stratname)){
+                        setRegionatingStrategy(factory.createStrategy());
+                        break;
+                    }
                 }
+                // if a strategy was specified but we did not find it, let the user know
+                if(myStrategy == null)
+                    throw new WmsException("Unknown regionating strategy " + stratname);
             }
 
             if (myStrategy == null){
