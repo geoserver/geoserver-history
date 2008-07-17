@@ -375,11 +375,6 @@ public class KMLTransformer extends TransformerBase {
             //handle startIndex requested by client query
             q.setStartIndex(definitionQuery.getStartIndex());
             
-            // make sure we output in 4326 since that's what KML mandates
-            if (sourceCrs != null && !CRS.equalsIgnoreMetadata(WGS84, sourceCrs)) {
-                return new ReprojectFeatureResults( featureSource.getFeatures(q), WGS84 );
-            }
-            
             // extract the actual rules that are going to be applied to this layer, 
             // - if none applies (scale denominator rules) then nothing to render
             // - if there are else rules, we have to load everything
@@ -392,8 +387,13 @@ public class KMLTransformer extends TransformerBase {
             	Filter newFilter = summarizeRuleFilters(rules[RULES], q.getFilter());
             	q.setFilter(newFilter);
             }
-
-            return featureSource.getFeatures(q);
+            
+            // make sure we output in 4326 since that's what KML mandates
+            if (sourceCrs != null && !CRS.equalsIgnoreMetadata(WGS84, sourceCrs)) {
+                return new ReprojectFeatureResults( featureSource.getFeatures(q), WGS84 );
+            } else {
+                return featureSource.getFeatures(q);
+            }
         }
         
         private List[] getLayerRules(FeatureType ftype, Style style) {
