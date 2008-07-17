@@ -101,7 +101,7 @@ public abstract class CsvService {
      * 
      * @param csvFile
      */
-    public List<LayerResult> configureCsvFile(String targetGeometryTable,
+    public synchronized List<LayerResult> configureCsvFile(String targetGeometryTable,
             String joinField, File csvFile) throws IOException {
         JDBCDataStore store = getDataStore();
 
