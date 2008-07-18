@@ -101,6 +101,8 @@ public class ReverseProxyFilter implements Filter {
      */
     private final Set/*<Pattern>*/ mimeTypePatterns = new HashSet/*<Pattern>*/();
 
+    private GeoServer geoServer;
+
     /**
      * Parses the <code>mime-types</code> init parameter, which is a comma separated list of
      * regular expressions used to match the response mime types to decide whether to apply the URL
@@ -108,6 +110,8 @@ public class ReverseProxyFilter implements Filter {
      */
     public void init(final FilterConfig filterConfig) throws ServletException {
         final String enabledInitParam = filterConfig.getInitParameter(ENABLED_INIT_PARAM);
+        
+        geoServer = (GeoServer) filterConfig.getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
 
         filterIsEnabled = Boolean.valueOf(enabledInitParam).booleanValue();
         if (filterIsEnabled) {
@@ -155,15 +159,11 @@ public class ReverseProxyFilter implements Filter {
             final ServletResponse response,
             final FilterChain chain) throws IOException, ServletException {
 
-        if (!(filterIsEnabled || (request instanceof HttpServletRequest))) {
+        if (!filterIsEnabled || !(request instanceof HttpServletRequest)) {
             chain.doFilter(request, response);
             return;
         }
 
-        final ServletContext servletContext = ((HttpServletRequest) request).getSession()
-                .getServletContext();
-        final GeoServer geoServer = (GeoServer) servletContext
-                .getAttribute(GeoServer.WEB_CONTAINER_KEY);
         final String proxyBaseUrl = geoServer.getProxyBaseUrl();
 
         if (proxyBaseUrl == null || "".equals(proxyBaseUrl)) {
