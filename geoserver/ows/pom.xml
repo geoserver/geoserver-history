@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <groupId>org.geoserver</groupId>		
-	  <artifactId>geoserver</artifactId>
-	  <version>1.7.0-SNAPSHOT</version>
+    <groupId>org.geoserver</groupId>
+    <artifactId>geoserver</artifactId>
+    <version>1.7.0-SNAPSHOT</version>
   </parent>
-
   <groupId>org.geoserver</groupId>
   <artifactId>ows</artifactId>
   <packaging>jar</packaging>
   <name>Open Web Service Module</name>
-
   <dependencies>
     <dependency>
       <groupId>org.acegisecurity</groupId>
@@ -29,41 +25,36 @@
           <groupId>org.springframework</groupId>
           <artifactId>spring-support</artifactId>
         </exclusion>
-     </exclusions>
+      </exclusions>
     </dependency>
-        <dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>platform</artifactId>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>platform</artifactId>
       <version>1.7.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools.ogc</groupId>
-			<artifactId>net.opengis.ows</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools.xsd</groupId>
-			<artifactId>gt-xsd-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-		</dependency>
-     <dependency>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.ogc</groupId>
+      <artifactId>net.opengis.ows</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.xsd</groupId>
+      <artifactId>gt-xsd-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
     </dependency>
     <dependency>
-      <groupId>mockobjects</groupId>
-      <artifactId>mockobjects-jdk1.4-j2ee1.3</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>mockobjects</groupId>
-      <artifactId>mockobjects-core</artifactId>
+      <groupId>com.mockrunner</groupId>
+      <artifactId>mockrunner</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -75,33 +66,30 @@
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
       <scope>test</scope>
-   </dependency>
-    
+    </dependency>
   </dependencies>
-	
-	<build>
-		<plugins>
-			<!--plugin>
+  <build>
+    <plugins>
+      <!--plugin>
         <groupId>org.geotools.maven</groupId>
         <artifactId>xmlcodegen</artifactId>
         <configuration>
-          <schemaLocation>owsAll.xsd</schemaLocation>
-          <schemaSourceDirectory>/home/jdeolive/devel/geoserver/ows4/community/ows/src/main/java/org/geoserver/xml/ows/v1_0_0</schemaSourceDirectory>
-					<schemaLookupDirectories>
-            <schemaLookupDirectory>/home/jdeolive/devel/geotools/trunk/modules/unsupported/xml-xsd/src/main/resources/org/geotools/xlink/bindings/</schemaLookupDirectory>
-          </schemaLookupDirectories>
-          <generateConfiguration>false</generateConfiguration>
-          <generateBindingConfiguration>false</generateBindingConfiguration>
-          <generateBindingInterface>false</generateBindingInterface>
-          <generateSchemaLocationResolver>false</generateSchemaLocationResolver>
-          <generateElements>true</generateElements>
-          <includes>
-            <include>ExceptionReport</include>
-            <include>ExceptionType</include>
-          </includes>
+        <schemaLocation>owsAll.xsd</schemaLocation>
+        <schemaSourceDirectory>/home/jdeolive/devel/geoserver/ows4/community/ows/src/main/java/org/geoserver/xml/ows/v1_0_0</schemaSourceDirectory>
+        <schemaLookupDirectories>
+        <schemaLookupDirectory>/home/jdeolive/devel/geotools/trunk/modules/unsupported/xml-xsd/src/main/resources/org/geotools/xlink/bindings/</schemaLookupDirectory>
+        </schemaLookupDirectories>
+        <generateConfiguration>false</generateConfiguration>
+        <generateBindingConfiguration>false</generateBindingConfiguration>
+        <generateBindingInterface>false</generateBindingInterface>
+        <generateSchemaLocationResolver>false</generateSchemaLocationResolver>
+        <generateElements>true</generateElements>
+        <includes>
+        <include>ExceptionReport</include>
+        <include>ExceptionType</include>
+        </includes>
         </configuration>
-       </plugin-->
-	
+      </plugin-->
       <!-- ====    Code Formatting  ============================== -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -119,7 +107,6 @@
           </execution>
         </executions>
       </plugin>
-     </plugins>
-   </build>
-
+    </plugins>
+  </build>
 </project>

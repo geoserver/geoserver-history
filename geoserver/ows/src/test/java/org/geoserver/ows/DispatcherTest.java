@@ -4,33 +4,36 @@
  */
 package org.geoserver.ows;
 
-import com.mockobjects.servlet.MockHttpServletRequest;
-import com.mockobjects.servlet.MockHttpServletResponse;
-import com.mockobjects.servlet.MockServletInputStream;
-import com.mockobjects.servlet.MockServletOutputStream;
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockServletInputStream;
+import com.mockrunner.mock.web.MockServletOutputStream;
 import junit.framework.TestCase;
 import org.geoserver.platform.Service;
 import org.geotools.util.Version;
+import org.geoserver.test.CodeExpectingHttpServletResponse;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletInputStream;
 
 
 public class DispatcherTest extends TestCase {
     public void testReadOpContext() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setupGetContextPath("/geoserver");
-        request.setupGetRequestURI("/geoserver/hello");
-        request.setupGetMethod("get");
+        request.setContextPath("/geoserver");
+        request.setRequestURI("/geoserver/hello");
+        request.setMethod("get");
 
         Dispatcher dispatcher = new Dispatcher();
         Map map = dispatcher.readOpContext(request);
@@ -39,16 +42,16 @@ public class DispatcherTest extends TestCase {
         assertNull(map.get("request"));
 
         request = new MockHttpServletRequest();
-        request.setupGetContextPath("/geoserver");
-        request.setupGetRequestURI("/geoserver/hello/Hello");
-        request.setupGetMethod("get");
+        request.setContextPath("/geoserver");
+        request.setRequestURI("/geoserver/hello/Hello");
+        request.setMethod("get");
         map = dispatcher.readOpContext(request);
 
         request = new MockHttpServletRequest();
-        request.setupGetContextPath("/geoserver");
-        request.setupGetRequestURI("/geoserver/hello/Hello/");
+        request.setContextPath("/geoserver");
+        request.setRequestURI("/geoserver/hello/Hello/");
 
-        request.setupGetMethod("get");
+        request.setMethod("get");
         map = dispatcher.readOpContext(request);
 
         assertEquals("hello", map.get("service"));
@@ -57,16 +60,13 @@ public class DispatcherTest extends TestCase {
 
     public void testReadOpPost() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setupGetContextPath("/geoserver");
-        request.setupGetRequestURI("/geoserver/hello");
-        request.setupGetMethod("post");
+        request.setContextPath("/geoserver");
+        request.setRequestURI("/geoserver/hello");
+        request.setMethod("post");
 
         String body = "<Hello service=\"hello\"/>";
 
-        MockServletInputStream input = new MockServletInputStream();
-        input.setupRead(body.getBytes());
-
-        request.setupGetInputStream(input);
+        MockServletInputStream input = new MockServletInputStream(body.getBytes());
 
         Dispatcher dispatcher = new Dispatcher();
 
@@ -88,15 +88,13 @@ public class DispatcherTest extends TestCase {
         Dispatcher dispatcher = (Dispatcher) context.getBean("dispatcher");
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setupGetContextPath("/geoserver");
+        request.setContextPath("/geoserver");
 
-        Map params = new HashMap();
-        params.put("service", "hello");
-        params.put("request", "Hello");
-        params.put("message", "Hello world!");
+        request.setupAddParameter("service", "hello");
+        request.setupAddParameter("request", "Hello");
+        request.setupAddParameter("message", "Hello world!");
 
-        request.setupGetParameterMap(params);
-        request.setupQueryString("service=hello&request=hello&message=Hello World!");
+        request.setQueryString("service=hello&request=hello&message=Hello World!");
 
         Request req = new Request();
         req.httpRequest = request;
@@ -157,28 +155,24 @@ public class DispatcherTest extends TestCase {
                 }
             };
 
-        request.setupScheme("http");
-        request.setupServerName("localhost");
+        request.setScheme("http");
+        request.setServerName("localhost");
 
-        request.setupGetContextPath("/geoserver");
-        request.setupGetMethod("GET");
+        request.setContextPath("/geoserver");
+        request.setMethod("GET");
 
         MockHttpServletResponse response = new MockHttpServletResponse();
-        response.setupOutputStream(new MockServletOutputStream());
 
-        Map params = new HashMap();
-        params.put("service", "hello");
-        params.put("request", "Hello");
-        params.put("version", "1.0.0");
-        params.put("message", "Hello world!");
+        request.setupAddParameter("service", "hello");
+        request.setupAddParameter("request", "Hello");
+        request.setupAddParameter("version", "1.0.0");
+        request.setupAddParameter("message", "Hello world!");
 
-        request.setupGetParameterMap(params);
-        request.setupGetInputStream(null);
-        request.setupGetRequestURI(
+        request.setRequestURI(
             "http://localhost/geoserver/ows?service=hello&request=hello&message=HelloWorld");
-        request.setupQueryString("service=hello&request=hello&message=HelloWorld");
+        request.setQueryString("service=hello&request=hello&message=HelloWorld");
         dispatcher.handleRequest(request, response);
-        assertEquals(params.get("message"), response.getOutputStreamContents());
+        assertEquals("Hello world!", response.getOutputStreamContent());
     }
 
     public void testHelloOperationPost() throws Exception {
@@ -188,6 +182,7 @@ public class DispatcherTest extends TestCase {
 
         Dispatcher dispatcher = (Dispatcher) context.getBean("dispatcher");
 
+        final String body = "<Hello service=\"hello\" message=\"Hello world!\" version=\"1.0.0\" />";
         MockHttpServletRequest request = new MockHttpServletRequest() {
                 String encoding;
 
@@ -202,29 +197,33 @@ public class DispatcherTest extends TestCase {
                 public void setCharacterEncoding(String encoding) {
                     this.encoding = encoding;
                 }
+
+                public ServletInputStream getInputStream() throws IOException{
+                    final ServletInputStream stream = super.getInputStream();
+                    return new ServletInputStream(){
+                        public int read() throws IOException{
+                            return stream.read();
+                        }
+
+                        public int available(){
+                            return body.length();
+                        }
+                    };
+                }
             };
 
-        request.setupScheme("http");
-        request.setupServerName("localhost");
-        request.setupGetContextPath("/geoserver");
-        request.setupGetMethod("POST");
-        request.setupGetRequestURI("http://localhost/geoserver/ows");
-        request.setupGetContentType("application/xml");
+        request.setScheme("http");
+        request.setServerName("localhost");
+        request.setContextPath("/geoserver");
+        request.setMethod("POST");
+        request.setRequestURI("http://localhost/geoserver/ows");
+        request.setContentType("application/xml");
+        request.setBodyContent(body);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
-        response.setupOutputStream(new MockServletOutputStream());
-
-        Map params = new HashMap();
-        request.setupGetParameterMap(params);
-
-        String body = "<Hello service=\"hello\" message=\"Hello world!\" version=\"1.0.0\" />";
-        MockServletInputStream input = new MockServletInputStream();
-        input.setupRead(body.getBytes());
-
-        request.setupGetInputStream(input);
 
         dispatcher.handleRequest(request, response);
-        assertEquals("Hello world!", response.getOutputStreamContents());
+        assertEquals("Hello world!", response.getOutputStreamContent());
     }
     
     /**
@@ -238,6 +237,8 @@ public class DispatcherTest extends TestCase {
 
         Dispatcher dispatcher = (Dispatcher) context.getBean("dispatcher");
 
+        final String body = "<Hello service=\"hello\" message=\"Hello world!\" version=\"1.0.0\" />";
+
         MockHttpServletRequest request = new MockHttpServletRequest() {
                 String encoding;
 
@@ -252,30 +253,35 @@ public class DispatcherTest extends TestCase {
                 public void setCharacterEncoding(String encoding) {
                     this.encoding = encoding;
                 }
+                
+                public ServletInputStream getInputStream() throws IOException{
+                    final ServletInputStream stream = super.getInputStream();
+                    return new ServletInputStream(){
+                        public int read() throws IOException{
+                            return stream.read();
+                        }
+
+                        public int available(){
+                            return body.length();
+                        }
+                    };
+                }
             };
 
-        request.setupScheme("http");
-        request.setupServerName("localhost");
-        request.setupGetContextPath("/geoserver");
-        request.setupGetMethod("POST");
-        request.setupGetRequestURI("http://localhost/geoserver/ows");
-        request.setupGetContentType("application/xml");
+        request.setScheme("http");
+        request.setServerName("localhost");
+        request.setContextPath("/geoserver");
+        request.setMethod("POST");
+        request.setRequestURI("http://localhost/geoserver/ows");
+        request.setContentType("application/xml");
+        request.setBodyContent(body);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
-        response.setupOutputStream(new MockServletOutputStream());
 
-        Map params = new HashMap();
-        params.put("strict", "true");
-        request.setupGetParameterMap(params);
-
-        String body = "<Hello service=\"hello\" message=\"Hello world!\" version=\"1.0.0\" />";
-        MockServletInputStream input = new MockServletInputStream();
-        input.setupRead(body.getBytes());
-
-        request.setupGetInputStream(input);
+        request.setupAddParameter("strict", "true");
 
         dispatcher.handleRequest(request, response);
-        assertEquals("Hello world!", response.getOutputStreamContents());
+        assertEquals("Hello world!", response.getOutputStreamContent());
     }
     
     public void testHttpErrorCodeException() throws Exception {
@@ -301,27 +307,23 @@ public class DispatcherTest extends TestCase {
                 }
             };
 
-        request.setupScheme("http");
-        request.setupServerName("localhost");
+        request.setScheme("http");
+        request.setServerName("localhost");
 
-        request.setupGetContextPath("/geoserver");
-        request.setupGetMethod("GET");
+        request.setContextPath("/geoserver");
+        request.setMethod("GET");
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        response.setupOutputStream(new MockServletOutputStream());
+        CodeExpectingHttpServletResponse response = new CodeExpectingHttpServletResponse(new MockHttpServletResponse());
 
-        Map params = new HashMap();
-        params.put("service", "hello");
-        params.put("request", "httpErrorCodeException");
-        params.put("version", "1.0.0");
-        
-        request.setupGetParameterMap(params);
-        request.setupGetInputStream(null);
-        request.setupGetRequestURI(
+        request.setupAddParameter("service", "hello");
+        request.setupAddParameter("request", "httpErrorCodeException");
+        request.setupAddParameter("version", "1.0.0");
+
+        request.setRequestURI(
             "http://localhost/geoserver/ows?service=hello&request=hello&message=HelloWorld");
-        request.setupQueryString("service=hello&request=hello&message=HelloWorld");
+        request.setQueryString("service=hello&request=hello&message=HelloWorld");
         
-        response.setExpectedError(HttpServletResponse.SC_NO_CONTENT);
         dispatcher.handleRequest(request, response);
+        assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatusCode());
     }
 }

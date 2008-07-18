@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -75,6 +76,7 @@ import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletConfig;
 import com.mockrunner.mock.web.MockServletContext;
 import com.mockrunner.mock.web.MockServletOutputStream;
+import com.mockrunner.mock.web.MockServletInputStream;
 
 /**
  * Base test class for GeoServer unit tests.
@@ -351,7 +353,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @return
      */
     protected MockHttpServletRequest createRequest(String path) {
-        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletRequest request = new GeoServerMockHttpServletRequest();
 
         request.setScheme("http");
         request.setServerName("localhost");
@@ -453,6 +455,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         MockHttpServletRequest request = createRequest( path ); 
         request.setMethod( "POST" );
         request.setContentType( "application/x-www-form-urlencoded" );
+        request.setBodyContent(new byte[]{});
         
         MockHttpServletResponse response = dispatch( request );
         return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
@@ -985,42 +988,86 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
 
         CodeExpectingHttpServletResponse response = new CodeExpectingHttpServletResponse(new MockHttpServletResponse());
         dispatch(request, response);
-        assertEquals(code, response.getError());
+        assertEquals(code, response.getErrorCode());
     }
 
-    /**
-     * HttpServletResponse wrapper to help in making assertions about expected status codes.
-     */
-    private class CodeExpectingHttpServletResponse extends HttpServletResponseWrapper{
-        private int myErrorCode;
+    public static class GeoServerMockHttpServletRequest extends MockHttpServletRequest {
+        private String myBody;
 
-        protected CodeExpectingHttpServletResponse (HttpServletResponse req){
-            super(req);
-            myErrorCode = 200;
+        public void setBodyContent(String body){
+            super.setBodyContent(body);
+            myBody = body;
+        }
+
+        public ServletInputStream getInputStream(){
+            return new GeoServerMockServletInputStream(myBody);
+        }
+    }
+
+    private static class GeoServerMockServletInputStream extends ServletInputStream {
+        private byte[] myBody;
+        private int myOffset = 0;
+        private int myMark = -1;
+
+        public GeoServerMockServletInputStream(String body){
+            myBody = body.getBytes();
+        }
+
+        public int available() {
+            return myBody.length - myOffset;
+        }
+
+        public void close(){}
+
+        public void mark(int readLimit){
+            myMark = myOffset;
         }
         
-        public void setStatus(int sc){
-            myErrorCode = sc;
-            super.setStatus(sc);
+        public void reset() {
+            if (myMark < 0 || myMark >= myBody.length){
+                throw new IllegalStateException("Can't reset when no mark was set.");
+            }
+            
+            myOffset = myMark;
         }
 
-        public void setStatus(int sc, String sm){
-            myErrorCode = sc;
-            super.setStatus(sc, sm);
+        public boolean markSupported(){ return true; }
+
+            public int read(){
+                byte[] b = new byte[1];
+                read(b, 0, 1);
+                return b[0];
+            }
+
+        public int read(byte[] b){
+            return read(b, 0, b.length);
         }
 
-        public void sendError(int sc) throws IOException {
-            myErrorCode = sc;
-            super.sendError(sc);
+        public int read(byte[] b, int offset, int length){
+            int realOffset = offset + myOffset;
+            int i;
+
+            for (i = 0; (i < length) && (i + myOffset < myBody.length); i++){
+                b[offset + i] = myBody[myOffset + i];
+            }
+
+            myOffset += i;
+
+            return i;
         }
 
-        public void sendError(int sc, String sm) throws IOException {
-            myErrorCode = sc;
-            super.sendError(sc, sm);
-        }
+        public int readLine(byte[] b, int offset, int length){
+            int realOffset = offset + myOffset;
+            int i;
 
-        public int getError(){
-            return myErrorCode;
+            for (i = 0; (i < length) && (i + myOffset < myBody.length); i++){
+                b[offset + i] = myBody[myOffset + i];
+                if (myBody[myOffset + i] == '\n') break;
+            }
+
+            myOffset += i;
+
+            return i;
         }
     }
 }

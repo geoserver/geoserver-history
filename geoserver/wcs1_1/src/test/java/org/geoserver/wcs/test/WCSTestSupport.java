@@ -4,7 +4,7 @@
  */
 package org.geoserver.wcs.test;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
 import java.io.File;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ import org.w3c.dom.Node;
  * @author Andrea Aime, TOPP
  * 
  */
-public class WCSTestSupport extends KvpRequestReaderTestSupport {
+public abstract class WCSTestSupport extends KvpRequestReaderTestSupport {
     protected static final String BASEPATH = "wcs";
 
     public static String WCS_PREFIX = "wcs";
