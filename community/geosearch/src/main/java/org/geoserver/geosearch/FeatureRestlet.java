@@ -122,7 +122,6 @@ public class FeatureRestlet extends Restlet {
         raw.put("maxfeatures", Integer.toString(maxFeatures));
         raw.put("format_options", "selfLinks:true;relLinks:true;regionateby:" + regionateBy + (regionateAttr != null ? ";regionateAttr:" + regionateAttr : ""));
 
-
         if ( feature != null ) {
             raw.put("featureid", layer + "." + feature);    
         }

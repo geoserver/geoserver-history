@@ -437,16 +437,6 @@
     <version>3.1</version>
    </dependency>
    <dependency>
-    <groupId>mockobjects</groupId>
-    <artifactId>mockobjects-core</artifactId>
-    <version>0.09</version>
-   </dependency>
-   <dependency>
-    <groupId>mockobjects</groupId>
-    <artifactId>mockobjects-jdk1.4-j2ee1.3</artifactId>
-    <version>0.09</version>
-   </dependency>
-   <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-beans</artifactId>
     <version>${spring.version}</version>

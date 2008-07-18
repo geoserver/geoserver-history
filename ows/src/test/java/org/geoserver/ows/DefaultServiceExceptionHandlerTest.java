@@ -19,15 +19,14 @@ import org.geotools.util.Version;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import com.mockobjects.servlet.MockHttpServletRequest;
-import com.mockobjects.servlet.MockHttpServletResponse;
-import com.mockobjects.servlet.MockServletOutputStream;
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockServletOutputStream;
 
 
 public class DefaultServiceExceptionHandlerTest extends TestCase {
     
     private DefaultServiceExceptionHandler handler;
-//    private Service service;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private Request requestInfo;
@@ -44,14 +43,13 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
                 }
             };
 
-        request.setupScheme("http");
-        request.setupServerName("localhost");
+        request.setScheme("http");
+        request.setServerName("localhost");
 
-        request.setupGetContextPath("geoserver");
+        request.setContextPath("geoserver");
 
         MockServletOutputStream output = new MockServletOutputStream();
         response = new MockHttpServletResponse();
-        response.setupOutputStream(output);
 
         handler = new DefaultServiceExceptionHandler();
         
@@ -69,7 +67,7 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         exception.getExceptionText().add("helloText");
         handler.handleServiceException(exception, requestInfo);
 
-        InputStream input = new ByteArrayInputStream(response.getOutputStreamContents().getBytes());
+        InputStream input = new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
 
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setNamespaceAware(true);
@@ -91,8 +89,7 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         serviceException.initCause(ioException);
         handler.handleServiceException(serviceException, requestInfo);
 
-        InputStream input = new ByteArrayInputStream(response.getOutputStreamContents().getBytes());
-        // System.out.println(response.getOutputStreamContents());
+        InputStream input = new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
 
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setNamespaceAware(true);

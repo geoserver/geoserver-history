@@ -35,6 +35,13 @@
       <version>1.8.0-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>ows</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
@@ -149,20 +156,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.mockrunner</groupId>
-			<artifactId>mockrunner</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>mockobjects</groupId>
-			<artifactId>mockobjects-jdk1.4-j2ee1.3</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>httpunit</groupId>
 			<artifactId>httpunit</artifactId>
 			<scope>test</scope>
 		</dependency>
+	    <dependency>
+	       <groupId>com.mockrunner</groupId>
+	       <artifactId>mockrunner</artifactId>
+	       <scope>test</scope>
+	    </dependency>
 	    <dependency>
 	       <groupId>org.easymock</groupId>
 	       <artifactId>easymock</artifactId>
