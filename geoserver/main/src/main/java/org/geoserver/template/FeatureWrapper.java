@@ -166,7 +166,7 @@ public class FeatureWrapper extends BeansWrapper {
             // map.put("features", new IteratorModel( featureCollection.iterator(), this));
             
             // this one is almost right; depends on finalizer to close iterator
-            map.put("features", new FeatureCollectionModel( featureCollection ) );
+            map.put("features", new FeatureCollectionModel( featureCollection, this ) );
             map.put("type", wrap(((FeatureCollection) object).getSchema()));
             return map;            
         } else if (object instanceof SimpleFeatureType) {

@@ -8,6 +8,8 @@ import java.util.Iterator;
 
 import org.geotools.feature.FeatureCollection;
 
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.IteratorModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateModelIterator;
@@ -25,9 +27,11 @@ public class FeatureCollectionModel implements TemplateCollectionModel {
 	private FeatureCollection features;	
 	@SuppressWarnings("unchecked")
 	public Iterator iterator;
+	private BeansWrapper bean;
 	
-	public FeatureCollectionModel( FeatureCollection<?,?> features) {
+	public FeatureCollectionModel( FeatureCollection<?,?> features, BeansWrapper bean) {
 		this.features = features;
+		this.bean = bean;
 	}
 	public TemplateModelIterator iterator() throws TemplateModelException {
 		if( iterator != null ){
@@ -35,7 +39,7 @@ public class FeatureCollectionModel implements TemplateCollectionModel {
 			features.close( iterator );
 		}
 		iterator = features.iterator();
-		return iterator();
+		return new IteratorModel( iterator, bean );
 	}
 	@Override
 	protected void finalize() throws Throwable {
