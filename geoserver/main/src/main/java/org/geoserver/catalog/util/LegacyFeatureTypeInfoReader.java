@@ -174,7 +174,7 @@ public class LegacyFeatureTypeInfoReader {
             return regionateStrategy.getAttribute("value");
         }
 
-        return "data";
+        return null;
     }
 
     public int regionateFeatureLimit() {
