@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="stylesheet" href="/geoserver/style.css" type="text/css" />
@@ -21,7 +22,8 @@
             var political = new OpenLayers.Layer.WMS(
                 "State", 
                 "/geoserver/wms",
-                {layers: 'topp:tasmania_state_boundaries'}
+                {layers: 'topp:tasmania_state_boundaries',
+                 format: 'image/png'}
             );
 
             var water = new OpenLayers.Layer.WMS(
@@ -44,7 +46,8 @@
                     extractAttributes: false
                 }
             );
-            roads.style.strokeColor = "#ff0000";
+            roads.style = OpenLayers.Util.applyDefaults({strokeColor: "#ff0000"}, 
+                    OpenLayers.Feature.Vector.style["default"]);
 
             var cities = new OpenLayers.Layer.WFS(
                 "Cities",
@@ -56,7 +59,8 @@
                     extractAttributes: false
                 }
             );
-            cities.style.strokeColor = "#0000ff";
+            cities.style = OpenLayers.Util.applyDefaults({strokeColor: "#0000ff"}, 
+                    OpenLayers.Feature.Vector.style["default"]);
 
             map.addLayers([political, water, roads, cities]);
 
