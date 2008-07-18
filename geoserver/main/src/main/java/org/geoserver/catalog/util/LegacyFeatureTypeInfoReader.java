@@ -147,6 +147,28 @@ public class LegacyFeatureTypeInfoReader {
         return null;
     }
     
+    public boolean cachingEnabled() {
+        Element cacheInfo = ReaderUtils.getChildElement( featureType, "cacheinfo");
+        if ( cacheInfo != null ) {
+            try {
+                return "true".equals( ReaderUtils.getAttribute( cacheInfo, "enabled", false ) );
+            } catch (Exception e) {
+            }
+        }
+        return false;
+    }
+    
+    public String cacheAgeMax() {
+        Element cacheInfo = ReaderUtils.getChildElement( featureType, "cacheinfo");
+        if ( cacheInfo != null ) {
+            try {
+                return ReaderUtils.getAttribute( cacheInfo, "maxage", false);
+            } catch(Exception e) {
+            }
+        } 
+        return null;
+    }
+    
     public boolean searchable() {
         Element searchable = ReaderUtils.getChildElement( featureType, "searchable");
         if ( searchable != null ) {
