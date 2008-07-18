@@ -226,11 +226,10 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
                     System.gc(); 
                     System.runFinalization();
                 }
-                
+
+                // this cleans up the data directory static loader, if we don't the next test
+                // will keep on running on the current data dir
                 if(getTestData() != null) {
-                    // this cleans up the data directory static loader, if we don't the next test
-                    // will keep on running on the current data dir
-                    GeoserverDataDirectory.destroy();
                     getTestData().tearDown();
                 }
             } finally {
@@ -238,6 +237,8 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
                 testData = null;
             }
         }
+        // make extra sure that no matter what the data dir is clean up
+        GeoserverDataDirectory.destroy();
     }
      
     /**
