@@ -949,14 +949,9 @@ public class WMSCapsTransformer extends TransformerBase {
                 handleLatLonBBox(llBbox);
                 handleBBox(bbox, authority);
 
-                // add the layer style
-                start("Style");
-
-                element("Name", layerName);
-                element("Title", layerName);
-                element("Abstract", "Layer-Group complex style");
-                //handleLegendURL(...URL);
-                end("Style");
+                // the layer style is not provided since the group does just have 
+                // one possibility, the lack of styles that will make it use
+                // the default ones for each layer
 
                 end("Layer");
             }
