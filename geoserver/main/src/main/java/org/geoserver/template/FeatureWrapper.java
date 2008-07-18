@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.util.MapEntry;
 import org.opengis.feature.simple.SimpleFeature;
@@ -24,6 +25,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.CollectionModel;
+import freemarker.ext.beans.IteratorModel;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
 import freemarker.template.TemplateModel;
@@ -154,10 +156,19 @@ public class FeatureWrapper extends BeansWrapper {
         if (object instanceof FeatureCollection) {
             // create a model with just one variable called 'features'
             SimpleHash map = new SimpleHash();
-            map.put("features", new CollectionModel((FeatureCollection) object, this));
-            map.put("type", wrap(((FeatureCollection) object).getSchema()));
+            FeatureCollection featureCollection = (FeatureCollection) object;
 
-            return map;
+            // this will load all the features into memory!
+            //List<SimpleFeature> features = DataUtilities.list( featureCollection );
+            //map.put("features", new CollectionModel( features, this));
+            
+            // this has the risk of leaking memory (if anything goes wrong)
+            // map.put("features", new IteratorModel( featureCollection.iterator(), this));
+            
+            // this one is almost right; depends on finalizer to close iterator
+            map.put("features", new FeatureCollectionModel( featureCollection ) );
+            map.put("type", wrap(((FeatureCollection) object).getSchema()));
+            return map;            
         } else if (object instanceof SimpleFeatureType) {
             SimpleFeatureType ft = (SimpleFeatureType) object;
 
