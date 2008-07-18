@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -52,8 +53,20 @@ public class ReverseProxyFilterTest extends TestCase {
         super.tearDown();
         filter = null;
     }
+    
+    protected ServletContext getMockServletContext(final String proxyBaseUrl) {
+        MockServletContext context = new MockServletContext();
+        GeoServer geoserver = new GeoServer() {
+            public String getProxyBaseUrl() {
+                return proxyBaseUrl;
+            }
+        };
+        context.setAttribute(GeoServer.WEB_CONTAINER_KEY, geoserver);
+        return context;
+    }
 
     public void testInit() throws ServletException {
+        final String proxyBaseUrl = "https://localhost/geoserver/tools";
         MockFilterConfig config = new MockFilterConfig() {
             public String getInitParameter(String name) {
                 if ("mime-types".equals(name)) {
@@ -63,6 +76,13 @@ public class ReverseProxyFilterTest extends TestCase {
                 }
                 return null;
             }
+            
+            @Override
+            public ServletContext getServletContext() {
+                return getMockServletContext(proxyBaseUrl);
+            }
+
+            
         };
 
         try {
@@ -78,6 +98,11 @@ public class ReverseProxyFilterTest extends TestCase {
                     return DEFAULT_MIME_TYPES_REGEX;
                 }
                 return null;
+            }
+            
+            @Override
+            public ServletContext getServletContext() {
+                return getMockServletContext(proxyBaseUrl);
             }
         };
 
@@ -201,6 +226,11 @@ public class ReverseProxyFilterTest extends TestCase {
                 }
                 return null;
             }
+            
+            @Override
+            public ServletContext getServletContext() {
+                return getMockServletContext(proxyBaseUrl);
+            }
         };
         MockHttpServletRequest req = new MockHttpServletRequest();
         req.setRequestURL(requestBaseUrl + requestResource);
@@ -216,12 +246,6 @@ public class ReverseProxyFilterTest extends TestCase {
         req.setSession(session);
         MockServletContext context = new MockServletContext();
         session.setupServletContext(context);
-        GeoServer geoserver = new GeoServer() {
-            public String getProxyBaseUrl() {
-                return proxyBaseUrl;
-            }
-        };
-        context.setAttribute(GeoServer.WEB_CONTAINER_KEY, geoserver);
 
         filter.init(config);
         // the servlet to call at the end of the chain, just writes the provided content out
