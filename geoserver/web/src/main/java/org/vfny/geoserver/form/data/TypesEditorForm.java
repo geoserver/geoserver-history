@@ -567,7 +567,7 @@ public class TypesEditorForm extends ActionForm {
             }
         }
 
-        if (isCachingEnabled()) {
+        if (isCachingEnabledChecked()) {
             try {
                 Integer.parseInt(cacheMaxAge);
             } catch (NumberFormatException nfe) {
