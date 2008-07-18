@@ -219,7 +219,7 @@ public class Dispatcher extends AbstractController {
         //create the kvp map
         parseKVP(request);
         
-        if ( !request.get ) {
+        if ( !request.get && httpRequest.getInputStream().available() > 0) {
             //wrap the input stream in a buffer input stream
             request.input = reader(httpRequest);
 
