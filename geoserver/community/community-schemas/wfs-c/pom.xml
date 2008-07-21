@@ -15,6 +15,11 @@
   <name>Community Schemas Capable Web Feature Service Module</name>
 
 	<dependencies>
+       <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt2-jdbc-regfunc</artifactId>
+          <version>2.4-SNAPSHOT</version>
+        </dependency>
         <dependency>
           <groupId>org.geotools</groupId>
           <artifactId>gt2-data</artifactId>

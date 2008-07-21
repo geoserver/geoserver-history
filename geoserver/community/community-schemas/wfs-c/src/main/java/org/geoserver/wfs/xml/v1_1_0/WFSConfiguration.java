@@ -21,18 +21,18 @@ import org.geoserver.wfs.xml.v1_1_0.overrides.ISOAbstractFeatureTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOAbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOCodeTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOCurvePropertyTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOEnvelopeTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyExtractor;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOGeometryPropertyTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMeasureTypeBinding;
-import org.geoserver.wfs.xml.v1_1_0.overrides.ISOEnvelopeTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiPointTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiSurfaceTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOPointTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOXSAnyTypeBinding;
 import org.geoserver.wfs.xml.xs.DateBinding;
 import org.geotools.filter.v1_1.OGC;
-import org.geotools.filter.v1_1.OGCConfiguration;
+import org.geotools.filter.v1_1.RegfuncOGCConfiguration;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.bindings.GML;
@@ -68,7 +68,7 @@ public class WFSConfiguration extends Configuration {
                 }
             });
 
-        addDependency(new OGCConfiguration());
+        addDependency(new RegfuncOGCConfiguration());
         addDependency(new GMLConfiguration());
         addDependency(new OWSConfiguration());
     }
