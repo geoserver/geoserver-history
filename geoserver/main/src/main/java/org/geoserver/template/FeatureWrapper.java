@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.util.MapEntry;
 import org.opengis.feature.simple.SimpleFeature;
@@ -154,7 +155,7 @@ public class FeatureWrapper extends BeansWrapper {
         if (object instanceof FeatureCollection) {
             // create a model with just one variable called 'features'
             SimpleHash map = new SimpleHash();
-            map.put("features", new CollectionModel((FeatureCollection) object, this));
+            map.put("features", new CollectionModel(DataUtilities.list((FeatureCollection) object), this));
             map.put("type", wrap(((FeatureCollection) object).getSchema()));
 
             return map;
