@@ -20,6 +20,7 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.GeometryCoordinateSequenceTransformer;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.ReferencingFactoryFinder;
+import org.opengis.feature.FeatureVisitor;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -29,6 +30,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.OperationNotFoundException;
 import org.opengis.referencing.operation.TransformException;
+import org.opengis.util.ProgressListener;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -99,7 +101,19 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
             transformer.setMathTransform(tx);
             transformers.put(source, transformer);
         } else {
-            // throw exception?
+            throw new RuntimeException("Source was null in trying to create a reprojected feature collection!");
+        }
+    }
+    
+   @Override
+    public void accepts(FeatureVisitor visitor, ProgressListener progress) {
+        FeatureIterator<SimpleFeature> it = features();
+        try {
+            while (it.hasNext()) {
+                visitor.visit(it.next());
+            }
+        } finally {
+            close(it);
         }
     }
 
