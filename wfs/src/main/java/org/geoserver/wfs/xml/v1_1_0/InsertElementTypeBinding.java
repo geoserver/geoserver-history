@@ -10,6 +10,7 @@ import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.wfs.WFSException;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml2.bindings.GML2ParsingUtils;
 import org.geotools.gml3.GML;
@@ -180,7 +181,7 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         if (node.hasChild(FeatureCollection.class)) {
             FeatureCollection<SimpleFeatureType, SimpleFeature> fc;
             fc = (FeatureCollection) node.getChildValue(FeatureCollection.class);
-            insertElement.getFeature().addAll(fc);
+            insertElement.getFeature().addAll(DataUtilities.list(fc));
         } else if (node.hasChild(SimpleFeature.class)) {
             insertElement.getFeature().addAll(node.getChildValues(SimpleFeature.class));
         }
