@@ -23,7 +23,7 @@ import org.geoserver.wfs.xml.v1_0_0.WFSConfiguration;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class WFSTestSupport extends GeoServerTestSupport {
+public abstract class WFSTestSupport extends GeoServerTestSupport {
     /**
      * @return The global wfs instance from the application context.
      */

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -32,11 +33,13 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.filter.identity.FeatureIdImpl;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
+import org.opengis.filter.identity.FeatureId;
 
 import com.vividsolutions.jts.io.WKTReader;
 
@@ -199,7 +202,7 @@ public class RetypingDataStoreTest extends TestCase {
 
         FeatureStore<SimpleFeatureType, SimpleFeature> fs = createMock(FeatureStore.class);
         expect(fs.addFeatures(isA(FeatureCollection.class))).andReturn(
-                Collections.singleton("trees.105"));
+                Collections.singletonList((FeatureId)(new FeatureIdImpl("trees.105"))));
         replay(fs);
 
         DataStore ds = createMock(DataStore.class);
@@ -224,9 +227,9 @@ public class RetypingDataStoreTest extends TestCase {
         FeatureCollection<SimpleFeatureType, SimpleFeature> fc = DataUtilities.collection(feature);
 
         FeatureStore<SimpleFeatureType, SimpleFeature> store = (FeatureStore) rts.getFeatureSource("oaks");
-        Set ids = store.addFeatures(fc);
+        List<FeatureId> ids = store.addFeatures(fc);
         assertEquals(1, ids.size());
-        String id = (String) ids.iterator().next();
+        String id = ((FeatureId) ids.iterator().next()).getID();
         assertTrue("Id does not start with " + "oaks" + " it's " + id, id.startsWith("oaks"));
     }
 

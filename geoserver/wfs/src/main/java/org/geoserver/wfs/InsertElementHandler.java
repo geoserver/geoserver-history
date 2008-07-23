@@ -24,6 +24,7 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -186,7 +187,7 @@ public class InsertElementHandler implements TransactionElementHandler {
 
                 // get the next fid
                 LinkedList fids = (LinkedList) schema2fids.get(schema.getTypeName());
-                String fid = (String) fids.removeFirst();
+                String fid = ((FeatureId) fids.removeFirst()).getID();
 
                 insertedFeature = WfsFactory.eINSTANCE.createInsertedFeatureType();
                 insertedFeature.setHandle(insert.getHandle());

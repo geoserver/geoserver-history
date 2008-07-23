@@ -5,7 +5,9 @@
 package org.geoserver.feature.retype;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.geoserver.feature.RetypingFeatureCollection;
@@ -18,6 +20,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
+import org.opengis.filter.identity.FeatureId;
 
 /**
  * Renaming wrapper for a {@link FeatureStore} instance, to be used along with {@link RetypingDataStore} 
@@ -62,11 +65,11 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements
         featureStore().setFeatures(retypingFeatureReader);
     }
 
-    public Set<String> addFeatures(FeatureCollection<SimpleFeatureType, SimpleFeature> collection) throws IOException {
-        Set<String> ids = featureStore().addFeatures(
+    public List<FeatureId> addFeatures(FeatureCollection<SimpleFeatureType, SimpleFeature> collection) throws IOException {
+        List<FeatureId> ids = featureStore().addFeatures(
                 new RetypingFeatureCollection(collection, typeMap.getOriginalFeatureType()));
-        Set<String> retyped = new HashSet<String>();
-        for (String id : ids) {
+        List<FeatureId> retyped = new ArrayList<FeatureId>();
+        for (FeatureId id : ids) {
             retyped.add(RetypingFeatureCollection.reTypeId(id, typeMap.getOriginalFeatureType(), typeMap.getFeatureType()));
         }
         return retyped;

@@ -13,8 +13,10 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 
@@ -68,7 +70,7 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements
      * @return
      * @throws IOException
      */
-    public Set addFeatures(FeatureCollection<SimpleFeatureType, SimpleFeature> fc) throws IOException {
+    public List<FeatureId> addFeatures(FeatureCollection<SimpleFeatureType, SimpleFeature> fc) throws IOException {
         FeatureStore<SimpleFeatureType, SimpleFeature> store = store();
 
         //check if the feature collection needs to be retyped

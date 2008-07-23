@@ -1,8 +1,10 @@
 package org.geoserver.wfs;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.geotools.data.collection.ResourceCollection;
 import org.geotools.feature.DecoratingFeature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -14,6 +16,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -165,6 +168,5 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         public void setPrimaryGeometry(Geometry geometry) throws IllegalAttributeException  {
             throw new UnsupportedOperationException("This feature wrapper is read only");
         }
-
     }
 }
