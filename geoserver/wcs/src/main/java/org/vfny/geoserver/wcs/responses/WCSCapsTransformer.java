@@ -45,8 +45,7 @@ import javax.xml.transform.TransformerException;
  */
 public class WCSCapsTransformer extends TransformerBase {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(WCSCapsTransformer.class.getPackage()
-                                                                                  .getName());
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(WCSCapsTransformer.class.getPackage().getName());
     protected static final String WCS_URI = "http://www.opengis.net/wcs";
 
     /** DOCUMENT ME! */

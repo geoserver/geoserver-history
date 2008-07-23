@@ -139,8 +139,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
             // grab the format, the reader using the default params,
             final Format format = meta.getFormatInfo().getFormat();
-            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta
-                    .createReader(HINTS);
+            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.createReader(HINTS);
             final ParameterValueGroup params = reader.getFormat().getReadParameters();
 
             // handle spatial domain subset, if needed
@@ -238,15 +237,12 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
             // now we have enough info to read the coverage, grab the parameters
             // and add the grid geometry info
-            final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat()
-                    .getReadParameters());
+            final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
             final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
             intersected.intersect(originalEnvelope);
             final GridGeometry2D destinationGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersected, null);
-            parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-                    destinationGridGeometry);
-            coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat()
-                    .getReadParameters(), parameters, true));
+            parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), destinationGridGeometry);
+            coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat().getReadParameters(), parameters, true));
             if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
                 throw new IOException("The requested coverage could not be found.");
             }
@@ -261,8 +257,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     throw new WcsException("Multi field coverages are not supported yet");
                 }
 
-                FieldSubsetType field = (FieldSubsetType) request.getRangeSubset().getFieldSubset()
-                        .get(0);
+                FieldSubsetType field = (FieldSubsetType) request.getRangeSubset().getFieldSubset().get(0);
                 interpolationType = field.getInterpolationType();
 
                 // handle axis subset
@@ -271,8 +266,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                 }
                 if (field.getAxisSubset().size() == 1) {
                     // prepare a support structure to quickly get the band index
-                    // of a
-                    // key
+                    // of a key
                     CoverageDimension[] dimensions = meta.getDimensions();
                     Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
                     for (int i = 0; i < dimensions.length; i++) {
@@ -296,8 +290,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
                     // finally execute the band select
                     try {
-                        bandSelectedCoverage = (GridCoverage2D) WCSUtils
-                                .bandSelect(coverage, bands);
+                        bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
                     } catch (WcsException e) {
                         throw new WcsException(e.getLocalizedMessage());
                     }
@@ -328,14 +321,12 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             /**
              * Scale
              */
-            final GridCoverage2D scaledCoverage = WCSUtils.scale(croppedGridCoverage,
-                    destinationGridGeometry);
+            final GridCoverage2D scaledCoverage = WCSUtils.scale(croppedGridCoverage, destinationGridGeometry);
 
             /**
              * Reproject
              */
-            final GridCoverage2D reprojectedCoverage = WCSUtils.reproject(scaledCoverage,
-                    nativeCRS, targetCRS, interpolation);
+            final GridCoverage2D reprojectedCoverage = WCSUtils.reproject(scaledCoverage, nativeCRS, targetCRS, interpolation);
 
             return new GridCoverage[] { reprojectedCoverage };
         } catch (Exception e) {
@@ -432,14 +423,10 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             String gridBaseCrs = gridCRS.getGridBaseCRS();
             if (gridBaseCrs != null) {
                 // make sure the requested is among the supported ones, by
-                // making a
-                // code level
-                // comparison (to avoid assuming epsg:xxxx and
-                // http://www.opengis.net/gml/srs/epsg.xml#xxx are different
-                // ones.
+                // making a code level comparison (to avoid assuming epsg:xxxx and
+                // http://www.opengis.net/gml/srs/epsg.xml#xxx are different ones.
                 // We'll also consider the urn one comparable, allowing eventual
-                // axis flip on the
-                // geographic crs
+                // axis flip on the geographic crs
                 String actualCRS = null;
                 final String gridBaseCrsCode = extractCode(gridBaseCrs);
                 for (Iterator it = meta.getResponseCRSs().iterator(); it.hasNext();) {
@@ -496,9 +483,8 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             }
             if (!gridCRS.isSetGridOrigin() || gridCRS.getGridOrigin() == null) {
                 // if not set, we have a default of "0 0" as a string, since I
-                // cannot
-                // find a way to make it default to new Double[] {0 0} I'll fix
-                // it here
+                // cannot find a way to make it default to new Double[] {0 0} 
+                // I'll fix it here
                 Double[] origin = new Double[type.getOriginArrayLength()];
                 Arrays.fill(origin, 0.0);
                 gridCRS.setGridOrigin(origin);
@@ -558,8 +544,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
      */
     private String getDeclaredFormat(List supportedFormats, String format) {
         // supported formats may be setup using old style formats, first scan
-        // the
-        // configured list
+        // the configured list
         for (Iterator it = supportedFormats.iterator(); it.hasNext();) {
             String sf = (String) it.next();
             if (sf.equalsIgnoreCase(format)) {

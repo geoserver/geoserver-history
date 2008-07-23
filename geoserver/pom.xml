@@ -1079,6 +1079,7 @@
   <module>data</module>
   <module>main</module>
   <module>wcs</module>
+  <module>wcs1_0</module>
   <module>wcs1_1</module>
   <module>wfs</module>
   <module>wfs11</module>

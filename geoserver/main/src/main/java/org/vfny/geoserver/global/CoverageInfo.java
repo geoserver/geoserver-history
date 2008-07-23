@@ -625,7 +625,6 @@ public final class CoverageInfo extends GlobalLayerSupertype {
             dimensionNames[i++] =  new SimpleInternationalString(dim.getName());
         }
         return dimensionNames;
-        //return dimensionNames;
     }
 
     /**
