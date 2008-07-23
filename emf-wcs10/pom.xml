@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.geotools</groupId>
+  <artifactId>emf-wcs10</artifactId>
+  <packaging>jar</packaging>
+  <version>2.5-SNAPSHOT</version>
+  <name>emf-wcs10</name>
+  
+  <url>http://maven.apache.org</url>
+  
+  <dependencies>
+
+   <dependency>
+	 <groupId>org.geotools</groupId>
+	 <artifactId>gt-xml</artifactId>
+   	 <version>2.5-SNAPSHOT</version>
+   </dependency>
+
+   <dependency>
+	 <groupId>org.geotools.xsd</groupId>
+	 <artifactId>gt-xsd-core</artifactId>
+   	 <version>2.5-SNAPSHOT</version>
+   </dependency>
+
+   <dependency>
+	 <groupId>org.geotools.xsd</groupId>
+	 <artifactId>gt-xsd-ows</artifactId>
+   	 <version>2.5-SNAPSHOT</version>
+   </dependency>
+
+	<dependency>
+      <groupId>org.geotools.ogc</groupId>
+      <artifactId>net.opengis.ows</artifactId>
+      <version>2.5-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.geotools.ogc</groupId>
+  	  <artifactId>org.w3.xlink</artifactId>
+      <version>2.5-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geotools</groupId>
+  	  <artifactId>gt-metadata</artifactId>
+      <version>2.5-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geotools</groupId>
+  	  <artifactId>gt-referencing</artifactId>
+      <version>2.5-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.geotools</groupId>
+  	  <artifactId>gt-temporal</artifactId>
+      <version>2.5-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geotools</groupId>
+  	  <artifactId>gt-epsg-hsql</artifactId>
+      <version>2.5-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+	<build>
+	  <plugins>
+		  <plugin>
+		     <groupId>org.apache.maven.plugins</groupId>
+		     <artifactId>maven-compiler-plugin</artifactId>
+		     <configuration>
+		       <source>1.5</source>  <!-- The -source argument for the Java compiler. -->
+		       <target>1.5</target>  <!-- The -target argument for the Java compiler. -->
+		       <debug>true</debug>   <!-- Whether to include debugging information.   -->
+		       <encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
+		     </configuration>
+		  </plugin>
+
+	    <plugin>
+		<groupId>org.geotools.maven</groupId>
+	  	<artifactId>xmlcodegen</artifactId>
+	        <configuration>
+	          <schemaLocation>C:\Work\geoserver\emf-stuff\tutorial\wcs10\src\main\xsd\wcs\1.0.0\wcsAll.xsd</schemaLocation>
+	          <sourceLocation>C:\Work\geoserver\emf-stuff\tutorial\wcs10\src\main\java</sourceLocation>  
+	          <testLocation>C:\Work\geoserver\emf-stuff\tutorial\wcs10\src\main\test</testLocation>  
+	          <resourceLocation>C:\Work\geoserver\emf-stuff\tutorial\wcs10\src\main\resources</resourceLocation>  
+	          <destinationPackage>org.geotools.wcs10.bindings</destinationPackage>
+	        </configuration>
+	      </plugin>
+	  </plugins>
+	</build>
+
+</project>
