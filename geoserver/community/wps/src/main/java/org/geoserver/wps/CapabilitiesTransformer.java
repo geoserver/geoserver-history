@@ -8,13 +8,12 @@ package org.geoserver.wps;
 import java.util.List;
 import java.util.Locale;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.geotools.xlink.XLINK;
 import org.geotools.filter.v1_1.OGC;
 import org.geoserver.ows.xml.v1_0.OWS;
-import org.geoserver.ows.util.RequestUtils;
+
+import org.xml.sax.ContentHandler;
+import org.xml.sax.helpers.AttributesImpl;
 
 import net.opengis.wps.GetCapabilitiesType;
 
@@ -55,9 +54,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
         }
 
         public class CapabilitiesTranslator1_0 extends TranslatorSupport {
-            public GetCapabilitiesType request;
-
-            private Locale locale;
+            public  GetCapabilitiesType request;
+            private DataTransformer     dataTransformer;
+            private Locale              locale;
 
             public CapabilitiesTranslator1_0(ContentHandler handler) {
                 super(handler, null, null);
@@ -71,6 +70,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 } else {
                     this.locale = new Locale(this.request.getLanguage());
                 }
+
+                this.dataTransformer = new DataTransformer(this.request.getBaseUrl());
 
                 AttributesImpl attrs = new AttributesImpl();
                 attrs.addAttribute("", "xmlns:xsi",          "xmlns:xsi",   "",
@@ -128,10 +129,18 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 end("ows:OperationsMetadata");
             }
 
+            /*
+             * Do not advertise processes with either inputs or outputs
+             * we don't have transmuters for.
+             */
             private void processOfferings() {
                 start("wps:ProcessOfferings", null);
 
                 for(ProcessFactory pf : Processors.getProcessFactories()) {
+                    if (false == this.dataTransformer.isTransmutable(pf)) {
+                        continue;
+                    }
+
                     start("wps:Process", null);
                         element("ows:Identifier", pf.getName());
                         element("ows:Title",      pf.getTitle().toString(this.locale));
@@ -142,6 +151,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 end("wps:ProcessOfferings");
             }
 
+            // Could be more dynamic
             private void languages() {
                 start("wps:Languages", null);
                     start("wps:Default", null);

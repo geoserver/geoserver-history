@@ -38,8 +38,13 @@ public class Executor {
     public Executor(ExecuteType request, WPS wps) {
         CodeType identifier = request.getIdentifier();
         this.factory        = this.findProcessFactory(identifier);
+        DataTransformer dataTransformer = new DataTransformer(request.getBaseUrl());
 
         if (null == factory) {
+            throw new WPSException("InvalidParameterValue", "Identifier");
+        }
+
+        if (false == dataTransformer.isTransmutable(this.factory)) {
             throw new WPSException("InvalidParameterValue", "Identifier");
         }
 
@@ -50,7 +55,6 @@ public class Executor {
         this.checkInputs(parameterInfo, requestInputs);
 
         // Parse inputs
-        DataTransformer dataTransformer = new DataTransformer(request.getBaseUrl());
         this.inputs = dataTransformer.decodeInputs(request.getDataInputs().getInput(), parameterInfo);
 
         // Get it ready to execute

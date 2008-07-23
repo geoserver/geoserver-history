@@ -8,6 +8,8 @@ package org.geoserver.wps;
 import net.opengis.wps.DescribeProcessType;
 
 /**
+ * First-call DescribeProcess class
+ *
  * @author Lucas Reed, Refractions Research Inc
  */
 public class DescribeProcess {
