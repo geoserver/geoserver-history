@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+
+<ViewContext version="1.0.0" id="atlas_world" xmlns="http://www.opengis.net/context" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+
+	<General>
+
+		<Window width="600" height="300"/>
+
+		<BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+
+		<Title xml:lang="en">World Base Map</Title>
+
+		<KeywordList>
+
+			<Keyword>world</Keyword>
+
+			<Keyword>atlas</Keyword>
+
+		</KeywordList>
+
+		<Abstract xml:lang="en">World Base Map.</Abstract>
+
+	</General>
+
+	<LayerList>
+
+		<Layer queryable="1" hidden="0">
+
+			<Server service="OGC:WMS" version="1.0.0" title="OGC:WMS">
+
+      <OnlineResource xlink:type="simple" xlink:href="http://www2.demis.nl/WMS/wms.asp?wms=WorldMap"/>
+
+			</Server>
+
+			<Name>Bathymetry,Countries,Topography,Hillshading,Builtup+areas,Coastlines,Waterbodies,Inundated,Rivers,Streams,Railroads,Highways,Roads,Trails,Borders,Cities,Settlements,Spot+elevations,Airports,Ocean+features</Name>
+
+			<Title>WMS 1.0</Title>
+
+			<SRS>EPSG:4326</SRS>
+
+			<FormatList>
+
+				<Format current="1">image/gif</Format>
+
+			</FormatList>
+
+			<StyleList>
+
+				<Style current="1">
+
+					<Name>default</Name>
+
+					<Title>default</Title>
+
+				</Style>
+
+			</StyleList>
+
+		</Layer>
+
+	</LayerList>
+
+</ViewContext>
+

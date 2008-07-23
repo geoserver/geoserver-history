@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<ViewContext version="1.0.0" id="timeSeriesDemo" 
+    xmlns="http://www.opengis.net/context" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+  <General>
+    <Window width="320" height="300"/>
+    <BoundingBox SRS="EPSG:4326" minx="-20." miny="-40." maxx="55." maxy="40." resx="0.1" resy="0.1" />
+    <Title>Estimated Precipitation (Africa)</Title>
+    <Abstract>Map Server maintained by International Research Institute for Climate Prediction, Columbia University, USA</Abstract>
+    <KeywordList>
+      <Keyword>precipitation</Keyword>
+    </KeywordList>
+    <DescriptionURL format="text/html">
+      <OnlineResource xlink:type="simple" xlink:href="http://iridl.ldeo.columbia.edu/" />
+    </DescriptionURL>
+    <ContactInformation>
+      <ContactPersonPrimary>
+        <ContactPerson></ContactPerson>
+        <ContactOrganization>IRI, Columbia U.</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactElectronicMailAddress>help@iri.columbia.edu</ContactElectronicMailAddress>
+    </ContactInformation>
+  </General>
+  <LayerList>
+    <Layer queryable="0" hidden="0">
+      <Server service="wms" version="1.3.0" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://iridl.ldeo.columbia.edu/SOURCES/.NOAA/.NCEP/.CPC/.FEWS/.Africa/.DAILY/.RFEv2/wmsmap?"/>
+      </Server>
+      <Name>est_prcp</Name>
+      <Title>Estimated Precipitation</Title>
+      <Abstract>Estimated Precipitation. original title was: NOAA NCEP CPC FEWS Africa DAILY RFEv2</Abstract>
+      <DimensionList>
+        <!--Dimension name="time" units="ISO8601" nearestValue="1">2000-10-31/2005-03-29/P1D</Dimension-->
+        <Dimension name="time" units="ISO8601" nearestValue="1">2005-02-01/2005-03-29/P1D</Dimension>
+      </DimensionList>
+      <FormatList>
+        <Format current="1">image/png</Format>
+      </FormatList>
+    </Layer>
+    <Layer queryable="0" hidden="0">
+      <Server service="wms" version="1.1.0" title="wms">
+        <OnlineResource xlink:type="simple" xlink:href="http://atlas.gc.ca/cgi-bin/mapserv?map=/home/atlas/mapdata/english/pb_world.map"/>
+      </Server>
+      <Name>coast</Name>
+      <Title>coastline</Title>
+      <SRS>EPSG:4326</SRS>
+      <FormatList>
+        <Format current="1">image/gif</Format>
+      </FormatList>
+    </Layer>
+  </LayerList>
+</ViewContext>

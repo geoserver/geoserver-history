@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- $Id$ -->
+<gml:featureMember version="1.0.0"  xmlns:gml="http://www.opengis.net/gml">
+
+  <points>
+    <FID>0</FID>
+    <AREA>0.0</AREA>
+    <PERIMETER>0.0</PERIMETER>
+    <DTM_>202240</DTM_>
+    <DTM_ID>202273</DTM_ID>
+    <DTM_CODE>1</DTM_CODE>
+    <DTM_ELEV>8.3000001907299996</DTM_ELEV>
+    <POLYGONID>0</POLYGONID>
+    <SCALE>1.0</SCALE>
+    <ANGLE>0</ANGLE>
+    <_SHAPE_>
+      <gml:MultiPoint srsName="epsg:4326">
+        <gml:pointMember>
+          <gml:Point>
+            <gml:coordinates>-71.08641266665947,42.363115828688542 </gml:coordinates>
+          </gml:Point>
+        </gml:pointMember>
+      </gml:MultiPoint>
+    </_SHAPE_>
+  </points>
+</gml:featureMember>

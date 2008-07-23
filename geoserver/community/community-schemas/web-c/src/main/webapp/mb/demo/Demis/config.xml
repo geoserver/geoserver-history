@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by Tom Kralidis (NRCAN CCRs) -->
+<MapbuilderConfig version="1.0.0" id="DemisMapExample" xmlns="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/config.xsd">
+	<models>
+		<Context id="mainMap">
+			<defaultModelUrl>DemisWorldMap.xml</defaultModelUrl>
+			<widgets>
+				<MapPane id="mainMapWidget">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<mapContainerId>mainMapContainer</mapContainerId>
+				</MapPane>
+				<Loading id="loading"/>
+				<Loading2 id="loading2">
+					<mapContainerId>mainMapContainer</mapContainerId>
+				</Loading2>
+				<ModelUrlInput id="urlInput"/>
+				<AoiBoxDHTML id="aoiBox2">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<stylesheet>../../lib/widget/Null.xsl</stylesheet>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<lineColor>#FF0000</lineColor>
+					<lineWidth>1</lineWidth>
+					<crossSize>15</crossSize>
+				</AoiBoxDHTML>
+				<MapScaleText id="mapScaleText"/>
+				<!-- 
+        <MapScaleBar id="mapScaleBar"/> 
+        -->
+				<CursorTrack id="cursorTrack">
+					<mouseHandler>mainMap</mouseHandler>
+					<showPx>false</showPx>
+					<showDMS>true</showDMS>
+					<showLatLong>false</showLatLong>
+					<showMGRS>false</showMGRS>
+					<precision>2</precision>
+				</CursorTrack>
+			</widgets>
+			<tools>
+				<AoiMouseHandler id="mainAoi"/>
+				<DragPanHandler id="mainDragPan">
+					<enabled>false</enabled>
+				</DragPanHandler>
+				<MouseClickHandler id="mainMouseClick"/>
+				<History id="extentHistory">
+					<targetModel>mainMap</targetModel>
+				</History>
+			</tools>
+		</Context>
+		<ContextCollection id="collectionGroup">
+			<defaultModelUrl>mapCollection.xml</defaultModelUrl>
+			<widgets>
+				<CollectionList id="collectionList">
+					<targetModel>mainMap</targetModel>
+					<stylesheet>./CollectionList.xsl</stylesheet>
+				</CollectionList>
+			</widgets>
+		</ContextCollection>
+	</models>
+	<widgets>
+		<Back id="back">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/UndoDisable.png</disabledSrc>
+		</Back>
+		<Forward id="forward">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/RedoDisable.png</disabledSrc>
+		</Forward>
+		<ZoomIn id="zoomIn">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<selected>true</selected>
+			<enabledSrc>/images/ZoomInEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomInDisable.png</disabledSrc>
+		</ZoomIn>
+		<ZoomOut id="zoomOut">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/ZoomOutEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomOutDisable.png</disabledSrc>
+		</ZoomOut>
+		<DragPan id="dragPan">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainDragPan</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/PanEnable.png</enabledSrc>
+			<disabledSrc>/images/PanDisable.png</disabledSrc>
+		</DragPan>
+		<SetAoi id="setAoi">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/SetAoiEnable.png</enabledSrc>
+			<disabledSrc>/images/SetAoiDisable.png</disabledSrc>
+		</SetAoi>
+		<Reset id="reset">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/ResetExtentDisable.png</disabledSrc>
+		</Reset>
+		<ModelSwitcher id="switcher">
+			<targetModel>mainMap</targetModel>
+		</ModelSwitcher>
+	</widgets>
+	<skinDir>../../lib/skin/default</skinDir>
+	<languages>en,fr,fr-CA</languages>
+	<widgetTextUrl>widgetText.xml</widgetTextUrl>
+</MapbuilderConfig>

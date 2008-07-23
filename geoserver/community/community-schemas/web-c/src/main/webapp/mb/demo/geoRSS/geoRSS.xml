@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rdf:RDF 
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+  xmlns="http://purl.org/rss/1.0/" 
+  xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:syn="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+<channel rdf:about="http://crcp-blogger.mit.edu/geoblogger">
+<title>Cambridge events</title>
+<link>http://crcp-blogger.mit.edu/geoblogger/</link>
+<syn:updatePeriod>daily</syn:updatePeriod>
+<syn:updateFrequency>1</syn:updateFrequency>
+<items>
+<rdf:Seq>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2034"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event1805"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event1805"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2079"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2068"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2047"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event1783"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2036"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2071"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2078"/>
+<rdf:li rdf:resource="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2088"/>
+</rdf:Seq>
+</items>
+</channel>
+<item rdf:about="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event1805">
+<title>Avon Hill Neighborhood Conservation District Commission meeting</title>
+<link>http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event1805</link>
+<description>Avon Hill NCD Commission meeting</description>
+<dc:date>2005-05-16T17:30:00-05</dc:date>
+<dc:subject>geo:lat=42.366813 geo:long=-71.106217</dc:subject>
+<geo:long>-71.106217</geo:long>
+<geo:lat>42.366813</geo:lat>
+</item>
+<item rdf:about="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event1805">
+<title>Regular City Council Meeting</title>
+<link>http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event1805</link>
+<description>Regular City Council Meeting</description>
+<dc:date>2005-05-16T12:30:00-05</dc:date>
+<dc:subject>geo:lat=42.365813 geo:long=-71.105217</dc:subject>
+<geo:long>-71.105217</geo:long>
+<geo:lat>42.365813</geo:lat>
+</item>
+<item rdf:about="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2068">
+<title>Planning Board Meeting</title>
+<link>http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2068</link>
+<description>For the Planning Board Agenda go to: http://www.cambridgema.gov/~CDD/cp/zng/agenda/index.html</description>
+<dc:date>2005-05-17T12:30:00-05</dc:date>
+<dc:subject>geo:lat=42.370097 geo:long=-71.103096</dc:subject>
+<geo:long>-71.103096</geo:long>
+<geo:lat>42.370097</geo:lat>
+</item>
+<item rdf:about="http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2047">
+<title>Minding Your Own Business POSTPONED</title>
+<link>http://crcp-blogger.mit.edu/geoblogger/rssitem.php?event_id=Event2047</link>
+<description>Four week facilitated business strategy forum. $20.00 registration fee</description>
+<dc:date>2005-05-18T12:00:00-05</dc:date>
+<dc:subject>geo:lat=42.365397 geo:long=-71.103796</dc:subject>
+<geo:long>-71.103796</geo:long>
+<geo:lat>42.365397</geo:lat>
+</item>
+</rdf:RDF>

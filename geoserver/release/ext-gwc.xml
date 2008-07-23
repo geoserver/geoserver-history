@@ -1,0 +1,36 @@
+<assembly>
+	<id>gwc-plugin</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>release/extensions/gwc</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>release/target/dependency</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>commons-beanutils-core-*.jar</include>
+				<include>commons-configuration-*.jar</include>
+				<include>commons-logging-api-*.jar</include>
+				<include>geowebcache-*.jar</include>
+				<include>gwc-*.jar</include>
+				<include>tomcat-util*</include>
+				<include>xmlrpc-*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>release/extensions</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>LICENSE.txt</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>

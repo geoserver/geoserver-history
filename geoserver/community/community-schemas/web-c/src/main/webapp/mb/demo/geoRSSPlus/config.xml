@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<MapbuilderConfig version="0.2.1" id="geoRSSConfig" 
+	xmlns="http://mapbuilder.sourceforge.net/mapbuilder" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/config.xsd">
+	
+	<models>
+		<Context id="mainMap">
+			<defaultModelUrl>cambridge.xml</defaultModelUrl>
+			<widgets>
+				<MapPane id="mainMapWidget">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<mapContainerId>mainMapContainer</mapContainerId>
+				</MapPane>
+				<Loading id="loading" />
+				<AoiBoxDHTML id="aoiBox2">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<stylesheet>../../lib/widget/Null.xsl</stylesheet>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<lineColor>#FF0000</lineColor>
+					<lineWidth>1</lineWidth>
+					<crossSize>15</crossSize>
+				</AoiBoxDHTML>
+			</widgets>
+			<tools>
+				<AoiMouseHandler id="mainAoi"/>
+				<DragPanHandler id="mainDragPan">
+					<enabled>false</enabled>
+				</DragPanHandler>
+			</tools>
+		</Context>
+		
+		<GeoRSS id="geoRSS">
+			<!--defaultModelUrl>http://crcp-blogger.mit.edu/geoblogger/rss.php</defaultModelUrl-->
+			<!--scriptFile>/geoRSS/GeoRSS.js</scriptFile-->
+			<defaultModelUrl>geoRSS.xml</defaultModelUrl>
+
+			<widgets>
+				<Widget id="eventsListing">
+					<targetModel>mainMap</targetModel>
+					<stylesheet>GeoRSSListing.xsl</stylesheet>
+				</Widget>
+				<GmlPointRenderer id="pointRenderer">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<stylesheet>popup.xsl</stylesheet>
+					<mapContainerId>mainMapContainer</mapContainerId>
+					<normalImage>/images/MarkerA.gif</normalImage>
+					<highlightImage>/images/MarkerB.gif</highlightImage>
+				</GmlPointRenderer>
+			</widgets>
+			<namespace>xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rss='http://purl.org/rss/1.0/' xmlns:taxo='http://purl.org/rss/1.0/modules/taxonomy/' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:syn='http://purl.org/rss/1.0/modules/syndication/' xmlns:geo='http://www.w3.org/2003/01/geo/wgs84_pos#'</namespace>
+			<nodeSelectXpath>/rdf:RDF/rss:item</nodeSelectXpath>
+		</GeoRSS>
+	</models>
+	
+	<widgets>
+		<ZoomIn id="zoomIn">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<selected>true</selected>
+			<enabledSrc>/images/ZoomInEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomInDisable.png</disabledSrc>
+		</ZoomIn>
+		<ZoomOut id="zoomOut">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainAoi</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/ZoomOutEnable.png</enabledSrc>
+			<disabledSrc>/images/ZoomOutDisable.png</disabledSrc>
+		</ZoomOut>
+		<DragPan id="dragPan">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<mouseHandler>mainDragPan</mouseHandler>
+			<class>RadioButton</class>
+			<enabledSrc>/images/PanEnable.png</enabledSrc>
+			<disabledSrc>/images/PanDisable.png</disabledSrc>
+		</DragPan>
+		<Reset id="reset">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<class>Button</class>
+			<disabledSrc>/images/ResetExtentDisable.png</disabledSrc>
+		</Reset>
+		<GetMarkerInfo id="getMarkerInfo">
+			<buttonBar>mainButtonBar</buttonBar>
+			<targetModel>mainMap</targetModel>
+			<context>mainMap</context>
+			<!-- mouseHandler>mainAoi</mouseHandler -->
+			<class>RadioButton</class>
+			<enabledSrc>/images/QueryEnable.png</enabledSrc>
+			<disabledSrc>/images/QueryDisable.png</disabledSrc>
+			<cursor>help</cursor>
+		</GetMarkerInfo>
+		
+	</widgets>
+	
+	<skinDir>../../lib/skin/default</skinDir>
+	<widgetTextUrl>widgetText.xml</widgetTextUrl>
+	<!-- relative to the skin dir -->
+</MapbuilderConfig>

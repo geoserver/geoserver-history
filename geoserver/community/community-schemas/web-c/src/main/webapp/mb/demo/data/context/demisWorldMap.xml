@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<ViewContext version="1.0.0" id="atlas_world" xmlns="http://www.opengis.net/context" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/context http://schemas.opengis.net/context/1.0.0/context.xsd">
+	<General>
+    <Title>Demis World Map (WMS)</Title>
+		<Window width="600" height="300"/>
+		<BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+    <KeywordList>
+      <Keyword>OGC WMS</Keyword>
+      <Keyword>Web Map Service</Keyword>
+      <Keyword>VMap0</Keyword>
+      <Keyword>DCW</Keyword>
+      <Keyword>SRTM</Keyword>
+      <Keyword>ETOPO2</Keyword>
+    </KeywordList>
+    <Abstract>Digital chart of the World, 1:1000,000 scale basemap from various public domain data sources</Abstract>
+    <LogoURL width="198" height="83" format="image/jpg">
+      <OnlineResource xlink:type="simple" xlink:href="http://www.demis.nl/home/images/OGCCompliant.gif"/>
+    </LogoURL>
+    <DescriptionURL format="text/html">
+      <OnlineResource xlink:type="simple" xlink:href="http://www.demis.nl/home/pages/wms/demiswms.htm"/>
+    </DescriptionURL>
+    <ContactInformation>
+      <ContactPersonPrimary>
+        <ContactPerson>Bart Adriaanse</ContactPerson>
+        <ContactOrganization>Demis bv. The Netherlands</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactPosition>GIS &amp; Software Engineer</ContactPosition>
+      <ContactAddress>
+        <AddressType>postal</AddressType>
+        <Address>Rotterdamseweg 183C</Address>
+        <City>Delft</City>
+        <StateOrProvince>ZH</StateOrProvince>
+        <PostCode>2629HD</PostCode>
+        <Country>Netherlands</Country>
+      </ContactAddress>
+      <ContactVoiceTelephone>+31152682510</ContactVoiceTelephone>
+      <ContactFacsimileTelephone>+31152682507</ContactFacsimileTelephone>
+      <ContactElectronicMailAddress>contact@demis.nl</ContactElectronicMailAddress>
+    </ContactInformation>
+	</General>
+	<LayerList>
+		<Layer queryable="1" hidden="0">
+			<Server service="OGC:WMS" version="1.0.0" title="OGC:WMS">
+      <OnlineResource xlink:type="simple" xlink:href="http://www2.demis.nl/WMS/wms.asp?wms=WorldMap"/>
+			</Server>
+			<Name>Bathymetry,Countries,Topography,Hillshading</Name>
+			<Title>Topography</Title>
+			<SRS>EPSG:4326</SRS>
+			<FormatList>
+				<Format current="1">image/gif</Format>
+			</FormatList>
+			<StyleList>
+				<Style current="1">
+					<Name>default</Name>
+					<Title>default</Title>
+				</Style>
+			</StyleList>
+		</Layer>
+		<Layer queryable="1" hidden="0">
+			<Server service="OGC:WMS" version="1.0.0" title="OGC:WMS">
+      <OnlineResource xlink:type="simple" xlink:href="http://www2.demis.nl/WMS/wms.asp?wms=WorldMap"/>
+			</Server>
+			<Name>Coastlines,Waterbodies,Inundated,Rivers,Streams</Name>
+			<Title>Land features</Title>
+			<SRS>EPSG:4326</SRS>
+			<FormatList>
+				<Format current="1">image/gif</Format>
+			</FormatList>
+			<StyleList>
+				<Style current="1">
+					<Name>default</Name>
+					<Title>default</Title>
+				</Style>
+			</StyleList>
+		</Layer>
+		<Layer queryable="1" hidden="0">
+			<Server service="OGC:WMS" version="1.0.0" title="OGC:WMS">
+      <OnlineResource xlink:type="simple" xlink:href="http://www2.demis.nl/WMS/wms.asp?wms=WorldMap"/>
+			</Server>
+			<Name>Builtup+areas,Railroads,Highways,Roads,Trails,Borders,Cities,Settlements,Airports</Name>
+			<Title>Man-made features</Title>
+			<SRS>EPSG:4326</SRS>
+			<FormatList>
+				<Format current="1">image/gif</Format>
+			</FormatList>
+			<StyleList>
+				<Style current="1">
+					<Name>default</Name>
+					<Title>default</Title>
+				</Style>
+			</StyleList>
+		</Layer>
+		<Layer queryable="1" hidden="0">
+			<Server service="OGC:WMS" version="1.0.0" title="OGC:WMS">
+      <OnlineResource xlink:type="simple" xlink:href="http://www2.demis.nl/WMS/wms.asp?wms=WorldMap"/>
+			</Server>
+			<Name>Spot+elevations,Ocean+features</Name>
+			<Title>Misc. features</Title>
+			<SRS>EPSG:4326</SRS>
+			<FormatList>
+				<Format current="1">image/gif</Format>
+			</FormatList>
+			<StyleList>
+				<Style current="1">
+					<Name>default</Name>
+					<Title>default</Title>
+				</Style>
+			</StyleList>
+		</Layer>
+	</LayerList>
+</ViewContext>
+

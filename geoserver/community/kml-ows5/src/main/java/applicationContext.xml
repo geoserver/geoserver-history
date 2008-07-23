@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="KMLOWS5MapProducerFactory" 
+		class="org.vfny.geoserver.wms.responses.map.kml.OWS5MapProducerFactory">
+	</bean>
+	
+  <!-- 
+	<bean id="KMZ3MapProducerFactory"
+		class="org.vfny.geoserver.wms.responses.map.kml.KMZMapProducerFactory">
+	</bean>
+   -->
+</beans>

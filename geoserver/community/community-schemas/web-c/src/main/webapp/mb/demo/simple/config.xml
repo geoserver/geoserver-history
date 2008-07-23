@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by Tom Kralidis (NRCAN CCRs) -->
+<MapbuilderConfig version="1.0.0" id="simpleTemplate" xmlns="http://mapbuilder.sourceforge.net/mapbuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ../../lib/schemas/config.xsd">
+	<models>
+		<Context id="mainMap">
+			<defaultModelUrl>../data/context/atlasWorld.xml</defaultModelUrl>
+			<widgets>
+				<MapPane id="mainMapWidget">
+					<htmlTagId>mainMapPane</htmlTagId>
+					<mapContainerId>mainMapContainer</mapContainerId>
+				</MapPane>
+				<Loading2 id="loading2">
+					<mapContainerId>mainMapContainer</mapContainerId>
+				</Loading2>
+			</widgets>
+		</Context>
+	</models>
+	<skinDir>../../lib/skin/default</skinDir>
+	<widgetTextUrl>widgetText.xml</widgetTextUrl>
+	<!-- relative to the skin dir -->
+</MapbuilderConfig>
