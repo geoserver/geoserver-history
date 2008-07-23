@@ -8,6 +8,7 @@ import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.store.ReTypingFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.Id;
@@ -36,9 +37,9 @@ class FidTransformeVisitor extends DuplicatingFilterVisitor {
         Filter external = null;
         Set<FeatureId> fids = new HashSet<FeatureId>();
         for (Iterator it = ids.iterator(); it.hasNext();) {
-            String id = (String) it.next();
-            String retyped = RetypingFeatureCollection.reTypeId(id, map.getFeatureType(), map.getOriginalFeatureType());
-            fids.add(ff.featureId(retyped));
+            FeatureId id = new FeatureIdImpl((String) it.next());
+            FeatureId retyped = RetypingFeatureCollection.reTypeId(id, map.getFeatureType(), map.getOriginalFeatureType());
+            fids.add(retyped);
         }
         return ff.id(fids);
     }

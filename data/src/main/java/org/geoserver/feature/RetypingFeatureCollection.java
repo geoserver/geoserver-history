@@ -14,9 +14,11 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.collection.DelegateFeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.filter.identity.FeatureIdImpl;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.filter.identity.FeatureId;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -74,8 +76,8 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             attributes[i] = value;
         }
 
-        String id = reTypeId(source.getID(), source.getFeatureType(), target);
-        return SimpleFeatureBuilder.build(target, attributes, id);
+        FeatureId id = reTypeId(source.getIdentifier(), source.getFeatureType(), target);
+        return SimpleFeatureBuilder.build(target, attributes, id.getID());
     }
 
     /**
@@ -88,7 +90,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
      * @param target
      * @return
      */
-    public static String reTypeId(String sourceId, SimpleFeatureType original,
+    public static FeatureId reTypeId(FeatureId sourceId, SimpleFeatureType original,
             SimpleFeatureType target) {
         final String originalTypeName = original.getName().getLocalPart();
         final String destTypeName = target.getName().getLocalPart();
@@ -96,8 +98,8 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             return sourceId;
 
         final String prefix = originalTypeName + ".";
-        if (sourceId.startsWith(prefix)) {
-            return destTypeName + "." + sourceId.substring(prefix.length());
+        if (sourceId.getID().startsWith(prefix)) {
+            return new FeatureIdImpl(destTypeName + "." + sourceId.getID().substring(prefix.length()));
         } else
             return sourceId;
     }
