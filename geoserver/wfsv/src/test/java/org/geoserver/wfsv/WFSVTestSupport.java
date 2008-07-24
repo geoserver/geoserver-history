@@ -17,7 +17,7 @@ import org.geoserver.test.GeoServerAbstractTestSupport;
  * @author Andrea Aime - TOPP
  * 
  */
-public class WFSVTestSupport extends GeoServerAbstractTestSupport {
+public abstract class WFSVTestSupport extends GeoServerAbstractTestSupport {
     
     // protected String getLogConfiguration() {
     // return "/DEFAULT_LOGGING.properties";

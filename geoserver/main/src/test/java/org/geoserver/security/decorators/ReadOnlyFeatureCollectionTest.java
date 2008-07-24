@@ -37,7 +37,7 @@ public class ReadOnlyFeatureCollectionTest extends TestCase {
         expect(fc.iterator()).andReturn(it).anyTimes();
         expect(fc.sort(sort)).andReturn(fc).anyTimes();
         expect(fc.subCollection(Filter.INCLUDE)).andReturn(fc).anyTimes();
-        expect(fc.getFeatureType()).andReturn(schema).anyTimes();
+        expect(fc.getSchema()).andReturn(schema).anyTimes();
         replay(fc);
     }
 

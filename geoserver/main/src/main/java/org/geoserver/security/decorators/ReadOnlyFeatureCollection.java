@@ -114,7 +114,7 @@ public class ReadOnlyFeatureCollection<T extends FeatureType, F extends Feature>
      * to force an authentication from the user
      */
     RuntimeException unsupportedOperation() {
-        String typeName = getFeatureType().getTypeName();
+        String typeName = getID(); 
         if(challenge) {
             return SecureCatalogImpl.unauthorizedAccess(typeName);
         } else

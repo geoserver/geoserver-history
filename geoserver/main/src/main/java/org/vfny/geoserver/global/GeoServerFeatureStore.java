@@ -103,7 +103,7 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements
      *
      * @throws IOException DOCUMENT ME!
      *
-     * @task REVISIT: should we check that non exposed attributes are requiered
+     * @task REVISIT: should we check that non exposed attributes are required
      *       in <code>type</code>?
      */
     public void modifyFeatures(AttributeDescriptor[] type, Object[] value, Filter filter)
