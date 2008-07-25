@@ -5,6 +5,7 @@
 package org.geoserver.security.decorators;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import org.geoserver.security.SecureCatalogImpl;
@@ -18,6 +19,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
+import org.opengis.filter.identity.FeatureId;
 
 /**
  * A feature store wrappers that waits for the first attempt at writing to throw
@@ -38,7 +40,7 @@ public class ReadOnlyFeatureStore<T extends FeatureType, F extends Feature>
         super(delegate, challenge);
     }
 
-    public Set<String> addFeatures(FeatureCollection<T, F> collection)
+    public List<FeatureId> addFeatures(FeatureCollection<T, F> collection)
             throws IOException {
         throw unsupportedOperation();
     }

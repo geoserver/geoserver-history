@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.geotools.data.Parameter;
+import org.geotools.process.ProcessFactory;
 
 import net.opengis.wps.DataType;
 import net.opengis.wps.InputType;
@@ -232,5 +233,25 @@ public class DataTransformer {
         }
 
         return transmuter;
+    }
+
+    public boolean isTransmutable(ProcessFactory pf) {
+        for(Parameter<?> param : pf.getParameterInfo().values()) {
+            try {
+                this.getDefaultTransmuter(param.type);
+            } catch(Exception e) {
+                return false;
+            }
+        }
+
+        for(Parameter<?> param : pf.getResultInfo(null).values()) {
+            try {
+                this.getDefaultTransmuter(param.type);
+            } catch(Exception e) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

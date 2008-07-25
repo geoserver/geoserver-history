@@ -12,6 +12,7 @@ import java.util.Map;
 
 import net.opengis.gml.CodeType;
 import net.opengis.gml.Gml4wcsFactory;
+import net.opengis.gml.GridType;
 import net.opengis.wcs.DomainSubsetType;
 import net.opengis.wcs.GetCoverageType;
 import net.opengis.wcs.OutputType;
@@ -29,6 +30,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
@@ -87,15 +90,34 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         }
 
         // either bbox or timesequence must be there
-        GeneralEnvelope bbox = (GeneralEnvelope) kvp.get("BBOX");
-        bbox.setCoordinateReferenceSystem(crs);
+        Envelope bbox = (Envelope) kvp.get("BBOX");
+        GeneralEnvelope envelope = new GeneralEnvelope(crs);
+        envelope.setEnvelope(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
         TimeSequenceType timeSequence = (TimeSequenceType) kvp.get("TIME");
         if (timeSequence == null && bbox == null)
             throw new WcsException(
                     "Bounding box cannot be null, TIME has not been specified",
                     WcsExceptionCode.MissingParameterValue, "BBOX");
 
-        spatialSubset.getEnvelope().add(bbox);
+        GridType grid = Gml4wcsFactory.eINSTANCE.createGridType();
+        if (kvp.get("width") != null && kvp.get("height") != null) {
+            double width  = ((Integer) kvp.get("width")).doubleValue();
+            double height = ((Integer) kvp.get("height")).doubleValue();
+            
+            grid.setLimits(new Envelope(0.0, width, 0.0, height));
+        } else if (kvp.get("resx") != null && kvp.get("resy") != null) {
+            double resX = Double.parseDouble((String) kvp.get("resx"));
+            double resY = Double.parseDouble((String) kvp.get("resy"));
+            
+            int width = (int) Math.round((envelope.getUpperCorner().getOrdinate(0) - envelope.getLowerCorner().getOrdinate(0)) / resX);
+            int height = (int) Math.round((envelope.getUpperCorner().getOrdinate(1) - envelope.getLowerCorner().getOrdinate(1)) / resY);
+
+            grid.setLimits(new Envelope(0.0, width, 0.0, height));
+        } else
+            throw new WcsException("Could not recognize grid resolution", InvalidParameterValue, "");
+
+        spatialSubset.getEnvelope().add(envelope);
+        spatialSubset.getGrid().add(grid);
         domainSubset.setSpatialSubset(spatialSubset);
         domainSubset.setTemporalSubset(timeSequence);
 

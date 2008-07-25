@@ -43,7 +43,7 @@ public class RollbackTest extends WFSVTestSupport {
         "</wfs:Transaction>\r\n" + 
         "";
         Document doc = postAsDOM(root(), transaction);
-//        print(doc);
+        print(doc);
 
         // let's just ensure the transaction was successful
         assertXpathEvaluatesTo("1", "count(/wfs:TransactionResponse)", doc);

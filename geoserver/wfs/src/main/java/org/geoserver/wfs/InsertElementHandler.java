@@ -4,15 +4,26 @@
  */
 package org.geoserver.wfs;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.WfsFactory;
+
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.FeatureStore;
-
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -20,25 +31,12 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.operation.projection.PointOutsideEnvelopeException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
-import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -186,7 +184,7 @@ public class InsertElementHandler implements TransactionElementHandler {
 
                 // get the next fid
                 LinkedList fids = (LinkedList) schema2fids.get(schema.getTypeName());
-                String fid = (String) fids.removeFirst();
+                String fid = ((FeatureId) fids.removeFirst()).getID();
 
                 insertedFeature = WfsFactory.eINSTANCE.createInsertedFeatureType();
                 insertedFeature.setHandle(insert.getHandle());

@@ -51,6 +51,10 @@
   </bean>
 
   <!-- kvp parsers -->
+  <bean id="wcs100AxisSubsetKvpParser" class="org.geoserver.wcs.kvp.AxisSubsetKvpParser" />
+
+  <bean id="wcs100BBoxKvpParser" class="org.geoserver.wcs.kvp.BBoxKvpParser" />
+
   <bean id="wcs100CoverageKvpParser" class="org.geoserver.wcs.kvp.CoverageKvpParser">
     <constructor-arg ref="catalog" />
   </bean>
@@ -60,10 +64,6 @@
   </bean>
 
   <bean id="wcs100SectionKvpParser" class="org.geoserver.wcs.kvp.SectionKvpParser" />
-
-  <bean id="wcs100BBOXKvpParser" class="org.geoserver.wcs.kvp.BBoxKvpParser" />
-
-  <bean id="wcs100AxisSubsetKvpParser" class="org.geoserver.wcs.kvp.AxisSubsetKvpParser" />
 
   <!-- kvp request readers -->
   <bean id="wcs100GetCapabilitiesKvpReader"

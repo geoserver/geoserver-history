@@ -88,6 +88,10 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
 
                 start("wps:ProcessDescriptions", attrs);
 
+                if (null == this.request.getIdentifier() || this.request.getIdentifier().isEmpty()) {
+                    throw new WPSException("Invalid identifier", "No identifier present");
+                }
+
                 for (Object identifier : this.request.getIdentifier()) {
                     this.processDescription(((CodeType)identifier).getValue());
                 }
@@ -105,6 +109,10 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
                 ProcessFactory pf = this.findProcessFactory(identifier);
 
                 if (null == pf) {
+                    throw new WPSException("Invalid identifier", "InvalidParameterValue");
+                }
+
+                if (false == this.dataTransformer.isTransmutable(pf)) {
                     throw new WPSException("Invalid identifier", "InvalidParameterValue");
                 }
 
@@ -127,6 +135,10 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
 
             private void processDescriptionAll() {
                 for (ProcessFactory pf : Processors.getProcessFactories()) {
+                    if (false == this.dataTransformer.isTransmutable(pf)) {
+                        continue;
+                    }
+
                     this.processDescription(pf);
                 }
             }

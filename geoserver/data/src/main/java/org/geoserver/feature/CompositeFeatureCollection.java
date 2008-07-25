@@ -9,9 +9,13 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.store.DataFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.identity.FeatureId;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -104,5 +108,51 @@ public class CompositeFeatureCollection extends DataFeatureCollection {
         public Object next() {
             return iterator.next();
         }
+    }
+
+    public boolean addAll(Collection arg0) {
+        throw new RuntimeException("Can't add to a composite featurecollection; you need to add to one of the constituent collections direclty.");
+    }
+
+    public boolean removeAll(Collection arg0) {
+        Iterator it = collections.iterator();
+        boolean result = false;
+        while (it.hasNext()){
+            FeatureCollection col = (FeatureCollection)it.next();
+            result |= col.removeAll(arg0);
+        }
+        return result;
+    }
+
+    public boolean retainAll(Collection arg0) {
+        boolean result = false;
+        
+        Iterator it = collections.iterator();
+        while (it.hasNext()){
+            FeatureCollection col = (FeatureCollection)it.next();
+            result |= col.removeAll(arg0);
+        }
+        
+        return result;
+    }
+
+    public Object[] toArray(Object[] arg0) {
+        List list = new ArrayList();
+        
+        Iterator it = collections.iterator();
+        while(it.hasNext()){
+            FeatureCollection col = (FeatureCollection)it.next();
+            Iterator it2 = col.iterator();
+            while (it2.hasNext()){
+                list.add(it.next());
+            }
+            col.close(it2);
+        }
+        
+        return list.toArray(arg0);
+    }
+
+    public FeatureId getIdentifier() {
+        throw new RuntimeException("Can't get the id for a composite featurecollection; you need to identify the consituent collections directly.");
     }
 }

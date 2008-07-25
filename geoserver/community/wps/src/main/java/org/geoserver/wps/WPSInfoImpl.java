@@ -8,11 +8,13 @@ package org.geoserver.wps;
 import org.geoserver.config.impl.ServiceInfoImpl;
 
 /**
+ * WPS information implementation
+ *
  * @author Lucas Reed, Refractions Research Inc
  */
 public class WPSInfoImpl extends ServiceInfoImpl implements WPSInfo {
-	public String getTitle()
-	{
-		return "Prototype GeoServer WPS";
-	}
+    @Override
+    public String getTitle() {
+        return "Prototype GeoServer WPS";
+    }
 }

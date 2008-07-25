@@ -6,6 +6,7 @@ package org.geoserver.wcs;
 
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.response.Wcs10DescribeCoverageTransformer;
 import org.geoserver.wcs.response.Wcs10CapsTransformer;
+import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -180,17 +182,20 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 targetCRS = CRS.decode(gridCRS);
 
             // grab the grid to world transformation
+            /**
+             * Reading Coverage on Requested Envelope
+             */
+            Rectangle destinationSize = null;
             MathTransform gridToCRS = reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER);
             if (gridCRS != null && request.getDomainSubset().getSpatialSubset().getGrid().size() > 0) {
                 GridType grid = (GridType) request.getDomainSubset().getSpatialSubset().getGrid().get(0);
-                Double[] origin = new Double[grid.getDimension().intValue()];
-                Double[] offsets = new Double[grid.getDimension().intValue()];
-
-                // from the specification if grid origin is omitted and the crs
-                // is 2d the default it's 0,0
-                for (int i=0; i<origin.length; i++)
-                    origin[i] = 0.0;
-
+                int[] lowers = new int[] {
+                        (int)grid.getLimits().getMinX(),
+                        (int)grid.getLimits().getMinY()};
+                int[] highers = new int[] {
+                        (int)grid.getLimits().getMaxX(),
+                        (int)grid.getLimits().getMaxY()};
+                
                 // if no offsets has been specified we try to default on the
                 // native ones
                 if (!(gridToCRS instanceof AffineTransform2D) && !(gridToCRS instanceof IdentityTransform))
@@ -198,25 +203,10 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
 
                 if (gridToCRS instanceof IdentityTransform) {
                     if (grid.getDimension().intValue() == 2)
-                        offsets = new Double[] { 1.0, 1.0 };
-                    else
-                        offsets = new Double[] { 1.0, 0.0, 0.0, 1.0 };
-                } else {
-                    AffineTransform2D affine = (AffineTransform2D) gridToCRS;
-                    if (grid.getDimension().intValue() == 2)
-                        offsets = new Double[] { affine.getScaleX(), affine.getScaleY() };
-                    else
-                        offsets = new Double[] { affine.getScaleX(), affine.getShearX(), affine.getShearY(), affine.getScaleY() };
+                        highers = new int[] { 1, 1 };
                 }
-
-                // building the actual transform for the resulting grid geometry
-                AffineTransform tx;
-                if (grid.getDimension().intValue() == 2) {
-                    tx = new AffineTransform(offsets[0], 0, 0, offsets[1], origin[0], origin[1]);
-                } else {
-                    tx = new AffineTransform(offsets[0], offsets[2], offsets[1], offsets[3], origin[0], origin[1]);
-                }
-                gridToCRS = new AffineTransform2D(tx);
+                
+                destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
             }
 
             // now we have enough info to read the coverage, grab the parameters
@@ -224,7 +214,8 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
             final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
             intersected.intersect(originalEnvelope);
-            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersected, null);
+            
+            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS);
             parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), destinationGridGeometry);
             coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat().getReadParameters(), parameters, true));
             if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {

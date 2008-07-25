@@ -4,24 +4,20 @@
  */
 package org.geoserver.wcs.kvp;
 
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
-import org.geotools.geometry.GeneralEnvelope;
-import org.vfny.geoserver.wcs.WcsException;
-import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
+import org.geoserver.platform.ServiceException;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-/**
- * WCS 1.0.0 BBoxKvpParser.
- * 
- * @author Alessio Fabiani, GeoSolutions
- * 
- */
+import java.util.List;
+
+
 public class BBoxKvpParser extends KvpParser {
     public BBoxKvpParser() {
-        super("BBOX", GeneralEnvelope.class);
-        setService("wcs");
+        super("bbox", Envelope.class);
     }
 
     public Object parse(String value) throws Exception {
@@ -29,40 +25,47 @@ public class BBoxKvpParser extends KvpParser {
 
         // check to make sure that the bounding box has 4 coordinates
         if (unparsed.size() < 4) {
-            throw new WcsException("Requested bounding box contains wrong"
-                    + "number of coordinates (should have at least 4): " + unparsed.size(),
-                    WcsExceptionCode.InvalidParameterValue, "BBOX");
+            throw new IllegalArgumentException("Requested bounding box contains wrong"
+                + "number of coordinates (should have " + "4): " + unparsed.size());
         }
 
-        // if it does, store them in an array of doubles
-        int size = unparsed.size();
-        double[] lower = new double[(int) Math.floor(size / 2.0)];
-        double[] upper = new double[lower.length];
+        //if it does, store them in an array of doubles
+        double[] bbox = new double[4];
 
-        for (int i = 0; i < lower.length; i++) {
+        for (int i = 0; i < 4; i++) {
             try {
-                lower[i] = Double.parseDouble((String) unparsed.get(i));
+                bbox[i] = Double.parseDouble((String) unparsed.get(i));
             } catch (NumberFormatException e) {
-                throw new WcsException("Bounding box coordinate is not parsable:"
-                        + unparsed.get(i * 2), WcsExceptionCode.InvalidParameterValue,
-                        "BBOX");
-            }
-
-            try {
-                upper[i] = Double.parseDouble((String) unparsed.get(lower.length + i));
-            } catch (NumberFormatException e) {
-                throw new WcsException("Bounding box coordinate is not parsable:"
-                        + unparsed.get(i * 2 + 1), WcsExceptionCode.InvalidParameterValue,
-                        "BBOX");
+                throw new IllegalArgumentException("Bounding box coordinate " + i
+                    + " is not parsable:" + unparsed.get(i));
             }
         }
+        
+        //ensure the values are sane
+        double minx = bbox[0];
+        double miny = bbox[1];
+        double maxx = bbox[2];
+        double maxy = bbox[3];
+        
+        if (minx > maxx) {
+            throw new ServiceException("illegal bbox, minX: " + minx + " is "
+                + "greater than maxX: " + maxx);
+        }
 
-        // we do not check that lower <= higher because in the case of geographic
-        // bbox we have to accept the case where the lower coordinate is higher
-        // than the high one and handle it as antimeridian crossing, better do that once
-        // in the code that handles GetCoverage (the same check must be performed for xml requests)
+        if (miny > maxy) {
+            throw new ServiceException("illegal bbox, minY: " + miny + " is "
+                + "greater than maxY: " + maxy);
+        }
 
-        GeneralEnvelope bbox = new GeneralEnvelope(lower, upper);
-        return bbox;
+        //check for crs
+        CoordinateReferenceSystem crs = null;
+
+        if (unparsed.size() > 4) {
+            crs = CRS.decode((String) unparsed.get(4));
+        } else {
+            //TODO: use the default crs of the system
+        }
+
+        return new ReferencedEnvelope(minx,maxx,miny,maxy,crs);
     }
 }

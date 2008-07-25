@@ -62,6 +62,7 @@ public class GeometrylessWriteTest extends WFSTestSupport {
                 + "</wfs:Insert>" + "</wfs:Transaction>";
 
         Document dom = postAsDOM("wfs", insert);
+        print(dom);
         assertTrue(dom.getElementsByTagName("wfs:SUCCESS").getLength() != 0);
         assertTrue(dom.getElementsByTagName("wfs:InsertResult").getLength() != 0);
 

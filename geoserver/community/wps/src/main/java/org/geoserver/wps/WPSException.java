@@ -8,7 +8,7 @@ package org.geoserver.wps;
 import org.geoserver.platform.ServiceException;
 
 /**
- * WPS Execption class
+ * WPS Exception class
  *
  * @author Lucas Reed, Refractions Research Inc
  */
