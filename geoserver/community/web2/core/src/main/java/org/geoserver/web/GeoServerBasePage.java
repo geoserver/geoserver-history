@@ -61,8 +61,8 @@ public class GeoServerBasePage extends WebPage {
             .add( new Label( "label", new StringResourceModel( "server", (Component)null, null ) ) ) );
         
         // list of services to administer
-        List<ServicePageInfo> pages = getGeoServerApplication().getBeansOfType(
-                ServicePageInfo.class);
+        List<ServicePageInfo> pages =
+            getGeoServerApplication().getBeansOfType( ServicePageInfo.class);
         ListView services = new ListView("admin.services", pages) {
             protected void populateItem(ListItem item) {
                 ServicePageInfo page = (ServicePageInfo) item.getModelObject();
@@ -79,13 +79,31 @@ public class GeoServerBasePage extends WebPage {
         };
         add( services );
         
+
+        List<ShortcutPageInfo> links =
+            getGeoServerApplication().getBeansOfType(ShortcutPageInfo.class);
+
+        ListView shortcuts =
+            new ListView("shortcuts", links){
+                protected void populateItem(ListItem item) {
+                    ShortcutPageInfo info = (ShortcutPageInfo) item.getModelObject();
+
+                    BookmarkablePageLink link = new BookmarkablePageLink("link", info.getComponentClass());
+                }
+            };
+
+        add(shortcuts);
         //data link
+        /*  // disable the static links
         add( new BookmarkablePageLink( "data", org.geoserver.web.data.tree.DataPage.class ) 
             .add( new Label( "label", new StringResourceModel( "data", (Component) null, null ) ) ) );
 
+        add(new BookmarkablePageLink("styles", StylePage.class)
+                .add(new Label("label", new StringResourceModel("styles", (Component)null, null))));
+
         add(new BookmarkablePageLink("demos", DemoPage.class)
                 .add(new Label("label", new StringResourceModel("demos", (Component)null, null))));
-        
+        */ 
         // dev buttons
         WebMarkupContainer devButtons = new WebMarkupContainer("devButtons");
         add(devButtons);
