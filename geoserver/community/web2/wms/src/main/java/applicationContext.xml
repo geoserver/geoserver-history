@@ -39,4 +39,12 @@
       </list>
     </property>
   </bean>
+
+  <bean id="stylePageShortcut" class="org.geoserver.web.ShortcutPageInfo">
+    <property name="id" value="styles"/>
+    <property name="titleKey" value="style.title"/>
+    <property name="descriptionKey" value="style.description"/>
+    <property name="componentClass" value="org.geoserver.wms.web.data.StylesPage"/>
+  </bean>
+
 </beans>

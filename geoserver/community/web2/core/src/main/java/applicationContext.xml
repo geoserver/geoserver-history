@@ -107,6 +107,20 @@
     <property name="descriptionKey" value="demo.description"/>
     <property name="componentClass" value="org.geoserver.web.DemoPage"/>
   </bean>
+<!--
+  <bean id="stylePageShortcut" class="org.geoserver.web.ShortcutPageInfo">
+    <property name="id" value="styles"/>
+    <property name="titleKey" value="style.title"/>
+    <property name="descriptionKey" value="style.description"/>
+    <property name="componentClass" value="org.geoserver.web.wms.StylePage"/>
+  </bean>
+-->
+  <bean id="dataPageShortcut" class="org.geoserver.web.ShortcutPageInfo">
+    <property name="id" value="data"/>
+    <property name="titleKey" value="data.title"/>
+    <property name="descriptionKey" value="data.description"/>
+    <property name="componentClass" value="org.geoserver.web.data.tree.DataPage"/>
+  </bean>
 
   <!-- 
   <bean id="mySqlConfig" class="org.geoserver.web.data.DataStorePanelInfo">
