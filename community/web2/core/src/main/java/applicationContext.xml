@@ -101,6 +101,13 @@
     <property name="icon" value="img/icons/geosilk/server_vector.png"/>
   </bean>
   
+  <bean id="demoPageShortcut" class="org.geoserver.web.ShortcutPageInfo">
+    <property name="id" value="demos"/>
+    <property name="titleKey" value="demo.title"/>
+    <property name="descriptionKey" value="demo.description"/>
+    <property name="componentClass" value="org.geoserver.web.DemoPage"/>
+  </bean>
+
   <!-- 
   <bean id="mySqlConfig" class="org.geoserver.web.data.DataStorePanelInfo">
     <property name="id" value="MySql"/>
