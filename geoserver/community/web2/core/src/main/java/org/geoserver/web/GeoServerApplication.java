@@ -40,6 +40,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.web.acegi.GeoServerSession;
 import org.geoserver.web.util.CompositeConverterLocator;
 import org.geoserver.web.util.DataDirectoryConverterLocator;
 import org.geoserver.web.util.GeoToolsConverterAdapter;
@@ -147,7 +148,7 @@ public class GeoServerApplication extends SpringWebApplication {
     
     @Override
     public Session newSession(Request request, Response response) {
-        Session s = super.newSession(request, response);
+        Session s = new GeoServerSession(request);
         if(s.getLocale() == null)
             s.setLocale(Locale.ENGLISH);
         return s;
@@ -303,7 +304,4 @@ public class GeoServerApplication extends SpringWebApplication {
 
         return locator;
     }
-
-    
-   
 }
