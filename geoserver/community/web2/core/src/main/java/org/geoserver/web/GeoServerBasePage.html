@@ -16,16 +16,16 @@
 <body>
 <div id="container">
   <div id="global">
-    <h1>GeoServer <small>2.0</small></h1>
-    <div class="buttons">
+    <h2>GeoServer <small>2.0</small></h2>
+    <div class="buttons selfclear">
       <button type="submit">
         <wicket:link>
-          <img src="img/icons/silk/door_in.png" alt=""/> Login
+          <img src="img/icons/silk/door_in.png" alt="Login"/> Login
         </wicket:link>
       </button>
       <button type="submit">
         <wicket:link>
-          <img src="img/icons/silk/door_out.png" alt=""/> Logout
+          <img src="img/icons/silk/door_out.png" alt="Logout"/> Logout
         </wicket:link>
       </button>
     </div>
@@ -59,7 +59,7 @@
         </div>
       </li>
     </ul>
-    <div class="buttons">
+    <div class="buttons selfclear">
       <button type="submit" class="positive">
         <wicket:link>
         <img src="img/icons/silk/disk.png" alt=""/> Save
@@ -71,7 +71,7 @@
         </wicket:link>
       </button>
     </div>
-    <div class="buttons" wicket:id="devButtons">
+    <div class="buttons selfclear" wicket:id="devButtons">
       Developer toolbar:
       <a href="#" class="positive" wicket:id="clearCache" title="Forces the Wicket caches to be cleared, so that localized messages will be reloaded without needing a restart" >
           Clear Wicket caches
@@ -80,7 +80,7 @@
   </div>
   <div id="page">
     <div class="page-header">
-      <h2><wicket:message key="page.title"></wicket:message></h2>
+      <h1><wicket:message key="page.title"></wicket:message></h1>
       <p><wicket:message key="page.description"></wicket:message></p>
     </div>
     <div class="page-pane">
