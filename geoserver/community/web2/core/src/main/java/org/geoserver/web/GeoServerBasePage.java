@@ -89,6 +89,8 @@ public class GeoServerBasePage extends WebPage {
                     ShortcutPageInfo info = (ShortcutPageInfo) item.getModelObject();
 
                     BookmarkablePageLink link = new BookmarkablePageLink("link", info.getComponentClass());
+                    item.add(link);
+                    link.add(new Label("label", new StringResourceModel(info.getTitleKey(), (Component) null, null)));
                 }
             };
 
