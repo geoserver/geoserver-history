@@ -115,13 +115,13 @@ padding: 5px;
 
 #sidebar, 
 #page {
-padding: 20px;
+padding: 0 20px;
 }
 
 #sidebar {
 float: left;
 width: 200px;
-}
+} 
 
 #page {
 margin-left: 240px;
@@ -156,7 +156,7 @@ background: #fafbfa;
 
 th.actions,
 td.actions {
-width: 11em;
+width: 13em;
 }
 
 /*-----------------------
@@ -261,14 +261,13 @@ Button  Styles
 
 .buttons a,
 .buttons button {
-display: block;
 float: left;
 margin: 0 0.58em 0 0;
 background-color: #f5f5f5;
 border: 1px solid #dedede;
 border-top: 1px solid #eee;
 border-left: 1px solid #eee;
-line-height: 1.3em;
+font-size: 1.15em;
 text-decoration: none;
 font-weight: bold;
 color: #565656;
@@ -361,6 +360,20 @@ float: right;
 padding: 0.5em 0 0;
 }
 
+#header form {
+float: left;
+}
+
+#header input {
+float: left;
+padding: 0.3em;
+}
+
+#header .buttons a,
+#header .buttons button {
+margin: 0;
+vertical-align: middle;
+}
 
 /* Global Pane */
 
@@ -371,8 +384,7 @@ font-weight: bold;
 }
 
 ul#navigation {
-margin-left: 0;
-margin-right: 0;
+margin: 20px 0 1.5em;
 list-style-type: none;
 }
 
