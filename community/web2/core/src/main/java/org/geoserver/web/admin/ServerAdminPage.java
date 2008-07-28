@@ -130,7 +130,6 @@ public class ServerAdminPage extends GeoServerBasePage {
             
             form.add(new ListChoice("log4jConfigFile",
                     new PropertyModel(this.globalConfig, "log4jConfigFile"), logProfiles ));
-            
         }
     };
     
