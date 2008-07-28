@@ -66,7 +66,7 @@ public class WmsExceptionHandler extends LegacyServiceExceptionHandler {
             width = (Integer) request.getKvp().get("WIDTH");
             height = (Integer) request.getKvp().get("HEIGHT");
             format = (String) request.getKvp().get("FORMAT");
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             // width and height might be missing
             super.handleServiceException(exception, request);
             return;
