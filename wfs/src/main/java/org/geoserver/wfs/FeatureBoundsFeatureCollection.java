@@ -1,25 +1,18 @@
 package org.geoserver.wfs;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.geotools.data.collection.ResourceCollection;
 import org.geotools.feature.DecoratingFeature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.collection.AbstractFeatureCollection;
-import org.geotools.feature.collection.AbstractResourceCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
-import org.opengis.filter.identity.FeatureId;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
@@ -41,21 +34,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
     public FeatureBoundsFeatureCollection(
             final FeatureCollection<SimpleFeatureType, SimpleFeature> wrapped,
             final SimpleFeatureType targetSchema) {
-        super(targetSchema, 
-            new AbstractResourceCollection() {
-                protected Iterator openIterator() {
-                    return  new BoundsIterator(wrapped.features(), targetSchema);
-                }
-    
-                protected void closeIterator(Iterator close) {
-                    ((BoundsIterator) close).close();
-                }
-    
-                public int size() {
-                    return wrapped.size();
-                }
-            }
-        );
+        super(targetSchema);
         this.wrapped = wrapped;
     }
 
@@ -89,6 +68,18 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         public void remove() {
             throw new UnsupportedOperationException("Removal is not supported");
         }
+    }
+    
+    protected Iterator openIterator() {
+        return  new BoundsIterator(wrapped.features(), schema);
+    }
+
+    protected void closeIterator(Iterator close) {
+        ((BoundsIterator) close).close();
+    }
+
+    public int size() {
+        return wrapped.size();
     }
 
     /**
@@ -169,4 +160,8 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
             throw new UnsupportedOperationException("This feature wrapper is read only");
         }
     }
+    
+       
+    
+
 }
