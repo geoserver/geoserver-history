@@ -500,6 +500,11 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             }
             
             org.geoserver.catalog.CoverageInfo ci = catalog.getFactory().createCoverage();
+
+            CoverageStoreInfoDTO format = (CoverageStoreInfoDTO)dto.getFormats().get(cDTO.getFormatId());
+            ci.setNamespace(catalog.getNamespaceByPrefix(format.getNameSpaceId()));
+
+
             LayerInfo layer = catalog.getFactory().createLayer();
             layer.setResource( ci );
             
