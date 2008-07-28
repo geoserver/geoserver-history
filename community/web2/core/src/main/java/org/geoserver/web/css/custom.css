@@ -106,12 +106,19 @@ Structural Elements
 #container {
 }
 
-#global, 
+#header {
+background: #000;
+border: 1px solid #6c9400;
+border-width: 0 0 2px;
+padding: 5px;
+}
+
+#sidebar, 
 #page {
 padding: 20px;
 }
 
-#global {
+#sidebar {
 float: left;
 width: 200px;
 }
@@ -228,7 +235,7 @@ height: 13em;
 
 input.text, input.file, textarea.textarea, select.select {
 color: #333;
-font-size: 100%;
+font-size: 1em;
 margin: 0;
 }
 
@@ -343,9 +350,21 @@ margin-right: 5px;
 /*-----------------------
 Targeted Styles
 -----------------------*/
+#header h2 {
+color: #fff;
+margin: 0;
+float: left;
+}
+
+#header .buttons {
+float: right;
+padding: 0.5em 0 0;
+}
+
+
 /* Global Pane */
 
-#global h2 {
+#sidebar h2 {
 font-size: 2em;
 line-height: 1.5em;
 font-weight: bold;
@@ -419,8 +438,8 @@ margin-bottom: 0;
 }
 
 .page-pane-content {
-padding: 10;
-margin-bottom: 10;
+padding: 10px;
+margin-bottom: 10px;
 overflow: auto;
 border: 1px solid #ccc;
 }
