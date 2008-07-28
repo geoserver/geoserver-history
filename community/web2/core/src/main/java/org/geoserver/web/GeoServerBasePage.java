@@ -58,14 +58,18 @@ public class GeoServerBasePage extends WebPage {
     public GeoServerBasePage() {
 
         // login form
-        add(new SignInForm("loginform"));
+        Form loginForm = new SignInForm("loginform");
+        add(loginForm);
+        loginForm.setVisible(GeoServerSession.get().getAuthentication() == null);
 
-        Form logoutForm = new Form("logoutform"){
+        Form logoutForm = new StatelessForm("logoutform"){
             @Override
             public void onSubmit(){
                 GeoServerSession.get().signout();
+                setResponsePage(GeoServerHomePage.class);
             }
         };
+        logoutForm.setVisible(GeoServerSession.get().getAuthentication() != null);
 
         add(logoutForm);
         logoutForm.add(new Label("username", GeoServerSession.get().getAuthentication() == null ? "Nobody" : "Some guy"));
