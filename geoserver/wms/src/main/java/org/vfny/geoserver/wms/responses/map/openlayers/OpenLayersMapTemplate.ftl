@@ -3,6 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>OpenLayers map preview</title>
+        <!-- Import OL CSS, auto import does not work with our minified OL.js build -->
+        <link rel="stylesheet" type="text/css" href="${baseUrl}/openlayers/theme/default/style.css"/>
         <!-- Basic CSS definitions -->
         <style type="text/css">
             /* General settings */
@@ -186,27 +188,26 @@
                 // support GetFeatureInfo
                 map.events.register('click', map, function (e) {
                     document.getElementById('nodelist').innerHTML = "Loading... please wait...";
-                    var url =  map.layers[0].getFullRequestString({
-                        request: "GetFeatureInfo",
-                        exceptions: "application/vnd.ogc.se_xml",
-                        bbox: map.getExtent().toBBOX(),
-                        x: e.xy.x,
-                        y: e.xy.y,
-                        info_format: 'text/html',
-                        query_layers: map.layers[0].params.LAYERS,
-                        feature_count: 50,
-                        <#assign skipped=["request","bbox","service","version","format","width","height","layers","styles","srs"]>
+                    var params = {
+                        REQUEST: "GetFeatureInfo",
+                        EXCEPTIONS: "application/vnd.ogc.se_xml",
+                        BBOX: map.getExtent().toBBOX(),
+                        X: e.xy.x,
+                        Y: e.xy.y,
+                        INFO_FORMAT: 'text/html',
+                        QUERY_LAYERS: map.layers[0].params.LAYERS,
+                        FEATURE_COUNT: 50,
+                        <#assign skipped=["request","bbox","width","height","format"]>
                         <#list parameters as param>            
                         <#if !(skipped?seq_contains(param.name?lower_case))>
-                        ${param.name}: '${param.value?js_string}',
+                        ${param.name?capitalize}: '${param.value?js_string}',
                         </#if>
                         </#list>
-                        width: map.size.w,
-                        height: map.size.h},
-                        "${baseUrl}/wms"
-                    );
-                    OpenLayers.loadURL(url, '', this, setHTML, setHTML);
-                    //OpenLayers.Event.stop(e);
+                        WIDTH: map.size.w,
+                        HEIGHT: map.size.h,
+                        format: format};
+                    OpenLayers.loadURL("${baseUrl}/wms", params, this, setHTML, setHTML);
+                    OpenLayers.Event.stop(e);
                 });
             }
             
@@ -225,6 +226,7 @@
                     toolbar.style.display = "none";
                 }
                 event.stopPropagation();
+                map.updateSize()
             }
             
             // Tiling mode, can be 'tiled' or 'untiled'            
