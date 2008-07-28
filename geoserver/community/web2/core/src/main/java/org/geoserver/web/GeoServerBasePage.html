@@ -15,22 +15,26 @@
 </wicket:head>
 <body>
 <div id="container">
-  <div id="global">
+  <div id="header" class="selfclear">
+    <!-- [TODO] This should link to the app root (I think /geoserver/web by default?) -->
     <h2>GeoServer <small>2.0</small></h2>
     <div class="buttons selfclear">
-      <!-- <button type="submit"> -->
+      <!-- [TODO] We'll want these to be conditionally displayed, depending on login state.
+        In other words, we should only ever show the Login button *or* the Logout Button 
+        - never both -->
         <wicket:link>
         <a href="/org/geoserver/web/acegi/SigninPage.html">
           <img src="img/icons/silk/door_in.png" alt="Login"/> Login
         </a>
         </wicket:link> 
-      <!-- </button> -->
       <button type="submit">
         <wicket:link>
           <img src="img/icons/silk/door_out.png" alt="Logout"/> Logout
         </wicket:link>
       </button>
     </div>
+  </div><!-- /#header -->
+  <div id="sidebar">
     <ul id="navigation">
       <li class="navigation-tab">
         <div class="navigation-tab-single">
@@ -79,7 +83,7 @@
           Clear Wicket caches
       </a>
     </div>
-  </div>
+  </div><!-- /#sidebar -->
   <div id="page">
     <div class="page-header">
       <h1><wicket:message key="page.title"></wicket:message></h1>
