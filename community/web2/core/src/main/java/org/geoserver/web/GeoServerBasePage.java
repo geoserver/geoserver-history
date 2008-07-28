@@ -18,11 +18,16 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.StatelessForm;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.geoserver.web.acegi.GeoServerSession;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.web.admin.ServerAdminPage;
@@ -51,6 +56,19 @@ public class GeoServerBasePage extends WebPage {
 
 	@SuppressWarnings("serial")
     public GeoServerBasePage() {
+
+        // login form
+        add(new SignInForm("loginform"));
+
+        Form logoutForm = new Form("logoutform"){
+            @Override
+            public void onSubmit(){
+                GeoServerSession.get().signout();
+            }
+        };
+
+        add(logoutForm);
+        logoutForm.add(new Label("username", GeoServerSession.get().getAuthentication() == null ? "Nobody" : "Some guy"));
 
         // welcome page link
         add( new BookmarkablePageLink( "welcome", GeoServerHomePage.class )
@@ -95,17 +113,7 @@ public class GeoServerBasePage extends WebPage {
             };
 
         add(shortcuts);
-        //data link
-        /*  // disable the static links
-        add( new BookmarkablePageLink( "data", org.geoserver.web.data.tree.DataPage.class ) 
-            .add( new Label( "label", new StringResourceModel( "data", (Component) null, null ) ) ) );
 
-        add(new BookmarkablePageLink("styles", StylePage.class)
-                .add(new Label("label", new StringResourceModel("styles", (Component)null, null))));
-
-        add(new BookmarkablePageLink("demos", DemoPage.class)
-                .add(new Label("label", new StringResourceModel("demos", (Component)null, null))));
-        */ 
         // dev buttons
         WebMarkupContainer devButtons = new WebMarkupContainer("devButtons");
         add(devButtons);
@@ -142,5 +150,33 @@ public class GeoServerBasePage extends WebPage {
     protected Catalog getCatalog() {
         return getGeoServerApplication().getCatalog();
     }
+    
+    private static class SignInForm extends StatelessForm {
+        private String password;
+        private String username;
+
+        public SignInForm(final String id){
+            super(id);
+            setModel(new CompoundPropertyModel(this));
+            add(new TextField("username"));
+            add(new PasswordTextField("password"));
+        }
+
+        @Override
+        public final void onSubmit(){
+            if (signIn(username, password)){
+                if (!continueToOriginalDestination()) {
+                    setResponsePage(getApplication().getHomePage());
+                }
+            } else {
+                error("Unknown username/password");
+            }
+        }
+
+        private final boolean signIn(String username, String password) {
+            return GeoServerSession.get().authenticate(username, password);
+        }
+    }
+
 
 }
