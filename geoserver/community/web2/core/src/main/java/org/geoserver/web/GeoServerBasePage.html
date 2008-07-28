@@ -20,18 +20,20 @@
     <h2>GeoServer <small>2.0</small></h2>
     <div class="buttons selfclear">
     <form wicket:id="loginform">
-      <label for="username">Username</label>
-      <input type="text" wicket:id="username"/>
-      <label for="password">Password</label>
-      <input type="password" wicket:id="password"/>
-      <button type="submit"> 
-        <a href="/org/geoserver/web/acegi/SigninPage.html">
-          <img src="img/icons/silk/door_in.png" alt="Login"/> Login
-        </a>
+      <label class="noshow" for="username">Username</label>
+      <input wicket:id="username" id="username" type="text" value="username" onblur="if(this.value=='') this.value='username';" onfocus="if(this.value=='username') this.value='';" />
+      <label class="noshow" for="password">Password</label>
+      <input id="password" type="password" wicket:id="password"/>
+      <!-- [FIXME] path for the login button image is not being properly set. Setting to not display -->
+      <button type="submit">
+         <img class="noshow" src="img/icons/silk/door_in.png" alt="Login"/> Login
       </button>
+      <!-- Commenting out - we don't need this if we have a login form, right?   <a href="/org/geoserver/web/acegi/SigninPage.html">
+          <img src="img/icons/silk/door_in.png" alt="Login"/> Login
+        </a> -->
     </form>
-      
-    <form wicket:id="logoutform">
+    <!-- [TODO] add conditional code so that we display login / logout form correctly. Only one will ever be shown at any given time -->
+    <form class="noshow" wicket:id="logoutform">
       Logged in as <span wicket:id="username">User von Testenheimer</span>.
       <button type="submit">
          <img src="img/icons/silk/door_out.png" alt="Logout"/> Logout
@@ -73,7 +75,7 @@
     <div class="buttons selfclear">
       <button type="submit" class="positive">
         <wicket:link>
-        <img src="img/icons/silk/disk.png" alt=""/> Save
+        <img src="img/icons/silk/disk.png" alt=""/> Persist
         </wicket:link>
       </button>
       <button type="submit" class="negative">
