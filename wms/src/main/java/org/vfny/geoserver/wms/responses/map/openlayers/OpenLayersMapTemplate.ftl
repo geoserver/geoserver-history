@@ -187,22 +187,22 @@
                 map.events.register('click', map, function (e) {
                     document.getElementById('nodelist').innerHTML = "Loading... please wait...";
                     var url =  map.layers[0].getFullRequestString({
-                        REQUEST: "GetFeatureInfo",
-                        EXCEPTIONS: "application/vnd.ogc.se_xml",
-                        BBOX: map.getExtent().toBBOX(),
-                        X: e.xy.x,
-                        Y: e.xy.y,
-                        INFO_FORMAT: 'text/html',
-                        QUERY_LAYERS: map.layers[0].params.LAYERS,
-                        FEATURE_COUNT: 50,
+                        request: "GetFeatureInfo",
+                        exceptions: "application/vnd.ogc.se_xml",
+                        bbox: map.getExtent().toBBOX(),
+                        x: e.xy.x,
+                        y: e.xy.y,
+                        info_format: 'text/html',
+                        query_layers: map.layers[0].params.LAYERS,
+                        feature_count: 50,
                         <#assign skipped=["request","bbox","service","version","format","width","height","layers","styles","srs"]>
                         <#list parameters as param>            
                         <#if !(skipped?seq_contains(param.name?lower_case))>
                         ${param.name}: '${param.value?js_string}',
                         </#if>
                         </#list>
-                        WIDTH: map.size.w,
-                        HEIGHT: map.size.h},
+                        width: map.size.w,
+                        height: map.size.h},
                         "${baseUrl}/wms"
                     );
                     OpenLayers.loadURL(url, '', this, setHTML, setHTML);
