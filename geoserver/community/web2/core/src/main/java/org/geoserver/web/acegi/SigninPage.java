@@ -32,7 +32,7 @@ public class SigninPage extends GeoServerBasePage {
         }
 
         private final boolean signIn(String username, String password) {
-            return ("admin".equals(username) && "geoserver".equals(password));
+            return GeoServerSession.get().authenticate(username, password);
         }
     }
 
