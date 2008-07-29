@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.IModel;
 import org.geoserver.web.services.BaseServiceAdminPage;
 import org.geoserver.wfs.web.publish.NamespaceManagerPage;
@@ -30,7 +31,7 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
         return WFSInfo.class;
     }
     
-    protected void build(IModel info, Form form) {
+    protected void build(final IModel info, Form form) {
         form.add(new BookmarkablePageLink("namespaces", NamespaceManagerPage.class));
         //max features
         form.add( new TextField( "maxFeatures" ) );
@@ -42,25 +43,36 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
         sl.add( new Radio( "transactional", new Model( WFSInfo.ServiceLevel.TRANSACTIONAL  ) ) );
         sl.add( new Radio( "complete", new Model( WFSInfo.ServiceLevel.COMPLETE ) ) );
         
-        //gml 2 
-        form.add( new GMLPanel( "gml2", ((WFSInfo)info.getObject()).getGML().get( WFSInfo.Version.V_10 ) ) );
-        form.add( new GMLPanel( "gml3", ((WFSInfo)info.getObject()).getGML().get( WFSInfo.Version.V_11 ) ) );
+        IModel gml2Model = new LoadableDetachableModel(){
+            public Object load(){
+                return ((WFSInfo)info.getObject()).getGML().get(WFSInfo.Version.V_10);
+            }
+        };
+
+        IModel gml3Model = new LoadableDetachableModel(){
+            public Object load(){
+                return ((WFSInfo)info.getObject()).getGML().get(WFSInfo.Version.V_11);
+            }
+        };
+
+        form.add(new GMLPanel("gml2", gml2Model));
+        form.add(new GMLPanel("gml3", gml3Model));
     }
     
     static class GMLPanel extends Panel {
 
-        public GMLPanel(String id, GMLInfo info) { 
-            super(id, new CompoundPropertyModel( info ) );
+        public GMLPanel(String id, IModel gmlModel) { 
+            super(id, new CompoundPropertyModel(gmlModel));
             
             //feature bounding
-            CheckBox bounding = new CheckBox( "featureBounding" );
-            add( bounding );
+            CheckBox bounding = new CheckBox("featureBounding");
+            add(bounding);
             
             //srsNameStyle
             List<GMLInfo.SrsNameStyle> choices = 
-                Arrays.asList( SrsNameStyle.values() );
-            DropDownChoice srsNameStyle = new DropDownChoice( "srsNameStyle", choices );
-            add( srsNameStyle );
+                Arrays.asList(SrsNameStyle.values());
+            DropDownChoice srsNameStyle = new DropDownChoice("srsNameStyle", choices);
+            add(srsNameStyle);
         }
         
     }
