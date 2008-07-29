@@ -10,10 +10,14 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.media.jai.InterpolationNearest;
+import javax.media.jai.operator.TranslateDescriptor;
 
 
 /**
@@ -36,13 +40,25 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
     /** JPEG Native Acceleration Mode * */
     private Boolean JPEGNativeAcc;
 
+	private boolean hasJAIWriter;
+
     public JPEGMapProducer(String outputFormat, WMS wms) {
         super(outputFormat, wms);
+
         /**
          * TODO To check Native Acceleration mode use the following variable
          */
         this.JPEGNativeAcc = wms.getGeoServer().getJPEGNativeAcceleration();
+        try{
+        	Class.forName("com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter") ;
+        	hasJAIWriter=true;
+        }catch (ClassNotFoundException e) {
+        	hasJAIWriter=false;
+		}
+        
+        
     }
+    
 
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
         throws IOException {
@@ -50,7 +66,14 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
             LOGGER.fine("About to write a JPEG image.");
         }
 
-        new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
+        if((JPEGNativeAcc.booleanValue()||!hasJAIWriter)&&(image.getMinX()!=0 || image.getMinY()!=0))
+        {
+        	final WritableRaster raster=(WritableRaster) image.getData();
+        	final BufferedImage finalImage= new BufferedImage(image.getColorModel(),raster.createWritableTranslatedChild(0, 0),image.getColorModel().isAlphaPremultiplied(),null);
+            new ImageWorker(finalImage).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
+        }
+        else
+        	new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());	
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing a JPEG done!!!");
