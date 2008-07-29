@@ -17,4 +17,8 @@ public class WCSAdminPage extends BaseServiceAdminPage<WCSInfo> {
     protected void build(IModel info, Form form) {
         //not much here
     }
+
+    protected String getServiceName(){
+        return "WCS";
+    }
 }
