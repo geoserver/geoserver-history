@@ -8,6 +8,7 @@ import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.repeater.RefreshingView;
@@ -35,13 +36,12 @@ public class NamespaceManagerPage extends GeoServerBasePage {
                         ) 
                     );
                          
-		    	final NamespaceInfo info = (NamespaceInfo)item.getModelObject();
-		    	item.add(new AjaxEditableLabel("prefix", new PropertyModel(info, "prefix")));
-		    	item.add(new AjaxEditableLabel("URI", new PropertyModel(info, "URI")));
-		    	item.add(new Link("delete", new PropertyModel(info, "delete")){
+		    	item.add(new AjaxEditableLabel("prefix", new PropertyModel(item.getModel(), "prefix")));
+		    	item.add(new AjaxEditableLabel("URI", new PropertyModel(item.getModel(), "URI")));
+		    	item.add(new Link("delete", new PropertyModel(item.getModel(), "delete")){
 		    		@Override
 		    		public void onClick() {
-		    			getCatalog().remove(info);
+		    			getCatalog().remove((NamespaceInfo)item.getModel().getObject());
 		    		}
 		    	});
 		    }
@@ -49,8 +49,15 @@ public class NamespaceManagerPage extends GeoServerBasePage {
             @Override
             protected Iterator getItemModels(){
                 List<IModel> models = new ArrayList<IModel>();
-                for (NamespaceInfo info : getCatalog().getNamespaces())
-                    models.add(new CompoundPropertyModel(info));
+                for (NamespaceInfo info : getCatalog().getNamespaces()){
+                    final String prefix = info.getPrefix();
+                    models.add(new CompoundPropertyModel(new LoadableDetachableModel(){
+                        public Object load(){
+                            return getCatalog().getNamespaceByPrefix(prefix);
+                        }
+                    }
+                    ));
+                }
                 return models.iterator();
             }
 	    }

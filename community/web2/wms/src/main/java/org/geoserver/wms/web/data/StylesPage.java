@@ -3,6 +3,7 @@ package org.geoserver.wms.web.data;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.catalog.StyleInfo;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -15,11 +16,11 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 
 public class StylesPage extends GeoServerBasePage {
-
-    private String name;
+    String name;
 
     public StylesPage(){
         name = "New Style";
@@ -27,8 +28,14 @@ public class StylesPage extends GeoServerBasePage {
             @Override
             protected Iterator getItemModels(){
                 List<IModel> styles = new ArrayList<IModel>();
-                for (StyleInfo info : getCatalog().getStyles())
-                    styles.add(new CompoundPropertyModel(info));;
+                for (StyleInfo info : getCatalog().getStyles()){
+                    final String id = info.getId();
+                    styles.add(new CompoundPropertyModel(new LoadableDetachableModel(){
+                        public Object load() {
+                            return getCatalog().getStyle(id);
+                        }
+                    }));
+                }
                 return styles.iterator();
             }
 
@@ -40,18 +47,17 @@ public class StylesPage extends GeoServerBasePage {
                         item.getIndex() % 2 == 0 ? "even" : "odd"
                         )
                     );
-                final StyleInfo info = (StyleInfo)item.getModelObject();
                 item.add(new AjaxEditableLabel("name"));
                 item.add(new Link("edit"){
                         @Override
                         public void onClick(){
-                            setResponsePage(new StyleEditorPage(info));
+                            setResponsePage(new StyleEditorPage((StyleInfo)item.getModelObject()));
                         }
                     });
                 item.add(new Link("delete"){
                         @Override
                         public void onClick(){
-                            getCatalog().remove(info);
+                            getCatalog().remove((StyleInfo)item.getModelObject());
                         }
                     });
             }
