@@ -107,7 +107,7 @@ Structural Elements
 }
 
 #header {
-background: #000;
+background: #142433;
 border: 1px solid #6c9400;
 border-width: 0 0 2px;
 padding: 5px;
@@ -161,17 +161,28 @@ width: 13em;
 
 /*-----------------------
 Forms
+
 -----------------------*/
+form ul {
+margin: 0; /* override blueprint's settings for unordered lists */
+list-style-type: none;
+}
+
 form li {
 width: 62%;
 display: block;
 margin: 0;
-padding: 4px 5px 2px 9px;
+padding: 4px 5px 2px 0;
 position: relative;
 }
 
-form ul {
-list-style-type:none;
+form ul ul {
+margin: 0;
+}
+
+form li li {
+width: 100%;
+padding: 0;
 }
 
 label {
@@ -225,7 +236,7 @@ input.text, textarea.textarea, .firefox select.select {
 background: #fff url(../img/fieldbg.gif) repeat-x scroll center top;
 border: 1px solid #7c7c7c;
 border-color: #7c7c7c #c3c3c3 #ddd;
-padding: 0;
+padding: 0.2em;
 width: 25em;
 }
 
@@ -267,18 +278,18 @@ background-color: #f5f5f5;
 border: 1px solid #dedede;
 border-top: 1px solid #eee;
 border-left: 1px solid #eee;
-font-size: 1.15em;
+font-size: 1em;
 text-decoration: none;
 font-weight: bold;
 color: #565656;
 cursor: pointer;
-padding: 0.42em 0.83em 0.5em 0.58em;
+padding: 0.5em 0.83em 0.6em 0.58em;
 }
 
 .buttons button {
 width: auto;
 overflow: visible;
-padding: 0.42em 0.83em 0.25em 0.58em; /* IE6 */
+padding: 0.5em 0.83em 0.6em 0.58em; /* IE6 */
 }
 
 
@@ -352,7 +363,17 @@ Targeted Styles
 #header h2 {
 color: #fff;
 margin: 0;
+font-size: 2.4em;
 float: left;
+}
+
+#header h2 a {
+color: #fff;
+text-decoration: none;
+}
+
+#header h2 a:hover {
+color: #fefdf1;
 }
 
 #header .buttons {
@@ -366,22 +387,16 @@ float: left;
 
 #header input {
 float: left;
-padding: 0.3em;
+padding: 0.55em 0.3em;
+font-size: 1em;
 }
 
 #header .buttons a,
 #header .buttons button {
 margin: 0;
-vertical-align: middle;
 }
 
 /* Global Pane */
-
-#sidebar h2 {
-font-size: 2em;
-line-height: 1.5em;
-font-weight: bold;
-}
 
 ul#navigation {
 margin: 20px 0 1.5em;

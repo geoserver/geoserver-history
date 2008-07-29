@@ -1,31 +1,39 @@
 <html>
-  <body>
-    <wicket:extend>
-    <form wicket:id="form">
-     <ul>
+<body>
+  <wicket:extend>
+  <form wicket:id="form">
+    <ul>
       <li>
-        <span>
-          <input wicket:id="enabled" class="field checkbox" type="checkbox"></input>
-          <label class="choice"><wicket:message key="enabled">Enabled</wicket:message></label>
-        </span>
-        <p class="instruct">
-        </p>
-      </li>
-      <li>
-        <label><wicket:message key="title">Title</wicket:message></label>
-        <span>
-          <input wicket:id="title" class="field text"></input>          
-        </span>
-        <p class="instruct">
-        </p>
-      </li>
-      <li>
-         <label><wicket:message key="abstract">Abstract</wicket:message></label>
-         <span>
-           <textarea wicket:id="abstract" class="field textarea"></textarea> 
-         </span>
-         <p class="instruct">
-         </p>
+        <fieldset>
+          <legend>Service Metadata</legend>
+          <ul>
+            <li>
+              <span>
+                <input wicket:id="enabled" type="checkbox" class="field checkbox"></input>
+                <!-- [TODO] change message to "Enable Servicename" -->
+                <label class="choice"><wicket:message key="enabled">Enabled</wicket:message></label>
+              </span>
+              <p class="instruct">
+              </p>
+            </li>
+            <li>
+              <label><wicket:message key="title">Title</wicket:message></label>
+              <span>
+                <input wicket:id="title" class="field text"></input>          
+              </span>
+              <p class="instruct">
+              </p>
+            </li>
+            <li>
+               <label><wicket:message key="abstract">Abstract</wicket:message></label>
+               <span>
+                 <textarea wicket:id="abstract" class="field textarea"></textarea> 
+               </span>
+               <p class="instruct">
+               </p>
+            </li>
+          </ul> 
+        </fieldset>
       </li>
       <wicket:child>
       </wicket:child>
@@ -33,9 +41,8 @@
         <input class="btnTxt" wicket:id="submit" type="submit"></input>
         <input class="btnTxt" wicket:id="cancel" type="submit"></input> 
       </li>
-     </ul>
-      
-    </form>
-    </wicket:extend>
-  </body>
+    </ul>    
+  </form>
+  </wicket:extend>
+</body>
 </html>

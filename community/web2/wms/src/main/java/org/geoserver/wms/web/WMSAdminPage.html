@@ -1,48 +1,56 @@
 <html xmlns:wicket="http://wicket.apache.org/">
-  <body>
-    <wicket:extend>
+<body>
+  <wicket:extend>
+    <li><!-- [TODO] move to top of the page -->
       <a href="#" wicket:id="styles"><wicket:message key="wms.data.styles">Style Manager</wicket:message></a>
-      <li>
-        <span>
-          <label><wicket:message key="page.interpolation">Interpolation</wicket:message></label>
-          <input wicket:id="interpolation" class="field text" type="text"></input>
-        </span>
-        <p class="instruct">
-        </p>
-      </li>
-      <li>
-        <span>
-          <wicket:message key="page.watermarkEnabled">Watermark Enabled</wicket:message>:
-          <input type="checkbox" wicket:id="watermark.enabled"></input> Global Watermarking
-         </span>
-        <p class="instruct">
-        </p>
-      </li>
-      <li>
-        <span> 
-          <label><wicket:message key="page.watermarkUrl">Watermark URL</wicket:message></label>
-          <input wicket:id="watermark.uRL" class="field text" type="text"></input>
-        </span>
-        <p class="instruct">
-        </p>
-      </li>
-      <li>
-        <span>                
-          <label><wicket:message key="page.watermarkTransparency">Watermark Transparency</wicket:message></label>
-          <input wicket:id="watermark.transparency" class="field text" type="text"></input><br/>
-        </span>
-        <p class="instruct">
-        </p>
-      </li>
-      <li><span>
-         <label><wicket:message key="page.watermarkPosition">Watermark Position</wicket:message></label>
-         <select wicket:id="watermark.position"></select>
-         
-        </span>
-        <p class="instruct">
-        </p>
-      </li>
-      
-    </wicket:extend>
-  </body>
+    </li>
+    <li>
+      <span>
+        <label><wicket:message key="page.interpolation">Interpolation</wicket:message></label>
+        <input wicket:id="interpolation" class="field text" type="text"></input>
+      </span>
+      <p class="instruct">
+      </p>
+    </li>
+    <li>
+      <fieldset><!-- [TODO] Do we need to turn this legend into a wicket message? -->
+        <legend>Watermark Settings</legend>
+        <ul>
+          <li>
+            <span>
+              <input class="field checkbox" type="checkbox" wicket:id="watermark.enabled"></input>
+              <label class="choice"><wicket:message key="page.watermarkEnabled">Enable Watermark</wicket:message></label>
+             </span>
+            <p class="instruct">
+            </p>
+          </li>
+          <li>
+            <span> 
+              <label><wicket:message key="page.watermarkUrl">Watermark URL</wicket:message></label>
+              <input wicket:id="watermark.uRL" class="field text" type="text"></input>
+            </span>
+            <p class="instruct">
+            </p>
+          </li>
+          <li>
+            <span>
+              <label><wicket:message key="page.watermarkTransparency">Watermark Transparency</wicket:message></label>
+              <input wicket:id="watermark.transparency" class="field text" type="text"></input>
+            </span>
+            <p class="instruct">
+            </p>
+          </li>
+          <li>
+            <span>
+              <label><wicket:message key="page.watermarkPosition">Watermark Position</wicket:message></label>
+              <select wicket:id="watermark.position"></select>
+            </span>
+            <p class="instruct">
+            </p>
+          </li>
+        </ul>
+      </fieldset>
+    </li> 
+  </wicket:extend>
+</body>
 </html>
