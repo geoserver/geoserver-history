@@ -89,8 +89,9 @@ public class FeatureRestlet extends Restlet {
         } catch (Exception e) {}
 
         regionateBy = form.getFirstValue("regionateBy", true);
-        if (regionateBy == null) regionateBy = "sld";
-
+        //if (regionateBy == null) regionateBy = "sld";
+        regionateBy = "random";
+        
         regionateAttr = form.getFirstValue("regionateAttr", true);
 
         NameSpaceInfo ns = catalog.getNameSpace(namespace);
@@ -120,7 +121,8 @@ public class FeatureRestlet extends Restlet {
         raw.put("format", "kml");
         raw.put("startIndex", Integer.toString(startIndex));
         raw.put("maxfeatures", Integer.toString(maxFeatures));
-        raw.put("format_options", "selfLinks:true;relLinks:true;regionateby:" + regionateBy + (regionateAttr != null ? ";regionateAttr:" + regionateAttr : ""));
+        raw.put("format_options", "selfLinks:true;relLinks:true;");
+        //regionateby:" + regionateBy + (regionateAttr != null ? ";regionateAttr:" + regionateAttr : ""));
 
         if ( feature != null ) {
             raw.put("featureid", layer + "." + feature);    
@@ -140,9 +142,9 @@ public class FeatureRestlet extends Restlet {
         //delegate to wms reflector
         final GetMapResponse getMapResponse = webMapService.reflect(getMapRequest);
 
-        //wrap resposne in a reslet output rep
+        //wrap response in a reslet output rep
         OutputRepresentation output = new OutputRepresentation( 
-                new MediaType("application/xml+kml")  
+                new MediaType("application/vnd.google-earth.kml+xml")  
                 ) {
             public void write(OutputStream outputStream) throws IOException {
                 try{

@@ -103,7 +103,8 @@ class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 		try {
 			transformer.transform(mapContext, out);
 		} catch (TransformerException e) {
-			throw (IOException) new IOException().initCause(e);
+		    LOGGER.severe(e.getMessage());
+		    throw (IOException) new IOException().initCause(e);
 		}
 	}
 
