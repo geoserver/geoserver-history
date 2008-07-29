@@ -26,6 +26,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.config.ContactInfo;
@@ -53,25 +54,62 @@ public class ServerAdminPage extends GeoServerBasePage {
 
         // create a list of ITab objects used to feed the tabbed panel
         List<AbstractTab> tabs = new ArrayList<AbstractTab>();
-        
+
+        final IModel geoServerModel = new LoadableDetachableModel(){
+            public Object load() {
+                return getGeoServerApplication().getGeoServer();
+            }
+        };
+
+        final IModel globalInfoModel = new LoadableDetachableModel(){
+            public Object load() {
+                return getGeoServerApplication().getGeoServer().getGlobal();
+            }
+        };
+
+        final IModel globalConfigModel = new LoadableDetachableModel(){
+            public Object load() {
+                return getGeoServerApplication().getApplicationContext().getBean("globalConfig");
+            }
+        };
+
+        final IModel jaiModel = new LoadableDetachableModel(){
+            public Object load() {
+                return getGeoServerApplication()
+                       .getGeoServer()
+                       .getGlobal()
+                       .getMetadata()
+                       .get(JAIInfo.KEY);
+            }
+        };
+
+        final IModel contactModel = new LoadableDetachableModel(){
+            public Object load() {
+                return getGeoServerApplication()
+                       .getGeoServer()
+                       .getGlobal()
+                       .getContact();
+            }
+        };
+
         // General server settings, logging and Java
         tabs.add(new AbstractTab(new Model("Settings")) {
             public Panel getPanel(String panelId) {
-                return new TabPanelSettings(panelId, getGeoServerApplication());
+                return new TabPanelSettings(panelId, geoServerModel, globalInfoModel, globalConfigModel);
             }
         });
 
         // Settings related to Java Advanced Imaging (JAI)
         tabs.add(new AbstractTab(new Model("Java Advanced Imaging")) {
             public Panel getPanel(String panelId) {
-                return new TabPanelJAI(panelId, getGeoServer());
+                return new TabPanelJAI(panelId, geoServerModel, globalInfoModel, jaiModel);
             }
         });
 
         // Settings for credits and contact information
         tabs.add(new AbstractTab(new Model("Contact Information")) {
             public Panel getPanel(String panelId) {
-                return new TabPanelContact(panelId, getGeoServer());
+                return new TabPanelContact(panelId, geoServerModel, contactModel);
             }
         });
 
@@ -84,35 +122,28 @@ public class ServerAdminPage extends GeoServerBasePage {
     }
     
     
-    private static class TabPanelSettings extends Panel
-    {
+    private static class TabPanelSettings extends Panel {
         private static final long serialVersionUID = 4716657682337915996L;
 
-        private GeoServer gs;
-        private GeoServerInfo gsi;
-        private GlobalConfig globalConfig;
-        
-        public TabPanelSettings(String id, GeoServerApplication gsa)
-        {
+        public TabPanelSettings(String id, final IModel geoServerModel, final IModel globalInfoModel, final IModel globalConfigModel) {
             super(id);
-            this.gs = gsa.getGeoServer();
-            this.gsi = gs.getGlobal();
-            this.globalConfig = (GlobalConfig) gsa.getApplicationContext().getBean("globalConfig");
                         
-            Form form = new Form( "form", new CompoundPropertyModel( gsi ) ) {
+            Form form = new Form("form", new CompoundPropertyModel(globalInfoModel)) {
                 protected void onSubmit() {
-                    gs.save(gsi);
+                    ((GeoServer)geoServerModel.getObject())
+                        .save((GeoServerInfo)globalInfoModel.getObject());
                 }
             };
+
             add( form );
             
-            form.add( new TextField( "maxFeatures", new PropertyModel(globalConfig,"maxFeatures") ) );
+            form.add( new TextField( "maxFeatures", new PropertyModel(globalConfigModel,"maxFeatures") ) );
             form.add( new CheckBox( "verbose" ) );
             form.add( new CheckBox( "verboseExceptions" ) );
             form.add( new TextField( "numDecimals" ) );
             form.add( new TextField( "charset" ) );
             form.add( new TextField( "proxyBaseUrl" ) );
-            logLevelsAppend(form);
+            logLevelsAppend(form, globalConfigModel);
             form.add( new CheckBox( "stdOutLogging" ) );
             form.add( new TextField("loggingLocation") );
             
@@ -120,7 +151,7 @@ public class ServerAdminPage extends GeoServerBasePage {
             form.add(submit);
         }
         
-        private void logLevelsAppend(Form form) {
+        private void logLevelsAppend(Form form, IModel globalConfigModel) {
             List<String> logProfiles = Arrays.asList(
                 "DEFAULT_LOGGING.properties",
                 "VERBOSE_LOGGING.properties",
@@ -129,7 +160,7 @@ public class ServerAdminPage extends GeoServerBasePage {
                 "GEOSERVER_DEVELOPER_LOGGING.properties");
             
             form.add(new ListChoice("log4jConfigFile",
-                    new PropertyModel(this.globalConfig, "log4jConfigFile"), logProfiles ));
+                    new PropertyModel(globalConfigModel, "log4jConfigFile"), logProfiles ));
         }
     };
     
@@ -137,73 +168,68 @@ public class ServerAdminPage extends GeoServerBasePage {
     {
         private static final long serialVersionUID = -1184717232184497578L;
         
-        private GeoServer gs;
-        private JAIInfo jai;
-        
-        public TabPanelJAI(String id, GeoServer tempGs)
+        public TabPanelJAI(String id, final IModel geoServerModel, final IModel globalInfoModel, final IModel jaiModel)
         {
             super(id);
-            this.gs = tempGs;
-            this.jai = (JAIInfo) tempGs.getGlobal().getMetadata().get(JAIInfo.KEY);
             
-            Form form = new Form( "form", new CompoundPropertyModel( jai ) ) {
+            Form form = new Form("form", new CompoundPropertyModel(jaiModel)) {
                 protected void onSubmit() {
-                    gs.getGlobal().getMetadata().put(JAIInfo.KEY,jai);
+                    ((GeoServer)geoServerModel.getObject())
+                        .getGlobal()
+                        .getMetadata()
+                        .put(
+                                JAIInfo.KEY,
+                                (JAIInfo)jaiModel.getObject()
+                            );
                 }
             };
             
             add( form );
             
-            form.add( new TextField( "memoryCapacity" ) );
-            form.add( new TextField( "memoryThreshold" ) );
-            form.add( new TextField( "tileThreads" ) );
-            form.add( new TextField( "tilePriority") );
-            form.add( new CheckBox( "recycling" ) );
-            form.add( new CheckBox( "imageIOCache" ) );
-            form.add( new CheckBox( "jpegAcceleration" ) );
-            form.add( new CheckBox( "pngAcceleration" ) );
+            form.add(new TextField("memoryCapacity"));
+            form.add(new TextField("memoryThreshold"));
+            form.add(new TextField("tileThreads"));
+            form.add(new TextField("tilePriority"));
+            form.add(new CheckBox("recycling"));
+            form.add(new CheckBox("imageIOCache"));
+            form.add(new CheckBox("jpegAcceleration"));
+            form.add(new CheckBox("pngAcceleration"));
             
-            Button submit = new Button("submit",new StringResourceModel( "submit", this, null) );
+            Button submit = new Button("submit", new StringResourceModel("submit", this, null));
             form.add(submit);
         }
     }
     
-    private static class TabPanelContact extends Panel
-    {
+    private static class TabPanelContact extends Panel {
         private static final long serialVersionUID = 348888410971935237L;
 
-        private GeoServer gs;
-        private ContactInfo contact;
-        public TabPanelContact(String id, GeoServer tempGs)
-        {
+        public TabPanelContact(String id, final IModel geoServerModel, final IModel contactModel) {
             super(id);
-            this.gs = tempGs;
-            this.contact = gs.getGlobal().getContact();
             
-            Form form = new Form( "form", new CompoundPropertyModel( contact ) ) {
+            Form form = new Form("form", new CompoundPropertyModel(contactModel)) {
                 protected void onSubmit() {
-                   gs.getGlobal().setContact(contact);
+                    ((GeoServer)geoServerModel.getObject())
+                        .getGlobal().setContact((ContactInfo)contactModel.getObject());
                 }
             };
             
-            add( form );
+            add(form);
             
-            form.add( new TextField( "contactPerson" ) );
-            form.add( new TextField( "contactOrganization" ) );
-            form.add( new TextField( "contactPosition" ) );
-            form.add( new TextField( "addressType") );
-            form.add( new TextField( "address" ) );
-            form.add( new TextField( "addressCity" ) );
-            form.add( new TextField( "addressState" ) );
-            form.add( new TextField( "addressPostalCode") );
-            form.add( new TextField( "addressCountry") );
-            form.add( new TextField( "contactVoice" ) );
-            form.add( new TextField( "contactFacsimile") );
-            form.add( new TextField( "contactEmail") );
+            form.add(new TextField("contactPerson"));
+            form.add(new TextField("contactOrganization"));
+            form.add(new TextField("contactPosition"));
+            form.add(new TextField("addressType"));
+            form.add(new TextField("address"));
+            form.add(new TextField("addressCity"));
+            form.add(new TextField("addressState"));
+            form.add(new TextField("addressPostalCode"));
+            form.add(new TextField("addressCountry"));
+            form.add(new TextField("contactVoice"));
+            form.add(new TextField("contactFacsimile"));
+            form.add(new TextField("contactEmail"));
             
             Button submit = new Button("submit",new StringResourceModel( "submit", this, null) );
             form.add(submit);
-            
         }
 
     }
