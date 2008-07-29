@@ -11,7 +11,9 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
@@ -46,9 +48,13 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
 
     public BaseServiceAdminPage() {
         
-        T info = getGeoServer().getService( getServiceClass() );
+        IModel infoModel = new LoadableDetachableModel() {
+            public Object load() {
+                return getGeoServer().getService(getServiceClass());
+            }
+        };
         
-        Form form = new Form( "form", new CompoundPropertyModel( info ) ) {
+        Form form = new Form( "form", new CompoundPropertyModel(infoModel)) {
             protected void onSubmit() {
                 handleSubmit((T)getModelObject());
                 setResponsePage(GeoServerHomePage.class);
@@ -60,7 +66,7 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
         form.add( new TextField( "title" ) );
         form.add( new TextArea( "abstract" ) );
         
-        build(info, form);
+        build(infoModel, form);
         
         Button submit = new Button("submit",new StringResourceModel( "save", (Component)null, null) );
         form.add(submit);
@@ -94,9 +100,9 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
      * @param info The service info object.
      * @param form The page form.
      */
-    protected void build( T info, Form form ) {
+    protected abstract void build(IModel info, Form form ); // {
         
-    }
+    // }
     
     /**
      * Callback for submit.

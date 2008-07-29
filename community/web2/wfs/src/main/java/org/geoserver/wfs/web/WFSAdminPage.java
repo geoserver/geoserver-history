@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.IModel;
 import org.geoserver.web.services.BaseServiceAdminPage;
 import org.geoserver.wfs.web.publish.NamespaceManagerPage;
 import org.geoserver.wfs.GMLInfo;
@@ -29,7 +30,7 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
         return WFSInfo.class;
     }
     
-    protected void build(WFSInfo info, Form form) {
+    protected void build(IModel info, Form form) {
         form.add(new BookmarkablePageLink("namespaces", NamespaceManagerPage.class));
         //max features
         form.add( new TextField( "maxFeatures" ) );
@@ -42,8 +43,8 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
         sl.add( new Radio( "complete", new Model( WFSInfo.ServiceLevel.COMPLETE ) ) );
         
         //gml 2 
-        form.add( new GMLPanel( "gml2", info.getGML().get( WFSInfo.Version.V_10 ) ) );
-        form.add( new GMLPanel( "gml3", info.getGML().get( WFSInfo.Version.V_11 ) ) );
+        form.add( new GMLPanel( "gml2", ((WFSInfo)info.getObject()).getGML().get( WFSInfo.Version.V_10 ) ) );
+        form.add( new GMLPanel( "gml3", ((WFSInfo)info.getObject()).getGML().get( WFSInfo.Version.V_11 ) ) );
     }
     
     static class GMLPanel extends Panel {
