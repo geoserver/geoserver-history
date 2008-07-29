@@ -32,7 +32,6 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
     }
     
     protected void build(final IModel info, Form form) {
-        form.add(new BookmarkablePageLink("namespaces", NamespaceManagerPage.class));
         //max features
         form.add( new TextField( "maxFeatures" ) );
         
