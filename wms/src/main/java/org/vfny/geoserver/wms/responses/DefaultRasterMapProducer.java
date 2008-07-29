@@ -242,12 +242,15 @@ public abstract class DefaultRasterMapProducer extends
 		if ((wms != null)
 				&& WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
 			hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
+			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 		} else if ((wms != null)
 				&& WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
 			hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
+			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		} else if ((wms != null)
 				&& WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
 			hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
+			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		}
 		// line look better with this hint, they are less blurred
 		hintsMap.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
