@@ -22,4 +22,12 @@
       </list>
     </property>
   </bean>
+
+  <bean id="namespaceManagerShortcut" class="org.geoserver.web.ShortcutPageInfo">
+    <property name="id" value="namespaceManager"/>
+    <property name="titleKey" value="data.namespace.manager.title"/>
+    <property name="descriptionKey" value="data.namespace.manager.description"/>
+    <property name="componentClass" value="org.geoserver.wfs.web.publish.NamespaceManagerPage"/>
+  </bean>
+
 </beans>
