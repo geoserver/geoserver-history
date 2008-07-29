@@ -449,9 +449,9 @@ public class KMLWriter extends OutputStreamWriter {
 		write("<LookAt>");
 		write("<longitude>" + coordinates[0].x + "</longitude>");
 		write("<latitude>" + coordinates[0].y + "</latitude>");
-		write("<range>700</range>");
-		write("<tilt>10.0</tilt>");
 		write("<heading>10.0</heading>");
+		write("<tilt>10.0</tilt>");
+		write("<range>700</range>");
 		write("</LookAt>");
 	}
 

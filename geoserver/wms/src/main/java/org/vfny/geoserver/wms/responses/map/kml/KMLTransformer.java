@@ -44,6 +44,7 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -107,8 +108,14 @@ public class KMLTransformer extends TransformerBase {
         }
 
         public void encode(Object o) throws IllegalArgumentException {
-            start("kml");
-
+            //start("kml");
+            start("kml", KMLUtils.attributes(
+                    new String[] {
+                            "xmlns", "http://earth.google.com/kml/2.2",
+                            "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance",
+                            "xsi:schemaLocation", "http://earth.google.com/kml/2.2 http://code.google.com/apis/kml/schema/kml22beta.xsd"
+                    }));
+            
             WMSMapContext mapContext = (WMSMapContext) o;
             GetMapRequest request = mapContext.getRequest();
             MapLayer[] layers = mapContext.getLayers();
