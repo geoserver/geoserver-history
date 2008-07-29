@@ -312,7 +312,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             String link = linkbase + "?startindex=" + prevStart
                     + "&maxfeatures=" + maxFeatures;
             start("NetworkLink", KMLUtils.attributes(new String[] {"id", id}));
-            element("linkName",readableName);
+            element("description",readableName);
             start("Link");
             element("href",link);
             end("Link");
@@ -917,9 +917,9 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
             element("longitude", Double.toString(centroid.x));
             element("latitude", Double.toString(centroid.y));
-            element("range", "700");
-            element("tilt", "10.0");
             element("heading", "10.0");
+            element("tilt", "10.0");
+            element("range", "700");
 
             end("LookAt");
         }
@@ -1061,7 +1061,19 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             // + centroid
             if ( geometry instanceof Point || 
                     (geometry instanceof MultiPoint) && ((MultiPoint)geometry).getNumPoints() == 1 ) {
-                encodeGeometry( geometry, styles );
+                
+                // This adds attributes that violate the KML specs
+                //encodeGeometry( geometry, styles );
+                
+                // Cut and paste from below
+                start("Point");
+                if (!Double.isNaN(centroid.z)) {
+                    element("coordinates", centroid.x + "," + centroid.y + "," + centroid.z);
+                } else {
+                    element("coordinates", centroid.x + "," + centroid.y);
+                }
+                end("Point");
+                // End cut and paste
             }
             else {
                 start("MultiGeometry");

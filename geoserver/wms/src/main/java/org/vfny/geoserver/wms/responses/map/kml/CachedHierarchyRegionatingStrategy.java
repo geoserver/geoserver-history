@@ -160,6 +160,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
 
             // oki doki, let's compute the fids in the requested tile
             featuresInTile = getFeaturesForTile(dataDir, tile);
+            LOGGER.log(Level.FINE, "Found "+featuresInTile.size() + " features in tile " + tile.toString());
         } catch (Throwable t) {
             LOGGER.log(Level.SEVERE,
                     "Error occurred while pre-processing regionated features",

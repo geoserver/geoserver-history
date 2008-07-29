@@ -63,8 +63,12 @@ public class EncodeKML {
     //private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
     /** the XML and KML header */
-    private static final String KML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t"
-        + "<kml xmlns=\"http://earth.google.com/kml/2.0\">\n";
+    private static final String KML_HEADER = 
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        + "<kml xmlns=\"http://earth.google.com/kml/2.2\" "
+        + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        + "xsi:schemaLocation=\"http://earth.google.com/kml/2.2 "
+        + "http://code.google.com/apis/kml/schema/kml22beta.xsd\">\n";
 
     /** the KML closing element */
     private static final String KML_FOOTER = "</kml>\n";

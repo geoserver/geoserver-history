@@ -307,19 +307,19 @@ public class GetMapResponse implements Response {
                     // check for startIndex + offset
                     final Integer startIndex = request.getStartIndex();
                     if (startIndex != null) {
-                        QueryCapabilities queryCapabilities = source
-                                .getQueryCapabilities();
-                        if (queryCapabilities.isOffsetSupported()) {
+                        //QueryCapabilities queryCapabilities = source
+                         //       .getQueryCapabilities();
+                        //if (queryCapabilities.isOffsetSupported()) {
                             // fsource is required to support
                             // SortBy.NATURAL_ORDER so we don't bother checking
                             definitionQuery.setStartIndex(startIndex);
-                        } else {
+                        //} else {
                             // source = new PagingFeatureSource(source,
                             // request.getStartIndex(), limit);
-                            throw new WmsException(
-                                    "startIndex is not supported for the "
-                                            + layers[i].getName() + " layer");
-                        }
+                        //    throw new WmsException(
+                        //            "startIndex is not supported for the "
+                        //                    + layers[i].getName() + " layer");
+                        //}
                     }
 
                     int maxFeatures = request.getMaxFeatures() != null ? request
