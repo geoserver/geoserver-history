@@ -1,50 +1,53 @@
 <html xmlns:wicket="http://wicket.apache.org/">
-  <body>
-    <wicket:extend>
-       <a href="#" wicket:id="namespaces"><wicket:message key="wfs.service.namespaces">Manage Namespaces</wicket:message></a>
-       <li>
-        <span>
-          <label><wicket:message key="maxFeatures.title">Maximum Features</wicket:message></label>
-          <input wicket:id="maxFeatures" class="field text" type="text"></input>
-        </span>
-        <p class="instruct">
-        </p>
-      </li>
-      <li>
-         <label><wicket:message key="page.serviceLevel">Service Level</wicket:message></label>
-         <span wicket:id="serviceLevel">
-           <input wicket:id="basic" class="field radio" type="radio"></input>
-           <label class="choice">
-             <wicket:message key="page.basic">Basic</wicket:message>
-           </label>
-           <input wicket:id="transactional" class="field radio" type="radio"></input>
-           <label class="choice">
-             <wicket:message key="page.transactional">Transactional</wicket:message>
-           </label>
-           <input wicket:id="complete" class="field radio" type="radio"></input> 
-           <label class="choice">
-             <wicket:message key="page.complete">Complete</wicket:message>
-           </label>
-         </span>
-         <p class="instruct">
-         </p>
-      </li>
-      <li>
-        <span>
-          <label><wicket:message key="gml2.title">GML 2</wicket:message></label>
-          <div wicket:id="gml2"></div>
-        </span>
-        <p class="instruct">
-        </p>
-      </li>
-        <li>
-        <span>
-          <label><wicket:message key="gml3.title">GML 3</wicket:message></label>
-          <div wicket:id="gml3"></div>
-        </span>
-        <p class="instruct">
-        </p>
-      </li>
-    </wicket:extend>
-  </body>
+<body>
+  <wicket:extend>
+  <!-- [TODO] this should be moved into the sidebar navigation, which probably *also* means that the NamespaceManagerPage.* stuff belongs over in core -->
+  <a class="noshow" href="#" wicket:id="namespaces"><wicket:message key="wfs.service.namespaces">Manage Namespaces</wicket:message></a>
+  <li>
+    <span>
+      <label><wicket:message key="maxFeatures.title">Maximum Features</wicket:message></label>
+      <input wicket:id="maxFeatures" class="field text" type="text"></input>
+    </span>
+    <p class="instruct">
+    </p>
+  </li>
+  <li>
+    <fieldset>
+      <legend><wicket:message key="page.serviceLevel">Service Level</wicket:message></legend>
+      <span wicket:id="serviceLevel">
+        <input wicket:id="basic" class="field radio" type="radio"></input>
+        <label class="choice">
+         <wicket:message key="page.basic">Basic</wicket:message>
+        </label>
+        <input wicket:id="transactional" class="field radio" type="radio"></input>
+        <label class="choice">
+         <wicket:message key="page.transactional">Transactional</wicket:message>
+        </label>
+        <input wicket:id="complete" class="field radio" type="radio"></input>
+        <label class="choice">
+         <wicket:message key="page.complete">Complete</wicket:message>
+        </label>
+      </span>
+    </fieldset>
+    <p class="instruct">
+    </p>
+  </li>
+  <li>
+    <fieldset>
+      <legend><wicket:message key="gml2.title">GML 2</wicket:message></legend>
+      <div wicket:id="gml2"></div>
+      <p class="instruct">
+      </p>
+    </fieldset>
+  </li>
+  <li>
+    <fieldset>
+      <legend><wicket:message key="gml3.title">GML 3</wicket:message></legend>
+      <div wicket:id="gml3"></div>
+      <p class="instruct">
+      </p>
+    </fieldset>
+  </li>
+  </wicket:extend>
+</body>
 </html>

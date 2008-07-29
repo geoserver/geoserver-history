@@ -74,9 +74,9 @@ public class GeoServerBasePage extends WebPage {
         add(logoutForm);
         logoutForm.add(new Label("username", GeoServerSession.get().getAuthentication() == null ? "Nobody" : "Some guy"));
 
-        // welcome page link
-        add( new BookmarkablePageLink( "welcome", GeoServerHomePage.class )
-            .add( new Label( "label", new StringResourceModel( "welcome", (Component)null, null ) )  ) );
+        // home page link
+        add( new BookmarkablePageLink( "home", GeoServerHomePage.class )
+            .add( new Label( "label", new StringResourceModel( "home", (Component)null, null ) )  ) );
         
         // server admin link
         add( new BookmarkablePageLink( "admin.server", ServerAdminPage.class ) 
