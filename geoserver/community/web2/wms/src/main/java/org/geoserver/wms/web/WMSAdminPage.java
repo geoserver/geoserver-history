@@ -35,4 +35,8 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     	form.add(new DropDownChoice("watermark.position", Arrays.asList(WatermarkInfo.Position.values())));
     }
     
+    protected String getServiceName(){
+        return "WMS";
+    }
+    
 }

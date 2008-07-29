@@ -6,12 +6,14 @@ package org.geoserver.web.services;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -47,7 +49,6 @@ import org.geoserver.web.GeoServerHomePage;
 public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoServerBasePage {
 
     public BaseServiceAdminPage() {
-        
         IModel infoModel = new LoadableDetachableModel() {
             public Object load() {
                 return getGeoServer().getService(getServiceClass());
@@ -60,11 +61,14 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
                 setResponsePage(GeoServerHomePage.class);
             }
         };
-        add( form );
+        add(form);
         
-        form.add( new CheckBox( "enabled" ) );
-        form.add( new TextField( "title" ) );
-        form.add( new TextArea( "abstract" ) );
+        form.add(new Label("service.enabled", new StringResourceModel("service.enabled", this, null, new Object[]{
+            getServiceName()
+        })));
+        form.add(new CheckBox("enabled"));
+        form.add(new TextField("title"));
+        form.add(new TextArea("abstract"));
         
         build(infoModel, form);
         
@@ -115,4 +119,10 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
     protected void handleSubmit( T info ) {
         getGeoServer().save( info );
     }
+
+    /**
+     * The string to use when representing this service to users.
+     * Subclasses must override.
+     */
+    protected abstract String getServiceName();
 }

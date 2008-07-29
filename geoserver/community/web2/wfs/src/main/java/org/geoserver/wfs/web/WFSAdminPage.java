@@ -64,4 +64,8 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
         }
         
     }
+
+    protected String getServiceName(){
+       return "WFS";
+    }
 }
