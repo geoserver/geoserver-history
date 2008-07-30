@@ -79,6 +79,12 @@ public class ServerAdminPage extends GeoServerBasePage {
             }
         };
 
+        tabs.add(new AbstractTab(new Model("Persistence")){
+            public Panel getPanel(String panelId){
+                return new TabPanelPersistence(panelId);
+            }
+        });
+
         // General server settings, logging and Java
         tabs.add(new AbstractTab(new Model("Settings")) {
             public Panel getPanel(String panelId) {
@@ -218,6 +224,11 @@ public class ServerAdminPage extends GeoServerBasePage {
             Button submit = new Button("submit",new StringResourceModel( "submit", this, null) );
             form.add(submit);
         }
+    }
 
+    private static class TabPanelPersistence extends Panel {
+        public TabPanelPersistence(String id){
+            super(id);
+        }
     }
 }
