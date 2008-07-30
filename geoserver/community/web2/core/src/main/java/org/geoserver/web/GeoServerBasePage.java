@@ -12,24 +12,23 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.extensions.breadcrumb.BreadCrumbBar;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.geoserver.web.acegi.GeoServerSession;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
+import org.geoserver.web.acegi.GeoServerSession;
 import org.geoserver.web.admin.ServerAdminPage;
 import org.geoserver.web.services.ServicePageInfo;
 
@@ -155,6 +154,7 @@ public class GeoServerBasePage extends WebPage {
         return getGeoServerApplication().getCatalog();
     }
     
+    @SuppressWarnings("serial")
     private static class SignInForm extends StatelessForm {
         private String password;
         private String username;

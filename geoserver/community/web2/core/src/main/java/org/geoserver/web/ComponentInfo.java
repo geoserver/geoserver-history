@@ -20,6 +20,7 @@ import org.apache.wicket.Component;
  *
  * @param <C>
  */
+@SuppressWarnings("serial")
 public abstract class ComponentInfo<C extends Component> implements Serializable {
 
     /**

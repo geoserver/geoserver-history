@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.geoserver.catalog.WorkspaceInfo;
 
+@SuppressWarnings("serial")
 class CatalogRootNode extends CatalogNode {
 
     public CatalogRootNode() {

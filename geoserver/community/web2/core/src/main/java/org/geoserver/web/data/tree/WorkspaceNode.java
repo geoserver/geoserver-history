@@ -17,6 +17,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 
+@SuppressWarnings("serial")
 class WorkspaceNode extends CatalogNode {
 
     public WorkspaceNode(String id, CatalogNode parent) {

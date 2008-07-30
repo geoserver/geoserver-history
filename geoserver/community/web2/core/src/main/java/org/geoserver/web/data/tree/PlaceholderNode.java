@@ -16,6 +16,7 @@ import java.util.List;
  * @author Andrea Aime - TOPP
  * 
  */
+@SuppressWarnings("serial")
 public abstract class PlaceholderNode extends CatalogNode {
 
     public PlaceholderNode(String id, CatalogNode parent) {

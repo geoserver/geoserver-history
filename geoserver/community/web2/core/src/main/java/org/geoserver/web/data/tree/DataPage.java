@@ -50,6 +50,7 @@ import org.geotools.util.logging.Logging;
  * @author Andrea Aime - TOPP
  * 
  */
+@SuppressWarnings("serial")
 public class DataPage extends GeoServerBasePage {
 
     static final Logger LOGGER = Logging.getLogger(DataPage.class);

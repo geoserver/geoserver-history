@@ -19,6 +19,7 @@ import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
  * @author Andrea Aime - TOPP
  *
  */
+@SuppressWarnings("serial")
 public class DataTreeTable extends TreeTable {
     
     /** Reference to the css file. */

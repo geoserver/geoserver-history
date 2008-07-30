@@ -16,11 +16,12 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.web.util.WebUtils;
 import org.geotools.data.DataStore;
 
+@SuppressWarnings("serial")
 public class UnconfiguredResourcesNode extends PlaceholderNode {
 
-    Class storeType;
+    Class<? extends StoreInfo> storeType;
 
-    public UnconfiguredResourcesNode(String name, CatalogNode parent, Class storeType) {
+    public UnconfiguredResourcesNode(String name, CatalogNode parent, Class<? extends StoreInfo> storeType) {
         super(name, parent);
         if(storeType == null)
             throw new NullPointerException("StoreType argument cannot be null");

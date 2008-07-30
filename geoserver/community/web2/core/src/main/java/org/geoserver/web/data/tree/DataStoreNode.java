@@ -24,6 +24,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
  * @author Andrea Aime - TOPP
  *
  */
+@SuppressWarnings("serial")
 class DataStoreNode extends StoreNode {
 
     public DataStoreNode(String id, CatalogNode parent) {

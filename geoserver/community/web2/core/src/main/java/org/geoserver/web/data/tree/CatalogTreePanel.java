@@ -15,6 +15,7 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 
+@SuppressWarnings("serial")
 public class CatalogTreePanel extends Panel {
 
     CatalogNode node;

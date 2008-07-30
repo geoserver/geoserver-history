@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.tree.CatalogNode.SelectionState;
 
+@SuppressWarnings("serial")
 public abstract class SelectionPanel extends Panel {
 
     CatalogNode catalogNode;

@@ -12,21 +12,22 @@ import java.util.List;
 
 import org.geoserver.catalog.ResourceInfo;
 
+@SuppressWarnings("serial")
 class ResourceNode extends CatalogNode {
 
-    private Class resourceType;
+    private Class<? extends ResourceInfo> resourceType;
 
     private String storeName;
 
     public ResourceNode(String storeName, String name,
-            CatalogNode parent, Class clazz) {
+            CatalogNode parent, Class<? extends ResourceInfo> clazz) {
         super(name, parent);
         this.storeName = storeName;
         this.resourceType = clazz;
     }
 
-    protected List buildChildNodes() {
-        return Collections.EMPTY_LIST;
+    protected List<CatalogNode> buildChildNodes() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -39,7 +40,7 @@ class ResourceNode extends CatalogNode {
         return getModel().getName();
     }
 
-    protected Class getResourceType() {
+    protected Class<? extends ResourceInfo> getResourceType() {
         return resourceType;
     }
 
