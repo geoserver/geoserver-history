@@ -6,7 +6,9 @@ package org.geoserver.web.util;
 
 import java.util.Map;
 
+import org.apache.wicket.model.IChainingModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 /**
  * A model which backs onto an underlying map.
@@ -17,25 +19,64 @@ import org.apache.wicket.model.IModel;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class MapModel implements IModel {
-
-    Map map;
+public class MapModel implements IModel, IChainingModel {
+    private static final long serialVersionUID = 3122822158252376260L;
+    IModel model;
     String expression;
     
-    public MapModel( Map map, String expression ) {
-        this.map = map;
+    public MapModel( Map<String,?> map, String expression ) {
+        this(new MapWrappingModel(map), expression);
+    }
+    
+    public MapModel(IModel model, String expression){
+        this.model = model;
         this.expression = expression;
     }
     
+    @SuppressWarnings("unchecked")
     public Object getObject() {
-        return map.get( expression );
+        return ((Map<String,Object>)model.getObject()).get( expression );
     }
 
+    @SuppressWarnings("unchecked")
     public void setObject(Object object) {
-        map.put( expression, object );
+        ((Map<String,Object>)model.getObject()).put(expression, object);
     }
 
     public void detach() {
+        model.detach();
+    }
+    
+    private static class MapWrappingModel implements IModel{
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -1474150801738143281L;
+        
+        private Map<?,?> myMap;
+        
+        public MapWrappingModel(Map<?,?> m){
+            myMap = m;
+        }
+
+        public Object getObject() {
+            return myMap;
+        }
+
+        public void setObject(Object arg0) {
+        }
+
+        public void detach() {
+        }
+        
+    }
+
+    public IModel getChainedModel() {
+        return null;
+    }
+
+    public void setChainedModel(IModel arg0) {
+        
     }
 
 }
