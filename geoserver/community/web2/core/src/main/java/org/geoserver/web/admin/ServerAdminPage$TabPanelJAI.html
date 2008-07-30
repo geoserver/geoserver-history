@@ -3,23 +3,43 @@
 <body>
 <wicket:panel>
 <form wicket:id="form">
-  <label for="memoryCapacity">memoryCapacity</label>
-  <input type="text" wicket:id="memoryCapacity"/>
-  <label for="memoryThreshold">memoryThreshold</label>
-  <input type="text" wicket:id="memoryThreshold"/>
-  <label for="tileThreads">tileThreads</label>
-  <input type="text" wicket:id="tileThreads"/>
-  <label for="tilePriority">tilePriority</label>
-  <input type="text" wicket:id="tilePriority"/>
-  <label for="recycling">recycling</label>
-  <input type="checkbox" wicket:id="recycling"/>
-  <label for="imageIOCache">imageIOCache</label>
-  <input type="checkbox" wicket:id="imageIOCache"/>
-  <label for="jpegAcceleration">jpegAcceleration</label>
-  <input type="checkbox" wicket:id="jpegAcceleration"/>
-  <label for="pngAcceleration">pngAcceleration</label>
-  <input type="checkbox" wicket:id="pngAcceleration"/>
-  <button type="submit" wicket:id="submit">K</button>
+  <ul>
+    <li>
+      <label for="memoryCapacity">memoryCapacity</label>
+      <input id="memoryCapacity" class="field text" type="text" wicket:id="memoryCapacity" />
+    </li>
+    <li>
+      <label for="memoryThreshold">memoryThreshold</label>
+      <input id="memoryThreshold" class="field text" type="text" wicket:id="memoryThreshold" />
+    </li>
+    <li>
+      <label for="tileThreads">tileThreads</label>
+      <input id="tileThreads" class="field text" type="text" wicket:id="tileThreads" />
+    </li>
+    <li>
+      <label for="tilePriority">tilePriority</label>
+      <input id="tilePriority" class="field text" type="text" wicket:id="tilePriority" />
+    </li>
+    <li>
+      <input id="recycling" class="field checkbox" type="checkbox" wicket:id="recycling" />
+      <label for="recycling" class="choice">Enable Recycling</label><!-- [FIXME] is there a better term for this? -->
+    </li>
+    <li>
+      <input id="imageIOCache" class="field checkbox" type="checkbox" wicket:id="imageIOCache" />
+      <label for="imageIOCache" class="choice">Enable Image I/O Cache</label>
+    </li>
+    <li>
+      <input id="jpegAcceleration" class="field checkbox" type="checkbox" wicket:id="jpegAcceleration" />
+      <label for="jpegAcceleration" class="choice">Enable JPEG Acceleration</label>
+    </li>
+    <li>
+      <input id="pngAcceleration" class="field checkbox" type="checkbox" wicket:id="pngAcceleration" />
+      <label for="pngAcceleration" class="choice">Enable PNG Acceleration</label>
+    </li>
+    <li class="buttons selfclear">
+      <button type="submit" wicket:id="submit">Submit</button>
+    </li>
+  </ul>
 </form>
 </wicket:panel>
 </body>

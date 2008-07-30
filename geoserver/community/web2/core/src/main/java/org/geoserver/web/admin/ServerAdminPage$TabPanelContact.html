@@ -3,33 +3,59 @@
 <body>
 <wicket:panel>
 <form wicket:id="form">
-
-    <label for="contactPerson">contactPerson</label> 
-    <input type="text" wicket:id="contactPerson"/>
-    <label for="contactOrganization">contactOrganization</label> 
-    <input type="text" wicket:id="contactOrganization"/>
-    <label for="contactPosition">contactPosition</label> 
-    <input type="text" wicket:id="contactPosition"/>
-    <label for="addressType">addressType</label> 
-    <input type="text" wicket:id="addressType"/>
-    <label for="address">address</label> 
-    <input type="text" wicket:id="address"/> 
-    <label for="addressCity">addressCity</label> 
-    <input type="text" wicket:id="addressCity"/>
-    <label for="addressState">addressState</label> 
-    <input type="text" wicket:id="addressState"/> 
-    <label for="addressPostalCode">addressPostalCode</label> 
-    <input type="text" wicket:id="addressPostalCode"/>
-    <label for="addressCountry">addressCountry</label> 
-    <input type="text" wicket:id="addressCountry"/>
-    <label for="contactVoice">contactVoice</label> 
-    <input type="text" wicket:id="contactVoice"/> 
-    <label for="contactFacsimile">contactFacsimile</label> 
-    <input type="text" wicket:id="contactFacsimile"/>
-    <label for="contactEmail">contactEmail</label> 
-    <input type="text" wicket:id="contactEmail"/>
-       
-    <button type="submit" wicket:id="submit">K</button>
+  <ul>
+    <li>
+      <label for="contactPerson">contactPerson</label> 
+      <input id="contactPerson" class="field text" type="text" wicket:id="contactPerson" />
+    </li>
+    <li>
+      <label for="contactOrganization">contactOrganization</label> 
+      <input id="contactOrganization" class="field text" type="text" wicket:id="contactOrganization"/>
+    </li>
+    <li>
+      <label for="contactPosition">contactPosition</label> 
+      <input id="contactPosition" class="field text" type="text" wicket:id="contactPosition"/>
+    </li>
+    <li>
+      <label for="addressType">addressType</label> 
+      <input id="addressType" class="field text" type="text" wicket:id="addressType"/>
+    </li>
+    <li>
+      <label for="address">address</label> 
+      <input id="address" class="field text" type="text" wicket:id="address"/> 
+    </li>
+    <li>
+      <label for="addressCity">addressCity</label> 
+      <input id="addressCity" class="field text" type="text" wicket:id="addressCity"/>
+    </li>
+    <li>
+      <label for="addressState">addressState</label> 
+      <input id="addressState" class="field text" type="text" wicket:id="addressState"/> 
+    </li>
+    <li>
+      <label for="addressPostalCode">addressPostalCode</label> 
+      <input id="addressPostalCode" class="field text" type="text" wicket:id="addressPostalCode"/>
+    </li>
+    <li>
+      <label for="addressCountry">addressCountry</label> 
+      <input id="addressCountry" class="field text" type="text" wicket:id="addressCountry"/>
+    </li>
+    <li>
+      <label for="contactVoice">contactVoice</label> 
+      <input id="contactVoice" class="field text" type="text" wicket:id="contactVoice"/>
+    </li>
+    <li>
+      <label for="contactFacsimile">contactFacsimile</label> 
+      <input id="contactFacsimile" class="field text" type="text" wicket:id="contactFacsimile"/>
+    </li>
+    <li>
+      <label for="contactEmail">contactEmail</label> 
+      <input id="contactEmail" class="field text" type="text" wicket:id="contactEmail"/>
+    </li>
+    <li class="buttons selfclear">
+      <button type="submit" wicket:id="submit">Submit</button>
+    </li>
+  </ul>
 </form>
 </wicket:panel>
 </body>
