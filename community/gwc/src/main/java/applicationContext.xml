@@ -62,7 +62,7 @@
   <bean id="gwcCacheFile" class="org.geowebcache.cache.file.FileCache">
     <property name="defaultKeyBeanId"><value>gwcCacheKeyFile</value></property>
   </bean>
-  <bean id="gwcCacheKeyFile" class="org.geowebcache.cache.file.FilePathKey"/>
+  <bean id="gwcCacheKeyFile" class="org.geowebcache.cache.file.FilePathKey2"/>
   
   <!-- Cache and CacheKey factories -->
   <bean id="gwcCacheKeyFactory" class="org.geowebcache.cache.CacheKeyFactory"/>
