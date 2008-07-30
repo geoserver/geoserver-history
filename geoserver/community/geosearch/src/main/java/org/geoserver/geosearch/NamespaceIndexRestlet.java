@@ -91,7 +91,12 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
         List layers = getLayers(namespace);
         if (layers.size() > 0) {
             Document d = buildKML(namespace, layers);
-            response.setEntity(new JDOMRepresentation(d));
+            MediaType mt = new MediaType("application/vnd.google-earth.kml+xml");
+            try { 
+                response.setEntity(new JDOMRepresentation(d).getText(), mt);
+            } catch(IOException ioe) {
+                LOGGER.fine(ioe.getMessage());
+            }
         } else {
             response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
         }
