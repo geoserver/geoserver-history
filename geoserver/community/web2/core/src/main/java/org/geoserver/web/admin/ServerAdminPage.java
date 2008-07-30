@@ -230,17 +230,29 @@ public class ServerAdminPage extends GeoServerBasePage {
 
     private static class TabPanelPersistence extends Panel {
         public TabPanelPersistence(String id){
+            //TODO: if we just provide the values directly as the models they won't be refreshed on a page reload (ugh).
             super(id);
-            add(new Label("locks", "0"));
-            add(new Label("connections", "17"));
-            add(new Label("memory", "337825K"));
-            add(new Label("jvm.version", "Sun Microsystems Inc.: 1.6.0_03"));
-            add(new Label("jai.available", "true"));
-            add(new Label("jai.memory.available", "466048K"));
-            add(new Label("jai.memory.used", "100"));
-            add(new Label("jai.memory.threshold", "75.0%"));
-            add(new Label("jai.tile.threads", "7"));
-            add(new Label("jai.tile.priority", "5 (1 - Min, 5 - Normal; 10 - Max)"));
+            add(new Label("locks", getLockCount()));
+            add(new Label("connections", getConnectionCount()));
+            add(new Label("memory", "" + Runtime.getRuntime().freeMemory() + "kB"));
+            add(new Label("jvm.version", System.getProperty("java.vendor") + ": " + System.getProperty("java.version")));
+            add(new Label("jai.available", ClassLoader.getSystemClassLoader().getResource("javax/media/jai/buildVersion") != null));
+            add(new Label("jai.memory.available",
+                        getGeoServerApplication().getGeoserver().getJaiCache().getMemoryCapacity())
+            );
+
+            add(new Label("jai.memory.used", 
+                        getGeoServerApplication().getGeoserver().getJaiCache().getCacheMemoryUsed())
+               );
+            add(new Label("jai.memory.threshold",
+                        getGeoServerApplication().getGeoserver().getJaiCache().getMemoryThreshold())
+               );
+            add(new Label("jai.tile.threads", 
+                        getGeoServerApplication().getGeoserver().getJAIDefault().getTileScheduler().getParallelism())
+               );
+            add(new Label("jai.tile.priority",
+                        getGeoServerApplication().getGeoserver().getJAIDefault().getTileScheduler().getPriority())
+               );
 
             add(new Link("free.locks"){
                 public void onClick(){
@@ -268,4 +280,62 @@ public class ServerAdminPage extends GeoServerBasePage {
             add(new Label("reload.date.xml", "Mar 14, 2:15 PM"));
         }
     }
+
+    private synchronized int getLockCount(){{
+        int count = 0;
+        DataStore dataStore;
+        LockingManager lockingManager;
+
+        for (Iterator i = getDataStores().iterator(); i.hasNext();) {
+            DataStoreInfo meta = (DataStoreInfo) i.next();
+
+            if (!meta.isEnabled()) {
+                // Don't count locks from disabled datastores.
+                continue;
+            }
+
+            try {
+                DataStore store = meta.getDataStore();
+                LockingManager lockingManager = store.getLockingManager();
+                if (lockingManager != null){
+                    // we can't actually *count* locks right now?
+                    // count += lockingManager.getLockSet().size();
+                }
+            } catch (IllegalStateException notAvailable) {
+                continue; 
+            } catch (Throwable huh) {
+                continue;
+            }
+        }
+
+        return count;
+    }
+
+    private synchronized int getConnectionCount() {
+        int count = 0;
+        DataStoreInfo meta;
+        DataStore dataStore;
+
+        for (Iterator i = getDataStores().iterator(); i.hasNext();) {
+            meta = (DataStoreInfo) i.next();
+
+            if (!meta.isEnabled()) {
+                // Don't count connections from disabled datastores.
+                continue; 
+            }
+
+            try {
+                dataStore = meta.getDataStore();
+            } catch (Throwable notAvailable) {
+                //TODO: Logging.
+                continue; 
+            }
+
+            count += 1;
+        }
+
+        return count;
+    }
+
 }
+
