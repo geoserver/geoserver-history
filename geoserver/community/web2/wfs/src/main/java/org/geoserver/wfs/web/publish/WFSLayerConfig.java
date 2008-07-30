@@ -24,7 +24,7 @@ public class WFSLayerConfig extends LayerConfigurationPanel {
     public WFSLayerConfig(String id, IModel model){
         super(id, model);
 
-        add(new TextField("maxFeatures", new PropertyModel(getLayerInfo().getResource(), "maxFeatures")));
+        add(new TextField("maxFeatures", new PropertyModel(model, "resource.maxFeatures")));
     }
 
     private List<String> listStyles(){
