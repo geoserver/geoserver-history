@@ -47,6 +47,7 @@ import org.vfny.geoserver.util.DataStoreUtils;
  * 
  * @author Gabriel Roldan
  */
+@SuppressWarnings("serial")
 public class DataStoreConfiguration extends GeoServerBasePage {
 
     private static final String DATASTORE_ID_PROPERTY_NAME = "Wicket_Data_Source_Name";
@@ -355,7 +356,7 @@ public class DataStoreConfiguration extends GeoServerBasePage {
         final String paramName = param.getName();
         final String paramLabel = param.getName();
         final boolean required = param.isRequired();
-        final Class binding = param.getBinding();
+        final Class<?> binding = param.getBinding();
 
         Panel parameterPanel;
         if (Boolean.class == binding) {

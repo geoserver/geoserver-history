@@ -15,6 +15,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ComponentPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 
+@SuppressWarnings("serial")
 public class BasicResourceConfig extends ResourceConfigurationPanel {
 
 	String myNewKeyword = "";

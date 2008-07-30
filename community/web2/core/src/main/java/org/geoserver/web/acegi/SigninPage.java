@@ -1,14 +1,13 @@
 package org.geoserver.web.acegi;
 
+import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.model.CompoundPropertyModel;
-
 import org.geoserver.web.GeoServerBasePage;
 
 public class SigninPage extends GeoServerBasePage {
+    @SuppressWarnings("serial")
     private static class SignInForm extends StatelessForm {
         private String password;
         private String username;

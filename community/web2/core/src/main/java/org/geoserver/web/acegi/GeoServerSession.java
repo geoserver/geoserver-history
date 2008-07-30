@@ -12,6 +12,7 @@ import org.apache.wicket.protocol.http.WebSession;
 
 import org.geoserver.web.GeoServerApplication;
 
+@SuppressWarnings("serial")
 public class GeoServerSession extends WebSession{
 
     private Authentication myAuthentication;

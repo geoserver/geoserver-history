@@ -50,6 +50,7 @@ public class NewDataPage extends GeoServerBasePage {
      *                the id of the workspace to attach the new resource store
      *                to.
      */
+    @SuppressWarnings("serial")
     public NewDataPage(final String workspaceId) {
 
         final ArrayList<String> sortedDsNames = new ArrayList<String>(
@@ -113,7 +114,7 @@ public class NewDataPage extends GeoServerBasePage {
         add(coverageLinks);
     }
 
-    protected ResourceReference getStoreIcon(Class factoryClass) {
+    protected ResourceReference getStoreIcon(Class<?> factoryClass) {
         // look for the associated panel info if there is one
         List<DataStorePanelInfo> infos = getGeoServerApplication()
                 .getBeansOfType(DataStorePanelInfo.class);
