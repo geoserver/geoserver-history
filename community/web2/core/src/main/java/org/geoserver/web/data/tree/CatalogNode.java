@@ -37,6 +37,7 @@ import org.geotools.util.logging.Logging;
  * @author Andrea Aime - TOPP
  * 
  */
+@SuppressWarnings("serial")
 abstract class CatalogNode implements TreeNode, Serializable, IDetachable,
         Comparable<CatalogNode> {
 
@@ -80,15 +81,15 @@ abstract class CatalogNode implements TreeNode, Serializable, IDetachable,
         return this;
     }
 
-    public Enumeration children() {
-        final Iterator i = childNodes().iterator();
-        return new Enumeration() {
+    public Enumeration<CatalogNode> children() {
+        final Iterator<CatalogNode> i = childNodes().iterator();
+        return new Enumeration<CatalogNode>() {
 
             public boolean hasMoreElements() {
                 return i.hasNext();
             }
 
-            public Object nextElement() {
+            public CatalogNode nextElement() {
                 return i.next();
             }
 
@@ -253,9 +254,9 @@ abstract class CatalogNode implements TreeNode, Serializable, IDetachable,
 
         // apply the above rules
         if (result == null && unselected)
-            result = selectionState.UNSELECTED;
+            result = SelectionState.UNSELECTED;
         if (result == null && selected)
-            result = selectionState.PARTIAL;
+            result = SelectionState.PARTIAL;
         if (result != null && result != selectionState) {
             selectionState = result;
         }

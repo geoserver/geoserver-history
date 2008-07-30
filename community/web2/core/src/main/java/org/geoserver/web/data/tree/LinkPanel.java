@@ -11,6 +11,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.Model;
 
+@SuppressWarnings("serial")
 public abstract class LinkPanel extends CatalogTreePanel {
 
     Label label;

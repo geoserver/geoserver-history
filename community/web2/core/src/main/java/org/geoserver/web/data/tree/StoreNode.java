@@ -11,6 +11,7 @@ import org.geoserver.catalog.StoreInfo;
  * @author Andrea Aime - TOPP
  * 
  */
+@SuppressWarnings("serial")
 abstract class StoreNode extends CatalogNode {
 
     boolean unconfiguredChildrenVisible;

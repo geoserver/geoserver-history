@@ -33,6 +33,7 @@ import org.geoserver.web.data.datastore.DataStoreConfiguration;
  * @author Andrea Aime
  * @author Gabriel Roldan
  */
+@SuppressWarnings("serial")
 public class EditRemovePanel extends Panel {
 
     /**
@@ -41,7 +42,7 @@ public class EditRemovePanel extends Panel {
      * 
      * @see #getAddRemoveStrategy(CatalogNode)
      */
-    private static final Map<Class, EditRemoveStrategy> EDIT_REMOVE_STRATEGIES = new HashMap<Class, EditRemoveStrategy>();
+    private static final Map<Class<?>, EditRemoveStrategy> EDIT_REMOVE_STRATEGIES = new HashMap<Class<?>, EditRemoveStrategy>();
     static {
         EDIT_REMOVE_STRATEGIES.put(WorkspaceNode.class, new WorkspaceEditRemoveStrategy());
         EDIT_REMOVE_STRATEGIES.put(DataStoreNode.class, new DataStoreEditRemoveStrategy());

@@ -35,6 +35,7 @@ import org.geoserver.web.data.ResourceConfigurationPage;
  * @author aaime
  * 
  */
+@SuppressWarnings("serial")
 public class AddConfigPanel extends Panel {
     
     /**
@@ -43,7 +44,7 @@ public class AddConfigPanel extends Panel {
      * 
      * @see #getAddRemoveStrategy(CatalogNode)
      */
-    private static final Map<Class, AddConfigStrategy> ADD_CONFIG_STRATEGIES = new HashMap<Class, AddConfigStrategy>();
+    private static final Map<Class<?>, AddConfigStrategy> ADD_CONFIG_STRATEGIES = new HashMap<Class<?>, AddConfigStrategy>();
     static {
         ADD_CONFIG_STRATEGIES.put(UnconfiguredResourceNode.class, new UnconfiguredResourceStrategy());
     }

@@ -9,6 +9,7 @@ import org.apache.wicket.model.StringResourceModel;
 import java.util.List;
 
 public class DemoPage extends GeoServerBasePage{
+    @SuppressWarnings("serial")
     public DemoPage(){
         List<DemoLinkInfo> links = getGeoServerApplication().getBeansOfType(DemoLinkInfo.class);
         add(new ListView("demoList", links){

@@ -14,6 +14,7 @@ import java.util.List;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 
+@SuppressWarnings("serial")
 class CoverageStoreNode extends StoreNode {
 
     public CoverageStoreNode(String id, CatalogNode parent) {

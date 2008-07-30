@@ -8,6 +8,7 @@ package org.geoserver.web.data.tree;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.util.WebUtils;
 
+@SuppressWarnings("serial")
 public class NewDatastoreNode extends PlaceholderNode {
 
     public NewDatastoreNode(String name, CatalogNode parent) {

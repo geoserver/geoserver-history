@@ -159,6 +159,7 @@ public class GeoServerApplication extends SpringWebApplication {
      * files on a single file per module basis.
      */
     static class GeoServerResourceStreamLocator extends ResourceStreamLocator {
+        @SuppressWarnings({ "unchecked", "serial" })
         public IResourceStream locate(Class clazz, String path) {
             int i = path.lastIndexOf("/");
             if (i != -1) {
@@ -221,7 +222,7 @@ public class GeoServerApplication extends SpringWebApplication {
             Component c = component;
             while( c != null ) {
                 //walk up the class hierachy of the component looking for a key
-                Class clazz = c.getClass();
+                Class<?> clazz = c.getClass();
                 while (Component.class.isAssignableFrom(clazz)) {
                     try {
                         String value = super.getString(key(key, clazz), component, model,defaultValue);
@@ -252,7 +253,7 @@ public class GeoServerApplication extends SpringWebApplication {
             return super.getString( key, component, model, defaultValue );
         }
 
-        String key(String key, Class clazz) {
+        String key(String key, Class<?> clazz) {
             String name = clazz.getSimpleName();
             return name + "." + key;
         }

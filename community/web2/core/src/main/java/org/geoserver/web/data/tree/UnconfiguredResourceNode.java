@@ -10,6 +10,7 @@ import org.geoserver.catalog.StoreInfo;
  * Represents a data resource that's waiting to be configured into GeoServer
  * @author Andrea Aime - TOPP
  */
+@SuppressWarnings("serial")
 public class UnconfiguredResourceNode extends PlaceholderNode {
     String resourceName;
     

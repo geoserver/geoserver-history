@@ -12,6 +12,7 @@ import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.Model;
 
+@SuppressWarnings("serial")
 public class LabelPanel extends CatalogTreePanel {
 
     Label label;
