@@ -2,26 +2,48 @@
 <head></head>
 <body>
 <wicket:panel>
-<form wicket:id="form"> 
-    <label for="maxFeatures">maxFeatures</label>
-    <input type="text" wicket:id="maxFeatures"/>
-    <label for="verbose">verbose</label>
-    <input type="checkbox" wicket:id="verbose"/>
-    <label for="verboseExceptions">verboseExceptions</label>
-    <input type="checkbox" wicket:id="verboseExceptions"/>
-    <label for="numDecimals">numDecimals</label>
-    <input type="text" wicket:id="numDecimals"/>
-    <label for="charset">charset</label>
-    <input type="text" wicket:id="charset"/>
-    <label for="proxyBaseUrl">proxyBaseUrl</label>
-    <input type="text" wicket:id="proxyBaseUrl"/>
-    <label for="log4jConfigFile">log4jConfigFile</label>
-    <select wicket:id="log4jConfigFile"/>
-    <label for="stdOutLogging">stdOutLogging</label>
-    <input type="checkbox" wicket:id="stdOutLogging"/>
-    <label for="loggingLocation">loggingLocation</label>
-    <input type="text" wicket:id="loggingLocation"/>
-    <button type="submit" wicket:id="submit">Submit</button>
+<form wicket:id="form">
+  <ul>
+    <li>
+      <label for="maxFeatures">maxFeatures</label>
+      <input id="maxFeatures" class="field text" type="text" wicket:id="maxFeatures" />
+    </li>
+    <li>
+      <input id="verbose" class="field checkbox" type="checkbox" wicket:id="verbose" />
+      <label for="verbose" class="choice">Enable Verbose Messaging</label>
+    </li>
+    <li>
+      <input id="verboseExceptions" class="field checkbox" type="checkbox" wicket:id="verboseExceptions" />
+      <label for="verboseExceptions" class="choice">Enable Verbose Exceptions</label>
+    </li>
+    <li>
+      <label for="numDecimals">numDecimals</label>
+      <input id="numDecimals" class="field text" type="text" wicket:id="numDecimals" />
+    </li>
+    <li>
+      <label for="charset">charset</label>
+      <input id="charset" class="field text" type="text" wicket:id="charset" />
+    </li>
+    <li>
+      <label for="proxyBaseUrl">proxyBaseUrl</label>
+      <input id="proxyBaseUrl" class="field text" type="text" wicket:id="proxyBaseUrl" />
+    </li>
+    <li>
+      <label for="log4jConfigFile">log4jConfigFile</label>
+      <select id="log4jConfigFile" class="field select" wicket:id="log4jConfigFile" />
+    </li>
+    <li>
+      <input id="stdOutLogging" class="field checkbox" type="checkbox" wicket:id="stdOutLogging" />
+      <label for="stdOutLogging" class="choice">Enable logging to STDOUT</label>
+    </li>
+    <li>
+      <label for="loggingLocation">loggingLocation</label>
+      <input id="loggingLocation"class="field text" type="text" wicket:id="loggingLocation" />
+    </li>
+    <li class="buttons selfclear">
+      <button type="submit" wicket:id="submit">Submit</button>
+    </li>
+  </ul>
 </form>
 </wicket:panel>
 </body>
