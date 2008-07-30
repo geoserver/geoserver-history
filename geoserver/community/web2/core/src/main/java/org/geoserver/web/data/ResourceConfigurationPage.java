@@ -30,6 +30,7 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 
+@SuppressWarnings("serial")
 public class ResourceConfigurationPage extends GeoServerBasePage {
 
     private IModel myResourceModel;
@@ -66,7 +67,6 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
         });
     }
 
-    @SuppressWarnings("serial")
     private void initComponents(){
         add(new Label("resourcename", getResourceInfo().getId()));
         Form theForm = new Form("resource", myResourceModel);

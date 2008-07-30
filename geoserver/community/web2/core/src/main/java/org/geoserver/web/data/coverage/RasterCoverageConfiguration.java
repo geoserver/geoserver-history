@@ -16,8 +16,6 @@ import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.data.tree.DataPage;
 import org.opengis.coverage.grid.Format;
-import org.opengis.parameter.ParameterDescriptorGroup;
-import org.opengis.parameter.ParameterValueGroup;
 
 /**
  * 
@@ -27,8 +25,10 @@ import org.opengis.parameter.ParameterValueGroup;
  * 
  * @author Gabriel Roldan
  */
+@SuppressWarnings("serial")
 public class RasterCoverageConfiguration extends GeoServerBasePage {
 
+    @SuppressWarnings("unused")
     private final String workspaceId;
 
     /**

@@ -15,6 +15,7 @@ import org.geotools.data.DataAccessFactory.Param;
  * 
  * @author Gabriel Roldan
  */
+@SuppressWarnings("serial")
 public class ParamInfo implements Serializable {
     private final String name;
 
@@ -22,7 +23,7 @@ public class ParamInfo implements Serializable {
 
     private boolean password;
 
-    private Class binding;
+    private Class<?> binding;
 
     private boolean required;
 
@@ -64,7 +65,7 @@ public class ParamInfo implements Serializable {
         return password;
     }
 
-    public Class getBinding() {
+    public Class<?> getBinding() {
         return binding;
     }
 

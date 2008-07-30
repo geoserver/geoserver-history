@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data;
 
+import org.apache.wicket.Component;
 import org.geoserver.web.ComponentInfo;
 
 /**
@@ -17,12 +18,13 @@ import org.geoserver.web.ComponentInfo;
 /*
  * TODO: specify the type of component that will fit in here
  */
-public class DataStorePanelInfo extends ComponentInfo {
-    Class factoryClass;
+@SuppressWarnings("serial")
+public class DataStorePanelInfo extends ComponentInfo<Component> {
+    Class<Component> factoryClass;
 
     String icon;
 
-    Class iconBase;
+    Class<?> iconBase;
 
     public String getIcon() {
         return icon;
@@ -32,7 +34,7 @@ public class DataStorePanelInfo extends ComponentInfo {
         this.icon = icon;
     }
 
-    public Class getIconBase() {
+    public Class<?> getIconBase() {
         return iconBase;
     }
 
@@ -42,15 +44,15 @@ public class DataStorePanelInfo extends ComponentInfo {
      * 
      * @param iconBase
      */
-    public void setIconBase(Class iconBase) {
+    public void setIconBase(Class<?> iconBase) {
         this.iconBase = iconBase;
     }
 
-    public Class getFactoryClass() {
+    public Class<Component> getFactoryClass() {
         return factoryClass;
     }
 
-    public void setFactoryClass(Class factoryClassName) {
+    public void setFactoryClass(Class<Component> factoryClassName) {
         this.factoryClass = factoryClassName;
     }
 
