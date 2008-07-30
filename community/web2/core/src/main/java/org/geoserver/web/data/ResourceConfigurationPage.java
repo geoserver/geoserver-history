@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.ResourceInfo;
@@ -31,36 +32,43 @@ import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 
 public class ResourceConfigurationPage extends GeoServerBasePage {
 
-    private ResourceInfo myResourceInfo;
-    private LayerInfo myLayerInfo;
     private IModel myResourceModel;
     private IModel myLayerModel;
 
     private boolean isNew;
 
     public ResourceConfigurationPage(ResourceInfo info, boolean isNew){
-        myResourceInfo = info;
-        myResourceModel = new CompoundPropertyModel(myResourceInfo);
-        myLayerInfo  = info.getCatalog().getLayers(info).get(0);
-        myLayerModel = new CompoundPropertyModel(myLayerInfo);
+        setup(info, getCatalog().getLayers(info).get(0));
         this.isNew = isNew;
-
         initComponents();
     }
 
     public ResourceConfigurationPage(LayerInfo info, boolean isNew) {
-        myResourceInfo = info.getResource();
-        myResourceModel = new CompoundPropertyModel(myResourceInfo);
-        myLayerInfo = info;
-        myLayerModel = new CompoundPropertyModel(info);
+        setup(info.getResource(), info);
         this.isNew = isNew;
-
         initComponents();
+    }
+
+    private void setup(ResourceInfo resource, LayerInfo layer){
+        final String resourceName = resource.getName();
+        myResourceModel = new CompoundPropertyModel(new LoadableDetachableModel(){
+            public Object load(){
+                return getCatalog().getResource(resourceName, ResourceInfo.class);
+            }
+        });
+
+        final String layerName = layer.getName();
+
+        myLayerModel = new CompoundPropertyModel(new LoadableDetachableModel(){
+            public Object load(){
+                return getCatalog().getLayer(layerName);
+            }
+        });
     }
 
     @SuppressWarnings("serial")
     private void initComponents(){
-        add(new Label("resourcename", myResourceInfo.getId()));
+        add(new Label("resourcename", getResourceInfo().getId()));
         Form theForm = new Form("resource", myResourceModel);
         add(theForm);
         List<ITab> tabs = new ArrayList<ITab>();
@@ -76,16 +84,14 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
             }
         });
         theForm.add(new TabbedPanel("tabs", tabs));
-        /* theForm.add(new ResourceConfigurationSectionListView("resources"));
-        theForm.add(new LayerConfigurationSectionListView("layers"));*/
         theForm.add(new Button("saveButton"){
             public void onSubmit(){
                 if (isNew){
-                    myResourceInfo.getCatalog().add(myResourceInfo);
-                    myResourceInfo.getCatalog().add(myLayerInfo);
+                    getCatalog().add(getResourceInfo());
+                    getCatalog().add(getLayerInfo());
                 } else {
-                    myResourceInfo.getCatalog().save(myResourceInfo);
-                    myResourceInfo.getCatalog().save(myLayerInfo);
+                    getCatalog().save(getResourceInfo());
+                    getCatalog().save(getLayerInfo());
                 }
             }
         });
@@ -95,7 +101,7 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
             List<ResourceConfigurationPanelInfo> list
             ){
         for (int i = 0; i < list.size(); i++){
-            if (!list.get(i).canHandle(myResourceInfo)){
+            if (!list.get(i).canHandle(getResourceInfo())){
                 list.remove(i);
                 i--;
             }
@@ -107,7 +113,7 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
             List<LayerConfigurationPanelInfo> list
             ){
         for (int i = 0; i < list.size(); i++){
-            if (!list.get(i).canHandle(myLayerInfo)){
+            if (!list.get(i).canHandle(getLayerInfo())){
                 list.remove(i);
                 i--;
             }
@@ -171,5 +177,14 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
                 throw new WicketRuntimeException("Failed to add pluggable layer configuration panels", e);
             }
         }
+    }
+
+    protected ResourceInfo getResourceInfo(){
+        Object o = myResourceModel.getObject();
+        return (ResourceInfo)o;
+    }
+
+    protected LayerInfo getLayerInfo(){
+        return (LayerInfo)myLayerModel.getObject();
     }
 }
