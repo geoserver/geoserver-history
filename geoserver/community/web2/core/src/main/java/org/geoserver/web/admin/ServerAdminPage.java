@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -229,6 +231,41 @@ public class ServerAdminPage extends GeoServerBasePage {
     private static class TabPanelPersistence extends Panel {
         public TabPanelPersistence(String id){
             super(id);
+            add(new Label("locks", "0"));
+            add(new Label("connections", "17"));
+            add(new Label("memory", "337825K"));
+            add(new Label("jvm.version", "Sun Microsystems Inc.: 1.6.0_03"));
+            add(new Label("jai.available", "true"));
+            add(new Label("jai.memory.available", "466048K"));
+            add(new Label("jai.memory.used", "100"));
+            add(new Label("jai.memory.threshold", "75.0%"));
+            add(new Label("jai.tile.threads", "7"));
+            add(new Label("jai.tile.priority", "5 (1 - Min, 5 - Normal; 10 - Max)"));
+
+            add(new Link("free.locks"){
+                public void onClick(){
+                }
+            });
+            add(new Link("free.memory"){
+                public void onClick(){
+                }
+            });
+            add(new Link("free.memory.jai"){
+                public void onClick(){
+                }
+            });
+            add(new Link("persist"){
+                public void onClick(){
+                }
+            });
+            add(new Link("revert"){
+                public void onClick(){
+                }
+            });
+
+            add(new Label("reload.date.geoserver", "Jul 14, 3:07 PM"));
+            add(new Label("reload.date.configuration", "Jul 14, 3:07 PM"));
+            add(new Label("reload.date.xml", "Mar 14, 2:15 PM"));
         }
     }
 }

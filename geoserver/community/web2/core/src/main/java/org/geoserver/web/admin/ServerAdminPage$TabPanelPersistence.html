@@ -3,47 +3,44 @@
 <body>
 <wicket:panel>
 
-  Locks:   	 0
-  Connections: 	17
-  Memory: 	337825K
-  Version of JVM: 	Sun Microsystems Inc. : 1.6.0_03
-  JAI is available: 	true
-  JAI mem capacity: 	466048K
-  JAI mem used: 	0K
-  JAI mem threshold: 	75.0%
-  JAI tile threads: 	7
-  JAI tile priority: 	5 (1 - Min, 5 - Normal; 10 - Max)
+<table>
+    <th><td></td><td></td></th>
+    <tr><td>Locks</td> <td wicket:id="locks">0</td></tr>
+    <tr><td>Connections</td> <td wicket:id="connections">17</td></tr>
+    <tr><td>Memory</td> <td wicket:id="memory">337825K</td></tr>
+    <tr><td>Version of JVM</td> <td wicket:id="jvm.version">Sun Microsystems Inc.: 1.6.0_03</td></tr>
+    <tr><td>JAI is available</td> <td wicket:id="jai.available">true</td></tr>
+    <tr><td>JAI mem capacity</td> <td wicket:id="jai.memory.available">466048K</td></tr>
+    <tr><td>JAI mem used</td> <td wicket:id="jai.memory.used">0K</td></tr>
+    <tr><td>JAI mem threshold</td> <td wicket:id="jai.memory.threshold">75.0%</td></tr>
+    <tr><td>JAI tile threads</td> <td wicket:id="jai.tile.threads">7</td></tr>
+    <tr><td>JAI tile priority</td> <td wicket:id="jai.tile.priority">5 (1 - Min, 5 - Normal; 10 - Max)</td></tr>
+</table>
 
   <div class="buttons selfclear">
-    <button type="submit">
-      <wicket:link>
+    <a href="#" wicket:id="free.locks">
        Free Locks
-      </wicket:link>
-    </button>
-    <button type="submit">
-      <wicket:link>
+    </a>
+    <a href="#" wicket:id="free.memory">
        Free Memory
-      </wicket:link>
-    </button>
-    <button type="submit">
-      <wicket:link>
+    </a>
+    <a href="#" wicket:id="free.memory.jai">
        Free JAI Memory
-      </wicket:link>
-    </button>
+    </a>
   </div>
   
   Update Sequence: 60
   <div class="buttons selfclear">
-    <button type="submit" class="positive">
+    <a href="#" wicket:id="persist">
       <wicket:link>
       <img src="img/icons/silk/disk.png" alt=""/> Persist
       </wicket:link>
-    </button>
-    <button type="submit" class="negative">
+    </a>
+    <a href="#" wicket:id="revert">
       <wicket:link>
       <img src="img/icons/silk/arrow_redo.png" alt=""/> Revert
       </wicket:link>
-    </button>
+    </a>
   </div>
   <!-- [TODO]
     * Add status bars for all included modules
@@ -62,15 +59,15 @@
         <tbody>
           <tr>
             <th scope="row">Geoserver</th>
-            <td>Jul 14, 3:07 PM</td>
+            <td wicket:id="reload.date.geoserver">Jul 14, 3:07 PM</td>
           </tr>
           <tr>
             <th scope="row">Configuration</th>
-            <td>Jul 14, 3:07 PM</td>
+            <td wicket:id="reload.date.configuration">Jul 14, 3:07 PM</td>
           </tr>
           <tr>
             <th scope="row">XML</th>
-            <td>Mar 14, 2:15 PM</td>
+            <td wicket:id="reload.date.xml">Mar 14, 2:15 PM</td>
           </tr>
         </tbody>
       </table>
