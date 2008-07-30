@@ -1,0 +1,80 @@
+<html>
+<head></head>
+<body>
+<wicket:panel>
+
+  Locks:   	 0
+  Connections: 	17
+  Memory: 	337825K
+  Version of JVM: 	Sun Microsystems Inc. : 1.6.0_03
+  JAI is available: 	true
+  JAI mem capacity: 	466048K
+  JAI mem used: 	0K
+  JAI mem threshold: 	75.0%
+  JAI tile threads: 	7
+  JAI tile priority: 	5 (1 - Min, 5 - Normal; 10 - Max)
+
+  <div class="buttons selfclear">
+    <button type="submit">
+      <wicket:link>
+       Free Locks
+      </wicket:link>
+    </button>
+    <button type="submit">
+      <wicket:link>
+       Free Memory
+      </wicket:link>
+    </button>
+    <button type="submit">
+      <wicket:link>
+       Free JAI Memory
+      </wicket:link>
+    </button>
+  </div>
+  
+  Update Sequence: 60
+  <div class="buttons selfclear">
+    <button type="submit" class="positive">
+      <wicket:link>
+      <img src="img/icons/silk/disk.png" alt=""/> Persist
+      </wicket:link>
+    </button>
+    <button type="submit" class="negative">
+      <wicket:link>
+      <img src="img/icons/silk/arrow_redo.png" alt=""/> Revert
+      </wicket:link>
+    </button>
+  </div>
+  <!-- [TODO]
+    * Add status bars for all included modules
+    * include the data about when the module was restarted - ie:
+        GeoServer *  	 Jul 14, 3:07 PM
+        Configuration 	Jul 14, 3:07 PM
+        XML 	Mar 14, 2:15 PM
+        Update Sequence: 	60
+    * Do we want to allow enabling / disabling of modules from this page, as well?
+  -->
+    <div>
+      <h2>GeoServer</h2>
+      <div class="status-bar"><span style="background-position: -50% 0">50%</span></div>
+      <h3>Restart Times</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th scope="row">Geoserver</th>
+            <td>Jul 14, 3:07 PM</td>
+          </tr>
+          <tr>
+            <th scope="row">Configuration</th>
+            <td>Jul 14, 3:07 PM</td>
+          </tr>
+          <tr>
+            <th scope="row">XML</th>
+            <td>Mar 14, 2:15 PM</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</wicket:panel>
+</body>
+</html>
