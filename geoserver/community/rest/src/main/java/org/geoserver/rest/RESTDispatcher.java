@@ -64,7 +64,12 @@ public class RESTDispatcher extends AbstractController {
             
             if ( re != null ) {
                 resp.setStatus( re.getStatus().getCode() );
-                re.getRepresentation().write(resp.getOutputStream());
+                // This does not actually write anything?
+                //re.getRepresentation().write(resp.getOutputStream());
+                
+                String reStr = re.getRepresentation().getText();
+                resp.getOutputStream().write(reStr.getBytes());
+                
                 resp.getOutputStream().flush();
             }
             else {
