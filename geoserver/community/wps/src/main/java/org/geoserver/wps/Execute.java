@@ -52,20 +52,21 @@ public abstract class Execute {
      * @author Lucas Reed, Refractions Research Inc
      */
     public static class WPS1_0 {
-        private WPS                 wps;
+        private WPSInfo             wps;
         private Locale              locale;
         private ExecuteType         request;
         private Executor            executor;
         private ExecuteResponseType response;
         private DataTransformer     dataTransformer;
 
-        public WPS1_0(WPS wps) {
+        public WPS1_0(WPSInfo wps) {
             this.wps      = wps;
             this.response = WpsFactory.eINSTANCE.createExecuteResponseType();
         }
 
         /**
          * Main method for performing decoding, execution, and response
+         *
          * @param object
          * @param output
          * @throws IllegalArgumentException
@@ -102,6 +103,7 @@ public abstract class Execute {
             }
         }
 
+        @SuppressWarnings("unchecked")
         private void outputs(Map<String, Object> outputs) {
             ProcessFactory      pf             = this.executor.getProcessFactory();
             ProcessOutputsType1 processOutputs = WpsFactory.eINSTANCE.createProcessOutputsType1();
@@ -154,6 +156,7 @@ public abstract class Execute {
             return data;
         }
 
+        @SuppressWarnings("unchecked")
         private ComplexDataType complexData(ComplexTransmuter transmuter, Object value) {
             ComplexDataType data = WpsFactory.eINSTANCE.createComplexDataType();
 

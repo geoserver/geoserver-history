@@ -12,6 +12,7 @@ import org.geoserver.config.impl.ServiceInfoImpl;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
+@SuppressWarnings("unchecked")
 public class WPSInfoImpl extends ServiceInfoImpl implements WPSInfo {
     @Override
     public String getTitle() {

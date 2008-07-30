@@ -31,7 +31,7 @@ public abstract class ComplexTransmuter implements Transmuter {
     abstract public Class<?> getXMLConfiguration();
 
     /**
-     * Returns mime type of encoded data
+     * Returns mime-type of encoded data
      *
      * @return
      */

@@ -13,6 +13,8 @@ import org.geoserver.platform.ServiceException;
  * @author Lucas Reed, Refractions Research Inc
  */
 public class WPSException extends ServiceException {
+    private static final long serialVersionUID = 7833862069590179589L;
+
     public WPSException(String message) {
         super(message);
     }

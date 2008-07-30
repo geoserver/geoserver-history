@@ -27,6 +27,7 @@ public class IdentifierKvpParser extends KvpParser {
         this.setService("wps");
     }
 
+    @SuppressWarnings("unchecked")
     public Object parse(String value) throws Exception {
         List<CodeType> values = new ArrayList<CodeType>();
 

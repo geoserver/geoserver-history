@@ -19,11 +19,39 @@ import org.geotools.xml.transform.TransformerBase;
  * @author Lucas Reed, Refractions Research Inc
  */
 public interface WebProcessingService {
+    /**
+     * Generates a XML object for the return of the getCapabilities request
+     *
+     * @param request
+     * @return
+     * @throws WPSException
+     */
     TransformerBase getCapabilities(GetCapabilitiesType request) throws WPSException;
 
+    /**
+     * Generates a XML object for  the return of the describeProcess request
+     *
+     * @param request
+     * @return
+     * @throws WPSException
+     */
     TransformerBase describeProcess(DescribeProcessType request) throws WPSException;
 
+    /**
+     * Executes a execute request and writes output to the Servlet response
+     *
+     * @param request
+     * @param response
+     * @throws WPSException
+     */
     void execute(ExecuteType request, HttpServletResponse response) throws WPSException;
 
+    /**
+     * Executes a get schema request and writes the output to the Servlet response
+     *
+     * @param request
+     * @param response
+     * @throws WPSException
+     */
     void getSchema(HttpServletRequest request, HttpServletResponse response) throws WPSException;
 }

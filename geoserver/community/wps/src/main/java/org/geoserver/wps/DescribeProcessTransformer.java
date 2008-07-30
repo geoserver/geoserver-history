@@ -30,12 +30,12 @@ import org.geoserver.wps.transmute.LiteralTransmuter;
  * @author Lucas Reed, Refractions Research Inc
  */
 public abstract class DescribeProcessTransformer extends TransformerBase {
-    protected WPS wps;
+    protected WPSInfo wps;
 
     protected static final String WPS_URI = "http://www.opengis.net/wps";
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    public DescribeProcessTransformer(WPS wps) {
+    public DescribeProcessTransformer(WPSInfo wps) {
         super();
 
         this.wps = wps;
@@ -47,7 +47,7 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
      * @author Lucas Reed, Refractions Research Inc
      */
     public static class WPS1_0 extends DescribeProcessTransformer {
-        public WPS1_0(WPS wps) {
+        public WPS1_0(WPSInfo wps) {
             super(wps);
         }
 

@@ -12,9 +12,9 @@ import org.geoserver.wps.CapabilitiesTransformer;
  * @author Lucas Reed, Refractions Research Inc
  */
 public class GetCapabilities {
-    public WPS wps;
+    public WPSInfo wps;
 
-    public GetCapabilities(WPS wps) {
+    public GetCapabilities(WPSInfo wps) {
         this.wps = wps;
     }
 
@@ -22,8 +22,6 @@ public class GetCapabilities {
         // Version detection and alternative invocation if being implemented.
 
         CapabilitiesTransformer capabilitiesTransformer = new CapabilitiesTransformer.WPS1_0(this.wps);
-
-        capabilitiesTransformer.setEncoding(this.wps.getCharSet());
 
         return capabilitiesTransformer;
     }

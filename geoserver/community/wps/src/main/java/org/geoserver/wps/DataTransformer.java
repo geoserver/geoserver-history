@@ -45,7 +45,7 @@ import org.geoserver.wps.transmute.GML2MultiPolygonTransmuter;
 import org.geoserver.wps.transmute.GML2MultiLineStringTransmuter;
 
 /**
- * Class for parsing and encoding inputs and results to processes.
+ * Class for parsing and encoding inputs and results to processes
  *
  * @author Lucas Reed, Refractions Research Inc
  */
@@ -57,6 +57,7 @@ public class DataTransformer {
 
     /**
      * Constructor takes server base URL
+     *
      * @param urlBase
      */
     public DataTransformer(String urlBase) {
@@ -82,11 +83,13 @@ public class DataTransformer {
     }
 
     /**
-     * Returns Map of parsed inputs ready for execution.
+     * Returns Map of parsed inputs ready for execution
+     *
      * @param inputs
      * @param parameters
      * @return
      */
+    @SuppressWarnings("unchecked")
     public Map<String, Object> decodeInputs(final List<InputType> inputs,
         final Map<String, Parameter<?>> parameters) {
         Map<String, Object> inputMap = new HashMap<String, Object>();
@@ -127,6 +130,7 @@ public class DataTransformer {
 
     /**
      * Fetches and decodes external data references
+     *
      * @param identifier
      * @param reference
      * @return
@@ -159,12 +163,16 @@ public class DataTransformer {
         String       parameterName = input.getIdentifier().getValue();
         Parameter<?> parameter     = this.inputParameters.get(parameterName);
 
-        if (null != data.getLiteralData()) {
-            output = this.decodeLiteralData(data.getLiteralData(), parameter.type);
-        }
-
-        if (null != data.getComplexData()) {
-            output = this.decodeComplexData(data.getComplexData(), parameter.type);
+        try {
+	        if (null != data.getLiteralData()) {
+	            output = this.decodeLiteralData(data.getLiteralData(), parameter.type);
+	        }
+	
+	        if (null != data.getComplexData()) {
+	            output = this.decodeComplexData(data.getComplexData(), parameter.type);
+	        }
+        } catch(Exception e) {
+        	throw new WPSException("InvalidParameterValue", parameterName);
         }
 
         if (null != data.getBoundingBoxData()) {
@@ -176,7 +184,7 @@ public class DataTransformer {
     }
 
     private Object decodeComplexData(final ComplexDataType input, final Class<?> type) {
-        Object data = input.getData().get(0);
+    	Object data = input.getData().get(0);
 
         return data;
     }
@@ -193,6 +201,7 @@ public class DataTransformer {
 
     /**
      * Attempt to find ComplexTransmuter for given Java type and schema
+     *
      * @param type
      * @param schema
      * @return
@@ -221,6 +230,7 @@ public class DataTransformer {
 
     /**
      * Return default a transmuter for a given Java type
+     *
      * @param type
      * @return
      */
@@ -235,6 +245,12 @@ public class DataTransformer {
         return transmuter;
     }
 
+    /**
+     * Tests if all inputs and outputs of a Process are transmutable
+     *
+     * @param pf
+     * @return
+     */
     public boolean isTransmutable(ProcessFactory pf) {
         for(Parameter<?> param : pf.getParameterInfo().values()) {
             try {

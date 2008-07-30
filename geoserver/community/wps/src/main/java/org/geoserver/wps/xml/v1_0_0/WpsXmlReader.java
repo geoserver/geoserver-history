@@ -17,9 +17,9 @@ import org.geotools.xml.Parser;
 import org.geotools.util.Version;
 import org.geotools.util.logging.Logging;
 import org.geotools.wps.WPSConfiguration;
-import org.geoserver.ows.XmlRequestReader;
 
 import org.geoserver.wps.WPSException;
+import org.geoserver.ows.XmlRequestReader;
 
 /**
  * WPS XML parser
@@ -36,6 +36,7 @@ public class WpsXmlReader extends XmlRequestReader {
         this.configuration = configuration;
     }
 
+    @SuppressWarnings("unchecked")
     public Object read(Object request, Reader reader, Map kvp) throws Exception {
         Parser parser = new Parser(configuration);
         parser.setValidating(true);

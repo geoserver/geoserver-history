@@ -10,11 +10,10 @@
 
 <beans>
     <!-- WPS Configuration bean -->
-    <bean id="wps" class="org.geoserver.wps.WPS" depends-on="config">
+    <bean id="wps" class="org.geoserver.wps.WPSInfoImpl" depends-on="config">
         <!-- the depends-on attribute ensures config was initialized before
             trying to instantiate this bean.
         -->
-        <constructor-arg ref="geoServer2" />
     </bean>
 
     <bean id="wpsServiceLoader" class="org.geoserver.wps.WPSLoader">

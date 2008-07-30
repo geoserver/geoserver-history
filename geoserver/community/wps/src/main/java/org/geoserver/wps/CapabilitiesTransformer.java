@@ -28,12 +28,12 @@ import org.geotools.xml.transform.TransformerBase;
  * @author Lucas Reed, Refractions Research Inc
  */
 public abstract class CapabilitiesTransformer extends TransformerBase {
-    protected              WPS    wps;
+    protected              WPSInfo wps;
 
-    protected static final String WPS_URI = "http://www.opengis.net/wps";
-    protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
+    protected static final String  WPS_URI = "http://www.opengis.net/wps";
+    protected static final String  XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    public CapabilitiesTransformer(WPS wps) {
+    public CapabilitiesTransformer(WPSInfo wps) {
         super();
 
         this.wps = wps;
@@ -45,14 +45,22 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
      * @author Lucas Reed, Refractions Research Inc
      */
     public static class WPS1_0 extends CapabilitiesTransformer {
-        public WPS1_0(WPS wps) {
+        public WPS1_0(WPSInfo wps) {
             super(wps);
         }
 
+        /**
+         * @see org.geotools.xml.transform.TransformerBase#createTranslator
+         */
         public Translator createTranslator(ContentHandler handler) {
             return new CapabilitiesTranslator1_0(handler);
         }
 
+        /**
+         * WPS 1.0.0 specific GetCapabilities translator
+         *
+         * @author Lucas Reed, Refractions Research Inc
+         */
         public class CapabilitiesTranslator1_0 extends TranslatorSupport {
             public  GetCapabilitiesType request;
             private DataTransformer     dataTransformer;
@@ -62,6 +70,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 super(handler, null, null);
             }
 
+            /**
+             * @see  org.geotools.xml.transform.Translator#encode
+             */
             public void encode(Object object) throws IllegalArgumentException {
                 this.request = (GetCapabilitiesType)object;
 

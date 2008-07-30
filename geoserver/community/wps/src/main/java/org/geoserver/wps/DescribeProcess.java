@@ -13,16 +13,14 @@ import net.opengis.wps.DescribeProcessType;
  * @author Lucas Reed, Refractions Research Inc
  */
 public class DescribeProcess {
-    public WPS wps;
+    public WPSInfo wps;
 
-    public DescribeProcess(WPS wps) {
+    public DescribeProcess(WPSInfo wps) {
         this.wps = wps;
     }
 
     public DescribeProcessTransformer run(DescribeProcessType request) {
         DescribeProcessTransformer transformer = new DescribeProcessTransformer.WPS1_0(this.wps);
-
-        transformer.setEncoding(this.wps.getCharSet());
 
         return transformer;
     }

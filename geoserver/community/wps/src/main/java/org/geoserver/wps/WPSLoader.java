@@ -11,11 +11,10 @@ import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerResourceLoader;
 
 /**
- * Service loader for the Web Processing Service.
+ * Service loader for the Web Processing Service
  *
  * @author Lucas Reed, Refractions Research Inc
  * @author Justin Deoliveira, The Open Planning Project
- *
  */
 public class WPSLoader extends XStreamServiceLoader {
     public WPSLoader(GeoServerResourceLoader resourceLoader) {

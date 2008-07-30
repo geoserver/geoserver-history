@@ -19,6 +19,7 @@ public class DescribeProcessKvpRequestReader extends WPSKvpRequestReader {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         request = super.read(request, kvp, rawKvp);
 

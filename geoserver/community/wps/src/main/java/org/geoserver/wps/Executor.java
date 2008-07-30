@@ -32,10 +32,12 @@ public class Executor {
 
     /**
      * Checks and decodes the process inputs from the request
+     *
      * @param request
      * @param wps
      */
-    public Executor(ExecuteType request, WPS wps) {
+    @SuppressWarnings("unchecked")
+    public Executor(ExecuteType request, WPSInfo wps) {
         CodeType identifier = request.getIdentifier();
         this.factory        = this.findProcessFactory(identifier);
         DataTransformer dataTransformer = new DataTransformer(request.getBaseUrl());
@@ -63,6 +65,7 @@ public class Executor {
 
     /**
      * Returns the ProcessFactory for the Execute request
+     *
      * @return
      */
     public ProcessFactory getProcessFactory() {
@@ -71,6 +74,7 @@ public class Executor {
 
     /**
      * Executes process and returns results as Java data types
+     *
      * @return
      */
     public Map<String, Object> execute() {
@@ -84,7 +88,8 @@ public class Executor {
     }
 
     /**
-     * Partial output validation.
+     * Partial output validation
+     *
      * @param outputs
      */
     private void checkOutputs(Map<String, Object> outputs) {
@@ -101,19 +106,34 @@ public class Executor {
 
     /**
      * Checks request inputs against those of the requested process implementation
+     *
      * @param processParameters
      * @param requestInputs
      */
+    @SuppressWarnings("unchecked")
     private void checkInputs(Map<String, Parameter<?>> processParameters,
         DataInputsType1 requestInputs) {
         List<String> requestInputNames = new ArrayList<String>();
         List<String> processInputNames = new ArrayList<String>();
 
+        processInputNames.addAll(processParameters.keySet());
+
+        if (null == requestInputs) {
+            StringBuffer str = new StringBuffer("");
+            for(String paramName : processInputNames) {
+                if (0 == str.length()) {
+                    str.append(paramName);
+                } else {
+                    str.append(", " + paramName);
+                }
+            }
+
+            throw new WPSException("MissingParameterValue", str.toString());
+        }
+
         for(InputType input : (List<InputType>)requestInputs.getInput()) {
             requestInputNames.add(input.getIdentifier().getValue());
         }
-
-        processInputNames.addAll(processParameters.keySet());
 
         // Check for missing input parameters
         for(String processInputName : processInputNames) {

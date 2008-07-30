@@ -19,17 +19,19 @@ import javax.servlet.http.HttpServletResponse;
  * @author Lucas Reed, Refractions Research Inc
  */
 public class GetSchema {
-    public WPS wps;
+    public WPSInfo wps;
 
-    public GetSchema(WPS wps) {
+    public GetSchema(WPSInfo wps) {
         this.wps = wps;
     }
 
     /**
      * Fetches named schema and writes it to the response stream
+     *
      * @param request
      * @param response
      */
+    @SuppressWarnings("unchecked")
     public void run(HttpServletRequest request, HttpServletResponse response) {
         String name = null;
 
