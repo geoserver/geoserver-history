@@ -10,6 +10,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.markup.html.form.CheckBox;
 
+@SuppressWarnings("serial")
 public class GeoSearchLayerConfigPanel extends LayerConfigurationPanel{
     public GeoSearchLayerConfigPanel(String id, IModel model){
         super(id, model);

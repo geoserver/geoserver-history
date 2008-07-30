@@ -10,6 +10,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.markup.html.form.TextField;
 
+@SuppressWarnings("serial")
 public class KMLLayerConfigPanel extends LayerConfigurationPanel {
     public KMLLayerConfigPanel(String id, IModel model){
         super(id, model);

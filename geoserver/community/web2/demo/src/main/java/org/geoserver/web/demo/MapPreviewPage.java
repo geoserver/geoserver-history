@@ -3,19 +3,18 @@ package org.geoserver.web.demo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.catalog.ResourceInfo;
-import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
-
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.web.GeoServerBasePage;
+import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
 public class MapPreviewPage extends GeoServerBasePage {
+    @SuppressWarnings("serial")
     public MapPreviewPage(){
         //TODO: This should list Layers, not Resources.  (Should it exist per-workspace? just have
         //the layers grouped by workspace in a single page?)
