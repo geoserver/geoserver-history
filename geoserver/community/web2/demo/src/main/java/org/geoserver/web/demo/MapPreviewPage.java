@@ -1,5 +1,8 @@
 package org.geoserver.web.demo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.catalog.ResourceInfo;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
@@ -8,32 +11,60 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 
 public class MapPreviewPage extends GeoServerBasePage {
     public MapPreviewPage(){
-        //TODO: This should list Layers, not Resources.  (Should it exist per-workspace? just have the layers grouped by workspace in a single page?)
-        add(new ListView("layer", getCatalog().getResources(ResourceInfo.class)){
-            public void populateItem(ListItem item){
-                final ResourceInfo info = (ResourceInfo)item.getModelObject();
+        //TODO: This should list Layers, not Resources.  (Should it exist per-workspace? just have
+        //the layers grouped by workspace in a single page?)
+        
+        IModel resourceListModel = new LoadableDetachableModel(){
+            public Object load(){
+                return getCatalog().getResources(ResourceInfo.class);
+            }
+        };
 
-                item.add(new ExternalLink("layerLink", "wms/reflect?layers=" + info.getPrefixedName())
-                    .setContextRelative(true)
-                    .add(new Label("label", info.getPrefixedName()))
+        final List<String> formats = getAvailableFormats();
+
+        add(new ListView("layer", resourceListModel){
+            public void populateItem(ListItem item){
+                final String prefixedName = ((ResourceInfo) item.getModelObject()).getPrefixedName();
+
+                item.add(
+                    new ExternalLink("layerLink", "wms/reflect?layers=" + prefixedName)
+                        .setContextRelative(true)
+                        .add(new Label("label", prefixedName))
                 );
-                item.add(new ListView("formatLink", getGeoServerApplication().getBeansOfType(GetMapProducerFactorySpi.class)){
+
+                item.add(new ListView("formatLink", formats){
                     public void populateItem(ListItem item){
-                        final GetMapProducerFactorySpi format = (GetMapProducerFactorySpi) item.getModelObject();
-                        String formatName = (String)format.getSupportedFormats().iterator().next();
+                        String format = (String)item.getModel().getObject();
                         item.add(new ExternalLink(
                                 "link",
-                                "wms/reflect?layers=" + info.getPrefixedName() + "&format=" + formatName
+                                "wms/reflect?layers=" 
+                                + prefixedName
+                                + "&format=" 
+                                + format
                                 ).setContextRelative(true)
-                                .add(new Label("label", formatName))
+                                .add(new Label("label", format))
                             );
                     }
                 });
             }
         });
+    }
 
+    private List<String> getAvailableFormats(){
+        List<String> formats = new ArrayList<String>();
+
+        for (GetMapProducerFactorySpi spi : 
+            getGeoServerApplication().getBeansOfType(GetMapProducerFactorySpi.class)
+            ) {
+            formats.add((String)spi.getSupportedFormats().iterator().next());
+        }
+
+        return formats;
     }
 }
