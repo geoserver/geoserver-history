@@ -47,7 +47,7 @@ public class NamespaceManagerPage extends GeoServerBasePage {
 		    }
 
             @Override
-            protected Iterator getItemModels(){
+            protected Iterator<?> getItemModels(){
                 List<IModel> models = new ArrayList<IModel>();
                 for (NamespaceInfo info : getCatalog().getNamespaces()){
                     final String prefix = info.getPrefix();

@@ -4,27 +4,28 @@
  */
 package org.geoserver.wms.web.publish;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.StyleInfo;
-import org.geoserver.web.publish.LayerConfigurationPanel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.ComponentPropertyModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.geoserver.catalog.StyleInfo;
+import org.geoserver.web.publish.LayerConfigurationPanel;
 
+@SuppressWarnings("serial")
 public class WMSLayerConfig extends LayerConfigurationPanel {
 
+    @SuppressWarnings("unused")
     private List<String> stylesToRemove;
     private List<String> stylesToAdd;
     private List<String> extraStyles;
     private List<String> availableStyles;
+    @SuppressWarnings("unused")
     private String wmsPath;
 
     public WMSLayerConfig(String id, IModel model){

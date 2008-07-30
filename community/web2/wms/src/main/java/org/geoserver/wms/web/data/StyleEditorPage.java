@@ -20,8 +20,10 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 
+@SuppressWarnings("serial")
 public class StyleEditorPage extends GeoServerBasePage{
-    private String rawSLD;
+    @SuppressWarnings("unused")
+    private String rawSLD; // Accessed via a property model, don't remove
 
     public StyleEditorPage(final StyleInfo style){
         try{
