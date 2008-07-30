@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-beta2</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -33,47 +33,47 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs1_1</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>validation</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfsv</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
 
 
@@ -192,14 +192,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -412,7 +412,7 @@
          <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>OpenPlans-Auth</artifactId>
-          <version>1.7.0-SNAPSHOT</version>
+          <version>1.7.0-beta2</version>
         </dependency>
       </dependencies>
     </profile>
@@ -422,7 +422,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>rest</artifactId>
-          <version>1.7.0-SNAPSHOT</version>
+          <version>1.7.0-beta2</version>
         </dependency>
       </dependencies>
     </profile>
@@ -432,7 +432,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>geosearch</artifactId>
-          <version>1.7.0-SNAPSHOT</version>
+          <version>1.7.0-beta2</version>
         </dependency>
       </dependencies>
     </profile>
@@ -452,7 +452,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>upload</artifactId>
-          <version>1.7.0-SNAPSHOT</version>
+          <version>1.7.0-beta2</version>
         </dependency>
       </dependencies>
     </profile>
@@ -462,7 +462,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>RESTConfig</artifactId>
-          <version>1.7.0-SNAPSHOT</version>
+          <version>1.7.0-beta2</version>
         </dependency>
       </dependencies>
     </profile>
@@ -472,7 +472,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>sldService</artifactId>
-          <version>1.7.0-SNAPSHOT</version>
+          <version>1.7.0-beta2</version>
         </dependency>
       </dependencies>
     </profile>
@@ -492,7 +492,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>wps</artifactId>
-          <version>1.7.0-SNAPSHOT</version>
+          <version>1.7.0-beta2</version>
         </dependency>
       </dependencies>
     </profile>

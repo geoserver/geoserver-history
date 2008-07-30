@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-beta2</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-beta2</version>
     </dependency>
   </dependencies>
 
