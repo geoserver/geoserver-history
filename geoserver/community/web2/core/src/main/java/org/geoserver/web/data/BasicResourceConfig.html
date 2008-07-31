@@ -6,6 +6,7 @@
     <!-- Once things are working well we can remove the word 'default' from the default
          messages.  Leaving them in now so we can tell if i18n is being picked up   -->
         <h3> <wicket:message key="page.title">Basic</wicket:message></h3>
+        <ul>
             <li><wicket:message key="title">Title</wicket:message>: <input type="text" wicket:id="title"></input> </li>
             <li><wicket:message key="abstract">Abstract</wicket:message>: <input type="text" wicket:id="abstract"></input> </li>
             <li><wicket:message key="keywords">Keywords</wicket:message>: <select wicket:id="keywords" multiple="multiple"></select> 
@@ -16,6 +17,7 @@
             <li><wicket:message key="page.nativeBbox">Native BBox</wicket:message>: <input type="text" wicket:id="nativeBoundingBox"></input> </li>
             <li><wicket:message key="page.publishBbox">Published BBox</wicket:message>:  <span wicket:id="boundingBox"></span> </li>
             <li><wicket:message key="page.latLonBbox">Lat/Lon BBox</wicket:message>: <input type="text" wicket:id="latLonBoundingBox"></input> </li>
+    	</ul>
     </wicket:panel>
     <input type="submit" value="Save Changes"></input>
 </form>
