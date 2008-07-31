@@ -265,8 +265,10 @@ public class LegacyServicesReader {
         Element keywordsElement = ReaderUtils.getChildElement( serviceElement, "keywords" );
         Element[] keywordElements = ReaderUtils.getChildElements( keywordsElement, "keyword" );
         ArrayList keywords = new ArrayList();
-        for ( int i = 0; i < keywordElements.length; i++ ) {
-            keywords.add( keywordElements[i].getFirstChild().getTextContent() );
+        if(keywordElements != null) {
+            for ( int i = 0; i < keywordElements.length; i++ ) {
+                keywords.add( keywordElements[i].getFirstChild().getTextContent() );
+            }
         }
         service.put( "keywords", keywords );
         
