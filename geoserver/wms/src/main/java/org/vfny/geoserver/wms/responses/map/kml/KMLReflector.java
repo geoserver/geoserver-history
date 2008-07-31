@@ -45,6 +45,9 @@ public class KMLReflector {
     /** default 'kmattr' value */
     public static final Boolean KMATTR = Boolean.TRUE;
 
+    /** default 'kmplacemark' value */
+    public static final Boolean KMPLACEMARK = Boolean.FALSE;
+
     /** default 'format' value */
     public static final String FORMAT = KML_MIME_TYPE;
 
@@ -114,6 +117,9 @@ public class KMLReflector {
         }
         if ( fo.get( "kmscore" ) == null ) {
             fo.put( "kmscore", KMSCORE );
+        }
+        if (fo.get("kmplacemark") == null) {
+            fo.put("kmplacemark", KMPLACEMARK);
         }
         
         //set the format

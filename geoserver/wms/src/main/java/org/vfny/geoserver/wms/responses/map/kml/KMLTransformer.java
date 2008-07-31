@@ -6,49 +6,27 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geoserver.platform.GeoServerExtensions;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
-import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureTypes;
-import org.geotools.filter.IllegalFilterException;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.RendererUtilities;
-import org.geotools.styling.FeatureTypeStyle;
-import org.geotools.styling.Rule;
-import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.GeometryDescriptor;
-import org.opengis.feature.type.Name;
-import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
-
-import com.vividsolutions.jts.geom.Envelope;
-
 
 public class KMLTransformer extends TransformerBase {
     /**
@@ -196,7 +174,7 @@ public class KMLTransformer extends TransformerBase {
             FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
 
             try {
-                features = loadFeatureCollection(featureSource, layer, mapContext);
+                features = KMLUtils.loadFeatureCollection(featureSource, layer, mapContext);
                 if(features == null)
                 	return;
             } catch (Exception e) {
@@ -346,202 +324,6 @@ public class KMLTransformer extends TransformerBase {
             } else {
                 return true; // return vector
             }
-        }
-
-        FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollection(
-                FeatureSource <SimpleFeatureType, SimpleFeature> featureSource, MapLayer layer,
-            WMSMapContext mapContext) throws Exception {
-            SimpleFeatureType schema = featureSource.getSchema();
-
-            Envelope envelope = mapContext.getAreaOfInterest();
-            ReferencedEnvelope aoi = new ReferencedEnvelope(envelope,
-                    mapContext.getCoordinateReferenceSystem());
-            CoordinateReferenceSystem sourceCrs = schema.getCoordinateReferenceSystem();
-
-            boolean reprojectBBox = (sourceCrs != null)
-                && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs); 
-            if (reprojectBBox) {
-                aoi = aoi.transform(sourceCrs, true);
-            }
-
-            Filter filter = createBBoxFilter(schema, aoi);
-
-            // now build the query using only the attributes and the bounding
-            // box needed
-            DefaultQuery q = new DefaultQuery(schema.getTypeName());
-            q.setFilter(filter);
-
-            // now, if a definition query has been established for this layer, be
-            // sure to respect it by combining it with the bounding box one.
-            Query definitionQuery = layer.getQuery();
-
-            if (definitionQuery != Query.ALL) {
-                if (q == Query.ALL) {
-                    q = (DefaultQuery) definitionQuery;
-                } else {
-                    q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery, q, "KMLEncoder");
-                }
-            }
-
-            //handle startIndex requested by client query
-            q.setStartIndex(definitionQuery.getStartIndex());
-            
-            // check the regionating strategy
-            RegionatingStrategy regionatingStrategy = null;
-            String stratname = (String)mapContext.getRequest().getFormatOptions().get("regionateBy");
-            if (("auto").equals(stratname)) {
-                Data catalog = mapContext.getRequest().getWMS().getData();
-                Name name = layer.getFeatureSource().getName();
-                stratname = catalog.getFeatureTypeInfo(name).getRegionateStrategy();
-                if(stratname == null)
-                    throw new WmsException("No default regionating strategy has been configured in " + name);
-            } 
-            if(stratname != null) {
-                List<RegionatingStrategyFactory> factories = GeoServerExtensions.extensions(RegionatingStrategyFactory.class);
-                Iterator<RegionatingStrategyFactory> it = factories.iterator();
-                while (it.hasNext()){
-                    RegionatingStrategyFactory factory = it.next();
-                    if (factory.canHandle(stratname)){
-                        regionatingStrategy = factory.createStrategy();
-                        break;
-                    }
-                }
-                // if a strategy was specified but we did not find it, let the user know
-                if(regionatingStrategy == null)
-                    throw new WmsException("Unknown regionating strategy " + stratname);
-            } 
-
-            // try to load less features by leveraging regionating strategy and the SLD
-            Filter regionatingFilter = Filter.INCLUDE;
-            if(regionatingStrategy != null)
-                regionatingFilter = regionatingStrategy.getFilter(mapContext, layer);
-            Filter ruleFilter = summarizeRuleFilters(getLayerRules(featureSource.getSchema(), layer.getStyle()));
-            Filter finalFilter = joinFilters(q.getFilter(), joinFilters(ruleFilter, regionatingFilter));
-          	q.setFilter(finalFilter);
-          	
-          	// make sure we output in 4326 since that's what KML mandates
-            if (sourceCrs != null && !CRS.equalsIgnoreMetadata(WGS84, sourceCrs)) {
-                return new ReprojectFeatureResults( featureSource.getFeatures(q), WGS84 );
-            } else {
-                return featureSource.getFeatures(q);
-            }
-        }
-        
-        private List[] getLayerRules(SimpleFeatureType ftype, Style style) {
-    		List[] result = new List[] {new ArrayList(), new ArrayList()};
-
-    		final String typeName = ftype.getTypeName();
-    		FeatureTypeStyle[] featureStyles = style.getFeatureTypeStyles();
-			final int length = featureStyles.length;
-    		for (int i = 0; i < length; i++)
-    		{
-    			// getting feature styles
-    			FeatureTypeStyle fts = featureStyles[i];
-
-    			// check if this FTS is compatible with this FT.
-    			if ((typeName != null)
-    					&& FeatureTypes.isDecendedFrom(ftype, null, fts.getFeatureTypeName())) {
-
-    				// get applicable rules at the current scale
-    				Rule[] ftsRules = fts.getRules();
-    				for (int j = 0; j < ftsRules.length; j++) {
-    					// getting rule
-    					Rule r = ftsRules[j];
-
-    					if (isWithInScale(r)) {
-    						if (r.hasElseFilter()) {
-    							result[ELSE_RULES].add(r);
-    						} else {
-    							result[RULES].add(r);
-    						}
-    					}
-    				}
-    			}
-    		}
-
-    		return result;
-        }
-        
-        private Filter joinFilters(Filter first, Filter second) {
-            if(Filter.EXCLUDE.equals(first) || Filter.EXCLUDE.equals(second))
-                return Filter.EXCLUDE;
-            
-            if(first == null || Filter.INCLUDE.equals(first))
-                return second;
-            
-            if(second == null || Filter.INCLUDE.equals(second))
-                return first;
-            
-            FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-      		return ff.and(first, second);
-        }
-
-        /**
-         * Summarizes, when possible, the rule filters into one. 
-         * @param rules
-         * @param originalFiter
-         * @return
-         */
-       private Filter summarizeRuleFilters(List[] rules) {
-           if(rules[RULES].size() == 0 || rules[ELSE_RULES].size() > 0)
-               return Filter.INCLUDE;
-           
-            List filters = new ArrayList();
-            for (Iterator it = rules[RULES].iterator(); it.hasNext();) {
-                Rule rule = (Rule) it.next();
-                // if there is a single rule asking for all filters, we have to 
-                // return everything that the original filter returned already
-                if(rule.getFilter() == null || Filter.INCLUDE.equals(rule.getFilter()))
-                    return Filter.INCLUDE;
-                else
-                    filters.add(rule.getFilter());
-            }
-            
-            FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-            return ff.or(filters);
-        }
-        
-        /**
-         * Checks if a rule can be triggered at the current scale level
-         * 
-         * @param r
-         *            The rule
-         * @return true if the scale is compatible with the rule settings
-         */
-         boolean isWithInScale(Rule r) {
-                return ((r.getMinScaleDenominator() - TOLERANCE) <= scaleDenominator)
-                    && ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator);
-        }
-
-        /** Creates the bounding box filters (one for each geometric attribute) needed to query a
-         * <code>MapLayer</code>'s feature source to return just the features for the target
-         * rendering extent
-         *
-         * @param schema the layer's feature source schema
-         * @param bbox the expression holding the target rendering bounding box
-         * @return an or'ed list of bbox filters, one for each geometric attribute in
-         *         <code>attributes</code>. If there are just one geometric attribute, just returns
-         *         its corresponding <code>GeometryFilter</code>.
-         * @throws IllegalFilterException if something goes wrong creating the filter
-         */
-        Filter createBBoxFilter(SimpleFeatureType schema, Envelope bbox)
-            throws IllegalFilterException {
-            List filters = new ArrayList();
-            for (int j = 0; j < schema.getAttributeCount(); j++) {
-                AttributeDescriptor attType = schema.getDescriptor(j);
-
-                if (attType instanceof GeometryDescriptor) {
-                    Filter gfilter = filterFactory.bbox(attType.getLocalName(), bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null);
-                    filters.add(gfilter);
-                }
-            }
-
-            if(filters.size() == 0)
-                return Filter.INCLUDE;
-            else if(filters.size() == 1)
-                return (Filter) filters.get(0);
-            else
-                return filterFactory.or(filters);
         }
     }
 }
