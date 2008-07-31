@@ -206,7 +206,19 @@
 	</bean>
 	
 	<bean id="bboxKvpParser" class="org.geoserver.wfs.kvp.BBoxKvpParser"/>
-	<bean id="filterKvpParser" class="org.geoserver.wfs.kvp.FilterKvpParser"/>
+	<bean id="filter1_0_0_KvpParser" class="org.geoserver.wfs.kvp.Filter_1_0_0_KvpParser">
+		<property name="service"><value>WFS</value></property>
+		<property name="version"><value>1.0.0</value></property>
+	</bean>
+	<bean id="filter1_1_0_KvpParser" class="org.geoserver.wfs.kvp.Filter_1_1_0_KvpParser">
+		<property name="service"><value>WFS</value></property>
+		<property name="version"><value>1.1.0</value></property>
+	</bean>
+	<!-- the filter kvp parser to use when the version and/or service parameters are not supplied
+	     (they're mandatory, but we're lax, so without this default catch-all parser the dispatcher
+	     may not find out the one to use) -->
+	<bean id="filter1_1_0_KvpParserDefault" class="org.geoserver.wfs.kvp.Filter_1_1_0_KvpParser"/>
+
     <bean id="cqlKvpParser" class="org.geoserver.wfs.kvp.CQLFilterKvpParser"/>
 	<bean id="propertyNameKvpParser" class="org.geoserver.ows.NestedKvpParser">
 		<constructor-arg index="0" value="propertyName"/>
