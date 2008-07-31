@@ -5,20 +5,27 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 
+import org.geotools.data.FeatureSource;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.DefaultGeocentricCRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.xml.transform.TransformerBase;
+import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.util.Requests;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
-import java.util.Map;
+import java.util.Iterator;
+import java.util.logging.Level;
 
 
 /**
@@ -51,19 +58,14 @@ import java.util.Map;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class KMLRasterTransformer extends KMLTransformerBase {
-    /**
-     * The map context
-     */
-    final WMSMapContext mapContext;
-
+public class KMLRasterTransformer extends KMLMapTransformer {
     /**
      * Flag controlling wether images are refernces inline or as remote wms calls.
      */
     boolean inline = false;
 
     public KMLRasterTransformer(WMSMapContext mapContext) {
-        this.mapContext = mapContext;
+        super(mapContext, null);
 
         setNamespaceDeclarationEnabled(false);
     }
@@ -76,7 +78,7 @@ public class KMLRasterTransformer extends KMLTransformerBase {
         return new KMLRasterTranslator(handler);
     }
 
-    class KMLRasterTranslator extends KMLTranslatorSupport {
+    class KMLRasterTranslator extends KMLMapTranslatorSupport {
         public KMLRasterTranslator(ContentHandler handler) {
             super(handler);
         }
@@ -131,6 +133,82 @@ public class KMLRasterTransformer extends KMLTransformerBase {
             end("LatLonBox");
 
             end("GroundOverlay");
+
+            // if the kmplacemark format option is true,
+            // add placmarks to the output
+            boolean kmplacemark = false;
+            if (mapContext.getRequest().getFormatOptions().get("kmplacemark") != null)
+                kmplacemark = ((Boolean) mapContext.getRequest()
+                        .getFormatOptions().get("kmplacemark")).booleanValue();
+            if (kmplacemark) {
+                FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
+                try {
+                    features = KMLUtils
+                            .loadFeatureCollection(
+                                    (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer
+                                            .getFeatureSource(), mapLayer,
+                                    mapContext);
+                } catch (Exception ex) {
+                    String msg = "Error getting features.";
+                    LOGGER.log(Level.WARNING, msg, ex);
+                }
+
+                if (features != null && features.size() > 0) {
+                    Geometry geom = null;
+                    Geometry centroidGeom = null;
+
+                    // get geometry of the area of interest
+                    Envelope aoi = mapContext.getAreaOfInterest();
+                    GeometryFactory factory = new GeometryFactory();
+                    Geometry displayGeom = factory.toGeometry(new Envelope(aoi
+                            .getMinX(), aoi.getMaxX(), aoi.getMinY(), aoi
+                            .getMaxY()));
+
+                    // get the styles for this feature
+                    SimpleFeatureType featureType = features.getSchema();
+                    FeatureTypeStyle[] fts = KMLUtils.filterFeatureTypeStyles(
+                            mapLayer.getStyle(), featureType);
+
+                    // get the kmattr value
+                    boolean kmattr = true;
+                    if (mapContext.getRequest().getFormatOptions().containsKey(
+                            "kmattr")) {
+                        kmattr = ((Boolean) mapContext.getRequest()
+                                .getFormatOptions().get("kmattr"))
+                                .booleanValue();
+                    }
+
+                    Iterator<SimpleFeature> iter = features.iterator();
+                    while (iter.hasNext()) {
+                        SimpleFeature ftr = iter.next();
+                        geom = (Geometry) ftr.getDefaultGeometry();
+
+                        encodeStyle(ftr, fts);
+
+                        // if this is a multipolygon, get the largest polygon
+                        // that intersects the AOI
+                        if (geom instanceof MultiPolygon) {
+                            double maxSize = -1;
+                            int numGeoms = geom.getNumGeometries();
+                            for (int i = 0; i < numGeoms; i++) {
+                                Polygon poly = (Polygon) geom.getGeometryN(i);
+                                if (poly.getArea() > maxSize) {
+                                    if (displayGeom.intersects(poly)) {
+                                        geom = poly;
+                                        maxSize = poly.getArea();
+                                    }
+                                }
+                            }
+                        }
+                        Geometry g1 = displayGeom.intersection(geom);
+                        // skip if the geometry is not in the AOI
+                        if (g1.isEmpty())
+                            continue;
+                        centroidGeom = g1.getCentroid();
+                        encodePlacemark(ftr, fts, centroidGeom);
+                    }
+                }
+            }
 
             end("Folder");
 

@@ -32,8 +32,10 @@ import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
-import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
+import org.geotools.styling.PointSymbolizer;
+import org.geotools.styling.Style;
+import org.geotools.styling.visitor.DuplicatingStyleVisitor;
 import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
@@ -292,6 +294,36 @@ public abstract class DefaultRasterMapProducer extends
 		    rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
 		}
+
+        boolean kmplacemark = false;
+        if (mapContext.getRequest().getFormatOptions().get("kmplacemark") != null)
+            kmplacemark = ((Boolean) mapContext.getRequest().getFormatOptions()
+                    .get("kmplacemark")).booleanValue();
+        if (kmplacemark) {
+            // create a StyleVisitor that copies a style, but removes the
+            // PointSymbolizers and TextSymbolizers
+            DuplicatingStyleVisitor dupVisitor = new DuplicatingStyleVisitor() {
+                public void visit(PointSymbolizer ps) {
+                    pages.push(null);
+                }
+
+                public void visit(org.geotools.styling.TextSymbolizer ts) {
+                    pages.push(null);
+                }
+            };
+
+            // Remove PointSymbolizers and TextSymbolizers from the
+            // layers' Styles to prevent their rendering on the
+            // raster image. Both are better served with the
+            // placemarks.
+            MapLayer[] layers = mapContext.getLayers();
+            for (int i = 0; i < layers.length; i++) {
+                Style style = layers[i].getStyle();
+                style.accept(dupVisitor);
+                Style copy = (Style) dupVisitor.getCopy();
+                layers[i].setStyle(copy);
+            }
+        }
 		renderer.setRendererHints(rendererParams);
 		
 		// if abort already requested bail out
