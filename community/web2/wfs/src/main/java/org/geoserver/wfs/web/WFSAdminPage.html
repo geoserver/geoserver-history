@@ -13,18 +13,20 @@
     <fieldset>
       <legend><wicket:message key="page.serviceLevel">Service Level</wicket:message></legend>
       <span wicket:id="serviceLevel">
-        <input id="basic" wicket:id="basic" class="field radio" type="radio"></input>
-        <label for="basic" class="choice">
-         <wicket:message key="page.basic">Basic</wicket:message>
-        </label>
-        <input id="transactional" wicket:id="transactional" class="field radio" type="radio"></input>
-        <label for="transactional" class="choice">
-         <wicket:message key="page.transactional">Transactional</wicket:message>
-        </label>
-        <input id="complete" wicket:id="complete" class="field radio" type="radio"></input>
-        <label for="complete" class="choice">
-         <wicket:message key="page.complete">Complete</wicket:message>
-        </label>
+      <ul>
+      	<li>
+        	<input id="basic" wicket:id="basic" class="field radio" type="radio"></input>
+        	<label for="basic" class="choice"><wicket:message key="page.basic">Basic</wicket:message></label>
+        </li>
+        <li>
+        	<input id="transactional" wicket:id="transactional" class="field radio" type="radio"></input>
+        	<label for="transactional" class="choice"><wicket:message key="page.transactional">Transactional</wicket:message></label>
+        </li>
+        <li>
+   			<input id="complete" wicket:id="complete" class="field radio" type="radio"></input>
+        	<label for="complete" class="choice"><wicket:message key="page.complete">Complete</wicket:message></label>
+        </li>
+      </ul>
       </span>
     </fieldset>
     <p class="instruct">
