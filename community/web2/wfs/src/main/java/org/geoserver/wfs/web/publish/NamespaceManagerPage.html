@@ -20,17 +20,22 @@
         </div>
       </td>
     </tr>
-    <!-- [TODO] Does this more properly belong out of the table? -->
-    <tr wicket:id="input">
-      <td wicket:id="newPrefix"/>
-      <td wicket:id="newURI"/>
+    <form wicket:id="input">
+    <tr>
+      <td> <input type="text" wicket:id="newPrefix"></input></td>
+      <td> <input type="text" wicket:id="newURI"></input> </td>
       <td class="actions">
         <div class="buttons selfclear">
-          <!-- [TODO] add image <img src="img/icons/silk/add.png" alt="Add" /> -->
-          <a class="positive" href="#" wicket:id="add"><wicket:message key="wfs.publish.namespace.add">Add Namespace</wicket:message></a>
+          <button type="submit" wicket:id="add">
+          <wicket:link>
+              <!-- <img src="/org/geoserver/web/img/icons/silk/add.png" alt="Add" /> -->
+              <wicket:message key="wfs.publish.namespace.add">Add Namespace</wicket:message>
+          </wicket:link>
+          </button>
         </div>
       </td>
     </tr>
+    </form>
   </tbody>
 </table>
 </wicket:extend>
