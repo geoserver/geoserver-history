@@ -2,26 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wfs.kvp;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+package org.geoserver.wms.kvp;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.filter.FilterFilter;
+import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
 import org.geotools.xml.Configuration;
@@ -32,35 +19,43 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /**
- * A base {@code FILTER} parameter parser that expects a subclass to provide the
- * actual {@link Parser} configuration for the expected OGC Filter Encoding spec
- * version.
+ * Parses the custom <code>FILTER</code> parameter for a WMS GetMap request.
+ * <p>
+ * This parser makes a best effort to parse the provided filter by trying with the
+ * parsers for the different supported OGC filter spec versions.
+ * </p>
  * 
- * @author Justin Deoliveira
+ * @authod Justin Deoliveira
  * @author Gabriel Roldan
+ * @version $Id$
+ * @since 1.7.x
  */
-public abstract class FilterKvpParser extends KvpParser {
-
+public class FilterKvpParser extends KvpParser {
     public FilterKvpParser() {
         super("filter", List.class);
     }
 
     /**
-     * Subclasses shall implement to provide the parse() method the appropriate
-     * parser Configuration for the filter spec version they specialize on.
-     * 
-     * @return The Configuration for the appropriate Filter spec version.
+     * @return a {@code List<Filter>} with the parsed filters from the 
+     * {@code FILTER=} request parameter
      */
-    protected abstract Configuration getParserConfiguration();
-
+    @SuppressWarnings("unchecked")
     public Object parse(String value) throws Exception {
-        // create the parser
-        final Configuration configuration = getParserConfiguration();
-        final Parser parser = new Parser(configuration);
-
-        // seperate the individual filter strings
+        //seperate the individual filter strings
         List unparsed = KvpUtils.readFlat(value, KvpUtils.OUTER_DELIMETER);
         List filters = new ArrayList();
 
@@ -68,30 +63,41 @@ public abstract class FilterKvpParser extends KvpParser {
 
         while (i.hasNext()) {
             String string = (String) i.next();
-            if ("".equals(string.trim())) {
+            if("".equals(string.trim())){
                 filters.add(Filter.INCLUDE);
-            } else {
-                InputStream input = new ByteArrayInputStream(string.getBytes());
-
+            }else{
+                Filter filter;
+                final byte[] rawContent = string.getBytes();
+                InputStream input = new ByteArrayInputStream(rawContent);
+    
                 try {
-                    Filter filter = (Filter) parser.parse(input);
-
-                    if (filter == null) {
-                        throw new NullPointerException();
-                    }
-
-                    filters.add(filter);
+                    //create the parser
+                    Configuration configuration = new OGCConfiguration();
+                    Parser parser_1_0_0 = new Parser(configuration);
+                    filter = (Filter) parser_1_0_0.parse(input);
                 } catch (Exception e) {
-                    // parsing failed, fall back to old parser
-                    String msg = "Unable to parse filter: " + string;
-                    LOGGER.log(Level.WARNING, msg, e);
-
-                    Filter filter = parseXMLFilterWithOldParser(new StringReader(string));
-
-                    if (filter != null) {
+                    //parsing failed, try with a Filter 1.1.0 parser
+                    try{
+                        input = new ByteArrayInputStream(rawContent);
+                        Configuration configuration = new org.geotools.filter.v1_1.OGCConfiguration();
+                        Parser parser_1_1_0 = new Parser(configuration);
+                        filter = (Filter) parser_1_1_0.parse(input);
+                        
                         filters.add(filter);
+                    }catch(Exception e2){
+                        //parsing failed, fall back to old parser
+                        String msg = "Unable to parse filter: " + string;
+                        LOGGER.log(Level.WARNING, msg, e);
+        
+                        filter = parseXMLFilterWithOldParser(new StringReader(string));
                     }
                 }
+                
+                if (filter == null) {
+                    throw new NullPointerException();
+                }
+
+                filters.add(filter);
             }
         }
 
@@ -105,16 +111,15 @@ public abstract class FilterKvpParser extends KvpParser {
      * backwards compatability with cases in which the new parser chokes on a
      * filter that hte old one could handle.
      * </p>
-     * 
-     * @param rawRequest
-     *            The plain POST text from the client.
-     * 
+     *
+     * @param rawRequest The plain POST text from the client.
+     *
      * @return The geotools filter constructed from rawRequest.
-     * 
-     * @throws WfsException
-     *             For any problems reading the request.
+     *
+     * @throws WfsException For any problems reading the request.
      */
-    protected Filter parseXMLFilterWithOldParser(Reader rawRequest) throws ServiceException {
+    protected Filter parseXMLFilterWithOldParser(Reader rawRequest)
+        throws ServiceException {
         // translate string into a proper SAX input source
         InputSource requestSource = new InputSource(rawRequest);
 
@@ -135,13 +140,13 @@ public abstract class FilterKvpParser extends KvpParser {
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
             throw new ServiceException(e, "XML getFeature request SAX parsing error",
-                    XmlRequestReader.class.getName());
+                XmlRequestReader.class.getName());
         } catch (IOException e) {
             throw new ServiceException(e, "XML get feature request input error",
-                    XmlRequestReader.class.getName());
+                XmlRequestReader.class.getName());
         } catch (ParserConfigurationException e) {
             throw new ServiceException(e, "Some sort of issue creating parser",
-                    XmlRequestReader.class.getName());
+                XmlRequestReader.class.getName());
         }
 
         LOGGER.fine("passing filter: " + contentHandler.getFilter());

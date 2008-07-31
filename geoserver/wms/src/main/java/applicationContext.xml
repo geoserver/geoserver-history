@@ -111,6 +111,9 @@
 	</bean>
  	
  	<!-- kvp parsers -->
+ 	<bean id="wmsFilterKvpParser" class="org.geoserver.wms.kvp.FilterKvpParser">
+ 		<property name="service"><value>WMS</value></property>
+ 	</bean>
  	<bean id="widthKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
 		<constructor-arg value="width"/>
  	</bean>

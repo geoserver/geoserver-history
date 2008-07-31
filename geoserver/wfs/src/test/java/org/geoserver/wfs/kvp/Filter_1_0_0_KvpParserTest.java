@@ -9,7 +9,7 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
 
-public class FilterKvpParserTest extends TestCase {
+public class Filter_1_0_0_KvpParserTest extends TestCase {
 
     public void test() throws Exception {
         String filter = "%3Cogc%3AFilter+xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net"
@@ -20,7 +20,7 @@ public class FilterKvpParserTest extends TestCase {
                 + "%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E";
         filter = URLDecoder.decode(filter, "UTF-8");
 
-        List filters = (List) new FilterKvpParser().parse(filter);
+        List filters = (List) new Filter_1_0_0_KvpParser().parse(filter);
         assertNotNull(filters);
         assertEquals(1, filters.size());
 
@@ -35,7 +35,7 @@ public class FilterKvpParserTest extends TestCase {
                 + "%20fid=%22tiger_roads.3%22/%3E%3C/Filter%3E)";
         filter = URLDecoder.decode(filter, "UTF-8");
 
-        List filters = (List) new FilterKvpParser().parse(filter);
+        List filters = (List) new Filter_1_0_0_KvpParser().parse(filter);
         assertNotNull(filters);
         assertEquals(2, filters.size());
 
@@ -55,7 +55,7 @@ public class FilterKvpParserTest extends TestCase {
                 + "%22%3E%3CFeatureId%20fid=%22roads.3%22/%3E%3C/Filter%3E)";
         param = URLDecoder.decode(param, "UTF-8");
         
-        List filters = (List) new FilterKvpParser().parse(param);
+        List filters = (List) new Filter_1_0_0_KvpParser().parse(param);
         assertNotNull(filters);
         assertEquals(2, filters.size());
         
@@ -68,4 +68,6 @@ public class FilterKvpParserTest extends TestCase {
         assertNotNull(fid);
         assertTrue(fid instanceof Id);
     }
+    
+    
 }

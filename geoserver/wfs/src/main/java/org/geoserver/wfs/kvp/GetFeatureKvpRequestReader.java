@@ -5,8 +5,11 @@
 package org.geoserver.wfs.kvp;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.Dispatcher;
 import org.geoserver.wfs.WFSException;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -47,7 +50,7 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         this.catalog = catalog;
         this.filterFactory = filterFactory;
     }
-
+    
     /**
      * Performs additinon GetFeature kvp parsing requirements
      */
