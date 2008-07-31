@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -49,6 +50,8 @@ public class StyleEditorPage extends GeoServerBasePage{
         };
         theForm.add(new TextField("name"));
         theForm.add(new TextArea("sld", new PropertyModel(this, "rawSLD")));
+        theForm.add(new Button("submit"));
+        theForm.add(new Button("cancel"));
         add(theForm);
     }
 
