@@ -7,6 +7,9 @@ package org.geoserver.web.admin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Iterator;
+
+import javax.media.jai.JAI;
 
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
@@ -24,12 +27,16 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.web.GeoServerBasePage;
+import org.geotools.data.LockingManager;
+import org.geotools.data.DataStore;
 
+import com.sun.media.jai.util.SunTileCache;
 /** 
  * 
  * @author Arne Kepp, The Open Planning Project
@@ -37,7 +44,7 @@ import org.geoserver.web.GeoServerBasePage;
 @SuppressWarnings("serial")
 public class ServerAdminPage extends GeoServerBasePage {
     private static final long serialVersionUID = 4712657652337914993L;
-    
+
     public ServerAdminPage() {
         setModel(new Model("tabpanel"));
 
@@ -65,64 +72,64 @@ public class ServerAdminPage extends GeoServerBasePage {
         final IModel jaiModel = new LoadableDetachableModel(){
             public Object load() {
                 return getGeoServerApplication()
-                       .getGeoServer()
-                       .getGlobal()
-                       .getMetadata()
-                       .get(JAIInfo.KEY);
+                    .getGeoServer()
+                    .getGlobal()
+                    .getMetadata()
+                    .get(JAIInfo.KEY);
             }
         };
 
         final IModel contactModel = new LoadableDetachableModel(){
             public Object load() {
                 return getGeoServerApplication()
-                       .getGeoServer()
-                       .getGlobal()
-                       .getContact();
+                    .getGeoServer()
+                    .getGlobal()
+                    .getContact();
             }
         };
 
         tabs.add(new AbstractTab(new Model("Persistence")){
-            public Panel getPanel(String panelId){
+                public Panel getPanel(String panelId){
                 return new TabPanelPersistence(panelId);
-            }
-        });
+                }
+                });
 
         // General server settings, logging and Java
         tabs.add(new AbstractTab(new Model("Settings")) {
-            public Panel getPanel(String panelId) {
+                public Panel getPanel(String panelId) {
                 return new TabPanelSettings(panelId, geoServerModel, globalInfoModel, globalConfigModel);
-            }
-        });
+                }
+                });
 
         // Settings related to Java Advanced Imaging (JAI)
         tabs.add(new AbstractTab(new Model("Java Advanced Imaging")) {
-            public Panel getPanel(String panelId) {
+                public Panel getPanel(String panelId) {
                 return new TabPanelJAI(panelId, geoServerModel, globalInfoModel, jaiModel);
-            }
-        });
+                }
+                });
 
         // Settings for credits and contact information
         tabs.add(new AbstractTab(new Model("Contact Information")) {
-            public Panel getPanel(String panelId) {
+                public Panel getPanel(String panelId) {
                 return new TabPanelContact(panelId, geoServerModel, contactModel);
-            }
-        });
+                }
+                });
 
         // add the new tabbed panel
         add(new TabbedPanel("tabs", tabs));
     }
-    
+
     protected void handleSubmit(Object obj) {
         getGeoServer().save((GeoServerInfo) obj);
     }
-    
-    
+
+
     private static class TabPanelSettings extends Panel {
         private static final long serialVersionUID = 4716657682337915996L;
 
         public TabPanelSettings(String id, final IModel geoServerModel, final IModel globalInfoModel, final IModel globalConfigModel) {
             super(id);
-                        
+
             Form form = new Form("form", new CompoundPropertyModel(globalInfoModel)) {
                 protected void onSubmit() {
                     ((GeoServer)geoServerModel.getObject())
@@ -131,7 +138,7 @@ public class ServerAdminPage extends GeoServerBasePage {
             };
 
             add( form );
-            
+
             form.add( new TextField( "maxFeatures", new PropertyModel(globalConfigModel,"maxFeatures") ) );
             form.add( new CheckBox( "verbose" ) );
             form.add( new CheckBox( "verboseExceptions" ) );
@@ -141,32 +148,32 @@ public class ServerAdminPage extends GeoServerBasePage {
             logLevelsAppend(form, globalConfigModel);
             form.add( new CheckBox( "stdOutLogging" ) );
             form.add( new TextField("loggingLocation") );
-            
+
             Button submit = new Button("submit",new StringResourceModel( "submit", this, null) );
             form.add(submit);
         }
-        
+
         private void logLevelsAppend(Form form, IModel globalConfigModel) {
             List<String> logProfiles = Arrays.asList(
-                "DEFAULT_LOGGING.properties",
-                "VERBOSE_LOGGING.properties",
-                "PRODUCTION_LOGGING.properties",
-                "GEOTOOLS_DEVELOPER_LOGGING.properties",
-                "GEOSERVER_DEVELOPER_LOGGING.properties");
-            
+                    "DEFAULT_LOGGING.properties",
+                    "VERBOSE_LOGGING.properties",
+                    "PRODUCTION_LOGGING.properties",
+                    "GEOTOOLS_DEVELOPER_LOGGING.properties",
+                    "GEOSERVER_DEVELOPER_LOGGING.properties");
+
             form.add(new ListChoice("log4jConfigFile",
-                    new PropertyModel(globalConfigModel, "log4jConfigFile"), logProfiles ));
+                        new PropertyModel(globalConfigModel, "log4jConfigFile"), logProfiles ));
         }
     };
-    
+
     private static class TabPanelJAI extends Panel
     {
         private static final long serialVersionUID = -1184717232184497578L;
-        
+
         public TabPanelJAI(String id, final IModel geoServerModel, final IModel globalInfoModel, final IModel jaiModel)
         {
             super(id);
-            
+
             Form form = new Form("form", new CompoundPropertyModel(jaiModel)) {
                 protected void onSubmit() {
                     ((GeoServer)geoServerModel.getObject())
@@ -178,9 +185,9 @@ public class ServerAdminPage extends GeoServerBasePage {
                             );
                 }
             };
-            
+
             add( form );
-            
+
             form.add(new TextField("memoryCapacity"));
             form.add(new TextField("memoryThreshold"));
             form.add(new TextField("tileThreads"));
@@ -189,27 +196,27 @@ public class ServerAdminPage extends GeoServerBasePage {
             form.add(new CheckBox("imageIOCache"));
             form.add(new CheckBox("jpegAcceleration"));
             form.add(new CheckBox("pngAcceleration"));
-            
+
             Button submit = new Button("submit", new StringResourceModel("submit", this, null));
             form.add(submit);
         }
     }
-    
+
     private static class TabPanelContact extends Panel {
         private static final long serialVersionUID = 348888410971935237L;
 
         public TabPanelContact(String id, final IModel geoServerModel, final IModel contactModel) {
             super(id);
-            
+
             Form form = new Form("form", new CompoundPropertyModel(contactModel)) {
                 protected void onSubmit() {
                     ((GeoServer)geoServerModel.getObject())
                         .getGlobal().setContact((ContactInfo)contactModel.getObject());
                 }
             };
-            
+
             add(form);
-            
+
             form.add(new TextField("contactPerson"));
             form.add(new TextField("contactOrganization"));
             form.add(new TextField("contactPosition"));
@@ -222,36 +229,55 @@ public class ServerAdminPage extends GeoServerBasePage {
             form.add(new TextField("contactVoice"));
             form.add(new TextField("contactFacsimile"));
             form.add(new TextField("contactEmail"));
-            
+
             Button submit = new Button("submit",new StringResourceModel( "submit", this, null) );
             form.add(submit);
         }
     }
 
-    private static class TabPanelPersistence extends Panel {
+    private class TabPanelPersistence extends Panel {
         public TabPanelPersistence(String id){
             //TODO: if we just provide the values directly as the models they won't be refreshed on a page reload (ugh).
             super(id);
-            add(new Label("locks", getLockCount()));
-            add(new Label("connections", getConnectionCount()));
-            add(new Label("memory", "" + Runtime.getRuntime().freeMemory() + "kB"));
+            add(new Label("locks", Long.toString(getLockCount())));
+            add(new Label("connections", Long.toString(getConnectionCount())));
+            add(new Label("memory", Long.toString(Runtime.getRuntime().freeMemory() / 1024) + "kB"));
             add(new Label("jvm.version", System.getProperty("java.vendor") + ": " + System.getProperty("java.version")));
-            add(new Label("jai.available", ClassLoader.getSystemClassLoader().getResource("javax/media/jai/buildVersion") != null));
+            add(new Label("jai.available", 
+                        Boolean.toString(ClassLoader.getSystemClassLoader().getResource("javax/media/jai/buildVersion") != null))
+               );
+
+            JAI jai = ((JAIInfo) 
+                    getGeoServerApplication()
+                    .getGeoServer()
+                    .getGlobal()
+                    .getMetadata()
+                    .get(JAIInfo.KEY))
+                .getJAI();
+
+            SunTileCache jaiCache = ((JAIInfo) 
+                    getGeoServerApplication()
+                    .getGeoServer()
+                    .getGlobal()
+                    .getMetadata()
+                    .get(JAIInfo.KEY))
+                .getTileCache();
+
             add(new Label("jai.memory.available",
-                        getGeoServerApplication().getGeoserver().getJaiCache().getMemoryCapacity())
+                        Long.toString(jaiCache.getMemoryCapacity()))
             );
 
             add(new Label("jai.memory.used", 
-                        getGeoServerApplication().getGeoserver().getJaiCache().getCacheMemoryUsed())
+                        Long.toString(jaiCache.getCacheMemoryUsed()))
                );
             add(new Label("jai.memory.threshold",
-                        getGeoServerApplication().getGeoserver().getJaiCache().getMemoryThreshold())
+                        Float.toString(100.0f * jaiCache.getMemoryThreshold()))
                );
             add(new Label("jai.tile.threads", 
-                        getGeoServerApplication().getGeoserver().getJAIDefault().getTileScheduler().getParallelism())
+                        Integer.toString(jai.getTileScheduler().getParallelism()))
                );
             add(new Label("jai.tile.priority",
-                        getGeoServerApplication().getGeoserver().getJAIDefault().getTileScheduler().getPriority())
+                        Integer.toString(jai.getTileScheduler().getPriority()))
                );
 
             add(new Link("free.locks"){
@@ -281,10 +307,8 @@ public class ServerAdminPage extends GeoServerBasePage {
         }
     }
 
-    private synchronized int getLockCount(){{
+    private synchronized int getLockCount(){
         int count = 0;
-        DataStore dataStore;
-        LockingManager lockingManager;
 
         for (Iterator i = getDataStores().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
@@ -295,7 +319,7 @@ public class ServerAdminPage extends GeoServerBasePage {
             }
 
             try {
-                DataStore store = meta.getDataStore();
+                DataStore store = meta.getDataStore(null);
                 LockingManager lockingManager = store.getLockingManager();
                 if (lockingManager != null){
                     // we can't actually *count* locks right now?
@@ -313,11 +337,9 @@ public class ServerAdminPage extends GeoServerBasePage {
 
     private synchronized int getConnectionCount() {
         int count = 0;
-        DataStoreInfo meta;
-        DataStore dataStore;
 
         for (Iterator i = getDataStores().iterator(); i.hasNext();) {
-            meta = (DataStoreInfo) i.next();
+            DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
                 // Don't count connections from disabled datastores.
@@ -325,7 +347,7 @@ public class ServerAdminPage extends GeoServerBasePage {
             }
 
             try {
-                dataStore = meta.getDataStore();
+                DataStore dataStore = meta.getDataStore(null);
             } catch (Throwable notAvailable) {
                 //TODO: Logging.
                 continue; 
@@ -335,6 +357,10 @@ public class ServerAdminPage extends GeoServerBasePage {
         }
 
         return count;
+    }
+
+    private List<DataStoreInfo> getDataStores(){
+        return getGeoServerApplication().getGeoServer().getCatalog().getDataStores();
     }
 
 }
