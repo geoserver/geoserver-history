@@ -1,47 +1,41 @@
 <html>
 <body>
-  <wicket:extend>
-  <form wicket:id="form">
-    <ul>
-      <li>
-        <fieldset>
-          <legend>Service Metadata</legend>
-          <ul>
-            <li>
-              <span>
-                <input wicket:id="enabled" type="checkbox" class="field checkbox"></input>
-                <label class="choice"><span wicket:id="service.enabled">Enable</span></label>
-              </span>
-              <p class="instruct">
-              </p>
-            </li>
-            <li>
-              <label><wicket:message key="title">Title</wicket:message></label>
-              <span>
-                <input wicket:id="title" class="field text"></input>          
-              </span>
-              <p class="instruct">
-              </p>
-            </li>
-            <li>
-               <label><wicket:message key="abstract">Abstract</wicket:message></label>
-               <span>
-                 <textarea wicket:id="abstract" class="field textarea"></textarea> 
-               </span>
-               <p class="instruct">
-               </p>
-            </li>
-          </ul> 
-        </fieldset>
-      </li>
-      <wicket:child>
-      </wicket:child>
-      <li class="buttons selfclear">
-        <input class="btnTxt" wicket:id="submit" type="submit"></input>
-        <input class="btnTxt" wicket:id="cancel" type="submit"></input> 
-      </li>
-    </ul>    
-  </form>
-  </wicket:extend>
+<wicket:extend>
+<form wicket:id="form">
+  <ul>
+    <li>
+      <fieldset>
+        <legend>Service Metadata</legend>
+        <ul>
+          <li>
+            <input wicket:id="enabled" type="checkbox" class="field checkbox"></input>
+            <label class="choice"><span wicket:id="service.enabled">Enable</span></label>
+            <p class="instruct">
+            </p>
+          </li>
+          <li>
+            <label><wicket:message key="title">Title</wicket:message></label>
+            <input wicket:id="title" class="field text"></input>          
+            <p class="instruct">
+            </p>
+          </li>
+          <li>
+             <label><wicket:message key="abstract">Abstract</wicket:message></label>
+             <textarea wicket:id="abstract" class="field textarea"></textarea> 
+             <p class="instruct">
+             </p>
+          </li>
+        </ul> 
+      </fieldset>
+    </li>
+    <wicket:child>
+    </wicket:child>
+    <li class="buttons selfclear">
+      <input class="btnTxt" wicket:id="submit" type="submit"></input>
+      <input class="btnTxt" wicket:id="cancel" type="submit"></input> 
+    </li>
+  </ul>    
+</form>
+</wicket:extend>
 </body>
 </html>

@@ -3,18 +3,23 @@
 </head>
 <body>
 <wicket:extend>
-    <h2> <wicket:message key="wms.data.style.editorTitle">Style Editor</wicket:message> </h2>
-    <form wicket:id="theForm">
-    <li>
+  <h2><wicket:message key="wms.data.style.editorTitle">Style Editor</wicket:message></h2>
+  <form wicket:id="theForm">
+    <ul>
+      <li>
         <label for="name"><wicket:message key="wms.data.style.name">Name</wicket:message></label>
-        <input wicket:id="name" type="text" />
-    </li>
-    <li>
+        <input id="name" class="field text" wicket:id="name" type="text" />
+      </li>
+      <li>
         <label for="sld"><wicket:message key="wms.data.style.raw">SLD Text</wicket:message></label>
-        <textarea wicket:id="sld"> </textarea>
-    </li>
-    <button type="submit"><wicket:message key="wms.data.style.editorSubmit">Save Changes</wicket:message></button>
-    </form>
+        <textarea id="sld" class="field textarea" wicket:id="sld"> </textarea>
+      </li>
+      <li class="buttons selfclear">
+        <input class="btnTxt" wicket:id="submit" type="submit"></input>
+        <input class="btnTxt" wicket:id="cancel" type="submit"></input> 
+      </li>
+    </ul>
+  </form>
 </wicket:extend>
 </body>
 </html>
