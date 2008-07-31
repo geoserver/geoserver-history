@@ -4,8 +4,17 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
+import org.geoserver.data.test.IOUtils;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -20,6 +30,7 @@ import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -208,6 +219,84 @@ public class KMLTransformerTest extends WMSTestSupport {
 
         Element href = (Element) document.getElementsByTagName("href").item(0);
         assertTrue(href.getFirstChild().getNodeValue().startsWith("http://localhost"));
+    }
+    
+    public void testRasterPlacemark() throws Exception {
+        doTestRasterPlacemark(true);
+        doTestRasterPlacemark(false);
+    }
+
+    protected void doTestRasterPlacemark(boolean doPlacemarks) throws Exception {
+        GetMapRequest getMapRequest = createGetMapRequest(MockData.BASIC_POLYGONS);
+        HashMap formatOptions = new HashMap();
+        formatOptions.put("kmplacemark", new Boolean(doPlacemarks));
+        formatOptions.put("kmscore", new Integer(0));
+        getMapRequest.setFormatOptions(formatOptions);
+
+        WMSMapContext mapContext = new WMSMapContext(getMapRequest);
+        mapContext.addLayer(mapLayer);
+        mapContext.setMapHeight(1024);
+        mapContext.setMapWidth(1024);
+
+        // create the map producer
+        KMZMapProducer mapProducer = (KMZMapProducer) new KMZMapProducerFactory()
+                .createMapProducer(KMZMapProducerFactory.MIME_TYPE, getWMS());
+        mapProducer.setMapContext(mapContext);
+        mapProducer.produceMap();
+
+        // create the kmz
+        File tempDir = IOUtils.createRandomDirectory("./target", "kmplacemark",
+                "test");
+        tempDir.deleteOnExit();
+
+        File zip = new File(tempDir, "kmz.zip");
+        zip.deleteOnExit();
+
+        FileOutputStream output = new FileOutputStream(zip);
+        mapProducer.writeTo(output);
+
+        output.flush();
+        output.close();
+
+        assertTrue(zip.exists());
+
+        // unzip and test it
+        ZipFile zipFile = new ZipFile(zip);
+
+        ZipEntry entry = zipFile.getEntry("wms.kml");
+        assertNotNull(entry);
+        assertNotNull(zipFile.getEntry("layer_0.png"));
+
+        // unzip the wms.kml to file
+        byte[] buffer = new byte[1024];
+        int len;
+
+        InputStream inStream = zipFile.getInputStream(entry);
+        File temp = File.createTempFile("test_out", "kmz", tempDir);
+        temp.deleteOnExit();
+        BufferedOutputStream outStream = new BufferedOutputStream(
+                new FileOutputStream(temp));
+
+        while ((len = inStream.read(buffer)) >= 0)
+            outStream.write(buffer, 0, len);
+        inStream.close();
+        outStream.close();
+
+        // read in the wms.kml and check its contents
+        Document document = dom(new BufferedInputStream(new FileInputStream(
+                temp)));
+
+        assertEquals("kml", document.getDocumentElement().getNodeName());
+        if (doPlacemarks) {
+            assertEquals(getFeatureSource(MockData.BASIC_POLYGONS)
+                    .getFeatures().size(), document.getElementsByTagName(
+                    "Placemark").getLength());
+        } else {
+            assertEquals(0, document.getElementsByTagName("Placemark")
+                    .getLength());
+        }
+
+        zipFile.close();
     }
 
     public void testSuperOverlayTransformer() throws Exception {
