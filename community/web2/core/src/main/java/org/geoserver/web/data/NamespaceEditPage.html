@@ -1,29 +1,26 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<h2><span wicket:id="pageTitle">Add or Edit Workspace</span></h2>
-
-	<form wicket:id="nsForm">
-	<div><span>Short name for the workspace. Will be used as namespace prefix.</span></div>
-	<div>
-		<span wicket:id="prefix">Prefix</span>
-		<input wicket:id="prefixValue" type="text" size="20"/>
-	</div>
-	
-	<div><span>Set a valid URI (Universal Resource Identifier) as namespace</span></div>
-	<div>
-		<span wicket:id="uri">URI</span>
-		<input wicket:id="uriValue" type="text" size="60"/>
-	</div>
-	
-	<div wicket:id="feedback"></div>
-	
-	<div class="buttons selfclear">
-		<a href="#" wicket:id="cancel"><span wicket:id="label">Cancel</span></a>
-		<a href="#" wicket:id="save"><span wicket:id="label">Save</span></a>
-	</div>
-	</form>
-
+<h2><span wicket:id="pageTitle">Add or Edit Workspace</span></h2>
+<form wicket:id="nsForm">
+  <ul>
+    <li>
+      <label for="prefixValue"><span wicket:id="prefix">Prefix</span></label>
+    	<input wicket:id="prefixValue" type="text" size="20"/>
+      <p class="instruct">Short name for the workspace. Will be used as namespace prefix.</p>
+    </li>
+    <li>
+      <label for="uriValue"><span wicket:id="uri">URI</span></label>
+      <input wicket:id="uriValue" type="text" size="60"/>
+      <p class="instruct">Set a valid URI (Universal Resource Identifier) as namespace.</p>
+    </li>
+    <li class="buttons selfclear">
+      <input class="btnTxt" wicket:id="submit" type="submit"></input>
+      <input class="btnTxt" wicket:id="cancel" type="submit"></input> 
+    </li>
+  </ul>
+<div wicket:id="feedback"></div>
+</form>
 </wicket:extend>
 </body>
 </html>

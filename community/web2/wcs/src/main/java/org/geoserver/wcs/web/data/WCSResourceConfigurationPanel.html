@@ -3,45 +3,45 @@
 <body>
 <form name="theForm">
 <wicket:panel>
-<h3><wicket:message key="wcs.data.resource.title">Coverage Settings</wicket:message></h3>
-<ul>
-<li>
-    <label for="requestSRS"><wicket:message key="wcs.data.resource.requestSRS">Request SRS List </wicket:message></label> 
-    <select wicket:id="requestSRS" multiple="multiple"/>
-    <input wicket:id="newRequestSRS" type="text"></input>
-    <button wicket:id="deleteSelectedRequestSRSs" type="submit"><wicket:message key="wcs.data.resource.requestSRS.delete">Delete Selected</wicket:message> </button>
-    <button wicket:id="addNewRequestSRS" type="submit"><wicket:message key="wcs.data.resource.requestSRS.add">Add SRS</wicket:message></button>
-</li>
-<li>
-    <label for="responseSRS"><wicket:message key="wcs.data.resource.responseSRS">Response SRS List </wicket:message></label>
-    <select wicket:id="responseSRS" multiple="multiple"/>
-    <input wicket:id="newResponseSRS" type="text"></input>
-    <button wicket:id="deleteSelectedResponseSRSs" type="submit"><wicket:message key="wcs.data.resource.responseSRS.delete">Delete Selected</wicket:message> </button>
-    <button wicket:id="addNewResponseSRS" type="submit"><wicket:message key="wcs.data.resource.responseSRS.add">Add SRS</wicket:message></button>
-</li>
-<li>
-    <label for="defaultInterpolationMethod"><wicket:message key="wcs.data.resource.defaultInterpolationMethod">Default Interpolation Method</wicket:message></label>
-    <input wicket:id="defaultInterpolationMethod"></input>
-</li>
-<li>
-    <label for="interpolationMethods"><wicket:message key="wcs.data.resource.interpolationMethods">Interpolation Methods</wicket:message></label>
-    <select wicket:id="interpolationMethods" multiple="multiple"/>
-    <input wicket:id="newInterpolationMethod" type="text"></input>
-    <button wicket:id="deleteInterpolationMethods" type="submit"><wicket:message key="wcs.data.resource.interpolationMethods.delete">Delete Selected</wicket:message> </button>
-    <button wicket:id="addNewInterpolationMethod" type="submit"><wicket:message key="wcs.data.resource.interpolationMethods.add">Add Interpolation Method</wicket:message></button>
-</li>
-<li>
-    <label for="nativeFormat"><wicket:message key="wcs.data.resource.nativeFormat">Native Format</wicket:message></label>
-    <input wicket:id="nativeFormat" type="text"></input>
-</li>
-<li>
-    <label for="supportedFormats"><wicket:message key="wcs.data.resource.supportedFormats">Supported Formats</wicket:message></label>
-    <select wicket:id="supportedFormats" multiple="multiple"/>
-    <input wicket:id="newFormat" type="text"></input>
-    <button wicket:id="deleteSelectedFormats" type="submit"><wicket:message key="wcs.data.resource.format.delete">Delete Selected</wicket:message> </button>
-    <button wicket:id="addNewFormat" type="submit"><wicket:message key="wcs.data.resource.format.add">Add Format</wicket:message></button>
-</li>
-</ul>
+  <h3><wicket:message key="wcs.data.resource.title">Coverage Settings</wicket:message></h3>
+  <ul>
+    <li>
+      <label for="requestSRS"><wicket:message key="wcs.data.resource.requestSRS">Request SRS List</wicket:message></label> 
+      <select wicket:id="requestSRS" multiple="multiple"/>
+      <input wicket:id="newRequestSRS" type="text"></input>
+      <button wicket:id="deleteSelectedRequestSRSs" type="submit"><wicket:message key="wcs.data.resource.requestSRS.delete">Delete Selected</wicket:message> </button>
+      <button wicket:id="addNewRequestSRS" type="submit"><wicket:message key="wcs.data.resource.requestSRS.add">Add SRS</wicket:message></button>
+    </li>
+  <li>
+      <label for="responseSRS"><wicket:message key="wcs.data.resource.responseSRS">Response SRS List </wicket:message></label>
+      <select wicket:id="responseSRS" multiple="multiple"/>
+      <input wicket:id="newResponseSRS" type="text"></input>
+      <button wicket:id="deleteSelectedResponseSRSs" type="submit"><wicket:message key="wcs.data.resource.responseSRS.delete">Delete Selected</wicket:message> </button>
+      <button wicket:id="addNewResponseSRS" type="submit"><wicket:message key="wcs.data.resource.responseSRS.add">Add SRS</wicket:message></button>
+  </li>
+  <li>
+      <label for="defaultInterpolationMethod"><wicket:message key="wcs.data.resource.defaultInterpolationMethod">Default Interpolation Method</wicket:message></label>
+      <input wicket:id="defaultInterpolationMethod"></input>
+  </li>
+  <li>
+      <label for="interpolationMethods"><wicket:message key="wcs.data.resource.interpolationMethods">Interpolation Methods</wicket:message></label>
+      <select wicket:id="interpolationMethods" multiple="multiple"/>
+      <input wicket:id="newInterpolationMethod" type="text"></input>
+      <button wicket:id="deleteInterpolationMethods" type="submit"><wicket:message key="wcs.data.resource.interpolationMethods.delete">Delete Selected</wicket:message> </button>
+      <button wicket:id="addNewInterpolationMethod" type="submit"><wicket:message key="wcs.data.resource.interpolationMethods.add">Add Interpolation Method</wicket:message></button>
+  </li>
+  <li>
+      <label for="nativeFormat"><wicket:message key="wcs.data.resource.nativeFormat">Native Format</wicket:message></label>
+      <input wicket:id="nativeFormat" type="text"></input>
+  </li>
+  <li>
+      <label for="supportedFormats"><wicket:message key="wcs.data.resource.supportedFormats">Supported Formats</wicket:message></label>
+      <select wicket:id="supportedFormats" multiple="multiple"/>
+      <input wicket:id="newFormat" type="text"></input>
+      <button wicket:id="deleteSelectedFormats" type="submit"><wicket:message key="wcs.data.resource.format.delete">Delete Selected</wicket:message> </button>
+      <button wicket:id="addNewFormat" type="submit"><wicket:message key="wcs.data.resource.format.add">Add Format</wicket:message></button>
+  </li>
+  </ul>
 </wicket:panel>
 <button type="submit"></button>
 </form>
