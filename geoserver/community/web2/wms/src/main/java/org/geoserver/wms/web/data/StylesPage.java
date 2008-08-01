@@ -16,6 +16,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.wicket.RichEditableLabel;
 
 @SuppressWarnings("serial")
 public class StylesPage extends GeoServerBasePage {
@@ -46,7 +47,7 @@ public class StylesPage extends GeoServerBasePage {
                         item.getIndex() % 2 == 0 ? "even" : "odd"
                         )
                     );
-                item.add(new AjaxEditableLabel("name"));
+                item.add(new RichEditableLabel("name"));
                 item.add(new Link("edit"){
                         @Override
                         public void onClick(){
@@ -70,7 +71,7 @@ public class StylesPage extends GeoServerBasePage {
                     )
                 );
         add(container);
-        container.add(new AjaxEditableLabel("name", new PropertyModel(this, "name")));
+        container.add(new RichEditableLabel("name", new PropertyModel(this, "name")));
         container.add(new Link("add"){
             @Override
             public void onClick(){

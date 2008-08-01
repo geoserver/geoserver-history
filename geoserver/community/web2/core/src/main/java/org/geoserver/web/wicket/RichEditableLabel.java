@@ -16,22 +16,52 @@ public class RichEditableLabel extends Panel{
     private Form form;
     private Object backup;
     private Label label;
+    private IModel myModel;
+
+    public RichEditableLabel(String id){
+        super(id);
+        init();
+    }
 
     public RichEditableLabel(String id, IModel model){
         super(id, model);
+        init();
+    }
 
+    private void init(){
         setupLabel();
         setupForm();
         setOutputMarkupId(true);
     }
 
+    private IModel getMyModel(){
+        if (myModel == null)
+            myModel = new MyModel();
+
+        return myModel;
+    }
+
+    private class MyModel implements IModel {
+        public Object getObject(){
+            return getModel().getObject();
+        }
+
+        public void setObject(Object o){
+            getModel().setObject(o);
+        }
+
+        public void detach(){
+            getModel().detach();
+        }
+    }
+
     public void setupLabel(){
-        label = new Label("label", getModel());
+        label = new Label("label", getMyModel());
         label.add(new AjaxEventBehavior("onclick"){
             protected void onEvent(AjaxRequestTarget target){
                 form.setVisible(true);
                 label.setVisible(false);
-                backup = RichEditableLabel.this.getModel().getObject();
+                backup = getMyModel().getObject();
                 target.addComponent(RichEditableLabel.this);
             }
         });
@@ -41,7 +71,7 @@ public class RichEditableLabel extends Panel{
 
     private void setupForm(){
         form = new Form("form");
-        form.add(new TextField("input", getModel()));
+        form.add(new TextField("input", getMyModel()));
         AjaxLink okay = new AjaxLink("okay"){
             public void onClick(AjaxRequestTarget target){}
         };
