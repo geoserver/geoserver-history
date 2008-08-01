@@ -1,6 +1,8 @@
 package org.geoserver.web.demo;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -18,10 +20,17 @@ public class MapPreviewPage extends GeoServerBasePage {
     public MapPreviewPage(){
         //TODO: This should list Layers, not Resources.  (Should it exist per-workspace? just have
         //the layers grouped by workspace in a single page?)
-        
         IModel resourceListModel = new LoadableDetachableModel(){
-            public Object load(){
-                return getCatalog().getResources(ResourceInfo.class);
+            public Object load() {
+                List<ResourceInfo> resources = getCatalog().getResources(ResourceInfo.class);
+                // sort by prefixed name
+                Collections.sort(resources, new Comparator<ResourceInfo>() {
+                
+                    public int compare(ResourceInfo o1, ResourceInfo o2) {
+                        return o1.getPrefixedName().compareTo(o2.getPrefixedName());
+                    }
+                });
+                return resources;
             }
         };
 
@@ -32,7 +41,8 @@ public class MapPreviewPage extends GeoServerBasePage {
                 final String prefixedName = ((ResourceInfo) item.getModelObject()).getPrefixedName();
 
                 item.add(
-                    new ExternalLink("layerLink", "wms/reflect?layers=" + prefixedName)
+                    new ExternalLink("layerLink", "wms/reflect?layers=" + prefixedName 
+                            + "&format=application/openlayers")
                         .setContextRelative(true)
                         .add(new Label("label", prefixedName))
                 );
@@ -63,6 +73,7 @@ public class MapPreviewPage extends GeoServerBasePage {
             ) {
             formats.add((String)spi.getSupportedFormats().iterator().next());
         }
+        Collections.sort(formats);
 
         return formats;
     }
