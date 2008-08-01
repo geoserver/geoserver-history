@@ -4,74 +4,68 @@
 <wicket:panel>
 
 <table>
-    <th><td></td><td></td></th>
-    <tr><td>Locks</td> <td wicket:id="locks">0</td></tr>
-    <tr><td>Connections</td> <td wicket:id="connections">17</td></tr>
-    <tr><td>Memory</td> <td wicket:id="memory">337825K</td></tr>
-    <tr><td>Version of JVM</td> <td wicket:id="jvm.version">Sun Microsystems Inc.: 1.6.0_03</td></tr>
-    <tr><td>JAI is available</td> <td wicket:id="jai.available">true</td></tr>
-    <tr><td>JAI mem capacity</td> <td wicket:id="jai.memory.available">466048K</td></tr>
-    <tr><td>JAI mem used</td> <td wicket:id="jai.memory.used">0K</td></tr>
-    <tr><td>JAI mem threshold</td> <td wicket:id="jai.memory.threshold">75.0%</td></tr>
-    <tr><td>JAI tile threads</td> <td wicket:id="jai.tile.threads">7</td></tr>
-    <tr><td>JAI tile priority</td> <td wicket:id="jai.tile.priority">5 (1 - Min, 5 - Normal; 10 - Max)</td></tr>
+  <thead>
+    <tr><th><span class="noshow">Data</span></th><th><span class="noshow">Value</span></th><th class="actions">Action</th></tr>
+  </thead>
+  <tbody>
+    <tr class="even"><th scope="row">Locks</th><td wicket:id="locks">0</td><td class="actions"><div class="buttons selfclear"><a href="#" wicket:id="free.locks">Free Locks</a></div></td></tr>
+    <tr class="odd"><th scope="row">Connections</th><td wicket:id="connections">17</td><td class="actions"></td></tr>
+    <tr class="even"><th scope="row">Memory</th><td wicket:id="memory">337825K</td><td class="actions"><div class="buttons selfclear"><a href="#" wicket:id="free.memory">Free Memory</a></div></td></tr>
+    <tr class="odd"><th scope="row">Version of JVM</th><td wicket:id="jvm.version">Sun Microsystems Inc.: 1.6.0_03</td><td class="actions"></td></tr>
+    <tr class="even"><th scope="row">JAI is available</th><td wicket:id="jai.available">true</td><td class="actions"></td></tr>
+    <tr class="odd"><th scope="row">JAI mem capacity</th><td wicket:id="jai.memory.available">466048K</td><td class="actions"></td></tr>
+    <tr class="even"><th scope="row">JAI mem used</th><td wicket:id="jai.memory.used">0K</td><td class="actions"><div class="buttons selfclear"><a href="#" wicket:id="free.memory.jai">Free JAI Memory</a></div></td></tr>
+    <tr class="odd"><th scope="row">JAI mem threshold</th><td wicket:id="jai.memory.threshold">75.0%</td><td class="actions"></td></tr>
+    <tr class="even"><th scope="row">JAI tile threads</th><td wicket:id="jai.tile.threads">7</td><td class="actions"></td></tr>
+    <tr class="odd"><th scope="row">JAI tile priority</th><td wicket:id="jai.tile.priority">5 (1 - Min, 5 - Normal; 10 - Max)</td><td class="actions"></td></tr>
+  </tbody>
 </table>
-
-  <div class="buttons selfclear">
-    <a href="#" wicket:id="free.locks">
-       Free Locks
-    </a>
-    <a href="#" wicket:id="free.memory">
-       Free Memory
-    </a>
-    <a href="#" wicket:id="free.memory.jai">
-       Free JAI Memory
-    </a>
-  </div>
-  
-  Update Sequence: 60
-  <div class="buttons selfclear">
-    <a href="#" wicket:id="persist">
-      <wicket:link>
-      <img src="img/icons/silk/disk.png" alt=""/> Persist
-      </wicket:link>
-    </a>
-    <a href="#" wicket:id="revert">
-      <wicket:link>
-      <img src="img/icons/silk/arrow_redo.png" alt=""/> Revert
-      </wicket:link>
-    </a>
-  </div>
-  <!-- [TODO]
-    * Add status bars for all included modules
-    * include the data about when the module was restarted - ie:
-        GeoServer *  	 Jul 14, 3:07 PM
-        Configuration 	Jul 14, 3:07 PM
-        XML 	Mar 14, 2:15 PM
-        Update Sequence: 	60
-    * Do we want to allow enabling / disabling of modules from this page, as well?
-  -->
-    <div>
+ 
+Update Sequence: 60
+<div class="buttons selfclear">
+  <a href="#" wicket:id="persist">
+    <wicket:link>
+    <img src="img/icons/silk/disk.png" alt=""/> Persist
+    </wicket:link>
+  </a>
+  <a href="#" wicket:id="revert">
+    <wicket:link>
+    <img src="img/icons/silk/arrow_redo.png" alt=""/> Revert
+    </wicket:link>
+  </a>
+</div>
+<!-- [TODO]
+  * Add status bars for all included modules
+  * include the data about when the module was restarted - ie:
+      GeoServer *    Jul 14, 3:07 PM
+      Configuration   Jul 14, 3:07 PM
+      XML   Mar 14, 2:15 PM
+      Update Sequence:  60
+  * Do we want to allow enabling / disabling of modules from this page, as well?
+-->
+  <div class="module-info">
+    <div class="module-header selfclear">
       <h2>GeoServer</h2>
-      <div class="status-bar"><span style="background-position: -50% 0">50%</span></div>
-      <h3>Restart Times</h3>
-      <table>
-        <tbody>
-          <tr>
-            <th scope="row">Geoserver</th>
-            <td wicket:id="reload.date.geoserver">Jul 14, 3:07 PM</td>
-          </tr>
-          <tr>
-            <th scope="row">Configuration</th>
-            <td wicket:id="reload.date.configuration">Jul 14, 3:07 PM</td>
-          </tr>
-          <tr>
-            <th scope="row">XML</th>
-            <td wicket:id="reload.date.xml">Mar 14, 2:15 PM</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="status-bar"><span style="width: 50%;">50%</span></div>
     </div>
+    <h3>Restart Times</h3>
+    <table>
+      <tbody>
+        <tr>
+          <th scope="row">Geoserver</th>
+          <td wicket:id="reload.date.geoserver">Jul 14, 3:07 PM</td>
+        </tr>
+        <tr>
+          <th scope="row">Configuration</th>
+          <td wicket:id="reload.date.configuration">Jul 14, 3:07 PM</td>
+        </tr>
+        <tr>
+          <th scope="row">XML</th>
+          <td wicket:id="reload.date.xml">Mar 14, 2:15 PM</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </wicket:panel>
 </body>
 </html>

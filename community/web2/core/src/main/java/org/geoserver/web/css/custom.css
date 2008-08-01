@@ -140,17 +140,20 @@ border: 1px solid #000;
 border-width: 0 0 1px;
 }
 
-tr:hover td {
+tr:hover td,
+tr:hover th {
 background: #fffef2;
 }
 
-tr.even td {
+tr.even td,
+tr.even th {
 background: #f7faf7; /* override blueprint's settings */
 border: 1px solid #edf0ed;
 border-width: 1px 0;
 }
 
-tr.even:hover td {
+tr.even:hover td,
+tr.even:hover th {
 background: #f6f7e9;
 }
 
@@ -367,12 +370,18 @@ margin-right: 5px;
 }
 
 /*-----------------------
-Targeted Styles
+Header
 -----------------------*/
+
+#header {
+text-align: right;
+}
+
 #header h2 {
 color: #fff;
 margin: 0;
-font-size: 2.4em;
+font-size: 1.76em;
+min-height: 16px;
 float: left;
 }
 
@@ -386,16 +395,17 @@ color: #fefdf1;
 }
 
 #header .buttons {
-float: right;
 padding: 0.5em 0 0;
 }
 
 #header form {
-float: left;
+}
+
+span.username {
+color: #fff;
 }
 
 #header input {
-float: left;
 margin: 0 0.2em;
 padding: 0.2em 0.3em;
 font-size: 0.9em;
@@ -408,9 +418,12 @@ margin: 0 0.2em;
 padding: 0.2em 0.83em 0.2em 0.58em;
 min-height: 16px;
 font-size: 0.9em;
+float: none;
 }
 
-/* Global Pane */
+/*-----------------------
+Sidebar
+-----------------------*/
 
 ul#navigation {
 margin: 20px 0 1.5em;
@@ -465,6 +478,40 @@ height: 16px;
 width: 16px;
 }
 
+/*-----------------------
+Targeted Styles
+-----------------------*/
+.module-info {
+margin: 1em 0;
+}
+
+.module-header {
+margin: 0 0 0.75em;
+}
+
+.module-header h2 {
+margin: 0 20px 0 0;
+float: left;
+}
+
+.status-bar {
+margin: 1.2em 0 0;
+float: left;
+width: 200px;
+height: 6px;
+background-color: #e8e6e6;
+border: 1px solid #555;
+}
+
+.status-bar span {
+display: block;
+background-image: url(../img/status-bar-bg.png);
+background-repeat: no-repeat;
+height: 6px;
+overflow: hidden;
+text-indent: -9999em;
+}
+
 /* Page */
 
 .page-header {
@@ -486,10 +533,6 @@ padding: 10px;
 margin-bottom: 10px;
 overflow: auto;
 border: 1px solid #ccc;
-}
-
-span.username {
-color: white;
 }
 
 
