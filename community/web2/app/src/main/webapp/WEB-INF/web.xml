@@ -45,6 +45,62 @@
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/web/*</url-pattern>
     </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/wms/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/wcs/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/wfs/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/ows/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/wfsv/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/wcs111/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/kml/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/styles/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/www/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/temp/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/history/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/gwc/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
     
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
