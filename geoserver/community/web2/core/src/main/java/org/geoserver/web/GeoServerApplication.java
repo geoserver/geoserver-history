@@ -114,6 +114,16 @@ public class GeoServerApplication extends SpringWebApplication {
     public <T> T getBeanOfType(Class<T> type) {
         return GeoServerExtensions.bean(type, getApplicationContext());
     }
+    
+    /**
+     * Loads a bean from the spring application context with a specific name.
+     * 
+     * @param type
+     *                The class of the bean to return.
+     */
+    public Object getBean(String name) {
+        return GeoServerExtensions.bean(name);
+    }
 
     /**
      * Loads beans from the spring application context of a specific type.
