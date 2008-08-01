@@ -174,6 +174,11 @@ public class GeoServerBasePage extends WebPage {
 
         @Override
         public final void onSubmit(){
+            if (username.length() == 0){
+                Session.get().warn("No username provided!");
+                return;
+            }
+
             if (signIn(username, password)){
                 if (!continueToOriginalDestination()) {
                     setResponsePage(getApplication().getHomePage());
