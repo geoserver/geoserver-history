@@ -6,6 +6,7 @@ package org.geoserver.web;
 
 import java.util.List;
 
+import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -59,7 +60,9 @@ public class GeoServerBasePage extends WebPage {
         // login form
         Form loginForm = new SignInForm("loginform");
         add(loginForm);
-        loginForm.setVisible(GeoServerSession.get().getAuthentication() == null);
+        final Authentication user = GeoServerSession.get().getAuthentication();
+        final boolean anonymous = user == null;
+        loginForm.setVisible(anonymous);
 
         Form logoutForm = new StatelessForm("logoutform"){
             @Override
@@ -68,10 +71,10 @@ public class GeoServerBasePage extends WebPage {
                 setResponsePage(GeoServerHomePage.class);
             }
         };
-        logoutForm.setVisible(GeoServerSession.get().getAuthentication() != null);
+        logoutForm.setVisible(user != null);
 
         add(logoutForm);
-        logoutForm.add(new Label("username", GeoServerSession.get().getAuthentication() == null ? "Nobody" : "Some guy"));
+        logoutForm.add(new Label("username", anonymous ? "Nobody" : user.getName()));
 
         // home page link
         add( new BookmarkablePageLink( "home", GeoServerHomePage.class )
