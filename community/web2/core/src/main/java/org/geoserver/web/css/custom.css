@@ -61,16 +61,16 @@ width: 80%;
 border: 1px solid #ccccb8;
 }
 
-.info {
+.notice {
 color: #000;
 background: #83d2e6;
 }
 
-.info a {
+.notice a {
 color: #176073;
 }
 
-.info a:hover {
+.notice a:hover {
 color: #007a99;
 }
 
@@ -141,17 +141,17 @@ border-width: 0 0 1px;
 }
 
 tr:hover td {
-background: #fcfdf9;
+background: #fffef2;
 }
 
 tr.even td {
-background: #fdfefd; /* override blueprint's settings */
-border: 1px solid #fcfdfc;
-border-width: 0 0 1px;
+background: #f7faf7; /* override blueprint's settings */
+border: 1px solid #edf0ed;
+border-width: 1px 0;
 }
 
 tr.even:hover td {
-background: #fafbfa;
+background: #f6f7e9;
 }
 
 th.actions,
@@ -161,7 +161,6 @@ width: 13em;
 
 /*-----------------------
 Forms
-
 -----------------------*/
 form ul {
 margin: 0; /* override blueprint's settings for unordered lists */
@@ -169,7 +168,6 @@ list-style-type: none;
 }
 
 form li {
-width: 62%;
 display: block;
 margin: 0;
 padding: 4px 5px 2px 0;
@@ -181,8 +179,18 @@ margin: 0;
 }
 
 form li li {
-width: 100%;
 padding: 0;
+}
+
+fieldset { /* override blueprint's settings */
+padding: 0;
+margin: 0;
+border: 2px solid #000;
+border-width: 2px 0 0;
+width: 35em;
+}
+
+legend {
 }
 
 label {
@@ -224,7 +232,7 @@ textarea.textarea {
 font-family: "Lucida Grande",Tahoma,Arial,sans-serif;
 }
 
-input.large, select.large, textarea.textarea {
+input.large, select.large, textarea.large {
 width: 100%;
 }
 
@@ -241,7 +249,8 @@ width: 25em;
 }
 
 textarea.textarea {
-height: 13em;
+height: 15em;
+width: 33em;
 }
 
 input.text, input.file, textarea.textarea, select.select {
@@ -387,13 +396,18 @@ float: left;
 
 #header input {
 float: left;
-padding: 0.55em 0.3em;
-font-size: 1em;
+margin: 0 0.2em;
+padding: 0.2em 0.3em;
+font-size: 0.9em;
+min-height: 16px;
 }
 
 #header .buttons a,
 #header .buttons button {
-margin: 0;
+margin: 0 0.2em;
+padding: 0.2em 0.83em 0.2em 0.58em;
+min-height: 16px;
+font-size: 0.9em;
 }
 
 /* Global Pane */
@@ -454,6 +468,7 @@ width: 16px;
 /* Page */
 
 .page-header {
+padding: 20px 0 0;
 margin-bottom: 0.75em;
 max-width: 70em;
 }
