@@ -91,13 +91,13 @@ public class ModificationProxy implements InvocationHandler {
     }
     
     public HashMap<String,Object> getProperties() {
-        return properties;
+        return properties();
     }
     
     public void commit() {
         synchronized (proxyObject) {
             //commit changes to the proxy object
-            for ( Map.Entry<String,Object> e : properties.entrySet() ) {
+            for ( Map.Entry<String,Object> e : properties().entrySet() ) {
                 String p = e.getKey();
                 Object v = e.getValue();
                 
@@ -147,7 +147,7 @@ public class ModificationProxy implements InvocationHandler {
     public List<String> getPropertyNames() {
         List<String> propertyNames = new ArrayList<String>();
         
-        for ( String propertyName : properties.keySet() ) {
+        for ( String propertyName : properties().keySet() ) {
             propertyNames.add( Character.toLowerCase( propertyName.charAt( 0 ) )
               + propertyName.substring(1));
         }
@@ -157,7 +157,7 @@ public class ModificationProxy implements InvocationHandler {
     
     public List<Object> getOldValues() {
         List<Object> oldValues = new ArrayList<Object>();
-        for ( String propertyName : properties.keySet() ) {
+        for ( String propertyName : properties().keySet() ) {
             try {
                 Method g = getter(propertyName);
                 if ( g == null ) {
@@ -175,7 +175,7 @@ public class ModificationProxy implements InvocationHandler {
     }
     
     public List<Object> getNewValues() {
-        return new ArrayList<Object>(properties.values());
+        return new ArrayList<Object>(properties().values());
     }
     
     /*
