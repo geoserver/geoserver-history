@@ -38,17 +38,16 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
         DefaultWebMapService reflector = new DefaultWebMapService();
 
         /* Run the reflector */
-        reflector.getMap = request;
         request.setLayers(mockGMR.getLayers());
         request.setFormat(DefaultWebMapService.FORMAT);
-        reflector.autoSetBoundsAndSize();
+        reflector.autoSetBoundsAndSize(request);
         
-        CoordinateReferenceSystem crs = reflector.getMap.getCrs();
-        String srs = reflector.getMap.getSRS();
-        Envelope bbox = reflector.getMap.getBbox();
-        String format = reflector.getMap.getFormat();
-        int width = reflector.getMap.getWidth();
-        int height = reflector.getMap.getHeight();
+        CoordinateReferenceSystem crs = request.getCrs();
+        String srs = request.getSRS();
+        Envelope bbox = request.getBbox();
+        String format = request.getFormat();
+        int width = request.getWidth();
+        int height = request.getHeight();
         
         String crsString = crs.getName().toString();
         assertTrue("EPSG:WGS 84".equalsIgnoreCase(crsString));
@@ -76,19 +75,18 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
         DefaultWebMapService reflector = new DefaultWebMapService();
 
         /* Run the reflector */
-        reflector.getMap = request;
-        reflector.getMap.setSRS("EPSG:41001");
-        reflector.getMap.setCrs(CRS.decode("EPSG:41001"));
+        request.setSRS("EPSG:41001");
+        request.setCrs(CRS.decode("EPSG:41001"));
         request.setLayers(mockGMR.getLayers());
         request.setFormat("image/gif");
-        reflector.autoSetBoundsAndSize();
+        reflector.autoSetBoundsAndSize(request);
         
-        CoordinateReferenceSystem crs = reflector.getMap.getCrs();
-        String srs = reflector.getMap.getSRS();
-        Envelope bbox = reflector.getMap.getBbox();
-        String format = reflector.getMap.getFormat();
-        int width = reflector.getMap.getWidth();
-        int height = reflector.getMap.getHeight();
+        CoordinateReferenceSystem crs = request.getCrs();
+        String srs = request.getSRS();
+        Envelope bbox = request.getBbox();
+        String format = request.getFormat();
+        int width = request.getWidth();
+        int height = request.getHeight();
         
         String crsString = crs.getName().toString();
         assertTrue("WGS84 / Simple Mercator".equalsIgnoreCase(crsString));
@@ -125,19 +123,18 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
         DefaultWebMapService reflector = new DefaultWebMapService();
 
         /* Run the reflector */
-        reflector.getMap = request;
-        reflector.getMap.setSRS("EPSG:41001");
-        reflector.getMap.setCrs(CRS.decode("EPSG:41001"));
+        request.setSRS("EPSG:41001");
+        request.setCrs(CRS.decode("EPSG:41001"));
         request.setLayers(mls);
         request.setFormat("image/gif");
-        reflector.autoSetBoundsAndSize();
+        reflector.autoSetBoundsAndSize(request);
         
-        CoordinateReferenceSystem crs = reflector.getMap.getCrs();
-        String srs = reflector.getMap.getSRS();
-        Envelope bbox = reflector.getMap.getBbox();
-        String format = reflector.getMap.getFormat();
-        int width = reflector.getMap.getWidth();
-        int height = reflector.getMap.getHeight();
+        CoordinateReferenceSystem crs = request.getCrs();
+        String srs = request.getSRS();
+        Envelope bbox = request.getBbox();
+        String format = request.getFormat();
+        int width = request.getWidth();
+        int height = request.getHeight();
         
         String crsString = crs.getName().toString();
         assertTrue("WGS84 / Simple Mercator".equalsIgnoreCase(crsString));
