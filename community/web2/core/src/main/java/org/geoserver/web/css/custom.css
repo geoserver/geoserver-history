@@ -473,6 +473,10 @@ overflow: auto;
 border: 1px solid #ccc;
 }
 
+span.username {
+color: white;
+}
+
 
 /* Data page styles */
 
