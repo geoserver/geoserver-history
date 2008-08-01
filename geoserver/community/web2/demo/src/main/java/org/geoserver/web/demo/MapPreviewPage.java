@@ -15,9 +15,18 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.geoserver.catalog.LayerGroupInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.wms.DefaultWebMapService;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 public class MapPreviewPage extends GeoServerBasePage {
     @SuppressWarnings("serial")
@@ -26,15 +35,21 @@ public class MapPreviewPage extends GeoServerBasePage {
         //the layers grouped by workspace in a single page?)
         IModel resourceListModel = new LoadableDetachableModel(){
             public Object load() {
-                List<ResourceInfo> resources = getCatalog().getResources(ResourceInfo.class);
-                // sort by prefixed name
-                Collections.sort(resources, new Comparator<ResourceInfo>() {
+                List<String> result = new ArrayList<String>();
                 
-                    public int compare(ResourceInfo o1, ResourceInfo o2) {
-                        return o1.getPrefixedName().compareTo(o2.getPrefixedName());
-                    }
-                });
-                return resources;
+                // gather layer and group names
+                List<LayerInfo> layers = getCatalog().getLayers();
+                for (LayerInfo layer : layers) {
+                    result.add(layer.getResource().getPrefixedName());
+                }
+                List<LayerGroupInfo> groups = getCatalog().getLayerGroups();
+                for (LayerGroupInfo group : groups) {
+                    result.add(group.getName());
+                }
+                
+                // alphabetical sort
+                Collections.sort(result);
+                return result;
             }
         };
 
@@ -42,13 +57,16 @@ public class MapPreviewPage extends GeoServerBasePage {
 
         add(new ListView("layer", resourceListModel){
             public void populateItem(ListItem item){
-                final String prefixedName = ((ResourceInfo) item.getModelObject()).getPrefixedName();
+                final String layerName = (String) item.getModelObject();
+                
+                GetMapRequest request = buildFakeGetMap(layerName);
+                DefaultWebMapService.autoSetBoundsAndSize(request);
+                final String linkTemplate = buildWmsLinkTemplate(request);
 
                 item.add(
-                    new ExternalLink("layerLink", "wms/reflect?layers=" + prefixedName 
-                            + "&format=application/openlayers")
+                    new ExternalLink("layerLink", linkTemplate.replaceAll("\\$\\{format\\}", "application/openlayers"))
                         .setContextRelative(true)
-                        .add(new Label("label", prefixedName))
+                        .add(new Label("label", layerName))
                 );
 
                 item.add(new ListView("formatLink", formats){
@@ -56,10 +74,7 @@ public class MapPreviewPage extends GeoServerBasePage {
                         String format = (String)item.getModel().getObject();
                         item.add(new ExternalLink(
                                 "link",
-                                "wms/reflect?layers=" 
-                                + prefixedName
-                                + "&format=" 
-                                + format
+                                linkTemplate.replaceAll("\\$\\{format\\}", format)
                                 ).setContextRelative(true)
                                 .add(new Label("label", format))
                             );
@@ -67,6 +82,63 @@ public class MapPreviewPage extends GeoServerBasePage {
                 });
             }
         });
+    }
+
+    /**
+     * Builds a fake GetMap request 
+     * @param prefixedName
+     * @return
+     */
+    protected GetMapRequest buildFakeGetMap(String prefixedName) {
+        final WMS wms = getGeoServerApplication().getBeanOfType(WMS.class);
+        GetMapRequest gm = new GetMapRequest(wms);
+        Data catalog = (Data) getGeoServerApplication().getBean("data");
+        gm.setLayers(expandLayers(prefixedName, catalog));
+        return gm;
+    }
+
+    /**
+     * Expands the specified name into a list of layer info names
+     * @param prefixedName
+     * @param catalog
+     * @return
+     */
+    private List<MapLayerInfo> expandLayers(String prefixedName, Data catalog) {
+        Integer type = catalog.getLayerType(prefixedName);
+        List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>();
+        if(type == Data.TYPE_VECTOR) {
+             layers.add(new MapLayerInfo(catalog.getFeatureTypeInfo(prefixedName)));
+        } else if(type == Data.TYPE_RASTER) {
+            layers.add(new MapLayerInfo(catalog.getCoverageInfo(prefixedName)));
+        } else {
+            for(LayerInfo info :getCatalog().getLayerGroupByName(prefixedName).getLayers()) {
+                layers.addAll(expandLayers(info.getResource().getPrefixedName(), catalog));
+            }
+        }
+        return layers;
+    }
+
+    /**
+     * Given a request and a target format, builds the WMS request
+     * @param request
+     * @param string
+     * @return
+     */
+    protected String buildWmsLinkTemplate(GetMapRequest request) {
+        final Envelope bbox = request.getBbox();
+        if(bbox == null) {
+            System.out.println("No bbox for layer " + request.getLayers()[0].getName());
+            return "";
+        }
+        return "wms?service=WMS&version=1.1.0&request=GetMap" //
+               + "&layers=" + request.getLayers()[0].getName() //
+               + "&styles=" //
+               + "&format=${format}" //
+               + "&bbox=" + bbox.getMinX() + "," + bbox.getMinY() //
+               + "," + bbox.getMaxX() + "," + bbox.getMaxY() //
+               + "&width=" + request.getWidth() //
+               + "&height=" + request.getHeight()
+               + "&srs=" + request.getSRS();
     }
 
     private List<String> getAvailableFormats(){
