@@ -19,6 +19,7 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.markup.repeater.Item;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.wicket.RichEditableLabel;
 
 public class NamespaceManagerPage extends GeoServerBasePage {
     private String newPrefix;
@@ -39,8 +40,8 @@ public class NamespaceManagerPage extends GeoServerBasePage {
                         ) 
                     );
                          
-		    	item.add(new RevertingAjaxEditableLabel("prefix", new PropertyModel(item.getModel(), "prefix")));
-		    	item.add(new RevertingAjaxEditableLabel("URI", new PropertyModel(item.getModel(), "URI")));
+		    	item.add(new RichEditableLabel("prefix", new PropertyModel(item.getModel(), "prefix")));
+		    	item.add(new RichEditableLabel("URI", new PropertyModel(item.getModel(), "URI")));
 		    	item.add(new Link("delete", new PropertyModel(item.getModel(), "delete")){
 		    		@Override
 		    		public void onClick() {
