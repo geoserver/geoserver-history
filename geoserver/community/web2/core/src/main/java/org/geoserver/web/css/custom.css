@@ -51,52 +51,56 @@ list-style-type: none;
 }
 
 /*-----------------------
-Flash Message Styles
+Feedback Message Styles
 -----------------------*/
-.flash {
-font-size: 1.2em;
+#feedback ul {
+margin: 0;
+}
+
+#feedback li {
 padding: 1em;
-margin: 1em auto;
+margin: 0 auto 1em;
 width: 80%;
 border: 1px solid #ccccb8;
+list-style-type: none;
 }
 
-.notice {
-color: #000;
-background: #83d2e6;
-}
-
-.notice a {
-color: #176073;
-}
-
-.notice a:hover {
-color: #007a99;
-}
-
-.succcess {
+.feedbackPanelINFO {
 color: #000;
 background: #c6ff8e;
 }
 
-.succcess a {
+.feedbackPanelINFO a {
 color: #6a993d;
 }
 
-succcess a:hover {
+.feedbackPanelINFO a:hover {
 color: #007a99;
 }
 
-.error {
+.feedbackPanelWARNING {
+color: #000;
+background: #ffec8e;
+}
+
+.feedbackPanelWARNING a {
+color: #cc872e;
+}
+
+.feedbackPanelWARNING a:hover {
+color: #dd7c14;
+}
+
+.feedbackPanelERROR {
 color: #fff;
 background: #f24e50;
 }
 
-.error a {
+.feedbackPanelERROR a {
 color: #801a1b;
 }
 
-.error a:hover {
+.feedbackPanelERROR a:hover {
 color: #660002;
 }
 
