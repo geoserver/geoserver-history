@@ -10,6 +10,7 @@ import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
@@ -25,6 +26,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
@@ -129,10 +131,11 @@ public class GeoServerBasePage extends WebPage {
             public void onClick(AjaxRequestTarget target) {
                 getGeoServerApplication().clearWicketCaches();
             }
-            
         });
+
         devButtons.setVisible(Application.DEVELOPMENT.equalsIgnoreCase(
                 getApplication().getConfigurationType())); 
+        add(new FeedbackPanel("feedback"));
     }
 
     /**
@@ -174,9 +177,10 @@ public class GeoServerBasePage extends WebPage {
             if (signIn(username, password)){
                 if (!continueToOriginalDestination()) {
                     setResponsePage(getApplication().getHomePage());
+                    Session.get().info("You have successfully signed in!");
                 }
             } else {
-                error("Unknown username/password");
+                Session.get().error("Unknown username/password");
             }
         }
 
@@ -184,6 +188,4 @@ public class GeoServerBasePage extends WebPage {
             return GeoServerSession.get().authenticate(username, password);
         }
     }
-
-
 }
