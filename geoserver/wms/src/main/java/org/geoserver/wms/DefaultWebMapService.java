@@ -80,11 +80,6 @@ public class DefaultWebMapService implements WebMapService,
             new Envelope(-180, 180, -90, 90), DefaultGeographicCRS.WGS84);
 
     /**
-     * The current getMap request
-     */
-    GetMapRequest getMap = null;
-
-    /**
      * Application context
      */
     ApplicationContext context;
@@ -144,7 +139,7 @@ public class DefaultWebMapService implements WebMapService,
     }
 
     public GetMapResponse getMapReflect(GetMapRequest request) {
-        getMap = (GetMapRequest) request;
+        GetMapRequest getMap = (GetMapRequest) request;
 
         // set the defaults
         if (getMap.getFormat() == null) {
@@ -169,7 +164,8 @@ public class DefaultWebMapService implements WebMapService,
             }
         }
 
-        this.autoSetBoundsAndSize();
+        // auto-magic missing info configuration
+        autoSetBoundsAndSize(getMap);
 
         return getMap(getMap);
     }
@@ -196,7 +192,7 @@ public class DefaultWebMapService implements WebMapService,
      * 4a) If bounding box has been specified, adjust height of image to match 
      * 4b) If bounding box has not been specified, but height has, adjust bounding box
      */
-    protected void autoSetBoundsAndSize() {
+    public void autoSetBoundsAndSize(GetMapRequest getMap) {
         // Get the layers
         MapLayerInfo[] layers = getMap.getLayers();        
         
@@ -209,7 +205,7 @@ public class DefaultWebMapService implements WebMapService,
         
         if (reqSRS == null || reqSRS.equalsIgnoreCase(DefaultWebMapService.SRS)) {
             reqSRS = DefaultWebMapService.SRS;
-            forceSRS(reqSRS);
+            forceSRS(getMap, reqSRS);
             useNativeBounds = false;
             
         } else {
@@ -304,7 +300,7 @@ public class DefaultWebMapService implements WebMapService,
 
         // Just in case
         if (aggregateBbox == null) {
-            forceSRS(DefaultWebMapService.SRS);
+            forceSRS(getMap, DefaultWebMapService.SRS);
             aggregateBbox = DefaultWebMapService.BBOX;   
         }
 
@@ -357,7 +353,7 @@ public class DefaultWebMapService implements WebMapService,
         }
     }
     
-    private void forceSRS(String srs) {
+    private static void forceSRS(GetMapRequest getMap, String srs) {
         getMap.setSRS(srs);
         
         try {
@@ -379,7 +375,7 @@ public class DefaultWebMapService implements WebMapService,
      * @param bbox the current bounding box
      * @return the adjusted bounding box
      */
-    private Envelope adjustBounds(String reqSRS, Envelope bbox) {        
+    private static Envelope adjustBounds(String reqSRS, Envelope bbox) {        
         if(reqSRS.equalsIgnoreCase("EPSG:4326")) {
             bbox.expandBy(bbox.getWidth() / 100, bbox.getHeight() / 100);
             Envelope maxEnv = new Envelope(
