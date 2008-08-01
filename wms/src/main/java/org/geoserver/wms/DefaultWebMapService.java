@@ -192,7 +192,7 @@ public class DefaultWebMapService implements WebMapService,
      * 4a) If bounding box has been specified, adjust height of image to match 
      * 4b) If bounding box has not been specified, but height has, adjust bounding box
      */
-    public void autoSetBoundsAndSize(GetMapRequest getMap) {
+    public static void autoSetBoundsAndSize(GetMapRequest getMap) {
         // Get the layers
         MapLayerInfo[] layers = getMap.getLayers();        
         
