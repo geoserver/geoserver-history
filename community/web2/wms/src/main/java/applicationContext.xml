@@ -2,15 +2,15 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-
-  <bean id="wmsServicePage" class="org.geoserver.web.services.ServicePageInfo">
+  <bean id="wmsServicePage" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="wms"/>
     <property name="titleKey" value="wms.title"/>
     <property name="descriptionKey" value="wms.description"/>
     <property name="componentClass" value="org.geoserver.wms.web.WMSAdminPage"/>
     <!--property name="icon" value="wms_obj.gif"/-->
-    <property name="icon" value="server_picture.png"/>
-  </bean>
+    <!-- <property name="icon" value="server_picture.png"/> -->
+    <property name="category" ref="servicesCategory"/>
+  </bean> 
     
   <bean id="wmsLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
     <property name="id" value="wmsLayerConfig"/>
@@ -39,12 +39,4 @@
       </list>
     </property>
   </bean>
-
-  <bean id="stylePageShortcut" class="org.geoserver.web.ShortcutPageInfo">
-    <property name="id" value="styles"/>
-    <property name="titleKey" value="style.title"/>
-    <property name="descriptionKey" value="style.description"/>
-    <property name="componentClass" value="org.geoserver.wms.web.data.StylesPage"/>
-  </bean>
-
 </beans>

@@ -4,7 +4,13 @@
  */
 package org.geoserver.web;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
@@ -28,12 +34,12 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.web.acegi.GeoServerSession;
 import org.geoserver.web.admin.ServerAdminPage;
-import org.geoserver.web.services.ServicePageInfo;
 
 /**
  * Base class for web pages in GeoServer web application.
@@ -82,56 +88,50 @@ public class GeoServerBasePage extends WebPage {
         add( new BookmarkablePageLink( "home", GeoServerHomePage.class )
             .add( new Label( "label", new StringResourceModel( "home", (Component)null, null ) )  ) );
         
-        // server admin link
-        add( new BookmarkablePageLink( "admin.server", ServerAdminPage.class ) 
-            .add( new Label( "label", new StringResourceModel( "server", (Component)null, null ) ) ) );
-        
-        // list of services to administer
-        List<ServicePageInfo> pages =
-            getGeoServerApplication().getBeansOfType( ServicePageInfo.class);
-        ListView services = new ListView("admin.services", pages) {
-            protected void populateItem(ListItem item) {
-                ServicePageInfo page = (ServicePageInfo) item.getModelObject();
-
-                //add a link
-                BookmarkablePageLink link = new BookmarkablePageLink("admin.service",
-                        page.getComponentClass());
-                link.add(new Image( "serviceIcon", new ResourceReference( page.getComponentClass(), page.getIcon() ) ) );
-                link.add(new Label("serviceLabel", new StringResourceModel( page.getTitleKey(), (Component) null, null ) ));
-                link.add(new AttributeModifier( "title", new StringResourceModel( page.getDescriptionKey(), (Component) null, null ) ) );
-                
-                item.add(link);
-            }
-        };
-        add( services );
-        
-
-        List<ShortcutPageInfo> links =
-            getGeoServerApplication().getBeansOfType(ShortcutPageInfo.class);
-
-        ListView shortcuts =
-            new ListView("shortcuts", links){
-                protected void populateItem(ListItem item) {
-                    ShortcutPageInfo info = (ShortcutPageInfo) item.getModelObject();
-
-                    BookmarkablePageLink link = new BookmarkablePageLink("link", info.getComponentClass());
-                    item.add(link);
-                    link.add(new Label("label", new StringResourceModel(info.getTitleKey(), (Component) null, null)));
-                }
-            };
-
-        add(shortcuts);
-
         // dev buttons
         WebMarkupContainer devButtons = new WebMarkupContainer("devButtons");
         add(devButtons);
         devButtons.add(new AjaxFallbackLink("clearCache"){
-
             @Override
             public void onClick(AjaxRequestTarget target) {
                 getGeoServerApplication().clearWicketCaches();
             }
         });
+
+        SortedMap<Category,List<MenuPageInfo>> links = splitByCategory(
+            getGeoServerApplication().getBeansOfType(MenuPageInfo.class)
+        );
+
+        List<MenuPageInfo> standalone = links.containsKey(null) 
+            ? links.get(null)
+            : new ArrayList<MenuPageInfo>();
+        links.remove(null);
+
+        add(new ListView("category", new ArrayList(links.entrySet())){
+            public void populateItem(ListItem item){
+                Map.Entry<Category,List<MenuPageInfo>> entry;
+                entry = (Map.Entry<Category,List<MenuPageInfo>>) item.getModelObject();
+                item.add(new Label("category.header", new PropertyModel(entry.getKey(), "nameKey")));
+                item.add(new ListView("category.links", entry.getValue()){
+                    public void populateItem(ListItem item){
+                        MenuPageInfo info = (MenuPageInfo)item.getModelObject();
+                        item.add(new BookmarkablePageLink("link", info.getComponentClass())
+                            .add(new Label("link.label", info.getTitleKey()))
+                        );
+                    }
+                });
+            }
+        });
+
+        add(new ListView("standalone", standalone){
+                    public void populateItem(ListItem item){
+                        MenuPageInfo info = (MenuPageInfo)item.getModelObject();
+                        item.add(new BookmarkablePageLink("link", info.getComponentClass())
+                            .add(new Label("link.label", info.getTitleKey()))
+                        );
+                    }
+                }
+        );
 
         devButtons.setVisible(Application.DEVELOPMENT.equalsIgnoreCase(
                 getApplication().getConfigurationType())); 
@@ -192,5 +192,33 @@ public class GeoServerBasePage extends WebPage {
         private final boolean signIn(String username, String password) {
             return GeoServerSession.get().authenticate(username, password);
         }
+    }
+
+    private static SortedMap<Category,List<MenuPageInfo>> splitByCategory(List<MenuPageInfo> pages){
+        Collections.sort(pages);
+
+        TreeMap<Category,List<MenuPageInfo>> map =
+            new TreeMap<Category,List<MenuPageInfo>>(new Comparator<Category>(){
+                public int compare(Category a, Category b){
+                    if (a == null){
+                        return b == null ? 0 : -1;
+                    }
+
+                    if (b == null) return 1;
+
+                    return a.getOrder() - b.getOrder();
+                }
+            });
+
+        for (MenuPageInfo page : pages){
+            Category cat = page.getCategory();
+
+            if (!map.containsKey(cat)) 
+                map.put(cat, new ArrayList<MenuPageInfo>());
+
+            map.get(cat).add(page);
+        }
+
+        return map;
     }
 }
