@@ -63,8 +63,9 @@ public class MapPreviewPage extends GeoServerBasePage {
                 DefaultWebMapService.autoSetBoundsAndSize(request);
                 final String linkTemplate = buildWmsLinkTemplate(request);
 
+                final String OL_FORMAT = "application/openlayers";
                 item.add(
-                    new ExternalLink("layerLink", linkTemplate.replaceAll("\\$\\{format\\}", "application/openlayers"))
+                    new ExternalLink("layerLink", linkTemplate.replaceAll("\\$\\{format\\}", OL_FORMAT))
                         .setContextRelative(true)
                         .add(new Label("label", layerName))
                 );
@@ -94,6 +95,7 @@ public class MapPreviewPage extends GeoServerBasePage {
         GetMapRequest gm = new GetMapRequest(wms);
         Data catalog = (Data) getGeoServerApplication().getBean("data");
         gm.setLayers(expandLayers(prefixedName, catalog));
+        gm.setFormat("application/openlayers");
         return gm;
     }
 
