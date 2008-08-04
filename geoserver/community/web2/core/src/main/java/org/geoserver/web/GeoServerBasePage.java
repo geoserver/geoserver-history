@@ -34,7 +34,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
@@ -111,12 +110,12 @@ public class GeoServerBasePage extends WebPage {
             public void populateItem(ListItem item){
                 Map.Entry<Category,List<MenuPageInfo>> entry;
                 entry = (Map.Entry<Category,List<MenuPageInfo>>) item.getModelObject();
-                item.add(new Label("category.header", new PropertyModel(entry.getKey(), "nameKey")));
+                item.add(new Label("category.header", new StringResourceModel(entry.getKey().getNameKey(), (Component) null, null)));
                 item.add(new ListView("category.links", entry.getValue()){
                     public void populateItem(ListItem item){
                         MenuPageInfo info = (MenuPageInfo)item.getModelObject();
                         item.add(new BookmarkablePageLink("link", info.getComponentClass())
-                            .add(new Label("link.label", info.getTitleKey()))
+                            .add(new Label("link.label", new StringResourceModel(info.getTitleKey(), (Component) null, null)))
                         );
                     }
                 });

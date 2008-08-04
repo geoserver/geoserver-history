@@ -56,12 +56,12 @@
   </bean>
 
   <!--  main application pages  -->
-  <bean id="dataPage" class="org.geoserver.web.MenuPageInfo">
+  <!-- <bean id="dataPage" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="data"/>
     <property name="titleKey" value="Data"/>
     <property name="componentClass" value="org.geoserver.web.data.tree.DataPage"/>
     <property name="category" ref="dataCategory"/>
-  </bean>
+  </bean> -->
 
   <!-- Resource configuration pages -->
   <bean id="basicResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
