@@ -43,25 +43,25 @@
   </div><!-- /#header -->
   <div id="sidebar">
     <ul id="navigation">
-      <li class="navigation-tab">
-        <a wicket:id="admin.server">
-          <wicket:link>
-            <img src="img/icons/silk/server.png"></img>
-          </wicket:link>
-          <span wicket:id="label">Server</span>
-        </a>
-      </li>
-      <li class="navigation-tab" id="nav-administer">
-        <div class="navigation-tab-header"><wicket:message key="admin">Services</wicket:message></div>
-        <div class="navigation-tab-content">
-          <ul class="plain">
-            <li class="nav-administer-service" wicket:id="admin.services"><a wicket:id="admin.service" title="title"><img wicket:id="serviceIcon"></img><span wicket:id="serviceLabel"></span></a></li>
-          </ul>
+      <li class="navigation-tab selected" id="nav-administer">
+        <div wicket:id="category">
+          <div class="navigation-tab-header">
+            <span wicket:id="category.header">[Category Header]</span>
+          </div>
+          <div class="navigation-tab-content">
+            <ul class="plain">
+              <li class="nav-administer-service" wicket:id="category.links">
+                <a wicket:id="link" title="title">
+                  <span wicket:id="link.label"></span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </li>
-      <li class="navigation-tab" wicket:id="shortcuts">
+      <li class="navigation-tab" wicket:id="standalone">
         <div class="navigation-tab-single">
-           <a wicket:id="link" href="#"><span wicket:id="label">Link</span></a>
+           <a wicket:id="link" href="#"><span wicket:id="link.label">[Link]</span></a>
         </div>
       </li>
     </ul>

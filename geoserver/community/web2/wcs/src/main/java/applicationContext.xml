@@ -2,14 +2,14 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-
-  <bean id="wcsServicePage" class="org.geoserver.web.services.ServicePageInfo">
+   <bean id="wcsServicePage" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="wcs"/>
     <property name="titleKey" value="wcs.title"/>
     <property name="descriptionKey" value="wcs.description"/>
-    <property name="componentClass" value="org.geoserver.wcs.web.WCSAdminPage"/>
+    <property name="componentClass" value="org.geoserver.wcs.web.WCSAdminPage"/> 
     <!--property name="icon" value="wcs_obj.gif"/-->
-    <property name="icon" value="server_raster.png"/>
+    <!--<property name="icon" value="server_raster.png"/>-->
+    <property name="category" ref="servicesCategory"/>
   </bean>
 
   <bean id="wcsResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
@@ -22,6 +22,4 @@
       </list>
     </property>
   </bean>
-
-    
 </beans>

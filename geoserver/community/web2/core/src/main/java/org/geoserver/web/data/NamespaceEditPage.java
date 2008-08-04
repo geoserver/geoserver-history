@@ -140,10 +140,9 @@ public class NamespaceEditPage extends GeoServerBasePage {
                 setResponsePage(DataPage.class);
             }
         };
-        link.add(new Label("label", "Cancel"));
         nsForm.add(link);
 
-        SubmitLink saveLink = new SubmitLink("save", nsForm) {
+        SubmitLink saveLink = new SubmitLink("submit", nsForm) {
             private static final long serialVersionUID = 1L;
 
             public void onSubmit() {
@@ -169,8 +168,6 @@ public class NamespaceEditPage extends GeoServerBasePage {
                 }
             }
         };
-        saveLink.add(new Label("label", "Save"));
         nsForm.add(saveLink);
     }
-
 }

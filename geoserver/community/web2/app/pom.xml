@@ -58,7 +58,7 @@
       <groupId>org.geoserver.web</groupId>
       <artifactId>web-demo</artifactId>
       <version>${project.version}</version>
-    </dependency>
+    </dependency> 
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>

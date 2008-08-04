@@ -39,13 +39,30 @@
     </property>
   </bean>
   
-  <!--  main application pages -->
-  <bean id="dataPage" class="org.geoserver.web.MainPageInfo">
+  <!-- Common Categories -->
+  <bean id="dataCategory" class="org.geoserver.web.Category">
+     <property name="nameKey" value="category.data"/>
+     <property name="order" value="150"/>
+  </bean>
+
+  <bean id="servicesCategory" class="org.geoserver.web.Category">
+     <property name="nameKey" value="category.services"/>
+     <property name="order" value="125"/>
+  </bean>
+
+  <bean id="serverCategory" class="org.geoserver.web.Category">
+     <property name="nameKey" value="category.server"/>
+     <property name="order" value="100"/>
+  </bean>
+
+  <!--  main application pages  -->
+  <bean id="dataPage" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="data"/>
     <property name="titleKey" value="Data"/>
     <property name="componentClass" value="org.geoserver.web.data.tree.DataPage"/>
+    <property name="category" ref="dataCategory"/>
   </bean>
-  
+
   <!-- Resource configuration pages -->
   <bean id="basicResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
     <property name="id" value="basic"/>
@@ -101,25 +118,18 @@
     <property name="icon" value="img/icons/geosilk/server_vector.png"/>
   </bean>
   
-  <bean id="demoPageShortcut" class="org.geoserver.web.ShortcutPageInfo">
+  <bean id="demoPageShortcut" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="demos"/>
     <property name="titleKey" value="demo.title"/>
     <property name="descriptionKey" value="demo.description"/>
     <property name="componentClass" value="org.geoserver.web.DemoPage"/>
   </bean>
-<!--
-  <bean id="stylePageShortcut" class="org.geoserver.web.ShortcutPageInfo">
-    <property name="id" value="styles"/>
-    <property name="titleKey" value="style.title"/>
-    <property name="descriptionKey" value="style.description"/>
-    <property name="componentClass" value="org.geoserver.web.wms.StylePage"/>
-  </bean>
--->
-  <bean id="dataPageShortcut" class="org.geoserver.web.ShortcutPageInfo">
+  <bean id="dataPageMenu" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="data"/>
     <property name="titleKey" value="data.title"/>
     <property name="descriptionKey" value="data.description"/>
     <property name="componentClass" value="org.geoserver.web.data.tree.DataPage"/>
+    <property name="category" ref="dataCategory"/>
   </bean>
 
   <!-- 
