@@ -17,6 +17,15 @@
   <name>GeoServer Web Application</name>
   
   <dependencies>
+    <!-- WARNING, TEMPORARY DEPENDENCY TO AVOID COPYING FILTER AND WEB LISTENERS
+         AROUND, SHOULD BE REMOVED ONCE THE NEW WEB UI IS A COMPLETE REPLACEMENT
+         FOR THE OLD ONE
+     -->
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>web</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.geoserver.web</groupId>
       <artifactId>web-core</artifactId>
