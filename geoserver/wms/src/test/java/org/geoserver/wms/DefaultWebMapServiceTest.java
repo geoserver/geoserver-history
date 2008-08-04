@@ -98,8 +98,8 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
                 && Math.abs(bbox.getMaxX() - 1.9236008009077676E7) < 1E-4
                 && Math.abs(bbox.getMaxY() - 2.2026354993694823E7) < 1E-4 );
         assertEquals("image/gif",format);
-        assertEquals(width, 512);
-        assertEquals(height, 586);
+        assertEquals(447, width);
+        assertEquals(512, height);
     }
     
     /**
@@ -145,8 +145,8 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
                 && Math.abs(bbox.getMaxX() - 1.9236008009077676E7) < 1E-4
                 && Math.abs(bbox.getMaxY() - 2.2026354993694823E7) < 1E-4 );
         assertEquals("image/gif",format);
-        assertEquals(width, 512);
-        assertEquals(height, 586);
+        assertEquals(447, width);
+        assertEquals(512, height);
     }
     
 }
