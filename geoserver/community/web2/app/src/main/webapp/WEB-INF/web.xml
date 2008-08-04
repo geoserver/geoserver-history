@@ -148,7 +148,7 @@
 
     <filter-mapping>
       <filter-name>GZIP Compression Filter</filter-name>
-      <url-pattern>/*</url-pattern>
+      <url-pattern>/ows/*</url-pattern>
     </filter-mapping>
     
     <filter-mapping>
