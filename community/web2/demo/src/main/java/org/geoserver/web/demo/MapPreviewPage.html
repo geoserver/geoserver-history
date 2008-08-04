@@ -9,6 +9,80 @@
     <th><wicket:message key="demo.previews">Previews</wicket:message></th>
   </thead>
   <tbody>
+    <!-- [TODO] sample markup - we'll want to add alternate-row highlighting like the style manager & namespace manager pages, as well as a javascript link to toggle display of the "extra" mime-types.
+      To show all other supported mime-types, just remove the "noshow" class from all dl.uncommon-mime-types elements.
+      To hide them again, just re-add the "noshow" class from all dl.uncommon-mime-types elements.
+       -->
+    <tr class="even">
+      <td><a href="#">something:great</a></td>
+      <td>
+        <dl class="common-mime-types">
+          <dt>Common mime-types</dt>
+          <dd class="selfclear">
+            <ul class="plain">
+              <li><a href="#">OpenLayers</a></li>
+              <li><a href="#">KML</a></li>
+              <li><a href="#">GeoRSS</a></li>
+              <li><a href="#">PDF</a></li>
+              <li><a href="#">SVG</a></li>
+            </ul>
+          </dd>
+        </dl>
+        <dl class="uncommon-mime-types noshow">
+          <dt>Other supported mime-types</dt>
+          <dd class="selfclear">
+            <ul class="plain">
+              <li><a href="#">GIF</a></li>
+              <li><a href="#">JPG</a></li>
+              <li><a href="#">PNG</a></li>
+              <li><a href="#">TIFF</a></li>
+              <li><a href="#">Etc.</a></li>
+            </ul>
+            <!-- [NOTE] a new <ul> will be created every sixth format. In other words, no <ul> should contain more than 5 items -->
+            <ul class="plain">
+              <li><a href="#">ATOM</a></li>
+              <li><a href="#">KMZ</a></li>
+              <li><a href="#">Etc.</a></li>
+            </ul>
+          </dd>
+        </dl>
+      </td>
+    </tr>
+    <tr class="odd">
+      <td><a href="#">something:else</a></td>
+      <td>
+        <dl class="common-mime-types">
+          <dt>Common mime-types</dt>
+          <dd class="selfclear">
+            <ul class="plain">
+              <li><a href="#">OpenLayers</a></li>
+              <li><a href="#">KML</a></li>
+              <li><a href="#">GeoRSS</a></li>
+              <li><a href="#">PDF</a></li>
+              <li><a href="#">SVG</a></li>
+            </ul>
+          </dd>
+        </dl>
+        <dl class="uncommon-mime-types noshow">
+          <dt>Other supported mime-types</dt>
+          <dd class="selfclear">
+            <ul class="plain">
+              <li><a href="#">GIF</a></li>
+              <li><a href="#">JPG</a></li>
+              <li><a href="#">PNG</a></li>
+              <li><a href="#">TIFF</a></li>
+              <li><a href="#">Etc.</a></li>
+            </ul>
+            <!-- [NOTE] a new <ul> will be created every sixth format. In other words, no <ul> should contain more than 5 items -->
+            <ul class="plain">
+              <li><a href="#">ATOM</a></li>
+              <li><a href="#">KMZ</a></li>
+              <li><a href="#">Etc.</a></li>
+            </ul>
+          </dd>
+        </dl>
+      </td>
+    </tr>
     <tr wicket:id="layer">
       <td><a href="#" wicket:id="layerLink"><span wicket:id="label"/></a></td>
       <td><span wicket:id="formatLink"><a href="#" wicket:id="link"><span wicket:id="label"></span></a>&nbsp;</span></td>

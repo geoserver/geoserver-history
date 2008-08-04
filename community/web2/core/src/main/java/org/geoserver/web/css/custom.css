@@ -58,7 +58,7 @@ margin: 0;
 }
 
 #feedback li {
-padding: 1em;
+padding: 0.2em 0.5em;
 margin: 0 auto 1em;
 width: 80%;
 border: 1px solid #ccccb8;
@@ -145,7 +145,7 @@ border-width: 0 0 1px;
 }
 
 tr:hover td,
-tr:hover th {
+tbody tr:hover th {
 background: #fffef2;
 }
 
@@ -515,6 +515,69 @@ height: 6px;
 overflow: hidden;
 text-indent: -9999em;
 }
+
+.mini-bar {
+height: 2px;
+width: 50px;
+background-color: #e8e6e6;
+border: 1px solid #555;
+}
+
+.mini-bar span {
+display: block;
+background-image: url(../img/status-bar-bg.png);
+background-repeat: no-repeat;
+height: 2px;
+overflow: hidden;
+text-indent: -9999em;
+}
+
+.common-mime-types,
+.uncommon-mime-types {
+float: left;
+margin: 0;
+}
+
+.common-mime-types dd,
+.uncommon-mime-types dd {
+margin: 0.5em 0;
+border: 1px solid #edf0ed;
+background: #fbfbfb;
+}
+
+.common-mime-types ul,
+.uncommon-mime-types ul {
+width: 10em;
+float: left;
+margin: 0;
+}
+
+.uncommon-mime-types ul {
+margin: 0 -1px 0 0;
+border: 1px solid #edf0ed;
+border-width: 0 1px 0 0;
+}
+
+.uncommon-mime-types {
+margin: 0 0 0 3em;
+}
+
+.common-mime-types li,
+.uncommon-mime-types li {
+display: inline;
+}
+
+.common-mime-types li a,
+.uncommon-mime-types li a {
+display: block;
+padding: 0.2em 1em 0.2em 0.5em;
+}
+
+.common-mime-types li a:hover,
+.uncommon-mime-types li a:hover {
+background: #fff;
+}
+
 
 /* Page */
 
