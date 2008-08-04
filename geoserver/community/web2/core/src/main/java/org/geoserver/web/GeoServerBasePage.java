@@ -126,7 +126,7 @@ public class GeoServerBasePage extends WebPage {
                     public void populateItem(ListItem item){
                         MenuPageInfo info = (MenuPageInfo)item.getModelObject();
                         item.add(new BookmarkablePageLink("link", info.getComponentClass())
-                            .add(new Label("link.label", info.getTitleKey()))
+                            .add(new Label("link.label", new StringResourceModel(info.getTitleKey(), (Component) null, null)))
                         );
                     }
                 }
