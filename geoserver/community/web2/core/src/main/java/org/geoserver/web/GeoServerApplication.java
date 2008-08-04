@@ -154,6 +154,7 @@ public class GeoServerApplication extends SpringWebApplication {
         getResourceSettings().setResourceStreamLocator(
                 new GeoServerResourceStreamLocator());
         getResourceSettings().setLocalizer(new GeoServerLocalizer());
+        getResourceSettings().setDisableGZipCompression(true);
     }
     
     @Override
