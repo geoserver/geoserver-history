@@ -10,4 +10,10 @@
     <property name="componentClass" value="org.geoserver.web.demo.MapPreviewPage"/>
   </bean>
     
+  <bean id="demoRequests" class="org.geoserver.web.DemoLinkInfo">
+    <property name="id" value="demoRequests"/>
+    <property name="titleKey" value="demo.demorequests"/>
+    <property name="descriptionKey" value="demo.demorequests.description"/>
+    <property name="componentClass" value="org.geoserver.web.demo.DemoRequestsPage"/>
+  </bean>
 </beans>
