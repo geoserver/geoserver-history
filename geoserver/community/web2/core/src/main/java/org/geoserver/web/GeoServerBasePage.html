@@ -43,21 +43,17 @@
   </div><!-- /#header -->
   <div id="sidebar">
     <ul id="navigation">
-      <li class="navigation-tab selected" id="nav-administer">
-        <div wicket:id="category">
-          <div class="navigation-tab-header">
-            <span wicket:id="category.header">[Category Header]</span>
-          </div>
-          <div class="navigation-tab-content">
-            <ul class="plain">
-              <li class="nav-administer-service" wicket:id="category.links">
-                <a wicket:id="link" title="title">
-                  <span wicket:id="link.label"></span>
-                </a>
-              </li>
-            </ul>
-          </div>
+      <li class="navigation-tab" wicket:id="category">
+        <div class="navigation-tab-header">
+          <span wicket:id="category.header">[Category Header]</span>
         </div>
+        <ul class="navigation-tab-content plain">
+          <li class="nav-administer-service" wicket:id="category.links">
+            <a wicket:id="link" title="title">
+              <span wicket:id="link.label"></span>
+            </a>
+          </li>
+        </ul>
       </li>
       <li class="navigation-tab" wicket:id="standalone">
         <div class="navigation-tab-single">
