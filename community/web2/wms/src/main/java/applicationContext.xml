@@ -39,4 +39,12 @@
       </list>
     </property>
   </bean>
+
+  <bean id="styleManagerPage" class="org.geoserver.web.MenuPageInfo">
+     <property name="id" value="style.manager"/>
+     <property name="titleKey" value="style.title"/>
+     <property name="descriptionKey" value="style.description"/>
+     <property name="componentClass" value="org.geoserver.wms.web.data.StylesPage"/>
+     <property name="category" ref="dataCategory"/>
+  </bean>
 </beans>
