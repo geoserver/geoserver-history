@@ -7,8 +7,10 @@ package org.geoserver.wms;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -23,6 +25,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -54,14 +58,14 @@ public class DefaultWebMapService implements WebMapService,
     public static List STYLES = Collections.EMPTY_LIST;
 
     /**
-     * default for 'height' parameter.
+     * longest side for the preview
      */
-    public static int HEIGHT = 512;
-
+    public static int MAX_SIDE = 512;
+    
     /**
-     * default for 'height' parameter.
+     * minimum height to have a decent looking OL preview
      */
-    public static int WIDTH = 512;
+    public static int MIN_OL_HEIGHT = 330;
 
     /**
      * default for 'srs' parameter.
@@ -198,26 +202,33 @@ public class DefaultWebMapService implements WebMapService,
         
         /** 1) Check what SRS has been requested */
         String reqSRS = getMap.getSRS();
-        CoordinateReferenceSystem reqCRS = getMap.getCrs();
         
-        // Keep track of whether we can use native all the way
+        // if none, try to determine which SRS to use
+        // and keep track of whether we can use native all the way
         boolean useNativeBounds = true;
-        
-        if (reqSRS == null || reqSRS.equalsIgnoreCase(DefaultWebMapService.SRS)) {
-            reqSRS = DefaultWebMapService.SRS;
+        if(reqSRS == null) {
+            reqSRS = guessCommonSRS(layers);
             forceSRS(getMap, reqSRS);
-            useNativeBounds = false;
-            
-        } else {
-            /** 2) Compare requested SRS */
-            for (int i = 0; useNativeBounds && i < layers.length; i++) {
-                if (layers[i] != null && layers[i].getFeature() != null) {
-                    useNativeBounds = 
-                        layers[i].getFeature().getSRS().equalsIgnoreCase(reqSRS);
-                } else {
-                    useNativeBounds = false;
+        } 
+        
+        /** 2) Compare requested SRS */
+        for (int i = 0; useNativeBounds && i < layers.length; i++) {
+            if (layers[i] != null) {
+                if(layers[i].getFeature() != null) {
+                    useNativeBounds = layers[i].getFeature().getSRS().equalsIgnoreCase(reqSRS);
+                } else if(layers[i].getCoverage() != null) {
+                    useNativeBounds = layers[i].getCoverage().getSrsName().equalsIgnoreCase(reqSRS);
                 }
+            } else {
+                useNativeBounds = false;
             }
+        }
+        
+        CoordinateReferenceSystem reqCRS;
+        try {
+            reqCRS = CRS.decode(reqSRS);
+        } catch(Exception e) {
+            throw new WmsException(e);
         }
         
         // Ready to determine the bounds based on the layers, if not specified
@@ -243,19 +254,22 @@ public class DefaultWebMapService implements WebMapService,
                         }
 
                     } else if (layers[i].getRemoteFeatureSource() != null) {
-                        // This layer was requested through a remote SLD or
-                        // something similar
-                        curbbox = 
-                            layers[i].getRemoteFeatureSource().getBounds();
-
+                        // This layer was requested through a remote WFS
+                        curbbox = layers[i].getRemoteFeatureSource().getBounds();
+                        if(!useNativeBounds)
+                            try {
+                                curbbox = ((ReferencedEnvelope) curbbox).transform(reqCRS, true);
+                            } catch(Exception e) {
+                                throw new WmsException(e);
+                            }
                     } else if (layers[i].getCoverage() != null) {
-                        // This is a coverage?
-                        // We have too many Envelope classes...
-                        GeneralEnvelope genEnv = layers[i].getCoverage()
-                                .getWGS84LonLatEnvelope();
-                        double[] ll = genEnv.getLowerCorner().getCoordinates();
-                        double[] ur = genEnv.getUpperCorner().getCoordinates();
-                        curbbox = new Envelope(ll[0], ll[1], ur[0], ur[1]);
+                        if(useNativeBounds) {
+                            GeneralEnvelope ge = layers[i].getCoverage().getEnvelope();
+                            curbbox = new Envelope(ge.getMinimum(0), ge.getMaximum(0), ge.getMinimum(1), ge.getMaximum(1));
+                        } else {
+                            GeneralEnvelope ge = layers[i].getCoverage().getWGS84LonLatEnvelope();
+                            curbbox = new Envelope(ge.getMinimum(0), ge.getMaximum(0), ge.getMinimum(1), ge.getMaximum(1));
+                        }
                     } else {
                         // ?
                         throw new RuntimeException("Unknown feature type in DefaultWebMapServer");
@@ -338,12 +352,26 @@ public class DefaultWebMapService implements WebMapService,
                 mwidth = bbratio * mheight;
             } else {
                 if (mwidth > 0.5) {
-                    // We're set
+                    mheight = (mwidth / bbratio >= 1) ? mwidth / bbratio : 1;
                 } else {
-                    // Fall through to the default
-                    mwidth = WIDTH;
+                    if(bbratio > 1) {
+                        mwidth = MAX_SIDE;
+                        mheight = (mwidth / bbratio >= 1) ? mwidth / bbratio : 1;
+                    } else {
+                        mheight = MAX_SIDE;
+                        mwidth = (mheight * bbratio >= 1) ? mheight * bbratio : 1;
+                    }
+                    
+                    // make sure OL output height is sufficient to show the OL scale bar fully
+                    if(mheight < MIN_OL_HEIGHT && (
+                            "application/openlayers".equalsIgnoreCase(getMap.getFormat()) 
+                            || "openlayers".equalsIgnoreCase(getMap.getFormat()))) {
+                        mheight = MIN_OL_HEIGHT;
+                        mwidth = (mheight * bbratio >= 1) ? mheight * bbratio : 1;
+                    }
+                        
                 }
-                mheight = mwidth / bbratio;
+                
             }
 
             // Actually set the bounding box and size of image
@@ -353,6 +381,39 @@ public class DefaultWebMapService implements WebMapService,
         }
     }
     
+    private static String guessCommonSRS(MapLayerInfo[] layers) {
+        String SRS = null;
+        for (MapLayerInfo layer : layers) {
+            String layerSRS = null;
+            if(layer.getType() == MapLayerInfo.TYPE_VECTOR) {
+                layerSRS = "EPSG:" + layer.getFeature().getSRS();
+            } else if(layer.getType() == MapLayerInfo.TYPE_RASTER) {
+                layerSRS = layer.getCoverage().getSrsName();
+//            } else if(layer.getType() == MapLayerInfo.TYPE_RASTER) {
+//                WMS wms = (WMS) GeoServerExtensions.bean("WMS");
+//                ReferencedEnvelope env =  (ReferencedEnvelope) wms.getBaseMapEnvelopes().get(layer.getName());
+//                try {
+//                    Integer epsgCode = CRS.lookupEpsgCode(env.getCoordinateReferenceSystem(), false) ; 
+//                    layerSRS = "EPSG:" + epsgCode;
+//                } catch (FactoryException e) {
+//                    throw new WmsException(e);
+//                }
+//            }
+            } else {
+                throw new WmsException("Could not recognize type for layer " + layer.getName());
+            }
+            if(SRS == null)
+                SRS = layerSRS.toUpperCase();
+            else if(!SRS.equals(layerSRS)) {
+                // layers with mixed native SRS, let's just use the default
+                return DefaultWebMapService.SRS;
+            }
+        }
+        if(SRS == null)
+            return DefaultWebMapService.SRS;
+        return SRS;
+    }
+
     private static void forceSRS(GetMapRequest getMap, String srs) {
         getMap.setSRS(srs);
         
