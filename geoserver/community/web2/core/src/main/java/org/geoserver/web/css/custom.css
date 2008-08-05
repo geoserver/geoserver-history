@@ -319,11 +319,11 @@ height: 16px;
 float: left;
 }
 
-button:hover,
+.buttons button:hover,
 .buttons a:hover {
 background-color: #dff4ff;
 border: 1px solid #c2e1ef;
-color: #336699;
+color: #369;
 }
 
 .buttons a:active {
@@ -340,18 +340,18 @@ color: #529214;
 .buttons a.positive:hover,
 button.positive:hover {
 background-color: #e6efc2;
-border: 1px solid #c6D880;
+border: 1px solid #c6d880;
 color: #529214;
 }
 
-.buttons a.positive:active{
+.buttons a.positive:active {
 background-color: #529214;
 border: 1px solid #529214;
 color: #fff;
 }
 
 .buttons a.negative,
-button.negative {
+ button.negative {
 color: #d12f19;
 }
 
@@ -604,7 +604,6 @@ border: 1px solid #ccc;
 
 
 /* Data page styles */
-
 span.command {
 margin-left: 2px;
 font-style: italic;
@@ -612,4 +611,76 @@ font-style: italic;
 
 span.unconfiguredLayer {
 font-style: italic;
+}
+
+
+/* Tabs */
+.tab-row {
+border: 1px solid #bbb;
+border-width: 0 0 1px;
+height: 2.1em;
+margin: 1.5em 0 1em;
+}
+
+.tab-row ul {
+list-style-type: none;
+margin: 0;
+float: left;
+}
+
+.tab-row li {
+float: left;
+margin: 0 0.2em 0 0;
+padding: 0;
+}
+
+.tab-row a {
+display: block;
+color: #222;
+text-decoration: none;
+font-weight: bold;
+background: #ddd;
+margin: 0 0 -1px;
+padding: 0.25em 1em;
+border-top: 1px solid #ccc;
+border-right: 1px solid #aaa;
+border-bottom: 1px solid #bbb;
+border-left: 1px solid #ccc;
+}
+
+.tab-row .selected a:link,
+.tab-row .selected a:visited {
+background: #fff;
+border-bottom: 1px solid #fff;
+}
+
+.tab-row a:hover,
+.tab-row a:active {
+background: #eee;
+}
+
+.tab-row .selected a:hover,
+.tab-row .selected a:active {
+background: #fefefb;
+}
+
+/* redundant to .selfclear, but with the default wicket tab functionality we don't have the markup control we'd need to avoid this */
+.tab-row ul:after {
+content: ".";
+display: block;
+height: 0;
+clear: both;
+visibility: hidden;
+}
+
+.tab-row ul {
+display: inline-block; /* IE 7 */
+}
+
+.tab-row ul {
+display: block;
+}
+
+* html .tab-row ul {
+height: 1px; /* IE < 7 */
 }
