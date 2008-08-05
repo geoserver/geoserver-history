@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ComponentPropertyModel;
@@ -25,7 +26,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
 		super(id, model);
 		init();
 		add(new TextField("title"));
-		add(new TextField("abstract"));
+		add(new TextArea("abstract"));
 		add(new ListMultipleChoice("keywords", new PropertyModel(this, "mySelectedKeywords"), new ComponentPropertyModel("keywords")));
         add(new Button("removeKeywords"){
             @Override
