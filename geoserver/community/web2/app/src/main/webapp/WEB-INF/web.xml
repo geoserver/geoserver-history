@@ -195,7 +195,11 @@
       <servlet-name>dispatcher</servlet-name>
       <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     </servlet>
-  
+    <servlet>
+	   <servlet-name>TestWfsPost</servlet-name>
+	   <servlet-class>org.vfny.geoserver.wfs.servlets.TestWfsPost</servlet-class>
+	</servlet>
+    
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/web/*</url-pattern>
@@ -257,7 +261,11 @@
      <servlet-name>dispatcher</servlet-name>
      <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-    
+    <servlet-mapping>
+     <servlet-name>TestWfsPost</servlet-name>
+     <url-pattern>/TestWfsPost/*</url-pattern>
+    </servlet-mapping>
+  
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
