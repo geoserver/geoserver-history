@@ -75,7 +75,6 @@ public class SRSListPage extends GeoServerBasePage {
         container.add(srsList);
         add(container);
         AjaxPagingNavigator navigator = new AjaxPagingNavigator("navigator", srsList);
-        navigator.getPagingNavigation().setViewSize(20);
         add(navigator);
     }
 
