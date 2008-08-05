@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.navigation.paging.IPageable;
  * @author Andrea Aime - TOPP
  *
  */
-class GeoServerPagingNavigator extends AjaxPagingNavigator {
+public class GeoServerPagingNavigator extends AjaxPagingNavigator {
 
     public GeoServerPagingNavigator(String id, IPageable pageable) {
         super(id, pageable);
