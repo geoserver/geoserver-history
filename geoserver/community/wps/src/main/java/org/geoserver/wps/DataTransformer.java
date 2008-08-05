@@ -164,15 +164,15 @@ public class DataTransformer {
         Parameter<?> parameter     = this.inputParameters.get(parameterName);
 
         try {
-	        if (null != data.getLiteralData()) {
-	            output = this.decodeLiteralData(data.getLiteralData(), parameter.type);
-	        }
-	
-	        if (null != data.getComplexData()) {
-	            output = this.decodeComplexData(data.getComplexData(), parameter.type);
-	        }
+            if (null != data.getLiteralData()) {
+                output = this.decodeLiteralData(data.getLiteralData(), parameter.type);
+            }
+
+            if (null != data.getComplexData()) {
+                output = this.decodeComplexData(data.getComplexData(), parameter.type);
+            }
         } catch(Exception e) {
-        	throw new WPSException("InvalidParameterValue", parameterName);
+            throw new WPSException("InvalidParameterValue", parameterName);
         }
 
         if (null != data.getBoundingBoxData()) {
@@ -184,7 +184,7 @@ public class DataTransformer {
     }
 
     private Object decodeComplexData(final ComplexDataType input, final Class<?> type) {
-    	Object data = input.getData().get(0);
+        Object data = input.getData().get(0);
 
         return data;
     }

@@ -112,7 +112,8 @@ public class Executor {
      */
     @SuppressWarnings("unchecked")
     private void checkInputs(Map<String, Parameter<?>> processParameters,
-        DataInputsType1 requestInputs) {
+        DataInputsType1 requestInputs)
+    {
         List<String> requestInputNames = new ArrayList<String>();
         List<String> processInputNames = new ArrayList<String>();
 
@@ -155,7 +156,7 @@ public class Executor {
         }
 
         if (false == "".equals(unknownParameters.toString())) {
-            throw new WPSException("NoApplicableCode", "Uknown input parameters: " + unknownParameters);
+            throw new WPSException("NoApplicableCode", "Unknown input parameters: " + unknownParameters);
         }
 
         return;
