@@ -14,16 +14,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.IPageable;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.wicket.GeoServerPagingNavigator;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.ReferencingFactoryFinder;
@@ -140,35 +138,6 @@ public class SRSListPage extends GeoServerBasePage {
             }
         }
 
-    }
-    
-    /**
-     * A custom navigator that sets classes for the elements
-     * @author Andrea Aime - TOPP
-     *
-     */
-    class GeoServerPagingNavigator extends AjaxPagingNavigator {
-
-        public GeoServerPagingNavigator(String id, IPageable pageable) {
-            super(id, pageable);
-        }
-        
-        @Override
-        protected Link newPagingNavigationLink(String id, IPageable pageable, int pageNumber) {
-            Link link = super.newPagingNavigationLink(id, pageable, pageNumber);
-            // we turn the id into the css class
-            link.add(new SimpleAttributeModifier("class", id));
-            return link;
-        }
-        
-        @Override
-        protected Link newPagingNavigationIncrementLink(String id, IPageable pageable, int increment) {
-            Link link = super.newPagingNavigationIncrementLink(id, pageable, increment);
-            // we turn the id into the css class
-            link.add(new SimpleAttributeModifier("class", id));
-            return link;
-        }
-        
     }
 
 

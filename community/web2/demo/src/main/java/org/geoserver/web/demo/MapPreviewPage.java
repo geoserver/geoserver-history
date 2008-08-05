@@ -6,19 +6,21 @@ package org.geoserver.web.demo;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.wicket.GeoServerPagingNavigator;
 import org.geoserver.wms.DefaultWebMapService;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MapLayerInfo;
@@ -28,7 +30,14 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+/**
+ * Lists the available WMS layers, allows for a map preview
+ * @author Andrea Aime - TOPP
+ *
+ */
 public class MapPreviewPage extends GeoServerBasePage {
+    private static final int MAX_ROWS = 25;
+
     @SuppressWarnings("serial")
     public MapPreviewPage(){
         //TODO: This should list Layers, not Resources.  (Should it exist per-workspace? just have
@@ -55,8 +64,13 @@ public class MapPreviewPage extends GeoServerBasePage {
 
         final List<String> formats = getAvailableFormats();
 
-        add(new ListView("layer", resourceListModel){
+        PageableListView layers = new PageableListView("layer", resourceListModel, MAX_ROWS){
             public void populateItem(ListItem item){
+                // alternate bg color
+                item.add(new SimpleAttributeModifier("class", item.getIndex() % 2 == 0 ? "even"
+                        : "odd"));
+                
+                
                 final String layerName = (String) item.getModelObject();
                 
                 GetMapRequest request = buildFakeGetMap(layerName);
@@ -82,7 +96,21 @@ public class MapPreviewPage extends GeoServerBasePage {
                     }
                 });
             }
-        });
+        };
+        WebMarkupContainer cnt = new WebMarkupContainer("layerContainer");
+        cnt.setOutputMarkupId(true);
+        cnt.add(layers);
+        add(cnt);
+        
+        // add pagers
+        final GeoServerPagingNavigator topPager = new GeoServerPagingNavigator("topNav", layers);
+        final GeoServerPagingNavigator bottomPager = new GeoServerPagingNavigator("bottomNav", layers);
+        add(topPager);
+        add(bottomPager);
+        if(layers.size() < MAX_ROWS) {
+            topPager.setVisible(false);
+            bottomPager.setVisible(false);
+        }
     }
 
     /**
