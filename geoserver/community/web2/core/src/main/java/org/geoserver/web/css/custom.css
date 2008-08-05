@@ -169,14 +169,16 @@ width: 13em;
 /*-----------------------
 Forms
 -----------------------*/
-form ul {
+form ul,
+ul.form-data {
 margin: 0; /* override blueprint's settings for unordered lists */
 list-style-type: none;
 }
 
-form li {
+form li,
+ul.form-data li {
 display: block;
-margin: 0;
+margin: 0 0 0.3em;
 padding: 4px 5px 2px 0;
 position: relative;
 }
@@ -191,7 +193,7 @@ padding: 0;
 
 fieldset { /* override blueprint's settings */
 padding: 0;
-margin: 0;
+margin: 0 0 1em;
 border: 2px solid #000;
 border-width: 2px 0 0;
 width: 35em;
@@ -200,7 +202,7 @@ width: 35em;
 legend {
 }
 
-label {
+label, span.fieldname {
 border: medium none;
 color: #222;
 display: block;
@@ -221,22 +223,8 @@ padding: 0.44em 0 0.5em;
 width: 90%;
 }
 
-label.choice {
-color: #222;
-display: block;
-font-size: 100%;
-line-height: 1.5em;
-margin: -1.65em 0 0 25px;
-padding: 0.44em 0 0.5em;
-width: 90%;
-}
-
 textarea.medium {
 height: 10em;
-}
-
-textarea.textarea {
-font-family: "Lucida Grande",Tahoma,Arial,sans-serif;
 }
 
 input.large, select.large, textarea.large {
@@ -256,6 +244,7 @@ width: 25em;
 }
 
 textarea.textarea {
+font-family: "Lucida Grande",Tahoma,Arial,sans-serif;
 height: 15em;
 width: 33em;
 }
@@ -278,6 +267,24 @@ input.btTxt {
 overflow: visible;
 padding: 0 7px;
 width: auto;
+}
+
+div.value,
+div.value-wide {
+border: 1px solid #7c7c7c;
+border-color: #7c7c7c #c3c3c3 #ddd;
+background: #f1f1f1;
+padding: 0.2em;
+width: 25em;
+}
+
+div.value-wide {
+width: 100%;
+}
+
+div.value pre,
+div.value-wide pre { /* override blueprint's settings */
+margin: 0;
 }
 
 /*-----------------------

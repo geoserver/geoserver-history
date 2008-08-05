@@ -25,7 +25,6 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     }
     
     protected void build(IModel info, Form form) {
-        form.add(new BookmarkablePageLink("styles", StylesPage.class));
         
     	form.add(new TextField("interpolation"));
     	form.add(new CheckBox("watermark.enabled"));
