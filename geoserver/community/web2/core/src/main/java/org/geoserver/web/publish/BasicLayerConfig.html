@@ -5,8 +5,14 @@
     <wicket:panel>
         <h3><wicket:message key="page.title">Basic</wicket:message></h3>
         <ul>
-        <li><wicket:message key="name">Name</wicket:message>: <input type="text" wicket:id="name"></input> </li>
-        <li><wicket:message key="enabled">Enabled</wicket:message>: <input type="checkbox" wicket:id="enabled"></input> </li>
+        <li>
+            <label for="name"><wicket:message key="name">Name</wicket:message> </label> 
+            <input type="text" wicket:id="name"></input> 
+        </li>
+        <li>
+            <label for="enabled"><wicket:message key="enabled">Enabled</wicket:message> </label> 
+            <input type="checkbox" wicket:id="enabled"></input> 
+        </li>
         </ul>
         <!-- Options which should be exposed eventually.  These aren't there on the backend yet so...
         Keywords: <select wicket:id="keywords" multiple="multiple"></select> <br/>

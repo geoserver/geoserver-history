@@ -51,20 +51,26 @@ public class ResourceConfigurationPage extends GeoServerBasePage {
     }
 
     private void setup(ResourceInfo resource, LayerInfo layer){
-        final String resourceName = resource.getName();
+        //final String resourceName = resource.getName();
+        myResourceModel = new CompoundPropertyModel(resource);
+        /*
         myResourceModel = new CompoundPropertyModel(new LoadableDetachableModel(){
             public Object load(){
                 return getCatalog().getResource(resourceName, ResourceInfo.class);
             }
         });
+        */
 
-        final String layerName = layer.getName();
+        //final String layerName = layer.getName();
+        myLayerModel = new CompoundPropertyModel(layer);
 
+        /*
         myLayerModel = new CompoundPropertyModel(new LoadableDetachableModel(){
             public Object load(){
                 return getCatalog().getLayer(layerName);
             }
         });
+        */
     }
 
     private void initComponents(){
