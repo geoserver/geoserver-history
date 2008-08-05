@@ -9,8 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
@@ -97,7 +96,7 @@ public class GeoServerBasePage extends WebPage {
             }
         });
 
-        SortedMap<Category,List<MenuPageInfo>> links = splitByCategory(
+        final Map<Category,List<MenuPageInfo>> links = splitByCategory(
             getGeoServerApplication().getBeansOfType(MenuPageInfo.class)
         );
 
@@ -106,12 +105,14 @@ public class GeoServerBasePage extends WebPage {
             : new ArrayList<MenuPageInfo>();
         links.remove(null);
 
-        add(new ListView("category", new ArrayList(links.entrySet())){
+        List<Category> categories = new ArrayList(links.keySet());
+        Collections.sort(categories);
+
+        add(new ListView("category", categories){
             public void populateItem(ListItem item){
-                Map.Entry<Category,List<MenuPageInfo>> entry;
-                entry = (Map.Entry<Category,List<MenuPageInfo>>) item.getModelObject();
-                item.add(new Label("category.header", new StringResourceModel(entry.getKey().getNameKey(), (Component) null, null)));
-                item.add(new ListView("category.links", entry.getValue()){
+                Category category = (Category)item.getModelObject();
+                item.add(new Label("category.header", new StringResourceModel(category.getNameKey(), (Component) null, null)));
+                item.add(new ListView("category.links", links.get(category)){
                     public void populateItem(ListItem item){
                         MenuPageInfo info = (MenuPageInfo)item.getModelObject();
                         item.add(new BookmarkablePageLink("link", info.getComponentClass())
@@ -193,21 +194,9 @@ public class GeoServerBasePage extends WebPage {
         }
     }
 
-    private static SortedMap<Category,List<MenuPageInfo>> splitByCategory(List<MenuPageInfo> pages){
+    private static Map<Category,List<MenuPageInfo>> splitByCategory(List<MenuPageInfo> pages){
         Collections.sort(pages);
-
-        TreeMap<Category,List<MenuPageInfo>> map =
-            new TreeMap<Category,List<MenuPageInfo>>(new Comparator<Category>(){
-                public int compare(Category a, Category b){
-                    if (a == null){
-                        return b == null ? 0 : -1;
-                    }
-
-                    if (b == null) return 1;
-
-                    return a.getOrder() - b.getOrder();
-                }
-            });
+        HashMap<Category,List<MenuPageInfo>> map = new HashMap<Category,List<MenuPageInfo>>();
 
         for (MenuPageInfo page : pages){
             Category cat = page.getCategory();
