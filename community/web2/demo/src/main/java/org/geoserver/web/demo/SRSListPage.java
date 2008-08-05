@@ -36,7 +36,7 @@ import org.vfny.geoserver.crs.GeoserverCustomWKTFactory;
 public class SRSListPage extends GeoServerBasePage {
 
     
-    private static final int MAX_ROWS = 40;
+    private static final int MAX_ROWS = 25;
 
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.web.demo");
 
