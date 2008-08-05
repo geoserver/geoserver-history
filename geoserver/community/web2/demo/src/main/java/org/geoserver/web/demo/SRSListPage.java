@@ -19,8 +19,10 @@ import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.IPageable;
 import org.geoserver.web.GeoServerBasePage;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
@@ -34,7 +36,7 @@ import org.vfny.geoserver.crs.GeoserverCustomWKTFactory;
 public class SRSListPage extends GeoServerBasePage {
 
     
-    private static final int MAX_ROWS = 20;
+    private static final int MAX_ROWS = 40;
 
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.web.demo");
 
@@ -74,8 +76,9 @@ public class SRSListPage extends GeoServerBasePage {
         container.setOutputMarkupId(true);
         container.add(srsList);
         add(container);
-        AjaxPagingNavigator navigator = new AjaxPagingNavigator("navigator", srsList);
-        add(navigator);
+        add(new GeoServerPagingNavigator("topNav", srsList));
+        add(new GeoServerPagingNavigator("bottomNav", srsList));
+        
     }
 
     List<String> buildCodeList() {
@@ -99,6 +102,12 @@ public class SRSListPage extends GeoServerBasePage {
         return ids;
     }
     
+    /**
+     * Compares the codes so that most of the codes ger compared as numbers,
+     * but unfortunately some non numeric ones can sneak in...
+     * @author Andrea Aime - TOPP
+     *
+     */
     public class CodeComparator implements Comparator<String> {
 
         public int compare(String s1, String s2) {
@@ -126,6 +135,35 @@ public class SRSListPage extends GeoServerBasePage {
             }
         }
 
+    }
+    
+    /**
+     * A custom navigator that sets classes for the elements
+     * @author Andrea Aime - TOPP
+     *
+     */
+    class GeoServerPagingNavigator extends AjaxPagingNavigator {
+
+        public GeoServerPagingNavigator(String id, IPageable pageable) {
+            super(id, pageable);
+        }
+        
+        @Override
+        protected Link newPagingNavigationLink(String id, IPageable pageable, int pageNumber) {
+            Link link = super.newPagingNavigationLink(id, pageable, pageNumber);
+            // we turn the id into the css class
+            link.add(new SimpleAttributeModifier("class", id));
+            return link;
+        }
+        
+        @Override
+        protected Link newPagingNavigationIncrementLink(String id, IPageable pageable, int increment) {
+            Link link = super.newPagingNavigationIncrementLink(id, pageable, increment);
+            // we turn the id into the css class
+            link.add(new SimpleAttributeModifier("class", id));
+            return link;
+        }
+        
     }
 
 
