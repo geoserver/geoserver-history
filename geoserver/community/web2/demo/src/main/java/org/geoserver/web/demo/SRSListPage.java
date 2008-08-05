@@ -33,6 +33,11 @@ import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.crs.GeoserverCustomWKTFactory;
 
+/**
+ * Lists all the SRS available in GeoServer
+ * @author Andrea Aime - OpenGeo
+ *
+ */
 public class SRSListPage extends GeoServerBasePage {
 
     
