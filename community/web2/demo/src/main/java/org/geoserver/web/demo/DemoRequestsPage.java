@@ -147,7 +147,7 @@ public class DemoRequestsPage extends GeoServerBasePage {
         TextArea body = new TextArea("body", new PropertyModel(model, "requestBody"));
         testWfsPostForm.add(body);
 
-        TextField username = new TextField("username", new PropertyModel(model, "username"));
+        TextField username = new TextField("username", new PropertyModel(model, "userName"));
         testWfsPostForm.add(username);
 
         PasswordTextField password = new PasswordTextField("password", new PropertyModel(model,
