@@ -5,10 +5,10 @@
 <body>
 <wicket:extend>
 	<h2 wicket:id="code">EPSG:XXXX</h2>
-	<ul>
-	<li><span class="fieldname"><wicket:message key="description">Description:</wicket:message></span><span class="value" wicket:id="description">description</span></li>
-	<li><span class="fieldname">WKT:</span><span class="value" wicket:id="wkt">wkt</span></li>
-	<li><span class="fieldname">Area of validity:</span><span class="value" >...</span></li>
+	<ul class="form-data">
+	<li><span class="fieldname"><wicket:message key="description">Description</wicket:message></span><div class="value" wicket:id="description">description</div></li>
+	<li><span class="fieldname">WKT</span><div class="value-wide"><pre wicket:id="wkt">wkt</pre></div></li>
+	<li><span class="fieldname">Area of validity</span><div class="value" >...</div></li>
 	</ul>
 </wicket:extend>
 </body>
