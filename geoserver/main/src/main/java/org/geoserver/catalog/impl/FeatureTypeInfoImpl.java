@@ -17,8 +17,6 @@ import org.opengis.util.ProgressListener;
 public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
         FeatureTypeInfo {
 
-    List<AttributeTypeInfo> attributes = new ArrayList<AttributeTypeInfo>();
-    
     Filter filter;
 
     int maxFeatures;
@@ -37,7 +35,7 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
     }
 
     public List<AttributeTypeInfo> getAttributes() {
-        return attributes;
+        return catalog.getResourcePool().getAttributeTypes(this);
     }
     
     public Filter getFilter() {
@@ -75,8 +73,8 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result
-                + ((attributes == null) ? 0 : attributes.hashCode());
+        //result = prime * result
+                //+ ((attributes == null) ? 0 : attributes.hashCode());
         result = prime * result + ((filter == null) ? 0 : filter.hashCode());
         result = prime * result + maxFeatures;
         result = prime * result + numDecimals;
@@ -92,6 +90,7 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
         }
         
         final FeatureTypeInfo other = (FeatureTypeInfo) obj;
+        final List<AttributeTypeInfo> attributes = getAttributes();
         if (attributes == null) {
             if (other.getAttributes() != null)
                 return false;
