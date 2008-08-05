@@ -1,0 +1,28 @@
+<html>
+<head>
+<title><wicket:message key="demo.srslist">SRS list</wicket:message></title>
+</head>
+<body>
+<wicket:extend>
+	<h2><wicket:message key="demo.srslist">SRS list</wicket:message></h2>
+	<div><wicket:message key="demo.srslist.abstract">page abstract goes here...</wicket:message></div>
+
+	<table>
+		<thead>
+			<tr>
+				<th><wicket:message key="demo.srslist.code">Code</wicket:message></th>
+				<th><wicket:message key="demo.srslist.description">Description</wicket:message></th>
+			</tr>
+		</thead>
+		<tbody wicket:id="listContainer">
+			<tr wicket:id="srslist">
+				<td><a href="#" wicket:id="codeLink"><span wicket:id="code">code</span></a></td>
+				<td><span wicket:id="description" >description</span></td>
+			</tr>
+		</tbody>
+	</table>
+	<div wicket:id="navigator">1|2|3|...</div>
+
+</wicket:extend>
+</body>
+</html>
