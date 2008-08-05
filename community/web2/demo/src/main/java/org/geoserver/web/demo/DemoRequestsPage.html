@@ -12,9 +12,8 @@
       <tr>
         <td class="label"><wicket:message key="demo.demorequests.request">Request:</wicket:message></td>
         <td class="datum">
-        <form id="selectForm" wicket:id="selectForm"><select wicket:id="demoRequestsList"
-          onchange="document.getElementById('selectForm').submit();"
-        >
+        <form id="selectForm" wicket:id="selectForm">
+         <select wicket:id="demoRequestsList">
           <optgroup label="WMS">
             <option>wms1</option>
           </optgroup>
@@ -24,7 +23,8 @@
           <optgroup label="WCS">
             <option>wcs1</option>
           </optgroup>
-        </select></form>
+         </select>
+        </form>
         </td>
       </tr>
       <form wicket:id="TestWfsPostForm" action="TestWfsPost" method="POST">
@@ -47,21 +47,18 @@
       <tr>
         <td class="label" width="1%"></td>
         <td class="datum" width="99%">
-          <input type="submit" value="Submit" wicket:id="submit"/>
-          <input type="submit" value="Submit new"  wicket:id="submitNew"/>
+          <div class="buttons selfclear">
+            <a href="#" wicket:id="submit"><wicket:message key="demo.demorequests.submit">Submit</wicket:message></a>
+            <!-- ignoring since I don't know yet how to open the contents in a new browser window
+            <a href="#" wicket:id="submitNew"><wicket:message key="demo.demorequests.submitNew">Submit New</wicket:message></a>
+            -->
+          </div>
         </td>
       </tr>
       </form>
-      <tr>
-        <td class="label" width="1%">
-          <wicket:message key="demo.demorequests.response">Response:</wicket:message>
-        </td>
-        <td width="99%">
-          <iframe wicket:id="demoResponse" style="border: 1px solid" width="100%" height="300px"/>
-        </td>
-      </tr>
     </tbody>
   </table>
+          <div wicket:id="responseWindow"></div>
 
 </wicket:extend>
 </body>

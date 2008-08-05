@@ -14,7 +14,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.wicket.Page;
+import org.apache.wicket.Request;
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -23,6 +30,8 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.web.GeoServerBasePage;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -38,7 +47,7 @@ public class DemoRequestsPage extends GeoServerBasePage {
 
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.web.demo");
 
-    private static class DemoRequestsModel implements Serializable {
+    public static class DemoRequestsModel implements Serializable {
         private static final long serialVersionUID = 1L;
 
         /**
@@ -56,7 +65,7 @@ public class DemoRequestsPage extends GeoServerBasePage {
 
         private String password;
 
-        public DemoRequestsModel(final File demoDir) {
+        DemoRequestsModel(final File demoDir) {
             this.demoDir = demoDir;
         }
 
@@ -152,25 +161,47 @@ public class DemoRequestsPage extends GeoServerBasePage {
 
         PasswordTextField password = new PasswordTextField("password", new PropertyModel(model,
                 "password"));
+        password.setRequired(false);
         testWfsPostForm.add(password);
 
-        testWfsPostForm.add(new Button("submit") {
+        final ModalWindow responseWindow;
+
+        responseWindow = new ModalWindow("responseWindow");
+        add(responseWindow);
+        responseWindow.setPageMapName("demoResponse");
+        responseWindow.setCookieName("demoResponse");
+        responseWindow.setPageCreator(new ModalWindow.PageCreator() {
+            public Page createPage() {
+                return new DemoRequestResponse(model);
+            }
+        });
+        responseWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+            public void onClose(AjaxRequestTarget target) {
+                // target.addComponent(result);
+            }
+        });
+
+        testWfsPostForm.add(new AjaxLink("submit") {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void onSubmit() {
-                submitOnIFrame();
+            public void onClick(AjaxRequestTarget target) {
+                responseWindow.show(target);
             }
 
         });
-        testWfsPostForm.add(new Button("submitNew") {
-            private static final long serialVersionUID = 1L;
 
-            @Override
-            public void onSubmit() {
-                submitOnNewWindow();
-            }
-        });
+        // Commented out since I don't know yet how to open it in a new browser
+        // window...
+        // testWfsPostForm.add(new AjaxLink("submitNew") {
+        // private static final long serialVersionUID = 1L;
+        //
+        // @Override
+        // public void onClick(AjaxRequestTarget target) {
+        // responseWindow.show(target);
+        // }
+        //
+        // });
     }
 
     private void setUpRequestSelectionForm() {
@@ -194,15 +225,6 @@ public class DemoRequestsPage extends GeoServerBasePage {
         Collections.sort(demoList);
         demoRequestsList = new DemoRequestsDropDown("demoRequestsList", model, demoList);
         selectForm.add(demoRequestsList);
-    }
-
-    private void submitOnIFrame() {
-        
-    }
-
-    private void submitOnNewWindow() {
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -236,6 +258,17 @@ public class DemoRequestsPage extends GeoServerBasePage {
         protected void onSelectionChanged(final Object newSelection) {
             final String reqFileName = (String) newSelection;
             final String contents;
+
+            final String baseUrl;
+            {
+                Request request = super.getWebPage().getRequest();
+                if (!(request instanceof WebRequest)) {
+                    throw new RuntimeException("request is not a WebRequest, shouldn't happen!");
+                }
+                HttpServletRequest httpServletRequest;
+                httpServletRequest = ((WebRequest) request).getHttpServletRequest();
+                baseUrl = RequestUtils.baseURL(httpServletRequest);
+            }
             try {
                 contents = demosModel.getFileContents(reqFileName);
             } catch (IOException e) {
@@ -243,12 +276,14 @@ public class DemoRequestsPage extends GeoServerBasePage {
                 throw new WicketRuntimeException("Can't load demo file");
             }
 
-            boolean isUrl = reqFileName.endsWith(".url");
-            if (isUrl) {
-                demosModel.setRequestUrl(contents);
+            boolean demoRequestIsHttpGet = reqFileName.endsWith(".url");
+            final String service = reqFileName.substring(0, reqFileName.indexOf('_')).toLowerCase();
+            final String serviceUrl = baseUrl + service;
+            if (demoRequestIsHttpGet) {
+                demosModel.setRequestUrl(baseUrl + contents);
                 demosModel.setRequestBody(null);
             } else {
-                demosModel.setRequestUrl(null);
+                demosModel.setRequestUrl(serviceUrl);
                 demosModel.setRequestBody(contents);
             }
         }
