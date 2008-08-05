@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -74,6 +75,7 @@ public class ResourcePool {
     CoverageReaderCache coverageReaderCache;
     CoverageReaderCache hintCoverageReaderCache;
     HashMap<StyleInfo,Style> styleCache;
+    Map<FeatureTypeInfo, List<AttributeTypeInfo>> attributeCache;
     
     public ResourcePool() {
         crsCache = new HashMap<String, CoordinateReferenceSystem>();
@@ -82,7 +84,7 @@ public class ResourcePool {
         coverageReaderCache = new CoverageReaderCache();
         hintCoverageReaderCache = new CoverageReaderCache();
         styleCache = new HashMap<StyleInfo, Style>();
-        
+        attributeCache = new HashMap<FeatureTypeInfo, List<AttributeTypeInfo>>();
     }
     
     /**
@@ -262,6 +264,15 @@ public class ResourcePool {
         }
         
         return ft;
+    }
+
+    public List<AttributeTypeInfo> getAttributeTypes(FeatureTypeInfo info){
+        synchronized(attributeCache){
+            if (!attributeCache.containsKey(info)){
+                attributeCache.put(info, new ArrayList<AttributeTypeInfo>());
+            }
+        }
+        return attributeCache.get(info);
     }
 
     /**
