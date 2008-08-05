@@ -16,4 +16,11 @@
     <property name="descriptionKey" value="demo.demorequests.description"/>
     <property name="componentClass" value="org.geoserver.web.demo.DemoRequestsPage"/>
   </bean>
+  
+  <bean id="srsList" class="org.geoserver.web.DemoLinkInfo">
+    <property name="id" value="demoRequests"/>
+    <property name="titleKey" value="demo.srslist"/>
+    <property name="descriptionKey" value="demo.srslist.description"/>
+    <property name="componentClass" value="org.geoserver.web.demo.SRSListPage"/>
+  </bean>
 </beans>
