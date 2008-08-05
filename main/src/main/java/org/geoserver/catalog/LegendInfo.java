@@ -1,12 +1,14 @@
 package org.geoserver.catalog;
 
+import java.io.Serializable;
+
 /**
  * A legend for a layer.
  * 
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-public interface LegendInfo {
+public interface LegendInfo extends Serializable {
 
     /**
      * Identifier.

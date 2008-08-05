@@ -12,7 +12,7 @@ import org.opengis.util.ProgressListener;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface StoreInfo {
+public interface StoreInfo extends Serializable {
 
     /**
      * The store identifier.

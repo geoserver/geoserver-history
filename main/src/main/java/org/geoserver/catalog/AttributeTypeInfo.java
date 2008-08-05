@@ -11,7 +11,7 @@ import org.opengis.feature.type.AttributeDescriptor;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public interface AttributeTypeInfo {
+public interface AttributeTypeInfo extends Serializable {
 
     /**
      * Name of the attribute.

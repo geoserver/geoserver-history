@@ -27,7 +27,7 @@ public abstract class StoreInfoImpl implements StoreInfo {
 
     WorkspaceInfo workspace;
     
-    Catalog catalog;
+    transient Catalog catalog;
 
     Map connectionParameters = new HashMap();
 

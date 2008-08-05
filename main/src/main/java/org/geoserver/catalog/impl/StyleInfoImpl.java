@@ -14,7 +14,7 @@ public class StyleInfoImpl implements StyleInfo {
 
     String filename;
     
-    Catalog catalog;
+    transient Catalog catalog;
     
     public StyleInfoImpl( Catalog catalog ) {
         this.catalog = catalog;

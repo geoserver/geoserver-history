@@ -8,7 +8,7 @@ import java.util.Map;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface NamespaceInfo {
+public interface NamespaceInfo extends Serializable {
 
     /**
      * Identifier.

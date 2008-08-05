@@ -58,7 +58,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
 
     StoreInfo store;
     
-    Catalog catalog;
+    transient Catalog catalog;
 
     protected ResourceInfoImpl(Catalog catalog) {
         this.catalog = catalog;

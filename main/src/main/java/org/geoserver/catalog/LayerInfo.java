@@ -9,7 +9,7 @@ import java.util.Set;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface LayerInfo {
+public interface LayerInfo extends Serializable {
 
     /**
      * Enumeration for type of layer.

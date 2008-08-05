@@ -1,6 +1,7 @@
 package org.geoserver.catalog;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import org.geotools.styling.Style;
 
@@ -9,7 +10,7 @@ import org.geotools.styling.Style;
  * 
  * @author Justin Deoliveira, The Open Planning project
  */
-public interface StyleInfo {
+public interface StyleInfo extends Serializable {
 
     /**
      * Identifier for the style.
