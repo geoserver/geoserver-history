@@ -1,11 +1,13 @@
 package org.geoserver.web;
 
+import java.io.Serializable;
+
 /**
  * A simple bean to represent a sidebar category.
  *
  * @author David Winslow <dwinslow@opengeo.org>
  */
-public class Category implements Comparable<Category> {
+public class Category implements Comparable<Category>, Serializable {
     /**
      * The sort key to determine the order of the categories in the menu.
      */
