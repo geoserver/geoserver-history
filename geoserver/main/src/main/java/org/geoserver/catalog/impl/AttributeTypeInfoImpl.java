@@ -14,7 +14,7 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
     int minOccurs;
     int maxOccurs;
     boolean nillable;
-    AttributeDescriptor attribute;
+    transient AttributeDescriptor attribute;
     HashMap metadata = new HashMap();
     
     public String getName() {
@@ -60,5 +60,4 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
     public Map<String, Serializable> getMetadata() {
         return metadata;
     }
-
 }

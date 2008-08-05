@@ -1,5 +1,6 @@
 package org.geoserver.catalog.impl;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -29,7 +30,7 @@ import java.util.Map;
  * TODO: this class should use BeanUtils for all reflection stuff
  *
  */
-public class ModificationProxy implements InvocationHandler {
+public class ModificationProxy implements InvocationHandler, Serializable {
 
     /** 
      * the proxy object 
