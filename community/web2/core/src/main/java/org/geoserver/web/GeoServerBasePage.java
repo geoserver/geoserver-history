@@ -122,7 +122,7 @@ public class GeoServerBasePage extends WebPage {
                         if(info.getIcon() != null) {
                             link.add(new Image("link.icon", new ResourceReference(info.getComponentClass(), info.getIcon())));
                         } else {
-                            link.add(new Image("link.icon", (Resource) null));
+                            link.add(new Image("link.icon", new ResourceReference(GeoServerBasePage.class, "img/icons/silk/wrench.png")));
                         }
                         item.add(link);
                     }
