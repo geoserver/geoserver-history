@@ -22,7 +22,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.tree.DataPage;
 import org.geoserver.web.util.MapModel;
 
@@ -30,7 +30,7 @@ import org.geoserver.web.util.MapModel;
  * 
  * @author Gabriel Roldan
  */
-public class NamespaceEditPage extends GeoServerBasePage {
+public class NamespaceEditPage extends GeoServerSecuredPage {
 
     private static final String PREFIX_KEY = "prefix";
 

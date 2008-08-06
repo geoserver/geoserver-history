@@ -6,20 +6,20 @@ package org.geoserver.web.admin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.media.jai.JAI;
 
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListChoice;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -32,9 +32,9 @@ import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.jai.JAIInfo;
-import org.geoserver.web.GeoServerBasePage;
-import org.geotools.data.LockingManager;
+import org.geoserver.web.GeoServerSecuredPage;
 import org.geotools.data.DataStore;
+import org.geotools.data.LockingManager;
 
 import com.sun.media.jai.util.SunTileCache;
 /** 
@@ -42,7 +42,7 @@ import com.sun.media.jai.util.SunTileCache;
  * @author Arne Kepp, The Open Planning Project
  */
 @SuppressWarnings("serial")
-public class ServerAdminPage extends GeoServerBasePage {
+public class ServerAdminPage extends GeoServerSecuredPage {
     private static final long serialVersionUID = 4712657652337914993L;
 
     public ServerAdminPage() {

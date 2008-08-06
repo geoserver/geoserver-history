@@ -144,6 +144,11 @@ public class GeoServerBasePage extends WebPage {
     protected GeoServerApplication getGeoServerApplication() {
         return (GeoServerApplication) getApplication();
     }
+    
+    @Override
+    public GeoServerSession getSession() {
+        return (GeoServerSession) super.getSession();
+    }
 
     /**
      * Convenience method for pages to get access to the geoserver

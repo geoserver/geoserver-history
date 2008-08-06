@@ -33,7 +33,6 @@ import com.vividsolutions.jts.geom.Envelope;
 /**
  * Lists the available WMS layers, allows for a map preview
  * @author Andrea Aime - TOPP
- *
  */
 public class MapPreviewPage extends GeoServerBasePage {
     private static final int MAX_ROWS = 25;
