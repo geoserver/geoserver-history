@@ -235,7 +235,7 @@ div#area_search_replace  #area_search_msg{
 	margin: 0; 
 	padding: 0;
 	background-color: #ECE9D8;
-	text-align: center;
+	text-align: left;
 }
 
 .area_toolbar, .area_toolbar table{
