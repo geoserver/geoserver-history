@@ -141,7 +141,7 @@
   -->
   <bean id="logoutFilter"
     class="org.acegisecurity.ui.logout.LogoutFilter">
-    <constructor-arg value="/index.jsp" />
+    <constructor-arg value="/web/" />
     <!-- URL redirected to after logout -->
     <constructor-arg>
       <list>
