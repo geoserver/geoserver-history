@@ -120,6 +120,7 @@ padding: 5px;
 #sidebar, 
 #page {
 padding: 0 20px;
+text-align: left; /* IE */
 }
 
 #sidebar {
@@ -207,7 +208,7 @@ border: 0 none transparent;
 
 legend span { 
 position: absolute;
-width: 35em;
+width: 29.2em;
 top: -1.5em;
 left: 0;
 }
@@ -636,7 +637,7 @@ font-style: italic;
 border: 1px solid #bbb;
 border-width: 0 0 1px;
 height: 2.1em;
-margin: 1.5em 0 1em;
+margin: 1.5em 0 2.5em;
 }
 
 .tab-row ul {
