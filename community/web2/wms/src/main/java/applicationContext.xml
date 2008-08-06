@@ -7,8 +7,7 @@
     <property name="titleKey" value="wms.title"/>
     <property name="descriptionKey" value="wms.description"/>
     <property name="componentClass" value="org.geoserver.wms.web.WMSAdminPage"/>
-    <!--property name="icon" value="wms_obj.gif"/-->
-    <!-- <property name="icon" value="server_picture.png"/> -->
+    <property name="icon" value="server_picture.png"/>
     <property name="category" ref="servicesCategory"/>
   </bean> 
     

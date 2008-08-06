@@ -19,6 +19,7 @@ package org.geoserver.web;
 public class MenuPageInfo extends ComponentInfo<GeoServerBasePage> implements Comparable<MenuPageInfo> {
     Category category;
     int order;
+    String icon;
 
     public void setCategory(Category category){
         this.category = category;
@@ -30,6 +31,14 @@ public class MenuPageInfo extends ComponentInfo<GeoServerBasePage> implements Co
 
     public void setOrder(int order){
         this.order = order;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public int getOrder(){

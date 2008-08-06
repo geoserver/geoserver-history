@@ -137,6 +137,7 @@
     <property name="descriptionKey" value="ServerAdminPage.page.description"/>
     <property name="componentClass" value="org.geoserver.web.admin.ServerAdminPage"/>
     <property name="category" ref="serverCategory"/>
+    <property name="icon" value="server.png"/>
   </bean>
 
   <!-- 
