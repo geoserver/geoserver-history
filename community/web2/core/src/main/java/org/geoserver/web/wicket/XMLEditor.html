@@ -1,0 +1,27 @@
+<html>
+<head>
+<wicket:head>
+<wicket:link>
+    <script type="text/javascript" src="js/editarea/edit_area_full.js"></script>
+</wicket:link>
+<script type="text/javascript">
+    editAreaLoader.init({
+        id : "textarea",
+        syntax: "css",
+        start_highlight: true,
+        min_width: 800,
+        min_height: 600,
+        allow_resize: true
+    });
+</script>
+</wicket:head>
+</head>
+<body>
+<form name="theform">
+<wicket:panel>
+<textarea id="textarea" wicket:id="textarea" rows="80" cols="100">
+</textarea>
+</wicket:panel>
+</form>
+</body>
+</html>
