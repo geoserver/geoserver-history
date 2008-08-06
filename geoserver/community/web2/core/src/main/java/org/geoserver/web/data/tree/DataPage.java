@@ -30,6 +30,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.tree.ITreeState;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.WebResponse;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.StoreInfo;
@@ -122,6 +123,12 @@ public class DataPage extends GeoServerSecuredPage {
 
         // refresh the state of the button based on the current selection
         updateButtonState();
+    }
+    
+    @Override
+    protected void setHeaders(WebResponse response) {
+        super.setHeaders(response);
+        response.setHeader("Cache-Control", "no-store");
     }
     
     protected void onNodeLinkClicked(AjaxRequestTarget target, TreeNode node) {
