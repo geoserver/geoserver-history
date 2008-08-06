@@ -1,16 +1,22 @@
 <html>
 <head></head>
 <body>
-  <form name="theForm">
+<form name="theForm">
   <wicket:panel>
-      <h3><wicket:message key="geosearch.section">GeoSearch</wicket:message></h3>
-      <ul>
-      <li>
-          <label for="geosearch.enable"> <wicket:message key="geosearch.enable">Enable Indexing</wicket:message> </label>
-          <input wicket:id="geosearch.enable" type="checkbox"></input>
-      </li>
-      </ul>
+    <ul>
+    <li>  
+      <fieldset>
+        <legend><wicket:message key="geosearch.section">GeoSearch</wicket:message></legend>
+        <ul>
+          <li>
+            <input id="geosearchEnable" class="field checkbox" wicket:id="geosearch.enable" type="checkbox"></input>
+            <label for="geosearchEnable" class="choice"><wicket:message key="geosearch.enable">Enable Indexing</wicket:message></label>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    </ul>
   </wicket:panel>
-  </form>
+</form>
 </body>
 </html>

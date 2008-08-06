@@ -2,31 +2,36 @@
 <head></head>
 <body>
 <form name="theForm">
-    <wicket:panel> 
-    <h3><wicket:message key="page.title">Default Title</wicket:message></h3>
-    <ul>
-        <li>
+  <wicket:panel>
+  <ul>
+    <li>
+      <fieldset>
+        <legend><wicket:message key="page.title">Default Title</wicket:message></legend>
+        <ul>
+          <li>
             <label for="defaultStyle"><wicket:message key="page.defaultStyle">Default Style</wicket:message></label>
-            <select wicket:id="defaultStyle"></select>
-        </li>
-        
-        <li>
-            <label> <wicket:message key="page.addStyles">Additional Styles</wicket:message> </label>
-            <select wicket:id="extraStyles" multiple="multiple"></select> 
-            <button wicket:id="addStyles" type="submit">Add Styles</button>
+            <select id="defaultStyle" class="select" wicket:id="defaultStyle"></select>
+          </li>
+          <li>
+            <label for="extraStyles"><wicket:message key="page.addStyles">Additional Styles</wicket:message></label>
+            <select id="extraStyles" class="select" wicket:id="extraStyles" multiple="multiple"></select> 
             <button wicket:id="removeStyles" type="submit">Remove Styles</button>
-        </li>
-        <li>
-            <label for="availableStyles"> <wicket:message key="page.availStyles">Default Available Styles</wicket:message> </label>
-            <select wicket:id="availableStyles" multiple="multiple"></select>
-        </li>
-        <li>
-            <label for="wmsPath"> <wicket:message key="page.wmsPath">Default WMS Path</wicket:message> </label>
-            <input wicket:id="wmsPath" type="text"></input> 
-        </li>
-    </ul>
-    </wicket:panel>
-    <input type="submit" value="Submit!"></input>
+          </li>
+          <li>
+            <label for="availableStyles"><wicket:message key="page.availStyles">Default Available Styles</wicket:message></label>
+            <select id="availableStyles" class="select" wicket:id="availableStyles" multiple="multiple"></select> 
+            <button wicket:id="addStyles" type="submit">Add Styles</button>
+          </li>
+          <li>
+            <label for="wmsPath"><wicket:message key="page.wmsPath">Default WMS Path</wicket:message></label>
+            <input id="wmsPath" class="text" wicket:id="wmsPath" type="text"></input> 
+          </li>
+        </ul>
+      </fieldset>
+    </li>   
+  </ul>
+  </wicket:panel>
+  <input type="submit" value="Submit!"></input>
 </form>
 </body>
 </html>

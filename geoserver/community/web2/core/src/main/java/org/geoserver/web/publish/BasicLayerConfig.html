@@ -2,28 +2,34 @@
 <head></head>
 <body>
 <form>
-    <wicket:panel>
-        <h3><wicket:message key="page.title">Basic</wicket:message></h3>
+  <wicket:panel>
+    <ul>
+    <li>  
+      <fieldset>
+        <legend><wicket:message key="page.title">Basic</wicket:message></legend>
         <ul>
-        <li>
-            <label for="name"><wicket:message key="name">Name</wicket:message> </label> 
-            <input type="text" wicket:id="name"></input> 
-        </li>
-        <li>
-            <label for="enabled"><wicket:message key="enabled">Enabled</wicket:message> </label> 
-            <input type="checkbox" wicket:id="enabled"></input> 
-        </li>
+          <li>
+            <label for="basic-name"><wicket:message key="name">Name</wicket:message></label> 
+            <input id="basic-name" class="text" type="text" wicket:id="name"></input>
+          </li>
+          <li>
+            <input id="basic-enabled" class="field checkbox" wicket:id="enabled" type="checkbox"></input>
+            <label for="basic-enabled" class="choice"><wicket:message key="enabled">Enabled</wicket:message></label>
+          </li>
+          <!-- Options which should be exposed eventually.  These aren't there on the backend yet so...
+          Keywords: <select wicket:id="keywords" multiple="multiple"></select> <br/>
+          <button wicket:id="removeKeywords" type="submit">Remove selected</button> <br/>
+          New Keyword <input type="text" wicket:id="newKeyword"></input>
+          <button wicket:id="addKeyword" type="submit"> Add </button> <br/>
+          <wicket:message key="page.publishBbox">Default Published BBox</wicket:message>:  <span style="border:1px; border-color:black; text-color: gray" wicket:id="boundingBox"></span> <br/>
+
+          -->
         </ul>
-        <!-- Options which should be exposed eventually.  These aren't there on the backend yet so...
-        Keywords: <select wicket:id="keywords" multiple="multiple"></select> <br/>
-        <button wicket:id="removeKeywords" type="submit">Remove selected</button> <br/>
-        New Keyword <input type="text" wicket:id="newKeyword"></input>
-        <button wicket:id="addKeyword" type="submit"> Add </button> <br/>
-        <wicket:message key="page.publishBbox">Default Published BBox</wicket:message>:  <span style="border:1px; border-color:black; text-color: gray" wicket:id="boundingBox"></span> <br/>
-        
-        -->
-    </wicket:panel>
-    <input type="submit" value="Save Changes"></input>
+      </fieldset>
+    </li>
+    </ul>
+  </wicket:panel>
+  <input type="submit" value="Save Changes"></input>
 </form>
 </body>
 </html>
