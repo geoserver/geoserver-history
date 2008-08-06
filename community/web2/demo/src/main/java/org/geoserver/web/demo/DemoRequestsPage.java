@@ -1,7 +1,8 @@
 /* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
- */package org.geoserver.web.demo;
+ */
+package org.geoserver.web.demo;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,7 +23,6 @@ import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -47,6 +47,13 @@ public class DemoRequestsPage extends GeoServerBasePage {
 
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.web.demo");
 
+    /**
+     * Holds on the properties used as arguments for the TestWfsPost servlet
+     * 
+     * @author Gabriel Roldan (TOPP)
+     * @version $Id$
+     * @since 2.0.x
+     */
     public static class DemoRequestsModel implements Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -113,6 +120,16 @@ public class DemoRequestsPage extends GeoServerBasePage {
             return demoDir;
         }
 
+        /**
+         * Loads the contents of the demo request file named {@code reqFileName}
+         * and located in the {@link #getDemoDir() demo directory}.
+         * 
+         * @param reqFileName
+         *            the file name to load the contents for
+         * @return the file contents
+         * @throws IOException
+         *             if an io exception occurs opening or loading the file
+         */
         public String getFileContents(final String reqFileName) throws IOException {
             final File file = new File(demoDir, reqFileName);
             final StringBuilder sb = new StringBuilder();
@@ -170,14 +187,12 @@ public class DemoRequestsPage extends GeoServerBasePage {
         add(responseWindow);
         responseWindow.setPageMapName("demoResponse");
         responseWindow.setCookieName("demoResponse");
+
         responseWindow.setPageCreator(new ModalWindow.PageCreator() {
+            private static final long serialVersionUID = 1L;
+
             public Page createPage() {
                 return new DemoRequestResponse(model);
-            }
-        });
-        responseWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
-            public void onClose(AjaxRequestTarget target) {
-                // target.addComponent(result);
             }
         });
 
