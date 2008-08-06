@@ -7,8 +7,7 @@
     <property name="titleKey" value="wcs.title"/>
     <property name="descriptionKey" value="wcs.description"/>
     <property name="componentClass" value="org.geoserver.wcs.web.WCSAdminPage"/> 
-    <!--property name="icon" value="wcs_obj.gif"/-->
-    <!--<property name="icon" value="server_raster.png"/>-->
+    <property name="icon" value="server_raster.png"/>
     <property name="category" ref="servicesCategory"/>
   </bean>
 

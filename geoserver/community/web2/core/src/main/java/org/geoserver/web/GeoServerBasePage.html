@@ -15,6 +15,7 @@
 </wicket:head>
 <body>
 <div id="container">
+
   <div id="header" class="selfclear">
     <h2><a wicket:id="home" href="#"><span wicket:id="label">GeoServer 2.0</span></a></h2>
     <div class="buttons selfclear">
@@ -39,6 +40,8 @@
     </form>
     </div>
   </div><!-- /#header -->
+  
+  
   <div id="sidebar">
     <ul id="navigation">
       <li class="navigation-tab" wicket:id="category">
@@ -48,7 +51,7 @@
         <ul class="navigation-tab-content plain">
           <li class="nav-administer-service" wicket:id="category.links">
             <a wicket:id="link" title="title">
-              <span wicket:id="link.label"></span>
+              <img src="#" wicket:id="link.icon"/><span wicket:id="link.label"></span>
             </a>
           </li>
         </ul>
@@ -66,6 +69,8 @@
       </a>
     </div>
   </div>
+  
+  
   <div id="page">
     <div class="page-header">
       <div id="feedback" wicket:id="feedback"></div>
