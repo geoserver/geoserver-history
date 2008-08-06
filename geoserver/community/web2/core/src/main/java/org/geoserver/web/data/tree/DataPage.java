@@ -128,6 +128,7 @@ public class DataPage extends GeoServerSecuredPage {
     @Override
     protected void setHeaders(WebResponse response) {
         super.setHeaders(response);
+        // fix for http://jira.codehaus.org/browse/GEOS-2010
         response.setHeader("Cache-Control", "no-store");
     }
     
