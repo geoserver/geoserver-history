@@ -18,6 +18,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.wicket.XMLEditor;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 @SuppressWarnings("serial")
@@ -47,8 +48,9 @@ public class StyleEditorPage extends GeoServerSecuredPage {
                 }
             }
         };
+
         theForm.add(new TextField("name"));
-        theForm.add(new TextArea("sld", new PropertyModel(this, "rawSLD")));
+        theForm.add(new XMLEditor("sld", new PropertyModel(this, "rawSLD")));
         theForm.add(new Button("submit"));
         theForm.add(new Button("cancel"));
         add(theForm);

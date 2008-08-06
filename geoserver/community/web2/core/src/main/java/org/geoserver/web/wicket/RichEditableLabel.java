@@ -38,23 +38,9 @@ public class RichEditableLabel extends Panel{
 
     private IModel getMyModel(){
         if (myModel == null)
-            myModel = new MyModel();
+            myModel = new DelegatingModel(this);
 
         return myModel;
-    }
-
-    private class MyModel implements IModel {
-        public Object getObject(){
-            return getModel().getObject();
-        }
-
-        public void setObject(Object o){
-            getModel().setObject(o);
-        }
-
-        public void detach(){
-            getModel().detach();
-        }
     }
 
     public void setupLabel(){
