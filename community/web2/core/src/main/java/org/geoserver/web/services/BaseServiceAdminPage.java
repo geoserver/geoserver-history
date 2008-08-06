@@ -4,7 +4,6 @@
  */
 package org.geoserver.web.services;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -12,15 +11,14 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
-import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.GeoServerHomePage;
+import org.geoserver.web.GeoServerSecuredPage;
 
 /**
  * Base page for service administration pages.
@@ -46,7 +44,7 @@ import org.geoserver.web.GeoServerHomePage;
  *@author Justin Deoliveira, The Open Planning Project
  *
  */
-public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoServerBasePage {
+public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoServerSecuredPage {
 
     public BaseServiceAdminPage() {
         IModel infoModel = new LoadableDetachableModel() {

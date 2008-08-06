@@ -35,7 +35,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.DataStorePanelInfo;
 import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
@@ -51,7 +51,7 @@ import org.geotools.util.logging.Logging;
  * 
  */
 @SuppressWarnings("serial")
-public class DataPage extends GeoServerBasePage {
+public class DataPage extends GeoServerSecuredPage {
 
     static final Logger LOGGER = Logging.getLogger(DataPage.class);
 

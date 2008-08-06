@@ -18,7 +18,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.coverage.RasterCoverageConfiguration;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.data.tree.DataPage;
@@ -37,7 +37,7 @@ import org.opengis.coverage.grid.Format;
  * 
  * @author Gabriel Roldan
  */
-public class NewDataPage extends GeoServerBasePage {
+public class NewDataPage extends GeoServerSecuredPage {
     
     transient Map<String, DataAccessFactory> dataStores = getAvailableDataStores();
     transient Map<String, Format> coverages = getAvailableCoverageStores();

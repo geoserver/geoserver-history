@@ -13,7 +13,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.data.util.CoverageStoreUtils;
-import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.tree.DataPage;
 import org.opengis.coverage.grid.Format;
 
@@ -26,7 +26,7 @@ import org.opengis.coverage.grid.Format;
  * @author Gabriel Roldan
  */
 @SuppressWarnings("serial")
-public class RasterCoverageConfiguration extends GeoServerBasePage {
+public class RasterCoverageConfiguration extends GeoServerSecuredPage {
 
     @SuppressWarnings("unused")
     private final String workspaceId;

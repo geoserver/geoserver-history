@@ -1,28 +1,27 @@
 package org.geoserver.wms.web.data;
 
-import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.catalog.StyleInfo;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.geoserver.catalog.StyleInfo;
+import org.geoserver.web.GeoServerSecuredPage;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 @SuppressWarnings("serial")
-public class StyleEditorPage extends GeoServerBasePage{
+public class StyleEditorPage extends GeoServerSecuredPage {
     @SuppressWarnings("unused")
     private String rawSLD; // Accessed via a property model, don't remove
 

@@ -30,7 +30,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.datastore.panel.LabelParamPanel;
 import org.geoserver.web.data.datastore.panel.PasswordParamPanel;
@@ -48,7 +48,7 @@ import org.vfny.geoserver.util.DataStoreUtils;
  * @author Gabriel Roldan
  */
 @SuppressWarnings("serial")
-public class DataStoreConfiguration extends GeoServerBasePage {
+public class DataStoreConfiguration extends GeoServerSecuredPage {
 
     private static final String DATASTORE_ID_PROPERTY_NAME = "Wicket_Data_Source_Name";
 
