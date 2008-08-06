@@ -6,16 +6,17 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>GeoServer</title>
 	<wicket:link>
-     	<link rel="stylesheet" href="css/custom.css" type="text/css" media="screen, projection" />
      	<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection" />
-        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print" /> 
-        <!--[if IE]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
-	    <link rel="stylesheet" href="css/custom.css" type="text/css" media="screen, projection" />
+      <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print" /> 
+	    <link rel="stylesheet" href="css/geoserver.css" type="text/css" media="screen, projection" />
+      <!--[if IE]>
+      <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" />
+	    <link rel="stylesheet" href="css/geoserver-ie.css" type="text/css" media="screen, projection" />
+      <![endif]-->
 	</wicket:link>
 </wicket:head>
 <body>
-<div id="container">
-
+<div id="container" class="selfclear">
   <div id="header" class="selfclear">
     <h2><a wicket:id="home" href="#"><span wicket:id="label">GeoServer 2.0</span></a></h2>
     <div class="buttons selfclear">
