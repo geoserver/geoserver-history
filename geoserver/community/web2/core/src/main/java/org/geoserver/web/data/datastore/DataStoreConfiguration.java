@@ -198,11 +198,10 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
 
         Panel dataStoreIdPanel;
         if (dataStoreInfoId == null) {
-            IValidator dsIdValidator = new AbstractValidator() {
+            IValidator dsIdValidator = new IValidator() {
                 private static final long serialVersionUID = 1L;
 
-                @Override
-                protected void onValidate(IValidatable validatable) {
+                public void validate(IValidatable validatable) {
                     String value = (String) validatable.getValue();
                     if (value == null || value.trim().length() == 0) {
                         ValidationError error = new ValidationError();
@@ -318,6 +317,13 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
             connectionParameters.putAll(dsParams);
 
             try {
+                dataStoreInfo.getDataStore(new NullProgressListener());
+            } catch (IOException e) {
+                paramsForm.error("Error creating data store, check the parameters. Error message: "
+                        + e.getMessage());
+                return;
+            }
+            try {
                 catalog.add(dataStoreInfo);
             } catch (Exception e) {
                 paramsForm.error("Error creating data store with the provided parameters: "
@@ -331,12 +337,6 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
             dataStoreInfo.setDescription(description);
             dataStoreInfo.setEnabled(enabled.booleanValue());
 
-            try {
-                DataStore dataStore = dataStoreInfo.getDataStore(new NullProgressListener());
-                dataStore.dispose();
-            } catch (IOException e) {
-                // hmmm... ignore?
-            }
             Map<String, Serializable> connectionParameters;
             connectionParameters = dataStoreInfo.getConnectionParameters();
             final Map<String, Serializable> oldParams = new HashMap<String, Serializable>(
@@ -355,7 +355,7 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
                 catalog.getResourcePool().clear(dataStoreInfo);
                 connectionParameters.clear();
                 connectionParameters.putAll(oldParams);
-                paramsForm.error("Error setting the new data store parameters: " + e.getMessage());
+                paramsForm.error("Error updating data store parameters: " + e.getMessage());
                 return;
             }
             // it worked, save it
