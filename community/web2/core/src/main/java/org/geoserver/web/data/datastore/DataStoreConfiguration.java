@@ -29,6 +29,7 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
@@ -47,7 +48,6 @@ import org.vfny.geoserver.util.DataStoreUtils;
  * 
  * @author Gabriel Roldan
  */
-@SuppressWarnings("serial")
 public class DataStoreConfiguration extends GeoServerSecuredPage {
 
     private static final String DATASTORE_ID_PROPERTY_NAME = "Wicket_Data_Source_Name";
@@ -140,13 +140,23 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
         Param[] parametersInfo = dsFact.getParametersInfo();
         for (int i = 0; i < parametersInfo.length; i++) {
             Serializable value;
-            if (parametersInfo[i].sample == null
-                    || parametersInfo[i].sample instanceof Serializable) {
-                value = (Serializable) parametersInfo[i].sample;
+            final Param param = parametersInfo[i];
+            if (param.sample == null || param.sample instanceof Serializable) {
+                value = (Serializable) param.sample;
             } else {
-                value = String.valueOf(parametersInfo[i].sample);
+                value = String.valueOf(param.sample);
             }
-            parametersMap.put(parametersInfo[i].key, value);
+
+            // as for GEOS-2080, we need to pre-populate the namespace parameter
+            // value with the namespace uri from the parent 'folder'
+            if ("namespace".equals(param.key) && value == null) {
+                final Catalog catalog = getCatalog();
+                final NamespaceInfo nsInfo = catalog.getNamespace(workspaceId);
+                final String nsUri = nsInfo.getURI();
+                value = nsUri;
+            }
+
+            parametersMap.put(param.key, value);
         }
         parametersMap.put(DATASTORE_ID_PROPERTY_NAME, null);
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, null);
@@ -165,8 +175,7 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
      *            the datastore factory to use
      */
     private void init(final DataStoreFactorySpi dsFactory) {
-        Catalog catalog = getCatalog();
-        WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
+        WorkspaceInfo workspace = getWorkspace();
         if (workspace == null) {
             throw new IllegalArgumentException("Can't locate workspace with id " + workspaceId);
         }
@@ -190,6 +199,8 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
         Panel dataStoreIdPanel;
         if (dataStoreInfoId == null) {
             IValidator dsIdValidator = new AbstractValidator() {
+                private static final long serialVersionUID = 1L;
+
                 @Override
                 protected void onValidate(IValidatable validatable) {
                     String value = (String) validatable.getValue();
@@ -233,6 +244,8 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
                 DATASTORE_ENABLED_PROPERTY_NAME, "Enabled"));
 
         ListView paramsList = new ListView("parameters", paramsInfo) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             protected void populateItem(ListItem item) {
                 ParamInfo parameter = (ParamInfo) item.getModelObject();
@@ -252,6 +265,8 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
         paramsForm.add(new BookmarkablePageLink("cancel", DataPage.class));
 
         paramsForm.add(new Button("submit") {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void onSubmit() {
                 onSaveDataStore(paramsForm);
@@ -259,6 +274,12 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
         });
 
         paramsForm.add(new FeedbackPanel("feedback"));
+    }
+
+    private WorkspaceInfo getWorkspace() {
+        Catalog catalog = getCatalog();
+        WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
+        return workspace;
     }
 
     /**
