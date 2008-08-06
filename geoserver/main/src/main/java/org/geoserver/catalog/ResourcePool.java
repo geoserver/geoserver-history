@@ -161,6 +161,9 @@ public class ResourcePool {
             
             return dataStore;
         } 
+        catch (IOException ioe){
+            throw ioe;
+        }
         catch (Exception e) {
             throw (IOException) new IOException().initCause(e);
         }

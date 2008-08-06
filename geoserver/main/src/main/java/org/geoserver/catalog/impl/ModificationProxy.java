@@ -2,6 +2,7 @@ package org.geoserver.catalog.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -84,7 +85,12 @@ public class ModificationProxy implements InvocationHandler, Serializable {
             return null;
         }
 
-        return method.invoke( proxyObject, args );
+        try{
+            return method.invoke( proxyObject, args );
+        }catch(InvocationTargetException e){
+            Throwable targetException = e.getTargetException();
+            throw targetException;
+        }
     }
     
     public Object getProxyObject() {
