@@ -189,17 +189,27 @@ margin: 0;
 
 form li li {
 padding: 0;
+margin: 0.3em 0;
 }
 
 fieldset { /* override blueprint's settings */
 padding: 0;
-margin: 0 0 1em;
-border: 2px solid #000;
-border-width: 2px 0 0;
+margin: 0 0 2em;
+border: 1px solid #000;
+border-width: 1px 0 0;
 width: 35em;
+position: relative;
 }
 
 legend {
+border: 0 none transparent;
+}
+
+legend span { 
+position: absolute;
+width: 35em;
+top: -1.5em;
+left: 0;
 }
 
 label, span.fieldname {
