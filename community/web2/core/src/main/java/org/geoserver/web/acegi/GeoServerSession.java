@@ -4,19 +4,19 @@ import org.acegisecurity.Authentication;
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.AuthenticationManager;
 import org.acegisecurity.BadCredentialsException;
+import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+import org.acegisecurity.ui.rememberme.RememberMeServices;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.protocol.http.WebRequestCycle;
 
 import org.geoserver.web.GeoServerApplication;
 
 @SuppressWarnings("serial")
 public class GeoServerSession extends WebSession{
-
-    private Authentication myAuthentication;
-
     public GeoServerSession(Request request) {
         super(request);
     }
@@ -35,27 +35,43 @@ public class GeoServerSession extends WebSession{
         try{
             Authentication authentication = 
                 findAuthenticationManager((GeoServerApplication)getApplication()).authenticate(authToken);
+            RememberMeServices rememberMeService = 
+                findRememberMeServices((GeoServerApplication)getApplication());
+            if (rememberMeService != null){
+                rememberMeService.loginSuccess(
+                        ((WebRequestCycle)WebRequestCycle.get()).getWebRequest().getHttpServletRequest(), 
+                        ((WebRequestCycle)WebRequestCycle.get()).getWebResponse().getHttpServletResponse(), 
+                        authentication
+                        );
+            }
 
-            setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             return true;
         } catch (BadCredentialsException e){
             //TODO: Log
         } catch (AuthenticationException e){
             //TODO: Log
         }
+ 
         return false;
     }
 
-    private void setAuthentication(Authentication auth){
-        myAuthentication = auth;
-    }
-
     public Authentication getAuthentication(){
-        return myAuthentication;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null &&
+                auth.getAuthorities().length == 1 &&
+                "ROLE_ANONYMOUS".equals(auth.getAuthorities()[0].getAuthority())
+           ) return null;
+
+        return auth;
     }
 
     public void signout(){
-        setAuthentication(null);
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
+    private static RememberMeServices findRememberMeServices(GeoServerApplication application){
+        return (RememberMeServices)application.getApplicationContext().getBean("rememberMeServices");
     }
 
     private static AuthenticationManager findAuthenticationManager(GeoServerApplication application){
