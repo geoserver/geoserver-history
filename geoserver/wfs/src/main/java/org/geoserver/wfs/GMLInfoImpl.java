@@ -2,7 +2,7 @@ package org.geoserver.wfs;
 
 public class GMLInfoImpl implements GMLInfo {
 
-    SrsNameStyle srsNameStyle;
+    SrsNameStyle srsNameStyle = SrsNameStyle.NORMAL;
     boolean featureBounding;
     
     public SrsNameStyle getSrsNameStyle() {
