@@ -19,6 +19,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
 import org.geoserver.wms.DefaultWebMapService;
@@ -48,7 +49,10 @@ public class MapPreviewPage extends GeoServerBasePage {
                 // gather layer and group names
                 List<LayerInfo> layers = getCatalog().getLayers();
                 for (LayerInfo layer : layers) {
-                    result.add(layer.getResource().getPrefixedName());
+                    ResourceInfo resource = layer.getResource();
+                    if(layer.isEnabled() && resource.isEnabled()){
+                        result.add(resource.getPrefixedName());
+                    }
                 }
                 List<LayerGroupInfo> groups = getCatalog().getLayerGroups();
                 for (LayerGroupInfo group : groups) {
