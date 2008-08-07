@@ -20,6 +20,10 @@ public class StyleInfoImpl implements StyleInfo {
         this.catalog = catalog;
     }
     
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
+    
     public String getId() {
         return id;
     }
