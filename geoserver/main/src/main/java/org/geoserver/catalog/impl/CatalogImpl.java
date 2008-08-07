@@ -1,8 +1,6 @@
 package org.geoserver.catalog.impl;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.MultiHashMap;
-import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
 import org.geoserver.catalog.NamespaceInfo;
@@ -35,7 +33,6 @@ import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.catalog.event.impl.CatalogAddEventImpl;
 import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
-import org.geoserver.ows.util.OwsUtils;
 
 /**
  * A default catalog implementation that is memory based.
@@ -800,16 +797,16 @@ public class CatalogImpl implements Catalog {
     }
     
     public void dispose() {
-        stores.clear();
-        resources.clear();
-        namespaces.clear();
-        workspaces.clear();
-        layers.clear();
-        maps.clear();
-        styles.clear();
-        listeners.clear();
+        if ( stores != null ) stores.clear();
+        if ( resources != null ) resources.clear();
+        if ( namespaces != null ) namespaces.clear();
+        if ( workspaces != null ) workspaces.clear();
+        if ( layers != null ) layers.clear();
+        if ( maps != null ) maps.clear();
+        if ( styles != null ) styles.clear();
+        if ( listeners != null ) listeners.clear();
         
-        resourcePool.dispose();
+        if ( resourcePool != null ) resourcePool.dispose();
     }
     
     List lookup(Class clazz, MultiHashMap map) {
@@ -903,6 +900,51 @@ public class CatalogImpl implements Catalog {
                 listener.handleModifyEvent((CatalogModifyEvent) event);
             }
         }
+    }
+    
+    /**
+     * Implementation method for resolving all {@link ResolvingProxy} instances.
+     */
+    public void resolve() {
+        //TODO: handle for other types of objects when need arises
+        
+        //resolve all references from store to workspaces
+        for ( Object o : stores.values() ) {
+            StoreInfoImpl s = (StoreInfoImpl) o;
+            s.setWorkspace( ResolvingProxy.resolve( this, s.getWorkspace() ) );
+            s.setCatalog( this );
+        }
+        for ( Object o : styles ) {
+            StyleInfoImpl s = (StyleInfoImpl) o;
+            s.setCatalog( this );
+        }
+        
+        resources = new MultiHashMap();
+        layers = new ArrayList<LayerInfo>();
+        layerGroups = new ArrayList<LayerGroupInfo>();
+        resourcePool = new ResourcePool();
+        listeners = new ArrayList<CatalogListener>();
+    }
+    
+    public void sync( CatalogImpl other ) {
+        stores = other.stores;
+        resources = other.resources;
+        namespaces = other.namespaces;
+        workspaces = other.workspaces;
+        layers = other.layers;
+        maps = other.maps;
+        layerGroups = other.layerGroups;
+        styles = other.styles;
+        listeners = other.listeners;
+        
+        if ( resourcePool != other.resourcePool ) {
+            resourcePool.dispose();
+            resourcePool = other.resourcePool;
+        }
+    }
+    
+    public static <T> T unwrap(T obj) {
+        return ModificationProxy.unwrap(obj);
     }
     
 }
