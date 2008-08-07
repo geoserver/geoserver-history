@@ -111,7 +111,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         File f = resourceLoader.find( "catalog2.xml" );
         if ( f != null ) {
             //load with xstream
-            CatalogImpl catalog2 = depersist( xp, f, CatalogImpl.class ); 
+            CatalogImpl catalog2 = depersist( xp, f, CatalogImpl.class );
             ((CatalogImpl)catalog).sync( catalog2 );
         } else {
             // import old style catalog
@@ -188,6 +188,8 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 try {
                     ServiceInfo s = l.load( geoServer );
                     geoServer.add( s );
+                    
+                    LOGGER.info( "Loaded service '" +  s.getId() + "', " + (s.isEnabled()?"enabled":"disabled") );
                 }
                 catch( Throwable t ) {
                     //TODO: log this
