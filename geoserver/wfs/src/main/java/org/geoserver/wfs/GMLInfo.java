@@ -19,7 +19,7 @@ public interface GMLInfo {
      * <p>
      *
      */
-    static enum SrsNameStyle {
+    public static enum SrsNameStyle {
         NORMAL {
             public String getPrefix() {
                 return "EPSG:";
