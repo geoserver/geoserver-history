@@ -397,10 +397,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
     }
     
     public void dispose() {
-        DataStore ds = getDataStore();
-        if ( ds != null ) {
-            ds.dispose();
-        }
+        catalog.getResourcePool().dispose( dataStore );
         
         //if(dataStore != null)
         //    dataStore.dispose();
