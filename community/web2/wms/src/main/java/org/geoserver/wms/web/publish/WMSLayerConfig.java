@@ -23,17 +23,14 @@ import org.geoserver.web.publish.LayerConfigurationPanel;
 public class WMSLayerConfig extends LayerConfigurationPanel {
 
     @SuppressWarnings("unused")
-    private List<String> stylesToRemove;
-    private List<String> stylesToAdd;
     private List<String> extraStyles;
     private List<String> availableStyles;
+
     @SuppressWarnings("unused")
     private String wmsPath;
 
     public WMSLayerConfig(String id, IModel model){
         super(id, model);
-        stylesToRemove  = new ArrayList<String>();
-        stylesToAdd     = new ArrayList<String>();
         extraStyles     = new ArrayList<String>();
         for (StyleInfo info : getLayerInfo().getStyles()) extraStyles.add(info.getId());
         availableStyles = listStyles();
