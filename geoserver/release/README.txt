@@ -1,7 +1,32 @@
+GeoServer 2.0.0-alpha1 (August 8, 2008)
+---------------------------------------
+
+This is the first experimental release of the 2.0.0.
+
+This release is based on Geotools 2.5.x (revision 31153)
+
+
+
+GeoServer 1.7.0-beta2 (July 30, 2008)
+-------------------------------------
+
+This is the second beta release of the 1.7.0, and is still unstable.  This release
+includes 35 bug fixes and improvements, including:
+
+* Optimized KML regionating output
+* Improved per-layer security
+
+For more information on bug fixes, please see:
+http://jira.codehaus.org/browse/GEOS/fixforversion/14377
+
+This release is based on Geotools 2.5.x (revision 31101).
+
+
 GeoServer 1.7.0-beta1
 ---------------------
 
-The first beta release of 1.7. This release is a unstable release. Major functionality include:
+The first beta release of 1.7. This release is a unstable release. Major
+functionality includes:
 
  * per layer security
  * WCS 1.1.1 support
@@ -13,6 +38,7 @@ This release is based on geotools 2.5.x:
   revision = 30605
   svn tag = 'geoserver-1.7.0-beta1'
 
+
 GeoServer 1.7.0-alpha1 
 ----------------------
 
@@ -23,6 +49,26 @@ full implementation of WCS 1.1.1.
 This release is based on GeoTools 2.5.x:
   revision = 29730, 
   svn tag = 'geoserver-1.7.0-alpha1'
+
+
+GeoServer 1.6.4b
+---------------
+This release is based off of Geotools 2.4.4 and fixes the following issue:
+http://jira.codehaus.org/browse/GEOS-1942
+
+
+GeoServer 1.6.4
+---------------
+This release contains 35 patches and bugfixes since 1.6.3.  While mainly a bugfix release, this version has:
+
+* Better default formatting of KML output
+* Improved and updated Windows installer
+* Support for Freemarker templates for coverage layers
+
+See the entire 1.6.4 changelog:
+http://jira.codehaus.org/browse/GEOS/fixforversion/14170
+
+This release is based off of Geotools 2.4.3.
 
 
 GeoServer 1.6.3
