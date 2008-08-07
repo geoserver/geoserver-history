@@ -16,7 +16,7 @@ public class ServiceInfoImpl implements ServiceInfo {
 
     GeoServerInfo geoServer;
 
-    boolean enabled;
+    boolean enabled = true;
 
     String name;
 
