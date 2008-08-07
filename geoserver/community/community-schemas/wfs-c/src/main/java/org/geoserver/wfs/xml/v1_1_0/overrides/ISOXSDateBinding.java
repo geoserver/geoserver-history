@@ -112,7 +112,7 @@ public class ISOXSDateBinding implements SimpleBinding {
         Date date = (Date) att.getValue();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+ //       calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         String printDateTime = null;
 

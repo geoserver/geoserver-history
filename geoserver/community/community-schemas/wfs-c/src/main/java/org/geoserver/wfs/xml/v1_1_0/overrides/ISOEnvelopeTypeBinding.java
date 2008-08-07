@@ -77,7 +77,7 @@ public class ISOEnvelopeTypeBinding extends EnvelopeTypeBinding {
             // we will be creating internal object from individual attribute
             // values.
             Attribute envelope = (Attribute) object;
-            Object lc = getProperty(envelope, new QName(GML.NAMESPACE,
+            Object lc = getProperty(envelope, new QName("",
                     "lowerCorner"));
             if (lc != null) {
                 Element lowerCorner = document.createElementNS(GML.NAMESPACE,
@@ -85,7 +85,7 @@ public class ISOEnvelopeTypeBinding extends EnvelopeTypeBinding {
                 lowerCorner.appendChild(document.createTextNode(lc.toString()));
                 value.appendChild(lowerCorner);
             }
-            Object uc = getProperty(envelope, new QName(GML.NAMESPACE,
+            Object uc = getProperty(envelope, new QName("",
                     "upperCorner"));
             if (uc != null) {
                 Element upperCorner = document.createElementNS(GML.NAMESPACE,

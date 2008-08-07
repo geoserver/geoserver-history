@@ -23,6 +23,9 @@ import org.geotools.xs.bindings.XS;
 import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.opengis.feature.Attribute;
 import java.util.Calendar;
+import java.sql.Timestamp;
+import java.util.TimeZone;
+
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 
@@ -30,7 +33,7 @@ import javax.xml.namespace.QName;
 /**
  * Binding object for the type http://www.w3.org/2001/XMLSchema:dateTime.
  *
- * @generated
+ * Adapted by Rob Atkinson for handling Attribute wrapped timestamps
  */
 public class ISOXSDateTimeBinding extends XSDateTimeBinding {
     static {
@@ -45,7 +48,7 @@ public class ISOXSDateTimeBinding extends XSDateTimeBinding {
      * @generated modifiable
      */
     public Class getType() {
-        return Attribute.class;
+        return Timestamp.class;
     }
 
     /**
@@ -57,13 +60,18 @@ public class ISOXSDateTimeBinding extends XSDateTimeBinding {
     public String encode(Object object, String value) {
         Attribute att = (Attribute) object;
 
-        Calendar datetime = (Calendar) att.getValue();
+        Timestamp date = (Timestamp) att.getValue();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+ //       calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         String printDateTime = null;
 
-        if (datetime != null) {
-            printDateTime = DatatypeConverter.printDateTime(datetime);
+        if (date != null) {
+            printDateTime = DatatypeConverter.printDate(calendar);
         }
+        
 
         return printDateTime;
     }

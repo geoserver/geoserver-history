@@ -20,6 +20,8 @@ import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOAbstractFeatureTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOAbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOCodeTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOXSDateBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOXSDateTimeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOCurvePropertyTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOEnvelopeTypeBinding;
 import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyExtractor;
@@ -131,7 +133,7 @@ public class WFSConfiguration extends Configuration {
 
     protected void configureBindings(MutablePicoContainer container) {
         //register our custom bindings
-        container.registerComponentImplementation(XS.DATE, DateBinding.class);
+       // container.registerComponentImplementation(XS.DATE, DateBinding.class);
         container.registerComponentImplementation(OGC.Filter, FilterTypeBinding.class);
         container.registerComponentImplementation(OGC.PropertyNameType,
             PropertyNameTypeBinding.class);
@@ -169,10 +171,10 @@ public class WFSConfiguration extends Configuration {
         registerOverride(container, GML.CodeType, ISOCodeTypeBinding.class);
         registerOverride(container, GML.MeasureType, ISOMeasureTypeBinding.class);
         registerOverride(container, GML.EnvelopeType, ISOEnvelopeTypeBinding.class);
-        /*
+        /*   
         registerOverride(container, XS.DATE, ISOXSDateBinding.class);
         registerOverride(container, XS.DATETIME, ISOXSDateTimeBinding.class);
-        
+      
         registerOverride(container, XS.COMPLEXTYPE, ISOXSComplexTypeBinding.class);
          */
         registerOverride(container, GML.FeaturePropertyType, ISOFeaturePropertyTypeBinding.class);
