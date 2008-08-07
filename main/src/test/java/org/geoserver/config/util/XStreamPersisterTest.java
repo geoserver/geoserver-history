@@ -18,6 +18,8 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -27,6 +29,7 @@ import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
+import org.geotools.referencing.CRS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -293,6 +296,127 @@ public class XStreamPersisterTest extends TestCase {
      
         ByteArrayOutputStream out = out();
         persister.save( catalog, out );
+        
+        catalog = persister.load( in(out), Catalog.class );
+        assertNotNull(catalog);
+        
+        assertEquals( 1, catalog.getWorkspaces().size() );
+        assertNotNull( catalog.getDefaultWorkspace() );
+        ws = catalog.getDefaultWorkspace();
+        assertEquals( "foo", ws.getName() );
+        
+        assertEquals( 1, catalog.getNamespaces().size() );
+        assertNotNull( catalog.getDefaultNamespace() );
+        ns = catalog.getDefaultNamespace();
+        assertEquals( "acme", ns.getPrefix() );
+        assertEquals( "http://acme.org", ns.getURI() );
+        
+        assertEquals( 1, catalog.getDataStores().size() );
+        ds = catalog.getDataStores().get( 0 );
+        assertEquals( "foo", ds.getName() );
+        assertNotNull( ds.getWorkspace() );
+        assertEquals( ws, ds.getWorkspace() );
+        
+        assertEquals( 1, catalog.getCoverageStores().size() );
+        cs = catalog.getCoverageStores().get( 0 );
+        assertEquals( "bar", cs.getName() );
+        assertEquals( ws, cs.getWorkspace() );
+        
+        assertEquals( 1, catalog.getStyles().size() );
+        s = catalog.getStyles().get(0);
+        assertEquals( "style", s.getName() );
+        assertEquals( "style.sld", s.getFilename() );
+    }
+    
+    public void testFeatureType() throws Exception {
+        Catalog catalog = new CatalogImpl();
+        CatalogFactory cFactory = catalog.getFactory();
+        
+        WorkspaceInfo ws = cFactory.createWorkspace();
+        ws.setName( "foo" );
+        catalog.add( ws );
+        
+        NamespaceInfo ns = cFactory.createNamespace();
+        ns.setPrefix( "acme" );
+        ns.setURI( "http://acme.org" );
+        catalog.add( ns );
+        
+        DataStoreInfo ds = cFactory.createDataStore();
+        ds.setWorkspace( ws );
+        ds.setName( "foo" );
+        catalog.add( ds );
+        
+        FeatureTypeInfo ft = cFactory.createFeatureType();
+        ft.setStore( ds );
+        ft.setNamespace( ns );
+        ft.setName( "ft" );
+        ft.setAbstract( "abstract");
+        ft.setSRS( "EPSG:4326");
+        ft.setNativeCRS( CRS.decode( "EPSG:4326") );
+        
+        ByteArrayOutputStream out = out();
+        persister.save( ft, out );
+        
+        persister.setCatalog( catalog );
+        ft = persister.load( in( out ), FeatureTypeInfo.class );
+        assertNotNull( ft );
+        
+        assertEquals( "ft", ft.getName() );
+        assertEquals( ds, ft.getStore() );
+        assertEquals( ns, ft.getNamespace() );
+        assertEquals( "EPSG:4326", ft.getSRS() );
+        assertTrue( CRS.equalsIgnoreMetadata( CRS.decode( "EPSG:4326"), ft.getNativeCRS() ) ); 
+    }
+    
+    public void testLayer() throws Exception {
+        Catalog catalog = new CatalogImpl();
+        CatalogFactory cFactory = catalog.getFactory();
+        
+        WorkspaceInfo ws = cFactory.createWorkspace();
+        ws.setName( "foo" );
+        catalog.add( ws );
+        
+        NamespaceInfo ns = cFactory.createNamespace();
+        ns.setPrefix( "acme" );
+        ns.setURI( "http://acme.org" );
+        catalog.add( ns );
+        
+        DataStoreInfo ds = cFactory.createDataStore();
+        ds.setWorkspace( ws );
+        ds.setName( "foo" );
+        catalog.add( ds );
+        
+        FeatureTypeInfo ft = cFactory.createFeatureType();
+        ft.setStore( ds );
+        ft.setNamespace( ns );
+        ft.setName( "ft" );
+        ft.setAbstract( "abstract");
+        ft.setSRS( "EPSG:4326");
+        ft.setNativeCRS( CRS.decode( "EPSG:4326") );
+        catalog.add( ft );
+        
+        StyleInfo s = cFactory.createStyle();
+        s.setName( "style" );
+        s.setFilename( "style.sld" );
+        catalog.add( s );
+        
+        LayerInfo l = cFactory.createLayer();
+        l.setName( "layer" );
+        l.setResource( ft );
+        l.setDefaultStyle( s );
+        catalog.add( l );
+        
+        ByteArrayOutputStream out = out();
+        persister.save( l, out );
+        
+        persister.setCatalog( catalog );
+        l = persister.load( in( out ) , LayerInfo.class );
+        
+        assertEquals( "layer", l.getName() );
+        assertEquals( ft, l.getResource() );
+        assertEquals( s, l.getDefaultStyle() );
+        //assertNotNull( l.getStyles() );
+        
     }
     
     ByteArrayOutputStream out() {
