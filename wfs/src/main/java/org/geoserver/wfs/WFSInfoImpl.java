@@ -12,7 +12,7 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
     int maxFeatures = Integer.MAX_VALUE;
     
     public WFSInfoImpl() {
-        System.out.println("here");
+        setId( "wfs" );
     }
     
     public Map<Version, GMLInfo> getGML() {
