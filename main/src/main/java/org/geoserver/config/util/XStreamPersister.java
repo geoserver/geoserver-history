@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -42,6 +44,7 @@ import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.ows.util.OwsUtils;
 import org.geotools.referencing.CRS;
+import org.geotools.util.logging.Logging;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -68,6 +71,11 @@ import com.thoughtworks.xstream.mapper.Mapper;
  */
 public class XStreamPersister {
 
+    /**
+     * logging instance
+     */
+    static Logger LOGGER = Logging.getLogger( "org.geoserver" );
+    
     /**
      * internal xstream instance
      */
@@ -283,6 +291,10 @@ public class XStreamPersister {
 
         public void marshal(Object source, HierarchicalStreamWriter writer,
                 MarshallingContext context) {
+            
+            LOGGER.info( "Persisting " + name + " '" + source + "'" );
+            
+            
             Map map = (Map) source;
             
             for (Object o : map.entrySet()) {
@@ -315,6 +327,7 @@ public class XStreamPersister {
                    if ( def ) {
                        map.put( null, ns );
                    }
+                   LOGGER.info( "Loading namespace '" + ns.getPrefix() + "'" );
                }
                else {
                    WorkspaceInfoImpl ws = (WorkspaceInfoImpl) context.convertAnother( map, WorkspaceInfoImpl.class );
@@ -322,6 +335,7 @@ public class XStreamPersister {
                    if ( def ) {
                        map.put( null, ws );
                    }
+                   LOGGER.info( "Loading workspace '" + ws.getName() + "'" );
                }
                
                reader.moveUp();
@@ -409,11 +423,23 @@ public class XStreamPersister {
                 HierarchicalStreamWriter writer, MarshallingContext context) {
             super.doMarshal(source, writer, context);
             
+            StoreInfo store = (StoreInfo) source;
+            LOGGER.info( "Persisting store '" +  store.getName() +  "'");
+            
             marshalReference( source, writer, "workspace" );
+        }
+        
+        public Object doUnmarshal(Object result,
+                HierarchicalStreamReader reader, UnmarshallingContext context) {
+            StoreInfo store = (StoreInfo) super.doUnmarshal(result, reader, context);
+            
+            LOGGER.info( "Loaded store '" +  store.getName() +  "', " + (store.isEnabled() ? "enabled" : "disabled") );
+            return store;
         }
         
         protected Object unmarshallField(UnmarshallingContext context,
                 Object result, Class type, Field field) {
+            
             if (WorkspaceInfo.class.isAssignableFrom(type)) {
                 // next should be  id
                 String ref = (String) context.convertAnother(result, String.class);
@@ -431,7 +457,7 @@ public class XStreamPersister {
                 //fall back on creating a resolving proxy
                 return ResolvingProxy.create(ref, WorkspaceInfo.class);
             } else {
-                return super.unmarshallField(context, result, type, field);
+                return super.unmarshallField(context, result, type, field); 
             }
         }
     }
@@ -452,6 +478,8 @@ public class XStreamPersister {
         
         protected void doMarshal(Object source,
                 HierarchicalStreamWriter writer, MarshallingContext context) {
+            
+            LOGGER.info( "Persisting resource '" + source + "'");
             super.doMarshal(source, writer, context);
             
             marshalReference( source, writer, "store" );
@@ -491,6 +519,19 @@ public class XStreamPersister {
             }
 
             return super.unmarshallField(context, result, type, field);
+        }
+        
+        public Object doUnmarshal(Object result,
+                HierarchicalStreamReader reader, UnmarshallingContext context) {
+            ResourceInfo obj = (ResourceInfo) super.doUnmarshal(result, reader, context);
+            
+            String enabled = obj.isEnabled() ? "enabled" : "disabled";
+            String type = obj instanceof CoverageInfo ? "coverage" : 
+                obj instanceof FeatureTypeInfo ? "feature type" : "resource";
+            
+            LOGGER.info( "Loaded " + type + " '" + obj.getName() + "', " + enabled );
+            
+            return obj;
         }
     }
     
