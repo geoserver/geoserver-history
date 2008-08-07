@@ -19,8 +19,6 @@ public class GeoServerImplTest extends TestCase {
     }
     
     public void testGlobal() throws Exception {
-        assertNull( geoServer.getGlobal() );
-        
         GeoServerInfo global = geoServer.getFactory().createGlobal();
         geoServer.setGlobal( global );
        
