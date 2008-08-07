@@ -7,7 +7,9 @@ package org.geoserver.wms.web.publish;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -45,28 +47,15 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
                     new PropertyModel(this, "availableStyles"))
            );
 
-        add(new ListMultipleChoice("extraStyles",
-                    new PropertyModel(this, "stylesToRemove"),
-                    new PropertyModel(this, "extraStyles")
+        add(new Palette("extraStyles",
+                    new PropertyModel(this, "extraStyles"),
+                    new PropertyModel(this, "availableStyles"),
+                    new ChoiceRenderer(),
+                    10,
+                    false // no reordering allowed since order doesn't affect anything
                     )
            );
-        add(new ListMultipleChoice("availableStyles",
-                    new PropertyModel(this, "stylesToAdd"),
-                    new PropertyModel(this, "availableStyles")
-                    )
-           );
-        add(new Button("addStyles"){
-            public void onSubmit(){
-                for (String style : stylesToAdd)
-                    getLayerInfo().getStyles().add(getLayerInfo().getResource().getCatalog().getStyle(style));
-            }
-        });
-        add(new Button("removeStyles"){
-            public void onSubmit(){
-                for (String style : stylesToAdd)
-                    getLayerInfo().getStyles().remove(getLayerInfo().getResource().getCatalog().getStyle(style));
-            }
-        });
+
         add(new TextField("wmsPath", new PropertyModel(this, "wmsPath")));
     }
 
