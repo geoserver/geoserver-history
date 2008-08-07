@@ -397,10 +397,10 @@ Header
 
 #header {
 text-align: right;
+color: #fff;
 }
 
 #header h2 {
-color: #fff;
 margin: 0;
 font-size: 1.76em;
 min-height: 16px;
@@ -425,6 +425,12 @@ padding: 0.5em 0 0;
 
 span.username {
 color: #fff;
+}
+
+#header label.shown {
+display: inline;
+color: #fff;
+font-weight: normal;
 }
 
 #header input {

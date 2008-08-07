@@ -22,11 +22,11 @@
     <div class="buttons selfclear">
     <form wicket:id="loginform" method="POST" action="../j_acegi_security_check">
       <label class="noshow" for="username">Username</label>
-      <input id="username" type="text" name="username" />
+      <input id="username" type="text" name="username" value="username" onfocus="if(this.value=='username') this.value='';" onblur="if(this.value=='') this.value='username';" />
       <label class="noshow" for="password">Password</label>
-      <input id="password" type="password" name="password" />
-      <label class="noshow" for="_acegi_security_remember_me">Keep Me Logged In</label>
-      <input type="checkbox" name="_acegi_security_remember_me" />
+      <input id="password" type="password" name="password" value="password" onfocus="if(this.value=='password') this.value='';" onblur="if(this.value=='') this.value='password';" />
+      <label class="shown" for="_acegi_security_remember_me">Remember me</label>
+      <input id="_acegi_security_remember_me" type="checkbox" name="_acegi_security_remember_me" />
       <button type="submit">
         <wicket:link>
           <img src="img/icons/silk/door_in.png" alt="Login"/> Login
