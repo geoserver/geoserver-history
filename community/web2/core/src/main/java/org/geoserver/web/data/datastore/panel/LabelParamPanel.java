@@ -7,6 +7,7 @@ package org.geoserver.web.data.datastore.panel;
 import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.geoserver.web.util.MapModel;
 
@@ -24,9 +25,9 @@ public class LabelParamPanel extends Panel {
             final String paramLabel) {
         super(id);
         Label label = new Label("paramName", paramLabel);
-        Label valueLabel = new Label("paramValue", new MapModel(paramsMap, paramName));
+        TextField textField = new TextField("paramValue", new MapModel(paramsMap, paramName));
 
         add(label);
-        add(valueLabel);
+        add(textField);
     }
 }

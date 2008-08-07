@@ -17,7 +17,9 @@ import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -263,9 +265,8 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
 
         paramsForm.add(new BookmarkablePageLink("cancel", DataPage.class));
 
-        paramsForm.add(new Button("submit") {
+        paramsForm.add(new SubmitLink("save") {
             private static final long serialVersionUID = 1L;
-
             @Override
             public void onSubmit() {
                 onSaveDataStore(paramsForm);
