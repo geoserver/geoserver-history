@@ -8,8 +8,12 @@ import org.geoserver.config.impl.ServiceInfoImpl;
 public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
 
     List<String> srs = new ArrayList<String>();
-    WatermarkInfo watermark;
+    WatermarkInfo watermark = new WatermarkInfoImpl();
     String interpolation;
+    
+    public WMSInfoImpl() {
+        setId( "wms" );
+    }
     
     public WatermarkInfo getWatermark() {
         return watermark;
