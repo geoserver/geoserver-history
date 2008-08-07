@@ -4,9 +4,15 @@
  */
 package org.geoserver.test;
 
+import java.io.IOException;
+
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.ui.context.Theme;
 import org.springframework.web.context.WebApplicationContext;
@@ -39,5 +45,26 @@ public class GeoServerTestApplicationContext extends ClassPathXmlApplicationCont
 
     public Theme getTheme(String themeName) {
         return null;
+    }
+    
+    /*
+     * JD: Overriding manually and playing with bean definitions. We do this
+     * because we have not ported all the mock test data to a 2.x style configuration
+     * directory, so we need to force the legacy data directory loader to engage.
+     */
+    protected void loadBeanDefinitions(XmlBeanDefinitionReader reader)
+            throws BeansException, IOException {
+        super.loadBeanDefinitions(reader);
+        
+        BeanDefinition def = reader.getBeanFactory().getBeanDefinition("geoServerLoader");
+        def.setBeanClassName( "org.geoserver.config.LegacyGeoServerLoader");
+
+        try {
+            def = reader.getBeanFactory().getBeanDefinition("wcsLoader");
+            def.getConstructorArgumentValues().clear();
+            def.setBeanClassName( "org.geoserver.wcs.WCSLoader");
+        }
+        catch( NoSuchBeanDefinitionException e ) {}
+        
     }
 }
