@@ -11,7 +11,10 @@
 		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="wfs"/>
 	</bean-->
-	<bean id="wmsLoader" class="org.geoserver.wms.WMSLoader"/>
+	<!--bean id="wmsLoader" class="org.geoserver.wms.WMSLoader"/-->
+	<bean id="wmsLoader" class="org.geoserver.wms.WMSXStreamLoader">
+	  <constructor-arg ref="resourceLoader"/>
+	</bean>
     <bean id="wms" class="org.vfny.geoserver.global.WMS">
       <constructor-arg ref="geoServer2"/>
     </bean>
