@@ -20,6 +20,8 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.breadcrumb.BreadCrumbBar;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
@@ -38,6 +40,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerLoader;
 import org.geoserver.web.acegi.GeoServerSession;
 import org.geoserver.web.admin.ServerAdminPage;
 
@@ -91,7 +94,9 @@ public class GeoServerBasePage extends WebPage {
                 getGeoServerApplication().clearWicketCaches();
             }
         });
-
+        devButtons.setVisible(Application.DEVELOPMENT.equalsIgnoreCase(
+                getApplication().getConfigurationType()));
+        
         final Map<Category,List<MenuPageInfo>> links = splitByCategory(
             getGeoServerApplication().getBeansOfType(MenuPageInfo.class)
         );
@@ -134,8 +139,40 @@ public class GeoServerBasePage extends WebPage {
                 }
         );
 
-        devButtons.setVisible(Application.DEVELOPMENT.equalsIgnoreCase(
-                getApplication().getConfigurationType())); 
+        //save + load
+        add(new AjaxLink("save") {
+            public void onClick(AjaxRequestTarget target) {
+                GeoServerLoader loader = 
+                    getGeoServerApplication().getBeanOfType( GeoServerLoader.class );
+                try {
+                    loader.persist();
+                    Session.get().info( "Changes saved successfully." );
+                } 
+                catch (Exception e) {
+                    Session.get().error( "Error occured during save: '" + e.getLocalizedMessage() + "'");
+                }
+                
+                setResponsePage(GeoServerHomePage.class);
+            }
+            
+        });
+        add(new AjaxLink("load"){
+            public void onClick(AjaxRequestTarget target) {
+                GeoServerLoader loader = 
+                    getGeoServerApplication().getBeanOfType( GeoServerLoader.class );
+                try {
+                    loader.reload();
+                    Session.get().info( "All outstanding changes reverted." );
+                } 
+                catch (Exception e) {
+                    Session.get().error( "Error occured reverting changes: '" + e.getLocalizedMessage() + "'");
+                }
+                
+                setResponsePage(GeoServerHomePage.class);
+            }
+            
+        });
+        
         add(new FeedbackPanel("feedback"));
     }
 
