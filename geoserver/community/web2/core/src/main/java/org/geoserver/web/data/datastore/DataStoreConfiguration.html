@@ -6,7 +6,7 @@
 	<div><span wicket:id="storeTypeDescription">Store Description</span></div>
 	<h4>Folder: <span wicket:id="workspaceName">folder name</span></h4>
     <form wicket:id="dataStoreForm">
-	
+	 <ul>
 		<div><span wicket:id="dataStoreIdPanel"></span></div>
 		<div><span wicket:id="dataStoreDescriptionPanel"></span></div>
 		<div><span wicket:id="dataStoreEnabledPanel"></span></div>
@@ -20,9 +20,10 @@
 		<div wicket:id="feedback"></div>
 		
 		<div class="buttons selfclear">
-			<a href="#" wicket:id="cancel">Cancel</a>
-			<input type="submit" wicket:id="submit" value="Save"/>
+			<a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a>
+            <a href="#" wicket:id="save"><wicket:message key="save">Save</wicket:message></a>
 		</div>
+      </ul>
 	</form>
 </wicket:extend>
 </body>

@@ -1,8 +1,10 @@
 <html>
 <body>
 <wicket:panel>
-	<span wicket:id="paramName">bar</span>: 
-	<span wicket:id="paramValue">value</span>
+    <li>
+      <label for="paramValue"><span wicket:id="paramName">bar</span></label>
+      <input id="paramValue" wicket:id="paramValue" type="text" readonly="readonly"/>
+    </li>
 </wicket:panel>
 </body>
 </html>
