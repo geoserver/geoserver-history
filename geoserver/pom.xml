@@ -297,6 +297,11 @@
      <version>${gt.version}</version>
    </dependency>
    <dependency>
+     <groupId>org.geotools</groupId>
+     <artifactId>gt-imageio-ext-gdal</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
     <groupId>org.wkb4j</groupId>
     <artifactId>wkb4j</artifactId>
     <version>1.0-RC1</version>
