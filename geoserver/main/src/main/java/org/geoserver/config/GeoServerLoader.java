@@ -23,6 +23,7 @@ import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.catalog.util.LegacyFeatureTypeInfoReader;
 import org.geoserver.config.util.LegacyConfigurationImporter;
+import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerExtensions;
@@ -112,8 +113,14 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             //load with xstream
             CatalogImpl catalog2 = depersist( xp, f, CatalogImpl.class ); 
             ((CatalogImpl)catalog).sync( catalog2 );
-        }
-        else {
+        } else {
+            // import old style catalog
+            File oldCatalog = resourceLoader.find( "catalog.xml" );
+            if(oldCatalog != null) {
+                CatalogImpl catalog2 = new CatalogImpl();
+                new LegacyCatalogImporter(catalog2).imprt(resourceLoader.getBaseDirectory());
+                ((CatalogImpl)catalog).sync( catalog2 );
+            } 
         }
         
         //set the catalog to resolve references directly
@@ -174,23 +181,25 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
             GeoServerInfo global = new XStreamPersister().load( in, GeoServerInfo.class );
             geoServer.setGlobal( global );
-        }
-        else {
             
-        }
-        
-        //load services
-        List<XStreamServiceLoader> loaders = GeoServerExtensions.extensions( XStreamServiceLoader.class );
-        for ( XStreamServiceLoader<ServiceInfo> l : loaders ) {
-            try {
-                ServiceInfo s = l.load( geoServer );
-                geoServer.add( s );
+            //load services
+            List<XStreamServiceLoader> loaders = GeoServerExtensions.extensions( XStreamServiceLoader.class );
+            for ( XStreamServiceLoader<ServiceInfo> l : loaders ) {
+                try {
+                    ServiceInfo s = l.load( geoServer );
+                    geoServer.add( s );
+                }
+                catch( Throwable t ) {
+                    //TODO: log this
+                    t.printStackTrace();
+                }
+                
             }
-            catch( Throwable t ) {
-                //TODO: log this
-                t.printStackTrace();
+        } else {
+            // fall back on the legacy configuration code
+            if(resourceLoader.find("services.xml") != null) {
+                new LegacyConfigurationImporter(geoServer).imprt(resourceLoader.getBaseDirectory());
             }
-            
         }
         
         //load initializer extensions
