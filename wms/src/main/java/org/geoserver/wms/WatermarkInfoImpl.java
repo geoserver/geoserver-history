@@ -3,8 +3,8 @@ package org.geoserver.wms;
 public class WatermarkInfoImpl implements WatermarkInfo {
 
     boolean enabled;
-    Position position;
-    int transparency;
+    Position position = Position.BOT_RIGHT;
+    int transparency = 255;
     String url;
     
     public boolean isEnabled() {
