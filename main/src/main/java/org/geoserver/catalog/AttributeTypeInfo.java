@@ -1,5 +1,6 @@
 package org.geoserver.catalog;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -54,6 +55,16 @@ public interface AttributeTypeInfo extends Serializable {
     void setNillable( boolean nillable );
     
     /**
+     * The feature type this attribute is part of.
+     */
+    FeatureTypeInfo getFeatureType();
+    
+    /**
+     * Sets the feature type this attribute is part of.
+     */
+    void setFeatureType( FeatureTypeInfo featureType );
+    
+    /**
      * A persistent map of metadata.
      * <p>
      * Data in this map is intended to be persisted. Common case of use is to
@@ -64,6 +75,7 @@ public interface AttributeTypeInfo extends Serializable {
      */
     Map<String,Serializable> getMetadata();
     
+    
     /**
      * The underlying attribute descriptor.
      * <p>
@@ -71,11 +83,11 @@ public interface AttributeTypeInfo extends Serializable {
      * be <code>null</code>. 
      * </p>
      */
-    AttributeDescriptor getAttribute();
+    AttributeDescriptor getAttribute() throws IOException;
     
     /**
      * Sets the underlying attribute descriptor.
      */
-    void setAttribute( AttributeDescriptor attribute );
+    //void setAttribute( AttributeDescriptor attribute );
     
 }

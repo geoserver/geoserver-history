@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.opengis.feature.type.AttributeDescriptor;
 
 public class AttributeTypeInfoImpl implements AttributeTypeInfo {
@@ -16,6 +17,8 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
     boolean nillable;
     transient AttributeDescriptor attribute;
     HashMap metadata = new HashMap();
+    
+    FeatureTypeInfo featureType;
     
     public String getName() {
         return name;
@@ -49,13 +52,21 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
         this.nillable = nillable;
     }
 
+    public FeatureTypeInfo getFeatureType() {
+        return featureType;
+    }
+    
+    public void setFeatureType(FeatureTypeInfo featureType) {
+        this.featureType = featureType;
+    }
+    
     public AttributeDescriptor getAttribute() {
         return attribute;
     }
     
-    public void setAttribute(AttributeDescriptor attribute) {
-        this.attribute = attribute;
-    }
+//    public void setAttribute(AttributeDescriptor attribute) {
+//        this.attribute = attribute;
+//    }
     
     public Map<String, Serializable> getMetadata() {
         return metadata;
