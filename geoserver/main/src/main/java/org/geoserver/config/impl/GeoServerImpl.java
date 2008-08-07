@@ -17,7 +17,7 @@ import org.geoserver.config.ServiceInfo;
 public class GeoServerImpl implements GeoServer {
 
     GeoServerFactory factory = new GeoServerFactoryImpl();
-    GeoServerInfo global;
+    GeoServerInfo global = factory.createGlobal();
     Catalog catalog;
     
     List<ServiceInfo> services = new ArrayList<ServiceInfo>();
@@ -62,10 +62,14 @@ public class GeoServerImpl implements GeoServer {
         }
         
         //may be adding a proxy, need to unwrap
-        service = ModificationProxy.unwrap(service);
+        service = unwrap(service);
         services.add( service );
     }
 
+    public static <T> T unwrap(T obj) {
+        return ModificationProxy.unwrap(obj);
+    }
+    
     public <T extends ServiceInfo> T getService(Class<T> clazz) {
         for ( ServiceInfo si : services ) {
            if( clazz.isAssignableFrom( si.getClass() ) ) {
@@ -157,9 +161,9 @@ public class GeoServerImpl implements GeoServer {
     }
     
     public void dispose() {
-        global.dispose();
-        catalog.dispose();
-        services.clear();
-        listeners.clear();
+        if ( global != null ) global.dispose();
+        if ( catalog != null ) catalog.dispose();
+        if ( services != null ) services.clear();
+        if ( listeners != null ) listeners.clear();
     }
 }
