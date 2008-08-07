@@ -6,6 +6,10 @@ public class WCSInfoImpl extends ServiceInfoImpl implements WCSInfo {
 
     boolean gmlPrefixing;
     
+    public WCSInfoImpl() {
+        setId( "wcs" );
+    }
+    
     public boolean isGMLPrefixing() {
         return gmlPrefixing;
     }
