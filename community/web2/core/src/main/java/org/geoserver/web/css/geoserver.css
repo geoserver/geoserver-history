@@ -301,11 +301,8 @@ margin: 0;
 /*-----------------------
 Button  Styles
 -----------------------*/
-.buttons {
-}
-
-.buttons a,
-.buttons button {
+.button-group a,
+.button-group button {
 float: left;
 margin: 0 0.58em 0 0;
 background-color: #f5f5f5;
@@ -320,76 +317,99 @@ cursor: pointer;
 padding: 0.5em 0.83em 0.6em 0.58em;
 }
 
-.buttons button {
+.button-group button {
 width: auto;
 overflow: visible;
 padding: 0.5em 0.83em 0.6em 0.58em; /* IE6 */
 }
 
-
-.buttons button img,
-.buttons a img {
-margin: 0 3px -3px 0 !important;
-padding: 0;
-border: none;
-width: 16px;
-height: 16px;
-float: left;
-}
-
-.buttons button:hover,
-.buttons a:hover {
+.button-group button:hover,
+.button-group a:hover {
 background-color: #dff4ff;
 border: 1px solid #c2e1ef;
 color: #369;
 }
 
-.buttons a:active {
+.button-group a:active {
 background-color: #6299c5;
 border: 1px solid #6299c5;
 color: #fff;
 }
 
 button.positive,
-.buttons a.positive {
+.button-group a.positive {
 color: #529214;
 }
 
-.buttons a.positive:hover,
+.button-group a.positive:hover,
 button.positive:hover {
 background-color: #e6efc2;
 border: 1px solid #c6d880;
 color: #529214;
 }
 
-.buttons a.positive:active {
+.button-group a.positive:active {
 background-color: #529214;
 border: 1px solid #529214;
 color: #fff;
 }
 
-.buttons a.negative,
+.button-group a.negative,
  button.negative {
 color: #d12f19;
 }
 
-.buttons a.negative:hover,
+.button-group a.negative:hover,
 button.negative:hover {
-background: #fbe3e4;
+background-color: #fbe3e4;
 border: 1px solid #fbc2c4;
 color: #d12f19;
 }
 
-.buttons a.negative:active {
+.button-group a.negative:active {
 background-color: #d12f19;
 border: 1px solid #d12f19;
 color: #fff;
 }
 
-.buttons input {
+.button-group input {
 font-size: 1.2em;
 margin-right: 5px;
 }
+
+.button-group .button-login {
+min-height: 18px;
+background-image: url(../img/icons/silk/door_in.png);
+background-position: 2px 50%;
+background-repeat: no-repeat;
+padding-left: 20px;
+}
+
+.button-group .button-logout {
+min-height: 18px;
+background-image: url(../img/icons/silk/door_out.png);
+background-position: 2px 50%;
+background-repeat: no-repeat;
+padding-left: 20px;
+}
+
+.button-group .button-save {
+min-height: 18px;
+background-image: url(../img/icons/silk/disk.png);
+background-position: 2px 50%;
+background-repeat: no-repeat;
+padding-left: 20px;
+}
+
+.button-group .button-revert {
+min-height: 18px;
+background-image: url(../img/icons/silk/arrow_redo.png);
+background-position: 2px 50%;
+background-repeat: no-repeat;
+padding-left: 20px;
+}
+
+
 
 /*-----------------------
 Header
@@ -416,7 +436,7 @@ text-decoration: none;
 color: #fefdf1;
 }
 
-#header .buttons {
+#header .button-group {
 padding: 0.5em 0 0;
 }
 
@@ -440,11 +460,10 @@ font-size: 0.9em;
 min-height: 16px;
 }
 
-#header .buttons a,
-#header .buttons button {
+#header .button-group a,
+#header .button-group button {
 margin: 0 0.2em;
-padding: 0.2em 0.83em 0.2em 0.58em;
-min-height: 16px;
+padding: 0.2em 0.83em 0.2em 20px;
 font-size: 0.9em;
 float: none;
 }
