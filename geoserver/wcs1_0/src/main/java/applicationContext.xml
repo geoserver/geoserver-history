@@ -42,12 +42,14 @@
   </bean>
 
   <!-- Exception handler, we need to output ows 1.1 exceptions -->
-  <bean id="wcs100ExceptionHandler" class="org.geoserver.ows.OWS11ServiceExceptionHandler">
+  <bean id="wcs100ExceptionHandler" class="org.geoserver.ows.WCS10_OWS11ServiceExceptionHandler">
     <constructor-arg index="0">
       <list>
         <ref local="wcsService-1.0.0" />
       </list>
     </constructor-arg>
+	<constructor-arg index="1" ref="wcs"/>
+    <constructor-arg index="2" ref="geoServer"/>
   </bean>
 
   <!-- kvp parsers -->

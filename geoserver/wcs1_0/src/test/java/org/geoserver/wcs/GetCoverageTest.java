@@ -63,9 +63,12 @@ public class GetCoverageTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("coverage", layerId);
+        raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "-180,-90,180,90");
         raw.put("CRS", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
 
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         assertEquals(1, coverages.length);
@@ -77,9 +80,13 @@ public class GetCoverageTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("coverage", layerId);
+        raw.put("version", "1.0.0");
         raw.put("format", "SuperCoolFormat");
         raw.put("BBox", "146,-45,147,-42");
         raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
+        
         try {
             GridCoverage[] coverages = executeGetCoverageKvp(raw);
             fail("When did we learn to encode SuperCoolFormat?");
@@ -93,10 +100,13 @@ public class GetCoverageTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("sourcecoverage", layerId);
+        raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146.49999999999477,-44.49999999999785,147.0,-42.99999999999787");
         raw.put("crs", "EPSG:4326");
-        
+        raw.put("width", "150");
+        raw.put("height", "150");
+
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
 //        assertEquals(146.49999999999477, tx.getTranslateX());
@@ -115,9 +125,12 @@ public class GetCoverageTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("coverage", layerId);
+        raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146,-45,147,-42");
         raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
 
         // extract all bands. We had two bugs here, one related to the case sensitiveness
         // and the other about the inability to extract bands at all (with exception of the red one) 
@@ -136,9 +149,12 @@ public class GetCoverageTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("coverage", layerId);
+        raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146,-45,147,-42");
         raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
 
         raw.put("band", "1,3");
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
@@ -151,9 +167,12 @@ public class GetCoverageTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("coverage", layerId);
+        raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146,-45,147,-42");
         raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
 
         raw.put("band", "3,2");
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
@@ -166,9 +185,13 @@ public class GetCoverageTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("sourcecoverage", layerId);
+        raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146,-45,147,-42");
         raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
+
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         assertEquals(3, coverages[0].getNumSampleDimensions());
     }

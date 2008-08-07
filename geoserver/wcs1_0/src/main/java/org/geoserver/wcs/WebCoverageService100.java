@@ -32,7 +32,7 @@ public interface WebCoverageService100 {
     Wcs10CapsTransformer getCapabilities(GetCapabilitiesType request);
 
     /**
-     * DescribeCoverage oeration.
+     * DescribeCoverage operation.
      */
     Wcs10DescribeCoverageTransformer describeCoverage(DescribeCoverageType request);
 

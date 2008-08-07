@@ -210,7 +210,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
         private void handleLonLatEnvelope(GeneralEnvelope lonLatEnvelope) {
             if (lonLatEnvelope != null) {
                 AttributesImpl attributes = new AttributesImpl();
-                attributes.addAttribute("", "srsName", "srsName", "", /* WGS84(DD) */ "urn:ogc:def:crs:OGC:1.3:CRS84");
+                attributes.addAttribute("", "srsName", "srsName", "", /* "WGS84(DD)" */ "urn:ogc:def:crs:OGC:1.3:CRS84" );
                 
                 start("wcs:lonLatEnvelope", attributes);
                     element("gml:pos", lonLatEnvelope.getLowerCorner().getOrdinate(0) + " " + lonLatEnvelope.getLowerCorner().getOrdinate(1));
@@ -433,7 +433,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 List<String> sortedFormats = new ArrayList<String>(formats);
                 Collections.sort(sortedFormats);
                 for (String format : sortedFormats) {
-                    element("wcs:formats", format);
+                    element("wcs:formats", format.equalsIgnoreCase("GEOTIFF") ? "GeoTIFF" : format);
                 }
             end("wcs:supportedFormats");            
         }

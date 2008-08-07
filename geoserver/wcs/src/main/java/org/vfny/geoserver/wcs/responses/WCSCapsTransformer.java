@@ -502,8 +502,7 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleEnvelope(GeneralEnvelope envelope) {
             AttributesImpl attributes = new AttributesImpl();
 
-            attributes.addAttribute("", "srsName", "srsName", "", /*"urn:ogc:def:crs:OGC:1.3:CRS84"*/
-                "WGS84(DD)");
+            attributes.addAttribute("", "srsName", "srsName", "", "urn:ogc:def:crs:OGC:1.3:CRS84" /* "WGS84(DD)" */ );
             start("lonLatEnvelope", attributes);
             element("gml:pos",
                 new StringBuffer(Double.toString(envelope.getLowerCorner().getOrdinate(0))).append(

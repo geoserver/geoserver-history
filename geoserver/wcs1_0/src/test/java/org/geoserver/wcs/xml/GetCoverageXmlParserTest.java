@@ -11,7 +11,6 @@ import net.opengis.wcs.RangeSubsetType;
 
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.wcs.WCSConfiguration;
 import org.vfny.geoserver.wcs.WcsException;

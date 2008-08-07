@@ -53,8 +53,10 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
             else
                 getCoverage.setSourceCoverage((String) ((List)kvp.get("coverage")).get(0));
         }
-            
-
+        // if not specified, throw a resounding exception (by spec)
+        if(!getCoverage.isSetVersion())
+            throw new WcsException("Version has not been specified", WcsExceptionCode.MissingParameterValue, "version");
+        
         // build the domain subset
         getCoverage.setDomainSubset(parseDomainSubset(kvp));
 
@@ -80,6 +82,9 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         if("urn:ogc:def:crs:OGC:1.3:CRS84".equals(crsName)) {
             crsName = "EPSG:4326";
         }
+        if("WGS84(DD)".equals(crsName)) {
+            crsName = "EPSG:4326";
+        }
         
         try {
             crs = CRS.decode(crsName, true);
@@ -101,8 +106,8 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
         GridType grid = Gml4wcsFactory.eINSTANCE.createGridType();
         if (kvp.get("width") != null && kvp.get("height") != null) {
-            double width  = ((Integer) kvp.get("width")).doubleValue();
-            double height = ((Integer) kvp.get("height")).doubleValue();
+            double width  = kvp.get("width") instanceof Integer ? ((Integer) kvp.get("width")).doubleValue() : Double.parseDouble((String) kvp.get("width"));
+            double height = kvp.get("height") instanceof Integer ? ((Integer) kvp.get("height")).doubleValue()  : Double.parseDouble((String) kvp.get("height"));
             
             grid.setLimits(new Envelope(0.0, width, 0.0, height));
         } else if (kvp.get("resx") != null && kvp.get("resy") != null) {
@@ -147,6 +152,9 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         CoordinateReferenceSystem crs = null;
         if (crsName != null) {
             if("urn:ogc:def:crs:OGC:1.3:CRS84".equals(crsName)) {
+                crsName = "EPSG:4326";
+            }
+            if("WGS84(DD)".equals(crsName)) {
                 crsName = "EPSG:4326";
             }
             

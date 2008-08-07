@@ -59,7 +59,7 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
     
     public String getMimeFormatFor(String outputFormat) {
         if(canProduce(outputFormat))
-            return "image/geotiff";
+            return "image/tiff";
         else
             return null;
     }

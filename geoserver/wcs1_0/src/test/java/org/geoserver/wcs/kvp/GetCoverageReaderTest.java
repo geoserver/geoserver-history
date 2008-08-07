@@ -62,8 +62,11 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             assertEquals("MissingParameterValue", e.getCode());
         }
         
+        raw.put("version", "1.0.0");
         raw.put("BBOX", "-45,146,-42,147");
         raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
         try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
         } catch (WcsException e) {
@@ -93,10 +96,13 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("SourceCoverage", layerId);
+        raw.put("version", "1.0.0");
         raw.put("format", "image/tiff");
         raw.put("BBOX", "-45,146,-42,147");
         raw.put("CRS", "EPSG:4326");
-
+        raw.put("width", "150");
+        raw.put("height", "150");
+        
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getSourceCoverage());
         assertEquals("image/tiff", getCoverage.getOutput().getFormat().getValue());
@@ -108,9 +114,12 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("SourceCoverage", layerId);
+        raw.put("version", "1.0.0");
         raw.put("format", "image/tiff");
         raw.put("CRS", "urn:ogc:def:crs:EPSG:6.6:-1000");
-
+        raw.put("width", "150");
+        raw.put("height", "150");
+        
         try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");

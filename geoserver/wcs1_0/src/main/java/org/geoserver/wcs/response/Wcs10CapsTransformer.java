@@ -113,7 +113,10 @@ public class Wcs10CapsTransformer extends TransformerBase {
                 try {
                     requestedUpdateSequence = Integer.parseInt(request.getUpdateSequence());
                 } catch (NumberFormatException e) {
-                    throw new WcsException("Invalid update sequence number format, "
+                    if (request.getUpdateSequence().length() == 0)
+                        requestedUpdateSequence = 0;
+                    else
+                        throw new WcsException("Invalid update sequence number format, "
                             + "should be an integer", WcsExceptionCode.InvalidUpdateSequence,
                             "updateSequence");
                 }
@@ -121,6 +124,10 @@ public class Wcs10CapsTransformer extends TransformerBase {
                     throw new WcsException("Invalid update sequence value, it's higher "
                             + "than the current value, " + updateSequence,
                             WcsExceptionCode.InvalidUpdateSequence, "updateSequence");
+                }
+                
+                if (requestedUpdateSequence == updateSequence) {
+                    throw new WcsException("WCS capabilities document is current (updateSequence = " + updateSequence + ")", WcsExceptionCode.CurrentUpdateSequence, "");
                 }
             }
 
@@ -522,7 +529,7 @@ public class Wcs10CapsTransformer extends TransformerBase {
         private void handleEnvelope(GeneralEnvelope envelope) {
             AttributesImpl attributes = new AttributesImpl();
 
-            attributes.addAttribute("", "srsName", "srsName", "", "urn:ogc:def:crs:OGC:1.3:CRS84" /* "WGS84(DD)"*/);
+            attributes.addAttribute("", "srsName", "srsName", "", /* "WGS84(DD)" */ "urn:ogc:def:crs:OGC:1.3:CRS84");
             start("wcs:lonLatEnvelope", attributes);
             element("gml:pos", new StringBuffer(Double.toString(envelope
                     .getLowerCorner().getOrdinate(0))).append(" ").append(

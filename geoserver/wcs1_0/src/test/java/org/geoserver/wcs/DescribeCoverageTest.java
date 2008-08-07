@@ -34,9 +34,9 @@ public class DescribeCoverageTest extends WCSTestSupport {
     public void testDescribeNoIdentifiers() throws Exception {
         Document dom = getAsDOM(BASEPATH + "?request=DescribeCoverage&service=WCS&version=1.0.0");
 //        print(dom);
-        assertEquals(1, dom.getElementsByTagName("ows:ExceptionReport").getLength());
-        Element element = (Element) dom.getElementsByTagName("ows:Exception").item(0);
-        assertEquals("MissingParameterValue", element.getAttribute("exceptionCode"));
+        assertEquals(1, dom.getElementsByTagName("ServiceExceptionReport").getLength());
+        Element element = (Element) dom.getElementsByTagName("ServiceException").item(0);
+        assertEquals("MissingParameterValue", element.getAttribute("code"));
         assertEquals("coverage", element.getAttribute("locator"));
     }
 
@@ -44,8 +44,8 @@ public class DescribeCoverageTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH + "?request=DescribeCoverage&service=WCS&version=1.0.0&coverage=plop");
 //        print(dom);
         checkOws11Exception(dom);
-        Element element = (Element) dom.getElementsByTagName("ows:Exception").item(0);
-        assertEquals("InvalidParameterValue", element.getAttribute("exceptionCode"));
+        Element element = (Element) dom.getElementsByTagName("ServiceException").item(0);
+        assertEquals("InvalidParameterValue", element.getAttribute("code"));
         assertEquals("coverage", element.getAttribute("locator"));
         assertTrue(element.getTextContent().contains("plop"));
     }
@@ -54,8 +54,8 @@ public class DescribeCoverageTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH + "?request=DescribeCoverage&service=WCS&coverage="  + layerId(WCSTestSupport.TASMANIA_DEM));
 //        print(dom);
         checkOws11Exception(dom);
-        Element element = (Element) dom.getElementsByTagName("ows:Exception").item(0);
-        assertEquals("MissingParameterValue", element.getAttribute("exceptionCode"));
+        Element element = (Element) dom.getElementsByTagName("ServiceException").item(0);
+        assertEquals("MissingParameterValue", element.getAttribute("code"));
         assertEquals("version", element.getAttribute("locator"));
     }
     
@@ -72,8 +72,8 @@ public class DescribeCoverageTest extends WCSTestSupport {
         Document dom = postAsDOM(BASEPATH, request, errors);
 //        print(dom);
         checkOws11Exception(dom);
-        Element element = (Element) dom.getElementsByTagName("ows:Exception").item(0);
-        assertEquals("InvalidParameterValue", element.getAttribute("exceptionCode"));
+        Element element = (Element) dom.getElementsByTagName("ServiceException").item(0);
+        assertEquals("InvalidParameterValue", element.getAttribute("code"));
         assertEquals("coverage", element.getAttribute("locator"));
         assertTrue(element.getTextContent().contains("plop"));
     }

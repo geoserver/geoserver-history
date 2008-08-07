@@ -281,7 +281,7 @@ public class DescribeResponse implements Response {
 
         final GeneralEnvelope envelope = cv.getWGS84LonLatEnvelope();
 
-        tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"WGS84(DD)\"") /*urn:ogc:def:crs:OGC:1.3:CRS84*/
+        tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"urn:ogc:def:crs:OGC:1.3:CRS84\"")
                     .append(">");
         tempResponse.append("\n   <gml:pos>").append(envelope.getLowerCorner().getOrdinate(0))
                     .append(" ").append(envelope.getLowerCorner().getOrdinate(1))

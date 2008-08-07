@@ -1,6 +1,6 @@
 package org.geoserver.wcs;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import junit.framework.Test;
 
 import org.geoserver.wcs.test.WCSTestSupport;
@@ -62,25 +62,6 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         checkValidationErrors(dom, WCS10_SCHEMA);
     }
 
-    public void testUnsupportedVersionPost() throws Exception {
-        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + "<wcs:GetCapabilities service=\"WCS\" xmlns:ows=\"http://www.opengis.net/ows/1.1\""
-                + " xmlns:wcs=\"http://www.opengis.net/wcs\""
-                + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"9.9.9\">"
-                + "</wcs:GetCapabilities>";
-        Document dom = postAsDOM(BASEPATH, request);
-//        print(dom);
-        checkOws11Exception(dom);
-        assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
-        assertXpathEvaluatesTo("NoApplicableCode", "ows:ExceptionReport/ows:Exception/@exceptionCode", dom);
-    }
-    
-    public void testUnsupportedVersionGet() throws Exception {
-        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&version=9.9.9");
-        checkOws11Exception(dom);
-        assertXpathEvaluatesTo("VersionNegotiationFailed", "ows:ExceptionReport/ows:Exception/@exceptionCode", dom);
-    }
-    
     public void testUpdateSequenceInferiorGet() throws Exception {
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&updateSequence=-1");
         checkValidationErrors(dom, WCS10_SCHEMA);
@@ -104,9 +85,10 @@ public class GetCapabilitiesTest extends WCSTestSupport {
     
     public void testUpdateSequenceEqualsGet() throws Exception {
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&version=1.0.0&updateSequence=0");
+//        print(dom);
         final Node root = dom.getFirstChild();
-        assertEquals("wcs:WCS_Capabilities", root.getNodeName());
-        assertEquals(0, root.getChildNodes().getLength());
+        assertEquals("ServiceExceptionReport", root.getNodeName());
+        assertEquals("CurrentUpdateSequence", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("code").getNodeValue());
     }
     
     public void testUpdateSequenceEqualsPost() throws Exception {
@@ -116,9 +98,10 @@ public class GetCapabilitiesTest extends WCSTestSupport {
                 + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
                 + " updateSequence=\"0\"/>";
         Document dom = postAsDOM(BASEPATH, request);
+//        print(dom);
         final Node root = dom.getFirstChild();
-        assertEquals("wcs:WCS_Capabilities", root.getNodeName());
-        assertEquals(0, root.getChildNodes().getLength());
+        assertEquals("ServiceExceptionReport", root.getNodeName());
+        assertEquals("CurrentUpdateSequence", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("code").getNodeValue());
     }
     
     public void testUpdateSequenceSuperiorGet() throws Exception {
@@ -140,7 +123,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
     public void testSectionsBogus() throws Exception {
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&version=1.0.0&section=Bogus");
         checkOws11Exception(dom);
-        assertXpathEvaluatesTo(WcsExceptionCode.InvalidParameterValue.toString(), "/ows:ExceptionReport/ows:Exception/@exceptionCode", dom);
+        assertXpathEvaluatesTo(WcsExceptionCode.InvalidParameterValue.toString(), "/ServiceExceptionReport/ServiceException/@code", dom);
     }
     
     public void testSectionsAll() throws Exception {

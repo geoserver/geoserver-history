@@ -7,7 +7,6 @@ package org.geoserver.wcs;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +20,6 @@ import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
-import net.opengis.gml.EnvelopeType;
 import net.opengis.gml.GridType;
 import net.opengis.wcs.AxisSubsetType;
 import net.opengis.wcs.DescribeCoverageType;
@@ -36,8 +34,8 @@ import net.opengis.wcs.TypedLiteralType;
 
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.wcs.response.Wcs10DescribeCoverageTransformer;
 import org.geoserver.wcs.response.Wcs10CapsTransformer;
+import org.geoserver.wcs.response.Wcs10DescribeCoverageTransformer;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -104,7 +102,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             accepted = new ArrayList<String>();
             accepted.add(request.getVersion());
         }
-        String version = RequestUtils.getVersionOws11(provided, accepted);
+        String version = RequestUtils.getVersionPreOws(provided, accepted);
 
         if ("1.0.0".equals(version)) {
             Wcs10CapsTransformer capsTransformer = new Wcs10CapsTransformer(wcs, catalog);
@@ -170,15 +168,17 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 destinationEnvelope = destinationEnvelopeInSourceCRS;
             }
 
-            final String gridCRS = request.getOutput().getCrs().getValue();
-            // TODO: handle time domain subset...
+            String gridCRS = null;
+            if (request.getOutput().getCrs() != null)
+                request.getOutput().getCrs().getValue();
 
             // Compute the target crs, the crs that the final coverage will be
             // served into
             final CoordinateReferenceSystem targetCRS;
-            if (gridCRS == null)
+            if (gridCRS == null) {
                 targetCRS = reader.getOriginalEnvelope().getCoordinateReferenceSystem();
-            else
+                gridCRS = CRS.lookupIdentifier(targetCRS, false);
+            } else
                 targetCRS = CRS.decode(gridCRS);
 
             // grab the grid to world transformation
@@ -380,7 +380,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         if (interpolation != null) {
             boolean interpolationSupported = false;
 
-            if (interpolation.equalsIgnoreCase("nearest")) {
+            if (interpolation.startsWith("nearest")) {
                 interpolation = "nearest neighbor";
             }
             for (Iterator it = info.getInterpolationMethods().iterator(); it.hasNext();) {
@@ -413,10 +413,14 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             throw new WcsException("format " + format + " is not supported for this coverage", InvalidParameterValue, "format");
         
         // check requested CRS
-        String requestedCRS = output.getCrs().getValue();
-        if (getRequestResponseCRS(meta.getRequestCRSs(), requestedCRS) == null && 
-                getRequestResponseCRS(meta.getResponseCRSs(), requestedCRS) == null)
-            throw new WcsException("CRS " + requestedCRS + " is not supported for this coverage", InvalidParameterValue, "CRS");
+        if (output.getCrs() != null) {
+            String requestedCRS = output.getCrs().getValue();
+            if (getRequestResponseCRS(meta.getRequestCRSs(), requestedCRS) == null && 
+                    getRequestResponseCRS(meta.getResponseCRSs(), requestedCRS) == null)
+                throw new WcsException("CRS " + requestedCRS + " is not supported for this coverage", InvalidParameterValue, "CRS");
+        } else {
+            // The requested CRS was not specified ... what to do ???
+        }
     }
 
     /**

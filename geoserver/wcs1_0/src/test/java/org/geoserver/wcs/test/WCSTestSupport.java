@@ -104,10 +104,9 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
     }
     
     protected void checkOws11Exception(Document dom) throws Exception {
-        assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
-        assertXpathEvaluatesTo("1.1.0", "/ows:ExceptionReport/@version", dom);
-        Node root  = xpath.getMatchingNodes("/ows:ExceptionReport", dom).item(0);
-        Node attr = root.getAttributes().getNamedItem("xmlns:ows");
-        assertEquals("http://www.opengis.net/ows/1.1", attr.getTextContent());
+        assertEquals("ServiceExceptionReport", dom.getFirstChild().getNodeName());
+        assertXpathEvaluatesTo("1.2.0", "/ServiceExceptionReport/@version", dom);
+        Node root  = xpath.getMatchingNodes("/ServiceExceptionReport", dom).item(0);
+        assertNotNull(root);
     }
 }
