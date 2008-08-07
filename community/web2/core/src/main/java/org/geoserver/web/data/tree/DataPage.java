@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.tree;
 
+import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
@@ -27,7 +29,11 @@ import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignm
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.ITreeState;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebResponse;
@@ -35,6 +41,8 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.catalog.util.LegacyCatalogImporter;
+import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.DataStorePanelInfo;
@@ -121,6 +129,46 @@ public class DataPage extends GeoServerSecuredPage {
         buttonForm.add(configureButton);
         add(buttonForm);
 
+        Form importForm = new Form( "importForm" );
+        add( importForm );
+        
+        final TextField directory = new RequiredTextField( "directory", new Model() );
+        importForm.add( directory );
+        importForm.add(new AjaxButton("import") {
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                String s = (String) directory.getModelObject();
+                File dir = new File( s );
+                
+                if ( !dir.exists() || !dir.isDirectory() ) {
+                    Session.get().error(s + " is not a directory." );
+                }
+                else {
+                    File catalog = new File( dir, "catalog.xml" );
+                    if ( !catalog.exists() ) {
+                        Session.get().error(s + " is not a GeoServer data directory." );
+                    }
+                    else {
+                        
+                        try {
+                            LegacyCatalogImporter catalogImporter = new LegacyCatalogImporter(getCatalog());
+                            catalogImporter.imprt( dir );
+                            
+                            LegacyConfigurationImporter configImporter = new LegacyConfigurationImporter( getGeoServer());
+                            configImporter.imprt( dir );
+                            
+                            Session.get().info( "Data directory successfully imported.");
+                        } 
+                        catch (Exception e) {
+                            Session.get().error( "Error occured on import: '" + e.getLocalizedMessage() + "'." );
+                        }
+                    }
+                }
+                
+                setResponsePage( DataPage.class );
+            } 
+            
+        });
+        
         // refresh the state of the button based on the current selection
         updateButtonState();
     }

@@ -15,6 +15,23 @@
 	<button wicket:id="configureChecked"><wicket:message key="configureChecked">Configure checked</wicket:message></button> 
 </form>
 
+<form wicket:id="importForm">
+  <ul>
+    <li>
+    <fieldset>
+      <legend><wicket:message key="dataDirectoryImport">Data Directory Import</wicket:message></legend>
+      <ul>
+        <li>
+          <label><wicket:message key="dataDirectory">Directory</wicket:message></label>
+          <input wicket:id="directory"></input>
+          <button wicket:id="import"><wicket:message key="import">Import</wicket:message></button>
+        </li>
+      </ul>
+    </fieldset>
+    </li>
+  </ul>
+</form>
+
 </wicket:extend>
 </body>
 </html>
