@@ -34,23 +34,21 @@ import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.util.NullProgressListener;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
-import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 
 /**
  * A simple component that can be used to edit/remove items from the tree
  * 
- * @author aaime
- * 
+ * @author Andrea Aime (TOPP)
+ * @author David Winslow (TOPP)
+ * @author Gabriel Roldan (TOPP)
  */
 @SuppressWarnings("serial")
 public class AddConfigPanel extends Panel {
