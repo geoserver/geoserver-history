@@ -48,6 +48,10 @@ public class JAIInitializer implements GeoServerInitializer {
     void initJAI(GeoServerInfo global) {
         
         JAIInfo jai = (JAIInfo) global.getMetadata().get( JAIInfo.KEY );
+        if ( jai == null ) {
+            jai = new JAIInfo();
+            global.getMetadata().put( JAIInfo.KEY, jai );
+        }
         
         JAI jaiDef = JAI.getDefaultInstance();
         jai.setJAI( jaiDef );
