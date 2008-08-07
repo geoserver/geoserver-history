@@ -179,6 +179,33 @@ public class ResourcePool {
     }
     
     /**
+     * Disposes a data store and removes it from the cache.
+     * <p>
+     * This method catches any exception thrown during data store disposal and 
+     * logs it at the FINE level.
+     * </p>
+     */
+    public void dispose( DataStoreInfo info ) {
+        DataStore dataStore = (DataStore) dataStoreCache.get(info);
+        if ( dataStore != null ) {
+            synchronized (dataStoreCache) {
+                dataStore = (DataStore) dataStoreCache.get(info);
+                if ( dataStore != null ) {
+                    try {
+                        dataStore.dispose();
+                    }
+                    catch( Exception e ) {
+                        LOGGER.warning( "Error occured disposing data store '" + info.getName() + "'");
+                        LOGGER.log(Level.FINE, "", e );
+                    }
+                    
+                    dataStoreCache.remove( info );
+                }
+            }
+        }
+    }
+    
+    /**
      * Returns the underlying resource for a feature type, caching the result.
      * <p>
      * In the event that the resource is not in the cache the associated data store
@@ -267,6 +294,27 @@ public class ResourcePool {
         return ft;
     }
 
+    /**
+     * Loads an attribute descriptor from feature type and attribute type metadata.
+     * <p>
+     * This method returns null if the attribute descriptor could not be loaded.
+     * </p>
+     */
+    public AttributeDescriptor getAttributeDescriptor( FeatureTypeInfo ftInfo, AttributeTypeInfo atInfo ) 
+        throws Exception {
+    
+        SimpleFeatureType featureType = getFeatureType( ftInfo );
+        if ( featureType != null ) {
+            for ( AttributeDescriptor ad : featureType.getAttributeDescriptors() ) {
+                if ( atInfo.getName().equals( ad.getLocalName() ) ) {
+                    return ad;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
     /**
      * Clears a feature type resource from the cache.
      * 
