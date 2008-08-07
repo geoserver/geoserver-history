@@ -12,6 +12,7 @@ package org.vfny.geoserver.global;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +83,12 @@ public class AttributeTypeInfo {
      * @see org.geotools.data.AttributeTypeMetaData#getAttributeType()
      */
     public AttributeDescriptor getAttributeType() {
-        return attributeType.getAttribute();
+        try {
+            return attributeType.getAttribute();
+        } 
+        catch (IOException e) {
+            throw new RuntimeException( e );
+        }
         //return type;
     }
 
@@ -92,7 +98,7 @@ public class AttributeTypeInfo {
      * @param type DOCUMENT ME!
      */
     public void sync(AttributeDescriptor type) {
-        attributeType.setAttribute(type);
+        //attributeType.setAttribute(type);
         //this.type = type;
     }
 
@@ -250,7 +256,7 @@ public class AttributeTypeInfo {
     }
 
     public String toString() {
-        return "[AttributeTypeInfo backed by " + toDTO() + " with type " + attributeType.getAttribute() + " and meta "
+        return "[AttributeTypeInfo backed by " + toDTO() + " with type " + attributeType.getName() + " and meta "
         + attributeType.getMetadata();
     }
 }

@@ -448,7 +448,7 @@ public class LegacyCatalogImporter {
                         att.setName( ad.getLocalName() );
                         att.setMinOccurs( ad.getMinOccurs() );
                         att.setMaxOccurs( ad.getMaxOccurs() );
-                        att.setAttribute( ad );
+                        //att.setAttribute( ad );
                         featureType.getAttributes().add( att );
                     }
                 }
