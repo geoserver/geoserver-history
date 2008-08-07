@@ -48,7 +48,8 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
         }
         else {
             //create an 'empty' object
-            return createServiceFromScratch( gs );
+            ServiceInfo service = createServiceFromScratch( gs );
+            return (T) service;
         }
     }
 
