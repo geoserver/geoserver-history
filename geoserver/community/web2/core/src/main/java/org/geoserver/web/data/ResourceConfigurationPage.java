@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,10 +127,10 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
             ResourceConfigurationPanelInfo panelInfo = (ResourceConfigurationPanelInfo) item
                 .getModelObject();
             try {
-                ResourceConfigurationPanel panel = panelInfo
-                    .getComponentClass()
-                    .getConstructor(String.class, IModel.class)
-                    .newInstance("content", myResourceModel);
+                final Class<ResourceConfigurationPanel> componentClass = panelInfo.getComponentClass();
+                final Constructor<ResourceConfigurationPanel> constructor;
+                constructor = componentClass.getConstructor(String.class, IModel.class);
+                ResourceConfigurationPanel panel = constructor.newInstance("content", myResourceModel);
                 item.add((Component) panel);
             } catch (Exception e) {
                 throw new WicketRuntimeException("Failed to add pluggable resource configuration panels", e);
