@@ -11,7 +11,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     String id;
 
-    ContactInfo contact;
+    ContactInfo contact = new ContactInfoImpl();
 
     // Charset charSet = Charset.forName("UTF-8");
     String charset = "UTF-8";
