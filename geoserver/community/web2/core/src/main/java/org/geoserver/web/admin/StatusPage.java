@@ -72,14 +72,6 @@ public class StatusPage extends ServerAdminPage {
                 public void onClick(){
                 }
             });
-        add(new Link("persist"){
-                public void onClick(){
-                }
-            });
-        add(new Link("revert"){
-                public void onClick(){
-                }
-            });
 
         add(new Label("reload.date.geoserver", "Jul 14, 3:07 PM"));
         add(new Label("reload.date.configuration", "Jul 14, 3:07 PM"));
