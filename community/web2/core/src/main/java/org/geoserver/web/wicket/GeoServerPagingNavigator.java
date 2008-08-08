@@ -18,6 +18,7 @@ public class GeoServerPagingNavigator extends AjaxPagingNavigator {
 
     public GeoServerPagingNavigator(String id, IPageable pageable) {
         super(id, pageable);
+        setOutputMarkupId(true);
     }
     
     @Override
