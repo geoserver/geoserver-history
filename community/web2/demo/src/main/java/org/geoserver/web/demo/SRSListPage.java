@@ -27,6 +27,8 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
 import org.geotools.factory.Hints;
@@ -56,7 +58,7 @@ public class SRSListPage extends GeoServerBasePage {
 
     public SRSListPage() {
         // setup pageable list
-        List<String> codeList = new ArrayList<String>(buildCodeList(null));
+        List<String> codeList = new ArrayList<String>(buildCodeList());
         final PageableListView srsList = new PageableListView("srslist", codeList, MAX_ROWS) {
 
             @Override
@@ -89,42 +91,72 @@ public class SRSListPage extends GeoServerBasePage {
         listContainer.setOutputMarkupId(true);
         listContainer.add(srsList);
         add(listContainer);
-        add(new GeoServerPagingNavigator("topNav", srsList));
-        add(new GeoServerPagingNavigator("bottomNav", srsList));
+        final GeoServerPagingNavigator topNav = new GeoServerPagingNavigator("topNav", srsList);
+        final GeoServerPagingNavigator bottomNav = new GeoServerPagingNavigator("bottomNav", srsList);
+        add(topNav);
+        add(bottomNav);
 
         // setup filter
         Form filterForm = new Form("filterForm");
+        filterForm.setOutputMarkupId(true);
+        final Label filterMatch = new Label("filterMatch");
+        filterMatch.setOutputMarkupId(true);
+        add(filterMatch);
+        
         final TextField filter = new TextField("filter", new Model());
         filter.setOutputMarkupId(true);
         filterForm.add(filter);
+        
         AjaxButton filterSubmit = new AjaxButton("applyFilter") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
+                // build filter representation
                 String[] filters = null;
                 String unparsed = filter.getValue();
-                if(unparsed != null)
+                if (unparsed != null)
                     filters = unparsed.split("\\s+");
-                srsList.setModel(new Model((Serializable) buildCodeList(filters)));
+                
+                // grab and filter the codes
+                List<String> allCodes = buildCodeList();
+                List<String> result = filterCodes(allCodes, filters);
+                
+                // report how many matched
+                filterMatch.setModel(new StringResourceModel("SRSListPage.filterMatch", null,
+                        new Object[] {result.size(), allCodes.size()}));
+                filterMatch.setVisible(true);
+                
+                // setup the table again
+                srsList.setModel(new Model((Serializable) result));
+                // ajax updates
                 target.addComponent(srsList.getParent());
+                target.addComponent(filterMatch);
+                target.addComponent(filterMatch);
+                target.addComponent(topNav);
+                target.addComponent(bottomNav);
             }
         };
         filterForm.add(filterSubmit);
+        
         AjaxButton filterReset = new AjaxButton("resetFilter") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 filter.setModel(new Model());
-                srsList.setModel(new Model((Serializable) buildCodeList(null)));
+                srsList.setModel(new Model((Serializable) buildCodeList()));
+                filterMatch.setVisible(false);
+                // ajax updates
                 target.addComponent(filter);
+                target.addComponent(filterMatch);
                 target.addComponent(srsList.getParent());
+                target.addComponent(topNav);
+                target.addComponent(bottomNav);
             }
         };
         filterForm.add(filterReset);
         add(filterForm);
-        
 
     }
 
-    List<String> buildCodeList(String[] filters) {
+    List<String> buildCodeList() {
         Set<String> codes = CRS.getSupportedCodes("EPSG");
 
         try {
@@ -138,32 +170,47 @@ public class SRSListPage extends GeoServerBasePage {
         for (String code : codes) {
             // make sure we're using just the non prefix part
             String id = code.substring(code.indexOf(':') + 1);
+            idSet.add(id);
+        }
+        List<String> ids = new ArrayList<String>(idSet);
+        Collections.sort(ids, new CodeComparator()); // sort to get them in
+                                                     // order
+        return ids;
+    }
 
-            // if filtering is required, filter against the code and the description
-            if (filters != null) {
-                String description = null;
+    List<String> filterCodes(List<String> codes, String[] filters) {
+        // if filtering is required, filter against the code and the description
+        if (filters != null) {
+            List<String> result = new ArrayList<String>();
+            for (String code : codes) {
+                code = code.toUpperCase();
                 
+                // grab the description
+                String description = null;
                 try {
-                    description = CRS.getAuthorityFactory(true).getDescriptionText("EPSG:" + id)
-                            .toString(getLocale());
+                    description = CRS.getAuthorityFactory(true).getDescriptionText("EPSG:" + code)
+                            .toString(getLocale()).toUpperCase();
                 } catch (Exception e) {
+                    // no problem
                 }
+
+                // check if we have all the keywords matching
+                boolean fullMatch = true;
                 for (String filter : filters) {
-                    if (id.contains(filter)
-                            || (description != null && description.contains(filter))) {
-                        idSet.add(id);
+                    filter = filter.toUpperCase();
+                    if (!code.contains(filter)
+                            && !(description != null && description.contains(filter))) {
+                        fullMatch = false;
                         break;
                     }
                 }
-
-            } else {
-                idSet.add(id);
+                if (fullMatch)
+                    result.add(code);
             }
-
+            return result;
+        } else {
+            return codes;
         }
-        List<String> ids = new ArrayList<String>(idSet);
-        Collections.sort(ids, new CodeComparator()); // sort to get them in order
-        return ids;
     }
 
     /**
