@@ -137,7 +137,24 @@
             </systemProperties> -->
         </configuration>
       </plugin>
-    </plugins>
+        <plugin>
+        <inherited>true</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warName>geoserver</warName>
+          <webappDirectory>${project.build.directory}/geoserver</webappDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+ </plugins>
   </build>
   <profiles>
     <profile>
@@ -182,5 +199,4 @@
       </dependencies>
     </profile>
   </profiles>
-
 </project>
