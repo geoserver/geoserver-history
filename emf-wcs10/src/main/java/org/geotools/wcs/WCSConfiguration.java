@@ -12,6 +12,7 @@ import org.geotools.wcs.bindings.AbstractDescriptionBaseTypeBinding;
 import org.geotools.wcs.bindings.AbstractDescriptionTypeBinding;
 import org.geotools.wcs.bindings.AxisDescriptionTypeBinding;
 import org.geotools.wcs.bindings.CapabilitiesSectionTypeBinding;
+import org.geotools.wcs.bindings.InterpolationMethodTypeBinding;
 import org.geotools.wcs.bindings.LonLatEnvelopeBaseTypeBinding;
 import org.geotools.wcs.bindings.LonLatEnvelopeTypeBinding;
 import org.geotools.wcs.bindings.RangeSubsetType_axisSubsetBinding;
@@ -72,6 +73,10 @@ public class WCSConfiguration extends Configuration {
         bindings.put(WCS.valueRangeType, new ValueRangeTypeBinding());
 
         register(bindings, wcsFactory, WCS.OutputType);
+        register(bindings, wcsFactory, WCS.SupportedCRSsType);
+        register(bindings, wcsFactory, WCS.SupportedFormatsType);
+        register(bindings, wcsFactory, WCS.SupportedInterpolationsType);
+        bindings.put(WCS.InterpolationMethodType, new InterpolationMethodTypeBinding());
 
         register(bindings, wcsFactory, WCS.DCPTypeType);
         register(bindings, wcsFactory, WCS.DCPTypeType_HTTP);
