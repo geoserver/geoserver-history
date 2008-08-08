@@ -6,27 +6,22 @@ package org.geoserver.web;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.Resource;
-import org.apache.wicket.Session;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.breadcrumb.BreadCrumbBar;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
@@ -36,13 +31,11 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.web.acegi.GeoServerSession;
-import org.geoserver.web.admin.ServerAdminPage;
 
 /**
  * Base class for web pages in GeoServer web application.
@@ -98,7 +91,7 @@ public class GeoServerBasePage extends WebPage {
                 getApplication().getConfigurationType()));
         
         final Map<Category,List<MenuPageInfo>> links = splitByCategory(
-            getGeoServerApplication().getBeansOfType(MenuPageInfo.class)
+            filterSecured(getGeoServerApplication().getBeansOfType(MenuPageInfo.class))
         );
 
         List<MenuPageInfo> standalone = links.containsKey(null) 
@@ -140,7 +133,7 @@ public class GeoServerBasePage extends WebPage {
         );
 
         //save + load
-        add(new AjaxLink("save") {
+        AjaxLink save = new AjaxLink("save") {
             public void onClick(AjaxRequestTarget target) {
                 GeoServerLoader loader = 
                     getGeoServerApplication().getBeanOfType( GeoServerLoader.class );
@@ -155,8 +148,9 @@ public class GeoServerBasePage extends WebPage {
                 setResponsePage(GeoServerHomePage.class);
             }
             
-        });
-        add(new AjaxLink("load"){
+        };
+        add(save);
+        AjaxLink load = new AjaxLink("load"){
             public void onClick(AjaxRequestTarget target) {
                 GeoServerLoader loader = 
                     getGeoServerApplication().getBeanOfType( GeoServerLoader.class );
@@ -171,7 +165,15 @@ public class GeoServerBasePage extends WebPage {
                 setResponsePage(GeoServerHomePage.class);
             }
             
-        });
+        };
+        add(load);
+        
+        // Make sure the user has admin rights before showing these buttons
+        if(!GeoServerSecuredPage.DEFAULT_AUTHORIZER.isAccessAllowed(this.getClass(),
+                getSession().getAuthentication())) {
+            load.setVisible(false);
+            save.setVisible(false);
+        }
         
         add(new FeedbackPanel("feedback"));
     }
@@ -237,7 +239,12 @@ public class GeoServerBasePage extends WebPage {
         }
     }
 
-    private static Map<Category,List<MenuPageInfo>> splitByCategory(List<MenuPageInfo> pages){
+    /**
+     * Splits up the pages by category, turning the list into a map keyed by category
+     * @param pages
+     * @return
+     */
+    private Map<Category,List<MenuPageInfo>> splitByCategory(List<MenuPageInfo> pages){
         Collections.sort(pages);
         HashMap<Category,List<MenuPageInfo>> map = new HashMap<Category,List<MenuPageInfo>>();
 
@@ -251,5 +258,23 @@ public class GeoServerBasePage extends WebPage {
         }
 
         return map;
+    }
+    
+    /**
+     * Filters out all of the pages that cannot be accessed by the current user
+     * @param pageList
+     * @return
+     */
+    private List<MenuPageInfo> filterSecured(List<MenuPageInfo> pageList) {
+        Authentication user = getSession().getAuthentication();
+        List<MenuPageInfo> result = new ArrayList<MenuPageInfo>();
+        for (MenuPageInfo page : pageList) {
+            final Class<GeoServerBasePage> pageClass = page.getComponentClass();
+            if(GeoServerSecuredPage.class.isAssignableFrom(pageClass) &&
+                    !page.getPageAuthorizer().isAccessAllowed(pageClass, user))
+                continue;
+            result.add(page);
+        }
+        return result;
     }
 }

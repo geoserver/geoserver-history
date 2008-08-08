@@ -4,36 +4,31 @@
  */
 package org.geoserver.web;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
 
 /**
  * Base class for secured web pages. By default it only allows
+ * 
  * @author Andrea Aime - TOPP
- *
+ * 
  */
 public class GeoServerSecuredPage extends GeoServerBasePage {
-    
+
+    public static final PageAuthorizer DEFAULT_AUTHORIZER = new DefaultPageAuthorizer();
+
     public GeoServerSecuredPage() {
         super();
-        if(!isAccessAllowed(getSession().getAuthentication()))
+        if (!getPageAuthorizer().isAccessAllowed(this.getClass(), getSession().getAuthentication()))
             setResponsePage(new UnauthorizedPage());
     }
-    
+
     /**
-     * By default, checks the user is logged-in and has administration
-     * roles, this can be overridden by subclasses
-     * @param authentication
+     * Override to use a page authorizer other than the default one. When you do
+     * so, remember to perform the same change in the associated
+     * {@link MenuPageInfo} instance
+     * 
      * @return
      */
-    public boolean isAccessAllowed(Authentication authentication) {
-        if(authentication == null)
-            return false;
-        
-        for (GrantedAuthority authority : authentication.getAuthorities()) {
-            if("ROLE_ADMINISTRATOR".equals(authority.getAuthority()))
-                return true;
-        }
-        return false;
+    protected PageAuthorizer getPageAuthorizer() {
+        return DEFAULT_AUTHORIZER;
     }
 }

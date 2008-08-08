@@ -30,14 +30,14 @@ RequestExecutionLevel "admin"
 ;General
 
   ;Name and file
-  Name "GeoServer 2.0.0-alpha1"
-  OutFile "geoserver-2.0.0-alpha1.exe"
+  Name "GeoServer 1.7.0-beta1"
+  OutFile "geoserver-1.7.0-beta1.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\GeoServer 2.0.0-alpha1"
+  InstallDir "$PROGRAMFILES\GeoServer 1.7.0-beta1"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\GeoServer-2.0.0-alpha1" ""
+  InstallDirRegKey HKCU "Software\GeoServer-1.7.0-beta1" ""
 
 ;--------------------------------
 ;Variables
@@ -54,7 +54,7 @@ RequestExecutionLevel "admin"
   !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
-                                installation of GeoServer 2.0.0-alpha1.  \
+                                installation of GeoServer 1.7.0-beta1.  \
                                 Please report any suggestions or issues \
 								to geoserver-devel@lists.sourceforge.net. \r\n\
                                 Click Next to continue."
@@ -447,7 +447,7 @@ Section "Uninstall"
   
   IfFileExists "$INSTDIR" 0 Removed
      MessageBox MB_YESNO|MB_ICONQUESTION \
-          "Remove all files in your GeoServer 2.0.0-alpha1 directory? (If you have anything you created that you want to keep, click No)" IDNO Removed
+          "Remove all files in your GeoServer 1.7.0-beta1 directory? (If you have anything you created that you want to keep, click No)" IDNO Removed
      Delete "$INSTDIR\*.*"
      RMDIR /r "$INSTDIR"
      Sleep 500

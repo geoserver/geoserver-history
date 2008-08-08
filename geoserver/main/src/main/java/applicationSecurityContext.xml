@@ -163,7 +163,7 @@
     class="org.geoserver.security.GeoserverAuthenticationProcessingFilter">
     <property name="authenticationManager" ref="authenticationManager" />
     <property name="authenticationFailureUrl"
-      value="/admin/login.do?login_error=1" />
+      value="/web/" />
     <property name="defaultTargetUrl" value="/" />
     <property name="filterProcessesUrl" value="/j_acegi_security_check" />
     <property name="rememberMeServices" ref="rememberMeServices" />

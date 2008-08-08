@@ -7,7 +7,7 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>2.0.0-SNAPSHOT</version>
+ <version>1.8.0-SNAPSHOT</version>
  <name>GeoServer</name>
 
  <scm>
@@ -294,6 +294,11 @@
    <dependency>
      <groupId>org.geotools.ogc</groupId>
      <artifactId>net.opengis.wcs</artifactId>
+     <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+     <groupId>org.geotools</groupId>
+     <artifactId>gt-imageio-ext-gdal</artifactId>
      <version>${gt.version}</version>
    </dependency>
    <dependency>
@@ -870,7 +875,7 @@
      <dependency>
       <groupId>org.geoserver.maven</groupId>
       <artifactId>build-configs</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <version>1.8.0-SNAPSHOT</version>
      </dependency>
     </dependencies>
    </plugin>
@@ -911,8 +916,9 @@
       <descriptor>release/ext-pyramid.xml</descriptor>
       <descriptor>release/ext-wfsv.xml</descriptor>
       <descriptor>release/ext-gwc.xml</descriptor>
+      <descriptor>release/ext-gdal.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-2.0.0-SNAPSHOT</finalName>
+     <finalName>geoserver-1.8.0-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -1116,7 +1122,7 @@
  </modules>
 
  <properties>
-  <gs.version>2.0.0-SNAPSHOT</gs.version>
+  <gs.version>1.8.0-SNAPSHOT</gs.version>
   <gt.version>2.5-SNAPSHOT</gt.version>
   <spring.version>2.5.5</spring.version>
   <wicket.version>1.3.4</wicket.version>

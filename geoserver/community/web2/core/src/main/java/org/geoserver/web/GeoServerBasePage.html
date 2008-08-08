@@ -19,7 +19,7 @@
 <div id="container" class="selfclear">
   <div id="header" class="selfclear">
     <h2><a wicket:id="home" href="#"><span wicket:id="label">GeoServer 2.0</span></a></h2>
-    <div class="buttons selfclear">
+    <div class="button-group selfclear">
     <form wicket:id="loginform" method="POST" action="../j_acegi_security_check">
       <label class="noshow" for="username">Username</label>
       <input id="username" type="text" name="username" value="username" onfocus="if(this.value=='username') this.value='';" onblur="if(this.value=='') this.value='username';" />
@@ -27,19 +27,11 @@
       <input id="password" type="password" name="password" value="password" onfocus="if(this.value=='password') this.value='';" onblur="if(this.value=='') this.value='password';" />
       <label class="shown" for="_acegi_security_remember_me">Remember me</label>
       <input id="_acegi_security_remember_me" type="checkbox" name="_acegi_security_remember_me" />
-      <button type="submit">
-        <wicket:link>
-          <img src="img/icons/silk/door_in.png" alt="Login"/> Login
-        </wicket:link>
-      </button>
+      <button class="button-login positive" type="submit">Login</button>
     </form>
     <div wicket:id="logoutform">
       <span class="username">Logged in as <span wicket:id="username">User von Testenheimer</span></span>.
-      <a href="j_acegi_logout">
-        <wicket:link>
-         <img src="img/icons/silk/door_out.png" alt="Logout"/> Logout
-        </wicket:link>
-      </a>
+      <a class="button-logout" href="j_acegi_logout">Logout</a>
     </div>
     </div>
   </div><!-- /#header -->
@@ -66,14 +58,14 @@
       </li>
       <li class="navigation-tab">
       
-       <div class="buttons selfclear">
-         <button type="submit" wicket:id="save">Save</button>
-         <button type="submit" wicket:id="load">Revert</button>
+       <div class="button-group selfclear">
+         <button class="button-save positive" type="submit" wicket:id="save">Save</button>
+         <button class="button-revert negative" type="submit" wicket:id="load">Revert</button>
        </div>
       
       </li>
     </ul>
-    <div class="buttons selfclear" wicket:id="devButtons">
+    <div class="button-group selfclear" wicket:id="devButtons">
       Developer toolbar:
       <a href="#" class="positive" wicket:id="clearCache" title="Forces the Wicket caches to be cleared, so that localized messages will be reloaded without needing a restart" >
           Clear Wicket caches
