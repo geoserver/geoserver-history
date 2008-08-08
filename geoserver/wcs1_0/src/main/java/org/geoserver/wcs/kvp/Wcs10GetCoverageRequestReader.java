@@ -7,6 +7,7 @@ package org.geoserver.wcs.kvp;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.MissingParameterValue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import net.opengis.wcs.TimeSequenceType;
 import net.opengis.wcs.Wcs10Factory;
 
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
+import org.geoserver.ows.util.RequestUtils;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
@@ -56,6 +58,21 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         // if not specified, throw a resounding exception (by spec)
         if(!getCoverage.isSetVersion())
             throw new WcsException("Version has not been specified", WcsExceptionCode.MissingParameterValue, "version");
+        
+        // do the version negotiation dance
+        List<String> provided = new ArrayList<String>();
+        provided.add("1.0.0");
+        List<String> accepted = null;
+        if (getCoverage.getVersion() != null) {
+            accepted = new ArrayList<String>();
+            accepted.add(getCoverage.getVersion());
+        }
+        String version = RequestUtils.getVersionPreOws(provided, accepted);
+
+        if (!"1.0.0".equals(version)) {
+            throw new WcsException("An invalid version number has been specified", WcsExceptionCode.InvalidParameterValue, "version");
+        }
+        getCoverage.setVersion("1.0.0");
         
         // build the domain subset
         getCoverage.setDomainSubset(parseDomainSubset(kvp));

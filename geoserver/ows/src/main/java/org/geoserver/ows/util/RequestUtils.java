@@ -141,8 +141,10 @@ public class RequestUtils {
             }
     
             //if highest accepted less then lowest provided, send lowest
-            if ((accepted.last()).compareTo(provided.first()) < 0) {
+            if ((accepted.last()).compareTo(provided.first()) < 0 && accepted.last().getMajor() == provided.first().getMajor()) {
                 version = (provided.first()).toString();
+            } else if ((accepted.last()).compareTo(provided.first()) < 0) {
+                version = accepted.last().toString();
             }
     
             //if lowest accepted is greater then highest provided, send highest
@@ -172,7 +174,7 @@ public class RequestUtils {
         
         return version;
     }
-    
+
     /**
      * Given a list of provided versions, and a list of accepted versions, this method will
      * return the negotiated version to be used for response according to the OWS 1.1 specification
