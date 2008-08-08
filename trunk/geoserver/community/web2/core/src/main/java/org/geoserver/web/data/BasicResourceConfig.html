@@ -1,0 +1,82 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<head></head>
+<body>
+  <h3><wicket:message key="page.title">Basic</wicket:message></h3>
+  <form>
+    <wicket:panel>
+  <!-- Once things are working well we can remove the word 'default' from the default
+       messages.  Leaving them in now so we can tell if i18n is being picked up   -->
+    <ul>
+      <li>
+        <fieldset>
+          <legend><span>Basic Resource Info</span></legend>
+          <ul>
+            <li>
+              <label for="title"><wicket:message key="title">Title</wicket:message></label>
+              <input id="title" class="text" type="text" wicket:id="title"></input>
+            </li>
+            <li>
+              <label for="abstract"><wicket:message key="abstract">Abstract</wicket:message></label>
+              <textarea wicket:id="abstract" class="field textarea"></textarea>
+            </li>
+          </ul>
+        </fieldset>
+      </li>
+      <li>
+        <fieldset>
+          <legend><span><wicket:message key="keywords">Keywords</wicket:message></span></legend>
+          <ul>
+            <li>
+              <label for="keywords">Current Keywords</label>
+              <select id="keywords" class="select" wicket:id="keywords" multiple="multiple"></select>
+              <button wicket:id="removeKeywords" type="submit"><wicket:message key="removeSelected">Remove selected</wicket:message></button>
+            </li>   
+            <li>
+              <label for="newKeyword"><wicket:message key="newKeyword">New Keyword</wicket:message></label>
+              <input id="newKeyword" class="text" type="text" wicket:id="newKeyword"></input>
+              <button wicket:id="addKeyword" type="submit"> <wicket:message key="add">Add</wicket:message> </button>
+            </li>
+          </ul>
+        </fieldset>
+      </li>
+      <li>
+        <fieldset>
+          <legend><span>Native Data</span></legend>
+          <ul>
+            <li>
+              <label for="SRS"><wicket:message key="page.nativeSrs">Native SRS</wicket:message></label>
+              <input id="SRS" class="text" type="text" wicket:id="SRS"></input>
+            </li>    
+            <li>
+              <label for="nativeBoundingBox"><wicket:message key="page.nativeBbox">Native BBox</wicket:message></label>
+              <input id="nativeBoundingBox" class="text" type="text" wicket:id="nativeBoundingBox"></input>
+            </li>
+          </ul>
+        </fieldset>
+      </li>
+      <li>
+        <fieldset>
+          <legend><span>Published Data</span></legend>
+          <ul>
+            <li>
+              <label for="boundingBox"><wicket:message key="page.publishBbox">Published BBox</wicket:message></label>
+              <span wicket:id="boundingBox"></span>
+            </li>
+            <li>
+              <label for="latLonBoundingBox"><wicket:message key="page.latLonBbox">Lat/Lon BBox</wicket:message></label>
+              <input id="latLonBoundingBox" class="text" type="text" wicket:id="latLonBoundingBox"></input>
+            </li>
+          </ul>
+        </fieldset>
+      </li>
+  	</ul>
+    </wicket:panel>
+    <ul>
+      <li class="button-group selfclear">
+        <input class="btnTxt" wicket:id="submit" type="submit"><wicket:message key="submit"/></input>
+        <input class="btnTxt" wicket:id="cancel" type="submit"><wicket:message key="cancel"/></input> 
+      </li>
+    </ul>
+  </form>
+</body>
+</html>

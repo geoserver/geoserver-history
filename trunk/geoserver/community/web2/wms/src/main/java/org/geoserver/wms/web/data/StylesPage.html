@@ -1,0 +1,32 @@
+<html>
+<head><title>Styles Editor</title></head>
+<body>
+<wicket:extend>
+<table>
+  <thead>
+    <tr><th>Style</th><th class="actions">Actions</th></tr>
+  </thead>
+  <tbody>
+    <tr wicket:id="styles">
+      <td><span wicket:id="name"/></td> 
+      <td class="actions">
+        <div class="button-group selfclear">
+          <a class="positive" href="#" wicket:id="edit"><wicket:message key="wms.data.styles.edit">Edit</wicket:message></a> 
+          <a class="negative" href="#" wicket:id="delete"><wicket:message key="wms.data.styles.delete">Delete</wicket:message></a>
+        </div>
+      </td>
+    </tr>
+    <tr wicket:id="input">
+      <td><span wicket:id="name"/><!-- input type="file" wicket:id="theFile"/ --> </td>
+      <td class="actions">
+        <div class="button-group selfclear">
+          <!-- [TODO] add image <img src="img/icons/silk/add.png" alt="Add" /> -->
+          <a class="positive" href="#" wicket:id="add"><wicket:message key="wms.data.styles.add">Add Style</wicket:message></a>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</wicket:extend>
+</body>
+</html>

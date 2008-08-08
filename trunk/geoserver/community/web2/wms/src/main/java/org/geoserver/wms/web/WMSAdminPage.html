@@ -1,0 +1,40 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<body>
+  <wicket:extend>
+    <li>
+      <fieldset><!-- [TODO] Do we need to turn this legend into a wicket message? -->
+        <legend><span>Interpolation</span></legend>
+        <ul>
+          <li>
+            <label><wicket:message key="page.interpolation">Interpolation</wicket:message></label>
+            <input wicket:id="interpolation" class="field text" type="text"></input>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    <li>
+      <fieldset><!-- [TODO] Do we need to turn this legend into a wicket message? -->
+        <legend><span>Watermark Settings</span></legend>
+        <ul>
+          <li>
+            <input class="field checkbox" type="checkbox" wicket:id="watermark.enabled"></input>
+            <label class="choice"><wicket:message key="page.watermarkEnabled">Enable Watermark</wicket:message></label>
+          </li>
+          <li>
+            <label><wicket:message key="page.watermarkUrl">Watermark URL</wicket:message></label>
+            <input wicket:id="watermark.uRL" class="field text" type="text"></input>
+          </li>
+          <li>
+            <label><wicket:message key="page.watermarkTransparency">Watermark Transparency</wicket:message></label>
+            <input wicket:id="watermark.transparency" class="field text" type="text"></input>
+          </li>
+          <li>
+            <label><wicket:message key="page.watermarkPosition">Watermark Position</wicket:message></label>
+            <select wicket:id="watermark.position"></select>
+          </li>
+        </ul>
+      </fieldset>
+    </li> 
+  </wicket:extend>
+</body>
+</html>

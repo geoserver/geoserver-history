@@ -1,0 +1,37 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+
+<!-- A Wicket tree table and its parent that specifies the width and allows for 
+    AJAX updates -->
+<div wicket:id="treeParent" style="width: 550px">
+<div wicket:id="dataTree"></div>
+</div>
+
+<!-- Some control buttons -->
+<form wicket:id="controlForm">
+	<button wicket:id="addChecked"><wicket:message key="addChecked">Add checked</wicket:message></button>
+	<button wicket:id="removeChecked"><wicket:message key="removeChecked">Remove checked</wicket:message></button>
+	<button wicket:id="configureChecked"><wicket:message key="configureChecked">Configure checked</wicket:message></button> 
+</form>
+
+<form wicket:id="importForm">
+  <ul>
+    <li>
+    <fieldset>
+      <legend><wicket:message key="page.dataDirectoryImport">Data Directory Import</wicket:message></legend>
+      <ul>
+        <li>
+          <label><wicket:message key="page.dataDirectory">Directory</wicket:message></label>
+          <input wicket:id="directory"></input>
+          <button wicket:id="import"><wicket:message key="import">Import</wicket:message></button>
+        </li>
+      </ul>
+    </fieldset>
+    </li>
+  </ul>
+</form>
+
+</wicket:extend>
+</body>
+</html>

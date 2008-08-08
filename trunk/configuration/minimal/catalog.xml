@@ -1,0 +1,22 @@
+<?config.xml version="1.0" encoding="UTF-8"?>
+<catalog>
+
+<formats>
+</formats>
+
+<datastores>
+</datastores>
+
+<namespaces>
+	<namespace uri="http://www.openplans.org/topp" prefix="topp" default="true"/>
+	<namespace uri = "http://www.geo-solutions.it" prefix = "it.geosolutions"  />
+</namespaces>
+
+<styles>
+	<style filename="default_line.sld" id="line"/>
+	<style filename="default_polygon.sld" id="polygon"/>
+	<style filename="default_point.sld" id="point"/>
+	<style filename="raster.sld" id="raster"/>
+</styles>
+
+</catalog>

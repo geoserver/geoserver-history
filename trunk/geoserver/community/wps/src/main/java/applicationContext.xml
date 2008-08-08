@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--
+    Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+    This code is licensed under the GPL 2.0 license, available at the root
+    application directory.
+
+    @author lreed@refractions.net
+-->
+
+<beans>
+    <!-- WPS Configuration bean -->
+    <bean id="wps" class="org.geoserver.wps.WPS" depends-on="config">
+        <!-- the depends-on attribute ensures config was initialized before
+            trying to instantiate this bean.
+        -->
+        <constructor-arg ref="geoServer2" />
+    </bean>
+
+    <bean id="wpsServiceLoader" class="org.geoserver.wps.WPSLoader">
+    	<constructor-arg ref="resourceLoader"/>
+    </bean>
+
+    <bean id="wpsRegisterar"
+        class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+        <constructor-arg type="java.lang.String" value="WPS" />
+        <constructor-arg ref="wps" />
+    </bean>
+
+    <!-- WPS Service -->
+    <bean id="wpsServiceTarget"
+        class="org.geoserver.wps.DefaultWebProcessingService">
+        <constructor-arg ref="wps" />
+    </bean>
+
+    <bean id="wpsService"
+        class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.geoserver.wps.WebProcessingService</value>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <!-- <value>wpsLogger</value> -->
+                <value>wpsServiceTarget</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Service Descriptor(s) -->
+    <bean id="wpsService-1.0.0"
+        class="org.geoserver.platform.Service">
+        <constructor-arg index="0" value="wps" />
+        <constructor-arg index="1" ref="wpsService" />
+        <constructor-arg index="2" value="1.0.0" />
+    </bean>
+
+    <!-- Responses -->
+    <bean id="wpsGetCapabilitiesResponse"
+        class="org.geoserver.wps.response.GetCapabilitiesResponse"
+        singleton="false" />
+    <bean id="wpsDescribeProcessResponse"
+        class="org.geoserver.wps.response.DescribeProcessResponse"
+        singleton="false" />
+    <bean id="wpsExecuteResponse"
+        class="org.geoserver.wps.response.ExecuteResponse" singleton="false" />
+
+    <!-- KVP Parsers -->
+    <!-- KVP Request Readers -->
+    <bean id="wpsGetCapabilitiesKvpReader"
+        class="org.geoserver.wps.kvp.GetCapabilitiesKvpRequestReader" />
+    <bean id="wpsDescribeProcessKvpReader"
+        class="org.geoserver.wps.kvp.DescribeProcessKvpRequestReader" />
+    <bean id="wpsIdentifierKvpParser"
+        class="org.geoserver.wps.kvp.IdentifierKvpParser" />
+
+    <!-- XML Configuration -->
+    <bean id="wpsXmlConfiguration-1.0.0"
+        class="org.geotools.wps.WPSConfiguration" />
+
+    <!-- XML Readers -->
+    <bean id="wpsXmlReader-1.0.0"
+        class="org.geoserver.wps.xml.v1_0_0.WpsXmlReader" abstract="true">
+        <constructor-arg ref="wps" />
+        <constructor-arg ref="wpsXmlConfiguration-1.0.0" />
+    </bean>
+    <bean id="wpsExecuteXmlReader-1.0.0"
+        class="org.geoserver.wps.xml.v1_0_0.WpsXmlReader">
+        <constructor-arg index="0" value="Execute" />
+        <constructor-arg index="1" value="1.0.0" />
+        <constructor-arg index="2" ref="wpsXmlConfiguration-1.0.0" />
+    </bean>
+
+    <!-- HTTP URL Mapping -->
+    <bean id="wpsURLMapping"
+        class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="alwaysUseFullPath" value="true" />
+        <property name="mappings">
+            <props>
+                <prop key="/wps">dispatcher</prop>
+                <prop key="/wps/*">dispatcher</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

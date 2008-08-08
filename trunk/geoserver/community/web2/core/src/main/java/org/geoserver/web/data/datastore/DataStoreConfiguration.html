@@ -1,0 +1,35 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+	<h3>Add Vector Data Source</h3>
+	<div><span wicket:id="storeType">Store Type</span></div>
+	<div><span wicket:id="storeTypeDescription">Store Description</span></div>
+	<h4>Folder: <span wicket:id="workspaceName">folder name</span></h4>
+    <form wicket:id="dataStoreForm">
+      <ul>
+        <li>
+          <fieldset>
+            <legend><span><wicket:message key="DataStoreConfiguration.basicInfo">Basic Store Info</wicket:message></span></legend> 
+        	<div><span wicket:id="dataStoreIdPanel"></span></div>
+        	<div><span wicket:id="dataStoreDescriptionPanel"></span></div>
+        	<div><span wicket:id="dataStoreEnabledPanel"></span></div>
+		  </fieldset>
+        </li>
+        <li>
+          <fieldset>
+            <legend><span><wicket:message key="DataStoreConfiguration.parameters">Connection Parameters</wicket:message></span></legend> 
+        	<div wicket:id="parameters">
+    		  <span wicket:id="parameterPanel">x</span>
+    		</div>
+		  </fieldset>
+        </li>
+      </ul>
+      <div wicket:id="feedback"></div>
+      <div class="button-group selfclear">
+        <a href="#" wicket:id="save"><wicket:message key="save">Save</wicket:message></a>
+        <a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a>
+      </div>
+	</form>
+</wicket:extend>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<body>
+  <wicket:extend>
+  <li>
+    <fieldset><!-- [TODO] Do we need to turn this legend into a wicket message? -->
+      <legend><span>Features</span></legend>
+      <ul>
+        <li>
+          <label for="maxFeatures"><wicket:message key="maxFeatures">Maximum number of features</wicket:message></label>
+          <input id="maxFeatures" wicket:id="maxFeatures" class="field text" type="text"></input>
+        </li>
+      </ul>
+    </fieldset>
+  </li>
+  <li>
+    <fieldset>
+      <legend><span><wicket:message key="page.serviceLevel">Service Level</wicket:message></span></legend>
+      <div wicket:id="serviceLevel">
+        <ul>
+        	<li>
+          	<input id="basic" wicket:id="basic" class="field radio" type="radio"></input>
+          	<label for="basic" class="choice"><wicket:message key="page.basic">Basic</wicket:message></label>
+          </li>
+          <li>
+          	<input id="transactional" wicket:id="transactional" class="field radio" type="radio"></input>
+          	<label for="transactional" class="choice"><wicket:message key="page.transactional">Transactional</wicket:message></label>
+          </li>
+          <li>
+     			<input id="complete" wicket:id="complete" class="field radio" type="radio"></input>
+          	<label for="complete" class="choice"><wicket:message key="page.complete">Complete</wicket:message></label>
+          </li>
+        </ul>
+      </div>
+    </fieldset>
+  </li>
+  <li>
+    <fieldset>
+      <legend><span><wicket:message key="gml2.title">GML 2</wicket:message></span></legend>
+      <div wicket:id="gml2"></div>
+    </fieldset>
+  </li>
+  <li>
+    <fieldset>
+      <legend><span><wicket:message key="gml3.title">GML 3</wicket:message></span></legend>
+      <div wicket:id="gml3"></div>
+    </fieldset>
+  </li>
+  </wicket:extend>
+</body>
+</html>

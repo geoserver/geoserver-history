@@ -1,0 +1,35 @@
+<html>
+<head>
+<title><wicket:message key="demo.srslist">SRS list</wicket:message></title>
+</head>
+<body>
+<wicket:extend>
+	<form wicket:id="filterForm">
+			<label for="filter"><wicket:message key="filter">Filter:</wicket:message>
+			</label> <input wicket:id="filter" type="text" size="50"></input>
+			<input class="btnTxt"
+				wicket:id="applyFilter" type="submit" wicket:message="value:applyFilter"></input>
+			<input class="btnTxt" wicket:id="resetFilter" type="button"
+				wicket:message="value:resetFilter"></input>
+	</form>
+	<div wicket:id="filterMatch">Matched xxx out of yyy</div>
+	<div wicket:id="topNav">1|2|3|...</div>
+	<table>
+		<thead>
+			<tr>
+				<th><wicket:message key="code">Code</wicket:message></th>
+				<th><wicket:message key="description">Description</wicket:message></th>
+			</tr>
+		</thead>
+		<tbody wicket:id="listContainer">
+			<tr wicket:id="srslist">
+				<td><a href="#" wicket:id="codeLink"><span wicket:id="code">code</span></a></td>
+				<td><span wicket:id="description">description</span></td>
+			</tr>
+		</tbody>
+	</table>
+	<div wicket:id="bottomNav">1|2|3|...</div>
+
+</wicket:extend>
+</body>
+</html>

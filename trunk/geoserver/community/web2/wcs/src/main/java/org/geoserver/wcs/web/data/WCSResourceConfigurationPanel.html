@@ -1,0 +1,89 @@
+<html>
+<head></head>
+<body>
+<form name="theForm">
+<wicket:panel>
+  <h3><wicket:message key="wcs.data.resource.title">Coverage Settings</wicket:message></h3>
+  <ul>
+    <li>
+      <fieldset>
+        <legend><span>Request SRS</span></legend>
+        <ul>
+          <li>
+            <label for="requestSRS"><wicket:message key="wcs.data.resource.requestSRS">Current Request SRS List</wicket:message></label> 
+            <select id="requestSRS" class="select" wicket:id="requestSRS" multiple="multiple"/>
+            <button wicket:id="deleteSelectedRequestSRSs" type="submit"><wicket:message key="wcs.data.resource.requestSRS.delete">Delete Selected</wicket:message></button>
+          </li>
+          <li>
+            <label for="newRequestSRS">New Request SRS</label>
+            <input id="newRequestSRS" class="text" wicket:id="newRequestSRS" type="text"></input>
+            <button wicket:id="addNewRequestSRS" type="submit"><wicket:message key="wcs.data.resource.requestSRS.add">Add SRS</wicket:message></button>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    <li>  
+      <fieldset>
+        <legend><span>Response SRS</span></legend>
+        <ul>
+          <li>
+            <label for="responseSRS"><wicket:message key="wcs.data.resource.responseSRS">Current Response SRS List </wicket:message></label>
+            <select id="responseSRS" class="select" wicket:id="responseSRS" multiple="multiple"/>
+            <button wicket:id="deleteSelectedResponseSRSs" type="submit"><wicket:message key="wcs.data.resource.responseSRS.delete">Delete Selected</wicket:message></button>
+          </li>
+          <li>
+            <label for="newRequestSRS">New Request SRS</label>
+            <input id="newRequestSRS" class="text" wicket:id="newResponseSRS" type="text"></input>
+            <button wicket:id="addNewResponseSRS" type="submit"><wicket:message key="wcs.data.resource.responseSRS.add">Add SRS</wicket:message></button>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    <li>  
+      <fieldset>
+        <legend><span><wicket:message key="wcs.data.resource.interpolationMethods">Interpolation Methods</wicket:message></span></legend>
+        <ul>
+          <li>
+            <label for="defaultInterpolationMethod"><wicket:message key="wcs.data.resource.defaultInterpolationMethod">Default Interpolation Method</wicket:message></label>
+            <input id="defaultInterpolationMethod" class="text" type="text" wicket:id="defaultInterpolationMethod"></input>
+          </li>
+          <li>
+            <label for="interpolationMethods">Current Interpolation Methods</label>
+            <select id="interpolationMethods" class="select"wicket:id="interpolationMethods" multiple="multiple"/>
+            <button wicket:id="deleteInterpolationMethods" type="submit"><wicket:message key="wcs.data.resource.interpolationMethods.delete">Delete Selected</wicket:message></button>
+          </li>
+          <li>
+            <label for="newInterpolationMethod">New Interpolation Method</label>
+            <input class="text" wicket:id="newInterpolationMethod" type="text"></input>
+            <button wicket:id="addNewInterpolationMethod" type="submit"><wicket:message key="wcs.data.resource.interpolationMethods.add">Add Method</wicket:message></button>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    <li>  
+      <fieldset>
+        <legend><span>Formats</span></legend>
+        <ul>
+          <li>
+            <label for="nativeFormat"><wicket:message key="wcs.data.resource.nativeFormat">Native Format</wicket:message></label>
+            <input id="nativeFormat" wicket:id="nativeFormat" type="text"></input>
+          </li>
+          <li>
+            <label for="supportedFormats"><wicket:message key="wcs.data.resource.supportedFormats">Supported Formats</wicket:message></label>
+            <select id="supportedFormats" class="select" wicket:id="supportedFormats" multiple="multiple"/>
+            <button wicket:id="deleteSelectedFormats" type="submit"><wicket:message key="wcs.data.resource.format.delete">Delete Selected</wicket:message></button>
+          </li>
+          <li>
+            <label for="newFormat">New Format</label>
+            <input id="newFormat" class="text" wicket:id="newFormat" type="text"></input>
+            <button wicket:id="addNewFormat" type="submit"><wicket:message key="wcs.data.resource.format.add">Add Format</wicket:message></button>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+  </ul>
+</wicket:panel>
+<button type="submit"></button>
+</form>
+</body>
+</html>

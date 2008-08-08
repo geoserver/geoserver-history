@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.geoserver</groupId>
+  <artifactId>cite</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>Compliance + Interopability Testing + Evaluation (CITE) Module</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <dependencies>
+           <dependency>
+              <groupId>sun.jdk</groupId>
+              <artifactId>tools</artifactId>
+              <version>1.5.0</version>
+              <scope>system</scope>
+              <systemPath>${java.home}/../lib/tools.jar</systemPath>
+            </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+             <id>pre</id>
+             <phase>process-sources</phase>
+             <configuration>
+               <tasks> 
+                  <!-- copy over env setup -->
+                  <copy todir="${basedir}/engine/bin">
+                    <fileset dir="${basedir}" includes="setenv.*"/> 
+                  </copy>
+
+                  <!-- copy over cite1 component -->
+                  <copy todir="${basedir}/engine/components">
+                     <fileset dir="${basedir}/tests/components" 
+                         excludes="/**/.svn"/>
+                  </copy>
+                  <copy todir="${basedir}/engine/components/cite1"
+                      file="${basedir}/build.properties"/>
+ 
+                  <!-- copy over resources from test suite 
+                  <copy todir="${basedir}/engine/scripts/wfs-1.0.0">
+                    <fileset dir="${basedir}/tests/wfs/1.0.0/ets" includes="resources/**/*,ctl/**/*"/>
+                  </copy>
+                  -->
+                  <copy todir="${basedir}/engine/scripts/wfs-1.1.0">
+                    <fileset dir="${basedir}/tests/wfs/1.1.0/ets" includes="resources/**/*,ctl/**/*"/>
+                  </copy>
+                  <!--
+                  <copy todir="${basedir}/engine/scripts/wms-1.1.1">
+                    <fileset dir="${basedir}/tests/wms/1.1.1/ets" includes="resources/**/*,ctl/**/*"/>
+                  </copy>
+                  <copy todir="${basedir}/engine/scripts/wcs-1.0.0">
+                    <fileset dir="${basedir}/tests/wcs/1.0.0/ets" includes="resources/**/*,ctl/**/*"/>
+                  </copy>
+                  -->
+                  <!--
+                  <copy todir="${basedir}/engine/scripts/wcs-1.1.1">
+                    <fileset dir="${basedir}/tests/wcs/1.1.1/ets" includes="resources/**/*,ctl/**/*"/>
+                  </copy>
+                   -->
+                  
+
+                  <!-- create necessary directories -->
+                  <mkdir dir="${basedir}/target/server/lib"/>
+                  <mkdir dir="${basedir}/target/common/lib"/>
+               </tasks> 
+             </configuration>
+             <goals>
+                <goal>run</goal>
+             </goals>
+          </execution>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <configuration>
+              <tasks>
+                <!-- delete env setup -->
+                <delete>
+                  <fileset dir="${basedir}/engine/bin" includes="setenv.sh,setenv.bat"/> 
+                </delete>
+
+                <!-- clean the cite1 component -->
+                <delete dir="${basedir}/engine/components/cite1"/>
+
+                <!-- delete test scripts -->
+                <delete includeemptydirs="true">
+                  <fileset dir="${basedir}/engine/scripts" includes="**/*"/>
+                </delete>
+
+                <!-- clean the engine -->
+                <ant dir="${basedir}/engine/apps/engine" target="clean"/>
+                <ant dir="${basedir}/engine" target="clean"/>
+           
+                <delete>
+                  <fileset dir="${basedir}/engine/setup/UserFilesRealm" includes="UserFilesRealm.jar"/>       
+                </delete>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>compile</id>
+            <phase>compile</phase>
+            <configuration>
+              <tasks>
+                <property name="tomcat.dir" value="${basedir}/target"/>
+                <property name="java.dir" value="c:\programmi\java\jdk1.5.0_09"/>
+                <ant dir="${basedir}/engine/apps/engine" target="jar"/>
+                <ant dir="${basedir}/engine/apps/manager" target="jar"/>
+		<ant dir="${basedir}/engine" target="war"/>
+		<ant dir="${basedir}/engine" target="jar.realm"/>
+                <!--ant dir="${basedir}/engine" target="jar.realm"/-->
+                <!--ant dir="${basedir}/engine" target="jar.engine"/>
+                <ant dir="${basedir}/engine" target="jar.components"/-->
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-dependency-plugin</artifactId>
+         <configuration>
+            <artifactItems>
+               <artifactItem>
+                  <groupId>tomcat</groupId>
+                  <artifactId>catalina</artifactId>
+                  <version>5.5.9</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${basedir}/target/server/lib</outputDirectory>
+               </artifactItem>
+            </artifactItems>
+            <stripVersion>true</stripVersion>
+         </configuration>
+         <executions>
+           <execution>
+             <id>pre</id>
+             <phase>process-sources</phase>
+             <goals>
+               <goal>copy</goal>
+             </goals>
+           </execution>
+         </executions>
+      </plugin> 
+      <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+         <artifactId>tomcat-maven-plugin</artifactId>
+         <configuration>
+           <path>/teamengine</path>
+           <port>9090</port>
+           <warSourceDirectory>${basedir}/engine/webapps/teamengine</warSourceDirectory>
+         </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <properties>
+     <cite.service>wfs</cite.service>
+     <cite.version>1.1.0</cite.version>
+  </properties>
+</project>

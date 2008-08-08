@@ -1,0 +1,23 @@
+<html>
+<head></head>
+<body>
+<form name="theForm">
+  <wicket:panel>
+    <ul>
+    <li>  
+      <fieldset>
+        <legend><span><wicket:message key="page.title">WFS Settings</wicket:message></span></legend>
+        <ul>
+          <li>
+            <label for="maxFeatures"><wicket:message key="wfs.maxFeatures">Per-Request Feature Limit</wicket:message></label>
+            <input id="maxFeatures" class="text" wicket:id="maxFeatures" type="text"></input>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    </ul>
+  </wicket:panel>
+  <input type="submit" value="Submit!"></input>
+</form>
+</body>
+</html>
