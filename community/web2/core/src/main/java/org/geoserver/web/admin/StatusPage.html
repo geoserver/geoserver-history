@@ -2,41 +2,85 @@
 <head></head>
 <body>
 <wicket:extend>
-<h2><wicket:message key="StatusPage.page.title"></wicket:message></h2>
+
 <table>
   <thead>
-    <tr><th><span class="noshow">Data</span></th><th><span class="noshow">Value</span></th><th class="actions">Action</th></tr>
+    <tr>
+    	<th><span class="noshow"><wicket:message key="data">Data</wicket:message></span></th>
+    	<th><span class="noshow"><wicket:message key="value">Value</wicket:message></span></th>
+    	<th class="actions"><wicket:message key="action">Action</wicket:message></th>
+    </tr>
   </thead>
   <tbody>
-    <tr class="even"><th scope="row">Locks</th><td wicket:id="locks">0</td><td class="actions"><div class="button-group selfclear"><a href="#" wicket:id="free.locks">Free Locks</a></div></td></tr>
-    <tr class="odd"><th scope="row">Connections</th><td wicket:id="connections">17</td><td class="actions"></td></tr>
-    <tr class="even"><th scope="row">Memory</th><td wicket:id="memory">337825K</td><td class="actions"><div class="button-group selfclear"><a href="#" wicket:id="free.memory">Free Memory</a></div></td></tr>
-    <tr class="odd"><th scope="row">Version of JVM</th><td wicket:id="jvm.version">Sun Microsystems Inc.: 1.6.0_03</td><td class="actions"></td></tr>
-    <tr class="even"><th scope="row">JAI is available</th><td wicket:id="jai.available">true</td><td class="actions"></td></tr>
-    <tr class="odd"><th scope="row">JAI mem capacity</th><td wicket:id="jai.memory.available">466048K</td><td class="actions"></td></tr>
-    <tr class="even"><th scope="row">JAI mem used</th><td wicket:id="jai.memory.used">0K</td><td class="actions"><div class="button-group selfclear"><a href="#" wicket:id="free.memory.jai">Free JAI Memory</a></div></td></tr>
-    <tr class="odd"><th scope="row">JAI mem threshold</th><td wicket:id="jai.memory.threshold">75.0%</td><td class="actions"></td></tr>
-    <tr class="even"><th scope="row">JAI tile threads</th><td wicket:id="jai.tile.threads">7</td><td class="actions"></td></tr>
-    <tr class="odd"><th scope="row">JAI tile priority</th><td wicket:id="jai.tile.priority">5 (1 - Min, 5 - Normal; 10 - Max)</td><td class="actions"></td></tr>
+    <tr class="even">
+    	<th scope="row"><wicket:message key="page.locks">Locks</wicket:message></th>
+    	<td wicket:id="locks">0</td>
+    	<td class="actions"><div class="button-group selfclear"><a href="#" wicket:id="free.locks"><wicket:message key="freeLocks">Free Locks</wicket:message></a></div></td>
+    </tr>
+    <tr class="odd">
+    	<th scope="row"><wicket:message key="page.connections">Connections</wicket:message></th>
+    	<td wicket:id="connections">17</td>
+    	<td class="actions"></td>
+    </tr>
+    <tr class="even">
+    	<th scope="row"><wicket:message key="page.memory">Memory</wicket:message></th>
+    	<td wicket:id="memory">337825K</td>
+    	<td class="actions"><div class="button-group selfclear"><a href="#" wicket:id="free.memory"><wicket:message key="freeMemory">Free Memory</wicket:message></a></div></td>
+    </tr>
+    <tr class="odd">
+    	<th scope="row"><wicket:message key="jvmVersion">JVM Version</wicket:message></th>
+    	<td wicket:id="jvm.version">Sun Microsystems Inc.: 1.6.0_03</td>
+    	<td class="actions"></td>
+    </tr>
+    <tr class="even">
+    	<th scope="row"><wicket:message key="page.jaiAvailable">JAI Available</wicket:message></th>
+    	<td wicket:id="jai.available">true</td>
+    	<td class="actions"></td>
+    </tr>
+    <tr class="odd">
+    	<th scope="row"><wicket:message key="page.jaiMemMax">JAI Memory Capacity</wicket:message></th>
+    	<td wicket:id="jai.memory.available">466048K</td>
+    	<td class="actions"></td>
+    </tr>
+    <tr class="even">
+    	<th scope="row"><wicket:message key="page.jaiMemUsed">JAI Memory Used</wicket:message></th>
+    	<td wicket:id="jai.memory.used">0K</td>
+    	<td class="actions"><div class="button-group selfclear"><a href="#" wicket:id="free.memory.jai"><wicket:message key="freeMemory">Free Memory</wicket:message></a></div></td>
+    </tr>
+    <tr class="odd">
+    	<th scope="row"><wicket:message key="page.jaiMemThres">JAI Memory Threshold</wicket:message></th>
+    	<td wicket:id="jai.memory.threshold">75.0%</td>
+    	<td class="actions"></td>
+    </tr>
+    <tr class="even">
+    	<th scope="row"><wicket:message key="page.jaiTileThreads">JAI Tile Threads</wicket:message></th>
+    	<td wicket:id="jai.tile.threads">7</td>
+    	<td class="actions"></td>
+    </tr>
+    <tr class="odd">
+    	<th scope="row"><wicket:message key="page.jaiTilePrio">JAI Thread Priority</wicket:message></th>
+    	<td wicket:id="jai.tile.priority">5 (1 - Min, 5 - Normal; 10 - Max)</td>
+    	<td class="actions"></td>
+    </tr>
   </tbody>
 </table>
  
-Update Sequence: 60
+<wicket:message key="updateSequence">Update Sequence</wicket:message>: 60
 
   <div class="module-info">
     <div class="module-header selfclear">
       <h2>GeoServer</h2>
       <div class="status-bar"><span style="width: 50%;">50%</span></div>
     </div>
-    <h3>Restart Times</h3>
+    <h3><wicket:message key="timestamps">Timestamps</wicket:message></h3>
     <table>
       <tbody>
         <tr>
-          <th scope="row">Geoserver</th>
+          <th scope="row">GeoServer</th>
           <td wicket:id="reload.date.geoserver">Jul 14, 3:07 PM</td>
         </tr>
         <tr>
-          <th scope="row">Configuration</th>
+          <th scope="row"><wicket:message key="configuration">Configuration</wicket:message></th>
           <td wicket:id="reload.date.configuration">Jul 14, 3:07 PM</td>
         </tr>
         <tr>
