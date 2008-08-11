@@ -244,7 +244,7 @@ public class KMLReflector extends WMService {
 
         StringBuffer sb = new StringBuffer();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        sb.append("<kml xmlns=\"http://earth.google.com/kml/2.0\">\n");
+        sb.append("<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n");
 
         sb.append("<Folder>\n");
         
