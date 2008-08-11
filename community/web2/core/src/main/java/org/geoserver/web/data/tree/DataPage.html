@@ -14,12 +14,12 @@
 	<button wicket:id="removeChecked"><wicket:message key="removeChecked">Remove checked</wicket:message></button>
 	<button wicket:id="configureChecked"><wicket:message key="configureChecked">Configure checked</wicket:message></button> 
 </form>
-
+<div style="height:2em"/> <!-- Spacer so the data dir form doesn't overlap with the data manager buttons-->
 <form wicket:id="importForm">
   <ul>
     <li>
     <fieldset>
-      <legend><wicket:message key="page.dataDirectoryImport">Data Directory Import</wicket:message></legend>
+      <legend><span><wicket:message key="page.dataDirectoryImport">Data Directory Import</wicket:message></span></legend>
       <ul>
         <li>
           <label><wicket:message key="page.dataDirectory">Directory</wicket:message></label>
