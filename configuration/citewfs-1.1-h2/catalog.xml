@@ -10,7 +10,6 @@ parameters repository for all featuretypes it holds.
 <parameter value = "http://cite.opengeospatial.org/gmlsf" name = "namespace"  />
 <parameter value = "cite" name = "Database"  />
 <parameter value = "h2" name = "Type"  />
-<parameter value = "true" name = "Associations" />
 </connectionParams>
 </datastore>
 </datastores>
