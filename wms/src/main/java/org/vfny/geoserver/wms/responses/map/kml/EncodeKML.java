@@ -65,10 +65,10 @@ public class EncodeKML {
     /** the XML and KML header */
     private static final String KML_HEADER = 
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        + "<kml xmlns=\"http://earth.google.com/kml/2.2\" "
-        + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-        + "xsi:schemaLocation=\"http://earth.google.com/kml/2.2 "
-        + "http://code.google.com/apis/kml/schema/kml22beta.xsd\">\n";
+            + "<kml xmlns=\"http://www.opengis.net/kml/2.2\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+            + "xsi:schemaLocation=\"http://www.opengis.net/kml/2.2 "
+            + "http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd\">\n";
 
     /** the KML closing element */
     private static final String KML_FOOTER = "</kml>\n";
