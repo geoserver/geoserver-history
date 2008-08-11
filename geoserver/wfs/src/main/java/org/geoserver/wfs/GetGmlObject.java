@@ -64,12 +64,15 @@ public class GetGmlObject {
             DataStore ds = dsInfo.getDataStore();
             
             if ( ds instanceof GmlObjectStore ) {
-//                try {
-                    return ds;
-//                }
-//                catch (IOException e) {
-//                    throw new WFSException( e );
-//                }
+                try {
+                    Object obj = ((GmlObjectStore) ds).getGmlObject(id, hints);
+                    if ( obj != null ) {
+                        return obj;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                
             }
         }
         
