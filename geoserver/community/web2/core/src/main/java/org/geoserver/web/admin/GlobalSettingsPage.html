@@ -2,47 +2,46 @@
 <head></head>
 <body>
 <wicket:extend>
-<h2><wicket:message key="GlobalSettingsPage.page.title"></wicket:message></h2>
 <form wicket:id="form">
   <ul>
     <li>
-      <label for="maxFeatures">maxFeatures</label>
+      <label for="maxFeatures"><wicket:message key="page.maxFeatures">maxFeatures</wicket:message></label>
       <input id="maxFeatures" class="field text" type="text" wicket:id="maxFeatures" />
     </li>
     <li>
       <input id="verbose" class="field checkbox" type="checkbox" wicket:id="verbose" />
-      <label for="verbose" class="choice">Enable Verbose Messaging</label>
+      <label for="verbose" class="choice"><wicket:message key="page.verboseMessaging">Enable Verbose Messaging</wicket:message></label>
     </li>
     <li>
       <input id="verboseExceptions" class="field checkbox" type="checkbox" wicket:id="verboseExceptions" />
-      <label for="verboseExceptions" class="choice">Enable Verbose Exceptions</label>
+      <label for="verboseExceptions" class="choice"><wicket:message key="page.verboseExceptions">Enable Verbose Exceptions</wicket:message></label>
     </li>
     <li>
-      <label for="numDecimals">numDecimals</label>
+      <label for="numDecimals"><wicket:message key="page.numDecimals">Number of Decimals</wicket:message></label>
       <input id="numDecimals" class="field text" type="text" wicket:id="numDecimals" />
     </li>
     <li>
-      <label for="charset">charset</label>
+      <label for="charset"><wicket:message key="page.charset">Character Set</wicket:message></label>
       <input id="charset" class="field text" type="text" wicket:id="charset" />
     </li>
     <li>
-      <label for="proxyBaseUrl">proxyBaseUrl</label>
+      <label for="proxyBaseUrl"><wicket:message key="page.proxyBaseUrl">Proxy Base URL</wicket:message></label>
       <input id="proxyBaseUrl" class="field text" type="text" wicket:id="proxyBaseUrl" />
     </li>
     <li>
-      <label for="log4jConfigFile">log4jConfigFile</label>
+      <label for="log4jConfigFile"><wicket:message key="page.log4jConfigFile">Logging Profile</wicket:message></label>
       <select id="log4jConfigFile" class="field select" wicket:id="log4jConfigFile" />
     </li>
     <li>
       <input id="stdOutLogging" class="field checkbox" type="checkbox" wicket:id="stdOutLogging" />
-      <label for="stdOutLogging" class="choice">Enable logging to STDOUT</label>
+      <label for="stdOutLogging" class="choice"><wicket:message key="page.stdOutLogging">Enable logging to STDOUT</wicket:message></label>
     </li>
     <li>
-      <label for="loggingLocation">loggingLocation</label>
+      <label for="loggingLocation"><wicket:message key="page.loggingLocation">Logfile</wicket:message></label>
       <input id="loggingLocation"class="field text" type="text" wicket:id="loggingLocation" />
     </li>
     <li class="button-group selfclear">
-      <button type="submit" wicket:id="submit">Submit</button>
+      <button type="submit" wicket:id="submit"><wicket:message key="submit">submit</wicket:message></button>
     </li>
   </ul>
 </form>
