@@ -4,39 +4,26 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import com.vividsolutions.jts.geom.Envelope;
-
-import org.geoserver.ows.util.KvpUtils;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.platform.ServiceException;
-import org.geotools.styling.Style;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.vfny.geoserver.Response;
-import org.vfny.geoserver.config.WMSConfig;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.wms.requests.GetKMLReflectKvpReader;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.responses.GetMapResponse;
-import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.geoserver.platform.GeoServerExtensions;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.vfny.geoserver.Response;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.wms.requests.GetKMLReflectKvpReader;
+import org.vfny.geoserver.wms.responses.GetMapResponse;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -254,7 +241,7 @@ public class KMLReflector extends WMService {
 
         StringBuffer sb = new StringBuffer();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        sb.append("<kml xmlns=\"http://earth.google.com/kml/2.0\">\n");
+        sb.append("<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n");
 
         sb.append("<Folder>\n");
         
