@@ -194,8 +194,10 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
         throws IOException {
         int c;
 
-        while (-1 != (c = in.read())) {
-            output.write(c);
+        byte[] buffer = new byte[4 * 1024];
+
+        while (-1 != (c = in.read(buffer))) {
+            output.write(buffer,0,c);
         }
     }
 
