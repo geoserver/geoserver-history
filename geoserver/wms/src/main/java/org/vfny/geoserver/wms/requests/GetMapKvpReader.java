@@ -162,6 +162,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @task TODO: refactor this so it dont stay _so_ ugly
 	 */
 	private boolean stylesRequired = true;
+	
+	/**
+	 * Indicates whether the FORMAT parameter is required or not. Defaults to true as
+	 * per the GetMap request requires in the spec, but can be set to false for a 
+	 * GetFeatureInfo request using this parser to be permisive about the FORMAT parameter.
+	 */
+	private boolean formatRequired = true;
 
         /**
          * Creates a new GetMapKvpReader object.
@@ -474,7 +481,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 		String format = getValue("FORMAT");
 
-		if (format == null) {
+		if (format == null && isFormatRequired()) {
 			throw new WmsException("parameter FORMAT is required");
 		}
 
@@ -1837,4 +1844,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 		return sb.toString();
 	}
+
+    public boolean isFormatRequired() {
+        return formatRequired;
+    }
+
+    public void setFormatRequired(boolean formatRequired) {
+        this.formatRequired = formatRequired;
+    }
 }
