@@ -73,7 +73,6 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>1.6.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>xalan</groupId>
