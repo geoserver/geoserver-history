@@ -62,7 +62,16 @@ public class ResponseAdapter extends org.geoserver.ows.Response {
     
     public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
         Response delegate = (Response) value;
-        HashMap map = delegate.getResponseHeaders();
+        HashMap map = new HashMap();
+        if ( delegate.getContentDisposition() != null ) {
+            map.put( "Content-Disposition", delegate.getContentDisposition() );
+        }
+        
+        HashMap m = delegate.getResponseHeaders();
+        if ( m != null && !m.isEmpty() ) {
+            map.putAll( m );
+        }
+        
         if(map == null || map.isEmpty())
             return null;
         
