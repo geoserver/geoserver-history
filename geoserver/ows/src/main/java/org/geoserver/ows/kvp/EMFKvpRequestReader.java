@@ -79,8 +79,19 @@ public class EMFKvpRequestReader extends KvpRequestReader {
             String property = (String) entry.getKey();
             Object value = entry.getValue();
 
+            //respect the filter
+            if ( filter( property ) ) {
+                continue;
+            }
+            
             if (EMFUtils.has(eObject, property)) {
-                EMFUtils.set(eObject, property, value);
+                //check for a collection
+                if ( EMFUtils.isCollection(eObject, property) ) {
+                    EMFUtils.add(eObject, property, value);
+                }
+                else {
+                    EMFUtils.set(eObject, property, value);    
+                }
             }
         }
 

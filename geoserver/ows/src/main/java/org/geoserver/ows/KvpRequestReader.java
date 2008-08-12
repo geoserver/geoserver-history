@@ -9,7 +9,9 @@ import org.geotools.util.Converters;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -68,6 +70,11 @@ public class KvpRequestReader {
     private Class requestBean;
 
     /**
+     * A list of kvp names to filter.
+     */
+    protected Set<String> filter;
+    
+    /**
      * Creats the new kvp request reader.
      *
      * @param requestBean The type of the request read, not <code>null</code>
@@ -87,6 +94,30 @@ public class KvpRequestReader {
         return requestBean;
     }
 
+    /**
+     * Sets a list of kvp's to filter by.
+     * <p>
+     * This value usually does not need to be set. The only case is when a kvp 
+     * matches a property of a request object, but is not intended to be mapped
+     * to that property.  
+     * </p>
+     * @param filter A list of names to filter, null to set no filter. 
+     */
+    public void setFilter(Set<String> filter) {
+        this.filter = filter;
+    }
+    
+    /**
+     * A list of kvp's to filter.
+     * <p>
+     * See {@link #setFilter(Set)} for a better description of this property.
+     * </p>
+     * @return A list of kvp's to filter, or null for no filter.
+     */
+    public Set<String> getFilter() {
+        return filter;
+    }
+    
     /**
      * Creats a new instance of the request object.
      * <p>
@@ -128,6 +159,11 @@ public class KvpRequestReader {
             if (value == null) {
                 continue;
             }
+            
+            //check the filter
+            if ( filter(property) ) {
+                continue;
+            }
 
             Method setter = OwsUtils.setter(request.getClass(), property, value.getClass());
 
@@ -155,6 +191,26 @@ public class KvpRequestReader {
         return request;
     }
 
+    /**
+     * Determines if a kvp should be filtered based on {@link #getFilter()}.
+     *
+     * @param kvp The name of the kvp.
+     * @return true if it sould be filtered and ignored, otherwise false.
+     */
+    protected boolean filter( String kvp ) {
+        if (filter == null) {
+            return false;
+        }
+        
+        for ( String f : filter ) {
+            if ( f.equalsIgnoreCase( kvp ) ) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
     /**
      * Equals override, equality is based on {@link #getRequestBean()}
      */

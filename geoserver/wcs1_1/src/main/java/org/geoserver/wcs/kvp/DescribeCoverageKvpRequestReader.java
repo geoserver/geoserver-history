@@ -4,6 +4,8 @@
  */
 package org.geoserver.wcs.kvp;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,9 @@ public class DescribeCoverageKvpRequestReader extends EMFKvpRequestReader {
     public DescribeCoverageKvpRequestReader(Data catalog) {
         super(DescribeCoverageType.class, Wcs111Factory.eINSTANCE);
         this.catalog = catalog;
+        
+        //JD: we set a filter because the WCS 1.1 scheme people are crazy
+        filter = new HashSet( Arrays.asList("service","version","identifiers"));
     }
 
     public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
