@@ -166,7 +166,7 @@ public final class WMSContentAction extends ConfigAction {
                                 try {
                                     if (ftype.getBoundingBox() instanceof ReferencedEnvelope) {
                                         ftEnvelope = (ReferencedEnvelope) ftype.getBoundingBox();
-                                        ftEnvelope.transform(dstCRS, true);
+                                        ftEnvelope = ftEnvelope.transform(dstCRS, true);
                                     } else {
                                         // TODO Add Action Errors
                                         return mapping.findForward("config.wms.content");
