@@ -547,7 +547,14 @@
                  >
                  <forward name="success" path="/WEB-INF/pages/srsList.jsp"/>
           </action>
-          
+          <action
+                    path="/config/data/srsHelp"
+                    type="org.vfny.geoserver.action.SrsHelpAction"
+                    name="srsInfoForm"
+                    scope="request"
+                 >
+                 <forward name="success" path="/WEB-INF/pages/srsList.jsp"/>
+          </action>
           
           <!-- mapPreview -->
           
