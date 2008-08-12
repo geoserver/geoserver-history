@@ -333,7 +333,13 @@ public class DataConfig {
 
         while (i.hasNext()) {
             key = i.next();
-            styles.put(key, new StyleConfig((StyleDTO) data.getStyles().get(key)));
+            StyleDTO style = (StyleDTO) data.getStyles().get(key);
+            // Check that the SLD file exists
+            if(style.getFilename() != null) {
+                styles.put(key, new StyleConfig(style));
+            } else {
+                LOGGER.log(Level.WARNING, "Missing SLD file for : " + style.getId() + ", skipping.");
+            }
         }
     }
 
