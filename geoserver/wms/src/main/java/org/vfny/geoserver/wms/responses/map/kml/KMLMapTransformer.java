@@ -3,6 +3,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -114,6 +115,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         // add default freemarker ones first since they are likely to be used
         // first, the order of this list matters.
 
+        dtformats.add(DateFormat.getDateTimeInstance());
         dtformats.add(FeatureTemplate.DATETIME_FORMAT);
         addFormats(dtformats, "dd%MM%yy hh:mm:ss");
         addFormats(dtformats, "MM%dd%yy hh:mm:ss");
@@ -129,6 +131,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         addFormats(dtformats, "MMM%dd%yy hh:mm");
         // addFormats(formats,"yy%MMM%dd hh:mm" );
 
+        dformats.add(DateFormat.getDateInstance());
         dformats.add(FeatureTemplate.DATE_FORMAT);
         addFormats(dformats, "dd%MM%yy");
         addFormats(dformats, "MM%dd%yy");
@@ -137,6 +140,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         addFormats(dformats, "MMM%dd%yy");
         // addFormats(formats,"yy%MMM%dd" );
 
+        tformats.add(DateFormat.getTimeInstance());
         tformats.add(FeatureTemplate.TIME_FORMAT);
     }
 
