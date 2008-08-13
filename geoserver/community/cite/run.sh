@@ -12,8 +12,12 @@ ctl=""
 if [ -e tests/$service/$version/ets/ctl/main.xml ]; then
   ctl=main.xml
 else 
-  if [ -e tests/$service/$version/ets/ctl/$service.xml ]; then
-    ctl=$service.xml
+  if [ -e tests/$service/$version/ets/ctl/main.ctl ]; then
+    ctl=main.ctl
+  else 
+    if [ -e tests/$service/$version/ets/ctl/$service.xml ]; then
+      ctl=$service.xml
+    fi
   fi
 fi
 
