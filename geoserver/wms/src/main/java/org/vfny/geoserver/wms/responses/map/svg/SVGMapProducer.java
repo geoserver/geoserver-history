@@ -17,10 +17,10 @@ import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 /**
  * Handles a GetMap request that spects a map in SVG format.
  * 
- * @author Gabriel Rold?n
+ * @author Gabriel Roldan
  * @version $Id$
  */
-public class SVGMapProducer extends AbstractGetMapProducer implements
+class SVGMapProducer extends AbstractGetMapProducer implements
 		GetMapProducer {
 	/** DOCUMENT ME! */
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
@@ -28,6 +28,10 @@ public class SVGMapProducer extends AbstractGetMapProducer implements
 	/** DOCUMENT ME! */
 	private EncodeSVG svgEncoder;
 
+	public SVGMapProducer(String formatName, String mimeType){
+	    super(formatName, mimeType);
+	}
+	
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -36,27 +40,6 @@ public class SVGMapProducer extends AbstractGetMapProducer implements
 	 */
 	public void abort(Service gs) {
 		this.svgEncoder.abort();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param gs
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public String getContentType() {
-		return SvgMapProducerFactory.MIME_TYPE;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public String getContentEncoding() {
-		return null;
 	}
 
 	/**
@@ -101,10 +84,5 @@ public class SVGMapProducer extends AbstractGetMapProducer implements
 	 */
 	public void writeTo(OutputStream out) throws ServiceException, IOException {
 		this.svgEncoder.encode(out);
-	}
-
-	public String getContentDisposition() {
-		// can be null
-		return null;
 	}
 }

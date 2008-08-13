@@ -35,6 +35,9 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 
 	private final static ImageWriterSpi writerSPI = new TIFFImageWriterSpi();
 
+	/** the only MIME type this map producer supports */
+    static final String MIME_TYPE = "image/tiff";
+
 	/**
 	 * Creates a {@link GetMapProducer} to encode the {@link RenderedImage}
 	 * generated in <code>outputFormat</code> format.
@@ -42,8 +45,8 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 	 * @param outputFormat
 	 *            the output format.
 	 */
-	public TiffMapProducer(String outputFormat, String mime, WMS wms) {
-		super(outputFormat, mime, wms);
+	public TiffMapProducer(String outputFormat, WMS wms) {
+		super(outputFormat, MIME_TYPE, wms);
 	}
 
 	/**

@@ -106,16 +106,16 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
         throws IllegalArgumentException {
         if (wms != null) {
             if (WMSConfig.SVG_SIMPLE.equals(wms.getSvgRenderer())) {
-                return new SVGMapProducer();
+                return new SVGMapProducer(mapFormat, MIME_TYPE);
             }
 
             if (WMSConfig.SVG_BATIK.equals(wms.getSvgRenderer())) {
-                return new SVGBatikMapProducer(wms);
+                return new SVGBatikMapProducer(mapFormat, MIME_TYPE, wms);
             }
         }
 
         //do the default
-        return new SVGMapProducer();
+        return new SVGMapProducer(mapFormat, MIME_TYPE);
     }
 
     /* (non-Javadoc)

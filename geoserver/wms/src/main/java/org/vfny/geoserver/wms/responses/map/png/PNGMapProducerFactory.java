@@ -105,7 +105,7 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
 					.append(" not supported by this map producer").toString());
 		}
 
-		return new PNGMapProducer(mapFormat, MIME_TYPE, wms);
+		return new PNGMapProducer(mapFormat, wms);
 	}
 
 	/*

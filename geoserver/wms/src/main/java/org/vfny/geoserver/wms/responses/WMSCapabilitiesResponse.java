@@ -8,12 +8,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
@@ -22,6 +29,8 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
+import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.helpers.WMSCapsTransformer;
 
@@ -33,7 +42,7 @@ import org.vfny.geoserver.wms.responses.helpers.WMSCapsTransformer;
  * service itself and specific information about the available maps.
  * </p>
  *
- * @author Gabriel Roldan, Axios Engineering
+ * @author Gabriel Roldan (Axios Engineering, TOPP)
  * @version $Id$
  */
 public class WMSCapabilitiesResponse implements Response {
@@ -50,13 +59,42 @@ public class WMSCapabilitiesResponse implements Response {
     /**
      * List of formats accessible via a GetMap request.
      */
-    private Set formats;
+    private Set<String> formats;
     private ApplicationContext applicationContext;
 
-    public WMSCapabilitiesResponse(Set wmsGetMapFormats, ApplicationContext applicationContext) {
-        this.formats = wmsGetMapFormats;
+    public WMSCapabilitiesResponse(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+        this.formats = loadImageFormats(applicationContext);
     }
+    
+    /**
+     * Grabs the list of available MIME-Types for the GetMap operation from the 
+     * set of {@link GetMapProducer}s registered in the application context.
+     * 
+     * @param applicationContext
+     *            The application context where to grab the GetMapProducers from.
+     * @see GetMapProducer#getContentType()
+     */
+    private static Set<String> loadImageFormats(final ApplicationContext applicationContext) {
+        final Collection<GetMapProducer> producers = GeoServerExtensions.extensions(GetMapProducer.class);
+        final Set<String> formats = new HashSet<String>();
+
+        for (GetMapProducer producer : producers) {
+            formats.add(producer.getOutputFormat());
+        }
+
+        return formats;
+
+//        final Collection<GetMapProducerFactorySpi> producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class);
+//        final Set<String> formats = new HashSet<String>();
+//
+//        for (GetMapProducerFactorySpi producer : producers) {
+//            formats.addAll(producer.getSupportedFormats());
+//        }
+//
+//        return formats;
+    }
+    
 
     /**
     * Returns any extra headers that this service might want to set in the HTTP response object.

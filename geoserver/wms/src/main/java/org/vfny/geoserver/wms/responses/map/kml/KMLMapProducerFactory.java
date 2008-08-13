@@ -112,7 +112,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         if (canProduce(mapFormat)) {
-            return new KMLMapProducer(mapFormat, MIME_TYPE);
+            return new KMLMapProducer();
         }
 
         throw new IllegalArgumentException("Unable to produce format " + mapFormat);

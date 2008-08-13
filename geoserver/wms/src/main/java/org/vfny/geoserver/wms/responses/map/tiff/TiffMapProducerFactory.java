@@ -95,7 +95,7 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
 					+ " format");
 		}
 
-		return new TiffMapProducer(mapFormat, MIME_TYPE, wms);
+		return new TiffMapProducer(mapFormat, wms);
 	}
 
 	/*

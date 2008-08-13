@@ -22,7 +22,7 @@ public class GeoRSSMapProducerFactory implements GetMapProducerFactorySpi {
     
     static {
         formats.add(AtomGeoRSSMapProducer.MIME_TYPE);
-        formats.add(RSSGeoRSSMapProducer.MIME_TYPE);
+        formats.add(RSSGeoRSSMapProducer.MIME_TYPE2);
         
         aliases.addAll(AtomGeoRSSMapProducer.FORMATS);
         aliases.addAll(RSSGeoRSSMapProducer.FORMATS);
@@ -39,12 +39,12 @@ public class GeoRSSMapProducerFactory implements GetMapProducerFactorySpi {
         throws IllegalArgumentException {
         if (AtomGeoRSSMapProducer.MIME_TYPE.equals(mapFormat)
                 || AtomGeoRSSMapProducer.FORMATS.contains(mapFormat)) {
-            return new AtomGeoRSSMapProducer();
+            return new AtomGeoRSSMapProducer(mapFormat);
         }
 
-        if (RSSGeoRSSMapProducer.MIME_TYPE.equals(mapFormat)
+        if (RSSGeoRSSMapProducer.MIME_TYPE2.equals(mapFormat)
                 || RSSGeoRSSMapProducer.FORMATS.contains(mapFormat)) {
-            return new RSSGeoRSSMapProducer();
+            return new RSSGeoRSSMapProducer(mapFormat);
         }
 
         return null;

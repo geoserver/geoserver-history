@@ -604,13 +604,13 @@ public class GetMapResponse implements Response {
 	 */
 	private GetMapProducer getDelegate(String outputFormat, WMS wms)
 			throws WmsException {
-		final Collection producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class, applicationContext);	
+		final Collection<GetMapProducer> producers = GeoServerExtensions.extensions(GetMapProducer.class, applicationContext);	
 
-		for (Iterator iter = producers.iterator(); iter.hasNext();) {
-			final GetMapProducerFactorySpi factory = (GetMapProducerFactorySpi) iter.next();
-
-			if (factory.canProduce(outputFormat)) {
-				return factory.createMapProducer(outputFormat, wms);
+		String producerFormat;
+		for (GetMapProducer producer : producers) {
+			producerFormat = producer.getOutputFormat();
+		    if (producerFormat.equals(outputFormat)) {
+				return producer;
 			}
 		}
 
@@ -620,42 +620,7 @@ public class GetMapResponse implements Response {
 		e.setCode("InvalidFormat");
 		throw e;
 	}
-
-	/**
-	 * Convenient mehtod to inspect the available
-	 * <code>GetMapProducerFactorySpi</code> and return the set of all the map
-	 * formats' MIME types that the producers can handle
-	 * 
-	 * @return a Set&lt;String&gt; with the supported mime types.
-	 * @deprecated seems not to be used
-	 */
-	public Set getMapFormats() {
-		Set wmsGetMapFormats = loadImageFormats(applicationContext);
-
-		return wmsGetMapFormats;
-	}
-
-	/**
-	 * Convenience method for processing the GetMapProducerFactorySpi extension
-	 * point and returning the set of available image formats.
-	 * 
-	 * @param applicationContext
-	 *            The application context.
-	 * 
-	 */
-	public static Set loadImageFormats(ApplicationContext applicationContext) {
-		final Collection producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class);
-		final Set formats = new HashSet();
-
-		for (Iterator iter = producers.iterator(); iter.hasNext();) {
-			final GetMapProducerFactorySpi producer = (GetMapProducerFactorySpi) iter
-					.next();
-			formats.addAll(producer.getSupportedFormats());
-		}
-
-		return Collections.unmodifiableSet(formats);
-	}
-
+	
 	public String getContentDisposition() {
 		return headerContentDisposition;
 	}

@@ -69,7 +69,7 @@ public class GeoTiffMapProducerFactory implements GetMapProducerFactorySpi {
             throw new IllegalArgumentException(mapFormat + " not supported by this map producer");
         }
 
-        return new GeoTiffMapProducer(mapFormat, MIME_TYPE, wms);
+        return new GeoTiffMapProducer(mapFormat, wms);
     }
 
     /*

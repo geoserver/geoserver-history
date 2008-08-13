@@ -34,7 +34,7 @@ public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
                     " not supported by this map producer").toString());
         }
 
-        return new JPEGMapProducer(MIME_TYPE, wms);
+        return new JPEGMapProducer(wms);
     }
 
     public JPEGMapProducerFactory() {

@@ -117,7 +117,7 @@ public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
 					+ " not supported by this map producer");
 		}
 
-		return new PDFMapProducer(mapFormat, MIME_TYPE);
+		return new PDFMapProducer();
 	}
 
 	/*

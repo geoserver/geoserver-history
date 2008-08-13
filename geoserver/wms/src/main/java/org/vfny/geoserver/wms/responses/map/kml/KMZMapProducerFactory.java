@@ -103,7 +103,7 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
 	public GetMapProducer createMapProducer(String mapFormat, WMS wms)
 			throws IllegalArgumentException {
 		if (canProduce(mapFormat)) {
-			return new KMZMapProducer(mapFormat, MIME_TYPE, wms);
+			return new KMZMapProducer(wms);
 		}
 
 		throw new IllegalArgumentException("Unable to produce format "

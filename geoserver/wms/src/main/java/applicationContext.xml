@@ -266,52 +266,128 @@
 	<!--  
 		Map producers
 	 -->
-	<!-- bean id="PNGMapProducer" 
+	<bean id="PNG24MapProducer"
+		singleton="false"
 		class="org.vfny.geoserver.wms.responses.map.png.PNGMapProducer">
-	</bean-->
+		<constructor-arg index="0" value="image/png" />
+		<constructor-arg index="1" ref="wms"/>
+	</bean>
+	<bean id="PNG8MapProducer" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.png.PNGMapProducer">
+		<constructor-arg index="0" value="image/png8" />
+		<constructor-arg index="1" ref="wms"/>
+	</bean>
 
-	<!--  
-		Map producer factories
-	 -->
-	<bean id="PNGMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.png.PNGMapProducerFactory">
+	<bean id="GeoTiff24MapProducer" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.geotiff.GeoTiffMapProducer">
+		<constructor-arg index="0" value="image/geotiff" />
+		<constructor-arg index="1" ref="wms"/>
 	</bean>
-	<bean id="GeoTiffMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.geotiff.GeoTiffMapProducerFactory">
+	<bean id="GeoTiff8MapProducer" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.geotiff.GeoTiffMapProducer">
+		<constructor-arg index="0" value="image/geotiff8" />
+		<constructor-arg index="1" ref="wms"/>
 	</bean>
-   	 <bean id="TiffMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.tiff.TiffMapProducerFactory">
+
+   	<bean id="Tiff24MapProducer" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.tiff.TiffMapProducer">
+		<constructor-arg index="0" value="image/tiff" />
+		<constructor-arg index="1" ref="wms"/>
+ 	</bean>
+   	<bean id="Tiff8MapProducer" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.tiff.TiffMapProducer">
+		<constructor-arg index="0" value="image/tiff8" />
+		<constructor-arg index="1" ref="wms"/>
+ 	</bean>
+
+	<bean id="GIFMapProducer" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.gif.GIFMapProducer">
+		<constructor-arg index="0" ref="wms"/>
 	</bean>
-	<bean id="SVGMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.svg.SvgMapProducerFactory">
-	</bean>
-	
-	<bean id="GIFMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.gif.GifMapProducerFactory">
-	</bean>
-	
-	<bean id="KMLMapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory">
-	</bean>
-	
-	<bean id="KMZMapProducerFactory"
-		class="org.vfny.geoserver.wms.responses.map.kml.KMZMapProducerFactory">
+
+	<bean id="JPEGMapProducer"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.jpeg.JPEGMapProducer">
+		<constructor-arg index="0" ref="wms"/>
 	</bean>
 	
 	<bean id="PDFMapProducerFactory"
-		class="org.vfny.geoserver.wms.responses.map.pdf.PDFMapProducerFactory">
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.pdf.PDFMapProducer">
 	</bean>
 	
-	<bean id="JPEGMapProducerFactory"
-		class="org.vfny.geoserver.wms.responses.map.jpeg.JPEGMapProducerFactory">
+	<bean id="KMLMapProducer" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.kml.KMLMapProducer">
 	</bean>
 	
-	<bean id="OpenLayersMapProducerFactory"
-		class="org.vfny.geoserver.wms.responses.map.openlayers.OpenLayersMapProducerFactory">
+	<bean id="KMZMapProducer"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.kml.KMZMapProducer">
+		<constructor-arg index="0" ref="wms"/>
+	</bean>
+	
+	<bean id="OpenLayersMapProducer"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.openlayers.OpenLayersMapProducer">
+		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
-	<bean id="GeoRSSMapProducerFactory"
-		class="org.vfny.geoserver.wms.responses.map.georss.GeoRSSMapProducerFactory">
+	<bean id="AtomGeoRSSMapProducer"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.georss.AtomGeoRSSMapProducer">
+		<constructor-arg index="0" value="application/atom+xml"/>
+	</bean>
+	<bean id="AtomGeoRSSMapProducer_Alias1"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.georss.AtomGeoRSSMapProducer">
+		<constructor-arg index="0" value="atom"/>
+	</bean>
+	<bean id="AtomGeoRSSMapProducer_Alias2"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.georss.AtomGeoRSSMapProducer">
+		<constructor-arg index="0" value="application/atom xml"/>
+	</bean>
+
+	<bean id="RSSGeoRSSMapProducer"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.georss.RSSGeoRSSMapProducer">
+		<constructor-arg index="0" value="application/rss+xml"/>
+	</bean>
+	<bean id="RSSGeoRSSMapProducer_Alias1"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.georss.RSSGeoRSSMapProducer">
+		<constructor-arg index="0" value="rss"/>
+	</bean>
+	<bean id="RSSGeoRSSMapProducer_Alias2"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.georss.RSSGeoRSSMapProducer">
+		<constructor-arg index="0" value="application/rss xml"/>
+	</bean>
+
+	<bean id="SVGMapProducer" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.svg.SvgMapProducerProxy">
+		<constructor-arg index="0" value="image/svg+xml" />
+		<constructor-arg index="1" ref="wms"/>
+	</bean>
+	<bean id="SVGMapProducer_Alias1" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.svg.SvgMapProducerProxy">
+		<constructor-arg index="0" value="image/svg xml" />
+		<constructor-arg index="1" ref="wms"/>
+	</bean>
+	<bean id="SVGMapProducer_Alias2" 
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.svg.SvgMapProducerProxy">
+		<constructor-arg index="0" value="image/svg" />
+		<constructor-arg index="1" ref="wms"/>
 	</bean>
 	
 	<!--  kml service stuff -->
