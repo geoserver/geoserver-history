@@ -49,12 +49,12 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
         GetMapRequest request = map.getRequest();
 
         String geometryEncoding = (String)request.getFormatOptions().get("encoding");
-        if ("simple".equals(geometryEncoding)){
-            tx.setGeometryEncoding(GeoRSSTransformerBase.GeometryEncoding.SIMPLE);
+        if ("gml".equals(geometryEncoding)){
+            tx.setGeometryEncoding(GeoRSSTransformerBase.GeometryEncoding.GML);
         } else if ("latlong".equals(geometryEncoding)){
             tx.setGeometryEncoding(GeoRSSTransformerBase.GeometryEncoding.LATLONG);
         } else {
-            tx.setGeometryEncoding(GeoRSSTransformerBase.GeometryEncoding.GML);
+            tx.setGeometryEncoding(GeoRSSTransformerBase.GeometryEncoding.SIMPLE);
         }
 
         WMS wms = request.getWMS();
