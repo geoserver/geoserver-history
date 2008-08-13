@@ -4,6 +4,8 @@
  */
 package org.geoserver.template;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.AbstractMap;
 import java.util.Date;
@@ -139,6 +141,12 @@ public class FeatureWrapper extends BeansWrapper {
             return "";
         }
         if (o instanceof Date) {
+            if ( o instanceof Timestamp ) {
+                return DateFormat.getDateTimeInstance().format((Date)o);
+            }
+            if ( o instanceof Time ) {
+                return DateFormat.getTimeInstance().format((Date)o);
+            }
             return DateFormat.getInstance().format((Date) o);
         }
         if (o instanceof Boolean) {
