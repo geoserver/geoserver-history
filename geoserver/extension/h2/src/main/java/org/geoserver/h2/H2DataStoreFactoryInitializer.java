@@ -1,4 +1,4 @@
-package org.geoserver;
+package org.geoserver.h2;
 
 import org.geoserver.data.DataStoreFactoryInitializer;
 import org.geoserver.platform.GeoServerResourceLoader;

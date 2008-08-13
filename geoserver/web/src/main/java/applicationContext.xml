@@ -31,11 +31,6 @@
     </property>
   </bean>
   
-  <!-- h2 datastore initialier -->
-  <bean id="h2DataStoreFactoryInitializer" class="org.geoserver.H2DataStoreFactoryInitializer">
-    <property name="resourceLoader" ref="resourceLoader"/>
-  </bean>
-  
   <!-- logging initializer -->
   <bean id="loggingInitializer" class="org.geoserver.logging.LoggingInitializer">
     <property name="resourceLoader" ref="resourceLoader"/>

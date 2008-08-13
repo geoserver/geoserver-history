@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+  <!-- h2 datastore initialier -->
+  <bean id="h2DataStoreFactoryInitializer" class="org.geoserver.h2.H2DataStoreFactoryInitializer">
+    <property name="resourceLoader" ref="resourceLoader"/>
+  </bean>
+
+</beans>
