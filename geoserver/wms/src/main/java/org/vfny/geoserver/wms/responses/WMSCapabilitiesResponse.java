@@ -79,15 +79,6 @@ public class WMSCapabilitiesResponse implements Response {
         }
 
         return formats;
-
-//        final Collection<GetMapProducerFactorySpi> producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class);
-//        final Set<String> formats = new HashSet<String>();
-//
-//        for (GetMapProducerFactorySpi producer : producers) {
-//            formats.addAll(producer.getSupportedFormats());
-//        }
-//
-//        return formats;
     }
     
 
