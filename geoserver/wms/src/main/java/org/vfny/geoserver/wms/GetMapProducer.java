@@ -89,7 +89,7 @@ public interface GetMapProducer {
 
     /**
      * Sets the MIME Type to be used for this {@link GetMapProducer}.
-     *
+     * @deprecated should be a read only property
      */
     public void setContentType(String mime);
 
@@ -97,6 +97,7 @@ public interface GetMapProducer {
      * Gets the output map type of the output image.
      *
      * @return the desired output map format.
+     * @deprecated same as {@link #getContentType()}
      */
     public String getOutputFormat();
 
@@ -105,6 +106,7 @@ public interface GetMapProducer {
      *
      * @param format
      *            the desired output map format.
+     * @deprecated non sense
      */
     public void setOutputFormat(String format);
 
