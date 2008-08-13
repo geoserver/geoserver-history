@@ -36,15 +36,16 @@
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt-h2</artifactId>
-  </dependency>
-  <dependency>
-   <groupId>org.geotools</groupId>
    <artifactId>gt-property</artifactId>
   </dependency>
   <dependency>
    <groupId>org.geotools.xsd</groupId>
    <artifactId>gt-xsd-gml2</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-jdbc</artifactId>
+    <scope>test</scope> 
   </dependency>
   <dependency>
    <groupId>junit</groupId>

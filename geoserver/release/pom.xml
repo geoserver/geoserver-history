@@ -129,6 +129,11 @@
 			<artifactId>gwc</artifactId>
 			<version>0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.geoserver.extension</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.7.0-SNAPSHOT</version>
+		</dependency>
   </dependencies>
 
 	<build>
