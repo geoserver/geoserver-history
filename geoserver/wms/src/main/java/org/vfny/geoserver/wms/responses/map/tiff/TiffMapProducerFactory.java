@@ -19,6 +19,7 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
  * @author Simone Giannecchini
  * @since .1.4.x
  * @version $Id$
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
  */
 public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
 	/** the only MIME type this map producer supports */

@@ -19,6 +19,7 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $
  * @version $Id$
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
  */
 public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
 	/**

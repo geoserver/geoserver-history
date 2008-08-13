@@ -11,7 +11,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
+/**
+ * 
+ * @version $Id$
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
+ */
 public class GeoRSSMapProducerFactory implements GetMapProducerFactorySpi {
     static Set formats = new HashSet();
     static Set aliases = new HashSet();

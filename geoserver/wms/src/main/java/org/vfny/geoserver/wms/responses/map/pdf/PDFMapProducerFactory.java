@@ -19,6 +19,7 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
  * @author Pierre-Emmanuel Balageas, ALCER (http://www.alcer.com)
  * @author Simone Giannecchini - GeoSolutions
  * @version $Id$
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
  */
 public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
 	/** the only MIME type this map producer supports */

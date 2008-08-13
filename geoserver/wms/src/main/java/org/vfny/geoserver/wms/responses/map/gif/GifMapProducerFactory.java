@@ -18,6 +18,7 @@ import java.util.Set;
  * @author Didier Richard, IGN-F *
  * @author Simone Giannechini
  * @version $Id$
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
  */
 public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */

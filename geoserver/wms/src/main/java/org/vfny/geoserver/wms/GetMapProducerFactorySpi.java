@@ -68,6 +68,7 @@ import java.util.Set;
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
  */
 public interface GetMapProducerFactorySpi extends Factory {
     /**

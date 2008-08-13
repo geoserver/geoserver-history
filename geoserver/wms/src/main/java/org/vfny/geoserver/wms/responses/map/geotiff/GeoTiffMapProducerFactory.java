@@ -16,6 +16,7 @@ import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
  * {@link GetMapProducerFactorySpi} for producing images in geotiff format.
  *
  * @author Simone Giannecchini, GeoSolutions
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
  */
 public class GeoTiffMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */

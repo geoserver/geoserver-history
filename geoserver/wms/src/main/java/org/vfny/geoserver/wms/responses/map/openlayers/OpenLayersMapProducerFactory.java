@@ -11,7 +11,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-
+/**
+ * 
+ * @version $Id$
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
+ */
 public class OpenLayersMapProducerFactory implements GetMapProducerFactorySpi {
     public OpenLayersMapProducerFactory() {
 	}

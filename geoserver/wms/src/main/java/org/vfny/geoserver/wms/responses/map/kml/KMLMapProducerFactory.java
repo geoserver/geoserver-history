@@ -18,6 +18,7 @@ import java.util.Set;
  * new format producers to be plugged in.
  *
  * @version $Id$
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
  */
 public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
     /**

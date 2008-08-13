@@ -17,6 +17,7 @@ import java.util.Set;
  *
  * @author Simone Giannecchini
  * @since 1.4.x
+ * @deprecated to be removed and register the GetMapProducers directly through spring context
  */
 public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */
