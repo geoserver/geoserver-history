@@ -10,15 +10,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-
 
 public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
     public Translator createTranslator(ContentHandler handler) {
@@ -38,17 +39,18 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
             start("feed");
 
             //title
-            element("title", map.getTitle());
+            element("title", AtomUtils.getFeedTitle(map));
 
-            //link
-            //TODO: make getFeature request
+            //TODO: Revist URN scheme
+            element("id", AtomUtils.getFeedURI(map));
+
             AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute(null, "href", "href", null, "http://localhost...");
+            atts.addAttribute(null, "href", "href", null, AtomUtils.getFeedURL(map));
+            atts.addAttribute(null, "rel", "rel", null, "self");
             element("link", null, atts);
 
             //updated
-            //TODO: proper xml encoding of date
-            element("updated", new Date().toString());
+            element("updated", AtomUtils.dateToRFC3339(new Date()));
 
             //entries
             try {
@@ -73,7 +75,7 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
                     while (iterator.hasNext()) {
                         SimpleFeature feature = iterator.next();
                         try {
-                            encodeEntry(feature);
+                            encodeEntry(feature, map);
                         }
                         catch( Exception e ) {
                             LOGGER.warning("Encoding failed for feature: " + feature.getID());
@@ -90,27 +92,33 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
             
         }
 
-        void encodeEntry(SimpleFeature feature) {
+        void encodeEntry(SimpleFeature feature, WMSMapContext map) {
             start("entry");
 
             //title
             element("title", feature.getID());
 
-            //link
-            //TODO: make getFeature with fid filter
-            AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute(null, "href", "href", null, "http://localhost...");
-            element("link", null, atts);
+            start("author");
+            element("name", map.getRequest().getGeoServer().getContactPerson());
+            end("author");
 
             //id
-            element("id", feature.getID());
+            element("id", AtomUtils.getEntryURI(feature, map));
+
+            AttributesImpl atts = new AttributesImpl();
+            atts.addAttribute(null, "href", "href", null, 
+                    AtomUtils.getEntryURL(feature, map)
+            );
+            atts.addAttribute(null, "rel", "rel", null, "self");
+            element("link", null, atts);
 
             //updated
-            //TODO: proper xml encoding of date
-            element("updated", new Date().toString());
+            element("updated", AtomUtils.dateToRFC3339(new Date()));
 
             //content
-            element("content", "some content");
+            atts = new AttributesImpl();
+            atts.addAttribute(null, "type", "type", null, "html");
+            element("content", AtomUtils.getFeatureDescription(feature), atts);
 
             //where
             start("georss:where");
