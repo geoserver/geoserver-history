@@ -94,10 +94,16 @@ public interface GetMapProducer {
     public void setContentType(String mime);
 
     /**
-     * Gets the output map type of the output image.
+     * Gets the name of the output format this map producer creates, 
+     * as shown in the capabilities document.
+     * <p>
+     * Note it may differ from the MIME-Type set as the HTTP response
+     * header. For example, the capabilities advertised output format
+     * name may be "image/png8" but the actual mime type written down
+     * as an HTTP header be just "image/png"
+     * </p>
      *
      * @return the desired output map format.
-     * @deprecated same as {@link #getContentType()}
      */
     public String getOutputFormat();
 
