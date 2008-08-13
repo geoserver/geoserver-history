@@ -25,7 +25,7 @@ import org.vfny.geoserver.wms.WmsException;
  */
 public class SvgMapProducerProxy implements GetMapProducer {
 
-    private static final String MIME_TYPE = "image/svg+xml";
+    static final String MIME_TYPE = "image/svg+xml";
 
     /**
      * The actual SVG map producer to use depending on the

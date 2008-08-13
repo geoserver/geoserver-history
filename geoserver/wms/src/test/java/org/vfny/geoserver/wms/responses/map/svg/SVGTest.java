@@ -27,7 +27,7 @@ public class SVGTest extends WMSTestSupport {
         getWMS().setSvgRenderer(WMSConfig.SVG_SIMPLE);
             Document doc = getAsDOM(
                 "wms?request=getmap&service=wms&version=1.1.1" + 
-                "&format=" + SvgMapProducerFactory.MIME_TYPE + 
+                "&format=" + SvgMapProducerProxy.MIME_TYPE + 
                 "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() + 
                 "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
                 "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
@@ -52,7 +52,7 @@ public class SVGTest extends WMSTestSupport {
         getWMS().setSvgRenderer(WMSConfig.SVG_BATIK);
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + SvgMapProducerFactory.MIME_TYPE + 
+            "&format=" + SvgMapProducerProxy.MIME_TYPE + 
             "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  

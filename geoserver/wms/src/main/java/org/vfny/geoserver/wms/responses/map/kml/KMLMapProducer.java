@@ -26,7 +26,7 @@ import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
  * 
  * @author James Macgill
  */
-class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
+public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	/** standard logger */
 	protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.kml");
 

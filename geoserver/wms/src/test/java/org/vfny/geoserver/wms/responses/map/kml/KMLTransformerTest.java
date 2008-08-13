@@ -239,8 +239,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         mapContext.setMapWidth(1024);
 
         // create the map producer
-        KMZMapProducer mapProducer = (KMZMapProducer) new KMZMapProducerFactory()
-                .createMapProducer(KMZMapProducerFactory.MIME_TYPE, getWMS());
+        KMZMapProducer mapProducer = new KMZMapProducer(getWMS());
         mapProducer.setMapContext(mapContext);
         mapProducer.produceMap();
 
