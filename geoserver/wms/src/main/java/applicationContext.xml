@@ -266,9 +266,9 @@
 	<!--  
 		Map producers
 	 -->
-	<bean id="PNGMapProducer" 
+	<!-- bean id="PNGMapProducer" 
 		class="org.vfny.geoserver.wms.responses.map.png.PNGMapProducer">
-	</bean>
+	</bean-->
 
 	<!--  
 		Map producer factories
