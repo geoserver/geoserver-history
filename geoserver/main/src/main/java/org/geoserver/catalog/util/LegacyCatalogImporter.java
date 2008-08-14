@@ -156,7 +156,9 @@ public class LegacyCatalogImporter {
             try {
                 ftInfoReader.read(ftInfoFile);
                 FeatureTypeInfo featureType = readFeatureType(ftInfoReader);
-                
+                if ( featureType == null ) {
+                    continue;
+                }
                 catalog.add(featureType);
                 
                 LOGGER.info( "Loaded feature type '" + featureType.getPrefixedName() + "'" );
@@ -214,6 +216,9 @@ public class LegacyCatalogImporter {
                 cInfoReader.read(cInfoFile);
     
                 CoverageInfo coverage = readCoverage(cInfoReader);
+                if ( coverage == null ) {
+                    continue;
+                }
                 catalog.add(coverage);
     
                 // create a wms layer for the feature type
@@ -415,7 +420,7 @@ public class LegacyCatalogImporter {
         if ( dataStore == null ) {
             LOGGER.warning( "Ignoring feature type: '" + ftInfoReader.parentDirectoryName()
                 + "', data store '" + dataStoreName + "'  not found");
-            featureType.setEnabled(false);
+            return null;
         }
         featureType.setStore(dataStore);
         
@@ -509,8 +514,8 @@ public class LegacyCatalogImporter {
         }
         
         // link to namespace
-        String prefix = catalog.getDataStore(dataStoreName).getWorkspace().getId();
-        featureType.setNamespace(catalog.getNamespaceByPrefix(prefix));
+        String prefix = dataStore.getWorkspace().getId();
+        featureType.setNamespace(catalog.getNamespaceByPrefix(prefix));    
         
         return featureType;
     }
