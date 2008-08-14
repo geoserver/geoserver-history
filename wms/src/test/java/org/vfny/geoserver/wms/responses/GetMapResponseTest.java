@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -28,16 +27,18 @@ import com.vividsolutions.jts.geom.Envelope;
 /**
  * Unit test for {@link GetMapResponse}
  * <p>
- * Trying to mock up collaborators lead to 3 direct ones needing to be mocked up, plus {@link WMS}
- * obtained from this test super class. Smells like too much coupling to me, though I'm not going to
- * change that until we have a plan to get rid of the old {@link Response} stuff in favor of the new
- * dispatching system, for which GetMapResponse is being adapted right now ({@link ResponseAdapter})
+ * Trying to mock up collaborators lead to 3 direct ones needing to be mocked
+ * up, plus {@link WMS} obtained from this test super class. Smells like too
+ * much coupling to me, though I'm not going to change that until we have a plan
+ * to get rid of the old {@link Response} stuff in favor of the new dispatching
+ * system, for which GetMapResponse is being adapted right now ({@link ResponseAdapter})
  * </p>
  * 
  * @author Gabriel Roldan (TOPP)
  * @version $Id$
  * @since 2.5.x
- * @source $URL$
+ * @source $URL:
+ *         https://svn.codehaus.org/geoserver/branches/1.7.x/geoserver/wms/src/test/java/org/vfny/geoserver/wms/responses/GetMapResponseTest.java $
  */
 public class GetMapResponseTest extends WMSTestSupport {
     final String mockMapFormat = "mockMapFormat";
@@ -45,8 +46,6 @@ public class GetMapResponseTest extends WMSTestSupport {
     private GetMapResponse response;
 
     ApplicationContext mockContext;
-
-    GetMapProducerFactorySpi mockFact;
 
     RasterMapProducer mockProducer;
 
@@ -76,7 +75,8 @@ public class GetMapResponseTest extends WMSTestSupport {
     }
 
     /**
-     * Test method for {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
+     * Test method for
+     * {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
      */
     public void testExecuteWrongOutputFormat() {
         response = new GetMapResponse(getWMS(), super.applicationContext);
@@ -92,39 +92,36 @@ public class GetMapResponseTest extends WMSTestSupport {
     }
 
     /**
-     * Sets up the mocked up collaborators for an GetMapResponse.execute call. Note the use of
-     * EasyMock.expect(...).anyTimes(). Depending on whether a single test case or the whole test
-     * suite is being ran, since the number of MapProduces factories returned will differ in both
-     * cases when GeoServerExtensions.extensions(MapProducerFactorySpi.class) is called by
+     * Sets up the mocked up collaborators for an GetMapResponse.execute call.
+     * Note the use of EasyMock.expect(...).anyTimes(). Depending on whether a
+     * single test case or the whole test suite is being ran, since the number
+     * of MapProduces factories returned will differ in both cases when
+     * GeoServerExtensions.extensions(MapProducerFactorySpi.class) is called by
      * GetMapResponse.execute
      */
     private void setUpMocksForExecute() {
         final WMS wms = getWMS();
 
         mockContext = EasyMock.createMock(ApplicationContext.class);
-        mockFact = EasyMock.createMock(GetMapProducerFactorySpi.class);
         mockProducer = EasyMock.createNiceMock(RasterMapProducer.class);
 
-        EasyMock.expect(
-                mockContext.getBeanNamesForType(EasyMock.eq(GetMapProducerFactorySpi.class)))
-                .andReturn(new String[] { "mockMapFactory" }).anyTimes();
+        EasyMock.expect(mockContext.getBeanNamesForType(EasyMock.eq(GetMapProducer.class)))
+                .andReturn(new String[] { "fakeMapProducer" }).anyTimes();
 
-        EasyMock.expect(mockContext.getBean((String) EasyMock.notNull())).andReturn(mockFact)
+        EasyMock.expect(mockContext.getBean((String) EasyMock.notNull())).andReturn(mockProducer)
                 .anyTimes();
 
-        EasyMock.expect(mockFact.canProduce(mockMapFormat)).andReturn(true);
-        EasyMock.expect(mockFact.createMapProducer(EasyMock.eq(mockMapFormat), EasyMock.eq(wms)))
-                .andReturn(mockProducer);
-
+        EasyMock.expect(mockProducer.getOutputFormat()).andReturn(mockMapFormat);
+        
         mockProducer.setMapContext((WMSMapContext) EasyMock.notNull());
 
         EasyMock.replay(mockContext);
-        EasyMock.replay(mockFact);
         EasyMock.replay(mockProducer);
     }
 
     /**
-     * Test method for {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
+     * Test method for
+     * {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
      */
     public void testExecuteNullExtent() {
         setUpMocksForExecute();
@@ -140,7 +137,6 @@ public class GetMapResponseTest extends WMSTestSupport {
         }
 
         EasyMock.verify(mockContext);
-        EasyMock.verify(mockFact);
         EasyMock.verify(mockProducer);
     }
 
@@ -157,7 +153,6 @@ public class GetMapResponseTest extends WMSTestSupport {
             assertTrue(true);
         }
         EasyMock.verify(mockContext);
-        EasyMock.verify(mockFact);
         EasyMock.verify(mockProducer);
     }
 
@@ -184,7 +179,6 @@ public class GetMapResponseTest extends WMSTestSupport {
         assertTrue(delegate instanceof MetatileMapProducer);
 
         EasyMock.verify(mockContext);
-        EasyMock.verify(mockFact);
         EasyMock.verify(mockProducer);
     }
 }

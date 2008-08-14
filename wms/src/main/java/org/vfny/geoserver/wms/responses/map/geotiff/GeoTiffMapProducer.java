@@ -37,6 +37,9 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(
             "org.vfny.geoserver.responses.wms.map.geotiff");
 
+    /** the only MIME type this map producer supports */
+    static final String MIME_TYPE = "image/tiff";
+
     /** GridCoverageFactory. */
     private final static GridCoverageFactory factory = CoverageFactoryFinder.getGridCoverageFactory(null);
 
@@ -44,14 +47,12 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
      * Constructo for a {@link GeoTiffMapProducer}.
      *
      * @param oformat
-     *            output format we want the image to be encoded in.
-     * @param mime_type
-     *            for the requested output format.
+     *            output format as advertised in the capabilities.
      * @param wms
      *            that is asking us to encode the image.
      */
-    public GeoTiffMapProducer(String oformat, String mime_type, WMS wms) {
-        super(oformat, mime_type, wms);
+    public GeoTiffMapProducer(String oformat, WMS wms) {
+        super(oformat, MIME_TYPE, wms);
     }
 
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
@@ -66,7 +67,7 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
         }
 
         // do we want it to be 8 bits?
-        if (this.format.equalsIgnoreCase("image/tiff8") || (this.mapContext.getPaletteInverter() != null)) {
+        if (this.format.equalsIgnoreCase("image/geotiff8") || (this.mapContext.getPaletteInverter() != null)) {
             image = forceIndexed8Bitmask(image);
         }
 

@@ -29,11 +29,17 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(
             "org.vfny.geoserver.wms.responses.map.png");
 
+    private static final String MIME_TYPE = "image/png";
+    
     /** PNG Native Acceleration Mode * */
 	protected Boolean PNGNativeAcc;
 
-    public PNGMapProducer(String format, String mime_type, WMS wms) {
-        super(format, mime_type, wms);
+	/**
+	 * @param format the format name as to be reported in the capabilities document
+	 * @param wms
+	 */
+    public PNGMapProducer(String format, WMS wms) {
+        super(format, MIME_TYPE, wms);
         this.PNGNativeAcc = wms.getGeoServer().getPNGNativeAcceleration();
     }
 

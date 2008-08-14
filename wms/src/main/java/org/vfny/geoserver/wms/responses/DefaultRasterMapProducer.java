@@ -133,12 +133,14 @@ public abstract class DefaultRasterMapProducer extends
 	/**
 	 * 
 	 */
-	public DefaultRasterMapProducer(String outputFormat, WMS wms) {
-		this(outputFormat, outputFormat, wms);
+	public DefaultRasterMapProducer(String mimeType, WMS wms) {
+		this(mimeType, mimeType, wms);
 	}
 
 	/**
 	 * 
+	 * @param outputFormat the format name to be reported in the capabilities document
+	 * @param the mime type to be written down as an HTTP header when a map of this format is generated
 	 */
 	public DefaultRasterMapProducer(String outputFormat, String mime, WMS wms) {
 		super(outputFormat, mime);

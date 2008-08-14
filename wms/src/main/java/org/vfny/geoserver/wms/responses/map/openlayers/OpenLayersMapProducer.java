@@ -84,8 +84,8 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 
 
 	public OpenLayersMapProducer(WMS wms) {
+	    super("application/openlayers", "text/html");
 		this.wms = wms;
-		mime = "text/html";
 	}
 
 

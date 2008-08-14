@@ -16,6 +16,7 @@ import org.geotools.map.MapLayer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
@@ -25,15 +26,20 @@ import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
  * 
  * @author James Macgill
  */
-class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
+public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	/** standard logger */
 	protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.kml");
 
-        /** kml transformer which turns the map contedxt into kml */
+    /** 
+     * Official KML mime type
+     */
+    public static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
+
+    /** kml transformer which turns the map contedxt into kml */
 	protected KMLTransformer transformer;
 
-	public KMLMapProducer(String mapFormat, String mime_type) {
-		super(mapFormat, mime_type);
+	public KMLMapProducer() {
+		super(MIME_TYPE, MIME_TYPE);
 	}
 
 	/**
@@ -103,11 +109,15 @@ class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 		try {
 			transformer.transform(mapContext, out);
 		} catch (TransformerException e) {
-		    LOGGER.severe(e.getMessage());
+		    //LOGGER.severe(e.getMessage());
 		    throw (IOException) new IOException().initCause(e);
 		}
 	}
 
+	/**
+	 * @return a sensible .kml file name attachment header
+	 * @see GetMapProducer#getContentDisposition()
+	 */
 	public String getContentDisposition() {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < mapContext.getLayerCount(); i++) {

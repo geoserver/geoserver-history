@@ -4,18 +4,16 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.logging.Logger;
+
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
-import java.util.Map;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 public class KMLSuperOverlayTransformer extends KMLTransformerBase {
@@ -226,7 +224,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             String getMap = KMLUtils.getMapUrl(mapContext, mapLayer, box,
                     new String[] {
-                        "format", KMLMapProducerFactory.MIME_TYPE, "width", "256", "height", "256",
+                        "format", KMLMapProducer.MIME_TYPE, "width", "256", "height", "256",
                         "superoverlay", "true"
                     }, false);
 
