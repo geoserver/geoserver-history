@@ -259,5 +259,15 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+     <id>h2</id>
+     <dependencies>
+      <dependency>
+       <groupId>org.geoserver.extension</groupId>
+       <artifactId>h2</artifactId>
+       <version>${project.version}</version>
+      </dependency>
+     </dependencies>
+    </profile>
   </profiles>
 </project>
