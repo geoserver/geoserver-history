@@ -763,6 +763,7 @@ public class CatalogImpl implements Catalog {
         namespaces.clear();
         workspaces.clear();
         layers.clear();
+        layerGroups.clear();
         maps.clear();
         styles.clear();
         listeners.clear();
