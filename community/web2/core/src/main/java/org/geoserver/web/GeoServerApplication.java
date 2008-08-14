@@ -18,6 +18,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.IRequestTarget;
@@ -71,6 +72,10 @@ public class GeoServerApplication extends SpringWebApplication {
      */
     public Class<GeoServerHomePage> getHomePage() {
         return GeoServerHomePage.class;
+    }
+
+    public static GeoServerApplication get(){
+        return (GeoServerApplication)Application.get();
     }
 
     /**
