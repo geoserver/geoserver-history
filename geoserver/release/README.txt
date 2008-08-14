@@ -1,3 +1,13 @@
+GeoServer 1.7.0-RC1 (August 15,2008)
+-----------------------------------
+
+This is the first release candidate of the official 1.7.0. This release include
+36 bug fixes and improvements. The chagne log can be found here:
+
+http://jira.codehaus.org/browse/GEOS/fixforversion/14475
+
+This release is based on Geotools 2.5.x (revision 31187)
+
 GeoServer 1.7.0-beta2 (July 30, 2008)
 -------------------------------------
 
