@@ -117,7 +117,17 @@ public final class WMSContentAction extends ConfigAction {
             envelopeMap.put(baseMapTitle, envelope);
 
             if (selectedLayerIndex == bmi) {
-
+                String srsName = contentForm.getSrsNameActual( selectedLayerIndex );
+                CoordinateReferenceSystem crs = null;
+                try {
+                    crs = CRS.decode( srsName );
+                } 
+                catch (Exception e1) {
+                    e1.printStackTrace();
+                    // TODO Add Action Errors
+                    return mapping.findForward("config.wms.content");
+                }
+                
                 Data catalog = (Data) getServlet().getServletContext()
                                           .getAttribute(Data.WEB_CONTAINER_KEY);
                 GeneralEnvelope selectedEnvelope = null;
@@ -127,7 +137,7 @@ public final class WMSContentAction extends ConfigAction {
                     String layerName = layerNames[i].trim();
 
                     Integer layerType = (Integer) catalog.getLayerType(layerName);
-
+                    ReferencedEnvelope layerEnvelope = null;
                     if (layerType != null) {
                         if (layerType.intValue() == MapLayerInfo.TYPE_VECTOR) {
                             FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
@@ -135,120 +145,72 @@ public final class WMSContentAction extends ConfigAction {
                                                      : catalog.getFeatureTypeInfo(layerName
                                     .substring(layerName.indexOf(":") + 1, layerName.length())));
 
-                            if (selectedEnvelope == null) {
-                                ReferencedEnvelope ftEnvelope = null;
-
-                                try {
-                                    if (ftype.getBoundingBox() instanceof ReferencedEnvelope
-                                            && !ftype.getBoundingBox().isNull()) {
-                                        ftEnvelope = (ReferencedEnvelope) ftype.getBoundingBox();
-                                    } else {
-                                        // TODO Add Action Errors
-                                        return mapping.findForward("config.wms.content");
-                                    }
-                                } catch (IOException e) {
+                            try {
+                                if (ftype.getBoundingBox() instanceof ReferencedEnvelope
+                                        && !ftype.getBoundingBox().isNull()) {
+                                    layerEnvelope = (ReferencedEnvelope) ftype.getBoundingBox();
+                                } else {
                                     // TODO Add Action Errors
                                     return mapping.findForward("config.wms.content");
                                 }
-
-                                selectedEnvelope = new GeneralEnvelope(new double[] {
-                                            ftEnvelope.getMinX(), ftEnvelope.getMinY()
-                                        },
-                                        new double[] { ftEnvelope.getMaxX(), ftEnvelope.getMaxY() });
-                                selectedEnvelope.setCoordinateReferenceSystem(ftEnvelope
-                                    .getCoordinateReferenceSystem());
-                            } else {
-                                final CoordinateReferenceSystem dstCRS = selectedEnvelope
-                                    .getCoordinateReferenceSystem();
-
-                                ReferencedEnvelope ftEnvelope = null;
-
-                                try {
-                                    if (ftype.getBoundingBox() instanceof ReferencedEnvelope) {
-                                        ftEnvelope = (ReferencedEnvelope) ftype.getBoundingBox();
-                                        ftEnvelope = ftEnvelope.transform(dstCRS, true);
-                                    } else {
-                                        // TODO Add Action Errors
-                                        return mapping.findForward("config.wms.content");
-                                    }
-                                } catch (TransformException e) {
-                                    // TODO Add Action Errors
-                                    return mapping.findForward("config.wms.content");
-                                } catch (FactoryException e) {
-                                    // TODO Add Action Errors
-                                    return mapping.findForward("config.wms.content");
-                                } catch (IOException e) {
-                                    // TODO Add Action Errors
-                                    return mapping.findForward("config.wms.content");
-                                }
-
-                                ReferencedEnvelope newEnvelope = new ReferencedEnvelope(dstCRS);
-                                newEnvelope.init(selectedEnvelope.getLowerCorner().getOrdinate(0),
-                                    selectedEnvelope.getUpperCorner().getOrdinate(0),
-                                    selectedEnvelope.getLowerCorner().getOrdinate(1),
-                                    selectedEnvelope.getUpperCorner().getOrdinate(1));
-
-                                newEnvelope.expandToInclude(ftEnvelope);
-
-                                selectedEnvelope = new GeneralEnvelope(new double[] {
-                                            newEnvelope.getMinX(), newEnvelope.getMinY()
-                                        },
-                                        new double[] { newEnvelope.getMaxX(), newEnvelope.getMaxY() });
-                                selectedEnvelope.setCoordinateReferenceSystem(dstCRS);
+                            } catch (IOException e) {
+                                // TODO Add Action Errors
+                                return mapping.findForward("config.wms.content");
                             }
-                        } else if (layerType.intValue() == MapLayerInfo.TYPE_RASTER) {
+                        } 
+                        else if (layerType.intValue() == MapLayerInfo.TYPE_RASTER) {
                             CoverageInfo cv = catalog.getCoverageInfo(layerName);
                             cv = ((cv != null) ? cv
                                                : catalog.getCoverageInfo(layerName.substring(layerName
                                         .indexOf(":") + 1, layerName.length())));
 
-                            if (selectedEnvelope == null) {
-                                selectedEnvelope = cv.getEnvelope();
-                            } else {
-                                final CoordinateReferenceSystem cvCRS = cv.getCrs();
-                                final CoordinateReferenceSystem dstCRS = selectedEnvelope
-                                    .getCoordinateReferenceSystem();
-
-                                ReferencedEnvelope cvEnvelope = new ReferencedEnvelope(cvCRS);
-                                cvEnvelope.init(cv.getEnvelope().getLowerCorner().getOrdinate(0),
-                                    cv.getEnvelope().getUpperCorner().getOrdinate(0),
-                                    cv.getEnvelope().getLowerCorner().getOrdinate(1),
-                                    cv.getEnvelope().getUpperCorner().getOrdinate(1));
-
-                                try {
-                                    cvEnvelope.transform(dstCRS, true);
-                                } catch (TransformException e) {
-                                    // TODO Add Action Errors
-                                    return mapping.findForward("config.wms.content");
-                                } catch (FactoryException e) {
-                                    // TODO Add Action Errors
-                                    return mapping.findForward("config.wms.content");
-                                }
-
-                                ReferencedEnvelope newEnvelope = new ReferencedEnvelope(dstCRS);
-                                newEnvelope.init(selectedEnvelope.getLowerCorner().getOrdinate(0),
-                                    selectedEnvelope.getUpperCorner().getOrdinate(0),
-                                    selectedEnvelope.getLowerCorner().getOrdinate(1),
-                                    selectedEnvelope.getUpperCorner().getOrdinate(1));
-
-                                newEnvelope.expandToInclude(cvEnvelope);
-
-                                selectedEnvelope = new GeneralEnvelope(new double[] {
-                                            newEnvelope.getMinX(), newEnvelope.getMinY()
-                                        },
-                                        new double[] { newEnvelope.getMaxX(), newEnvelope.getMaxY() });
-                                selectedEnvelope.setCoordinateReferenceSystem(dstCRS);
-                            }
+                            layerEnvelope = new ReferencedEnvelope(cv.getEnvelope());
                         }
-                    }
-                }
+                        
+                        
+                        if ( !CRS.equalsIgnoreMetadata(crs, layerEnvelope.getCoordinateReferenceSystem())) {
+                            try {
+                                layerEnvelope = layerEnvelope.transform(crs, true);
+                            } catch (Exception e) {
+                                //TODO Add Action Errors    
+                                e.printStackTrace();
+                                return mapping.findForward("config.wms.content");
+                            } 
+                        }
+                            
+                        if ( selectedEnvelope == null ) {
+                            selectedEnvelope = new GeneralEnvelope(new double[] {
+                                  layerEnvelope.getMinX(), layerEnvelope.getMinY()
+                            }, new double[] { layerEnvelope.getMaxX(), layerEnvelope.getMaxY() });
+                            selectedEnvelope.setCoordinateReferenceSystem(layerEnvelope.getCoordinateReferenceSystem());
+                        }
+                        else {
+                            ReferencedEnvelope newEnvelope = new ReferencedEnvelope(crs);
+                            newEnvelope.init(selectedEnvelope.getLowerCorner().getOrdinate(0),
+                              selectedEnvelope.getUpperCorner().getOrdinate(0),
+                              selectedEnvelope.getLowerCorner().getOrdinate(1),
+                              selectedEnvelope.getUpperCorner().getOrdinate(1));
 
-                if (selectedEnvelope != null) {
-                    envelope.setCoordinateReferenceSystem(selectedEnvelope
-                        .getCoordinateReferenceSystem());
-                    envelope.setEnvelope(selectedEnvelope);
-                    envelopeMap.put(baseMapTitle, envelope);
-                    contentForm.setBaseMapEnvelope(selectedLayerIndex, envelope);
+                            newEnvelope.expandToInclude(layerEnvelope);
+
+                            selectedEnvelope = new GeneralEnvelope(new double[] {
+                                      newEnvelope.getMinX(), newEnvelope.getMinY()
+                                  },
+                                  new double[] { newEnvelope.getMaxX(), newEnvelope.getMaxY() });
+                            selectedEnvelope.setCoordinateReferenceSystem(crs);
+                        }
+                        
+                        
+                    }
+                    
+                    if (selectedEnvelope != null) {
+                      envelope.setCoordinateReferenceSystem(selectedEnvelope
+                          .getCoordinateReferenceSystem());
+                      envelope.setEnvelope(selectedEnvelope);
+                      envelopeMap.put(baseMapTitle, envelope);
+                      contentForm.setBaseMapEnvelope(selectedLayerIndex, envelope);
+                    }
+                    
                 }
             }
         }

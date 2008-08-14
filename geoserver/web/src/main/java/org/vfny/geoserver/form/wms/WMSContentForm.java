@@ -55,7 +55,7 @@ public class WMSContentForm extends ActionForm {
     private HashMap maxCPs = new HashMap();
 
     private CoordinateReferenceSystem targetCRS = null;
-
+    private List srsNames = new ArrayList();
     private int selectedLayer;
 
     /*
@@ -286,8 +286,18 @@ public class WMSContentForm extends ActionForm {
         } catch (Exception e) {
             targetCRS = null;
         }
+        if ( index >= srsNames.size() ) {
+            while( srsNames.size() <= index ) {
+                srsNames.add(null);
+            }
+        }
+        srsNames.set( index, value);
+//        
     }
 
+    public String getSrsNameActual( int index ) {
+        return (String) srsNames.get(index);
+    }
     /**
      * DOCUMENT ME!
      * 
