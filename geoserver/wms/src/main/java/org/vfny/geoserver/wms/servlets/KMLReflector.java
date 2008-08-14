@@ -4,7 +4,13 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -13,15 +19,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.ServiceException;
+import org.geotools.styling.Style;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.vfny.geoserver.Response;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetKMLReflectKvpReader;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
+import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducer;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -30,7 +44,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * This class takes in a simple WMS request, presumably from Google Earth, and
  * produces a completed WMS request that outputs KML/KMZ. To map a request to
  * this, simple pass a "layers=myLayer" parameter to "wms/kml_reflect":
- * <b>http://localhost:8080/geoserver/wms/kml_reflect?layers=states</b>
+ * <b>http://localhost:8080/geoserver/wms/kml_reflect?layers=states<b>
  * No extra information, such as styles or EPSG code need to be passed.
  * A request to kml_reflect will return a network link for each layer
  * passed in. Each network layer makes a full WMS request with these
@@ -109,18 +123,8 @@ public class KMLReflector extends WMService {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-            org.vfny.geoserver.wms.responses.map.kml.KMLReflector reflector =
-                (org.vfny.geoserver.wms.responses.map.kml.KMLReflector)
-                GeoServerExtensions.extensions(
-                        org.vfny.geoserver.wms.responses.map.kml.KMLReflector.class
-                        ).get(0);
-
-        reflector.http(request, response);
-        return;
-
-/*
         //set to KML mime type, so GEarth opens automatically
-        response.setContentType(KMLMapProducerFactory.MIME_TYPE);
+        response.setContentType(KMLMapProducer.MIME_TYPE);
 
         // the output stream we will write to
         BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
@@ -353,7 +357,6 @@ public class KMLReflector extends WMService {
         byte[] kml_b = sb.toString().getBytes();
         out.write(kml_b);
         out.flush();
-        */
     }
 
   private String getLookAt(Envelope e){

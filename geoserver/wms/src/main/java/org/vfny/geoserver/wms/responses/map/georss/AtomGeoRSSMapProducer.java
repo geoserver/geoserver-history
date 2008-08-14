@@ -34,6 +34,12 @@ public class AtomGeoRSSMapProducer implements GetMapProducer {
 	 */
 	WMSMapContext map;
 
+    private final String advertisedFormatName;
+
+	public AtomGeoRSSMapProducer(final String advertisedFormatName){
+	    this.advertisedFormatName = advertisedFormatName;
+	}
+
 	public String getContentType() throws IllegalStateException {
 		return MIME_TYPE;
 	}
@@ -87,7 +93,7 @@ public class AtomGeoRSSMapProducer implements GetMapProducer {
 	}
 
 	public String getOutputFormat() {
-		return MIME_TYPE;
+		return advertisedFormatName;
 	}
 
 	public void setOutputFormat(String format) {

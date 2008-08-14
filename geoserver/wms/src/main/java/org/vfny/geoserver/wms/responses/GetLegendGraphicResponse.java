@@ -245,7 +245,7 @@ public class GetLegendGraphicResponse implements Response {
     }
     
     /**
-     * Convenience method for processing the GetMapProducerFactorySpi extension
+     * Convenience method for processing the GetLegendGraphicProducerSpi extension
      * point and returning the set of available image formats.
      */
     private static Set loadLegendFormats() {

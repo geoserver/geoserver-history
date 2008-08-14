@@ -28,16 +28,23 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
     }
 
     /** mime type */
-    public static String MIME_TYPE = "application/rss+xml";
+    public static String MIME_TYPE2 = "application/rss+xml";
+
+    private static String MIME_TYPE = "application/xml";
 
     /**
      * current map context
      */
     WMSMapContext map;
 
+    private final String advertisedFormatName;
+
+    public RSSGeoRSSMapProducer(final String advertisedFormatName){
+        this.advertisedFormatName = advertisedFormatName;
+    }
+    
     public String getContentType() throws IllegalStateException {
-        //return MIME_TYPE;
-        return "application/xml";
+        return MIME_TYPE;
     }
 
     public void produceMap() throws WmsException {
@@ -82,7 +89,7 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
 	}
 
 	public String getOutputFormat() {
-		return MIME_TYPE;
+		return advertisedFormatName;
 	}
 	
 	public void setOutputFormat(String format) {

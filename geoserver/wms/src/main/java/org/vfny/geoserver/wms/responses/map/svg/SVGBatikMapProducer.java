@@ -42,13 +42,14 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-public class SVGBatikMapProducer extends AbstractGetMapProducer implements
+class SVGBatikMapProducer extends AbstractGetMapProducer implements
 		GetMapProducer {
 	StreamingRenderer renderer;
 
 	WMS wms;
 
-	public SVGBatikMapProducer(WMS wms) {
+	public SVGBatikMapProducer(String formatName, String mimeType, WMS wms) {
+	    super(formatName, mimeType);
 		this.wms = wms;
 	}
 
@@ -62,14 +63,6 @@ public class SVGBatikMapProducer extends AbstractGetMapProducer implements
 		if (renderer != null) {
 			renderer.stopRendering();
 		}
-	}
-
-	public String getContentType() {
-		return SvgMapProducerFactory.MIME_TYPE;
-	}
-
-	public String getContentEncoding() {
-		return null;
 	}
 
 	public void produceMap() throws WmsException {
@@ -165,10 +158,5 @@ public class SVGBatikMapProducer extends AbstractGetMapProducer implements
 
 		// Set up the context
 		return SVGGeneratorContext.createDefault(document);
-	}
-
-	public String getContentDisposition() {
-		// can be null
-		return null;
 	}
 }

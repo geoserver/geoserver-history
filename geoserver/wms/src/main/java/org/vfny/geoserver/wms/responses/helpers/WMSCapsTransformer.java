@@ -70,7 +70,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
     /** DOCUMENT ME! */
     private String baseUrl;
-    private Set formats;
+    private Set<String> formats;
     private ApplicationContext applicationContext;
 
     /**
@@ -84,7 +84,7 @@ public class WMSCapsTransformer extends TransformerBase {
      * @throws NullPointerException
      *             if <code>schemaBaseUrl</code> is null;
      */
-    public WMSCapsTransformer(String baseUrl, Set formats,
+    public WMSCapsTransformer(String baseUrl, Set<String> formats,
         ApplicationContext applicationContext) {
         super();
         this.formats = formats;

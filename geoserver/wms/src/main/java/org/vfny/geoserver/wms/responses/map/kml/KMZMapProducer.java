@@ -42,7 +42,12 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	/** standard logger */
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.kmz");
 
-	/**
+    /**
+     * Official KMZ mime type
+     */
+    static final String MIME_TYPE = "application/vnd.google-earth.kmz";
+
+    /**
 	 * delegating producer for rendering.
 	 */
 	PNGMapProducer mapProducer;
@@ -52,9 +57,9 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	 */
 	KMLTransformer transformer;
 
-	public KMZMapProducer(String mapFormat, String mime_type, WMS wms) {
-		super(mapFormat, mime_type);
-		mapProducer = new PNGMapProducer("image/png", "image/png", wms);
+	public KMZMapProducer(WMS wms) {
+		super(MIME_TYPE, MIME_TYPE);
+		mapProducer = new PNGMapProducer("image/png", wms);
 	}
 
 	public void abort() {
@@ -81,7 +86,7 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	}
 
 	public String getContentType() throws IllegalStateException {
-		return KMZMapProducerFactory.MIME_TYPE;
+		return MIME_TYPE;
 	}
 
     /**

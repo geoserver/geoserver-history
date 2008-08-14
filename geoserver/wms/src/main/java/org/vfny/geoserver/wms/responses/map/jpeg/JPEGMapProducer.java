@@ -28,22 +28,19 @@ import javax.media.jai.operator.TranslateDescriptor;
  *
  */
 public final class JPEGMapProducer extends DefaultRasterMapProducer {
-    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette, boolean transparent) {
-        //there is no transparency in JPEG anyway :-)
-        transparent = false;
-        palette = null;
-        return super.prepareImage(width, height, palette, transparent);
-    }
     /** Logger. */
     private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(JPEGMapProducer.class.toString());
+
+    /** the only MIME type this map producer supports */
+    static final String MIME_TYPE = "image/jpeg";
 
     /** JPEG Native Acceleration Mode * */
     private Boolean JPEGNativeAcc;
 
 	private boolean hasJAIWriter;
 
-    public JPEGMapProducer(String outputFormat, WMS wms) {
-        super(outputFormat, wms);
+    public JPEGMapProducer(WMS wms) {
+        super(MIME_TYPE, wms);
 
         /**
          * TODO To check Native Acceleration mode use the following variable
@@ -58,7 +55,14 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         
         
     }
-    
+
+    @Override
+    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette, boolean transparent) {
+        //there is no transparency in JPEG anyway :-)
+        transparent = false;
+        palette = null;
+        return super.prepareImage(width, height, palette, transparent);
+    }
 
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
         throws IOException {

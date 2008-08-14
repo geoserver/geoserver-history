@@ -71,7 +71,7 @@ public class SVGMapProducerTest extends WMSTestSupport {
         Style basicStyle = getCatalog().getStyle("Default");
         map.addLayer(fs, basicStyle);
 
-        SVGMapProducer producer = new SVGMapProducer();
+        SVGMapProducer producer = new SVGMapProducer("image/svg", "image/svg+xml");
         producer.setMapContext(map);
         producer.produceMap();
 

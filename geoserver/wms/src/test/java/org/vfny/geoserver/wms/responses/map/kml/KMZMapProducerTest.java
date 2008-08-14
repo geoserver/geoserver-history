@@ -42,8 +42,7 @@ public class KMZMapProducerTest extends WMSTestSupport {
 		mapContext.setRequest(getMapRequest);
 
 		// create hte map producer
-		mapProducer = (KMZMapProducer) new KMZMapProducerFactory()
-				.createMapProducer(KMZMapProducerFactory.MIME_TYPE, getWMS());
+		mapProducer = new KMZMapProducer(getWMS());
 		mapProducer.setMapContext(mapContext);
 		mapProducer.produceMap();
 	}
