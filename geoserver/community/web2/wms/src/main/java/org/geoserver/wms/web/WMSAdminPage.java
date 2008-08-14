@@ -18,14 +18,11 @@ import org.geoserver.wms.WatermarkInfo;
 import java.util.Arrays;
 
 public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
-
-	
     protected Class<WMSInfo> getServiceClass() {
         return WMSInfo.class;
     }
     
     protected void build(IModel info, Form form) {
-        
     	form.add(new TextField("interpolation"));
     	form.add(new CheckBox("watermark.enabled"));
     	form.add(new TextField("watermark.uRL"));
