@@ -40,7 +40,6 @@ public class GeoServerHomePage extends GeoServerBasePage {
 
     private IModel getServices() {
         return new LoadableDetachableModel() {
-        
             @Override
             protected Object load() {
                 return getGeoServerApplication().getBeansOfType(Service.class);

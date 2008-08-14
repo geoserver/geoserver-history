@@ -83,12 +83,12 @@
     <property name="componentClass" value="org.geoserver.web.publish.HTTPLayerConfig"/>
   </bean>
   
-  <bean id="h2Config" class="org.geoserver.web.data.DataStorePanelInfo">
+  <!-- <bean id="h2Config" class="org.geoserver.web.data.DataStorePanelInfo">
     <property name="id" value="h2"/>
     <property name="factoryClass" value="org.geotools.data.h2.H2DataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/database_vector.png"/>
-  </bean>
+  </bean> -->
   
   <bean id="postgisConfig" class="org.geoserver.web.data.DataStorePanelInfo">
     <property name="id" value="postgis"/>
