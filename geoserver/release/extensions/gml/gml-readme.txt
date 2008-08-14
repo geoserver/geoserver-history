@@ -25,6 +25,6 @@ information see http://docs.codehaus.org/display/GEOSDOC/GML+DataStore
 
 COMPATIBILITY
 
-This jar should work with any version of GeoServer based on GeoTools 2.2.x.  
+This jar should work with any version of GeoServer based on GeoTools 2.5.x.  
 Currently this is anything in 1.3.x above 1.3.1.  GeoServer 1.4 should also
 be compatible.

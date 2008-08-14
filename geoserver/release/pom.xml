@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.7.0-SNAPSHOT</version>
+		<version>1.7.0-RC1</version>
 	</parent>
 	
 	<groupId>org.geoserver</groupId>
@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>org.geoserver.extension</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.7.0-SNAPSHOT</version>
+			<version>1.7.0-RC1</version>
 		</dependency>
   </dependencies>
 

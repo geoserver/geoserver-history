@@ -8,20 +8,20 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>community</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-RC1</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
   <artifactId>imagemap</artifactId>
   <packaging>jar</packaging>
-  <version>1.7.0-SNAPSHOT</version>
+  <version>1.7.0-RC1</version>
   <name>ImageMap output format</name>
 
     <dependencies>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-	   <version>1.7.0-SNAPSHOT</version>
+	   <version>1.7.0-RC1</version>
     </dependency>
 	<dependency>
       <groupId>org.geotools</groupId>
