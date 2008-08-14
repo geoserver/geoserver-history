@@ -122,6 +122,9 @@ class StyleResource extends Resource {
                 fw.flush();
                 fw.close();
 
+                if (newSLDFile.exists())
+                    newSLDFile.delete();
+                
                 tempSLDFile.renameTo(newSLDFile);
             } catch (IOException ioe){
                 LOG.severe("Problem writing temp file while PUTting a new style");
