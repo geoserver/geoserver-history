@@ -20,37 +20,43 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
 import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.WebMapService;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
+import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
+import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
 
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Lists the available WMS layers, allows for a map preview
+ * 
  * @author Andrea Aime - TOPP
  */
 public class MapPreviewPage extends GeoServerBasePage {
     private static final int MAX_ROWS = 25;
 
     @SuppressWarnings("serial")
-    public MapPreviewPage(){
-        //TODO: This should list Layers, not Resources.  (Should it exist per-workspace? just have
-        //the layers grouped by workspace in a single page?)
-        IModel resourceListModel = new LoadableDetachableModel(){
+    public MapPreviewPage() {
+        // TODO: This should list Layers, not Resources. (Should it exist
+        // per-workspace? just have
+        // the layers grouped by workspace in a single page?)
+        IModel resourceListModel = new LoadableDetachableModel() {
             public Object load() {
                 List<String> result = new ArrayList<String>();
-                
+
                 // gather layer and group names
                 List<LayerInfo> layers = getCatalog().getLayers();
                 for (LayerInfo layer : layers) {
                     ResourceInfo resource = layer.getResource();
-                    if(layer.isEnabled() && resource.isEnabled()){
+                    if (layer.isEnabled() && resource.isEnabled()) {
                         result.add(resource.getPrefixedName());
                     }
                 }
@@ -58,7 +64,7 @@ public class MapPreviewPage extends GeoServerBasePage {
                 for (LayerGroupInfo group : groups) {
                     result.add(group.getName());
                 }
-                
+
                 // alphabetical sort
                 Collections.sort(result);
                 return result;
@@ -67,35 +73,28 @@ public class MapPreviewPage extends GeoServerBasePage {
 
         final List<String> formats = getAvailableFormats();
 
-        PageableListView layers = new PageableListView("layer", resourceListModel, MAX_ROWS){
-            public void populateItem(ListItem item){
+        PageableListView layers = new PageableListView("layer", resourceListModel, MAX_ROWS) {
+            public void populateItem(ListItem item) {
                 // alternate bg color
                 item.add(new SimpleAttributeModifier("class", item.getIndex() % 2 == 0 ? "even"
                         : "odd"));
-                
-                
+
                 final String layerName = (String) item.getModelObject();
-                
+
                 GetMapRequest request = buildFakeGetMap(layerName);
                 DefaultWebMapService.autoSetBoundsAndSize(request);
                 final String linkTemplate = buildWmsLinkTemplate(request);
 
                 final String OL_FORMAT = "application/openlayers";
-                item.add(
-                    new ExternalLink("layerLink", linkTemplate.replaceAll("\\$\\{format\\}", OL_FORMAT))
-                        .setContextRelative(true)
-                        .add(new Label("label", layerName))
-                );
+                item.add(new ExternalLink("layerLink", linkTemplate.replaceAll("\\$\\{format\\}",
+                        OL_FORMAT)).setContextRelative(true).add(new Label("label", layerName)));
 
-                item.add(new ListView("formatLink", formats){
-                    public void populateItem(ListItem item){
-                        String format = (String)item.getModel().getObject();
-                        item.add(new ExternalLink(
-                                "link",
-                                linkTemplate.replaceAll("\\$\\{format\\}", format)
-                                ).setContextRelative(true)
-                                .add(new Label("label", format))
-                            );
+                item.add(new ListView("formatLink", formats) {
+                    public void populateItem(ListItem item) {
+                        String format = (String) item.getModel().getObject();
+                        item.add(new ExternalLink("link", linkTemplate.replaceAll(
+                                "\\$\\{format\\}", format)).setContextRelative(true).add(
+                                new Label("label", format)));
                     }
                 });
             }
@@ -104,20 +103,22 @@ public class MapPreviewPage extends GeoServerBasePage {
         cnt.setOutputMarkupId(true);
         cnt.add(layers);
         add(cnt);
-        
+
         // add pagers
         final GeoServerPagingNavigator topPager = new GeoServerPagingNavigator("topNav", layers);
-        final GeoServerPagingNavigator bottomPager = new GeoServerPagingNavigator("bottomNav", layers);
+        final GeoServerPagingNavigator bottomPager = new GeoServerPagingNavigator("bottomNav",
+                layers);
         add(topPager);
         add(bottomPager);
-        if(layers.size() < MAX_ROWS) {
+        if (layers.size() < MAX_ROWS) {
             topPager.setVisible(false);
             bottomPager.setVisible(false);
         }
     }
 
     /**
-     * Builds a fake GetMap request 
+     * Builds a fake GetMap request
+     * 
      * @param prefixedName
      * @return
      */
@@ -132,6 +133,7 @@ public class MapPreviewPage extends GeoServerBasePage {
 
     /**
      * Expands the specified name into a list of layer info names
+     * 
      * @param prefixedName
      * @param catalog
      * @return
@@ -139,12 +141,12 @@ public class MapPreviewPage extends GeoServerBasePage {
     private List<MapLayerInfo> expandLayers(String prefixedName, Data catalog) {
         Integer type = catalog.getLayerType(prefixedName);
         List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>();
-        if(type == Data.TYPE_VECTOR) {
-             layers.add(new MapLayerInfo(catalog.getFeatureTypeInfo(prefixedName)));
-        } else if(type == Data.TYPE_RASTER) {
+        if (type == Data.TYPE_VECTOR) {
+            layers.add(new MapLayerInfo(catalog.getFeatureTypeInfo(prefixedName)));
+        } else if (type == Data.TYPE_RASTER) {
             layers.add(new MapLayerInfo(catalog.getCoverageInfo(prefixedName)));
         } else {
-            for(LayerInfo info :getCatalog().getLayerGroupByName(prefixedName).getLayers()) {
+            for (LayerInfo info : getCatalog().getLayerGroupByName(prefixedName).getLayers()) {
                 layers.addAll(expandLayers(info.getResource().getPrefixedName(), catalog));
             }
         }
@@ -153,34 +155,33 @@ public class MapPreviewPage extends GeoServerBasePage {
 
     /**
      * Given a request and a target format, builds the WMS request
+     * 
      * @param request
      * @param string
      * @return
      */
     protected String buildWmsLinkTemplate(GetMapRequest request) {
         final Envelope bbox = request.getBbox();
-        if(bbox == null) {
+        if (bbox == null) {
             System.out.println("No bbox for layer " + request.getLayers()[0].getName());
             return "";
         }
         return "wms?service=WMS&version=1.1.0&request=GetMap" //
-               + "&layers=" + request.getLayers()[0].getName() //
-               + "&styles=" //
-               + "&format=${format}" //
-               + "&bbox=" + bbox.getMinX() + "," + bbox.getMinY() //
-               + "," + bbox.getMaxX() + "," + bbox.getMaxY() //
-               + "&width=" + request.getWidth() //
-               + "&height=" + request.getHeight()
-               + "&srs=" + request.getSRS();
+                + "&layers=" + request.getLayers()[0].getName() //
+                + "&styles=" //
+                + "&format=${format}" //
+                + "&bbox=" + bbox.getMinX() + "," + bbox.getMinY() //
+                + "," + bbox.getMaxX() + "," + bbox.getMaxY() //
+                + "&width=" + request.getWidth() //
+                + "&height=" + request.getHeight() + "&srs=" + request.getSRS();
     }
 
-    private List<String> getAvailableFormats(){
+    private List<String> getAvailableFormats() {
         List<String> formats = new ArrayList<String>();
 
-        for (GetMapProducerFactorySpi spi : 
-            getGeoServerApplication().getBeansOfType(GetMapProducerFactorySpi.class)
-            ) {
-            formats.add((String)spi.getSupportedFormats().iterator().next());
+        final GeoServerApplication application = getGeoServerApplication();
+        for (GetMapProducer producer : application.getBeansOfType(GetMapProducer.class)) {
+            formats.add(producer.getOutputFormat());
         }
         Collections.sort(formats);
 
