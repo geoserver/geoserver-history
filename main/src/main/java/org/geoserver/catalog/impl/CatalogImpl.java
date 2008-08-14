@@ -806,6 +806,7 @@ public class CatalogImpl implements Catalog {
         if ( namespaces != null ) namespaces.clear();
         if ( workspaces != null ) workspaces.clear();
         if ( layers != null ) layers.clear();
+        if ( layerGroups != null ) layerGroups.clear();
         if ( maps != null ) maps.clear();
         if ( styles != null ) styles.clear();
         if ( listeners != null ) listeners.clear();
