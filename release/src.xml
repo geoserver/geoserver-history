@@ -18,6 +18,7 @@
                    <include>org.geoserver:validation</include>
                    <include>org.geoserver:web</include>
                    <include>org.geoserver:wcs</include>
+                   <include>org.geoserver:wcs1_1</include>
                    <include>org.geoserver:data</include>
                    <include>org.geoserver:platform</include>
                    <include>org.geoserver:test</include>
