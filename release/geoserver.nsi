@@ -50,7 +50,7 @@ RequestExecutionLevel "admin"
 ;--------------------------------
 ;Interface Settings
 
-  !define MUI_ICON   "webapps\geoserver\WEB-INF\images\gs.ico"
+  !define MUI_ICON   "gs.ico"
   !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
