@@ -13,7 +13,6 @@
   <!-- controller for handling all incoming requests -->
   <bean id="gwcDispatcher" class="org.geowebcache.GeoWebCacheDispatcher">
     <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
-    <property name="seederDispatcher" ref="gwcSeederDispatcher"/>
     <property name="servletPrefix" value="gwc"/>
   </bean>
 
@@ -21,16 +20,7 @@
   <bean id="gwcTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
     <property name="config">
       <list>
-	<ref bean="gwcGSConfig"/>
-      </list>
-    </property>
-  </bean>
-  
-  <!-- Seeder dispatcher -->
-  <bean id="gwcSeederDispatcher" class="org.geowebcache.seeder.SeederDispatcher">
-    <property name="allowedSeeders">
-      <list>
-	<value>127.0.0.1</value>
+		<ref bean="gwcGSConfig"/>
       </list>
     </property>
   </bean>
