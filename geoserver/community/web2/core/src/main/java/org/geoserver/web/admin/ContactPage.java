@@ -10,7 +10,6 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.ContactInfo;
 
 public class ContactPage extends ServerAdminPage {
-
     public ContactPage(){
         final IModel geoServerModel = getGeoServerModel();
         final IModel contactModel = getContactInfoModel();
