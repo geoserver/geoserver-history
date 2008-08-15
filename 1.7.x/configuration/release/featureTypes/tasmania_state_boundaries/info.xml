@@ -1,0 +1,19 @@
+<featureType datastore = "tasmania_state_boundaries" >
+  <name>tasmania_state_boundaries</name>
+  <!--
+    native wich EPGS code for the FeatureTypeInfoDTO
+  -->
+  <SRS>4326</SRS>
+  <title>tasmania_state_boundaries_Type</title>
+  <abstract>Generated from tasmania_state_boundaries_shapefile</abstract>
+  <numDecimals value = "8" />
+  <keywords>Tasmania Australia State</keywords>
+  <latLonBoundingBox dynamic = "false" maxx = "148.47914100000003" maxy = "-39.573891" minx = "143.83482400000003" miny = "-43.648056" />
+  <nativeBBox dynamic = "true" />
+  <!--
+    the default style this FeatureTypeInfoDTO can be represented by.
+    at least must contain the "default" attribute
+  -->
+  <styles default = "green" />
+  <cacheinfo enabled = "true" maxage = "3600" />
+</featureType>

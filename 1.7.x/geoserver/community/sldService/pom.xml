@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>community</artifactId>
+    <groupId>org.geoserver</groupId>
+    <version>1.7.0-RC1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.geoserver</groupId>
+  <artifactId>sldService</artifactId>
+  <version>1.7.0-RC1</version>
+  <description>REST SLD service</description>
+  <name>REST SLD service</name>
+  <repositories>
+    <repository>
+      <id>codehaus</id>
+      <name>codehaus</name>
+      <url>http://repository.codehaus.org/</url>
+    </repository>
+    <repository>
+      <id>refractions</id>
+      <name>refractions</name>
+      <url>http://lists.refractions.net/m2</url>
+    </repository>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>main</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>rest</artifactId>
+      <version>1.7.0-RC1</version>
+    </dependency>
+    <dependency>
+      <groupId>xom</groupId>
+      <artifactId>xom</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-main</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-xml</artifactId>
+      <version>${gt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-render</artifactId>
+    </dependency>
+    <!-- dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-xml-filter</artifactId>
+    </dependency -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

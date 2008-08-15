@@ -1,0 +1,20 @@
+<featureType datastore = "sfBugsites" >
+  <name>bugsites</name>
+  <!--
+    native wich EPGS code for the FeatureTypeInfoDTO
+  -->
+  <SRS>26713</SRS>
+  <title>bugsites_Type</title>
+  <abstract>Generated from sfBugsites</abstract>
+  <wmspath>/</wmspath>
+  <numDecimals value = "8" />
+  <keywords>sfBugsites bugsites</keywords>
+  <latLonBoundingBox dynamic = "false" maxx = "-103.63773523234195" maxy = "44.43418821380063" minx = "-103.86796131703647" miny = "44.373938816704396" />
+  <nativeBBox dynamic = "false" maxx = "608462.4604629107" maxy = "4920523.89081033" minx = "590223.4382724703" miny = "4914107.882513998" />
+  <!--
+    the default style this FeatureTypeInfoDTO can be represented by.
+    at least must contain the "default" attribute
+  -->
+  <styles default = "capitals" />
+  <cacheinfo enabled = "true" maxage = "3600" />
+</featureType>

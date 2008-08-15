@@ -1,0 +1,17 @@
+<featureType datastore = "cgf" >
+<name>MPolygons</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>32615</SRS>
+<title>MPolygons_Type</title>
+<abstract>Generated from cgf</abstract>
+<numDecimals value = "8" />
+<keywords>MPolygons cgf</keywords>
+<latLonBoundingBox dynamic = "false" miny = "4.523788736542844" maxy = "4.524241070877522" maxx = "-92.99481657650189" minx = "-92.99526731191555"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "dotty"  />
+</featureType>

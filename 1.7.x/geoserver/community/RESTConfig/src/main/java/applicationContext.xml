@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+<bean id="restConfigMapping" class="org.geoserver.rest.RESTMapping">
+<property name="routes">
+  <map>
+        <entry>
+          <key><value>/folders/{folder}/layers/{layer}/file.{type}</value></key>
+          <value>folderFileFinder</value>
+        </entry>  
+        <entry>
+          <key><value>/folders/{folder}/file.{type}</value></key>
+          <value>folderFileFinder</value>
+        </entry>  
+        <entry>
+          <key><value>/folders/{folder}/layers/{layer}.{type}</value></key>
+          <value>layerFinder</value>
+        </entry>
+        <entry>
+          <key><value>/folders/{folder}/layers/{layer}</value></key>
+          <value>layerFinder</value>
+        </entry>
+        <entry>
+          <key><value>/folders/{folder}/layers.{type}</value></key>
+          <value>layerListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/folders/{folder}/layers</value></key>
+          <value>layerListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/folders/{folder}.{type}</value></key>
+          <value>folderConfigFinder</value>
+        </entry>
+        <entry>
+          <key><value>/folders/{folder}</value></key>
+          <value>folderConfigFinder</value>
+        </entry>
+        <entry>
+          <key><value>/folders.{type}</value></key>
+          <value>folderListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/folders</value></key>
+          <value>folderListFinder</value>
+        </entry>
+
+        <entry>
+          <key><value>/styles/{style}.{type}</value></key>
+          <value>styleFinder</value>
+        </entry>
+        <entry>
+          <key><value>/styles/{style}</value></key>
+          <value>styleFinder</value>
+        </entry>
+        <entry>
+          <key><value>/styles.{type}</value></key>
+          <value>styleListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/styles</value></key>
+          <value>styleListFinder</value>
+        </entry>
+<!--    Leave out everything but the data and styles for now 
+        <entry>
+          <key><value>/layergroups/{group}.{type}</value></key>
+          <value>layerGroupFinder</value>
+        </entry>
+        <entry>
+          <key><value>/layergroups/{group}</value></key>
+          <value>layerGroupFinder</value>
+        </entry>
+        <entry>
+          <key><value>/layergroups.{type}</value></key>
+          <value>layerGroupListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/layergroups</value></key>
+          <value>layerGroupListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/projections/{projection}</value></key>
+          <value>dummyRestlet</value>
+        </entry>
+        <entry>
+          <key><value>/projections</value></key>
+          <value>dummyRestlet</value>
+        </entry>
+        <entry>
+          <key><value>/dummy.{type}</value></key>
+          <value>dummyRestlet</value>
+        </entry> -->
+  </map>
+</property>
+</bean>
+
+<bean id="layerFinder" class="org.geoserver.restconfig.LayerFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+</bean>
+<bean id="layerListFinder" class="org.geoserver.restconfig.LayerListFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+</bean>
+<bean id="folderFileFinder" class="org.geoserver.restconfig.FolderFileFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+    <property name="geoServer"><ref bean="geoServer"/></property>
+    <property name="globalConfig"><ref bean="globalConfig"/></property>
+</bean>
+<bean id="folderConfigFinder" class="org.geoserver.restconfig.FolderConfigFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+</bean>
+<bean id="folderListFinder" class="org.geoserver.restconfig.FolderListFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+</bean>
+<bean id="styleFinder" class="org.geoserver.restconfig.StyleResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"> <ref bean="data"/> </property>
+</bean>
+<bean id="styleListFinder" class="org.geoserver.restconfig.StyleListResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+</bean>
+<bean id="layerGroupFinder" class="org.geoserver.restconfig.LayerGroupResource">
+      <property name="WMSConfig"><ref bean="wmsConfig"/></property>
+      <property name="WMS"><ref bean="wms"/></property>
+      <property name="WFS"><ref bean="wfs"/></property>
+      <property name="WCS"><ref bean="wcs"/></property>
+      <property name="geoserver"><ref bean="geoServer"/> </property>
+</bean> 
+<bean name="layerGroupListFinder" class="org.geoserver.restconfig.LayerGroupListResource">
+      <property name="WMSConfig"><ref bean="wmsConfig"/></property>
+</bean>
+<bean id="dummyRestlet" class="org.geoserver.restconfig.DummyRestlet"/>
+
+
+</beans>

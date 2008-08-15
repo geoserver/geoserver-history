@@ -1,0 +1,15 @@
+WFS 1.1 H2 Cite Testing README
+------------------------------
+
+0. Download the H2 Database from 'http://www.h2database.com' and install it 
+   somewhere on your system.
+
+1. Open 'h2.sh': 
+
+   1. Edit the 'H2_HOME' variable to point to your H2 installation
+   2. Edit the 'M2_REPO' variable to point to your local Maven repository
+
+2. From the command line run 'h2.sh load'
+
+3. Run GeoServer with the 'citewfs-1.1-h2' configuration.
+

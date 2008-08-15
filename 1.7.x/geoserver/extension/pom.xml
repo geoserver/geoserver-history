@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.geoserver</groupId>
+    <artifactId>geoserver</artifactId>
+    <version>1.7.0-RC1</version>
+  </parent>
+
+  <groupId>org.geoserver</groupId>
+  <artifactId>extension</artifactId>
+  <packaging>pom</packaging>
+  <name>GeoServer Extensions</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>platform</artifactId>
+      <version>1.7.0-RC1</version>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <!-- profiles for individual modules -->
+    <profile>
+      <id>h2</id>
+      <modules>
+        <module>h2</module>
+      </modules>
+    </profile>
+
+    <!-- release profile, includes all modules -->
+    <profile>
+      <id>release</id>
+      <modules>
+        <module>h2</module>
+      </modules>
+    </profile>
+  </profiles>
+</project>

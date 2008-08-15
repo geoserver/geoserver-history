@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<struts-config>
+
+<!-- ==================================== Data Source Configuration -->
+
+<!-- ======================================== Form Bean Definitions -->
+
+    <form-beans>
+        <!--
+          form-bean: maps ActionForm instances
+          name: name of of form bean
+          type: class of form bean
+        -->
+        
+    	<form-bean
+    		name="wmsDescriptionForm"
+    		type="org.vfny.geoserver.form.wms.WMSDescriptionForm"/>
+    		
+    	<form-bean
+    		name="wmsContentForm"
+    		type="org.vfny.geoserver.form.wms.WMSContentForm"/>
+
+		<form-bean
+			name="wmsRenderingForm"
+			type="org.vfny.geoserver.form.wms.WMSRenderingForm"/>
+    		
+    </form-beans>
+
+<!-- ================================= Global Exception Definitions -->
+
+    <global-exceptions>
+    </global-exceptions>
+
+<!-- =================================== Global Forward Definitions -->
+
+    <global-forwards>
+        <!-- CONFIG wms -->       		
+       	<forward
+       		name="config.wms"
+       		path="/config/wms/index.do"/>
+        <forward
+       		name="config.wms.description"
+       		path="/config/wms/description.do"/>
+       	<forward
+       		name="config.wms.content"
+       		path="/config/wms/content.do"/>
+     	<forward
+     		name="config.wms.rendering"
+     		path="/config/wms/rendering.do"/>
+       		       		
+       	<forward
+       		name="wmsConfigDescription"
+       		path="/config/wms/description.do"/>
+       	<forward
+       		name="wmsConfigContent"
+       		path="/config/wms/content.do"/>
+
+    </global-forwards>
+
+<!-- =================================== Action Mapping Definitions -->
+
+    <action-mappings>
+        <!-- CONFIG WMS -->
+        <action
+        	path="/config/wms/index"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wms"/>      	
+        <action
+        	path="/config/wms"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wms"/>      
+
+        <action
+        	path="/config/wms/description"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wms.description"/>
+
+        <action
+        	path="/config/wms/content"
+        	type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wms.content"/>
+        	
+       	<action 
+       		path="/config/wms/rendering"
+       		type="org.apache.struts.actions.ForwardAction"
+        	parameter="config.wms.rendering"/>
+
+<!-- Submit Actions -->    
+       	<!-- WMS Actions -->
+        <action
+        	path="/config/wms/descriptionSubmit"
+        	type="org.vfny.geoserver.action.wms.WMSDescriptionAction"
+        	name="wmsDescriptionForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/wms/description.do"/>
+        <action
+        	path="/config/wms/contentSubmit"
+        	type="org.vfny.geoserver.action.wms.WMSContentAction"
+        	name="wmsContentForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/wms/content.do"/>
+		<action
+        	path="/config/wms/renderingSubmit"
+        	type="org.vfny.geoserver.action.wms.WMSRenderingAction"
+        	name="wmsRenderingForm"
+        	scope="request"
+        	validate="true"
+        	input="/config/wms/rendering.do"/>
+<!-- End Submit Actions -->
+
+    </action-mappings>
+
+</struts-config>

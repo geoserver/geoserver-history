@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.0">
+  <Name>SLD_Name</Name> <!--optional-->
+  <Title>SLD_Title</Title> <!--optional-->
+  <Abstract>SLD_Abstract</Abstract> <!--optional-->
+  <!--choice: 0 or 1 of each: NamedLayer, UserLayer-->
+  <NamedLayer> <!--optional-->
+    <Name>NamedLayer_NameString</Name> <!--required-->
+    <LayerFeatureConstraints> <!--optional-->
+      <FeatureTypeConstraint> <!--multiple-->
+	<FeatureTypeName>FeatureType1String</FeatureTypeName> <!--optional-->
+	<Filter> <!--optional-->
+	  <!-- ogc:Filter -->
+	</Filter>
+	<Extent> <!--optional, multiple-->
+	  <Name>ExtentNameString</Name> <!--required-->
+	  <Value>ExtentValueString</Value> <!--required-->
+	</Extent>
+      </FeatureTypeConstraint>
+    </LayerFeatureConstraints>
+    
+    <!--choice: 0 or 1 of each: NamedStyle, UserStyle-->
+    <NamedStyle> <!--optional-->
+      <Name>StyleNameString</Name> <!--required-->
+    </NamedStyle>
+    <UserStyle> <!--optional-->
+      <Name>StyleNameString</Name> <!--optional-->
+      <Title>StyleTitleString</Title> <!--optional-->
+      <Abstract>StyleAbstractString</Abstract> <!--optional-->
+      <IsDefault>1 or 0String</IsDefault> <!--optional-->
+      <FeatureTypeStyle> <!--multiple-->
+	<Name>FeatureTypeStyleNameString</Name> <!--optional-->
+	<Title>FeatureTypeStyleTitleString</Title> <!--optional-->
+	<Abstract>FeatureTypeStyleAbstractString</Abstract> <!--optional-->
+	<FeatureTypeName>***</FeatureTypeName> <!--optional-->
+	<SemanticTypeIdentifier>undefinedString</SemanticTypeIdentifier> <!--optional, multiple-->
+	<Rule> <!--multiple-->
+	  <Name>RuleNameString</Name> <!--optional-->
+	  <Title>RuleTitleString</Title> <!--optional-->
+	  <Abstract>RuleAbstractString</Abstract> <!--optional-->
+	  <LegendGraphic> <!--optional-->
+	    <Graphic> <!--required-->
+	      <!--choice: 0 or 1 of each: ExternalGraphic, Mark-->
+	      <ExternalGraphic> <!--optional-->
+		<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:type="simple"
+				xlink:href="http://www.vendor.com/geosym/2267.png"/> <!--required-->
+		<!--attribute group is xlink:simpleLink-->
+		
+		<Format>image/pngString</Format> <!--required-->
+	      </ExternalGraphic>
+	      <Mark> <!--optional-->
+		<WellKnownName>Graphic1String</WellKnownName> <!--optional-->
+		<Fill> <!--optional-->
+		  <GraphicFill> <!--optional-->
+		    <Graphic>***</Graphic> <!--required-->
+		  </GraphicFill>
+		  <CssParameter name="fill, fill-opacity"> <!--optional, multiple-->
+		    <!--ogc:Expression--> <!--optional-->
+		  </CssParameter>
+		</Fill>
+		<Stroke> <!--optional-->
+		  <!--choice: 0 or 1 of 1: GraphicFill, GraphicStroke-->
+		  <GraphicFill> <!--optional-->
+		    <Graphic>***</Graphic> <!--required-->
+		  </GraphicFill> <!--optional-->
+		  <GraphicStroke> <!--optional-->
+		    <Graphic>***</Graphic> <!--required-->
+		  </GraphicStroke>
+		  <!--optional, multiple-->
+		  <CssParameter name="stroke, stroke-opacity, stroke-width, stroke-linejoin, stroke-linecap, stroke-dasharray, stroke-dashoffset"> <!--optional, multiple-->
+		    <!--ogc:expression-->
+		  </CssParameter>
+		</Stroke>
+	      </Mark>
+	      <Opacity>1.0 to 0.0(percent)<!--ogc:expression--></Opacity> <!--optional-->
+	      <Size>16 (pixels)<!--ogc:expression--></Size> <!--optional-->
+	      <Rotation>90.0 (degrees clockwise)<!--ogc:expression--></Rotation> <!--optional-->
+	    </Graphic>
+	  </LegendGraphic>
+	  <!--choice:0 or 1 of 1: Filter, ElseFilter-->
+	  <Filter> <!--optional-->
+	    <!--ogc:filter (try wfs spec)-->
+	  </Filter>
+	  <ElseFilter/> <!--optional-->
+	  <MinScaleDenominator>6000Double</MinScaleDenominator> <!--optional-->
+	  <MaxScaleDenominator>10000000Double</MaxScaleDenominator> <!--optional-->
+	  <!--choice: 0 or 1 of each: LineSymbolizer, PolygonSymbolizer, PointSymbolizer, TextSymbolizer, RasterSymbolizer-->
+	  <LineSymbolizer> <!--optional-->
+	    <Geometry> <!--optional-->
+	      <PropertyName>
+		centerline
+		<!--ogc:PropertyName-->
+	      </PropertyName>
+	    </Geometry>
+	    <Stroke>***</Stroke> <!--optional-->
+	  </LineSymbolizer>
+	  <PolygonSymbolizer> <!--optional-->
+	    <Geometry>***</Geometry> <!--optional-->
+	    <Fill>***</Fill> <!--optional-->
+	    <Stroke>***</Stroke> <!--optional-->
+	  </PolygonSymbolizer>
+	  <PointSymbolizer> <!--optional-->
+	    <Geometry>***</Geometry> <!--optional-->
+	    <Graphic>***</Graphic> <!--optional-->
+	  </PointSymbolizer>
+	  <TextSymbolizer> <!--optional-->
+	    <Geometry>***</Geometry> <!--optional-->
+	    <Label> <!--optional-->
+	      <!--ogc:expression-->
+	    </Label>
+	    <Font> <!--optional-->
+	      <CssParameter name="font-family, font-style, font-weight, font-size">  <!--optional, multiple-->
+		<!--ogc:expression-->
+	      </CssParameter>
+	    </Font>
+	    <LabelPlacement> <!--optional-->
+	      <!--choice: 1 of 1: PointPlacement, LinePlacement-->
+	      <PointPlacement> <!--optional-->
+		<AnchorPoint> <!--optional-->
+		  <AnchorPointX> <!--required-->
+		    <!--ogc:expression-->
+		  </AnchorPointX>
+		  <AnchorPointY> <!--required-->
+		    <!--ogc:expression-->
+		  </AnchorPointY>
+		</AnchorPoint>
+		<Displacement> <!--optional-->
+		  <DisplacementX> <!--optional-->
+		    <!--ogc:expression-->
+		  </DisplacementX>
+		  <DisplacementY> <!--optional-->
+		    <!--ogc:expression-->
+		  </DisplacementY>
+		</Displacement>
+		<Rotation>***</Rotation> <!--optional-->
+	      </PointPlacement>
+	      <LinePlacement>  <!--optional-->
+		<PerpendicularOffset> <!--optional-->
+		  <!--ogc:expression-->
+		</PerpendicularOffset>
+	      </LinePlacement>
+	    </LabelPlacement>
+	    <Halo> <!--optional-->
+	      <Radius> <!--optional-->
+		<!--ogc:expression-->
+	      </Radius>
+	      <Fill>***</Fill> <!--optional-->
+	    </Halo>
+	    <Fill>***</Fill> <!--optional-->
+	  </TextSymbolizer>
+	  <RasterSymbolizer> <!--optional-->
+	    <Geometry>***</Geometry> <!--optional-->
+	    <Opacity>***</Opacity> <!--optional-->
+	    <ChannelSelection>
+	      <!--choice: 1 of 1: (RedChannel, GreenChannel, BlueChannel), GrayChannel-->
+	      <RedChannel> <!--optional-->
+		<SourceChannelName>Channel1String</SourceChannelName>  <!--required-->
+		<ContrastEnhancement> <!--optional-->
+		  <!--choice 0 or 1 of 1: Normalize, Histogram-->
+		  <Normalize/> <!--optional-->
+		  <Histogram/> <!--optional-->
+		  <GammaValue>1.0double</GammaValue> <!--optional-->
+		</ContrastEnhancement>
+	      </RedChannel>
+	      <GreenChannel>***sameRed***</GreenChannel> <!--optional-->
+	      <BlueChannel>***sameRed***</BlueChannel> <!--optional-->
+	      <GrayChannel>***sameRed***</GrayChannel> <!--optional-->
+	    </ChannelSelection> <!--optional-->
+	    <OverlapBehavior>  <!--optional-->
+	      <!--choice: 1 of 1: LATEST_ON_TOP, EARLIEST_ON_TOP, AVERAGE, RANDOM-->
+	      <LATEST_ON_TOP/> <!--optional-->
+	      <EARLIEST_ON_TOP/> <!--optional-->
+	      <AVERAGE/> <!--optional-->
+	      <RANDOM/> <!--optional-->
+	    </OverlapBehavior>
+	    <ColorMap> <!--optional-->
+	      <!--choice: 0 or 1 of each: ColorMapEntry-->
+	      <ColorMapEntry color="colorString"  
+			     opacity="opacityDouble"  
+			     quantity="quantityDouble"  
+			     label="labelString"/>  <!--optional-->
+	      <!--required-->
+	      <!--optional-->
+	      <!--optional-->
+	      <!--optional-->
+	    </ColorMap>
+	    <ContrastEnhancement>***</ContrastEnhancement> <!--optional-->
+	    <ShadedRelief> <!--optional-->
+	      <BrightnessOnly>0Boolean</BrightnessOnly> <!--optional-->
+	      <ReliefFactor>1.0Double</ReliefFactor> <!--optional-->
+	    </ShadedRelief>
+	    <ImageOutline> <!--optional-->
+	      <!--choice: 1 of 1: LineSymbolizer, PolygonSymbolizer-->
+	      <LineSymbolizer>***</LineSymbolizer> <!--optional-->
+	      <PolygonSymbolizer>***</PolygonSymbolizer> <!--optional-->
+	    </ImageOutline>
+	  </RasterSymbolizer>
+	</Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+  
+  <UserLayer> <!--optional-->
+    <Name>***</Name> <!--optional-->
+    <RemoteOWS> <!--optional-->
+      <Service>WFS or WCS (string)</Service><!--required-->
+      <OnlineResource>***</OnlineResource> <!--required-->
+    </RemoteOWS>
+    <LayerFeatureConstraints>***</LayerFeatureConstraints> <!--required-->
+    <UserStyle>***</UserStyle> <!--multiple-->
+  </UserLayer>
+</StyledLayerDescriptor>
