@@ -28,9 +28,6 @@ public class LegacyConfigurationImporterTest extends TestCase {
         GeoServerInfo info = importer.getConfiguration().getGlobal();
         assertNotNull( info );
         
-        assertEquals( "DEFAULT_LOGGING.properties", info.getLoggingLevel() );
-        assertTrue( info.isStdOutLogging() );
-        assertEquals( "logs/geoserver.log", info.getLoggingLocation() );
         assertEquals( 1000000, info.getMaxFeatures() );
         assertFalse( info.isVerbose() );
         assertFalse( info.isVerboseExceptions() );  

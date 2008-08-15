@@ -30,7 +30,7 @@ import com.sun.media.jai.util.SunTileCache;
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-public class LegacyConfigurationImporter {
+public class LegacyConfigurationImporter extends LegacyImporterSupport {
 
     /** logger */
     static Logger LOGGER = Logging.getLogger( "org.geoserver.confg" );
@@ -86,36 +86,23 @@ public class LegacyConfigurationImporter {
      */
     public void imprt(File dir) throws Exception {
 
+        LegacyServicesReader reader = reader( dir );
+        
         //TODO: this routine needs to be safer about accessing paramerters, 
         // wrapping in null checks
         
         GeoServerFactory factory = geoServer.getFactory();
 
-        // services.xml
-        File servicesFile = new File(dir, "services.xml");
-        if (!servicesFile.exists()) {
-            throw new FileNotFoundException(
-                    "Could not find services.xml under:"
-                            + dir.getAbsolutePath());
-        }
-
-        LegacyServicesReader reader = new LegacyServicesReader();
-        reader.read(servicesFile);
-
         //
         //global
         //
-        GeoServerInfo info = factory.createGlobal();
+        GeoServerInfo info = geoServer.getGlobal();
+        if ( info == null ) {
+            info = factory.createGlobal();
+            geoServer.setGlobal( info );
+        }
+            
         Map<String,Object> global = reader.global(); 
-        info.setLoggingLevel( (String) global.get( "log4jConfigFile") );
-        info.setLoggingLocation( (String) global.get( "logLocation") );
-        
-        if ( global.get( "suppressStdOutLogging" ) != null ) {
-            info.setStdOutLogging( ! get( global, "suppressStdOutLogging", Boolean.class) );    
-        }
-        else {
-            info.setStdOutLogging(true);
-        }
 
         info.setMaxFeatures( get( global, "maxFeatures", Integer.class ) );
         info.setVerbose( get( global, "verbose", Boolean.class ) );
@@ -180,18 +167,5 @@ public class LegacyConfigurationImporter {
                 LOGGER.log( Level.INFO, "", e );
             }
         }
-    }
-    
-    Object value( Object value, Object def ) {
-        return value != null ? value : def;
-    }
-    
-    <T extends Object> T get( Map map, String key, Class<T> clazz ) {
-        Object o = map.get( key );
-        if ( o == null ) {
-            return null;
-        }
-        
-        return (T) o;
     }
 }

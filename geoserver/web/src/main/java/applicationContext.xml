@@ -31,9 +31,4 @@
     </property>
   </bean>
   
-  <!-- logging initializer -->
-  <bean id="loggingInitializer" class="org.geoserver.logging.LoggingInitializer">
-    <property name="resourceLoader" ref="resourceLoader"/>
-  </bean>
- 	
 </beans>

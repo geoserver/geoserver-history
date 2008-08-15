@@ -14,6 +14,8 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.Wrapper;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.config.util.LegacyConfigurationImporter;
+import org.geoserver.config.util.LegacyLoggingImporter;
+import org.geoserver.logging.LoggingInitializer;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.util.logging.Logging;
@@ -75,6 +77,25 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     }
     
     protected void initialize() {
+        
+        //first thing to do is load the logging configuration
+        LegacyLoggingImporter loggingImporter = new LegacyLoggingImporter( geoserver );
+        try {
+            loggingImporter.imprt( resourceLoader.getBaseDirectory() );
+        } 
+        catch (Exception e) {
+            throw new RuntimeException( e );
+        }
+        
+        try {
+            LoggingInitializer loggingIniter = new LoggingInitializer();
+            loggingIniter.setResourceLoader( resourceLoader );
+            loggingIniter.initialize( geoserver );
+        } 
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
         //load catalog
         LegacyCatalogImporter catalogImporter = new LegacyCatalogImporter();
         catalogImporter.setResourceLoader(resourceLoader);
