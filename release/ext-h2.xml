@@ -11,6 +11,7 @@
       <includes>
         <include>gt-h2-*.jar</include>
         <include>h2-*.jar</include>
+        <include>spatialdbbox-*.jar</include>
       </includes>
     </fileSet>
   </fileSets>
