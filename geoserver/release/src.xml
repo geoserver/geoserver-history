@@ -13,11 +13,13 @@
                    <include>org.geoserver:net.opengis.wfs</include>
                    <include>org.geoserver:net.opengis.wfsv</include>
                    <include>org.geoserver:wfs</include>
+                   <include>org.geoserver:wfs11</include>
                    <include>org.geoserver:wms</include>
                    <include>org.geoserver:wfsv</include>
                    <include>org.geoserver:validation</include>
                    <include>org.geoserver:web</include>
                    <include>org.geoserver:wcs</include>
+                   <include>org.geoserver:wcs1_1</include>
                    <include>org.geoserver:data</include>
                    <include>org.geoserver:platform</include>
                    <include>org.geoserver:test</include>
