@@ -205,40 +205,6 @@ public class GeoServerBasePage extends WebPage {
         return getGeoServerApplication().getCatalog();
     }
     
-    @SuppressWarnings("serial")
-    private static class SignInForm extends StatelessForm {
-        private String password;
-        private String username;
-
-        public SignInForm(final String id){
-            super(id);
-            setModel(new CompoundPropertyModel(this));
-            add(new TextField("username"));
-            add(new PasswordTextField("password"));
-        }
-
-        @Override
-        public final void onSubmit(){
-            if (username == null || username.length() == 0){
-                Session.get().warn("No username provided!");
-                return;
-            }
-
-            if (signIn(username, password)){
-                if (!continueToOriginalDestination()) {
-                    setResponsePage(getApplication().getHomePage());
-                    Session.get().info("You have successfully signed in!");
-                }
-            } else {
-                Session.get().error("Unknown username/password");
-            }
-        }
-
-        private final boolean signIn(String username, String password) {
-            return GeoServerSession.get().authenticate(username, password);
-        }
-    }
-
     /**
      * Splits up the pages by category, turning the list into a map keyed by category
      * @param pages
