@@ -12,48 +12,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.Test;
 
-import org.geoserver.test.GeoServerTestSupport;
-
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletContext;
 
-public class BufferedRequestWrapperTest extends GeoServerTestSupport{
+public class BufferedRequestWrapperTest extends RequestWrapperTestSupport{
 
-	protected final String[] testStrings = new String[]{
-		"Hello, this is a test",
-		"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong",
-		""
-	};
-	
 	/**
      * This is a READ ONLY TEST so we can use one time setup
      */
     public static Test suite() {
         return new OneTimeTestSetup(new BufferedRequestWrapperTest());
     }
-
-	protected HttpServletRequest makeRequest(String body){
-		MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setScheme("http");
-        request.setServerName("localhost");
-        request.setContextPath("/geoserver");
-        request.setRequestURI("/geoserver");
-        request.setQueryString("");
-        request.setRemoteAddr("127.0.0.1");
-        request.setServletPath("/geoserver");
-
-		request.setMethod("POST");
-		request.setBodyContent(body);
-
-        MockHttpSession session = new MockHttpSession();
-        session.setupServletContext(new MockServletContext());
-        request.setSession(session);
-
-        request.setUserPrincipal(null);
-
-		return request;
-	}
 
 	public void testGetInputStream() throws Exception{
 		for (int i = 0; i < testStrings.length; i++){
@@ -85,42 +55,24 @@ public class BufferedRequestWrapperTest extends GeoServerTestSupport{
 		}
 
 		assertEquals(buff.toString(), testString);
-		//compare(req, wrapper);
 	}
 
     public void doGetReaderTest(String testString) throws Exception{
 		HttpServletRequest req = makeRequest(testString);
 
 		BufferedReader br = req.getReader();
-		String line;
 
 		while ((br.readLine()) != null){ /* clear out the body */ }
 
 		BufferedRequestWrapper wrapper = new BufferedRequestWrapper(req, testString);
 		StringBuffer buff = new StringBuffer();
+        int c;
 		br = wrapper.getReader();
 		
-		while ((line = br.readLine()) != null){
-			buff.append(line);
+		while ((c = br.read()) != -1){
+			buff.append((char)c);
 		}
 
 		assertEquals(buff.toString(), testString);
-		//compare(req, wrapper);
-	}
-	
-	public static void compare(HttpServletRequest reqA, HttpServletRequest reqB){
-		Method[] methods = HttpServletRequest.class.getMethods();
-
-		for (int i = 0; i < methods.length; i++){
-			try {
-				if (methods[i].getParameterTypes().length == 0){
-					Object resultA = methods[i].invoke(reqA);
-					Object resultB = methods[i].invoke(reqB);
-		            assertEquals(resultA, resultB);
-				} 
-			} catch (Exception e){
-				// don't do anything, it's fine
-			}
-		}
 	}
 }
