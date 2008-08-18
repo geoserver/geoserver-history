@@ -30,17 +30,17 @@
         <dependency>
             <groupId>org.geotools.ogc</groupId>
             <artifactId>net.opengis.wps</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>${gt.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools.xsd</groupId>
             <artifactId>gt-xsd-wps</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>${gt.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-process</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>${gt.version}</version>
         </dependency>
     </dependencies>
 
