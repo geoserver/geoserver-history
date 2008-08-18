@@ -1,23 +1,20 @@
 package org.geoserver.web.admin;
 
-import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.web.util.MapModel;
-import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.jai.JAIInfo;
-import org.geotools.data.DataStore;
-import org.geotools.data.LockingManager;
-import org.vfny.geoserver.global.GeoServer;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.media.jai.JAI;
 
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.jai.JAIInfo;
+import org.geoserver.web.util.MapModel;
+import org.geotools.data.DataStore;
+import org.geotools.data.LockingManager;
 
 import com.sun.media.jai.util.SunTileCache;
 
