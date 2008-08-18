@@ -8,6 +8,7 @@ import org.geotools.data.LockingManager;
 
 import javax.media.jai.JAI;
 
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Iterator;
 
@@ -21,7 +22,7 @@ public class StatusPage extends ServerAdminPage {
         //TODO: if we just provide the values directly as the models they won't be refreshed on a page reload (ugh).
         add(new Label("locks", Long.toString(getLockCount())));
         add(new Label("connections", Long.toString(getConnectionCount())));
-        add(new Label("memory", Long.toString(Runtime.getRuntime().freeMemory() / 1024) + "kB"));
+        add(new Label("memory", formatUsedMemory()));
         add(new Label("jvm.version", System.getProperty("java.vendor") + ": " + System.getProperty("java.version")));
         add(new Label("jai.available", 
                     Boolean.toString(ClassLoader.getSystemClassLoader().getResource("javax/media/jai/buildVersion") != null))
@@ -66,6 +67,7 @@ public class StatusPage extends ServerAdminPage {
             });
         add(new Link("free.memory"){
                 public void onClick(){
+                    System.gc();
                 }
             });
         add(new Link("free.memory.jai"){
@@ -76,6 +78,30 @@ public class StatusPage extends ServerAdminPage {
         add(new Label("reload.date.geoserver", "Jul 14, 3:07 PM"));
         add(new Label("reload.date.configuration", "Jul 14, 3:07 PM"));
         add(new Label("reload.date.xml", "Mar 14, 2:15 PM"));
+    }
+
+    /**
+     * @return a human friendly string for the VM used memory
+     */
+    private String formatUsedMemory() {
+        final Runtime runtime = Runtime.getRuntime();
+        final double usedBytes = runtime.totalMemory() - runtime.freeMemory();
+        final long KB = 1024;
+        final long MB = KB * KB;
+        final long GB = KB * MB;
+        final NumberFormat formatter = NumberFormat.getInstance();
+        formatter.setMaximumFractionDigits(2);
+        
+        String formattedUsedMemory;
+        if(usedBytes > GB){
+            formattedUsedMemory = formatter.format(usedBytes / GB) + " GB";
+        }else if(usedBytes > MB){
+            formattedUsedMemory = formatter.format(usedBytes / MB) + " MB";
+        }else{
+            formattedUsedMemory = formatter.format(usedBytes / KB) + " KB";
+        }
+        
+        return formattedUsedMemory;
     }
 
     private synchronized int getLockCount(){
