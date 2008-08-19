@@ -21,13 +21,4 @@
       </list>
     </property>
   </bean>
-
-  <bean id="namespaceManagerShortcut" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="namespaceManager"/>
-    <property name="titleKey" value="data.namespace.manager.title"/>
-    <property name="descriptionKey" value="data.namespace.manager.description"/>
-    <property name="componentClass" value="org.geoserver.wfs.web.publish.NamespaceManagerPage"/>
-    <property name="category" ref="dataCategory"/>
-  </bean>
-
 </beans>
