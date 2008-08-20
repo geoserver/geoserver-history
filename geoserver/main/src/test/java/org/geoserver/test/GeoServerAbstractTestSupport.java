@@ -834,6 +834,17 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     }
 
     /**
+     * Utility method to print out the contents of an input stream.
+     */
+    protected void print( InputStream in ) throws Exception {
+        BufferedReader r = new BufferedReader( new InputStreamReader( in ) );
+        String line = null;
+        while( (line = r.readLine()) != null ) {
+            System.out.println( line );
+        }
+    }
+    
+    /**
      * Convenience method for element.getElementsByTagName() to return the 
      * first element in the resulting node list.
      */
