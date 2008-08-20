@@ -814,6 +814,12 @@
      </exclude>
     </excludes>
    </resource>
+   <resource>
+     <directory>${basedir}/src/main/resources</directory>
+     <includes>
+       <include>**/*</include>
+     </includes>
+   </resource>
   </resources>
   <testResources>
    <testResource>
