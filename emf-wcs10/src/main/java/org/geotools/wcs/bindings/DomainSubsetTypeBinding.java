@@ -2,9 +2,9 @@ package org.geotools.wcs.bindings;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wcs.DomainSubsetType;
-import net.opengis.wcs.SpatialSubsetType;
-import net.opengis.wcs.Wcs10Factory;
+import net.opengis.wcs10.DomainSubsetType;
+import net.opengis.wcs10.SpatialSubsetType;
+import net.opengis.wcs10.Wcs10Factory;
 
 import org.geotools.wcs.WCS;
 import org.geotools.xml.AbstractComplexBinding;

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wcs.Wcs10Factory;
+import net.opengis.wcs10.Wcs10Factory;
 
 import org.eclipse.emf.ecore.EFactory;
 import org.geotools.gml4wcs.GMLConfiguration;

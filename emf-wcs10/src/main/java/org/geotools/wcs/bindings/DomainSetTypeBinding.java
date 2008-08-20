@@ -2,7 +2,7 @@ package org.geotools.wcs.bindings;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wcs.DomainSetType;
+import net.opengis.wcs10.DomainSetType;
 
 import org.geotools.wcs.WCS;
 import org.geotools.xml.AbstractComplexBinding;

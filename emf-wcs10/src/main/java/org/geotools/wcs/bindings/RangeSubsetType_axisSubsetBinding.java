@@ -2,11 +2,11 @@ package org.geotools.wcs.bindings;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wcs.AxisSubsetType;
-import net.opengis.wcs.IntervalType;
-import net.opengis.wcs.TypedLiteralType;
-import net.opengis.wcs.ValueRangeType;
-import net.opengis.wcs.Wcs10Factory;
+import net.opengis.wcs10.AxisSubsetType;
+import net.opengis.wcs10.IntervalType;
+import net.opengis.wcs10.TypedLiteralType;
+import net.opengis.wcs10.ValueRangeType;
+import net.opengis.wcs10.Wcs10Factory;
 
 import org.geotools.wcs.WCS;
 import org.geotools.xml.AbstractComplexBinding;

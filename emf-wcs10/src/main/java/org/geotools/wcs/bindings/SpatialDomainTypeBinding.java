@@ -2,7 +2,7 @@ package org.geotools.wcs.bindings;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wcs.SpatialDomainType;
+import net.opengis.wcs10.SpatialDomainType;
 
 import org.geotools.wcs.WCS;
 import org.geotools.xml.AbstractComplexBinding;

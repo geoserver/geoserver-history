@@ -9,8 +9,8 @@ import javax.xml.namespace.QName;
 import net.opengis.gml.DirectPositionType;
 import net.opengis.gml.EnvelopeType;
 import net.opengis.gml.Gml4wcsFactory;
-import net.opengis.wcs.SpatialSubsetType;
-import net.opengis.wcs.Wcs10Factory;
+import net.opengis.wcs10.SpatialSubsetType;
+import net.opengis.wcs10.Wcs10Factory;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;

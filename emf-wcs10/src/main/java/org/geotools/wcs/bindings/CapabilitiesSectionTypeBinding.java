@@ -2,8 +2,8 @@ package org.geotools.wcs.bindings;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wcs.CapabilitiesSectionType;
-import net.opengis.wcs.Wcs10Factory;
+import net.opengis.wcs10.CapabilitiesSectionType;
+import net.opengis.wcs10.Wcs10Factory;
 
 import org.geotools.wcs.WCS;
 import org.geotools.xml.AbstractSimpleBinding;
