@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import net.opengis.wcs.DescribeCoverageType;
+import net.opengis.wcs10.DescribeCoverageType;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.geometry.GeneralEnvelope;

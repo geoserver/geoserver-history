@@ -15,10 +15,10 @@ import java.util.Map;
 import javax.media.jai.Interpolation;
 
 import net.opengis.gml.GridType;
-import net.opengis.wcs.AxisSubsetType;
-import net.opengis.wcs.GetCoverageType;
-import net.opengis.wcs.IntervalType;
-import net.opengis.wcs.TypedLiteralType;
+import net.opengis.wcs10.AxisSubsetType;
+import net.opengis.wcs10.GetCoverageType;
+import net.opengis.wcs10.IntervalType;
+import net.opengis.wcs10.TypedLiteralType;
 
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.Response;

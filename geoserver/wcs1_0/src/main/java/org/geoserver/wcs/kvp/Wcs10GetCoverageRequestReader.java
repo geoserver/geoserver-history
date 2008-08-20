@@ -14,13 +14,13 @@ import java.util.Map;
 import net.opengis.gml.CodeType;
 import net.opengis.gml.Gml4wcsFactory;
 import net.opengis.gml.GridType;
-import net.opengis.wcs.DomainSubsetType;
-import net.opengis.wcs.GetCoverageType;
-import net.opengis.wcs.OutputType;
-import net.opengis.wcs.RangeSubsetType;
-import net.opengis.wcs.SpatialSubsetType;
-import net.opengis.wcs.TimeSequenceType;
-import net.opengis.wcs.Wcs10Factory;
+import net.opengis.wcs10.DomainSubsetType;
+import net.opengis.wcs10.GetCoverageType;
+import net.opengis.wcs10.OutputType;
+import net.opengis.wcs10.RangeSubsetType;
+import net.opengis.wcs10.SpatialSubsetType;
+import net.opengis.wcs10.TimeSequenceType;
+import net.opengis.wcs10.Wcs10Factory;
 
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
 import org.geoserver.ows.util.RequestUtils;
@@ -175,7 +175,7 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
      * @return
      */
     private CoordinateReferenceSystem decodeCRS(String crsName, CoordinateReferenceSystem crs) {
-        if("WGS84(DD)".equals(crsName)) {
+        if("WGS84(DD)".equals(crsName) || "urn:ogc:def:crs:OGC:1.3:CRS84".equals(crsName)) {
             crsName = "EPSG:4326";
         }
         

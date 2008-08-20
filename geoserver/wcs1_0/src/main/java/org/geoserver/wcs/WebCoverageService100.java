@@ -4,9 +4,9 @@
  */
 package org.geoserver.wcs;
 
-import net.opengis.wcs.DescribeCoverageType;
-import net.opengis.wcs.GetCapabilitiesType;
-import net.opengis.wcs.GetCoverageType;
+import net.opengis.wcs10.DescribeCoverageType;
+import net.opengis.wcs10.GetCapabilitiesType;
+import net.opengis.wcs10.GetCoverageType;
 
 import org.geoserver.wcs.response.Wcs10DescribeCoverageTransformer;
 import org.geoserver.wcs.response.Wcs10CapsTransformer;

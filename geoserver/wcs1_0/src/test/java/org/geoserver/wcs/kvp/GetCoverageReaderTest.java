@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.Test;
-import net.opengis.wcs.GetCoverageType;
+import net.opengis.wcs10.GetCoverageType;
 
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.Data;

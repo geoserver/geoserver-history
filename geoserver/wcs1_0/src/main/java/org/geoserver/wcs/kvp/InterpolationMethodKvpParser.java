@@ -5,7 +5,7 @@
 package org.geoserver.wcs.kvp;
 
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
-import net.opengis.wcs.InterpolationMethodType;
+import net.opengis.wcs10.InterpolationMethodType;
 
 import org.geoserver.ows.KvpParser;
 import org.vfny.geoserver.wcs.WcsException;

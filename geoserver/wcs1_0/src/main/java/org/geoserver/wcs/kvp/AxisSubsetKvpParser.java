@@ -6,10 +6,10 @@ package org.geoserver.wcs.kvp;
 
 import java.util.List;
 
-import net.opengis.wcs.AxisSubsetType;
-import net.opengis.wcs.IntervalType;
-import net.opengis.wcs.TypedLiteralType;
-import net.opengis.wcs.Wcs10Factory;
+import net.opengis.wcs10.AxisSubsetType;
+import net.opengis.wcs10.IntervalType;
+import net.opengis.wcs10.TypedLiteralType;
+import net.opengis.wcs10.Wcs10Factory;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;

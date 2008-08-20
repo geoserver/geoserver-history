@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import net.opengis.wcs.CapabilitiesSectionType;
-import net.opengis.wcs.GetCapabilitiesType;
+import net.opengis.wcs10.CapabilitiesSectionType;
+import net.opengis.wcs10.GetCapabilitiesType;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;

@@ -3,7 +3,7 @@ package org.geoserver.wcs.xml;
 import java.io.StringReader;
 
 import junit.framework.TestCase;
-import net.opengis.wcs.DescribeCoverageType;
+import net.opengis.wcs10.DescribeCoverageType;
 
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
 import org.geotools.wcs.WCSConfiguration;

@@ -4,10 +4,10 @@ import java.io.StringReader;
 
 import junit.framework.TestCase;
 import net.opengis.gml.GridType;
-import net.opengis.wcs.AxisSubsetType;
-import net.opengis.wcs.GetCoverageType;
-import net.opengis.wcs.IntervalType;
-import net.opengis.wcs.RangeSubsetType;
+import net.opengis.wcs10.AxisSubsetType;
+import net.opengis.wcs10.GetCoverageType;
+import net.opengis.wcs10.IntervalType;
+import net.opengis.wcs10.RangeSubsetType;
 
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
 import org.geotools.geometry.GeneralEnvelope;

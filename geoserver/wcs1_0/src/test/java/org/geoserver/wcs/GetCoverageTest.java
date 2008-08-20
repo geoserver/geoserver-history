@@ -8,7 +8,7 @@ import java.util.Map;
 
 import junit.framework.Test;
 import junit.textui.TestRunner;
-import net.opengis.wcs.GetCoverageType;
+import net.opengis.wcs10.GetCoverageType;
 
 import org.geoserver.wcs.kvp.Wcs10GetCoverageRequestReader;
 import org.geoserver.wcs.test.WCSTestSupport;
