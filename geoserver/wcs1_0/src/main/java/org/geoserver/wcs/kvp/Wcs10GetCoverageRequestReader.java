@@ -96,20 +96,7 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         if (crsName == null)
             throw new WcsException("crs parameter is mandatory", MissingParameterValue, "crs");
 
-        if("urn:ogc:def:crs:OGC:1.3:CRS84".equals(crsName)) {
-            crsName = "EPSG:4326";
-        }
-        if("WGS84(DD)".equals(crsName)) {
-            crsName = "EPSG:4326";
-        }
-        
-        try {
-            crs = CRS.decode(crsName, true);
-        } catch (NoSuchAuthorityCodeException e) {
-            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue, "crs");
-        } catch (FactoryException e) {
-            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue, "crs");
-        }
+        crs = decodeCRS(crsName, crs);
 
         // either bbox or timesequence must be there
         Envelope bbox = (Envelope) kvp.get("BBOX");
@@ -168,20 +155,7 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         String crsName = (String) (kvp.get("response_crs") != null ? kvp.get("response_crs") : kvp.get("crs"));
         CoordinateReferenceSystem crs = null;
         if (crsName != null) {
-            if("urn:ogc:def:crs:OGC:1.3:CRS84".equals(crsName)) {
-                crsName = "EPSG:4326";
-            }
-            if("WGS84(DD)".equals(crsName)) {
-                crsName = "EPSG:4326";
-            }
-            
-            try {
-                crs = CRS.decode(crsName, true);
-            } catch (NoSuchAuthorityCodeException e) {
-                throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue, "crs");
-            } catch (FactoryException e) {
-                throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue, "crs");
-            }
+            crs = decodeCRS(crsName, crs);
 
             crsType.setValue(CRS.lookupIdentifier(crs, false));
 
@@ -193,6 +167,27 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         output.setFormat(formatType);
 
         return output;
+    }
+
+    /**
+     * @param crsName
+     * @param crs
+     * @return
+     */
+    private CoordinateReferenceSystem decodeCRS(String crsName, CoordinateReferenceSystem crs) {
+        if("WGS84(DD)".equals(crsName)) {
+            crsName = "EPSG:4326";
+        }
+        
+        try {
+            crs = CRS.decode(crsName, true);
+        } catch (NoSuchAuthorityCodeException e) {
+            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue, "crs");
+        } catch (FactoryException e) {
+            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue, "crs");
+        }
+        
+        return crs;
     }
 
 }

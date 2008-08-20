@@ -33,9 +33,7 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.Coverage;
-import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
@@ -92,12 +90,10 @@ public class Wcs10GetCoverageResponse extends Response {
     @Override
     public String getMimeType(Object value, Operation operation)
             throws ServiceException {
-        // this one can handle GetCoverage responses where store = false
         if (!(operation.getParameters()[0] instanceof GetCoverageType))
-            return null;
+            throw new WcsException("Cannot handle object of type: " + operation.getParameters()[0].getClass());
 
-        GetCoverageType getCoverage = (GetCoverageType) operation
-                .getParameters()[0];
+        GetCoverageType getCoverage = (GetCoverageType) operation.getParameters()[0];
         String outputFormat = getCoverage.getOutput().getFormat().getValue();
         if (delegate == null)
             this.delegate = CoverageResponseDelegateFactory
@@ -112,12 +108,10 @@ public class Wcs10GetCoverageResponse extends Response {
 
     @Override
     public boolean canHandle(Operation operation) {
-        // this one can handle GetCoverage responses where store = false
         if (!(operation.getParameters()[0] instanceof GetCoverageType))
             return false;
 
-        GetCoverageType getCoverage = (GetCoverageType) operation
-                .getParameters()[0];
+        GetCoverageType getCoverage = (GetCoverageType) operation.getParameters()[0];
         String outputFormat = getCoverage.getOutput().getFormat().getValue();
         if (delegate == null)
             this.delegate = CoverageResponseDelegateFactory
@@ -147,47 +141,6 @@ public class Wcs10GetCoverageResponse extends Response {
 
         // grab the coverage info for Coverages document encoding
         final GridCoverage2D coverage = (GridCoverage2D) coverages[0];
-//        CoverageInfo coverageInfo = catalog.getCoverageInfo(request
-//                .getSourceCoverage());
-//
-//        // build the response
-//        if (!coverageInfo.getSupportedFormats().contains(
-//                outputFormat.toUpperCase())) {
-//            WcsException newEx = new WcsException(new StringBuffer(
-//                    "output format: ").append(outputFormat).append(" not ")
-//                    .append("supported by geoserver for this Coverage")
-//                    .toString());
-//            throw newEx;
-//        }
-//
-//        final Format format = coverageInfo.getFormatInfo().getFormat();
-//        final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) coverageInfo
-//                .createReader(hints);
-//
-//        // /////////////////////////////////////////////////////////
-//        //
-//        // Setting coverage reading params.
-//        //
-//        // /////////////////////////////////////////////////////////
-//        final ParameterValueGroup params = reader.getFormat()
-//                .getReadParameters();
-//
-//        GridCoverage2D finalCoverage = null;
-//        try {
-//            finalCoverage = getFinalCoverage(request, coverageInfo, reader, CoverageUtils.getParametersKVP(params));
-//        } catch (IndexOutOfBoundsException e) {
-//            final WcsException newEx = new WcsException(e, "problem with CoverageResults", "GetCoverage");
-//
-//            throw newEx;
-//        } catch (FactoryException e) {
-//            final WcsException newEx = new WcsException(e, "problem with CoverageResults", "GetCoverage");
-//
-//            throw newEx;
-//        } catch (TransformException e) {
-//            final WcsException newEx = new WcsException(e, "problem with CoverageResults", "GetCoverage");
-//
-//            throw newEx;
-//        }
         
         // write the coverage
         try {
