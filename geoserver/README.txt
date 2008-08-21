@@ -3,7 +3,7 @@ http://docs.codehaus.org/display/GEOSDOC/Developers+Guide
 
 ----------------------------
 
-1) Install JAVA SDK
+1) Install JAVA SDK 
 Download and install the Java SDK.
 
 Create an environment variable called JAVA_HOME and point it to your Java SDK directory.
