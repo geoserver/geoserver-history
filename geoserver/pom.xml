@@ -227,6 +227,11 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>gt-xsd-wcs</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
     <groupId>org.geotools</groupId>
     <artifactId>gt-shapefile</artifactId>
     <version>${gt.version}</version>
@@ -1080,7 +1085,7 @@
   <module>main</module>
   <module>wcs</module>
   <module>wcs1_0</module>
-  <!-- module>wcs1_1</module -->
+  <module>wcs1_1</module>
   <module>wfs</module>
   <module>wfs11</module>
   <module>wfsv</module>

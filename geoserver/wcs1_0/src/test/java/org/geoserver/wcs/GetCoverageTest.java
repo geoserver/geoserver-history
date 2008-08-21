@@ -15,6 +15,7 @@ import org.geoserver.wcs.test.WCSTestSupport;
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.geotools.wcs.WCSConfiguration;
 import org.opengis.coverage.grid.GridCoverage;
@@ -73,7 +74,7 @@ public class GetCoverageTest extends WCSTestSupport {
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         assertEquals(1, coverages.length);
         GridCoverage2D coverage = (GridCoverage2D) coverages[0];
-        assertEquals(CRS.decode("EPSG:4326"), coverage.getEnvelope().getCoordinateReferenceSystem());
+        assertTrue(CRS.equalsIgnoreMetadata(DefaultGeographicCRS.WGS84, coverage.getEnvelope().getCoordinateReferenceSystem()));
     }
     
     public void testWrongFormatParams() throws Exception {

@@ -39,11 +39,6 @@
       <artifactId>gt-xsd-filter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>emf-wcs10</artifactId>
-      <version>2.5-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.geotools.xsd</groupId>
       <artifactId>gt-xsd-ows</artifactId>
       <!-- This is due to the fact the ows model jars come from geoserver but are
@@ -58,6 +53,10 @@
           <artifactId>ows11</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.xsd</groupId>
+  	  <artifactId>gt-xsd-wcs</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
