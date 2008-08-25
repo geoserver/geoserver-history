@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMSExtensions;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -131,7 +132,7 @@ public class GetMapResponse implements Response {
 
 		final String outputFormat = request.getFormat();
 
-		this.delegate = getDelegate(outputFormat, wms);
+		this.delegate = getDelegate(outputFormat);
 		// JD:make instance variable in order to release resources later
 		// final WMSMapContext map = new WMSMapContext();
 		map = new WMSMapContext(request);
@@ -582,8 +583,8 @@ public class GetMapResponse implements Response {
     }
 
 	/**
-	 * Creates a GetMapDelegate specialized in generating the requested map
-	 * format
+	 * Finds out a {@link GetMapProducer} specialized in generating the requested map
+	 * format, registered in the spring context.
 	 * 
 	 * @param outputFormat
 	 *            a request parameter object wich holds the processed request
@@ -597,14 +598,19 @@ public class GetMapResponse implements Response {
 	 *             specified in <code>request</code> or if it can't be
 	 *             instantiated
 	 */
-	private GetMapProducer getDelegate(String outputFormat, WMS wms)
+	private GetMapProducer getDelegate(final String outputFormat)
 			throws WmsException {
-		final Collection<GetMapProducer> producers = GeoServerExtensions.extensions(GetMapProducer.class, applicationContext);	
+		final Collection<GetMapProducer> producers = WMSExtensions.findMapProducers(applicationContext);	
 
-		String producerFormat;
+		List<String> producerFormats;
 		for (GetMapProducer producer : producers) {
-			producerFormat = producer.getOutputFormat();
-		    if (producerFormat.equals(outputFormat)) {
+			producerFormats = producer.getOutputFormatNames();
+		    if (producerFormats.contains(outputFormat)) {
+		        //Tell the producer which of its output format names the request
+		        //was made for, the producer may need it for its logic.
+		        //For example, result is different if requested image/png8 instead of image/png
+		        //I'm not so glad with this, but found a lot of producers were made that way
+		        producer.setOutputFormat(outputFormat);
 				return producer;
 			}
 		}

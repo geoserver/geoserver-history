@@ -10,7 +10,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -312,53 +314,18 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      */
     private static class DummyRasterMapProducer extends
             DefaultRasterMapProducer {
-        /**
-         * DOCUMENT ME!
-         * 
-         * @param image
-         *            not used.
-         * @param outStream
-         *            not used.
-         * 
-         * @throws WmsException
-         *             never.
-         * @throws IOException
-         *             never.
-         */
+        
+        @Override
+        public List<String>getOutputFormatNames(){
+            return Collections.singletonList("image/gif");
+        }
+        
         public void formatImageOutputStream(RenderedImage image,
                 OutputStream outStream) throws WmsException, IOException {
             /*
              * Intentionally left blank, since this class is used just to ensure
              * the abstract raster producer correctly generates a BufferedImage.
              */
-        }
-
-        protected BufferedImage prepareImage(int width, int height) {
-            // final int size = width * height;
-            // final byte pixels[] = new byte[size];
-            // Arrays.fill(pixels, (byte) 255);
-            //
-            // // Create a data buffer using the byte buffer of pixel data.
-            // // The pixel data is not copied; the data buffer uses the byte
-            // buffer
-            // // array.
-            // final DataBuffer dbuf = new DataBufferByte(pixels, width *
-            // height,
-            // 0);
-            //
-            // // Prepare a sample model suitable for the default palette
-            // final SampleModel sampleModel = DEFAULT_PALETTE
-            // .createCompatibleSampleModel(width, height);
-            //
-            // // Create a raster using the sample model and data buffer
-            // final WritableRaster raster =
-            // Raster.createWritableRaster(sampleModel,
-            // dbuf, null);
-            //
-            // // Combine the color model and raster into a buffered image
-            // return new BufferedImage(DEFAULT_PALETTE, raster, false, null);
-            return new BufferedImage(width, height,
-                    BufferedImage.TYPE_4BYTE_ABGR);
         }
 
         public String getContentDisposition() {

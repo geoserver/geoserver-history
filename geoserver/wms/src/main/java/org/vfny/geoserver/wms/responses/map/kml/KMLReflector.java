@@ -23,11 +23,6 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
  *
  */
 public class KMLReflector {
-    /**
-     * kml/kmz mime types
-     */
-    public static final String KML_MIME_TYPE = "application/vnd.google-earth.kml+xml";
-    public static final String KMZ_MIME_TYPE = "application/vnd.google-earth.kmz+xml";
 
     /** default 'kmscore' value */
     public static final Integer KMSCORE = new Integer(50);
@@ -39,7 +34,7 @@ public class KMLReflector {
     public static final Boolean KMPLACEMARK = Boolean.FALSE;
 
     /** default 'format' value */
-    public static final String FORMAT = KML_MIME_TYPE;
+    public static final String FORMAT = KMLMapProducer.MIME_TYPE;
 
     /**
      * web map service
@@ -78,13 +73,13 @@ public class KMLReflector {
         //set the format
         //TODO: create a subclass of GetMapRequest to store these values
         if ( request.getSuperOverlay() ) {
-            request.setFormat( KML_MIME_TYPE );
+            request.setFormat( KMLMapProducer.MIME_TYPE );
         }
         else {
-            request.setFormat( KMZ_MIME_TYPE );
+            request.setFormat( KMZMapProducer.MIME_TYPE );
         }
         
-        response.setContentType( KML_MIME_TYPE );
+        response.setContentType( KMLMapProducer.MIME_TYPE );
         
         //set the content disposition
         StringBuffer filename = new StringBuffer();

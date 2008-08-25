@@ -6,6 +6,8 @@ package org.vfny.geoserver.wms.responses.map.svg;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
@@ -25,7 +27,13 @@ import org.vfny.geoserver.wms.WmsException;
  */
 public class SvgMapProducerProxy implements GetMapProducer {
 
-    static final String MIME_TYPE = "image/svg+xml";
+    public static final String MIME_TYPE = "image/svg+xml";
+    
+    public static final String[] OUTPUT_FORMATS = {
+       MIME_TYPE,
+       "image/svg xml",
+       "image/svg"
+    };
 
     /**
      * The actual SVG map producer to use depending on the
@@ -39,15 +47,15 @@ public class SvgMapProducerProxy implements GetMapProducer {
      *            easy
      * 
      */
-    public SvgMapProducerProxy(final String formatName, WMS wms) {
+    public SvgMapProducerProxy( WMS wms ) {
         final String svgRendererTypeSetting = wms.getSvgRenderer();
         if (WMSConfig.SVG_SIMPLE.equals(svgRendererTypeSetting)) {
-            svgProducer = new SVGMapProducer(formatName, MIME_TYPE);
+            svgProducer = new SVGMapProducer(MIME_TYPE, OUTPUT_FORMATS);
         } else if (WMSConfig.SVG_BATIK.equals(svgRendererTypeSetting)) {
-            svgProducer = new SVGBatikMapProducer(formatName, MIME_TYPE, wms);
+            svgProducer = new SVGBatikMapProducer(MIME_TYPE, OUTPUT_FORMATS, wms);
         } else {
             //no setting, do the default
-            svgProducer = new SVGMapProducer(formatName, MIME_TYPE);
+            svgProducer = new SVGMapProducer(MIME_TYPE, OUTPUT_FORMATS);
         }
     }
 
@@ -75,10 +83,6 @@ public class SvgMapProducerProxy implements GetMapProducer {
         svgProducer.produceMap();
     }
 
-    public void setContentType(String mime) {
-        svgProducer.setContentType(mime);
-    }
-
     public void setMapContext(WMSMapContext mapContext) {
         svgProducer.setMapContext(mapContext);
     }
@@ -91,4 +95,7 @@ public class SvgMapProducerProxy implements GetMapProducer {
         svgProducer.writeTo(out);
     }
 
+    public List<String> getOutputFormatNames() {
+        return Arrays.asList(OUTPUT_FORMATS);
+    }
 }

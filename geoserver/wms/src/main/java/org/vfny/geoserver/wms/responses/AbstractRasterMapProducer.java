@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import org.vfny.geoserver.wms.RasterMapProducer;
 import java.awt.image.RenderedImage;
+
+import org.vfny.geoserver.wms.RasterMapProducer;
 
 
 /**
@@ -20,8 +21,23 @@ public abstract class AbstractRasterMapProducer extends AbstractGetMapProducer
      */
     protected RenderedImage image;
 
-    public AbstractRasterMapProducer(String outputFormat, String mime) {
-        super(outputFormat, mime);
+    /**
+     * Constructor that assumes MIME Type and a single output format name 
+     * equal to the MIME Type
+     * 
+     * @param mime the MIME Type this producer creates the map in
+     */
+    public AbstractRasterMapProducer(String mime) {
+        super(mime, mime);
+    }
+
+    /**
+     * 
+     * @param mime the MIME Type this producer creates the map in
+     * @param outputFormats the names of the output format to state in capabilities
+     */
+    public AbstractRasterMapProducer(String mime, String[] outputFormats) {
+        super(mime, outputFormats);
     }
 
     /**

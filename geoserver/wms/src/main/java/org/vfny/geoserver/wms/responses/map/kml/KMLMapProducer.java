@@ -7,6 +7,9 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
@@ -34,12 +37,21 @@ public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProd
      * Official KML mime type
      */
     public static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
+    
+    public static final String[] OUTPUT_FORMATS = {
+            MIME_TYPE,
+            "application/vnd.google-earth.kml",
+            "kml",
+            "application/vnd.google-earth.kml xml"
+    };
 
-    /** kml transformer which turns the map contedxt into kml */
+    /** kml transformer which turns the map context into kml */
 	protected KMLTransformer transformer;
 
+	private List<String> aliases = new ArrayList<String>();
+	
 	public KMLMapProducer() {
-		super(MIME_TYPE, MIME_TYPE);
+		super(MIME_TYPE, OUTPUT_FORMATS);
 	}
 
 	/**
@@ -133,4 +145,12 @@ public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProd
 		}
 		return "attachment; filename=geoserver.kml";
 	}
+
+    public List<String> getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(List<String> aliases) {
+        this.aliases = aliases;
+    }
 }

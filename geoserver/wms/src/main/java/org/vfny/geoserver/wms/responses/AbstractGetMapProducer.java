@@ -4,15 +4,19 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.geotools.renderer.GTRenderer;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 
-
 /**
- *
+ * 
  * @author Simone Giannecchini, GeoSolutions
- *
+ * 
  */
 public abstract class AbstractGetMapProducer implements GetMapProducer {
     /**
@@ -39,15 +43,27 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
      * to be sure that method has been called before getContentType() thus
      * supporting the workflow contract of the request processing
      */
-    protected String format;
-    protected String mime;
+    private String requestedOutputFormat;
 
-    public AbstractGetMapProducer(String format, String mime) {
-        this.format = format;
-        this.mime = mime;
+    private final String mime;
+
+    private final List <String> outputFormatNames;
+
+    protected AbstractGetMapProducer(final String mime, final String outputFormat) {
+        this( mime, new String[]{ outputFormat } );
     }
 
-    public AbstractGetMapProducer() {
+    protected AbstractGetMapProducer(final String mime, final String[] outputFormats) {
+        this.mime = mime;
+        if(outputFormats == null){
+            outputFormatNames = Collections.emptyList();
+        }else{
+            outputFormatNames = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList(outputFormats)));
+        }
+    }
+
+    protected AbstractGetMapProducer() {
+        this(null, (String[])null);
     }
 
     /**
@@ -77,9 +93,9 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
 
     /**
      * returns the content encoding for the output data (null for this class)
-     *
+     * 
      * @return <code>null</code> since no special encoding is performed while
-     *         wrtting to the output stream. Do not confuse this with
+     *         writting to the output stream. Do not confuse this with
      *         getMimeType().
      */
     public String getContentEncoding() {
@@ -87,31 +103,43 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     }
 
     /**
-     * Gets the content type. This is set by the request, should only be called
-     * after execute. GetMapResponse should handle this though.
-     *
-     * @return The mime type that this response will generate.
-     *
-     * @throws IllegalStateException
-     *             DOCUMENT ME!
+     * @see GetMapProducer#getContentType()
      */
-    public String getContentType() throws java.lang.IllegalStateException {
+    public String getContentType() {
         return mime;
     }
 
-    public void setContentType(String mime) {
-        this.mime = mime;
-    }
-
+    /**
+     * @see GetMapProducer#getOutputFormat()
+     */
     public String getOutputFormat() {
-        return format;
+        return requestedOutputFormat == null ? getContentType() : requestedOutputFormat;
     }
 
-    public void setOutputFormat(String outputFormat) {
-        this.format = outputFormat;
+    /**
+     * @see GetMapProducer#setOutputFormat(String)
+     */
+    public void setOutputFormat(final String outputFormat) {
+        if (!getOutputFormatNames().contains(outputFormat)) {
+            throw new IllegalArgumentException(outputFormat + " is not a recognized output "
+                    + "format for this GetMapProducer");
+        }
+        this.requestedOutputFormat = outputFormat;
     }
-    
-	public String getContentDisposition() {
-		return null;
-	}
+
+    /**
+     * @see GetMapProducer#getContentDisposition()
+     * @return {@code null}, subclasses should override as needed
+     */
+    public String getContentDisposition() {
+        return null;
+    }
+
+    /**
+     * @see GetMapProducer#getOutputFormatNames()
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> getOutputFormatNames() {
+        return outputFormatNames;
+    }
 }

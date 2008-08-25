@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import org.geoserver.platform.ServiceException;
 
@@ -90,39 +91,62 @@ public interface GetMapProducer {
 
     /**
      * Returns the MIME type of the content to be written at
-     * <code>writeTo(OutputStream)</code>
+     * <code>writeTo(OutputStream)</code>.
+     * <p>
+     * The value of this method is meant to be required after the map has been
+     * {@link #produceMap() produced} in order to set the content type HTTP
+     * response header, yet this value is not going to be exposed in the
+     * capabilities document. If the output format MIME type coincides with one
+     * of the desired output format names for the GetCapabilities document, an
+     * implementation must ensure its returned in the list of format names at
+     * {@link #getOutputFormatNames()}.
+     * </p>
+     * <p>
+     * This is so to give implementations more freedom over what the actual MIME
+     * type for the response is, since it may be the case this MIME Type may
+     * vary depending on certain conditions only the GeMapProducer
+     * implementation may know.
+     * </p>
      * 
      * @return the output format
      */
     public String getContentType() throws java.lang.IllegalStateException;
 
     /**
-     * Sets the MIME Type to be used for this {@link GetMapProducer}.
-     * 
-     * @deprecated should be a read only property
-     */
-    public void setContentType(String mime);
-
-    /**
-     * Gets the name of the output format this map producer creates, as shown in
-     * the capabilities document.
+     * Gets the name of the output format the GetMap request was provided with.
      * <p>
-     * Note it may differ from the MIME-Type set as the HTTP response header.
-     * For example, the capabilities advertised output format name may be
-     * "image/png8" but the actual mime type written down as an HTTP header be
-     * just "image/png"
+     * If not explicitly set through {@link #setOutputFormat(String)}, defaults
+     * to {@link #getContentType()}.
      * </p>
      * 
-     * @return the desired output map format.
+     * @return the name of the outputformat parameter issued by the GetMap
+     *         request.
+     * @see #getOutputFormatNames()
      */
     public String getOutputFormat();
+
+    /**
+     * Returns the list of content type aliases for this output format, that are
+     * the ones to be used as Format elements in the GetCapabilities document.
+     * <p>
+     * Aliases are used to easy the task of writing a GetMap request, (for
+     * example, to type &outputformat=svg instead of the full
+     * &outputformat=image/svg+xml)
+     * </p>
+     * 
+     * @return the aliases a map of the content type this map producer creates
+     *         content type can be asked by through a GetMap request.
+     */
+    public List<String> getOutputFormatNames();
 
     /**
      * Sets the MIME type of the output image.
      * 
      * @param format
-     *            the desired output map format.
-     * @deprecated non sense
+     *            the desired output map format, one of
+     *            {@link #getContentType()} or {@link #getOutputFormatNames()}.
+     * @throws IllegalArgumentException
+     *             if format is not supported by this GetMapProducer
      */
     public void setOutputFormat(String format);
 

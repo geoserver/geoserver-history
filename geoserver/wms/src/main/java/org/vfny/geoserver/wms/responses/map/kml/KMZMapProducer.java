@@ -7,6 +7,8 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -45,7 +47,14 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     /**
      * Official KMZ mime type
      */
-    static final String MIME_TYPE = "application/vnd.google-earth.kmz";
+    static final String MIME_TYPE = "application/vnd.google-earth.kmz+xml";
+
+    public static final String[] OUTPUT_FORMATS = {
+            MIME_TYPE,
+            "application/vnd.google-earth.kmz",
+            "kmz",
+            "application/vnd.google-earth.kmz xml"
+    };
 
     /**
 	 * delegating producer for rendering.
@@ -58,8 +67,8 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	KMLTransformer transformer;
 
 	public KMZMapProducer(WMS wms) {
-		super(MIME_TYPE, MIME_TYPE);
-		mapProducer = new PNGMapProducer("image/png", wms);
+		super(MIME_TYPE, OUTPUT_FORMATS);
+		mapProducer = new PNGMapProducer(wms);
 	}
 
 	public void abort() {

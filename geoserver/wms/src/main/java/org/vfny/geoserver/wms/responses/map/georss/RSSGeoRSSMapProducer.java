@@ -7,7 +7,9 @@ package org.vfny.geoserver.wms.responses.map.georss;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -20,27 +22,25 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 
 public class RSSGeoRSSMapProducer implements GetMapProducer {
-    /** format names/aliases */
-    public static HashSet FORMATS = new HashSet();
-    static {
-        FORMATS.add("rss");
-        FORMATS.add("application/rss xml");
-    }
 
-    /** mime type */
-    public static String MIME_TYPE2 = "application/rss+xml";
-
+    /** the actual mime type for the response header */
     private static String MIME_TYPE = "application/xml";
+
+    /** format names/aliases */
+    public static String[] OUTPUT_FORMATS = {
+        "application/rss+xml",
+        "rss",
+        "application/rss xml"
+    };
 
     /**
      * current map context
      */
     WMSMapContext map;
 
-    private final String advertisedFormatName;
+    private String outputFormat = "application/rss+xml";
 
-    public RSSGeoRSSMapProducer(final String advertisedFormatName){
-        this.advertisedFormatName = advertisedFormatName;
+    public RSSGeoRSSMapProducer(){
     }
     
     public String getContentType() throws IllegalStateException {
@@ -48,7 +48,7 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
     }
 
     public void produceMap() throws WmsException {
-		
+		//nothing to do, the actual work is done in writeTo since its purely streamed
 	}
 
     public void writeTo(OutputStream out) throws ServiceException, IOException {
@@ -89,14 +89,23 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
 	}
 
 	public String getOutputFormat() {
-		return advertisedFormatName;
+		return outputFormat;
 	}
 	
 	public void setOutputFormat(String format) {
-		throw new UnsupportedOperationException();
-	}
-    
-	public void setContentType(String mime) {
-		throw new UnsupportedOperationException();
-	}
+        for (int i = 0; i < OUTPUT_FORMATS.length; i++) {
+            if (OUTPUT_FORMATS[i].equalsIgnoreCase(format)) {
+                this.outputFormat = OUTPUT_FORMATS[i];
+                return;
+            }
+        }
+        throw new IllegalArgumentException(format + " is not supported by this producer");
+ 	}
+
+	/**
+	 * @see GetMapProducer#getOutputFormatNames()
+	 */
+    public List<String> getOutputFormatNames() {
+        return Arrays.asList(OUTPUT_FORMATS);
+    }
 }
