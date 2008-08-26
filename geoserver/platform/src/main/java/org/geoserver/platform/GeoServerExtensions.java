@@ -85,13 +85,21 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      * @return A collection of the extensions, or an empty collection.
      */
     public static final <T> List<T> extensions(Class<T> extensionPoint, ApplicationContext context) {
-        String[] names = extensionsCache.get(extensionPoint);
+        String[] names;
+        if(GeoServerExtensions.context == context){
+            names = extensionsCache.get(extensionPoint);
+        }else{
+            names = null;
+        }
         if(names == null) {
             checkContext(context);
             if ( context != null ) {
                 try {
                     names = context.getBeanNamesForType(extensionPoint);
-                    extensionsCache.put(extensionPoint, names);    
+                    //update cache only if dealing with the same context
+                    if(GeoServerExtensions.context == context){
+                        extensionsCache.put(extensionPoint, names);
+                    }
                 }
                 catch( Exception e ) {
                     //JD: this can happen during testing... if the application 
