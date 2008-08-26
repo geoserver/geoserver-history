@@ -697,15 +697,18 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 if (gc.getNumGeometries() == 1) {
                     g = gc.getGeometryN(0);
                 } else {
-                    Coordinate[] pts = new Coordinate[gc.getNumGeometries()];
+                    double maxAreaSoFar = gc.getGeometryN(0).getArea();
+                    Coordinate centroidToReturn = gc.getGeometryN(0).getCentroid().getCoordinate();
 
                     for (int t = 0; t < gc.getNumGeometries(); t++) {
-                        pts[t] = gc.getGeometryN(t).getCentroid()
-                                .getCoordinate();
+                        double area = gc.getGeometryN(t).getArea();
+                        if (area > maxAreaSoFar) {
+                            maxAreaSoFar = area;
+                            centroidToReturn = gc.getGeometryN(t).getCentroid().getCoordinate();
+                        }
                     }
 
-                    return g.getFactory().createMultiPoint(pts)
-                            .getCoordinates()[0];
+                    return centroidToReturn;
                 }
             }
 
