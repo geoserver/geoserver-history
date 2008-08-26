@@ -4,6 +4,14 @@
  */
 package org.geoserver.platform;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.geotools.factory.FactoryRegistry;
 import org.geotools.util.SoftValueHashMap;
 import org.geotools.util.logging.Logging;
@@ -13,16 +21,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-
-import sun.reflect.annotation.ExceptionProxy;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -87,13 +85,21 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      * @return A collection of the extensions, or an empty collection.
      */
     public static final <T> List<T> extensions(Class<T> extensionPoint, ApplicationContext context) {
-        String[] names = extensionsCache.get(extensionPoint);
+        String[] names;
+        if(GeoServerExtensions.context == context){
+            names = extensionsCache.get(extensionPoint);
+        }else{
+            names = null;
+        }
         if(names == null) {
             checkContext(context);
             if ( context != null ) {
                 try {
                     names = context.getBeanNamesForType(extensionPoint);
-                    extensionsCache.put(extensionPoint, names);    
+                    //update cache only if dealing with the same context
+                    if(GeoServerExtensions.context == context){
+                        extensionsCache.put(extensionPoint, names);
+                    }
                 }
                 catch( Exception e ) {
                     //JD: this can happen during testing... if the application 

@@ -37,7 +37,7 @@
     </dependency>
     <dependency>
        <groupId>javax.media</groupId>
-        <artifactId>jai_codec</artifactId>
+       <artifactId>jai_codec</artifactId>
     </dependency>
     <dependency>
         <groupId>javax.media</groupId>
@@ -46,7 +46,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-    	  <scope>test</scope>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <scope>test</scope>
     </dependency>
 
 	</dependencies>
