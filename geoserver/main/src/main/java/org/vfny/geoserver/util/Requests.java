@@ -93,6 +93,9 @@ public final class Requests {
                                         .getInitParameter(PROXY_PARAM);
             }
 
+            //REVISIT: there's a potential NPE here. The if above check servletreq is not null,
+            //here we're using it with no check. Soo... is it allowed for httpServletRequest 
+            //being null or not?
             if ((url == null) || (url.trim().length() == 0)) {
                 url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName()
                     + ":" + httpServletRequest.getServerPort()
