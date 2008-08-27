@@ -93,7 +93,7 @@ public class DataCoveragesSelectAction extends ConfigAction {
             String layers = (String) config.getBaseMapLayers().get(group);
             String[] layerNames = layers.split(",");
             for (int i = 0; i < layerNames.length; i++) {
-                if(layerNames[i].equals(name) || layerNames.equals(qualifiedName))
+                if(layerNames[i].equals(name) || layerNames[i].equals(qualifiedName))
                     return group;
             }
         } 
