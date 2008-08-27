@@ -4,21 +4,30 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.NameSpaceConfig;
+import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.form.data.DataFeatureTypesSelectForm;
 import org.vfny.geoserver.global.UserContainer;
-import java.io.IOException;
-import java.util.Locale;
-import java.util.logging.Level;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -59,14 +68,41 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
 
             return mapping.findForward("config.data.type.editor");
         } else if (delete.equals(buttonAction)) {
-            dataConfig.removeFeatureType(selectedFeatureType);
-            request.getSession().removeAttribute(DataConfig.SELECTED_FEATURE_TYPE);
-            getApplicationState().notifyConfigChanged();
+            String group = featureTypeInGroup(dataConfig, selectedFeatureType); 
+            if(group != null) {
+                ActionErrors errors = new ActionErrors();
+                errors.add(ActionErrors.GLOBAL_ERROR,
+                    new ActionError("error.delete.layer.in.group", selectedFeatureType, group));
+                saveErrors(request, errors);
+            } else {
+                dataConfig.removeFeatureType(selectedFeatureType);
+                request.getSession().removeAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+                getApplicationState().notifyConfigChanged();
+            }
 
             return mapping.findForward("config.data.type");
         }
 
         throw new ServletException(
             "Action must be a MessageResource key value of either 'label.edit' or 'label.delete'");
+    }
+
+    private String featureTypeInGroup(DataConfig dataConfig, String selectedFeatureType) {
+        FeatureTypeConfig ft = dataConfig.getFeatureTypeConfig(selectedFeatureType);
+        String name = ft.getName();
+        DataStoreConfig ds = dataConfig.getDataStore(ft.getDataStoreId());
+        NameSpaceConfig ns = dataConfig.getNameSpace(ds.getNameSpaceId());
+        String qualifiedName = ns.getPrefix() + ":" + name;
+        WMSConfig config = getWMSConfig();
+        for (Iterator it = config.getBaseMapLayers().keySet().iterator(); it.hasNext();) {
+            String group = (String) it.next();
+            String layers = (String) config.getBaseMapLayers().get(group);
+            String[] layerNames = layers.split(",");
+            for (int i = 0; i < layerNames.length; i++) {
+                if(layerNames[i].equals(name) || layerNames.equals(qualifiedName))
+                    return group;
+            }
+        } 
+        return null;
     }
 }
