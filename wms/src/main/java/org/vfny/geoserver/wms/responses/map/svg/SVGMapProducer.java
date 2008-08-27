@@ -28,8 +28,8 @@ class SVGMapProducer extends AbstractGetMapProducer implements
 	/** DOCUMENT ME! */
 	private EncodeSVG svgEncoder;
 
-	public SVGMapProducer(String formatName, String mimeType){
-	    super(formatName, mimeType);
+	public SVGMapProducer(String mimeType, String[] outputFormats){
+	    super(mimeType, outputFormats);
 	}
 	
 	/**

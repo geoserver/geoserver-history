@@ -302,7 +302,7 @@ public class KMLReflector extends WMService {
                 sb.append("<Link>\n");
                 
                 StringBuffer queryString = new StringBuffer("wms?");
-                queryString.append("service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML");
+                queryString.append("service=WMS&request=GetMap&format=application/vnd.google-earth.kml+xml");
                 queryString.append("&width=").append(WIDTH).append("&height=").append(HEIGHT);
                 queryString.append("&srs=").append(SRS).append("&layers=").append(layers[i].getName());
                 queryString.append(style).append("&bbox=").append(requestParams.get("BBOX"));
@@ -320,7 +320,7 @@ public class KMLReflector extends WMService {
                 sb.append("</NetworkLink>\n");
             } else {
                 StringBuffer queryString = new StringBuffer("wms?");
-                queryString.append("service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML");
+                queryString.append("service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+xml");
                 queryString.append("&width=").append(WIDTH).append("&height=").append(HEIGHT);
                 queryString.append("&srs=").append(SRS).append("&layers=");
                 queryString.append(layers[i].getName());

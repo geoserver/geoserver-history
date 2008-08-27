@@ -54,7 +54,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 	private ByteArrayOutputStream bos;
 
 	public PDFMapProducer() {
-	    super(MIME_TYPE, MIME_TYPE);
+	    super(MIME_TYPE);
 	}
 
 	/**

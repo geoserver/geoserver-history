@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses;
 
 import java.awt.geom.Point2D;
+import java.util.Collections;
 
 import junit.framework.Test;
 
@@ -74,6 +75,19 @@ public class GetMapResponseTest extends WMSTestSupport {
     protected void tearDownInternal() throws Exception {
     }
 
+    public void testExecuteOutputFormat() {
+        response = new GetMapResponse(getWMS(), super.applicationContext);
+        GetMapRequest request;
+        request = new GetMapRequest(getWMS());
+        request.setFormat("non-existent-output-format");
+        try {
+            response.execute(request);
+            fail("Asked for a non existent format, expected ServiceException");
+        } catch (ServiceException e) {
+            assertTrue(true);
+        }
+    }
+
     /**
      * Test method for
      * {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
@@ -111,8 +125,9 @@ public class GetMapResponseTest extends WMSTestSupport {
         EasyMock.expect(mockContext.getBean((String) EasyMock.notNull())).andReturn(mockProducer)
                 .anyTimes();
 
-        EasyMock.expect(mockProducer.getOutputFormat()).andReturn(mockMapFormat);
-        
+        EasyMock.expect(mockProducer.getOutputFormatNames()).andReturn(
+                Collections.singleton(mockMapFormat));
+
         mockProducer.setMapContext((WMSMapContext) EasyMock.notNull());
 
         EasyMock.replay(mockContext);
