@@ -87,7 +87,9 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
     loadRoles(); 
 		String tempSecret = "";
 		try{
-			File secretFile = new File("/var/lib/secret.txt");
+			File secretFile = new File(
+                    GeoserverDataDirectory.findCreateConfigDir("security"), "secret.txt"
+            );
 			BufferedReader br =
 				new BufferedReader(new InputStreamReader(new FileInputStream(secretFile)));
 			tempSecret = br.readLine();
