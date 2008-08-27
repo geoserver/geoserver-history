@@ -18,6 +18,7 @@ import javax.xml.transform.TransformerException;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMSExtensions;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -71,11 +72,11 @@ public class WMSCapabilitiesResponse implements Response {
      * @see GetMapProducer#getContentType()
      */
     private static Set<String> loadImageFormats(final ApplicationContext applicationContext) {
-        final Collection<GetMapProducer> producers = GeoServerExtensions.extensions(GetMapProducer.class);
+        final Collection<GetMapProducer> producers = WMSExtensions.findMapProducers(applicationContext);
         final Set<String> formats = new HashSet<String>();
 
         for (GetMapProducer producer : producers) {
-            formats.add(producer.getOutputFormat());
+            formats.addAll(producer.getOutputFormatNames());
         }
 
         return formats;

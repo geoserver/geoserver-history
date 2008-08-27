@@ -44,6 +44,16 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map.openlayers");
 
 	/**
+	 * The mime type for the response header
+	 */
+	private static final String MIME_TYPE = "text/html";
+	
+	/**
+	 * The formats accepted in a GetMap request for this producer and stated in getcaps
+	 */
+	private static final String[] OUTPUT_FORMATS = {"application/openlayers", "openlayers"};
+	
+	/**
 	 * Set of parameters that we can ignore, since they are not part of the
 	 * OpenLayers WMS request
 	 */
@@ -84,7 +94,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 
 
 	public OpenLayersMapProducer(WMS wms) {
-	    super("application/openlayers", "text/html");
+	    super(MIME_TYPE, OUTPUT_FORMATS);
 		this.wms = wms;
 	}
 

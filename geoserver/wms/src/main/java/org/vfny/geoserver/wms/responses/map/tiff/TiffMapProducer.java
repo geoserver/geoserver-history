@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses.map.tiff;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +39,8 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 	/** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/tiff";
 
+    private static final String[] OUTPUT_FORMATS = {MIME_TYPE, "image/tiff8" };
+
 	/**
 	 * Creates a {@link GetMapProducer} to encode the {@link RenderedImage}
 	 * generated in <code>outputFormat</code> format.
@@ -45,8 +48,8 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 	 * @param outputFormat
 	 *            the output format.
 	 */
-	public TiffMapProducer(String outputFormat, WMS wms) {
-		super(outputFormat, MIME_TYPE, wms);
+	public TiffMapProducer(WMS wms) {
+		super(MIME_TYPE, OUTPUT_FORMATS, wms);
 	}
 
 	/**
@@ -84,8 +87,11 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 			LOGGER.fine("Writing tiff image ...");
 		}
 
-		// do we want it to be 8 bits?
-		if (this.format.equalsIgnoreCase("image/tiff8")
+        // get the one required by the GetMapRequest
+        final String format = getOutputFormat();
+
+        // do we want it to be 8 bits?
+		if (format.equalsIgnoreCase("image/tiff8")
 				|| (this.mapContext.getPaletteInverter() != null)) {
 			image = forceIndexed8Bitmask(image);
 		}

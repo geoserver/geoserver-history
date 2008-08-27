@@ -30,6 +30,8 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
             "org.vfny.geoserver.wms.responses.map.png");
 
     private static final String MIME_TYPE = "image/png";
+
+    private static final String[] OUTPUT_FORMATS = { MIME_TYPE, "image/png8" };
     
     /** PNG Native Acceleration Mode * */
 	protected Boolean PNGNativeAcc;
@@ -38,8 +40,8 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
 	 * @param format the format name as to be reported in the capabilities document
 	 * @param wms
 	 */
-    public PNGMapProducer(String format, WMS wms) {
-        super(format, MIME_TYPE, wms);
+    public PNGMapProducer(WMS wms) {
+        super(MIME_TYPE, OUTPUT_FORMATS, wms);
         this.PNGNativeAcc = wms.getGeoServer().getPNGNativeAcceleration();
     }
 
@@ -67,7 +69,9 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
             LOGGER.fine("Writing png image ...");
         }
 
-        if (this.format.equalsIgnoreCase("image/png8") || (this.mapContext.getPaletteInverter() != null)) {
+        // get the one required by the GetMapRequest
+        final String format = getOutputFormat();
+        if (format.equalsIgnoreCase("image/png8") || (this.mapContext.getPaletteInverter() != null)) {
             image = forceIndexed8Bitmask(image);
         }
 

@@ -48,8 +48,8 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 
 	WMS wms;
 
-	public SVGBatikMapProducer(String formatName, String mimeType, WMS wms) {
-	    super(formatName, mimeType);
+	public SVGBatikMapProducer(String mimeType, String[] outputFormats, WMS wms) {
+	    super(mimeType, outputFormats);
 		this.wms = wms;
 	}
 

@@ -43,16 +43,16 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
     /** GridCoverageFactory. */
     private final static GridCoverageFactory factory = CoverageFactoryFinder.getGridCoverageFactory(null);
 
+    private static final String[] OUTPUT_FORMATS = { "image/geotiff", "image/geotiff8" };
+
     /**
      * Constructo for a {@link GeoTiffMapProducer}.
      *
-     * @param oformat
-     *            output format as advertised in the capabilities.
      * @param wms
      *            that is asking us to encode the image.
      */
-    public GeoTiffMapProducer(String oformat, WMS wms) {
-        super(oformat, MIME_TYPE, wms);
+    public GeoTiffMapProducer( WMS wms) {
+        super(MIME_TYPE, OUTPUT_FORMATS, wms);
     }
 
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
@@ -66,8 +66,10 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
             LOGGER.fine("Writing tiff image ...");
         }
 
+        // get the one required by the GetMapRequest
+        final String format = getOutputFormat();
         // do we want it to be 8 bits?
-        if (this.format.equalsIgnoreCase("image/geotiff8") || (this.mapContext.getPaletteInverter() != null)) {
+        if (format.equalsIgnoreCase("image/geotiff8") || (this.mapContext.getPaletteInverter() != null)) {
             image = forceIndexed8Bitmask(image);
         }
 
