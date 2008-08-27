@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.action.data;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -11,10 +13,16 @@ import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.CoverageConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.NameSpaceConfig;
+import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.form.data.DataCoveragesSelectForm;
 import org.vfny.geoserver.global.UserContainer;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Locale;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -54,14 +62,41 @@ public class DataCoveragesSelectAction extends ConfigAction {
 
             return mapping.findForward("config.data.coverage.editor");
         } else if (delete.equals(buttonAction)) {
-            dataConfig.removeCoverage(selectedCoverage);
-            request.getSession().removeAttribute(DataConfig.SELECTED_COVERAGE);
-            getApplicationState().notifyConfigChanged();
+            String group = coverageInGroup(dataConfig, selectedCoverage); 
+            if(group != null) {
+                ActionErrors errors = new ActionErrors();
+                errors.add(ActionErrors.GLOBAL_ERROR,
+                    new ActionError("error.delete.layer.in.group", selectedCoverage, group));
+                saveErrors(request, errors);
+            } else {
+                dataConfig.removeCoverage(selectedCoverage);
+                request.getSession().removeAttribute(DataConfig.SELECTED_COVERAGE);
+                getApplicationState().notifyConfigChanged();
+            }
 
             return mapping.findForward("config.data.coverage");
         }
 
         throw new ServletException(
             "Action must be a MessageResource key value of either 'label.edit' or 'label.delete'");
+    }
+    
+    private String coverageInGroup(DataConfig dataConfig, String selectedCoverage) {
+        CoverageConfig cv = dataConfig.getCoverageConfig(selectedCoverage);
+        String name = cv.getName();
+        CoverageStoreConfig cs = dataConfig.getDataFormat(cv.getFormatId());
+        NameSpaceConfig ns = dataConfig.getNameSpace(cs.getNameSpaceId());
+        String qualifiedName = ns.getPrefix() + ":" + name;
+        WMSConfig config = getWMSConfig();
+        for (Iterator it = config.getBaseMapLayers().keySet().iterator(); it.hasNext();) {
+            String group = (String) it.next();
+            String layers = (String) config.getBaseMapLayers().get(group);
+            String[] layerNames = layers.split(",");
+            for (int i = 0; i < layerNames.length; i++) {
+                if(layerNames[i].equals(name) || layerNames[i].equals(qualifiedName))
+                    return group;
+            }
+        } 
+        return null;
     }
 }

@@ -4,16 +4,21 @@
  */
 package org.vfny.geoserver.action.data;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataDataStoresSelectForm;
 import org.vfny.geoserver.global.UserContainer;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Locale;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -46,15 +51,24 @@ public class DataDataStoresSelectAction extends ConfigAction {
         String editLabel = messages.getMessage(locale, "label.edit");
         String deleteLabel = messages.getMessage(locale, "label.delete");
 
+        String selectedDataStore = form.getSelectedDataStoreId();
         if (editLabel.equals(buttonAction)) {
-            dsConfig = (DataStoreConfig) dataConfig.getDataStore(form.getSelectedDataStoreId());
+            dsConfig = (DataStoreConfig) dataConfig.getDataStore(selectedDataStore);
 
             getUserContainer(request).setDataStoreConfig(dsConfig);
 
             return mapping.findForward("config.data.store.editor");
         } else if (deleteLabel.equals(buttonAction)) {
-            dataConfig.removeDataStore(form.getSelectedDataStoreId());
-            getUserContainer(request).setDataStoreConfig(null);
+            int count = countFeatureTypesUsingStore(dataConfig, selectedDataStore);
+            if(count > 0) {
+                ActionErrors errors = new ActionErrors();
+                errors.add(ActionErrors.GLOBAL_ERROR,
+                    new ActionError("error.delete.datastore", new Object[] {selectedDataStore, new Integer(count)}));
+                saveErrors(request, errors);
+            } else {
+                dataConfig.removeDataStore(selectedDataStore);
+                getUserContainer(request).setDataStoreConfig(null);
+            }
 
             form.reset(mapping, request);
 
@@ -63,5 +77,15 @@ public class DataDataStoresSelectAction extends ConfigAction {
 
         throw new ServletException("Action '" + buttonAction + "'must be '" + editLabel + "' or '"
             + deleteLabel + "'");
+    }
+    
+    private int countFeatureTypesUsingStore(DataConfig dataConfig, String selectedDataStore) {
+        int count = 0;
+        for (Iterator it = dataConfig.getFeaturesTypes().values().iterator(); it.hasNext();) {
+            FeatureTypeConfig ft = (FeatureTypeConfig) it.next();
+            if(selectedDataStore.equals(ft.getDataStoreId()))
+                count++;
+        }
+        return count;
     }
 }
