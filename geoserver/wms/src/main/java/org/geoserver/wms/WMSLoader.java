@@ -18,7 +18,12 @@ import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.LegacyServicesReader;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import sun.rmi.runtime.Log;
 
 public class WMSLoader extends LegacyServiceLoader {
 
@@ -46,6 +51,21 @@ public class WMSLoader extends LegacyServiceLoader {
         wms.setInterpolation( (String) props.get( "allowInterpolation" ) );
         wms.getMetadata().put( "svgRenderer", (Serializable) props.get( "svgRenderer") );
         wms.getMetadata().put( "svgAntiAlias",(Serializable) props.get( "svgAntiAlias") );
+        
+        // CRS list for getCapabilities 
+        String crsListStr = (String) props.get("capabilitiesCrsList");
+        if(crsListStr != null) {
+            String[] crsArray = crsListStr.split(", ");
+            for(int i=0; i< crsArray.length; i++) {
+                // Check that this CRS exists
+                try {
+                    CoordinateReferenceSystem tmp = CRS.decode(crsArray[i]);
+                    wms.getSRS().add(crsArray[i]);
+                } catch(NoSuchAuthorityCodeException nsae) {
+                    LOGGER.warning("Unknown CRS " + crsArray[i] + " in getCapabilities CRS list");
+                }
+            }
+        }
         
         // base maps
         Catalog catalog = geoServer.getCatalog();
