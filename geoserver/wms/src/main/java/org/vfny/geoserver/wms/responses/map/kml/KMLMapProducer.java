@@ -145,12 +145,4 @@ public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProd
 		}
 		return "attachment; filename=geoserver.kml";
 	}
-
-    public List<String> getAliases() {
-        return aliases;
-    }
-
-    public void setAliases(List<String> aliases) {
-        this.aliases = aliases;
-    }
 }

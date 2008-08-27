@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
 
@@ -137,7 +138,7 @@ public interface GetMapProducer {
      * @return the aliases a map of the content type this map producer creates
      *         content type can be asked by through a GetMap request.
      */
-    public List<String> getOutputFormatNames();
+    public Set<String> getOutputFormatNames();
 
     /**
      * Sets the MIME type of the output image.

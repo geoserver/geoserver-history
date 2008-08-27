@@ -4,10 +4,10 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.geotools.renderer.GTRenderer;
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -47,23 +47,29 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
 
     private final String mime;
 
-    private final List <String> outputFormatNames;
+    /**
+     * The list of GetCapabilities stated format names for this map producer.
+     */
+    private final Set<String> outputFormatNames;
 
     protected AbstractGetMapProducer(final String mime, final String outputFormat) {
-        this( mime, new String[]{ outputFormat } );
+        this(mime, new String[] { outputFormat });
     }
 
     protected AbstractGetMapProducer(final String mime, final String[] outputFormats) {
         this.mime = mime;
-        if(outputFormats == null){
-            outputFormatNames = Collections.emptyList();
-        }else{
-            outputFormatNames = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList(outputFormats)));
+        if (outputFormats == null) {
+            outputFormatNames = Collections.emptySet();
+        } else {
+            // Using a set that performs case insensitive look ups directly.
+            Set<String> names = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            names.addAll(Arrays.asList(outputFormats));
+            outputFormatNames = Collections.unmodifiableSet(names);
         }
     }
 
     protected AbstractGetMapProducer() {
-        this(null, (String[])null);
+        this(null, (String[]) null);
     }
 
     /**
@@ -120,11 +126,14 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
      * @see GetMapProducer#setOutputFormat(String)
      */
     public void setOutputFormat(final String outputFormat) {
-        if (!getOutputFormatNames().contains(outputFormat)) {
+        // this lookup is made in a case insensitive manner, see
+        // outputFormatNames definition
+        if (outputFormatNames.contains(outputFormat)) {
+            this.requestedOutputFormat = outputFormat;
+        }else{
             throw new IllegalArgumentException(outputFormat + " is not a recognized output "
-                    + "format for this GetMapProducer");
+                + "format for " + getClass().getSimpleName());
         }
-        this.requestedOutputFormat = outputFormat;
     }
 
     /**
@@ -139,7 +148,7 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
      * @see GetMapProducer#getOutputFormatNames()
      */
     @SuppressWarnings("unchecked")
-    public List<String> getOutputFormatNames() {
+    public Set<String> getOutputFormatNames() {
         return outputFormatNames;
     }
 }

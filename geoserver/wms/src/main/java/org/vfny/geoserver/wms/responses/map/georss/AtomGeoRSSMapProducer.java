@@ -10,7 +10,8 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.transform.TransformerException;
 
@@ -26,8 +27,14 @@ public class AtomGeoRSSMapProducer implements GetMapProducer {
     public static String MIME_TYPE = "application/atom+xml";
 
     /** format names/aliases */
-    public static String[] FORMATS = { MIME_TYPE, "atom", "application/atom xml" };
-
+    public static final Set<String> FORMAT_NAMES;
+    static{
+        String[] FORMATS = { MIME_TYPE, "atom", "application/atom xml" };
+        Set<String> names = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        names.addAll(Arrays.asList(FORMATS));
+        FORMAT_NAMES = Collections.unmodifiableSet(names);
+    }
+    
     /**
      * current map context
      */
@@ -98,20 +105,19 @@ public class AtomGeoRSSMapProducer implements GetMapProducer {
     }
 
     public void setOutputFormat(String format) {
-        for (int i = 0; i < FORMATS.length; i++) {
-            if (FORMATS[i].equalsIgnoreCase(format)) {
-                this.outputFormat = FORMATS[i];
-                return;
-            }
+        if ( FORMAT_NAMES.contains(format) ){
+            this.outputFormat = format;
+        } else {
+            throw new IllegalArgumentException(format + " is not supported by " + 
+                    getClass().getSimpleName());
         }
-        throw new IllegalArgumentException(format + " is not supported by this producer");
     }
 
     /**
      * @see GetMapProducer#getOutputFormatNames()
      */
-    public List<String> getOutputFormatNames() {
-        return Arrays.asList(FORMATS);
+    public Set<String> getOutputFormatNames() {
+        return FORMAT_NAMES;
     }
 
 }

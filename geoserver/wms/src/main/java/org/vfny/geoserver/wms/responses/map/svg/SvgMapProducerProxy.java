@@ -7,7 +7,9 @@ package org.vfny.geoserver.wms.responses.map.svg;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
@@ -30,10 +32,10 @@ public class SvgMapProducerProxy implements GetMapProducer {
     public static final String MIME_TYPE = "image/svg+xml";
     
     public static final String[] OUTPUT_FORMATS = {
-       MIME_TYPE,
-       "image/svg xml",
-       "image/svg"
-    };
+            MIME_TYPE,
+            "image/svg xml",
+            "image/svg"
+         };
 
     /**
      * The actual SVG map producer to use depending on the
@@ -95,7 +97,7 @@ public class SvgMapProducerProxy implements GetMapProducer {
         svgProducer.writeTo(out);
     }
 
-    public List<String> getOutputFormatNames() {
-        return Arrays.asList(OUTPUT_FORMATS);
+    public Set<String> getOutputFormatNames() {
+        return svgProducer.getOutputFormatNames();
     }
 }

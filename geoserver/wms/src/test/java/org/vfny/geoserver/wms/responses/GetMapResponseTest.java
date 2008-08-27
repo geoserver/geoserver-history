@@ -105,19 +105,6 @@ public class GetMapResponseTest extends WMSTestSupport {
         }
     }
 
-    public void testExecuteOutputFormatCaseInsensitive() {
-        response = new GetMapResponse(getWMS(), super.applicationContext);
-        GetMapRequest request;
-        request = new GetMapRequest(getWMS());
-        request.setFormat("ImAgE/PnG");
-        try {
-            response.execute(request);
-            fail("Asked for a non existent format, expected ServiceException");
-        } catch (ServiceException e) {
-            assertTrue(true);
-        }
-    }
-
     /**
      * Sets up the mocked up collaborators for an GetMapResponse.execute call.
      * Note the use of EasyMock.expect(...).anyTimes(). Depending on whether a
@@ -138,8 +125,9 @@ public class GetMapResponseTest extends WMSTestSupport {
         EasyMock.expect(mockContext.getBean((String) EasyMock.notNull())).andReturn(mockProducer)
                 .anyTimes();
 
-        EasyMock.expect(mockProducer.getOutputFormatNames()).andReturn(Collections.singletonList(mockMapFormat));
-        
+        EasyMock.expect(mockProducer.getOutputFormatNames()).andReturn(
+                Collections.singleton(mockMapFormat));
+
         mockProducer.setMapContext((WMSMapContext) EasyMock.notNull());
 
         EasyMock.replay(mockContext);

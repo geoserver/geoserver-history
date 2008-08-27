@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -41,10 +41,9 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     /** DOCUMENT ME! */
     private static final boolean INTERACTIVE = false;
 
-    
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DefaultRasterMapProducerTest.class.getPackage()
-                    .getName());
+    private static final Logger LOGGER = org.geotools.util.logging.Logging
+            .getLogger(DefaultRasterMapProducerTest.class.getPackage().getName());
 
     /** DOCUMENT ME! */
     private static final Color BG_COLOR = Color.white;
@@ -57,8 +56,8 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      */
     public static Test suite() {
         return new OneTimeTestSetup(new DefaultRasterMapProducerTest());
-    }   
-    
+    }
+
     /**
      * DOCUMENT ME!
      * 
@@ -99,11 +98,12 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     public void testSimpleGetMapQuery() throws Exception {
         final String mapFormat = "image/gif";
 
-        final FeatureSource fs = getCatalog().getFeatureSource(MockData.BASIC_POLYGONS.getPrefix(), MockData.BASIC_POLYGONS.getLocalPart());
-        final Envelope env = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS).getBoundingBox();
+        final FeatureSource fs = getCatalog().getFeatureSource(MockData.BASIC_POLYGONS.getPrefix(),
+                MockData.BASIC_POLYGONS.getLocalPart());
+        final Envelope env = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS)
+                .getBoundingBox();
 
-        LOGGER.info("about to create map ctx for BasicPolygons with bounds "
-                + env);
+        LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
 
         final WMSMapContext map = new WMSMapContext();
         map.setAreaOfInterest(env);
@@ -113,7 +113,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.setTransparent(false);
         map.setRequest(new GetMapRequest(null));
 
-        Style basicStyle =  getCatalog().getStyle("default");
+        Style basicStyle = getCatalog().getStyle("default");
         map.addLayer(fs, basicStyle);
 
         this.rasterMapProducer.setOutputFormat(mapFormat);
@@ -131,10 +131,11 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      */
     public void testDefaultStyle() throws Exception {
         Map typeInfos = getCatalog().getFeatureTypeInfos();
-        
+
         for (Iterator it = typeInfos.values().iterator(); it.hasNext();) {
             FeatureTypeInfo info = (FeatureTypeInfo) it.next();
-            if(info.getPrefix().equals(MockData.CITE_PREFIX) && info.getFeatureType().getGeometryDescriptor() != null)
+            if (info.getPrefix().equals(MockData.CITE_PREFIX)
+                    && info.getFeatureType().getGeometryDescriptor() != null)
                 testDefaultStyle(info.getFeatureSource());
         }
     }
@@ -149,15 +150,14 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * @throws IOException
      *             DOCUMENT ME!
      */
-    public void testBlueLake() throws IOException, IllegalFilterException,
-            Exception {
+    public void testBlueLake() throws IOException, IllegalFilterException, Exception {
         final Data catalog = getCatalog();
         Envelope env = catalog.getFeatureTypeInfo(MockData.LAKES).getBoundingBox();
         double shift = env.getWidth() / 6;
 
-        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env
-                .getMinY()
-                - shift, env.getMaxY() + shift);
+        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift, env
+                .getMaxY()
+                + shift);
 
         final WMSMapContext map = new WMSMapContext();
         int w = 400;
@@ -188,8 +188,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         assertNotBlank("testBlueLake", this.rasterMapProducer);
     }
 
-    private void addToMap(final WMSMapContext map,
-            final QName typeName) throws IOException {
+    private void addToMap(final WMSMapContext map, final QName typeName) throws IOException {
         final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeInfo(typeName);
         map.addLayer(ftInfo.getFeatureSource(), ftInfo.getDefaultStyle());
     }
@@ -200,18 +199,19 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * @param testName
      * @param producer
      */
-    protected void assertNotBlank(String testName,
-            DefaultRasterMapProducer producer) {
+    protected void assertNotBlank(String testName, DefaultRasterMapProducer producer) {
         BufferedImage image = (BufferedImage) producer.getImage();
         assertNotBlank(testName, image, BG_COLOR);
         showImage(testName, image);
     }
-    
+
     /**
      * DOCUMENT ME!
-     *
-     * @param frameName DOCUMENT ME!
-     * @param image DOCUMENT ME!
+     * 
+     * @param frameName
+     *            DOCUMENT ME!
+     * @param image
+     *            DOCUMENT ME!
      */
     protected void showImage(String frameName, final BufferedImage image) {
         showImage(frameName, SHOW_TIMEOUT, image);
@@ -219,7 +219,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
     /**
      * Shows <code>image</code> in a Frame.
-     *
+     * 
      * @param frameName
      * @param timeOut
      * @param image
@@ -228,20 +228,22 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        if (((System.getProperty("java.awt.headless") == null)
-                || !System.getProperty("java.awt.headless").equals("true")) && INTERACTIVE) {
+        if (((System.getProperty("java.awt.headless") == null) || !System.getProperty(
+                "java.awt.headless").equals("true"))
+                && INTERACTIVE) {
             Frame frame = new Frame(frameName);
             frame.addWindowListener(new WindowAdapter() {
-                    public void windowClosing(WindowEvent e) {
-                        e.getWindow().dispose();
-                    }
-                });
+                public void windowClosing(WindowEvent e) {
+                    e.getWindow().dispose();
+                }
+            });
 
-            Panel p = new Panel(null) { //no layout manager so it respects setSize
-                    public void paint(Graphics g) {
-                        g.drawImage(image, 0, 0, this);
-                    }
-                };
+            Panel p = new Panel(null) { // no layout manager so it respects
+                                        // setSize
+                public void paint(Graphics g) {
+                    g.drawImage(image, 0, 0, this);
+                }
+            };
 
             frame.add(p);
             p.setSize(width, height);
@@ -257,7 +259,6 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
             frame.dispose();
         }
     }
-    
 
     /**
      * DOCUMENT ME!
@@ -279,9 +280,9 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
         double shift = env.getWidth() / 6;
 
-        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env
-                .getMinY()
-                - shift, env.getMaxY() + shift);
+        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift, env
+                .getMaxY()
+                + shift);
 
         WMSMapContext map = new WMSMapContext();
         map.setRequest(new GetMapRequest(null));
@@ -312,16 +313,14 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * @version $Id: DefaultRasterMapProducerTest.java 6797 2007-05-16 10:23:50Z
      *          aaime $
      */
-    private static class DummyRasterMapProducer extends
-            DefaultRasterMapProducer {
-        
-        @Override
-        public List<String>getOutputFormatNames(){
-            return Collections.singletonList("image/gif");
+    private static class DummyRasterMapProducer extends DefaultRasterMapProducer {
+
+        public DummyRasterMapProducer() {
+            super("image/gif", new String[] { "image/gif" }, null);
         }
-        
-        public void formatImageOutputStream(RenderedImage image,
-                OutputStream outStream) throws WmsException, IOException {
+
+        public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
+                throws WmsException, IOException {
             /*
              * Intentionally left blank, since this class is used just to ensure
              * the abstract raster producer correctly generates a BufferedImage.
