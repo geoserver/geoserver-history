@@ -5,14 +5,14 @@
   <!-- Configuration -->
   <bean id="gwcGSConfig" class="org.geowebcache.util.GeoServerConfiguration">
     <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="gwcCacheFactory"/>
-    <constructor-arg value="image/png,image/jpeg,image/gif"/>
+    <constructor-arg value="image/png,image/png8,image/jpeg,image/gif,application/vnd.google-earth.kml+xml"/>
     <constructor-arg value="4x4"/>
+    <constructor-arg value="format_options=regionateby:auto"/>
   </bean>
 
   <!-- controller for handling all incoming requests -->
   <bean id="gwcDispatcher" class="org.geowebcache.GeoWebCacheDispatcher">
     <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
-    <property name="seederDispatcher" ref="gwcSeederDispatcher"/>
     <property name="servletPrefix" value="gwc"/>
   </bean>
 
@@ -20,16 +20,7 @@
   <bean id="gwcTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
     <property name="config">
       <list>
-	<ref bean="gwcGSConfig"/>
-      </list>
-    </property>
-  </bean>
-  
-  <!-- Seeder dispatcher -->
-  <bean id="gwcSeederDispatcher" class="org.geowebcache.seeder.SeederDispatcher">
-    <property name="allowedSeeders">
-      <list>
-	<value>127.0.0.1</value>
+		<ref bean="gwcGSConfig"/>
       </list>
     </property>
   </bean>
@@ -61,7 +52,7 @@
   <bean id="gwcCacheFile" class="org.geowebcache.cache.file.FileCache">
     <property name="defaultKeyBeanId"><value>gwcCacheKeyFile</value></property>
   </bean>
-  <bean id="gwcCacheKeyFile" class="org.geowebcache.cache.file.FilePathKey"/>
+  <bean id="gwcCacheKeyFile" class="org.geowebcache.cache.file.FilePathKey2"/>
   
   <!-- Cache and CacheKey factories -->
   <bean id="gwcCacheKeyFactory" class="org.geowebcache.cache.CacheKeyFactory"/>
