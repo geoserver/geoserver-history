@@ -93,6 +93,16 @@ public class KMLGeometryTransformer extends GeometryTransformer {
             }
             super.encode(o);
         }
+        
+        public void encode(Geometry g, String srsname){
+            extrudeEnabled = inspectGeometry(g);
+            super.encode(g, srsname);
+        }
+
+        public void encode(Geometry g){
+            extrudeEnabled = inspectGeometry(g);
+            super.encode(g);
+        }
 
         protected void start(String element, Attributes atts){
             super.start(element,atts);
