@@ -111,7 +111,7 @@ public final class AtomUtils {
     }
 
     public static String getFeedURL(WMSMapContext context){
-        return WMSRequests.getGetMapUrl(context.getRequest(), null, null, null).replace(' ', '+');
+        return WMSRequests.getGetMapUrl(context.getRequest(), null, 0, null, null).replace(' ', '+');
     }
 
     public static String getFeedURI(WMSMapContext context){

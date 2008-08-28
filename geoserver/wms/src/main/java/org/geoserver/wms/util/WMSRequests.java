@@ -4,7 +4,9 @@
  */
 package org.geoserver.wms.util;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +16,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.platform.ServiceException;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.GeoServer;
@@ -91,21 +94,22 @@ public class WMSRequests {
      *
      * @param req The getMap request.
      * @param layer The Map layer, may be <code>null</code>.
+     * @param layerIndex The index of the layer in the request
      * @param bbox The bounding box of the request, may be <code>null</code>.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      *
      * @return The full url for a getMap request.
      */
-    public static String getTiledGetMapUrl(GetMapRequest req, MapLayer layer, Envelope bbox, String[] kvp) {
+    public static String getTiledGetMapUrl(GetMapRequest req, MapLayer layer, int layerIndex, Envelope bbox, String[] kvp) {
         String baseUrl = Requests.getTileCacheBaseUrl(req.getHttpServletRequest(),
                     req.getGeoServer());
         
         if ( baseUrl == null ) {
-            return getGetMapUrl( req, layer, bbox, kvp );
+            return getGetMapUrl( req, layer, layerIndex, bbox, kvp );
 
         }
         
-        return getGetMapUrl( baseUrl, req, layer.getTitle(),layer.getStyle().getName(), bbox, kvp );
+        return getGetMapUrl( baseUrl, req, layer.getTitle(), layerIndex, layer.getStyle().getName(), bbox, kvp );
     }
 
     /**
@@ -121,19 +125,20 @@ public class WMSRequests {
      *
      * @param req The getMap request
      * @param layer The Map layer, may be <code>null</code>.
+     * @param layerIndex The index of the layer in the request
      * @param bbox The bounding box of the request, may be <code>null</code>.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      *
      * @return The full url for a getMap request.
      */
-    public static String getGetMapUrl(GetMapRequest req, MapLayer layer, Envelope bbox, String[] kvp) {
+    public static String getGetMapUrl(GetMapRequest req, MapLayer layer, int layerIndex, Envelope bbox, String[] kvp) {
         //base url
         String baseUrl = getBaseUrl( req );
     
         String layerName = layer != null ? layer.getTitle() : null;
         String style = layer != null ? layer.getStyle().getTitle() : null;
         
-        return getGetMapUrl( baseUrl, req, layerName,style, bbox, kvp );
+        return getGetMapUrl( baseUrl, req, layerName, layerIndex, style, bbox, kvp );
     }
 
     /**
@@ -154,17 +159,18 @@ public class WMSRequests {
      *
      * @param req The getMap request
      * @param layer The layer name, may be <code>null</code>.
+     * @param layerIndex The index of the layer in the request. 
      * @param style The style name, may be <code>null</code>
      * @param bbox The bounding box of the request, may be <code>null</code>.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      *
      * @return The full url for a getMap request.
      */
-    public static String getGetMapUrl(GetMapRequest req, String layer, String style, Envelope bbox, String[] kvp) {
+    public static String getGetMapUrl(GetMapRequest req, String layer, int layerIndex, String style, Envelope bbox, String[] kvp) {
         //base url
         String baseUrl = getBaseUrl( req );
     
-        return getGetMapUrl( baseUrl, req, layer, style, bbox, kvp );
+        return getGetMapUrl( baseUrl, req, layer, layerIndex, style, bbox, kvp );
     }
     
     /**
@@ -202,7 +208,7 @@ public class WMSRequests {
      * Helper method for encoding GetMap request.
      *
      */
-    static String getGetMapUrl( String baseUrl, GetMapRequest req, String layer, String style, Envelope bbox, String[] kvp ) {
+    static String getGetMapUrl( String baseUrl, GetMapRequest req, String layer, int layerIndex, String style, Envelope bbox, String[] kvp ) {
         //parameters
         HashMap params = new HashMap();
 
@@ -215,6 +221,18 @@ public class WMSRequests {
         StringBuffer layers = new StringBuffer();
         StringBuffer styles = new StringBuffer();
         
+        boolean useLayerIndex = true;
+        int count=0;
+        for ( int i = 0; i < req.getLayers().length; i++ ) {
+            if (layer != null && layer.equals( req.getLayers()[i].getName() ) ) {
+               ++count;
+            }
+        }
+        // only one of each layer in the request
+        if (count == 1) {
+           useLayerIndex = false;
+        }
+        
         if ( layer != null ) {
              layers.append( layer );
              if ( style != null ) {
@@ -222,10 +240,14 @@ public class WMSRequests {
              }
              else {
                  //use default for layer
-                 for ( int i = 0; i < req.getLayers().length; i++ ) {
-                     if ( layer.equals( req.getLayers()[i].getName() ) ) {
-                         styles.append( req.getLayers()[i].getDefaultStyle().getName() );
-                     }
+                 if (useLayerIndex) {
+                     styles.append( req.getLayers()[layerIndex].getDefaultStyle().getName() );                   
+                 } else {
+                     for ( int i = 0; i < req.getLayers().length; i++ ) {
+                         if ( layer.equals( req.getLayers()[i].getName() ) ) {
+                             styles.append( req.getLayers()[i].getDefaultStyle().getName() );
+                         }
+                     }                   
                  }
              }
         }
@@ -250,14 +272,19 @@ public class WMSRequests {
         //filters, we grab them from the original raw kvp since re-encoding 
         // them from objects is kind of silly
         if (layer != null) {
-            //only get filters for hte layer
+            //only get filters for the layer
             int index = 0;
-            for ( ; index < req.getLayers().length; index++) {
-                if ( req.getLayers()[index].getName().equals( layer ) ) {
-                    break;
+            
+            if (useLayerIndex) {
+               index = layerIndex;
+            }else{
+                for ( ; index < req.getLayers().length; index++) {
+                    if ( req.getLayers()[index].getName().equals( layer ) ) {
+                        break;
+                    }
                 }
             }
-            
+
             if ( req.getRawKvp().get("filter") != null ) {
                 //split out the filter we need
                 List filters = KvpUtils.readFlat((String) req.getRawKvp().get("filter"),
@@ -383,7 +410,19 @@ public class WMSRequests {
       
         for (Iterator e = kvp.entrySet().iterator(); e.hasNext();) {
             Map.Entry entry = (Map.Entry) e.next();
-            query.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            String name = (String)entry.getKey();
+            String value = (String)entry.getValue();
+            try {
+               name = URLEncoder.encode(name, "UTF-8");
+               if(value == null){
+                   value = "";
+               }else{
+                   value = URLEncoder.encode(value, "UTF-8");
+               }
+            } catch (UnsupportedEncodingException uex) {
+               throw new ServiceException("Error encoding name-value pairs" + uex.getMessage(), uex);
+            }
+            query.append(name).append("=").append(value).append("&");
         }
 
         query.setLength(query.length() - 1);
