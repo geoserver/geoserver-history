@@ -68,9 +68,7 @@ public class KMLVectorTransformer extends KMLMapTransformer {
             GeoServer config = mapContext.getRequest().getGeoServer();
             geometryTransformer.setNumDecimals(config.getNumDecimals());
 
-            geometryTranslator = 
-                (KMLGeometryTransformer.KMLGeometryTranslator)
-                geometryTransformer.createTranslator(contentHandler, mapContext);
+            geometryTranslator = geometryTransformer.createTranslator(contentHandler);
         }
 
         public void setRegionatingStrategy(RegionatingStrategy rs){

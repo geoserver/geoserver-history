@@ -107,6 +107,7 @@ public class KMLUtils {
        
         if ( tile ) {
             return WMSRequests.getTiledGetMapUrl( mapContext.getRequest(), mapLayer, layerIndex, bbox, kvp );
+
         }
         
         return WMSRequests.getGetMapUrl( mapContext.getRequest(), mapLayer, layerIndex, bbox, kvp ); 

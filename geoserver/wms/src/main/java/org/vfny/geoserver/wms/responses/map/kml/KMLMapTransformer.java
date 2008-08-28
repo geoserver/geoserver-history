@@ -44,11 +44,9 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureHeightTemplate;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -165,7 +163,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         /**
          * Geometry transformer
          */
-        KMLGeometryTransformer.KMLGeometryTranslator geometryTranslator;
+        Translator geometryTranslator;
 
         public KMLMapTranslatorSupport(ContentHandler contentHandler) {
             super(contentHandler);
@@ -913,6 +911,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
 
                 if (time.length == 1) {
                     encodeKmlTimeStamp(parseDateTime(time[0]));
+
                 } else {
                     encodeKmlTimeSpan(parseDateTime(time[0]),
                             parseDateTime(time[1]));
@@ -1040,7 +1039,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         protected void encodePlacemarkGeometry(Geometry geometry,
                 Coordinate centroid, FeatureTypeStyle[] styles) {
             // if point, just encode a single point, otherwise encode the
-            // geometry + centroid
+            // geometry
+            // + centroid
             if (geometry instanceof Point || (geometry instanceof MultiPoint)
                     && ((MultiPoint) geometry).getNumPoints() == 1) {
                 
@@ -1050,7 +1050,6 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 // Cut and paste from below
                 start("Point");
                 if (!Double.isNaN(centroid.z)) {
-                    geometryTranslator.insertExtrudeTags(geometry);
                     element("coordinates", centroid.x + "," + centroid.y + ","
                             + centroid.z);
                 } else {
@@ -1061,15 +1060,10 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             } else {
                 start("MultiGeometry");
 
-                if (!Double.isNaN(geometry.getCoordinate().z)) {
-                    centroid.z = geometry.getCoordinate().z;
-                }
-
                 // the centroid
                 start("Point");
 
                 if (!Double.isNaN(centroid.z)) {
-                    geometryTranslator.insertExtrudeTags(geometry);
                     element("coordinates", centroid.x + "," + centroid.y + ","
                             + centroid.z);
                 } else {
@@ -1120,27 +1114,11 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         }
 
         /**
-         * Returns the geometry for the feature reprojecting if necessary.
+         * Rreturns the geometry for the feature reprojecting if necessary.
          */
         Geometry featureGeometry(SimpleFeature f) {
             // get the geometry
             Geometry geom = (Geometry) f.getDefaultGeometry();
-            try{
-                final double height = new FeatureHeightTemplate(template).execute(f);
-
-                if (!Double.isNaN(height) && height != 0){
-                    geom.apply(
-                        new CoordinateFilter(){
-                            public void filter(Coordinate c){
-                                c.setCoordinate(new Coordinate(c.x, c.y, height));
-                            }
-                        }
-                    );
-                    geom.geometryChanged();
-                }
-            } catch (IOException ioe){
-                LOGGER.log(Level.WARNING, "Couldn't render height template for " + f.getID(), ioe);
-            }
 
             // rprojection done in KMLTransformer
 //          if (!CRS.equalsIgnoreMetadata(sourceCrs, mapContext.getCoordinateReferenceSystem())) {
