@@ -94,6 +94,7 @@ public class KMLUtils {
      *
      * @param mapContext The map context.
      * @param mapLayer The Map layer, may be <code>null</code>.
+     * @param layerIndex The index of the layer in the request.
      * @param bbox The bounding box of the request, may be <code>null</code>.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      * @param tile Flag controlling wether the request should be made against tile cache
@@ -101,15 +102,15 @@ public class KMLUtils {
      * @return The full url for a getMap request.
      * @deprecated use {@link WMSRequests#getGetMapUrl(WMSMapContext, MapLayer, Envelope, String[])}
      */
-    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, Envelope bbox,
+    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, int layerIndex, Envelope bbox,
         String[] kvp, boolean tile) {
        
         if ( tile ) {
-            return WMSRequests.getTiledGetMapUrl( mapContext.getRequest(), mapLayer, bbox, kvp );
+            return WMSRequests.getTiledGetMapUrl( mapContext.getRequest(), mapLayer, layerIndex, bbox, kvp );
 
         }
         
-        return WMSRequests.getGetMapUrl( mapContext.getRequest(), mapLayer, bbox, kvp ); 
+        return WMSRequests.getGetMapUrl( mapContext.getRequest(), mapLayer, layerIndex, bbox, kvp ); 
     }
 
     /**
@@ -120,14 +121,15 @@ public class KMLUtils {
      * </p>
      * @param mapContext The map context.
      * @param mapLayer The Map layer, may be <code>null</code>
+     * @param layerIndex The index of the layer in the request.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      * @param tile Flag controlling wether the request should be made against tile cache
      *
      * @return The full url for a getMap request.
-     * @deprecated use {@link WMSRequests#getGetMapUrl(WMSMapContext, MapLayer, Envelope, String[])}
+     * @deprecated use {@link WMSRequests#getGetMapUrl(WMSMapContext, MapLayer, int, Envelope, String[])}
      */
-    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, boolean tile) {
-        return getMapUrl(mapContext, mapLayer, mapContext.getAreaOfInterest(), null, tile);
+    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, int layerIndex, boolean tile) {
+        return getMapUrl(mapContext, mapLayer, layerIndex, mapContext.getAreaOfInterest(), null, tile);
     }
 
     /**
