@@ -1,9 +1,12 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
+import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.wms.util.WMSRequests;
+import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.global.MapLayerInfo;
@@ -69,6 +72,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
         
         protected void encodeAsSuperOverlay( GetMapRequest request ) {
             MapLayerInfo[] layers = request.getLayers();
+            List/*<Style>*/ styles = request.getStyles();
             for ( int i = 0; i < layers.length; i++ ) {
                 start("NetworkLink");
                 element( "name", layers[i].getName() );
@@ -96,7 +100,8 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 //link
                 start("Link" );
   
-                String href = WMSRequests.getGetMapUrl(request, layers[i].getName(),null, null, null);
+                String style = i < styles.size()? ((Style)styles.get(i)).getName() : null;
+                String href = WMSRequests.getGetMapUrl(request, layers[i].getName(), i, style, null, null);
                 start( "href" );
                 cdata( href );
                 end( "href" );
@@ -109,7 +114,8 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
         }
         
         protected void encodeAsOverlay( GetMapRequest request ) {
-            MapLayerInfo[] layers = request.getLayers();
+            MapLayerInfo[] layers = request.getLayers();         
+            List/*<Style>*/ styles = request.getStyles();
             for ( int i = 0; i < layers.length; i++ ) {
                 start("NetworkLink");
                 element( "name", layers[i].getName() );
@@ -119,10 +125,11 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 start( "Url" );
                 
                 //set bbox to null so its not included in the request, google 
-                // earth will append it for us
+                // earth will append it for us                
                 request.setBbox(null);
                 
-                String href = WMSRequests.getGetMapUrl(request, layers[i].getName(),null, null, null);
+                String style = i < styles.size()? ((Style)styles.get(i)).getName() : null;
+                String href = WMSRequests.getGetMapUrl(request, layers[i].getName(), i, style, null, null);
                 start( "href" );
                 cdata( href );
                 end( "href" );

@@ -190,7 +190,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             start("Icon");
 
-            String href = KMLUtils.getMapUrl(mapContext, mapLayer, box,
+            String href = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box,
                     new String[] { "width", "256", "height", "256" }, true);
             element("href", href);
             LOGGER.fine(href);
@@ -224,7 +224,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             start("Link");
 
-            String getMap = KMLUtils.getMapUrl(mapContext, mapLayer, box,
+            String getMap = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box,
                     new String[] {
                         "format", KMLMapProducerFactory.MIME_TYPE, "width", "256", "height", "256",
                         "superoverlay", "true"
