@@ -43,6 +43,7 @@ Where profile is one of the following:
   'wfs-1.1.0'
   'wms-1.1.1'
   'wcs-1.0.0'
+  'wcs-1.1.1'
 
 Examples:
 
