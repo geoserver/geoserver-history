@@ -8,6 +8,7 @@ WFS 1.1 H2 Cite Testing README
 
    1. Edit the 'H2_HOME' variable to point to your H2 installation
    2. Edit the 'M2_REPO' variable to point to your local Maven repository
+   3. Edit the 'GT_VERSION' variable to the appropriate GeoTools version for the geoserver release
 
 2. From the command line run 'h2.sh load'
 
