@@ -5,12 +5,12 @@
   <parent>
     <artifactId>community</artifactId>
     <groupId>org.geoserver</groupId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-RC2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.geoserver</groupId>
   <artifactId>sldService</artifactId>
-  <version>1.7.0-SNAPSHOT</version>
+  <version>1.7.0-RC2</version>
   <description>REST SLD service</description>
   <name>REST SLD service</name>
   <repositories>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>rest</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>xom</groupId>
