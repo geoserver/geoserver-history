@@ -63,7 +63,8 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  */
 public class KMLReflector extends WMService {
-    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.servlets");
+    private static Logger LOGGER = 
+        org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.servlets");
     final String KML_MIME_TYPE = "application/vnd.google-earth.kml+xml";
     final String KMZ_MIME_TYPE = "application/vnd.google-earth.kmz+xml";
 
@@ -88,7 +89,8 @@ public class KMLReflector extends WMService {
     }
 
     protected Response getResponseHandler() {
-        ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        ApplicationContext context = 
+            WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
         //return new GetMapResponse(config);
         return new GetMapResponse(getWMS(), context);
@@ -103,8 +105,8 @@ public class KMLReflector extends WMService {
         * @todo Implement this org.vfny.geoserver.servlets.AbstractService
         *       abstract method
         */
-        throw new java.lang.UnsupportedOperationException(
-            "Method getXmlRequestReader() not yet implemented.");
+        throw 
+            new UnsupportedOperationException("Method getXmlRequestReader() not yet implemented.");
     }
 
     /**
@@ -112,14 +114,18 @@ public class KMLReflector extends WMService {
      * for each layer.
      * The only mandatory parameter is "layers" with the layer names.
      * Styles is optional, and so are all other parameters such as:
-     * KMScore
-     * KMAttr
-     * Version
-     * Width
-     * Height
-     * SRS
+     * <ul>
+     * <li>KMScore</li>
+     * <li>KMAttr</li>
+     * <li>Version</li>
+     * <li>Width</li>
+     * <li>Height</li>
+     * <li>SRS</li>
+     * </ul>
      *
      * The result is written to the buffered output stream.
+     * @param request the HttpServletRequest being handled
+     * @param response the HttpServletResponse to which the results should be written
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
@@ -199,13 +205,11 @@ public class KMLReflector extends WMService {
                 String filter = (String) requestParams.get("FILTER");
                 filters = KvpUtils.readFlat(filter, KvpUtils.OUTER_DELIMETER);
                 filterKey = "filter";
-        }
-        else if ( requestParams.containsKey("CQL_FILTER")) {
+        } else if ( requestParams.containsKey("CQL_FILTER")) {
                 String filter = (String) requestParams.get("CQL_FILTER");
                 filters = KvpUtils.readFlat(filter, KvpUtils.CQL_DELIMITER);
                 filterKey = "cql_filter";
-        }
-        else if ( requestParams.containsKey("FEATUREID") ) {
+        } else if ( requestParams.containsKey("FEATUREID") ) {
                 //JD: featureid semantics slightly different then other types of 
                 // filters
                 String filter = (String) requestParams.get("FEATUREID");
@@ -217,9 +221,14 @@ public class KMLReflector extends WMService {
         }
         
         if ( filters != null && filters.size() != layers.length) {
-                throw (IOException) new IOException().initCause(
-                        new ServiceException( layers.length + " layers specified, but " + filters.size() + " filters")
-                        );
+            throw (IOException) new IOException().initCause(
+                    new ServiceException(
+                        layers.length 
+                        + " layers specified, but " 
+                        + filters.size() 
+                        + " filters"
+                        )
+                    );
         }
         
         //set the content disposition
@@ -250,10 +259,10 @@ public class KMLReflector extends WMService {
         sb.append("<Folder>\n");
         
         String proxifiedBaseUrl = RequestUtils.baseURL(request);
-        GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class).get(0);
+        GeoServer gs = GeoServerExtensions.bean(GeoServer.class);
         proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl,gs.getProxyBaseUrl());
           
-          Envelope layerbbox = null;
+        Envelope layerbbox = null;
 
         // make a network link for every layer
         for (int i = 0; i < layers.length; i++) {
@@ -267,17 +276,15 @@ public class KMLReflector extends WMService {
             String filter = (String) (filters != null ? filters.get(i) : null);
             if ( filter != null ) {
                 filter = "&" + filterKey + "=" + filter;
-            }
-            else {
+            } else {
                 filter = "";
             }
             
-            //Envelope le = (layers[i].getFeature() == null ? layers[i].getBoundingBox() : layers[i].getFeature().getLatLongBoundingBox());
             Envelope le = layers[i].getLatLongBoundingBox();
             if (layerbbox == null){
-              layerbbox = new Envelope(le);
+                layerbbox = new Envelope(le);
             } else {
-              layerbbox.expandToInclude(le);
+                layerbbox.expandToInclude(le);
             }
 
             final URL geoserverUrl = new URL(proxifiedBaseUrl);
@@ -350,7 +357,7 @@ public class KMLReflector extends WMService {
             }
         }
 
-          sb.append(getLookAt(layerbbox));
+        sb.append(getLookAt(layerbbox));
           
         sb.append("</Folder>\n");
 
@@ -361,74 +368,75 @@ public class KMLReflector extends WMService {
         out.flush();
     }
 
-  private String getLookAt(Envelope e){
-    double lon1 = e.getMinX();
-    double lat1 = e.getMinY();
-    double lon2 = e.getMaxX();
-    double lat2 = e.getMaxY();
-    
-    double R_EARTH = 6.371 * 1000000; // meters
-    double VIEWER_WIDTH = 22 * Math.PI / 180; // The field of view of the google maps camera, in radians
-    double[] p1 = getRect(lon1, lat1, R_EARTH);
-    double[] p2 = getRect(lon2, lat2, R_EARTH);
-    double[] midpoint = new double[]{
-      (p1[0] + p2[0])/2,
-        (p1[1] + p2[1])/2,
-        (p1[2] + p2[2])/2
-    };
-    
-    midpoint = getGeographic(midpoint[0], midpoint[1], midpoint[2]);
-    
-    // averaging the longitudes; using the rectangular coordinates makes the calculated center tend toward the corner that's closer to the equator. 
-    midpoint[0] = ((lon1 + lon2)/2); 
-    
-    double distance = distance(p1, p2);
-    
-    double height = distance/ (2 * Math.tan(VIEWER_WIDTH));
-    
-    LOGGER.fine("lat1: " + lat1 + "; lon1: " + lon1);
-    LOGGER.fine("lat2: " + lat2 + "; lon2: " + lon2);
-    LOGGER.fine("latmid: " + midpoint[1] + "; lonmid: " + midpoint[0]);
-    
-    
-    return "<LookAt id=\"geoserver\">" + 
-      "  <longitude>" + ((lon1 + lon2)/2) +  "</longitude>      <!-- kml:angle180 -->" +
-      "  <latitude>"+midpoint[1]+"</latitude>        <!-- kml:angle90 -->" +
-    "  <altitude>0</altitude>       <!-- double --> " +
-    "  <range>"+distance+"</range>              <!-- double -->" +
-    "  <tilt>0</tilt>               <!-- float -->" +
-    "  <heading>0</heading>         <!-- float -->" +
-    "  <altitudeMode>clampToGround</altitudeMode> " +
-    "  <!--kml:altitudeModeEnum:clampToGround, relativeToGround, absolute -->" +
-      "</LookAt>";
-  }
-  
-  private double[] getRect(double lat, double lon, double radius){
-    double theta = (90 - lat) * Math.PI/180;
-    double phi   = (90 - lon) * Math.PI/180;
-    
-    double x = radius * Math.sin(phi) * Math.cos(theta);
-    double y = radius * Math.sin(phi) * Math.sin(theta);
-    double z = radius * Math.cos(phi);
-    return new double[]{x, y, z};
-  }
-  
-  private double[] getGeographic(double x, double y, double z){
-    double theta, phi, radius;
-    radius = distance(new double[]{x, y, z}, new double[]{0,0,0});
-    theta = Math.atan2(Math.sqrt(x * x + y * y) , z);
-    phi = Math.atan2(y , x);
-    
-    double lat = 90 - (theta * 180 / Math.PI);
-    double lon = 90 - (phi * 180 / Math.PI);
-    
-    return new double[]{(lon > 180 ? lon - 360 : lon), lat, radius};
-  }
-  
-  private double distance(double[] p1, double[] p2){
-    double dx = p1[0] - p2[0];
-    double dy = p1[1] - p2[1];
-    double dz = p1[2] - p2[2];
-    return Math.sqrt(dx * dx + dy * dy + dz * dz);
-  }
+    private String getLookAt(Envelope e){
+        double lon1 = e.getMinX();
+        double lat1 = e.getMinY();
+        double lon2 = e.getMaxX();
+        double lat2 = e.getMaxY();
+
+        double R_EARTH = 6.371 * 1000000; // meters
+        // The field of view of the google maps camera, in radians
+        double VIEWER_WIDTH = 22 * Math.PI / 180; 
+        double[] p1 = getRect(lon1, lat1, R_EARTH);
+        double[] p2 = getRect(lon2, lat2, R_EARTH);
+        double[] midpoint = new double[]{
+            (p1[0] + p2[0])/2,
+                (p1[1] + p2[1])/2,
+                (p1[2] + p2[2])/2
+        };
+
+        midpoint = getGeographic(midpoint[0], midpoint[1], midpoint[2]);
+
+        // averaging the longitudes; using the rectangular coordinates makes 
+        // the calculated center tend toward the corner that's closer to the equator. 
+        midpoint[0] = ((lon1 + lon2)/2); 
+
+        double distance = distance(p1, p2);
+
+        double height = distance/ (2 * Math.tan(VIEWER_WIDTH));
+
+        LOGGER.fine("lat1: " + lat1 + "; lon1: " + lon1);
+        LOGGER.fine("lat2: " + lat2 + "; lon2: " + lon2);
+        LOGGER.fine("latmid: " + midpoint[1] + "; lonmid: " + midpoint[0]);
+
+
+        return "<LookAt id=\"geoserver\">" + 
+            "  <longitude>" + ((lon1 + lon2)/2) +  "</longitude>" +
+            "  <latitude>"+midpoint[1]+"</latitude>" +
+            "  <altitude>0</altitude> " +
+            "  <range>"+distance+"</range>" +
+            "  <tilt>0</tilt>" +
+            "  <heading>0</heading>" +
+            "  <altitudeMode>clampToGround</altitudeMode> " +
+            "</LookAt>";
+    }
+
+    private double[] getRect(double lat, double lon, double radius){
+        double theta = (90 - lat) * Math.PI/180;
+        double phi   = (90 - lon) * Math.PI/180;
+
+        double x = radius * Math.sin(phi) * Math.cos(theta);
+        double y = radius * Math.sin(phi) * Math.sin(theta);
+        double z = radius * Math.cos(phi);
+        return new double[]{x, y, z};
+    }
+
+    private double[] getGeographic(double x, double y, double z){
+        double theta, phi, radius;
+        radius = distance(new double[]{x, y, z}, new double[]{0,0,0});
+        theta = Math.atan2(Math.sqrt(x * x + y * y) , z);
+        phi = Math.atan2(y , x);
+
+        double lat = 90 - (theta * 180 / Math.PI);
+        double lon = 90 - (phi * 180 / Math.PI);
+
+        return new double[]{(lon > 180 ? lon - 360 : lon), lat, radius};
+    }
+
+    private double distance(double[] p1, double[] p2){
+        double dx = p1[0] - p2[0];
+        double dy = p1[1] - p2[1];
+        double dz = p1[2] - p2[2];
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
 }
