@@ -329,6 +329,8 @@ public class KMLReflector extends WMService {
                 queryString.append("&KMScore=").append(serviceRequest.getKMScore());
                 queryString.append("&KMAttr=").append(serviceRequest.getKMattr());
                 queryString.append("&legend=").append(serviceRequest.getLegend());
+                queryString.append("&bbox=").append(
+                        le.getMinX()+","+le.getMinY()+","+le.getMaxX()+","+le.getMaxY());
                 
                 URL url = new URL(geoserverUrl, queryString.toString());
                 
