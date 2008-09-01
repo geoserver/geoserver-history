@@ -4,31 +4,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import org.apache.struts.Globals;
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.config.ControllerConfig;
-import org.apache.struts.upload.CommonsMultipartRequestHandler;
-import org.apache.struts.upload.MultipartRequestHandler;
-import org.apache.struts.util.MessageResources;
-import org.geoserver.data.util.CoverageStoreUtils;
-import org.geoserver.data.util.CoverageUtils;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.CRS;
-import org.opengis.coverage.grid.Format;
-import org.opengis.parameter.ParameterValue;
-import org.opengis.parameter.ParameterValueGroup;
-import org.vfny.geoserver.action.HTMLEncoder;
-import org.vfny.geoserver.config.ConfigRequests;
-import org.vfny.geoserver.config.CoverageConfig;
-import org.vfny.geoserver.config.CoverageStoreConfig;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.StyleConfig;
-import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.util.Requests;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,7 +12,27 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.Globals;
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
+import org.geotools.coverage.io.Driver;
+import org.geotools.data.Parameter;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
+import org.vfny.geoserver.action.HTMLEncoder;
+import org.vfny.geoserver.config.ConfigRequests;
+import org.vfny.geoserver.config.CoverageConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.StyleConfig;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.Requests;
 
 
 /**
@@ -235,8 +230,7 @@ public final class CoveragesEditorForm extends ActionForm {
         wmsPath = cvConfig.getWmsPath();
         label = cvConfig.getLabel();
         description = cvConfig.getDescription();
-        metadataLink = ((cvConfig.getMetadataLink() != null)
-            ? cvConfig.getMetadataLink().getAbout() : null);
+        metadataLink = ((cvConfig.getMetadataLink() != null) ? cvConfig.getMetadataLink().getAbout() : null);
         nativeFormat = cvConfig.getNativeFormat();
         defaultInterpolationMethod = cvConfig.getDefaultInterpolationMethod();
 
@@ -249,11 +243,11 @@ public final class CoveragesEditorForm extends ActionForm {
 
         // Keywords
         if (cvConfig.getKeywords() != null) {
-            String keyword;
+            Object keyword;
 
             for (Iterator i = cvConfig.getKeywords().iterator(); i.hasNext();) {
-                keyword = (String) i.next();
-                buf.append(keyword);
+                keyword = i.next();
+                buf.append(keyword.toString());
 
                 if (i.hasNext()) {
                     buf.append(" ");
@@ -389,19 +383,21 @@ public final class CoveragesEditorForm extends ActionForm {
         /**
          * Sync params
          */
-        Iterator it = type.getParameters().keySet().iterator();
-        String paramKey;
-        String paramValue;
         List paramHelp = new ArrayList();
         List paramKeys = new ArrayList();
         List paramValues = new ArrayList();
+        if (type.getParameters() != null) {
+            Iterator it = type.getParameters().keySet().iterator();
+            String paramKey;
+            String paramValue;
 
-        while (it.hasNext()) {
-            paramKey = (String) it.next();
-            paramValue = (String) type.getParameters().get(paramKey);
-            paramHelp.add(paramKey);
-            paramKeys.add(paramKey);
-            paramValues.add(paramValue);
+            while (it.hasNext()) {
+                paramKey = (String) it.next();
+                paramValue = (String) type.getParameters().get(paramKey);
+                paramHelp.add(paramKey);
+                paramKeys.add(paramKey);
+                paramValues.add(paramValue);
+            }
         }
 
         this.paramHelp = paramHelp;
@@ -414,15 +410,12 @@ public final class CoveragesEditorForm extends ActionForm {
 
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
-        final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale,
-                    "config.data.calculateBoundingBox.label"));
-        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
-                    "config.data.lookupSRS.label"));
+        final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale, "config.data.calculateBoundingBox.label"));
+        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale, "config.data.lookupSRS.label"));
 
         // Pass Attribute Management Actions through without
         // much validation.
-        if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove")
-                || ENVELOPE.equals(action)) {
+        if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove") || ENVELOPE.equals(action)) {
             return errors;
         }
 
@@ -455,8 +448,7 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         //
         // //
-        if ("".equals(boundingBoxMinX) || "".equals(boundingBoxMinY) || "".equals(boundingBoxMaxX)
-                || "".equals(boundingBoxMaxY)) {
+        if ("".equals(boundingBoxMinX) || "".equals(boundingBoxMinY) || "".equals(boundingBoxMaxX) || "".equals(boundingBoxMaxY)) {
             errors.add("envelope", new ActionError("error.envelope.required"));
         } else {
             try {
@@ -476,7 +468,7 @@ public final class CoveragesEditorForm extends ActionForm {
         // //
         if ("".equals(name)) {
             errors.add("name", new ActionError("error.coverage.name.required"));
-        } else if (name.indexOf(" ") > 0) {
+        } else if (name.toString().indexOf(" ") > 0) {
             errors.add("name", new ActionError("error.coverage.name.invalid"));
         }
 
@@ -497,71 +489,71 @@ public final class CoveragesEditorForm extends ActionForm {
         }
 
         // Retrieve connection params
-        final Format factory = cvConfig.getFactory();
-        final ParameterValueGroup info = factory.getReadParameters();
-        final Map connectionParams = new HashMap();
+        final Driver factory = cvConfig.getFactory();
+        final Map<String, Parameter<?>> connectionParams = (factory.getConnectParameterInfo() != null ? factory.getConnectParameterInfo() : new HashMap<String, Parameter<?>>());
 
-        // Convert Params into the kind of Map we actually need
-        //
-        if (paramKeys != null) {
-            Boolean maxSize;
-            String size = null;
-            ControllerConfig cc;
-            Object value;
-            String key;
-            ParameterValue param;
-            final int length = paramKeys.size();
-            final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
-                                                                                 .toString();
-
-            for (int i = 0; i < length; i++) {
-                key = (String) getParamKey(i);
-
-                // //
-                //
-                // Ignore the parameters used for decimation at run time
-                //
-                // //
-                if (key.equalsIgnoreCase(readGeometryKey)) {
-                    continue;
-                }
-
-                param = CoverageStoreUtils.find(info, key);
-
-                if (param == null) {
-                    errors.add("paramValue[" + i + "]",
-                        new ActionError("error.dataFormatEditor.param.missing", key,
-                            factory.getDescription()));
-
-                    continue;
-                }
-
-                maxSize = (Boolean) request.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
-
-                if ((maxSize != null) && (maxSize.booleanValue())) {
-                    size = null;
-                    cc = mapping.getModuleConfig().getControllerConfig();
-
-                    if (cc == null) {
-                        size = Long.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
-                    } else {
-                        size = cc.getMaxFileSize(); // struts-config :
-                                                    // <controller
-                                                    // maxFileSize="nK" />
-                    }
-
-                    errors.add("styleID", new ActionError("error.file.maxLengthExceeded", size));
-
-                    return errors;
-                }
-
-                value = CoverageUtils.getCvParamValue(key, param, paramValues, i);
-
-                if (value != null) {
-                    connectionParams.put(key, value);
-                }
-            }
-        }
+        // TODO: FIX THIS !!!
+//        // Convert Params into the kind of Map we actually need
+//        //
+//        if (paramKeys != null) {
+//            Boolean maxSize;
+//            String size = null;
+//            ControllerConfig cc;
+//            Object value;
+//            String key;
+//            ParameterValue param;
+//            final int length = paramKeys.size();
+//            final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
+//                                                                                 .toString();
+//
+//            for (int i = 0; i < length; i++) {
+//                key = (String) getParamKey(i);
+//
+//                // //
+//                //
+//                // Ignore the parameters used for decimation at run time
+//                //
+//                // //
+//                if (key.equalsIgnoreCase(readGeometryKey)) {
+//                    continue;
+//                }
+//
+//                param = CoverageStoreUtils.find(info, key);
+//
+//                if (param == null) {
+//                    errors.add("paramValue[" + i + "]",
+//                        new ActionError("error.dataFormatEditor.param.missing", key,
+//                            factory.getDescription()));
+//
+//                    continue;
+//                }
+//
+//                maxSize = (Boolean) request.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
+//
+//                if ((maxSize != null) && (maxSize.booleanValue())) {
+//                    size = null;
+//                    cc = mapping.getModuleConfig().getControllerConfig();
+//
+//                    if (cc == null) {
+//                        size = Long.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
+//                    } else {
+//                        size = cc.getMaxFileSize(); // struts-config :
+//                                                    // <controller
+//                                                    // maxFileSize="nK" />
+//                    }
+//
+//                    errors.add("styleID", new ActionError("error.file.maxLengthExceeded", size));
+//
+//                    return errors;
+//                }
+//
+//                value = CoverageUtils.getCvParamValue(key, param, paramValues, i);
+//
+//                if (value != null) {
+//                    connectionParams.put(key, value);
+//                }
+//            }
+//        }
 
         return errors;
     }
@@ -574,8 +566,7 @@ public final class CoveragesEditorForm extends ActionForm {
      * @return Configuration model for Catalog information.
      */
     protected DataConfig getDataConfig(HttpServletRequest request) {
-        return (DataConfig) request.getSession().getServletContext()
-                                   .getAttribute(DataConfig.CONFIG_KEY);
+        return (DataConfig) request.getSession().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
     }
 
     /**

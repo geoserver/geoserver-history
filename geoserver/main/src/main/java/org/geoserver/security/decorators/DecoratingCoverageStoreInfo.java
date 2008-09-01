@@ -11,7 +11,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.io.Driver;
 
 /**
  * Delegates all methods to the provided delegate. Suclasses will override
@@ -45,8 +45,8 @@ public class DecoratingCoverageStoreInfo extends
         return delegate.getError();
     }
 
-    public AbstractGridFormat getFormat() {
-        return delegate.getFormat();
+    public Driver getDriver() {
+        return delegate.getDriver();
     }
 
     public String getId() {

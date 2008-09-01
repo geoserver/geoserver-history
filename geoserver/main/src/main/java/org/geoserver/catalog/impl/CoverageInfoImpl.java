@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.util.ProgressListener;
 
@@ -33,13 +33,13 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
 
     String defaultInterpolationMethod;
 
-    List<CoverageDimensionInfo> dimensions = new ArrayList<CoverageDimensionInfo>();
-
     List<String> requestSRS = new ArrayList<String>();
 
     List<String> responseSRS = new ArrayList<String>();
     
     Map parameters = new HashMap();
+
+    private RangeType fields;
 
     public CoverageInfoImpl(Catalog catalog) {
         super( catalog );
@@ -85,10 +85,6 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
         this.defaultInterpolationMethod = defaultInterpolationMethod;
     }
 
-    public List getDimensions() {
-        return dimensions;
-    }
-
     public List<String> getRequestSRS() {
         return requestSRS;
     }
@@ -115,36 +111,23 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
         return catalog.getResourcePool().getGridCoverage(this, envelope, hints);
     }
     
-    public GridCoverageReader getGridCoverageReader(ProgressListener listener,
+    public CoverageAccess getCoverageAccess(ProgressListener listener,
             Hints hints) throws IOException {
-        return catalog.getResourcePool().getGridCoverageReader(getStore(), hints);
+        return catalog.getResourcePool().getCoverageAccess(getStore(), hints);
     }
 
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime
-                * result
-                + ((defaultInterpolationMethod == null) ? 0
-                        : defaultInterpolationMethod.hashCode());
-        result = prime * result
-                + ((dimensions == null) ? 0 : dimensions.hashCode());
+        result = prime * result + ((defaultInterpolationMethod == null) ? 0 : defaultInterpolationMethod.hashCode());
         result = prime * result + ((grid == null) ? 0 : grid.hashCode());
-        result = prime
-                * result
-                + ((interpolationMethods == null) ? 0 : interpolationMethods
-                        .hashCode());
-        result = prime * result
-                + ((nativeFormat == null) ? 0 : nativeFormat.hashCode());
-        result = prime * result
-                + ((parameters == null) ? 0 : parameters.hashCode());
-        result = prime * result
-                + ((requestSRS == null) ? 0 : requestSRS.hashCode());
-        result = prime * result
-                + ((responseSRS == null) ? 0 : responseSRS.hashCode());
-        result = prime
-                * result
-                + ((supportedFormats == null) ? 0 : supportedFormats.hashCode());
+        result = prime * result + ((fields == null) ? 0 : fields.hashCode());
+        result = prime * result + ((interpolationMethods == null) ? 0 : interpolationMethods.hashCode());
+        result = prime * result + ((nativeFormat == null) ? 0 : nativeFormat.hashCode());
+        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+        result = prime * result + ((requestSRS == null) ? 0 : requestSRS.hashCode());
+        result = prime * result + ((responseSRS == null) ? 0 : responseSRS.hashCode());
+        result = prime * result + ((supportedFormats == null) ? 0 : supportedFormats.hashCode());
         return result;
     }
 
@@ -163,15 +146,15 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
         } else if (!defaultInterpolationMethod
                 .equals(other.getDefaultInterpolationMethod()))
             return false;
-        if (dimensions == null) {
-            if (other.getDimensions() != null)
-                return false;
-        } else if (!dimensions.equals(other.getDimensions()))
-            return false;
         if (grid == null) {
             if (other.getGrid() != null)
                 return false;
         } else if (!grid.equals(other.getGrid()))
+            return false;
+        if (fields == null) {
+            if (other.getFields() != null)
+                return false;
+        } else if (!fields.equals(other.getFields()))
             return false;
         if (interpolationMethods == null) {
             if (other.getInterpolationMethods() != null)
@@ -204,5 +187,13 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
         } else if (!supportedFormats.equals(other.getSupportedFormats()))
             return false;
         return true;
+    }
+
+    public RangeType getFields() {
+        return this.fields;
+    }
+
+    public void setFields(RangeType fields) {
+        this.fields = fields;
     }
 }

@@ -13,7 +13,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.geotools.factory.Hints;
@@ -26,15 +25,12 @@ import org.opengis.referencing.datum.DatumFactory;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.MathTransformFactory;
-import org.opengis.util.InternationalString;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.util.ResponseUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
 import org.vfny.geoserver.wcs.requests.WCSRequest;
@@ -281,7 +277,7 @@ public class DescribeResponse implements Response {
 
         final GeneralEnvelope envelope = cv.getWGS84LonLatEnvelope();
 
-        tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"WGS84(DD)\"") /*urn:ogc:def:crs:OGC:1.3:CRS84*/
+        tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"urn:ogc:def:crs:OGC:1.3:CRS84\"")
                     .append(">");
         tempResponse.append("\n   <gml:pos>").append(envelope.getLowerCorner().getOrdinate(0))
                     .append(" ").append(envelope.getLowerCorner().getOrdinate(1))
@@ -344,7 +340,9 @@ public class DescribeResponse implements Response {
         // Grid
 		GridGeometry  grid      = cv.getGrid();
 		MathTransform gridToCRS = grid.getGridToCRS();
-		InternationalString[] dimNames = cv.getDimensionNames();
+		
+		// TODO: FIX THIS!!!
+//		InternationalString[] dimNames = cv.getDimensionNames();
 		final int gridDimension = gridToCRS != null ? gridToCRS.getSourceDimensions() : 0;
 
 		// RectifiedGrid
@@ -370,11 +368,12 @@ public class DescribeResponse implements Response {
 		tempResponse.append("\n         </gml:GridEnvelope>");
 		tempResponse.append("\n       </gml:limits>");
 
-		if (dimNames != null) {
-			for (int dn = 0; dn < dimNames.length; dn++)
-				tempResponse.append("\n       <gml:axisName>" + dimNames[dn]
-						+ "</gml:axisName>");
-		}
+		// TODO: FIX THIS!!!
+//		if (dimNames != null) {
+//			for (int dn = 0; dn < dimNames.length; dn++)
+//				tempResponse.append("\n       <gml:axisName>" + dimNames[dn]
+//						+ "</gml:axisName>");
+//		}
 
 		tempResponse.append("\n       <gml:origin>");
 		tempResponse.append("\n       <gml:pos>"
@@ -397,76 +396,77 @@ public class DescribeResponse implements Response {
         tempResponse.append("\n  </domainSet>");
 
         // rangeSet
-        CoverageDimension[] dims = cv.getDimensions();
-        TreeSet nodataValues = new TreeSet();
-
-        try {
-            if (dims != null) {
-                int numSampleDimensions = dims.length;
-                tempResponse.append("\n  <rangeSet>");
-                tempResponse.append("\n   <RangeSet>");
-                //tempResponse.append("\n    <!--  WARNING: Mandatory metadata '..._rangeset_name' was missing in this context.  --> ");
-                tempResponse.append("\n    <name>" + cv.getName() + "</name>");
-                tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");
-                tempResponse.append("\n      <axisDescription>");
-                tempResponse.append("\n        <AxisDescription>");
-                tempResponse.append("\n          <name>Band</name>");
-                tempResponse.append("\n          <label>Band</label>");
-                tempResponse.append("\n          <values>");
-
-                if (numSampleDimensions == 1) {
-                    tempResponse.append("\n            <singleValue>").append("1")
-                                .append("</singleValue>");
-                } else {
-                    tempResponse.append("\n            <interval>");
-                    tempResponse.append("\n              <min>1</min>");
-                    tempResponse.append("\n              <max>" + numSampleDimensions + "</max>");
-                    tempResponse.append("\n            </interval>");
-                }
-
-                tempResponse.append("\n          </values>");
-                tempResponse.append("\n        </AxisDescription>");
-                tempResponse.append("\n      </axisDescription>");
-
-                for (int sample = 0; sample < numSampleDimensions; sample++) {
-                    Double[] nodata = dims[sample].getNullValues();
-
-                    if (nodata != null) {
-                        for (int nd = 0; nd < nodata.length; nd++) {
-                            if (!nodataValues.contains(nodata[nd])) {
-                                nodataValues.add(nodata[nd]);
-                            }
-                        }
-                    }
-                }
-
-                tempResponse.append("\n      <nullValues>");
-
-                if (nodataValues.size() > 0) {
-                    if (nodataValues.size() == 1) {
-                        tempResponse.append("\n        <singleValue>"
-                            + (Double) nodataValues.first() + "</singleValue>");
-                    } else {
-                        tempResponse.append("\n        <interval>");
-                        tempResponse.append("\n          <min>" + (Double) nodataValues.first()
-                            + "</min>");
-                        tempResponse.append("\n          <max>" + (Double) nodataValues.last()
-                            + "</max>");
-                        tempResponse.append("\n        <interval>");
-                    }
-                } else {
-                    tempResponse.append("\n        <singleValue>0</singleValue>");
-                }
-
-                tempResponse.append("\n      </nullValues>");
-
-                tempResponse.append("\n   </RangeSet>");
-                tempResponse.append("\n  </rangeSet>");
-            }
-        } catch (Exception e) {
-            // TODO Handle this exceptions ...
-            e.printStackTrace();
-        }
+        // TODO: FIX THIS!!!
+//        CoverageDimension[] dims = cv.getDimensions();
+//        TreeSet nodataValues = new TreeSet();
+//
+//        try {
+//            if (dims != null) {
+//                int numSampleDimensions = dims.length;
+//                tempResponse.append("\n  <rangeSet>");
+//                tempResponse.append("\n   <RangeSet>");
+//                //tempResponse.append("\n    <!--  WARNING: Mandatory metadata '..._rangeset_name' was missing in this context.  --> ");
+//                tempResponse.append("\n    <name>" + cv.getName() + "</name>");
+//                tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");
+//                tempResponse.append("\n      <axisDescription>");
+//                tempResponse.append("\n        <AxisDescription>");
+//                tempResponse.append("\n          <name>Band</name>");
+//                tempResponse.append("\n          <label>Band</label>");
+//                tempResponse.append("\n          <values>");
+//
+//                if (numSampleDimensions == 1) {
+//                    tempResponse.append("\n            <singleValue>").append("1")
+//                                .append("</singleValue>");
+//                } else {
+//                    tempResponse.append("\n            <interval>");
+//                    tempResponse.append("\n              <min>1</min>");
+//                    tempResponse.append("\n              <max>" + numSampleDimensions + "</max>");
+//                    tempResponse.append("\n            </interval>");
+//                }
+//
+//                tempResponse.append("\n          </values>");
+//                tempResponse.append("\n        </AxisDescription>");
+//                tempResponse.append("\n      </axisDescription>");
+//
+//                for (int sample = 0; sample < numSampleDimensions; sample++) {
+//                    Double[] nodata = dims[sample].getNullValues();
+//
+//                    if (nodata != null) {
+//                        for (int nd = 0; nd < nodata.length; nd++) {
+//                            if (!nodataValues.contains(nodata[nd])) {
+//                                nodataValues.add(nodata[nd]);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                tempResponse.append("\n      <nullValues>");
+//
+//                if (nodataValues.size() > 0) {
+//                    if (nodataValues.size() == 1) {
+//                        tempResponse.append("\n        <singleValue>"
+//                            + (Double) nodataValues.first() + "</singleValue>");
+//                    } else {
+//                        tempResponse.append("\n        <interval>");
+//                        tempResponse.append("\n          <min>" + (Double) nodataValues.first()
+//                            + "</min>");
+//                        tempResponse.append("\n          <max>" + (Double) nodataValues.last()
+//                            + "</max>");
+//                        tempResponse.append("\n        <interval>");
+//                    }
+//                } else {
+//                    tempResponse.append("\n        <singleValue>0</singleValue>");
+//                }
+//
+//                tempResponse.append("\n      </nullValues>");
+//
+//                tempResponse.append("\n   </RangeSet>");
+//                tempResponse.append("\n  </rangeSet>");
+//            }
+//        } catch (Exception e) {
+//            // TODO Handle this exceptions ...
+//            e.printStackTrace();
+//        }
 
         if (((cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() > 0))
                 || ((cv.getResponseCRSs() != null) && (cv.getResponseCRSs().size() > 0))) {

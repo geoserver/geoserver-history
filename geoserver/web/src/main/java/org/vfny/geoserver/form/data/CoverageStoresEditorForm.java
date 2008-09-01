@@ -4,27 +4,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.config.ControllerConfig;
-import org.apache.struts.upload.CommonsMultipartRequestHandler;
-import org.apache.struts.upload.FormFile;
-import org.apache.struts.upload.MultipartRequestHandler;
-import org.geoserver.data.util.CoverageStoreUtils;
-import org.geoserver.data.util.CoverageUtils;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.opengis.coverage.grid.Format;
-import org.opengis.parameter.ParameterValue;
-import org.opengis.parameter.ParameterValueGroup;
-import org.vfny.geoserver.config.CoverageStoreConfig;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.util.Requests;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,8 +11,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+import org.geotools.coverage.io.Driver;
+import org.vfny.geoserver.config.CoverageStoreConfig;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.global.UserContainer;
+import org.vfny.geoserver.util.Requests;
 
 
 /**
@@ -180,7 +170,7 @@ public final class CoverageStoresEditorForm extends ActionForm {
         //
         //
         // //
-        Format factory = dfConfig.getFactory();
+        Driver factory = dfConfig.getFactory();
         type = (((dfConfig.getType() != null) && (dfConfig.getType().length() > 0))
             ? dfConfig.getType() : factory.getName());
     }
@@ -195,102 +185,102 @@ public final class CoverageStoresEditorForm extends ActionForm {
 
         //
         // dsConfig is the only way to get a factory
-        Format factory = dfConfig.getFactory();
-        ParameterValueGroup info = factory.getReadParameters();
+        Driver factory = dfConfig.getFactory();
+//        ParameterValueGroup info = factory.getReadParameters();
 
-        Map connectionParams = new HashMap();
+        Map connectionParams = /* new HashMap() */ factory.getConnectParameterInfo();
 
         // Convert Params into the kind of Map we actually need
         //
-        if (paramKeys != null) {
-            final int length = paramKeys.size();
-            String key;
-            ParameterValue param;
-            Boolean maxSize;
-            String size;
-            ControllerConfig cc;
-            Object value;
-            final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
-                                                                                 .toString();
+//        if (paramKeys != null) {
+//            final int length = paramKeys.size();
+//            String key;
+//            ParameterValue param;
+//            Boolean maxSize;
+//            String size;
+//            ControllerConfig cc;
+//            Object value;
+//            final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
+//                                                                                 .toString();
+//
+//            for (int i = 0; i < length; i++) {
+//                key = (String) getParamKey(i);
+//
+//                // //
+//                //
+//                // Ignore the parameters used for decimation at run time
+//                //
+//                // //
+//                if (key.equalsIgnoreCase(readGeometryKey)) {
+//                    continue;
+//                }
+//
+//                param = CoverageStoreUtils.find(info, key);
+//
+//                if (param == null) {
+//                    errors.add("paramValue[" + i + "]",
+//                        new ActionError("error.dataFormatEditor.param.missing", key,
+//                            factory.getDescription()));
+//
+//                    continue;
+//                }
+//
+//                maxSize = (Boolean) request.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
+//
+//                if ((maxSize != null) && (maxSize.booleanValue())) {
+//                    size = null;
+//                    cc = mapping.getModuleConfig().getControllerConfig();
+//
+//                    if (cc == null) {
+//                        size = Long.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
+//                    } else {
+//                        size = cc.getMaxFileSize(); // struts-config :
+//                                                    // <controller
+//                                                    // maxFileSize="nK" />
+//                    }
+//
+//                    errors.add("styleID", new ActionError("error.file.maxLengthExceeded", size));
+//
+//                    return errors;
+//                }
+//
+//                value = CoverageUtils.getCvParamValue(key, param, paramValues, i);
+//
+//                if (value != null) {
+//                    connectionParams.put(key, value);
+//                }
+//            }
+//        }
 
-            for (int i = 0; i < length; i++) {
-                key = (String) getParamKey(i);
-
-                // //
-                //
-                // Ignore the parameters used for decimation at run time
-                //
-                // //
-                if (key.equalsIgnoreCase(readGeometryKey)) {
-                    continue;
-                }
-
-                param = CoverageStoreUtils.find(info, key);
-
-                if (param == null) {
-                    errors.add("paramValue[" + i + "]",
-                        new ActionError("error.dataFormatEditor.param.missing", key,
-                            factory.getDescription()));
-
-                    continue;
-                }
-
-                maxSize = (Boolean) request.getAttribute(MultipartRequestHandler.ATTRIBUTE_MAX_LENGTH_EXCEEDED);
-
-                if ((maxSize != null) && (maxSize.booleanValue())) {
-                    size = null;
-                    cc = mapping.getModuleConfig().getControllerConfig();
-
-                    if (cc == null) {
-                        size = Long.toString(CommonsMultipartRequestHandler.DEFAULT_SIZE_MAX);
-                    } else {
-                        size = cc.getMaxFileSize(); // struts-config :
-                                                    // <controller
-                                                    // maxFileSize="nK" />
-                    }
-
-                    errors.add("styleID", new ActionError("error.file.maxLengthExceeded", size));
-
-                    return errors;
-                }
-
-                value = CoverageUtils.getCvParamValue(key, param, paramValues, i);
-
-                if (value != null) {
-                    connectionParams.put(key, value);
-                }
-            }
-        }
-
-        //do a check to make sure the format accepts the url and report back 
-        // an error if it does not
-        if (factory instanceof AbstractGridFormat) {
-            AbstractGridFormat aFormat = (AbstractGridFormat) factory;
-
-            File file;
-
-            // HACK!  ArcSDE rasters take a string (which is stuffed into the given file)
-            if (-1 == factory.getClass().toString()
-                                 .indexOf("org.geotools.arcsde.gce.ArcSDERasterFormat")) {
-                file = GeoserverDataDirectory.findDataFile(url);
-                FormUtils.checkFileExistsAndCanRead(file, errors);
-
-                if (!errors.isEmpty()) {
-                    return errors;
-                }
-            } else {
-                file = new File(url);
-            }
-
-            if (!aFormat.accepts(file)) {
-                String key = "error.coverage.invalidUrlForFormat";
-                Object[] params = new Object[] { url, type };
-
-                errors.add("URL", new ActionMessage(key, params));
-
-                return errors;
-            }
-        }
+//        //do a check to make sure the format accepts the url and report back 
+//        // an error if it does not
+//        if (factory instanceof AbstractGridFormat) {
+//            AbstractGridFormat aFormat = (AbstractGridFormat) factory;
+//
+//            File file;
+//
+//            // HACK!  ArcSDE rasters take a string (which is stuffed into the given file)
+//            if (-1 == factory.getClass().toString()
+//                                 .indexOf("org.geotools.arcsde.gce.ArcSDERasterFormat")) {
+//                file = GeoserverDataDirectory.findDataFile(url);
+//                FormUtils.checkFileExistsAndCanRead(file, errors);
+//
+//                if (!errors.isEmpty()) {
+//                    return errors;
+//                }
+//            } else {
+//                file = new File(url);
+//            }
+//
+//            if (!aFormat.accepts(file)) {
+//                String key = "error.coverage.invalidUrlForFormat";
+//                Object[] params = new Object[] { url, type };
+//
+//                errors.add("URL", new ActionMessage(key, params));
+//
+//                return errors;
+//            }
+//        }
 
         dump("form", connectionParams);
 
@@ -305,23 +295,25 @@ public final class CoverageStoresEditorForm extends ActionForm {
 
         System.out.print(" connection params { ");
 
-        for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            System.out.print(entry.getKey());
-            System.out.print("=");
+        if (params != null) {
+            for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
+                Map.Entry entry = (Map.Entry) i.next();
+                System.out.print(entry.getKey());
+                System.out.print("=");
 
-            if (entry.getValue() == null) {
-                System.out.print("null");
-            } else if (entry.getValue() instanceof String) {
-                System.out.print("\"");
-                System.out.print(entry.getValue());
-                System.out.print("\"");
-            } else {
-                System.out.print(entry.getValue());
-            }
+                if (entry.getValue() == null) {
+                    System.out.print("null");
+                } else if (entry.getValue() instanceof String) {
+                    System.out.print("\"");
+                    System.out.print(entry.getValue());
+                    System.out.print("\"");
+                } else {
+                    System.out.print(entry.getValue());
+                }
 
-            if (i.hasNext()) {
-                System.out.print(", ");
+                if (i.hasNext()) {
+                    System.out.print(", ");
+                }
             }
         }
 

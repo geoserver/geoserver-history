@@ -45,11 +45,6 @@ public interface CatalogFactory {
     CoverageInfo createCoverage();
 
     /**
-     * Creates a new coverage dimension.
-     */
-    CoverageDimensionInfo createCoverageDimension();
-
-    /**
      * Creates a new legend.
      */
     LegendInfo createLegend();

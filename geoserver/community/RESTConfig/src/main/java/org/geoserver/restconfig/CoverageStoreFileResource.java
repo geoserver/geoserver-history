@@ -271,8 +271,7 @@ public class CoverageStoreFileResource extends Resource {
                 }
 
                 try {
-                    cc = new CoverageConfig(csc.getId(), format, reader,
-                            myDataConfig);
+                    cc = new CoverageConfig(csc.getId(), format, reader, myDataConfig);
 
                     if ("UNKNOWN".equals(cc.getSrsName())) {
                         CoordinateReferenceSystem sourceCRS = cc.getCrs();

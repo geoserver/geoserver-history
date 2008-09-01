@@ -138,25 +138,16 @@ public class ClessifierResource extends Resource {
             if (property != null && property.length() > 0) {
                 /* First try to find as a FeatureType */
                 try {
-                    FeatureType ftType = this.dt.getFeatureTypeInfo(
-                            featureTypeName).getFeatureType();
-                    FeatureCollection ftCollection = this.dt
-                            .getFeatureTypeInfo(featureTypeName)
-                            .getFeatureSource(true).getFeatures();
+                    FeatureType ftType = this.dt.getFeatureTypeInfo(featureTypeName).getFeatureType();
+                    FeatureCollection ftCollection = this.dt.getFeatureTypeInfo(featureTypeName).getFeatureSource(true).getFeatures();
                     List<Rule> rules = null;
 
                     if ("equalInterval".equals(method)) {
-                        rules = builder.equalIntervalClassification(
-                                ftCollection, property, Integer
-                                        .parseInt(intervals), Boolean
-                                        .parseBoolean(open));
+                        rules = builder.equalIntervalClassification(ftCollection, property, Integer.parseInt(intervals), Boolean.parseBoolean(open));
                     } else if ("uniqueInterval".equals(method)) {
-                        rules = builder.uniqueIntervalClassification(
-                                ftCollection, property);
+                        rules = builder.uniqueIntervalClassification(ftCollection, property);
                     } else if ("quantile".equals(method)) {
-                        rules = builder.quantileClassification(ftCollection,
-                                property, Integer.parseInt(intervals), Boolean
-                                        .parseBoolean(open));
+                        rules = builder.quantileClassification(ftCollection, property, Integer.parseInt(intervals), Boolean.parseBoolean(open));
                     }
 
                     if (colorRamp != null && colorRamp.length() > 0) {
@@ -168,13 +159,9 @@ public class ClessifierResource extends Resource {
                         else if (colorRamp.equalsIgnoreCase("blue"))
                             ramp = (ColorRamp) new BlueColorRamp();
                         else if (colorRamp.equalsIgnoreCase("custom")) {
-                            Color startColor = Color.decode(form.getFirst(
-                                    "startColor").getValue());
-                            Color endColor = Color.decode(form.getFirst(
-                                    "endColor").getValue());
-                            Color midColor = (form.contains("midColor") ? Color
-                                    .decode(form.getFirst("midColor")
-                                            .getValue()) : null);
+                            Color startColor = Color.decode(form.getFirst("startColor").getValue());
+                            Color endColor = Color.decode(form.getFirst("endColor").getValue());
+                            Color midColor = (form.contains("midColor") ? Color.decode(form.getFirst("midColor").getValue()) : null);
                             if (startColor != null && endColor != null) {
                                 CustomColorRamp tramp = new CustomColorRamp();
                                 tramp.setStartColor(startColor);
@@ -185,14 +172,12 @@ public class ClessifierResource extends Resource {
                             }
                         }
 
-                        Class geomT = ftType.getGeometryDescriptor().getType()
-                                .getBinding();
+                        Class geomT = ftType.getGeometryDescriptor().getType().getBinding();
 
                         /*
                          * Line Symbolizer
                          */
-                        if (geomT == LineString.class
-                                || geomT == MultiLineString.class) {
+                        if (geomT == LineString.class || geomT == MultiLineString.class) {
                             builder.lineStyle(rules, ramp);
                         }
 

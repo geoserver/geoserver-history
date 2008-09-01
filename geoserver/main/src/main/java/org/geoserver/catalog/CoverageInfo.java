@@ -9,10 +9,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.util.ProgressListener;
 
@@ -110,15 +111,6 @@ public interface CoverageInfo extends ResourceInfo {
     Map<String,Serializable> getParameters();
 
     /**
-     * The dimensions of the coverage.
-     * 
-     * @uml.property name="dimensions"
-     * @uml.associationEnd multiplicity="(0 -1)" container="java.util.List"
-     *                     inverse="coverageInfo:org.geoserver.catalog.CoverageDimension"
-     */
-    List<CoverageDimensionInfo> getDimensions();
-
-    /**
      * The grid geometry.
      */
     GridGeometry getGrid();
@@ -149,8 +141,12 @@ public interface CoverageInfo extends ResourceInfo {
     GridCoverage getGridCoverage(ProgressListener listener, ReferencedEnvelope envelope, Hints hints ) 
         throws IOException;
     
-    GridCoverageReader getGridCoverageReader( ProgressListener listener, Hints hints ) 
+    CoverageAccess getCoverageAccess( ProgressListener listener, Hints hints ) 
         throws IOException;
+
+    void setFields(RangeType fields);
+
+    RangeType getFields();
     
     /**
      * The live coverage resource, an instance of of {@link CoverageResource}.

@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +17,6 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
-import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -44,7 +41,6 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
-import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -594,21 +590,20 @@ public class LegacyCatalogImporter {
         }
         else {
             // new grid range
-            GeneralGridRange range = new GeneralGridRange(new int[] { 0,
-                    0 }, new int[] { 1, 1 });
+            GeneralGridRange range = new GeneralGridRange(new int[] { 0, 0 }, new int[] { 1, 1 });
             coverage.setGrid( new GridGeometry2D(range, gridEnvelope) );
         }
         
-        for ( Iterator x = cInfoReader.coverageDimensions().iterator(); x   .hasNext(); ) {
-            Map map = (Map) x.next();
-            CoverageDimensionInfo cd = factory.createCoverageDimension();
-            cd.setName((String)map.get("name"));
-            cd.setDescription((String)map.get("description"));
-            cd.setRange(
-               new NumberRange((Double)map.get("min"),(Double)map.get("max"))
-            );
-            coverage.getDimensions().add( cd );
-        }
+//        for ( Iterator x = cInfoReader.coverageDimensions().iterator(); x.hasNext(); ) {
+//            Map map = (Map) x.next();
+//            CoverageDimensionInfo cd = factory.createCoverageDimension();
+//            cd.setName((String)map.get("name"));
+//            cd.setDescription((String)map.get("description"));
+//            cd.setRange(
+//               new NumberRange((Double)map.get("min"),(Double)map.get("max"))
+//            );
+//            coverage.getDimensions().add( cd );
+//        }
         
         coverage.setNativeFormat(cInfoReader.nativeFormat());
         coverage.getSupportedFormats().addAll(cInfoReader.supportedFormats());

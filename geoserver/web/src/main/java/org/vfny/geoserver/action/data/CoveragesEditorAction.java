@@ -4,18 +4,33 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Level;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageSource;
+import org.geotools.coverage.io.Driver;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.factory.FactoryRegistryException;
+import org.geotools.feature.NameImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.NamedIdentifier;
-import org.geotools.resources.CRSUtilities;
-import org.opengis.coverage.grid.Format;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -34,48 +49,33 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 
 /**
  * These Action handles all the buttons for the Coverage Editor.
- *
+ * 
  * <p>
  * Buttons that make this action go:
- *
+ * 
  * <ul>
- * <li> Submit: update the CoverageConfig held by the user, punt it back into
- * DataConfig and return to the CoverageSelect screen. </li>
+ * <li> Submit: update the CoverageConfig held by the user, punt it back into DataConfig and return
+ * to the CoverageSelect screen. </li>
  * </ul>
- *
+ * 
  * As usual we will have to uninternationlize the action name provided to us.
  * </p>
- *
+ * 
  * @author Richard Gould
  * @author Jody Garnett
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
- *         modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
- *         modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public final class CoveragesEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+            HttpServletRequest request, HttpServletResponse response) throws IOException,
+            ServletException {
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("form bean:").append(form.getClass().getName()).toString());
+            LOGGER.finer(new StringBuffer("form bean:").append(form.getClass().getName())
+                    .toString());
         }
 
         final CoveragesEditorForm coverageForm = (CoveragesEditorForm) form;
@@ -96,9 +96,9 @@ public final class CoveragesEditorAction extends ConfigAction {
         MessageResources messages = getResources(request);
         final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));
         final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale,
-                    "config.data.calculateBoundingBox.label"));
+                "config.data.calculateBoundingBox.label"));
         final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
-                    "config.data.lookupSRS.label"));
+                "config.data.lookupSRS.label"));
 
         if (LOGGER.isLoggable(Level.FINER)) {
             LOGGER.finer(new StringBuffer("ENVELOPE: ").append(ENVELOPE).toString());
@@ -137,50 +137,69 @@ public final class CoveragesEditorAction extends ConfigAction {
     }
 
     /**
-     * Populate the bounding box fields from the source and pass control back to
-     * the UI
-     *
+     * Populate the bounding box fields from the source and pass control back to the UI
+     * 
      * @param mapping
-     *            DOCUMENT ME!
+     *                DOCUMENT ME!
      * @param coverageForm
-     *            DOCUMENT ME!
+     *                DOCUMENT ME!
      * @param user
-     *            DOCUMENT ME!
+     *                DOCUMENT ME!
      * @param request
-     *            DOCUMENT ME!
-     *
+     *                DOCUMENT ME!
+     * 
      * @return DOCUMENT ME!
-     *
+     * 
      * @throws IOException
-     *             DOCUMENT ME!
+     *                 DOCUMENT ME!
      * @throws ServletException
-     *             DOCUMENT ME!
+     *                 DOCUMENT ME!
      */
     private ActionForward executeEnvelope(ActionMapping mapping, CoveragesEditorForm coverageForm,
-        UserContainer user, HttpServletRequest request)
-        throws IOException, ServletException {
+            UserContainer user, HttpServletRequest request) throws IOException, ServletException {
         final String formatID = coverageForm.getFormatId();
         final Data catalog = getData();
         CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
 
         if (cvStoreInfo == null) {
-            org.geoserver.catalog.CoverageStoreInfo cvStore = getCatalog().getFactory().createCoverageStore();
-            cvStoreInfo = new CoverageStoreInfo( cvStore, getCatalog() );
-            cvStoreInfo.load( getDataConfig().getDataFormat(formatID).toDTO() );
-            //cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
-            //        catalog);
+            org.geoserver.catalog.CoverageStoreInfo cvStore = getCatalog().getFactory()
+                    .createCoverageStore();
+            cvStoreInfo = new CoverageStoreInfo(cvStore, getCatalog());
+            cvStoreInfo.load(getDataConfig().getDataFormat(formatID).toDTO());
+            // cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
+            // catalog);
         }
 
-        final Format format = cvStoreInfo.getFormat();
-        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
+        final Driver driver = cvStoreInfo.getDriver();
+        CoverageAccess cvAccess = cvStoreInfo.getCoverageAccess();
 
-        if (reader == null) {
-            reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
+        if (cvAccess == null) {
+            Map<String, Serializable> params = new HashMap<String, Serializable>();
+            try {
+                params.put("url", GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()).toURI().toURL());
+            } catch (MalformedURLException e) {
+                ServletException exception = new ServletException("Could not retrieve the Coverage source file due to the following error: " + e.getLocalizedMessage());
+                exception.setStackTrace(e.getStackTrace());
+                throw exception;
+            }
+            try {
+                cvAccess = driver.create(params, null, null);
+            } catch (IOException e) {
+                ServletException exception = new ServletException("Could not get access the Coverage due to the following error: " + e.getLocalizedMessage());
+                exception.setStackTrace(e.getStackTrace());
+                throw exception;
+            }
+        }
+
+        if (cvAccess == null) {
+            throw new ServletException("Could not obtain a reader for the CoverageDataSet. Please check the CoverageDataSet configuration!");
         }
 
         try {
-            final CoordinateReferenceSystem sourceCRS = reader.getCrs();
-            final GeneralEnvelope gEnvelope = reader.getOriginalEnvelope();
+            // TODO: FIX THIS!
+            CoverageSource cvSource = cvAccess.access(new NameImpl(coverageForm.getName()), null, AccessType.READ_ONLY, null, null);
+            final CoordinateReferenceSystem sourceCRS = cvSource.getHorizontalDomain(false, null).get(0).getCoordinateReferenceSystem();
+            final GeneralEnvelope gEnvelope = new GeneralEnvelope(cvSource.getHorizontalDomain(false, null).get(0));
             final GeneralEnvelope targetEnvelope = gEnvelope;
             GeneralEnvelope envelope = targetEnvelope;
 
@@ -193,7 +212,8 @@ public final class CoveragesEditorAction extends ConfigAction {
                     if (!nativeCRS.toUpperCase().startsWith("EPSG:")) {
                         try {
                             nativeCRS = "EPSG:" + Integer.decode(nativeCRS);
-                            transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS), true);
+                            transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS),
+                                    true);
                             envelope = CRS.transform(transform, envelope);
                             coverageForm.setSrsName(nativeCRS);
                         } catch (NumberFormatException e) {
@@ -210,8 +230,7 @@ public final class CoveragesEditorAction extends ConfigAction {
                 String identifier = sourceCRS.getIdentifiers().toArray()[0].toString();
 
                 /*
-                 * CRS.lookupIdentifier(sourceCRS, Collections
-                 * .singleton("EPSG"), false);
+                 * CRS.lookupIdentifier(sourceCRS, Collections .singleton("EPSG"), false);
                  */
                 if ((identifier != null) && !identifier.startsWith("EPSG:")) {
                     identifier = "EPSG:" + identifier;
@@ -244,13 +263,13 @@ public final class CoveragesEditorAction extends ConfigAction {
 
     /**
      * Sync generated attributes with schemaBase.
-     *
+     * 
      * @param form
      * @param config
      * @throws FactoryException
      */
     private void sync(CoveragesEditorForm form, CoverageConfig config, HttpServletRequest request)
-        throws FactoryException {
+            throws FactoryException {
         config.setDefaultInterpolationMethod(form.getDefaultInterpolationMethod());
         config.setDescription(form.getDescription());
         config.setInterpolationMethods(interpolationMethods(form));
@@ -261,7 +280,7 @@ public final class CoveragesEditorAction extends ConfigAction {
         config.setRequestCRSs(requestCRSs(form));
         config.setResponseCRSs(responseCRSs(form));
         config.setCrs(CRS.parseWKT(form.getWKTString()));
-        if(!form.getSrsName().toUpperCase().startsWith("EPSG"))
+        if (!form.getSrsName().toUpperCase().startsWith("EPSG"))
             config.setSrsName("EPSG:" + form.getSrsName());
         else
             config.setSrsName(form.getSrsName());
@@ -310,18 +329,17 @@ public final class CoveragesEditorAction extends ConfigAction {
 
     /**
      * Execute Submit Action.
-     *
+     * 
      * @param mapping
      * @param form
      * @param user
      * @param request
-     *
+     * 
      * @return
      * @throws FactoryException
      */
     private ActionForward executeSubmit(ActionMapping mapping, CoveragesEditorForm form,
-        UserContainer user, HttpServletRequest request)
-        throws IOException {
+            UserContainer user, HttpServletRequest request) throws IOException {
         final CoverageConfig config = user.getCoverageConfig();
 
         try {
@@ -347,15 +365,15 @@ public final class CoveragesEditorAction extends ConfigAction {
     }
 
     /**
-     *
-     *
+     * 
+     * 
      * @param coverageForm
      * @param system
-     *
+     * 
      * @return Bounding box in lat long TODO is this correct
      */
     private GeneralEnvelope getEnvelope(CoveragesEditorForm coverageForm,
-        CoordinateReferenceSystem crs) {
+            CoordinateReferenceSystem crs) {
         final double[] coordinates = new double[4];
         final CoordinateSystem cs = crs.getCoordinateSystem();
         boolean lonFirst = true;
@@ -372,35 +390,28 @@ public final class CoveragesEditorAction extends ConfigAction {
         final AxisDirection latitude = cs.getAxis(latIndex).getDirection();
         final AxisDirection longitude = cs.getAxis((latIndex + 1) % 2).getDirection();
         final boolean[] reverse = new boolean[] {
-                lonFirst ? (!longitude.equals(AxisDirection.EAST))
-                         : (!latitude.equals(AxisDirection.NORTH)),
-                lonFirst ? (!latitude.equals(AxisDirection.NORTH))
-                         : (!longitude.equals(AxisDirection.EAST))
-            };
+                lonFirst ? (!longitude.equals(AxisDirection.EAST)) : (!latitude
+                        .equals(AxisDirection.NORTH)),
+                lonFirst ? (!latitude.equals(AxisDirection.NORTH)) : (!longitude
+                        .equals(AxisDirection.EAST)) };
 
-        coordinates[0] = ((!reverse[(latIndex + 1) % 2])
-            ? ((!swapXY) ? Double.parseDouble(coverageForm.getMinX())
-                         : Double.parseDouble(coverageForm.getMinY()))
-            : ((!swapXY) ? Double.parseDouble(coverageForm.getMaxX())
-                         : Double.parseDouble(coverageForm.getMaxY())));
-        coordinates[1] = ((!reverse[latIndex])
-            ? ((!swapXY) ? Double.parseDouble(coverageForm.getMinY())
-                         : Double.parseDouble(coverageForm.getMinX()))
-            : ((!swapXY) ? Double.parseDouble(coverageForm.getMaxY())
-                         : Double.parseDouble(coverageForm.getMaxX())));
-        coordinates[2] = ((!reverse[(latIndex + 1) % 2])
-            ? ((!swapXY) ? Double.parseDouble(coverageForm.getMaxX())
-                         : Double.parseDouble(coverageForm.getMaxY()))
-            : ((!swapXY) ? Double.parseDouble(coverageForm.getMinX())
-                         : Double.parseDouble(coverageForm.getMinY())));
-        coordinates[3] = ((!reverse[latIndex])
-            ? ((!swapXY) ? Double.parseDouble(coverageForm.getMaxY())
-                         : Double.parseDouble(coverageForm.getMaxX()))
-            : ((!swapXY) ? Double.parseDouble(coverageForm.getMinY())
-                         : Double.parseDouble(coverageForm.getMinX())));
+        coordinates[0] = ((!reverse[(latIndex + 1) % 2]) ? ((!swapXY) ? Double
+                .parseDouble(coverageForm.getMinX()) : Double.parseDouble(coverageForm.getMinY()))
+                : ((!swapXY) ? Double.parseDouble(coverageForm.getMaxX()) : Double
+                        .parseDouble(coverageForm.getMaxY())));
+        coordinates[1] = ((!reverse[latIndex]) ? ((!swapXY) ? Double.parseDouble(coverageForm
+                .getMinY()) : Double.parseDouble(coverageForm.getMinX())) : ((!swapXY) ? Double
+                .parseDouble(coverageForm.getMaxY()) : Double.parseDouble(coverageForm.getMaxX())));
+        coordinates[2] = ((!reverse[(latIndex + 1) % 2]) ? ((!swapXY) ? Double
+                .parseDouble(coverageForm.getMaxX()) : Double.parseDouble(coverageForm.getMaxY()))
+                : ((!swapXY) ? Double.parseDouble(coverageForm.getMinX()) : Double
+                        .parseDouble(coverageForm.getMinY())));
+        coordinates[3] = ((!reverse[latIndex]) ? ((!swapXY) ? Double.parseDouble(coverageForm
+                .getMaxY()) : Double.parseDouble(coverageForm.getMaxX())) : ((!swapXY) ? Double
+                .parseDouble(coverageForm.getMinY()) : Double.parseDouble(coverageForm.getMinX())));
 
-        GeneralEnvelope envelope = new GeneralEnvelope(new double[] { coordinates[0], coordinates[1] },
-                new double[] { coordinates[2], coordinates[3] });
+        GeneralEnvelope envelope = new GeneralEnvelope(new double[] { coordinates[0],
+                coordinates[1] }, new double[] { coordinates[2], coordinates[3] });
 
         envelope.setCoordinateReferenceSystem(crs);
 
@@ -408,32 +419,34 @@ public final class CoveragesEditorAction extends ConfigAction {
     }
 
     private ActionForward executeLookupSRS(ActionMapping mapping, CoveragesEditorForm coverageForm,
-        UserContainer user, HttpServletRequest request)
-        throws IOException, ServletException {
+            UserContainer user, HttpServletRequest request) throws IOException, ServletException {
         final String formatID = coverageForm.getFormatId();
         final Data catalog = getData();
         CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
 
         if (cvStoreInfo == null) {
-            org.geoserver.catalog.CoverageStoreInfo cvStore = 
-                getCatalog().getFactory().createCoverageStore();
-            cvStoreInfo = new CoverageStoreInfo( cvStore, getCatalog() );
-            cvStoreInfo.load( getDataConfig().getDataFormat(formatID).toDTO() );
-            //cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
-            //        catalog);
+            org.geoserver.catalog.CoverageStoreInfo cvStore = getCatalog().getFactory()
+                    .createCoverageStore();
+            cvStoreInfo = new CoverageStoreInfo(cvStore, getCatalog());
+            cvStoreInfo.load(getDataConfig().getDataFormat(formatID).toDTO());
+            // cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
+            // catalog);
         }
 
-        final Format format = cvStoreInfo.getFormat();
-        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
+        final Driver driver = cvStoreInfo.getDriver();
+        CoverageAccess cvAccess = cvStoreInfo.getCoverageAccess();
 
-        if (reader == null) {
-            reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory
-                    .findDataFile(cvStoreInfo.getUrl()));
+        if (cvAccess == null) {
+            Map params = new HashMap();
+            params.put("url", GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()).toURI().toURL());
+            cvAccess = driver.connect(params, null, null);
         }
 
         try {
-            final CoordinateReferenceSystem sourceCRS = reader.getCrs();
-            final GeneralEnvelope gEnvelope = reader.getOriginalEnvelope();
+            // TODO: FIX THIS!
+            CoverageSource cvSource = cvAccess.access(new NameImpl(coverageForm.getName()), null, AccessType.READ_ONLY, null, null);
+            final CoordinateReferenceSystem sourceCRS = cvSource.getHorizontalDomain(false, null).get(0).getCoordinateReferenceSystem();
+            final GeneralEnvelope gEnvelope = new GeneralEnvelope(cvSource.getHorizontalDomain(false, null).get(0));
             final GeneralEnvelope targetEnvelope = gEnvelope;
             GeneralEnvelope envelope = targetEnvelope;
             String s = CRS.lookupIdentifier(sourceCRS, true);
@@ -453,7 +466,7 @@ public final class CoveragesEditorAction extends ConfigAction {
     }
 
     private MetaDataLink metadataLink(CoveragesEditorForm coverageForm) {
-        
+
         MetaDataLink ml = new MetaDataLink(getCatalog().getFactory().createMetadataLink());
 
         if ((coverageForm.getMetadataLink() != null)
@@ -469,15 +482,15 @@ public final class CoveragesEditorAction extends ConfigAction {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @param coverageForm
-     *
+     * 
      * @return Set of keywords
      */
     private List keyWords(CoveragesEditorForm coverageForm) {
         LinkedList keywords = new LinkedList();
-        String[] array = (coverageForm.getKeywords() != null)
-            ? coverageForm.getKeywords().split(" ") : new String[0];
+        String[] array = (coverageForm.getKeywords() != null) ? coverageForm.getKeywords().split(
+                " ") : new String[0];
         final int length = array.length;
 
         for (int i = 0; i < length; i++) {
@@ -489,8 +502,8 @@ public final class CoveragesEditorAction extends ConfigAction {
 
     private List interpolationMethods(CoveragesEditorForm coverageForm) {
         LinkedList interpolationMethods = new LinkedList();
-        String[] array = (coverageForm.getInterpolationMethods() != null)
-            ? coverageForm.getInterpolationMethods().split(",") : new String[0];
+        String[] array = (coverageForm.getInterpolationMethods() != null) ? coverageForm
+                .getInterpolationMethods().split(",") : new String[0];
         final int length = array.length;
 
         for (int i = 0; i < length; i++) {
@@ -502,8 +515,8 @@ public final class CoveragesEditorAction extends ConfigAction {
 
     private List requestCRSs(CoveragesEditorForm coverageForm) {
         LinkedList requestCRSs = new LinkedList();
-        String[] array = (coverageForm.getRequestCRSs() != null)
-            ? coverageForm.getRequestCRSs().split(",") : new String[0];
+        String[] array = (coverageForm.getRequestCRSs() != null) ? coverageForm.getRequestCRSs()
+                .split(",") : new String[0];
         final int length = array.length;
 
         for (int i = 0; i < length; i++) {
@@ -515,8 +528,8 @@ public final class CoveragesEditorAction extends ConfigAction {
 
     private List responseCRSs(CoveragesEditorForm coverageForm) {
         LinkedList responseCRSs = new LinkedList();
-        String[] array = (coverageForm.getResponseCRSs() != null)
-            ? coverageForm.getResponseCRSs().split(",") : new String[0];
+        String[] array = (coverageForm.getResponseCRSs() != null) ? coverageForm.getResponseCRSs()
+                .split(",") : new String[0];
         final int length = array.length;
 
         for (int i = 0; i < length; i++) {
@@ -528,8 +541,8 @@ public final class CoveragesEditorAction extends ConfigAction {
 
     private List supportedFormats(CoveragesEditorForm coverageForm) {
         LinkedList supportedFormats = new LinkedList();
-        String[] array = (coverageForm.getSupportedFormats() != null)
-            ? coverageForm.getSupportedFormats().split(",") : new String[0];
+        String[] array = (coverageForm.getSupportedFormats() != null) ? coverageForm
+                .getSupportedFormats().split(",") : new String[0];
         final int length = array.length;
 
         for (int i = 0; i < length; i++) {

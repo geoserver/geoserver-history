@@ -12,9 +12,9 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.data.util.CoverageStoreUtils;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.Driver;
 import org.geotools.factory.Hints;
-import org.opengis.coverage.grid.Format;
-import org.opengis.coverage.grid.GridCoverageReader;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 
 
@@ -118,12 +118,12 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
         cs.setDescription( dto.getTitle() );
     }
 
-    private Format lookupFormat() {
-        final int length = CoverageStoreUtils.formats.length;
+    private Driver lookupDriver() {
+        final int length = CoverageStoreUtils.drivers.length;
 
         for (int i = 0; i < length; i++) {
-            if (CoverageStoreUtils.formats[i].getName().equals(getType())) {
-                return CoverageStoreUtils.formats[i];
+            if (CoverageStoreUtils.drivers[i].getName().equals(getType())) {
+                return CoverageStoreUtils.drivers[i];
             }
         }
 
@@ -186,18 +186,18 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @throws NoSuchElementException
      *             if no CoverageStoreInfo is found
      */
-    public Format getFormat() throws IllegalStateException, NoSuchElementException {
+    public Driver getDriver() throws IllegalStateException, NoSuchElementException {
         if (!isEnabled()) {
             throw new IllegalStateException("this format is not enabled, check your configuration");
         }
 
-        Format format = cs.getFormat();
-        if (format == null) {
+        Driver driver = cs.getDriver();
+        if (driver == null) {
             LOGGER.warning("failed to establish connection with " + toString());
             throw new NoSuchElementException("No format found capable of managing " + toString());
         }
 
-        return format;
+        return driver;
     }
 
     /**
@@ -334,13 +334,14 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
         //return nameSpaceId;
     }
 
-    public synchronized GridCoverageReader getReader() {
+    public synchronized CoverageAccess getCoverageAccess() {
         try {
-            return catalog.getResourcePool().getGridCoverageReader(cs, null);
+            return catalog.getResourcePool().getCoverageAccess(cs, null);
         } 
         catch (IOException e) {
             throw new RuntimeException( e );
         }
+        // TODO: FIX THIS!!!
         //return DataStoreCache.getInstance().getGridCoverageReader(cs, null);
         
         //if ((reader != null) && (reader.get() != null)) {
@@ -383,13 +384,14 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
         //return null;
     }
 
-    public synchronized GridCoverageReader createReader(Hints hints) {
+    public synchronized CoverageAccess createCoverageAccess(Hints hints) {
         try {
-            return catalog.getResourcePool().getGridCoverageReader(cs,hints);
+            return catalog.getResourcePool().getCoverageAccess(cs,hints);
         } 
         catch (IOException e) {
             throw new RuntimeException( e );
         }
+        // TODO: FIX THIS!!!
         //if ((hintReader != null) && (hintReader.get() != null)) {
         //    return (GridCoverageReader) hintReader.get();
         //} else if ((hints == null) && ((reader != null) && (reader.get() != null))) {
@@ -435,6 +437,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
     
     public void dispose() {
         catalog.getResourcePool().clear( cs );
+        // TODO: FIX THIS!!!
         //
         //try {
         //    if ((hintReader != null) && (hintReader.get() != null)) {
@@ -457,7 +460,5 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
         //    LOGGER.log(Level.FINE, "Exception occurred trying to dispose the coverage reader", e);
         //    // ok, we tried...
         //}
-
-        
     }
 }

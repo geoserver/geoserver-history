@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
@@ -18,10 +17,11 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.ProgressListener;
@@ -74,10 +74,6 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         return delegate.getDescription();
     }
 
-    public List<CoverageDimensionInfo> getDimensions() {
-        return delegate.getDimensions();
-    }
-
     public GridGeometry getGrid() {
         return delegate.getGrid();
     }
@@ -92,9 +88,9 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         return delegate.getGridCoverage(listener, envelope, hints);
     }
 
-    public GridCoverageReader getGridCoverageReader(ProgressListener listener,
+    public CoverageAccess getCoverageAccess(ProgressListener listener,
             Hints hints) throws IOException {
-        return delegate.getGridCoverageReader(listener, hints);
+        return delegate.getCoverageAccess(listener, hints);
     }
 
     public String getId() {
@@ -248,5 +244,13 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
     public void setTitle(String title) {
         delegate.setTitle(title);
     }
-    
+
+    public RangeType getFields() {
+        return delegate.getFields();
+    }
+
+    public void setFields(RangeType fields) {
+        delegate.setFields(fields);
+    }
+
 }

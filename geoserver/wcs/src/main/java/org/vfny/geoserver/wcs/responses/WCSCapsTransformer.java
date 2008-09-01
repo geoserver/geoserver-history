@@ -45,8 +45,7 @@ import javax.xml.transform.TransformerException;
  */
 public class WCSCapsTransformer extends TransformerBase {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(WCSCapsTransformer.class.getPackage()
-                                                                                  .getName());
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(WCSCapsTransformer.class.getPackage().getName());
     protected static final String WCS_URI = "http://www.opengis.net/wcs";
 
     /** DOCUMENT ME! */
@@ -503,8 +502,7 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleEnvelope(GeneralEnvelope envelope) {
             AttributesImpl attributes = new AttributesImpl();
 
-            attributes.addAttribute("", "srsName", "srsName", "", /*"urn:ogc:def:crs:OGC:1.3:CRS84"*/
-                "WGS84(DD)");
+            attributes.addAttribute("", "srsName", "srsName", "", "urn:ogc:def:crs:OGC:1.3:CRS84" /* "WGS84(DD)" */ );
             start("lonLatEnvelope", attributes);
             element("gml:pos",
                 new StringBuffer(Double.toString(envelope.getLowerCorner().getOrdinate(0))).append(

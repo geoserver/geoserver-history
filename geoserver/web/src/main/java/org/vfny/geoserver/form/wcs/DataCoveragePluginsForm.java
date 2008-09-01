@@ -4,16 +4,18 @@
  */
 package org.vfny.geoserver.form.wcs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.geoserver.data.util.CoverageStoreUtils;
-import org.opengis.coverage.grid.Format;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
+import org.geotools.coverage.io.Driver;
 
 
 /**
@@ -28,17 +30,17 @@ public class DataCoveragePluginsForm extends ActionForm {
     /**
      *
      */
-    private List formats;
+    private Driver[] drivers;
 
     /**
      *
      */
-    private List formatDescriptions;
+    private List driverDescriptions;
 
     /**
      *
      */
-    private List formatIDs;
+    private List driverIDs;
 
     /**
      * Default state of New form
@@ -48,16 +50,14 @@ public class DataCoveragePluginsForm extends ActionForm {
      */
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
-        formats = CoverageStoreUtils.listDataFormats();
-        formatDescriptions = new ArrayList();
-        formatIDs = new ArrayList();
+        drivers = CoverageStoreUtils.drivers;
+        driverDescriptions = CoverageStoreUtils.listDataFormatsDescriptions();
+        driverIDs = new ArrayList();
 
-        Format fTmp;
 
-        for (Iterator i = formats.iterator(); i.hasNext();) {
-            fTmp = (Format) i.next();
-            formatDescriptions.add(fTmp.getDescription());
-            formatIDs.add(fTmp.getName());
+        for (int i = 0; i < drivers.length; i++) {
+            driverDescriptions.add(drivers[i].getDescription().toString());
+            driverIDs.add(drivers[i].getName());
         }
     }
 
@@ -79,32 +79,32 @@ public class DataCoveragePluginsForm extends ActionForm {
      * Allows the JSP page to easily access the list of dataFormat Descriptions
      */
     public List getFormatDescriptions() {
-        return formatDescriptions;
+        return driverDescriptions;
     }
 
     public void setFormatDescriptions(List desc) {
-        formatDescriptions = desc;
+        driverDescriptions = desc;
     }
 
     /**
      *
      */
     public List getFormatIDs() {
-        return formatIDs;
+        return driverIDs;
     }
 
     public void setFormatIDs(List ids) {
-        formatIDs = ids;
+        driverIDs = ids;
     }
 
     /**
      *
      */
-    public List getFormats() {
-        return formats;
+    public List getDrivers() {
+        return Arrays.asList(drivers);
     }
 
-    public void setFormats(List f) {
-        formats = f;
+    public void setDrivers(List f) {
+        drivers = (Driver[]) f.toArray(new Driver[]{});
     }
 }

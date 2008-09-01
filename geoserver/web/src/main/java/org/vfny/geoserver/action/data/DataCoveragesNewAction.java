@@ -4,6 +4,12 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,11 +17,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geoserver.catalog.Catalog;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.opengis.coverage.grid.Format;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.Driver;
 import org.vfny.geoserver.action.ConfigAction;
-import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.DataCoveragesNewForm;
@@ -78,36 +82,79 @@ public class DataCoveragesNewAction extends ConfigAction {
             //        getCatalog());
         }
 
-        CoverageConfig coverageConfig = newCoverageConfig(cvStoreInfo, formatID, request, getCatalog());
+        CoverageConfig[] coverageConfigs = newCoverageConfig(cvStoreInfo, formatID, request, getCatalog());
 
-        user.setCoverageConfig(coverageConfig);
+        if (coverageConfigs.length == 1) {
+            user.setCoverageConfig(coverageConfigs[0]);
 
-        return mapping.findForward("config.data.coverage.editor");
+            return mapping.findForward("config.data.coverage.editor");
+        } else if (coverageConfigs.length > 1) {
+            final DataConfig dataConfig = (DataConfig) getDataConfig();
+
+            for (int ci = 0; ci < coverageConfigs.length; ci++) {
+                final CoverageConfig config = coverageConfigs[ci];
+                final StringBuffer coverage = new StringBuffer(config.getFormatId());
+                dataConfig.addCoverage(coverage.append(":").append(config.getName()).toString(), config);
+            }
+
+            // Don't think reset is needed (as me have moved on to new page)
+            // form.reset(mapping, request);
+            getApplicationState().notifyConfigChanged();
+
+            // Coverage no longer selected
+            user.setCoverageConfig(null);
+
+            return mapping.findForward("config.data.coverage");
+        }
+
+        return mapping.getInputForward();
     }
 
     /**
      * Static method so that the CoverageStore editor can do the same thing that the new one
      * does.*/
-    public static CoverageConfig newCoverageConfig(CoverageStoreInfo cvStoreInfo, String formatID,
+    public static CoverageConfig[] newCoverageConfig(CoverageStoreInfo cvStoreInfo, String formatID,
         HttpServletRequest request, Catalog catalog ) throws ConfigurationException {
         //GridCoverage gc = null;
-        final Format format = cvStoreInfo.getFormat();
-        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
+        final Driver driver = cvStoreInfo.getDriver();
+        CoverageAccess cvAccess = cvStoreInfo.getCoverageAccess();
 
-        if (reader == null) {
-            reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
+        if (cvAccess == null) {
+            // TODO: FIX THIS!!!
+//            cvAccess = (AbstractGridCoverage2DReader) ((AbstractGridFormat) driver).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
+            Map<String, Serializable> params = new HashMap<String, Serializable>();
+            try {
+                params.put("url", GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()).toURI().toURL());
+            } catch (MalformedURLException e) {
+                ConfigurationException exception = new ConfigurationException("Could not retrieve the Coverage source file due to the following error: " + e.getLocalizedMessage());
+                exception.setStackTrace(e.getStackTrace());
+                throw exception;
+            }
+            try {
+                cvAccess = driver.create(params, null, null);
+            } catch (IOException e) {
+                ConfigurationException exception = new ConfigurationException("Could not get access the Coverage due to the following error: " + e.getLocalizedMessage());
+                exception.setStackTrace(e.getStackTrace());
+                throw exception;
+            }
         }
 
-        if (reader == null) {
+        if (cvAccess == null) {
             throw new ConfigurationException(
                 "Could not obtain a reader for the CoverageDataSet. Please check the CoverageDataSet configuration!");
         }
 
-        CoverageConfig coverageConfig = new CoverageConfig(formatID, format, reader, ConfigRequests.getDataConfig(request));
+//        CoverageConfig coverageConfig = new CoverageConfig(formatID, driver, cvAccess, ConfigRequests.getDataConfig(request));
+        int numCoverages = cvAccess.getNumCoverages(null);
+        CoverageConfig[] coverageConfigs = new CoverageConfig[numCoverages];
 
+        for (int i=0; i<numCoverages; i++) {
+            coverageConfigs[i] = new CoverageConfig(formatID, driver, cvAccess, cvAccess.getNames(null).get(i), request);
+        }
+        
         request.setAttribute(NEW_COVERAGE_KEY, "true");
-        request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfig);
+        request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfigs[0]);
 
-        return coverageConfig;
+        return coverageConfigs;
     }
 }

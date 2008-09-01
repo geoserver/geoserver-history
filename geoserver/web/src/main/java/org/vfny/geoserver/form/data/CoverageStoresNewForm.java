@@ -9,6 +9,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.geoserver.data.util.CoverageStoreUtils;
+import org.geotools.util.SimpleInternationalString;
 
 import java.util.List;
 import java.util.SortedSet;
@@ -72,7 +73,7 @@ public final class CoverageStoresNewForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if (!getDataFormatDescriptions().contains(getSelectedDescription())) {
+        if (!getDataFormatDescriptions().contains(new SimpleInternationalString(getSelectedDescription()))) {
             errors.add("selectedDescription",
                 new ActionError("error.dataFormatFactory.invalid", getSelectedDescription()));
         }

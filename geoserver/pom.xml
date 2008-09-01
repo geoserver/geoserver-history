@@ -198,6 +198,11 @@
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
+    <artifactId>gt-coverage-api</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools</groupId>
     <artifactId>gt-referencing</artifactId>
     <version>${gt.version}</version>
    </dependency>
@@ -224,6 +229,11 @@
    <dependency>
     <groupId>org.geotools.xsd</groupId>
     <artifactId>gt-xsd-filter</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+      <dependency>
+    <groupId>org.geotools.xsd</groupId>
+    <artifactId>gt-xsd-wcs</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
@@ -1103,6 +1113,7 @@
   <module>data</module>
   <module>main</module>
   <module>wcs</module>
+  <module>wcs1_0</module>
   <module>wcs1_1</module>
   <module>wfs</module>
   <module>wfs11</module>

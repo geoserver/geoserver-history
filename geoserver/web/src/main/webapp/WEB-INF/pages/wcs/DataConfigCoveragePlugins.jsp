@@ -6,16 +6,16 @@
 <table class="info" align="center">
   	<tr>
 			<td class="datum">
-				<strong>Format ID / Version</strong>
+				<strong>Driver ID <!-- / Version --></strong>
 			</td>
 			<td class="datum">
-				<strong>Format Description</strong>
+				<strong>Driver Description</strong>
 			</td>
   	</tr>
-		<logic:iterate id="element" name="dataCoveragePluginsForm" property="formats">
+		<logic:iterate id="element" name="dataCoveragePluginsForm" property="drivers">
   	<tr>
 			<td class="datum">
-				<bean:write name="element" property="name"/>&nbsp;/&nbsp;<bean:write name="element" property="version"/>
+				<bean:write name="element" property="name"/>&nbsp;<%-- /&nbsp;<bean:write name="element" property="version"/> --%>
 			</td>
 			<td class="datum">
 				<i><bean:write name="element" property="description"/></i>

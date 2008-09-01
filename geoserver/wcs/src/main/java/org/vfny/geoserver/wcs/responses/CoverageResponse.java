@@ -7,6 +7,7 @@ package org.vfny.geoserver.wcs.responses;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,20 +17,22 @@ import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
-import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageSource;
+import org.geotools.coverage.io.Driver;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.factory.Hints;
+import org.geotools.feature.NameImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.Coverage;
-import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
@@ -37,7 +40,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -202,26 +204,26 @@ public class CoverageResponse implements Response {
             meta = catalog.getCoverageInfo(request.getCoverage());
 
             if (!meta.getSupportedFormats().contains(outputFormat.toUpperCase())) {
-                WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
-                            outputFormat).append(" not ")
-                                                                                         .append("supported by geoserver for this Coverage")
-                                                                                         .toString());
+                WcsException newEx = new WcsException(
+                        new StringBuffer("output format: ")
+                            .append(outputFormat).append(" not ")
+                            .append("supported by geoserver for this Coverage")
+                            .toString());
                 throw newEx;
             }
 
-            final Format format = meta.getFormatInfo().getFormat();
-            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta
-                .createReader(hints);
+            final Driver driver = meta.getFormatInfo().getDriver();
+            final CoverageAccess cvAccess = meta.createCoverageAccess(hints);
 
             // /////////////////////////////////////////////////////////
             //
             // Setting coverage reading params.
             //
             // /////////////////////////////////////////////////////////
-            final ParameterValueGroup params = reader.getFormat().getReadParameters();
-
-            final GridCoverage2D finalCoverage = getFinalCoverage(request, meta, reader,
-                    CoverageUtils.getParametersKVP(params));
+            final CoverageSource cvSource = cvAccess.access(new NameImpl(meta.getCoverageName()), cvAccess.getConnectParameters(), AccessType.READ_ONLY, hints, null);
+            final GridCoverage2D finalCoverage = getFinalCoverage(request, meta, cvSource,
+                    /* CoverageUtils.getParametersKVP(params) */ // TODO: CHECK THIS;
+                    cvAccess.getConnectParameters());
             delegate.prepare(outputFormat, finalCoverage);
         } catch (IOException e) {
             final WcsException newEx = new WcsException(e, "problem with CoverageResults",
@@ -287,7 +289,7 @@ public class CoverageResponse implements Response {
      * @throws TransformException
      */
     private static GridCoverage2D getFinalCoverage(CoverageRequest request, CoverageInfo meta,
-        AbstractGridCoverage2DReader coverageReader /*GridCoverage coverage*/, Map parameters)
+        CoverageSource cvSource, Map<String, Serializable> parameters)
         throws WcsException, IOException, IndexOutOfBoundsException, FactoryException,
             TransformException {
         // This is the final Response CRS
@@ -315,36 +317,36 @@ public class CoverageResponse implements Response {
         final CoordinateReferenceSystem sourceCRS = CRS.decode(requestCRS);
 
         // This is the CRS of the Coverage Envelope
-        final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverageReader
-            .getOriginalEnvelope()).getCoordinateReferenceSystem();
-        final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS
-            .findMathTransform(cvCRS, sourceCRS, true);
+        BoundingBox bbox = cvSource.getHorizontalDomain(false, null).get(0);
+        final CoordinateReferenceSystem cvCRS = bbox.getCoordinateReferenceSystem();
+        final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS.findMathTransform(cvCRS, sourceCRS, true);
         final MathTransform GCCRSTodeviceCRSTransform = CRS.findMathTransform(cvCRS, targetCRS, true);
-        final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform
-            .inverse();
+        final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform.inverse();
 
         com.vividsolutions.jts.geom.Envelope envelope = request.getEnvelope();
         GeneralEnvelope destinationEnvelope;
-        final boolean lonFirst = sourceCRS.getCoordinateSystem().getAxis(0).getDirection().absolute()
-                                          .equals(AxisDirection.EAST);
+        final boolean lonFirst = sourceCRS.getCoordinateSystem().getAxis(0).getDirection().absolute().equals(AxisDirection.EAST);
 
         // the envelope we are provided with is lon,lat always
         if (!lonFirst) {
-            destinationEnvelope = new GeneralEnvelope(new double[] {
-                        envelope.getMinY(), envelope.getMinX()
-                    }, new double[] { envelope.getMaxY(), envelope.getMaxX() });
+            destinationEnvelope = new GeneralEnvelope(
+                    new double[] {envelope.getMinY(), envelope.getMinX()}, 
+                    new double[] {envelope.getMaxY(), envelope.getMaxX()}
+            );
         } else {
-            destinationEnvelope = new GeneralEnvelope(new double[] {
-                        envelope.getMinX(), envelope.getMinY()
-                    }, new double[] { envelope.getMaxX(), envelope.getMaxY() });
+            destinationEnvelope = new GeneralEnvelope(
+                    new double[] {envelope.getMinX(), envelope.getMinY()}, 
+                    new double[] {envelope.getMaxX(), envelope.getMaxY()}
+            );
         }
 
         destinationEnvelope.setCoordinateReferenceSystem(sourceCRS);
 
         // this is the destination envelope in the coverage crs
-        final GeneralEnvelope destinationEnvelopeInSourceCRS = (!deviceCRSToGCCRSTransform
-            .isIdentity()) ? CRS.transform(deviceCRSToGCCRSTransform, destinationEnvelope)
-                           : new GeneralEnvelope(destinationEnvelope);
+        final GeneralEnvelope destinationEnvelopeInSourceCRS = (
+                !deviceCRSToGCCRSTransform.isIdentity()) ? 
+                        CRS.transform(deviceCRSToGCCRSTransform, destinationEnvelope) : 
+                            new GeneralEnvelope(destinationEnvelope);
         destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(cvCRS);
 
         /**
@@ -362,6 +364,7 @@ public class CoverageResponse implements Response {
 
             destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
         } else {
+            // TODO: FIX THIS!!!
             /*destinationSize = coverageReader.getOriginalGridRange().toRectangle();*/
             throw new WcsException("Neither Grid Size nor Grid Resolution have been specified.");
         }
@@ -402,8 +405,10 @@ public class CoverageResponse implements Response {
         parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
             new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS));
 
-        final GridCoverage coverage = coverageReader.read(CoverageUtils.getParameters(
-                    coverageReader.getFormat().getReadParameters(), parameters, true));
+        // TODO: FIX THIS!
+        final GridCoverage coverage = null;
+            /* cvSource.read(CoverageUtils.getParameters(
+                    cvSource.getFormat().getReadParameters(), parameters, true)); */
 
         if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
             throw new IOException("The requested coverage could not be found.");

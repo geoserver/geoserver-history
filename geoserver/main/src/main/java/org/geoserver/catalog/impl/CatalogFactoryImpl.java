@@ -5,13 +5,12 @@
 package org.geoserver.catalog.impl;
 
 import org.geoserver.catalog.AttributeTypeInfo;
-import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.CatalogFactory;
-import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.MapInfo;
@@ -30,10 +29,6 @@ public class CatalogFactoryImpl implements CatalogFactory {
     
     public CoverageInfo createCoverage() {
         return new CoverageInfoImpl(catalog);
-    }
-
-    public CoverageDimensionInfo createCoverageDimension() {
-        return new CoverageDimensionImpl();
     }
 
     public CoverageStoreInfo createCoverageStore() {

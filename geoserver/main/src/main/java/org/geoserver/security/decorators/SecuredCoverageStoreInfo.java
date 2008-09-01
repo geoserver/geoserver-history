@@ -7,7 +7,7 @@ package org.geoserver.security.decorators;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.security.SecureCatalogImpl;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.io.Driver;
 
 public class SecuredCoverageStoreInfo extends DecoratingCoverageStoreInfo {
     WrapperPolicy policy;
@@ -18,10 +18,10 @@ public class SecuredCoverageStoreInfo extends DecoratingCoverageStoreInfo {
     }
 
     @Override
-    public AbstractGridFormat getFormat() {
+    public Driver getDriver() {
         if(policy == WrapperPolicy.METADATA)
             throw SecureCatalogImpl.unauthorizedAccess(getName());
-        return super.getFormat();
+        return super.getDriver();
     }
 
 }

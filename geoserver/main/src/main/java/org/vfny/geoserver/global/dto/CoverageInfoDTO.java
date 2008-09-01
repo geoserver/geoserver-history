@@ -4,17 +4,17 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import org.geotools.geometry.GeneralEnvelope;
-import org.opengis.coverage.grid.GridGeometry;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.util.InternationalString;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.global.CoverageDimension;
-import org.vfny.geoserver.global.MetaDataLink;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.geotools.coverage.io.range.RangeType;
+import org.geotools.geometry.GeneralEnvelope;
+import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.global.MetaDataLink;
 
 
 /**
@@ -84,16 +84,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
     /**
      *
      */
-    private CoverageDimension[] dimensions;
-
-    /**
-     *
-     */
-    private InternationalString[] dimensionNames;
-
-    /**
-     *
-     */
     private List requestCRSs;
 
     /**
@@ -149,6 +139,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
          */
     private Map parameters;
 
+    private RangeType fields;
+
     public CoverageInfoDTO() {
     }
 
@@ -177,9 +169,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
         envelope = dto.getEnvelope();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
-        dimensions = dto.getDimensions();
-        dimensionNames = dto.getDimensionNames();
-
+        fields = dto.getFields();
+        
         try {
             requestCRSs = CloneLibrary.clone(dto.getRequestCRSs());
         } catch (CloneNotSupportedException e1) {
@@ -252,6 +243,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         r = r && (dirName == f.getDirName());
         r = r && (envelope == f.getEnvelope());
         r = r && (grid == f.getGrid());
+        r = r && (fields == f.getFields());
 
         return r;
     }
@@ -734,41 +726,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
         this.grid = grid;
     }
 
-    /**
-     *
-     * @uml.property name="dimensionNames"
-     */
-    public InternationalString[] getDimensionNames() {
-        return dimensionNames;
-    }
-
-    /**
-     *
-     * @uml.property name="dimensionNames"
-     */
-    public void setDimensionNames(InternationalString[] dimentionNames) {
-        this.dimensionNames = dimentionNames;
-    }
-
-    /**
-     * @return Returns the dimensions.
-     *
-     * @uml.property name="dimensions"
-     */
-    public CoverageDimension[] getDimensions() {
-        return dimensions;
-    }
-
-    /**
-     * @param dimensions
-     *            The dimensions to set.
-     *
-     * @uml.property name="dimensions"
-     */
-    public void setDimensions(CoverageDimension[] dimensions) {
-        this.dimensions = dimensions;
-    }
-
     public String getSrsWKT() {
         return srsWKT;
     }
@@ -816,5 +773,13 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     public synchronized void setParameters(Map parameters) {
         this.parameters = parameters;
+    }
+
+    public void setFields(RangeType fields) {
+        this.fields = fields;
+    }
+
+    public RangeType getFields() {
+        return this.fields;
     }
 }

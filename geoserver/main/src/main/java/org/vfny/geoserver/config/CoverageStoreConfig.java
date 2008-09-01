@@ -4,11 +4,13 @@
  */
 package org.vfny.geoserver.config;
 
-import org.geoserver.data.util.CoverageStoreUtils;
-import org.opengis.coverage.grid.Format;
-import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import java.io.IOException;
+
 import javax.servlet.ServletContext;
+
+import org.geoserver.data.util.CoverageStoreUtils;
+import org.geotools.coverage.io.Driver;
+import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 
 
 /**
@@ -59,7 +61,7 @@ public class CoverageStoreConfig {
     /**
      * Config ONLY!
      */
-    private Format factory;
+    private Driver factory;
 
     /**
      * Create a new CoverageStoreConfig from a dataFormatId and factoryDescription
@@ -80,7 +82,7 @@ public class CoverageStoreConfig {
     }
 
     /** Creates a new CoverageStoreConfig for the provided factory (Format). */
-    public CoverageStoreConfig(String dataFormatId, Format factory) {
+    public CoverageStoreConfig(String dataFormatId, Driver factory) {
         this.factory = factory;
         id = dataFormatId;
         nameSpaceId = "";
@@ -288,14 +290,14 @@ public class CoverageStoreConfig {
      * @throws IOException
      *             If Format could not be aquired
      */
-    public Format findDataFormat(ServletContext sc) throws IOException {
-        return CoverageStoreUtils.acquireFormat(type);
+    public Driver findDataFormat(ServletContext sc) throws IOException {
+        return CoverageStoreUtils.acquireDriver(type);
     }
 
     /**
      * @return Returns the factory.
      */
-    public Format getFactory() {
+    public Driver getFactory() {
         return factory;
     }
 
@@ -303,7 +305,7 @@ public class CoverageStoreConfig {
      * @param factory
      *            The factory to set.
      */
-    public void setFactory(Format factory) {
+    public void setFactory(Driver factory) {
         this.factory = factory;
     }
 

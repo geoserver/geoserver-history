@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.io.Driver;
 import org.opengis.util.ProgressListener;
 
 /**
@@ -48,7 +49,7 @@ public interface CoverageStoreInfo extends StoreInfo {
     /**
      * The grid format.
      */
-    AbstractGridFormat getFormat();
+    Driver getDriver();
 
     
     /**

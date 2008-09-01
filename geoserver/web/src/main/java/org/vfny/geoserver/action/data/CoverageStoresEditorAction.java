@@ -4,6 +4,14 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -15,12 +23,6 @@ import org.vfny.geoserver.form.data.CoverageStoresEditorForm;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageStoreInfo;
 import org.vfny.geoserver.global.UserContainer;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -87,11 +89,30 @@ public final class CoverageStoresEditorAction extends ConfigAction {
         if (newCoverageFlag) {
             //if we're making a new coverage store, then go ahead and create the new coverage and
             //forward to the editor
-            CoverageConfig coverageConfig = DataCoveragesNewAction.newCoverageConfig(cvStoreInfo,
+            CoverageConfig[] coverageConfigs = DataCoveragesNewAction.newCoverageConfig(cvStoreInfo,
                     dataFormatID, request, getCatalog());
-            user.setCoverageConfig(coverageConfig);
 
-            return mapping.findForward("config.data.coverage.editor");
+            if (coverageConfigs.length == 1) {
+                user.setCoverageConfig(coverageConfigs[0]);
+
+                return mapping.findForward("config.data.coverage.editor");
+            } else if (coverageConfigs.length > 1) {
+                for (int ci = 0; ci < coverageConfigs.length; ci++) {
+                    final CoverageConfig cvConfig = coverageConfigs[ci];
+                    final StringBuffer coverage = new StringBuffer(cvConfig.getFormatId());
+                    dataConfig.addCoverage(coverage.append(":").append(cvConfig.getName()).toString(),
+                        cvConfig);
+                }
+
+                // Don't think reset is needed (as me have moved on to new page)
+                // form.reset(mapping, request);
+                getApplicationState().notifyConfigChanged();
+
+                // Coverage no longer selected
+                user.setCoverageConfig(null);
+
+                return mapping.findForward("config.data.coverage");
+            }
         } else {
             // For now we're only not forwarding to the coverage editor if this is a coverage store edit 
             //(instead of a new one.  In the future with nD coverage support we'll also want to check
@@ -99,6 +120,8 @@ public final class CoverageStoresEditorAction extends ConfigAction {
             //to force people to edit the first one.
             return mapping.findForward("config.data.format");
         }
+        
+        return mapping.getInputForward();
     }
 
     /** Used to debug connection parameters */

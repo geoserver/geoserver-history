@@ -6,10 +6,10 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.security.SecureCatalogImpl;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geotools.coverage.io.CoverageAccess;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.util.ProgressListener;
 
 public class SecuredCoverageInfo extends DecoratingCoverageInfo {
@@ -38,11 +38,11 @@ public class SecuredCoverageInfo extends DecoratingCoverageInfo {
     }
 
     @Override
-    public GridCoverageReader getGridCoverageReader(ProgressListener listener,
+    public CoverageAccess getCoverageAccess(ProgressListener listener,
             Hints hints) throws IOException {
         if(policy == WrapperPolicy.METADATA)
             throw SecureCatalogImpl.unauthorizedAccess(this.getName());
-        return super.getGridCoverageReader(listener, hints);
+        return super.getCoverageAccess(listener, hints);
     }
 
     @Override

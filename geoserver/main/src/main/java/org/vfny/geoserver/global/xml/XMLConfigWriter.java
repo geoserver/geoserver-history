@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,11 +13,11 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,9 +27,7 @@ import org.geotools.filter.FilterTransformer;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.operation.MathTransform;
-import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -1526,27 +1523,28 @@ public class XMLConfigWriter {
                 GridGeometry g = cv.getGrid();
                 MathTransform tx = g.getGridToCRS();
 
-                InternationalString[] dimNames = cv.getDimensionNames();
-                m = new HashMap();
-
-                m.put("dimension", new Integer(g.getGridRange().getDimension()));
-
-                String lowers = "";
-                String upers = "";
-
-                for (int r = 0; r < g.getGridRange().getDimension(); r++) {
-                    lowers += (g.getGridRange().getLower(r) + " ");
-                    upers += (g.getGridRange().getUpper(r) + " ");
-                }
-
-                cw.openTag("grid", m);
-                cw.textTag("low", lowers);
-                cw.textTag("high", upers);
-
-                if (dimNames != null) {
-                    for (int dn = 0; dn < dimNames.length; dn++)
-                        cw.textTag("axisName", dimNames[dn].toString());
-                }
+                // TODO: FIX THIS
+//                InternationalString[] dimNames = cv.getDimensionNames();
+//                m = new HashMap();
+//
+//                m.put("dimension", new Integer(g.getGridRange().getDimension()));
+//
+//                String lowers = "";
+//                String upers = "";
+//
+//                for (int r = 0; r < g.getGridRange().getDimension(); r++) {
+//                    lowers += (g.getGridRange().getLower(r) + " ");
+//                    upers += (g.getGridRange().getUpper(r) + " ");
+//                }
+//
+//                cw.openTag("grid", m);
+//                cw.textTag("low", lowers);
+//                cw.textTag("high", upers);
+//
+//                if (dimNames != null) {
+//                    for (int dn = 0; dn < dimNames.length; dn++)
+//                        cw.textTag("axisName", dimNames[dn].toString());
+//                }
 
                 // //
                 // AlFa: storing geo-transform
@@ -1566,39 +1564,40 @@ public class XMLConfigWriter {
                 cw.closeTag("grid");
             }
 
-            if (cv.getDimensions() != null) {
-                CoverageDimension[] dims = cv.getDimensions();
-
-                for (int d = 0; d < dims.length; d++) {
-                    Double[] nulls = dims[d].getNullValues();
-                    cw.openTag("CoverageDimension");
-                    cw.textTag("name", dims[d].getName());
-                    cw.textTag("description", dims[d].getDescription());
-
-                    if (dims[d].getRange() != null) {
-                        cw.openTag("interval");
-                        cw.textTag("min", Double.toString(dims[d].getRange().getMinimum(true)));
-                        cw.textTag("max", Double.toString(dims[d].getRange().getMaximum(true)));
-                        cw.closeTag("interval");
-                    }
-                    else
-                    {
-                        cw.openTag("interval");
-                        cw.textTag("min", Double.toString(Double.NEGATIVE_INFINITY));
-                        cw.textTag("max", Double.toString(Double.POSITIVE_INFINITY));
-                        cw.closeTag("interval");
-                    }
-
-                    if (nulls != null) {
-                        cw.openTag("nullValues");
-                        for (int n = 0; n < nulls.length; n++) {
-                            cw.textTag("value", nulls[n].toString());
-                        }
-                        cw.closeTag("nullValues");
-                    }
-                    cw.closeTag("CoverageDimension");
-                }
-            }
+            // TODO: FIX THIS
+//            if (cv.getDimensions() != null) {
+//                CoverageDimension[] dims = cv.getDimensions();
+//
+//                for (int d = 0; d < dims.length; d++) {
+//                    Double[] nulls = dims[d].getNullValues();
+//                    cw.openTag("CoverageDimension");
+//                    cw.textTag("name", dims[d].getName());
+//                    cw.textTag("description", dims[d].getDescription());
+//
+//                    if (dims[d].getRange() != null) {
+//                        cw.openTag("interval");
+//                        cw.textTag("min", Double.toString(dims[d].getRange().getMinimum(true)));
+//                        cw.textTag("max", Double.toString(dims[d].getRange().getMaximum(true)));
+//                        cw.closeTag("interval");
+//                    }
+//                    else
+//                    {
+//                        cw.openTag("interval");
+//                        cw.textTag("min", Double.toString(Double.NEGATIVE_INFINITY));
+//                        cw.textTag("max", Double.toString(Double.POSITIVE_INFINITY));
+//                        cw.closeTag("interval");
+//                    }
+//
+//                    if (nulls != null) {
+//                        cw.openTag("nullValues");
+//                        for (int n = 0; n < nulls.length; n++) {
+//                            cw.textTag("value", nulls[n].toString());
+//                        }
+//                        cw.closeTag("nullValues");
+//                    }
+//                    cw.closeTag("CoverageDimension");
+//                }
+//            }
 
             cw.openTag("supportedCRSs");
 

@@ -35,10 +35,8 @@ import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.ows.util.XmlCharsetDetector;
-import org.geoserver.ows.xml.v1_0.UpdateSequenceTypeBinding;
 import org.geoserver.util.ReaderUtils;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -62,7 +60,6 @@ import org.opengis.referencing.operation.Matrix;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -1955,14 +1952,15 @@ public class XMLConfigReader {
             final Element grid = ReaderUtils.getChildElement(coverageRoot, "grid");
             cv.setGrid(loadGrid(grid, gcEnvelope, crs));
 
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // SAMPLE DIMENSIONS
-            //
-            // /////////////////////////////////////////////////////////////////////
-            cv.setDimensionNames(loadDimensionNames(grid));
-            final NodeList dims = coverageRoot.getElementsByTagName("CoverageDimension");
-            cv.setDimensions(loadDimensions(dims));
+            // TODO: FIX THIS
+//            // /////////////////////////////////////////////////////////////////////
+//            //
+//            // SAMPLE DIMENSIONS
+//            //
+//            // /////////////////////////////////////////////////////////////////////
+//            cv.setDimensionNames(loadDimensionNames(grid));
+//            final NodeList dims = coverageRoot.getElementsByTagName("CoverageDimension");
+//            cv.setDimensions(loadDimensions(dims));
 
             // /////////////////////////////////////////////////////////////////////
             //
@@ -2199,6 +2197,7 @@ public class XMLConfigReader {
 
     }
 
+    // TODO: FIX THIS
     /**
      * 
      * @param gridElem
@@ -2225,52 +2224,52 @@ public class XMLConfigReader {
         return dimNames;
     }
 
-    protected CoverageDimension[] loadDimensions(NodeList dimElems) throws ConfigurationException {
-        CoverageDimension[] dimensions = null;
-
-        if ((dimElems != null) && (dimElems.getLength() > 0)) {
-            dimensions = new CoverageDimension[dimElems.getLength()];
-            final int length=dimElems.getLength();
-            for (int dim = 0; dim < length; dim++) {
-                dimensions[dim] = new CoverageDimension(catalog.getFactory().createCoverageDimension());
-                dimensions[dim].setName(ReaderUtils.getElementText((Element) ((Element) dimElems
-                        .item(dim)).getElementsByTagName("name").item(0)));
-                dimensions[dim].setDescription(ReaderUtils
-                        .getElementText((Element) ((Element) dimElems.item(dim))
-                                .getElementsByTagName("description").item(0)));
-
-                NodeList interval = ((Element) dimElems.item(dim)).getElementsByTagName("interval");
-                double min = Double.parseDouble(ReaderUtils
-                        .getElementText((Element) ((Element) interval.item(0))
-                                .getElementsByTagName("min").item(0)));
-                double max = Double.parseDouble(ReaderUtils
-                        .getElementText((Element) ((Element) interval.item(0))
-                                .getElementsByTagName("max").item(0)));
-                dimensions[dim].setRange(new NumberRange(min, max));
-
-                NodeList nullValues = ((Element) dimElems.item(dim))
-                        .getElementsByTagName("nullValues");
-
-                if ((nullValues != null) && (nullValues.getLength() > 0)) {
-                    NodeList values = ((Element) nullValues.item(0)).getElementsByTagName("value");
-
-                    if (values != null) {
-                        Vector nulls = new Vector();
-
-                        for (int nl = 0; nl < values.getLength(); nl++) {
-                            nulls.add(new Double(ReaderUtils.getElementText((Element) values
-                                    .item(nl))));
-                        }
-
-                        dimensions[dim].setNullValues((Double[]) nulls.toArray(new Double[nulls
-                                .size()]));
-                    }
-                }
-            }
-        }
-
-        return dimensions;
-    }
+//    protected CoverageDimension[] loadDimensions(NodeList dimElems) throws ConfigurationException {
+//        CoverageDimension[] dimensions = null;
+//
+//        if ((dimElems != null) && (dimElems.getLength() > 0)) {
+//            dimensions = new CoverageDimension[dimElems.getLength()];
+//            final int length=dimElems.getLength();
+//            for (int dim = 0; dim < length; dim++) {
+//                dimensions[dim] = new CoverageDimension(catalog.getFactory().createCoverageDimension());
+//                dimensions[dim].setName(ReaderUtils.getElementText((Element) ((Element) dimElems
+//                        .item(dim)).getElementsByTagName("name").item(0)));
+//                dimensions[dim].setDescription(ReaderUtils
+//                        .getElementText((Element) ((Element) dimElems.item(dim))
+//                                .getElementsByTagName("description").item(0)));
+//
+//                NodeList interval = ((Element) dimElems.item(dim)).getElementsByTagName("interval");
+//                double min = Double.parseDouble(ReaderUtils
+//                        .getElementText((Element) ((Element) interval.item(0))
+//                                .getElementsByTagName("min").item(0)));
+//                double max = Double.parseDouble(ReaderUtils
+//                        .getElementText((Element) ((Element) interval.item(0))
+//                                .getElementsByTagName("max").item(0)));
+//                dimensions[dim].setRange(new NumberRange(min, max));
+//
+//                NodeList nullValues = ((Element) dimElems.item(dim))
+//                        .getElementsByTagName("nullValues");
+//
+//                if ((nullValues != null) && (nullValues.getLength() > 0)) {
+//                    NodeList values = ((Element) nullValues.item(0)).getElementsByTagName("value");
+//
+//                    if (values != null) {
+//                        Vector nulls = new Vector();
+//
+//                        for (int nl = 0; nl < values.getLength(); nl++) {
+//                            nulls.add(new Double(ReaderUtils.getElementText((Element) values
+//                                    .item(nl))));
+//                        }
+//
+//                        dimensions[dim].setNullValues((Double[]) nulls.toArray(new Double[nulls
+//                                .size()]));
+//                    }
+//                }
+//            }
+//        }
+//
+//        return dimensions;
+//    }
 
     protected MetaDataLink loadMetaDataLink(Element metalinkRoot) {
         MetaDataLink ml = new MetaDataLink(catalog.getFactory().createMetadataLink());

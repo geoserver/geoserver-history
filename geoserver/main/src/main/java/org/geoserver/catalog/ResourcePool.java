@@ -7,6 +7,7 @@ package org.geoserver.catalog;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +21,12 @@ import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageReadRequest;
+import org.geotools.coverage.io.CoverageSource;
+import org.geotools.coverage.io.Driver;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
+import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
@@ -28,6 +34,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeTypeBuilder;
 import org.geotools.feature.FeatureTypes;
+import org.geotools.feature.NameImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -36,9 +43,7 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.util.logging.Logging;
-import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -406,15 +411,15 @@ public class ResourcePool {
      * 
      * @throws IOException Any errors that occur loading the reader.
      */
-    public GridCoverageReader getGridCoverageReader( CoverageStoreInfo info, Hints hints ) 
+    public CoverageAccess getCoverageAccess( CoverageStoreInfo info, Hints hints ) 
         throws IOException {
         
-        GridCoverageReader reader = null;
+        CoverageAccess reader = null;
         if ( hints != null ) {
-            reader = (GridCoverageReader) hintCoverageReaderCache.get( info );    
+            reader = (CoverageAccess) hintCoverageReaderCache.get( info );    
         }
         else {
-            reader = (GridCoverageReader) coverageReaderCache.get( info );
+            reader = (CoverageAccess) coverageReaderCache.get( info );
         }
         
         if (reader != null) {
@@ -431,7 +436,9 @@ public class ResourcePool {
             final File obj = GeoserverDataDirectory.findDataFile(info.getURL());
 
             // XXX CACHING READERS HERE
-            reader = (info.getFormat()).getReader(obj,hints);
+            Map<String, Serializable> params = new HashMap<String, Serializable>();
+            params.put("url", obj.toURI().toURL());
+            reader = (info.getDriver()).connect(params, hints, null);
             (hints != null ? hintCoverageReaderCache : coverageReaderCache ).put(info, reader); 
         }
         
@@ -523,9 +530,9 @@ public class ResourcePool {
         // get a reader
         //
         // /////////////////////////////////////////////////////////
-        final GridCoverageReader reader = getGridCoverageReader(info.getStore(),hints);
+        final CoverageAccess driver = getCoverageAccess(info.getStore(),hints);
         
-        if (reader == null) {
+        if (driver == null) {
             return null;
         }
         
@@ -535,8 +542,17 @@ public class ResourcePool {
         //
         // /////////////////////////////////////////////////////////
         
-        GridCoverage gc  = reader.read(CoverageUtils.getParameters(
-                    reader.getFormat().getReadParameters(), info.getParameters()));
+//        GridCoverage gc  = reader.read(CoverageUtils.getParameters(
+//                    reader.getFormat().getReadParameters(), info.getParameters()));
+        GridCoverage gc  = null;
+        
+        CoverageSource source = driver.access(new NameImpl(info.getName()), info.getParameters(), AccessType.READ_ONLY, hints, null);
+        CoverageReadRequest request = new DefaultCoverageReadRequest();
+        request.setName(new NameImpl(info.getName()));
+        
+        // TODO set the all the read request metadata in order to get the spatial, vertical, temporal and range subset
+        
+        source.read(request, null);
         
         if ((gc == null) || !(gc instanceof GridCoverage2D)) {
             throw new IOException("The requested coverage could not be found.");
@@ -554,12 +570,12 @@ public class ResourcePool {
      * 
      * @return The format, or null.
      */
-    public AbstractGridFormat getGridCoverageFormat( CoverageStoreInfo info ) {
-        final int length = CoverageStoreUtils.formats.length;
+    public Driver getDriver( CoverageStoreInfo info ) {
+        final int length = CoverageStoreUtils.drivers.length;
 
         for (int i = 0; i < length; i++) {
-            if (CoverageStoreUtils.formats[i].getName().equals(info.getType())) {
-                return (AbstractGridFormat) CoverageStoreUtils.formats[i];
+            if (CoverageStoreUtils.drivers[i].getName().toString().equals(info.getType())) {
+                return CoverageStoreUtils.drivers[i];
             }
         }
 
@@ -675,11 +691,11 @@ public class ResourcePool {
     static class CoverageReaderCache extends LRUMap {
         protected boolean removeLRU(LinkEntry entry) {
             CoverageStoreInfo info = (CoverageStoreInfo) entry.getKey();
-            dispose( info, (GridCoverageReader) entry.getValue() );
+            dispose( info, (CoverageAccess) entry.getValue() );
             return super.removeLRU(entry);
         }
         
-        void dispose( CoverageStoreInfo info, GridCoverageReader reader ) {
+        void dispose( CoverageStoreInfo info, CoverageAccess reader ) {
             LOGGER.info( "Disposing grid coverage reader '" + info.getName() + "'");
             try {
                 reader.dispose();
@@ -691,14 +707,14 @@ public class ResourcePool {
         }
         
         protected void destroyEntry(HashEntry entry) {
-            dispose( (CoverageStoreInfo) entry.getKey(), (GridCoverageReader) entry.getValue() );
+            dispose( (CoverageStoreInfo) entry.getKey(), (CoverageAccess) entry.getValue() );
             super.destroyEntry(entry);
         }
         
         public void clear() {
             for ( Iterator e = entrySet().iterator(); e.hasNext(); ) {
-                Map.Entry<CoverageStoreInfo,GridCoverageReader> entry = 
-                    (Entry<CoverageStoreInfo, GridCoverageReader>) e.next();
+                Map.Entry<CoverageStoreInfo, CoverageAccess> entry = 
+                    (Entry<CoverageStoreInfo, CoverageAccess>) e.next();
                 dispose( entry.getKey(), entry.getValue() );
             }
             super.clear();

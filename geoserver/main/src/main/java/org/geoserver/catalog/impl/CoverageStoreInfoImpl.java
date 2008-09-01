@@ -4,12 +4,10 @@
  */
 package org.geoserver.catalog.impl;
 
-import java.util.Iterator;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.opengis.util.ProgressListener;
+import org.geotools.coverage.io.Driver;
 
 /**
  * Default implementation of {@link CoverageStoreInfo}.
@@ -47,7 +45,7 @@ public class CoverageStoreInfoImpl extends StoreInfoImpl implements
         this.url = url;
     }
     
-    public AbstractGridFormat getFormat() {
-        return catalog.getResourcePool().getGridCoverageFormat(this);
+    public Driver getDriver() {
+        return catalog.getResourcePool().getDriver(this);
     }
 }

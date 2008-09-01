@@ -14,20 +14,18 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
-import org.geotools.util.SimpleInternationalString;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 
 
@@ -239,12 +237,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         coverage.setLatLonBoundingBox(new ReferencedEnvelope(dto.getLonLatWGS84Envelope()));
         
         coverage.setGrid(dto.getGrid());
-        coverage.getDimensions().clear();
-        for ( int i = 0; i < dto.getDimensions().length; i++ ) {
-            CoverageDimensionInfo cd = catalog.getFactory().createCoverageDimension();
-            new CoverageDimension(cd).load( dto.getDimensions()[i]);
-            coverage.getDimensions().add( cd );
-        }
+        coverage.setFields(dto.getFields());
         
         coverage.getRequestSRS().clear();
         coverage.getRequestSRS().addAll( dto.getRequestCRSs() );
@@ -297,8 +290,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         dto.setEnvelope(getEnvelope());
         dto.setLonLatWGS84Envelope(getWGS84LonLatEnvelope());
         dto.setGrid(getGrid());
-        dto.setDimensions(getDimensions());
-        dto.setDimensionNames(getDimensionNames());
+        dto.setFields(getFields());
         dto.setRequestCRSs(getRequestCRSs());
         dto.setResponseCRSs(getResponseCRSs());
         dto.setNativeFormat(getNativeFormat());
@@ -317,7 +309,6 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         }
         dto.setStyles(styles);
         dto.setParameters(getParameters());
-
         
         //dto.setFormatId(formatId);
         //dto.setName(name);
@@ -346,6 +337,10 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         //dto.setParameters(parameters);
 
         return dto;
+    }
+
+    private RangeType getFields() {
+        return coverage.getFields();
     }
 
     public CoverageStoreInfo getFormatInfo() {
@@ -615,31 +610,6 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         //return grid;
     }
 
-    /**
-     *
-     */
-    public InternationalString[] getDimensionNames() {
-        InternationalString[] dimensionNames = new InternationalString[coverage.getDimensions().size()];
-        int i = 0;
-        for ( org.geoserver.catalog.CoverageDimensionInfo dim : coverage.getDimensions() ) {
-            dimensionNames[i++] =  new SimpleInternationalString(dim.getName());
-        }
-        return dimensionNames;
-        //return dimensionNames;
-    }
-
-    /**
-     * @return Returns the dimensions.
-     */
-    public CoverageDimension[] getDimensions() {
-        CoverageDimension[] dims = new CoverageDimension[coverage.getDimensions().size()];
-        for ( int i = 0; i < dims.length; i++ ) {
-            dims[i] = new CoverageDimension( coverage.getDimensions().get( i ) );
-        }
-        return dims;
-        //return dimensions;
-    }
-
     public String getSrsWKT() {
         try {
             return coverage.getCRS().toWKT();
@@ -679,9 +649,9 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         //this.wmsPath = wmsPath;
     }
 
-    public GridCoverageReader getReader() {
+    public CoverageAccess getCoverageAccess() {
         try {
-            return coverage.getGridCoverageReader(null, null);
+            return coverage.getCoverageAccess(null, null);
         } 
         catch (IOException e) {
             throw new RuntimeException( e );
@@ -695,13 +665,14 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         //return data.getFormatInfo(formatId).getReader();
     }
 
-    public GridCoverageReader createReader(Hints hints) {
+    public CoverageAccess createCoverageAccess(Hints hints) {
         try {
-            return coverage.getGridCoverageReader(null,hints);
+            return coverage.getCoverageAccess(null,hints);
         } 
         catch (IOException e) {
             throw new RuntimeException( e );
         }
+        // TODO: FIX THIS!!!
         //return DataStoreCache.getInstance().getGridCoverageReader(coverage.getStore(), hints);
         
         //// /////////////////////////////////////////////////////////
@@ -732,7 +703,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
                 gc = coverage.getGridCoverage(null,new ReferencedEnvelope(envelope),null);
             }
             
-            
+            // TODO: FIX THIS!!!
             //if (envelope == null) {
             //    envelope = this.envelope;
             //}

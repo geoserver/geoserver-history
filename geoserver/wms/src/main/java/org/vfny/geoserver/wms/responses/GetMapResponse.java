@@ -6,19 +6,15 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSExtensions;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -325,8 +321,7 @@ public class GetMapResponse implements Response {
                     // Adding a coverage layer
                     //
                     // /////////////////////////////////////////////////////////
-                    AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) layers[i]
-                            .getCoverage().getReader();
+                    AbstractGridCoverage2DReader reader = layers[i].getCoverage().getCoverageAccess();
                     if (reader != null) {
                         // /////////////////////////////////////////////////////////
                         //

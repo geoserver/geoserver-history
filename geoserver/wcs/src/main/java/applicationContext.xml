@@ -76,22 +76,22 @@
 	
 	<!-- wms service + descriptor -->
  	<bean id="wcsService2" class="org.geoserver.wcs.DefaultWebCoverageService"/>
- 	<bean id="wcsServiceDescriptor" class="org.geoserver.platform.Service">
+ 	<!-- bean id="wcsServiceDescriptor" class="org.geoserver.platform.Service">
 		<constructor-arg index="0" value="wcs"/>
 		<constructor-arg index="1" ref="wcsService2"/>
 		<constructor-arg index="2" value="1.0.0"/>
- 	</bean>
+ 	</bean -->
  	<!-- service exception handler -->
-	<bean id="wcsExceptionHandler" class="org.geoserver.ows.LegacyServiceExceptionHandler">
+	<!-- bean id="wcsExceptionHandler" class="org.geoserver.ows.LegacyServiceExceptionHandler">
 		<constructor-arg ref="wcsServiceDescriptor"/>
 		<constructor-arg ref="wcs"/>
         <constructor-arg ref="geoServer"/>
 		<property name="contentType" value="application/vnd.ogc.se_xml"/>
 		<property name="schemaLocation" value="wcs/1.0.0/OGC-exception.xsd"/>
-	</bean>
+	</bean -->
  	
  	<!-- kvp request readers -->
- 	<bean id="wcsGetCapabilitiesKvpReader" 
+ 	<!-- bean id="wcsGetCapabilitiesKvpReader" 
  		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.WCSCapabilitiesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.CapabilitiesKvpReader" />
@@ -110,10 +110,10 @@
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.CoverageRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.GetCoverageKvpReader" />
       	<constructor-arg index="2" ref="wcs" />
-	</bean>
+	</bean -->
 	
 	<!--  xml request readers -->
-	<bean id="wcsXmlReader" class="org.geoserver.ows.adapters.XmlRequestReaderAdapter"
+	<!-- bean id="wcsXmlReader" class="org.geoserver.ows.adapters.XmlRequestReaderAdapter"
 		abstract="true">
 		<constructor-arg index="0" value="http://www.opengis.net/wcs"/>
 		<constructor-arg index="2" ref="wcs"/>
@@ -135,10 +135,10 @@
 		<constructor-arg index="1" value="GetCoverage"/>
 		<constructor-arg index="3" 
 			value="org.vfny.geoserver.wcs.requests.readers.GetCoverageXmlReader"/>
-	</bean>
+	</bean -->
 	
 	<!--  responses -->
-	<bean id="wcsGetCapabilitiesResponse"
+	<!-- bean id="wcsGetCapabilitiesResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">
 		<constructor-arg value="org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse"/>
 		<constructor-arg ref="geoServer"/>
@@ -152,7 +152,7 @@
 		class="org.geoserver.ows.adapters.ResponseAdapter">
 		<constructor-arg value="org.vfny.geoserver.wcs.responses.CoverageResponse"/>
 		<constructor-arg ref="geoServer"/>
-	</bean>
+	</bean -->
 	
 	
 	<!-- http url mapping -->

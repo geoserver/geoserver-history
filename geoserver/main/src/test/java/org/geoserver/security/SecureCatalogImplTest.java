@@ -179,7 +179,7 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
             //
         }
         try {
-            sc.getCoverageStoreByName("arcGrid").getFormat();
+            sc.getCoverageStoreByName("arcGrid").getDriver();
             fail("Should have failed with a security exception");
         } catch(AcegiSecurityException e) {
             //
