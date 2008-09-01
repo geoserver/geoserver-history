@@ -1525,22 +1525,22 @@ public class XMLConfigWriter {
 
                 // TODO: FIX THIS
 //                InternationalString[] dimNames = cv.getDimensionNames();
-//                m = new HashMap();
-//
-//                m.put("dimension", new Integer(g.getGridRange().getDimension()));
-//
-//                String lowers = "";
-//                String upers = "";
-//
-//                for (int r = 0; r < g.getGridRange().getDimension(); r++) {
-//                    lowers += (g.getGridRange().getLower(r) + " ");
-//                    upers += (g.getGridRange().getUpper(r) + " ");
-//                }
-//
-//                cw.openTag("grid", m);
-//                cw.textTag("low", lowers);
-//                cw.textTag("high", upers);
-//
+                m = new HashMap();
+
+                m.put("dimension", new Integer(g.getGridRange().getDimension()));
+
+                String lowers = "";
+                String upers = "";
+
+                for (int r = 0; r < g.getGridRange().getDimension(); r++) {
+                    lowers += (g.getGridRange().getLower(r) + " ");
+                    upers += (g.getGridRange().getUpper(r) + " ");
+                }
+
+                cw.openTag("grid", m);
+                cw.textTag("low", lowers);
+                cw.textTag("high", upers);
+
 //                if (dimNames != null) {
 //                    for (int dn = 0; dn < dimNames.length; dn++)
 //                        cw.textTag("axisName", dimNames[dn].toString());

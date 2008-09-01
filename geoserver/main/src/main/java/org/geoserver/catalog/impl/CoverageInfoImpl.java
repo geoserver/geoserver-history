@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
@@ -19,6 +20,8 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.geometry.Envelope;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.opengis.util.ProgressListener;
 
 public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
@@ -40,6 +43,10 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     Map parameters = new HashMap();
 
     private RangeType fields;
+
+    private Set<TemporalGeometricPrimitive> temporalExtent;
+
+    private Set<Envelope> verticalExtent;
 
     public CoverageInfoImpl(Catalog catalog) {
         super( catalog );
@@ -196,4 +203,21 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     public void setFields(RangeType fields) {
         this.fields = fields;
     }
+
+    public Set<TemporalGeometricPrimitive> getTemporalExtent() {
+        return this.temporalExtent;
+    }
+
+    public Set<Envelope> getVerticalExtent() {
+        return this.verticalExtent;
+    }
+
+    public void setTemporalExtent(Set<TemporalGeometricPrimitive> temporalExtent) {
+        this.temporalExtent = temporalExtent;
+    }
+
+    public void setVerticalExtent(Set<Envelope> verticalExtent) {
+        this.verticalExtent = verticalExtent;
+    }
+
 }

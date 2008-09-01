@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.geotools.coverage.io.CoverageAccess;
 import org.geotools.coverage.io.range.RangeType;
@@ -15,6 +16,8 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.geometry.Envelope;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.opengis.util.ProgressListener;
 
 /**
@@ -147,6 +150,14 @@ public interface CoverageInfo extends ResourceInfo {
     void setFields(RangeType fields);
 
     RangeType getFields();
+
+    Set<TemporalGeometricPrimitive> getTemporalExtent();
+
+    Set<Envelope> getVerticalExtent();
+
+    void setTemporalExtent(Set<TemporalGeometricPrimitive> temporalExtent);
+
+    void setVerticalExtent(Set<Envelope> verticalExtent);
     
     /**
      * The live coverage resource, an instance of of {@link CoverageResource}.

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
@@ -23,7 +24,9 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.opengis.util.ProgressListener;
 
 /**
@@ -253,4 +256,19 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         delegate.setFields(fields);
     }
 
+    public Set<TemporalGeometricPrimitive> getTemporalExtent() {
+        return delegate.getTemporalExtent();
+    }
+
+    public Set<Envelope> getVerticalExtent() {
+        return delegate.getVerticalExtent();
+    }
+
+    public void setTemporalExtent(Set<TemporalGeometricPrimitive> temporalExtent) {
+        delegate.setTemporalExtent(temporalExtent);
+    }
+
+    public void setVerticalExtent(Set<Envelope> verticalExtent) {
+        delegate.setVerticalExtent(verticalExtent);
+    }
 }

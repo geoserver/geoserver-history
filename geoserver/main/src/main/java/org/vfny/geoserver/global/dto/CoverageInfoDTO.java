@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.MetaDataLink;
 
@@ -141,6 +144,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     private RangeType fields;
 
+    private Set<Envelope> verticalExtent;
+
+    private Set<TemporalGeometricPrimitive> temporalExtent;
+
     public CoverageInfoDTO() {
     }
 
@@ -167,6 +174,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
         srsName = dto.getSrsName();
         srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
+        verticalExtent = dto.getVerticalExtent();
+        temporalExtent = dto.getTemporalExtent();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
         fields = dto.getFields();
@@ -781,5 +790,21 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     public RangeType getFields() {
         return this.fields;
+    }
+
+    public Set<Envelope> getVerticalExtent() {
+        return this.verticalExtent;
+    }
+
+    public Set<TemporalGeometricPrimitive> getTemporalExtent() {
+        return this.temporalExtent;
+    }
+
+    public void setVerticalExtent(Set<Envelope> verticalExtent) {
+        this.verticalExtent = verticalExtent;
+    }
+
+    public void setTemporalExtent(Set<TemporalGeometricPrimitive> temporalExtent) {
+        this.temporalExtent = temporalExtent;
     }
 }

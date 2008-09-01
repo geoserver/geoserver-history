@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.geoserver.catalog.Catalog;
@@ -25,7 +26,9 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 
 
@@ -236,6 +239,9 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         coverage.setNativeBoundingBox(new ReferencedEnvelope(dto.getEnvelope()));
         coverage.setLatLonBoundingBox(new ReferencedEnvelope(dto.getLonLatWGS84Envelope()));
         
+        coverage.setVerticalExtent(dto.getVerticalExtent());
+        coverage.setTemporalExtent(dto.getTemporalExtent());
+        
         coverage.setGrid(dto.getGrid());
         coverage.setFields(dto.getFields());
         
@@ -288,6 +294,8 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         dto.setSrsName(getSrsName());
         dto.setSrsWKT(getSrsWKT());
         dto.setEnvelope(getEnvelope());
+        dto.setVerticalExtent(getVerticalExtent());
+        dto.setTemporalExtent(getTemporalExtent());
         dto.setLonLatWGS84Envelope(getWGS84LonLatEnvelope());
         dto.setGrid(getGrid());
         dto.setFields(getFields());
@@ -337,6 +345,14 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         //dto.setParameters(parameters);
 
         return dto;
+    }
+
+    private Set<TemporalGeometricPrimitive> getTemporalExtent() {
+        return coverage.getTemporalExtent();
+    }
+
+    private Set<Envelope> getVerticalExtent() {
+        return coverage.getVerticalExtent();
     }
 
     private RangeType getFields() {

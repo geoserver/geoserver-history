@@ -29,9 +29,11 @@ import org.geotools.util.SimpleInternationalString;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.feature.type.Name;
 import org.opengis.geometry.BoundingBox;
+import org.opengis.geometry.Envelope;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -102,6 +104,16 @@ public class CoverageConfig {
      */
     private GeneralEnvelope envelope;
 
+    /**
+     * 
+     */
+    Set<TemporalGeometricPrimitive> temporalExtent;
+
+    /**
+     * 
+     */
+    Set<Envelope> verticalExtent;
+    
     /**
      *
      */
@@ -231,6 +243,8 @@ public class CoverageConfig {
             BoundingBox bbox = cvSource.getHorizontalDomain(false, null).get(0);
             envelope = new GeneralEnvelope(bbox);
             envelope.setCoordinateReferenceSystem(crs);
+            verticalExtent = cvSource.getVerticalDomain(false, null);
+            temporalExtent = cvSource.getTemporalDomain(null);
             final GeneralGridEnvelope originalRange = new GeneralGridEnvelope(cvSource.getRasterDomain(false, null).get(0), 2);
             grid = new GridGeometry2D(originalRange, cvSource.getGridToWorldTransform(false, null),crs);
             try {
@@ -300,6 +314,7 @@ public class CoverageConfig {
         else ml.setAbout("UNKNOWN");
         ml.setMetadataType("other");
         metadataLink = new MetaDataLink(ml);
+     // TODO: FIX THIS!!!
         //metadataLink.setAbout(format.getDocURL());
         //metadataLink.setMetadataType("other");
         keywords = new ArrayList(10);
@@ -308,19 +323,22 @@ public class CoverageConfig {
         keywords.add(name);
         nativeFormat = driver.getName();
         dirName = new StringBuffer(formatId).append("_").append(name).toString();
-        requestCRSs = new ArrayList(); // TODO
+        requestCRSs = new ArrayList(); 
+        // TODO: FIX THIS!!!
 //        if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
 //                && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
 //            requestCRSs.add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
 //                                            .toArray()[0]).toString());
 //        }
-        responseCRSs = new ArrayList(); // TODO
+        responseCRSs = new ArrayList(); 
+     // TODO: FIX THIS!!!
 //        if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
 //                && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
 //            responseCRSs.add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
 //                                             .toArray()[0]).toString());
 //        }
-        supportedFormats = new ArrayList(); // TODO
+        supportedFormats = new ArrayList(); 
+     // TODO: FIX THIS!!!
 //        final List formats = CoverageStoreUtils.listDataFormats();
 //        for (Iterator i = formats.iterator(); i.hasNext();) {
 //            final Format fTmp = (Format) i.next();
@@ -680,6 +698,8 @@ public class CoverageConfig {
         srsName = dto.getSrsName();
         srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
+        verticalExtent = dto.getVerticalExtent();
+        temporalExtent = dto.getTemporalExtent();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
         fields = dto.getFields();
@@ -708,6 +728,8 @@ public class CoverageConfig {
         c.setSrsName(srsName);
         c.setSrsWKT(srsWKT);
         c.setEnvelope(envelope);
+        c.setVerticalExtent(verticalExtent);
+        c.setTemporalExtent(temporalExtent);
         c.setLonLatWGS84Envelope(lonLatWGS84Envelope);
         c.setGrid(grid);
         c.setFields(fields);
@@ -1119,5 +1141,21 @@ public class CoverageConfig {
 
     public void setFields(RangeType fields) {
         this.fields = fields;
+    }
+
+    public Set<TemporalGeometricPrimitive> getTemporalExtent() {
+        return temporalExtent;
+    }
+
+    public void setTemporalExtent(Set<TemporalGeometricPrimitive> temporalExtent) {
+        this.temporalExtent = temporalExtent;
+    }
+
+    public Set<Envelope> getVerticalExtent() {
+        return verticalExtent;
+    }
+
+    public void setVerticalExtent(Set<Envelope> verticalExtent) {
+        this.verticalExtent = verticalExtent;
     }
 }

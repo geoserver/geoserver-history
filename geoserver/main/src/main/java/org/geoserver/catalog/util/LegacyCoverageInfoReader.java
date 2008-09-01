@@ -195,38 +195,48 @@ public class LegacyCoverageInfoReader {
     
     public List<String> requestCRSs() throws Exception {
         Element supportedCRS = ReaderUtils.getChildElement(coverage, "supportedCRSs" );
-        String[] requestCRS = ReaderUtils.getChildText( supportedCRS, "requestCRSs" ).trim().split(",");
-        return Arrays.asList(requestCRS);
+        if (ReaderUtils.getChildText( supportedCRS, "requestCRSs" ) != null) {
+            String[] requestCRS = ReaderUtils.getChildText( supportedCRS, "requestCRSs" ).trim().split(",");
+            return Arrays.asList(requestCRS);
+        } else
+            return new ArrayList<String>();
     }
     
     public List<String> responseCRSs() throws Exception {
         Element supportedCRS = ReaderUtils.getChildElement(coverage, "supportedCRSs" );
-        String[] responseCRS = ReaderUtils.getChildText( supportedCRS, "responseCRSs" ).trim().split(",");
-        return Arrays.asList(responseCRS);
+        if (ReaderUtils.getChildText( supportedCRS, "responseCRSs" ) != null) {
+            String[] responseCRS = ReaderUtils.getChildText( supportedCRS, "responseCRSs" ).trim().split(",");
+            return Arrays.asList(responseCRS);
+        } else
+            return new ArrayList<String>();
     }
     
     public String nativeFormat() throws Exception {
         Element supportedFormats = ReaderUtils.getChildElement(coverage, "supportedFormats" );
         return ReaderUtils.getAttribute(supportedFormats, "nativeFormat", true);
-        
     }
     
     public List<String> supportedFormats() throws Exception {
         Element supportedFormats = ReaderUtils.getChildElement(coverage, "supportedFormats" );
-        String[] formats = ReaderUtils.getChildText(supportedFormats, "formats" ).split(",");
-        return Arrays.asList(formats);
+        if (ReaderUtils.getChildText(supportedFormats, "formats" ) != null) {
+            String[] formats = ReaderUtils.getChildText(supportedFormats, "formats" ).split(",");
+            return Arrays.asList(formats);
+        } else
+            return new ArrayList<String>();
     }
     
     public String defaultInterpolation() throws Exception {
         Element supportedFormats = ReaderUtils.getChildElement(coverage, "supportedInterpolations" );
         return ReaderUtils.getAttribute(supportedFormats, "default", true);
-        
     }
     
     public List<String> supportedInterpolations() throws Exception {
         Element supportedFormats = ReaderUtils.getChildElement(coverage, "supportedInterpolations" );
-        String[] interpolations = ReaderUtils.getChildText(supportedFormats, "interpolationMethods" ).split(",");
-        return Arrays.asList(interpolations);
+        if (ReaderUtils.getChildText(supportedFormats, "interpolationMethods" ) != null) {
+            String[] interpolations = ReaderUtils.getChildText(supportedFormats, "interpolationMethods" ).split(",");
+            return Arrays.asList(interpolations);
+        } else
+            return new ArrayList<String>();
     }
 
     

@@ -26,6 +26,11 @@ import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.grid.io.GridFormatFinder;
+import org.geotools.coverage.io.Driver;
+import org.geotools.coverage.io.impl.CoverageIO;
 import org.geotools.data.property.PropertyDataStoreFactory;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
@@ -497,11 +502,11 @@ public class MockData implements TestData {
         coverageInfo(name, f, styleName);
         
         // setup the meta information to be written in the catalog 
-        AbstractGridFormat format = (AbstractGridFormat) GridFormatFinder.findFormat(f);
+        Driver driver = CoverageIO.findDriver(f.toURI().toURL());
         namespaces.put(name.getPrefix(), name.getNamespaceURI());
         coverageStoresNamespaces.put(name.getLocalPart(), name.getPrefix());
         Map params = new HashMap();
-        params.put(CatalogWriter.COVERAGE_TYPE_KEY, format.getName());
+        params.put(CatalogWriter.COVERAGE_TYPE_KEY, driver.getName());
         params.put(CatalogWriter.COVERAGE_URL_KEY, "file:" + name.getPrefix() + "/" + name.getLocalPart() + "." + extension);
         coverageStores.put(name.getLocalPart(), params);
     }
@@ -597,6 +602,7 @@ public class MockData implements TestData {
     }
 
     
+    // TODO: FIX THIS!!!
     void coverageInfo(QName name, File coverageFile, String styleName) throws Exception {
         String coverage = name.getLocalPart();
 
@@ -648,10 +654,8 @@ public class MockData implements TestData {
         final GeneralEnvelope subEnvelope = new GeneralEnvelope(minCP, maxCP);
         subEnvelope.setCoordinateReferenceSystem(reader.getCrs());
 
-        parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-            new GridGeometry2D(reader.getOriginalGridRange(), subEnvelope));
-        GridCoverage2D gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters,
-                    true));
+        parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), new GridGeometry2D(reader.getOriginalGridRange(), subEnvelope));
+        GridCoverage2D gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters, true));
         
         // grid geometry
         final GridGeometry geometry = gc.getGridGeometry();
