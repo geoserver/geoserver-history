@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+	
+  <!-- set parent pom to community pom -->
+  <parent>
+    <groupId>org.geoserver</groupId>
+    <artifactId>community</artifactId>
+    <version>1.7.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.geoserver</groupId>
+  <artifactId>imagemap</artifactId>
+  <packaging>jar</packaging>
+  <version>1.7.0-SNAPSHOT</version>
+  <name>ImageMap output format</name>
+
+    <dependencies>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wms</artifactId>
+	   <version>1.7.0-SNAPSHOT</version>
+    </dependency>
+	<dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-sample-data</artifactId>
+      <version>${gt.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+	<testResources>
+      <testResource>
+        <directory>src/test/resources</directory>        
+      </testResource>      
+    </testResources>
+  </build>
+</project>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <parent>
+  <groupId>org.geoserver</groupId>
+  <artifactId>geoserver</artifactId>
+  <version>1.7.0-SNAPSHOT</version>
+ </parent>
+ <groupId>org.geoserver</groupId>
+ <artifactId>data</artifactId>
+ <packaging>jar</packaging>
+ <version>1.7.0-SNAPSHOT</version>
+ <name>Data Module</name>
+ <dependencies>
+  <dependency>
+   <groupId>org.geoserver</groupId>
+   <artifactId>platform</artifactId>
+   <version>1.7.0-SNAPSHOT</version>
+  </dependency>
+  <dependency>
+   <groupId>org.geotools</groupId>
+   <artifactId>gt-api</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-epsg-hsql</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.geotools</groupId>
+   <artifactId>gt-main</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.geotools</groupId>
+   <artifactId>gt-coverage</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.geotools</groupId>
+   <artifactId>gt-property</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.geotools.xsd</groupId>
+   <artifactId>gt-xsd-gml2</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-jdbc</artifactId>
+    <scope>test</scope> 
+  </dependency>
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.easymock</groupId>
+    <artifactId>easymock</artifactId>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>log4j</groupId>
+	<artifactId>log4j</artifactId>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>xml-apis</groupId>
+   <artifactId>xml-apis-xerces</artifactId>
+  </dependency>
+ </dependencies>
+<!-- =========================================================== -->
+<!--     Build Configuration                                     -->
+<!-- =========================================================== -->
+ <build>
+  <plugins>
+<!-- ====    Code Formatting  ============================== -->
+   <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>jalopy-maven-plugin</artifactId>
+    <configuration>
+     <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+     <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+    </configuration>
+    <executions>
+     <execution>
+      <goals>
+       <goal>format</goal>
+      </goals>
+      <phase>${jalopy.phase}</phase>
+     </execution>
+    </executions>
+   </plugin>
+  </plugins>
+ </build>
+</project>

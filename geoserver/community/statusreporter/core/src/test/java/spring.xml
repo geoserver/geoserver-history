@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="statusReporter" 
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://localhost:8080/webapp-0.1/remoting/http-status</value>
+		</property>
+		<property name="serviceInterface">
+			<value>org.vfny.geoserver.control.IStatusReporter</value>
+		</property>
+	</bean>
+</beans>
