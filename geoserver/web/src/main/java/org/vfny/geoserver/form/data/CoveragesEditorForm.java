@@ -31,6 +31,7 @@ import org.geotools.data.Parameter;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.temporal.object.DefaultPosition;
+import org.opengis.feature.type.Name;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.TemporalCRS;
 import org.opengis.referencing.crs.VerticalCRS;
@@ -175,6 +176,13 @@ public final class CoveragesEditorForm extends ActionForm {
     private List paramHelp;
     private List paramKeys;
     private List paramValues;
+    
+    /**
+     * 
+     */
+    private List<String> fieldNames;
+    private List<String> fieldDescriptions;
+    private List<String> fieldUnitOfMeasures;
 
     /**
      * 
@@ -332,7 +340,20 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         //
         // //
+        this.fieldNames = new ArrayList<String>();
+        this.fieldDescriptions = new ArrayList<String>();
+        this.fieldUnitOfMeasures = new ArrayList<String>();
+
         RangeType range = cvConfig.getFields();
+        if (range != null && range.getNumFieldTypes() > 0) {
+            for (Iterator<Name> i=range.getFieldTypeNames().iterator(); i.hasNext();) {
+                // TODO: FIX THIS!!!
+                String fieldName = i.next().getLocalPart();
+                fieldNames.add(fieldName);
+                fieldDescriptions.add(range.getFieldType(fieldName).getDescription().toString());
+                fieldUnitOfMeasures.add(range.getFieldType(fieldName).getUnitOfMeasure().toString());
+            }
+        }
         
         // //
         //
@@ -1244,6 +1265,39 @@ public final class CoveragesEditorForm extends ActionForm {
      */
     public String getVerticalAxisUnit() {
         return verticalAxisUnit;
+    }
+
+    /**
+     * @return the fieldNames
+     */
+    public List<String> getFieldNames() {
+        return fieldNames;
+    }
+
+    /**
+     * @return the fieldDescriptions
+     */
+    public List<String> getFieldDescriptions() {
+        return fieldDescriptions;
+    }
+
+    /**
+     * @return the fieldUnitOfMeasures
+     */
+    public List<String> getFieldUnitOfMeasures() {
+        return fieldUnitOfMeasures;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param index
+     *            DOCUMENT ME!
+     *
+     * @return
+     */
+    public String getFieldName(int index) {
+        return fieldNames.get(index);
     }
 
 }

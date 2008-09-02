@@ -541,6 +541,32 @@ function generateColorPicker(colorFieldName, fieldValue)
 	  </td>
 	</tr>
 
+	<!-- -------------------- COVERGAE FIELDS ------------------ -->
+    <td class="label">
+		<span class="help" title="<bean:message key="help.coverage.interpolationMethods"/>">
+			Coverage Fields
+		</span>
+	  </td>
+    </tr>
+	<logic:notEmpty name="coveragesEditorForm"
+                   property="fieldNames">
+	    <logic:iterate id="field"
+	                   indexId="ctr"
+	                   name="coveragesEditorForm"
+	                   property="fieldNames">
+			<tr>
+	    	  <td class="label">
+	    		  Field <%= ""+(ctr+1) %>:
+	          </td>
+	    	  <td class="greyedOut2">
+	              Name: <bean:write name="coveragesEditorForm" property='<%= "fieldName[" + ctr + "]"%>'/><br>
+	              Description: <bean:write name="coveragesEditorForm" property='<%= "fieldDescriptions[" + ctr + "]"%>'/><br>
+	              UoM: <bean:write name="coveragesEditorForm" property='<%= "fieldUnitOfMeasures[" + ctr + "]"%>'/><br>
+	    	  </td>
+	    	</tr>                   
+	    </logic:iterate>
+    </logic:notEmpty>
+
     <tr>
     <td class="label">
 		<span class="help" title="<bean:message key="help.dataCoverageKeywords"/>">
@@ -620,7 +646,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	  </td>
     </tr>
 
-
+	<!-- -------------------- COVERGAE READ PARAMS ------------------ -->
     <logic:notEmpty name="coveragesEditorForm"
                    property="paramKeys">
     <logic:iterate id="param"
