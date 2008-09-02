@@ -21,6 +21,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.geometry.Envelope;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.opengis.util.ProgressListener;
 
@@ -47,6 +48,10 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     private Set<TemporalGeometricPrimitive> temporalExtent;
 
     private Set<Envelope> verticalExtent;
+
+    private CoordinateReferenceSystem temporalCRS;
+
+    private CoordinateReferenceSystem verticalCRS;
 
     public CoverageInfoImpl(Catalog catalog) {
         super( catalog );
@@ -218,6 +223,22 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
 
     public void setVerticalExtent(Set<Envelope> verticalExtent) {
         this.verticalExtent = verticalExtent;
+    }
+
+    public CoordinateReferenceSystem getTemporalCRS() {
+        return this.temporalCRS;
+    }
+
+    public CoordinateReferenceSystem getVerticalCRS() {
+        return this.verticalCRS;
+    }
+
+    public void setTemporalCRS(CoordinateReferenceSystem temporalCRS) {
+        this.temporalCRS = temporalCRS;
+    }
+
+    public void setVerticalCRS(CoordinateReferenceSystem verticalCRS) {
+        this.verticalCRS = verticalCRS;
     }
 
 }

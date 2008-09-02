@@ -17,6 +17,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.geometry.Envelope;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.opengis.util.ProgressListener;
 
@@ -158,6 +159,14 @@ public interface CoverageInfo extends ResourceInfo {
     void setTemporalExtent(Set<TemporalGeometricPrimitive> temporalExtent);
 
     void setVerticalExtent(Set<Envelope> verticalExtent);
+
+    CoordinateReferenceSystem getVerticalCRS();
+
+    CoordinateReferenceSystem getTemporalCRS();
+
+    void setVerticalCRS(CoordinateReferenceSystem verticalCRS);
+
+    void setTemporalCRS(CoordinateReferenceSystem temporalCRS);
     
     /**
      * The live coverage resource, an instance of of {@link CoverageResource}.

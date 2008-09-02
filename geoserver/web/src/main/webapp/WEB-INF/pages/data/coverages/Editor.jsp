@@ -346,9 +346,8 @@ function generateColorPicker(colorFieldName, fieldValue)
 	</tr>
 	<!------------------------->
 	<!------ This puts in the SRS WKT definition --->
-	
 	<tr>
-	<td class="label">
+	  <td class="label">
 		<span class="help" title="<bean:message key="help.type.srswkt"/>">
           <bean:message key="label.type.crswkt"/>:
         </span>
@@ -358,8 +357,6 @@ function generateColorPicker(colorFieldName, fieldValue)
 			  <html:hidden property="WKTString"/>
             </td>
 	</tr>
-	
-	
 	<!-------------------------->
 	
     <tr>
@@ -385,7 +382,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	</tr>
 
     <tr>
-    <td class="label">
+      <td class="label">
 		<span class="help" title="<bean:message key="help.coverage.metadataLink"/>">
         <bean:message key="label.metadataLink"/>:
       </span>
@@ -445,6 +442,104 @@ function generateColorPicker(colorFieldName, fieldValue)
         </table>
 	  </td>
     </tr>
+
+	<!------ VERTICAL CRS and VERTICAL EXTENT --->
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.type.srswkt"/>">
+          Temporal CRS:
+        </span>
+	  </td>
+	  <td class="greyedOut2">
+	    Vertical Datum Type: <bean:write name="coveragesEditorForm" property="verticalDatumType"/>
+		<html:hidden property="verticalDatumType"/><br>
+	    Vertical Axis: <bean:write name="coveragesEditorForm" property="verticalAxisAbbr"/>
+		<html:hidden property="verticalAxisAbbr"/><br>
+	    Vertical Axis Dimension: <bean:write name="coveragesEditorForm" property="verticalAxisDimension"/>
+		<html:hidden property="verticalAxisDimension"/><br>
+	    Vertical Axis Direction: <bean:write name="coveragesEditorForm" property="verticalAxisDirection"/>
+		<html:hidden property="verticalAxisDirection"/><br>
+	    Vertical Axis Unit: <bean:write name="coveragesEditorForm" property="verticalAxisUnit"/>
+		<html:hidden property="verticalAxisUnit"/><br>
+      </td>
+	</tr>
+    <tr>
+      <td class="label">
+		<span class="help" title="A test!!">
+        Vertical Extent:
+      </span>
+	  </td>
+	  <td class="datum">
+        <table border=0>
+          <tr>
+            <td style="white-space: nowrap;">
+              <span class="help" title="<bean:message key="help.coverage.minx"/>">
+                Min Z:
+              </span>
+            </td>
+            <td>
+              <html:text property="verticalExtentMinZ" size="30"/>
+            </td>
+            <td style="white-space: nowrap;">
+              <span class="help" title="<bean:message key="help.coverage.miny"/>">
+                Max Z:
+              </span>
+            </td>
+            <td>
+              <html:text property="verticalExtentMaxZ" size="30"/>
+            </td>
+          </tr>
+        </table>
+	  </td>
+	</tr>
+
+	<!------ TEMPORAL CRS and TEMPORAL EXTENT --->
+	<tr>
+	  <td class="label">
+		<span class="help" title="<bean:message key="help.type.srswkt"/>">
+          Temporal CRS:
+        </span>
+	  </td>
+	  <td class="greyedOut2">
+	    Time Origin: <bean:write name="coveragesEditorForm" property="timeDateOrigin"/>
+		<html:hidden property="timeDateOrigin"/><br>
+	    Time Axis Dimension: <bean:write name="coveragesEditorForm" property="timeAxisDimension"/>
+		<html:hidden property="timeAxisDimension"/><br>
+	    Time Axis Direction: <bean:write name="coveragesEditorForm" property="timeAxisDirection"/>
+		<html:hidden property="timeAxisDirection"/><br>
+	    Time Axis Unit: <bean:write name="coveragesEditorForm" property="timeAxisUnit"/>
+		<html:hidden property="timeAxisUnit"/><br>
+      </td>
+	</tr>
+    <tr>
+      <td class="label">
+		<span class="help" title="A test!!">
+        Temporal Extent:
+      </span>
+	  </td>
+	  <td class="datum">
+        <table border=0>
+          <tr>
+            <td style="white-space: nowrap;">
+              <span class="help" title="<bean:message key="help.coverage.minx"/>">
+                Begin:
+              </span>
+            </td>
+            <td>
+              <html:text property="temporalExtentBegin" size="30"/>
+            </td>
+            <td style="white-space: nowrap;">
+              <span class="help" title="<bean:message key="help.coverage.miny"/>">
+                End:
+              </span>
+            </td>
+            <td>
+              <html:text property="temporalExtentEnd" size="30"/>
+            </td>
+          </tr>
+        </table>
+	  </td>
+	</tr>
 
     <tr>
     <td class="label">

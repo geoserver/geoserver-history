@@ -239,6 +239,9 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         coverage.setNativeBoundingBox(new ReferencedEnvelope(dto.getEnvelope()));
         coverage.setLatLonBoundingBox(new ReferencedEnvelope(dto.getLonLatWGS84Envelope()));
         
+        coverage.setVerticalCRS(dto.getVerticalCRS());
+        coverage.setTemporalCRS(dto.getTemporalCRS());
+        
         coverage.setVerticalExtent(dto.getVerticalExtent());
         coverage.setTemporalExtent(dto.getTemporalExtent());
         
@@ -293,6 +296,8 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         dto.setCrs(getCrs());
         dto.setSrsName(getSrsName());
         dto.setSrsWKT(getSrsWKT());
+        dto.setTemporalCRS(getTemporalCRS());
+        dto.setVerticalCRS(getVerticalCRS());
         dto.setEnvelope(getEnvelope());
         dto.setVerticalExtent(getVerticalExtent());
         dto.setTemporalExtent(getTemporalExtent());
@@ -345,6 +350,14 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         //dto.setParameters(parameters);
 
         return dto;
+    }
+
+    private CoordinateReferenceSystem getVerticalCRS() {
+        return coverage.getVerticalCRS();
+    }
+
+    private CoordinateReferenceSystem getTemporalCRS() {
+        return coverage.getTemporalCRS();
     }
 
     private Set<TemporalGeometricPrimitive> getTemporalExtent() {

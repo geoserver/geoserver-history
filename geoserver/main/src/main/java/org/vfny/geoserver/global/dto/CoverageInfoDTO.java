@@ -148,6 +148,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     private Set<TemporalGeometricPrimitive> temporalExtent;
 
+    private CoordinateReferenceSystem verticalCRS;
+
+    private CoordinateReferenceSystem temporalCRS;
+
     public CoverageInfoDTO() {
     }
 
@@ -171,6 +175,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
         }
 
         crs = dto.getCrs();
+        verticalCRS = dto.getVerticalCRS();
+        temporalCRS = dto.getTemporalCRS();
         srsName = dto.getSrsName();
         srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
@@ -276,6 +282,14 @@ public final class CoverageInfoDTO implements DataTransferObject {
             r *= envelope.hashCode();
         }
 
+        if (verticalExtent != null) {
+            r *= verticalExtent.hashCode();
+        }
+
+        if (temporalExtent != null) {
+            r *= temporalExtent.hashCode();
+        }
+
         if (grid != null) {
             r *= grid.hashCode();
         }
@@ -291,6 +305,12 @@ public final class CoverageInfoDTO implements DataTransferObject {
         if (crs != null) {
             r *= crs.hashCode();
         }
+        
+        if (verticalCRS != null)
+            r *= verticalCRS.hashCode();
+        
+        if (temporalCRS != null)
+            r *= temporalCRS.hashCode();
 
         return r;
     }
@@ -806,5 +826,21 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     public void setTemporalExtent(Set<TemporalGeometricPrimitive> temporalExtent) {
         this.temporalExtent = temporalExtent;
+    }
+
+    public CoordinateReferenceSystem getVerticalCRS() {
+        return this.verticalCRS;
+    }
+
+    public CoordinateReferenceSystem getTemporalCRS() {
+        return this.temporalCRS;
+    }
+
+    public void setVerticalCRS(CoordinateReferenceSystem verticalCRS) {
+        this.verticalCRS = verticalCRS;
+    }
+
+    public void setTemporalCRS(CoordinateReferenceSystem temporalCRS) {
+        this.temporalCRS = temporalCRS;
     }
 }

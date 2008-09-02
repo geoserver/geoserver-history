@@ -30,7 +30,9 @@ import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.feature.type.Name;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.geometry.Envelope;
+import org.opengis.metadata.Identifier;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CompoundCRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.temporal.TemporalGeometricPrimitive;
@@ -186,6 +188,10 @@ public class CoverageConfig {
 
     private RangeType fields;
 
+    private CoordinateReferenceSystem temporalCRS;
+
+    private CoordinateReferenceSystem verticalCRS;
+
     /**
      * Creating a coverage config from gridcoverages information
      * 
@@ -243,8 +249,23 @@ public class CoverageConfig {
             BoundingBox bbox = cvSource.getHorizontalDomain(false, null).get(0);
             envelope = new GeneralEnvelope(bbox);
             envelope.setCoordinateReferenceSystem(crs);
-            verticalExtent = cvSource.getVerticalDomain(false, null);
+
+            CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
             temporalExtent = cvSource.getTemporalDomain(null);
+            if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                if (compundCRS instanceof CompoundCRS) {
+                    temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                }
+            }
+            verticalExtent = cvSource.getVerticalDomain(false, null);
+            if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                if (compundCRS instanceof CompoundCRS) {
+                    if (temporalCRS != null)
+                        verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                    else
+                        verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                } 
+            }
             final GeneralGridEnvelope originalRange = new GeneralGridEnvelope(cvSource.getRasterDomain(false, null).get(0), 2);
             grid = new GridGeometry2D(originalRange, cvSource.getGridToWorldTransform(false, null),crs);
             try {
@@ -324,40 +345,34 @@ public class CoverageConfig {
         nativeFormat = driver.getName();
         dirName = new StringBuffer(formatId).append("_").append(name).toString();
         requestCRSs = new ArrayList(); 
-        // TODO: FIX THIS!!!
-//        if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
-//                && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
-//            requestCRSs.add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
-//                                            .toArray()[0]).toString());
-//        }
+        if ((crs.getIdentifiers() != null)
+                && !crs.getIdentifiers().isEmpty()) {
+            requestCRSs.add(((Identifier) crs.getIdentifiers().toArray()[0]).toString());
+        }
         responseCRSs = new ArrayList(); 
-     // TODO: FIX THIS!!!
-//        if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
-//                && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
-//            responseCRSs.add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
-//                                             .toArray()[0]).toString());
-//        }
+        if ((crs.getIdentifiers() != null)
+                && !crs.getIdentifiers().isEmpty()) {
+            responseCRSs.add(((Identifier) crs.getIdentifiers().toArray()[0]).toString());
+        }
         supportedFormats = new ArrayList(); 
-     // TODO: FIX THIS!!!
-//        final List formats = CoverageStoreUtils.listDataFormats();
-//        for (Iterator i = formats.iterator(); i.hasNext();) {
-//            final Format fTmp = (Format) i.next();
-//            final  String fName = fTmp.getName();
-//
-//            if (fName.equalsIgnoreCase("WorldImage")) {
-//                // TODO check if coverage can encode Format
-//                supportedFormats.add("GIF");
-//                supportedFormats.add("PNG");
-//                supportedFormats.add("JPEG");
-//                supportedFormats.add("TIFF");
-//            } else if (fName.toLowerCase().startsWith("geotiff")) {
-//                // TODO check if coverage can encode Format
-//                supportedFormats.add("GeoTIFF");
-//            } else {
-//                // TODO check if coverage can encode Format
-//                supportedFormats.add(fName);
-//            }
-//        }
+        final Driver[] drivers = CoverageStoreUtils.drivers;
+        for (int i = 0; i < drivers.length; i++) {
+            final String dName = drivers[i].getName();
+
+            if (dName.equalsIgnoreCase("WorldImage")) {
+                // TODO check if coverage can encode Format
+                supportedFormats.add("GIF");
+                supportedFormats.add("PNG");
+                supportedFormats.add("JPEG");
+                supportedFormats.add("TIFF");
+            } else if (dName.toLowerCase().startsWith("geotiff")) {
+                // TODO check if coverage can encode Format
+                supportedFormats.add("GeoTIFF");
+            } else {
+                // TODO check if coverage can encode Format
+                supportedFormats.add(dName);
+            }
+        }
         // TODO make me parametric
         defaultInterpolationMethod = "nearest neighbor"; 
         interpolationMethods = new ArrayList(10);
@@ -695,6 +710,8 @@ public class CoverageConfig {
         metadataLink = dto.getMetadataLink();
         keywords = dto.getKeywords();
         crs = dto.getCrs();
+        verticalCRS = dto.getVerticalCRS();
+        temporalCRS = dto.getTemporalCRS();
         srsName = dto.getSrsName();
         srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
@@ -725,6 +742,8 @@ public class CoverageConfig {
         c.setMetadataLink(metadataLink);
         c.setKeywords(keywords);
         c.setCrs(crs);
+        c.setVerticalCRS(verticalCRS);
+        c.setTemporalCRS(temporalCRS);
         c.setSrsName(srsName);
         c.setSrsWKT(srsWKT);
         c.setEnvelope(envelope);
@@ -1157,5 +1176,33 @@ public class CoverageConfig {
 
     public void setVerticalExtent(Set<Envelope> verticalExtent) {
         this.verticalExtent = verticalExtent;
+    }
+
+    /**
+     * @return the temporalCRS
+     */
+    public CoordinateReferenceSystem getTemporalCRS() {
+        return temporalCRS;
+    }
+
+    /**
+     * @param temporalCRS the temporalCRS to set
+     */
+    public void setTemporalCRS(CoordinateReferenceSystem temporalCRS) {
+        this.temporalCRS = temporalCRS;
+    }
+
+    /**
+     * @return the verticalCRS
+     */
+    public CoordinateReferenceSystem getVerticalCRS() {
+        return verticalCRS;
+    }
+
+    /**
+     * @param verticalCRS the verticalCRS to set
+     */
+    public void setVerticalCRS(CoordinateReferenceSystem verticalCRS) {
+        this.verticalCRS = verticalCRS;
     }
 }

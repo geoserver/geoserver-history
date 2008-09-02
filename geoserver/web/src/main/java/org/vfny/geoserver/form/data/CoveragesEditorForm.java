@@ -5,14 +5,18 @@
 package org.vfny.geoserver.form.data;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.measure.converter.UnitConverter;
+import javax.measure.unit.SI;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.Globals;
@@ -22,9 +26,20 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.coverage.io.Driver;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.data.Parameter;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.temporal.object.DefaultPosition;
+import org.opengis.geometry.Envelope;
+import org.opengis.referencing.crs.TemporalCRS;
+import org.opengis.referencing.crs.VerticalCRS;
+import org.opengis.referencing.cs.CoordinateSystemAxis;
+import org.opengis.referencing.datum.TemporalDatum;
+import org.opengis.referencing.datum.VerticalDatum;
+import org.opengis.temporal.Instant;
+import org.opengis.temporal.Period;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.CoverageConfig;
@@ -162,6 +177,38 @@ public final class CoveragesEditorForm extends ActionForm {
     private List paramValues;
 
     /**
+     * 
+     */
+    private String verticalExtentMinZ;
+    private String verticalExtentMaxZ;
+
+    /**
+     * 
+     */
+    private String temporalExtentBegin;
+    private String temporalExtentEnd;
+
+    private long timeOrigin;
+
+    private int timeAxisDimension;
+
+    private String timeAxisUnit;
+
+    private String timeAxisDirection;
+
+    private String timeDateOrigin;
+
+    private String verticalDatumType;
+
+    private int verticalAxisDimension;
+
+    private String verticalAxisAbbr;
+
+    private String verticalAxisDirection;
+
+    private String verticalAxisUnit;
+
+    /**
      * Set up CoverageEditor from from Web Container.
      *
      * <p>
@@ -200,8 +247,7 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         //
         // //
-        final CoverageConfig cvConfig = (CoverageConfig) request.getSession()
-                                                                .getAttribute(DataConfig.SELECTED_COVERAGE);
+        final CoverageConfig cvConfig = (CoverageConfig) request.getSession().getAttribute(DataConfig.SELECTED_COVERAGE);
         final GeneralEnvelope bounds = cvConfig.getEnvelope();
 
         if (bounds.isNull()) {
@@ -213,6 +259,81 @@ public final class CoveragesEditorForm extends ActionForm {
             boundingBoxMaxY = Double.toString(bounds.getUpperCorner().getOrdinate(1));
         }
 
+        // //
+        //
+        //
+        //
+        // //
+        Set<Envelope> verticalExtent = cvConfig.getVerticalExtent();
+        if (verticalExtent != null && !verticalExtent.isEmpty()) {
+            VerticalDatum verticalDatum = ((VerticalCRS)cvConfig.getVerticalCRS()).getDatum();
+            CoordinateSystemAxis verticalAxis = ((VerticalCRS)cvConfig.getVerticalCRS()).getCoordinateSystem().getAxis(0);
+
+            this.verticalDatumType = verticalDatum.getVerticalDatumType().identifier();
+            this.verticalAxisDimension = ((VerticalCRS)cvConfig.getVerticalCRS()).getCoordinateSystem().getDimension();
+            this.verticalAxisAbbr = verticalAxis.getAbbreviation();
+            this.verticalAxisDirection = verticalAxis.getDirection().identifier();
+            this.verticalAxisUnit = verticalAxis.getUnit().toString();
+            
+            Envelope vEnvelope = verticalExtent.iterator().next();
+            verticalExtentMinZ = String.valueOf(vEnvelope.getMinimum(0));
+            verticalExtentMaxZ = String.valueOf(vEnvelope.getMaximum(0));
+        } else {
+            verticalExtentMinZ = "";
+            verticalExtentMaxZ = "";
+        }
+        
+        // //
+        //
+        //
+        //
+        // //
+        Set<TemporalGeometricPrimitive> temporalExtent = cvConfig.getTemporalExtent();
+        if (temporalExtent != null && !temporalExtent.isEmpty()) {
+            TemporalDatum temporalDatum = ((TemporalCRS)cvConfig.getTemporalCRS()).getDatum();
+            CoordinateSystemAxis timeAxis = ((TemporalCRS)cvConfig.getTemporalCRS()).getCoordinateSystem().getAxis(0);
+            
+            long origin = temporalDatum.getOrigin().getTime();
+            UnitConverter toMillis = timeAxis.getUnit().getConverterTo(SI.MILLI(SI.SECOND));
+            
+            this.timeOrigin = origin;
+            this.timeDateOrigin = new DefaultPosition(new Date(origin)).getDateTime().toString();
+            this.timeAxisDimension = ((TemporalCRS)cvConfig.getTemporalCRS()).getCoordinateSystem().getDimension();
+            this.timeAxisDirection = timeAxis.getDirection().identifier();
+            this.timeAxisUnit = timeAxis.getUnit().toString();
+            
+            
+            for (Iterator<TemporalGeometricPrimitive> i=temporalExtent.iterator(); i.hasNext();) {
+                TemporalGeometricPrimitive temporalObject = i.next();
+                
+                if (temporalObject instanceof Period) {
+                    /*
+                    long beginTime = ((Period) temporalObject).getBeginning().getPosition().getDate().getTime();
+                    long endTime = ((Period) temporalObject).getEnding().getPosition().getDate().getTime();
+                    temporalExtentBegin = new DefaultPosition(new Date((long)toMillis.convert(beginTime) + origin)).getDateTime().toString();
+                    temporalExtentEnd = new DefaultPosition(new Date((long)toMillis.convert(endTime) + origin)).getDateTime().toString();
+                    */
+                    temporalExtentBegin = ((Period) temporalObject).getBeginning().getPosition().getDateTime().toString();
+                    temporalExtentEnd = ((Period) temporalObject).getEnding().getPosition().getDateTime().toString();
+                } else if (temporalObject instanceof Instant) {
+                    if (temporalExtentBegin == null || temporalExtentBegin.length() == 0)
+                        temporalExtentBegin = ((Instant) temporalObject).getPosition().getDateTime().toString();
+                    if (!i.hasNext())
+                        temporalExtentEnd = ((Instant) temporalObject).getPosition().getDateTime().toString();
+                }
+            }
+        } else {
+            temporalExtentBegin = "";
+            temporalExtentEnd = "";
+        }
+        
+        // //
+        //
+        //
+        //
+        // //
+        RangeType range = cvConfig.getFields();
+        
         // //
         //
         //
@@ -1026,4 +1147,103 @@ public final class CoveragesEditorForm extends ActionForm {
     public SortedSet getTypeStyles() {
         return typeStyles;
     }
+
+    /**
+     * @return the verticalExtentMinZ
+     */
+    public String getVerticalExtentMinZ() {
+        return verticalExtentMinZ;
+    }
+
+    /**
+     * @return the verticalExtentMaxZ
+     */
+    public String getVerticalExtentMaxZ() {
+        return verticalExtentMaxZ;
+    }
+
+    /**
+     * @return the temporalExtentBegin
+     */
+    public String getTemporalExtentBegin() {
+        return temporalExtentBegin;
+    }
+
+    /**
+     * @return the temporalExtentEnd
+     */
+    public String getTemporalExtentEnd() {
+        return temporalExtentEnd;
+    }
+
+    /**
+     * @return the timeOrigin
+     */
+    public long getTimeOrigin() {
+        return timeOrigin;
+    }
+
+    /**
+     * @return the timeAxisDimension
+     */
+    public int getTimeAxisDimension() {
+        return timeAxisDimension;
+    }
+
+    /**
+     * @return the timeAxisUnit
+     */
+    public String getTimeAxisUnit() {
+        return timeAxisUnit;
+    }
+
+    /**
+     * @return the timeAxisDirection
+     */
+    public String getTimeAxisDirection() {
+        return timeAxisDirection;
+    }
+
+    /**
+     * @return the timeDateOrigin
+     */
+    public String getTimeDateOrigin() {
+        return timeDateOrigin;
+    }
+
+    /**
+     * @return the verticalDatumType
+     */
+    public String getVerticalDatumType() {
+        return verticalDatumType;
+    }
+
+    /**
+     * @return the verticalAxisDimension
+     */
+    public int getVerticalAxisDimension() {
+        return verticalAxisDimension;
+    }
+
+    /**
+     * @return the verticalAxisAbbr
+     */
+    public String getVerticalAxisAbbr() {
+        return verticalAxisAbbr;
+    }
+
+    /**
+     * @return the verticalAxisDirection
+     */
+    public String getVerticalAxisDirection() {
+        return verticalAxisDirection;
+    }
+
+    /**
+     * @return the verticalAxisUnit
+     */
+    public String getVerticalAxisUnit() {
+        return verticalAxisUnit;
+    }
+
 }

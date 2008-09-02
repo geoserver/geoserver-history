@@ -271,4 +271,21 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
     public void setVerticalExtent(Set<Envelope> verticalExtent) {
         delegate.setVerticalExtent(verticalExtent);
     }
+
+    public CoordinateReferenceSystem getTemporalCRS() {
+        return delegate.getTemporalCRS();
+    }
+
+    public CoordinateReferenceSystem getVerticalCRS() {
+        return delegate.getVerticalCRS();
+    }
+
+    public void setTemporalCRS(CoordinateReferenceSystem temporalCRS) {
+        delegate.setTemporalCRS(temporalCRS);
+    }
+
+    public void setVerticalCRS(CoordinateReferenceSystem verticalCRS) {
+        delegate.setVerticalCRS(verticalCRS);
+    }
+    
 }
