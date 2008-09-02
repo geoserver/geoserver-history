@@ -201,10 +201,8 @@ public class GetCoverageTest extends WCSTestSupport {
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         GridCoverage original = catalog.getCoverageInfo(layerId).getCoverage();
 
-        final AffineTransform2D originalTx = (AffineTransform2D) original.getGridGeometry()
-                .getGridToCRS();
-        final AffineTransform2D flippedTx = (AffineTransform2D) coverages[0].getGridGeometry()
-                .getGridToCRS();
+        final AffineTransform2D originalTx = (AffineTransform2D) original.getGridGeometry().getGridToCRS();
+        final AffineTransform2D flippedTx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
         assertEquals(originalTx.getScaleX(), flippedTx.getShearY(), EPS);
         assertEquals(originalTx.getScaleY(), flippedTx.getShearX(), EPS);
         assertEquals(originalTx.getShearX(), flippedTx.getScaleY(), EPS);

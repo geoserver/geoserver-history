@@ -447,7 +447,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	<tr>
 	  <td class="label">
 		<span class="help" title="<bean:message key="help.type.srswkt"/>">
-          Temporal CRS:
+          Vertical CRS:
         </span>
 	  </td>
 	  <td class="greyedOut2">
@@ -542,14 +542,14 @@ function generateColorPicker(colorFieldName, fieldValue)
 	</tr>
 
 	<!-- -------------------- COVERGAE FIELDS ------------------ -->
-    <td class="label">
-		<span class="help" title="<bean:message key="help.coverage.interpolationMethods"/>">
-			Coverage Fields
-		</span>
-	  </td>
-    </tr>
 	<logic:notEmpty name="coveragesEditorForm"
                    property="fieldNames">
+	    <td class="label">
+			<span class="help" title="<bean:message key="help.coverage.interpolationMethods"/>">
+				Coverage Fields
+			</span>
+		  </td>
+	    </tr>
 	    <logic:iterate id="field"
 	                   indexId="ctr"
 	                   name="coveragesEditorForm"

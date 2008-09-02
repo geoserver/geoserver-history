@@ -347,7 +347,6 @@ public final class CoveragesEditorForm extends ActionForm {
         RangeType range = cvConfig.getFields();
         if (range != null && range.getNumFieldTypes() > 0) {
             for (Iterator<Name> i=range.getFieldTypeNames().iterator(); i.hasNext();) {
-                // TODO: FIX THIS!!!
                 String fieldName = i.next().getLocalPart();
                 fieldNames.add(fieldName);
                 fieldDescriptions.add(range.getFieldType(fieldName).getDescription().toString());

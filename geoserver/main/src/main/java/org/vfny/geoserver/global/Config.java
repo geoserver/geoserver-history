@@ -9,15 +9,10 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.util.logging.Logger;
 
-import javax.imageio.spi.ImageReaderSpi;
-import javax.imageio.spi.ImageWriterSpi;
 import javax.servlet.ServletContext;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.util.ReaderUtils;
-import org.geotools.factory.Hints;
-import org.geotools.resources.image.ImageUtilities;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.ApplicationContext;

@@ -196,7 +196,6 @@ public final class CoveragesEditorAction extends ConfigAction {
         }
 
         try {
-            // TODO: FIX THIS!
             CoverageSource cvSource = cvAccess.access(new NameImpl(coverageForm.getName()), null, AccessType.READ_ONLY, null, null);
             final CoordinateReferenceSystem sourceCRS = cvSource.getHorizontalDomain(false, null).get(0).getCoordinateReferenceSystem();
             final GeneralEnvelope gEnvelope = new GeneralEnvelope(cvSource.getHorizontalDomain(false, null).get(0));
@@ -443,7 +442,6 @@ public final class CoveragesEditorAction extends ConfigAction {
         }
 
         try {
-            // TODO: FIX THIS!
             CoverageSource cvSource = cvAccess.access(new NameImpl(coverageForm.getName()), null, AccessType.READ_ONLY, null, null);
             final CoordinateReferenceSystem sourceCRS = cvSource.getHorizontalDomain(false, null).get(0).getCoordinateReferenceSystem();
             final GeneralEnvelope gEnvelope = new GeneralEnvelope(cvSource.getHorizontalDomain(false, null).get(0));

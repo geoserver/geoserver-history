@@ -685,13 +685,6 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         catch (IOException e) {
             throw new RuntimeException( e );
         }
-        
-        //// /////////////////////////////////////////////////////////
-        ////
-        //// Getting coverage config and then reader
-        ////
-        //// /////////////////////////////////////////////////////////
-        //return data.getFormatInfo(formatId).getReader();
     }
 
     public CoverageAccess createCoverageAccess(Hints hints) {
@@ -701,97 +694,9 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         catch (IOException e) {
             throw new RuntimeException( e );
         }
-        // TODO: FIX THIS!!!
-        //return DataStoreCache.getInstance().getGridCoverageReader(coverage.getStore(), hints);
-        
-        //// /////////////////////////////////////////////////////////
-        ////
-        //// Getting coverage config and then reader
-        ////
-        //// /////////////////////////////////////////////////////////
-        //return data.getFormatInfo(formatId).createReader(hints);
     }
 
     public Map getParameters() {
         return coverage.getParameters();
-        //return parameters;
-    }
-
-    public GridCoverage getCoverage() {
-        return getCoverage(null, null);
-    }
-
-    public GridCoverage getCoverage(GeneralEnvelope envelope, Rectangle dim) {
-        GridCoverage gc = null;
-
-        try {
-            if ( envelope == null ) {
-                gc = coverage.getGridCoverage(null,null);
-            }
-            else {
-                gc = coverage.getGridCoverage(null,new ReferencedEnvelope(envelope),null);
-            }
-            
-            // TODO: FIX THIS!!!
-            //if (envelope == null) {
-            //    envelope = this.envelope;
-            //}
-            //
-            //// /////////////////////////////////////////////////////////
-            ////
-            //// Do we need to proceed?
-            //// I need to check the requested envelope in order to see if the
-            //// coverage we ask intersect it otherwise it is pointless to load it
-            //// since its reader might return null;
-            //// /////////////////////////////////////////////////////////
-            //final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
-            //final CoordinateReferenceSystem destCRS = crs;
-            //
-            //if (!CRS.equalsIgnoreMetadata(sourceCRS, destCRS)) {
-            //    // get a math transform
-            //    final MathTransform transform = CoverageUtils.getMathTransform(sourceCRS, destCRS);
-            //
-            //    // transform the envelope
-            //    if (!transform.isIdentity()) {
-            //        envelope = CRS.transform(transform, envelope);
-            //    }
-            //}
-            //
-            //// just do the intersection since
-            //envelope.intersect(this.envelope);
-            //
-            //if (envelope.isEmpty()) {
-            //    return null;
-            //}
-            //
-            //envelope.setCoordinateReferenceSystem(destCRS);
-            //
-            //// /////////////////////////////////////////////////////////
-            ////
-            //// get a reader
-            ////
-            //// /////////////////////////////////////////////////////////
-            //final GridCoverageReader reader = getReader();
-            //
-            //if (reader == null) {
-            //    return null;
-            //}
-            //
-            //// /////////////////////////////////////////////////////////
-            ////
-            //// Reading the coverage
-            ////
-            //// /////////////////////////////////////////////////////////
-            //gc = reader.read(CoverageUtils.getParameters(
-            //            getReader().getFormat().getReadParameters(), getParameters()));
-            //
-            //if ((gc == null) || !(gc instanceof GridCoverage2D)) {
-            //    throw new IOException("The requested coverage could not be found.");
-            //}
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        } 
-
-        return gc;
     }
 }

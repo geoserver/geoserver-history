@@ -8,9 +8,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,10 +34,15 @@ import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageSource;
+import org.geotools.coverage.io.Driver;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.NameImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -44,8 +52,10 @@ import org.geotools.referencing.operation.matrix.GeneralMatrix;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.referencing.crs.CompoundCRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -580,8 +590,7 @@ public class LegacyCatalogImporter {
                 matrix[5] = tx.get( "translateY") != null ? tx.get( "translateY") : matrix[5];
                 matrix[8] = 1.0;
                 
-                MathTransform gridToCRS = new DefaultMathTransformFactory()
-                    .createAffineTransform( new GeneralMatrix(3,3,matrix));
+                MathTransform gridToCRS = new DefaultMathTransformFactory().createAffineTransform( new GeneralMatrix(3,3,matrix));
                 coverage.setGrid( new GridGeometry2D(range,gridToCRS,crs) );
             }
             else {
@@ -594,16 +603,42 @@ public class LegacyCatalogImporter {
             coverage.setGrid( new GridGeometry2D(range, gridEnvelope) );
         }
         
-//        for ( Iterator x = cInfoReader.coverageDimensions().iterator(); x.hasNext(); ) {
-//            Map map = (Map) x.next();
-//            CoverageDimensionInfo cd = factory.createCoverageDimension();
-//            cd.setName((String)map.get("name"));
-//            cd.setDescription((String)map.get("description"));
-//            cd.setRange(
-//               new NumberRange((Double)map.get("min"),(Double)map.get("max"))
-//            );
-//            coverage.getDimensions().add( cd );
-//        }
+        /* read fields and cv-domains */
+        Driver driver = coverageStore.getDriver();
+        Map params = new HashMap();
+        params.put("url", new URL(coverageStore.getURL()));
+        CoverageAccess cvAccess = driver.connect(params, null, null);
+        if (cvAccess != null) {
+            CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+            if (cvSource != null) {
+                coverage.setFields(cvSource.getRangeType(null));
+                
+                CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                CoordinateReferenceSystem temporalCRS = null;
+                CoordinateReferenceSystem verticalCRS = null;
+                if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                    if (compundCRS instanceof CompoundCRS) {
+                        temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                    }
+                }
+                Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                    if (compundCRS instanceof CompoundCRS) {
+                        if (temporalCRS != null)
+                            verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                        else
+                            verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                    } 
+                }
+
+                coverage.setTemporalCRS(temporalCRS);
+                coverage.setTemporalExtent(temporalExtent);
+                
+                coverage.setVerticalCRS(verticalCRS);
+                coverage.setVerticalExtent(verticalExtent);
+            }
+        }
         
         coverage.setNativeFormat(cInfoReader.nativeFormat());
         coverage.getSupportedFormats().addAll(cInfoReader.supportedFormats());

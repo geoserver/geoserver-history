@@ -1523,8 +1523,6 @@ public class XMLConfigWriter {
                 GridGeometry g = cv.getGrid();
                 MathTransform tx = g.getGridToCRS();
 
-                // TODO: FIX THIS
-//                InternationalString[] dimNames = cv.getDimensionNames();
                 m = new HashMap();
 
                 m.put("dimension", new Integer(g.getGridRange().getDimension()));
@@ -1540,11 +1538,6 @@ public class XMLConfigWriter {
                 cw.openTag("grid", m);
                 cw.textTag("low", lowers);
                 cw.textTag("high", upers);
-
-//                if (dimNames != null) {
-//                    for (int dn = 0; dn < dimNames.length; dn++)
-//                        cw.textTag("axisName", dimNames[dn].toString());
-//                }
 
                 // //
                 // AlFa: storing geo-transform
@@ -1563,41 +1556,6 @@ public class XMLConfigWriter {
 
                 cw.closeTag("grid");
             }
-
-            // TODO: FIX THIS
-//            if (cv.getDimensions() != null) {
-//                CoverageDimension[] dims = cv.getDimensions();
-//
-//                for (int d = 0; d < dims.length; d++) {
-//                    Double[] nulls = dims[d].getNullValues();
-//                    cw.openTag("CoverageDimension");
-//                    cw.textTag("name", dims[d].getName());
-//                    cw.textTag("description", dims[d].getDescription());
-//
-//                    if (dims[d].getRange() != null) {
-//                        cw.openTag("interval");
-//                        cw.textTag("min", Double.toString(dims[d].getRange().getMinimum(true)));
-//                        cw.textTag("max", Double.toString(dims[d].getRange().getMaximum(true)));
-//                        cw.closeTag("interval");
-//                    }
-//                    else
-//                    {
-//                        cw.openTag("interval");
-//                        cw.textTag("min", Double.toString(Double.NEGATIVE_INFINITY));
-//                        cw.textTag("max", Double.toString(Double.POSITIVE_INFINITY));
-//                        cw.closeTag("interval");
-//                    }
-//
-//                    if (nulls != null) {
-//                        cw.openTag("nullValues");
-//                        for (int n = 0; n < nulls.length; n++) {
-//                            cw.textTag("value", nulls[n].toString());
-//                        }
-//                        cw.closeTag("nullValues");
-//                    }
-//                    cw.closeTag("CoverageDimension");
-//                }
-//            }
 
             cw.openTag("supportedCRSs");
 

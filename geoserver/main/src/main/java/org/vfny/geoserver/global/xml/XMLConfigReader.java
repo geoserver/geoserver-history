@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,19 +34,19 @@ import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.util.ReaderUtils;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.io.Driver;
 import org.geotools.filter.FilterDOMParser;
 import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
-import org.geotools.util.NameFactory;
-import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.filter.Filter;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -58,7 +57,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.MathTransformFactory;
 import org.opengis.referencing.operation.Matrix;
 import org.opengis.referencing.operation.TransformException;
-import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -1913,8 +1911,7 @@ public class XMLConfigReader {
             cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
             final CoordinateReferenceSystem crs;
             try {
-                crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs", false).replaceAll("'",
-                        "\""));
+                crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs", false).replaceAll("'", "\""));
             } catch (FactoryException e) {
                 throw new ConfigurationException(e);
             } catch (ConfigurationException e) {
@@ -1952,23 +1949,12 @@ public class XMLConfigReader {
             final Element grid = ReaderUtils.getChildElement(coverageRoot, "grid");
             cv.setGrid(loadGrid(grid, gcEnvelope, crs));
 
-            // TODO: FIX THIS
-//            // /////////////////////////////////////////////////////////////////////
-//            //
-//            // SAMPLE DIMENSIONS
-//            //
-//            // /////////////////////////////////////////////////////////////////////
-//            cv.setDimensionNames(loadDimensionNames(grid));
-//            final NodeList dims = coverageRoot.getElementsByTagName("CoverageDimension");
-//            cv.setDimensions(loadDimensions(dims));
-
             // /////////////////////////////////////////////////////////////////////
             //
             // SUPPORTED/REQUEST CRS
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element supportedCRSs = ReaderUtils
-                    .getChildElement(coverageRoot, "supportedCRSs");
+            final Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot, "supportedCRSs");
             final String requestCRSs = ReaderUtils.getChildText(supportedCRSs, "requestCRSs");
             list = ReaderUtils.stringToList(requestCRSs, ",");
             if (list != null&&list.size()>0) {
@@ -1986,8 +1972,7 @@ public class XMLConfigReader {
             // SUPPORTED FORMATS
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element supportedFormats = ReaderUtils.getChildElement(coverageRoot,
-                    "supportedFormats");
+            final Element supportedFormats = ReaderUtils.getChildElement(coverageRoot, "supportedFormats");
             cv.setNativeFormat(ReaderUtils.getAttribute(supportedFormats, "nativeFormat", true));
             final String formats = ReaderUtils.getChildText(supportedFormats, "formats");
             list = ReaderUtils.stringToList(formats, ",");
@@ -2001,13 +1986,10 @@ public class XMLConfigReader {
             // SUPPORTED INTERPOLATIONS
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element supportedInterpolations = ReaderUtils.getChildElement(coverageRoot,
-                    "supportedInterpolations");
-            cv.setDefaultInterpolationMethod(ReaderUtils.getAttribute(supportedInterpolations,
-                    "default", true));
+            final Element supportedInterpolations = ReaderUtils.getChildElement(coverageRoot, "supportedInterpolations");
+            cv.setDefaultInterpolationMethod(ReaderUtils.getAttribute(supportedInterpolations, "default", true));
 
-            final String interpolations = ReaderUtils.getChildText(supportedInterpolations,
-                    "interpolationMethods");
+            final String interpolations = ReaderUtils.getChildText(supportedInterpolations, "interpolationMethods");
             list = ReaderUtils.stringToList(interpolations, ",");
             if (list != null&&list.size()>0) {
             	cv.setInterpolationMethods(list);
@@ -2019,13 +2001,30 @@ public class XMLConfigReader {
             // READ PARAMETERS
             //
             // /////////////////////////////////////////////////////////////////////
-            cv.setParameters(loadConnectionParams(ReaderUtils.getChildElement(coverageRoot,
-                    "parameters", false)));
+            cv.setParameters(loadConnectionParams(ReaderUtils.getChildElement(coverageRoot, "parameters", false)));
+
+            // /////////////////////////////////////////////////////////////////////
+            //
+            // LOADING COVERAGE DOMAIN SETS
+            //
+            // /////////////////////////////////////////////////////////////////////
+            loadCoverageDomains(cv);
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
 
         return cv;
+    }
+
+    /**
+     * 
+     * @param cv
+     */
+    private void loadCoverageDomains(CoverageInfoDTO cv) {
+        CoverageStoreInfo cvStore = this.catalog.getCoverageStore(cv.getFormatId());
+        if (cvStore != null) {
+            Driver driver = cvStore.getDriver();
+        }
     }
 
     /**
@@ -2196,80 +2195,6 @@ public class XMLConfigReader {
         }
 
     }
-
-    // TODO: FIX THIS
-    /**
-     * 
-     * @param gridElem
-     * @return
-     * @throws ConfigurationException
-     */
-    protected InternationalString[] loadDimensionNames(Element gridElem)
-            throws ConfigurationException {
-        if (gridElem == null) {
-            return null;
-        }
-
-        NodeList axisNames = gridElem.getElementsByTagName("axisName");
-        InternationalString[] dimNames = new InternationalString[axisNames.getLength()];
-
-        for (int i = 0; i < axisNames.getLength(); i++) {
-            String values = ReaderUtils.getElementText((Element) axisNames.item(i));
-
-            if (values != null) {
-                dimNames[i] = NameFactory.create(values).toInternationalString();
-            }
-        }
-
-        return dimNames;
-    }
-
-//    protected CoverageDimension[] loadDimensions(NodeList dimElems) throws ConfigurationException {
-//        CoverageDimension[] dimensions = null;
-//
-//        if ((dimElems != null) && (dimElems.getLength() > 0)) {
-//            dimensions = new CoverageDimension[dimElems.getLength()];
-//            final int length=dimElems.getLength();
-//            for (int dim = 0; dim < length; dim++) {
-//                dimensions[dim] = new CoverageDimension(catalog.getFactory().createCoverageDimension());
-//                dimensions[dim].setName(ReaderUtils.getElementText((Element) ((Element) dimElems
-//                        .item(dim)).getElementsByTagName("name").item(0)));
-//                dimensions[dim].setDescription(ReaderUtils
-//                        .getElementText((Element) ((Element) dimElems.item(dim))
-//                                .getElementsByTagName("description").item(0)));
-//
-//                NodeList interval = ((Element) dimElems.item(dim)).getElementsByTagName("interval");
-//                double min = Double.parseDouble(ReaderUtils
-//                        .getElementText((Element) ((Element) interval.item(0))
-//                                .getElementsByTagName("min").item(0)));
-//                double max = Double.parseDouble(ReaderUtils
-//                        .getElementText((Element) ((Element) interval.item(0))
-//                                .getElementsByTagName("max").item(0)));
-//                dimensions[dim].setRange(new NumberRange(min, max));
-//
-//                NodeList nullValues = ((Element) dimElems.item(dim))
-//                        .getElementsByTagName("nullValues");
-//
-//                if ((nullValues != null) && (nullValues.getLength() > 0)) {
-//                    NodeList values = ((Element) nullValues.item(0)).getElementsByTagName("value");
-//
-//                    if (values != null) {
-//                        Vector nulls = new Vector();
-//
-//                        for (int nl = 0; nl < values.getLength(); nl++) {
-//                            nulls.add(new Double(ReaderUtils.getElementText((Element) values
-//                                    .item(nl))));
-//                        }
-//
-//                        dimensions[dim].setNullValues((Double[]) nulls.toArray(new Double[nulls
-//                                .size()]));
-//                    }
-//                }
-//            }
-//        }
-//
-//        return dimensions;
-//    }
 
     protected MetaDataLink loadMetaDataLink(Element metalinkRoot) {
         MetaDataLink ml = new MetaDataLink(catalog.getFactory().createMetadataLink());

@@ -120,8 +120,6 @@ public class DataCoveragesNewAction extends ConfigAction {
         CoverageAccess cvAccess = cvStoreInfo.getCoverageAccess();
 
         if (cvAccess == null) {
-            // TODO: FIX THIS!!!
-//            cvAccess = (AbstractGridCoverage2DReader) ((AbstractGridFormat) driver).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
             Map<String, Serializable> params = new HashMap<String, Serializable>();
             try {
                 params.put("url", GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()).toURI().toURL());
