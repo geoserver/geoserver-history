@@ -988,53 +988,54 @@ public class KMLWriter extends OutputStreamWriter {
 
 		LOGGER.finer("applying one symbolizer: " + symbolizers[0].toString());
 
-		final AbstractGridCoverage2DReader gcReader = (AbstractGridCoverage2DReader) feature
-				.getAttribute("grid");
-
-		// TODO add read parameters feature.getAttribute("params")
-		final HttpServletRequest request = this.mapContext.getRequest()
-				.getHttpServletRequest();
-		final String baseURL = org.vfny.geoserver.util.Requests.getBaseUrl(
-				request, null);
-
-		com.vividsolutions.jts.geom.Envelope envelope = this.mapContext
-				.getRequest().getBbox();
-		write(new StringBuffer("<GroundOverlay>").append("<name>").append(
-				feature.getID()).append("</name>").append("<Icon>").toString());
-
-		final double[] BBOX = new double[] { envelope.getMinX(),
-				envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY() };
-
-		final StringBuffer getMapRequest = new StringBuffer(baseURL)
-				.append("wms?bbox=")
-				.append(BBOX[0])
-				.append(",")
-				.append(BBOX[1])
-				.append(",")
-				.append(BBOX[2])
-				.append(",")
-				.append(BBOX[3])
-				.append("&amp;styles=")
-				.append(layer.getStyle().getName())
-				.append("&amp;Format=image/png&amp;request=GetMap&amp;layers=")
-				.append(layer.getTitle())
-				.append(
-						"&amp;width="
-								+ this.mapContext.getMapWidth()
-								+ "&amp;height="
-								+ this.mapContext.getMapHeight()
-								+ "&amp;srs=EPSG:4326&amp;transparent=true&amp;");
-
-		write(new StringBuffer("<href>").append(getMapRequest)
-				.append("</href>").append(
-						"<viewRefreshMode>never</viewRefreshMode>").append(
-						"<viewBoundScale>0.75</viewBoundScale>").append(
-						"</Icon>").append("<LatLonBox>").append("<north>")
-				.append(BBOX[3]).append("</north>").append("<south>").append(
-						BBOX[1]).append("</south>").append("<east>").append(
-						BBOX[2]).append("</east>").append("<west>").append(
-						BBOX[0]).append("</west>").append("</LatLonBox>")
-				.append("</GroundOverlay>").toString());
+	        // TODO: FIX THIS!!!
+//		final AbstractGridCoverage2DReader gcReader = (AbstractGridCoverage2DReader) feature
+//				.getAttribute("grid");
+//
+//		// TODO add read parameters feature.getAttribute("params")
+//		final HttpServletRequest request = this.mapContext.getRequest()
+//				.getHttpServletRequest();
+//		final String baseURL = org.vfny.geoserver.util.Requests.getBaseUrl(
+//				request, null);
+//
+//		com.vividsolutions.jts.geom.Envelope envelope = this.mapContext
+//				.getRequest().getBbox();
+//		write(new StringBuffer("<GroundOverlay>").append("<name>").append(
+//				feature.getID()).append("</name>").append("<Icon>").toString());
+//
+//		final double[] BBOX = new double[] { envelope.getMinX(),
+//				envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY() };
+//
+//		final StringBuffer getMapRequest = new StringBuffer(baseURL)
+//				.append("wms?bbox=")
+//				.append(BBOX[0])
+//				.append(",")
+//				.append(BBOX[1])
+//				.append(",")
+//				.append(BBOX[2])
+//				.append(",")
+//				.append(BBOX[3])
+//				.append("&amp;styles=")
+//				.append(layer.getStyle().getName())
+//				.append("&amp;Format=image/png&amp;request=GetMap&amp;layers=")
+//				.append(layer.getTitle())
+//				.append(
+//						"&amp;width="
+//								+ this.mapContext.getMapWidth()
+//								+ "&amp;height="
+//								+ this.mapContext.getMapHeight()
+//								+ "&amp;srs=EPSG:4326&amp;transparent=true&amp;");
+//
+//		write(new StringBuffer("<href>").append(getMapRequest)
+//				.append("</href>").append(
+//						"<viewRefreshMode>never</viewRefreshMode>").append(
+//						"<viewBoundScale>0.75</viewBoundScale>").append(
+//						"</Icon>").append("<LatLonBox>").append("<north>")
+//				.append(BBOX[3]).append("</north>").append("<south>").append(
+//						BBOX[1]).append("</south>").append("<east>").append(
+//						BBOX[2]).append("</east>").append("<west>").append(
+//						BBOX[0]).append("</west>").append("</LatLonBox>")
+//				.append("</GroundOverlay>").toString());
 	}
 
 	/**

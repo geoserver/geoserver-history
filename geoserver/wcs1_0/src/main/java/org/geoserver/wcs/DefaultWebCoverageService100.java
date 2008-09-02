@@ -128,186 +128,188 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
 
         CoverageInfo meta = null;
         GridCoverage2D coverage = null;
-        try {
-            meta = catalog.getCoverageInfo(request.getSourceCoverage());
-
-            // first let's run some sanity checks on the inputs
-            checkDomainSubset(meta, request.getDomainSubset());
-            checkRangeSubset(meta, request.getRangeSubset());
-            checkInterpolationMethod(meta, request.getInterpolationMethod());
-            checkOutput(meta, request.getOutput());
-
-            // grab the format, the reader using the default params,
-            final Format format = meta.getFormatInfo().getFormat();
-            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.createReader(HINTS);
-            final ParameterValueGroup params = reader.getFormat().getReadParameters();
-
-            // handle spatial domain subset, if needed
-            final GeneralEnvelope originalEnvelope = reader.getOriginalEnvelope();
-            GeneralEnvelope destinationEnvelope = (GeneralEnvelope) request.getDomainSubset().getSpatialSubset().getEnvelope().get(0);
-            final CoordinateReferenceSystem nativeCRS = originalEnvelope.getCoordinateReferenceSystem();
-            final GeneralEnvelope destinationEnvelopeInSourceCRS;
-            if (destinationEnvelope != null) {
-                // grab the native crs
-                // if no crs has beens specified, the native one is assumed
-                if (destinationEnvelope.getCoordinateReferenceSystem() == null) {
-                    destinationEnvelope.setCoordinateReferenceSystem(nativeCRS);
-                    destinationEnvelopeInSourceCRS = destinationEnvelope;
-                } else {
-                    // otherwise we need to transform
-                    final CoordinateReferenceSystem bboxCRS = destinationEnvelope.getCoordinateReferenceSystem();
-                    final MathTransform bboxToNativeTx = CRS.findMathTransform(bboxCRS, nativeCRS, true);
-                    destinationEnvelopeInSourceCRS = CRS.transform(bboxToNativeTx, destinationEnvelope);
-                    destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(nativeCRS);
-                }
-            } else {
-                destinationEnvelopeInSourceCRS = reader.getOriginalEnvelope();
-                destinationEnvelope = destinationEnvelopeInSourceCRS;
-            }
-
-            String gridCRS = null;
-            if (request.getOutput().getCrs() != null)
-                request.getOutput().getCrs().getValue();
-
-            // Compute the target crs, the crs that the final coverage will be
-            // served into
-            final CoordinateReferenceSystem targetCRS;
-            if (gridCRS == null) {
-                targetCRS = reader.getOriginalEnvelope().getCoordinateReferenceSystem();
-                gridCRS = CRS.lookupIdentifier(targetCRS, false);
-            } else
-                targetCRS = CRS.decode(gridCRS);
-
-            // grab the grid to world transformation
-            /**
-             * Reading Coverage on Requested Envelope
-             */
-            Rectangle destinationSize = null;
-            MathTransform gridToCRS = reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER);
-            if (gridCRS != null && request.getDomainSubset().getSpatialSubset().getGrid().size() > 0) {
-                GridType grid = (GridType) request.getDomainSubset().getSpatialSubset().getGrid().get(0);
-                int[] lowers = new int[] {
-                        (int)grid.getLimits().getMinX(),
-                        (int)grid.getLimits().getMinY()};
-                int[] highers = new int[] {
-                        (int)grid.getLimits().getMaxX(),
-                        (int)grid.getLimits().getMaxY()};
-                
-                // if no offsets has been specified we try to default on the
-                // native ones
-                if (!(gridToCRS instanceof AffineTransform2D) && !(gridToCRS instanceof IdentityTransform))
-                    throw new WcsException("Internal error, the coverage we're playing with does not have an affine transform...");
-
-                if (gridToCRS instanceof IdentityTransform) {
-                    if (grid.getDimension().intValue() == 2)
-                        highers = new int[] { 1, 1 };
-                }
-                
-                destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
-            }
-
-            // now we have enough info to read the coverage, grab the parameters
-            // and add the grid geometry info
-            final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
-            final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
-            intersected.intersect(originalEnvelope);
-            
-            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS);
-            parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), destinationGridGeometry);
-            coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat().getReadParameters(), parameters, true));
-            if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
-                throw new IOException("The requested coverage could not be found.");
-            }
-
-            /**
-             * Band Select (works on just one field)
-             */
-            GridCoverage2D bandSelectedCoverage = coverage;
-            String interpolationType = null;
-            if (request.getRangeSubset() != null) {
-                if (request.getRangeSubset().getAxisSubset().size() > 1) {
-                    throw new WcsException("Multi field coverages are not supported yet");
-                }
-
-                interpolationType = request.getInterpolationMethod().getLiteral();
-
-                // prepare a support structure to quickly get the band index
-                // of a
-                // key
-                CoverageDimension[] dimensions = meta.getDimensions();
-                Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
-                for (int i = 0; i < dimensions.length; i++) {
-                    String keyName = dimensions[i].getName().replace(' ', '_');
-                    dimensionMap.put(keyName, i);
-                }
-
-                // extract the band indexes
-                List axisSubset = request.getRangeSubset().getAxisSubset();
-                if (axisSubset.size() > 0)
-                    if (((AxisSubsetType)axisSubset.get(0)).getName().equalsIgnoreCase("Band")) {
-                    AxisSubsetType axis = (AxisSubsetType)axisSubset.get(0);
-                    int[] bands = null;
-                    if (axis.getSingleValue().size() > 0) {
-                        bands = new int[axis.getSingleValue().size()];
-                        for (int s=0; s<axis.getSingleValue().size(); s++)
-                            bands[s] = Integer.parseInt(((TypedLiteralType)axis.getSingleValue().get(s)).getValue()) - 1;
-                    } else if (axis.getInterval().size() > 0) {
-                        IntervalType interval = (IntervalType) axis.getInterval().get(0);
-                        int min = Integer.parseInt(interval.getMin().getValue());
-                        int max = Integer.parseInt(interval.getMax().getValue());
-                        int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue()) : 1);
-                        
-                        bands = new int[(int) (Math.floor(max - min) / res + 1)];
-                        for (int b=0; b<bands.length; b++)
-                            bands[b] = b * res;
-                    }
-
-                    // finally execute the band select
-                    try {
-                        bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
-                    } catch (WcsException e) {
-                        throw new WcsException(e.getLocalizedMessage());
-                    }
-                } else
-                    throw new WcsException("Unknown axis " + ((AxisSubsetType)axisSubset.get(0)).getName());
-            }
-
-            /**
-             * Checking for supported Interpolation Methods
-             */
-            Interpolation interpolation = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
-            if (interpolationType != null) {
-                if (interpolationType.equalsIgnoreCase("bilinear")) {
-                    interpolation = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
-                } else if (interpolationType.equalsIgnoreCase("bicubic")) {
-                    interpolation = Interpolation.getInstance(Interpolation.INTERP_BICUBIC);
-                } else if (interpolationType.equalsIgnoreCase("nearest")) {
-                    interpolation = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
-                }
-            }
-
-            /**
-             * Crop
-             */
-            final GridCoverage2D croppedGridCoverage = WCSUtils.crop(bandSelectedCoverage, (GeneralEnvelope) coverage.getEnvelope(), nativeCRS, destinationEnvelopeInSourceCRS, Boolean.TRUE);
-
-            /**
-             * Scale
-             */
-            final GridCoverage2D scaledCoverage = WCSUtils.scale(croppedGridCoverage, destinationGridGeometry);
-
-            /**
-             * Reproject
-             */
-            final GridCoverage2D reprojectedCoverage = WCSUtils.reproject(scaledCoverage, nativeCRS, targetCRS, interpolation);
-
-            return new GridCoverage[] { reprojectedCoverage };
-        } catch (Exception e) {
-            if (e instanceof WcsException)
-                throw (WcsException) e;
-            else
-                throw new WcsException(e);
-        }
+        // TODO: FIX THIS!!!
+        return null;
+//        try {
+//            meta = catalog.getCoverageInfo(request.getSourceCoverage());
+//
+//            // first let's run some sanity checks on the inputs
+//            checkDomainSubset(meta, request.getDomainSubset());
+//            checkRangeSubset(meta, request.getRangeSubset());
+//            checkInterpolationMethod(meta, request.getInterpolationMethod());
+//            checkOutput(meta, request.getOutput());
+//
+//            // grab the format, the reader using the default params,
+//            final Format format = meta.getFormatInfo().getFormat();
+//            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.createReader(HINTS);
+//            final ParameterValueGroup params = reader.getFormat().getReadParameters();
+//
+//            // handle spatial domain subset, if needed
+//            final GeneralEnvelope originalEnvelope = reader.getOriginalEnvelope();
+//            GeneralEnvelope destinationEnvelope = (GeneralEnvelope) request.getDomainSubset().getSpatialSubset().getEnvelope().get(0);
+//            final CoordinateReferenceSystem nativeCRS = originalEnvelope.getCoordinateReferenceSystem();
+//            final GeneralEnvelope destinationEnvelopeInSourceCRS;
+//            if (destinationEnvelope != null) {
+//                // grab the native crs
+//                // if no crs has beens specified, the native one is assumed
+//                if (destinationEnvelope.getCoordinateReferenceSystem() == null) {
+//                    destinationEnvelope.setCoordinateReferenceSystem(nativeCRS);
+//                    destinationEnvelopeInSourceCRS = destinationEnvelope;
+//                } else {
+//                    // otherwise we need to transform
+//                    final CoordinateReferenceSystem bboxCRS = destinationEnvelope.getCoordinateReferenceSystem();
+//                    final MathTransform bboxToNativeTx = CRS.findMathTransform(bboxCRS, nativeCRS, true);
+//                    destinationEnvelopeInSourceCRS = CRS.transform(bboxToNativeTx, destinationEnvelope);
+//                    destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(nativeCRS);
+//                }
+//            } else {
+//                destinationEnvelopeInSourceCRS = reader.getOriginalEnvelope();
+//                destinationEnvelope = destinationEnvelopeInSourceCRS;
+//            }
+//
+//            String gridCRS = null;
+//            if (request.getOutput().getCrs() != null)
+//                request.getOutput().getCrs().getValue();
+//
+//            // Compute the target crs, the crs that the final coverage will be
+//            // served into
+//            final CoordinateReferenceSystem targetCRS;
+//            if (gridCRS == null) {
+//                targetCRS = reader.getOriginalEnvelope().getCoordinateReferenceSystem();
+//                gridCRS = CRS.lookupIdentifier(targetCRS, false);
+//            } else
+//                targetCRS = CRS.decode(gridCRS);
+//
+//            // grab the grid to world transformation
+//            /**
+//             * Reading Coverage on Requested Envelope
+//             */
+//            Rectangle destinationSize = null;
+//            MathTransform gridToCRS = reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER);
+//            if (gridCRS != null && request.getDomainSubset().getSpatialSubset().getGrid().size() > 0) {
+//                GridType grid = (GridType) request.getDomainSubset().getSpatialSubset().getGrid().get(0);
+//                int[] lowers = new int[] {
+//                        (int)grid.getLimits().getMinX(),
+//                        (int)grid.getLimits().getMinY()};
+//                int[] highers = new int[] {
+//                        (int)grid.getLimits().getMaxX(),
+//                        (int)grid.getLimits().getMaxY()};
+//                
+//                // if no offsets has been specified we try to default on the
+//                // native ones
+//                if (!(gridToCRS instanceof AffineTransform2D) && !(gridToCRS instanceof IdentityTransform))
+//                    throw new WcsException("Internal error, the coverage we're playing with does not have an affine transform...");
+//
+//                if (gridToCRS instanceof IdentityTransform) {
+//                    if (grid.getDimension().intValue() == 2)
+//                        highers = new int[] { 1, 1 };
+//                }
+//                
+//                destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
+//            }
+//
+//            // now we have enough info to read the coverage, grab the parameters
+//            // and add the grid geometry info
+//            final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
+//            final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
+//            intersected.intersect(originalEnvelope);
+//            
+//            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS);
+//            parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), destinationGridGeometry);
+//            coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat().getReadParameters(), parameters, true));
+//            if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
+//                throw new IOException("The requested coverage could not be found.");
+//            }
+//
+//            /**
+//             * Band Select (works on just one field)
+//             */
+//            GridCoverage2D bandSelectedCoverage = coverage;
+//            String interpolationType = null;
+//            if (request.getRangeSubset() != null) {
+//                if (request.getRangeSubset().getAxisSubset().size() > 1) {
+//                    throw new WcsException("Multi field coverages are not supported yet");
+//                }
+//
+//                interpolationType = request.getInterpolationMethod().getLiteral();
+//
+//                // prepare a support structure to quickly get the band index
+//                // of a
+//                // key
+//                CoverageDimension[] dimensions = meta.getDimensions();
+//                Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
+//                for (int i = 0; i < dimensions.length; i++) {
+//                    String keyName = dimensions[i].getName().replace(' ', '_');
+//                    dimensionMap.put(keyName, i);
+//                }
+//
+//                // extract the band indexes
+//                List axisSubset = request.getRangeSubset().getAxisSubset();
+//                if (axisSubset.size() > 0)
+//                    if (((AxisSubsetType)axisSubset.get(0)).getName().equalsIgnoreCase("Band")) {
+//                    AxisSubsetType axis = (AxisSubsetType)axisSubset.get(0);
+//                    int[] bands = null;
+//                    if (axis.getSingleValue().size() > 0) {
+//                        bands = new int[axis.getSingleValue().size()];
+//                        for (int s=0; s<axis.getSingleValue().size(); s++)
+//                            bands[s] = Integer.parseInt(((TypedLiteralType)axis.getSingleValue().get(s)).getValue()) - 1;
+//                    } else if (axis.getInterval().size() > 0) {
+//                        IntervalType interval = (IntervalType) axis.getInterval().get(0);
+//                        int min = Integer.parseInt(interval.getMin().getValue());
+//                        int max = Integer.parseInt(interval.getMax().getValue());
+//                        int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue()) : 1);
+//                        
+//                        bands = new int[(int) (Math.floor(max - min) / res + 1)];
+//                        for (int b=0; b<bands.length; b++)
+//                            bands[b] = b * res;
+//                    }
+//
+//                    // finally execute the band select
+//                    try {
+//                        bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
+//                    } catch (WcsException e) {
+//                        throw new WcsException(e.getLocalizedMessage());
+//                    }
+//                } else
+//                    throw new WcsException("Unknown axis " + ((AxisSubsetType)axisSubset.get(0)).getName());
+//            }
+//
+//            /**
+//             * Checking for supported Interpolation Methods
+//             */
+//            Interpolation interpolation = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
+//            if (interpolationType != null) {
+//                if (interpolationType.equalsIgnoreCase("bilinear")) {
+//                    interpolation = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
+//                } else if (interpolationType.equalsIgnoreCase("bicubic")) {
+//                    interpolation = Interpolation.getInstance(Interpolation.INTERP_BICUBIC);
+//                } else if (interpolationType.equalsIgnoreCase("nearest")) {
+//                    interpolation = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
+//                }
+//            }
+//
+//            /**
+//             * Crop
+//             */
+//            final GridCoverage2D croppedGridCoverage = WCSUtils.crop(bandSelectedCoverage, (GeneralEnvelope) coverage.getEnvelope(), nativeCRS, destinationEnvelopeInSourceCRS, Boolean.TRUE);
+//
+//            /**
+//             * Scale
+//             */
+//            final GridCoverage2D scaledCoverage = WCSUtils.scale(croppedGridCoverage, destinationGridGeometry);
+//
+//            /**
+//             * Reproject
+//             */
+//            final GridCoverage2D reprojectedCoverage = WCSUtils.reproject(scaledCoverage, nativeCRS, targetCRS, interpolation);
+//
+//            return new GridCoverage[] { reprojectedCoverage };
+//        } catch (Exception e) {
+//            if (e instanceof WcsException)
+//                throw (WcsException) e;
+//            else
+//                throw new WcsException(e);
+//        }
 
     }
 
@@ -511,12 +513,14 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         // prepare a support structure to quickly get the band index of a key
         // (and remember we replaced spaces with underscores in the keys to
         // avoid issues with the kvp parsing of indentifiers that include spaces)
-        CoverageDimension[] dimensions = info.getDimensions();
-        Set<String> dimensionMap = new HashSet<String>();
-        for (int i = 0; i < dimensions.length; i++) {
-            String keyName = dimensions[i].getName().replace(' ', '_');
-            dimensionMap.add(keyName);
-        }
+
+        // TODO: FIX THIS!!!
+//        CoverageDimension[] dimensions = info.getDimensions();
+//        Set<String> dimensionMap = new HashSet<String>();
+//        for (int i = 0; i < dimensions.length; i++) {
+//            String keyName = dimensions[i].getName().replace(' ', '_');
+//            dimensionMap.add(keyName);
+//        }
 
         // check indexes
         int[] bands = null;

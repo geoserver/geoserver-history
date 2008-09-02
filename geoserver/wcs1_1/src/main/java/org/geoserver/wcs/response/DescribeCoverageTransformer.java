@@ -277,25 +277,26 @@ public class DescribeCoverageTransformer extends TransformerBase {
             start("wcs:Range");
             // at the moment we only handle single field coverages
             start("wcs:Field");
-            CoverageDimension[] dimensions = ci.getDimensions();
-            element("wcs:Identifier", "contents");
-            // the output domain of the field
-            start("wcs:Definition");
-            NumberRange range = getCoverageRange(dimensions);
-            if (range == null || range.isEmpty()) {
-                element("wcs:AnyValue", "");
-            } else {
-                start("ows:AllowedValues");
-                start("ows:Range");
-                element("ows:MinimumValue", Double.toString(range.getMinimum()));
-                element("ows:MaximumValue", Double.toString(range.getMaximum()));
-                end("ows:Range");
-                end("ows:AllowedValues");
-            }
-            end("wcs:Definition");
-            handleNullValues(dimensions);
-            handleInterpolationMethods(ci);
-            handleAxis(ci);
+            // TODO: FIX THIS!!!
+//            CoverageDimension[] dimensions = ci.getDimensions();
+//            element("wcs:Identifier", "contents");
+//            // the output domain of the field
+//            start("wcs:Definition");
+//            NumberRange range = getCoverageRange(dimensions);
+//            if (range == null || range.isEmpty()) {
+//                element("wcs:AnyValue", "");
+//            } else {
+//                start("ows:AllowedValues");
+//                start("ows:Range");
+//                element("ows:MinimumValue", Double.toString(range.getMinimum()));
+//                element("ows:MaximumValue", Double.toString(range.getMaximum()));
+//                end("ows:Range");
+//                end("ows:AllowedValues");
+//            }
+//            end("wcs:Definition");
+//            handleNullValues(dimensions);
+//            handleInterpolationMethods(ci);
+//            handleAxis(ci);
             end("wcs:Field");
             end("wcs:Range");
         }
@@ -305,51 +306,53 @@ public class DescribeCoverageTransformer extends TransformerBase {
             attributes.addAttribute("", "identifier", "identifier", "", "Bands");
             start("wcs:Axis", attributes);
             start("wcs:AvailableKeys");
-            CoverageDimension[] dimensions = ci.getDimensions();
-            for (int i = 0; i < dimensions.length; i++) {
-                element("wcs:Key", dimensions[i].getName().replace(' ', '_'));
-            }
+            // TODO: FIX THIS!!!
+//            CoverageDimension[] dimensions = ci.getDimensions();
+//            for (int i = 0; i < dimensions.length; i++) {
+//                element("wcs:Key", dimensions[i].getName().replace(' ', '_'));
+//            }
             end("wcs:AvailableKeys");
             end("wcs:Axis");
         }
 
-        /**
-         * Given a set of sample dimensions, this will return a valid range only
-         * if all sample dimensions have one, otherwise null
-         * 
-         * @param dimensions
-         * @return
-         */
-        private NumberRange getCoverageRange(CoverageDimension[] dimensions) {
-            NumberRange range = null;
-            for (int i = 0; i < dimensions.length; i++) {
-                if (dimensions[i].getRange() == null)
-                    return null;
-                else if (range == null)
-                    range = dimensions[i].getRange();
-                else
-                    range.union(dimensions[i].getRange());
-            }
-            return range;
-        }
-
-        private void handleNullValues(CoverageDimension[] dimensions) {
-            for (int i = 0; i < dimensions.length; i++) {
-                CoverageDimension cd = dimensions[i];
-                Double[] nulls = cd.getNullValues();
-                if(nulls == null)
-                    return;
-                if (nulls.length == 1) {
-                    element("wcs:NullValue", nulls[0].toString());
-                } else if (nulls.length >= 1) {
-                    // the new specification allows only for a list of values,
-                    // Can we assume min and max are two integer numbers and
-                    // make up a list out of them? For the moment, just fail
-                    throw new IllegalArgumentException("Cannot encode a range of null values, "
-                            + "only single values are handled");
-                }
-            }
-        }
+        // TODO: FIX THIS!!!
+//        /**
+//         * Given a set of sample dimensions, this will return a valid range only
+//         * if all sample dimensions have one, otherwise null
+//         * 
+//         * @param dimensions
+//         * @return
+//         */
+//        private NumberRange getCoverageRange(CoverageDimension[] dimensions) {
+//            NumberRange range = null;
+//            for (int i = 0; i < dimensions.length; i++) {
+//                if (dimensions[i].getRange() == null)
+//                    return null;
+//                else if (range == null)
+//                    range = dimensions[i].getRange();
+//                else
+//                    range.union(dimensions[i].getRange());
+//            }
+//            return range;
+//        }
+//
+//        private void handleNullValues(CoverageDimension[] dimensions) {
+//            for (int i = 0; i < dimensions.length; i++) {
+//                CoverageDimension cd = dimensions[i];
+//                Double[] nulls = cd.getNullValues();
+//                if(nulls == null)
+//                    return;
+//                if (nulls.length == 1) {
+//                    element("wcs:NullValue", nulls[0].toString());
+//                } else if (nulls.length >= 1) {
+//                    // the new specification allows only for a list of values,
+//                    // Can we assume min and max are two integer numbers and
+//                    // make up a list out of them? For the moment, just fail
+//                    throw new IllegalArgumentException("Cannot encode a range of null values, "
+//                            + "only single values are handled");
+//                }
+//            }
+//        }
 
         private void handleInterpolationMethods(CoverageInfo ci) {
             start("wcs:InterpolationMethods");

@@ -645,7 +645,8 @@ public class MockData implements TestData {
          */
 
         final ParameterValueGroup readParams = reader.getFormat().getReadParameters();
-        final Map parameters = CoverageUtils.getParametersKVP(readParams);
+        // TODO: FIX THIS!!!
+//        final Map parameters = CoverageUtils.getParametersKVP(readParams);
         double[] minCP = envelope.getLowerCorner().getCoordinates();
         double[] maxCP = new double[] {
                 minCP[0] + (envelope.getLength(0) / 20.0),
@@ -654,8 +655,10 @@ public class MockData implements TestData {
         final GeneralEnvelope subEnvelope = new GeneralEnvelope(minCP, maxCP);
         subEnvelope.setCoordinateReferenceSystem(reader.getCrs());
 
-        parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), new GridGeometry2D(reader.getOriginalGridRange(), subEnvelope));
-        GridCoverage2D gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters, true));
+        // TODO: FIX THIS!!!
+//        parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), new GridGeometry2D(reader.getOriginalGridRange(), subEnvelope));
+//        GridCoverage2D gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters, true));
+        GridCoverage2D gc = null;
         
         // grid geometry
         final GridGeometry geometry = gc.getGridGeometry();

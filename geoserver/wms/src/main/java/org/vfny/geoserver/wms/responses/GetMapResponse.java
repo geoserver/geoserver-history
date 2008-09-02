@@ -316,85 +316,86 @@ public class GetMapResponse implements Response {
                     layer.setQuery(definitionQuery);
                     map.addLayer(layer);
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
-                    // /////////////////////////////////////////////////////////
-                    //
-                    // Adding a coverage layer
-                    //
-                    // /////////////////////////////////////////////////////////
-                    AbstractGridCoverage2DReader reader = layers[i].getCoverage().getCoverageAccess();
-                    if (reader != null) {
-                        // /////////////////////////////////////////////////////////
-                        //
-                        // Setting coverage reading params.
-                        //
-                        // /////////////////////////////////////////////////////////
-
-                        /*
-                         * Test if the parameter "TIME" is present in the WMS
-                         * request, and by the way in the reading parameters. If
-                         * it is the case, one can adds it to the request. If an
-                         * exception is thrown, we have nothing to do.
-                         */
-                        try {
-                            ParameterValue time = reader.getFormat().getReadParameters().parameter(
-                                    "TIME");
-                            if (time != null && request.getTime() != null) {
-                                time.setValue(request.getTime());
-                            }
-                        } catch (ParameterNotFoundException p) {
-                        }
-
-                        // uncomment when the DIM_RANGE vendor parameter will be
-                        // enabled
-                        // try {
-                        // ParameterValue dimRange =
-                        // reader.getFormat().getReadParameters()
-                        // .parameter("DIM_RANGE");
-                        // if (dimRange != null && request.getDimRange() !=
-                        // null) {
-                        // dimRange.setValue(request.getDimRange());
-                        // }
-                        // } catch (ParameterNotFoundException p) {
-                        // }
-
-                        try {
-                            ParameterValue elevation = reader.getFormat().getReadParameters()
-                                    .parameter("ELEVATION");
-                            if (elevation != null && request.getElevation() != null) {
-                                elevation.setValue(request.getElevation().intValue());
-                            }
-                        } catch (ParameterNotFoundException p) {
-                        }
-
-                        try {
-                            final ParameterValueGroup params = reader.getFormat()
-                                    .getReadParameters();
-
-                            layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
-                                    reader, CoverageUtils.getParameters(params, layers[i]
-                                            .getCoverage().getParameters())), layerStyle);
-
-                            layer.setTitle(layers[i].getName());
-                            layer.setQuery(Query.ALL);
-                            map.addLayer(layer);
-                        } catch (IllegalArgumentException e) {
-                            if (LOGGER.isLoggable(Level.SEVERE)) {
-                                LOGGER.log(Level.SEVERE, new StringBuffer(
-                                        "Wrapping GC in feature source: ").append(
-                                        e.getLocalizedMessage()).toString(), e);
-                            }
-
-                            throw new WmsException(
-                                    null,
-                                    new StringBuffer(
-                                            "Internal error : unable to get reader for this coverage layer ")
-                                            .append(layers[i].toString()).toString());
-                        }
-                    } else {
-                        throw new WmsException(null, new StringBuffer(
-                                "Internal error : unable to get reader for this coverage layer ")
-                                .append(layers[i].toString()).toString());
-                    }
+                    // TODO: FIX THIS!!!
+//                    // /////////////////////////////////////////////////////////
+//                    //
+//                    // Adding a coverage layer
+//                    //
+//                    // /////////////////////////////////////////////////////////
+//                    AbstractGridCoverage2DReader reader = layers[i].getCoverage().getCoverageAccess();
+//                    if (reader != null) {
+//                        // /////////////////////////////////////////////////////////
+//                        //
+//                        // Setting coverage reading params.
+//                        //
+//                        // /////////////////////////////////////////////////////////
+//
+//                        /*
+//                         * Test if the parameter "TIME" is present in the WMS
+//                         * request, and by the way in the reading parameters. If
+//                         * it is the case, one can adds it to the request. If an
+//                         * exception is thrown, we have nothing to do.
+//                         */
+//                        try {
+//                            ParameterValue time = reader.getFormat().getReadParameters().parameter(
+//                                    "TIME");
+//                            if (time != null && request.getTime() != null) {
+//                                time.setValue(request.getTime());
+//                            }
+//                        } catch (ParameterNotFoundException p) {
+//                        }
+//
+//                        // uncomment when the DIM_RANGE vendor parameter will be
+//                        // enabled
+//                        // try {
+//                        // ParameterValue dimRange =
+//                        // reader.getFormat().getReadParameters()
+//                        // .parameter("DIM_RANGE");
+//                        // if (dimRange != null && request.getDimRange() !=
+//                        // null) {
+//                        // dimRange.setValue(request.getDimRange());
+//                        // }
+//                        // } catch (ParameterNotFoundException p) {
+//                        // }
+//
+//                        try {
+//                            ParameterValue elevation = reader.getFormat().getReadParameters()
+//                                    .parameter("ELEVATION");
+//                            if (elevation != null && request.getElevation() != null) {
+//                                elevation.setValue(request.getElevation().intValue());
+//                            }
+//                        } catch (ParameterNotFoundException p) {
+//                        }
+//
+//                        try {
+//                            final ParameterValueGroup params = reader.getFormat()
+//                                    .getReadParameters();
+//
+//                            layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
+//                                    reader, CoverageUtils.getParameters(params, layers[i]
+//                                            .getCoverage().getParameters())), layerStyle);
+//
+//                            layer.setTitle(layers[i].getName());
+//                            layer.setQuery(Query.ALL);
+//                            map.addLayer(layer);
+//                        } catch (IllegalArgumentException e) {
+//                            if (LOGGER.isLoggable(Level.SEVERE)) {
+//                                LOGGER.log(Level.SEVERE, new StringBuffer(
+//                                        "Wrapping GC in feature source: ").append(
+//                                        e.getLocalizedMessage()).toString(), e);
+//                            }
+//
+//                            throw new WmsException(
+//                                    null,
+//                                    new StringBuffer(
+//                                            "Internal error : unable to get reader for this coverage layer ")
+//                                            .append(layers[i].toString()).toString());
+//                        }
+//                    } else {
+//                        throw new WmsException(null, new StringBuffer(
+//                                "Internal error : unable to get reader for this coverage layer ")
+//                                .append(layers[i].toString()).toString());
+//                    }
                 }
             }
 
