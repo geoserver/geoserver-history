@@ -43,6 +43,8 @@ import org.vfny.geoserver.wcs.requests.WCSRequest;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
+ * 
+ * @deprecated
  */
 public class DescribeResponse implements Response {
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");

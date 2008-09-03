@@ -57,6 +57,8 @@ import org.vfny.geoserver.wcs.requests.CoverageRequest;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
+ * 
+ * @deprecated
  */
 public class CoverageResponse implements Response {
     /** Standard logging instance for class */

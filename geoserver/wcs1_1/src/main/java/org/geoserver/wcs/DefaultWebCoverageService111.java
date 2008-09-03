@@ -353,7 +353,8 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             bbox.setCrs("EPSG:4326");
         
         CoordinateReferenceSystem bboxCRs = CRS.decode(bbox.getCrs());
-        Envelope gridEnvelope = meta.getCoverage().getEnvelope();
+        // TODO: FIX THIS!!!
+        Envelope gridEnvelope = /* meta.getCoverage().getEnvelope() */ null;
         GeneralEnvelope gridEnvelopeBboxCRS = null;
         if (bboxCRs instanceof GeographicCRS) {
             try {

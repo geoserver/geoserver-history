@@ -133,7 +133,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                 mli.setCoverage(cvi);
 
                 FeatureCollection<SimpleFeatureType, SimpleFeature> feature;
-                feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) cvi.getCoverage(null, null));
+                // TODO: FIX THIS!!!
+                feature = FeatureUtilities.wrapGridCoverage(/* (GridCoverage2D) cvi.getCoverage(null, null)*/ null);
                 request.setLayer(feature.getSchema());
             } catch (NoSuchElementException ne) {
                 throw new WmsException(ne, new StringBuffer(layer)

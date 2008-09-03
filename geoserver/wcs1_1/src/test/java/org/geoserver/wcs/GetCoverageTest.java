@@ -199,7 +199,8 @@ public class GetCoverageTest extends WCSTestSupport {
         raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
 
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        GridCoverage original = catalog.getCoverageInfo(layerId).getCoverage();
+        // TODO: FIX THIS!!!
+        GridCoverage original = /* catalog.getCoverageInfo(layerId).getCoverage() */ null;
 
         final AffineTransform2D originalTx = (AffineTransform2D) original.getGridGeometry().getGridToCRS();
         final AffineTransform2D flippedTx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();

@@ -18,10 +18,16 @@ import net.opengis.wcs10.GetCapabilitiesType;
 
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.type.Name;
+import org.opengis.geometry.Envelope;
+import org.opengis.temporal.Instant;
+import org.opengis.temporal.Period;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
 import org.vfny.geoserver.global.Data;
@@ -476,8 +482,7 @@ public class Wcs10CapsTransformer extends TransformerBase {
             end("wcs:DCPType");
 
             attributes = new AttributesImpl();
-            attributes
-                    .addAttribute("", "xlink:href", "xlink:href", "", baseURL);
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseURL);
 
             start("wcs:DCPType");
             start("wcs:HTTP");
@@ -526,17 +531,41 @@ public class Wcs10CapsTransformer extends TransformerBase {
         private void handleVendorSpecifics(WCS config) {
         }
 
-        private void handleEnvelope(GeneralEnvelope envelope) {
+        private void handleEnvelope(GeneralEnvelope envelope, Set<Envelope> verticalExtent, Set<TemporalGeometricPrimitive> temporalExtent) {
             AttributesImpl attributes = new AttributesImpl();
 
             attributes.addAttribute("", "srsName", "srsName", "", /* "WGS84(DD)" */ "urn:ogc:def:crs:OGC:1.3:CRS84");
             start("wcs:lonLatEnvelope", attributes);
-            element("gml:pos", new StringBuffer(Double.toString(envelope
-                    .getLowerCorner().getOrdinate(0))).append(" ").append(
-                    envelope.getLowerCorner().getOrdinate(1)).toString());
-            element("gml:pos", new StringBuffer(Double.toString(envelope
-                    .getUpperCorner().getOrdinate(0))).append(" ").append(
-                    envelope.getUpperCorner().getOrdinate(1)).toString());
+            element("gml:pos", 
+                    new StringBuffer(Double.toString(envelope.getLowerCorner().getOrdinate(0)))
+                        .append(" ")
+                        .append(envelope.getLowerCorner().getOrdinate(1)).toString());
+            element("gml:pos", 
+                    new StringBuffer(Double.toString(envelope.getUpperCorner().getOrdinate(0)))
+                        .append(" ")
+                        .append(envelope.getUpperCorner().getOrdinate(1)).toString());
+            
+                if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                    String temporalExtentBegin = null;
+                    String temporalExtentEnd = null;
+    
+                    for (Iterator<TemporalGeometricPrimitive> i=temporalExtent.iterator(); i.hasNext();) {
+                        TemporalGeometricPrimitive temporalObject = i.next();
+                        
+                        if (temporalObject instanceof Period) {
+                            temporalExtentBegin = ((Period) temporalObject).getBeginning().getPosition().getDateTime().toString();
+                            temporalExtentEnd = ((Period) temporalObject).getEnding().getPosition().getDateTime().toString();
+                        } else if (temporalObject instanceof Instant) {
+                            if (temporalExtentBegin == null || temporalExtentBegin.length() == 0)
+                                temporalExtentBegin = ((Instant) temporalObject).getPosition().getDateTime().toString();
+                            if (!i.hasNext())
+                                temporalExtentEnd = ((Instant) temporalObject).getPosition().getDateTime().toString();
+                        }
+                    }
+                    element("gml:timePosition", temporalExtentBegin);
+                    element("gml:timePosition", temporalExtentEnd);
+                }
+
             end("wcs:lonLatEnvelope");
         }
 
@@ -548,10 +577,8 @@ public class Wcs10CapsTransformer extends TransformerBase {
                     attributes.addAttribute("", "about", "about", "", mdl.getAbout());
                 }
 
-                if ((mdl.getMetadataType() != null)
-                        && (mdl.getMetadataType() != "")) {
-                    attributes.addAttribute("", "xlink:type", "xlink:type", "",
-                            linkType);
+                if ((mdl.getMetadataType() != null) && (mdl.getMetadataType() != "")) {
+                    attributes.addAttribute("", "xlink:type", "xlink:type", "", linkType);
                 }
 
                 if (attributes.getLength() > 0) {
@@ -566,8 +593,7 @@ public class Wcs10CapsTransformer extends TransformerBase {
 
             start("wcs:ContentMetadata", attributes);
 
-            List coverages = new ArrayList(wcs.getData().getCoverageInfos()
-                    .values());
+            List coverages = new ArrayList(wcs.getData().getCoverageInfos().values());
             Collections.sort(coverages, new CoverageInfoLabelComparator());
             for (Iterator i = coverages.iterator(); i.hasNext();) {
                 handleCoverageOfferingBrief(wcs, (CoverageInfo) i.next());
@@ -578,33 +604,68 @@ public class Wcs10CapsTransformer extends TransformerBase {
 
         private void handleCoverageOfferingBrief(WCS config, CoverageInfo cv) {
             if (cv.isEnabled()) {
-                start("wcs:CoverageOfferingBrief");
+                RangeType fields = cv.getFields();
+                if (fields != null) {
+                    Set<Name> fieldNames = fields.getFieldTypeNames();
+                    for (Iterator<Name> f = fieldNames.iterator(); f.hasNext(); ) {
+                        Name fieldName = f.next();
+                        start("wcs:CoverageOfferingBrief");
 
-                String tmp;
+                        String tmp;
 
-                handleMetadataLink(cv.getMetadataLink());
-                tmp = cv.getDescription();
+                        handleMetadataLink(cv.getMetadataLink());
+                        tmp = fields.getFieldType(fieldName.getLocalPart()).getDescription().toString();
 
-                if ((tmp != null) && (tmp != "")) {
-                    element("wcs:description", tmp);
+                        if ((tmp != null) && (tmp != "")) {
+                            element("wcs:description", tmp);
+                        }
+
+                        tmp = cv.getName() + "#" + fieldName.getLocalPart();
+
+                        if ((tmp != null) && (tmp != "")) {
+                            element("wcs:name", tmp);
+                        }
+
+                        tmp = cv.getLabel();
+
+                        if ((tmp != null) && (tmp != "")) {
+                            element("wcs:label", tmp);
+                        }
+
+                        handleEnvelope(cv.getWGS84LonLatEnvelope(), cv.getVerticalExtent(), cv.getTemporalExtent());
+                        handleKeywords(cv.getKeywords());
+
+                        end("wcs:CoverageOfferingBrief");
+                    }
+                } else {
+                    start("wcs:CoverageOfferingBrief");
+
+                    String tmp;
+
+                    handleMetadataLink(cv.getMetadataLink());
+                    tmp = cv.getDescription();
+
+                    if ((tmp != null) && (tmp != "")) {
+                        element("wcs:description", tmp);
+                    }
+
+                    tmp = cv.getName();
+
+                    if ((tmp != null) && (tmp != "")) {
+                        element("wcs:name", tmp);
+                    }
+
+                    tmp = cv.getLabel();
+
+                    if ((tmp != null) && (tmp != "")) {
+                        element("wcs:label", tmp);
+                    }
+
+                    handleEnvelope(cv.getWGS84LonLatEnvelope(), cv.getVerticalExtent(), cv.getTemporalExtent());
+                    handleKeywords(cv.getKeywords());
+
+                    end("wcs:CoverageOfferingBrief");
                 }
-
-                tmp = cv.getName();
-
-                if ((tmp != null) && (tmp != "")) {
-                    element("wcs:name", tmp);
-                }
-
-                tmp = cv.getLabel();
-
-                if ((tmp != null) && (tmp != "")) {
-                    element("wcs:label", tmp);
-                }
-
-                handleEnvelope(cv.getWGS84LonLatEnvelope());
-                handleKeywords(cv.getKeywords());
-
-                end("wcs:CoverageOfferingBrief");
             }
         }
 

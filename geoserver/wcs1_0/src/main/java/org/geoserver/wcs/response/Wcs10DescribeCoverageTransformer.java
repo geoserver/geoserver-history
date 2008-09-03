@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import net.opengis.wcs10.DescribeCoverageType;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geotools.coverage.io.range.FieldType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.LinearTransform;
@@ -26,10 +27,14 @@ import org.geotools.util.logging.Logging;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.geometry.Envelope;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.Matrix;
+import org.opengis.temporal.Instant;
+import org.opengis.temporal.Period;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
@@ -139,6 +144,10 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             start("wcs:CoverageDescription", attributes);
             for (Iterator it = request.getCoverage().iterator(); it.hasNext();) {
                 String coverageId = (String) it.next();
+                String fieldId = null;
+                
+                coverageId = coverageId.indexOf("#") > 0 ? coverageId.substring(0, coverageId.indexOf("#")) : coverageId;
+                fieldId = coverageId.indexOf("#") > 0 ? coverageId.substring(coverageId.indexOf("#")+1) : null;
 
                 // check the coverage is known
                 if (!Data.TYPE_RASTER.equals(catalog.getLayerType(coverageId))) {
@@ -147,7 +156,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
 
                 CoverageInfo ci = catalog.getCoverageInfo(coverageId);
                 try {
-                    handleCoverageOffering(ci);
+                    handleCoverageOffering(ci, fieldId);
                 } catch (Exception e) {
                     throw new RuntimeException("Unexpected error occurred during describe coverage xml encoding", e);
                 }
@@ -156,20 +165,41 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             end("wcs:CoverageDescription");
         }
 
-        void handleCoverageOffering(CoverageInfo ci) throws Exception {
-            start("wcs:CoverageOffering");
-            handleMetadataLink(ci.getMetadataLink());
-            element("wcs:description", ci.getDescription());
-            element("wcs:name", ci.getName());
-            element("wcs:label", ci.getLabel());
-            handleLonLatEnvelope(ci.getWGS84LonLatEnvelope());
-            handleKeywords(ci.getKeywords());
-            handleDomain(ci);
-            handleRange(ci);
-            handleSupportedCRSs(ci);
-            handleSupportedFormats(ci);
-            handleSupportedInterpolations(ci);
-            end("wcs:CoverageOffering");
+        void handleCoverageOffering(CoverageInfo ci, String fieldId) throws Exception {
+            if (fieldId != null) {
+                FieldType field = ci.getFields().getFieldType(fieldId);
+                start("wcs:CoverageOffering");
+                    handleMetadataLink(ci.getMetadataLink());
+                element("wcs:description", field.getDescription().toString());
+                element("wcs:name", ci.getName() + "#" + fieldId);
+                element("wcs:label", ci.getLabel());
+                    handleLonLatEnvelope(ci.getWGS84LonLatEnvelope());
+                    handleKeywords(ci.getKeywords());
+                    
+                    handleDomain(ci);
+                    handleRange(ci);
+                    
+                    handleSupportedCRSs(ci);
+                    handleSupportedFormats(ci);
+                    handleSupportedInterpolations(ci);
+                end("wcs:CoverageOffering");
+            } else {
+                start("wcs:CoverageOffering");
+                    handleMetadataLink(ci.getMetadataLink());
+                element("wcs:description", ci.getDescription());
+                element("wcs:name", ci.getName());
+                element("wcs:label", ci.getLabel());
+                    handleLonLatEnvelope(ci.getWGS84LonLatEnvelope());
+                    handleKeywords(ci.getKeywords());
+                    
+                    handleDomain(ci);
+                    handleRange(ci);
+                    
+                    handleSupportedCRSs(ci);
+                    handleSupportedFormats(ci);
+                    handleSupportedInterpolations(ci);
+                end("wcs:CoverageOffering");
+            }
         }
 
         /**
@@ -243,7 +273,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
         private void handleDomain(CoverageInfo ci) throws Exception {
             start("wcs:domainSet");
             start("wcs:spatialDomain");
-            handleBoundingBox(ci.getSrsName(), ci.getEnvelope());
+            handleBoundingBox(ci.getSrsName(), ci.getEnvelope(), ci.getVerticalExtent(), ci.getTemporalExtent());
             handleGrid(ci);
             end("wcs:spatialDomain");
             end("wcs:domainSet");
@@ -253,8 +283,10 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
          * DOCUMENT ME!
          *  
          * @param envelope
+         * @param set2 
+         * @param set 
          */
-        private void handleBoundingBox(String srsName, GeneralEnvelope envelope) {
+        private void handleBoundingBox(String srsName, GeneralEnvelope envelope, Set<Envelope> verticalExtent, Set<TemporalGeometricPrimitive> temporalExtent) {
             if (envelope != null) {
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "srsName", "srsName", "", srsName);
@@ -262,6 +294,28 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 start("gml:Envelope", attributes);
                     element("gml:pos", Double.toString(envelope.getLowerCorner().getOrdinate(0)) + " " + Double.toString(envelope.getLowerCorner().getOrdinate(1)));
                     element("gml:pos", Double.toString(envelope.getUpperCorner().getOrdinate(0)) + " " + Double.toString(envelope.getUpperCorner().getOrdinate(1)));
+
+                    if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                        String temporalExtentBegin = null;
+                        String temporalExtentEnd = null;
+        
+                        for (Iterator<TemporalGeometricPrimitive> i=temporalExtent.iterator(); i.hasNext();) {
+                            TemporalGeometricPrimitive temporalObject = i.next();
+                            
+                            if (temporalObject instanceof Period) {
+                                temporalExtentBegin = ((Period) temporalObject).getBeginning().getPosition().getDateTime().toString();
+                                temporalExtentEnd = ((Period) temporalObject).getEnding().getPosition().getDateTime().toString();
+                            } else if (temporalObject instanceof Instant) {
+                                if (temporalExtentBegin == null || temporalExtentBegin.length() == 0)
+                                    temporalExtentBegin = ((Instant) temporalObject).getPosition().getDateTime().toString();
+                                if (!i.hasNext())
+                                    temporalExtentEnd = ((Instant) temporalObject).getPosition().getDateTime().toString();
+                            }
+                        }
+                        element("gml:timePosition", temporalExtentBegin);
+                        element("gml:timePosition", temporalExtentEnd);
+                    }
+                    
                 end("gml:Envelope");
             }
         }

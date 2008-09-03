@@ -263,7 +263,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     //}
                 } else {
                     CoverageInfo cinfo = requestedLayers[i].getCoverage();
-                    GridCoverage2D coverage = ((GridCoverage2D) cinfo.getCoverage()).geophysics(true);
+                    // TODO: FIX THIS!!!
+                    GridCoverage2D coverage = /* ((GridCoverage2D) cinfo.getCoverage()).geophysics(true) */ null;
                     DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
                     try {
                         double[] pixelValues = null;

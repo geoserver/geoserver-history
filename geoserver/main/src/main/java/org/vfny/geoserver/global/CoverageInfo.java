@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
@@ -24,7 +22,6 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
-import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -352,23 +349,23 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         return dto;
     }
 
-    private CoordinateReferenceSystem getVerticalCRS() {
+    public CoordinateReferenceSystem getVerticalCRS() {
         return coverage.getVerticalCRS();
     }
 
-    private CoordinateReferenceSystem getTemporalCRS() {
+    public CoordinateReferenceSystem getTemporalCRS() {
         return coverage.getTemporalCRS();
     }
 
-    private Set<TemporalGeometricPrimitive> getTemporalExtent() {
+    public Set<TemporalGeometricPrimitive> getTemporalExtent() {
         return coverage.getTemporalExtent();
     }
 
-    private Set<Envelope> getVerticalExtent() {
+    public Set<Envelope> getVerticalExtent() {
         return coverage.getVerticalExtent();
     }
 
-    private RangeType getFields() {
+    public RangeType getFields() {
         return coverage.getFields();
     }
 

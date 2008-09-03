@@ -341,47 +341,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
         catch (IOException e) {
             throw new RuntimeException( e );
         }
-        // TODO: FIX THIS!!!
-        //return DataStoreCache.getInstance().getGridCoverageReader(cs, null);
-        
-        //if ((reader != null) && (reader.get() != null)) {
-        //    return (GridCoverageReader) reader.get();
-        //}
-        //
-        //try {
-        //    // /////////////////////////////////////////////////////////
-        //    //
-        //    // Getting coverage config
-        //    //
-        //    // /////////////////////////////////////////////////////////
-        //    final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
-        //
-        //    if (gcInfo == null) {
-        //        return null;
-        //    }
-        //
-        //    // /////////////////////////////////////////////////////////
-        //    //
-        //    // Getting coverage reader using the format and the real path.
-        //    //
-        //    // /////////////////////////////////////////////////////////
-        //    final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
-        //
-        //    // XXX CACHING READERS HERE
-        //    reader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(obj));
-        //
-        //    return (GridCoverageReader) reader.get();
-        //} catch (InvalidParameterValueException e) {
-        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        //} catch (ParameterNotFoundException e) {
-        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        //} catch (IllegalArgumentException e) {
-        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        //} catch (SecurityException e) {
-        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        //}
-        //
-        //return null;
     }
 
     public synchronized CoverageAccess createCoverageAccess(Hints hints) {
@@ -391,74 +350,9 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
         catch (IOException e) {
             throw new RuntimeException( e );
         }
-        // TODO: FIX THIS!!!
-        //if ((hintReader != null) && (hintReader.get() != null)) {
-        //    return (GridCoverageReader) hintReader.get();
-        //} else if ((hints == null) && ((reader != null) && (reader.get() != null))) {
-        //    return (GridCoverageReader) reader.get();
-        //}
-        //
-        //try {
-        //    // /////////////////////////////////////////////////////////
-        //    //
-        //    // Getting coverage config
-        //    //
-        //    // /////////////////////////////////////////////////////////
-        //    final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
-        //
-        //    if (gcInfo == null) {
-        //        return null;
-        //    }
-        //
-        //    // /////////////////////////////////////////////////////////
-        //    //
-        //    // Getting coverage reader using the format and the real path.
-        //    //
-        //    // /////////////////////////////////////////////////////////
-        //    final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
-        //
-        //    // XXX CACHING READERS HERE
-        //    hintReader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(
-        //                obj, hints));
-        //
-        //    return (GridCoverageReader) hintReader.get();
-        //} catch (InvalidParameterValueException e) {
-        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        //} catch (ParameterNotFoundException e) {
-        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        //} catch (IllegalArgumentException e) {
-        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        //} catch (SecurityException e) {
-        //    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        //}
-        //
-        //return null;
     }
     
     public void dispose() {
         catalog.getResourcePool().clear( cs );
-        // TODO: FIX THIS!!!
-        //
-        //try {
-        //    if ((hintReader != null) && (hintReader.get() != null)) {
-        //        GridCoverageReader gcr = (GridCoverageReader) (hintReader.get());
-        //        gcr.dispose();
-        //        hintReader = null;
-        //    }
-        //} catch(IOException e) {
-        //    LOGGER.log(Level.FINE, "Exception occurred trying to dispose the coverage reader", e);
-        //    // ok, we tried...
-        //}
-        //
-        //try {
-        //    if ((reader != null) && (reader.get() != null)) {
-        //        GridCoverageReader gcr = (GridCoverageReader) (reader.get());
-        //        gcr.dispose();
-        //        reader = null;
-        //    }
-        //} catch(IOException e) {
-        //    LOGGER.log(Level.FINE, "Exception occurred trying to dispose the coverage reader", e);
-        //    // ok, we tried...
-        //}
     }
 }
