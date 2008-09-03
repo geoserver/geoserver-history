@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7-ND-SNAPSHOT</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -19,7 +19,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7-ND-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geotools.ogc</groupId>
@@ -28,7 +28,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7-ND-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geotools.xsd</groupId>
@@ -71,14 +71,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7-ND-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7-ND-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

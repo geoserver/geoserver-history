@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>community</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7-ND-SNAPSHOT</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -19,26 +19,26 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7-ND-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7-ND-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7-ND-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7-ND-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
