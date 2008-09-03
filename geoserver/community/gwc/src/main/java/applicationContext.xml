@@ -30,10 +30,19 @@
     <property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
       <props>
+        <prop key="/gwc/rest/**">gwcRESTDispatcher</prop>
         <prop key="/gwc">gwcDispatcher</prop>
         <prop key="/gwc/**">gwcDispatcher</prop>
       </props>
     </property>
+  </bean>
+  
+  <!-- Stuff for the REST dispatcher -->
+  <bean id="gwcXmlConfig" class="org.geowebcache.util.XMLConfiguration" />
+  
+  <bean id="gwcRESTDispatcher" class="org.geowebcache.rest.RESTDispatcher">
+    <constructor-arg type="org.geowebcache.layer.TileLayerDispatcher" ref="gwcTLDispatcher"/>
+	<constructor-arg type="org.geowebcache.util.XMLConfiguration" ref="gwcXmlConfig"/>
   </bean>
 
   <!-- Services -->
