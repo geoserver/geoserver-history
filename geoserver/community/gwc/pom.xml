@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>community</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.6.5-SNAPSHOT</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -31,27 +31,9 @@
      <artifactId>geowebcache</artifactId>
      <version>1.0-SNAPSHOT</version>
      <exclusions>
-       <!-- GeoServer - This doesn't actually do anything, specified in community/pom.xml -->
-       <exclusion>
-	 <groupId>org.geoserver</groupId>
-	 <artifactId>platform</artifactId>
-       </exclusion>
-       <!-- GeoTools - Also not very successful-->
-       <exclusion>
-	 <groupId>org.geotools</groupId>
-	 <artifactId>gt-api</artifactId>
-       </exclusion>
        <exclusion>
 	 <groupId>org.geotools</groupId>
 	 <artifactId>gt-wms</artifactId>
-       </exclusion>
-       <exclusion>
-	 <groupId>org.geotools</groupId>
-	 <artifactId>gt-api</artifactId>
-       </exclusion>
-       <exclusion>
-	 <groupId>org.geotools</groupId>
-	 <artifactId>gt-main</artifactId>
        </exclusion>
        <!-- JAI wrappers -->
        <exclusion>
