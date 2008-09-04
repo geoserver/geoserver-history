@@ -31,11 +31,6 @@
      <artifactId>geowebcache</artifactId>
      <version>1.0-SNAPSHOT</version>
      <exclusions>
-       <!-- GeoServer - This doesn't actually do anything, specified in community/pom.xml -->
-       <exclusion>
-	 <groupId>org.geoserver</groupId>
-	 <artifactId>platform</artifactId>
-       </exclusion>
        <!-- GeoTools - Also not very successful-->
        <exclusion>
 	 <groupId>org.geotools</groupId>
