@@ -162,4 +162,28 @@ public class ResponseUtils {
 
         return url.endsWith("/") ? (url + path) : (url + "/" + path);
     }
+    
+    /**
+     * Returns the parent url of a url.
+     * <p>
+     * Examples:
+     * <ul>
+     *   <li>http://foo.com/bar/foo -> http://foo.com/bar
+     *   <li>http://foo.com/bar/ -> http://foo.com
+     *   <li>http://foo.com/bar -> http://foo.com
+     * </ul>
+     * </p>
+     */
+    public static String getParentUrl( String url ) {
+        if ( url.endsWith( "/" ) ) {
+            url = url.substring(0,url.length()-1);
+        }
+        
+        int index = url.lastIndexOf('/');
+        if ( index == -1 ) {
+            return url;
+        }
+        
+        return url.substring(0,index);
+    }
 }
