@@ -130,7 +130,7 @@ public abstract class FeatureTypeSchemaBuilder {
             XSDImport imprt = factory.createXSDImport();
             imprt.setNamespace(gmlNamespace);
 
-            imprt.setSchemaLocation( ResponseUtils.appendPath(baseUrl,
+            imprt.setSchemaLocation( ResponseUtils.appendPath(ResponseUtils.getParentUrl(baseUrl),
                     "schemas/" + gmlSchemaLocation));
 
             XSDSchema gmlSchema = gmlSchema();
