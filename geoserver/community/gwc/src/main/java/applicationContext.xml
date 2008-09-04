@@ -20,7 +20,7 @@
   <bean id="gwcTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
     <property name="config">
       <list>
-		<ref bean="gwcGSConfig"/>
+	<ref bean="gwcGSConfig"/>
       </list>
     </property>
   </bean>
@@ -46,8 +46,11 @@
   </bean>
 
   <!-- Services -->
-  <bean id="gwcServiceWMS" 
-    	class="org.geowebcache.service.wms.WMSService"/>
+  <bean id="gwcServiceWMS" class="org.geowebcache.service.wms.WMSService">
+    <property name="config">
+      <list><ref bean="gwcGSConfig"/></list>
+    </property>
+  </bean>
   <bean id="gwcServiceGMaps"
 	class="org.geowebcache.service.gmaps.GMapsConverter"/>
   <bean id="gwcServiceMGMaps"
