@@ -48,6 +48,7 @@ import org.geotools.coverage.io.CoverageResponse.Status;
 import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
 import org.geotools.coverage.io.impl.range.DefaultFieldType;
 import org.geotools.coverage.io.impl.range.DefaultRangeType;
+import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.Hints;
 import org.geotools.feature.NameImpl;
@@ -137,11 +138,11 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         GridCoverage2D coverage = null;
         List<GridCoverage> coverageResults = new ArrayList<GridCoverage>();
         try {
-            String coverageName = request.getSourceCoverage().indexOf("#") > 0 ? 
-                    request.getSourceCoverage().substring(0, request.getSourceCoverage().indexOf("#")) : 
+            String coverageName = request.getSourceCoverage().indexOf("/") > 0 ? 
+                    request.getSourceCoverage().substring(0, request.getSourceCoverage().indexOf("/")) : 
                     request.getSourceCoverage();
-            String fieldName = request.getSourceCoverage().indexOf("#") > 0 ?
-                    request.getSourceCoverage().substring(request.getSourceCoverage().indexOf("#")+1) : 
+            String fieldName = request.getSourceCoverage().indexOf("/") > 0 ?
+                    request.getSourceCoverage().substring(request.getSourceCoverage().indexOf("/")+1) : 
                     null;
             
             meta = catalog.getCoverageInfo(coverageName);
@@ -184,7 +185,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
     
                 String gridCRS = null;
                 if (request.getOutput().getCrs() != null)
-                    request.getOutput().getCrs().getValue();
+                    gridCRS = request.getOutput().getCrs().getValue();
     
                 // Compute the target crs, the crs that the final coverage will be
                 // served into
@@ -238,8 +239,13 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 
                 cvRequest.setDomainSubset(destinationSize, intersected);
                 if (fieldName != null) {
-                    RangeType range = new DefaultRangeType("", "", new DefaultFieldType(new NameImpl(fieldName), null, null, null, null));
-                    cvRequest.setRangeSubset(range);
+                    FieldType field = meta.getFields().getFieldType(fieldName);
+                    if (field != null) {
+                        RangeType range = new DefaultRangeType("", "", field);
+                        cvRequest.setRangeSubset(range);
+                    } else {
+                        throw new IOException("The requested coverage field could not be found."); // TODO: FIX THIS!!!
+                    }
                 }
                 
                 final CoverageResponse cvResponse = cvSource.read(cvRequest, null);
@@ -452,14 +458,14 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             throw new WcsException("format " + format + " is not supported for this coverage", InvalidParameterValue, "format");
         
         // check requested CRS
-        if (output.getCrs() != null) {
-            String requestedCRS = output.getCrs().getValue();
-            if (getRequestResponseCRS(meta.getRequestCRSs(), requestedCRS) == null && 
-                    getRequestResponseCRS(meta.getResponseCRSs(), requestedCRS) == null)
-                throw new WcsException("CRS " + requestedCRS + " is not supported for this coverage", InvalidParameterValue, "CRS");
-        } else {
-            // The requested CRS was not specified ... what to do ???
-        }
+//        if (output.getCrs() != null) {
+//            String requestedCRS = output.getCrs().getValue();
+//            if (getRequestResponseCRS(meta.getRequestCRSs(), requestedCRS) == null && 
+//                    getRequestResponseCRS(meta.getResponseCRSs(), requestedCRS) == null)
+//                throw new WcsException("CRS " + requestedCRS + " is not supported for this coverage", InvalidParameterValue, "CRS");
+//        } else {
+//            // The requested CRS was not specified ... what to do ???
+//        }
     }
 
     /**
@@ -495,7 +501,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         // the configured list
         for (Iterator it = supportedFormats.iterator(); it.hasNext();) {
             String sf = (String) it.next();
-            if (sf.equalsIgnoreCase(format)) {
+            if (sf.equalsIgnoreCase(format.trim())) {
                 return sf;
             } else {
                 CoverageResponseDelegate delegate = CoverageResponseDelegateFactory.encoderFor(sf);

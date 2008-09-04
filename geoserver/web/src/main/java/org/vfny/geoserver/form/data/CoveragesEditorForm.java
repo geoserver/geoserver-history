@@ -582,6 +582,7 @@ public final class CoveragesEditorForm extends ActionForm {
                 errors.add("envelope", new ActionError("config.data.coverage.srs", srsName));
             }
             
+            requestCRSs = responseCRSs = srsName;
         }
 
         // //

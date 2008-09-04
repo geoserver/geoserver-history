@@ -100,6 +100,8 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
         // either bbox or timesequence must be there
         Envelope bbox = (Envelope) kvp.get("BBOX");
+        if (bbox == null)
+            throw new WcsException("bbox parameter is mandatory", MissingParameterValue, "bbox");
         GeneralEnvelope envelope = new GeneralEnvelope(crs);
         envelope.setEnvelope(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
         TimeSequenceType timeSequence = (TimeSequenceType) kvp.get("TIME");

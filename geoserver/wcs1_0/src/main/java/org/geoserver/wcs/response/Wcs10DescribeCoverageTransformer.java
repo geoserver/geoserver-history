@@ -4,6 +4,7 @@
  */
 package org.geoserver.wcs.response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,13 +20,23 @@ import java.util.logging.Logger;
 import net.opengis.wcs10.DescribeCoverageType;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geotools.coverage.io.CoverageResponse;
+import org.geotools.coverage.io.CoverageSource;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
+import org.geotools.coverage.io.CoverageResponse.Status;
+import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
+import org.geotools.coverage.io.range.Axis;
 import org.geotools.coverage.io.range.FieldType;
+import org.geotools.coverage.io.range.RangeType;
+import org.geotools.feature.NameImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.LinearTransform;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.coverage.Coverage;
+import org.opengis.coverage.SampleDimension;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.FactoryException;
@@ -35,7 +46,7 @@ import org.opengis.referencing.operation.Matrix;
 import org.opengis.temporal.Instant;
 import org.opengis.temporal.Period;
 import org.opengis.temporal.TemporalGeometricPrimitive;
-import org.vfny.geoserver.global.CoverageDimension;
+import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -143,11 +154,12 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             
             start("wcs:CoverageDescription", attributes);
             for (Iterator it = request.getCoverage().iterator(); it.hasNext();) {
-                String coverageId = (String) it.next();
+                String coverageName = (String) it.next();
+                String coverageId = null;
                 String fieldId = null;
                 
-                coverageId = coverageId.indexOf("#") > 0 ? coverageId.substring(0, coverageId.indexOf("#")) : coverageId;
-                fieldId = coverageId.indexOf("#") > 0 ? coverageId.substring(coverageId.indexOf("#")+1) : null;
+                coverageId = coverageName.indexOf("/") > 0 ? coverageName.substring(0, coverageName.indexOf("/")) : coverageName;
+                fieldId = coverageName.indexOf("/") > 0 ? coverageName.substring(coverageName.indexOf("/")+1) : null;
 
                 // check the coverage is known
                 if (!Data.TYPE_RASTER.equals(catalog.getLayerType(coverageId))) {
@@ -171,13 +183,13 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 start("wcs:CoverageOffering");
                     handleMetadataLink(ci.getMetadataLink());
                 element("wcs:description", field.getDescription().toString());
-                element("wcs:name", ci.getName() + "#" + fieldId);
+                element("wcs:name", ci.getName() + "/" + fieldId);
                 element("wcs:label", ci.getLabel());
                     handleLonLatEnvelope(ci.getWGS84LonLatEnvelope());
                     handleKeywords(ci.getKeywords());
                     
                     handleDomain(ci);
-                    handleRange(ci);
+                    handleRange(ci, field);
                     
                     handleSupportedCRSs(ci);
                     handleSupportedFormats(ci);
@@ -193,7 +205,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                     handleKeywords(ci.getKeywords());
                     
                     handleDomain(ci);
-                    handleRange(ci);
+                    handleRange(ci, null);
                     
                     handleSupportedCRSs(ci);
                     handleSupportedFormats(ci);
@@ -272,11 +284,37 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
 
         private void handleDomain(CoverageInfo ci) throws Exception {
             start("wcs:domainSet");
-            start("wcs:spatialDomain");
-            handleBoundingBox(ci.getSrsName(), ci.getEnvelope(), ci.getVerticalExtent(), ci.getTemporalExtent());
-            handleGrid(ci);
-            end("wcs:spatialDomain");
+                start("wcs:spatialDomain");
+                    handleBoundingBox(ci.getSrsName(), ci.getEnvelope(), ci.getVerticalExtent(), ci.getTemporalExtent());
+                    handleGrid(ci);
+                end("wcs:spatialDomain");
+                start("wcs:temporalDomain");
+                    handleTemporalDomain(ci);
+                end("wcs:temporalDomain");
             end("wcs:domainSet");
+        }
+
+        /**
+         * DOCUMENT ME!
+         * 
+         * @param ci
+         */
+        private void handleTemporalDomain(CoverageInfo ci) {
+            Set<TemporalGeometricPrimitive> temporalExtent = ci.getTemporalExtent();
+            if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                for (Iterator<TemporalGeometricPrimitive> i=temporalExtent.iterator(); i.hasNext();) {
+                    TemporalGeometricPrimitive temporalObject = i.next();
+                    
+                    if (temporalObject instanceof Period) {
+                        start("gml:timePeriod");
+                            element("gml:beginPosition", ((Period) temporalObject).getBeginning().getPosition().getDateTime().toString());
+                            element("gml:endPosition", ((Period) temporalObject).getEnding().getPosition().getDateTime().toString());
+                        end("gml:timePeriod");
+                    } else if (temporalObject instanceof Instant) {
+                        element("gml:timePosition", ((Instant) temporalObject).getPosition().getDateTime().toString());
+                    }
+                }
+            }
         }
 
         /**
@@ -376,62 +414,143 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             end("gml:RectifiedGrid");
         }
 
-        private void handleRange(CoverageInfo ci) {
+        private void handleRange(CoverageInfo ci, FieldType field) {
             // rangeSet
-            // TODO: FIX THIS!!!
-//            CoverageDimension[] dims = ci.getDimensions();
-//            TreeSet nodataValues = new TreeSet();
-//
-//            if (dims != null) {
-//                int numSampleDimensions = dims.length;
-//                start("wcs:rangeSet");
-//                    start("wcs:RangeSet");
-//                        element("wcs:name", ci.getName());
-//                        element("wcs:label", ci.getLabel());
-//                        start("wcs:axisDescription");
-//                            start("wcs:AxisDescription");
-//                                element("wcs:name", "Band");
-//                                element("wcs:label", "Band");
-//                                start("wcs:values");
-//                if (numSampleDimensions == 1) {
-//                    element("wcs:singleValue", "1");
-//                } else {
-//                    start("wcs:interval");
-//                        element("wcs:min", "1");
-//                        element("wcs:max", String.valueOf(numSampleDimensions));
-//                    end("wcs:interval");
-//                }
-//                                end("wcs:values");
-//                            end("wcs:AxisDescription");
-//                        end("wcs:axisDescription");
-//
-//                        // null values
-//                        for (int sample = 0; sample < numSampleDimensions; sample++) {
-//                            Double[] nodata = dims[sample].getNullValues();
-//        
-//                            if (nodata != null) {
-//                                for (int nd = 0; nd < nodata.length; nd++) {
-//                                    if (!nodataValues.contains(nodata[nd])) {
-//                                        nodataValues.add(nodata[nd]);
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        if (nodataValues.size() > 0) {
-//                            start("wcs:nullValues");
-//                            if (nodataValues.size() == 1) {
-//                                element("wcs:singleValue", ((Double) nodataValues.first()).toString());
-//                            } else {
-//                                start("wcs:interval");
-//                                    element("wcs:min", ((Double) nodataValues.first()).toString());
-//                                    element("wcs:max", ((Double) nodataValues.last()).toString());
-//                                end("wcs:interval");
-//                            }
-//                            end("wcs:nullValues");
-//                        }
-//                    end("wcs:RangeSet");
-//                end("wcs:rangeSet");
-//            }
+            if (field != null) {
+                final List<Axis<?, ?>> fieldAxes = field.getAxes();
+                for (Axis<?, ?> axis : fieldAxes) {
+                    start("wcs:rangeSet");
+                        start("wcs:RangeSet");
+                            element("wcs:name", field.getName().getLocalPart());
+                            element("wcs:label", field.getDescription().toString());
+                            start("wcs:axisDescription");
+                                start("wcs:AxisDescription");
+                                    element("wcs:name", axis.getName().toString());
+                                    element("wcs:label", axis.getDescription().toString());
+                                    start("wcs:values");
+                                    if (axis.getNumKeys() == 1) {
+                                        element("wcs:singleValue", axis.getKey(0).toString());
+                                    } else {
+                                        start("wcs:interval");
+                                            element("wcs:min", axis.getKey(0).toString());
+                                            element("wcs:max", axis.getKey(axis.getNumKeys()-1).toString());
+                                        end("wcs:interval");
+                                    }
+                                    end("wcs:values");
+                                 end("wcs:AxisDescription");
+                             end("wcs:axisDescription");
+    
+                            // null values
+                            TreeSet nodataValues = new TreeSet();
+                            final Set<SampleDimension> sampleDimensions = field.getSampleDimensions();
+                            for (SampleDimension dim : sampleDimensions) {
+                                // TODO: FIX THIS!!!
+                                double[] nodata = dim.getNoDataValues();
+
+                                if (nodata != null) {
+                                    for (int nd = 0; nd < nodata.length; nd++) {
+                                        if (!nodataValues.contains(nodata[nd])) {
+                                            nodataValues.add(nodata[nd]);
+                                        }
+                                    }
+                                        }
+                            }
+                    
+                            if (nodataValues.size() > 0) {
+                                start("wcs:nullValues");
+                                if (nodataValues.size() == 1) {
+                                    element("wcs:singleValue", ((Double) nodataValues.first()).toString());
+                                } else {
+                                    start("wcs:interval");
+                                    element("wcs:min", ((Double) nodataValues.first()).toString());
+                                    element("wcs:max", ((Double) nodataValues.last()).toString());
+                                    end("wcs:interval");
+                                }
+                                end("wcs:nullValues");
+                            }
+                        end("wcs:RangeSet");
+                    end("wcs:rangeSet");
+                }
+            } else {
+                RangeType fields = ci.getFields();
+                if (fields != null && fields.getNumFieldTypes() <= 0) {
+                    try {
+                        CoverageSource cvSource = ci.getCoverageAccess().access(new NameImpl(ci.getCoverageName()), null, AccessType.READ_ONLY, null, null);
+                        DefaultCoverageReadRequest cvReadRequest = new DefaultCoverageReadRequest();
+                        cvReadRequest.setName(new NameImpl(ci.getCoverageName()));
+                        CoverageResponse cvResponse = cvSource.read(cvReadRequest, null);
+                        if (cvResponse.getStatus().equals(Status.SUCCESS)) {
+                            Coverage coverage = cvResponse.getResults(null).iterator().next();
+                            int numSampleDimensions = coverage.getNumSampleDimensions();
+                            start("wcs:rangeSet");
+                                start("wcs:RangeSet");
+                                    element("wcs:name", ci.getName());
+                                    element("wcs:label", ci.getLabel());
+                                    start("wcs:axisDescription");
+                                        start("wcs:AxisDescription");
+                                            element("wcs:name", "Band");
+                                            element("wcs:label", "Band");
+                                            start("wcs:values");
+                                            if (numSampleDimensions == 1) {
+                                                element("wcs:singleValue", "1");
+                                            } else {
+                                                start("wcs:interval");
+                                                    element("wcs:min", "1");
+                                                    element("wcs:max", String.valueOf(numSampleDimensions));
+                                                end("wcs:interval");
+                                            }
+                                            end("wcs:values");
+                                         end("wcs:AxisDescription");
+                                     end("wcs:axisDescription");
+
+                                    // null values
+                                    TreeSet nodataValues = new TreeSet();
+                                    for (int sample = 0; sample < numSampleDimensions; sample++) {
+                                        double[] nodata = coverage.getSampleDimension(sample).getNoDataValues();
+        
+                                        if (nodata != null) {
+                                            for (int nd = 0; nd < nodata.length; nd++) {
+                                                if (!nodataValues.contains(nodata[nd])) {
+                                                    nodataValues.add(nodata[nd]);
+                                                }
+                                            }
+                                        }
+                                    }
+                            
+                                    if (nodataValues.size() > 0) {
+                                        start("wcs:nullValues");
+                                        if (nodataValues.size() == 1) {
+                                            element("wcs:singleValue",
+                                                    ((Double) nodataValues.first())
+                                                    .toString());
+                                        } else {
+                                            start("wcs:interval");
+                                            element("wcs:min", ((Double) nodataValues.first()).toString());
+                                            element("wcs:max", ((Double) nodataValues.last()).toString());
+                                            end("wcs:interval");
+                                        }
+                                        end("wcs:nullValues");
+                                    }
+                                end("wcs:RangeSet");
+                            end("wcs:rangeSet");
+                        }
+                    } catch (IOException e) {
+                        // TODO: FIX THIS!!!
+                        e.printStackTrace();
+                    }
+                } else {
+                    start("wcs:rangeSet");
+                        start("wcs:RangeSet");
+                            element("wcs:name", ci.getName());
+                            element("wcs:label", ci.getLabel());
+                            start("wcs:axisDescription");
+                                start("wcs:AxisDescription");
+                                end("wcs:AxisDescription");
+                            end("wcs:axisDescription");
+                        end("wcs:RangeSet");
+                    end("wcs:rangeSet");
+                }
+            }
         }
 
         /**

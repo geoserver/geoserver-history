@@ -636,7 +636,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	<!-- --------------------------------- RequestResponseCRSs : deprecated ------------------------------- -->
 
     <tr>
-    <td class="label">
+      <td class="label">
 		<span class="help" title="<bean:message key="help.coverage.nativeFormat"/>">
         <bean:message key="label.nativeFormat"/>:
       </span>
