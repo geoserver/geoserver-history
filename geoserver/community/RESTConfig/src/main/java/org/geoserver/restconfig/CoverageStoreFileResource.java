@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -257,20 +258,19 @@ public class CoverageStoreFileResource extends Resource {
                     .get(qualified);
 
             if (cc == null) {
-                AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format)
-                        .getReader(uploadedFile);
-
-                if (reader == null) {
-                    getResponse()
-                            .setEntity(
-                                    new StringRepresentation(
-                                            "Error while storing uploaded file: Invalid GeoTIFF file!",
-                                            MediaType.TEXT_PLAIN));
-                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-                    return;
-                }
-
                 try {
+                	AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format)
+                	.getReader(new URL(csc.getUrl()));
+
+                	if (reader == null) {
+                		getResponse()
+                		.setEntity(
+                				new StringRepresentation(
+                						"Error while storing uploaded file: Invalid GeoTIFF file!",
+                						MediaType.TEXT_PLAIN));
+                		getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                		return;
+                	}
                     cc = new CoverageConfig(csc.getId(), format, reader,
                             myDataConfig);
 
@@ -294,6 +294,13 @@ public class CoverageStoreFileResource extends Resource {
 
                     cc.setRequestCRSs(requestResponseCRSs);
                     cc.setResponseCRSs(requestResponseCRSs);
+                    
+                    if (cc.getName().toLowerCase().contains("lowcloud"))
+                    	cc.setDefaultStyle("lowcloud");
+
+                    if (cc.getName().toLowerCase().contains("mcsst"))
+                    	cc.setDefaultStyle("mcsst");
+
                 } catch (Exception e) {
                     getResponse().setEntity(
                             new StringRepresentation(
