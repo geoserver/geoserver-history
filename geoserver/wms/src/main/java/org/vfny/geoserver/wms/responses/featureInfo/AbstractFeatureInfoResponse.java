@@ -44,7 +44,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -52,6 +51,7 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -262,9 +262,11 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                     //}
                 } else {
+                    GetMapRequest req = request.getGetMapRequest();
+                    req.setRawKvp(request.getHttpServletRequest().getParameterMap());
                     CoverageInfo cinfo = requestedLayers[i].getCoverage();
-                    // TODO: FIX THIS!!!
-                    GridCoverage2D coverage = /* ((GridCoverage2D) cinfo.getCoverage()).geophysics(true) */ null;
+                    GridCoverage2D coverage = /* ((GridCoverage2D) cinfo.getCoverage()).geophysics(true) */ 
+                        GetMapResponse.getCoverage(req, requestedLayers[i], req.getBbox(), req.getCrs(), cinfo.getCoverageAccess());
                     DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
                     try {
                         double[] pixelValues = null;
