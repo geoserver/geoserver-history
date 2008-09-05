@@ -8,8 +8,13 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +30,9 @@ import org.geotools.coverage.io.CoverageSource;
 import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.CoverageResponse.Status;
 import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
+import org.geotools.coverage.io.impl.range.DefaultRangeType;
+import org.geotools.coverage.io.range.FieldType;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -38,12 +46,15 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.geotools.referencing.operation.transform.IdentityTransform;
 import org.geotools.styling.Style;
+import org.geotools.temporal.object.DefaultInstant;
+import org.geotools.temporal.object.DefaultPosition;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -334,7 +345,6 @@ public class GetMapResponse implements Response {
                     // Adding a coverage layer
                     //
                     // /////////////////////////////////////////////////////////
-                    
                     CoverageAccess cvAccess = layers[i].getCoverage().getCoverageAccess();
                     if (cvAccess != null) {
                         final CoverageSource cvSource = cvAccess.access(new NameImpl(layers[i].getName()), null, AccessType.READ_ONLY, null, null);
@@ -398,38 +408,37 @@ public class GetMapResponse implements Response {
                         
                         cvRequest.setDomainSubset(destinationSize, intersected);
 
-                        // TODO: FIX THIS!!!
-//                        if (request.getDimRange() != null) {
-//                           dimRange.setValue(request.getDimRange());
-//                        if (fieldName != null) {
-//                            FieldType field = meta.getFields().getFieldType(fieldName);
-//                            if (field != null) {
-//                                RangeType range = new DefaultRangeType("", "", field);
-//                                cvRequest.setRangeSubset(range);
-//                            } else {
-//                                throw new IOException("The requested coverage field could not be found."); // TODO: FIX THIS!!!
-//                            }
-//                        }
+                        Set<FieldType> rangeSubset = new HashSet<FieldType>();
+                        RangeType fields = layers[i].getCoverage().getFields();
+                        if (fields != null && fields.getNumFieldTypes() > 0) {
+                            for (FieldType field : fields.getFieldTypes()) {
+                                String fieldName = field.getName().getLocalPart();
+                                if (request.getRawKvp().containsKey(fieldName) || request.getRawKvp().containsKey(fieldName.toUpperCase())) {
+                                    rangeSubset.add(field);
+                                }
+                            }
+                        }
+                        if (rangeSubset != null && rangeSubset.size() > 0) {
+                            RangeType range = new DefaultRangeType("", "", rangeSubset);
+                            cvRequest.setRangeSubset(range);
+                        }
                         
-//                        TimeSequenceType temporalSubset = request.getDomainSubset().getTemporalSubset();
-//                        if (temporalSubset != null) {
-//                            List<TimePositionType> timePositions = temporalSubset.getTimePosition();
-//                            SortedSet<TemporalGeometricPrimitive> requestedTemporalSubset = new TreeSet<TemporalGeometricPrimitive>();
-//                            
-//                            for (TimePositionType tPos : timePositions) {
-//                                requestedTemporalSubset.add(new DefaultInstant(new DefaultPosition(new SimpleInternationalString((String)tPos.getValue()))));
-//                            }
-//                            
-//                            cvRequest.setTemporalSubset(requestedTemporalSubset);
-//                        }
+                        if (request.getTime() != null && request.getTime().size() > 0) {
+                            List<Date> timePositions = request.getTime();
+                            SortedSet<TemporalGeometricPrimitive> requestedTemporalSubset = new TreeSet<TemporalGeometricPrimitive>();
+                            
+                            for (Date tPos : timePositions) {
+                                requestedTemporalSubset.add(new DefaultInstant(new DefaultPosition(tPos)));
+                            }
+
+                            cvRequest.setTemporalSubset(requestedTemporalSubset);
+                        }
                         
-//                        if (request.getDomainSubset().getSpatialSubset().getEnvelope().size() > 1) {
-//                            GeneralEnvelope verticalEnvelope = (GeneralEnvelope) request.getDomainSubset().getSpatialSubset().getEnvelope().get(1);
-//                            
-//                            Set<Envelope> verticalSubset = new TreeSet<Envelope>();
-//                            verticalSubset.add(verticalEnvelope);
-//                            cvRequest.setVerticalSubset(verticalSubset);
-//                        }
+                        if (request.getElevation() != null) {
+                            Set<org.opengis.geometry.Envelope> verticalSubset = new TreeSet<org.opengis.geometry.Envelope>();
+                            verticalSubset.add(new GeneralEnvelope(request.getElevation(), request.getElevation()));
+                            cvRequest.setVerticalSubset(verticalSubset);
+                        }
 
                         final CoverageResponse cvResponse = cvSource.read(cvRequest, null);
                         
@@ -450,47 +459,6 @@ public class GetMapResponse implements Response {
                          * Band Select (works on just one field)
                          */
                         // TODO: FIX THIS!!!
-
-//                        // /////////////////////////////////////////////////////////
-//                        //
-//                        // Setting coverage reading params.
-//                        //
-//                        // /////////////////////////////////////////////////////////
-//
-//                        /*
-//                         * Test if the parameter "TIME" is present in the WMS
-//                         * request, and by the way in the reading parameters. If
-//                         * it is the case, one can adds it to the request. If an
-//                         * exception is thrown, we have nothing to do.
-//                         */
-//                        try {
-//                            ParameterValue time = reader.getFormat().getReadParameters().parameter("TIME");
-//                            if (time != null && request.getTime() != null) {
-//                                time.setValue(request.getTime());
-//                            }
-//                        } catch (ParameterNotFoundException p) {
-//                        }
-//
-//                        // uncomment when the DIM_RANGE vendor parameter will be
-//                        // enabled
-//                        // try {
-//                        // ParameterValue dimRange =
-//                        // reader.getFormat().getReadParameters()
-//                        // .parameter("DIM_RANGE");
-//                        // if (dimRange != null && request.getDimRange() !=
-//                        // null) {
-//                        // dimRange.setValue(request.getDimRange());
-//                        // }
-//                        // } catch (ParameterNotFoundException p) {
-//                        // }
-//
-//                        try {
-//                            ParameterValue elevation = reader.getFormat().getReadParameters().parameter("ELEVATION");
-//                            if (elevation != null && request.getElevation() != null) {
-//                                elevation.setValue(request.getElevation().intValue());
-//                            }
-//                        } catch (ParameterNotFoundException p) {
-//                        }
 
                         try {
                             layer = new DefaultMapLayer(coverage, layerStyle);
