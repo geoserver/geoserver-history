@@ -313,8 +313,6 @@ public class KMLTransformerTest extends WMSTestSupport {
         assertEquals("kml", document.getDocumentElement().getNodeName());
         assertEquals( 3, document.getElementsByTagName("Region").getLength() );
         assertEquals( 2, document.getElementsByTagName("NetworkLink").getLength() );
-        assertEquals( 2, document.getElementsByTagName("GroundOverlay").getLength() );
-        
     }
 
     public void testTransformer() throws Exception {
