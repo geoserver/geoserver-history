@@ -136,7 +136,7 @@ public class KMLTransformer extends TransformerBase {
                     encodeSuperOverlayLayer(mapContext, layer);
                 } else {
                     //figure out which type of layer this is, raster or vector
-                    if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR || layerInfo.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+                    if (layerInfo.getType() != MapLayerInfo.TYPE_RASTER) {
                         //vector 
                         encodeVectorLayer(mapContext, layer);
                     } else {

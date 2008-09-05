@@ -10,6 +10,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.transform.Translator;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 
@@ -166,12 +167,12 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             //encode the ground overlay(s)
             if (top == world) {
                 //special case for top since it does not line up as a propery
-                // tile -> split it in two
-                encodeGroundOverlay(mapLayer, i, new Envelope(-180, 0, -90, 90));
-                encodeGroundOverlay(mapLayer, i, new Envelope(0, 180, -90, 90));
+                //tile -> split it in two
+                encodeTileForViewing(mapLayer, i, new Envelope(-180, 0, -90, 90));
+                encodeTileForViewing(mapLayer, i, new Envelope(0, 180, -90, 90));
             } else {
                 //encode straight up
-                encodeGroundOverlay(mapLayer, i, top);
+                encodeTileForViewing(mapLayer, i, top);
             }
 
             //end document
@@ -182,6 +183,43 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             }
         }
 
+        void encodeTileForViewing(MapLayer mapLayer, int drawOrder, Envelope box){
+            for (MapLayerInfo info : mapContext.getRequest().getLayers()) {
+                if (info.getName().equals(mapLayer.getTitle())){
+                    if (info.getType() == MapLayerInfo.TYPE_VECTOR 
+                        || info.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR)
+                    {
+                        encodeKMLLink(mapLayer, drawOrder, box);
+                    } else {
+                        encodeGroundOverlay(mapLayer, drawOrder, box);
+                    }
+                    return;
+                }
+            }
+        }
+
+        void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box){
+            start("NetworkLink");
+            element("visibility", "1");
+            start("Link");
+            element("href", KMLUtils.getMapUrl(
+                        mapContext,
+                        mapLayer,
+                        0,
+                        box,
+                        new String[] { 
+                            "width", "256",
+                            "height", "256",
+                            "format_options", "regionateBy:auto"
+                        },
+                        true
+                    )
+                   );
+            end("Link");
+            encodeRegion(box, 128, -1);
+            end("NetworkLink");
+        }
+
         void encodeGroundOverlay(MapLayer mapLayer, int drawOrder, Envelope box) {
             start("GroundOverlay");
             element("drawOrder", "" + drawOrder);
@@ -189,7 +227,14 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             start("Icon");
 
             String href = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box,
-                    new String[] { "width", "256", "height", "256" }, true);
+                    new String[] { 
+                        "width", "256", 
+                        "height", "256", 
+                        "format", "image/png",
+                        "transparent", "true"
+                    },
+                    true
+                    );
             element("href", href);
             LOGGER.fine(href);
             end("Icon");

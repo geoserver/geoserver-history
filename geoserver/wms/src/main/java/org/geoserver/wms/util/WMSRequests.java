@@ -136,7 +136,7 @@ public class WMSRequests {
         String baseUrl = getBaseUrl( req );
     
         String layerName = layer != null ? layer.getTitle() : null;
-        String style = layer != null ? layer.getStyle().getTitle() : null;
+        String style = layer != null ? layer.getStyle().getName() : null;
         
         return getGetMapUrl( baseUrl, req, layerName, layerIndex, style, bbox, kvp );
     }
