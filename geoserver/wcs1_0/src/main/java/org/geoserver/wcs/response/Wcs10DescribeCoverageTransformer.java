@@ -13,13 +13,23 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import net.opengis.gml.CodeType;
+import net.opengis.gml.Gml4wcsFactory;
+import net.opengis.gml.GridType;
 import net.opengis.wcs10.DescribeCoverageType;
+import net.opengis.wcs10.DomainSubsetType;
+import net.opengis.wcs10.GetCoverageType;
+import net.opengis.wcs10.OutputType;
+import net.opengis.wcs10.SpatialSubsetType;
+import net.opengis.wcs10.Wcs10Factory;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.wcs.DefaultWebCoverageService100;
 import org.geotools.coverage.io.CoverageResponse;
 import org.geotools.coverage.io.CoverageSource;
 import org.geotools.coverage.io.CoverageAccess.AccessType;
@@ -37,6 +47,7 @@ import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.SampleDimension;
+import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.FactoryException;
@@ -46,7 +57,6 @@ import org.opengis.referencing.operation.Matrix;
 import org.opengis.temporal.Instant;
 import org.opengis.temporal.Period;
 import org.opengis.temporal.TemporalGeometricPrimitive;
-import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -441,20 +451,20 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                              end("wcs:axisDescription");
     
                             // null values
-                            TreeSet nodataValues = new TreeSet();
-                            final Set<SampleDimension> sampleDimensions = field.getSampleDimensions();
-                            for (SampleDimension dim : sampleDimensions) {
-                                // TODO: FIX THIS!!!
-                                double[] nodata = dim.getNoDataValues();
+                             TreeSet nodataValues = new TreeSet();
+                             final Set<SampleDimension> sampleDimensions = field.getSampleDimensions();
+                             for (SampleDimension dim : sampleDimensions) {
+                                 // TODO: FIX THIS!!!
+                                 double[] nodata = dim.getNoDataValues();
 
-                                if (nodata != null) {
-                                    for (int nd = 0; nd < nodata.length; nd++) {
-                                        if (!nodataValues.contains(nodata[nd])) {
-                                            nodataValues.add(nodata[nd]);
-                                        }
-                                    }
-                                        }
-                            }
+                                 if (nodata != null) {
+                                     for (int nd = 0; nd < nodata.length; nd++) {
+                                         if (!nodataValues.contains(nodata[nd])) {
+                                             nodataValues.add(nodata[nd]);
+                                         }
+                                     }
+                                 }
+                             }
                     
                             if (nodataValues.size() > 0) {
                                 start("wcs:nullValues");
@@ -520,9 +530,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                                     if (nodataValues.size() > 0) {
                                         start("wcs:nullValues");
                                         if (nodataValues.size() == 1) {
-                                            element("wcs:singleValue",
-                                                    ((Double) nodataValues.first())
-                                                    .toString());
+                                            element("wcs:singleValue", ((Double) nodataValues.first()).toString());
                                         } else {
                                             start("wcs:interval");
                                             element("wcs:min", ((Double) nodataValues.first()).toString());
@@ -543,14 +551,69 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                         start("wcs:RangeSet");
                             element("wcs:name", ci.getName());
                             element("wcs:label", ci.getLabel());
+                            
                             start("wcs:axisDescription");
                                 start("wcs:AxisDescription");
+                                
+                                String coverageName = (String) request.getCoverage().get(0);
+                                GridCoverage[] coverage = getSampleCoverages(coverageName, catalog);
+                                if (coverage != null && coverage.length > 0) {
+                                    int numSampleDimensions = coverage[0].getNumSampleDimensions();
+                                    
+                                    element("wcs:name", "Band");
+                                    element("wcs:label", "Band");
+                                    start("wcs:values");
+                                    if (numSampleDimensions == 1) {
+                                        element("wcs:singleValue", "1");
+                                    } else {
+                                        start("wcs:interval");
+                                        element("wcs:min", "1");
+                                        element("wcs:max", String.valueOf(numSampleDimensions));
+                                        end("wcs:interval");
+                                    }
+                                    end("wcs:values");
+                                }
+                                
                                 end("wcs:AxisDescription");
                             end("wcs:axisDescription");
                         end("wcs:RangeSet");
                     end("wcs:rangeSet");
                 }
             }
+        }
+
+        /**
+         * @param coverageName
+         * @return 
+         * @throws NoSuchElementException
+         */
+        private GridCoverage[] getSampleCoverages(final String coverageName, final Data catalog) throws NoSuchElementException {
+            CoverageInfo meta = catalog.getCoverageInfo(coverageName);
+            GetCoverageType cvRequest = Wcs10Factory.eINSTANCE.createGetCoverageType();
+            
+            DomainSubsetType domainSubset = Wcs10Factory.eINSTANCE.createDomainSubsetType();
+            SpatialSubsetType spatialSubset = Wcs10Factory.eINSTANCE.createSpatialSubsetType();
+            OutputType output = Wcs10Factory.eINSTANCE.createOutputType();
+            GridType grid = Gml4wcsFactory.eINSTANCE.createGridType();
+            CodeType crs = Gml4wcsFactory.eINSTANCE.createCodeType();
+            CodeType format = Gml4wcsFactory.eINSTANCE.createCodeType();
+            
+            grid.setLimits(new com.vividsolutions.jts.geom.Envelope(0,2,0,2));
+            spatialSubset.getEnvelope().add(meta.getEnvelope());
+            spatialSubset.getGrid().add(grid);
+            domainSubset.setSpatialSubset(spatialSubset);
+            crs.setValue(meta.getSrsName());
+            format.setValue(meta.getNativeFormat());
+            output.setCrs(crs);
+            output.setFormat(format);
+            
+            cvRequest.setSourceCoverage(coverageName);
+            cvRequest.setDomainSubset(domainSubset);
+            cvRequest.setOutput(output);
+            
+            GridCoverage[] coverage = DefaultWebCoverageService100.getCoverage(cvRequest, catalog);
+            
+            return coverage;
         }
 
         /**

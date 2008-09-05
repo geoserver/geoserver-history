@@ -94,8 +94,7 @@ public class Wcs10GetCoverageResponse extends Response {
         GetCoverageType getCoverage = (GetCoverageType) operation.getParameters()[0];
         String outputFormat = getCoverage.getOutput().getFormat().getValue();
         if (delegate == null)
-            this.delegate = CoverageResponseDelegateFactory
-                    .encoderFor(outputFormat);
+            this.delegate = CoverageResponseDelegateFactory.encoderFor(outputFormat);
 
         if (delegate == null)
             throw new WcsException("Could not find encoder for output format "

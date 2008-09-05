@@ -482,7 +482,7 @@ public class GetMapResponse implements Response {
             
             final CoverageReadRequest cvRequest = new DefaultCoverageReadRequest();
             
-            cvRequest.setDomainSubset(destinationSize, intersected);
+            cvRequest.setDomainSubset(destinationSize, destinationEnvelopeInSourceCRS);
 
             Set<FieldType> rangeSubset = new HashSet<FieldType>();
             RangeType fields = layer.getCoverage().getFields();
