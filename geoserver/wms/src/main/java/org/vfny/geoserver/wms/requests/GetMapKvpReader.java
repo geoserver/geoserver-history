@@ -398,6 +398,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 					|| "ON".equalsIgnoreCase(legend));
 		}
 
+		// TODO: FIX THIS!!!
 //		/** TIME: a time stamp for multidim coverages <description> */
 //		String time = getValue("TIME");
 //
@@ -409,19 +410,19 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 //			}
 //		}
 
-		/**
-		 * ELEVATION: elevation (or depth) valu for multidim coverages
-		 * <description>
-		 */
-		String elev = getValue("ELEVATION");
-
-		if (elev != null) {
-			request.setElevation(Integer.valueOf(elev));
-
-			if (LOGGER.isLoggable(Level.INFO)) {
-				LOGGER.info("Set ELEVATION: " + elev);
-			}
-		}
+//		/**
+//		 * ELEVATION: elevation (or depth) value for multidim coverages
+//		 * <description>
+//		 */
+//		String elev = getValue("ELEVATION");
+//
+//		if (elev != null) {
+//			request.setElevation(Integer.valueOf(elev));
+//
+//			if (LOGGER.isLoggable(Level.INFO)) {
+//				LOGGER.info("Set ELEVATION: " + elev);
+//			}
+//		}
 	}
 
 	private Point2D parseTilesOrigin(String origin) {

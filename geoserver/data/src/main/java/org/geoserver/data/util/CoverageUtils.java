@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.geotools.factory.Hints;
 import org.geotools.referencing.operation.BufferedCoordinateOperationFactory;
+import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperation;

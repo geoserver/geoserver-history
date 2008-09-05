@@ -14,12 +14,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
 import net.opengis.gml.GridType;
+import net.opengis.gml.TimePositionType;
 import net.opengis.wcs10.AxisSubsetType;
 import net.opengis.wcs10.DescribeCoverageType;
 import net.opengis.wcs10.DomainSubsetType;
@@ -29,6 +33,7 @@ import net.opengis.wcs10.InterpolationMethodType;
 import net.opengis.wcs10.IntervalType;
 import net.opengis.wcs10.OutputType;
 import net.opengis.wcs10.RangeSubsetType;
+import net.opengis.wcs10.TimeSequenceType;
 import net.opengis.wcs10.TypedLiteralType;
 
 import org.geoserver.ows.util.RequestUtils;
@@ -46,7 +51,6 @@ import org.geotools.coverage.io.Driver;
 import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.CoverageResponse.Status;
 import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
-import org.geotools.coverage.io.impl.range.DefaultFieldType;
 import org.geotools.coverage.io.impl.range.DefaultRangeType;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
@@ -56,6 +60,9 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.geotools.referencing.operation.transform.IdentityTransform;
+import org.geotools.temporal.object.DefaultInstant;
+import org.geotools.temporal.object.DefaultPosition;
+import org.geotools.util.SimpleInternationalString;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.geometry.Envelope;
@@ -66,6 +73,7 @@ import org.opengis.referencing.cs.CoordinateSystemAxis;
 import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.WCS;
@@ -129,11 +137,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         throw new WcsException("Could not understand version:" + version);
     }
 
-    public GridCoverage[] getCoverage(GetCoverageType request) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest(new StringBuffer("execute CoverageRequest response. Called request is: ").append(request).toString());
-        }
-
+    public static GridCoverage[] getCoverage(GetCoverageType request, Data catalog) {
         CoverageInfo meta = null;
         GridCoverage2D coverage = null;
         List<GridCoverage> coverageResults = new ArrayList<GridCoverage>();
@@ -231,10 +235,6 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 
                 final GridGeometry2D destinationGridGeometry = new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS);
 
-                // final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
-                // parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), destinationGridGeometry);
-                // coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat().getReadParameters(), parameters, true));
-                
                 final CoverageReadRequest cvRequest = new DefaultCoverageReadRequest();
                 
                 cvRequest.setDomainSubset(destinationSize, intersected);
@@ -246,6 +246,26 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                     } else {
                         throw new IOException("The requested coverage field could not be found."); // TODO: FIX THIS!!!
                     }
+                }
+                
+                TimeSequenceType temporalSubset = request.getDomainSubset().getTemporalSubset();
+                if (temporalSubset != null) {
+                    List<TimePositionType> timePositions = temporalSubset.getTimePosition();
+                    SortedSet<TemporalGeometricPrimitive> requestedTemporalSubset = new TreeSet<TemporalGeometricPrimitive>();
+                    
+                    for (TimePositionType tPos : timePositions) {
+                        requestedTemporalSubset.add(new DefaultInstant(new DefaultPosition(new SimpleInternationalString((String)tPos.getValue()))));
+                    }
+                    
+                    cvRequest.setTemporalSubset(requestedTemporalSubset);
+                }
+                
+                if (request.getDomainSubset().getSpatialSubset().getEnvelope().size() > 1) {
+                    GeneralEnvelope verticalEnvelope = (GeneralEnvelope) request.getDomainSubset().getSpatialSubset().getEnvelope().get(1);
+                    
+                    Set<Envelope> verticalSubset = new TreeSet<Envelope>();
+                    verticalSubset.add(verticalEnvelope);
+                    cvRequest.setVerticalSubset(verticalSubset);
                 }
                 
                 final CoverageResponse cvResponse = cvSource.read(cvRequest, null);
@@ -266,6 +286,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 /**
                  * Band Select (works on just one field)
                  */
+                // TODO: FIX THIS!!!
                 GridCoverage2D bandSelectedCoverage = coverage;
                 String interpolationType = null;
                 if (request.getRangeSubset() != null) {
@@ -274,16 +295,6 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                     }
     
                     interpolationType = request.getInterpolationMethod().getLiteral();
-    
-                 // TODO: FIX THIS!!!
-//                    // prepare a support structure to quickly get the band index
-//                    // of a key
-//                    CoverageDimension[] dimensions = meta.getDimensions();
-//                    Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
-//                    for (int i = 0; i < dimensions.length; i++) {
-//                        String keyName = dimensions[i].getName().replace(' ', '_');
-//                        dimensionMap.put(keyName, i);
-//                    }
     
                     // extract the band indexes
                     List axisSubset = request.getRangeSubset().getAxisSubset();
@@ -358,7 +369,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
 
     }
 
-    private void checkDomainSubset(CoverageInfo meta, DomainSubsetType domainSubset) throws Exception {
+    private static void checkDomainSubset(CoverageInfo meta, DomainSubsetType domainSubset) throws Exception {
         GeneralEnvelope bbox = (GeneralEnvelope) domainSubset.getSpatialSubset().getEnvelope().get(0);
 
         CoordinateReferenceSystem bboxCRs = bbox.getCoordinateReferenceSystem();
@@ -418,7 +429,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         }
     }
 
-    private void checkInterpolationMethod(CoverageInfo info,
+    private static void checkInterpolationMethod(CoverageInfo info,
             InterpolationMethodType interpolationMethod) {
         // check interpolation method
         String interpolation =  interpolationMethod.getLiteral();
@@ -447,7 +458,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
      * @param info
      * @param rangeSubset
      */
-    private void checkOutput(CoverageInfo meta, OutputType output) {
+    private static void checkOutput(CoverageInfo meta, OutputType output) {
         if (output == null)
             return;
 
@@ -496,7 +507,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
      * @param format
      * @return
      */
-    private String getDeclaredFormat(List supportedFormats, String format) {
+    private static String getDeclaredFormat(List supportedFormats, String format) {
         // supported formats may be setup using old style formats, first scan
         // the configured list
         for (Iterator it = supportedFormats.iterator(); it.hasNext();) {
@@ -540,7 +551,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
      * @param info
      * @param rangeSubset
      */
-    private void checkRangeSubset(CoverageInfo info, RangeSubsetType rangeSubset) {
+    private static void checkRangeSubset(CoverageInfo info, RangeSubsetType rangeSubset) {
         // quick escape if no range subset has been specified (it's legal)
         if (rangeSubset == null)
             return;
@@ -586,5 +597,16 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         
         if (bands == null)
             throw new WcsException("Invalid values for axis " + axisSubset.getName(), InvalidParameterValue, "AxisSubset");
+    }
+
+    /**
+     * 
+     */
+    public GridCoverage[] getCoverage(GetCoverageType request) {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest(new StringBuffer("execute CoverageRequest response. Called request is: ").append(request).toString());
+        }
+        
+        return getCoverage(request, catalog);
     }
 }

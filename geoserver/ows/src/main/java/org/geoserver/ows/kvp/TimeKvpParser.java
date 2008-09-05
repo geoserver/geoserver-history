@@ -29,6 +29,7 @@ public class TimeKvpParser extends KvpParser {
      * All patterns that are correct regarding the ISO-8601 norm.
      */
     private static final String[] PATTERNS = {
+        "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
         "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
         "yyyy-MM-dd'T'HH:mm:ss'Z'",
         "yyyy-MM-dd'T'HH:mm'Z'",

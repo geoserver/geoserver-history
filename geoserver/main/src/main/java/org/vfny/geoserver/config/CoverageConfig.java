@@ -370,7 +370,7 @@ public class CoverageConfig {
                 supportedFormats.add("GeoTIFF");
             } else {
                 // TODO check if coverage can encode Format
-                supportedFormats.add("GeoTIFF");
+//                supportedFormats.add("GeoTIFF");
                 supportedFormats.add(dName);
             }
         }

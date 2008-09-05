@@ -7,13 +7,16 @@ package org.geoserver.wcs.kvp;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.MissingParameterValue;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import net.opengis.gml.CodeType;
 import net.opengis.gml.Gml4wcsFactory;
 import net.opengis.gml.GridType;
+import net.opengis.gml.TimePositionType;
 import net.opengis.wcs10.DomainSubsetType;
 import net.opengis.wcs10.GetCoverageType;
 import net.opengis.wcs10.OutputType;
@@ -33,6 +36,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 
 public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
@@ -104,7 +108,20 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
             throw new WcsException("bbox parameter is mandatory", MissingParameterValue, "bbox");
         GeneralEnvelope envelope = new GeneralEnvelope(crs);
         envelope.setEnvelope(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
-        TimeSequenceType timeSequence = (TimeSequenceType) kvp.get("TIME");
+        TimeSequenceType timeSequence = null;
+        Object time = kvp.get("TIME");
+        if (time != null && time instanceof TimeSequenceType) {
+            timeSequence = (TimeSequenceType) time;
+        } else if (time != null && time instanceof List) {
+            timeSequence = Wcs10Factory.eINSTANCE.createTimeSequenceType();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            for (Date tPos : (List<Date>)time) {
+                TimePositionType timePosition = Gml4wcsFactory.eINSTANCE.createTimePositionType();
+                timePosition.setValue(sdf.format(tPos));
+                timeSequence.getTimePosition().add(timePosition);
+            }
+        }
+
         if (timeSequence == null && bbox == null)
             throw new WcsException(
                     "Bounding box cannot be null, TIME has not been specified",
@@ -128,6 +145,12 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
             throw new WcsException("Could not recognize grid resolution", InvalidParameterValue, "");
 
         spatialSubset.getEnvelope().add(envelope);
+
+        Double verticalPosition = (Double) kvp.get("ELEVATION");
+        if (verticalPosition != null) {
+            spatialSubset.getEnvelope().add(new GeneralEnvelope(verticalPosition, verticalPosition));
+        }
+
         spatialSubset.getGrid().add(grid);
         domainSubset.setSpatialSubset(spatialSubset);
         domainSubset.setTemporalSubset(timeSequence);

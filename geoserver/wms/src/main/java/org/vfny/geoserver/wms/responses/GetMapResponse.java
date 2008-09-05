@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
@@ -12,26 +13,37 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSExtensions;
+import org.geotools.coverage.grid.GeneralGridRange;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageReadRequest;
+import org.geotools.coverage.io.CoverageResponse;
+import org.geotools.coverage.io.CoverageSource;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
+import org.geotools.coverage.io.CoverageResponse.Status;
+import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.NameImpl;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.map.DefaultMapLayer;
+import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.resources.coverage.FeatureUtilities;
+import org.geotools.referencing.operation.transform.AffineTransform2D;
+import org.geotools.referencing.operation.transform.IdentityTransform;
 import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.parameter.ParameterNotFoundException;
-import org.opengis.parameter.ParameterValue;
-import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -39,6 +51,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -316,14 +329,128 @@ public class GetMapResponse implements Response {
                     layer.setQuery(definitionQuery);
                     map.addLayer(layer);
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
-                    // TODO: FIX THIS!!!
-//                    // /////////////////////////////////////////////////////////
-//                    //
-//                    // Adding a coverage layer
-//                    //
-//                    // /////////////////////////////////////////////////////////
-//                    AbstractGridCoverage2DReader reader = layers[i].getCoverage().getCoverageAccess();
-//                    if (reader != null) {
+                    // /////////////////////////////////////////////////////////
+                    //
+                    // Adding a coverage layer
+                    //
+                    // /////////////////////////////////////////////////////////
+                    
+                    CoverageAccess cvAccess = layers[i].getCoverage().getCoverageAccess();
+                    if (cvAccess != null) {
+                        final CoverageSource cvSource = cvAccess.access(new NameImpl(layers[i].getName()), null, AccessType.READ_ONLY, null, null);
+                        // handle spatial domain subset, if needed
+                        final GeneralEnvelope originalEnvelope = new GeneralEnvelope(cvSource.getHorizontalDomain(false, null).get(0));
+                        GeneralEnvelope destinationEnvelope = new GeneralEnvelope(new double[] {env.getMinX(), env.getMinY()}, new double[] {env.getMaxX(), env.getMaxY()});
+                        destinationEnvelope.setCoordinateReferenceSystem(mapcrs);
+                        final CoordinateReferenceSystem nativeCRS = originalEnvelope.getCoordinateReferenceSystem();
+                        final GeneralEnvelope destinationEnvelopeInSourceCRS;
+                        if (destinationEnvelope != null) {
+                            // otherwise we need to transform
+                            final CoordinateReferenceSystem bboxCRS = destinationEnvelope.getCoordinateReferenceSystem();
+                            final MathTransform bboxToNativeTx = CRS.findMathTransform(bboxCRS, nativeCRS, true);
+                            destinationEnvelopeInSourceCRS = CRS.transform(bboxToNativeTx, destinationEnvelope);
+                            destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(nativeCRS);
+                        } else {
+                            destinationEnvelopeInSourceCRS = new GeneralEnvelope(cvSource.getHorizontalDomain(false, null).get(0));
+                            destinationEnvelope = destinationEnvelopeInSourceCRS;
+                        }
+            
+                        // Compute the target crs, the crs that the final coverage will be
+                        // served into
+                        final CoordinateReferenceSystem targetCRS;
+                        if (mapcrs == null) {
+                            targetCRS = cvSource.getHorizontalDomain(false, null).get(0).getCoordinateReferenceSystem();
+                        } else
+                            targetCRS = mapcrs;
+            
+                        // grab the grid to world transformation
+                        /**
+                         * Reading Coverage on Requested Envelope
+                         */
+                        Rectangle destinationSize = null;
+                        MathTransform gridToCRS = cvSource.getGridToWorldTransform(true, null);
+                        int[] lowers = new int[] {
+                                0,
+                                0};
+                        int[] highers = new int[] {
+                                request.getWidth(),
+                                request.getHeight()};
+
+                        // if no offsets has been specified we try to default on the
+                        // native ones
+                        if (!(gridToCRS instanceof AffineTransform2D) && !(gridToCRS instanceof IdentityTransform))
+                            throw new WcsException("Internal error, the coverage we're playing with does not have an affine transform...");
+
+                        if (gridToCRS instanceof IdentityTransform) {
+                            highers = new int[] { 1, 1 };
+                        }
+
+                        destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
+            
+                        // now we have enough info to read the coverage, grab the parameters
+                        // and add the grid geometry info
+                        final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
+                        intersected.intersect(originalEnvelope);
+                        
+                        final GridGeometry2D destinationGridGeometry = new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS);
+                        
+                        final CoverageReadRequest cvRequest = new DefaultCoverageReadRequest();
+                        
+                        cvRequest.setDomainSubset(destinationSize, intersected);
+
+                        // TODO: FIX THIS!!!
+//                        if (request.getDimRange() != null) {
+//                           dimRange.setValue(request.getDimRange());
+//                        if (fieldName != null) {
+//                            FieldType field = meta.getFields().getFieldType(fieldName);
+//                            if (field != null) {
+//                                RangeType range = new DefaultRangeType("", "", field);
+//                                cvRequest.setRangeSubset(range);
+//                            } else {
+//                                throw new IOException("The requested coverage field could not be found."); // TODO: FIX THIS!!!
+//                            }
+//                        }
+                        
+//                        TimeSequenceType temporalSubset = request.getDomainSubset().getTemporalSubset();
+//                        if (temporalSubset != null) {
+//                            List<TimePositionType> timePositions = temporalSubset.getTimePosition();
+//                            SortedSet<TemporalGeometricPrimitive> requestedTemporalSubset = new TreeSet<TemporalGeometricPrimitive>();
+//                            
+//                            for (TimePositionType tPos : timePositions) {
+//                                requestedTemporalSubset.add(new DefaultInstant(new DefaultPosition(new SimpleInternationalString((String)tPos.getValue()))));
+//                            }
+//                            
+//                            cvRequest.setTemporalSubset(requestedTemporalSubset);
+//                        }
+                        
+//                        if (request.getDomainSubset().getSpatialSubset().getEnvelope().size() > 1) {
+//                            GeneralEnvelope verticalEnvelope = (GeneralEnvelope) request.getDomainSubset().getSpatialSubset().getEnvelope().get(1);
+//                            
+//                            Set<Envelope> verticalSubset = new TreeSet<Envelope>();
+//                            verticalSubset.add(verticalEnvelope);
+//                            cvRequest.setVerticalSubset(verticalSubset);
+//                        }
+
+                        final CoverageResponse cvResponse = cvSource.read(cvRequest, null);
+                        
+                        if (!cvResponse.getStatus().equals(Status.SUCCESS))
+                            throw new IOException("The requested coverage could not be found."); // TODO: FIX THIS!!!
+                        
+                        if (cvResponse.getResults(null) == null || cvResponse.getResults(null).isEmpty())
+                            throw new IOException("The requested coverage could not be found."); // TODO: FIX THIS!!!
+                        
+                        /** if (cvResponse.getResults(null).size() > 1) ?? **/ // TODO: FIX THIS!!!
+                        GridCoverage2D coverage = (GridCoverage2D) cvResponse.getResults(null).toArray()[0];
+                        
+                        if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
+                            throw new IOException("The requested coverage could not be found.");
+                        }
+
+                        /**
+                         * Band Select (works on just one field)
+                         */
+                        // TODO: FIX THIS!!!
+
 //                        // /////////////////////////////////////////////////////////
 //                        //
 //                        // Setting coverage reading params.
@@ -337,8 +464,7 @@ public class GetMapResponse implements Response {
 //                         * exception is thrown, we have nothing to do.
 //                         */
 //                        try {
-//                            ParameterValue time = reader.getFormat().getReadParameters().parameter(
-//                                    "TIME");
+//                            ParameterValue time = reader.getFormat().getReadParameters().parameter("TIME");
 //                            if (time != null && request.getTime() != null) {
 //                                time.setValue(request.getTime());
 //                            }
@@ -359,43 +485,36 @@ public class GetMapResponse implements Response {
 //                        // }
 //
 //                        try {
-//                            ParameterValue elevation = reader.getFormat().getReadParameters()
-//                                    .parameter("ELEVATION");
+//                            ParameterValue elevation = reader.getFormat().getReadParameters().parameter("ELEVATION");
 //                            if (elevation != null && request.getElevation() != null) {
 //                                elevation.setValue(request.getElevation().intValue());
 //                            }
 //                        } catch (ParameterNotFoundException p) {
 //                        }
-//
-//                        try {
-//                            final ParameterValueGroup params = reader.getFormat()
-//                                    .getReadParameters();
-//
-//                            layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
-//                                    reader, CoverageUtils.getParameters(params, layers[i]
-//                                            .getCoverage().getParameters())), layerStyle);
-//
-//                            layer.setTitle(layers[i].getName());
-//                            layer.setQuery(Query.ALL);
-//                            map.addLayer(layer);
-//                        } catch (IllegalArgumentException e) {
-//                            if (LOGGER.isLoggable(Level.SEVERE)) {
-//                                LOGGER.log(Level.SEVERE, new StringBuffer(
-//                                        "Wrapping GC in feature source: ").append(
-//                                        e.getLocalizedMessage()).toString(), e);
-//                            }
-//
-//                            throw new WmsException(
-//                                    null,
-//                                    new StringBuffer(
-//                                            "Internal error : unable to get reader for this coverage layer ")
-//                                            .append(layers[i].toString()).toString());
-//                        }
-//                    } else {
-//                        throw new WmsException(null, new StringBuffer(
-//                                "Internal error : unable to get reader for this coverage layer ")
-//                                .append(layers[i].toString()).toString());
-//                    }
+
+                        try {
+                            layer = new DefaultMapLayer(coverage, layerStyle);
+
+                            layer.setTitle(layers[i].getName());
+                            layer.setQuery(Query.ALL);
+                            map.addLayer(layer);
+                        } catch (IllegalArgumentException e) {
+                            if (LOGGER.isLoggable(Level.SEVERE)) {
+                                LOGGER.log(Level.SEVERE, 
+                                new StringBuffer("Wrapping GC in feature source: ")
+                                .append(e.getLocalizedMessage()).toString(), e);
+                            }
+
+                            throw new WmsException(
+                                    null,
+                                    new StringBuffer("Internal error : unable to get reader for this coverage layer ")
+                                    .append(layers[i].toString()).toString());
+                        }
+                    } else {
+                        throw new WmsException(null, new StringBuffer(
+                                "Internal error : unable to get reader for this coverage layer ")
+                                .append(layers[i].toString()).toString());
+                    }
                 }
             }
 

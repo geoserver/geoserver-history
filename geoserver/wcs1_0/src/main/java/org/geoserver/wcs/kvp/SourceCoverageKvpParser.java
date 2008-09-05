@@ -42,7 +42,14 @@ public class SourceCoverageKvpParser extends KvpParser {
         }
         
         for (String coverage : identifiers) {
-            Integer type = catalog.getLayerType(coverage);
+            String coverageName = coverage.indexOf("/") > 0 ? 
+                    coverage.substring(0, coverage.indexOf("/")) : 
+                    coverage;
+            String fieldName = coverage.indexOf("/") > 0 ?
+                    coverage.substring(coverage.indexOf("/")+1) : 
+                    null;
+
+            Integer type = catalog.getLayerType(coverageName);
             if (!Data.TYPE_RASTER.equals(type))
                 throw new WcsException("Could not find sourcecoverage '" + coverage + "'", InvalidParameterValue, "sourcecoverage");
             coverages.add(coverage);
