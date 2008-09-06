@@ -196,6 +196,29 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-validation</artifactId>
     </dependency>
+  
+  	<!-- coverage plugins -->
+    <dependency>
+   	  <!-- core plugin for nd coverages support -->
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-ndplugin</artifactId>
+      <version>${gt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-netcdf</artifactId>
+      <version>${gt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-hdf-avhrr</artifactId>
+      <version>${gt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-geotiff-ported</artifactId>
+      <version>${gt.version}</version>
+    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
