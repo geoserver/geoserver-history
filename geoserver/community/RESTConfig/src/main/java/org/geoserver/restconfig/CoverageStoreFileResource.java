@@ -283,6 +283,7 @@ public class CoverageStoreFileResource extends Resource {
                                 sourceCRS, targetCRS, true);
                         GeneralEnvelope envelope = CRS.transform(transform, cc
                                 .getEnvelope());
+                        envelope.setCoordinateReferenceSystem(targetCRS);
 
                         cc.setSrsName("EPSG:4326");
                         cc.setCrs(targetCRS);
