@@ -219,6 +219,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         org.geoserver.catalog.CoverageStoreInfo cs = catalog.getCoverageStoreByName(dto.getFormatId());
         coverage.setStore( cs );
         coverage.setName( dto.getName() );
+        coverage.setTitle( dto.getLabel() );
         coverage.setDescription(dto.getDescription());
         
         coverage.getMetadataLinks().clear();
