@@ -168,8 +168,8 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 String coverageId = null;
                 String fieldId = null;
                 
-                coverageId = coverageName.indexOf("/") > 0 ? coverageName.substring(0, coverageName.indexOf("/")) : coverageName;
-                fieldId = coverageName.indexOf("/") > 0 ? coverageName.substring(coverageName.indexOf("/")+1) : null;
+                coverageId = coverageName.indexOf("@") > 0 ? coverageName.substring(0, coverageName.indexOf("@")) : coverageName;
+                fieldId = coverageName.indexOf("@") > 0 ? coverageName.substring(coverageName.indexOf("@")+1) : null;
 
                 // check the coverage is known
                 if (!Data.TYPE_RASTER.equals(catalog.getLayerType(coverageId))) {
@@ -193,7 +193,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 start("wcs:CoverageOffering");
                     handleMetadataLink(ci.getMetadataLink());
                 element("wcs:description", field.getDescription().toString());
-                element("wcs:name", ci.getName() + "/" + fieldId);
+                element("wcs:name", ci.getName() + "@" + fieldId);
                 element("wcs:label", ci.getLabel());
                     handleLonLatEnvelope(ci.getWGS84LonLatEnvelope());
                     handleKeywords(ci.getKeywords());
@@ -435,7 +435,8 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                             element("wcs:label", field.getDescription().toString());
                             start("wcs:axisDescription");
                                 start("wcs:AxisDescription");
-                                    element("wcs:name", axis.getName().toString());
+                                // TODO: FIX THIS!!!
+                                    element("wcs:name", axis.getName().getLocalPart().toString());
                                     element("wcs:label", axis.getDescription().toString());
                                     start("wcs:values");
                                     if (axis.getNumKeys() == 1) {
@@ -484,8 +485,9 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             } else {
                 RangeType fields = ci.getFields();
                 if (fields != null && fields.getNumFieldTypes() <= 0) {
+                    CoverageSource cvSource = null;
                     try {
-                        CoverageSource cvSource = ci.getCoverageAccess().access(new NameImpl(ci.getCoverageName()), null, AccessType.READ_ONLY, null, null);
+                        cvSource = ci.getCoverageAccess().access(new NameImpl(ci.getCoverageName()), null, AccessType.READ_ONLY, null, null);
                         DefaultCoverageReadRequest cvReadRequest = new DefaultCoverageReadRequest();
                         cvReadRequest.setName(new NameImpl(ci.getCoverageName()));
                         CoverageResponse cvResponse = cvSource.read(cvReadRequest, null);
@@ -545,6 +547,9 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                     } catch (IOException e) {
                         // TODO: FIX THIS!!!
                         e.printStackTrace();
+                    } finally {
+                        if (cvSource != null)
+                            cvSource.dispose();
                     }
                 } else {
                     start("wcs:rangeSet");

@@ -33,6 +33,7 @@ import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
 import org.geotools.coverage.io.impl.range.DefaultRangeType;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
+import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -48,6 +49,7 @@ import org.geotools.referencing.operation.transform.IdentityTransform;
 import org.geotools.styling.Style;
 import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.temporal.object.DefaultPosition;
+import org.geotools.util.NullProgressListener;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -65,6 +67,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -518,6 +521,7 @@ public class GetMapResponse implements Response {
 
             final CoverageResponse cvResponse = cvSource.read(cvRequest, null);
             
+
             if (!cvResponse.getStatus().equals(Status.SUCCESS))
                 throw new IOException("The requested coverage could not be found."); // TODO: FIX THIS!!!
             
@@ -525,27 +529,86 @@ public class GetMapResponse implements Response {
                 throw new IOException("The requested coverage could not be found."); // TODO: FIX THIS!!!
             
             /** if (cvResponse.getResults(null).size() > 1) ?? **/ // TODO: FIX THIS!!!
-            coverage = (GridCoverage2D) cvResponse.getResults(null).toArray()[0];
-            
+            coverage = (GridCoverage2D) cvResponse.getResults(new NullProgressListener()).toArray()[0];
+            // TODO: Debug
+            //coverage.show();
             if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
-                throw new IOException("The requested coverage could not be found.");
+                throw new DataSourceException("The requested coverage could not be found.");
             }
 
             /**
              * Band Select (works on just one field)
              */
-            // TODO: FIX THIS!!!
+            GridCoverage2D bandSelectedCoverage = null;
+            if (rangeSubset != null && rangeSubset.size() > 0) {
+                if (rangeSubset.size() > 1) {
+                    throw new WcsException("Multi field coverages are not supported yet");
+                }
 
+                for (FieldType field : rangeSubset) {
+                    String fieldName = field.getName().getLocalPart();
+                    String selectedBandField = (String) (request.getRawKvp().get(fieldName) != null ? request.getRawKvp().get(fieldName) : request.getRawKvp().get(fieldName.toUpperCase()));
+                    selectedBandField = String.valueOf(Integer.parseInt(selectedBandField)+1);
+                    bandSelectedCoverage = bandSelect(coverage, selectedBandField);
+                }
+            } else if (request.getRawKvp().containsKey("band") || request.getRawKvp().containsKey("BAND")) {
+                String selectedBandField = (String) (request.getRawKvp().get("band") != null ? request.getRawKvp().get("band") : request.getRawKvp().get("BAND"));
+                bandSelectedCoverage = bandSelect(coverage, selectedBandField);
+            }
+
+            if (bandSelectedCoverage != null)
+                coverage = bandSelectedCoverage;
+            
+            cvSource.dispose();
         } else {
             throw new WmsException(null, new StringBuffer(
                     "Internal error : unable to get reader for this coverage layer ")
                     .append(layer.toString()).toString());
         }
+        
         return coverage;
     }
 
     /**
-     * Returns the list of filters resulting of comining the layers definition
+     * @param coverage
+     * @param bandSelectedCoverage
+     * @param selectedBandField
+     * @return
+     * @throws NumberFormatException
+     * @throws WcsException
+     */
+    private static GridCoverage2D bandSelect(GridCoverage2D coverage, String selectedBandField)
+            throws NumberFormatException, WcsException {
+        GridCoverage2D bandSelectedCoverage = null;
+        int[] bands = null;
+        if (selectedBandField.indexOf("/") <= 0) {
+            String[] selectedBands = selectedBandField.indexOf(",") > 0 ? selectedBandField.split(",") : new String[] {selectedBandField};
+            bands = new int[selectedBands.length];
+            for (int s=0; s<selectedBands.length; s++)
+                bands[s] = Integer.parseInt(selectedBands[0]) - 1;
+        } else if (selectedBandField.indexOf("/") > 0) {
+            String[] selectedBands = selectedBandField.split("/");
+            int min = Integer.parseInt(selectedBands[0]);
+            int max = Integer.parseInt(selectedBands[selectedBands.length-1]);
+            int res = (selectedBands.length > 2 ? Integer.parseInt(selectedBands[1]) : 1);
+
+            bands = new int[(int) (Math.floor(max - min) / res + 1)];
+            for (int b=0; b<bands.length; b++)
+                bands[b] = b * res;
+        }
+
+        // finally execute the band select
+        try {
+            bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
+        } catch (Exception e) {
+            throw new WcsException("The selected Band values are not allowed for this Coverage.");
+        }
+        
+        return bandSelectedCoverage;
+    }
+
+    /**
+     * Returns the list of filters resulting of combining the layers definition
      * filters with the per layer filters made by the user.
      * <p>
      * If <code>requestFilters != null</code>, it shall contain the same

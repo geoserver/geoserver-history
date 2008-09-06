@@ -17,26 +17,33 @@ import net.opengis.gml.CodeType;
 import net.opengis.gml.Gml4wcsFactory;
 import net.opengis.gml.GridType;
 import net.opengis.gml.TimePositionType;
+import net.opengis.wcs10.AxisSubsetType;
 import net.opengis.wcs10.DomainSubsetType;
 import net.opengis.wcs10.GetCoverageType;
+import net.opengis.wcs10.IntervalType;
 import net.opengis.wcs10.OutputType;
 import net.opengis.wcs10.RangeSubsetType;
 import net.opengis.wcs10.SpatialSubsetType;
 import net.opengis.wcs10.TimeSequenceType;
+import net.opengis.wcs10.TypedLiteralType;
 import net.opengis.wcs10.Wcs10Factory;
 
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
+import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.KvpUtils.Tokenizer;
+import org.geotools.coverage.io.range.FieldType;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 
 public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
@@ -82,7 +89,7 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         getCoverage.setDomainSubset(parseDomainSubset(kvp));
 
         // build the range subset
-        getCoverage.setRangeSubset(parseRangeSubset(kvp));
+        getCoverage.setRangeSubset(parseRangeSubset(kvp, getCoverage.getSourceCoverage()));
         
         // build output element
         getCoverage.setOutput(parseOutputElement(kvp));
@@ -158,12 +165,72 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         return domainSubset;
     }
 
-    private RangeSubsetType parseRangeSubset(Map kvp) {
+    private RangeSubsetType parseRangeSubset(Map kvp, String coverageName) {
         final RangeSubsetType rangeSubset = Wcs10Factory.eINSTANCE.createRangeSubsetType();
 
         if (kvp.get("Band") != null)
             rangeSubset.getAxisSubset().add(kvp.get("Band"));
-        
+        else {
+            coverageName = coverageName.indexOf("@") > 0 ? 
+                    coverageName.substring(0, coverageName.indexOf("@")) : 
+                    coverageName;
+            CoverageInfo meta = catalog.getCoverageInfo(coverageName);
+            if (meta != null) {
+                RangeType fields = meta.getFields();
+                if (fields != null && fields.getNumFieldTypes() > 0) {
+                    for (FieldType field : fields.getFieldTypes()) {
+                        String fieldName = field.getName().getLocalPart();
+                        if (kvp.get(fieldName) != null) {
+                            final AxisSubsetType axisSubset = Wcs10Factory.eINSTANCE.createAxisSubsetType();
+                            
+                            axisSubset.setName(fieldName);
+                            String value = (String) kvp.get(fieldName);
+                            if (value.contains("/")) {
+                                List<String> unparsed = KvpUtils.readFlat(value, new Tokenizer("/"));
+                                
+                                IntervalType interval = Wcs10Factory.eINSTANCE.createIntervalType();
+                                TypedLiteralType min = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                                TypedLiteralType max = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                                TypedLiteralType res = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                                if (unparsed.size() == 2) {
+                                    min.setValue(unparsed.get(0));
+                                    max.setValue(unparsed.get(1));
+
+                                    interval.setMin(min);
+                                    interval.setMax(max);
+                                } else {
+                                    min.setValue(unparsed.get(0));
+                                    max.setValue(unparsed.get(1));
+                                    res.setValue(unparsed.get(2));
+                                    
+                                    interval.setMin(min);
+                                    interval.setMax(max);
+                                    interval.setRes(res);
+                                }
+                                
+                                axisSubset.getInterval().add(interval);
+                            } else {
+                                List<String> unparsed = KvpUtils.readFlat(value, KvpUtils.INNER_DELIMETER);
+                                
+                                if (unparsed.size() == 0) {
+                                    throw new WcsException("Requested axis subset contains wrong number of values (should have at least 1): " + unparsed.size(), WcsExceptionCode.InvalidParameterValue, "band");
+                                }
+
+                                for (String bandValue : unparsed) {
+                                    TypedLiteralType singleValue = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                                    singleValue.setValue(bandValue);
+                                    
+                                    axisSubset.getSingleValue().add(singleValue);
+                                }
+                            }
+                            
+                            rangeSubset.getAxisSubset().add(axisSubset);
+                        }
+                    }
+                }
+            }
+        }
+
         return rangeSubset;
     }
 

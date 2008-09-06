@@ -1006,7 +1006,15 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         // //
         for (Iterator it = layerNames.iterator(); it.hasNext();) {
             layerName = (String) it.next();
-
+            String coverageName = layerName.indexOf("@") > 0 ? 
+                    layerName.substring(0, layerName.indexOf("@")) : 
+                    layerName;
+            String fieldName = layerName.indexOf("@") > 0 ?
+                    layerName.substring(layerName.indexOf("@")+1) : 
+                    null;
+                    
+            layerName = coverageName;
+            
             // search into the remote WFS if there is any
             if (remoteTypeNames != null
                     && Collections.binarySearch(remoteTypeNames, layerName) >= 0) {
@@ -1046,7 +1054,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                                 CoverageInfo cv = findCoverageLayer(catalogLayerName);
                                 String wmsPath = cv.getWmsPath();
 
-                                if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
+                                if ((wmsPath != null) && wmsPath.matches(".*/" + catalogLayerName)) {
                                     layers.add(buildMapLayerInfo(catalogLayerName));
                                     found = true;
                                 }
@@ -1122,12 +1130,18 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
     CoverageInfo findCoverageLayer(String layerName) throws WmsException {
         CoverageInfo cv = null;
-        Integer layerType = catalog.getLayerType(layerName);
+        String coverageName = layerName.indexOf("@") > 0 ? 
+                layerName.substring(0, layerName.indexOf("@")) : 
+                layerName;
+        String fieldName = layerName.indexOf("@") > 0 ?
+                layerName.substring(layerName.indexOf("@")+1) : 
+                null;
+        Integer layerType = catalog.getLayerType(coverageName);
 
         if (Data.TYPE_RASTER != layerType) {
             return null;
         } else {
-            cv = catalog.getCoverageInfo(layerName);
+            cv = catalog.getCoverageInfo(coverageName);
         }
 
         return cv;

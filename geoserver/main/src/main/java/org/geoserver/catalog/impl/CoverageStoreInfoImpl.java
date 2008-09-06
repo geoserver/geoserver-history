@@ -6,7 +6,6 @@ package org.geoserver.catalog.impl;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.io.Driver;
 
 /**
@@ -18,8 +17,6 @@ public class CoverageStoreInfoImpl extends StoreInfoImpl implements
     String type;
 
     String url;
-    
-    AbstractGridFormat format;
     
     public CoverageStoreInfoImpl(Catalog catalog) {
         super(catalog);

@@ -4,43 +4,20 @@
  */
 package org.geoserver.wcs.response;
 
-import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import javax.media.jai.Interpolation;
-
-import net.opengis.gml.GridType;
-import net.opengis.wcs10.AxisSubsetType;
 import net.opengis.wcs10.GetCoverageType;
-import net.opengis.wcs10.IntervalType;
-import net.opengis.wcs10.TypedLiteralType;
 
-import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.factory.Hints;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.CRS;
-import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;

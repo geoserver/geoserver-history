@@ -620,7 +620,7 @@ public class Wcs10CapsTransformer extends TransformerBase {
                             element("wcs:description", tmp);
                         }
 
-                        tmp = cv.getName() + "/" + fieldName.getLocalPart();
+                        tmp = cv.getName() + "@" + fieldName.getLocalPart();
 
                         if ((tmp != null) && (tmp != "")) {
                             element("wcs:name", tmp);

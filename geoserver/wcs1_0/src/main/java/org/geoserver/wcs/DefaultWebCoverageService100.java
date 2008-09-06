@@ -142,11 +142,11 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         GridCoverage2D coverage = null;
         List<GridCoverage> coverageResults = new ArrayList<GridCoverage>();
         try {
-            String coverageName = request.getSourceCoverage().indexOf("/") > 0 ? 
-                    request.getSourceCoverage().substring(0, request.getSourceCoverage().indexOf("/")) : 
+            String coverageName = request.getSourceCoverage().indexOf("@") > 0 ? 
+                    request.getSourceCoverage().substring(0, request.getSourceCoverage().indexOf("@")) : 
                     request.getSourceCoverage();
-            String fieldName = request.getSourceCoverage().indexOf("/") > 0 ?
-                    request.getSourceCoverage().substring(request.getSourceCoverage().indexOf("/")+1) : 
+            String fieldName = request.getSourceCoverage().indexOf("@") > 0 ?
+                    request.getSourceCoverage().substring(request.getSourceCoverage().indexOf("@")+1) : 
                     null;
             
             meta = catalog.getCoverageInfo(coverageName);
@@ -298,14 +298,13 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
     
                     // extract the band indexes
                     List axisSubset = request.getRangeSubset().getAxisSubset();
-                    if (axisSubset.size() > 0)
-                        if (((AxisSubsetType)axisSubset.get(0)).getName().equalsIgnoreCase("Band")) {
+                    if (axisSubset.size() > 0) {
                         AxisSubsetType axis = (AxisSubsetType)axisSubset.get(0);
                         int[] bands = null;
                         if (axis.getSingleValue().size() > 0) {
                             bands = new int[axis.getSingleValue().size()];
                             for (int s=0; s<axis.getSingleValue().size(); s++)
-                                bands[s] = Integer.parseInt(((TypedLiteralType)axis.getSingleValue().get(s)).getValue()) - 1;
+                                bands[s] = Integer.parseInt(((TypedLiteralType)axis.getSingleValue().get(s)).getValue()) - (((AxisSubsetType)axisSubset.get(0)).getName().equalsIgnoreCase("Band") ? 1 : 0);
                         } else if (axis.getInterval().size() > 0) {
                             IntervalType interval = (IntervalType) axis.getInterval().get(0);
                             int min = Integer.parseInt(interval.getMin().getValue());
@@ -320,11 +319,10 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                         // finally execute the band select
                         try {
                             bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
-                        } catch (WcsException e) {
+                        } catch (Exception e) {
                             throw new WcsException(e.getLocalizedMessage());
                         }
-                    } else
-                        throw new WcsException("Unknown axis " + ((AxisSubsetType)axisSubset.get(0)).getName());
+                    }
                 }
     
                 /**
@@ -357,6 +355,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 final GridCoverage2D reprojectedCoverage = WCSUtils.reproject(scaledCoverage, nativeCRS, targetCRS, interpolation);
                 
                 coverageResults.add(reprojectedCoverage);
+                cvSource.dispose();
             }
                 
             return coverageResults.toArray(new GridCoverage2D[]{});
@@ -563,21 +562,10 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             return;
 
         AxisSubsetType axisSubset = (AxisSubsetType) rangeSubset.getAxisSubset().get(0);
-        final String axisId = axisSubset.getName();
-        if (!axisId.equalsIgnoreCase("Band"))
-            throw new WcsException("Unknown axis " + axisId, InvalidParameterValue, "AxisSubset");
 
         // prepare a support structure to quickly get the band index of a key
         // (and remember we replaced spaces with underscores in the keys to
         // avoid issues with the kvp parsing of indentifiers that include spaces)
-
-        // TODO: FIX THIS!!!
-//        CoverageDimension[] dimensions = info.getDimensions();
-//        Set<String> dimensionMap = new HashSet<String>();
-//        for (int i = 0; i < dimensions.length; i++) {
-//            String keyName = dimensions[i].getName().replace(' ', '_');
-//            dimensionMap.add(keyName);
-//        }
 
         // check indexes
         int[] bands = null;
@@ -606,7 +594,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest(new StringBuffer("execute CoverageRequest response. Called request is: ").append(request).toString());
         }
-        
+
         return getCoverage(request, catalog);
     }
 }
