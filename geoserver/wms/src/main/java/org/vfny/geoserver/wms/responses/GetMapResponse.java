@@ -20,9 +20,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSExtensions;
-import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.io.CoverageAccess;
 import org.geotools.coverage.io.CoverageReadRequest;
 import org.geotools.coverage.io.CoverageResponse;
@@ -33,7 +31,6 @@ import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
 import org.geotools.coverage.io.impl.range.DefaultRangeType;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
-import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -42,10 +39,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.NameImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.map.DefaultMapLayer;
-import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.referencing.operation.transform.AffineTransform2D;
-import org.geotools.referencing.operation.transform.IdentityTransform;
 import org.geotools.styling.Style;
 import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.temporal.object.DefaultPosition;
@@ -57,7 +51,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.springframework.context.ApplicationContext;
@@ -354,7 +347,8 @@ public class GetMapResponse implements Response {
                     GridCoverage2D coverage = null;
                     CoverageAccess cvAccess = layers[i].getCoverage().getCoverageAccess();
                     coverage = getCoverage(request, layers[i], env, mapcrs, cvAccess);
-
+                    
+                    if (coverage == null) continue;
                     try {
                         layer = new DefaultMapLayer(coverage, layerStyle);
 
@@ -428,36 +422,8 @@ public class GetMapResponse implements Response {
         if (cvAccess != null) {
             final CoverageSource cvSource = cvAccess.access(new NameImpl(layer.getName()), null, AccessType.READ_ONLY, null, null);
             // handle spatial domain subset, if needed
-            final GeneralEnvelope originalEnvelope = new GeneralEnvelope(cvSource.getHorizontalDomain(false, null).get(0));
-            GeneralEnvelope destinationEnvelope = new GeneralEnvelope(new double[] {env.getMinX(), env.getMinY()}, new double[] {env.getMaxX(), env.getMaxY()});
-            destinationEnvelope.setCoordinateReferenceSystem(mapcrs);
-            final CoordinateReferenceSystem nativeCRS = originalEnvelope.getCoordinateReferenceSystem();
-            final GeneralEnvelope destinationEnvelopeInSourceCRS;
-            if (destinationEnvelope != null) {
-                // otherwise we need to transform
-                final CoordinateReferenceSystem bboxCRS = destinationEnvelope.getCoordinateReferenceSystem();
-                final MathTransform bboxToNativeTx = CRS.findMathTransform(bboxCRS, nativeCRS, true);
-                destinationEnvelopeInSourceCRS = CRS.transform(bboxToNativeTx, destinationEnvelope);
-                destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(nativeCRS);
-            } else {
-                destinationEnvelopeInSourceCRS = new GeneralEnvelope(cvSource.getHorizontalDomain(false, null).get(0));
-                destinationEnvelope = destinationEnvelopeInSourceCRS;
-            }
-         
-            // Compute the target crs, the crs that the final coverage will be
-            // served into
-            final CoordinateReferenceSystem targetCRS;
-            if (mapcrs == null) {
-                targetCRS = cvSource.getHorizontalDomain(false, null).get(0).getCoordinateReferenceSystem();
-            } else
-                targetCRS = mapcrs;
-         
-            // grab the grid to world transformation
-            /**
-             * Reading Coverage on Requested Envelope
-             */
-            Rectangle destinationSize = null;
-            MathTransform gridToCRS = cvSource.getGridToWorldTransform(true, null);
+            GeneralEnvelope requestedEnvelope = new GeneralEnvelope(new double[] {env.getMinX(), env.getMinY()}, new double[] {env.getMaxX(), env.getMaxY()});
+            requestedEnvelope.setCoordinateReferenceSystem(mapcrs);
             int[] lowers = new int[] {
                     0,
                     0};
@@ -465,27 +431,11 @@ public class GetMapResponse implements Response {
                     request.getWidth(),
                     request.getHeight()};
 
-            // if no offsets has been specified we try to default on the
-            // native ones
-            if (!(gridToCRS instanceof AffineTransform2D) && !(gridToCRS instanceof IdentityTransform))
-                throw new WcsException("Internal error, the coverage we're playing with does not have an affine transform...");
+            Rectangle destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
 
-            if (gridToCRS instanceof IdentityTransform) {
-                highers = new int[] { 1, 1 };
-            }
-
-            destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
-         
-            // now we have enough info to read the coverage, grab the parameters
-            // and add the grid geometry info
-            final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
-            intersected.intersect(originalEnvelope);
-            
-            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS);
-            
             final CoverageReadRequest cvRequest = new DefaultCoverageReadRequest();
             
-            cvRequest.setDomainSubset(destinationSize, destinationEnvelopeInSourceCRS);
+            cvRequest.setDomainSubset(destinationSize, requestedEnvelope);
 
             Set<FieldType> rangeSubset = new HashSet<FieldType>();
             RangeType fields = layer.getCoverage().getFields();
@@ -526,19 +476,18 @@ public class GetMapResponse implements Response {
                 throw new IOException("The requested coverage could not be found."); // TODO: FIX THIS!!!
             
             if (cvResponse.getResults(null) == null || cvResponse.getResults(null).isEmpty())
-                throw new IOException("The requested coverage could not be found."); // TODO: FIX THIS!!!
+                return null;
             
             /** if (cvResponse.getResults(null).size() > 1) ?? **/ // TODO: FIX THIS!!!
-            coverage = (GridCoverage2D) cvResponse.getResults(new NullProgressListener()).toArray()[0];
-            // TODO: Debug
-            //coverage.show();
-            if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
-                throw new DataSourceException("The requested coverage could not be found.");
-            }
-
+            coverage = (GridCoverage2D) cvResponse.getResults(new NullProgressListener()).iterator().next();
+            
+            if ((coverage == null) || !(coverage instanceof GridCoverage2D))
+                return null;
+            
             /**
              * Band Select (works on just one field)
              */
+            // TODO: FIX THIS!! java.lang.NumberFormatException: For input string: "0/2"
             GridCoverage2D bandSelectedCoverage = null;
             if (rangeSubset != null && rangeSubset.size() > 0) {
                 if (rangeSubset.size() > 1) {

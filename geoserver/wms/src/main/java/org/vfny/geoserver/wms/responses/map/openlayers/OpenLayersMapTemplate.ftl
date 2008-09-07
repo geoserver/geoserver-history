@@ -151,9 +151,9 @@
                         <#list parameters as param>            
                         ${param.name}: '${param.value?js_string}',
                         </#list>
-                        format: format,
-                        tiled: 'true',
-                        tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
+                        format: format //,
+                        //tiled: 'true',
+                        //tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
                     },
                     {buffer: 0} 
                 );

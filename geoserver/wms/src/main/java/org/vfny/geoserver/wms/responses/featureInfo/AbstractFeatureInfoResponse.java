@@ -267,35 +267,37 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     CoverageInfo cinfo = requestedLayers[i].getCoverage();
                     GridCoverage2D coverage = /* ((GridCoverage2D) cinfo.getCoverage()).geophysics(true) */ 
                         GetMapResponse.getCoverage(req, requestedLayers[i], req.getBbox(), req.getCrs(), cinfo.getCoverageAccess());
-                    DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
-                    try {
-                        double[] pixelValues = null;
-                        if (requestedCRS != null) {
-                            
-                            final CoordinateReferenceSystem targetCRS = coverage
-                                    .getCoordinateReferenceSystem2D();
-                            TransformedDirectPosition arbitraryToInternal = new TransformedDirectPosition(
-                                    requestedCRS, targetCRS, new Hints(
-                                            Hints.LENIENT_DATUM_SHIFT,
-                                            Boolean.TRUE));
-                            try {
-                                arbitraryToInternal.transform(position);
-                            } catch (TransformException exception) {
-                                throw new CannotEvaluateException(exception
-                                        .getLocalizedMessage());
-                            }
-                            Point2D point2D = arbitraryToInternal.toPoint2D();
-                            pixelValues = coverage.evaluate(point2D,
-                                    (double[]) null);
-                        } else
-                            pixelValues = coverage.evaluate(position,
-                                    (double[]) null);
-                        FeatureCollection<SimpleFeatureType, SimpleFeature> pixel;
-                        pixel = wrapPixelInFeatureCollection(coverage, pixelValues, cinfo.getName());
-                        metas.add(requestedLayers[i]);
-                        results.add(pixel);
-                    } catch(PointOutsideCoverageException e) {
-                        // it's fine, users might legitimately query point outside, we just don't return anything
+                    if (coverage != null) {
+                        DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
+                        try {
+                            double[] pixelValues = null;
+                            if (requestedCRS != null) {
+                                
+                                final CoordinateReferenceSystem targetCRS = coverage
+                                        .getCoordinateReferenceSystem2D();
+                                TransformedDirectPosition arbitraryToInternal = new TransformedDirectPosition(
+                                        requestedCRS, targetCRS, new Hints(
+                                                Hints.LENIENT_DATUM_SHIFT,
+                                                Boolean.TRUE));
+                                try {
+                                    arbitraryToInternal.transform(position);
+                                } catch (TransformException exception) {
+                                    throw new CannotEvaluateException(exception
+                                            .getLocalizedMessage());
+                                }
+                                Point2D point2D = arbitraryToInternal.toPoint2D();
+                                pixelValues = coverage.evaluate(point2D,
+                                        (double[]) null);
+                            } else
+                                pixelValues = coverage.evaluate(position,
+                                        (double[]) null);
+                            FeatureCollection<SimpleFeatureType, SimpleFeature> pixel;
+                            pixel = wrapPixelInFeatureCollection(coverage, pixelValues, cinfo.getName());
+                            metas.add(requestedLayers[i]);
+                            results.add(pixel);
+                        } catch(PointOutsideCoverageException e) {
+                            // it's fine, users might legitimately query point outside, we just don't return anything
+                        }
                     }
                 }
             }

@@ -18,6 +18,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import javax.measure.Measure;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
+import javax.measure.unit.UnitFormat;
+
 import net.opengis.gml.CodeType;
 import net.opengis.gml.Gml4wcsFactory;
 import net.opengis.gml.GridType;
@@ -63,6 +68,7 @@ import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -434,19 +440,37 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                             element("wcs:name", field.getName().getLocalPart());
                             element("wcs:label", field.getDescription().toString());
                             start("wcs:axisDescription");
-                                start("wcs:AxisDescription");
+                                Unit<?> uom = axis.getUnitOfMeasure();
+
+                                AttributesImpl attributes = new AttributesImpl();
+                                
+                                if (uom.isCompatible(Unit.ONE)) {
+                                    attributes.addAttribute("", "refSysLabel", "refSysLabel", "", "dimensionless");
+                                } else {
+                                    String uomUCUM = UnitFormat.getUCUMInstance().format(uom);
+                                    if (uomUCUM != null) {
+                                        attributes.addAttribute("", "refSys", "refSys", "", "http://www.regenstrief.org/medinformatics/ucum#" + uomUCUM);
+                                        attributes.addAttribute("", "refSysLabel", "refSysLabel", "", uomUCUM);
+                                    }
+                                }
+                                
+                                
+                                start("wcs:AxisDescription", attributes);
                                 // TODO: FIX THIS!!!
                                     element("wcs:name", axis.getName().getLocalPart().toString());
                                     element("wcs:label", axis.getDescription().toString());
                                     start("wcs:values");
-                                    if (axis.getNumKeys() == 1) {
-                                        element("wcs:singleValue", axis.getKey(0).toString());
-                                    } else {
-                                        start("wcs:interval");
-                                            element("wcs:min", axis.getKey(0).toString());
-                                            element("wcs:max", axis.getKey(axis.getNumKeys()-1).toString());
-                                        end("wcs:interval");
+                                    for (Measure key : axis.getKeys()) {
+                                        element("wcs:singleValue", key.getValue().toString());
                                     }
+//                                    if (axis.getNumKeys() == 1) {
+//                                        element("wcs:singleValue", axis.getKey(0).toString());
+//                                    } else {
+//                                        start("wcs:interval");
+//                                            element("wcs:min", axis.getKey(0).toString());
+//                                            element("wcs:max", axis.getKey(axis.getNumKeys()-1).toString());
+//                                        end("wcs:interval");
+//                                    }
                                     end("wcs:values");
                                  end("wcs:AxisDescription");
                              end("wcs:axisDescription");

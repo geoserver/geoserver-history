@@ -277,7 +277,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                     throw new IOException("The requested coverage could not be found."); // TODO: FIX THIS!!!
                 
                 /** if (cvResponse.getResults(null).size() > 1) ?? **/ // TODO: FIX THIS!!!
-                coverage = (GridCoverage2D) cvResponse.getResults(null).toArray()[0];
+                coverage = (GridCoverage2D) cvResponse.getResults(null).iterator().next();
                 
                 if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
                     throw new IOException("The requested coverage could not be found.");
@@ -286,7 +286,6 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 /**
                  * Band Select (works on just one field)
                  */
-                // TODO: FIX THIS!!!
                 GridCoverage2D bandSelectedCoverage = coverage;
                 String interpolationType = null;
                 if (request.getRangeSubset() != null) {

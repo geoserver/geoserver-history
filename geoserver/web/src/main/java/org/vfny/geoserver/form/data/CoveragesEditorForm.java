@@ -349,8 +349,15 @@ public final class CoveragesEditorForm extends ActionForm {
             for (Iterator<Name> i=range.getFieldTypeNames().iterator(); i.hasNext();) {
                 String fieldName = i.next().getLocalPart();
                 fieldNames.add(fieldName);
-                fieldDescriptions.add(range.getFieldType(fieldName).getDescription().toString());
-                fieldUnitOfMeasures.add(range.getFieldType(fieldName).getUnitOfMeasure().toString());
+                if (range.getFieldType(fieldName).getDescription() != null)
+                    fieldDescriptions.add(range.getFieldType(fieldName).getDescription().toString());
+                else
+                    fieldDescriptions.add("");
+                
+                if (range.getFieldType(fieldName).getUnitOfMeasure() != null)
+                    fieldUnitOfMeasures.add(range.getFieldType(fieldName).getUnitOfMeasure().toString());
+                else 
+                    fieldUnitOfMeasures.add("");
             }
         }
         
