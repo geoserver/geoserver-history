@@ -127,8 +127,8 @@
                     document.getElementById('antialiasSelector').disabled = true;
                     document.getElementById('updateFilterButton').disabled = true;
                     document.getElementById('resetFilterButton').disabled = true;
-                    document.getElementById('jpeg').selected = true;
-                    format = "image/jpeg";
+										document.getElementById('png8').selected = true;
+                    format = "image/png8";
                 }
             
                 var bounds = new OpenLayers.Bounds(
