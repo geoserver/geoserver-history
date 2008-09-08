@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.media.jai.InterpolationNearest;
+import javax.media.jai.PlanarImage;
 import javax.media.jai.operator.TranslateDescriptor;
-
 
 /**
  * Map producer for JPEG image format.
@@ -37,7 +37,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
     /** JPEG Native Acceleration Mode * */
     private Boolean JPEGNativeAcc;
 
-	private boolean hasJAIWriter;
+    private boolean hasJAIWriter;
 
     public JPEGMapProducer(WMS wms) {
         super(MIME_TYPE, wms);
@@ -52,8 +52,6 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         }catch (ClassNotFoundException e) {
         	hasJAIWriter=false;
 		}
-        
-        
     }
 
     @Override
@@ -70,16 +68,16 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
             LOGGER.fine("About to write a JPEG image.");
         }
 
-        if((JPEGNativeAcc.booleanValue()||!hasJAIWriter)&&(image.getMinX()!=0 || image.getMinY()!=0)) {
-        	// the JPEG native writer does a direct access to the writable raster in a way
-            // that does not respect minx/miny settings. This in turn results in the issue
-            // described at http://jira.codehaus.org/browse/GEOS-2061
-            final WritableRaster raster=(WritableRaster) image.getData();
-        	final BufferedImage finalImage= new BufferedImage(image.getColorModel(),raster.createWritableTranslatedChild(0, 0),image.getColorModel().isAlphaPremultiplied(),null);
-            new ImageWorker(finalImage).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
-        } else {
-        	new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
+        final WritableRaster raster=(WritableRaster) image.getData();
+        if(image instanceof BufferedImage){
+            BufferedImage im = (BufferedImage) image;
+            im.flush();
+            im=null;
         }
+        else
+            PlanarImage.wrapRenderedImage(image).dispose();
+        final BufferedImage finalImage = new BufferedImage(image.getColorModel(),raster.createWritableTranslatedChild(0, 0),image.getColorModel().isAlphaPremultiplied(),null);
+        new ImageWorker(finalImage).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing a JPEG done!!!");
@@ -91,3 +89,4 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         return null;
     }
 }
+
