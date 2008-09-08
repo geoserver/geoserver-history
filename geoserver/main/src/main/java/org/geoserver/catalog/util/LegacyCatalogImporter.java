@@ -626,9 +626,9 @@ public class LegacyCatalogImporter {
                 if (verticalExtent != null && !verticalExtent.isEmpty()) {
                     if (compundCRS instanceof CompoundCRS) {
                         if (temporalCRS != null)
-                            verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
-                        else
                             verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                        else
+                            verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
                     } 
                 }
 

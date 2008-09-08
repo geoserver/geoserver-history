@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.media.jai.BorderExtender;
@@ -29,6 +30,7 @@ import org.geotools.referencing.CRS;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridRange;
+import org.opengis.geometry.Envelope;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wcs.WcsException;
@@ -481,5 +483,23 @@ public class WCSUtils {
         }
 
         return bandSelectedCoverage;
+    }
+    
+    public static double[] getVerticalExtentLimits(Set<Envelope> verticalExtent) {
+        double minZ = Double.POSITIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
+        double resZ = 0.0;
+        
+        for (Envelope env : verticalExtent) {
+            if (env.getMinimum(0) < minZ)
+                minZ = env.getMinimum(0);
+            
+            if (env.getMaximum(0) > maxZ)
+                maxZ = env.getMaximum(0);
+        }
+        
+        resZ = (maxZ - minZ) / verticalExtent.size();
+        
+        return new double[] {minZ, maxZ, resZ};
     }
 }

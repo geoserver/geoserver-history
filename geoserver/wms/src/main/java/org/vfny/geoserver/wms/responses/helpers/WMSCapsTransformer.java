@@ -24,6 +24,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.coverage.io.range.FieldType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.resources.CRSUtilities;
@@ -760,7 +761,10 @@ public class WMSCapsTransformer extends TransformerBase {
                 cLayer = (CoverageInfo) it.next();
 
                 if (cLayer.isEnabled()) {
-                    handleCoverage(cLayer);
+                    if (cLayer.getFields() != null)
+                        handleMultiDimCoverage(cLayer);
+                    else
+                        handleCoverage(cLayer);
                 }
             }
 
@@ -776,6 +780,72 @@ public class WMSCapsTransformer extends TransformerBase {
             }
         }
 
+        protected void handleMultiDimCoverage(CoverageInfo coverage) {
+            for (FieldType field : coverage.getFields().getFieldTypes()) {
+                AttributesImpl qatts = new AttributesImpl();
+                qatts.addAttribute("", "queryable", "queryable", "", "1");
+                start("Layer", qatts);
+                element("Name", coverage.getName() + "@" + field.getName().getLocalPart());
+                element("Title", field.getDescription().toString());
+                element("Abstract", field.getDescription().toString());
+
+                handleKeywordList(coverage.getKeywords());
+
+                String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
+                comment(desc);
+
+                String authority = coverage.getSrsName();
+
+                element("SRS", authority);
+
+                GeneralEnvelope bounds = null;
+                GeneralEnvelope llBounds = null;
+
+                final GeneralEnvelope latLonEnvelope = coverage.getWGS84LonLatEnvelope();
+                bounds = coverage.getEnvelope();
+                llBounds = latLonEnvelope;
+
+                final Envelope bbox = new Envelope(bounds.getLowerCorner().getOrdinate(0),
+                        bounds.getUpperCorner().getOrdinate(0), bounds.getLowerCorner().getOrdinate(1),
+                        bounds.getUpperCorner().getOrdinate(1));
+
+                final Envelope llBbox = new Envelope(llBounds.getLowerCorner().getOrdinate(0),
+                        llBounds.getUpperCorner().getOrdinate(0),
+                        llBounds.getLowerCorner().getOrdinate(1),
+                        llBounds.getUpperCorner().getOrdinate(1));
+
+                handleLatLonBBox(llBbox);
+                handleBBox(bbox, authority);
+
+                // TODO: FIX THIS!!! HandleDimensions
+                
+                // add the layer style
+                start("Style");
+
+                Style cvStyle = coverage.getDefaultStyle();
+                element("Name", cvStyle.getName());
+                element("Title", cvStyle.getTitle());
+                element("Abstract", cvStyle.getAbstract());
+                handleLegendURL(coverage);
+                end("Style");
+
+                final ArrayList styles = coverage.getStyles();
+                Iterator s_IT = styles.iterator();
+
+                while (s_IT.hasNext()) {
+                    cvStyle = (Style) s_IT.next();
+                    start("Style");
+                    element("Name", cvStyle.getName());
+                    element("Title", cvStyle.getTitle());
+                    element("Abstract", cvStyle.getAbstract());
+                    handleLegendURL(coverage);
+                    end("Style");
+                }
+
+                end("Layer");
+            }
+        }
+        
         protected void handleCoverage(CoverageInfo coverage) {
             // HACK: by now all our layers are queryable, since they reference
             // only featuretypes managed by this server
@@ -860,6 +930,9 @@ public class WMSCapsTransformer extends TransformerBase {
             handleLatLonBBox(llBbox);
             handleBBox(bbox, authority);
 
+            
+            // TODO: FIX THIS!!! HandleDimensions
+            
             // add the layer style
             start("Style");
 

@@ -273,8 +273,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                             double[] pixelValues = null;
                             if (requestedCRS != null) {
                                 
-                                final CoordinateReferenceSystem targetCRS = coverage
-                                        .getCoordinateReferenceSystem2D();
+                                final CoordinateReferenceSystem targetCRS = coverage.getCoordinateReferenceSystem2D();
                                 TransformedDirectPosition arbitraryToInternal = new TransformedDirectPosition(
                                         requestedCRS, targetCRS, new Hints(
                                                 Hints.LENIENT_DATUM_SHIFT,

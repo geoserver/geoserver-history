@@ -35,6 +35,7 @@ import org.opengis.feature.type.Name;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.TemporalCRS;
 import org.opengis.referencing.crs.VerticalCRS;
+import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.cs.CoordinateSystemAxis;
 import org.opengis.referencing.datum.TemporalDatum;
 import org.opengis.referencing.datum.VerticalDatum;
@@ -49,6 +50,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.WCSUtils;
 
 
 /**
@@ -283,9 +285,9 @@ public final class CoveragesEditorForm extends ActionForm {
             this.verticalAxisDirection = verticalAxis.getDirection().identifier();
             this.verticalAxisUnit = verticalAxis.getUnit().toString();
             
-            Envelope vEnvelope = verticalExtent.iterator().next();
-            verticalExtentMinZ = String.valueOf(vEnvelope.getMinimum(0));
-            verticalExtentMaxZ = String.valueOf(vEnvelope.getMaximum(0));
+            double[] verticalLimits = WCSUtils.getVerticalExtentLimits(verticalExtent);
+            verticalExtentMinZ = String.valueOf(verticalAxis.getDirection().equals(AxisDirection.UP) ? verticalLimits[0] : verticalLimits[1]);
+            verticalExtentMaxZ = String.valueOf(verticalAxis.getDirection().equals(AxisDirection.UP) ? verticalLimits[1] : verticalLimits[0]);
         } else {
             verticalExtentMinZ = "";
             verticalExtentMaxZ = "";

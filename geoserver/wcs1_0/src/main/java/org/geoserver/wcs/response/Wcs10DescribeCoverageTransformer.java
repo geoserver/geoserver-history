@@ -57,6 +57,9 @@ import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.VerticalCRS;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystemAxis;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.Matrix;
 import org.opengis.temporal.Instant;
@@ -66,6 +69,7 @@ import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WCS;
+import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.xml.sax.Attributes;
@@ -302,7 +306,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             start("wcs:domainSet");
                 start("wcs:spatialDomain");
                     handleBoundingBox(ci.getSrsName(), ci.getEnvelope(), ci.getVerticalExtent(), ci.getTemporalExtent());
-                    handleGrid(ci);
+                    handleGrid(ci, ci.getVerticalExtent());
                 end("wcs:spatialDomain");
                 start("wcs:temporalDomain");
                     handleTemporalDomain(ci);
@@ -374,10 +378,13 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             }
         }
 
-        private void handleGrid(CoverageInfo ci) throws Exception {
+        private void handleGrid(CoverageInfo ci, Set<Envelope> verticalExtent) throws Exception {
             GridGeometry  grid      = ci.getGrid();
             MathTransform gridToCRS = grid.getGridToCRS();
-            final int gridDimension = gridToCRS != null ? gridToCRS.getSourceDimensions() : 0;
+            final int gridDimension = (gridToCRS != null ? gridToCRS.getSourceDimensions() : 0) + 
+                                        (verticalExtent != null && verticalExtent.size() > 0 ? 1 : 0);
+            final double[] verticalLimits = (verticalExtent != null && verticalExtent.size() > 0 ? 
+                    WCSUtils.getVerticalExtentLimits(verticalExtent) : null);
             
             AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "dimension", "dimension", "", String.valueOf(gridDimension));
@@ -388,8 +395,13 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 String uppers= "";
     
                 for (int r = 0; r < gridDimension; r++) {
+                    if (gridToCRS.getSourceDimensions() > r) {
                         lowers += (grid.getGridRange().getLower(r) + " ");
                         uppers += (grid.getGridRange().getUpper(r) + " ");
+                    } else {
+                        lowers += (verticalLimits[0] + " ");
+                        uppers += (verticalLimits[1] + " ");
+                    }
                 }
                 start("gml:limits");
                     start("gml:GridEnvelope");
@@ -401,6 +413,11 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 // Grid Axes
                 for (int dn = 0; dn < ci.getCrs().getCoordinateSystem().getDimension(); dn++)
                     element("gml:axisName", ci.getCrs().getCoordinateSystem().getAxis(dn).getAbbreviation());
+                
+                if (verticalExtent != null && verticalExtent.size() > 0) {
+                    String vAxisName = ((VerticalCRS) ci.getVerticalCRS()).getCoordinateSystem().getAxis(0).getAbbreviation();
+                    element("gml:axisName", vAxisName);
+                }
 
                 final LinearTransform tx = (LinearTransform) ci.getGrid().getGridToCRS();
                 final Matrix matrix = tx.getMatrix();
@@ -411,6 +428,12 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                     if (i < matrix.getNumRow() - 2)
                         origins.append(" ");
                 }
+                
+                if (verticalExtent != null && verticalExtent.size() > 0) {
+                    CoordinateSystemAxis vAxis = ((VerticalCRS) ci.getVerticalCRS()).getCoordinateSystem().getAxis(0);
+                    origins.append(" ").append(vAxis.getDirection().equals(AxisDirection.UP) ? verticalLimits[0] : verticalLimits[1]);
+                }
+                
                 start("gml:origin");
                     element("gml:pos", origins.toString());
                 end("gml:origin");
@@ -423,8 +446,17 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                             offsets.append(" ");
                     }
 
+                    if (verticalExtent != null && verticalExtent.size() > 0) {
+                        offsets.append(" ").append("0.0");
+                    }
+                    
                     element("gml:offsetVector", offsets.toString());
                     offsets = new StringBuffer();
+                }
+                
+                if (verticalExtent != null && verticalExtent.size() > 0) {
+                    CoordinateSystemAxis vAxis = ((VerticalCRS) ci.getVerticalCRS()).getCoordinateSystem().getAxis(0);
+                    element("gml:offsetVector", "0.0 0.0 " + (vAxis.getDirection().equals(AxisDirection.UP) ? "" : "-") + verticalLimits[2]);
                 }
 
             end("gml:RectifiedGrid");

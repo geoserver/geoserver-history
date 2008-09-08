@@ -442,8 +442,10 @@ public class GetMapResponse implements Response {
             if (fields != null && fields.getNumFieldTypes() > 0) {
                 for (FieldType field : fields.getFieldTypes()) {
                     String fieldName = field.getName().getLocalPart();
-                    if (request.getRawKvp().containsKey(fieldName) || request.getRawKvp().containsKey(fieldName.toUpperCase())) {
-                        rangeSubset.add(field);
+                    for (Object key : request.getRawKvp().keySet() ) {
+                        if (((String)key).equalsIgnoreCase("dim_" + fieldName)) {
+                            rangeSubset.add(field);
+                        }
                     }
                 }
             }
@@ -487,7 +489,6 @@ public class GetMapResponse implements Response {
             /**
              * Band Select (works on just one field)
              */
-            // TODO: FIX THIS!! java.lang.NumberFormatException: For input string: "0/2"
             GridCoverage2D bandSelectedCoverage = null;
             if (rangeSubset != null && rangeSubset.size() > 0) {
                 if (rangeSubset.size() > 1) {
@@ -496,13 +497,27 @@ public class GetMapResponse implements Response {
 
                 for (FieldType field : rangeSubset) {
                     String fieldName = field.getName().getLocalPart();
-                    String selectedBandField = (String) (request.getRawKvp().get(fieldName) != null ? request.getRawKvp().get(fieldName) : request.getRawKvp().get(fieldName.toUpperCase()));
-                    selectedBandField = String.valueOf(Integer.parseInt(selectedBandField)+1);
-                    bandSelectedCoverage = bandSelect(coverage, selectedBandField);
+                    String selectedBandField = null;
+                    for (Object key : request.getRawKvp().keySet() ) {
+                        if (((String)key).equalsIgnoreCase("dim_" + fieldName)) {
+                            Object value = request.getRawKvp().get(key);
+                            if (value instanceof String)
+                                selectedBandField = (String) value;
+                            
+                            if (value instanceof String[] && ((String[]) value).length > 0)
+                                selectedBandField = ((String[]) value)[0];
+                            
+                            break;
+                        }
+                    }
+                    
+                    if (selectedBandField != null) {
+                        bandSelectedCoverage = bandSelect(coverage, selectedBandField, true);
+                    }
                 }
             } else if (request.getRawKvp().containsKey("band") || request.getRawKvp().containsKey("BAND")) {
                 String selectedBandField = (String) (request.getRawKvp().get("band") != null ? request.getRawKvp().get("band") : request.getRawKvp().get("BAND"));
-                bandSelectedCoverage = bandSelect(coverage, selectedBandField);
+                bandSelectedCoverage = bandSelect(coverage, selectedBandField, false);
             }
 
             if (bandSelectedCoverage != null)
@@ -522,11 +537,12 @@ public class GetMapResponse implements Response {
      * @param coverage
      * @param bandSelectedCoverage
      * @param selectedBandField
+     * @param realValue 
      * @return
      * @throws NumberFormatException
      * @throws WcsException
      */
-    private static GridCoverage2D bandSelect(GridCoverage2D coverage, String selectedBandField)
+    private static GridCoverage2D bandSelect(GridCoverage2D coverage, String selectedBandField, boolean realValue)
             throws NumberFormatException, WcsException {
         GridCoverage2D bandSelectedCoverage = null;
         int[] bands = null;
@@ -534,7 +550,7 @@ public class GetMapResponse implements Response {
             String[] selectedBands = selectedBandField.indexOf(",") > 0 ? selectedBandField.split(",") : new String[] {selectedBandField};
             bands = new int[selectedBands.length];
             for (int s=0; s<selectedBands.length; s++)
-                bands[s] = Integer.parseInt(selectedBands[0]) - 1;
+                bands[s] = Integer.parseInt(selectedBands[0]) - (realValue?0:1);
         } else if (selectedBandField.indexOf("/") > 0) {
             String[] selectedBands = selectedBandField.split("/");
             int min = Integer.parseInt(selectedBands[0]);
@@ -543,7 +559,7 @@ public class GetMapResponse implements Response {
 
             bands = new int[(int) (Math.floor(max - min) / res + 1)];
             for (int b=0; b<bands.length; b++)
-                bands[b] = b * res;
+                bands[b] = (b + (realValue?1:0)) * res;
         }
 
         // finally execute the band select
