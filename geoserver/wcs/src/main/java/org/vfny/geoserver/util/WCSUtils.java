@@ -488,18 +488,37 @@ public class WCSUtils {
     public static double[] getVerticalExtentLimits(Set<Envelope> verticalExtent) {
         double minZ = Double.POSITIVE_INFINITY;
         double maxZ = Double.NEGATIVE_INFINITY;
-        double resZ = 0.0;
         
+        double[] mcdNumbers = new double[verticalExtent.size()+1];
+        
+        int n=0;
         for (Envelope env : verticalExtent) {
             if (env.getMinimum(0) < minZ)
                 minZ = env.getMinimum(0);
             
             if (env.getMaximum(0) > maxZ)
                 maxZ = env.getMaximum(0);
+            
+            mcdNumbers[n++] = env.getMinimum(0); 
+        }
+        mcdNumbers[n] = maxZ;
+        
+        double resZ = maxZ;
+
+        boolean mcdFound = false;
+        while (!mcdFound) {
+            boolean res = true;
+            for (n=0; n<mcdNumbers.length ; n++) {
+                res = (res && mcdNumbers[n]%resZ == 0);
+                if (!res) break;
+            }
+            
+            if (res)
+                mcdFound = res;
+            else
+                resZ--;
         }
         
-        resZ = (maxZ - minZ) / verticalExtent.size();
-        
-        return new double[] {minZ, maxZ, resZ};
+        return new double[] {minZ, maxZ, Math.abs(resZ)};
     }
 }
