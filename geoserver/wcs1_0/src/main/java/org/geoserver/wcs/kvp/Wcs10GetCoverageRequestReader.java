@@ -111,11 +111,15 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         crs = decodeCRS(crsName, crs);
 
         // either bbox or timesequence must be there
-        Envelope bbox = (Envelope) kvp.get("BBOX");
+        GeneralEnvelope bbox = (GeneralEnvelope) kvp.get("BBOX");
         if (bbox == null)
             throw new WcsException("bbox parameter is mandatory", MissingParameterValue, "bbox");
         GeneralEnvelope envelope = new GeneralEnvelope(crs);
-        envelope.setEnvelope(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+        envelope.setEnvelope(
+                bbox.getLowerCorner().getOrdinate(0),
+                bbox.getLowerCorner().getOrdinate(1), 
+                bbox.getUpperCorner().getOrdinate(0), 
+                bbox.getUpperCorner().getOrdinate(1));
         TimeSequenceType timeSequence = null;
         Object time = kvp.get("TIME");
         if (time != null && time instanceof TimeSequenceType) {
@@ -154,9 +158,12 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
         spatialSubset.getEnvelope().add(envelope);
 
-        Double verticalPosition = (Double) kvp.get("ELEVATION");
-        if (verticalPosition != null) {
-            spatialSubset.getEnvelope().add(new GeneralEnvelope(verticalPosition, verticalPosition));
+        if (bbox.getDimension() > 2) {
+            spatialSubset.getEnvelope().add(
+                    new GeneralEnvelope(
+                            bbox.getLowerCorner().getOrdinate(2), 
+                            bbox.getUpperCorner().getOrdinate(2))
+            );
         }
 
         spatialSubset.getGrid().add(grid);

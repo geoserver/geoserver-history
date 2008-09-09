@@ -4,20 +4,19 @@
  */
 package org.geoserver.wcs.kvp;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geoserver.ows.KvpParser;
+import java.util.List;
+
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import java.util.List;
 
-
-public class BBoxKvpParser extends KvpParser {
+public class BBoxKvpParser extends WcsKvpParser {
     public BBoxKvpParser() {
-        super("bbox", Envelope.class);
+        super("bbox", GeneralEnvelope.class);
     }
 
     public Object parse(String value) throws Exception {
@@ -30,9 +29,9 @@ public class BBoxKvpParser extends KvpParser {
         }
 
         //if it does, store them in an array of doubles
-        double[] bbox = new double[4];
+        double[] bbox = new double[unparsed.size()];
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < unparsed.size(); i++) {
             try {
                 bbox[i] = Double.parseDouble((String) unparsed.get(i));
             } catch (NumberFormatException e) {
@@ -47,6 +46,9 @@ public class BBoxKvpParser extends KvpParser {
         double maxx = bbox[2];
         double maxy = bbox[3];
         
+        double minz = 0.0;
+        double maxz = 0.0;
+        
         if (minx > maxx) {
             throw new ServiceException("illegal bbox, minX: " + minx + " is "
                 + "greater than maxX: " + maxx);
@@ -58,14 +60,20 @@ public class BBoxKvpParser extends KvpParser {
         }
 
         //check for crs
-        CoordinateReferenceSystem crs = null;
+//        CoordinateReferenceSystem crs = null;
 
+//        if (unparsed.size() > 4) {
+//            crs = CRS.decode((String) unparsed.get(4));
+//        } else {
+//            //TODO: use the default crs of the system
+//        }
+
+//        return new ReferencedEnvelope(minx,maxx,miny,maxy,crs);
         if (unparsed.size() > 4) {
-            crs = CRS.decode((String) unparsed.get(4));
-        } else {
-            //TODO: use the default crs of the system
-        }
-
-        return new ReferencedEnvelope(minx,maxx,miny,maxy,crs);
+            minz = bbox[4];
+            maxz = unparsed.size() == 5 ? minz : bbox[5];
+            return new GeneralEnvelope(new double[] {minx, miny, minz}, new double[] {maxx, maxy, maxz});
+        } else
+            return new GeneralEnvelope(new double[] {minx, miny}, new double[] {maxx, maxy});
     }
 }
