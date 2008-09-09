@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geoserver.ows.KvpParser;
+import org.geoserver.ows.kvp.TimeKvpParser;
 import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -263,7 +265,29 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     //}
                 } else {
                     GetMapRequest req = request.getGetMapRequest();
+                    
                     req.setRawKvp(request.getHttpServletRequest().getParameterMap());
+                    
+                    if (request.getHttpServletRequest().getParameterMap().get("Elevation") != null) {
+                        Object value = request.getHttpServletRequest().getParameterMap().get("Elevation");
+                        if (value instanceof String)
+                            req.setElevation((int)Double.parseDouble((String)value));
+                        
+                        if (value instanceof String[])
+                            req.setElevation((int)Double.parseDouble(((String[])value)[0]));
+                    }
+                    
+                    if (request.getHttpServletRequest().getParameterMap().get("Time") != null) {
+                        Object value = request.getHttpServletRequest().getParameterMap().get("Time");
+                        KvpParser timeKvp = new TimeKvpParser("Time");
+                        
+                        if (value instanceof String)
+                            req.setTime((List) timeKvp.parse((String)value));
+                        
+                        if (value instanceof String[])
+                            req.setTime((List) timeKvp.parse(((String[])value)[0]));
+                    }
+                    
                     CoverageInfo cinfo = requestedLayers[i].getCoverage();
                     GridCoverage2D coverage = /* ((GridCoverage2D) cinfo.getCoverage()).geophysics(true) */ 
                         GetMapResponse.getCoverage(req, requestedLayers[i], req.getBbox(), req.getCrs(), cinfo.getCoverageAccess());

@@ -29,6 +29,7 @@ import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.CoverageResponse.Status;
 import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
 import org.geotools.coverage.io.impl.range.DefaultRangeType;
+import org.geotools.coverage.io.range.Axis;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.data.DefaultQuery;
@@ -497,19 +498,31 @@ public class GetMapResponse implements Response {
                     String selectedBandField = null;
                     for (Object key : request.getRawKvp().keySet() ) {
                         if (((String)key).toLowerCase().startsWith("dim_")) {
+                            String axisName = ((String)key).toLowerCase().substring(((String)key).toLowerCase().indexOf("dim_")+"dim_".length());
+                            axisName = (axisName.startsWith("axis:") ? axisName : "axis:" + 
+                                    (layer.getName().contains(":") ? layer.getName().substring(layer.getName().indexOf(":")+1) : layer.getName()) + // remove namespace 
+                                    axisName);
                             Object value = request.getRawKvp().get(key);
-                            if (value instanceof String)
-                                selectedBandField = (String) value;
                             
-                            if (value instanceof String[] && ((String[]) value).length > 0)
-                                selectedBandField = ((String[]) value)[0];
-                            
+                            try {
+                                Axis<?, ?> axis = field.getAxis(new NameImpl(axisName));
+                                if (axis != null) {
+                                    if (value instanceof String) {
+                                        selectedBandField = (String) value;
+                                    }
+
+                                    if (value instanceof String[] && ((String[]) value).length > 0)
+                                        selectedBandField = ((String[]) value)[0];
+
+                                    if (selectedBandField != null) {
+                                        bandSelectedCoverage = bandSelect(coverage, axis, selectedBandField);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                LOGGER.warning(e.getLocalizedMessage());
+                            }
                             break;
                         }
-                    }
-                    
-                    if (selectedBandField != null) {
-                        bandSelectedCoverage = bandSelect(coverage, selectedBandField, true);
                     }
                 }
             } else if (request.getRawKvp().containsKey("band") || request.getRawKvp().containsKey("BAND")) {
@@ -557,6 +570,43 @@ public class GetMapResponse implements Response {
             bands = new int[(int) (Math.floor(max - min) / res + 1)];
             for (int b=0; b<bands.length; b++)
                 bands[b] = (b + (realValue?1:0)) * res;
+        }
+
+        // finally execute the band select
+        try {
+            bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
+        } catch (Exception e) {
+            throw new WcsException("The selected Band values are not allowed for this Coverage.");
+        }
+        
+        return bandSelectedCoverage;
+    }
+
+    /**
+     * 
+     * @param coverage
+     * @param axis
+     * @param selectedBandField
+     * @return
+     */
+    private static GridCoverage2D bandSelect(GridCoverage2D coverage,
+            Axis<?, ?> axis, String selectedBandField) {
+        GridCoverage2D bandSelectedCoverage = null;
+        int[] bands = null;
+        if (selectedBandField.indexOf("/") <= 0) {
+            String[] selectedBands = selectedBandField.indexOf(",") > 0 ? selectedBandField.split(",") : new String[] {selectedBandField};
+            bands = new int[selectedBands.length];
+            for (int s=0; s<selectedBands.length; s++)
+                bands[s] = axis.getKey(Integer.parseInt(selectedBands[0])).intValue(null);
+        } else if (selectedBandField.indexOf("/") > 0) {
+            String[] selectedBands = selectedBandField.split("/");
+            int min = Integer.parseInt(selectedBands[0]);
+            int max = Integer.parseInt(selectedBands[selectedBands.length-1]);
+            int res = (selectedBands.length > 2 ? Integer.parseInt(selectedBands[1]) : 1);
+
+            bands = new int[(int) (Math.floor(max - min) / res + 1)];
+            for (int b=0; b<bands.length; b++)
+                bands[b] = axis.getKey(Integer.parseInt(selectedBands[0] + b*res)).intValue(null);
         }
 
         // finally execute the band select

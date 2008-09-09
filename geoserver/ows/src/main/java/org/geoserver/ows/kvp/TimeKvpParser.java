@@ -77,6 +77,7 @@ public class TimeKvpParser extends KvpParser {
             return Collections.EMPTY_LIST;
         }
         value = value.trim();
+        value = value.replaceAll(" ", "+");
         if (value.length() == 0) {
             return Collections.EMPTY_LIST;
         }
