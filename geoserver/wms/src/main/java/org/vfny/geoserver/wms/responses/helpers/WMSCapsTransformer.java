@@ -43,6 +43,7 @@ import org.opengis.temporal.Duration;
 import org.opengis.temporal.Instant;
 import org.opengis.temporal.Period;
 import org.opengis.temporal.Position;
+import org.opengis.temporal.RelativePosition;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -851,22 +852,61 @@ public class WMSCapsTransformer extends TransformerBase {
                 if (coverage.getTemporalExtent() != null && coverage.getTemporalExtent().size() > 0) {
                     Position beginPosition = null;
                     Position endPosition = null;
+                    Duration duration = null;
+                    
                     for(TemporalGeometricPrimitive temporalObject : coverage.getTemporalExtent()) {
                         if (temporalObject instanceof Period) {
-                            beginPosition = ((Period) temporalObject).getBeginning().getPosition();
-                            endPosition = ((Period) temporalObject).getEnding().getPosition();
+                            Position tmp = ((Period) temporalObject).getBeginning().getPosition();
+                            if (beginPosition != null) {
+                                DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                                DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                
+                                if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                                    beginPosition = tmp;
+                                } else if (duration == null)
+                                    duration = beginInstant.distance(tmpInstant);
+                            } else
+                                beginPosition = tmp;
+                            
+                            tmp = ((Period) temporalObject).getEnding().getPosition();
+                            if (endPosition != null) {
+                                DefaultInstant endInstant = new DefaultInstant(endPosition);
+                                DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                
+                                if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                                    endPosition = tmp;
+                                }
+                            } else
+                                endPosition = tmp;
                         } else if (temporalObject instanceof Instant) {
-                            beginPosition = endPosition = ((Instant) temporalObject).getPosition();
+                            Position tmp = ((Instant) temporalObject).getPosition();
+                            if (beginPosition != null) {
+                                DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                                DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                
+                                if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                                    beginPosition = tmp;
+                                } else if (duration == null)
+                                    duration = beginInstant.distance(tmpInstant);
+                            } else
+                                beginPosition = tmp;
+                            
+                            if (endPosition != null) {
+                                DefaultInstant endInstant = new DefaultInstant(endPosition);
+                                DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                
+                                if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                                    endPosition = tmp;
+                                }
+                            } else
+                                endPosition = tmp;
                         }
                     }
                     
-                    DefaultInstant beginInstant = new DefaultInstant(beginPosition);
-                    DefaultInstant endInstant = new DefaultInstant(endPosition);
-                    Duration duration = beginInstant.distance(endInstant);
                     AttributesImpl timeDim = new AttributesImpl();
                     timeDim.addAttribute("", "name", "name", "", "time");
                     timeDim.addAttribute("", "default", "default", "", beginPosition.getDateTime().toString());
-                    element("Extent", beginPosition.getDateTime() + "/" + endPosition.getDateTime() + "/" + duration.toString(), timeDim);
+                    element("Extent", beginPosition.getDateTime() + (duration != null ? "/" : ",") + endPosition.getDateTime() + (duration != null ? "/" + duration.toString() : ""), timeDim);
                 }
                 
                 if (coverage.getVerticalExtent() != null && coverage.getVerticalExtent().size() > 0) {

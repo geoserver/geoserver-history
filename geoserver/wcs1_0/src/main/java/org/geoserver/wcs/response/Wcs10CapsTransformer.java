@@ -20,13 +20,17 @@ import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.type.Name;
 import org.opengis.geometry.Envelope;
+import org.opengis.temporal.Duration;
 import org.opengis.temporal.Instant;
 import org.opengis.temporal.Period;
+import org.opengis.temporal.Position;
+import org.opengis.temporal.RelativePosition;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
@@ -549,19 +553,64 @@ public class Wcs10CapsTransformer extends TransformerBase {
                     String temporalExtentBegin = null;
                     String temporalExtentEnd = null;
     
+                    Position beginPosition = null;
+                    Position endPosition = null;
+                    Duration duration = null;
+                    
                     for (Iterator<TemporalGeometricPrimitive> i=temporalExtent.iterator(); i.hasNext();) {
                         TemporalGeometricPrimitive temporalObject = i.next();
                         
                         if (temporalObject instanceof Period) {
-                            temporalExtentBegin = ((Period) temporalObject).getBeginning().getPosition().getDateTime().toString();
-                            temporalExtentEnd = ((Period) temporalObject).getEnding().getPosition().getDateTime().toString();
+                            Position tmp = ((Period) temporalObject).getBeginning().getPosition();
+                            if (beginPosition != null) {
+                                DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                                DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                
+                                if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                                    beginPosition = tmp;
+                                } else if (duration == null)
+                                    duration = beginInstant.distance(tmpInstant);
+                            } else
+                                beginPosition = tmp;
+                            
+                            tmp = ((Period) temporalObject).getEnding().getPosition();
+                            if (endPosition != null) {
+                                DefaultInstant endInstant = new DefaultInstant(endPosition);
+                                DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                
+                                if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                                    endPosition = tmp;
+                                }
+                            } else
+                                endPosition = tmp;
                         } else if (temporalObject instanceof Instant) {
-                            if (temporalExtentBegin == null || temporalExtentBegin.length() == 0)
-                                temporalExtentBegin = ((Instant) temporalObject).getPosition().getDateTime().toString();
-                            if (!i.hasNext())
-                                temporalExtentEnd = ((Instant) temporalObject).getPosition().getDateTime().toString();
+                            Position tmp = ((Instant) temporalObject).getPosition();
+                            if (beginPosition != null) {
+                                DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                                DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                
+                                if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                                    beginPosition = tmp;
+                                } else if (duration == null)
+                                    duration = beginInstant.distance(tmpInstant);
+                            } else
+                                beginPosition = tmp;
+                            
+                            if (endPosition != null) {
+                                DefaultInstant endInstant = new DefaultInstant(endPosition);
+                                DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                
+                                if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                                    endPosition = tmp;
+                                }
+                            } else
+                                endPosition = tmp;
                         }
                     }
+
+                    temporalExtentBegin = beginPosition.getDateTime().toString();
+                    temporalExtentEnd   = endPosition.getDateTime().toString();
+                    
                     element("gml:timePosition", temporalExtentBegin);
                     element("gml:timePosition", temporalExtentEnd);
                 }
@@ -612,9 +661,10 @@ public class Wcs10CapsTransformer extends TransformerBase {
                         start("wcs:CoverageOfferingBrief");
 
                         String tmp;
-
+                        
                         handleMetadataLink(cv.getMetadataLink());
-                        tmp = fields.getFieldType(fieldName.getLocalPart()).getDescription().toString();
+
+                        tmp = cv.getLabel() + " @ " + fieldName.getLocalPart();
 
                         if ((tmp != null) && (tmp != "")) {
                             element("wcs:description", tmp);
@@ -626,7 +676,7 @@ public class Wcs10CapsTransformer extends TransformerBase {
                             element("wcs:name", tmp);
                         }
 
-                        tmp = cv.getLabel() + " @ " + fieldName.getLocalPart();
+                        tmp = fields.getFieldType(fieldName.getLocalPart()).getDescription().toString();
 
                         if ((tmp != null) && (tmp != "")) {
                             element("wcs:label", tmp);

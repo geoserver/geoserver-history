@@ -30,6 +30,7 @@ import org.geotools.coverage.io.range.RangeType;
 import org.geotools.data.Parameter;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.temporal.object.DefaultPosition;
 import org.opengis.feature.type.Name;
 import org.opengis.geometry.Envelope;
@@ -39,8 +40,11 @@ import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.cs.CoordinateSystemAxis;
 import org.opengis.referencing.datum.TemporalDatum;
 import org.opengis.referencing.datum.VerticalDatum;
+import org.opengis.temporal.Duration;
 import org.opengis.temporal.Instant;
 import org.opengis.temporal.Period;
+import org.opengis.temporal.Position;
+import org.opengis.temporal.RelativePosition;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
@@ -313,25 +317,62 @@ public final class CoveragesEditorForm extends ActionForm {
             this.timeAxisUnit = timeAxis.getUnit().toString();
             
             
+            Position beginPosition = null;
+            Position endPosition = null;
+            Duration duration = null;
             for (Iterator<TemporalGeometricPrimitive> i=temporalExtent.iterator(); i.hasNext();) {
                 TemporalGeometricPrimitive temporalObject = i.next();
                 
                 if (temporalObject instanceof Period) {
-                    /*
-                    long beginTime = ((Period) temporalObject).getBeginning().getPosition().getDate().getTime();
-                    long endTime = ((Period) temporalObject).getEnding().getPosition().getDate().getTime();
-                    temporalExtentBegin = new DefaultPosition(new Date((long)toMillis.convert(beginTime) + origin)).getDateTime().toString();
-                    temporalExtentEnd = new DefaultPosition(new Date((long)toMillis.convert(endTime) + origin)).getDateTime().toString();
-                    */
-                    temporalExtentBegin = ((Period) temporalObject).getBeginning().getPosition().getDateTime().toString();
-                    temporalExtentEnd = ((Period) temporalObject).getEnding().getPosition().getDateTime().toString();
+                    Position tmp = ((Period) temporalObject).getBeginning().getPosition();
+                    if (beginPosition != null) {
+                        DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                        DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                        
+                        if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                            beginPosition = tmp;
+                        } else if (duration == null)
+                            duration = beginInstant.distance(tmpInstant);
+                    } else
+                        beginPosition = tmp;
+                    
+                    tmp = ((Period) temporalObject).getEnding().getPosition();
+                    if (endPosition != null) {
+                        DefaultInstant endInstant = new DefaultInstant(endPosition);
+                        DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                        
+                        if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                            endPosition = tmp;
+                        }
+                    } else
+                        endPosition = tmp;
                 } else if (temporalObject instanceof Instant) {
-                    if (temporalExtentBegin == null || temporalExtentBegin.length() == 0)
-                        temporalExtentBegin = ((Instant) temporalObject).getPosition().getDateTime().toString();
-                    if (!i.hasNext())
-                        temporalExtentEnd = ((Instant) temporalObject).getPosition().getDateTime().toString();
+                    Position tmp = ((Instant) temporalObject).getPosition();
+                    if (beginPosition != null) {
+                        DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                        DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                        
+                        if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                            beginPosition = tmp;
+                        } else if (duration == null)
+                            duration = beginInstant.distance(tmpInstant);
+                    } else
+                        beginPosition = tmp;
+                    
+                    if (endPosition != null) {
+                        DefaultInstant endInstant = new DefaultInstant(endPosition);
+                        DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                        
+                        if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                            endPosition = tmp;
+                        }
+                    } else
+                        endPosition = tmp;
                 }
             }
+
+            temporalExtentBegin = beginPosition.getDateTime().toString();
+            temporalExtentEnd   = endPosition.getDateTime().toString();
         } else {
             temporalExtentBegin = "";
             temporalExtentEnd = "";

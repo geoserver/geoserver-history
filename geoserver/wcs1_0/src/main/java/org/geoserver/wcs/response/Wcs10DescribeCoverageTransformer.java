@@ -200,9 +200,9 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 FieldType field = ci.getFields().getFieldType(fieldId);
                 start("wcs:CoverageOffering");
                     handleMetadataLink(ci.getMetadataLink());
-                element("wcs:description", field.getDescription().toString());
+                element("wcs:description", ci.getLabel() + " @ " + field.getName().getLocalPart());
                 element("wcs:name", ci.getName() + "@" + fieldId);
-                element("wcs:label", ci.getLabel() + " @ " + field.getName().getLocalPart());
+                element("wcs:label", field.getDescription().toString());
                     handleLonLatEnvelope(ci.getWGS84LonLatEnvelope());
                     handleKeywords(ci.getKeywords());
                     
