@@ -388,7 +388,7 @@
                     <a>Format:</a>
                     <select id="imageFormatSelector" onchange="setImageFormat(value)">
                         <option value="image/png">PNG 24bit</option>
-                        <option value="image/png8">PNG 8bit</option>
+                        <option id="png8" value="image/png8">PNG 8bit</option>
                         <option value="image/gif">GIF</option>
                         <option id="jpeg" value="image/jpeg">JPEG</option>
                     </select>

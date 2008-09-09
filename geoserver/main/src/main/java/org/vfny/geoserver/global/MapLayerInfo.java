@@ -4,17 +4,17 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.List;
+
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
-import java.io.IOException;
-import java.util.List;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -90,6 +90,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
      * List of styles for a grouped layer
      */
     private List styles;
+    private String fieldId;
     
     public MapLayerInfo() {
         name = "";
@@ -111,6 +112,11 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         coverage = info;
         feature = null;
         type = TYPE_RASTER;
+    }
+    
+    public MapLayerInfo(CoverageInfo info, String fieldId) {
+        this(info);
+        this.fieldId = fieldId;
     }
 
     public MapLayerInfo(FeatureTypeInfo info) {
@@ -207,10 +213,12 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
 
     /**
      *
+     * @param fieldId 
      * @uml.property name="coverage"
      */
-    public void setCoverage(CoverageInfo coverage) {
+    public void setCoverage(CoverageInfo coverage, String fieldId) {
         this.name = coverage.getName();
+        this.fieldId = fieldId;
         this.label = coverage.getLabel();
         this.description = coverage.getDescription();
         this.dirName = coverage.getDirName();
@@ -380,6 +388,17 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     public void setRemoteFeatureSource(
             FeatureSource<SimpleFeatureType, SimpleFeature> remoteFeatureSource) {
         this.remoteFeatureSource = remoteFeatureSource;
+    }
+
+    /**
+     * @return the fieldId
+     */
+    public String getFieldId() {
+        return fieldId;
+    }
+
+    public void setFieldId(String fieldName) {
+        this.fieldId = fieldName;
     }
 
 }

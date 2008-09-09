@@ -2052,6 +2052,16 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             return null;
     }
     
+    public MapLayerInfo getMapLayerInfo(String layerName, String fieldName) {
+        Integer layerType = getLayerType(layerName);
+        if(layerType == TYPE_VECTOR)
+            return new MapLayerInfo(getFeatureTypeInfo(layerName));
+        else if(layerType == TYPE_RASTER)
+            return new MapLayerInfo(getCoverageInfo(layerName), fieldName);
+        else
+            return null;
+    }
+
 
     /**
      * Retrieve map of FeatureTypeInfo by prefix:typeName.
@@ -2745,4 +2755,5 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         }
         LOGGER.info("Done disposing datastores.");
     }
+
 }

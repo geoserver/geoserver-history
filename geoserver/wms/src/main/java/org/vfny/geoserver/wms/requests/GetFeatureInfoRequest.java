@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.servlets.WMService;
 
 
 /**

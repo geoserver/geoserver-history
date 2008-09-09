@@ -309,7 +309,15 @@ public class GetMapXmlReader extends XmlRequestReader {
             sl = styledLayers[i];
 
             String layerName = sl.getName();
+            String coverageName = layerName.indexOf("@") > 0 ? 
+                    layerName.substring(0, layerName.indexOf("@")) : 
+                    layerName;
+            String fieldName = layerName.indexOf("@") > 0 ?
+                    layerName.substring(layerName.indexOf("@")+1) : 
+                    null;
 
+            layerName = coverageName;
+            
             if (null == layerName) {
                 throw new WmsException("A UserLayer without layer name was passed");
             }
@@ -336,7 +344,7 @@ public class GetMapXmlReader extends XmlRequestReader {
                             currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));    
                         }
                         catch( Exception e ) {
-                            currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName));
+                            currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName), fieldName);
                         }
                         
                         GetMapKvpReader.addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
@@ -347,7 +355,7 @@ public class GetMapXmlReader extends XmlRequestReader {
                         currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));    
                     }
                     catch( Exception e ) {
-                        currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName));
+                        currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName), fieldName);
                     }
                 }
             }

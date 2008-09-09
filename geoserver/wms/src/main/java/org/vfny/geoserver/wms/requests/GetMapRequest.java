@@ -4,24 +4,23 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geoserver.ows.util.CaseInsensitiveMap;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyledLayerDescriptor;
-import org.opengis.filter.Filter;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.servlets.WMService;
 import java.awt.Color;
 import java.awt.geom.Point2D;
-import java.awt.image.IndexColorModel;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.geoserver.ows.util.CaseInsensitiveMap;
+import org.geotools.styling.Style;
+import org.opengis.filter.Filter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

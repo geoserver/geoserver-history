@@ -91,7 +91,15 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
 
         for (int i = 0; i < layerCount; i++) {
             layerName = (String) layers.get(i);
-
+            String coverageName = layerName.indexOf("@") > 0 ? 
+                    layerName.substring(0, layerName.indexOf("@")) : 
+                    layerName;
+            String fieldName = layerName.indexOf("@") > 0 ?
+                    layerName.substring(layerName.indexOf("@")+1) : 
+                    null;
+                    
+            layerName = coverageName;
+            
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine(new StringBuffer("Looking for layer ").append(layerName).toString());
             }
@@ -113,7 +121,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
 
                     CoverageInfo cinfo = catalog.getCoverageInfo(layerName);
                     layer = new MapLayerInfo();
-                    layer.setCoverage(cinfo);
+                    layer.setCoverage(cinfo, fieldName);
                     req.addLayer(layer);
 
                     if (LOGGER.isLoggable(Level.FINE)) {

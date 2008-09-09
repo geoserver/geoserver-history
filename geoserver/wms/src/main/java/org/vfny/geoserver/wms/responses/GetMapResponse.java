@@ -442,11 +442,8 @@ public class GetMapResponse implements Response {
             if (fields != null && fields.getNumFieldTypes() > 0) {
                 for (FieldType field : fields.getFieldTypes()) {
                     String fieldName = field.getName().getLocalPart();
-                    for (Object key : request.getRawKvp().keySet() ) {
-                        if (((String)key).equalsIgnoreCase("dim_" + fieldName)) {
-                            rangeSubset.add(field);
-                        }
-                    }
+                    if (layer.getFieldId() != null && layer.getFieldId().equalsIgnoreCase(fieldName))
+                        rangeSubset.add(field);
                 }
             }
             if (rangeSubset != null && rangeSubset.size() > 0) {
@@ -499,7 +496,7 @@ public class GetMapResponse implements Response {
                     String fieldName = field.getName().getLocalPart();
                     String selectedBandField = null;
                     for (Object key : request.getRawKvp().keySet() ) {
-                        if (((String)key).equalsIgnoreCase("dim_" + fieldName)) {
+                        if (((String)key).toLowerCase().startsWith("dim_")) {
                             Object value = request.getRawKvp().get(key);
                             if (value instanceof String)
                                 selectedBandField = (String) value;

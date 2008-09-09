@@ -4,12 +4,25 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.FactoryConfigurationError;
+
 import org.geoserver.platform.ServiceException;
-import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
-import org.geotools.resources.coverage.CoverageUtilities;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
@@ -21,7 +34,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
-
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -30,23 +42,6 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
-import org.vfny.geoserver.wms.servlets.WMService;
-import java.awt.Font;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.FactoryConfigurationError;
 
 /**
  * Key/Value pair set parsed for a GetLegendGraphic request. When calling
@@ -118,6 +113,14 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         // + "\"");
         // }
         String layer = getValue("LAYER");
+        String coverageName = layer.indexOf("@") > 0 ? 
+                layer.substring(0, layer.indexOf("@")) : 
+                layer;
+        String fieldName = layer.indexOf("@") > 0 ?
+                layer.substring(layer.indexOf("@")+1) : 
+                null;
+        
+        layer = coverageName;
         MapLayerInfo mli = new MapLayerInfo();
 
         try {
@@ -130,7 +133,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         } catch (NoSuchElementException e) {
             try {
                 CoverageInfo cvi = request.getWMS().getData().getCoverageInfo(layer);
-                mli.setCoverage(cvi);
+                mli.setCoverage(cvi, fieldName);
 
                 FeatureCollection<SimpleFeatureType, SimpleFeature> feature;
                 // TODO: FIX THIS!!!

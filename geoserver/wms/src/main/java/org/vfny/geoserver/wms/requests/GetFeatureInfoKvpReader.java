@@ -4,25 +4,18 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.geoserver.ows.util.KvpMap;
-import org.geoserver.ows.util.KvpUtils;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.kvp.GetMapKvpRequestReader;
-import org.geotools.data.wms.response.GetFeatureInfoResponse;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.servlets.WMService;
-
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
-import org.vfny.geoserver.global.CoverageInfo;
 
 
 /**
@@ -171,7 +164,13 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
         String layerName = null;
         for (int i = 0; i < layerCount; i++) {
             layerName = (String) layers.get(i); 
-            layerInfos[i] = catalog.getMapLayerInfo(layerName);
+            String coverageName = layerName.indexOf("@") > 0 ? 
+                    layerName.substring(0, layerName.indexOf("@")) : 
+                    layerName;
+            String fieldName = layerName.indexOf("@") > 0 ?
+                    layerName.substring(layerName.indexOf("@")+1) : 
+                    null;
+            layerInfos[i] = catalog.getMapLayerInfo(coverageName, fieldName);
         }
 
         return layerInfos;

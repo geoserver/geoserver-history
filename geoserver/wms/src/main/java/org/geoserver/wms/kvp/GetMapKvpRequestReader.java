@@ -548,8 +548,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     try {
                         currLayer.setFeature(GetMapKvpReader.findFeatureLayer(request, layerName));
                     } catch (WmsException e) {
-                        currLayer
-                                .setCoverage(GetMapKvpReader.findCoverageLayer(request, layerName));
+                        currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(request, layerName), null);
                     }
                 }
 
@@ -1027,10 +1026,10 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
             Integer layerType = catalog.getLayerType(layerName);
             if (layerType != null) {
-                layers.add(buildMapLayerInfo(layerName));
+                layers.add(buildMapLayerInfo(layerName, fieldName));
             } else {
                 if (wms.getBaseMapLayers().containsKey(layerName)) {
-                    layers.add(buildMapLayerInfo(layerName));
+                    layers.add(buildMapLayerInfo(layerName, fieldName));
                 } else {
                     // //
                     // Search for grouped layers (attention: heavy process)
@@ -1046,7 +1045,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                             String wmsPath = ftype.getWmsPath();
 
                             if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
-                                layers.add(buildMapLayerInfo(catalogLayerName));
+                                layers.add(buildMapLayerInfo(catalogLayerName, fieldName));
                                 found = true;
                             }
                         } catch (Exception e_1) {
@@ -1055,7 +1054,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                                 String wmsPath = cv.getWmsPath();
 
                                 if ((wmsPath != null) && wmsPath.matches(".*/" + catalogLayerName)) {
-                                    layers.add(buildMapLayerInfo(catalogLayerName));
+                                    layers.add(buildMapLayerInfo(catalogLayerName, fieldName));
                                     found = true;
                                 }
                             } catch (Exception e_2) {
@@ -1089,7 +1088,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         }
     }
 
-    private MapLayerInfo buildMapLayerInfo(String layerName) throws Exception {
+    private MapLayerInfo buildMapLayerInfo(String layerName, String fieldId) throws Exception {
         MapLayerInfo li = new MapLayerInfo();
 
         FeatureTypeInfo ftype = findFeatureLayer(layerName);
@@ -1098,7 +1097,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         } else {
             CoverageInfo cv = findCoverageLayer(layerName);
             if (cv != null) {
-                li.setCoverage(cv);
+                li.setCoverage(cv, fieldId);
             } else {
                 if (wms.getBaseMapLayers().containsKey(layerName)) {
                     String styleCsl = (String) wms.getBaseMapStyles().get(layerName);

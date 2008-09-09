@@ -24,59 +24,60 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import org.apache.struts.util.MessageResources;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.coverage.io.range.FieldType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
-import org.vfny.geoserver.wms.servlets.Capabilities;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-
 /**
- * <b>MapPreviewAction</b><br> Sep 26, 2005<br>
+ * <b>MapPreviewAction</b><br>
+ * Sep 26, 2005<br>
  * <b>Purpose:</b><br>
- * Gathers up all the FeatureTypes in use and returns the informaion to the
- * .jsp .<br>
+ * Gathers up all the FeatureTypes in use and returns the informaion to the .jsp .<br>
  * It will also generate requests to the WMS "openlayers" output format. <br>
- * This will communicate to a .jsp and return it three arrays of strings that contain:<br>
- * - The Featuretype's name<br>
- * - The DataStore name of the FeatureType<br>
- * - The bounding box of the FeatureType<br>
+ * This will communicate to a .jsp and return it three arrays of strings that contain:<br> - The
+ * Featuretype's name<br> - The DataStore name of the FeatureType<br> - The bounding box of the
+ * FeatureType<br>
  * To change what data is output to the .jsp, you must change <b>struts-config.xml</b>.<br>
  * Look for the line:<br>
  * &lt;form-bean <br>
  * name="mapPreviewForm"<br>
- *
+ * 
  * @author Brent Owens (The Open Planning Project)
  * @version
  */
 public class MapPreviewAction extends GeoServerAction {
     // the layer is a coverage, or is made exclusively of coverages
     public static final Integer LAYER_IS_COVERAGE = new Integer(0);
+
     // the layer is a group with at least one coverage
     public static final Integer LAYER_HAS_COVERAGE = new Integer(1);
+
     // the layer or group is made of vectors only
     public static final Integer LAYER_IS_VECTOR = new Integer(2);
-    
-    
-    /* (non-Javadoc)
-     * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping,
+     *      org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest,
+     *      javax.servlet.http.HttpServletResponse)
      */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+            HttpServletRequest request, HttpServletResponse response) throws IOException,
+            ServletException {
         ArrayList dsList = new ArrayList();
         ArrayList ftList = new ArrayList();
         ArrayList bboxList = new ArrayList();
@@ -95,7 +96,7 @@ public class MapPreviewAction extends GeoServerAction {
         List ftypes = new ArrayList(catalog.getFeatureTypeInfos().values());
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
             FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
-            if(!ft.isEnabled())
+            if (!ft.isEnabled())
                 it.remove();
         }
         Collections.sort(ftypes, new FeatureTypeInfoNameComparator());
@@ -103,7 +104,7 @@ public class MapPreviewAction extends GeoServerAction {
         List ctypes = new ArrayList(catalog.getCoverageInfos().values());
         for (Iterator it = ctypes.iterator(); it.hasNext();) {
             CoverageInfo ci = (CoverageInfo) it.next();
-            if(!ci.isEnabled())
+            if (!ci.isEnabled())
                 it.remove();
         }
         Collections.sort(ctypes, new CoverageInfoNameComparator());
@@ -114,18 +115,18 @@ public class MapPreviewAction extends GeoServerAction {
         // 2) delete any existing generated files in the generation directory
         ServletContext sc = request.getSession().getServletContext();
 
-        //File rootDir =  GeoserverDataDirectory.getGeoserverDataDirectory(sc);
-        //File previewDir = new File(sc.getRealPath("data/generated"));
+        // File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory(sc);
+        // File previewDir = new File(sc.getRealPath("data/generated"));
         if (sc.getRealPath("preview") == null) {
-            //There's a problem here, since we can't get a real path for the "preview" directory.
-            //On tomcat this happens when "unpackWars=false" is set for this context.
+            // There's a problem here, since we can't get a real path for the "preview" directory.
+            // On tomcat this happens when "unpackWars=false" is set for this context.
             throw new RuntimeException(
-                "Couldn't populate preview directory...is the war running in unpacked mode?");
+                    "Couldn't populate preview directory...is the war running in unpacked mode?");
         }
 
         File previewDir = new File(sc.getRealPath("preview"));
 
-        //File previewDir = new File(rootDir, "data/generated");
+        // File previewDir = new File(rootDir, "data/generated");
         if (!previewDir.exists()) {
             previewDir.mkdirs();
         }
@@ -150,56 +151,56 @@ public class MapPreviewAction extends GeoServerAction {
                 if (!layer.isEnabled() || layer.isGeometryless()) {
                     continue; // if it isn't enabled, move to the next layer
                 }
-    
+
                 CoordinateReferenceSystem layerCrs = layer.getDeclaredCRS();
-    
-                /* A quick and efficient way to grab the bounding box is to get it
-                 * from the featuretype info where the lat/lon bbox is loaded
-                 * from the DTO. We do this with layer.getLatLongBoundingBox().
-                 * We need to reproject the bounding box from lat/lon to the layer crs
-                 * for display
+
+                /*
+                 * A quick and efficient way to grab the bounding box is to get it from the
+                 * featuretype info where the lat/lon bbox is loaded from the DTO. We do this with
+                 * layer.getLatLongBoundingBox(). We need to reproject the bounding box from lat/lon
+                 * to the layer crs for display
                  */
                 Envelope orig_bbox = layer.getLatLongBoundingBox();
-    
+
                 if ((orig_bbox.getWidth() == 0) || (orig_bbox.getHeight() == 0)) {
                     orig_bbox.expandBy(0.1);
                 }
-    
+
                 ReferencedEnvelope bbox = new ReferencedEnvelope(orig_bbox, latLonCrs);
-    
+
                 if (!CRS.equalsIgnoreMetadata(layerCrs, latLonCrs)) {
                     // first check if we have a native bbox
                     bbox = layer.getBoundingBox();
                 }
-    
+
                 // we now have a bounding box in the same CRS as the layer
                 if ((bbox.getWidth() == 0) || (bbox.getHeight() == 0)) {
                     bbox.expandBy(0.1);
                 }
-    
+
                 if (layer.isEnabled()) {
                     // prepare strings for web output
                     ftList.add(layer.getNameSpace().getPrefix() + "_"
-                        + layer.getFeatureType().getTypeName()); // FeatureType name
+                            + layer.getFeatureType().getTypeName()); // FeatureType name
                     ftnsList.add(layer.getNameSpace().getPrefix() + ":"
-                        + layer.getFeatureType().getTypeName());
+                            + layer.getFeatureType().getTypeName());
                     dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
-                                                                  // bounding box of the FeatureType
-    
+                    // bounding box of the FeatureType
+
                     // expand bbox by 5% to allow large symbolizers to fit the map
                     bbox.expandBy(bbox.getWidth() / 20, bbox.getHeight() / 20);
                     bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
-                        + bbox.getMaxY());
+                            + bbox.getMaxY());
                     srsList.add("EPSG:" + layer.getSRS());
-        
-                        int[] imageBox = getMapWidthHeight(bbox);
-                        widthList.add(String.valueOf(imageBox[0]));
-                        heightList.add(String.valueOf(imageBox[1]));
-                        
-                     // not a coverage
+
+                    int[] imageBox = getMapWidthHeight(bbox);
+                    widthList.add(String.valueOf(imageBox[0]));
+                    heightList.add(String.valueOf(imageBox[1]));
+
+                    // not a coverage
                     coverageStatus.add(LAYER_IS_VECTOR);
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Error trying to access layer " + layer.getName(), e);
             }
         }
@@ -208,38 +209,65 @@ public class MapPreviewAction extends GeoServerAction {
         for (Iterator it = ctypes.iterator(); it.hasNext();) {
             CoverageInfo layer = (CoverageInfo) it.next();
             try {
-    
-                // upper right corner? lower left corner? Who knows?! Better naming conventions needed guys.
+
+                // upper right corner? lower left corner? Who knows?! Better naming conventions
+                // needed guys.
                 double[] lowerLeft = layer.getEnvelope().getLowerCorner().getCoordinates();
                 double[] upperRight = layer.getEnvelope().getUpperCorner().getCoordinates();
-                Envelope bbox = new Envelope(lowerLeft[0], upperRight[0], lowerLeft[1], upperRight[1]);
-    
+                Envelope bbox = new Envelope(lowerLeft[0], upperRight[0], lowerLeft[1],
+                        upperRight[1]);
+
                 if (layer.isEnabled()) {
                     // prepare strings for web output
-                    String shortLayerName = layer.getName().split(":")[1]; // we don't want the namespace prefix
-    
-                    ftList.add(layer.getNameSpace().getPrefix() + "_" + shortLayerName); // Coverage name
-                    ftnsList.add(layer.getNameSpace().getPrefix() + ":" + shortLayerName);
-    
-                    dsList.add(layer.getFormatInfo().getId()); // DataStore info
-                                                               // bounding box of the Coverage
-    
-                    bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
-                        + bbox.getMaxY());
-                    srsList.add(layer.getSrsName());
-    
-                    int[] imageBox = getMapWidthHeight(bbox);
-                    widthList.add(String.valueOf(imageBox[0]));
-                    heightList.add(String.valueOf(imageBox[1]));
-                    
-                    // this layer is a coverage, all right
-                    coverageStatus.add(LAYER_IS_COVERAGE);
+                    String shortLayerName = layer.getName().split(":")[1]; // we don't want the
+                                                                            // namespace prefix
+
+                    if (layer.getFields() != null && layer.getFields().getNumFieldTypes() > 0) {
+                        for (FieldType field : layer.getFields().getFieldTypes()) {
+                            ftList.add(layer.getNameSpace().getPrefix() + "_" + shortLayerName
+                                    + "@" + field.getName().getLocalPart()); // Coverage name
+                            ftnsList.add(layer.getNameSpace().getPrefix() + ":" + shortLayerName
+                                    + "@" + field.getName().getLocalPart());
+
+                            dsList.add(layer.getFormatInfo().getId()); // DataStore info
+                            // bounding box of the Coverage
+
+                            bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX()
+                                    + "," + bbox.getMaxY());
+                            srsList.add(layer.getSrsName());
+
+                            int[] imageBox = getMapWidthHeight(bbox);
+                            widthList.add(String.valueOf(imageBox[0]));
+                            heightList.add(String.valueOf(imageBox[1]));
+
+                            // this layer is a coverage, all right
+                            coverageStatus.add(LAYER_IS_COVERAGE);
+                        }
+                    } else {
+                        ftList.add(layer.getNameSpace().getPrefix() + "_" + shortLayerName); // Coverage
+                                                                                                // name
+                        ftnsList.add(layer.getNameSpace().getPrefix() + ":" + shortLayerName);
+
+                        dsList.add(layer.getFormatInfo().getId()); // DataStore info
+                        // bounding box of the Coverage
+
+                        bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX()
+                                + "," + bbox.getMaxY());
+                        srsList.add(layer.getSrsName());
+
+                        int[] imageBox = getMapWidthHeight(bbox);
+                        widthList.add(String.valueOf(imageBox[0]));
+                        heightList.add(String.valueOf(imageBox[1]));
+
+                        // this layer is a coverage, all right
+                        coverageStatus.add(LAYER_IS_COVERAGE);
+                    }
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Error trying to access layer " + layer.getName(), e);
             }
         }
-        
+
         // 3.6) Go thru base map layers
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = getResources(request);
@@ -250,14 +278,17 @@ public class MapPreviewAction extends GeoServerAction {
                 ftList.add(baseMapTitle);
                 ftnsList.add(baseMapTitle);
                 dsList.add(baseMap);
-                GeneralEnvelope bmBbox = ((GeneralEnvelope) wms.getBaseMapEnvelopes().get(baseMapTitle));
-                Envelope bbox = new Envelope(bmBbox.getMinimum(0), bmBbox.getMaximum(0), bmBbox.getMinimum(1), bmBbox.getMaximum(1));
+                GeneralEnvelope bmBbox = ((GeneralEnvelope) wms.getBaseMapEnvelopes().get(
+                        baseMapTitle));
+                Envelope bbox = new Envelope(bmBbox.getMinimum(0), bmBbox.getMaximum(0), bmBbox
+                        .getMinimum(1), bmBbox.getMaximum(1));
                 bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
                         + bbox.getMaxY());
                 try {
-                    Integer epsgCode = CRS.lookupEpsgCode(bmBbox.getCoordinateReferenceSystem(), false) ; 
-                    if ( epsgCode != null ) {
-                        srsList.add( "EPSG:" + epsgCode );
+                    Integer epsgCode = CRS.lookupEpsgCode(bmBbox.getCoordinateReferenceSystem(),
+                            false);
+                    if (epsgCode != null) {
+                        srsList.add("EPSG:" + epsgCode);
                     }
                 } catch (FactoryException e) {
                     throw (IOException) new IOException().initCause(e);
@@ -265,11 +296,11 @@ public class MapPreviewAction extends GeoServerAction {
                 int[] imageBox = getMapWidthHeight(bbox);
                 widthList.add(String.valueOf(imageBox[0]));
                 heightList.add(String.valueOf(imageBox[1]));
-                
+
                 // this depends on the composition, we raise the flag if the layer has at least
                 // one coverage
-               coverageStatus.add(computeGroupCoverageStatus(wms, baseMapTitle));
-            } catch(Exception e) {
+                coverageStatus.add(computeGroupCoverageStatus(wms, baseMapTitle));
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Error trying to access group " + baseMapTitle, e);
             }
         }
@@ -285,16 +316,17 @@ public class MapPreviewAction extends GeoServerAction {
         myForm.set("HeightList", heightList.toArray(new String[heightList.size()]));
         myForm.set("FTNamespaceList", ftnsList.toArray(new String[ftnsList.size()]));
         myForm.set("CoverageStatus", coverageStatus.toArray(new Integer[coverageStatus.size()]));
-        //String proxifiedBaseUrl = RequestUtils.baseURL(request);
-        GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class).get(0);
-        //proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl, gs.getProxyBaseUrl());
-        myForm.set("BaseUrl", "" );
+        // String proxifiedBaseUrl = RequestUtils.baseURL(request);
+        GeoServer gs = (GeoServer) GeoServerExtensions.extensions(GeoServer.class).get(0);
+        // proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl, gs.getProxyBaseUrl());
+        myForm.set("BaseUrl", "");
 
         return mapping.findForward("success");
     }
 
     /**
      * Computes the coverage status flag for the specified layer
+     * 
      * @param baseMapTitle
      * @return
      */
@@ -303,12 +335,12 @@ public class MapPreviewAction extends GeoServerAction {
         String[] layers = layerParam.split(",");
         int coverageCount = 0;
         for (int i = 0; i < layers.length; i++) {
-            if(wms.getData().getLayerType(layers[i]) == Data.TYPE_RASTER)
+            if (wms.getData().getLayerType(layers[i]) == Data.TYPE_RASTER)
                 coverageCount++;
         }
-        if(coverageCount == 0)
+        if (coverageCount == 0)
             return LAYER_IS_VECTOR;
-        else if(coverageCount < layers.length)
+        else if (coverageCount < layers.length)
             return LAYER_HAS_COVERAGE;
         else
             return LAYER_IS_COVERAGE;
@@ -327,7 +359,7 @@ public class MapPreviewAction extends GeoServerAction {
             height = 550;
         }
 
-        // make sure we reach some minimal dimensions (300 pixels is more or less 
+        // make sure we reach some minimal dimensions (300 pixels is more or less
         // the height of the zoom bar)
         if (width < 300) {
             width = 300;
