@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
-import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSExtensions;
 import org.springframework.context.ApplicationContext;

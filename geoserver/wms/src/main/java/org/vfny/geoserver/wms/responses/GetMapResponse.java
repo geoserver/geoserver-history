@@ -421,7 +421,10 @@ public class GetMapResponse implements Response {
             TransformException, WcsException, WmsException {
         GridCoverage2D coverage = null;
         if (cvAccess != null) {
-            final CoverageSource cvSource = cvAccess.access(new NameImpl(layer.getName()), null, AccessType.READ_ONLY, null, null);
+            // stripping the namespace
+            String layerName = layer.getName();
+            layerName = layerName.contains(":") ? layerName.substring(layerName.indexOf(":")+1) : layerName;
+            final CoverageSource cvSource = cvAccess.access(new NameImpl(layerName), null, AccessType.READ_ONLY, null, null);
             // handle spatial domain subset, if needed
             GeneralEnvelope requestedEnvelope = new GeneralEnvelope(new double[] {env.getMinX(), env.getMinY()}, new double[] {env.getMaxX(), env.getMaxY()});
             requestedEnvelope.setCoordinateReferenceSystem(mapcrs);

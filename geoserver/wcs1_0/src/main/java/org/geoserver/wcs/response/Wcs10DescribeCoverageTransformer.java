@@ -19,7 +19,6 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import javax.measure.Measure;
-import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 import javax.measure.unit.UnitFormat;
 
@@ -72,7 +71,6 @@ import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
-import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -204,7 +202,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                     handleMetadataLink(ci.getMetadataLink());
                 element("wcs:description", field.getDescription().toString());
                 element("wcs:name", ci.getName() + "@" + fieldId);
-                element("wcs:label", ci.getLabel());
+                element("wcs:label", ci.getLabel() + " @ " + field.getName().getLocalPart());
                     handleLonLatEnvelope(ci.getWGS84LonLatEnvelope());
                     handleKeywords(ci.getKeywords());
                     
@@ -488,21 +486,12 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                                 
                                 
                                 start("wcs:AxisDescription", attributes);
-                                // TODO: FIX THIS!!!
                                     element("wcs:name", axis.getName().getLocalPart().toString());
                                     element("wcs:label", axis.getDescription().toString());
                                     start("wcs:values");
                                     for (Measure key : axis.getKeys()) {
                                         element("wcs:singleValue", key.getValue().toString());
                                     }
-//                                    if (axis.getNumKeys() == 1) {
-//                                        element("wcs:singleValue", axis.getKey(0).toString());
-//                                    } else {
-//                                        start("wcs:interval");
-//                                            element("wcs:min", axis.getKey(0).toString());
-//                                            element("wcs:max", axis.getKey(axis.getNumKeys()-1).toString());
-//                                        end("wcs:interval");
-//                                    }
                                     end("wcs:values");
                                  end("wcs:AxisDescription");
                              end("wcs:axisDescription");

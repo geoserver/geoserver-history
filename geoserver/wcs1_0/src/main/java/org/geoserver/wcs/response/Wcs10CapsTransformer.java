@@ -626,7 +626,7 @@ public class Wcs10CapsTransformer extends TransformerBase {
                             element("wcs:name", tmp);
                         }
 
-                        tmp = cv.getLabel();
+                        tmp = cv.getLabel() + " @ " + fieldName.getLocalPart();
 
                         if ((tmp != null) && (tmp != "")) {
                             element("wcs:label", tmp);

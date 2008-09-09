@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,25 +17,33 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.measure.Measure;
+import javax.measure.unit.UnitFormat;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
-
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.coverage.io.range.Axis;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
+import org.geotools.temporal.object.DefaultDuration;
+import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.opengis.temporal.Duration;
+import org.opengis.temporal.Instant;
+import org.opengis.temporal.Period;
+import org.opengis.temporal.Position;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
@@ -43,9 +52,9 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.LegendURL;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -54,7 +63,6 @@ import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.util.Collections;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -817,7 +825,75 @@ public class WMSCapsTransformer extends TransformerBase {
                 handleLatLonBBox(llBbox);
                 handleBBox(bbox, authority);
 
-                // TODO: FIX THIS!!! HandleDimensions
+                // handle dimensions
+                if (coverage.getTemporalExtent() != null && coverage.getTemporalExtent().size() > 0) {
+                    AttributesImpl timeDim = new AttributesImpl();
+                    timeDim.addAttribute("", "name", "name", "", "time");
+                    timeDim.addAttribute("", "units", "units", "", "ISO8601");
+                    element("Dimension", null, timeDim);
+                }
+                
+                if (coverage.getVerticalExtent() != null && coverage.getVerticalExtent().size() > 0) {
+                    AttributesImpl elevDim = new AttributesImpl();
+                    elevDim.addAttribute("", "name", "name", "", "elevation");
+                    elevDim.addAttribute("", "units", "units", "", UnitFormat.getUCUMInstance().format(coverage.getVerticalCRS().getCoordinateSystem().getAxis(0).getUnit()));
+                    element("Dimension", null, elevDim);
+                }
+
+                for (Axis<?, ?> axis : field.getAxes()) {
+                    AttributesImpl fieldDim = new AttributesImpl();
+                    fieldDim.addAttribute("", "name", "name", "", axis.getName().toString());
+                    fieldDim.addAttribute("", "units", "units", "", UnitFormat.getUCUMInstance().format(axis.getUnitOfMeasure()));
+                    element("Dimension", null, fieldDim);
+                }
+                
+                // handle extents
+                if (coverage.getTemporalExtent() != null && coverage.getTemporalExtent().size() > 0) {
+                    Position beginPosition = null;
+                    Position endPosition = null;
+                    for(TemporalGeometricPrimitive temporalObject : coverage.getTemporalExtent()) {
+                        if (temporalObject instanceof Period) {
+                            beginPosition = ((Period) temporalObject).getBeginning().getPosition();
+                            endPosition = ((Period) temporalObject).getEnding().getPosition();
+                        } else if (temporalObject instanceof Instant) {
+                            beginPosition = endPosition = ((Instant) temporalObject).getPosition();
+                        }
+                    }
+                    
+                    DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                    DefaultInstant endInstant = new DefaultInstant(endPosition);
+                    Duration duration = beginInstant.distance(endInstant);
+                    AttributesImpl timeDim = new AttributesImpl();
+                    timeDim.addAttribute("", "name", "name", "", "time");
+                    timeDim.addAttribute("", "default", "default", "", beginPosition.getDateTime().toString());
+                    element("Extent", beginPosition.getDateTime() + "/" + endPosition.getDateTime() + "/" + duration.toString(), timeDim);
+                }
+                
+                if (coverage.getVerticalExtent() != null && coverage.getVerticalExtent().size() > 0) {
+                    double[] verticalLimits = WCSUtils.getVerticalExtentLimits(coverage.getVerticalExtent());
+
+                    AttributesImpl elevDim = new AttributesImpl();
+                    elevDim.addAttribute("", "name", "name", "", "elevation");
+                    elevDim.addAttribute("", "default", "default", "", String.valueOf(verticalLimits[0]));
+                    element("Extent", verticalLimits[0] + "/" + verticalLimits[1] + "/" + verticalLimits[2], elevDim);
+                }
+
+                for (Axis<?, ?> axis : field.getAxes()) {
+                    StringBuffer axisValues = new StringBuffer();
+                    
+                    int keyIndex = 0;
+                    for(Measure<?, ?> axisKey : axis.getKeys()) {
+                        axisValues.append(axisKey.getValue());
+                        keyIndex++;
+                        if (keyIndex < axis.getNumKeys())
+                            axisValues.append(",");
+                    }
+                    
+                    AttributesImpl fieldDim = new AttributesImpl();
+                    fieldDim.addAttribute("", "name", "name", "", axis.getName().toString());
+                    fieldDim.addAttribute("", "default", "default", "", axis.getKey(0).getValue().toString());
+                    element("Extent", axisValues.toString(), fieldDim);
+                }
                 
                 // add the layer style
                 start("Style");
