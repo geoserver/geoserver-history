@@ -177,28 +177,34 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         protected void encodePlacemarkName(SimpleFeature feature,
                 FeatureTypeStyle[] styles) throws IOException {
 
-            // order to use when figuring out what the name / label of a
-            // placemark should be:
-            // 1. the title template for features
-            // 2. a text sym with a label from teh sld
-            // 3. nothing ( do not use fid )
+            // Algorithm for finding name / label of a placemark
+            // 1. The title template for feature
+            // 2. If the title is the same as the fid
+            //    - try getting something better from the SLD 
+            // 3. Add <name> with whatever we've got, fid is worst case
 
             String title = template.title(feature);
-
-            // ensure not empty and != fid
-            if (title == null || "".equals(title)
-                    || feature.getID().equals(title)) {
-                // try sld
+            boolean trySLD = false;
+            
+            if (title == null || "".equals(title)) {
+                title = feature.getID();
+                
+            }
+            
+            if(title.equals(feature.getID())) {
+                trySLD = true;
+            }
+            
+            if(trySLD) {
                 StringBuffer label = new StringBuffer();
                 for (int i = 0; i < styles.length; i++) {
-                    Rule[] rules = KMLUtils.filterRules(styles[i], feature,
-                            scaleDenominator);
+                    Rule[] rules = KMLUtils.filterRules(styles[i], feature, scaleDenominator);
                     for (int j = 0; j < rules.length; j++) {
+                        
                         Symbolizer[] syms = rules[j].getSymbolizers();
                         for (int k = 0; k < syms.length; k++) {
                             if (syms[k] instanceof TextSymbolizer) {
-                                Expression e = SLD
-                                        .textLabel((TextSymbolizer) syms[k]);
+                                Expression e = SLD.textLabel((TextSymbolizer) syms[k]);
                                 Object object = null;
                                 if (e != null)
                                     object = e.evaluate(feature);
@@ -219,20 +225,16 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                         }
                     }
                 }
+            
 
                 if (label.length() > 0) {
                     title = label.toString();
-                } else {
-                    title = null;
                 }
-
             }
-
-            if (title != null) {
-                start("name");
-                cdata(title);
-                end("name");
-            }
+            
+            start("name");
+            cdata(title);
+            end("name");
         }
 
         /**
@@ -331,11 +333,10 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
 
             // Final pre-flight check
             if (!line && !poly) {
-                LOGGER
-                        .log(
-                                Level.FINER,
-                                "Unexpectedly entered encodeDefaultIconStyle() "
-                                        + "with something that does not have a multipoint geometry.");
+                LOGGER.log(
+                        Level.FINER,
+                        "Unexpectedly entered encodeDefaultIconStyle() "
+                        + "with something that does not have a multipoint geometry.");
                 return;
             }
 
@@ -366,6 +367,16 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             end("IconStyle");
 
         }
+        
+        
+        /**
+         * Encodes a transparent KML LabelStyle
+         */
+        protected void encodeDefaultTextStyle() {
+            start("LabelStyle");
+            encodeColor("00ffffff");
+            end("LabelStyle");
+        }
 
         /**
          * Encodes the provided set of symbolizers as KML styles.
@@ -384,6 +395,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
 
             // if this is a polygon or line, it should also be given a point
             boolean lacksPointSymbolizer = true;
+            boolean lacksTextSymbolizer = true;
             Symbolizer multiPointSymbolizer = null;
 
             // create a 2-D style
@@ -395,12 +407,10 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                             .append(symbolizer).toString());
 
                     // Used for custom placemark icon, sometimes even the
-                    // smallest
-                    // placemarks will cover up the underlying polygons.
+                    // smallest placemarks will cover up the underlying polygons.
 
-                    // But ff we pass a PointSymbolizer to something that is
-                    // essentially
-                    // a polygon this throws up, so we catch it?
+                    // But if we pass a PointSymbolizer to something that is
+                    // essentially a polygon this throws up, so we catch it?
                     Style2D style = null;
                     try {
                         styleFactory.createStyle(feature, symbolizer,
@@ -413,6 +423,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     if (symbolizer instanceof TextSymbolizer) {
                         encodeTextStyle((TextStyle2D) style,
                                 (TextSymbolizer) symbolizer);
+                        lacksTextSymbolizer = false;
                     }
 
                     if (symbolizer instanceof PolygonSymbolizer) {
@@ -432,6 +443,11 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                         lacksPointSymbolizer = false;
                     }
 
+                }
+                
+                // Add a default txt symbolizer that effectively hides the <name> tag
+                if (lacksTextSymbolizer) {
+                    encodeDefaultTextStyle();
                 }
 
                 // Add a default point symbolizer, so people have something

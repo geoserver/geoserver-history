@@ -89,9 +89,9 @@ public class KMLTransformer extends TransformerBase {
             //start("kml");
             start("kml", KMLUtils.attributes(
                     new String[] {
-                            "xmlns", "http://earth.google.com/kml/2.2",
+                            "xmlns", "http://www.opengis.net/kml/2.2",
                             "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance",
-                            "xsi:schemaLocation", "http://earth.google.com/kml/2.2 http://code.google.com/apis/kml/schema/kml22beta.xsd"
+                            "xsi:schemaLocation", "http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd"
                     }));
             
             WMSMapContext mapContext = (WMSMapContext) o;
