@@ -36,6 +36,7 @@ import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.type.Name;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -180,51 +181,53 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
                 if (fields != null && fields.getNumFieldTypes() > 0) {
                     for (FieldType field : fields.getFieldTypes()) {
                         String fieldName = field.getName().getLocalPart();
-                        if (kvp.get(fieldName) != null) {
-                            final AxisSubsetType axisSubset = Wcs10Factory.eINSTANCE.createAxisSubsetType();
-                            
-                            axisSubset.setName(fieldName);
-                            String value = (String) kvp.get(fieldName);
-                            if (value.contains("/")) {
-                                List<String> unparsed = KvpUtils.readFlat(value, new Tokenizer("/"));
+                        for (Name axisName : field.getAxesNames()) {
+                            if (kvp.get(axisName.toString()) != null) {
+                                final AxisSubsetType axisSubset = Wcs10Factory.eINSTANCE.createAxisSubsetType();
                                 
-                                IntervalType interval = Wcs10Factory.eINSTANCE.createIntervalType();
-                                TypedLiteralType min = Wcs10Factory.eINSTANCE.createTypedLiteralType();
-                                TypedLiteralType max = Wcs10Factory.eINSTANCE.createTypedLiteralType();
-                                TypedLiteralType res = Wcs10Factory.eINSTANCE.createTypedLiteralType();
-                                if (unparsed.size() == 2) {
-                                    min.setValue(unparsed.get(0));
-                                    max.setValue(unparsed.get(1));
+                                axisSubset.setName(axisName.toString());
+                                String value = (String) kvp.get(axisName.toString());
+                                if (value.contains("/")) {
+                                    List<String> unparsed = KvpUtils.readFlat(value, new Tokenizer("/"));
+                                    
+                                    IntervalType interval = Wcs10Factory.eINSTANCE.createIntervalType();
+                                    TypedLiteralType min = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                                    TypedLiteralType max = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                                    TypedLiteralType res = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                                    if (unparsed.size() == 2) {
+                                        min.setValue(unparsed.get(0));
+                                        max.setValue(unparsed.get(1));
 
-                                    interval.setMin(min);
-                                    interval.setMax(max);
+                                        interval.setMin(min);
+                                        interval.setMax(max);
+                                    } else {
+                                        min.setValue(unparsed.get(0));
+                                        max.setValue(unparsed.get(1));
+                                        res.setValue(unparsed.get(2));
+                                        
+                                        interval.setMin(min);
+                                        interval.setMax(max);
+                                        interval.setRes(res);
+                                    }
+                                    
+                                    axisSubset.getInterval().add(interval);
                                 } else {
-                                    min.setValue(unparsed.get(0));
-                                    max.setValue(unparsed.get(1));
-                                    res.setValue(unparsed.get(2));
+                                    List<String> unparsed = KvpUtils.readFlat(value, KvpUtils.INNER_DELIMETER);
                                     
-                                    interval.setMin(min);
-                                    interval.setMax(max);
-                                    interval.setRes(res);
-                                }
-                                
-                                axisSubset.getInterval().add(interval);
-                            } else {
-                                List<String> unparsed = KvpUtils.readFlat(value, KvpUtils.INNER_DELIMETER);
-                                
-                                if (unparsed.size() == 0) {
-                                    throw new WcsException("Requested axis subset contains wrong number of values (should have at least 1): " + unparsed.size(), WcsExceptionCode.InvalidParameterValue, "band");
-                                }
+                                    if (unparsed.size() == 0) {
+                                        throw new WcsException("Requested axis subset contains wrong number of values (should have at least 1): " + unparsed.size(), WcsExceptionCode.InvalidParameterValue, "band");
+                                    }
 
-                                for (String bandValue : unparsed) {
-                                    TypedLiteralType singleValue = Wcs10Factory.eINSTANCE.createTypedLiteralType();
-                                    singleValue.setValue(bandValue);
-                                    
-                                    axisSubset.getSingleValue().add(singleValue);
+                                    for (String bandValue : unparsed) {
+                                        TypedLiteralType singleValue = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                                        singleValue.setValue(bandValue);
+                                        
+                                        axisSubset.getSingleValue().add(singleValue);
+                                    }
                                 }
+                                
+                                rangeSubset.getAxisSubset().add(axisSubset);                                
                             }
-                            
-                            rangeSubset.getAxisSubset().add(axisSubset);
                         }
                     }
                 }

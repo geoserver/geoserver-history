@@ -150,6 +150,9 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                     request.getSourceCoverage().substring(request.getSourceCoverage().indexOf("@")+1) : 
                     null;
             
+            // stripping namespace
+            coverageName = coverageName.contains(":") ? coverageName.substring(coverageName.indexOf(":")+1) : coverageName;
+                    
             meta = catalog.getCoverageInfo(coverageName);
 
             // first let's run some sanity checks on the inputs
