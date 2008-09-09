@@ -606,7 +606,7 @@ public class GetMapResponse implements Response {
 
             bands = new int[(int) (Math.floor(max - min) / res + 1)];
             for (int b=0; b<bands.length; b++)
-                bands[b] = axis.getKey(Integer.parseInt(selectedBands[0] + b*res)).intValue(null);
+                bands[b] = axis.getKey(min + b*res).intValue(null);
         }
 
         // finally execute the band select

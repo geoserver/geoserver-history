@@ -52,6 +52,7 @@ import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.CoverageResponse.Status;
 import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
 import org.geotools.coverage.io.impl.range.DefaultRangeType;
+import org.geotools.coverage.io.range.Axis;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.Hints;
@@ -299,27 +300,42 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                     List axisSubset = request.getRangeSubset().getAxisSubset();
                     if (axisSubset.size() > 0) {
                         AxisSubsetType axis = (AxisSubsetType)axisSubset.get(0);
-                        int[] bands = null;
-                        if (axis.getSingleValue().size() > 0) {
-                            bands = new int[axis.getSingleValue().size()];
-                            for (int s=0; s<axis.getSingleValue().size(); s++)
-                                bands[s] = Integer.parseInt(((TypedLiteralType)axis.getSingleValue().get(s)).getValue()) - (((AxisSubsetType)axisSubset.get(0)).getName().equalsIgnoreCase("Band") ? 1 : 0);
-                        } else if (axis.getInterval().size() > 0) {
-                            IntervalType interval = (IntervalType) axis.getInterval().get(0);
-                            int min = Integer.parseInt(interval.getMin().getValue());
-                            int max = Integer.parseInt(interval.getMax().getValue());
-                            int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue()) : 1);
-                            
-                            bands = new int[(int) (Math.floor(max - min) / res + 1)];
-                            for (int b=0; b<bands.length; b++)
-                                bands[b] = b * res;
-                        }
-    
-                        // finally execute the band select
+                        
                         try {
-                            bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
+                            String axisName = axis.getName();
+                            axisName = (axisName.startsWith("axis:") ? axisName : "axis:" + 
+                                    (coverageName.contains(":") ? coverageName.substring(coverageName.indexOf(":")+1) : coverageName) + // remove namespace 
+                                    axisName);
+                            
+                            FieldType field = meta.getFields().getFieldType(fieldName);
+                            if (field != null) {
+                                Axis<?, ?> selectedAxis = field.getAxis(new NameImpl(axisName));
+                                if (selectedAxis != null) {
+                                    int[] bands = null;
+                                    if (axis.getSingleValue().size() > 0) {
+                                        bands = new int[axis.getSingleValue().size()];
+                                        for (int s=0; s<axis.getSingleValue().size(); s++) {
+                                            int keyIndex = Integer.parseInt(((TypedLiteralType)axis.getSingleValue().get(s)).getValue()) - (((AxisSubsetType)axisSubset.get(0)).getName().equalsIgnoreCase("Band") ? 1 : 0);
+                                            bands[s] = selectedAxis.getKey(keyIndex).intValue(null);
+                                        }
+                                    } else if (axis.getInterval().size() > 0) {
+                                        IntervalType interval = (IntervalType) axis.getInterval().get(0);
+                                        int min = Integer.parseInt(interval.getMin().getValue());
+                                        int max = Integer.parseInt(interval.getMax().getValue());
+                                        int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue()) : 1);
+                                        
+                                        bands = new int[(int) (Math.floor(max - min) / res + 1)];
+                                        for (int b=0; b<bands.length; b++)
+                                            bands[b] = selectedAxis.getKey(min + b*res).intValue(null);
+                                    }
+
+                                    // finally execute the band select
+                                    bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
+                                }
+                            }
                         } catch (Exception e) {
-                            throw new WcsException(e.getLocalizedMessage());
+                            // Warning: Axis not found!!!
+                            throw new WcsException("Band Select Operation: " + e.getLocalizedMessage());
                         }
                     }
                 }
