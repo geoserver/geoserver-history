@@ -56,6 +56,7 @@ import org.opengis.referencing.crs.CompoundCRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.temporal.TemporalGeometricPrimitive;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -604,9 +605,27 @@ public class LegacyCatalogImporter {
         }
         
         /* read fields and cv-domains */
+        File coverageSource = new File(coverageStore.getURL());
+        if (!coverageSource.exists()) {
+            String coverageStoreURL = coverageStore.getURL();
+            if (coverageStoreURL.startsWith("file:")) {
+                coverageStoreURL = 
+                            GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath() + 
+                            File.separator + 
+                            coverageStoreURL.substring(coverageStoreURL.indexOf(":") + 1);
+                
+                coverageSource = new File(coverageStoreURL);
+                
+                if (!coverageSource.exists()) {
+                    throw new Exception("Could not find Coverage Source file!");
+                }
+            }
+        }
+        
+        
         Driver driver = coverageStore.getDriver();
         Map params = new HashMap();
-        params.put("url", new URL(coverageStore.getURL()));
+        params.put("url", coverageSource.toURI().toURL());
         CoverageAccess cvAccess = driver.connect(params, null, null);
         if (cvAccess != null) {
             CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
