@@ -8,13 +8,13 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>community</artifactId>
-    <version>1.6.5-SNAPSHOT</version>
+    <version>1.6.5</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
   <artifactId>RESTConfig</artifactId>
   <packaging>jar</packaging>
-  <version>1.6.5-SNAPSHOT</version>
+  <version>1.6.5</version>
   <name>REST Configuration Service Module</name>
 
   <repositories>
@@ -40,17 +40,17 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>rest</artifactId>
-      <version>1.6.5-SNAPSHOT</version>
+      <version>1.6.5</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.5-SNAPSHOT</version>
+      <version>1.6.5</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.6.5-SNAPSHOT</version>
+      <version>1.6.5</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
@@ -88,14 +88,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.5-SNAPSHOT</version>
+      <version>1.6.5</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6.5-SNAPSHOT</version>
+      <version>1.6.5</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

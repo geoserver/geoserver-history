@@ -1,3 +1,18 @@
+GeoServer 1.6.5 (September 10, 2008)
+------------------------------------
+This release is the final version of the 1.6.x branch.  This is mainly a
+loose-ends release, but includes over 50 bug fixes and features, including
+
+* WMS renders point layers correctly
+* Dispatcher no longer breaks on key-value pairs when "strict=true" is used
+* SRS 900913 now works again
+* Map preview URL encoding fixed
+* New Dutch translation
+
+See the entire 1.6.5 changelog:
+http://jira.codehaus.org/browse/GEOS/fixforversion/13878  
+
+
 GeoServer 1.6.4b
 ----------------
 This release is based off of Geotools 2.4.4 and fixes the following issue:
