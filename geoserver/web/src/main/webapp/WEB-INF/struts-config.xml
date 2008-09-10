@@ -51,6 +51,10 @@
 	        type="java.lang.String[]" 
 	    />
 	    <form-property 
+            name="EscapedFTNamespaceList" 
+            type="java.lang.String[]" 
+        />
+	    <form-property 
 	        name="BBoxList" 
 	        type="java.lang.String[]" 
 	    />
