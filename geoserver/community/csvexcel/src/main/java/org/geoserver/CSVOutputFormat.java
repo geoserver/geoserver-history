@@ -16,6 +16,12 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 
+/**
+ * WFS output format for a GetFeature operation in which the outputFormat is "csv".
+ *
+ * @author Justin Deoliveira, OpenGeo, jdeolive@opengeo.org
+ * @author Sebastian Benthall, OpenGeo, seb@opengeo.org
+ */
 public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
 
     public CSVOutputFormat() {
@@ -26,6 +32,9 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         super("csv");
     }
     
+    /**
+     * @return "text/csv";
+     */
     @Override
     public String getMimeType(Object value, Operation operation)
                throws ServiceException {
@@ -42,6 +51,9 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         return super.canHandleInternal(operation);
     }
     
+    /**
+     * @see WFSGetFeatureOutputFormat#write(Object, OutputStream, Operation)
+     */
     @Override
     protected void write(FeatureCollectionType featureCollection,
             OutputStream output, Operation getFeature) throws IOException,

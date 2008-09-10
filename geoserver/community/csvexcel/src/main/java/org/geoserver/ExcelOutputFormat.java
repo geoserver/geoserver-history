@@ -21,6 +21,12 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 
+
+/**
+ * WFS output format for a GetFeature operation in which the outputFormat is "excel".
+ *
+ * @author Sebastian Benthall, OpenGeo, seb@opengeo.org
+ */
 public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
 
     public ExcelOutputFormat() {
@@ -31,6 +37,9 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
         super("excel");
     }
     
+    /**
+     * @return "application/msexcel";
+     */
     @Override
     public String getMimeType(Object value, Operation operation)
                throws ServiceException {
@@ -47,6 +56,9 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
         return super.canHandleInternal(operation);
     }
     
+    /**
+     * @see WFSGetFeatureOutputFormat#write(Object, OutputStream, Operation)
+     */
     @Override
     protected void write(FeatureCollectionType featureCollection,
             OutputStream output, Operation getFeature) throws IOException,
