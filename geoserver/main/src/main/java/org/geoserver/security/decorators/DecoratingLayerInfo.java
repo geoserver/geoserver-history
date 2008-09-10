@@ -89,4 +89,8 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
     public void setType(Type type) {
         delegate.setType(type);
     }
+
+    public void addStyle(StyleInfo style) {
+        delegate.addStyle(style);
+    }
 }

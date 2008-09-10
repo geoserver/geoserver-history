@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -238,6 +237,12 @@ public class LegacyCatalogImporter {
                 String defaultStyleName = cInfoReader.defaultStyle();
                 if ( defaultStyleName != null ) {
                     layer.setDefaultStyle(catalog.getStyleByName(defaultStyleName));    
+                }
+                
+                List<String> styles = cInfoReader.styles();
+                if (styles != null && !styles.isEmpty()) {
+                    for (String style : styles)
+                        layer.addStyle(catalog.getStyleByName(style));
                 }
                
                 catalog.add(layer);

@@ -6,7 +6,6 @@ package org.geoserver.catalog.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
@@ -20,6 +19,8 @@ import java.util.StringTokenizer;
 
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Reads a legacy coverage info.xml file.
@@ -260,5 +261,23 @@ public class LegacyCoverageInfoReader {
     
     public String parentDirectoryName() {
         return parentDirectory.getName();
+    }
+
+
+    public List<String> styles() throws Exception {
+        List<String> styles = new ArrayList<String>();
+        Element styleElement = ReaderUtils.getChildElement(coverage, "styles" );
+        final NodeList childrens = styleElement.getChildNodes();
+        final int numChildNodes = childrens.getLength();
+        for (int n = 0; n < numChildNodes; n++) {
+            final Node child = childrens.item(n);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                if (child.getNodeName().equals("style")) {
+                    styles.add(ReaderUtils.getElementText((Element) child));
+                }
+            }
+        }
+        
+        return styles;
     }
 }

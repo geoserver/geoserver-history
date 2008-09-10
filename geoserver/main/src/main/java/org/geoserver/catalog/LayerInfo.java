@@ -166,4 +166,6 @@ public interface LayerInfo {
      * 
      */
     Map<String,Serializable> getMetadata();
+
+    void addStyle(StyleInfo style);
 }

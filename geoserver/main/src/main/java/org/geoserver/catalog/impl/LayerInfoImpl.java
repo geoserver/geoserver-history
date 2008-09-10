@@ -194,4 +194,8 @@ public class LayerInfoImpl implements LayerInfo {
     public String toString() {
         return name;
     }
+
+    public void addStyle(StyleInfo style) {
+        this.styles.add(style);
+    }
 }

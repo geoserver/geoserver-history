@@ -204,7 +204,9 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 element("wcs:name", ci.getName() + "@" + fieldId);
                 element("wcs:label", field.getDescription().toString());
                     handleLonLatEnvelope(ci.getWGS84LonLatEnvelope());
-                    handleKeywords(ci.getKeywords());
+                    List keywords = new ArrayList(ci.getKeywords());
+                    keywords.add(fieldId);
+                    handleKeywords(keywords);
                     
                     handleDomain(ci);
                     handleRange(ci, field);

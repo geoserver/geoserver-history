@@ -683,7 +683,9 @@ public class Wcs10CapsTransformer extends TransformerBase {
                         }
 
                         handleEnvelope(cv.getWGS84LonLatEnvelope(), cv.getVerticalExtent(), cv.getTemporalExtent());
-                        handleKeywords(cv.getKeywords());
+                        List keywords = new ArrayList(cv.getKeywords());
+                        keywords.add(fieldName.getLocalPart());
+                        handleKeywords(keywords);
 
                         end("wcs:CoverageOfferingBrief");
                     }

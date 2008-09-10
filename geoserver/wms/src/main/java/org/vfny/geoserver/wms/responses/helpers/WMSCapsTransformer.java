@@ -37,6 +37,8 @@ import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystemAxis;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.temporal.Duration;
@@ -910,11 +912,18 @@ public class WMSCapsTransformer extends TransformerBase {
                 }
                 
                 if (coverage.getVerticalExtent() != null && coverage.getVerticalExtent().size() > 0) {
+                    CoordinateSystemAxis vAxis = coverage.getVerticalCRS().getCoordinateSystem().getAxis(0);
                     double[] verticalLimits = WCSUtils.getVerticalExtentLimits(coverage.getVerticalExtent());
 
                     AttributesImpl elevDim = new AttributesImpl();
                     elevDim.addAttribute("", "name", "name", "", "elevation");
-                    elevDim.addAttribute("", "default", "default", "", String.valueOf(verticalLimits[0]));
+                    elevDim.addAttribute("", "default", "default", "", 
+                            String.valueOf(
+                                    vAxis.getDirection().equals(AxisDirection.UP) && verticalLimits[0] < 0.0 && verticalLimits[0] < verticalLimits[1] ? 
+                                    verticalLimits[1] : 
+                                        vAxis.getDirection().equals(AxisDirection.DOWN) && verticalLimits[0] > 0.0 && verticalLimits[0] > verticalLimits[1] ?
+                                                verticalLimits[1] : verticalLimits[0]  
+                            ));
                     element("Extent", verticalLimits[0] + "/" + verticalLimits[1] + "/" + verticalLimits[2], elevDim);
                 }
 
