@@ -829,11 +829,12 @@ public class WMSCapsTransformer extends TransformerBase {
 		 * @param coverage an info object for a multi dimensional coverage
 		 */
         protected void handleMultiDimCoverage(CoverageInfo coverage) {
-            if(coverage.getFields() == null){
-            	throw new IllegalArgumentException("coverage " + coverage.getName() + " is not n-dim");
+            if (coverage.getFields() == null) {
+                throw new IllegalArgumentException("coverage " + coverage.getName()
+                        + " is not n-dim");
             }
-            
-        	for (FieldType field : coverage.getFields().getFieldTypes()) {
+
+            for (FieldType field : coverage.getFields().getFieldTypes()) {
                 AttributesImpl qatts = new AttributesImpl();
                 qatts.addAttribute("", "queryable", "queryable", "", "1");
                 start("Layer", qatts);
@@ -857,14 +858,13 @@ public class WMSCapsTransformer extends TransformerBase {
                 bounds = coverage.getEnvelope();
                 llBounds = latLonEnvelope;
 
-                final Envelope bbox = new Envelope(bounds.getLowerCorner().getOrdinate(0),
-                        bounds.getUpperCorner().getOrdinate(0), bounds.getLowerCorner().getOrdinate(1),
+                final Envelope bbox = new Envelope(bounds.getLowerCorner().getOrdinate(0), bounds
+                        .getUpperCorner().getOrdinate(0), bounds.getLowerCorner().getOrdinate(1),
                         bounds.getUpperCorner().getOrdinate(1));
 
                 final Envelope llBbox = new Envelope(llBounds.getLowerCorner().getOrdinate(0),
-                        llBounds.getUpperCorner().getOrdinate(0),
-                        llBounds.getLowerCorner().getOrdinate(1),
-                        llBounds.getUpperCorner().getOrdinate(1));
+                        llBounds.getUpperCorner().getOrdinate(0), llBounds.getLowerCorner()
+                                .getOrdinate(1), llBounds.getUpperCorner().getOrdinate(1));
 
                 handleLatLonBBox(llBbox);
                 handleBBox(bbox, authority);
@@ -876,47 +876,53 @@ public class WMSCapsTransformer extends TransformerBase {
                     timeDim.addAttribute("", "units", "units", "", "ISO8601");
                     element("Dimension", null, timeDim);
                 }
-                
+
                 if (coverage.getVerticalExtent() != null && coverage.getVerticalExtent().size() > 0) {
                     AttributesImpl elevDim = new AttributesImpl();
                     elevDim.addAttribute("", "name", "name", "", "elevation");
-                    elevDim.addAttribute("", "units", "units", "", UnitFormat.getUCUMInstance().format(coverage.getVerticalCRS().getCoordinateSystem().getAxis(0).getUnit()));
+                    elevDim.addAttribute("", "units", "units", "", UnitFormat.getUCUMInstance()
+                            .format(
+                                    coverage.getVerticalCRS().getCoordinateSystem().getAxis(0)
+                                            .getUnit()));
                     element("Dimension", null, elevDim);
                 }
 
                 for (Axis<?, ?> axis : field.getAxes()) {
                     AttributesImpl fieldDim = new AttributesImpl();
                     fieldDim.addAttribute("", "name", "name", "", axis.getName().toString());
-                    fieldDim.addAttribute("", "units", "units", "", UnitFormat.getUCUMInstance().format(axis.getUnitOfMeasure()));
+                    fieldDim.addAttribute("", "units", "units", "", UnitFormat.getUCUMInstance()
+                            .format(axis.getUnitOfMeasure()));
                     element("Dimension", null, fieldDim);
                 }
-                
+
                 // handle extents
                 if (coverage.getTemporalExtent() != null && coverage.getTemporalExtent().size() > 0) {
                     Position beginPosition = null;
                     Position endPosition = null;
                     Duration duration = null;
-                    
-                    for(TemporalGeometricPrimitive temporalObject : coverage.getTemporalExtent()) {
+
+                    for (TemporalGeometricPrimitive temporalObject : coverage.getTemporalExtent()) {
                         if (temporalObject instanceof Period) {
                             Position tmp = ((Period) temporalObject).getBeginning().getPosition();
                             if (beginPosition != null) {
                                 DefaultInstant beginInstant = new DefaultInstant(beginPosition);
                                 DefaultInstant tmpInstant = new DefaultInstant(tmp);
-                                
-                                if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+
+                                if (tmpInstant.relativePosition(beginInstant).equals(
+                                        RelativePosition.BEFORE)) {
                                     beginPosition = tmp;
                                 } else if (duration == null)
                                     duration = beginInstant.distance(tmpInstant);
                             } else
                                 beginPosition = tmp;
-                            
+
                             tmp = ((Period) temporalObject).getEnding().getPosition();
                             if (endPosition != null) {
                                 DefaultInstant endInstant = new DefaultInstant(endPosition);
                                 DefaultInstant tmpInstant = new DefaultInstant(tmp);
-                                
-                                if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+
+                                if (tmpInstant.relativePosition(endInstant).equals(
+                                        RelativePosition.AFTER)) {
                                     endPosition = tmp;
                                 }
                             } else
@@ -926,65 +932,82 @@ public class WMSCapsTransformer extends TransformerBase {
                             if (beginPosition != null) {
                                 DefaultInstant beginInstant = new DefaultInstant(beginPosition);
                                 DefaultInstant tmpInstant = new DefaultInstant(tmp);
-                                
-                                if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+
+                                if (tmpInstant.relativePosition(beginInstant).equals(
+                                        RelativePosition.BEFORE)) {
                                     beginPosition = tmp;
                                 } else if (duration == null)
                                     duration = beginInstant.distance(tmpInstant);
                             } else
                                 beginPosition = tmp;
-                            
+
                             if (endPosition != null) {
                                 DefaultInstant endInstant = new DefaultInstant(endPosition);
                                 DefaultInstant tmpInstant = new DefaultInstant(tmp);
-                                
-                                if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+
+                                if (tmpInstant.relativePosition(endInstant).equals(
+                                        RelativePosition.AFTER)) {
                                     endPosition = tmp;
                                 }
                             } else
                                 endPosition = tmp;
                         }
                     }
-                    
+
                     AttributesImpl timeDim = new AttributesImpl();
                     timeDim.addAttribute("", "name", "name", "", "time");
-                    timeDim.addAttribute("", "default", "default", "", beginPosition.getDateTime().toString());
-                    element("Extent", beginPosition.getDateTime() + (duration != null ? "/" : ",") + endPosition.getDateTime() + (duration != null ? "/" + duration.toString() : ""), timeDim);
+                    timeDim.addAttribute("", "default", "default", "", beginPosition.getDateTime()
+                            .toString());
+                    element("Extent", beginPosition.getDateTime() + (duration != null ? "/" : ",")
+                            + endPosition.getDateTime()
+                            + (duration != null ? "/" + duration.toString() : ""), timeDim);
                 }
-                
+
                 if (coverage.getVerticalExtent() != null && coverage.getVerticalExtent().size() > 0) {
-                    CoordinateSystemAxis vAxis = coverage.getVerticalCRS().getCoordinateSystem().getAxis(0);
-                    double[] verticalLimits = WCSUtils.getVerticalExtentLimits(coverage.getVerticalExtent());
+                    CoordinateSystemAxis vAxis = coverage.getVerticalCRS().getCoordinateSystem()
+                            .getAxis(0);
+                    double[] verticalLimits = WCSUtils.getVerticalExtentLimits(coverage
+                            .getVerticalExtent());
 
                     AttributesImpl elevDim = new AttributesImpl();
                     elevDim.addAttribute("", "name", "name", "", "elevation");
-                    elevDim.addAttribute("", "default", "default", "", 
-                            String.valueOf(
-                                    vAxis.getDirection().equals(AxisDirection.UP) && verticalLimits[0] < 0.0 && verticalLimits[0] < verticalLimits[1] ? 
-                                    verticalLimits[1] : 
-                                        vAxis.getDirection().equals(AxisDirection.DOWN) && verticalLimits[0] > 0.0 && verticalLimits[0] > verticalLimits[1] ?
-                                                verticalLimits[1] : verticalLimits[0]  
-                            ));
-                    element("Extent", verticalLimits[0] + "/" + verticalLimits[1] + "/" + verticalLimits[2], elevDim);
+                    elevDim
+                            .addAttribute(
+                                    "",
+                                    "default",
+                                    "default",
+                                    "",
+                                    String
+                                            .valueOf(vAxis.getDirection().equals(AxisDirection.UP)
+                                                    && verticalLimits[0] < 0.0
+                                                    && verticalLimits[0] < verticalLimits[1] ? verticalLimits[1]
+                                                    : vAxis.getDirection().equals(
+                                                            AxisDirection.DOWN)
+                                                            && verticalLimits[0] > 0.0
+                                                            && verticalLimits[0] > verticalLimits[1] ? verticalLimits[1]
+                                                            : verticalLimits[0]));
+                    element("Extent", verticalLimits[0] + "/" + verticalLimits[1] + "/"
+                            + verticalLimits[2], elevDim);
                 }
 
                 for (Axis<?, ?> axis : field.getAxes()) {
                     StringBuffer axisValues = new StringBuffer();
-                    
+
                     int keyIndex = 0;
-                    for(Measure<?, ?> axisKey : axis.getKeys()) {
+                    for (Measure<?, ?> axisKey : axis.getKeys()) {
                         axisValues.append(axisKey.getValue());
                         keyIndex++;
                         if (keyIndex < axis.getNumKeys())
                             axisValues.append(",");
                     }
-                    
+
                     AttributesImpl fieldDim = new AttributesImpl();
                     fieldDim.addAttribute("", "name", "name", "", axis.getName().toString());
-                    fieldDim.addAttribute("", "default", "default", "", axis.getKey(0).getValue().toString());
+                    fieldDim.addAttribute("", "default", "default", "", axis.getKey(0).getValue()
+                            .toString());
                     element("Extent", axisValues.toString(), fieldDim);
                 }
-                
+
                 // add the layer style
                 start("Style");
 
