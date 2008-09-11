@@ -84,12 +84,12 @@ public class LogOrderTest extends WFSVTestSupport {
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
         Document doc = postAsDOM(root(), request);
+        print(doc);
         XpathEngine xpath = XMLUnit.newXpathEngine();
         NodeList nodes = xpath.getMatchingNodes("//wfs:FeatureCollection/gml:featureMember/topp:changesets/@fid", doc);
-        assertEquals(3, nodes.getLength());
+        assertEquals(2, nodes.getLength());
         assertEquals("changesets.5", nodes.item(0).getTextContent());
         assertEquals("changesets.4", nodes.item(1).getTextContent());
-        assertEquals("changesets.1", nodes.item(2).getTextContent());
     }
     
     public void testLogBackwards() throws Exception {
@@ -104,9 +104,8 @@ public class LogOrderTest extends WFSVTestSupport {
         Document doc = postAsDOM(root(), request);
         XpathEngine xpath = XMLUnit.newXpathEngine();
         NodeList nodes = xpath.getMatchingNodes("//wfs:FeatureCollection/gml:featureMember/topp:changesets/@fid", doc);
-        assertEquals(3, nodes.getLength());
-        assertEquals("changesets.1", nodes.item(0).getTextContent());
-        assertEquals("changesets.4", nodes.item(1).getTextContent());
-        assertEquals("changesets.5", nodes.item(2).getTextContent());
+        assertEquals(2, nodes.getLength());
+        assertEquals("changesets.4", nodes.item(0).getTextContent());
+        assertEquals("changesets.5", nodes.item(1).getTextContent());
     }
 }
