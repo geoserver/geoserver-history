@@ -13,10 +13,10 @@ public class ColorRampGenerator {
      * @param args
      */
     public static void main(String[] args) {
-        double min = 0.0;
-        double max = 1.0;
+        double min = 1.0E-4;
+        double max = 4.0;
 
-        int intervals = 20;
+        int intervals = 250;
 
         String colorRampType = "hot-color-ramp";
 

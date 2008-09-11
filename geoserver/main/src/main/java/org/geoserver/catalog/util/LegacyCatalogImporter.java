@@ -610,27 +610,27 @@ public class LegacyCatalogImporter {
         }
         
         /* read fields and cv-domains */
-        File coverageSource = new File(coverageStore.getURL());
-        if (!coverageSource.exists()) {
-            String coverageStoreURL = coverageStore.getURL();
-            if (coverageStoreURL.startsWith("file:")) {
-                coverageStoreURL = 
-                            GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath() + 
-                            File.separator + 
-                            coverageStoreURL.substring(coverageStoreURL.indexOf(":") + 1);
-                
-                coverageSource = new File(coverageStoreURL);
-                
-                if (!coverageSource.exists()) {
-                    throw new Exception("Could not find Coverage Source file!");
-                }
-            }
-        }
+//        File coverageSource = new File(coverageStore.getURL());
+//        if (!coverageSource.exists()) {
+//            String coverageStoreURL = coverageStore.getURL();
+//            if (coverageStoreURL.startsWith("file:")) {
+//                coverageStoreURL = 
+//                            GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath() + 
+//                            File.separator + 
+//                            coverageStoreURL.substring(coverageStoreURL.indexOf(":") + 1);
+//                
+//                coverageSource = new File(coverageStoreURL);
+//                
+//                if (!coverageSource.exists()) {
+//                    throw new Exception("Could not find Coverage Source file!");
+//                }
+//            }
+//        }
         
         
         Driver driver = coverageStore.getDriver();
         Map params = new HashMap();
-        params.put("url", coverageSource.toURI().toURL());
+        params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
         CoverageAccess cvAccess = driver.connect(params, null, null);
         if (cvAccess != null) {
             CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);

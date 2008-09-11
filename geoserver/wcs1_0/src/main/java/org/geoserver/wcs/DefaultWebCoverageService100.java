@@ -7,6 +7,7 @@ package org.geoserver.wcs;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
 import java.awt.Rectangle;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -77,6 +78,7 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
@@ -162,8 +164,24 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             checkOutput(meta, request.getOutput());
 
             final Driver driver = meta.getFormatInfo().getDriver();
+//            File coverageSource = new File(meta.getFormatInfo().getUrl());
+//            if (!coverageSource.exists()) {
+//                String coverageStoreURL = meta.getFormatInfo().getUrl();
+//                if (coverageStoreURL.startsWith("file:")) {
+//                    coverageStoreURL = 
+//                                GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath() + 
+//                                File.separator + 
+//                                coverageStoreURL.substring(coverageStoreURL.indexOf(":") + 1);
+//                    
+//                    coverageSource = new File(coverageStoreURL);
+//                    
+//                    if (!coverageSource.exists()) {
+//                        throw new Exception("Could not find Coverage Source file!");
+//                    }
+//                }
+//            }
             Map params = new HashMap();
-            params.put("url", new URL(meta.getFormatInfo().getUrl()));
+            params.put("url", GeoserverDataDirectory.findDataFile(meta.getFormatInfo().getUrl()).toURI().toURL());
             final CoverageAccess cvAccess = driver.connect(params, HINTS, null);
             
             if (cvAccess != null) {
