@@ -109,7 +109,7 @@ public class RollbackElementHandler implements TransactionElementHandler {
             String user = rollback.getUser();
             String[] users = ((user != null) && !user.trim().equals("")) ? new String[] { user }
                     : null;
-            reader = vstore.getDifferences(null, version, filter, users);
+            reader = vstore.getDifferences("LAST", version, filter, users);
 
             Set insertedIds = new HashSet();
             Set updatedIds = new HashSet();
