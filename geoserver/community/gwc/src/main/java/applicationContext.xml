@@ -47,9 +47,8 @@
 
   <!-- Services -->
   <bean id="gwcServiceWMS" class="org.geowebcache.service.wms.WMSService">
-    <property name="config">
-      <list><ref bean="gwcGSConfig"/></list>
-    </property>
+    <property name="config"><list><ref bean="gwcGSConfig"/></list></property>
+    <property name="proxyRequests"><value>TRUE</value></property>
   </bean>
   <bean id="gwcServiceGMaps"
 	class="org.geowebcache.service.gmaps.GMapsConverter"/>
