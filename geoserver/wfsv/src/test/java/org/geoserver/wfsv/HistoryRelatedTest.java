@@ -171,7 +171,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "</wfsv:GetLog>";
         Document doc = postAsDOM(root(), request);
         print(doc);
-        assertXpathEvaluatesTo("2", "count(//topp:changesets)", doc);
+        assertXpathEvaluatesTo("1", "count(//topp:changesets)", doc);
         // version 2 and 3 are taken to version enable roads and restricted
         assertXpathEvaluatesTo("Inserting, updating and deleting",
                 "//topp:changesets[@fid=\"changesets.4\"]/topp:message", doc);
@@ -189,7 +189,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "</wfsv:GetLog>";
         Document doc = postAsDOM(root(), request);
         print(doc);
-        assertXpathEvaluatesTo("2", "count(//topp:changesets)", doc);
+        assertXpathEvaluatesTo("1", "count(//topp:changesets)", doc);
         // version 2 and 3 are taken to version enable roads and restricted
         assertXpathEvaluatesTo("Inserting, updating and deleting",
                 "//topp:changesets[@gml:id=\"changesets.4\"]/topp:message", doc);
@@ -210,9 +210,9 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
         Document doc = postAsDOM(root(), request);
-        // test it's html and there are 2 history rows in the table (tr owning a
+        // test it's html and there are 1 history rows in the table (tr owning a
         // td, not tr owning a th)
-        assertXpathEvaluatesTo("2", "count(/html/body/table/tr[td])", doc);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr[td])", doc);
     }
 
     public void testGetDiff11() throws Exception {
