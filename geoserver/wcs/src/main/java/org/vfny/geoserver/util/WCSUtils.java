@@ -488,6 +488,7 @@ public class WCSUtils {
     public static double[] getVerticalExtentLimits(Set<Envelope> verticalExtent) {
         double minZ = Double.POSITIVE_INFINITY;
         double maxZ = Double.NEGATIVE_INFINITY;
+        double resZ = 0.0;
         
         double[] mcdNumbers = new double[verticalExtent.size()+1];
         
@@ -502,9 +503,18 @@ public class WCSUtils {
             mcdNumbers[n++] = env.getMinimum(0); 
         }
         mcdNumbers[n] = maxZ;
-        
-        double resZ = maxZ;
 
+        // Computing the minimum distance between the vertical levels
+        resZ = Double.POSITIVE_INFINITY;
+        for (n=0; n<mcdNumbers.length-1 ; n++) {
+            double distance = Math.abs(mcdNumbers[n+1] - mcdNumbers[n]); 
+            if (distance < resZ)
+                resZ = distance;
+        }
+        
+        // Computing M.C.D.
+        // @deprecated
+        /*resZ = maxZ;
         boolean mcdFound = false;
         while (!mcdFound) {
             boolean res = true;
@@ -517,7 +527,7 @@ public class WCSUtils {
                 mcdFound = res;
             else
                 resZ--;
-        }
+        }*/
         
         return new double[] {minZ, maxZ, Math.abs(resZ)};
     }
