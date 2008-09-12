@@ -82,7 +82,6 @@ public class WMSCapsTransformer extends TransformerBase {
      * @param getMapFormats the list of supported output formats to state for the GetMap request
      * @param getLegendGraphicFormats the list of supported output formats to state for the 
      *          GetLegendGraphic request
-     * @param applicationContext
      *
      * @throws NullPointerException
      *             if <code>schemaBaseUrl</code> is null;
