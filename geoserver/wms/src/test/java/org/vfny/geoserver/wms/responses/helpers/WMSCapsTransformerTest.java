@@ -237,7 +237,7 @@ public class WMSCapsTransformerTest extends TestCase {
         }
         db.setEntityResolver(new EmptyResolver());
 
-        //System.out.println(out.toString());
+        // System.out.println(out.toString());
 
         Document doc = db.parse(new ByteArrayInputStream(out.toByteArray()));
         return doc;
@@ -461,12 +461,16 @@ public class WMSCapsTransformerTest extends TestCase {
 
         final String beginingTime = "2008-09-12T00:00:00.000-0100";
         final String endingTime = "2008-09-12T23:59:59.00-0100";
+        final String singlePosition = "2008-09-14T23:59:59.00-0100";
+
         DefaultInstant begining;
         DefaultInstant ending;
         begining = new DefaultInstant(new DefaultPosition(new SimpleInternationalString(
                 beginingTime)));
         ending = new DefaultInstant(new DefaultPosition(new SimpleInternationalString(endingTime)));
         temporalExtent.add(new DefaultPeriod(begining, ending));
+        temporalExtent.add(new DefaultInstant(new DefaultPosition(new SimpleInternationalString(
+                singlePosition))));
 
         coverageInfo.setTemporalExtent(temporalExtent);
 
@@ -500,18 +504,18 @@ public class WMSCapsTransformerTest extends TestCase {
         assertXpathExists(pathToLayer + "/Extent/@default", dom);
 
         Date expectedBegining = Utils.getDateFromString(beginingTime);
-        Date expectedEnding = Utils.getDateFromString(endingTime);
+        Date expectedEnding = Utils.getDateFromString(singlePosition);
         String defaultExtentValue = XPATH.evaluate(pathToLayer + "/Extent/@default", dom);
         assertEquals(expectedBegining, Utils.getDateFromString(defaultExtentValue));
 
-        String valuesStr = XPATH.evaluate(pathToLayer + "/Extent", dom);
-        String[] values = valuesStr.split(",");
-        assertEquals(2, values.length);
-        Date actualStart = Utils.getDateFromString(values[0]);
-        Date actualEnd = Utils.getDateFromString(values[1]);
+        String durationStr = XPATH.evaluate(pathToLayer + "/Extent", dom);
+        String[] duration = durationStr.split(",");
+        assertEquals(2, duration.length);
+        Date durationStart = Utils.getDateFromString(duration[0]);
+        Date durationEnd = Utils.getDateFromString(duration[1]);
 
-        assertEquals(expectedBegining, actualStart);
-        assertEquals(expectedEnding, actualEnd);
+        assertEquals(expectedBegining, durationStart);
+        assertEquals(expectedEnding, durationEnd);
     }
 
     /**
