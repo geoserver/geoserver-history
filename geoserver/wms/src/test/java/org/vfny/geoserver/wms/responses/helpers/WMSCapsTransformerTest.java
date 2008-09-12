@@ -99,6 +99,7 @@ public class WMSCapsTransformerTest extends TestCase {
         geosConfig = new GeoServerImpl();
 
         geosInfo = new GeoServerInfoImpl();
+        geosInfo.setContact(new ContactInfoImpl());
         geosConfig.setGlobal(geosInfo);
 
         wmsInfo = new WMSInfoImpl();
