@@ -58,10 +58,12 @@ import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.NameImpl;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.crs.DefaultTemporalCRS;
+import org.geotools.referencing.crs.DefaultVerticalCRS;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.temporal.object.DefaultInstant;
@@ -70,6 +72,9 @@ import org.geotools.temporal.object.DefaultPosition;
 import org.geotools.temporal.object.Utils;
 import org.geotools.util.SimpleInternationalString;
 import org.opengis.coverage.SampleDimension;
+import org.opengis.geometry.Envelope;
+import org.opengis.metadata.extent.VerticalExtent;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
@@ -516,6 +521,58 @@ public class WMSCapsTransformerTest extends TestCase {
 
         assertEquals(expectedBegining, durationStart);
         assertEquals(expectedEnding, durationEnd);
+    }
+
+    public void testEncodeNDimCoverage_VerticalExtent() throws Exception {
+        wmsInfo.getSRS().add("EPSG:4326");
+
+        CoverageStoreInfoImpl coverageStoreInfo = new CoverageStoreInfoImpl(catalog);
+        CoverageInfoImpl coverageInfo = new CoverageInfoImpl(catalog);
+        LayerInfoImpl coverageLayerInfo = new LayerInfoImpl();
+
+        // set the basic coverage properties
+        setUpBasicTestCoverage(coverageStoreInfo, coverageInfo, coverageLayerInfo);
+
+        // and enhance it with a vertical dimension
+        // TODO: revisit, verticalCRS seems not to have any impact on the getcaps doc...
+        coverageInfo.setVerticalCRS(DefaultVerticalCRS.ELLIPSOIDAL_HEIGHT);
+        Set<Envelope> verticalExtent = new HashSet<Envelope>();
+        Envelope extent = new GeneralEnvelope(-10000.0, 10000.0);
+        verticalExtent.add(extent);
+        coverageInfo.setVerticalExtent(verticalExtent);
+
+        List<? extends Axis<Object, Quantity>> axes = Collections.emptyList();
+        Map<? extends Measure<Object, Quantity>, SampleDimension> dimensions = Collections
+                .emptyMap();
+        FieldType fieldType = new BaseFieldType(new NameImpl("fieldType"),
+                new SimpleInternationalString("fieldDesc"), (Unit<Quantity>) null, axes, dimensions);
+
+        RangeType fields = new DefaultRangeType("range", "description", fieldType);
+        // for the coverage to be n-dim it shall have at least one RangeType field
+        coverageInfo.setFields(fields);
+
+        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        tr.setIndentation(2);
+        Document dom = transform(req, tr);
+
+        final String pathToLayer = "/WMT_MS_Capabilities/Capability/Layer/Layer";
+        assertXpathExists(pathToLayer, dom);
+        assertXpathEvaluatesTo("1", pathToLayer + "/@queryable", dom);
+        assertXpathEvaluatesTo("geos:testCoverageName@fieldType", pathToLayer + "/Name", dom);
+        assertXpathEvaluatesTo("fieldDesc", pathToLayer + "/Title", dom);
+        assertXpathEvaluatesTo("fieldDesc", pathToLayer + "/Abstract", dom);
+
+        assertXpathExists(pathToLayer + "/Dimension", dom);
+        assertXpathEvaluatesTo("elevation", pathToLayer + "/Dimension/@name", dom);
+        assertXpathEvaluatesTo("m", pathToLayer + "/Dimension/@units", dom);
+
+        assertXpathExists(pathToLayer + "/Extent", dom);
+        assertXpathEvaluatesTo("elevation", pathToLayer + "/Extent/@name", dom);
+        assertXpathExists(pathToLayer + "/Extent/@default", dom);
+
+        String defaultExtentValue = XPATH.evaluate(pathToLayer + "/Extent/@default", dom);
+        assertEquals("10000.0", defaultExtentValue);
+        assertXpathEvaluatesTo("-10000.0/10000.0/10000.0", pathToLayer + "/Extent", dom);
     }
 
     /**
