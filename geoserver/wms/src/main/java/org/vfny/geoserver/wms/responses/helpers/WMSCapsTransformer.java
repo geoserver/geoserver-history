@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +21,10 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
-
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
@@ -34,7 +32,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
 import org.vfny.geoserver.global.Data;
@@ -42,18 +39,17 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.LegendURL;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
+import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.util.Collections;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -68,34 +64,45 @@ public class WMSCapsTransformer extends TransformerBase {
     /** fixed MIME type for the returned capabilities document */
     public static final String WMS_CAPS_MIME = "application/vnd.ogc.wms_xml";
 
-    /** DOCUMENT ME! */
-    private String baseUrl;
-    private Set<String> formats;
-    private ApplicationContext applicationContext;
+    /** The geoserver base URL to append it the schemas/wms/1.1.1/WMS_MS_Capabilities.dtd DTD location */
+    private String schemaBaseUrl;
+
+    /** The list of output formats to state as supported for the GetMap request */
+    private Set<String> getMapFormats;
+
+    /** The list of output formats to state as supported for the GetLegendGraphic request */
+    private Set<String> getLegendGraphicFormats;
 
     /**
      * Creates a new WMSCapsTransformer object.
      *
-     * @param baseUrl
-     *            needed to get the schema base URL
-     * @param formats
+     * @param schemaBaseUrl
+     *            the server base url which to append the "schemas/wms/1.1.1/WMS_MS_Capabilities.dtd" 
+     *            DTD location to
+     * @param getMapFormats the list of supported output formats to state for the GetMap request
+     * @param getLegendGraphicFormats the list of supported output formats to state for the 
+     *          GetLegendGraphic request
      * @param applicationContext
      *
      * @throws NullPointerException
      *             if <code>schemaBaseUrl</code> is null;
      */
-    public WMSCapsTransformer(String baseUrl, Set<String> formats,
-        ApplicationContext applicationContext) {
+    public WMSCapsTransformer(String schemaBaseUrl, Set<String> getMapFormats, Set<String> getLegendGraphicFormats) {
         super();
-        this.formats = formats;
-
-        if (baseUrl == null) {
-            throw new NullPointerException();
+        if (schemaBaseUrl == null) {
+            throw new NullPointerException("schemaBaseUrl");
+        }
+        if (getMapFormats == null) {
+            throw new NullPointerException("getMapFormats");
+        }
+        if (getLegendGraphicFormats == null) {
+            throw new NullPointerException("getLegendGraphicFormats");
         }
 
-        this.baseUrl = baseUrl;
+        this.getMapFormats = getMapFormats;
+        this.getLegendGraphicFormats = getLegendGraphicFormats;
+        this.schemaBaseUrl = schemaBaseUrl;
         this.setNamespaceDeclarationEnabled(false);
-        this.applicationContext = applicationContext;
     }
 
     /**
@@ -107,7 +114,7 @@ public class WMSCapsTransformer extends TransformerBase {
      * @return DOCUMENT ME!
      */
     public Translator createTranslator(ContentHandler handler) {
-        return new CapabilitiesTranslator(handler, formats, applicationContext);
+        return new CapabilitiesTranslator(handler, getMapFormats, getLegendGraphicFormats);
     }
 
     /**
@@ -129,8 +136,7 @@ public class WMSCapsTransformer extends TransformerBase {
      */
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
-        GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class, applicationContext).get(0);
-        String dtdUrl = RequestUtils.proxifiedBaseURL(this.baseUrl,gs.getProxyBaseUrl()) +
+        String dtdUrl = schemaBaseUrl + (schemaBaseUrl.endsWith("/")? "" : "/") +
             "schemas/wms/1.1.1/WMS_MS_Capabilities.dtd"; // DJB: fixed this to
                                                                                   // point to correct
                                                                                   // location
@@ -169,8 +175,9 @@ public class WMSCapsTransformer extends TransformerBase {
          * capabilities document can be obtained
          */
         private CapabilitiesRequest request;
-        private Set formats;
-        private ApplicationContext applicationContext;
+        private Set getMapFormats;
+
+        private Set<String> getLegendGraphicFormats;
 
         /**
          * Creates a new CapabilitiesTranslator object.
@@ -178,21 +185,18 @@ public class WMSCapsTransformer extends TransformerBase {
          * @param handler
          *            content handler to send sax events to.
          */
-        public CapabilitiesTranslator(ContentHandler handler, Set formats,
-            ApplicationContext applicationContext) {
+        public CapabilitiesTranslator(ContentHandler handler, Set getMapFormats,
+            Set<String> getLegendGraphicFormats) {
             super(handler, null, null);
-            this.formats = formats;
-            this.applicationContext = applicationContext;
+            this.getMapFormats = getMapFormats;
+            this.getLegendGraphicFormats = getLegendGraphicFormats;
         }
 
         /**
          * DOCUMENT ME!
          *
-         * @param o
-         *            the <code>CapabilitiesRequest</code>
-         *
-         * @throws IllegalArgumentException
-         *             DOCUMENT ME!
+         * @param o the {@link WMSCapabilitiesRequest}
+         * @throws IllegalArgumentException if {@code o} is not of the expected type
          */
         public void encode(Object o) throws IllegalArgumentException {
             if (!(o instanceof CapabilitiesRequest)) {
@@ -349,7 +353,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
             start("GetMap");
 
-            List sortedFormats = new ArrayList(formats);
+            List sortedFormats = new ArrayList(getMapFormats);
             Collections.sort(sortedFormats);
             // this is a hack necessary to make cite tests pass: we need an output format
             // that is equal to the mime type as the first one....
@@ -380,7 +384,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
             start("GetLegendGraphic");
 
-            for (Iterator it = GetLegendGraphicResponse.getFormats(applicationContext).iterator();
+            for (Iterator it = getLegendGraphicFormats.iterator();
                     it.hasNext();) {
                 element("Format", String.valueOf(it.next()));
             }
@@ -1008,7 +1012,7 @@ public class WMSCapsTransformer extends TransformerBase {
             } else {
                 String defaultFormat = GetLegendGraphicRequest.DEFAULT_FORMAT;
 
-                if (!GetLegendGraphicResponse.supportsFormat(defaultFormat, applicationContext)) {
+                if (!GetLegendGraphicResponse.supportsFormat(defaultFormat)) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.warning(new StringBuffer("Default legend format (").append(
                                 defaultFormat)
