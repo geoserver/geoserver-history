@@ -974,23 +974,24 @@ public class WMSCapsTransformer extends TransformerBase {
 
                     AttributesImpl elevDim = new AttributesImpl();
                     elevDim.addAttribute("", "name", "name", "", "elevation");
-                    elevDim
-                            .addAttribute(
-                                    "",
-                                    "default",
-                                    "default",
-                                    "",
-                                    String
-                                            .valueOf(vAxis.getDirection().equals(AxisDirection.UP)
-                                                    && verticalLimits[0] < 0.0
-                                                    && verticalLimits[0] < verticalLimits[1] ? verticalLimits[1]
-                                                    : vAxis.getDirection().equals(
-                                                            AxisDirection.DOWN)
-                                                            && verticalLimits[0] > 0.0
-                                                            && verticalLimits[0] > verticalLimits[1] ? verticalLimits[1]
-                                                            : verticalLimits[0]));
-                    element("Extent", verticalLimits[0] + "/" + verticalLimits[1] + "/"
-                            + verticalLimits[2], elevDim);
+                    final double lowerLimit = verticalLimits[0];
+                    final double upperLimit = verticalLimits[1];
+                    final double resolution = verticalLimits[2];
+
+                    final double defaultElevation;
+                    if (AxisDirection.UP.equals(vAxis.getDirection()) && lowerLimit < 0.0
+                            && lowerLimit < upperLimit) {
+                        defaultElevation = upperLimit;
+                    } else if (vAxis.getDirection().equals(AxisDirection.DOWN) && lowerLimit > 0.0
+                            && lowerLimit > upperLimit) {
+                        defaultElevation = upperLimit;
+                    } else {
+                        defaultElevation = lowerLimit;
+                    }
+                    
+                    elevDim.addAttribute("", "default", "default", "", String
+                            .valueOf(defaultElevation));
+                    element("Extent", lowerLimit + "/" + upperLimit + "/" + resolution, elevDim);
                 }
 
                 for (Axis<?, ?> axis : field.getAxes()) {
