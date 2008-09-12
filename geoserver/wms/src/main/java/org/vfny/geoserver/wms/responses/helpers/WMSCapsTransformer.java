@@ -801,42 +801,35 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-		 * Writes out a capabilities Layer definition for a multi-dimensional
-		 * grid coverage.
-		 * <p>
-		 * That is, a coverage whose
-		 * {@code CoverageInfo#getFields() Field range} is not null nor empty.
-		 * The GetCapabilities output for such a coverage consists of a Layer
-		 * element for each measure type in the coverage fields. Among the usual
-		 * Name, Title, Abstract, SRS and BBOX attributes, each Layer for a
-		 * {@link FieldType} in the coverage receives the following attributes:
-		 * <ul>
-		 * <li>The Layer will be named the same than its originated coverage
-		 * plus an extra "@" followed by the name of the {@link FieldType} the
-		 * layer points to.
-		 * <li>a Dimension element for the coverage
-		 * {@linkplain CoverageInfo#getTemporalExtent() temporal extent}, if
-		 * present
-		 * <li>a Dimension element for the coverage
-		 * {@linkplain CoverageInfo#getVerticalExtent() vertical extent}, if
-		 * present
-		 * <li>a Dimension element for each {@link Axis} in the
-		 * {@link FieldType#getAxes() field type axes}
-		 * <li>an Extent element named "time" for each {@link Period} or
-		 * {@link Instant} in the coverage
-		 * {@link CoverageInfo#getTemporalExtent() temporal extent}
-		 * <li>an Extent element named "elevation" for the coverage's
-		 * {@link CoverageInfo#getVerticalExtent() vertical extent}
-		 * <li>an Extent element for each {@link Axis} in the
-		 * {@link FieldType#getAxes() field type axes} named the same than the
-		 * axis
-		 * <li>and its own list of styles inherited from the coverage default
-		 * and extra styles
-		 * </ul>
-		 * </p>
-		 * 
-		 * @param coverage an info object for a multi dimensional coverage
-		 */
+         * Writes out a capabilities Layer definition for a multi-dimensional grid coverage.
+         * <p>
+         * That is, a coverage whose {@code CoverageInfo#getFields() Field range} is not null nor
+         * empty. The GetCapabilities output for such a coverage consists of a Layer element for
+         * each measure type in the coverage fields. Among the usual Name, Title, Abstract, SRS and
+         * BBOX attributes, each Layer for a {@link FieldType} in the coverage receives the
+         * following attributes:
+         * <ul>
+         * <li>The Layer will be named the same than its originated coverage plus an extra "@"
+         * followed by the name of the {@link FieldType} the layer points to.
+         * <li>a Dimension element for the coverage
+         * {@linkplain CoverageInfo#getTemporalExtent() temporal extent}, if present
+         * <li>a Dimension element for the coverage
+         * {@linkplain CoverageInfo#getVerticalExtent() vertical extent}, if present
+         * <li>a Dimension element for each {@link Axis} in the
+         * {@link FieldType#getAxes() field type axes}
+         * <li>an Extent element named "time" for each {@link Period} or {@link Instant} in the
+         * coverage {@link CoverageInfo#getTemporalExtent() temporal extent}
+         * <li>an Extent element named "elevation" for the coverage's
+         * {@link CoverageInfo#getVerticalExtent() vertical extent}
+         * <li>an Extent element for each {@link Axis} in the
+         * {@link FieldType#getAxes() field type axes} named the same than the axis
+         * <li>and its own list of styles inherited from the coverage default and extra styles
+         * </ul>
+         * </p>
+         * 
+         * @param coverage
+         *                an info object for a multi dimensional coverage
+         */
         protected void handleMultiDimCoverage(CoverageInfo coverage) {
             if (coverage.getFields() == null) {
                 throw new IllegalArgumentException("coverage " + coverage.getName()
