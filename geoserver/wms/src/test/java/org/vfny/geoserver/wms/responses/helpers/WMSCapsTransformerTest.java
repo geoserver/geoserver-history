@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.config.ContactInfo;
@@ -33,11 +34,12 @@ import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfoImpl;
-import org.geotools.data.ows.WMSRequest;
+import org.geotools.referencing.CRS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
@@ -46,6 +48,8 @@ import org.xml.sax.InputSource;
  * @version $Id$
  */
 public class WMSCapsTransformerTest extends TestCase {
+
+    private XpathEngine XPATH;
 
     /** default base url to feed a WMSCapsTransformer with for it to append the DTD location */
     private static final String schemaBaseUrl = "http://localhost/geoserver";
@@ -88,7 +92,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
     private WMSCapabilitiesRequest req;
 
-    /** the default base url for {@link WMSCapabilitiesRequest#getBaseUrl()                */
+    /** the default base url for {@link WMSCapabilitiesRequest#getBaseUrl()                      */
     private static final String baseUrl = "http://localhost:8080/geoserver";
 
     /**
@@ -116,6 +120,7 @@ public class WMSCapsTransformerTest extends TestCase {
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("xlink", "http://www.w3.org/1999/xlink");
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
+        XPATH = XMLUnit.newXpathEngine();
     }
 
     protected void tearDown() throws Exception {
@@ -152,9 +157,6 @@ public class WMSCapsTransformerTest extends TestCase {
             }
         }
         db.setEntityResolver(new EmptyResolver());
-
-        System.out.println(out.toString().substring(0, 2000));
-
         Document doc = db.parse(new ByteArrayInputStream(out.toByteArray()));
         return doc;
     }
@@ -290,5 +292,27 @@ public class WMSCapsTransformerTest extends TestCase {
 
         String getLegentGet = "/WMT_MS_Capabilities/Capability/Request/GetLegendGraphic/DCPType/HTTP/Get/OnlineResource/@xlink:href";
         assertXpathEvaluatesTo(proxyBaseUrl + "/wms?SERVICE=WMS&", getLegentGet, dom);
+    }
+
+    public void testCRSList() throws Exception {
+        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        tr.setIndentation(2);
+        Document dom = transform(tr);
+        final Set<String> supportedCodes = CRS.getSupportedCodes("EPSG");
+        NodeList allCrsCodes = XPATH.getMatchingNodes("/WMT_MS_Capabilities/Capability/Layer/SRS",
+                dom);
+        assertEquals(supportedCodes.size(), allCrsCodes.getLength());
+    }
+
+    public void testLimitedCRSList() throws Exception {
+        wmsInfo.getSRS().add("EPSG:3246");
+        wmsInfo.getSRS().add("EPSG:23030");
+
+        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        tr.setIndentation(2);
+        Document dom = transform(tr);
+        NodeList limitedCrsCodes = XPATH.getMatchingNodes("/WMT_MS_Capabilities/Capability/Layer/SRS",
+                dom);
+        assertEquals(2, limitedCrsCodes.getLength());    
     }
 }
