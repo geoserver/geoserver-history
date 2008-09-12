@@ -25,6 +25,7 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.impl.CatalogImpl;
+import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
@@ -88,7 +89,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
     private WMSCapabilitiesRequest req;
 
-    /** the default base url for {@link WMSCapabilitiesRequest#getBaseUrl()                */
+    /** the default base url for {@link WMSCapabilitiesRequest#getBaseUrl()                   */
     private static final String baseUrl = "http://localhost:8080/geoserver";
 
     /**
@@ -100,6 +101,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         geosInfo = new GeoServerInfoImpl();
         geosConfig.setGlobal(geosInfo);
+        geosInfo.setContactInfo(new ContactInfoImpl());
 
         wmsInfo = new WMSInfoImpl();
         geosConfig.add(wmsInfo);
@@ -196,7 +198,7 @@ public class WMSCapsTransformerTest extends TestCase {
         wmsInfo.setOnlineResource("http://onlineresource/fake");
 
         ContactInfo contactInfo = new ContactInfoImpl();
-        geosInfo.setContact(contactInfo);
+        geosInfo.setContactInfo(contactInfo);
         contactInfo.setContactPerson("contactPerson");
         contactInfo.setContactOrganization("contactOrganization");
         contactInfo.setContactPosition("contactPosition");

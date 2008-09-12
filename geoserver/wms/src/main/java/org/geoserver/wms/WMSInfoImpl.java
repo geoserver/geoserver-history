@@ -11,6 +11,10 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
     WatermarkInfo watermark;
     String interpolation;
     
+    public WMSInfoImpl() {
+        setId( "wms" );
+    }
+
     public WatermarkInfo getWatermark() {
         return watermark;
     }

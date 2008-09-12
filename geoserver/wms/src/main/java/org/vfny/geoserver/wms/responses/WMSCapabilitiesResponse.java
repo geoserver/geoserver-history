@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSExtensions;
 import org.springframework.context.ApplicationContext;
@@ -54,12 +55,12 @@ public class WMSCapabilitiesResponse implements Response {
     /**
      * List of formats accessible via a GetMap request.
      */
-    private Set<String> formats;
+    private Set<String> mapFormats;
     private ApplicationContext applicationContext;
 
     public WMSCapabilitiesResponse(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-        this.formats = loadImageFormats(applicationContext);
+        this.mapFormats = loadImageFormats(applicationContext);
     }
     
     /**
@@ -124,8 +125,14 @@ public class WMSCapabilitiesResponse implements Response {
     	//otherwise it's a normal response...
         
 
-        WMSCapsTransformer transformer = new WMSCapsTransformer(request.getBaseUrl(),
-                formats, applicationContext);
+        String serverBaseUrl;
+        {
+            String requestBaseUrl = request.getBaseUrl();
+            String proxyBaseUrl = request.getServiceConfig().getGeoServer().getProxyBaseUrl();
+            serverBaseUrl = RequestUtils.proxifiedBaseURL(requestBaseUrl, proxyBaseUrl); 
+        }
+        Set<String> legendFormats = GetLegendGraphicResponse.getFormats();
+        WMSCapsTransformer transformer = new WMSCapsTransformer(serverBaseUrl, mapFormats, legendFormats);
 
         // if (request.getWFS().getGeoServer().isVerbose()) {
         transformer.setIndentation(2);
