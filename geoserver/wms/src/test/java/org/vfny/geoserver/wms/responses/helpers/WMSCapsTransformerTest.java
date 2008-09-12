@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,7 +25,14 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.impl.CatalogImpl;
+import org.geoserver.catalog.impl.CoverageInfoImpl;
+import org.geoserver.catalog.impl.CoverageStoreInfoImpl;
+import org.geoserver.catalog.impl.LayerInfoImpl;
+import org.geoserver.catalog.impl.NamespaceInfoImpl;
+import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
@@ -34,7 +41,12 @@ import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfoImpl;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.w3c.dom.Document;
@@ -48,6 +60,11 @@ import org.xml.sax.InputSource;
  * @version $Id$
  */
 public class WMSCapsTransformerTest extends TestCase {
+
+    /**
+     * Namespace used for the resources in this test suite
+     */
+    private static final String TEST_NAMESPACE = "http://geoserver.org";
 
     private XpathEngine XPATH;
 
@@ -85,6 +102,12 @@ public class WMSCapsTransformerTest extends TestCase {
      */
     private CatalogImpl catalog;
 
+    private NamespaceInfoImpl namespaceInfo;
+
+    private WorkspaceInfoImpl workspaceInfo;
+
+    private StyleInfoImpl defaultStyle;
+
     /**
      * An old style {@link WMS} to
      */
@@ -92,7 +115,10 @@ public class WMSCapsTransformerTest extends TestCase {
 
     private WMSCapabilitiesRequest req;
 
-    /** the default base url for {@link WMSCapabilitiesRequest#getBaseUrl()                   */
+    /**
+     * the default base url for
+     * {@link WMSCapabilitiesRequest#getBaseUrl()                           
+     */
     private static final String baseUrl = "http://localhost:8080/geoserver";
 
     /**
@@ -100,6 +126,12 @@ public class WMSCapsTransformerTest extends TestCase {
      * modify their state before running the assertions
      */
     protected void setUp() throws Exception {
+        Map<String, String> namespaces = new HashMap<String, String>();
+        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
+        namespaces.put("geos", TEST_NAMESPACE);
+        XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
+        XPATH = XMLUnit.newXpathEngine();
+
         geosConfig = new GeoServerImpl();
 
         geosInfo = new GeoServerInfoImpl();
@@ -108,6 +140,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         wmsInfo = new WMSInfoImpl();
         geosConfig.add(wmsInfo);
+        wmsInfo.setTitle("My GeoServer WMS");
 
         catalog = new CatalogImpl();
         geosConfig.setCatalog(catalog);
@@ -117,10 +150,32 @@ public class WMSCapsTransformerTest extends TestCase {
         req = new WMSCapabilitiesRequest(wms);
         req.setBaseUrl(baseUrl);
 
-        Map<String, String> namespaces = new HashMap<String, String>();
-        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
-        XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
-        XPATH = XMLUnit.newXpathEngine();
+        namespaceInfo = new NamespaceInfoImpl(catalog);
+        namespaceInfo.setId("testNs");
+        namespaceInfo.setPrefix("geos");
+        namespaceInfo.setURI(TEST_NAMESPACE);
+        catalog.add(namespaceInfo);
+
+        workspaceInfo = new WorkspaceInfoImpl();
+        catalog.setDefaultWorkspace(workspaceInfo);
+
+        defaultStyle = new StyleInfoImpl(catalog) {
+            /**
+             * Override so it does not try to load a file from disk
+             */
+            @Override
+            public Style getStyle() throws IOException {
+                StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
+                Style style = styleFactory.createStyle();
+                style.setName("Default Style");
+                return style;
+            }
+        };
+        defaultStyle.setFilename("defaultStyleFileName");
+        defaultStyle.setId("defaultStyleId");
+        defaultStyle.setName("defaultStyleName");
+        catalog.add(defaultStyle);
+
     }
 
     protected void tearDown() throws Exception {
@@ -128,9 +183,9 @@ public class WMSCapsTransformerTest extends TestCase {
     }
 
     /**
-     * Runs the transformation on tr and returns the result as a DOM
+     * Runs the transformation on tr with the provided request and returns the result as a DOM
      */
-    private Document transform(WMSCapsTransformer tr) throws Exception {
+    private Document transform(WMSCapabilitiesRequest req, WMSCapsTransformer tr) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         tr.transform(req, out);
 
@@ -158,7 +213,7 @@ public class WMSCapsTransformerTest extends TestCase {
         }
         db.setEntityResolver(new EmptyResolver());
 
-        System.out.println(out.toString().substring(0, 2000));
+        //System.out.println(out.toString());
 
         Document doc = db.parse(new ByteArrayInputStream(out.toByteArray()));
         return doc;
@@ -179,7 +234,7 @@ public class WMSCapsTransformerTest extends TestCase {
     public void testRootElement() throws Exception {
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
 
-        Document dom = transform(tr);
+        Document dom = transform(req, tr);
         Element root = dom.getDocumentElement();
         assertEquals("WMT_MS_Capabilities", root.getNodeName());
         assertEquals("1.1.1", root.getAttribute("version"));
@@ -187,7 +242,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         geosInfo.setUpdateSequence(10);
         tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
-        dom = transform(tr);
+        dom = transform(req, tr);
         root = dom.getDocumentElement();
         assertEquals("10", root.getAttribute("updateSequence"));
     }
@@ -221,7 +276,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
-        Document dom = transform(tr);
+        Document dom = transform(req, tr);
 
         String service = "/WMT_MS_Capabilities/Service";
         assertXpathEvaluatesTo("OGC:WMS", service + "/Name", dom);
@@ -269,7 +324,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
-        Document dom = transform(tr);
+        Document dom = transform(req, tr);
 
         String serviceOnlineRes = "/WMT_MS_Capabilities/Service/OnlineResource/@xlink:href";
         // @REVISIT: shouldn't it be WmsInfo.getOnlineResource?
@@ -300,7 +355,7 @@ public class WMSCapsTransformerTest extends TestCase {
     public void testCRSList() throws Exception {
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
-        Document dom = transform(tr);
+        Document dom = transform(req, tr);
         final Set<String> supportedCodes = CRS.getSupportedCodes("EPSG");
         NodeList allCrsCodes = XPATH.getMatchingNodes("/WMT_MS_Capabilities/Capability/Layer/SRS",
                 dom);
@@ -313,9 +368,111 @@ public class WMSCapsTransformerTest extends TestCase {
 
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
-        Document dom = transform(tr);
-        NodeList limitedCrsCodes = XPATH.getMatchingNodes("/WMT_MS_Capabilities/Capability/Layer/SRS",
-                dom);
-        assertEquals(2, limitedCrsCodes.getLength());    
+        Document dom = transform(req, tr);
+        NodeList limitedCrsCodes = XPATH.getMatchingNodes(
+                "/WMT_MS_Capabilities/Capability/Layer/SRS", dom);
+        assertEquals(2, limitedCrsCodes.getLength());
+    }
+
+    /**
+     * Tests that the basic coverage properties are correctly encoded
+     * 
+     * @throws Exception
+     */
+    public void testEncodeCoverage() throws Exception {
+        wmsInfo.getSRS().add("EPSG:4326");
+
+        CoverageStoreInfoImpl coverageStoreInfo = new CoverageStoreInfoImpl(catalog);
+        CoverageInfoImpl coverageInfo = new CoverageInfoImpl(catalog);
+        LayerInfoImpl coverageLayerInfo = new LayerInfoImpl();
+        setUpBasicTestCoverage(coverageStoreInfo, coverageInfo, coverageLayerInfo);
+
+        // make latLon and native bbox differ
+        ReferencedEnvelope nativeBbox = new ReferencedEnvelope(-170, 170, -80, 80,
+                DefaultGeographicCRS.WGS84);
+        coverageInfo.setNativeBoundingBox(nativeBbox);
+
+        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        tr.setIndentation(2);
+        Document dom = transform(req, tr);
+
+        final String pathToLayer = "/WMT_MS_Capabilities/Capability/Layer/Layer";
+        assertXpathExists(pathToLayer, dom);
+        assertXpathEvaluatesTo("1", pathToLayer + "/@queryable", dom);
+        assertXpathEvaluatesTo("geos:testCoverageName", pathToLayer + "/Name", dom);
+        assertXpathEvaluatesTo("testCoverageTitle", pathToLayer + "/Title", dom);
+        assertXpathEvaluatesTo("testCoverageDescription", pathToLayer + "/Abstract", dom);
+        assertXpathEvaluatesTo("EPSG:4326", pathToLayer + "/SRS", dom);
+
+        assertXpathEvaluatesTo("-180.0", pathToLayer + "/LatLonBoundingBox/@minx", dom);
+        assertXpathEvaluatesTo("-90.0", pathToLayer + "/LatLonBoundingBox/@miny", dom);
+        assertXpathEvaluatesTo("180.0", pathToLayer + "/LatLonBoundingBox/@maxx", dom);
+        assertXpathEvaluatesTo("90.0", pathToLayer + "/LatLonBoundingBox/@maxy", dom);
+
+        assertXpathEvaluatesTo("EPSG:4326", pathToLayer + "/BoundingBox/@SRS", dom);
+        assertXpathEvaluatesTo("-170.0", pathToLayer + "/BoundingBox/@minx", dom);
+        assertXpathEvaluatesTo("-80.0", pathToLayer + "/BoundingBox/@miny", dom);
+        assertXpathEvaluatesTo("170.0", pathToLayer + "/BoundingBox/@maxx", dom);
+        assertXpathEvaluatesTo("80.0", pathToLayer + "/BoundingBox/@maxy", dom);
+
+        // just check the correct style was added, its not this test business to fully check how
+        // styles are encoded
+        assertXpathExists(pathToLayer + "/Style", dom);
+        assertXpathEvaluatesTo("Default Style", pathToLayer + "/Style/Name", dom);
+    }
+
+    /**
+     * Ties up the provided coverage store, coverage and layer together and adds them to the catalog
+     * in order to assert the encoding of a coverage in the GetCapabilities response.
+     * <p>
+     * This method only sets up the simplest and minimal properties needed for each of the
+     * arguments. Callers could enhance them after this method returns in order to set up the
+     * objects properties of interest for the specific test.
+     * </p>
+     * 
+     * @param coverageStoreInfo
+     *                the coverage store info to add to the catalog and where to configure the
+     *                coverage
+     * @param coverageInfo
+     *                the coverage to configure with basic resource properties, add to the catalog
+     *                as a component of the {@code coverageStoreInfo}
+     * @param coverageLayerInfo
+     *                the layer to configure for {@code coverageInfo} and add to the catalog with
+     *                {@link #defaultStyle} and some default simple properties
+     */
+    private void setUpBasicTestCoverage(CoverageStoreInfoImpl coverageStoreInfo,
+            CoverageInfoImpl coverageInfo, LayerInfoImpl coverageLayerInfo) {
+
+        coverageInfo.setStore(coverageStoreInfo);
+
+        coverageInfo.setId("testCoverageId");
+        coverageInfo.setEnabled(true);
+        coverageInfo.setName("testCoverageName");
+        coverageInfo.setNamespace(namespaceInfo);
+        coverageInfo.setId("testCoverage");
+        coverageInfo.setTitle("testCoverageTitle");
+        coverageInfo.setAbstract("testCoverageAbstract");
+        coverageInfo.setDescription("testCoverageDescription");
+        coverageInfo.setDefaultInterpolationMethod("defaultInterpolationMethod");
+        ReferencedEnvelope latLonBbox = new ReferencedEnvelope(-180, 180, -90, 90,
+                DefaultGeographicCRS.WGS84);
+        coverageInfo.setLatLonBoundingBox(latLonBbox);
+        coverageInfo.setNativeCRS(DefaultGeographicCRS.WGS84);
+        coverageInfo.setNativeBoundingBox(latLonBbox);
+        coverageInfo.setSRS("EPSG:4326");
+
+        coverageLayerInfo.setResource(coverageInfo);
+        coverageLayerInfo.setEnabled(true);
+        coverageLayerInfo.setId("testLayerId");
+        coverageLayerInfo.setName("testLayerName");
+
+        // no path, top level layer
+        // coverageLayerInfo.setPath("testLayerPath");
+        coverageLayerInfo.setType(LayerInfo.Type.RASTER);
+        coverageLayerInfo.setDefaultStyle(defaultStyle);
+
+        catalog.add(coverageLayerInfo);
+        catalog.add(coverageStoreInfo);
+        catalog.add(coverageInfo);
     }
 }
