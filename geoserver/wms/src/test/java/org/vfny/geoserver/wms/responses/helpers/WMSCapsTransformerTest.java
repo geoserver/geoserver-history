@@ -11,11 +11,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.measure.Measure;
+import javax.measure.quantity.Quantity;
+import javax.measure.unit.BaseUnit;
+import javax.measure.unit.Unit;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -41,12 +50,27 @@ import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfoImpl;
+import org.geotools.coverage.io.impl.range.BaseFieldType;
+import org.geotools.coverage.io.impl.range.DefaultRangeType;
+import org.geotools.coverage.io.impl.range.NetCDFProductFieldType;
+import org.geotools.coverage.io.range.Axis;
+import org.geotools.coverage.io.range.FieldType;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.NameImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.referencing.crs.DefaultTemporalCRS;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.geotools.temporal.object.DefaultInstant;
+import org.geotools.temporal.object.DefaultPeriod;
+import org.geotools.temporal.object.DefaultPosition;
+import org.geotools.temporal.object.Utils;
+import org.geotools.util.SimpleInternationalString;
+import org.opengis.coverage.SampleDimension;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.w3c.dom.Document;
@@ -376,8 +400,6 @@ public class WMSCapsTransformerTest extends TestCase {
 
     /**
      * Tests that the basic coverage properties are correctly encoded
-     * 
-     * @throws Exception
      */
     public void testEncodeCoverage() throws Exception {
         wmsInfo.getSRS().add("EPSG:4326");
@@ -419,6 +441,77 @@ public class WMSCapsTransformerTest extends TestCase {
         // styles are encoded
         assertXpathExists(pathToLayer + "/Style", dom);
         assertXpathEvaluatesTo("Default Style", pathToLayer + "/Style/Name", dom);
+    }
+
+    public void testEncodeNDimCoverage_TemporalExtent() throws Exception {
+        wmsInfo.getSRS().add("EPSG:4326");
+
+        CoverageStoreInfoImpl coverageStoreInfo = new CoverageStoreInfoImpl(catalog);
+        CoverageInfoImpl coverageInfo = new CoverageInfoImpl(catalog);
+        LayerInfoImpl coverageLayerInfo = new LayerInfoImpl();
+
+        // set the basic coverage properties
+        setUpBasicTestCoverage(coverageStoreInfo, coverageInfo, coverageLayerInfo);
+
+        // and enhance it with temporal dimension
+        // TODO: revisit, temporalCRS seems not to have any impact on the getcaps doc...
+        coverageInfo.setTemporalCRS(DefaultTemporalCRS.JULIAN);
+
+        Set<TemporalGeometricPrimitive> temporalExtent = new HashSet<TemporalGeometricPrimitive>();
+
+        final String beginingTime = "2008-09-12T00:00:00.000-0100";
+        final String endingTime = "2008-09-12T23:59:59.00-0100";
+        DefaultInstant begining;
+        DefaultInstant ending;
+        begining = new DefaultInstant(new DefaultPosition(new SimpleInternationalString(
+                beginingTime)));
+        ending = new DefaultInstant(new DefaultPosition(new SimpleInternationalString(endingTime)));
+        temporalExtent.add(new DefaultPeriod(begining, ending));
+
+        coverageInfo.setTemporalExtent(temporalExtent);
+
+        List<? extends Axis<Object, Quantity>> axes = Collections.emptyList();
+        Map<? extends Measure<Object, Quantity>, SampleDimension> dimensions = Collections
+                .emptyMap();
+        FieldType fieldType = new BaseFieldType(new NameImpl("fieldType"),
+                new SimpleInternationalString("fieldDesc"), (Unit<Quantity>) null, axes, dimensions);
+
+        RangeType fields = new DefaultRangeType("range", "description", fieldType);
+        // for the coverage to be n-dim it shall have at least one RangeType field
+        coverageInfo.setFields(fields);
+
+        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        tr.setIndentation(2);
+        Document dom = transform(req, tr);
+
+        final String pathToLayer = "/WMT_MS_Capabilities/Capability/Layer/Layer";
+        assertXpathExists(pathToLayer, dom);
+        assertXpathEvaluatesTo("1", pathToLayer + "/@queryable", dom);
+        assertXpathEvaluatesTo("geos:testCoverageName@fieldType", pathToLayer + "/Name", dom);
+        assertXpathEvaluatesTo("fieldDesc", pathToLayer + "/Title", dom);
+        assertXpathEvaluatesTo("fieldDesc", pathToLayer + "/Abstract", dom);
+
+        assertXpathExists(pathToLayer + "/Dimension", dom);
+        assertXpathEvaluatesTo("time", pathToLayer + "/Dimension/@name", dom);
+        assertXpathEvaluatesTo("ISO8601", pathToLayer + "/Dimension/@units", dom);
+
+        assertXpathExists(pathToLayer + "/Extent", dom);
+        assertXpathEvaluatesTo("time", pathToLayer + "/Extent/@name", dom);
+        assertXpathExists(pathToLayer + "/Extent/@default", dom);
+
+        Date expectedBegining = Utils.getDateFromString(beginingTime);
+        Date expectedEnding = Utils.getDateFromString(endingTime);
+        String defaultExtentValue = XPATH.evaluate(pathToLayer + "/Extent/@default", dom);
+        assertEquals(expectedBegining, Utils.getDateFromString(defaultExtentValue));
+
+        String valuesStr = XPATH.evaluate(pathToLayer + "/Extent", dom);
+        String[] values = valuesStr.split(",");
+        assertEquals(2, values.length);
+        Date actualStart = Utils.getDateFromString(values[0]);
+        Date actualEnd = Utils.getDateFromString(values[1]);
+
+        assertEquals(expectedBegining, actualStart);
+        assertEquals(expectedEnding, actualEnd);
     }
 
     /**
