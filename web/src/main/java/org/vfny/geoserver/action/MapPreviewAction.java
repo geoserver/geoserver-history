@@ -6,6 +6,7 @@ package org.vfny.geoserver.action;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -273,6 +274,15 @@ public class MapPreviewAction extends GeoServerAction {
                 LOGGER.log(Level.WARNING, "Error trying to access group " + baseMapTitle, e);
             }
         }
+        
+        // Build up a list of url-encoded layer names, they might contain chars that are invalid
+        // in urls
+        List escapedFtnsist = new ArrayList();
+        for (Iterator it = ftnsList.iterator(); it.hasNext();) {
+            String ft = (String) it.next();
+            escapedFtnsist.add(URLEncoder.encode(ft, "UTF-8"));
+        }
+        
 
         // 4) send off gathered information to the .jsp
         DynaActionForm myForm = (DynaActionForm) form;
@@ -284,6 +294,7 @@ public class MapPreviewAction extends GeoServerAction {
         myForm.set("WidthList", widthList.toArray(new String[widthList.size()]));
         myForm.set("HeightList", heightList.toArray(new String[heightList.size()]));
         myForm.set("FTNamespaceList", ftnsList.toArray(new String[ftnsList.size()]));
+        myForm.set("EscapedFTNamespaceList", ftnsList.toArray(new String[escapedFtnsist.size()]));
         myForm.set("CoverageStatus", coverageStatus.toArray(new Integer[coverageStatus.size()]));
         //String proxifiedBaseUrl = RequestUtils.baseURL(request);
         GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class).get(0);
