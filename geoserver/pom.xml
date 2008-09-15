@@ -6,7 +6,7 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>1.6.5-SNAPSHOT</version>
+ <version>1.6.5</version>
  <name>GeoServer 1.6.x</name>
 
  <scm>
@@ -1005,8 +1005,8 @@
  </modules>
 
  <properties>
-  <gs.version>1.6.5-SNAPSHOT</gs.version>
-  <gt.version>2.4-SNAPSHOT</gt.version>
+  <gs.version>1.6.5</gs.version>
+  <gt.version>2.4.5</gt.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
