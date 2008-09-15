@@ -90,7 +90,7 @@
                 document.getElementById('nodelist').innerHTML = "Loading... please wait...";
                 var url =  map.layers[0].getFullRequestString(
                     {
-                        REQUEST: "GetFeatureInfo",
+                        request: "GetFeatureInfo",
                         EXCEPTIONS: "application/vnd.ogc.se_xml",
                         BBOX: map.getExtent().toBBOX(),
                         X: e.xy.x,
