@@ -57,9 +57,30 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        DescribeLayerRequest req = new DescribeLayerRequest((WMS)serviceConfig);
+        if (request == null) {
+            throw new NullPointerException("request");
+    }
+
+        DescribeLayerRequest req = new DescribeLayerRequest((WMS) serviceConfig);
         req.setHttpServletRequest(request);
-        
+
+        final String version = getValue("VERSION");
+        if (null == version) {
+            // spec allows to use custom exception codes, so we'll use
+            // NoVersionInfo here. No need to define it as a DTD extension
+            // though
+            throw new WmsException("Version parameter not provided for DescribeLayer operation",
+                    "NoVersionInfo", getClass().getSimpleName());
+        }
+
+        if (!getWMS().getVersion().equals(version)) {
+            // spec allows to use custom exception codes, so we'll use
+            // InvalidVersion here. No need to define it as a DTD extension
+            // though
+            throw new WmsException("Wrong value for version parameter: " + version
+                    + ". This server accetps version " + getWMS().getVersion(), "InvalidVersion",
+                    getClass().getSimpleName());
+        }
         req.setVersion(getValue("VERSION"));
 
         String layersParam = getValue("LAYERS");
@@ -77,7 +98,8 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
         int layerCount = layers.size();
 
         if (layerCount == 0) {
-            throw new WmsException("No LAYERS has been requested", getClass().getName());
+            throw new WmsException("No LAYERS has been requested", "NoLayerRequested", getClass()
+                    .getName());
         }
 
         Data catalog = req.getWMS().getData();
@@ -128,8 +150,9 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
                         LOGGER.fine(new StringBuffer(layerName).append(" found").toString());
                     }
                 } catch (NoSuchElementException cex) {
-                    throw new WmsException(cex, layerName + ": no such layer on this server",
-                        "LayerNotDefined");
+                    throw new WmsException(cex, layerName
+                            + ": no such layer on this server",
+                            getClass().getSimpleName(), "LayerNotDefined");
                 }
 
                 if (LOGGER.isLoggable(Level.FINE)) {
