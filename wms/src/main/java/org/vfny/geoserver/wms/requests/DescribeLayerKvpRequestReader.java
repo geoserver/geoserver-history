@@ -20,120 +20,158 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
- * Parses a DescribeLayer request, wich consists only of a list of
- * layer names, given by the <code>"LAYER"</code> parameter.
- *
- *
+ * Parses a DescribeLayer request, wich consists only of a list of layer names,
+ * given by the <code>"LAYER"</code> parameter.
+ * 
+ * 
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id$
+ * @version $Id: DescribeLayerKvpRequestReader.java 9027 2008-05-28 07:18:12Z
+ *          jdeolive $
  */
 public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
-    /** package's logger  */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DescribeLayerKvpRequestReader.class.getPackage()
-                                                                                             .getName());
-    /**
-     * Constructs a new DescribeLayer request parser.
-     * @param params
-     * @param service The wms service config.
-     */
-    public DescribeLayerKvpRequestReader(Map params, WMS wms) {
-        super(params, wms);
-    }
-    
-    /**
-     * Does the request parsing and constructs a <code>DescribeLayerRequest</code>,
-     * wich holds the requiered layers as <code>FeatureTypeInfo</code> references.
-     *
-     * @param request the original request.
-     *
-     * @return the parsed and validated <code>DescribeLayerRequest</code>
-     *
-     * @throws ServiceException see "throws WmsException"...
-     * @throws WmsException if no layers has been requested, or
-     * one of the requested layers does not exists on this
-     * server instance.
-     */
-    public Request getRequest(HttpServletRequest request)
-        throws ServiceException {
-        DescribeLayerRequest req = new DescribeLayerRequest((WMS)serviceConfig);
-        req.setHttpServletRequest(request);
-        
-        req.setVersion(getValue("VERSION"));
+	/** package's logger */
+	private static final Logger LOGGER = org.geotools.util.logging.Logging
+			.getLogger(DescribeLayerKvpRequestReader.class.getPackage()
+					.getName());
 
-        String layersParam = getValue("LAYERS");
+	/**
+	 * Constructs a new DescribeLayer request parser.
+	 * 
+	 * @param params
+	 * @param service
+	 *            The wms service config.
+	 */
+	public DescribeLayerKvpRequestReader(Map params, WMS wms) {
+		super(params, wms);
+	}
 
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(layersParam);
-        }
+	/**
+	 * Does the request parsing and constructs a
+	 * <code>DescribeLayerRequest</code>, wich holds the requiered layers as
+	 * <code>FeatureTypeInfo</code> references.
+	 * 
+	 * @param request
+	 *            the original request.
+	 * 
+	 * @return the parsed and validated <code>DescribeLayerRequest</code>
+	 * 
+	 * @throws ServiceException
+	 *             see "throws WmsException"...
+	 * @throws WmsException
+	 *             if no layers has been requested, or one of the requested
+	 *             layers does not exists on this server instance, or the
+	 *             version parameter was not provided.
+	 */
+	public Request getRequest(HttpServletRequest request)
+			throws ServiceException {
+		if (request == null) {
+			throw new NullPointerException("request");
+		}
 
-        List layers = readFlat(layersParam, INNER_DELIMETER);
+		DescribeLayerRequest req = new DescribeLayerRequest((WMS) serviceConfig);
+		req.setHttpServletRequest(request);
 
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(layers.toString());
-        }
+		final String version = getValue("VERSION");
+		if (null == version) {
+			// spec allows to use custom exception codes, so we'll use
+			// NoVersionInfo here. No need to define it as a DTD extension
+			// though
+			throw new WmsException(
+					"Version parameter not provided for DescribeLayer operation",
+					"NoVersionInfo", getClass().getSimpleName());
+		}
 
-        int layerCount = layers.size();
+		if (!getWMS().getVersion().equals(version)) {
+			// spec allows to use custom exception codes, so we'll use
+			// InvalidVersion here. No need to define it as a DTD extension
+			// though
+			throw new WmsException("Wrong value for version parameter: "
+					+ version + ". This server accetps version "
+					+ getWMS().getVersion(), "InvalidVersion", getClass()
+					.getSimpleName());
+		}
 
-        if (layerCount == 0) {
-            throw new WmsException("No LAYERS has been requested", getClass().getName());
-        }
+		req.setVersion(version);
 
-        Data catalog = req.getWMS().getData();
+		String layersParam = getValue("LAYERS");
 
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(catalog.toString());
-        }
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(layersParam);
+		}
 
-        String layerName = null;
-        MapLayerInfo layer = null;
+		List layers = readFlat(layersParam, INNER_DELIMETER);
 
-        for (int i = 0; i < layerCount; i++) {
-            layerName = (String) layers.get(i);
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(layers.toString());
+		}
 
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(new StringBuffer("Looking for layer ").append(layerName).toString());
-            }
+		int layerCount = layers.size();
 
-            try {
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine("looking featuretypeinfos");
-                }
+		if (layerCount == 0) {
+			throw new WmsException("No LAYERS has been requested", "NoLayerRequested", getClass()
+					.getName());
+		}
 
-                FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
-                layer = new MapLayerInfo();
-                layer.setFeature(ftype);
-                req.addLayer(layer);
-            } catch (NoSuchElementException fex) {
-                try {
-                    if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.fine("looking coverageinfos");
-                    }
+		Data catalog = req.getWMS().getData();
 
-                    CoverageInfo cinfo = catalog.getCoverageInfo(layerName);
-                    layer = new MapLayerInfo();
-                    layer.setCoverage(cinfo);
-                    req.addLayer(layer);
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(catalog.toString());
+		}
 
-                    if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.fine(new StringBuffer(layerName).append(" found").toString());
-                    }
-                } catch (NoSuchElementException cex) {
-                    throw new WmsException(cex, layerName + ": no such layer on this server",
-                        "LayerNotDefined");
-                }
+		String layerName = null;
+		MapLayerInfo layer = null;
 
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer(layerName).append(" found").toString());
-                }
-            }
-        }
+		for (int i = 0; i < layerCount; i++) {
+			layerName = (String) layers.get(i);
 
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("parsed request ").append(req).toString());
-        }
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine(new StringBuffer("Looking for layer ").append(
+						layerName).toString());
+			}
 
-        return req;
-    }
+			try {
+				if (LOGGER.isLoggable(Level.FINE)) {
+					LOGGER.fine("looking featuretypeinfos");
+				}
+
+				FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
+				layer = new MapLayerInfo();
+				layer.setFeature(ftype);
+				req.addLayer(layer);
+			} catch (NoSuchElementException fex) {
+				try {
+					if (LOGGER.isLoggable(Level.FINE)) {
+						LOGGER.fine("looking coverageinfos");
+					}
+
+					CoverageInfo cinfo = catalog.getCoverageInfo(layerName);
+					layer = new MapLayerInfo();
+					layer.setCoverage(cinfo);
+					req.addLayer(layer);
+
+					if (LOGGER.isLoggable(Level.FINE)) {
+						LOGGER.fine(new StringBuffer(layerName)
+								.append(" found").toString());
+					}
+				} catch (NoSuchElementException cex) {
+					throw new WmsException(cex, layerName
+							+ ": no such layer on this server",
+							getClass().getSimpleName(), "LayerNotDefined");
+				}
+
+				if (LOGGER.isLoggable(Level.FINE)) {
+					LOGGER.fine(new StringBuffer(layerName).append(" found")
+							.toString());
+				}
+			}
+		}
+
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(new StringBuffer("parsed request ").append(req)
+					.toString());
+		}
+
+		return req;
+	}
 }
