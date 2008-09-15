@@ -281,22 +281,13 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          */
         protected boolean encodeStyle(SimpleFeature feature,
                 FeatureTypeStyle[] styles) {
-            return encodeStyle(feature, styles, false);
-        }
-        
-        protected boolean encodeStyle(SimpleFeature feature,
-                FeatureTypeStyle[] styles, boolean isVector) {
 
             // encode the Line/Poly styles
             List symbolizerList = new ArrayList();
             for (int j = 0; j < styles.length; j++) {
-                Rule[] rules;
-                if(isVector) {
-                    rules = KMLUtils.filterRules(styles[j], feature, 0);
-                } else {
-                    rules = KMLUtils.filterRules(styles[j], feature,
-                            scaleDenominator);
-                }
+                Rule[] rules = KMLUtils.filterRules(styles[j], feature,
+                        scaleDenominator);
+
                 for (int i = 0; i < rules.length; i++) {
                     symbolizerList.addAll(Arrays.asList(rules[i]
                             .getSymbolizers()));
