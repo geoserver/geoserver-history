@@ -209,7 +209,7 @@ public class KMLVectorTransformer extends KMLMapTransformer {
         }
 
         protected void encode(SimpleFeature feature, FeatureTypeStyle[] styles) {
-            if(encodeStyle(feature, styles))
+            if(encodeStyle(feature, styles, true))
                 encodePlacemark(feature,styles);    
         }
     }

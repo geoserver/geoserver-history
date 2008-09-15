@@ -32,11 +32,11 @@
     </profile>
 
     <!-- release profile, includes all modules -->
-    <profile>
+    <!-- profile>
       <id>release</id>
       <modules>
         <module>h2</module>
       </modules>
-    </profile>
+    </profile -->
   </profiles>
 </project>
