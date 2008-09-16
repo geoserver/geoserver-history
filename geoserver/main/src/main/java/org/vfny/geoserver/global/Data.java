@@ -2060,7 +2060,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     public synchronized Map getFeatureTypeInfos() {
         Map map = new HashMap();
         for ( org.geoserver.catalog.FeatureTypeInfo ft : catalog.getFeatureTypes() ) {
-            if(ft.isEnabled())
+            //if(ft.isEnabled())
                 map.put( ft.getPrefixedName(), new FeatureTypeInfo( layer( ft ), catalog ) );
         }
         return map;
@@ -2078,7 +2078,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     public synchronized Map getCoverageInfos() {
         Map map = new HashMap();
         for ( org.geoserver.catalog.CoverageInfo c : catalog.getCoverages() ) {
-            if(c.isEnabled())
+            //if(c.isEnabled())
                 map.put( c.getPrefixedName(), new CoverageInfo( layer(c), catalog ) );
         }
         return map;
