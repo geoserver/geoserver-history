@@ -23,6 +23,14 @@
 				<include>gwc-*.jar</include>
 				<include>tomcat-util*</include>
 				<include>xmlrpc-*</include>
+				<include>com.noelios.restlet.ext.simple-*</include>
+				<include>jettison-*</include>
+				<include>org.restlet.ext.spring-*</include>
+				<include>org.restlet.ext.json-*</include>
+				<include>org.simpleframework-*</include>
+				<include>stax-api-*</include>
+				<include>org.json-*</include>
+				<include>xstream-*</include>
 			</includes>
 		</fileSet>
 		<fileSet>
