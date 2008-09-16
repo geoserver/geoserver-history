@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.io.FileUtils;
 import org.geotools.filter.FilterTransformer;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
@@ -973,9 +974,15 @@ public class XMLConfigWriter {
         // if it's from another datastore. Though I suppose that is not
         // mutually exclusive, just a little wasting of space, for shapefiles
         // would be held twice.
+        // JD: changing this to back up rather than delete
         File[] fa = dir.listFiles();
 
         for (int j = 0; j < fa.length; j++) {
+            if ( fa[j].getName().startsWith( ".") ) {
+                //ignore it
+                continue;
+            }
+            
             // find dir name
             i = data.getFeaturesTypes().values().iterator();
 
@@ -1016,14 +1023,26 @@ public class XMLConfigWriter {
                             // sorry for the hardcodes, I don't remember
                             // if/where
                             // we have these file names.
-                            files[x].delete();
+                            try {
+                                WriterUtils.backupFile( files[x], true );
+                            } 
+                            catch (IOException e) {
+                                LOGGER.severe( "Unable to backup: " + files[x].getAbsolutePath() );
+                            }
+                            //files[x].delete();
                         }
                     }
                 }
 
-                if ((files != null) && (files.length == 0)) {
-                    fa[j].delete();
-                }
+                // rename it if its not a backup
+                if ( !fa[j].getName().endsWith( ".bak") ) {
+                    try {
+                        WriterUtils.backupDirectory( fa[j] );
+                    }
+                    catch (IOException e) {
+                        LOGGER.severe( "Unable to backup: " + fa[j].getAbsolutePath() );
+                    }
+                } 
             }
         }
     }
@@ -1051,7 +1070,18 @@ public class XMLConfigWriter {
             LOGGER.finer("In method storeFeature");
         }
 
-        File f = WriterUtils.initWriteFile(new File(dir, "info.xml"), false);
+        File ftInfo = new File(dir, "info.xml");
+        //back up file if it already exists
+        if ( ftInfo.exists() ) {
+            try {
+                WriterUtils.backupFile( ftInfo, true );
+            } 
+            catch (IOException e) {
+                LOGGER.severe( "Unable to backup: " + ftInfo.getAbsolutePath() );
+            }
+        }
+        
+        File f = WriterUtils.initWriteFile(ftInfo, false);
 
         try {
             Writer fw = new OutputStreamWriter(new FileOutputStream(f), getDefaultEncoding());
@@ -1260,7 +1290,18 @@ public class XMLConfigWriter {
             return;
         }
 
-        File f = WriterUtils.initWriteFile(new File(dir, "schema.xml"), false);
+        File ftSchema = new File(dir, "schema.xml");
+        
+        //backup file if it already exists
+        if ( ftSchema.exists() ) {
+            try {
+                WriterUtils.backupFile( ftSchema, true );
+            } 
+            catch (IOException e) {
+                LOGGER.severe( "Unable to backup: " + ftSchema.getAbsolutePath() );
+            }
+        }
+        File f = WriterUtils.initWriteFile(ftSchema, false);
 
         try {
             Writer fw = new OutputStreamWriter(new FileOutputStream(f), getDefaultEncoding());
@@ -1828,6 +1869,72 @@ public class XMLConfigWriter {
             }
 
             return f;
+        }
+        
+        public static void backupFile( File f, boolean rename ) throws IOException {
+            File b = new File( f.getAbsolutePath() + ".bak" );
+            
+            //kill the pre-existing backup if it exists
+            if ( b.exists() ) {
+                WriterUtils.delete( b );
+            }
+            
+            if( rename ) {
+                f.renameTo( b );
+            }
+            else {
+                FileUtils.copyFile( f, b );
+            }
+            
+        }
+        
+        /**
+         * Backs up a directory by appending .bak to its name.
+         */
+        public static void backupDirectory(File d) throws IOException {
+            File b = new File( d.getAbsolutePath() + ".bak" );
+            if ( b.exists() ) {
+                //kill the old backup
+                
+                //should be a directory, but check anyways
+                if ( b.isDirectory() ) {
+                    deleteDirectory( b );     
+                }
+                else {
+                    b.delete();
+                }
+               
+            }
+            
+            //rename directory
+            d.renameTo( b );
+        }
+        
+        /**
+         * Deletes a file, handling the case in which it is a directory.
+         */
+        public static void delete( File f ) throws IOException {
+            if ( f.isDirectory() ) {
+                WriterUtils.deleteDirectory( f );
+            }
+            else {
+                f.delete();
+            }
+        }
+        /**
+         * Recursively deletes a directory.
+         */
+        public static void deleteDirectory( File d ) throws IOException {
+            File[] ls = d.listFiles();
+            for ( int i = 0; i < ls.length; i++ ) {
+                if ( ls[i].isDirectory() ) {
+                    deleteDirectory(ls[i]);
+                }
+                else {
+                    ls[i].delete();
+                }
+            }
+            d.delete();
         }
     }
 }
