@@ -339,6 +339,13 @@
 
   <profiles>
     <profile>
+      <id>release</id>
+      <properties>
+        <configDirectory>${basedir}/../../configuration</configDirectory>
+        <configId>release</configId>
+      </properties>
+    </profile>
+    <profile>
       <id>includeArcSDEJars</id>
       <activation>
         <property>

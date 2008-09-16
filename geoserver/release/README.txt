@@ -10,8 +10,7 @@ loose-ends release, but includes over 50 bug fixes and features, including
 * New Dutch translation
 
 See the entire 1.6.5 changelog:
-http://jira.codehaus.org/browse/GEOS/fixforversion/13878  
-
+http://jira.codehaus.org/browse/GEOS/fixforversion/13878
 
 GeoServer 1.6.4b
 ----------------

@@ -50,7 +50,7 @@ RequestExecutionLevel "admin"
 ;--------------------------------
 ;Interface Settings
 
-  !define MUI_ICON   "webapps\geoserver\WEB-INF\images\gs.ico"
+  !define MUI_ICON   "gs.ico"
   !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the \
@@ -109,6 +109,7 @@ Section "GeoServer Section" SecGeoServer
   File /a LICENSE.txt
   File /a start.jar
   File /r webapps
+  File /a gs.ico
 	
   ; Create the GEOSERVER_DATA_DIR environment variable
   ; (this will overwrite if one already exists)
@@ -136,10 +137,10 @@ Section "GeoServer Section" SecGeoServer
                    "http://localhost:8080/geoserver/"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Start GeoServer.lnk" \
                    "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx300m -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar'\
-                   "$INSTDIR\webapps\geoserver\WEB-INF\images\gs.ico" 0 SW_SHOWNORMAL
+                   "$INSTDIR\gs.ico" 0 SW_SHOWNORMAL
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Stop GeoServer.lnk" \
                    "$2\bin\java.exe" '-DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar --stop'\
-                   "$INSTDIR\webapps\geoserver\WEB-INF\images\gs.ico" 0 SW_SHOWMINIMIZED
+                   "$INSTDIR\gs.ico" 0 SW_SHOWMINIMIZED
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
   
   !insertmacro MUI_STARTMENU_WRITE_END
