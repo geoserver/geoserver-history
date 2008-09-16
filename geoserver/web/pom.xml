@@ -456,5 +456,15 @@
           </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>csvexcel</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>csvexcel</artifactId>
+          <version>1.6.6-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>

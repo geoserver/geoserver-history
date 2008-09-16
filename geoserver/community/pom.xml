@@ -76,7 +76,15 @@
         <module>gwc</module>
       </modules>
     </profile>
+    <profile>
+      <id>csvexcel</id>
+      <modules>
+        <module>csvexcel</module>
+      </modules>
+    </profile>
+
   </profiles>
+
   <!-- modules>
     <module>ftpServer</module>
   </modules -->
