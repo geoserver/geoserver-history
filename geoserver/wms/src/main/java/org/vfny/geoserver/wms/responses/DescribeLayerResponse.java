@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -76,10 +77,16 @@ public class DescribeLayerResponse implements Response {
             LOGGER.fine(new StringBuffer("executing request ").append(request).toString());
         }
 
-        this.transformer = new DescribeLayerTransformer(this.request.getBaseUrl(), request.getServiceConfig().getGeoServer(), request.getVersion());
+        String baseUrl = this.request.getBaseUrl();
+        String proxyBaseUrl = request.getServiceConfig().getGeoServer().getProxyBaseUrl();
+        String serverBaseUrl = RequestUtils.proxifiedBaseURL(baseUrl, proxyBaseUrl);
+        this.transformer = new DescribeLayerTransformer(serverBaseUrl);
         this.transformer.setNamespaceDeclarationEnabled(false);
         Charset encoding = this.request.getWMS().getCharSet();
         this.transformer.setEncoding(encoding);
+        if(request.getServiceConfig().isVerbose()){
+            this.transformer.setIndentation(2);
+        }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 

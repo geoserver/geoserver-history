@@ -6,6 +6,8 @@ package org.geoserver.wms;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -22,13 +24,17 @@ import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
+import org.geotools.xml.transform.TransformerBase;
+import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.servlets.GetMap;
 import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -161,6 +167,50 @@ public class WMSTestSupport extends GeoServerTestSupport {
         LOGGER.info(testName + ": pixel count=" + (image.getWidth() * image.getHeight())
             + " non bg pixels: " + pixelsDiffer);
         assertTrue(testName + " image is comlpetely blank", 0 < pixelsDiffer);
+    }
+
+    /**
+     * Utility method to run the transformation on tr with the provided request and returns the
+     * result as a DOM
+     * 
+     * @param req,
+     *                the Object to run the xml transformation against with {@code tr}, usually an
+     *                instance of a {@link Request} subclass
+     * @param tr,
+     *                the transformer to run the transformation with and produce the result as a DOM
+     */
+    public static Document transform(Object req, TransformerBase tr) throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        tr.transform(req, out);
+    
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+    
+        DocumentBuilder db = dbf.newDocumentBuilder();
+    
+        /**
+         * Resolves everything to an empty xml document, useful for skipping errors due to missing
+         * dtds and the like
+         * 
+         * @author Andrea Aime - TOPP
+         */
+        class EmptyResolver implements org.xml.sax.EntityResolver {
+            public InputSource resolveEntity(String publicId, String systemId)
+                    throws org.xml.sax.SAXException, IOException {
+                StringReader reader = new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                InputSource source = new InputSource(reader);
+                source.setPublicId(publicId);
+                source.setSystemId(systemId);
+    
+                return source;
+            }
+        }
+        db.setEntityResolver(new EmptyResolver());
+    
+        // System.out.println(out.toString());
+    
+        Document doc = db.parse(new ByteArrayInputStream(out.toByteArray()));
+        return doc;
     }
     
 }
