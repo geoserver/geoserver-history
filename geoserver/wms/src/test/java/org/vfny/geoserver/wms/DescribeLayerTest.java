@@ -31,10 +31,10 @@ public class DescribeLayerTest extends WMSTestSupport {
         assertEquals("1.1.1", dom.getDocumentElement().getAttributes().getNamedItem("version").getNodeValue());
     }
     
-    public void testDescribeLayerVersion110() throws Exception {
-        String layer = MockData.FORESTS.getPrefix() + ":" + MockData.FORESTS.getLocalPart();
-        String request = "wms?service=wms&version=1.1.0&request=DescribeLayer&layers=" + layer;
-        Document dom = getAsDOM(request);
-        assertEquals("1.1.0", dom.getDocumentElement().getAttributes().getNamedItem("version").getNodeValue());
-    }
+//    public void testDescribeLayerVersion110() throws Exception {
+//        String layer = MockData.FORESTS.getPrefix() + ":" + MockData.FORESTS.getLocalPart();
+//        String request = "wms?service=wms&version=1.1.0&request=DescribeLayer&layers=" + layer;
+//        Document dom = getAsDOM(request);
+//        assertEquals("1.1.0", dom.getDocumentElement().getAttributes().getNamedItem("version").getNodeValue());
+//    }
 }
