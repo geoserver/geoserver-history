@@ -2,6 +2,10 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"> 
 
 <beans>
-  <bean id="CSVOutputFormat" class="org.geoserver.CSVOutputFormat"/>
-  <bean id="ExcelOutputFormat" class="org.geoserver.ExcelOutputFormat"/>
+    <bean id="CSVOutputFormat" 
+        class="org.geoserver.CSVOutputFormat" singleton="false">
+    </bean>
+    <bean id="ExcelOutputFormat" 
+	class="org.geoserver.ExcelOutputFormat" singleton="false">
+    </bean>
 </beans>

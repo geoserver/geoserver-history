@@ -81,10 +81,10 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
         HSSFCell cell;
         
         for ( int i = 0; i < ft.getAttributeCount(); i++ ) {
-            AttributeDescriptor ad = ft.getDescriptor( i );
+            AttributeDescriptor ad = ft.getAttribute( i );
             
             cell = header.createCell((short) i);
-            cell.setCellValue(ad.getLocalName());
+            cell.setCellValue(ad.getName().toString());
         }
         
         //write out the features
@@ -96,8 +96,8 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
             	r++; //start at 1, since header is at 0
                 SimpleFeature f = (SimpleFeature) i.next();
                 row = sheet.createRow((short) r);
-                for ( int j = 0; j < f.getAttributeCount(); j++ ) {
-                    Object att = f.getAttribute( j );
+                for ( int j = 0; j < f.getNumberOfAttributes(); j++ ) {
+                    Object att = f.getValue( j );
                     if ( att != null ) {
                     	cell = row.createCell((short) j);
                     	cell.setCellValue( att.toString() );

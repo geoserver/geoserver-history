@@ -10,6 +10,9 @@ import net.opengis.wfs.FeatureCollectionType;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.DefaultFeature;
+import org.geotools.feature.DefaultFeatureType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
@@ -65,12 +68,13 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
                    
         //get the feature collection
         FeatureCollection fc = (FeatureCollection) featureCollection.getFeature().get(0);
-           
+        
         //write out the header
-        SimpleFeatureType ft = (SimpleFeatureType) fc.getSchema();
+        DefaultFeatureType ft = (DefaultFeatureType) fc.getSchema();
+        
         for ( int i = 0; i < ft.getAttributeCount(); i++ ) {
-            AttributeDescriptor ad = ft.getDescriptor( i );
-            w.write( prepCSVField(ad.getLocalName()) );
+            AttributeType ad = (AttributeType) ft.getAttributeType( i );
+            w.write( prepCSVField(ad.getName().toString()) );
                
             if ( i < ft.getAttributeCount()-1 ) {
                w.write( "," );
@@ -82,13 +86,13 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         FeatureIterator i = fc.features();
         try {
             while( i.hasNext() ) {
-                SimpleFeature f = (SimpleFeature) i.next();
-                for ( int j = 0; j < f.getAttributeCount(); j++ ) {
+                DefaultFeature f = (DefaultFeature) i.next();
+                for ( int j = 0; j < f.getNumberOfAttributes(); j++ ) {                	
                     Object att = f.getAttribute( j );
                     if ( att != null ) {
                         w.write( prepCSVField(att.toString()) );
                     }
-                    if ( j < f.getAttributeCount()-1 ) {
+                    if ( j < f.getNumberOfAttributes() -1 ) {
                         w.write(",");    
                     }
                 }    
