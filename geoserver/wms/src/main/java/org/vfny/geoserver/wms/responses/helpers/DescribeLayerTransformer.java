@@ -4,20 +4,20 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.platform.GeoServerExtensions;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+
+import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.springframework.context.ApplicationContext;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.util.Iterator;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 
 
 /**
@@ -29,28 +29,26 @@ import javax.xml.transform.TransformerException;
  */
 public class DescribeLayerTransformer extends TransformerBase {
     /** The base url upon URLs which point to 'me' should be based. */
-    private String baseUrl;
-    
-    private GeoServer geoserver;
-
-    private String version;
+    private String serverBaseUrl;
 
     /**
      * Creates a new DescribeLayerTransformer object.
-     *
-     * @param baseUrl the url string wich holds the validation
-     * schemas and DTD's on this server instance.
+     * 
+     * @param serverBaseUrl
+     *                the server base url which to append the
+     *                "schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd" dtd location to for the
+     *                response. If proxified, shall be resolved before calling this constructor and
+     *                give it the actual URL to use. No "proxification" will be performed by this
+     *                transformer.
      */
-    public DescribeLayerTransformer(String baseUrl, GeoServer gs, String version) {
+    public DescribeLayerTransformer(final String serverBaseUrl) {
         super();
 
-        if (baseUrl == null) {
-            throw new NullPointerException();
+        if (serverBaseUrl == null) {
+            throw new NullPointerException("serverBaseUrl");
         }
 
-        this.baseUrl = baseUrl;
-        this.geoserver = gs;
-        this.version = version;
+        this.serverBaseUrl = serverBaseUrl;
     }
 
     /**
@@ -81,8 +79,8 @@ public class DescribeLayerTransformer extends TransformerBase {
      */
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
-        String dtdUrl = RequestUtils.proxifiedBaseURL(baseUrl,geoserver.getProxyBaseUrl());
-        dtdUrl += "schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd";
+        String dtdUrl = ResponseUtils.appendPath(serverBaseUrl,
+                "schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd");
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;
@@ -107,7 +105,7 @@ public class DescribeLayerTransformer extends TransformerBase {
         /**
          * Encode the object.
          *
-         * @param o The Object to encode.
+         * @param o The {@link DescribeLayerRequest} to encode a DescribeLayer response for
          *
          * @throws IllegalArgumentException if the Object is not encodeable.
          */
@@ -119,9 +117,12 @@ public class DescribeLayerTransformer extends TransformerBase {
             DescribeLayerRequest req = (DescribeLayerRequest) o;
 
             AttributesImpl versionAtt = new AttributesImpl();
-            // TODO: grab the version from the request, should be equal to
-            // the WMS one
-            versionAtt.addAttribute("", "version", "version", "", version);
+            final String requestVersion = req.getVersion();
+            if(requestVersion == null){
+                throw new NullPointerException("requestVersion");
+            }
+
+            versionAtt.addAttribute("", "version", "version", "", requestVersion);
 
             start("WMS_DescribeLayerResponse", versionAtt);
 
@@ -140,17 +141,41 @@ public class DescribeLayerTransformer extends TransformerBase {
         private void handleLayers(DescribeLayerRequest req) {
             MapLayerInfo layer;
 
-            String url = RequestUtils.proxifiedBaseURL(req.getBaseUrl(),req.getServiceConfig().getGeoServer().getProxyBaseUrl()) + "wfs/WfsDispatcher?";
-
-            AttributesImpl layerAtts = new AttributesImpl();
-            layerAtts.addAttribute("", "name", "name", "", "");
-            layerAtts.addAttribute("", "wfs", "wfs", "", url);
+            final List layers = req.getLayers();
+            
 
             AttributesImpl queryAtts = new AttributesImpl();
             queryAtts.addAttribute("", "typeName", "typeName", "", "");
 
-            for (Iterator it = req.getLayers().iterator(); it.hasNext();) {
+            for (Iterator it = layers.iterator(); it.hasNext();) {
                 layer = (MapLayerInfo) it.next();
+
+                AttributesImpl layerAtts = new AttributesImpl();
+                layerAtts.addAttribute("", "name", "name", "", "");
+                String owsUrl;
+                String owsType;
+                if (MapLayerInfo.TYPE_VECTOR == layer.getType()) {
+                    // REVISIT: not sure why we need WfsDispatcher, "wfs?" should suffice imho
+                    owsUrl = ResponseUtils.appendPath(serverBaseUrl, "wfs/WfsDispatcher?");
+                    owsType = "WFS";
+                    layerAtts.addAttribute("", "wfs", "wfs", "", owsUrl);
+                } else if (MapLayerInfo.TYPE_RASTER == layer.getType()) {
+                    owsUrl = ResponseUtils.appendPath(serverBaseUrl, "wcs?");
+                    owsType = "WCS";
+                } else {
+                    // non vector nor raster layer, LayerDescription will not contain these
+                    // attributes
+                    owsUrl = owsType = null;
+                }
+
+                if (owsType != null && owsUrl != null) {
+                    // the layer is describable only if its vector or raster based
+                    // in our case that meand directly associated to a resourceInfo (ie, no base
+                    // map)
+                    layerAtts.addAttribute("", "owsURL", "owsURL", "", owsUrl);
+                    layerAtts.addAttribute("", "owsType", "owsType", "", owsType);
+                }
+
                 layerAtts.setAttribute(0, "", "name", "name", "", layer.getName());
                 start("LayerDescription", layerAtts);
 
