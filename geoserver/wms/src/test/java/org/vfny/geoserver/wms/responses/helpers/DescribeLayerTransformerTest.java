@@ -7,6 +7,8 @@ package org.vfny.geoserver.wms.responses.helpers;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 
+import java.io.StringWriter;
+
 import javax.xml.transform.TransformerException;
 
 import junit.framework.TestCase;
@@ -173,6 +175,14 @@ public class DescribeLayerTransformerTest extends TestCase {
         Element root = dom.getDocumentElement();
         assertEquals("WMS_DescribeLayerResponse", root.getNodeName());
         assertEquals("1.1.1", root.getAttribute("version"));
+    }
+
+    public void testDTDLocation() throws Exception {
+        final String expected = "!DOCTYPE WMS_DescribeLayerResponse SYSTEM \"http://geoserver.org/schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd\"";
+        transformer = new DescribeLayerTransformer("http://geoserver.org");
+        StringWriter writer = new StringWriter();
+        transformer.transform(request, writer);
+        assertTrue(writer.getBuffer().indexOf(expected) > 0);
     }
 
     public void testSingleVectorLayer() throws Exception {
