@@ -70,7 +70,7 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         SimpleFeatureType ft = (SimpleFeatureType) fc.getSchema();
         for ( int i = 0; i < ft.getAttributeCount(); i++ ) {
             AttributeDescriptor ad = ft.getDescriptor( i );
-            w.write( ad.getLocalName() );
+            w.write( prepCSVField(ad.getLocalName()) );
                
             if ( i < ft.getAttributeCount()-1 ) {
                w.write( "," );
@@ -86,7 +86,7 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
                 for ( int j = 0; j < f.getAttributeCount(); j++ ) {
                     Object att = f.getAttribute( j );
                     if ( att != null ) {
-                        w.write( att.toString() );
+                        w.write( prepCSVField(att.toString()) );
                     }
                     if ( j < f.getAttributeCount()-1 ) {
                         w.write(",");    
@@ -100,6 +100,27 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         }
            
         w.flush();
+    }
+    
+    /*
+     * The CSV "spec" explains that fields with certain properties must be
+     * delimited by double quotes, and also that double quotes within fields
+     * must be escaped.  This method takes a field and returns one that
+     * obeys the CSV spec.
+     */    
+    private String prepCSVField(String field){
+    	// "embedded double-quote characters must be represented by a pair of double-quote characters."
+    	String mod = field.replaceAll("\"", "\"\"");
+    	
+    	/*
+    	 * Enclose string in double quotes if it contains double quotes, commas, or newlines
+    	 */
+    	if(mod.matches(".*(\"|\n|,).*")){
+    		mod = "\"" + mod + "\"";
+    	}
+    	
+		return mod;
+    	
     }
 
 }
