@@ -1,0 +1,88 @@
+<project>
+ <modelVersion>4.0.0</modelVersion>
+ <groupId>org.geoserver.community</groupId>
+ <artifactId>csvexcel</artifactId>
+ <packaging>jar</packaging>
+ <version>1.0-SNAPSHOT</version>
+ <name>CSV and Excel Output Formats</name>
+
+  <repositories>
+   <repository>
+     <id>codehaus</id>
+     <name>codehaus</name>
+     <url>http://snapshots.repository.codehaus.org/</url>
+     <snapshots>
+      <enabled>true</enabled>
+     </snapshots>
+    </repository>
+  </repositories>
+
+ <dependencies>
+  <dependency>
+   <groupId>org.geoserver</groupId>
+   <artifactId>wfs</artifactId>
+   <version>1.7.0-SNAPSHOT</version>
+  </dependency>
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <version>3.8.1</version>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver</groupId>
+   <artifactId>wfs</artifactId>
+   <version>1.7.0-SNAPSHOT</version>
+   <classifier>tests</classifier>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver</groupId>
+   <artifactId>main</artifactId>
+   <version>1.7.0-SNAPSHOT</version>
+   <classifier>tests</classifier>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver</groupId>
+   <artifactId>data</artifactId>
+   <version>1.7.0-SNAPSHOT</version>
+   <classifier>tests</classifier>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+     <groupId>com.mockrunner</groupId>
+     <artifactId>mockrunner</artifactId>
+     <version>0.3.1</version>
+     <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>xmlunit</groupId>
+    <artifactId>xmlunit</artifactId>
+    <version>1.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi</artifactId>
+    <version>3.1-FINAL</version>
+  </dependency>
+ </dependencies>
+
+
+ <build>
+  <plugins>
+   <plugin>
+     <groupId>org.apache.maven.plugins</groupId>
+     <artifactId>maven-compiler-plugin</artifactId>
+     <configuration>
+       <source>1.5</source> 
+       <target>1.5</target>
+       <debug>true</debug>
+       <encoding>UTF-8</encoding>
+     </configuration>
+    </plugin>
+  </plugins>
+ </build>
+
+</project>
