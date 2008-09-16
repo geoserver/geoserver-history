@@ -30,6 +30,7 @@
 				<include>org.simpleframework-*</include>
 				<include>stax-api-*</include>
 				<include>org.json-*</include>
+				<include>xstream-*</include>
 			</includes>
 		</fileSet>
 		<fileSet>
