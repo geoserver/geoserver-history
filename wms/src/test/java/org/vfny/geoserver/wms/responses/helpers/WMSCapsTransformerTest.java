@@ -34,6 +34,7 @@ import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfoImpl;
+import org.geoserver.wms.WMSTestSupport;
 import org.geotools.referencing.CRS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
@@ -127,40 +128,6 @@ public class WMSCapsTransformerTest extends TestCase {
         super.tearDown();
     }
 
-    /**
-     * Runs the transformation on tr and returns the result as a DOM
-     */
-    private Document transform(WMSCapsTransformer tr) throws Exception {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        tr.transform(req, out);
-
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-
-        DocumentBuilder db = dbf.newDocumentBuilder();
-
-        /**
-         * Resolves everything to an empty xml document, useful for skipping errors due to missing
-         * dtds and the like
-         * 
-         * @author Andrea Aime - TOPP
-         */
-        class EmptyResolver implements org.xml.sax.EntityResolver {
-            public InputSource resolveEntity(String publicId, String systemId)
-                    throws org.xml.sax.SAXException, IOException {
-                StringReader reader = new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                InputSource source = new InputSource(reader);
-                source.setPublicId(publicId);
-                source.setSystemId(systemId);
-
-                return source;
-            }
-        }
-        db.setEntityResolver(new EmptyResolver());
-        Document doc = db.parse(new ByteArrayInputStream(out.toByteArray()));
-        return doc;
-    }
-
     public void testHeader() throws Exception {
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
         StringWriter writer = new StringWriter();
@@ -176,7 +143,7 @@ public class WMSCapsTransformerTest extends TestCase {
     public void testRootElement() throws Exception {
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
 
-        Document dom = transform(tr);
+        Document dom = WMSTestSupport.transform(req, tr);
         Element root = dom.getDocumentElement();
         assertEquals("WMT_MS_Capabilities", root.getNodeName());
         assertEquals("1.1.1", root.getAttribute("version"));
@@ -184,7 +151,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         geosInfo.setUpdateSequence(10);
         tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
-        dom = transform(tr);
+        dom = WMSTestSupport.transform(req, tr);
         root = dom.getDocumentElement();
         assertEquals("10", root.getAttribute("updateSequence"));
     }
@@ -218,7 +185,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
-        Document dom = transform(tr);
+        Document dom = WMSTestSupport.transform(req, tr);
 
         String service = "/WMT_MS_Capabilities/Service";
         assertXpathEvaluatesTo("OGC:WMS", service + "/Name", dom);
@@ -266,7 +233,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
-        Document dom = transform(tr);
+        Document dom = WMSTestSupport.transform(req, tr);
 
         String serviceOnlineRes = "/WMT_MS_Capabilities/Service/OnlineResource/@xlink:href";
         // @REVISIT: shouldn't it be WmsInfo.getOnlineResource?
@@ -297,7 +264,7 @@ public class WMSCapsTransformerTest extends TestCase {
     public void testCRSList() throws Exception {
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
-        Document dom = transform(tr);
+        Document dom = WMSTestSupport.transform(req, tr);
         final Set<String> supportedCodes = CRS.getSupportedCodes("EPSG");
         NodeList allCrsCodes = XPATH.getMatchingNodes("/WMT_MS_Capabilities/Capability/Layer/SRS",
                 dom);
@@ -310,7 +277,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
-        Document dom = transform(tr);
+        Document dom = WMSTestSupport.transform(req, tr);
         NodeList limitedCrsCodes = XPATH.getMatchingNodes("/WMT_MS_Capabilities/Capability/Layer/SRS",
                 dom);
         assertEquals(2, limitedCrsCodes.getLength());    
