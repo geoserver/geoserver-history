@@ -47,8 +47,8 @@ public class WfsXmlReader extends XmlRequestReader {
         //"inject" namespace mappings
         NameSpaceInfo[] namespaces = configuration.getCatalog().getNameSpaces();
         for ( int i = 0; i < namespaces.length; i++) {
-            if ( namespaces[i].isDefault() ) 
-                continue;
+            //if ( namespaces[i].isDefault() ) 
+            //    continue;
             
             parser.getNamespaces().declarePrefix( 
                 namespaces[i].getPrefix(), namespaces[i].getURI());
