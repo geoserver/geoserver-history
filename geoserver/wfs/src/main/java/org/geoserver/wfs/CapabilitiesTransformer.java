@@ -25,6 +25,7 @@ import org.opengis.filter.expression.Function;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -827,7 +828,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 start("wfs:WFS_Capabilities", attributes);
 
                 serviceIdentification();
-                serviceProvider();
+                serviceProvider(wfs.getGeoServer());
                 operationsMetadata();
                 featureTypeList();
                 //supportsGMLObjectTypeList();
@@ -928,12 +929,57 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                  * </p>
                  *
                  */
-            void serviceProvider() {
+            void serviceProvider(GeoServer gs) {
                 start("ows:ServiceProvider");
 
-                element("ows:ProviderName", null);
-                element("ows:ProviderSite", null);
-                element("ows:ServiceContact", null);
+                element("ows:ProviderName", gs.getContactOrganization());
+                start( "ows:ServiceContact");
+                /*
+                <sequence>
+                <element ref="ows:IndividualName" minOccurs="0"/>
+                <element ref="ows:OrganisationName" minOccurs="0"/>
+                <element ref="ows:PositionName" minOccurs="0"/>
+                <element ref="ows:ContactInfo" minOccurs="0"/>
+                <element ref="ows:Role"/>
+                </sequence>
+                */
+                element( "ows:IndividualName", gs.getContactPerson());
+                element( "ows:OrganisationName", gs.getContactOrganization() );
+                element( "ows:PositionName", gs.getContactPosition() );
+
+                start( "ows:ContactInfo" );
+                /*
+                  <sequence>
+                        <element name="Phone" type="ows:TelephoneType" minOccurs="0">
+                        <element name="Address" type="ows:AddressType" minOccurs="0">
+                        <element name="OnlineResource" type="ows:OnlineResourceType" minOccurs="0">
+                        <element name="HoursOfService" type="string" minOccurs="0">
+                        <element name="ContactInstructions" type="string" minOccurs="0">
+                 </sequence>
+                 */
+                start( "ows:Phone");
+                element( "ows:Voice", gs.getContactVoice() );
+                element( "ows:Facsimile", gs.getContactFacsimile() );
+                end( "ows:Phone");
+                
+                start( "ows:Address");
+                /*
+                <element name="DeliveryPoint" type="string" minOccurs="0" maxOccurs="unbounded">
+                <element name="City" type="string" minOccurs="0">
+                <element name="AdministrativeArea" type="string" minOccurs="0">
+                <element name="PostalCode" type="string" minOccurs="0">
+                <element name="Country" type="string" minOccurs="0">
+                <element name="ElectronicMailAddress" type="string" minOccurs="0" maxOccurs="unbounded">
+                 */
+                element( "ows:City", gs.getAddressCity() );
+                element( "ows:AdministrativeArea", gs.getAddressState() );
+                element( "ows:PostalCode", gs.getAddressPostalCode() );
+                element( "ows:Country", gs.getAddressCountry() );
+                end( "ows:Address" );
+                
+                end( "ows:ContactInfo" );
+                
+                end( "ows:ServiceContact");
 
                 end("ows:ServiceProvider");
             }
