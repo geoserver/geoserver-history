@@ -944,7 +944,6 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 </sequence>
                 */
                 element( "ows:IndividualName", gs.getContactPerson());
-                element( "ows:OrganisationName", gs.getContactOrganization() );
                 element( "ows:PositionName", gs.getContactPosition() );
 
                 start( "ows:ContactInfo" );
