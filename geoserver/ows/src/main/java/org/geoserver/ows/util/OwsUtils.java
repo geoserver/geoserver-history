@@ -6,6 +6,9 @@ package org.geoserver.ows.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
+
+import org.geotools.util.SoftValueHashMap;
 
 
 /**
@@ -44,6 +47,25 @@ public class OwsUtils {
     }
     
     /**
+     * Cache of reflection information about a class, keyed by class.
+     */
+    static Map<Class, ClassProperties> classPropertiesCache = new SoftValueHashMap<Class, ClassProperties>();
+    
+    /**
+     * Accessor for the class to property info cache.
+     */
+    static ClassProperties classProperties(Class clazz) {
+        // SoftValueHashMap is thread safe, no need to synch
+        ClassProperties properties = classPropertiesCache.get(clazz);
+        if(properties == null) {
+            properties = new ClassProperties(clazz);
+            classPropertiesCache.put(clazz, properties);
+        }
+        return properties;
+    }
+    
+    
+    /**
      * Returns a setter method for a property of java bean.
      * <p>
      * The <tt>type</tt> parameter may be <code>null</code> to indicate the 
@@ -57,58 +79,7 @@ public class OwsUtils {
      * @return The setter method, or <code>null</code> if not found.
      */
     public static Method setter(Class clazz, String property, Class type) {
-        //TODO: this lookup doesn't deal with classes that might have two setters
-        // that are in the same class hierachy
-        Method[] methods = clazz.getMethods();
-
-        final String methodName = "set" + property;
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
-
-            if (method.getName().equalsIgnoreCase(methodName)) {
-                if (method.getParameterTypes().length == 1) {
-                    if ( type != null ) {
-                        if (method.getParameterTypes()[0].isAssignableFrom(type)) {
-                            return method;
-                        }
-                    }
-                    else {
-                        return method;
-                    }
-                }
-            }
-        }
-
-        //nto found, check for case where setter property is primtive and the 
-        // class specified is its wrapper class
-        if ( type != null ) {
-            for (int i = 0; i < methods.length; i++) {
-                Method method = methods[i];
-
-                if (method.getName().equalsIgnoreCase(methodName)) {
-                    if ((method.getParameterTypes().length == 1)) {
-                        Class target =  method.getParameterTypes()[0];
-                        if ( target.isPrimitive() && type == wrapper( target ) ) {
-                            return method;
-                        }
-                        
-                        if ( type.isPrimitive() && target == wrapper( type ) ) {
-                            return method;
-                        }
-                    }
-                }
-            }
-        }
-        
-        
-        //could not be found, try again with a more lax match
-        String lax = lax(property);
-
-        if (!lax.equals(property)) {
-            return setter(clazz, lax, type);
-        }
-
-        return null;
+        return classProperties(clazz).setter(property, type);
     }
 
     /**
@@ -147,55 +118,7 @@ public class OwsUtils {
      * @return The setter method, or <code>null</code> if not found.
      */
     public static Method getter(Class clazz, String property, Class type) {
-        //TODO: this lookup doesn't deal with classes that might have two setters
-        // that are in the same class hierachy
-        Method[] methods = clazz.getMethods();
-
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
-
-            if (method.getName().equalsIgnoreCase("get" + property)) {
-                if (type != null) {
-                    if (type.equals(method.getReturnType())) {
-                        return method;
-                    }
-                } else {
-                    return method;
-                }
-            }
-        }
-
-        //check for case where one of the classes is primitive and the other
-        // is a wrapper
-        if ( type != null ) {
-            for (int i = 0; i < methods.length; i++) {
-                Method method = methods[i];
-
-                if (method.getName().equalsIgnoreCase("get" + property)) {
-                   Class target = method.getReturnType();
-                   if ( target != null ) {
-                       
-                       if ( target.isPrimitive() && type == wrapper( target ) ) {
-                           return method;
-                       }
-                       if ( type.isPrimitive() && target == wrapper( type ) ) {
-                           return method;
-                       }
-
-                   }
-                }
-            }
-        }
-       
-        
-        //could not be found, try again with a more lax match
-        String lax = lax(property);
-
-        if (!lax.equals(property)) {
-            return getter(clazz, lax, type);
-        }
-
-        return null;
+        return classProperties(clazz).getter(property, type);
     }
 
     /**
@@ -231,17 +154,7 @@ public class OwsUtils {
      * @return The method, or <code>null</code> if it could not be found.
      */
     public static Method method(Class clazz, String name) {
-        Method[] methods = clazz.getMethods();
-
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
-
-            if (method.getName().equalsIgnoreCase(name)) {
-                return method;
-            }
-        }
-
-        return null;
+        return classProperties(clazz).method( name );
     }
 
     /**
@@ -263,50 +176,5 @@ public class OwsUtils {
         }
 
         return null;
-    }
-
-    /**
-     * Returns the wrapper class for a primitive class.
-     * 
-     * @param primitive A primtive class, like int.class, double.class, etc...
-     */
-    static Class wrapper( Class primitive ) {
-        if ( boolean.class == primitive ) {
-            return Boolean.class;
-        }
-        if ( char.class == primitive ) {
-            return Character.class;
-        }
-        if ( byte.class == primitive ) {
-            return Byte.class;
-        }
-        if ( short.class == primitive ) {
-            return Short.class;
-        }
-        if ( int.class == primitive ) {
-            return Integer.class;
-        }
-        if ( long.class == primitive ) {
-            return Long.class;
-        }
-        
-        if ( float.class == primitive ) {
-            return Float.class;
-        }
-        if ( double.class == primitive ) {
-            return Double.class;
-        }
-        
-        return null;
-    }
-    
-    /**
-     * Does some checks on the property name to turn it into a java bean property.
-     * <p>
-     * Checks include collapsing any "_" characters.
-     * </p>
-     */
-    static String lax(String property) {
-        return property.replaceAll("_", "");
     }
 }
