@@ -23,18 +23,19 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.transformer.TransformerIdentityImpl;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.coverage.io.range.Axis;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
-import org.geotools.temporal.object.DefaultDuration;
 import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.coverage.SampleDimension;
+import org.opengis.feature.type.Name;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
@@ -47,7 +48,6 @@ import org.opengis.temporal.Period;
 import org.opengis.temporal.Position;
 import org.opengis.temporal.RelativePosition;
 import org.opengis.temporal.TemporalGeometricPrimitive;
-import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
 import org.vfny.geoserver.global.Data;
@@ -65,6 +65,8 @@ import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -233,8 +235,8 @@ public class WMSCapsTransformer extends TransformerBase {
 
             WMS wms = (WMS) request.getServiceConfig();
             AttributesImpl rootAtts = new AttributesImpl(wmsVersion);
-            rootAtts.addAttribute("", "updateSequence", "updateSequence", "", wms.getGeoServer()
-                    .getUpdateSequence()
+            int updateSequence = wms.getGeoServer().getUpdateSequence();
+            rootAtts.addAttribute("", "updateSequence", "updateSequence", "", updateSequence
                     + "");
             start("WMT_MS_Capabilities", rootAtts);
             handleService();
@@ -842,8 +844,39 @@ public class WMSCapsTransformer extends TransformerBase {
                 qatts.addAttribute("", "queryable", "queryable", "", "1");
                 start("Layer", qatts);
                 element("Name", coverage.getName() + "@" + field.getName().getLocalPart());
-                element("Title", field.getDescription().toString());
-                element("Abstract", field.getDescription().toString());
+                element("Title", String.valueOf(field.getDescription()));
+
+                StringBuffer fieldAbstract = new StringBuffer("Layer generated from ");
+                fieldAbstract.append(coverage.getName()).append(" coverage, which is a ");
+                fieldAbstract.append(coverage.getNativeFormat());
+                fieldAbstract.append(" coverage.\n\t\tThis layer corresponds to the ");
+                fieldAbstract.append(field.getName());
+                if(field.getAxesNames().size() > 0){
+                    fieldAbstract.append(" field with axes ");
+                    for(Name axisName : field.getAxesNames()){
+                        Axis<?, ?> axis = field.getAxis(axisName);
+                        fieldAbstract.append("[");
+                        fieldAbstract.append(axis.getDescription());
+                        if(axis.getCoordinateReferenceSystem() != null){
+                            fieldAbstract.append("CRS: ").append(axis.getCoordinateReferenceSystem());
+                        }
+                        fieldAbstract.append("], ");
+                    }
+                    fieldAbstract.setLength(fieldAbstract.length() - 2);
+                }
+                if(null != field.getUnitOfMeasure()){
+                    fieldAbstract.append(" and unit of measure ").append(field.getUnitOfMeasure());
+                }
+
+                Set<SampleDimension> sampleDimensions = field.getSampleDimensions();
+                if(sampleDimensions != null){
+                    fieldAbstract.append(".\n\t\tSample dimensions: ");
+                    for(SampleDimension sd : sampleDimensions){
+                        fieldAbstract.append("\n\t\t\t").append(sd.toString().replaceAll("\n", " "));
+                    }
+                }
+                fieldAbstract.append("\n");
+                element("Abstract", fieldAbstract.toString());
 
                 handleKeywordList(coverage.getKeywords());
 
@@ -1356,19 +1389,14 @@ public class WMSCapsTransformer extends TransformerBase {
          * @param comment
          */
         public void comment(String comment) {
-            if (contentHandler instanceof TransformerIdentityImpl) // HACK HACK
-            // HACK --
-            // not sure
-            // of the
-            // proper
-            // way to do
-            // this.
+            if (contentHandler instanceof LexicalHandler) // HACK HACK
+            // HACK -- not sure of the proper way to do this.
             {
+                LexicalHandler ch = (LexicalHandler) contentHandler;
                 try {
-                    TransformerIdentityImpl ch = (TransformerIdentityImpl) contentHandler;
                     ch.comment(comment.toCharArray(), 0, comment.length());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (SAXException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
