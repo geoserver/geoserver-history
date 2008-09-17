@@ -118,6 +118,8 @@ public class Dispatcher extends AbstractController {
     OperationInterceptor securityInterceptor = null;
     
     public static final ThreadLocal<Request> REQUEST = new ThreadLocal<Request>();
+    
+    static final Charset UTF8 = Charset.forName("UTF-8");
 
     /**
      * Sets the flag to control wether the dispatcher is cite compliante.
@@ -144,12 +146,14 @@ public class Dispatcher extends AbstractController {
         //set the charset
         Charset charSet = null;
 
-        try {
-            charSet = Charset.forName(request.getCharacterEncoding());
-        } catch (Exception e) {
-            //TODO: make this server settable
-            charSet = Charset.forName("UTF-8");
-        }
+       //TODO: make this server settable
+        charSet = UTF8;
+        if(request.getCharacterEncoding() != null)
+	        try {
+	            charSet = Charset.forName(request.getCharacterEncoding());
+	        } catch (Exception e) {
+	            // ok, we tried...
+	        }
 
         request.setCharacterEncoding(charSet.name());
     }
