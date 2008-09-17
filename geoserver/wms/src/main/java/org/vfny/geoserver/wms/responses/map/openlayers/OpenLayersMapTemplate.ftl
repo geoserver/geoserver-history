@@ -127,8 +127,8 @@
                     document.getElementById('antialiasSelector').disabled = true;
                     document.getElementById('updateFilterButton').disabled = true;
                     document.getElementById('resetFilterButton').disabled = true;
-                    document.getElementById('png8').selected = true;
-                    format = "image/png8";
+                    document.getElementById('jpeg').selected = true;
+                    format = "image/jpeg";
                 }
             
                 var bounds = new OpenLayers.Bounds(
@@ -388,7 +388,7 @@
                     <a>Format:</a>
                     <select id="imageFormatSelector" onchange="setImageFormat(value)">
                         <option value="image/png">PNG 24bit</option>
-                        <option id="png8" value="image/png8">PNG 8bit</option>
+                        <option value="image/png8">PNG 8bit</option>
                         <option value="image/gif">GIF</option>
                         <option id="jpeg" value="image/jpeg">JPEG</option>
                     </select>
