@@ -21,6 +21,8 @@ import java.util.Properties;
 public class PropertyFileWatcher {
     File file;
     private long lastModified = Long.MIN_VALUE;
+    private long lastCheck;
+    private boolean stale;
 
     public PropertyFileWatcher(File file) {
         this.file = file;
@@ -36,6 +38,8 @@ public class PropertyFileWatcher {
                 is = new FileInputStream(file);
                 p.load(is);
                 lastModified = file.lastModified();
+                lastCheck = System.currentTimeMillis();
+                stale = false;
             } finally {
                 if (is != null) {
                     is.close();
@@ -47,6 +51,11 @@ public class PropertyFileWatcher {
     }
 
     public boolean isStale() {
-        return file.exists() && (file.lastModified() > lastModified);
+        long now = System.currentTimeMillis();
+        if((now - lastCheck) > 1000) {
+            lastCheck = now;
+            stale = file.exists() && (file.lastModified() > lastModified);
+        }
+        return stale;
     }
 }
