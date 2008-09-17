@@ -35,7 +35,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -67,6 +66,9 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
 
     /** FeatureSource being served up */
     protected FeatureSource<SimpleFeatureType, SimpleFeature> source;
+    
+    /** The single filter factory for this source (grabbing it has a high sync penalty */
+    FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 
     /**
      * GeoTools2 Schema information
@@ -256,7 +258,6 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
 
         try {
             if (definitionQuery != Filter.INCLUDE) {
-                FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
                 newFilter = ff.and(definitionQuery, filter);
             }
         } catch (Exception ex) {
@@ -371,7 +372,6 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
             }
             
             // now we apply a default to all geometries and bbox in the filter
-            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
             DefaultCRSFilterVisitor defaultCRSVisitor = new DefaultCRSFilterVisitor(ff, defaultCRS);
             Filter defaultedFilter = (Filter) query.getFilter().accept(defaultCRSVisitor, null);
             
