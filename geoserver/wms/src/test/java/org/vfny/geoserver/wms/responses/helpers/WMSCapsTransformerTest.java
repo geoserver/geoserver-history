@@ -456,7 +456,10 @@ public class WMSCapsTransformerTest extends TestCase {
         assertXpathEvaluatesTo("1", pathToLayer + "/@queryable", dom);
         assertXpathEvaluatesTo("geos:testCoverageName@fieldType", pathToLayer + "/Name", dom);
         assertXpathEvaluatesTo("fieldDesc", pathToLayer + "/Title", dom);
-        assertXpathEvaluatesTo("fieldDesc", pathToLayer + "/Abstract", dom);
+        String fieldAbstract = XPATH.evaluate(pathToLayer + "/Abstract", dom);
+        assertNotNull(fieldAbstract);
+        assertTrue(fieldAbstract.contains("geos:testCoverageName"));
+        assertTrue(fieldAbstract.contains("fieldType"));
 
         assertXpathExists(pathToLayer + "/Dimension", dom);
         assertXpathEvaluatesTo("time", pathToLayer + "/Dimension/@name", dom);
@@ -518,7 +521,10 @@ public class WMSCapsTransformerTest extends TestCase {
         assertXpathEvaluatesTo("1", pathToLayer + "/@queryable", dom);
         assertXpathEvaluatesTo("geos:testCoverageName@fieldType", pathToLayer + "/Name", dom);
         assertXpathEvaluatesTo("fieldDesc", pathToLayer + "/Title", dom);
-        assertXpathEvaluatesTo("fieldDesc", pathToLayer + "/Abstract", dom);
+        String fieldAbstract = XPATH.evaluate(pathToLayer + "/Abstract", dom);
+        assertNotNull(fieldAbstract);
+        assertTrue(fieldAbstract.contains("geos:testCoverageName"));
+        assertTrue(fieldAbstract.contains("fieldType"));
 
         assertXpathExists(pathToLayer + "/Dimension", dom);
         assertXpathEvaluatesTo("elevation", pathToLayer + "/Dimension/@name", dom);
