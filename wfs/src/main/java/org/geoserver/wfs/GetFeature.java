@@ -351,7 +351,11 @@ public class GetFeature {
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
                 FeatureCollection<SimpleFeatureType, SimpleFeature> features = getFeatures(request, source, gtQuery);
-                count += features.size();
+                
+                // optimization: WFS 1.0 does not require count, so if we don't need it to limit 
+                // the features, don't compute it, avoid the count query
+                if(request.getQuery().size() > 1 || !("1.0".equals(request.getVersion()) || "1.0.0".equals(request.getVersion())))
+                	count += features.size();
                 
                 // we may need to shave off geometries we did load only to make bounds
                 // computation happy
