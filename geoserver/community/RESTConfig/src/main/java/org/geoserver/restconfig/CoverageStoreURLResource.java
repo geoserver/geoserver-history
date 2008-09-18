@@ -7,21 +7,29 @@ package org.geoserver.restconfig;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.opengis.coverage.grid.Format;
+import org.geoserver.data.util.CoverageStoreUtils;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.Driver;
+import org.geotools.coverage.io.impl.BaseFileDriver;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
+import org.geotools.util.NullProgressListener;
+import org.opengis.feature.type.Name;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Status;
@@ -35,7 +43,6 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
-import org.vfny.geoserver.util.CoverageStoreUtils;
 
 /**
  * This class extends Resource to handle the GET and PUT requests to manage the
@@ -46,6 +53,8 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
  */
 
 public class CoverageStoreURLResource extends Resource {
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+	
     private DataConfig myDataConfig;
 
     private Data myData;
@@ -115,22 +124,24 @@ public class CoverageStoreURLResource extends Resource {
      * coverage store and the coverage if necessary.
      */
 
-    public void handlePut() {
+    public synchronized void handlePut() {
         String coverageStore = (String) getRequest().getAttributes().get("coveragestore");
         String coverageName = (String) getRequest().getAttributes().get("coverage");
         String extension = (String) getRequest().getAttributes().get("type");
 
-        String formatId = (String) myFormats.get(extension);
-        Format format;
+        Form form = getRequest().getResourceRef().getQueryAsForm();
+        
+        String typeId = (String) myFormats.get(extension);
+        Driver driver;
         try {
-            format = CoverageStoreUtils.acquireFormat(formatId, null);
+            driver = CoverageStoreUtils.acquireDriver(typeId);
         } catch (IOException e) {
             getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             return;
         }
 
-        if (format == null) {
+        if (driver == null) {
             getResponse().setEntity(new StringRepresentation("Unrecognized extension: " + extension, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
             return;
@@ -151,17 +162,20 @@ public class CoverageStoreURLResource extends Resource {
 
         CoverageStoreConfig csc = myDataConfig.getDataFormat(coverageStore);
 
+        URL source = null;
+        try {
+            source = uploadedFile.toURI().toURL();
+        } catch (MalformedURLException e) {
+            getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
+            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+            return;
+        }
+        
         if (csc == null) {
-            csc = new CoverageStoreConfig(coverageStore, format);
+            csc = new CoverageStoreConfig(coverageStore, driver);
             csc.setEnabled(true);
             csc.setNameSpaceId(myDataConfig.getDefaultNameSpace().getPrefix());
-            try {
-                csc.setUrl(uploadedFile.toURL().toExternalForm());
-            } catch (MalformedURLException e) {
-                getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
-                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-                return;
-            }
+            csc.setUrl(source.toExternalForm());
 
             // //////
             // TODO: something better exists, I hope
@@ -170,7 +184,6 @@ public class CoverageStoreURLResource extends Resource {
             csc.setAbstract("Autoconfigured by RESTConfig");
 
             myDataConfig.addDataFormat(csc);
-
         }
 
         save();
@@ -184,22 +197,55 @@ public class CoverageStoreURLResource extends Resource {
         CoverageConfig cc = (CoverageConfig) myDataConfig.getCoverages().get(qualified);
 
         if (cc == null) {
-            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(uploadedFile);
-
-            if (reader == null) {
-                getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: Invalid GeoTIFF file!", MediaType.TEXT_PLAIN));
-                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-                return;
-            }
-
             try {
-                cc = new CoverageConfig(csc.getId(), format, reader, myDataConfig);
+                final CoverageAccess cvAccess = ((BaseFileDriver)driver).connect(source, null, null, new NullProgressListener());
+
+                if (cvAccess == null) {
+                    getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: Invalid GeoTIFF file!", MediaType.TEXT_PLAIN));
+                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                    return;
+                }
+
+                final int numCoverages = cvAccess.getNumCoverages(null);
+                
+                for (int i=0; i<numCoverages; i++) {
+                    final Name name = cvAccess.getNames(null).get(i);
+                    cc = new CoverageConfig(csc.getId(), driver, cvAccess, name, myDataConfig);
+
+                    if ("UNKNOWN".equals(cc.getSrsName())) {
+                        CoordinateReferenceSystem sourceCRS = cc.getCrs();
+                        CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
+
+                        MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
+                        GeneralEnvelope envelope = CRS.transform(transform, cc.getEnvelope());
+                        envelope.setCoordinateReferenceSystem(targetCRS);
+
+                        cc.setSrsName("EPSG:4326");
+                        cc.setCrs(targetCRS);
+                        cc.setEnvelope(envelope);
+                    }
+
+                    List requestResponseCRSs = new ArrayList();
+                    requestResponseCRSs.add(cc.getSrsName());
+
+                    cc.setRequestCRSs(requestResponseCRSs);
+                    cc.setResponseCRSs(requestResponseCRSs);
+
+                    if (form.getFirst("style") != null)
+                        cc.setDefaultStyle(form.getFirstValue("style"));
+                    else {
+                        if (name.getLocalPart().toLowerCase().contains("lowcloud"))
+                            cc.setDefaultStyle("lowcloud");
+
+                        if (name.getLocalPart().toLowerCase().contains("mcsst"))
+                            cc.setDefaultStyle("mcsst");
+                    }
+                }
             } catch (Exception e) {
                 getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                 return;
             }
-
         }
 
         myDataConfig.removeCoverage(qualified);
@@ -251,10 +297,12 @@ public class CoverageStoreURLResource extends Resource {
         BufferedInputStream stream = new BufferedInputStream(fileURL.openStream());
 
         FileOutputStream out = new FileOutputStream(tempFile);
-        int c = stream.read();
-        while (c != -1) {
-            out.write((byte) c);
-            c = stream.read();
+        byte[] binBuffer = new byte[DEFAULT_BUFFER_SIZE];
+        int count = 0;
+        int n = 0;
+        while (-1 != (n = stream.read(binBuffer))) {
+        	out.write(binBuffer, 0, n);
+            count += n;
         }
         out.flush();
         out.close();

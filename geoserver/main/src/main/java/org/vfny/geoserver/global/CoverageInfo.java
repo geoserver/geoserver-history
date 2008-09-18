@@ -7,6 +7,7 @@ package org.vfny.geoserver.global;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -263,7 +264,10 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         coverage.setSRS( dto.getSrsName() );
         
         coverage.getParameters().clear();
-        coverage.getParameters().putAll( dto.getParameters() );
+        if (dto.getParameters() != null)
+            coverage.getParameters().putAll( dto.getParameters() );
+        else
+            coverage.getParameters().putAll(new HashMap<String, Serializable>());
         coverage.setEnabled( cs.isEnabled() );
         
         layer.setDefaultStyle(catalog.getStyleByName(dto.getDefaultStyle()));

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.measure.unit.Unit;
-import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
@@ -202,7 +201,7 @@ public class CoverageConfig {
      * @param request
      */
     public CoverageConfig(String formatId, Driver driver, CoverageAccess cvAccess, Name name,
-            HttpServletRequest request) throws ConfigurationException {
+            DataConfig catalog) throws ConfigurationException {
         ///////////////////////////////////////////////////////////////////////
         //
         // Initial checks
@@ -226,7 +225,7 @@ public class CoverageConfig {
         //
         ///////////////////////////////////////////////////////////////////////
         this.formatId = formatId;
-        final CoverageStoreConfig cvConfig = getDataConfig(request).getDataFormat(formatId);
+        final CoverageStoreConfig cvConfig = catalog.getDataFormat(formatId);
         if (cvConfig == null) {
             // something is horribly wrong no FormatID selected!
             // The JSP needs to not include us if there is no
@@ -305,7 +304,7 @@ public class CoverageConfig {
                 key.append("_").append(count);
             }
 
-            Map coverages = getDataConfig(request).getCoverages();
+            Map coverages = catalog.getCoverages();
             Set cvKeySet = coverages.keySet();
             boolean key_exists = false;
 
@@ -472,18 +471,6 @@ public class CoverageConfig {
         c.setParameters(parameters);
 
         return c;
-    }
-
-    /**
-     * Access Catalog Configuration Model from the WebContainer.
-     *
-     * @param request
-     *
-     * @return Configuration model for Catalog information.
-     */
-    protected DataConfig getDataConfig(HttpServletRequest request) {
-        return (DataConfig) request.getSession().getServletContext()
-                                   .getAttribute(DataConfig.CONFIG_KEY);
     }
 
     public String getKey() {

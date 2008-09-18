@@ -147,12 +147,23 @@ public class DataCoveragesNewAction extends ConfigAction {
         CoverageConfig[] coverageConfigs = new CoverageConfig[numCoverages];
 
         for (int i=0; i<numCoverages; i++) {
-            coverageConfigs[i] = new CoverageConfig(formatID, driver, cvAccess, cvAccess.getNames(null).get(i), request);
+            coverageConfigs[i] = new CoverageConfig(formatID, driver, cvAccess, cvAccess.getNames(null).get(i), getDataConfig(request));
         }
         
         request.setAttribute(NEW_COVERAGE_KEY, "true");
         request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfigs[0]);
 
         return coverageConfigs;
+    }
+    
+    /**
+     * Access Catalog Configuration Model from the WebContainer.
+     *
+     * @param request
+     *
+     * @return Configuration model for Catalog information.
+     */
+    protected static DataConfig getDataConfig(HttpServletRequest request) {
+        return (DataConfig) request.getSession().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
     }
 }
