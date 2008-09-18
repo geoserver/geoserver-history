@@ -7,12 +7,10 @@ package org.geoserver.restconfig;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -46,6 +44,8 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
  */
 
 public class CoverageStoreURLResource extends Resource {
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+	
     private DataConfig myDataConfig;
 
     private Data myData;
@@ -251,10 +251,12 @@ public class CoverageStoreURLResource extends Resource {
         BufferedInputStream stream = new BufferedInputStream(fileURL.openStream());
 
         FileOutputStream out = new FileOutputStream(tempFile);
-        int c = stream.read();
-        while (c != -1) {
-            out.write((byte) c);
-            c = stream.read();
+        byte[] binBuffer = new byte[DEFAULT_BUFFER_SIZE];
+        int count = 0;
+        int n = 0;
+        while (-1 != (n = stream.read(binBuffer))) {
+        	out.write(binBuffer, 0, n);
+            count += n;
         }
         out.flush();
         out.close();
