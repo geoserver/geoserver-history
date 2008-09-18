@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.requests;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -667,6 +668,43 @@ public class GetMapRequest extends WMSRequest {
     }
     
     /**
+     * List of sample dimension names requested, case insensitive.
+     * <p>
+     * The WMS 1.1.1 spec, section C.4.2, page 61, states that when extra dimensions are available
+     * one or more of them can be requested by adding a parameter per dimension to the GetMap
+     * request where the parameter name consists of the "DIM_" prefix followed by the dimension
+     * name. For example "DIM_TEMPERATURE=...&DIM_WAVELENGTH=...".
+     * </p>
+     * <p>
+     * This list contains the request dimension names with the "DIM_" prefix already stripped out.
+     * </p>
+     * <p>
+     * Note the matching with the actual dimension names and the ones in this list shall be don case
+     * insensitively
+     * </p>
+     * 
+     * @return the list of sample dimension names requested without the "DIM_" prefix, or the empty
+     *         list if no dimension was requested.
+     */
+    public List<String> getSampleDimensions() {
+        if (optionalParams.sampleDimensions == null) {
+            return Collections.emptyList();
+        }
+        return optionalParams.sampleDimensions;
+    }
+    
+    /**
+     * Sets the request sample dimension names
+     * 
+     * @param dimensionNames
+     *                the names of the requested dimensions
+     * @see #getSampleDimensions()
+     */
+    public void setSampleDimensions(List<String> dimensionNames){
+        optionalParams.sampleDimensions = dimensionNames;
+    }
+    
+    /**
      * decodes a color of the form <code>#FFFFFF</code> into a
      * <code>java.awt.Color</code> object
      *
@@ -766,6 +804,16 @@ public class GetMapRequest extends WMSRequest {
 
         /** time elevation parameter */
         Integer elevation;
+        
+        /**
+         * List of sample dimension names requested. The WMS 1.1.1 spec, section C.4.2, page 61,
+         * states that when extra dimensions are available one or more of them can be requested by
+         * adding a parameter per dimension to the GetMap request where the parameter name consists
+         * of the "DIM_" prefix followed by the dimension name. For example
+         * "DIM_TEMPERATURE=...&DIM_WAVELENGTH=...". This list contains the request dimension names
+         * with the "DIM_" prefix already stripped out.
+         */
+        List<String> sampleDimensions;
 
         /**
          * SLD parameter
