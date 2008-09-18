@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -501,42 +502,36 @@ public class GetMapResponse implements Response {
                     throw new WcsException("Multi field coverages are not supported yet");
                 }
 
+                final Map<String, String> requestDimensions = request.getSampleDimensions();
+                
                 for (FieldType field : rangeSubset) {
-                    String fieldName = field.getName().getLocalPart();
+                    String axisName;
                     String selectedBandField = null;
-                    for (Object key : request.getRawKvp().keySet() ) {
-                        if (((String)key).toLowerCase().startsWith("dim_")) {
-                            String axisName = ((String)key).toLowerCase().substring(((String)key).toLowerCase().indexOf("dim_")+"dim_".length());
-                            axisName = (axisName.startsWith("axis:") ? axisName : "axis:" + 
-                                    (layer.getName().contains(":") ? layer.getName().substring(layer.getName().indexOf(":")+1) : layer.getName()) + // remove namespace 
-                                    axisName);
-                            Object value = request.getRawKvp().get(key);
-                            
-                            try {
-                                Axis<?, ?> axis = field.getAxis(new NameImpl(axisName));
-                                if (axis != null) {
-                                    if (value instanceof String) {
-                                        selectedBandField = (String) value;
-                                    }
-
-                                    if (value instanceof String[] && ((String[]) value).length > 0)
-                                        selectedBandField = ((String[]) value)[0];
-
-                                    if (selectedBandField != null) {
-                                        bandSelectedCoverage = bandSelect(coverage, axis, selectedBandField);
-                                    }
+                    for (Map.Entry<String, String> dimParam : requestDimensions.entrySet()) {
+                        axisName = dimParam.getKey();
+                        selectedBandField = dimParam.getValue();
+                        axisName = normalizeCoverageFieldAxisName(layer, axisName);
+                        
+                        try {
+                            Axis<?, ?> axis = field.getAxis(new NameImpl(axisName));
+                            if (axis != null) {
+                                //REVISIT: should check if selectBandField != "" too?
+                                if (selectedBandField != null) {
+                                    bandSelectedCoverage = bandSelect(coverage, axis, selectedBandField);
+                                    //REVISIT: should break here?
                                 }
-                            } catch (Exception e) {
-                                LOGGER.warning(e.getLocalizedMessage());
                             }
-                            break;
+                        } catch (Exception e) {
+                            LOGGER.warning(e.getLocalizedMessage());
                         }
+                        break;
                     }
                 }
             }
 
-            if (bandSelectedCoverage != null)
+            if (bandSelectedCoverage != null){
                 coverage = bandSelectedCoverage;
+            }
 
         }finally{
             cvSource.dispose();
@@ -545,43 +540,17 @@ public class GetMapResponse implements Response {
         return coverage;
     }
 
-    /**
-     * @param coverage
-     * @param bandSelectedCoverage
-     * @param selectedBandField
-     * @param realValue 
-     * @return
-     * @throws NumberFormatException
-     * @throws WcsException
-     */
-    private static GridCoverage2D bandSelect(GridCoverage2D coverage, String selectedBandField, boolean realValue)
-            throws NumberFormatException, WcsException {
-        GridCoverage2D bandSelectedCoverage = null;
-        int[] bands = null;
-        if (selectedBandField.indexOf("/") <= 0) {
-            String[] selectedBands = selectedBandField.indexOf(",") > 0 ? selectedBandField.split(",") : new String[] {selectedBandField};
-            bands = new int[selectedBands.length];
-            for (int s=0; s<selectedBands.length; s++)
-                bands[s] = Integer.parseInt(selectedBands[0]) - (realValue?0:1);
-        } else if (selectedBandField.indexOf("/") > 0) {
-            String[] selectedBands = selectedBandField.split("/");
-            int min = Integer.parseInt(selectedBands[0]);
-            int max = Integer.parseInt(selectedBands[selectedBands.length-1]);
-            int res = (selectedBands.length > 2 ? Integer.parseInt(selectedBands[1]) : 1);
-
-            bands = new int[(int) (Math.floor(max - min) / res + 1)];
-            for (int b=0; b<bands.length; b++)
-                bands[b] = (b + (realValue?1:0)) * res;
+    private static String normalizeCoverageFieldAxisName(final MapLayerInfo layer, String axisName) {
+        axisName = axisName.toLowerCase();
+        if(!axisName.startsWith("axis:")){
+            String layerName = layer.getName();
+            //remove namespace prefix
+            if(layerName.indexOf(':') != -1){
+                layerName = layerName.substring(layerName.indexOf(':') + 1);
+            }
+            axisName = "axis:" + layerName + axisName;
         }
-
-        // finally execute the band select
-        try {
-            bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
-        } catch (Exception e) {
-            throw new WcsException("The selected Band values are not allowed for this Coverage.");
-        }
-        
-        return bandSelectedCoverage;
+        return axisName;
     }
 
     /**
