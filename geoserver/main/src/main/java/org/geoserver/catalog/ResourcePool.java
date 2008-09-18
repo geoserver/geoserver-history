@@ -36,7 +36,6 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.util.logging.Logging;
-import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.simple.SimpleFeature;
@@ -44,6 +43,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -495,18 +495,23 @@ public class ResourcePool {
         }
         
         if (!CRS.equalsIgnoreMetadata(sourceCRS, destCRS)) {
-            // get a math transform
-            final MathTransform transform = CoverageUtils.getMathTransform(sourceCRS, destCRS);
-        
-            // transform the envelope
-            if (!transform.isIdentity()) {
-                try {
-                    envelope = CRS.transform(transform, envelope);
-                } 
-                catch (TransformException e) {
-                    throw (IOException) new IOException( "error occured transforming envelope").initCause( e );
-                }
+            try {
+	            // get a math transform
+	            final MathTransform transform = CRS.findMathTransform(sourceCRS, destCRS,true);
+	        
+	            // transform the envelope
+	            if (!transform.isIdentity()) {
+	
+	                    envelope = CRS.transform(transform, envelope);
+	            } 
             }
+            catch (TransformException e) {
+                throw (IOException) new IOException( "error occured transforming envelope").initCause( e );
+            
+            } catch (FactoryException e) {
+            	throw (IOException) new IOException( "error occured transforming envelope").initCause( e );
+			}
+            
         }
         
         // just do the intersection since
