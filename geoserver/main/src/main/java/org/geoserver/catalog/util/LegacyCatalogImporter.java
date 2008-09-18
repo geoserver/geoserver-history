@@ -169,7 +169,7 @@ public class LegacyCatalogImporter {
                 layer.setName(featureType.getName());
                 layer.setPath(ftInfoReader.wmsPath());
                 if ( layer.getPath() == null ) {
-                    layer.setPath( featureType.getName() );
+                    layer.setPath( "/" );
                 }
                 layer.setType(LayerInfo.Type.VECTOR);
                
@@ -230,7 +230,7 @@ public class LegacyCatalogImporter {
                 layer.setName(coverage.getName());
                 layer.setPath(cInfoReader.wmsPath());
                 if ( layer.getPath() == null ) {
-                    layer.setPath( coverage.getName() );
+                    layer.setPath( "/" );
                 }
                 layer.setType(LayerInfo.Type.RASTER);
                 
