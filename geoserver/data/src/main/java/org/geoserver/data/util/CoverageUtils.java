@@ -4,26 +4,6 @@
  */
 package org.geoserver.data.util;
 
-import org.geotools.coverage.GridSampleDimension;
-import org.geotools.coverage.grid.GeneralGridGeometry;
-import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.factory.Hints;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.parameter.DefaultParameterDescriptor;
-import org.geotools.referencing.CRS;
-import org.geotools.referencing.operation.BufferedCoordinateOperationFactory;
-import org.opengis.parameter.GeneralParameterValue;
-import org.opengis.parameter.ParameterDescriptor;
-import org.opengis.parameter.ParameterValue;
-import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.CoordinateOperation;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.OperationNotFoundException;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,9 +11,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geotools.coverage.GridSampleDimension;
+import org.geotools.coverage.grid.GeneralGridGeometry;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.parameter.DefaultParameterDescriptor;
+import org.geotools.referencing.CRS;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterDescriptor;
+import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 
 
 /**
@@ -45,8 +37,7 @@ import java.util.logging.Logger;
  *         modification)
  */
 public class CoverageUtils {
-    private final static BufferedCoordinateOperationFactory operationFactory = new BufferedCoordinateOperationFactory(new Hints(
-                Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+
     private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CoverageUtils.class.toString());
     public static final int TRANSPARENT = 0;
     public static final int OPAQUE = 1;
@@ -396,21 +387,5 @@ public class CoverageUtils {
         GridCoverage2D gc = (GridCoverage2D) reader.read(getParameters(readParams, parameters,
                     true));
         return gc.getSampleDimensions();
-    }
-    public static MathTransform getMathTransform(CoordinateReferenceSystem sourceCRS,
-            CoordinateReferenceSystem destCRS) {
-            try {
-                CoordinateOperation op = operationFactory.createOperation(sourceCRS, destCRS);
-
-                if (op != null) {
-                    return op.getMathTransform();
-                }
-            } catch (OperationNotFoundException e) {
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-            } catch (FactoryException e) {
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-            }
-
-            return null;
-        }    
+    }    
 }
