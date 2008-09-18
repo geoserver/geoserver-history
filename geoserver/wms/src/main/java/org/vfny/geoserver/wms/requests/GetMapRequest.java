@@ -668,7 +668,7 @@ public class GetMapRequest extends WMSRequest {
     }
     
     /**
-     * List of sample dimension names requested, case insensitive.
+     * List of sample dimension names and raw values requested, names are case insensitive.
      * <p>
      * The WMS 1.1.1 spec, section C.4.2, page 61, states that when extra dimensions are available
      * one or more of them can be requested by adding a parameter per dimension to the GetMap
@@ -676,31 +676,32 @@ public class GetMapRequest extends WMSRequest {
      * name. For example "DIM_TEMPERATURE=...&DIM_WAVELENGTH=...".
      * </p>
      * <p>
-     * This list contains the request dimension names with the "DIM_" prefix already stripped out.
+     * This list contains the request dimension names with the "DIM_" prefix already stripped out
+     * and the values.
      * </p>
      * <p>
      * Note the matching with the actual dimension names and the ones in this list shall be don case
      * insensitively
      * </p>
      * 
-     * @return the list of sample dimension names requested without the "DIM_" prefix, or the empty
-     *         list if no dimension was requested.
+     * @return the kvp pairs of sample dimension names and values requested without the "DIM_"
+     *         prefix, or the empty list if no dimension was requested.
      */
-    public List<String> getSampleDimensions() {
+    public Map<String, String> getSampleDimensions() {
         if (optionalParams.sampleDimensions == null) {
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
         return optionalParams.sampleDimensions;
     }
     
     /**
-     * Sets the request sample dimension names
+     * Sets the request sample dimensions as a Map of dimension name/value pairs
      * 
      * @param dimensionNames
      *                the names of the requested dimensions
      * @see #getSampleDimensions()
      */
-    public void setSampleDimensions(List<String> dimensionNames){
+    public void setSampleDimensions(Map<String, String> dimensionNames){
         optionalParams.sampleDimensions = dimensionNames;
     }
     
@@ -806,14 +807,14 @@ public class GetMapRequest extends WMSRequest {
         Integer elevation;
         
         /**
-         * List of sample dimension names requested. The WMS 1.1.1 spec, section C.4.2, page 61,
-         * states that when extra dimensions are available one or more of them can be requested by
-         * adding a parameter per dimension to the GetMap request where the parameter name consists
-         * of the "DIM_" prefix followed by the dimension name. For example
+         * List of sample dimension names and values requested. The WMS 1.1.1 spec, section C.4.2,
+         * page 61, states that when extra dimensions are available one or more of them can be
+         * requested by adding a parameter per dimension to the GetMap request where the parameter
+         * name consists of the "DIM_" prefix followed by the dimension name. For example
          * "DIM_TEMPERATURE=...&DIM_WAVELENGTH=...". This list contains the request dimension names
          * with the "DIM_" prefix already stripped out.
          */
-        List<String> sampleDimensions;
+        Map<String, String> sampleDimensions;
 
         /**
          * SLD parameter

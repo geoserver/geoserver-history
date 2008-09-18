@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 
@@ -348,10 +349,12 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         raw.put("DIM_temp", "32");
 
         request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
-        List<String> sampleDimensions = request.getSampleDimensions();
+        Map<String, String> sampleDimensions = request.getSampleDimensions();
         assertEquals(2, request.getSampleDimensions().size());
         //parsed names are upper case, dimension names shall be compared case insensitively
-        assertTrue(request.getSampleDimensions().contains("WAVELENGTH"));
-        assertTrue(request.getSampleDimensions().contains("TEMP"));
+        assertTrue(request.getSampleDimensions().containsKey("WAVELENGTH"));
+        assertTrue(request.getSampleDimensions().containsKey("TEMP"));
+        assertEquals("1.0e3", request.getSampleDimensions().get("WAVELENGTH"));
+        assertEquals("32", request.getSampleDimensions().get("TEMP"));
     }
 }

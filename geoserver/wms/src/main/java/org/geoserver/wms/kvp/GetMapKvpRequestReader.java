@@ -256,15 +256,15 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         // parse extra sample dimension names. They're case insensitive name parameters with "DIM_"
         // prefix
         Map.Entry entry;
-        List<String> sampleDimensions = null;
+        Map<String, String> sampleDimensions = null;
         for (Iterator it = kvp.entrySet().iterator(); it.hasNext();) {
             entry = (Entry) it.next();
             if (((String) entry.getKey()).startsWith("DIM_")) {
                 if (sampleDimensions == null) {
-                    sampleDimensions = new ArrayList<String>(2);
+                    sampleDimensions = new HashMap<String, String>();
                 }
                 String dimName = ((String) entry.getKey()).substring(4);
-                sampleDimensions.add(dimName);
+                sampleDimensions.put(dimName, ((String)entry.getValue()));
             }
         }
         getMap.setSampleDimensions(sampleDimensions);
