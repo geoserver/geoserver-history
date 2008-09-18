@@ -246,6 +246,10 @@ public class LegacyCoverageInfoReader {
     	
     	return map;
     }
+    
+    public String wmsPath() {
+        return ReaderUtils.getChildText(coverage, "wmspath");
+    }
 
     public String parentDirectoryName() {
         return parentDirectory.getName();

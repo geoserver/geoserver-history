@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.geoserver.ows.util.XmlCharsetDetector;
-import org.geoserver.util.ReaderUtils;
 import org.w3c.dom.Element;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -212,6 +211,10 @@ public class LegacyFeatureTypeInfoReader {
         }
     }
     
+    public String wmsPath() {
+        return ReaderUtils.getChildText(featureType, "wmspath");
+    }
+
     public String parentDirectoryName() {
         return parentDirectory.getName();
     }
