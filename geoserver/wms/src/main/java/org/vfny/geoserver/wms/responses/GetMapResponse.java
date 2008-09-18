@@ -533,9 +533,6 @@ public class GetMapResponse implements Response {
                         }
                     }
                 }
-            } else if (request.getRawKvp().containsKey("band") || request.getRawKvp().containsKey("BAND")) {
-                String selectedBandField = (String) (request.getRawKvp().get("band") != null ? request.getRawKvp().get("band") : request.getRawKvp().get("BAND"));
-                bandSelectedCoverage = bandSelect(coverage, selectedBandField, false);
             }
 
             if (bandSelectedCoverage != null)
