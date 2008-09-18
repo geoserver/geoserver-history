@@ -328,4 +328,30 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
             assertEquals("RemoteOWSFailure", e.getCode());
         }
     }
+
+    public void testSampleDimensions() throws Exception {
+        HashMap raw = new HashMap();
+        raw.put("layers", "cite:Lakes");
+        raw.put("format", "image/png");
+        raw.put("srs", "epsg:4326");
+        raw.put("bbox", "-100,20,-60,50");
+        raw.put("height", "300");
+        raw.put("width", "300");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+        assertNotNull(request.getSampleDimensions());
+        assertEquals(0, request.getSampleDimensions().size());
+
+        raw.put("dim_WaveLength", "1.0e3");
+        raw.put("DIM_temp", "32");
+
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+        List<String> sampleDimensions = request.getSampleDimensions();
+        assertEquals(2, request.getSampleDimensions().size());
+        //parsed names are upper case, dimension names shall be compared case insensitively
+        assertTrue(request.getSampleDimensions().contains("WAVELENGTH"));
+        assertTrue(request.getSampleDimensions().contains("TEMP"));
+    }
 }

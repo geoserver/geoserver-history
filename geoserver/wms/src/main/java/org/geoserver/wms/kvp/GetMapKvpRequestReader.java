@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -133,6 +134,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         this.styleRequired = styleRequired;
     }
 
+    @Override
     public Object createRequest() throws Exception {
         GetMapRequest request = new GetMapRequest(wms);
         request.setHttpServletRequest(httpRequest);
@@ -140,7 +142,13 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         return request;
     }
 
+    /**
+     * Relies in {@link KvpRequestReader#read(Object, Map, Map)} to reflectively set the easy to
+     * parse properties and performs the parsing of the remaining ones.
+     */
+    @Override
     public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+        //reflectively set the easy to parse properties
         GetMapRequest getMap = (GetMapRequest) super.read(request, kvp, rawKvp);
 
         // do some additional checks
@@ -170,22 +178,112 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
         // remote OWS url
         URL remoteOwsUrl = getMap.getRemoteOwsURL();
-        if (remoteOwsUrl != null && remoteOwsType == null)
+        if (remoteOwsUrl != null && remoteOwsType == null){
             throw new WmsException("REMOTE_OWS_URL specified, but REMOTE_OWS_TYPE is missing");
-
+        }
+        
         // layers
         String layerParam = (String) kvp.get("LAYERS");
-        if (layerParam != null)
-            getMap
-                    .setLayers(parseLayers(KvpUtils.readFlat(layerParam), remoteOwsUrl,
-                            remoteOwsType));
+        if (layerParam != null){
+            List layerNames = KvpUtils.readFlat(layerParam);
+            MapLayerInfo[] layers = parseLayers(layerNames, remoteOwsUrl, remoteOwsType);
+            getMap.setLayers(layers);
+        }
+        
+        readSLDLayersAndStyles(kvp, getMap);
 
+        // filters
+        // in case of a mixed request, get with sld in post body, layers
+        // are not parsed, so we can't parse filters neither...
+        if ((getMap.getLayers() != null) && (getMap.getLayers().length > 0)) {
+            List filters = (getMap.getFilter() != null) ? getMap.getFilter()
+                    : Collections.EMPTY_LIST;
+            List cqlFilters = (getMap.getCQLFilter() != null) ? getMap.getCQLFilter()
+                    : Collections.EMPTY_LIST;
+            List featureId = (getMap.getFeatureId() != null) ? getMap.getFeatureId()
+                    : Collections.EMPTY_LIST;
+
+            if (!featureId.isEmpty()) {
+                if (!filters.isEmpty()) {
+                    throw new WmsException("GetMap KVP request contained "
+                            + "conflicting filters.  Filter: " + filters + ", fid: " + featureId);
+                }
+
+                Set ids = new HashSet();
+                for (Iterator i = featureId.iterator(); i.hasNext();) {
+                    ids.add(filterFactory.featureId((String) i.next()));
+                }
+                filters = Collections.singletonList(filterFactory.id(ids));
+            }
+
+            if (!cqlFilters.isEmpty()) {
+                if (!filters.isEmpty()) {
+                    throw new WmsException("GetMap KVP request contained "
+                            + "conflicting filters.  Filter: " + filters + ", fid: " + featureId
+                            + ", cql: " + cqlFilters);
+                }
+
+                filters = cqlFilters;
+            }
+
+            int numLayers = getMap.getLayers().length;
+
+            if (!filters.isEmpty() && (numLayers != filters.size())) {
+                // as in wfs getFeatures, perform lenient parsing, if just one
+                // filter, it gets
+                // applied to all layers
+                if (filters.size() == 1) {
+                    Filter f = (Filter) filters.get(0);
+                    filters = new ArrayList(numLayers);
+
+                    for (int i = 0; i < numLayers; i++) {
+                        filters.add(f);
+                    }
+                } else {
+                    String msg = numLayers
+                            + " layers requested, but found "
+                            + filters.size()
+                            + " filters specified. "
+                            + "When you specify the FILTER parameter, you must provide just one, \n"
+                            + " that will be applied to all layers, or exactly one for each requested layer";
+                    throw new WmsException(msg, getClass().getName());
+                }
+            }
+
+            getMap.setFilter(filters);
+        }
+
+        // parse extra sample dimension names. They're case insensitive name parameters with "DIM_"
+        // prefix
+        Map.Entry entry;
+        List<String> sampleDimensions = null;
+        for (Iterator it = kvp.entrySet().iterator(); it.hasNext();) {
+            entry = (Entry) it.next();
+            if (((String) entry.getKey()).startsWith("DIM_")) {
+                if (sampleDimensions == null) {
+                    sampleDimensions = new ArrayList<String>(2);
+                }
+                String dimName = ((String) entry.getKey()).substring(4);
+                sampleDimensions.add(dimName);
+            }
+        }
+        getMap.setSampleDimensions(sampleDimensions);
+        
+        
+        // set the raw params used to create the request
+        getMap.setRawKvp(rawKvp);
+
+        return getMap;
+    }
+
+    private void readSLDLayersAndStyles(Map kvp, GetMapRequest getMap) throws IOException, Exception {
         // raw styles parameter
         String stylesParam = (String) kvp.get("STYLES");
         List styleNameList = Collections.EMPTY_LIST;
-        if (stylesParam != null)
+        if (stylesParam != null){
             styleNameList = KvpUtils.readFlat(stylesParam);
-
+        }
+        
         // styles
         // process SLD_BODY, SLD, then STYLES parameter
         if (getMap.getSldBody() != null) {
@@ -249,9 +347,10 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
 
             // ok, parse the styles parameter in isolation
-            if (styleNameList.size() > 0)
+            if (styleNameList.size() > 0){
                 getMap.setStyles(parseStyles(styleNameList));
-
+            }
+            
             // first, expand base layers and default styles
             if (getMap.getLayers() != null) {
                 List oldLayers = new ArrayList(Arrays.asList(getMap.getLayers()));
@@ -315,72 +414,6 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 }
             }
         }
-
-        // filters
-        // in case of a mixed request, get with sld in post body, layers
-        // are not parsed, so we can't parse filters neither...
-        if ((getMap.getLayers() != null) && (getMap.getLayers().length > 0)) {
-            List filters = (getMap.getFilter() != null) ? getMap.getFilter()
-                    : Collections.EMPTY_LIST;
-            List cqlFilters = (getMap.getCQLFilter() != null) ? getMap.getCQLFilter()
-                    : Collections.EMPTY_LIST;
-            List featureId = (getMap.getFeatureId() != null) ? getMap.getFeatureId()
-                    : Collections.EMPTY_LIST;
-
-            if (!featureId.isEmpty()) {
-                if (!filters.isEmpty()) {
-                    throw new WmsException("GetMap KVP request contained "
-                            + "conflicting filters.  Filter: " + filters + ", fid: " + featureId);
-                }
-
-                Set ids = new HashSet();
-                for (Iterator i = featureId.iterator(); i.hasNext();) {
-                    ids.add(filterFactory.featureId((String) i.next()));
-                }
-                filters = Collections.singletonList(filterFactory.id(ids));
-            }
-
-            if (!cqlFilters.isEmpty()) {
-                if (!filters.isEmpty()) {
-                    throw new WmsException("GetMap KVP request contained "
-                            + "conflicting filters.  Filter: " + filters + ", fid: " + featureId
-                            + ", cql: " + cqlFilters);
-                }
-
-                filters = cqlFilters;
-            }
-
-            int numLayers = getMap.getLayers().length;
-
-            if (!filters.isEmpty() && (numLayers != filters.size())) {
-                // as in wfs getFeatures, perform lenient parsing, if just one
-                // filter, it gets
-                // applied to all layers
-                if (filters.size() == 1) {
-                    Filter f = (Filter) filters.get(0);
-                    filters = new ArrayList(numLayers);
-
-                    for (int i = 0; i < numLayers; i++) {
-                        filters.add(f);
-                    }
-                } else {
-                    String msg = numLayers
-                            + " layers requested, but found "
-                            + filters.size()
-                            + " filters specified. "
-                            + "When you specify the FILTER parameter, you must provide just one, \n"
-                            + " that will be applied to all layers, or exactly one for each requested layer";
-                    throw new WmsException(msg, getClass().getName());
-                }
-            }
-
-            getMap.setFilter(filters);
-        }
-
-        // set the raw params used to create the request
-        getMap.setRawKvp(rawKvp);
-
-        return getMap;
     }
 
     /**
