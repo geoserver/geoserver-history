@@ -420,11 +420,16 @@ public class GetMapResponse implements Response {
             IllegalArgumentException, MismatchedDimensionException, FactoryException,
             TransformException, WcsException, WmsException {
         GridCoverage2D coverage = null;
-        if (cvAccess != null) {
-            // stripping the namespace
-            String layerName = layer.getName();
-            layerName = layerName.contains(":") ? layerName.substring(layerName.indexOf(":")+1) : layerName;
-            final CoverageSource cvSource = cvAccess.access(new NameImpl(layerName), null, AccessType.READ_ONLY, null, null);
+        if (cvAccess == null) {
+            throw new WmsException(null, new StringBuffer(
+            "Internal error : unable to get reader for this coverage layer ")
+            .append(layer.toString()).toString() + ". CoverageAccess can't be null");
+        }
+        // stripping the namespace
+        String layerName = layer.getName();
+        layerName = layerName.contains(":") ? layerName.substring(layerName.indexOf(":")+1) : layerName;
+        final CoverageSource cvSource = cvAccess.access(new NameImpl(layerName), null, AccessType.READ_ONLY, null, null);
+        try{
             // handle spatial domain subset, if needed
             GeneralEnvelope requestedEnvelope = new GeneralEnvelope(new double[] {env.getMinX(), env.getMinY()}, new double[] {env.getMaxX(), env.getMaxY()});
             requestedEnvelope.setCoordinateReferenceSystem(mapcrs);
@@ -535,12 +540,9 @@ public class GetMapResponse implements Response {
 
             if (bandSelectedCoverage != null)
                 coverage = bandSelectedCoverage;
-            
+
+        }finally{
             cvSource.dispose();
-        } else {
-            throw new WmsException(null, new StringBuffer(
-                    "Internal error : unable to get reader for this coverage layer ")
-                    .append(layer.toString()).toString());
         }
         
         return coverage;
