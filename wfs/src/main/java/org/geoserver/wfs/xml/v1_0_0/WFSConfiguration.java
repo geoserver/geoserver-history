@@ -7,6 +7,7 @@ package org.geoserver.wfs.xml.v1_0_0;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.WfsFactory;
@@ -133,11 +134,10 @@ public class WFSConfiguration extends Configuration {
         }
     }
 
-    protected void configureBindings(MutablePicoContainer bindings) {
-        super.configureBindings(bindings);
-
-        //override the GMLAbstractFeatureTypeBinding
-        bindings.registerComponentImplementation(GML.AbstractFeatureType,
+    @Override
+    protected void configureBindings(Map bindings) {
+      //override the GMLAbstractFeatureTypeBinding
+        bindings.put(GML.AbstractFeatureType,
             GMLAbstractFeatureTypeBinding.class);
         
         //use setter injection for AbstractGeometryType bindign to allow an 
@@ -145,7 +145,8 @@ public class WFSConfiguration extends Configuration {
         // is set by the binding of a parent element.
         // note: it is important that this component adapter is non-caching so 
         // that the setter property gets updated properly every time
-        bindings.registerComponent(
+        bindings.put(
+                GML.AbstractGeometryType,
             new SetterInjectionComponentAdapter( 
                 GML.AbstractGeometryType, AbstractGeometryTypeBinding.class, 
                 new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
@@ -157,7 +158,9 @@ public class WFSConfiguration extends Configuration {
         // is set by the binding of a parent element.
         // note: it is important that this component adapter is non-caching so 
         // that the setter property gets updated properly every time
-        bindings.registerComponent(new SetterInjectionComponentAdapter(OGC.BBOXType,
+        bindings.put(
+            OGC.BBOXType,
+            new SetterInjectionComponentAdapter(OGC.BBOXType,
                 OGCBBOXTypeBinding.class,
                 new Parameter[] { new OptionalComponentParameter(CoordinateReferenceSystem.class) }));
         

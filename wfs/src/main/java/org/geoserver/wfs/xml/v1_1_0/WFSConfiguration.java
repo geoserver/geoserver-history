@@ -39,6 +39,7 @@ import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 
 public class WFSConfiguration extends Configuration {
@@ -182,20 +183,22 @@ public class WFSConfiguration extends Configuration {
         }
     }
 
-    protected void configureBindings(MutablePicoContainer container) {
+    @Override
+    protected void configureBindings(Map bindings) {
         //register our custom bindings
-        container.registerComponentImplementation(XS.DATE, DateBinding.class);
-        container.registerComponentImplementation(OGC.Filter, FilterTypeBinding.class);
-        container.registerComponentImplementation(OGC.PropertyNameType,
+        bindings.put(XS.DATE, DateBinding.class);
+        bindings.put(OGC.FilterType, FilterTypeBinding.class);
+        bindings.put(OGC.PropertyNameType,
             PropertyNameTypeBinding.class);
-        container.registerComponentImplementation(GML.CircleType, CircleTypeBinding.class);
+        bindings.put(GML.CircleType, CircleTypeBinding.class);
         
         //use setter injection for AbstractGeometryType bindign to allow an 
         // optional crs to be set in teh binding context for parsing, this crs
         // is set by the binding of a parent element.
         // note: it is important that this component adapter is non-caching so 
         // that the setter property gets updated properly every time
-        container.registerComponent(
+        bindings.put(
+            GML.AbstractGeometryType,
             new SetterInjectionComponentAdapter( 
                 GML.AbstractGeometryType, AbstractGeometryTypeBinding.class, 
                 new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
@@ -207,11 +210,13 @@ public class WFSConfiguration extends Configuration {
         // is set by the binding of a parent element.
         // note: it is important that this component adapter is non-caching so 
         // that the setter property gets updated properly every time
-        container.registerComponent(new SetterInjectionComponentAdapter(OGC.BBOXType,
+        bindings.put(
+            OGC.BBOXType,    
+            new SetterInjectionComponentAdapter(OGC.BBOXType,
                 OGCBBOXTypeBinding.class,
                 new Parameter[] { new OptionalComponentParameter(CoordinateReferenceSystem.class) }));
         
         // override XSQName binding
-        container.registerComponentImplementation(XS.QNAME, XSQNameBinding.class);
+        bindings.put(XS.QNAME, XSQNameBinding.class);
     }
 }
