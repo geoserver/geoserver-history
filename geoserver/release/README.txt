@@ -1,3 +1,11 @@
+GeoServer 1.7.0-RC3 (September 22, 2008)
+---------------------------------------
+
+The third release candidate of 1.7.0 including more bug fixes. The change log
+for this release can be found here:
+
+This release is based on Geotools 2.5.x (revision 31557)
+
 GeoServer 1.7.0-RC1 (August 15,2008)
 -----------------------------------
 
