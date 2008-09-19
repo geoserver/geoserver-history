@@ -93,7 +93,7 @@ public class KMLReflector extends WMService {
             WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
         //return new GetMapResponse(config);
-        return new GetMapResponse(getWMS(), context);
+        return new GetMapResponse(context);
     }
 
     protected KvpRequestReader getKvpReader(Map params) {

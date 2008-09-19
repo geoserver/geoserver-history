@@ -76,7 +76,7 @@ public class GetMapResponseTest extends WMSTestSupport {
     }
 
     public void testExecuteOutputFormat() {
-        response = new GetMapResponse(getWMS(), super.applicationContext);
+        response = new GetMapResponse(super.applicationContext);
         GetMapRequest request;
         request = new GetMapRequest(getWMS());
         request.setFormat("non-existent-output-format");
@@ -93,7 +93,7 @@ public class GetMapResponseTest extends WMSTestSupport {
      * {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
      */
     public void testExecuteWrongOutputFormat() {
-        response = new GetMapResponse(getWMS(), super.applicationContext);
+        response = new GetMapResponse(super.applicationContext);
         GetMapRequest request;
         request = new GetMapRequest(getWMS());
         request.setFormat("non-existent-output-format");
@@ -140,7 +140,7 @@ public class GetMapResponseTest extends WMSTestSupport {
      */
     public void testExecuteNullExtent() {
         setUpMocksForExecute();
-        response = new GetMapResponse(getWMS(), mockContext);
+        response = new GetMapResponse(mockContext);
         GetMapRequest request = createGetMapRequest(MockData.BASIC_POLYGONS);
         request.setFormat(mockMapFormat);
         request.setBbox(null);
@@ -157,7 +157,7 @@ public class GetMapResponseTest extends WMSTestSupport {
 
     public void testExecuteEmptyExtent() {
         setUpMocksForExecute();
-        response = new GetMapResponse(getWMS(), mockContext);
+        response = new GetMapResponse(mockContext);
         GetMapRequest request = createGetMapRequest(MockData.BASIC_POLYGONS);
         request.setFormat(mockMapFormat);
         request.setBbox(new Envelope());
@@ -173,7 +173,7 @@ public class GetMapResponseTest extends WMSTestSupport {
 
     public void testExecuteTilingRequested() {
         setUpMocksForExecute();
-        response = new GetMapResponse(getWMS(), mockContext);
+        response = new GetMapResponse(mockContext);
 
         GetMapRequest request = createGetMapRequest(MockData.BASIC_POLYGONS);
         request.setFormat(mockMapFormat);
