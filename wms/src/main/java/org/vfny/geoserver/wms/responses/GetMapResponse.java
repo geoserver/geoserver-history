@@ -80,11 +80,6 @@ public class GetMapResponse implements Response {
     private WMSMapContext map;
 
     /**
-     * WMS module
-     */
-    private WMS wms;
-
-    /**
      * custom response headers
      */
     private HashMap responseHeaders;
@@ -98,8 +93,7 @@ public class GetMapResponse implements Response {
      * 
      * @param applicationContext
      */
-    public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
-        this.wms = wms;
+    public GetMapResponse(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
         responseHeaders = new HashMap();
     }

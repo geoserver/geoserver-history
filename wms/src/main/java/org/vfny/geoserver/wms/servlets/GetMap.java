@@ -52,7 +52,7 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-        return new GetMapResponse(getWMS(), getApplicationContext());
+        return new GetMapResponse(getApplicationContext());
     }
 
     /**
