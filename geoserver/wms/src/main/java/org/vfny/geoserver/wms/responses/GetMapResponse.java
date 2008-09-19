@@ -395,25 +395,27 @@ public class GetMapResponse implements Response {
 
     /**
      * @param request
+     *                the request where to get the output size and time, elevation and coverage
+     *                specific dimensions to query the {@link CoverageSource} for
      * @param layer
-     * @param env
-     * @param mapcrs
-     * @param i
-     * @param coverage
-     * @param cvAccess
+     * @param areaOfInterest the extent to query in {@code mapCrs} units
+     * @param mapcrs the CRS for the response
+     * @param cvAccess the {@link CoverageAccess} to query
      * @return
-     * @throws IOException
-     * @throws IllegalArgumentException
-     * @throws MismatchedDimensionException
-     * @throws FactoryException
-     * @throws TransformException
-     * @throws WcsException
-     * @throws WmsException
+     * 
+     * @throws IOException if accessing the coverage fails
+     *  
+     * @see GetMapRequest#getWidth()
+     * @see GetMapRequest#getHeight()
+     * @see GetMapRequest#getTime()
+     * @see GetMapRequest#getElevation()
+     * @see GetMapRequest#getSampleDimensions()
+     * @see CoverageAccess#access(org.opengis.feature.type.Name, Map, AccessType, org.geotools.factory.Hints, org.opengis.util.ProgressListener)
+     * @see CoverageReadRequest
+     * @see CoverageResponse
      */
     public static GridCoverage2D getCoverage(GetMapRequest request, final MapLayerInfo layer,
-            final Envelope env, final CoordinateReferenceSystem mapcrs, CoverageAccess cvAccess) throws IOException,
-            IllegalArgumentException, MismatchedDimensionException, FactoryException,
-            TransformException, WcsException, WmsException {
+            final Envelope areaOfInterest, final CoordinateReferenceSystem mapcrs, CoverageAccess cvAccess) throws IOException {
         GridCoverage2D coverage = null;
         if (cvAccess == null) {
             throw new WmsException(null, new StringBuffer(
@@ -426,7 +428,7 @@ public class GetMapResponse implements Response {
         final CoverageSource cvSource = cvAccess.access(new NameImpl(layerName), null, AccessType.READ_ONLY, null, null);
         try{
             // handle spatial domain subset, if needed
-            GeneralEnvelope requestedEnvelope = new GeneralEnvelope(new double[] {env.getMinX(), env.getMinY()}, new double[] {env.getMaxX(), env.getMaxY()});
+            GeneralEnvelope requestedEnvelope = new GeneralEnvelope(new double[] {areaOfInterest.getMinX(), areaOfInterest.getMinY()}, new double[] {areaOfInterest.getMaxX(), areaOfInterest.getMaxY()});
             requestedEnvelope.setCoordinateReferenceSystem(mapcrs);
             int[] lowers = new int[] {
                     0,
@@ -504,7 +506,7 @@ public class GetMapResponse implements Response {
                     for (Map.Entry<String, String> dimParam : requestDimensions.entrySet()) {
                         axisName = dimParam.getKey();
                         selectedBandField = dimParam.getValue();
-                        axisName = normalizeCoverageFieldAxisName(layer, axisName);
+                        axisName = normalizeCoverageFieldAxisName(layer.getName(), axisName);
                         
                         try {
                             Axis<?, ?> axis = field.getAxis(new NameImpl(axisName));
@@ -534,15 +536,15 @@ public class GetMapResponse implements Response {
         return coverage;
     }
 
-    private static String normalizeCoverageFieldAxisName(final MapLayerInfo layer, String axisName) {
+    private static String normalizeCoverageFieldAxisName(final String layerName, String axisName) {
         axisName = axisName.toLowerCase();
+        String name = layerName;
         if(!axisName.startsWith("axis:")){
-            String layerName = layer.getName();
             //remove namespace prefix
             if(layerName.indexOf(':') != -1){
-                layerName = layerName.substring(layerName.indexOf(':') + 1);
+                name = layerName.substring(layerName.indexOf(':') + 1);
             }
-            axisName = "axis:" + layerName + axisName;
+            axisName = "axis:" + name + axisName;
         }
         return axisName;
     }
