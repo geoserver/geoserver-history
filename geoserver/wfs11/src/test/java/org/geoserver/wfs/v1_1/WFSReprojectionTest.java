@@ -163,4 +163,28 @@ public class WFSReprojectionTest extends WFSTestSupport {
         return coordinates;
     }
     
+    public void testFilterReprojection() throws Exception {
+        String xml = "<wfs:GetFeature " + "service='WFS' "
+        + "version='1.0.0' "
+        + "xmlns:cdf='http://www.opengis.net/cite/data' "
+        + "xmlns:ogc='http://www.opengis.net/ogc' "
+        + "xmlns:wfs='http://www.opengis.net/wfs' " + "> "
+        + "<wfs:Query typeName='" + MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart() + "' "
+        +    " srsName='" + TARGET_CRS_CODE + "'> "
+      +    "> "
+        +    "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> "
+        +    "<ogc:Filter>"
+        +     "<ogc:Intersects>"
+        +      "<ogc:PropertyName>polygonProperty</ogc:PropertyName>"
+        +        "<gml:Point xmlns:gml='http://www.opengis.net/gml'>"
+        +          "<gml:coordinates decimal='.' cs=',' ts=' '>-1.035246176730227E7,504135.14926478104</gml:coordinates>"
+        +        "</gml:Point>"
+        +     "</ogc:Intersects>"
+        +    "</ogc:Filter>"
+        + "</wfs:Query> " + "</wfs:GetFeature>";
+        
+        Document dom = postAsDOM("wfs",xml);
+        assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
+        
+    }
 }
