@@ -199,7 +199,6 @@ public class WMSCapsTransformerTest extends TestCase {
         defaultStyle.setId("defaultStyleId");
         defaultStyle.setName("defaultStyleName");
         catalog.add(defaultStyle);
-
     }
 
     protected void tearDown() throws Exception {

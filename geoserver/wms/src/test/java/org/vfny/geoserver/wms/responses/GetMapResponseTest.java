@@ -13,6 +13,7 @@ import org.easymock.EasyMock;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.adapters.ResponseAdapter;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMSExtensions;
 import org.geoserver.wms.WMSTestSupport;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Response;
@@ -76,7 +77,7 @@ public class GetMapResponseTest extends WMSTestSupport {
     }
 
     public void testExecuteOutputFormat() {
-        response = new GetMapResponse(super.applicationContext);
+        response = new GetMapResponse(WMSExtensions.findMapProducers(super.applicationContext));
         GetMapRequest request;
         request = new GetMapRequest(getWMS());
         request.setFormat("non-existent-output-format");
@@ -93,7 +94,7 @@ public class GetMapResponseTest extends WMSTestSupport {
      * {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
      */
     public void testExecuteWrongOutputFormat() {
-        response = new GetMapResponse(super.applicationContext);
+        response = new GetMapResponse(WMSExtensions.findMapProducers(super.applicationContext));
         GetMapRequest request;
         request = new GetMapRequest(getWMS());
         request.setFormat("non-existent-output-format");
@@ -140,7 +141,7 @@ public class GetMapResponseTest extends WMSTestSupport {
      */
     public void testExecuteNullExtent() {
         setUpMocksForExecute();
-        response = new GetMapResponse(mockContext);
+        response = new GetMapResponse(WMSExtensions.findMapProducers(mockContext));
         GetMapRequest request = createGetMapRequest(MockData.BASIC_POLYGONS);
         request.setFormat(mockMapFormat);
         request.setBbox(null);
@@ -157,7 +158,7 @@ public class GetMapResponseTest extends WMSTestSupport {
 
     public void testExecuteEmptyExtent() {
         setUpMocksForExecute();
-        response = new GetMapResponse(mockContext);
+        response = new GetMapResponse(WMSExtensions.findMapProducers(mockContext));
         GetMapRequest request = createGetMapRequest(MockData.BASIC_POLYGONS);
         request.setFormat(mockMapFormat);
         request.setBbox(new Envelope());
@@ -173,7 +174,7 @@ public class GetMapResponseTest extends WMSTestSupport {
 
     public void testExecuteTilingRequested() {
         setUpMocksForExecute();
-        response = new GetMapResponse(mockContext);
+        response = new GetMapResponse(WMSExtensions.findMapProducers(mockContext));
 
         GetMapRequest request = createGetMapRequest(MockData.BASIC_POLYGONS);
         request.setFormat(mockMapFormat);

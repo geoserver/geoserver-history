@@ -23,6 +23,7 @@ import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMSExtensions;
 import org.geotools.styling.Style;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -93,7 +94,7 @@ public class KMLReflector extends WMService {
             WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
         //return new GetMapResponse(config);
-        return new GetMapResponse(context);
+        return new GetMapResponse(WMSExtensions.findMapProducers(context));
     }
 
     protected KvpRequestReader getKvpReader(Map params) {

@@ -54,7 +54,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.temporal.TemporalGeometricPrimitive;
-import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -104,17 +103,22 @@ public class GetMapResponse implements Response {
      */
     private HashMap responseHeaders;
 
-    String headerContentDisposition;
+    private String headerContentDisposition;
 
-    private ApplicationContext applicationContext;
+    private Collection<GetMapProducer> availableProducers;
 
     /**
      * Creates a new GetMapResponse object.
      * 
-     * @param applicationContext
+     * @param availableProducers
+     *                the list of available map producers where to get one to handle the request
+     *                format at {@link #execute(Request)}
      */
-    public GetMapResponse(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public GetMapResponse(Collection<GetMapProducer> availableProducers) {
+        if(availableProducers == null){
+            throw new NullPointerException("availableProducers");
+        }
+        this.availableProducers = availableProducers;
         responseHeaders = new HashMap();
     }
 
@@ -774,7 +778,7 @@ public class GetMapResponse implements Response {
      */
     private GetMapProducer getDelegate(final String outputFormat) throws WmsException {
         final GetMapProducer producer = WMSExtensions.findMapProducer(outputFormat,
-                applicationContext);
+                availableProducers);
         if (producer == null) {
             WmsException e = new WmsException("There is no support for creating maps in "
                     + outputFormat + " format");
