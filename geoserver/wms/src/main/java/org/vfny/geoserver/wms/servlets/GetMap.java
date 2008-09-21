@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.servlets;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMSExtensions;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WMS;
@@ -52,7 +53,7 @@ public class GetMap extends WMService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-        return new GetMapResponse(getApplicationContext());
+        return new GetMapResponse(WMSExtensions.findMapProducers(getApplicationContext()));
     }
 
     /**

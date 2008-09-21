@@ -10,8 +10,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,13 +34,11 @@ import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -86,15 +82,20 @@ public class GetMapResponse implements Response {
 
     String headerContentDisposition;
 
-    private ApplicationContext applicationContext;
+    private Collection<GetMapProducer> availableProducers;
 
     /**
      * Creates a new GetMapResponse object.
      * 
-     * @param applicationContext
+     * @param availableProducers
+     *                the list of available map producers where to get one to handle the request
+     *                format at {@link #execute(Request)}
      */
-    public GetMapResponse(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public GetMapResponse(Collection<GetMapProducer> availableProducers) {
+        if(availableProducers == null){
+            throw new NullPointerException("availableProducers");
+        }
+        this.availableProducers = availableProducers;
         responseHeaders = new HashMap();
     }
 
@@ -592,7 +593,7 @@ public class GetMapResponse implements Response {
      */
     private GetMapProducer getDelegate(final String outputFormat) throws WmsException {
         final GetMapProducer producer = WMSExtensions.findMapProducer(outputFormat,
-                applicationContext);
+                availableProducers);
         if (producer == null) {
             WmsException e = new WmsException("There is no support for creating maps in "
                     + outputFormat + " format");
