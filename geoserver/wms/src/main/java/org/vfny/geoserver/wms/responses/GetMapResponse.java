@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,22 +47,20 @@ import org.geotools.styling.Style;
 import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.temporal.object.DefaultPosition;
 import org.geotools.util.NullProgressListener;
+import org.opengis.coverage.Coverage;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.geometry.MismatchedDimensionException;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
+import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -342,7 +341,11 @@ public class GetMapResponse implements Response {
                     // /////////////////////////////////////////////////////////
                     GridCoverage2D coverage = null;
                     CoverageAccess cvAccess = layers[i].getCoverage().getCoverageAccess();
-                    coverage = getCoverage(request, layers[i], env, mapcrs, cvAccess);
+                    GeneralEnvelope requestedEnvelope = new GeneralEnvelope(new double[] {
+                            env.getMinX(), env.getMinY() }, new double[] { env.getMaxX(),
+                            env.getMaxY() });
+                    requestedEnvelope.setCoordinateReferenceSystem(mapcrs);
+                    coverage = getCoverage(request, layers[i], requestedEnvelope, cvAccess);
                     
                     if (coverage == null) continue;
                     try {
@@ -397,9 +400,8 @@ public class GetMapResponse implements Response {
      * @param request
      *                the request where to get the output size and time, elevation and coverage
      *                specific dimensions to query the {@link CoverageSource} for
-     * @param layer
-     * @param areaOfInterest the extent to query in {@code mapCrs} units
-     * @param mapcrs the CRS for the response
+     * @param layer provides the name and field of the coverage to query
+     * @param requestedEnvelope the referenced envelope for which to extract the coverage data
      * @param cvAccess the {@link CoverageAccess} to query
      * @return
      * 
@@ -415,46 +417,39 @@ public class GetMapResponse implements Response {
      * @see CoverageResponse
      */
     public static GridCoverage2D getCoverage(GetMapRequest request, final MapLayerInfo layer,
-            final Envelope areaOfInterest, final CoordinateReferenceSystem mapcrs, CoverageAccess cvAccess) throws IOException {
+            final GeneralEnvelope requestedEnvelope, CoverageAccess cvAccess) throws IOException {
         GridCoverage2D coverage = null;
-        if (cvAccess == null) {
-            throw new WmsException(null, new StringBuffer(
-            "Internal error : unable to get reader for this coverage layer ")
-            .append(layer.toString()).toString() + ". CoverageAccess can't be null");
-        }
-        // stripping the namespace
-        String layerName = layer.getName();
-        layerName = layerName.contains(":") ? layerName.substring(layerName.indexOf(":")+1) : layerName;
+        assert request != null;
+        assert layer != null;
+        assert requestedEnvelope != null;
+        assert cvAccess != null;
+        
+        final String layerName = stripNsPrefix(layer.getName());
+        final CoverageInfo coverageInfo = layer.getCoverage();
         final CoverageSource cvSource = cvAccess.access(new NameImpl(layerName), null, AccessType.READ_ONLY, null, null);
         try{
             // handle spatial domain subset, if needed
-            GeneralEnvelope requestedEnvelope = new GeneralEnvelope(new double[] {areaOfInterest.getMinX(), areaOfInterest.getMinY()}, new double[] {areaOfInterest.getMaxX(), areaOfInterest.getMaxY()});
-            requestedEnvelope.setCoordinateReferenceSystem(mapcrs);
-            int[] lowers = new int[] {
-                    0,
-                    0};
-            int[] highers = new int[] {
-                    request.getWidth(),
-                    request.getHeight()};
-
-            Rectangle destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
+            Rectangle destinationSize = new Rectangle(0, 0, request.getWidth(), request.getHeight());
 
             final CoverageReadRequest cvRequest = new DefaultCoverageReadRequest();
             
             cvRequest.setDomainSubset(destinationSize, requestedEnvelope);
 
             Set<FieldType> rangeSubset = new HashSet<FieldType>();
-            RangeType fields = layer.getCoverage().getFields();
-            if (fields != null && fields.getNumFieldTypes() > 0) {
-                for (FieldType field : fields.getFieldTypes()) {
+
+            final String fieldId = layer.getFieldId();
+            final RangeType fields = coverageInfo.getFields();
+            if(fieldId != null && fields != null){
+                for(FieldType field : fields.getFieldTypes()){
                     String fieldName = field.getName().getLocalPart();
-                    if (layer.getFieldId() != null && layer.getFieldId().equalsIgnoreCase(fieldName))
+                    if(fieldId.equals(fieldName)){
                         rangeSubset.add(field);
+                    }
                 }
-            }
-            if (rangeSubset != null && rangeSubset.size() > 0) {
-                RangeType range = new DefaultRangeType("", "", rangeSubset);
-                cvRequest.setRangeSubset(range);
+                if(rangeSubset.size() > 0){
+                    RangeType range = new DefaultRangeType("", "", rangeSubset);
+                    cvRequest.setRangeSubset(range);
+                }
             }
             
             if (request.getTime() != null && request.getTime().size() > 0) {
@@ -477,17 +472,38 @@ public class GetMapResponse implements Response {
             final CoverageResponse cvResponse = cvSource.read(cvRequest, null);
             
 
-            if (!cvResponse.getStatus().equals(Status.SUCCESS))
-                throw new IOException("The requested coverage could not be found."); // TODO: FIX THIS!!!
+            if (!Status.SUCCESS.equals(cvResponse.getStatus())) {
+                String msg = "Error accessing the coverage " + coverageInfo.getName()
+                        + ". Read operation returned status " + cvResponse.getStatus();
+                Collection<? extends Exception> exceptions = cvResponse.getExceptions();
+                if (exceptions != null) {
+                    String lastMsg = null;
+                    for (Exception e : exceptions) {
+                        if (e.getMessage() != null && lastMsg != null
+                                && !lastMsg.equals(e.getMessage())) {
+                            msg += ". Error: " + (lastMsg = e.getMessage());
+                        }
+                    }
+                }
+                throw new IOException(msg); // TODO: FIX THIS!!!
+            }
             
-            if (cvResponse.getResults(null) == null || cvResponse.getResults(null).isEmpty())
-                return null;
+            Collection<? extends Coverage> results = cvResponse.getResults(null);
+            if (results == null || results.isEmpty()){
+                //GR: I don't think returning null should be an option?
+                throw new IOException("Requests returned no coverage");
+                //return null;
+            }
             
             /** if (cvResponse.getResults(null).size() > 1) ?? **/ // TODO: FIX THIS!!!
             coverage = (GridCoverage2D) cvResponse.getResults(new NullProgressListener()).iterator().next();
             
-            if ((coverage == null) || !(coverage instanceof GridCoverage2D))
-                return null;
+            if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
+                //GR: I don't think returning null should be an option?
+                throw new IOException("Request returned "
+                        + (coverage == null ? "null" : "not a GridCoverage2D" + coverage));
+                // return null;
+            }
             
             /**
              * Band Select (works on just one field)
@@ -495,7 +511,7 @@ public class GetMapResponse implements Response {
             GridCoverage2D bandSelectedCoverage = null;
             if (rangeSubset != null && rangeSubset.size() > 0) {
                 if (rangeSubset.size() > 1) {
-                    throw new WcsException("Multi field coverages are not supported yet");
+                    throw new WmsException("Multi field coverages are not supported yet");
                 }
 
                 final Map<String, String> requestDimensions = request.getSampleDimensions();
@@ -536,14 +552,17 @@ public class GetMapResponse implements Response {
         return coverage;
     }
 
+    private static String stripNsPrefix(final String layerName) {
+        String localName = layerName.contains(":") ? layerName.substring(layerName.indexOf(":")+1) : layerName;
+        return localName;
+    }
+
     private static String normalizeCoverageFieldAxisName(final String layerName, String axisName) {
         axisName = axisName.toLowerCase();
         String name = layerName;
         if(!axisName.startsWith("axis:")){
             //remove namespace prefix
-            if(layerName.indexOf(':') != -1){
-                name = layerName.substring(layerName.indexOf(':') + 1);
-            }
+            name = stripNsPrefix(layerName);
             axisName = "axis:" + name + axisName;
         }
         return axisName;
