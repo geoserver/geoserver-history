@@ -31,6 +31,7 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.TransformedDirectPosition;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
@@ -193,12 +194,12 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         GetFeatureInfoRequest request = getRequest();
         this.format = request.getInfoFormat();
 
-        GetMapRequest getMapReq = request.getGetMapRequest();
-        CoordinateReferenceSystem requestedCRS = getMapReq.getCrs(); // optional, may be null
+        final GetMapRequest getMapReq = request.getGetMapRequest();
+        final CoordinateReferenceSystem requestedCRS = getMapReq.getCrs(); // optional, may be null
 
-        int width = getMapReq.getWidth();
-        int height = getMapReq.getHeight();
-        Envelope bbox = getMapReq.getBbox();
+        final int width = getMapReq.getWidth();
+        final int height = getMapReq.getHeight();
+        final Envelope bbox = getMapReq.getBbox();
 
         Coordinate upperLeft = pixelToWorld(x - 2, y - 2, bbox, width, height);
         Coordinate middle = pixelToWorld(x, y, bbox, width, height);
@@ -289,8 +290,12 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     }
                     
                     CoverageInfo cinfo = requestedLayers[i].getCoverage();
-                    GridCoverage2D coverage = /* ((GridCoverage2D) cinfo.getCoverage()).geophysics(true) */ 
-                        GetMapResponse.getCoverage(req, requestedLayers[i], req.getBbox(), req.getCrs(), cinfo.getCoverageAccess());
+                    GeneralEnvelope requestedEnvelope = new GeneralEnvelope(new double[] {
+                            bbox.getMinX(), bbox.getMinY() }, new double[] { bbox.getMaxX(),
+                            bbox.getMaxY() });
+                    requestedEnvelope.setCoordinateReferenceSystem(req.getCrs());
+                    GridCoverage2D coverage = GetMapResponse.getCoverage(req, requestedLayers[i],
+                            requestedEnvelope, cinfo.getCoverageAccess());
                     if (coverage != null) {
                         DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
                         try {
