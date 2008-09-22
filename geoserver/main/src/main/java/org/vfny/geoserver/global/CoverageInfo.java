@@ -735,21 +735,18 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     public GridCoverage getCoverage(GeneralEnvelope envelope, Rectangle dim) {
         GridCoverage gc = null;
 
-   
-
             try {
 
-                
                 final GridGeometry2D coverageGeometry=(GridGeometry2D) getGrid();
                 final Envelope coverageEnvelope=coverageGeometry.getEnvelope2D();
                 if (envelope == null) {
                     envelope = new GeneralEnvelope(coverageEnvelope);
                 }
-                if(dim==null)
+                if(dim == null)
                 	dim=coverageGeometry.getGridRange2D().getBounds();
                 
                 
-                // /////////////////////////////////////////////////////////
+            // /////////////////////////////////////////////////////////
             //
             // Do we need to proceed?
             // I need to check the requested envelope in order to see if the
@@ -757,11 +754,11 @@ public final class CoverageInfo extends GlobalLayerSupertype {
             // since its reader might return null;
             // /////////////////////////////////////////////////////////
             final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
-            final CoordinateReferenceSystem destCRS = envelope.getCoordinateReferenceSystem();
+            final CoordinateReferenceSystem destCRS = coverageEnvelope.getCoordinateReferenceSystem();
             
             if (!CRS.equalsIgnoreMetadata(sourceCRS, destCRS)) {
                 // get a math transform
-                final MathTransform transform =CRS.findMathTransform(sourceCRS, destCRS,true);
+                final MathTransform transform = CRS.findMathTransform(sourceCRS, destCRS,true);
             
                 // transform the envelope
                 if (!transform.isIdentity()) {
