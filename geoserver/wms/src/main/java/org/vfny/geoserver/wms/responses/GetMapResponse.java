@@ -351,6 +351,8 @@ public class GetMapResponse implements Response {
                     requestedEnvelope.setCoordinateReferenceSystem(mapcrs);
                     coverage = getCoverage(request, layers[i], requestedEnvelope, cvAccess);
                     
+                    // GR: wonder why could it be null? if can't process the request shouldn't we
+                    // throw an exception?
                     if (coverage == null) continue;
                     try {
                         layer = new DefaultMapLayer(coverage, layerStyle);
@@ -422,12 +424,15 @@ public class GetMapResponse implements Response {
      */
     public static GridCoverage2D getCoverage(GetMapRequest request, final MapLayerInfo layer,
             final GeneralEnvelope requestedEnvelope, CoverageAccess cvAccess) throws IOException {
-        GridCoverage2D coverage = null;
         assert request != null;
         assert layer != null;
         assert requestedEnvelope != null;
         assert cvAccess != null;
         
+        GridCoverage2D coverage = null;
+
+        final NullProgressListener nullProgressListener = new NullProgressListener();
+
         final String layerName = stripNsPrefix(layer.getName());
         final CoverageInfo coverageInfo = layer.getCoverage();
         final CoverageSource cvSource = cvAccess.access(new NameImpl(layerName), null, AccessType.READ_ONLY, null, null);
@@ -439,7 +444,7 @@ public class GetMapResponse implements Response {
             
             cvRequest.setDomainSubset(destinationSize, requestedEnvelope);
 
-            Set<FieldType> rangeSubset = new HashSet<FieldType>();
+            final Set<FieldType> rangeSubset = new HashSet<FieldType>();
 
             final String fieldId = layer.getFieldId();
             final RangeType fields = coverageInfo.getFields();
@@ -455,6 +460,12 @@ public class GetMapResponse implements Response {
                     cvRequest.setRangeSubset(range);
                 }
             }
+            
+            if (rangeSubset.size() > 1) {
+                throw new IOException("Multi field coverages are not supported yet. Matches: "
+                        + rangeSubset);
+            }
+
             
             if (request.getTime() != null && request.getTime().size() > 0) {
                 List<Date> timePositions = request.getTime();
@@ -473,12 +484,13 @@ public class GetMapResponse implements Response {
                 cvRequest.setVerticalSubset(verticalSubset);
             }
 
-            final CoverageResponse cvResponse = cvSource.read(cvRequest, null);
+            final CoverageResponse cvResponse = cvSource.read(cvRequest, nullProgressListener);
             
 
-            if (!Status.SUCCESS.equals(cvResponse.getStatus())) {
+            final Status responseStatus = cvResponse.getStatus();
+            if (!Status.SUCCESS.equals(responseStatus)) {
                 String msg = "Error accessing the coverage " + coverageInfo.getName()
-                        + ". Read operation returned status " + cvResponse.getStatus();
+                        + ". Read operation returned status " + responseStatus;
                 Collection<? extends Exception> exceptions = cvResponse.getExceptions();
                 if (exceptions != null) {
                     String lastMsg = null;
@@ -492,32 +504,37 @@ public class GetMapResponse implements Response {
                 throw new IOException(msg); // TODO: FIX THIS!!!
             }
             
-            Collection<? extends Coverage> results = cvResponse.getResults(null);
+            final Collection<? extends Coverage> results = cvResponse.getResults(nullProgressListener);
             if (results == null || results.isEmpty()){
                 //GR: I don't think returning null should be an option?
                 throw new IOException("Requests returned no coverage");
                 //return null;
             }
-            
-            /** if (cvResponse.getResults(null).size() > 1) ?? **/ // TODO: FIX THIS!!!
-            coverage = (GridCoverage2D) cvResponse.getResults(new NullProgressListener()).iterator().next();
-            
-            if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
-                //GR: I don't think returning null should be an option?
-                throw new IOException("Request returned "
-                        + (coverage == null ? "null" : "not a GridCoverage2D" + coverage));
-                // return null;
+            // TODO: REVISIT, what should actually happen if results.size() > 1 ??
+            if (results.size() > 1) {
+                throw new IOException("Request returned " + results.size()
+                        + " coverages, it was expected to return just one, "
+                        + "not sure what to do, giving up");
+            }
+            {
+                Coverage resultCoverage = results.iterator().next();
+
+                if ((resultCoverage == null) || !(resultCoverage instanceof GridCoverage2D)) {
+                    // GR: I don't think returning null should be an option?
+                    throw new IOException("Request returned "
+                            + (resultCoverage == null ? "null" : "not a GridCoverage2D" + resultCoverage));
+                    // return null;
+                }
+                coverage = (GridCoverage2D) resultCoverage;
             }
             
             /**
              * Band Select (works on just one field)
              */
             GridCoverage2D bandSelectedCoverage = null;
-            if (rangeSubset != null && rangeSubset.size() > 0) {
-                if (rangeSubset.size() > 1) {
-                    throw new WmsException("Multi field coverages are not supported yet");
-                }
-
+            if (rangeSubset.size() > 0) {
+                //size() can only be 1 here, we already checked above
+                
                 final Map<String, String> requestDimensions = request.getSampleDimensions();
                 
                 for (FieldType field : rangeSubset) {
