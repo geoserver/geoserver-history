@@ -211,7 +211,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
             GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
             fail("Expected IOException if the coverage response has no coverages");
         } catch (IOException e) {
-            assertTrue(true);
+            assertTrue(e.getMessage().startsWith("Requests returned no coverage"));
         }
         verify(response);
         verify(cvAccess);
@@ -247,7 +247,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
             GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
             fail("Expected IOException if the coverage response has more than one coverage");
         } catch (IOException e) {
-            assertTrue(true);
+            assertTrue(e.getMessage().startsWith("Request returned 2 coverages"));
         }
         verify(response);
         verify(cvAccess);
@@ -284,7 +284,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
             GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
             fail("Expected IOException if the resulting coverage is not a GridCoverage2D");
         } catch (IOException e) {
-            assertTrue(true);
+            assertTrue(e.getMessage().contains("not a GridCoverage2D"));
         }
         verify(response);
         verify(cvAccess);
@@ -324,9 +324,9 @@ public class GetMapResponseNDCoverageTest extends TestCase {
 
         try {
             GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
-            fail("Expected IOException if the resulting coverage is not a GridCoverage2D");
+            fail("Expected IOException if there are more than one range matching the layer field id");
         } catch (IOException e) {
-            assertTrue(true);
+            assertTrue(e.getMessage().contains("Multi field coverages are not supported yet"));
         }
         verify(cvAccess);
         verify(coverageSource);
