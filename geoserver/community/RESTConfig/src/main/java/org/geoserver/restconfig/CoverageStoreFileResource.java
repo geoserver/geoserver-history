@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.geoserver.data.util.CoverageStoreUtils;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
@@ -40,7 +41,6 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
-import org.vfny.geoserver.util.CoverageStoreUtils;
 
 /**
  * This class extends Resource to handle the GET and PUT requests to manage the
@@ -173,7 +173,7 @@ public class CoverageStoreFileResource extends Resource {
         String formatId = (String) myFormats.get(extension);
         Format format;
         try {
-            format = CoverageStoreUtils.acquireFormat(formatId, null);
+            format = CoverageStoreUtils.acquireFormat(formatId);
         } catch (IOException e) {
             getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
