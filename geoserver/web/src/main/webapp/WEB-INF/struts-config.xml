@@ -67,6 +67,14 @@
             type="java.lang.String[]" 
         />
         <form-property 
+            name="TimeList" 
+            type="java.lang.String[]" 
+        />
+        <form-property 
+            name="ElevList" 
+            type="java.lang.String[]" 
+        />
+        <form-property 
             name="CoverageStatus" 
             type="java.lang.Integer[]" 
         />

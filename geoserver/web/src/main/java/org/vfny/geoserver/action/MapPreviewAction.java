@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
@@ -29,14 +30,25 @@ import org.geotools.coverage.io.range.FieldType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.temporal.object.DefaultInstant;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.VerticalCRS;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystemAxis;
+import org.opengis.temporal.Duration;
+import org.opengis.temporal.Instant;
+import org.opengis.temporal.Period;
+import org.opengis.temporal.Position;
+import org.opengis.temporal.RelativePosition;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -85,6 +97,8 @@ public class MapPreviewAction extends GeoServerAction {
         ArrayList ftnsList = new ArrayList();
         ArrayList widthList = new ArrayList();
         ArrayList heightList = new ArrayList();
+        ArrayList timeList = new ArrayList();
+        ArrayList elevList = new ArrayList();
         ArrayList coverageStatus = new ArrayList();
 
         // 1) get the capabilities info so we can find out our feature types
@@ -196,6 +210,8 @@ public class MapPreviewAction extends GeoServerAction {
                     int[] imageBox = getMapWidthHeight(bbox);
                     widthList.add(String.valueOf(imageBox[0]));
                     heightList.add(String.valueOf(imageBox[1]));
+                    timeList.add("");
+                    elevList.add("");
 
                     // not a coverage
                     coverageStatus.add(LAYER_IS_VECTOR);
@@ -240,6 +256,81 @@ public class MapPreviewAction extends GeoServerAction {
                             widthList.add(String.valueOf(imageBox[0]));
                             heightList.add(String.valueOf(imageBox[1]));
 
+                            final Set<TemporalGeometricPrimitive> temporalExtent = layer.getTemporalExtent();
+                            if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                                String temporalExtentBegin = null;
+                                String temporalExtentEnd = null;
+                
+                                Position beginPosition = null;
+                                Position endPosition = null;
+                                Duration duration = null;
+                                
+                                for (Iterator<TemporalGeometricPrimitive> i=temporalExtent.iterator(); i.hasNext();) {
+                                    TemporalGeometricPrimitive temporalObject = i.next();
+                                    
+                                    if (temporalObject instanceof Period) {
+                                        Position tmp = ((Period) temporalObject).getBeginning().getPosition();
+                                        if (beginPosition != null) {
+                                            DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                                            DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                            
+                                            if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                                                beginPosition = tmp;
+                                            } else if (duration == null)
+                                                duration = beginInstant.distance(tmpInstant);
+                                        } else
+                                            beginPosition = tmp;
+                                        
+                                        tmp = ((Period) temporalObject).getEnding().getPosition();
+                                        if (endPosition != null) {
+                                            DefaultInstant endInstant = new DefaultInstant(endPosition);
+                                            DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                            
+                                            if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                                                endPosition = tmp;
+                                            }
+                                        } else
+                                            endPosition = tmp;
+                                    } else if (temporalObject instanceof Instant) {
+                                        Position tmp = ((Instant) temporalObject).getPosition();
+                                        if (beginPosition != null) {
+                                            DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                                            DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                            
+                                            if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                                                beginPosition = tmp;
+                                            } else if (duration == null)
+                                                duration = beginInstant.distance(tmpInstant);
+                                        } else
+                                            beginPosition = tmp;
+                                        
+                                        if (endPosition != null) {
+                                            DefaultInstant endInstant = new DefaultInstant(endPosition);
+                                            DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                            
+                                            if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                                                endPosition = tmp;
+                                            }
+                                        } else
+                                            endPosition = tmp;
+                                    }
+                                }
+
+                                temporalExtentBegin = beginPosition.getDateTime().toString();
+                                temporalExtentEnd   = endPosition.getDateTime().toString();
+                                
+                                timeList.add(temporalExtentBegin);
+                            } else 
+                            	timeList.add("");
+                            
+                            final Set<org.opengis.geometry.Envelope> verticalExtent = layer.getVerticalExtent();
+                            if (verticalExtent != null && verticalExtent.size() > 0) {
+                            	final double[] verticalLimits = WCSUtils.getVerticalExtentLimits(verticalExtent);
+                                final CoordinateSystemAxis vAxis = ((VerticalCRS) layer.getVerticalCRS()).getCoordinateSystem().getAxis(0);
+                                elevList.add(vAxis.getDirection().equals(AxisDirection.UP) ? String.valueOf(verticalLimits[1]) : String.valueOf(verticalLimits[0]));
+                            } else
+                            	elevList.add("");
+                            
                             // this layer is a coverage, all right
                             coverageStatus.add(LAYER_IS_COVERAGE);
                         }
@@ -258,6 +349,80 @@ public class MapPreviewAction extends GeoServerAction {
                         int[] imageBox = getMapWidthHeight(bbox);
                         widthList.add(String.valueOf(imageBox[0]));
                         heightList.add(String.valueOf(imageBox[1]));
+                        final Set<TemporalGeometricPrimitive> temporalExtent = layer.getTemporalExtent();
+                        if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                            String temporalExtentBegin = null;
+                            String temporalExtentEnd = null;
+            
+                            Position beginPosition = null;
+                            Position endPosition = null;
+                            Duration duration = null;
+                            
+                            for (Iterator<TemporalGeometricPrimitive> i=temporalExtent.iterator(); i.hasNext();) {
+                                TemporalGeometricPrimitive temporalObject = i.next();
+                                
+                                if (temporalObject instanceof Period) {
+                                    Position tmp = ((Period) temporalObject).getBeginning().getPosition();
+                                    if (beginPosition != null) {
+                                        DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                                        DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                        
+                                        if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                                            beginPosition = tmp;
+                                        } else if (duration == null)
+                                            duration = beginInstant.distance(tmpInstant);
+                                    } else
+                                        beginPosition = tmp;
+                                    
+                                    tmp = ((Period) temporalObject).getEnding().getPosition();
+                                    if (endPosition != null) {
+                                        DefaultInstant endInstant = new DefaultInstant(endPosition);
+                                        DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                        
+                                        if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                                            endPosition = tmp;
+                                        }
+                                    } else
+                                        endPosition = tmp;
+                                } else if (temporalObject instanceof Instant) {
+                                    Position tmp = ((Instant) temporalObject).getPosition();
+                                    if (beginPosition != null) {
+                                        DefaultInstant beginInstant = new DefaultInstant(beginPosition);
+                                        DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                        
+                                        if (tmpInstant.relativePosition(beginInstant).equals(RelativePosition.BEFORE)) {
+                                            beginPosition = tmp;
+                                        } else if (duration == null)
+                                            duration = beginInstant.distance(tmpInstant);
+                                    } else
+                                        beginPosition = tmp;
+                                    
+                                    if (endPosition != null) {
+                                        DefaultInstant endInstant = new DefaultInstant(endPosition);
+                                        DefaultInstant tmpInstant = new DefaultInstant(tmp);
+                                        
+                                        if (tmpInstant.relativePosition(endInstant).equals(RelativePosition.AFTER)) {
+                                            endPosition = tmp;
+                                        }
+                                    } else
+                                        endPosition = tmp;
+                                }
+                            }
+
+                            temporalExtentBegin = beginPosition.getDateTime().toString();
+                            temporalExtentEnd   = endPosition.getDateTime().toString();
+                            
+                            timeList.add(temporalExtentBegin);
+                        } else 
+                        	timeList.add("");
+
+                        final Set<org.opengis.geometry.Envelope> verticalExtent = layer.getVerticalExtent();
+                        if (verticalExtent != null && verticalExtent.size() > 0) {
+                        	final double[] verticalLimits = WCSUtils.getVerticalExtentLimits(verticalExtent);
+                            final CoordinateSystemAxis vAxis = ((VerticalCRS) layer.getVerticalCRS()).getCoordinateSystem().getAxis(0);
+                            elevList.add(vAxis.getDirection().equals(AxisDirection.UP) ? String.valueOf(verticalLimits[1]) : String.valueOf(verticalLimits[0]));
+                        } else
+                        	elevList.add("");
 
                         // this layer is a coverage, all right
                         coverageStatus.add(LAYER_IS_COVERAGE);
@@ -296,6 +461,8 @@ public class MapPreviewAction extends GeoServerAction {
                 int[] imageBox = getMapWidthHeight(bbox);
                 widthList.add(String.valueOf(imageBox[0]));
                 heightList.add(String.valueOf(imageBox[1]));
+                timeList.add("");
+                elevList.add("");
 
                 // this depends on the composition, we raise the flag if the layer has at least
                 // one coverage
@@ -314,6 +481,8 @@ public class MapPreviewAction extends GeoServerAction {
         myForm.set("SRSList", srsList.toArray(new String[srsList.size()]));
         myForm.set("WidthList", widthList.toArray(new String[widthList.size()]));
         myForm.set("HeightList", heightList.toArray(new String[heightList.size()]));
+        myForm.set("TimeList", timeList.toArray(new String[timeList.size()]));
+        myForm.set("ElevList", elevList.toArray(new String[elevList.size()]));
         myForm.set("FTNamespaceList", ftnsList.toArray(new String[ftnsList.size()]));
         myForm.set("CoverageStatus", coverageStatus.toArray(new Integer[coverageStatus.size()]));
         // String proxifiedBaseUrl = RequestUtils.baseURL(request);

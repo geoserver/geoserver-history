@@ -53,6 +53,8 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
 
     private CoordinateReferenceSystem verticalCRS;
 
+	private String srsWKT;
+
     public CoverageInfoImpl(Catalog catalog) {
         super( catalog );
     }
@@ -240,5 +242,13 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     public void setVerticalCRS(CoordinateReferenceSystem verticalCRS) {
         this.verticalCRS = verticalCRS;
     }
+
+	/* (non-Javadoc)
+	 * @see org.geoserver.catalog.CoverageInfo#getNativeSrsWKT()
+	 */
+	public String getNativeSrsWKT() {
+		// TODO: FIX ME!!!
+		return this.srsWKT;
+	}
 
 }

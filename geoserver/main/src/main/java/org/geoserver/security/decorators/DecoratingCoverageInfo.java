@@ -30,7 +30,7 @@ import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.opengis.util.ProgressListener;
 
 /**
- * Delegates all methods to the provided delegate. Suclasses will override
+ * Delegates all methods to the provided delegate. Subclasses will override
  * methods in order to perform their decoration work
  * 
  * @author Andrea Aime - TOPP
@@ -287,5 +287,13 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
     public void setVerticalCRS(CoordinateReferenceSystem verticalCRS) {
         delegate.setVerticalCRS(verticalCRS);
     }
-    
+
+	/* (non-Javadoc)
+	 * @see org.geoserver.catalog.CoverageInfo#getNativeSrsWKT()
+	 */
+	public String getNativeSrsWKT() {
+		// TODO: FIX ME!!!
+		return delegate.getNativeSrsWKT();
+	}
+
 }

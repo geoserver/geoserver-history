@@ -9,8 +9,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -221,7 +223,13 @@ public class CoverageStoreFileResource extends Resource {
             else
                 csc.setNameSpaceId(myDataConfig.getDefaultNameSpace().getPrefix());
             
-            csc.setUrl(source.toExternalForm());
+            try {
+				csc.setUrl(URLDecoder.decode(source.toExternalForm(), "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
+                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                return;
+			}
 
             // //////
             // TODO: something better exists, I hope
