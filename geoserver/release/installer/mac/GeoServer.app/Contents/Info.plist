@@ -4,14 +4,14 @@
 <dict>
 	<key>CFBundleName</key>
 	<string>GeoServer</string>
+	<key>CFBundleExecutable</key>
+	<string>geoserver</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.geoserver</string>
 	<key>CFBundleVersion</key>
 	<string>1.6.5</string>
 	<key>CFBundleAllowMixedLocalizations</key>
 	<string>true</string>
-	<key>CFBundleExecutable</key>
-	<string>JavaApplicationStub</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundlePackageType</key>
@@ -31,13 +31,16 @@
 		<key>WorkingDirectory</key>
 		<string>$APP_PACKAGE/Contents/Resources/Java</string>
 		<key>VMOptions</key>
-		<string>-Djava.awt.headless=true -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -Xms128m -Xmx512m</string>
+		<string>-DGEOSERVER_DATA_DIR=data_dir -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -Xms128m -Xmx512m</string>
 		<key>MainClass</key>
-		<string>org.mortbay.start.Main</string>
+		<string>org.geoserver.console.Main</string>
 		<key>JVMVersion</key>
 		<string>1.5*</string>
 		<key>ClassPath</key>
+                <array>
+			<string>$JAVAROOT/console.jar</string>
 			<string>$JAVAROOT/start.jar</string>
+                </array>
 		<key>Properties</key>
 		<dict>
 			<key>apple.laf.useScreenMenuBar</key>
