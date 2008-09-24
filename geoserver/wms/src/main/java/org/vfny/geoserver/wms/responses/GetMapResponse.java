@@ -529,7 +529,10 @@ public class GetMapResponse implements Response {
             }
             
             /**
-             * Band Select (works on just one field)
+             * Band Select (works on just one field). Applying the bandSelect operation at this
+             * point is just a workaround patch while the coverage api is in stat of flux, since the
+             * older drivers are not prepared to handle both the field and axis set in the
+             * rangeSubset request
              */
             GridCoverage2D bandSelectedCoverage = null;
             if (rangeSubset.size() > 0) {
