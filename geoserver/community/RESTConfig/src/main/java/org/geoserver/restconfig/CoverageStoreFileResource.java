@@ -70,6 +70,8 @@ public class CoverageStoreFileResource extends Resource {
     static {
         myFormats.put("tiff", "GeoTIFF");
         myFormats.put("hdf4", "HDF-AVHRR");
+        myFormats.put("hdf4-avhrr", "HDF-AVHRR");
+        myFormats.put("hdf4-aps", "HDF-APS");
     }
 
     Logger log = Logger.getLogger(CoverageStoreFileResource.class);
@@ -283,9 +285,16 @@ public class CoverageStoreFileResource extends Resource {
                     else {
                         if (cc.getName().toLowerCase().contains("lowcloud"))
                         	cc.setDefaultStyle("lowcloud");
-
-                        if (cc.getName().toLowerCase().contains("mcsst"))
+                        else if (cc.getName().toLowerCase().contains("mcsst"))
                         	cc.setDefaultStyle("mcsst");
+                        else if (cc.getName().toLowerCase().contains("sst4"))
+                            cc.setDefaultStyle("sst4");
+                        else if (cc.getName().toLowerCase().contains("sst"))
+                            cc.setDefaultStyle("sst");
+                        else if (cc.getName().toLowerCase().contains("chl_oc3"))
+                            cc.setDefaultStyle("chl_oc3");
+                        else if (cc.getName().toLowerCase().contains("salinity"))
+                            cc.setDefaultStyle("salinity");
                     }
                 } catch (Exception e) {
                     getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
