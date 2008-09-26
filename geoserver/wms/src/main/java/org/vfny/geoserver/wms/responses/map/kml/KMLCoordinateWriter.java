@@ -33,7 +33,7 @@ public class KMLCoordinateWriter extends CoordinateWriter {
 
     private static final String coordinateDelimiter = ",";
 
-    private static final String tupleDelimiter = ",";
+    private static final String tupleDelimiter = " ";
 
     private final StringBuffer coordBuff = new StringBuffer();
 
