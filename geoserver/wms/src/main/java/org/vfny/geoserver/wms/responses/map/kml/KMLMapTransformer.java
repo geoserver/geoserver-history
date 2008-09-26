@@ -431,9 +431,14 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     Iterator<PointSymbolizer> iter = iconStyles.iterator();
                     while (iter.hasNext()) {
                         PointSymbolizer sym = (PointSymbolizer) iter.next();
-                        Style2D style = styleFactory.createStyle(feature, sym,
-                                scaleRange);
-                        encodePointStyle(style, sym);
+                        try {
+                            Style2D style = styleFactory.createStyle(feature,
+                                    sym, scaleRange);
+                            encodePointStyle(style, sym);
+                        } catch (IllegalArgumentException iae) {
+                            LOGGER.fine(iae.getMessage() + " for "
+                                    + sym.toString());
+                        }
                     }
                 }
 
@@ -444,9 +449,14 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     Iterator<TextSymbolizer> iter = labelStyles.iterator();
                     while (iter.hasNext()) {
                         TextSymbolizer sym = (TextSymbolizer) iter.next();
-                        TextStyle2D style = (TextStyle2D) styleFactory
-                                .createStyle(feature, sym, scaleRange);
-                        encodeTextStyle(style, sym);
+                        try {
+                            TextStyle2D style = (TextStyle2D) styleFactory
+                                    .createStyle(feature, sym, scaleRange);
+                            encodeTextStyle(style, sym);
+                        } catch (IllegalArgumentException iae) {
+                            LOGGER.fine(iae.getMessage() + " for "
+                                    + sym.toString());
+                        }
                     }
                 }
 
@@ -455,9 +465,14 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     Iterator<LineSymbolizer> iter = lineStyles.iterator();
                     while (iter.hasNext()) {
                         LineSymbolizer sym = (LineSymbolizer) iter.next();
-                        LineStyle2D style = (LineStyle2D) styleFactory
-                                .createStyle(feature, sym, scaleRange);
-                        encodeLineStyle(style, sym);
+                        try {
+                            LineStyle2D style = (LineStyle2D) styleFactory
+                                    .createStyle(feature, sym, scaleRange);
+                            encodeLineStyle(style, sym);
+                        } catch (IllegalArgumentException iae) {
+                            LOGGER.fine(iae.getMessage() + " for "
+                                    + sym.toString());
+                        }
                     }
                 }
 
@@ -466,10 +481,16 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     Iterator<PolygonSymbolizer> iter = polyStyles.iterator();
                     while (iter.hasNext()) {
                         PolygonSymbolizer sym = (PolygonSymbolizer) iter.next();
-                        PolygonStyle2D style = (PolygonStyle2D) styleFactory
-                                .createStyle(feature, sym, scaleRange);
-                        // The last argument is forced outline
-                        encodePolygonStyle(style, sym, !lineStyles.isEmpty());
+                        try {
+                            PolygonStyle2D style = (PolygonStyle2D) styleFactory
+                                    .createStyle(feature, sym, scaleRange);
+                            // The last argument is forced outline
+                            encodePolygonStyle(style, sym, !lineStyles
+                                    .isEmpty());
+                        } catch (IllegalArgumentException iae) {
+                            LOGGER.fine(iae.getMessage() + " for "
+                                    + sym.toString());
+                        }
                     }
                 }
 
