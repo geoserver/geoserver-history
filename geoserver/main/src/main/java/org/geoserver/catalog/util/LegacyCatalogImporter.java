@@ -223,7 +223,7 @@ public class LegacyCatalogImporter {
                     continue;
                 }
                 catalog.add(coverage);
-    
+
                 // create a wms layer for the feature type
                 LayerInfo layer = factory.createLayer();
                 layer.setResource(coverage);
@@ -555,9 +555,11 @@ public class LegacyCatalogImporter {
         coverage.getKeywords().addAll( cInfoReader.keywords() );
         
         Map<String,Object> envelope = cInfoReader.envelope();
-        coverage.setSRS((String)envelope.get( "srsName" ));
-        
-        CoordinateReferenceSystem crs = CRS.decode(coverage.getSRS());
+        String userDefinedCrsIdentifier = (String)envelope.get( "srsName" );
+        String nativeCrsWkt = (String)envelope.get("crs");
+
+        coverage.setSRS(userDefinedCrsIdentifier);
+        CoordinateReferenceSystem crs = CRS.parseWKT(nativeCrsWkt);
         coverage.setNativeCRS( crs );
         
         ReferencedEnvelope bounds = new ReferencedEnvelope( 

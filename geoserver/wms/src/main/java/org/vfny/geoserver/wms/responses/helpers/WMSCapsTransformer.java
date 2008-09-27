@@ -26,6 +26,7 @@ import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.wkt.UnformattableObjectException;
 import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
@@ -790,7 +791,14 @@ public class WMSCapsTransformer extends TransformerBase {
 
             handleKeywordList(coverage.getKeywords());
 
-            String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
+            CoordinateReferenceSystem crs = coverage.getCrs();
+            String desc;
+            try{
+                String publishedCoverageCrsWKT = crs.toWKT();
+                desc = "WKT definition of this CRS:\n" + publishedCoverageCrsWKT;
+            }catch(UnformattableObjectException e){
+                desc = "Unable to get the WKT representation for the coverage crs: " + coverage.getSrsName();
+            }
             comment(desc);
 
             String authority = coverage.getSrsName();
