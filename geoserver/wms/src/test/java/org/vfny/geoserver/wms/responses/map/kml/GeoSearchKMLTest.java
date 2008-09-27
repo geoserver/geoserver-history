@@ -89,7 +89,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&height=1024&width=1024&srs=EPSG:4326" +  
             "&format_options=regionateBy:bogus";
-         Document document = getAsDOM(path + "&bbox=0,-90,180,90");
+         Document document = getAsDOM(path + "&bbox=0,-90,180,90", true);
          assertEquals("ServiceExceptionReport", document.getDocumentElement().getTagName());
     }
 
