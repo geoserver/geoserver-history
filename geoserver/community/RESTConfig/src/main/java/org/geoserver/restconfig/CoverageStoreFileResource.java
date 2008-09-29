@@ -261,21 +261,21 @@ public class CoverageStoreFileResource extends Resource {
                 	}
                     cc = new CoverageConfig(csc.getId(), format, reader, myDataConfig);
 
-                    if ("UNKNOWN".equals(cc.getSrsName())) {
-                        CoordinateReferenceSystem sourceCRS = cc.getCrs();
+                    if ("UNKNOWN".equals(cc.getUserDefinedCrsIdentifier())) {
+                        CoordinateReferenceSystem sourceCRS = cc.getEnvelope().getCoordinateReferenceSystem();
                         CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
 
                         MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
                         GeneralEnvelope envelope = CRS.transform(transform, cc.getEnvelope());
                         envelope.setCoordinateReferenceSystem(targetCRS);
 
-                        cc.setSrsName("EPSG:4326");
-                        cc.setCrs(targetCRS);
+                        cc.setUserDefinedCrsIdentifier("EPSG:4326");
+                        //cc.setCrs(targetCRS);
                         cc.setEnvelope(envelope);
                     }
 
                     List requestResponseCRSs = new ArrayList();
-                    requestResponseCRSs.add(cc.getSrsName());
+                    requestResponseCRSs.add(cc.getUserDefinedCrsIdentifier());
 
                     cc.setRequestCRSs(requestResponseCRSs);
                     cc.setResponseCRSs(requestResponseCRSs);
