@@ -535,7 +535,7 @@ public class WMSCapsTransformerTest extends TestCase {
 
         String defaultExtentValue = XPATH.evaluate(pathToLayer + "/Extent/@default", dom);
         assertEquals("10000.0", defaultExtentValue);
-        assertXpathEvaluatesTo("-10000.0/10000.0/10000.0", pathToLayer + "/Extent", dom);
+        assertXpathEvaluatesTo("-10000.0/10000.0/20000.0", pathToLayer + "/Extent", dom);
     }
 
     /**
