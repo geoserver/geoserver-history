@@ -325,9 +325,10 @@ public class DescribeResponse implements Response {
         tempResponse.append("\n  <domainSet>");
         tempResponse.append("\n   <spatialDomain>");
         // Envelope
+        String userDefinedCrsIdentifier = cv.getSrsName();
         tempResponse.append("\n    <gml:Envelope")
-                    .append((((cv.getSrsName() != null) && (cv.getSrsName() != ""))
-            ? new StringBuffer(" srsName=\"").append(cv.getSrsName()).append("\"").toString() : ""))
+                    .append((((userDefinedCrsIdentifier != null) && (userDefinedCrsIdentifier != ""))
+            ? new StringBuffer(" srsName=\"").append(userDefinedCrsIdentifier).append("\"").toString() : ""))
                     .append(">");
         tempResponse.append("\n       <gml:pos>")
                     .append((cvEnvelope != null)

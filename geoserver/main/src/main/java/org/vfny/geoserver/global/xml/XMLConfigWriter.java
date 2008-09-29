@@ -1538,19 +1538,24 @@ public class XMLConfigWriter {
             }
 
             // //
-            // storing the envelope
+            // storing the envelope.
+            // The native crs wkt is stored as the crs attribute. The user defined srs identifier as
+            // the srsName atribute
             // //
             if (cv.getEnvelope() != null) {
                 GeneralEnvelope e = cv.getEnvelope();
                 m = new HashMap();
 
-                if ((cv.getSrsName() != null) && (cv.getSrsName() != "")) {
-                    m.put("srsName", cv.getSrsName());
+                String userDefinedCrsIdentifier = cv.getUserDefinedCrsIdentifier();
+                if ((userDefinedCrsIdentifier != null) && (userDefinedCrsIdentifier != "")) {
+                    m.put("srsName", userDefinedCrsIdentifier);
                 }
 
-                m.put("crs", cv.getCrs().toWKT().replaceAll("\"", "'").replaceAll("\r\n", "\n"));
+                String nativeCrsWkt = cv.getNativeCrsWKT();
+                m.put("crs", nativeCrsWkt.replaceAll("\"", "'").replaceAll("\r\n", "\n"));
 
                 if (!e.isNull()) {
+                	cw.comment("crs: native CRS definition, srsName: user defined CRS identifier");
                     cw.openTag("envelope", m);
                     cw.textTag("pos", e.getLowerCorner().getOrdinate(0) + " "
                             + e.getLowerCorner().getOrdinate(1));
