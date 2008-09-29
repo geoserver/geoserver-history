@@ -106,7 +106,10 @@ public class LegacyCoverageInfoReader {
         Element envelopeElement = ReaderUtils.getChildElement(coverage, "envelope");
         HashMap<String,Object> e = new HashMap<String, Object>();
     
-        e.put( "crs", ReaderUtils.getAttribute(envelopeElement, "crs", false));
+        String nativeCrsWkt = ReaderUtils.getAttribute(envelopeElement, "crs", false);
+        nativeCrsWkt = nativeCrsWkt.replaceAll("'", "\"");
+
+        e.put( "crs", nativeCrsWkt);
         e.put( "srsName", ReaderUtils.getAttribute(envelopeElement, "srsName", false));
         
         Element[] posElements = ReaderUtils.getChildElements(envelopeElement, "pos" );
@@ -196,48 +199,38 @@ public class LegacyCoverageInfoReader {
     
     public List<String> requestCRSs() throws Exception {
         Element supportedCRS = ReaderUtils.getChildElement(coverage, "supportedCRSs" );
-        if (ReaderUtils.getChildText( supportedCRS, "requestCRSs" ) != null) {
-            String[] requestCRS = ReaderUtils.getChildText( supportedCRS, "requestCRSs" ).trim().split(",");
-            return Arrays.asList(requestCRS);
-        } else
-            return new ArrayList<String>();
+        String[] requestCRS = ReaderUtils.getChildText( supportedCRS, "requestCRSs" ).trim().split(",");
+        return Arrays.asList(requestCRS);
     }
     
     public List<String> responseCRSs() throws Exception {
         Element supportedCRS = ReaderUtils.getChildElement(coverage, "supportedCRSs" );
-        if (ReaderUtils.getChildText( supportedCRS, "responseCRSs" ) != null) {
-            String[] responseCRS = ReaderUtils.getChildText( supportedCRS, "responseCRSs" ).trim().split(",");
-            return Arrays.asList(responseCRS);
-        } else
-            return new ArrayList<String>();
+        String[] responseCRS = ReaderUtils.getChildText( supportedCRS, "responseCRSs" ).trim().split(",");
+        return Arrays.asList(responseCRS);
     }
     
     public String nativeFormat() throws Exception {
         Element supportedFormats = ReaderUtils.getChildElement(coverage, "supportedFormats" );
         return ReaderUtils.getAttribute(supportedFormats, "nativeFormat", true);
+        
     }
     
     public List<String> supportedFormats() throws Exception {
         Element supportedFormats = ReaderUtils.getChildElement(coverage, "supportedFormats" );
-        if (ReaderUtils.getChildText(supportedFormats, "formats" ) != null) {
-            String[] formats = ReaderUtils.getChildText(supportedFormats, "formats" ).split(",");
-            return Arrays.asList(formats);
-        } else
-            return new ArrayList<String>();
+        String[] formats = ReaderUtils.getChildText(supportedFormats, "formats" ).split(",");
+        return Arrays.asList(formats);
     }
     
     public String defaultInterpolation() throws Exception {
         Element supportedFormats = ReaderUtils.getChildElement(coverage, "supportedInterpolations" );
         return ReaderUtils.getAttribute(supportedFormats, "default", true);
+        
     }
     
     public List<String> supportedInterpolations() throws Exception {
         Element supportedFormats = ReaderUtils.getChildElement(coverage, "supportedInterpolations" );
-        if (ReaderUtils.getChildText(supportedFormats, "interpolationMethods" ) != null) {
-            String[] interpolations = ReaderUtils.getChildText(supportedFormats, "interpolationMethods" ).split(",");
-            return Arrays.asList(interpolations);
-        } else
-            return new ArrayList<String>();
+        String[] interpolations = ReaderUtils.getChildText(supportedFormats, "interpolationMethods" ).split(",");
+        return Arrays.asList(interpolations);
     }
 
     
@@ -257,6 +250,10 @@ public class LegacyCoverageInfoReader {
            }
            
            return map;
+    }
+    
+    public String wmsPath() {
+        return ReaderUtils.getChildText(coverage, "wmspath");
     }
     
     public String parentDirectoryName() {

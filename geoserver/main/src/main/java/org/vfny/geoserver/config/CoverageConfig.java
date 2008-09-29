@@ -24,6 +24,7 @@ import org.geotools.coverage.io.Driver;
 import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.util.SimpleInternationalString;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.feature.type.Name;
@@ -158,17 +159,12 @@ public class CoverageConfig {
     /**
      *
      */
-    private String srsName;
+    private String userDefinedCrsIdentifier;
 
     /**
      *
      */
-    private String srsWKT;
-
-    /**
-     *
-     */
-    private CoordinateReferenceSystem crs;
+    private CoordinateReferenceSystem nativeCrs;
 
     /**
      * The default style name.
@@ -242,12 +238,11 @@ public class CoverageConfig {
         CoverageSource cvSource = null;
         try {
             cvSource = cvAccess.access(name, cvAccess.getConnectParameters(), AccessType.READ_ONLY, null, null);
-            crs = /* cvSource.getCoordinateReferenceSystem(null) */ cvSource.getHorizontalDomain(false, null).get(0).getCoordinateReferenceSystem();
-            srsName = (((crs != null) && !crs.getIdentifiers().isEmpty()) ? crs.getIdentifiers().toArray()[0].toString() : "UNKNOWN");
-            srsWKT = ((crs != null) ? crs.toWKT() : "UNKNOWN");
+            nativeCrs = /* cvSource.getCoordinateReferenceSystem(null) */ cvSource.getHorizontalDomain(false, null).get(0).getCoordinateReferenceSystem();
+            userDefinedCrsIdentifier = (((nativeCrs != null) && !nativeCrs.getIdentifiers().isEmpty()) ? nativeCrs.getIdentifiers().toArray()[0].toString() : "UNKNOWN");
             BoundingBox bbox = cvSource.getHorizontalDomain(false, null).get(0);
             envelope = new GeneralEnvelope(bbox);
-            envelope.setCoordinateReferenceSystem(crs);
+            envelope.setCoordinateReferenceSystem(nativeCrs);
 
             CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
             temporalExtent = cvSource.getTemporalDomain(null);
@@ -266,7 +261,7 @@ public class CoverageConfig {
                 } 
             }
             final GeneralGridEnvelope originalRange = new GeneralGridEnvelope(cvSource.getRasterDomain(false, null).get(0), 2);
-            grid = new GridGeometry2D(originalRange, cvSource.getGridToWorldTransform(false, null),crs);
+            grid = new GridGeometry2D(originalRange, cvSource.getGridToWorldTransform(false, null),nativeCrs);
             try {
                 lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
             } catch (IndexOutOfBoundsException e) {
@@ -344,14 +339,14 @@ public class CoverageConfig {
         nativeFormat = driver.getName();
         dirName = new StringBuffer(formatId).append("_").append(name).toString();
         requestCRSs = new ArrayList(); 
-        if ((crs.getIdentifiers() != null)
-                && !crs.getIdentifiers().isEmpty()) {
-            requestCRSs.add(((Identifier) crs.getIdentifiers().toArray()[0]).toString());
+        if ((nativeCrs.getIdentifiers() != null)
+                && !nativeCrs.getIdentifiers().isEmpty()) {
+            requestCRSs.add(((Identifier) nativeCrs.getIdentifiers().toArray()[0]).toString());
         }
         responseCRSs = new ArrayList(); 
-        if ((crs.getIdentifiers() != null)
-                && !crs.getIdentifiers().isEmpty()) {
-            responseCRSs.add(((Identifier) crs.getIdentifiers().toArray()[0]).toString());
+        if ((nativeCrs.getIdentifiers() != null)
+                && !nativeCrs.getIdentifiers().isEmpty()) {
+            responseCRSs.add(((Identifier) nativeCrs.getIdentifiers().toArray()[0]).toString());
         }
         supportedFormats = new ArrayList(); 
         final Driver[] drivers = CoverageStoreUtils.drivers;
@@ -416,11 +411,18 @@ public class CoverageConfig {
         description = dto.getDescription();
         metadataLink = dto.getMetadataLink();
         keywords = dto.getKeywords();
-        crs = dto.getCrs();
         verticalCRS = dto.getVerticalCRS();
         temporalCRS = dto.getTemporalCRS();
-        srsName = dto.getSrsName();
-        srsWKT = dto.getSrsWKT();
+        userDefinedCrsIdentifier = dto.getUserDefinedCrsIdentifier();
+        
+        String nativeCrsWKT = dto.getNativeCrsWKT();
+        
+        try {
+            nativeCrs = CRS.parseWKT(nativeCrsWKT);
+        } catch (FactoryException e) {
+            throw new RuntimeException(e);
+        }
+        
         envelope = dto.getEnvelope();
         verticalExtent = dto.getVerticalExtent();
         temporalExtent = dto.getTemporalExtent();
@@ -448,11 +450,10 @@ public class CoverageConfig {
         c.setDescription(description);
         c.setMetadataLink(metadataLink);
         c.setKeywords(keywords);
-        c.setCrs(crs);
+        c.setUserDefinedCrsIdentifier(userDefinedCrsIdentifier);
+        c.setNativeCrsWKT(nativeCrs.toWKT());
         c.setVerticalCRS(verticalCRS);
         c.setTemporalCRS(temporalCRS);
-        c.setSrsName(srsName);
-        c.setSrsWKT(srsWKT);
         c.setEnvelope(envelope);
         c.setVerticalExtent(verticalExtent);
         c.setTemporalExtent(temporalExtent);
@@ -479,7 +480,7 @@ public class CoverageConfig {
 
     public String toString() {
         return "CoverageConfig[name: " + name + " dewcription: " + description + " srsName: "
-        + srsName + "]";
+        + userDefinedCrsIdentifier + "]";
     }
 
     /**
@@ -734,8 +735,8 @@ public class CoverageConfig {
      *
      * @uml.property name="srsName"
      */
-    public String getSrsName() {
-        return srsName;
+    public String getUserDefinedCrsIdentifier() {
+        return userDefinedCrsIdentifier;
     }
 
     /**
@@ -744,8 +745,8 @@ public class CoverageConfig {
      *
      * @uml.property name="srsName"
      */
-    public void setSrsName(String srsName) {
-        this.srsName = srsName;
+    public void setUserDefinedCrsIdentifier(String srsName) {
+        this.userDefinedCrsIdentifier = srsName;
     }
 
     /**
@@ -771,16 +772,16 @@ public class CoverageConfig {
      *
      * @uml.property name="crs"
      */
-    public CoordinateReferenceSystem getCrs() {
-        return crs;
+    public CoordinateReferenceSystem getNativeCrs() {
+        return nativeCrs;
     }
 
     /**
      *
      * @uml.property name="crs"
      */
-    public void setCrs(CoordinateReferenceSystem crs) {
-        this.crs = crs;
+    public void setNativeCrs(CoordinateReferenceSystem crs) {
+        this.nativeCrs = crs;
     }
 
     /**
@@ -819,14 +820,6 @@ public class CoverageConfig {
         if (!this.styles.contains(style)) {
             this.styles.add(style);
         }
-    }
-
-    public String getSrsWKT() {
-        return srsWKT;
-    }
-
-    public void setSrsWKT(String srsWKT) {
-        this.srsWKT = srsWKT;
     }
 
     public GeneralEnvelope getLonLatWGS84Envelope() {

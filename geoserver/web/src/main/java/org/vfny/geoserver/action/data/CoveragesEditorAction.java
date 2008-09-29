@@ -203,27 +203,26 @@ public final class CoveragesEditorAction extends ConfigAction {
             GeneralEnvelope envelope = targetEnvelope;
 
             if (sourceCRS.getIdentifiers().isEmpty()) {
-                String nativeCRS = coverageForm.getSrsName();
+                String userCRS = coverageForm.getUserDefinedCrsIdentifier();
 
-                if (nativeCRS != null) {
+                if (userCRS != null) {
                     MathTransform transform;
 
-                    if (!nativeCRS.toUpperCase().startsWith("EPSG:")) {
+                    if (!userCRS.toUpperCase().startsWith("EPSG:")) {
                         try {
-                            nativeCRS = "EPSG:" + Integer.decode(nativeCRS);
-                            transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS),
-                                    true);
+                            userCRS = "EPSG:" + Integer.decode(userCRS);
+                            transform = CRS.findMathTransform(sourceCRS, CRS.decode(userCRS), true);
                             envelope = CRS.transform(transform, envelope);
-                            coverageForm.setSrsName(nativeCRS);
+                            coverageForm.setUserDefinedCrsIdentifier(userCRS);
                         } catch (NumberFormatException e) {
-                            coverageForm.setSrsName("UNKNOWN");
+                            coverageForm.setUserDefinedCrsIdentifier("UNKNOWN");
                         }
                     } else {
-                        transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS), true);
+                        transform = CRS.findMathTransform(sourceCRS, CRS.decode(userCRS), true);
                         envelope = CRS.transform(transform, envelope);
                     }
                 } else {
-                    coverageForm.setSrsName("UNKNOWN");
+                    coverageForm.setUserDefinedCrsIdentifier("UNKNOWN");
                 }
             } else {
                 String identifier = sourceCRS.getIdentifiers().toArray()[0].toString();
@@ -235,10 +234,10 @@ public final class CoveragesEditorAction extends ConfigAction {
                     identifier = "EPSG:" + identifier;
                 }
 
-                coverageForm.setSrsName(identifier);
+                coverageForm.setUserDefinedCrsIdentifier(identifier);
             }
 
-            coverageForm.setWKTString(sourceCRS.toWKT());
+            coverageForm.setNativeCrsWKT(sourceCRS.toWKT());
             coverageForm.setMinX(Double.toString(envelope.getLowerCorner().getOrdinate(0)));
             coverageForm.setMaxX(Double.toString(envelope.getUpperCorner().getOrdinate(0)));
             coverageForm.setMinY(Double.toString(envelope.getLowerCorner().getOrdinate(1)));
@@ -278,19 +277,25 @@ public final class CoveragesEditorAction extends ConfigAction {
         config.setNativeFormat(form.getNativeFormat());
         config.setRequestCRSs(requestCRSs(form));
         config.setResponseCRSs(responseCRSs(form));
-        config.setCrs(CRS.parseWKT(form.getWKTString()));
-        if (!form.getSrsName().toUpperCase().startsWith("EPSG"))
-            config.setSrsName("EPSG:" + form.getSrsName());
-        else
-            config.setSrsName(form.getSrsName());
-        config.setSrsWKT(form.getWKTString());
 
-        if (!"UNKNOWN".equals(config.getSrsName()) && (config.getSrsName() != null)
-                && config.getSrsName().toUpperCase().startsWith("EPSG:")) {
-            config.setCrs(CRS.decode(config.getSrsName()));
+        //set the native CRS
+        String nativeCrsWkt = form.getNativeCrsWKT();
+        CoordinateReferenceSystem nativeCrs = CRS.parseWKT(nativeCrsWkt);
+        config.setNativeCrs(nativeCrs);
+        
+        //set the user defined SRS identifier
+        String srsName = form.getUserDefinedCrsIdentifier();
+        if(!"UNKNOWN".equals(srsName) && srsName != null){
+            if(!srsName.toUpperCase().startsWith("EPSG")){
+                srsName = "EPSG:" + srsName;
+            }
+        }else{
+            CoordinateReferenceSystem userDefinedCrs = nativeCrs;
+            srsName = userDefinedCrs.getIdentifiers().toArray()[0].toString();
         }
-
-        config.setEnvelope(getEnvelope(form, config.getCrs()));
+        config.setUserDefinedCrsIdentifier(srsName);
+        
+        config.setEnvelope(getEnvelope(form, nativeCrs));
         config.setSupportedFormats(supportedFormats(form));
         config.setDefaultStyle(form.getStyleId());
 
@@ -450,14 +455,14 @@ public final class CoveragesEditorAction extends ConfigAction {
             String s = CRS.lookupIdentifier(sourceCRS, true);
 
             if (s == null) {
-                coverageForm.setSrsName("UNKNOWN");
+                coverageForm.setUserDefinedCrsIdentifier("UNKNOWN");
             } else if (s.toUpperCase().startsWith("EPSG:")) {
-                coverageForm.setSrsName(s);
+                coverageForm.setUserDefinedCrsIdentifier(s);
             } else {
-                coverageForm.setSrsName("EPSG:" + s);
+                coverageForm.setUserDefinedCrsIdentifier("EPSG:" + s);
             }
         } catch (Exception e) {
-            coverageForm.setSrsName("UNKNOWN");
+            coverageForm.setUserDefinedCrsIdentifier("UNKNOWN");
         }
 
         return mapping.findForward("config.data.coverage.editor");

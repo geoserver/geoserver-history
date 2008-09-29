@@ -128,17 +128,12 @@ public final class CoveragesEditorForm extends ActionForm {
     /**
      *
      */
-    private String srsName;
+    private String userDefinedCrsIdentifier;
 
     /**
      *
      */
-    private String nativeCRS;
-
-    /**
-     *
-     */
-    private String WKTString;
+    private String nativeCrsWKT;
 
     /**
      *
@@ -409,8 +404,8 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         //
         // //
-        srsName = cvConfig.getSrsName();
-        WKTString = cvConfig.getSrsWKT();
+        userDefinedCrsIdentifier = cvConfig.getUserDefinedCrsIdentifier();
+        nativeCrsWKT = cvConfig.getNativeCrs().toWKT();
 
         // //
         //
@@ -623,16 +618,16 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         // //
         if (!LOOKUP_SRS.equals(action)) {
-            if(!srsName.toUpperCase().startsWith("EPSG:")) {
-                srsName = "EPSG:" + srsName;
+            if(!userDefinedCrsIdentifier.toUpperCase().startsWith("EPSG:")) {
+                userDefinedCrsIdentifier = "EPSG:" + userDefinedCrsIdentifier;
             }
             try {
-                CRS.decode(srsName);
+                CRS.decode(userDefinedCrsIdentifier);
             } catch(Exception e) {
-                errors.add("envelope", new ActionError("config.data.coverage.srs", srsName));
+                errors.add("envelope", new ActionError("config.data.coverage.srs", userDefinedCrsIdentifier));
             }
             
-            requestCRSs = responseCRSs = srsName;
+            requestCRSs = responseCRSs = userDefinedCrsIdentifier;
         }
 
         // //
@@ -912,18 +907,18 @@ public final class CoveragesEditorForm extends ActionForm {
     }
 
     /**
-     * @return Returns the srsName.
+     * @return Returns user defined CRS identifier
      */
-    public String getSrsName() {
-        return srsName;
+    public String getUserDefinedCrsIdentifier() {
+        return userDefinedCrsIdentifier;
     }
 
     /**
      * @param srsName
-     *            The srsName to set.
+     *            The user defined CRS identifier
      */
-    public void setSrsName(String srsName) {
-        this.srsName = srsName;
+    public void setUserDefinedCrsIdentifier(String srsName) {
+        this.userDefinedCrsIdentifier = srsName;
     }
 
     /**
@@ -1062,12 +1057,18 @@ public final class CoveragesEditorForm extends ActionForm {
         this.styleId = styleId;
     }
 
-    public String getWKTString() {
-        return WKTString;
+    /**
+     * @return the native CRS WKT
+     */
+    public String getNativeCrsWKT() {
+        return nativeCrsWKT;
     }
 
-    public void setWKTString(String string) {
-        WKTString = string;
+    /**
+     * @param string the native CRS WKT
+     */
+    public void setNativeCrsWKT(String string) {
+        nativeCrsWKT = string;
     }
 
     public String getWmsPath() {

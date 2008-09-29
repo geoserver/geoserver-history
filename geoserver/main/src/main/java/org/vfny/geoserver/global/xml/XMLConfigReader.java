@@ -1908,7 +1908,7 @@ public class XMLConfigReader {
             //
             // /////////////////////////////////////////////////////////////////////
             final Element envelope = ReaderUtils.getChildElement(coverageRoot, "envelope");
-            cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
+            cv.setUserDefinedCrsIdentifier(ReaderUtils.getAttribute(envelope, "srsName", true));
             final CoordinateReferenceSystem crs;
             try {
                 crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs", false).replaceAll("'", "\""));
@@ -1917,8 +1917,7 @@ public class XMLConfigReader {
             } catch (ConfigurationException e) {
                 throw new ConfigurationException(e);
             }
-            cv.setCrs(crs);
-            cv.setSrsWKT(crs.toWKT());
+            cv.setNativeCrsWKT(crs.toWKT());
 
             // /////////////////////////////////////////////////////////////////////
             //

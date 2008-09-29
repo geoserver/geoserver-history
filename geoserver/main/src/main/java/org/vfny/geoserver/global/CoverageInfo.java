@@ -22,6 +22,7 @@ import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.geometry.Envelope;
@@ -234,7 +235,15 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         coverage.getKeywords().clear();
         coverage.getKeywords().addAll( dto.getKeywords() );
         
-        coverage.setNativeCRS(dto.getCrs());
+        try {
+            coverage.setNativeCRS(CRS.parseWKT(dto.getNativeCrsWKT()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        String userDefinedCrsIdentifier = dto.getUserDefinedCrsIdentifier();
+        coverage.setSRS( userDefinedCrsIdentifier );
+        
         coverage.setNativeBoundingBox(new ReferencedEnvelope(dto.getEnvelope()));
         coverage.setLatLonBoundingBox(new ReferencedEnvelope(dto.getLonLatWGS84Envelope()));
         
@@ -261,7 +270,6 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         coverage.setDefaultInterpolationMethod(dto.getDefaultInterpolationMethod());
         
         coverage.setNativeFormat(dto.getNativeFormat());
-        coverage.setSRS( dto.getSrsName() );
         
         coverage.getParameters().clear();
         if (dto.getParameters() != null)
@@ -295,9 +303,8 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         dto.setMetadataLink(getMetadataLink());
         dto.setDirName(getDirName());
         dto.setKeywords(getKeywords());
-        dto.setCrs(getCrs());
-        dto.setSrsName(getSrsName());
-        dto.setSrsWKT(getSrsWKT());
+        dto.setUserDefinedCrsIdentifier(getSrsName());
+        dto.setNativeCrsWKT(getNativeCrsWKT());
         dto.setTemporalCRS(getTemporalCRS());
         dto.setVerticalCRS(getVerticalCRS());
         dto.setEnvelope(getEnvelope());
@@ -566,7 +573,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * @return Returns the srsName.
+     * @return Returns the user defined CRS identifier.
      */
     public String getSrsName() {
         return coverage.getSRS();
@@ -621,7 +628,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     }
 
     /**
-     *
+     * @return the user defined CRS
      */
     public CoordinateReferenceSystem getCrs() {
         try {
@@ -641,9 +648,12 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         //return grid;
     }
 
-    public String getSrsWKT() {
+    /**
+     * @return the native CRS WKT
+     */
+    public String getNativeCrsWKT() {
         try {
-            return coverage.getCRS().toWKT();
+            return coverage.getNativeCRS().toWKT();
         } 
         catch (Exception e) {
             throw new RuntimeException( e );

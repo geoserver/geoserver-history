@@ -30,6 +30,7 @@ import org.geotools.coverage.io.range.Axis;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.wkt.UnformattableObjectException;
 import org.geotools.styling.Style;
 import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.xml.transform.TransformerBase;
@@ -880,7 +881,14 @@ public class WMSCapsTransformer extends TransformerBase {
 
                 handleKeywordList(coverage.getKeywords());
 
-                String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
+                CoordinateReferenceSystem crs = coverage.getCrs();
+                String desc;
+                try{
+                    String publishedCoverageCrsWKT = crs.toWKT();
+                    desc = "WKT definition of this CRS:\n" + publishedCoverageCrsWKT;
+                }catch(UnformattableObjectException e){
+                    desc = "Unable to get the WKT representation for the coverage crs: " + coverage.getSrsName();
+                }
                 comment(desc);
 
                 String authority = coverage.getSrsName();
@@ -1086,7 +1094,14 @@ public class WMSCapsTransformer extends TransformerBase {
 
             handleKeywordList(coverage.getKeywords());
 
-            String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
+            CoordinateReferenceSystem crs = coverage.getCrs();
+            String desc;
+            try{
+                String publishedCoverageCrsWKT = crs.toWKT();
+                desc = "WKT definition of this CRS:\n" + publishedCoverageCrsWKT;
+            }catch(UnformattableObjectException e){
+                desc = "Unable to get the WKT representation for the coverage crs: " + coverage.getSrsName();
+            }
             comment(desc);
 
             String authority = coverage.getSrsName();

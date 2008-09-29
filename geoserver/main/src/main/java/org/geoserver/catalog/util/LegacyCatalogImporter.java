@@ -34,6 +34,7 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.CoverageSource;
 import org.geotools.coverage.io.Driver;
 import org.geotools.coverage.io.CoverageAccess.AccessType;
@@ -173,7 +174,10 @@ public class LegacyCatalogImporter {
                 LayerInfo layer = factory.createLayer();
                 layer.setResource(featureType);
                 layer.setName(featureType.getName());
-                layer.setPath(featureType.getName());
+                layer.setPath(ftInfoReader.wmsPath());
+                if ( layer.getPath() == null ) {
+                    layer.setPath( "/" );
+                }
                 layer.setType(LayerInfo.Type.VECTOR);
                
                 String defaultStyleName = ftInfoReader.defaultStyle();
@@ -226,12 +230,15 @@ public class LegacyCatalogImporter {
                     continue;
                 }
                 catalog.add(coverage);
-    
+
                 // create a wms layer for the feature type
                 LayerInfo layer = factory.createLayer();
                 layer.setResource(coverage);
                 layer.setName(coverage.getName());
-                layer.setPath(coverage.getName());
+                layer.setPath(cInfoReader.wmsPath());
+                if ( layer.getPath() == null ) {
+                    layer.setPath( "/" );
+                }
                 layer.setType(LayerInfo.Type.RASTER);
                 
                 String defaultStyleName = cInfoReader.defaultStyle();
@@ -561,9 +568,11 @@ public class LegacyCatalogImporter {
         coverage.getKeywords().addAll( cInfoReader.keywords() );
         
         Map<String,Object> envelope = cInfoReader.envelope();
-        coverage.setSRS((String)envelope.get( "srsName" ));
-        
-        CoordinateReferenceSystem crs = CRS.decode(coverage.getSRS());
+        String userDefinedCrsIdentifier = (String)envelope.get( "srsName" );
+        String nativeCrsWkt = (String)envelope.get("crs");
+
+        coverage.setSRS(userDefinedCrsIdentifier);
+        CoordinateReferenceSystem crs = CRS.parseWKT(nativeCrsWkt);
         coverage.setNativeCRS( crs );
         
         ReferencedEnvelope bounds = new ReferencedEnvelope( 
@@ -596,7 +605,8 @@ public class LegacyCatalogImporter {
                 matrix[5] = tx.get( "translateY") != null ? tx.get( "translateY") : matrix[5];
                 matrix[8] = 1.0;
                 
-                MathTransform gridToCRS = new DefaultMathTransformFactory().createAffineTransform( new GeneralMatrix(3,3,matrix));
+                MathTransform gridToCRS = new DefaultMathTransformFactory()
+                    .createAffineTransform( new GeneralMatrix(3,3,matrix));
                 coverage.setGrid( new GridGeometry2D(range,gridToCRS,crs) );
             }
             else {
@@ -605,7 +615,8 @@ public class LegacyCatalogImporter {
         }
         else {
             // new grid range
-            GeneralGridRange range = new GeneralGridRange(new int[] { 0, 0 }, new int[] { 1, 1 });
+            GeneralGridRange range = new GeneralGridRange(new int[] { 0,
+                    0 }, new int[] { 1, 1 });
             coverage.setGrid( new GridGeometry2D(range, gridEnvelope) );
         }
         

@@ -117,17 +117,12 @@ public final class CoverageInfoDTO implements DataTransferObject {
     /**
      *
      */
-    private String srsName;
+    private String userDefinedCrsIdentifier;
 
     /**
      *
      */
-    private String srsWKT;
-
-    /**
-     *
-     */
-    private CoordinateReferenceSystem crs;
+    private String nativeCrsWkt;
 
     /**
      * Default style used to render this Coverage with WMS
@@ -174,11 +169,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
             keywords = new LinkedList();
         }
 
-        crs = dto.getCrs();
+        userDefinedCrsIdentifier = dto.getUserDefinedCrsIdentifier();
+        nativeCrsWkt = dto.getNativeCrsWKT();
         verticalCRS = dto.getVerticalCRS();
         temporalCRS = dto.getTemporalCRS();
-        srsName = dto.getSrsName();
-        srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
         verticalExtent = dto.getVerticalExtent();
         temporalExtent = dto.getTemporalExtent();
@@ -238,9 +232,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
             return false;
         }
 
-        r = r && (srsName == f.getSrsName());
-        r = r && (srsWKT == f.getSrsWKT());
-        r = r && (crs == f.getCrs());
+        r = r && (userDefinedCrsIdentifier == f.getUserDefinedCrsIdentifier());
+        r = r && (nativeCrsWkt == f.getNativeCrsWKT());
         r = r && (name == f.getName());
         r = r && (wmsPath == f.getWmsPath());
         r = r && (description == f.getDescription());
@@ -294,18 +287,14 @@ public final class CoverageInfoDTO implements DataTransferObject {
             r *= grid.hashCode();
         }
 
-        if (srsName != null) {
-            r *= srsName.hashCode();
+        if (userDefinedCrsIdentifier != null) {
+            r *= userDefinedCrsIdentifier.hashCode();
         }
 
-        if (srsWKT != null) {
-            r *= srsWKT.hashCode();
+        if (nativeCrsWkt != null) {
+            r *= nativeCrsWkt.hashCode();
         }
 
-        if (crs != null) {
-            r *= crs.hashCode();
-        }
-        
         if (verticalCRS != null)
             r *= verticalCRS.hashCode();
         
@@ -446,7 +435,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     public String toString() {
         return "[CoverageInfoDTO: " + name + ", formatId: " + formatId + ", envelope: " + envelope
-        + "\n  SRS: " + srsName + ", dirName: " + dirName + ", label: " + label
+        + "\n  SRS: " + userDefinedCrsIdentifier + ", dirName: " + dirName + ", label: " + label
         + "\n  description: " + description;
     }
 
@@ -641,22 +630,22 @@ public final class CoverageInfoDTO implements DataTransferObject {
     }
 
     /**
-     * @return Returns the srsName.
+     * @return Returns the user defined srsName.
      *
      * @uml.property name="srsName"
      */
-    public String getSrsName() {
-        return srsName;
+    public String getUserDefinedCrsIdentifier() {
+        return userDefinedCrsIdentifier;
     }
 
     /**
      * @param srsName
-     *            The srsName to set.
+     *            The user defined srsName to set.
      *
      * @uml.property name="srsName"
      */
-    public void setSrsName(String srsName) {
-        this.srsName = srsName;
+    public void setUserDefinedCrsIdentifier(String srsName) {
+        this.userDefinedCrsIdentifier = srsName;
     }
 
     /**
@@ -725,22 +714,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     /**
      *
-     * @uml.property name="crs"
-     */
-    public CoordinateReferenceSystem getCrs() {
-        return crs;
-    }
-
-    /**
-     *
-     * @uml.property name="crs"
-     */
-    public void setCrs(CoordinateReferenceSystem crs) {
-        this.crs = crs;
-    }
-
-    /**
-     *
      * @uml.property name="grid"
      */
     public GridGeometry getGrid() {
@@ -755,12 +728,18 @@ public final class CoverageInfoDTO implements DataTransferObject {
         this.grid = grid;
     }
 
-    public String getSrsWKT() {
-        return srsWKT;
+    /**
+     * @return the native CRS WKT
+     */
+    public String getNativeCrsWKT() {
+        return nativeCrsWkt;
     }
 
-    public void setSrsWKT(String srsWKT) {
-        this.srsWKT = srsWKT;
+    /**
+     * @param srsWKT the native CRS WKT
+     */
+    public void setNativeCrsWKT(String srsWKT) {
+        this.nativeCrsWkt = srsWKT;
     }
 
     public GeneralEnvelope getLonLatWGS84Envelope() {

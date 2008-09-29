@@ -315,7 +315,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	  	<table>
 	  	<tr>
 			<td>
-			<html:text property="srsName" size="32"/>
+			<html:text property="userDefinedCrsIdentifier" size="32"/>
 			</td>
 			<td>
 	        <html:submit property="action">
@@ -353,8 +353,8 @@ function generateColorPicker(colorFieldName, fieldValue)
         </span>
 	  </td>
 	  <td class="greyedOut2">
-              <bean:write name="coveragesEditorForm" property="WKTString"/>
-			  <html:hidden property="WKTString"/>
+              <bean:write name="coveragesEditorForm" property="nativeCrsWKT"/>
+			  <html:hidden property="nativeCrsWKT"/>
             </td>
 	</tr>
 	<!-------------------------->
