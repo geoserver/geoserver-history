@@ -192,6 +192,6 @@ public class LayerInfoImpl implements LayerInfo {
     }
 
     public String toString() {
-        return name;
+        return getResource().getNamespace().getPrefix() + ":" + name;
     }
 }
