@@ -60,8 +60,9 @@ public class KMLReflector {
         this.wms = wms;
     }
 
-    public void http(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-        try{
+    public void http(HttpServletRequest request, HttpServletResponse response) 
+        throws ServletException {
+        try {
             WMS wms = (WMS)GeoServerExtensions.extensions(WMS.class).get(0);
             GetMapKvpRequestReader reader = new GetMapKvpRequestReader(wms);
             reader.setHttpRequest(request);
@@ -83,7 +84,7 @@ public class KMLReflector {
 
     public void wms(GetMapRequest request, HttpServletResponse response) throws Exception {
         boolean vectorOverlay = false;
-        Boolean superoverlay = (Boolean)request.getFormatOptions().get("superoverlay");
+        Boolean superoverlay = (Boolean) request.getFormatOptions().get("superoverlay");
         if (superoverlay != null && superoverlay.booleanValue()){
             MapLayerInfo[] layers = request.getLayers();
             for (int i = 0; i < layers.length; i++){
@@ -103,7 +104,8 @@ public class KMLReflector {
 
         if (vectorOverlay) {
             if (request.getBbox() == null){
-                request.setBbox(new Envelope(-180, -90, 180, 90)); // TODO: I guess this needs to be reprojected...
+                // TODO: I guess this needs to be reprojected...
+                request.setBbox(new Envelope(-180, -90, 180, 90)); 
             }
         }
         
