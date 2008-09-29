@@ -5,10 +5,8 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.logging.Level;
 
-import org.apache.batik.dom.util.HashTable;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.map.MapLayer;
@@ -187,19 +185,14 @@ public class KMLVectorTransformer extends KMLMapTransformer {
         protected void encode(FeatureCollection<SimpleFeatureType, SimpleFeature> features,
                 FeatureTypeStyle[] styles) {
            //grab a feader and process
-            FeatureIterator<SimpleFeature> reader = null;
+            FeatureIterator<SimpleFeature> reader = features.features();
 
-            HashMap<String,Boolean> ht = new HashMap<String,Boolean>();
-            
             try {
-                //grab a feader and process
-                reader = features.features();
-                
-                // Write Styles
                 while (reader.hasNext()) {
                     SimpleFeature feature = (SimpleFeature) reader.next();
+
                     try {
-                        ht.put(feature.getID(), encodeStyle(feature, styles, true));
+                        encode(feature, styles);
                     } catch (RuntimeException t) {
                         // if the stream has been closed by the client don't keep on going forward, this is not
                         // a feature local issue
@@ -209,31 +202,15 @@ public class KMLVectorTransformer extends KMLMapTransformer {
                             LOGGER.log(Level.WARNING, "Failure tranforming feature to KML:" + feature.getID(), t);
                     } 
                 }
-                
-                // Write Placemarks
-                reader = features.features();           
-                // Write Styles
-                while (reader.hasNext()) {
-                    SimpleFeature feature = (SimpleFeature) reader.next();
-                    try {
-                        // Check whether encoding the style succeeded
-                        if(ht.get(feature.getID())) {
-                            encodePlacemark(feature,styles);
-                        }
-                    } catch (RuntimeException t) {
-                        // if the stream has been closed by the client don't keep on going forward, this is not
-                        // a feature local issue
-                        if(t.getCause() instanceof SAXException)
-                            throw t;
-                        else
-                            LOGGER.log(Level.WARNING, "Failure tranforming feature to KML:" + feature.getID(), t);
-                    } 
-                }
-                
             } finally {
                 //make sure we always close
                 features.close(reader);
             }
+        }
+
+        protected void encode(SimpleFeature feature, FeatureTypeStyle[] styles) {
+            if(encodeStyle(feature, styles, true))
+                encodePlacemark(feature,styles);    
         }
     }
 
