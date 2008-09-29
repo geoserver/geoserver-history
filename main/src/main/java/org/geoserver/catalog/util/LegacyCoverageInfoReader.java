@@ -105,7 +105,10 @@ public class LegacyCoverageInfoReader {
         Element envelopeElement = ReaderUtils.getChildElement(coverage, "envelope");
         HashMap<String,Object> e = new HashMap<String, Object>();
     
-        e.put( "crs", ReaderUtils.getAttribute(envelopeElement, "crs", false));
+        String nativeCrsWkt = ReaderUtils.getAttribute(envelopeElement, "crs", false);
+        nativeCrsWkt = nativeCrsWkt.replaceAll("'", "\"");
+
+        e.put( "crs", nativeCrsWkt);
         e.put( "srsName", ReaderUtils.getAttribute(envelopeElement, "srsName", false));
         
         Element[] posElements = ReaderUtils.getChildElements(envelopeElement, "pos" );
