@@ -9,6 +9,7 @@ import static org.easymock.classextension.EasyMock.verify;
 
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,6 +43,7 @@ import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.CoverageResponse.Status;
 import org.geotools.coverage.io.impl.range.DefaultFieldType;
 import org.geotools.coverage.io.impl.range.DefaultRangeType;
+import org.geotools.coverage.io.range.Axis;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.data.Parameter;
@@ -70,6 +72,13 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+/**
+ * Unit test suite for {@link GetMapResponse} when asked for a nd coverage through a layer
+ * configured against one of the coverage fields.
+ * 
+ * @author Gabriel Roldan
+ * @version $Id$
+ */
 public class GetMapResponseNDCoverageTest extends TestCase {
 
     /**
@@ -192,7 +201,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         replay(coverageSource);
 
         try {
-            GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
+            getMap.getCoverage(request, layer, requestedEnvelope, cvAccess);
             fail("Expected IOException if the coverage response has non SUCCESS status");
         } catch (IOException e) {
             assertTrue(true);
@@ -226,7 +235,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         replay(coverageSource);
 
         try {
-            GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
+            getMap.getCoverage(request, layer, requestedEnvelope, cvAccess);
             fail("Expected IOException if the coverage response has no coverages");
         } catch (IOException e) {
             assertTrue(e.getMessage().startsWith("Requests returned no coverage"));
@@ -262,7 +271,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         replay(coverageSource);
 
         try {
-            GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
+            getMap.getCoverage(request, layer, requestedEnvelope, cvAccess);
             fail("Expected IOException if the coverage response has more than one coverage");
         } catch (IOException e) {
             assertTrue(e.getMessage().startsWith("Request returned 2 coverages"));
@@ -299,7 +308,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         replay(coverageSource);
 
         try {
-            GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
+            getMap.getCoverage(request, layer, requestedEnvelope, cvAccess);
             fail("Expected IOException if the resulting coverage is not a GridCoverage2D");
         } catch (IOException e) {
             assertTrue(e.getMessage().contains("not a GridCoverage2D"));
@@ -338,7 +347,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         replay(coverageSource);
 
         try {
-            GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
+            getMap.getCoverage(request, layer, requestedEnvelope, cvAccess);
             fail("Expected IOException if there are more than one range matching the layer field id");
         } catch (IOException e) {
             assertTrue(e.getMessage().contains("Multi field coverages are not supported yet"));
@@ -369,9 +378,9 @@ public class GetMapResponseNDCoverageTest extends TestCase {
                 null));
         coverageInfo.setFields(new DefaultRangeType("testRange", "range desc", fieldTypes));
 
-        //Set the request value for the elevation param
+        // Set the request value for the elevation param
         request.setElevation(new Integer(1500));
-        
+
         MockCoverageSource source = new MockCoverageSource(coverageSource);
 
         expect(
@@ -386,7 +395,8 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         // record the dispose() expectation, it should always be called
         coverageSource.dispose();
 
-        // return status failure so it does not advances further than issuing the read request
+        // return status failure so it does not advance further than issuing the read request. We
+        // just need to check later the correct request was built and sent
         expect(response.getStatus()).andReturn(Status.FAILURE);
         expect(response.getExceptions()).andStubReturn(
                 Collections.singleton(new Exception("Fake exception")));
@@ -395,7 +405,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         replay(coverageSource);
 
         try {
-            GetMapResponse.getCoverage(request, layer, requestedEnvelope, cvAccess);
+            getMap.getCoverage(request, layer, requestedEnvelope, cvAccess);
             fail("Expected IOException if there are more than one range matching the layer field id");
         } catch (IOException e) {
             assertTrue(e.getMessage(), e.getMessage().contains("FAILURE"));
@@ -403,7 +413,7 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         verify(cvAccess);
         verify(coverageSource);
 
-        // no assert the correct request were sent
+        // now assert the correct request was sent
         final CoverageReadRequest issuedRequest = source.issuedRequest;
 
         // was the request envelope set?
@@ -439,16 +449,16 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         assertEquals(2000L, ((Instant) t1).getPosition().getDate().getTime());
         assertEquals(1000L, ((Instant) t2).getPosition().getDate().getTime());
         assertEquals(0L, ((Instant) t3).getPosition().getDate().getTime());
-        
-        //assert the CoverageReadRequest was set with the elevation parameters
+
+        // assert the CoverageReadRequest was set with the elevation parameters
         Set<org.opengis.geometry.Envelope> verticalSubset = issuedRequest.getVerticalSubset();
         assertNotNull(verticalSubset);
         assertEquals(1, verticalSubset.size());
         org.opengis.geometry.Envelope verticalRange = verticalSubset.iterator().next();
         assertTrue(verticalRange instanceof GeneralEnvelope);
-        assertEquals(1, ((GeneralEnvelope)verticalRange).getDimension());        
-        assertEquals(Double.valueOf(1500), ((GeneralEnvelope)verticalRange).getMinimum(0));
-        assertEquals(Double.valueOf(1500), ((GeneralEnvelope)verticalRange).getMaximum(0));
+        assertEquals(1, ((GeneralEnvelope) verticalRange).getDimension());
+        assertEquals(Double.valueOf(1500), ((GeneralEnvelope) verticalRange).getMinimum(0));
+        assertEquals(Double.valueOf(1500), ((GeneralEnvelope) verticalRange).getMaximum(0));
     }
 
     /**
@@ -504,6 +514,87 @@ public class GetMapResponseNDCoverageTest extends TestCase {
         catalog.add(coverageLayerInfo);
         catalog.add(coverageStoreInfo);
         catalog.add(coverageInfo);
+    }
+
+    /**
+     * If the coverage request succeeded, then prior to returning it the band select operation is
+     * performed.
+     * <p>
+     * This test ensures that if the layer maps to a coverage fieldType, and any extra sample
+     * dimension is requested in the form of the GetMap's optional "DIM_<dimension name>=<value>"
+     * dynamic argument, the proper axis name matching the dimension name is used to perform the
+     * band selection.
+     * </p>
+     * 
+     */
+    public void testBandSelectionFromDimXXXParameter() throws IOException {
+        // now mock up the layer fieldId and coverage FieldTypes...
+        layer.setFieldId("testFieldName");
+
+        Set<FieldType> fieldTypes = new HashSet<FieldType>();
+        // make sure there are more than one match for the layer field id
+        List<Axis<?, ?>> axes = new ArrayList<Axis<?, ?>>();
+        final Axis mockAxis = createMock(Axis.class);
+        axes.add(mockAxis);
+        // this is how we expose the axis name in the capabilities doc
+        final String dimensionName = "testDimensionName";
+        final String normalizedAxisName = "axis:testCoverageName" + dimensionName.toLowerCase();
+        expect(mockAxis.getName()).andReturn(new NameImpl(normalizedAxisName));
+
+        replay(mockAxis);
+
+        request.setSampleDimensions(Collections.singletonMap(dimensionName, "3"));
+
+        fieldTypes.add(new DefaultFieldType(new NameImpl("testFieldName"), null, null, axes, null));
+
+        fieldTypes.add(new DefaultFieldType(new NameImpl("nonMatchingFieldName"), null, null, null,
+                null));
+
+        RangeType fields = new DefaultRangeType("testRange", "range desc", fieldTypes);
+        coverageInfo.setFields(fields);
+
+        expect(
+                cvAccess.access(new NameImpl("testCoverageName"), null, AccessType.READ_ONLY, null,
+                        null)).andReturn(coverageSource);
+
+        CoverageResponse response = createMock(CoverageResponse.class);
+        expect(
+                coverageSource.read((CoverageReadRequest) notNull(), (ProgressListener) EasyMock
+                        .anyObject())).andReturn(response);
+
+        expect(response.getStatus()).andReturn(Status.SUCCESS);
+
+        final GridCoverage2D resultCoverage = createMock(GridCoverage2D.class);
+        Collection<? extends Coverage> results = Collections.singleton(resultCoverage);
+        expect(response.getResults((ProgressListener) anyObject())).andStubReturn(results);
+
+        // record the dispose() expectation, it should always be called
+        coverageSource.dispose();
+
+        replay(cvAccess);
+        replay(coverageSource);
+        replay(response);
+        replay(resultCoverage);
+
+        final GridCoverage2D bandSelectedCoverage = createMock(GridCoverage2D.class);
+
+        getMap = new GetMapResponse(Collections.singleton(mockMapProducer)) {
+            @Override
+            public GridCoverage2D bandSelect(GridCoverage2D coverage, Axis<?, ?> axis,
+                    String selectedBandValue) {
+                assertSame(mockAxis, axis);
+                assertSame(resultCoverage, coverage);
+                return bandSelectedCoverage;
+            }
+        };
+        GridCoverage2D coverage = getMap.getCoverage(request, layer, requestedEnvelope, cvAccess);
+
+        assertSame(bandSelectedCoverage, coverage);
+
+        verify(cvAccess);
+        verify(coverageSource);
+        verify(response);
+        verify(resultCoverage);
     }
 
     /**

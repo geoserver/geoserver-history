@@ -255,6 +255,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
         // parse extra sample dimension names. They're case insensitive name parameters with "DIM_"
         // prefix
+        // REVISIT: I feel like we should check for the existence of the axis name for the layer's
+        // coverage fieldType here in order to early catch a bad request instead of waiting for the
+        // coverage request to be performed (ie, GetMapResponse.getCoverage()->bandSelect())
         Map.Entry entry;
         Map<String, String> sampleDimensions = null;
         for (Iterator it = kvp.entrySet().iterator(); it.hasNext();) {

@@ -422,13 +422,13 @@ public class GetMapResponse implements Response {
      * @see CoverageReadRequest
      * @see CoverageResponse
      */
-    public static GridCoverage2D getCoverage(GetMapRequest request, final MapLayerInfo layer,
+    public GridCoverage2D getCoverage(GetMapRequest request, final MapLayerInfo layer,
             final GeneralEnvelope requestedEnvelope, CoverageAccess cvAccess) throws IOException {
         assert request != null;
         assert layer != null;
         assert requestedEnvelope != null;
         assert cvAccess != null;
-        
+
         GridCoverage2D coverage = null;
 
         final NullProgressListener nullProgressListener = new NullProgressListener();
@@ -540,20 +540,25 @@ public class GetMapResponse implements Response {
                 
                 final Map<String, String> requestDimensions = request.getSampleDimensions();
                 
+                // NOTE: band selection's gonna be performed only if the coverage field contains an
+                // axis named as requested. Otherwise the argument will be ignored, specified in the
+                // WMS 1.1.1 spec, section C.4.4: "If the georeferenced object does not have that
+                // dimension, then the dimension value is ignored for the purposes of responding to
+                // the request for that object."                
                 for (FieldType field : rangeSubset) {
                     String axisName;
-                    String selectedBandField = null;
+                    String selectedBandValue = null;
                     for (Map.Entry<String, String> dimParam : requestDimensions.entrySet()) {
                         axisName = dimParam.getKey();
-                        selectedBandField = dimParam.getValue();
+                        selectedBandValue = dimParam.getValue();
                         axisName = normalizeCoverageFieldAxisName(layer.getName(), axisName);
                         
                         try {
                             Axis<?, ?> axis = field.getAxis(new NameImpl(axisName));
                             if (axis != null) {
                                 //REVISIT: should check if selectBandField != "" too?
-                                if (selectedBandField != null) {
-                                    bandSelectedCoverage = bandSelect(coverage, axis, selectedBandField);
+                                if (selectedBandValue != null) {
+                                    bandSelectedCoverage = bandSelect(coverage, axis, selectedBandValue);
                                     //REVISIT: should break here?
                                 }
                             }
@@ -593,23 +598,35 @@ public class GetMapResponse implements Response {
     }
 
     /**
+     * Performs the bandSelect operation over the specified coverage and axis with the given
+     * value(s).
+     * <p>
+     * NOTE this method is package visible for the sole purpose of being overridden by unit tests.
+     * This claims for a refactoring. I'd like the whole
+     * {@link #getCoverage(GetMapRequest, MapLayerInfo, GeneralEnvelope, CoverageAccess)} operation
+     * to belong to a GetMapResponse collaborator. Also, the fact that this method calls
+     * {@link WCSUtils#bandSelect(org.opengis.coverage.grid.GridCoverage, int[])} makes it difficult
+     * to unit test.
+     * </p>
      * 
      * @param coverage
      * @param axis
-     * @param selectedBandField
+     * @param selectedBandValue
+     *                the unparsed dimension value, in the form of {@code value[,value]*} for
+     *                discrete values or {@code minVal/maxVal/resolution} for a range.
      * @return
      */
-    private static GridCoverage2D bandSelect(GridCoverage2D coverage,
-            Axis<?, ?> axis, String selectedBandField) {
+    GridCoverage2D bandSelect(GridCoverage2D coverage,
+            Axis<?, ?> axis, String selectedBandValue) {
         GridCoverage2D bandSelectedCoverage = null;
         int[] bands = null;
-        if (selectedBandField.indexOf("/") <= 0) {
-            String[] selectedBands = selectedBandField.indexOf(",") > 0 ? selectedBandField.split(",") : new String[] {selectedBandField};
+        if (selectedBandValue.indexOf("/") <= 0) {
+            String[] selectedBands = selectedBandValue.indexOf(",") > 0 ? selectedBandValue.split(",") : new String[] {selectedBandValue};
             bands = new int[selectedBands.length];
             for (int s=0; s<selectedBands.length; s++)
                 bands[s] = axis.getKey(Integer.parseInt(selectedBands[0])).intValue(null);
-        } else if (selectedBandField.indexOf("/") > 0) {
-            String[] selectedBands = selectedBandField.split("/");
+        } else if (selectedBandValue.indexOf("/") > 0) {
+            String[] selectedBands = selectedBandValue.split("/");
             int min = Integer.parseInt(selectedBands[0]);
             int max = Integer.parseInt(selectedBands[selectedBands.length-1]);
             int res = (selectedBands.length > 2 ? Integer.parseInt(selectedBands[1]) : 1);

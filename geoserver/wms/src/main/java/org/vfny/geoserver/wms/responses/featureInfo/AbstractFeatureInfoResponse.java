@@ -10,6 +10,7 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -294,7 +295,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                             bbox.getMinX(), bbox.getMinY() }, new double[] { bbox.getMaxX(),
                             bbox.getMaxY() });
                     requestedEnvelope.setCoordinateReferenceSystem(req.getCrs());
-                    GridCoverage2D coverage = GetMapResponse.getCoverage(req, requestedLayers[i],
+                    GetMapResponse getmap = new GetMapResponse(Collections.EMPTY_LIST);
+                    GridCoverage2D coverage = getmap.getCoverage(req, requestedLayers[i],
                             requestedEnvelope, cinfo.getCoverageAccess());
                     if (coverage != null) {
                         DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
