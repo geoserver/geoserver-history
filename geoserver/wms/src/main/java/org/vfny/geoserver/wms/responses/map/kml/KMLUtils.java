@@ -75,6 +75,16 @@ public class KMLUtils {
         }
     }
 
+    public final static Envelope WORLD_BOUNDS_WGS84 = new Envelope(-180,180,-90,90);    
+    
+    private final static double[] TILE_RESOLUTIONS = new double[100];
+
+    static {
+        for (int i = 0; i < TILE_RESOLUTIONS.length; i++) {
+            TILE_RESOLUTIONS[i] = WORLD_BOUNDS_WGS84.getWidth() / ((0x01 << i) * 256);
+        }
+    }
+
     /**
      * Factory used to create filter objects
      */
@@ -272,7 +282,59 @@ public class KMLUtils {
         return ((r.getMinScaleDenominator() - TOLERANCE) <= scaleDenominator)
                 && ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator);
     }
+    
+    public static int findZoomLevel(Envelope extent){
+        double resolution = Math.max(extent.getWidth()/256d, extent.getHeight() / 256d);
+        
+        int i;
+        
+        for (i = 1; i < TILE_RESOLUTIONS.length; i++){
+            if (resolution > TILE_RESOLUTIONS[i]) {
+                i--;
+                break;
+            }
+        }
+        
+        return i;
+    }
 
+    public static Envelope expandToTile(Envelope extent){
+        double resolution = Math.max(extent.getWidth() / 256d, extent.getHeight() / 256d);
+        
+        int i = findZoomLevel(extent);
+         
+        while (i > 0) {
+            resolution = TILE_RESOLUTIONS[i];
+
+            double tilelon = resolution * 256;
+            double tilelat = resolution * 256;
+
+            double lon0 = extent.getMinX() - WORLD_BOUNDS_WGS84.getMinX();
+            double lon1 = extent.getMaxX() - WORLD_BOUNDS_WGS84.getMinX();
+
+            int col0 = (int) Math.floor(lon0 / tilelon);
+            int col1 = (int) Math.floor((lon1 / tilelon) - 1E-9);
+
+            double lat0 = extent.getMinY() - WORLD_BOUNDS_WGS84.getMinY();
+            double lat1 = extent.getMaxY() - WORLD_BOUNDS_WGS84.getMinY();
+
+            int row0 = (int) Math.floor(lat0 / tilelat);
+            int row1 = (int) Math.floor((lat1 / tilelat) - 1E-9);
+
+            if ((col0 == col1) && (row0 == row1)) {
+                double tileoffsetlon = WORLD_BOUNDS_WGS84.getMinX() + (col0 * tilelon);
+                double tileoffsetlat = WORLD_BOUNDS_WGS84.getMinY() + (row0 * tilelat);
+
+                return new Envelope(tileoffsetlon, tileoffsetlon + tilelon, tileoffsetlat,
+                        tileoffsetlat + tilelat);
+            } else {
+                i--;
+            }
+        }
+        
+        return WORLD_BOUNDS_WGS84;
+    }
+    
     /**
      * Utility method to convert an int into hex, padded to two characters.
      * handy for generating colour strings.

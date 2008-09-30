@@ -4,12 +4,17 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.ows.HttpErrorCodeException;
+import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
@@ -22,23 +27,6 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.kml");
-
-    /**
-     * the world bounds
-     */
-    final static ReferencedEnvelope world = new ReferencedEnvelope(-180, 180, -90, 90,
-            DefaultGeographicCRS.WGS84);
-
-    /**
-     * resolutions
-     */
-    final static double[] resolutions = new double[100];
-
-    static {
-        for (int i = 0; i < resolutions.length; i++) {
-            resolutions[i] = world.getWidth() / ((0x01 << i) * 256);
-        }
-    }
 
     /**
      * The map context
@@ -64,60 +52,12 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             //calculate closest resolution
             ReferencedEnvelope extent = mapContext.getAreaOfInterest();
-            double resolution = Math.max(extent.getWidth() / 256d, extent.getHeight() / 256d);
-
-            //calculate the closest zoom level
-            int i = 1;
-
-            for (; i < resolutions.length; i++) {
-                if (resolution > resolutions[i]) {
-                    i--;
-
-                    break;
-                }
-            }
-
-            LOGGER.fine("resolution = " + resolution);
-            LOGGER.fine("zoom level = " + i);
-
+            
             //zoom out until the entire bounds requested is covered by a 
             //single tile
-            Envelope top = null;
+            Envelope top = KMLUtils.expandToTile(extent);
+            int i = KMLUtils.findZoomLevel(extent);
 
-            while (i > 0) {
-                resolution = resolutions[i];
-
-                double tilelon = resolution * 256;
-                double tilelat = resolution * 256;
-
-                double lon0 = extent.getMinX() - world.getMinX();
-                double lon1 = extent.getMaxX() - world.getMinX();
-
-                int col0 = (int) Math.floor(lon0 / tilelon);
-                int col1 = (int) Math.floor((lon1 / tilelon) - 1E-9);
-
-                double lat0 = extent.getMinY() - world.getMinY();
-                double lat1 = extent.getMaxY() - world.getMinY();
-
-                int row0 = (int) Math.floor(lat0 / tilelat);
-                int row1 = (int) Math.floor((lat1 / tilelat) - 1E-9);
-
-                if ((col0 == col1) && (row0 == row1)) {
-                    double tileoffsetlon = world.getMinX() + (col0 * tilelon);
-                    double tileoffsetlat = world.getMinY() + (row0 * tilelat);
-
-                    top = new Envelope(tileoffsetlon, tileoffsetlon + tilelon, tileoffsetlat,
-                            tileoffsetlat + tilelat);
-
-                    break;
-                } else {
-                    i--;
-                }
-            }
-
-            if (top == null) {
-                top = world;
-            }
 
             LOGGER.fine("request = " + extent);
             LOGGER.fine("top level = " + top);
@@ -133,7 +73,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             encodeRegion(top, 256, 1024);
 
             //encode the network links
-            if (top != world) {
+            if (top != KMLUtils.WORLD_BOUNDS_WGS84) {
                 //top left
                 Envelope e00 = new Envelope(top.getMinX(), top.getMinX() + (top.getWidth() / 2d),
                         top.getMaxY() - (top.getHeight() / 2d), top.getMaxY());
@@ -165,7 +105,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             }
 
             //encode the ground overlay(s)
-            if (top == world) {
+            if (top == KMLUtils.WORLD_BOUNDS_WGS84) {
                 //special case for top since it does not line up as a propery
                 //tile -> split it in two
                 encodeTileForViewing(mapLayer, i, new Envelope(-180, 0, -90, 90));
@@ -184,40 +124,93 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         }
 
         void encodeTileForViewing(MapLayer mapLayer, int drawOrder, Envelope box){
-            for (MapLayerInfo info : mapContext.getRequest().getLayers()) {
-                if (info.getName().equals(mapLayer.getTitle())){
-                    if (info.getType() == MapLayerInfo.TYPE_VECTOR 
-                        || info.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR)
-                    {
-                        encodeKMLLink(mapLayer, drawOrder, box);
-                    } else {
-                        encodeGroundOverlay(mapLayer, drawOrder, box);
-                    }
-                    return;
-                }
+            if (isVectorLayer(mapLayer)){
+                encodeKMLLink(mapLayer, drawOrder, box);
+            } else {
+                encodeGroundOverlay(mapLayer, drawOrder, box);
             }
         }
 
         void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box){
-            start("NetworkLink");
-            element("visibility", "1");
-            start("Link");
-            element("href", KMLUtils.getMapUrl(
-                        mapContext,
-                        mapLayer,
-                        0,
-                        box,
-                        new String[] { 
+            if (!tileIsEmpty(mapLayer, box)){
+                start("NetworkLink");
+                element("visibility", "1");
+                start("Link");
+                element("href", KMLUtils.getMapUrl(
+                            mapContext,
+                            mapLayer,
+                            0,
+                            box,
+                            new String[] { 
                             "width", "256",
                             "height", "256",
                             "format_options", "regionateBy:auto"
-                        },
-                        true
-                    )
-                   );
-            end("Link");
-            encodeRegion(box, 128, -1);
-            end("NetworkLink");
+                            },
+                            true
+                            )
+                       );
+                end("Link");
+                encodeRegion(box, 128, -1);
+                end("NetworkLink");
+            }
+        }
+
+        boolean isVectorLayer(MapLayer layer){
+            for (MapLayerInfo info : mapContext.getRequest().getLayers()) {
+                if (info.getName().equals(layer.getTitle())){
+                    if (info.getType() == MapLayerInfo.TYPE_VECTOR 
+                            || info.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        boolean tileIsEmpty(MapLayer mapLayer, Envelope bounds){
+            if (!isVectorLayer(mapLayer)) return false;
+
+            Envelope originalBounds = mapContext.getRequest().getBbox();
+            String originalRegionateBy = 
+            (String)mapContext.getRequest().getFormatOptions().get("regionateby");
+            if (originalRegionateBy == null)
+                 mapContext.getRequest().getFormatOptions().put("regionateby","auto");
+            mapContext.getRequest().setBbox(bounds);
+            int numFeatures = 0;
+
+            try{
+                numFeatures = 
+                    (KMLUtils.loadFeatureCollection(
+                        (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource(),
+                        mapLayer,
+                        mapContext
+                        ).size()/* == 0*/);
+            } catch (HttpErrorCodeException e) {
+                if (e.getErrorCode() == 204){
+                    numFeatures = 0;
+                } else {
+                    LOGGER.log(
+                            Level.WARNING,
+                            "Failure while checking whether a regionated child tile contained features!",
+                            e
+                      );
+                }
+            } catch (Exception e){
+                // Probably just trying to regionate a raster layer...
+                LOGGER.log(
+                        Level.WARNING,
+                        "Failure while checking whether a regionated child tile contained features!",
+                        e
+                  );
+            }
+
+            mapContext.getRequest().setBbox(originalBounds);
+            if (originalRegionateBy == null){
+                mapContext.getRequest().getFormatOptions().remove("regionateby");
+            }
+
+            return numFeatures == 0;
         }
 
         void encodeGroundOverlay(MapLayer mapLayer, int drawOrder, Envelope box) {
@@ -260,6 +253,8 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         }
 
         void encodeNetworkLink(Envelope box, String name, MapLayer mapLayer) {
+            if (tileIsEmpty(mapLayer, box)) return;
+
             start("NetworkLink");
             element("name", name);
 
