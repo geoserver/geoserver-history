@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -288,9 +287,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         protected boolean encodeStyle(SimpleFeature feature,
                 FeatureTypeStyle[] styles, boolean isVector) {
 
-            /**
-             * KML requires sorting, should we do it here ? 
-             */
+            // encode the Line/Poly styles
             List symbolizerList = new ArrayList();
             for (int j = 0; j < styles.length; j++) {
                 Rule[] rules;
@@ -393,84 +390,77 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          */
         protected void encodeStyle(SimpleFeature feature,
                 Symbolizer[] symbolizers) {
+            // look for line symbolizers, if there is any, we should tell the
+            // polygon style to have an outline
+            boolean forceOutline = false;
+            for (int i = 0; i < symbolizers.length; i++) {
+                if (symbolizers[i] instanceof LineSymbolizer) {
+                    forceOutline = true;
+                    break;
+                }
+            }
+
+            // if this is a polygon or line, it should also be given a point
+            boolean lacksPointSymbolizer = true;
+            boolean lacksTextSymbolizer = true;
+            Symbolizer multiPointSymbolizer = null;
+
+            // create a 2-D style
             try {
-                /**
-                 * This causes some performance overhead, but we should separate
-                 * out repeated styles anyway...
-                 * 
-                 * In order of appearance, according to KML specs
-                 */
-                LinkedList<PointSymbolizer> iconStyles = new LinkedList<PointSymbolizer>();
-                LinkedList<TextSymbolizer> labelStyles = new LinkedList<TextSymbolizer>();
-                LinkedList<LineSymbolizer> lineStyles = new LinkedList<LineSymbolizer>();
-                LinkedList<PolygonSymbolizer> polyStyles = new LinkedList<PolygonSymbolizer>();
-                // * Not used: <kml:BalloonStyle>
-                // * Not used: <kml:ListStyle>
 
                 for (int i = 0; i < symbolizers.length; i++) {
-                    Symbolizer sym = symbolizers[i];
-                    if (sym instanceof PointSymbolizer) {
-                        iconStyles.add((PointSymbolizer) sym);
-                    } else if (sym instanceof TextSymbolizer) {
-                        labelStyles.add((TextSymbolizer) sym);
-                    } else if (sym instanceof LineSymbolizer) {
-                        lineStyles.add((LineSymbolizer) sym);
-                    } else if (sym instanceof PolygonSymbolizer) {
-                        polyStyles.add((PolygonSymbolizer) sym);
-                    }
-                    LOGGER.finer(new StringBuffer("Adding symbolizer ").append(
-                            sym).toString());
-                }
+                    Symbolizer symbolizer = symbolizers[i];
+                    LOGGER.finer(new StringBuffer("Applying symbolizer ")
+                            .append(symbolizer).toString());
 
-                // Points / Icons
-                if (iconStyles.isEmpty()) {
-                    // Add a default point symbolizer, so people have something
-                    // to click on
-                    encodeDefaultIconStyle(feature);
-                } else {
-                    Iterator<PointSymbolizer> iter = iconStyles.iterator();
-                    while (iter.hasNext()) {
-                        PointSymbolizer sym = (PointSymbolizer) iter.next();
-                        Style2D style = styleFactory.createStyle(feature, sym,
+                    // Used for custom placemark icon, sometimes even the
+                    // smallest placemarks will cover up the underlying polygons.
+
+                    // But if we pass a PointSymbolizer to something that is
+                    // essentially a polygon this throws up, so we catch it?
+                    Style2D style = null;
+                    try {
+                        styleFactory.createStyle(feature, symbolizer,
                                 scaleRange);
-                        encodePointStyle(style, sym);
+                    } catch (IllegalArgumentException iae) {
+                        // Do nothing
                     }
-                }
 
-                // Labels / Text
-                if (labelStyles.isEmpty()) {
+                    // split out each type of symbolizer
+                    if (symbolizer instanceof TextSymbolizer) {
+                        encodeTextStyle((TextStyle2D) style,
+                                (TextSymbolizer) symbolizer);
+                        lacksTextSymbolizer = false;
+                    }
+
+                    if (symbolizer instanceof PolygonSymbolizer) {
+                        encodePolygonStyle((PolygonStyle2D) style,
+                                (PolygonSymbolizer) symbolizer, forceOutline);
+                        multiPointSymbolizer = symbolizer;
+                    }
+
+                    if (symbolizer instanceof LineSymbolizer) {
+                        encodeLineStyle((LineStyle2D) style,
+                                (LineSymbolizer) symbolizer);
+                        multiPointSymbolizer = symbolizer;
+                    }
+
+                    if (symbolizer instanceof PointSymbolizer) {
+                        encodePointStyle(style, (PointSymbolizer) symbolizer);
+                        lacksPointSymbolizer = false;
+                    }
+
+                }
+                
+                // Add a default txt symbolizer that effectively hides the <name> tag
+                if (lacksTextSymbolizer) {
                     encodeDefaultTextStyle();
-                } else {
-                    Iterator<TextSymbolizer> iter = labelStyles.iterator();
-                    while (iter.hasNext()) {
-                        TextSymbolizer sym = (TextSymbolizer) iter.next();
-                        TextStyle2D style = (TextStyle2D) styleFactory
-                                .createStyle(feature, sym, scaleRange);
-                        encodeTextStyle(style, sym);
-                    }
                 }
 
-                // Lines
-                if (!lineStyles.isEmpty()) {
-                    Iterator<LineSymbolizer> iter = lineStyles.iterator();
-                    while (iter.hasNext()) {
-                        LineSymbolizer sym = (LineSymbolizer) iter.next();
-                        LineStyle2D style = (LineStyle2D) styleFactory
-                                .createStyle(feature, sym, scaleRange);
-                        encodeLineStyle(style, sym);
-                    }
-                }
-
-                // Polygons
-                if (!polyStyles.isEmpty()) {
-                    Iterator<PolygonSymbolizer> iter = polyStyles.iterator();
-                    while (iter.hasNext()) {
-                        PolygonSymbolizer sym = (PolygonSymbolizer) iter.next();
-                        PolygonStyle2D style = (PolygonStyle2D) styleFactory
-                                .createStyle(feature, sym, scaleRange);
-                        // The last argument is forced outline
-                        encodePolygonStyle(style, sym, !lineStyles.isEmpty());
-                    }
+                // Add a default point symbolizer, so people have something
+                // to click on in the Google Earth
+                if (multiPointSymbolizer != null && lacksPointSymbolizer) {
+                    encodeDefaultIconStyle(feature);
                 }
 
             } catch (Exception e) {
