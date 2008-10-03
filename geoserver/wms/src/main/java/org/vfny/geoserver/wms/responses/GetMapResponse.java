@@ -6,10 +6,12 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
+    static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger(GetMapResponse.class.getPackage().getName());
 
     private static FilterFactory filterFac = CommonFactoryFinder.getFilterFactory(null);
@@ -95,8 +97,11 @@ public class GetMapResponse implements Response {
         if(availableProducers == null){
             throw new NullPointerException("availableProducers");
         }
-        this.availableProducers = availableProducers;
-        responseHeaders = new HashMap();
+        if(availableProducers.size() == 0){
+            throw new IllegalArgumentException("No available map producers provided");
+        }
+        this.availableProducers = new ArrayList<GetMapProducer>(availableProducers);
+        responseHeaders = null;
     }
 
     /**
@@ -105,13 +110,21 @@ public class GetMapResponse implements Response {
      * 
      */
     public HashMap getResponseHeaders() {
-        return new HashMap(responseHeaders);
+        return responseHeaders == null? null : new HashMap(responseHeaders);
     }
 
     /**
      * Implements the map production logic for a WMS GetMap request, delegating
      * the encoding to the appropriate output format to a {@link GetMapProducer}
      * appropriate for the required format.
+     * 
+     * <p>
+     * Preconditions:
+     * <ul>
+     * <li>request.getLayers().length > 0
+     * <li>request.getStyles().length == request.getLayers().length
+     * </ul>
+     * </p>
      * 
      * @param req
      *            a {@link GetMapRequest}
@@ -136,6 +149,18 @@ public class GetMapResponse implements Response {
         map = new WMSMapContext(request);
         this.delegate.setMapContext(map);
 
+        // DJB: the WMS spec says that the request must not be 0 area
+        // if it is, throw a service exception!
+        final Envelope env = request.getBbox();
+        if (env == null) {
+            throw new WmsException("GetMap requests must include a BBOX parameter.", "MissingBBox");
+        }
+        if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
+            throw new WmsException(new StringBuffer("The request bounding box has zero area: ")
+                    .append(env).toString());
+        }
+
+
         // enable on the fly meta tiling if request looks like a tiled one
         if (MetatileMapProducer.isRequestTiled(request, delegate)) {
             if (LOGGER.isLoggable(Level.FINER)) {
@@ -149,17 +174,6 @@ public class GetMapResponse implements Response {
         final MapLayerInfo[] layers = request.getLayers();
         final Style[] styles = (Style[]) request.getStyles().toArray(new Style[] {});
         final Filter[] filters = buildLayersFilters(request.getFilter(), layers);
-
-        // DJB: the WMS spec says that the request must not be 0 area
-        // if it is, throw a service exception!
-        final Envelope env = request.getBbox();
-        if (env == null) {
-            throw new WmsException("GetMap requests must include a BBOX parameter.");
-        }
-        if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
-            throw new WmsException(new StringBuffer("The request bounding box has zero area: ")
-                    .append(env).toString());
-        }
 
         // DJB DONE: replace by setAreaOfInterest(Envelope,
         // CoordinateReferenceSystem)
@@ -411,6 +425,9 @@ public class GetMapResponse implements Response {
             this.delegate.produceMap();
 
             if (cachingPossible) {
+                if(responseHeaders == null){
+                    responseHeaders = new HashMap();
+                }
                 responseHeaders.put("Cache-Control", "max-age=" + maxAge + ", must-revalidate");
             }
 
@@ -596,7 +613,7 @@ public class GetMapResponse implements Response {
                 availableProducers);
         if (producer == null) {
             WmsException e = new WmsException("There is no support for creating maps in "
-                    + outputFormat + " format");
+                    + outputFormat + " format", "InvalidFormat");
             e.setCode("InvalidFormat");
             throw e;
         }
