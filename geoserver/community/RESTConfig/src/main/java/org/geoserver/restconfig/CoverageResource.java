@@ -10,41 +10,34 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.MapResource;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
-
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import org.restlet.Context;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.data.MediaType;
 import org.restlet.resource.Representation;
 import org.restlet.resource.StringRepresentation;
-
 import org.springframework.context.ApplicationContext;
-
-import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
-import org.geoserver.rest.MapResource;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.JSONFormat;
-
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
 /**
@@ -192,7 +185,7 @@ public class CoverageResource extends MapResource {
         cc = (CoverageConfig) myDC.getCoverages().get(qualified);
 
         cc.setWmsPath((String) details.get("WMSPath"));
-        cc.setCrs(CRS.decode((String)details.get("CRS")));
+        //cc.setCrs(CRS.decode((String)details.get("CRS")));
 
         GeneralEnvelope env = listAsEnvelope((List) details.get("Envelope"), (String)details.get("CRS"));
         cc.setEnvelope(env);
@@ -249,15 +242,17 @@ public class CoverageResource extends MapResource {
     public static Map getMap(CoverageConfig cc) {
         Map m = new HashMap();
         m.put("WMSPath", cc.getWmsPath());
-        m.put("CRS", cc.getCrs().getIdentifiers().toArray()[0].toString());
 
         GeneralEnvelope env = cc.getEnvelope();
+        m.put("CRS", /* cc.getCrs() */ env.getCoordinateReferenceSystem().getIdentifiers().toArray()[0].toString());
+        
         List envPoints = new ArrayList();
         envPoints.add(env.getLowerCorner().getOrdinate(0));
         envPoints.add(env.getLowerCorner().getOrdinate(1));
         envPoints.add(env.getUpperCorner().getOrdinate(0));
         envPoints.add(env.getUpperCorner().getOrdinate(1));
         m.put("Envelope", envPoints);
+        
         m.put("DefaultStyle", cc.getDefaultStyle());
         m.put("SupplementaryStyles", cc.getStyles()); // TODO: does this return a list of strings or something else?
         m.put("Label", cc.getLabel());
