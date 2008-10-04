@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -75,7 +76,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
 
         // TODO: investigate setting proper charsets in this
         // it's part of the constructor, just need to hook it up.
-        Writer outWriter = new BufferedWriter(new OutputStreamWriter(output));
+        Writer outWriter = new BufferedWriter(new OutputStreamWriter(output,wfs.getCharSet()));
 
         GeoJSONBuilder jsonWriter = new GeoJSONBuilder(outWriter);
 
