@@ -36,7 +36,6 @@ import org.vfny.geoserver.wms.requests.GetKMLReflectKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducer;
-import org.vfny.geoserver.wms.responses.map.kml.KMLUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -130,7 +129,6 @@ public class KMLReflector extends WMService {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-        boolean defaultBbox = false; // Did we fudge the bbox?
         //set to KML mime type, so GEarth opens automatically
         response.setContentType(KMLMapProducer.MIME_TYPE);
 
@@ -152,7 +150,6 @@ public class KMLReflector extends WMService {
         // supply one in that case that covers the whole world (pray your data isn't big and
         // the KMScore value isn't large)
         if (!requestParams.containsKey("BBOX")) {
-            defaultBbox = true;
             requestParams.put("BBOX", DEFAULT_BBOX);
         }
 
@@ -170,19 +167,6 @@ public class KMLReflector extends WMService {
 
         final MapLayerInfo[] layers = serviceRequest.getLayers();
         LOGGER.info("KML NetworkLink sharing " + layers.length + " layer(s) created.");
-        
-        if (defaultBbox){
-            Envelope e = layers[0].getLatLongBoundingBox();
-            for (int i = 1; i < layers.length; i++)
-                e.expandToInclude(layers[i].getLatLongBoundingBox());
-            
-            e = KMLUtils.expandToTile(e);
-            
-            serviceRequest.setBbox(e);
-            requestParams.put("BBOX", "" + e.getMinX() + "," + e.getMinY() + "," + e.getMaxX() + "," + e.getMaxY());
-        }
-        
-        Envelope layerbbox = serviceRequest.getBbox();
 
         Style[] styles = null;
 
@@ -278,6 +262,8 @@ public class KMLReflector extends WMService {
         GeoServer gs = GeoServerExtensions.bean(GeoServer.class);
         proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl,gs.getProxyBaseUrl());
           
+        Envelope layerbbox = null;
+
         // make a network link for every layer
         for (int i = 0; i < layers.length; i++) {
             //if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
@@ -292,6 +278,13 @@ public class KMLReflector extends WMService {
                 filter = "&" + filterKey + "=" + filter;
             } else {
                 filter = "";
+            }
+            
+            Envelope le = layers[i].getLatLongBoundingBox();
+            if (layerbbox == null){
+                layerbbox = new Envelope(le);
+            } else {
+                layerbbox.expandToInclude(le);
             }
 
             final URL geoserverUrl = new URL(proxifiedBaseUrl);
@@ -333,7 +326,6 @@ public class KMLReflector extends WMService {
                 sb.append("</Link>\n");
                 sb.append("</NetworkLink>\n");
             } else {
-                Envelope le = serviceRequest.getBbox();
                 StringBuffer queryString = new StringBuffer("wms?");
                 queryString.append("service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+xml");
                 queryString.append("&width=").append(WIDTH).append("&height=").append(HEIGHT);
