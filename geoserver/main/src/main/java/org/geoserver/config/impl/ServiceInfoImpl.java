@@ -323,6 +323,34 @@ public class ServiceInfoImpl implements ServiceInfo {
             return false;
         return true;
     }
+
+    /**
+     * @param versions the versions to set
+     */
+    public void setVersions(List versions) {
+        this.versions = versions;
+    }
+
+    /**
+     * @param keywords the keywords to set
+     */
+    public void setKeywords(List keywords) {
+        this.keywords = keywords;
+    }
+
+    /**
+     * @param exceptionFormats the exceptionFormats to set
+     */
+    public void setExceptionFormats(List exceptionFormats) {
+        this.exceptionFormats = exceptionFormats;
+    }
+
+    /**
+     * @param clientProperties the clientProperties to set
+     */
+    public void setClientProperties(Map clientProperties) {
+        this.clientProperties = clientProperties;
+    }
     
     
 }

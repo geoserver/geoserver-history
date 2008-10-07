@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.opengis.util.ProgressListener;

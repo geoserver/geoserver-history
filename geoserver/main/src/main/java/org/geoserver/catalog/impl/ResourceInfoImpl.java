@@ -378,4 +378,18 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
             return false;
         return true;
     }
+
+    /**
+     * @param keywords the keywords to set
+     */
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
+    }
+
+    /**
+     * @param metadataLinks the metadataLinks to set
+     */
+    public void setMetadataLinks(List<MetadataLinkInfo> metadataLinks) {
+        this.metadataLinks = metadataLinks;
+    }
 }

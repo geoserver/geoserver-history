@@ -1,0 +1,349 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <!-- 
+      TYPE DEFINITIONS 
+    -->
+	<typedef class="org.geoserver.catalog.hibernate.FilterType" name="filter">
+    </typedef>
+    <typedef class="org.geoserver.catalog.hibernate.BoundingBoxType" name="boundingBox">
+    </typedef>
+    <typedef class="org.geoserver.catalog.hibernate.NumberRangeType" name="numberRange">
+    </typedef>
+    
+    <!--
+       CATALOG
+    -->
+    <!-- StoreInfo -->
+	<class name="org.geoserver.catalog.impl.StoreInfoImpl" table="STORES">
+		<id name="id" column="STORE_ID">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="NAME" unique="true" not-null="true" />
+		<property name="description" column="DESCRIPTION"/>
+		<property name="enabled" column="ENABLED"/>
+        <!-- many-to-one name="namespace" column="NAMESPACE" 
+        	class="org.geoserver.catalog.impl.NamespaceInfoImpl"/ --> <!-- FIX: WorkSpace -->
+        	
+        <map name="metadata" table="STORE_METADATA">
+        	<key column="STORE_ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>
+    </class>
+    
+    <!-- DataStoreInfo -->
+    <joined-subclass name="org.geoserver.catalog.impl.DataStoreInfoImpl" 
+		extends="org.geoserver.catalog.impl.StoreInfoImpl" table="DATA_STORES">
+		<key column="DATA_STORE_ID"/>
+		
+		<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS">
+        	<key column="DATA_STORE_ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>
+		
+	</joined-subclass>
+    
+    <!-- CoverageStoreInfo -->
+    <joined-subclass name="org.geoserver.catalog.impl.CoverageStoreInfoImpl" 
+		extends="org.geoserver.catalog.impl.StoreInfoImpl" table="COVERAGE_STORES">
+		<key column="COVERAGE_STORE_ID"/>
+		<property name="type" column="TYPE"/>
+		<property name="URL" column="URL"/>
+    </joined-subclass>
+    
+	<!-- StyleInfo -->
+	<class name="org.geoserver.catalog.impl.StyleInfoImpl" table="STYLES">
+		<id name="id" column="STYLE_ID">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="NAME"/>
+        <property name="filename" column="FILENAME"/>
+    </class>
+    
+	<!-- NamespaceInfo -->
+    <class name="org.geoserver.catalog.impl.NamespaceInfoImpl" table="NAMESPACES">
+		<id name="id" column="STYLE_ID">
+            <generator class="native"/>
+        </id>
+        <property name="prefix" column="PREFIX" unique="true"/>        
+        <property name="URI" column="URI" unique="true"/>
+	</class>	
+	
+	 <!-- MetadataLinkInfo -->
+    <class name="org.geoserver.catalog.impl.MetadataLinkInfoImpl" table="METADATA_LINKS">
+		<id name="id" column="ID">
+            <generator class="native"/>
+        </id>
+    	<property name="type" column="TYPE"/>
+		<property name="about" column="ABOUT"/>
+		<property name="metadataType" column="METADATA_TYPE"/>
+		<property name="content" column="CONTENT"/>
+    </class>
+    
+	<!-- ResourceInfo -->    
+	<class name="org.geoserver.catalog.impl.ResourceInfoImpl" table="RESOURCES">
+		<id name="id" column="RESOURCE_ID">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="NAME"/>
+        <many-to-one name="namespace" column="NAMESPACE" class="org.geoserver.catalog.impl.NamespaceInfoImpl"/>
+		<property name="title" column="TITLE"/>
+		<property name="abstract" column="ABSTRACT"/>
+		<property name="description" column="DESCRIPTION"/>
+		<property name="enabled" column="ENABLED"/>
+	    <set name="keywords" table="RESOURCE_KEYWORDS">
+		   <key column="RESOURCE_ID"/>
+		   <element type="java.lang.String"/>
+		</set>
+		<set name="metadataLinks" cascade="all">
+		   <key column="RESOURCE_ID"/>
+		   <many-to-many 
+		  		class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
+		</set>
+		<property name="nativeBoundingBox" type="boundingBox">
+			<column name="MINX"/>
+			<column name="MINY"/>
+			<column name="MAXX"/>
+			<column name="MAXY"/>
+			<column name="CRS"/>
+		</property>
+		<property name="latLonBoundingBox" type="boundingBox">
+			<column name="LL_MINX"/>
+			<column name="LL_MINY"/>
+			<column name="LL_MAXX"/>
+			<column name="LL_MAXY"/>
+			<column name="LL_CRS"/>
+		</property>
+		<property name="SRS" column="SRS"/>
+        <map name="metadata" table="RESOURCE_METADATA">
+        	<key column="RESOURCE_ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>
+    	<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.StoreInfoImpl"/>
+	</class>
+	
+	<!-- FeatureTypeInfo -->
+	<joined-subclass name="org.geoserver.catalog.impl.FeatureTypeInfoImpl"
+		extends="org.geoserver.catalog.impl.ResourceInfoImpl" table="FEATURE_TYPES">
+		<key column="FEATURE_TYPE_ID"/>
+		<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.DataStoreInfoImpl"/>
+		<property name="filter" column="FILTER" type="filter"/>
+    </joined-subclass>
+    
+    <!-- CoverageInfo -->
+    <joined-subclass name="org.geoserver.catalog.impl.CoverageInfoImpl" 
+		extends="org.geoserver.catalog.impl.ResourceInfoImpl" table="COVERAGES">
+		<key column="COVERAGE_ID"/>
+		<property name="nativeFormat" column="NATIVE_FORMAT"/>
+		<set name="supportedFormats">
+		   <key column="COVERAGE_ID"/>
+		   <element type="java.lang.String"/>
+		</set>
+    	<set name="requestSRS">
+			<key column="COVERAGE_ID"/>
+			<element type="java.lang.String"/>
+		</set>
+		<set name="responseSRS">
+			<key column="COVERAGE_ID"/>
+			<element type="java.lang.String"/>
+		</set>
+		<property name="defaultInterpolationMethod" column="DEFAULT_INTERPOLATION_METHOD"/>
+		<set name="interpolationMethods">
+			<key column="COVERAGE_ID"/>
+			<element type="java.lang.String"/>
+		</set>
+		<map name="parameters" table="COVERAGE_PARAMETERS">
+        	<key column="STORE_ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.lang.String"></element>
+        </map>       
+        <many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.CoverageStoreInfoImpl"/>
+    </joined-subclass>
+    
+    <!-- LegendInfo -->
+    <class name="org.geoserver.catalog.impl.LegendInfoImpl" table="LEGENDS">
+       <id name="id" column="LEGEND_ID">
+	   	 <generator class="native"/>
+	   </id>
+	   <property name="width" column="WIDTH"/>
+	   <property name="height" column="HEIGHT"/>
+	   <property name="format" column="FORMAT"/>
+	   <property name="onlineResource" column="ONLINE_RESOURCE"/>
+    </class>
+    
+    <!-- LayerInfo -->
+    <class name="org.geoserver.catalog.impl.LayerInfoImpl" table="LAYERS">
+	   <id name="id" column="LAYER_ID">
+	   	 <generator class="native"/>
+	   </id>
+	   <property name="path" column="PATH"/>
+		
+	   <many-to-one name="defaultStyle" column="DEFAULT_STYLE" class="org.geoserver.catalog.impl.StyleInfoImpl"/>
+	   <set name="styles" table="LAYER_STYLES">
+        	<key column="LAYER_ID"/>
+			<many-to-many class="org.geoserver.catalog.impl.StyleInfoImpl"/>
+       </set>   
+       	   
+       <many-to-one name="resource" column="RESOURCE" class="org.geoserver.catalog.impl.ResourceInfoImpl"/>
+       <many-to-one name="legend" column="LEGEND" 
+          cascade="all" class="org.geoserver.catalog.impl.LegendInfoImpl"/>
+    	
+       <property name="enabled" column="ENABLED"/>
+       <map name="metadata" table="LAYER_METADATA">
+        	<key column="LAYER_ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>
+    </class>
+    
+    <!-- MapInfo -->
+    <class name="org.geoserver.catalog.impl.MapInfoImpl" table="MAPS">
+	   <id name="id" column="ID">
+	   	 <generator class="native"/>
+	   </id>
+	   <property name="name" column="NAME"/>
+	   <property name="enabled" column="ENABLED"/>
+       <list name="layers">
+          <key column="MAP_ID"/>
+          <list-index column="LAYER_INDEX"/>
+		  <one-to-many class="org.geoserver.catalog.impl.LayerInfoImpl"/>
+		</list>
+		
+    </class>
+
+    <!--
+    SERVICES
+    -->
+    <!-- ContactInfo -->
+    <class name="org.geoserver.config.impl.ContactInfoImpl" table="CONTACT">
+		<id name="id" column="ID">
+            <generator class="native"/>
+        </id>
+    	<property name="address" column="ADDRESS"/>
+    	<property name="addressCity" column="ADDRESS_CITY"/>
+    	<property name="addressCountry" column="ADDRESS_COUNTRY"/>
+    	<property name="addressPostalCode" column="ADDRESS_POSTAL_CODE"/>
+    	<property name="addressState" column="ADDRESS_STATE"/>
+    	<property name="addressType" column="ADDRESS_TYPE"/>
+    
+    	<property name="contactEmail" column="ADDRESS_EMAIL"/>
+    	<property name="contactFacsimile" column="ADDRESS_FACSIMILE"/>
+    	<property name="contactOrganization" column="ADDRESS_ORGANIZATION"/>
+    	<property name="contactPerson" column="ADDRESS_PERSON"/>
+    	<property name="contactPosition" column="ADDRESS_POSITION"/>
+    	<property name="contactVoice" column="ADDRESS_VOICE"/>
+	 </class>
+	 
+	 <!-- ImageFormatInfo -->
+	 <!-- class name="org.geoserver.config.impl.ImageFormatInfoImpl" table="IMAGE_FORMATS">
+		<id name="id" column="ID">
+            <generator class="native"/>
+        </id>
+    	<property name="antiAliasing" column="ANTI_ALIASING"/>    	    
+		<property name="nativeAcceleration" column="NATIVE_ACCELERATION"/>
+	    <map name="metadata" table="IMAGING_METADATA">
+        	<key column="ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>    
+     </class -->
+
+	 <!-- ImagingInfo -->
+	 <!-- class name="org.geoserver.config.impl.ImagingInfoImpl" table="IMAGING">
+		<id name="id" column="ID">
+            <generator class="native"/>
+        </id>
+    	<set name="imageFormats" table="IMAGE_FORMATS">
+    	    <key column="ID"/>
+			<one-to-many class="org.geoserver.config.impl.ImageFormatInfoImpl"/>
+    	</set>
+		<property name="allowInterpolation" column="ALLOW_INTERPOLATION"/>    	    
+		<property name="recycling" column="RECYCLYING"/>
+		<property name="tileThreads" column="TILE_THREADS"/>
+		<property name="tilePriority" column="TILE_PRIORITY"/>
+
+	    <map name="metadata" table="IMAGING_METADATA">
+        	<key column="ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>    
+     </class -->
+	 
+	 <!-- GeoServerInfo -->
+     <class name="org.geoserver.config.impl.GeoServerInfoImpl" table="GEOSERVER">
+		<id name="id" column="ID">
+            <generator class="native"/>
+        </id>
+    	<one-to-one name="contactInfo" class="org.geoserver.config.impl.ContactInfoImpl"/>
+    	<!-- one-to-one name="imaging" class="org.geoserver.config.impl.ImagingInfoImpl"/ -->
+    	
+		<property name="charset" column="CHARSET"/>
+		<property name="title" column="TITLE"/>
+		<property name="adminUsername" column="ADMIN_USER_NAME"/>
+		<property name="adminPassword" column="ADMIN_PASSWORD"/>
+		<!-- property name="memoryCapacity" column="MEMORY_CAPACITY"/ -->
+		<!-- property name="memoryThreshold" column="MEMORY_THRESHOLD"/ -->
+		<property name="maxFeatures" column="MAX_FEATURES"/>
+		<property name="numDecimals" column="NUM_DECIMALS"/>
+		<property name="onlineResource" column="ONLINE_RESOURCE"/>
+		<property name="schemaBaseUrl" column="SCHEMA_BASE_URL"/>
+		<property name="proxyBaseUrl" column="PROXY_BASE_URL"/>
+		<property name="verbose" column="VERBOSE"/>
+		<property name="verboseExceptions" column="VERBOSE_EXCEPTIONS"/>
+	
+		<map name="metadata" table="GEOSERVER_METADATA">
+        	<key column="ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>    
+	 </class>
+
+    <!-- ServiceInfo -->
+    <class name="org.geoserver.config.impl.ServiceInfoImpl" table="SERVICES">
+		<id name="id" column="ID">
+            <generator class="native"/>
+        </id>
+        <property name="enabled" column="ENABLED"/>
+		<property name="name" column="NAME" not-null="true" unique="true"/>
+		<property name="title" column="TITLE"/>
+		<property name="maintainer" column="MAINTAINER"/>
+		<property name="abstract" column="ABSTRACT"/>	
+		<property name="accessConstraints" column="ACCESS_CONSTRAINTS"/>	
+		<property name="fees" column="FEES"/>	
+		<list name="keywords" table="SERVICE_KEYWORDS">
+		    <key column="SERVICE_ID"/>
+		    <list-index column="KEYWORD_INDEX"/>
+			<element type="java.lang.String"/>
+    	</list>   
+    	<list name="exceptionFormats">
+    	    <key column="SERVICE_ID"/>
+    	    <list-index column="EXCEPTION_FORMAT_INDEX"/>
+			<element type="java.lang.String"/>
+    	</list>
+		<list name="versions">
+		    <key column="SERVICE_ID"/>
+		    <list-index column="VERSION_INDEX"/>
+			<element type="org.geotools.util.Version"/>
+    	</list>       	
+		<one-to-one name="metadataLink" cascade="all" 
+			class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
+		<many-to-one name="geoServer" class="org.geoserver.config.impl.GeoServerInfoImpl" column="GEOSERVER"/>
+
+		<property name="citeCompliant" column="CITE_COMPLIANT"/>
+		<property name="onlineResource" column="ONLINE_RESOURCE"/>
+
+		<map name="metadata" table="SERVICE_METADATA">
+        	<key column="ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>    
+	 </class>
+    
+</hibernate-mapping>

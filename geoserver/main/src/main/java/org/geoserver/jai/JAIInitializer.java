@@ -67,7 +67,7 @@ public class JAIInitializer implements GeoServerInitializer {
         long jaiMemory = (long) (jai.getMemoryCapacity() * Runtime.getRuntime().maxMemory());
         jaiCache.setMemoryCapacity(jaiMemory);
         
-        // Setting up Cahce Threshold
+        // Setting up Cache Threshold
         jaiCache.setMemoryThreshold((float) jai.getMemoryThreshold());
         
         jaiDef.getTileScheduler().setParallelism(jai.getTileThreads());

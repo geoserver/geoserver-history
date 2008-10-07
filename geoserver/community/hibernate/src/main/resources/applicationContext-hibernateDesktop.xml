@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+	Application context for hibernate based web applications
+-->
+<beans>
+
+	<!-- conext initializer -->
+	<bean id="configurationInitializer" 
+		class="org.geoserver.hibernate.ConfigurationInitializer"/>
+		
+	<!-- catalog -->
+	<bean id="catalog" 
+	    class="org.geoserver.catalog.hibernate.HibernateCatalog">
+	    <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+</beans>

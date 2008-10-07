@@ -236,7 +236,7 @@
     <artifactId>gt-xsd-filter</artifactId>
     <version>${gt.version}</version>
    </dependency>
-      <dependency>
+   <dependency>
     <groupId>org.geotools.xsd</groupId>
     <artifactId>gt-xsd-wcs</artifactId>
     <version>${gt.version}</version>

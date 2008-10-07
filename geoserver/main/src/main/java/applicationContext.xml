@@ -22,7 +22,7 @@
      
     <!-- configuration module -->
         <!-- note: we use depends to ensure that all datastore plugins are 
-             loaded from the spring container before processing hte catalog -->
+             loaded from the spring container before processing the catalog -->
     
     <bean id="rawCatalog" class="org.geoserver.catalog.impl.CatalogImpl"/>
     <bean id="secureCatalog" class="org.geoserver.security.SecureCatalogImpl">

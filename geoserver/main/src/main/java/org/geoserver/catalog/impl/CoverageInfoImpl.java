@@ -251,4 +251,32 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
 		return this.srsWKT;
 	}
 
+    /**
+     * @param supportedFormats the supportedFormats to set
+     */
+    public void setSupportedFormats(List<String> supportedFormats) {
+        this.supportedFormats = supportedFormats;
+    }
+
+    /**
+     * @param interpolationMethods the interpolationMethods to set
+     */
+    public void setInterpolationMethods(List<String> interpolationMethods) {
+        this.interpolationMethods = interpolationMethods;
+    }
+
+    /**
+     * @param requestSRS the requestSRS to set
+     */
+    public void setRequestSRS(List<String> requestSRS) {
+        this.requestSRS = requestSRS;
+    }
+
+    /**
+     * @param responseSRS the responseSRS to set
+     */
+    public void setResponseSRS(List<String> responseSRS) {
+        this.responseSRS = responseSRS;
+    }
+
 }

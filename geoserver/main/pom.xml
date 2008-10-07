@@ -155,8 +155,8 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>data</artifactId>
-                        <version>1.7-ND-SNAPSHOT</version>
-                        <classifier>tests</classifier>
+            <version>1.7-ND-SNAPSHOT</version>
+            <classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

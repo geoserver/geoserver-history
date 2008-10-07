@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  <!-- property file config -->
+  <bean id="placeholderConfig"
+     class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+		  <value>classpath:h2.properties</value>
+  		  <!--value>classpath:postgresql.properties</value-->
+		</property>
+		<property name="systemPropertiesModeName">
+		  <value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
+		</property>
+  </bean>
+  
+  <!-- data source -->
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	<property name="driverClassName">
+	  <value>${jdbc.driver}</value>
+	</property>
+	<property name="url">
+	  <value>${jdbc.url}</value>
+	</property>
+	<property name="username">
+	  <value>${jdbc.user}</value>
+	</property>
+	<property name="password">
+	  <value>${jdbc.password}</value>
+	</property>
+  </bean>
+ 
+  <!-- setup hibernate session factory -->
+  <bean id="sessionFactory" class="org.geoserver.hibernate.GeoServerSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="schemaUpdate" value="false"/>
+    <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
+  </bean>
+ 
+   <!-- setup transaction manager	-->
+   <bean id="catalogInterceptor" 
+      class="org.geoserver.catalog.hibernate.HibernateCatalogInterceptor">
+      <constructor-arg ref="catalogTarget"/>
+   </bean>
+   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory">
+      <ref bean="sessionFactory"/>
+    </property>
+    <property name="dataSource" ref="dataSource"/>
+    <property name="entityInterceptor" ref="catalogInterceptor"/>
+   </bean>
+
+ <!-- this is a transactional proxy for services which make calls to 
+      catalog / config which ensrues transactions / session set up -->
+ <bean id="transactionalService" abstract="true"
+    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+  <property name="transactionManager" ref="transactionManager"/>
+  <property name="transactionAttributes">
+   <props>
+    <prop key="*">PROPAGATION_REQUIRED</prop>
+   </props>
+  </property>
+ </bean>
+   
+  <!--
+    catalog
+  -->
+  <bean id="catalogTarget" class="org.geoserver.catalog.hibernate.HibernateCatalog">
+	<property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+  <alias name="catalogTarget" alias="catalog"/>
+ 
+  <bean id="configFactory" class="org.geoserver.config.impl.GeoServerFactoryImpl"/>
+  <bean id="configTarget" class="org.geoserver.config.hibernate.HibernateGeoServer">
+    <property  name="sessionFactory" ref="sessionFactory"/>
+    <property name="factory" ref="configFactory"/>
+  </bean>
+  <alias name="configTarget" alias="config"/>
+  
+</beans>
