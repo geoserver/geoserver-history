@@ -15,7 +15,12 @@ import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-
+/**
+ * KML transformer for doing superoverlay regions.
+ * 
+ * @author Justin Deoliveira
+ * @version $Id$
+ */
 public class KMLSuperOverlayTransformer extends KMLTransformerBase {
     /**
      * logger

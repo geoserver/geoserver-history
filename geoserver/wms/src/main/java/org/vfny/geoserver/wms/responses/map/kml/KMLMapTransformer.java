@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.awt.Color;
@@ -61,7 +65,10 @@ import com.vividsolutions.jts.geom.Polygon;
  * Common utility adapter for kml raster/vector transformers.
  * 
  * @author Wayne Fang, Refractions Research, wfang@refractions.net
+ * @author Arne Kepp - OpenGeo
+ * @author Justin Deoliveira - OpenGeo
  * 
+ * @version $Id$
  */
 public abstract class KMLMapTransformer extends KMLTransformerBase {
     /**

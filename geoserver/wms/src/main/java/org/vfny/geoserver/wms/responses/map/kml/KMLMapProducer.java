@@ -28,6 +28,8 @@ import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
  * Handles a GetMap request that spects a map in KML format.
  * 
  * @author James Macgill
+ * @author Justin Deoliveira
+ * @see KMLTransformer
  */
 public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	/** standard logger */

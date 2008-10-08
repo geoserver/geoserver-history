@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.math.BigDecimal;
@@ -36,6 +40,12 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
+/**
+ * TODO: what does this class do?
+ * 
+ * @author Andrea Aime
+ * @version $Id$
+ */
 public class ExternalSortRegionatingStrategy extends
         CachedHierarchyRegionatingStrategy {
 

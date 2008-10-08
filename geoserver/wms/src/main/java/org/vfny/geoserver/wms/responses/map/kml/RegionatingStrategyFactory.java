@@ -1,5 +1,17 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+/**
+ * Acts as a spring extension point to grab the {@link RegionatingStrategy} GeoServer shall use.
+ * 
+ * @author David Winslow
+ * 
+ * @version $Id$
+ * @see RegionatingStrategy
+ */
 public interface RegionatingStrategyFactory {
     /**
      * Based on a string identifying a strategy, can this factory produce a suitable strategy implementation?
