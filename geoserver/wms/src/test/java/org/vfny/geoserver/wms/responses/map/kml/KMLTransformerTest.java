@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -102,7 +103,7 @@ public class KMLTransformerTest extends WMSTestSupport {
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(featureSource.getFeatures(), output);
-        System.out.println(output.toString());
+        // System.out.println(output.toString());
         
         Document document = dom(new ByteArrayInputStream(output.toByteArray()));
 
@@ -300,12 +301,43 @@ public class KMLTransformerTest extends WMSTestSupport {
     }
 
     public void testStyleConverter() throws Exception {
+//      <Style id="GeoServerStyleBasicPolygons.1107531493630">
+//      <IconStyle>
+//      <colorMode>normal</colorMode>
+//      <Icon>
+//      <href>http://maps.google.com/mapfiles/kml/pal4/icon25.png</href>
+//      </Icon>
+//      </IconStyle>
+//      <LineStyle>
+//      <color>ffBA3E00</color>
+//      <width>2</width>
+//      </LineStyle>
+//      <PolyStyle>
+//      <color>b24d4dff</color>
+//      <outline>1</outline>   
+//      </PolyStyle>
+//      <LabelStyle>
+//      <color>ffffffff</color>
+//      </LabelStyle>
+//      </Style>
+        
         KMLTransformer transformer = new KMLTransformer();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         mapContext.removeLayer(mapContext.getLayer(0));
         mapContext.addLayer(createMapLayer(MockData.BASIC_POLYGONS, "allsymbolizers"));
 
         transformer.transform(mapContext, output);
+        
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+
+        assertEquals("kml", document.getDocumentElement().getNodeName());
+        assertEquals(3, document.getElementsByTagName("Style").getLength());
+        XMLAssert.assertXpathEvaluatesTo("0", "count(//Style[1]/IconStyle/Icon/color)", document);
+        XMLAssert.assertXpathEvaluatesTo("http://maps.google.com/mapfiles/kml/pal4/icon25.png", "//Style[1]/IconStyle/Icon/href", document);
+        XMLAssert.assertXpathEvaluatesTo("b24d4dff", "//Style[1]/PolyStyle/color", document);
+        XMLAssert.assertXpathEvaluatesTo("1", "//Style[1]/PolyStyle/outline", document);
+        XMLAssert.assertXpathEvaluatesTo("ffBA3E00", "//Style[1]/LineStyle/color", document);
     }
 
     public void testTransformer() throws Exception {
