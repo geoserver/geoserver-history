@@ -61,6 +61,7 @@ public class KMLTransformerTest extends WMSTestSupport {
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
+        dataDirectory.addStyle("allsymbolizers", getClass().getResource("allsymbolizers.sld"));
         dataDirectory.addStyle("SingleFeature", getClass().getResource("singlefeature.sld"));
         dataDirectory.addStyle("Bridge", getClass().getResource("bridge.sld"));
         dataDirectory.copyTo(getClass().getResourceAsStream("bridge.png"), "styles/bridge.png");
@@ -298,23 +299,13 @@ public class KMLTransformerTest extends WMSTestSupport {
         zipFile.close();
     }
 
-    public void testSuperOverlayTransformer() throws Exception {
-        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(mapContext);
-        transformer.setIndentation(2);
-
-        mapContext.setAreaOfInterest(new Envelope(-180, 180, -90, 90));
-
+    public void testStyleConverter() throws Exception {
+        KMLTransformer transformer = new KMLTransformer();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        transformer.transform(mapLayer, output);
-        
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+        mapContext.removeLayer(mapContext.getLayer(0));
+        mapContext.addLayer(createMapLayer(MockData.BASIC_POLYGONS, "allsymbolizers"));
 
-        assertEquals("kml", document.getDocumentElement().getNodeName());
-        assertEquals( 3, document.getElementsByTagName("Region").getLength() );
-        assertEquals( 2, document.getElementsByTagName("NetworkLink").getLength() );
-        assertEquals( 2, document.getElementsByTagName("GroundOverlay").getLength() );
-        
+        transformer.transform(mapContext, output);
     }
 
     public void testTransformer() throws Exception {

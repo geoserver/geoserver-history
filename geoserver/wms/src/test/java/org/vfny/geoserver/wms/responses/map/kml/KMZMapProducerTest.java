@@ -15,6 +15,7 @@ import junit.framework.Test;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 public class KMZMapProducerTest extends WMSTestSupport {
@@ -74,4 +75,33 @@ public class KMZMapProducerTest extends WMSTestSupport {
 
 		zipFile.close();
 	}
+
+    public void testAbort() throws Exception {
+        mapProducer.abort();
+        FileOutputStream output = null;
+        try{
+            File temp = File.createTempFile("test", "kmz");
+            temp.delete();
+            temp.mkdir();
+            temp.deleteOnExit();
+
+            File zip = new File(temp, "kmz.zip");
+
+            output = new FileOutputStream(zip);
+            mapProducer.writeTo(output);
+        } catch (NullPointerException we){
+            // TODO: Should be a WmsException, right?
+            return;
+        } finally {
+            if (output != null) output.close();
+        }
+
+        fail();
+    }
+
+    public void testContentDisposition() {
+        String contentDisposition = mapProducer.getContentDisposition();
+        assertTrue(contentDisposition.startsWith("attachment; filename="));
+        assertTrue(contentDisposition.endsWith(".kml"));
+    }
 }

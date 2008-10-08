@@ -104,7 +104,5 @@ public class KMLReflector {
         transformer.setEncoding(encoding);
         transformer.setEncodeAsRegion( request.getSuperOverlay() );
         transformer.transform( request, response.getOutputStream() );
-        
-     
     }
 }

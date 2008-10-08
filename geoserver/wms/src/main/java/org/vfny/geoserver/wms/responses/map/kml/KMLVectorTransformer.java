@@ -71,10 +71,6 @@ public class KMLVectorTransformer extends KMLMapTransformer {
             geometryTranslator = geometryTransformer.createTranslator(contentHandler);
         }
 
-        public void setRegionatingStrategy(RegionatingStrategy rs){
-            myStrategy = rs;
-        }
-
         public void encode(Object o) throws IllegalArgumentException {
             FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) o;
             SimpleFeatureType featureType = features.getSchema();
