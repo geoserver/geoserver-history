@@ -4,12 +4,8 @@
  */
 package org.geoserver.catalog;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.Map;
-
-import org.opengis.util.ProgressListener;
 
 /**
  * A store of geoaspatial resources.

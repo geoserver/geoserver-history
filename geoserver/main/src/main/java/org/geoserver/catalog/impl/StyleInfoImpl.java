@@ -20,6 +20,10 @@ public class StyleInfoImpl implements StyleInfo {
     
     Catalog catalog;
     
+    public StyleInfoImpl() {
+        
+    }
+    
     public StyleInfoImpl( Catalog catalog ) {
         this.catalog = catalog;
     }

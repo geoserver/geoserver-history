@@ -7,7 +7,6 @@ package org.geoserver.config.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerInfo;
 
@@ -327,5 +326,12 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         if (verboseExceptions != other.isVerboseExceptions())
             return false;
         return true;
+    }
+
+    /**
+     * @param clientProperties the clientProperties to set
+     */
+    public void setClientProperties(Map clientProperties) {
+        this.clientProperties = clientProperties;
     }
 }

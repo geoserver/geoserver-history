@@ -18,6 +18,10 @@ public class CoverageStoreInfoImpl extends StoreInfoImpl implements
 
     String url;
     
+    public CoverageStoreInfoImpl() {
+        super(null);
+    }
+    
     public CoverageStoreInfoImpl(Catalog catalog) {
         super(catalog);
     }

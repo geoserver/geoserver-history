@@ -68,13 +68,14 @@
   <bean id="catalogTarget" class="org.geoserver.catalog.hibernate.HibernateCatalog">
 	<property name="sessionFactory" ref="sessionFactory"/>
   </bean>
-  <alias name="catalogTarget" alias="catalog"/>
+  <alias name="catalogTarget" alias="rawCatalog"/>
  
   <bean id="configFactory" class="org.geoserver.config.impl.GeoServerFactoryImpl"/>
   <bean id="configTarget" class="org.geoserver.config.hibernate.HibernateGeoServer">
-    <property  name="sessionFactory" ref="sessionFactory"/>
+    <property name="sessionFactory" ref="sessionFactory"/>
     <property name="factory" ref="configFactory"/>
+    <property name="catalog" ref="catalogTarget"/>
   </bean>
-  <alias name="configTarget" alias="config"/>
+  <alias name="configTarget" alias="geoServer2"/>
   
 </beans>

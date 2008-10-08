@@ -65,4 +65,11 @@ public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
             return false;
         return true;
     }
+
+    /**
+     * @param metadata the metadata to set
+     */
+    public void setMetadata(Map<String, Serializable> metadata) {
+        this.metadata = metadata;
+    }
 }

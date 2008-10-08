@@ -14,6 +14,7 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.GeoServerFactoryImpl;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class HibernateGeoServer implements GeoServer {
 
@@ -63,32 +64,50 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public GeoServerInfo getGlobal() {
+        getSession().beginTransaction();
         Iterator i = getSession().createQuery("from " + GeoServerInfo.class.getName()).iterate();
         if (i.hasNext()) {
-            return (GeoServerInfo) i.next();
+            GeoServerInfo geoserver = (GeoServerInfo) i.next();
+            return geoserver;
         }
+        
         return null;
     }
 
     public void setGlobal(GeoServerInfo configuration) {
+        Transaction transaction = getSession().getTransaction();
+        transaction.begin();
         getSession().save(configuration);
+        transaction.commit();
     }
 
     public void save(GeoServerInfo geoServer) {
+        Transaction transaction = getSession().getTransaction();
+        transaction.begin();
         getSession().save(geoServer);
+        transaction.commit();
     }
 
     public void add(ServiceInfo service) {
+        Transaction transaction = getSession().getTransaction();
+        transaction.begin();
         service.setGeoServer(getGlobal());
         getSession().save(service);
+        transaction.commit();
     }
 
     public void remove(ServiceInfo service) {
+        Transaction transaction = getSession().getTransaction();
+        transaction.begin();
         getSession().delete(service);
+        transaction.commit();
     }
 
     public void save(ServiceInfo service) {
+        Transaction transaction = getSession().getTransaction();
+        transaction.begin();
         getSession().save(service);
+        transaction.commit();
     }
 
     public Collection<? extends ServiceInfo> getServices() {
@@ -96,7 +115,10 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public Collection<? extends ServiceInfo> getServices(Class<?> clazz) {
-        return getSession().createQuery("from " + clazz.getName()).list();
+        Transaction transaction = getSession().getTransaction();
+        transaction.begin();
+        List list = getSession().createQuery("from " + clazz.getName()).list();
+        return list;
     }
 
     public <T extends ServiceInfo> T getService(Class<T> clazz) {
@@ -114,12 +136,15 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public <T extends ServiceInfo> T getService(String id, Class<T> clazz) {
-        Iterator i = getSession().createQuery("from " + clazz.getName() + " where id = " + id)
-                .iterate();
+        Transaction transaction = getSession().getTransaction();
+        transaction.begin();
+        Iterator i = getSession().createQuery("from " + clazz.getName() + " where id = " + id).iterate();
         if (i.hasNext()) {
-            return (T) i.next();
+            T service = (T) i.next();
+            return service;
         }
 
+        transaction.rollback();
         return null;
     }
 
@@ -128,13 +153,15 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public <T extends ServiceInfo> T getServiceByName(String name, Class<T> clazz) {
-
-        Iterator i = getSession().createQuery(
-                "from " + clazz.getName() + " where name = '" + name + "'").iterate();
+        Transaction transaction = getSession().getTransaction();
+        transaction.begin();
+        Iterator i = getSession().createQuery("from " + clazz.getName() + " where name = '" + name + "'").iterate();
         if (i.hasNext()) {
-            return (T) i.next();
+            T service = (T) i.next();
+            return service;
         }
 
+        transaction.rollback();
         return null;
     }
 

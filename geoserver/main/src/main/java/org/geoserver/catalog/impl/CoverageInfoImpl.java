@@ -53,8 +53,12 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
 
     private CoordinateReferenceSystem verticalCRS;
 
-	private String srsWKT;
+    private String srsWKT;
 
+    public CoverageInfoImpl() {
+        super( null );
+    }
+    
     public CoverageInfoImpl(Catalog catalog) {
         super( catalog );
     }

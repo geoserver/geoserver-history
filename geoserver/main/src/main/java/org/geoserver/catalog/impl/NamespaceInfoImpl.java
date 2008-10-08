@@ -29,6 +29,10 @@ public class NamespaceInfoImpl implements NamespaceInfo {
     
     HashMap<String,Serializable> metadata;
     
+    public NamespaceInfoImpl() {
+        
+    }
+    
     public NamespaceInfoImpl(Catalog catalog) {
         this.catalog = catalog;
     }

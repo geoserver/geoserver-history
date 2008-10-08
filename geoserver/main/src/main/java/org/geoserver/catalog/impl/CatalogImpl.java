@@ -4,9 +4,7 @@
  */
 package org.geoserver.catalog.impl;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,13 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.MultiHashMap;
-import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
 import org.geoserver.catalog.NamespaceInfo;

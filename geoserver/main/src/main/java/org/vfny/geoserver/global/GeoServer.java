@@ -208,7 +208,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Address.
      */
     public String getAddress() {
-        return info.getContactInfo().getAddress();
+        return info.getContactInfo() != null ? info.getContactInfo().getAddress() : null;
         //return notNull(address);
     }
 
@@ -222,7 +222,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact City.
      */
     public String getAddressCity() {
-        return info.getContactInfo().getAddressCity();
+        return info.getContactInfo() != null ? info.getContactInfo().getAddressCity() : null;
         //return notNull(addressCity);
     }
 
@@ -236,7 +236,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Country.
      */
     public String getAddressCountry() {
-        return info.getContactInfo().getAddressCountry();
+        return info.getContactInfo() != null ? info.getContactInfo().getAddressCountry() : null;
         //return notNull(addressCountry);
     }
 
@@ -250,7 +250,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact PostalCode.
      */
     public String getAddressPostalCode() {
-        return info.getContactInfo().getAddressPostalCode();
+        return info.getContactInfo() != null ? info.getContactInfo().getAddressPostalCode() : null;
         //return notNull(addressPostalCode);
     }
 
@@ -264,7 +264,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact State.
      */
     public String getAddressState() {
-        return info.getContactInfo().getAddressState();
+        return info.getContactInfo() != null ? info.getContactInfo().getAddressState() : null;
         //return notNull(addressState);
     }
 
@@ -278,7 +278,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Address Type.
      */
     public String getAddressType() {
-        return info.getContactInfo().getAddressType();
+        return info.getContactInfo() != null ? info.getContactInfo().getAddressType() : null;
         //return notNull(addressType);
     }
 
@@ -312,7 +312,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Email.
      */
     public String getContactEmail() {
-        return info.getContactInfo().getContactEmail();
+        return info.getContactInfo() != null ? info.getContactInfo().getContactEmail() : null;
         //return notNull(contactEmail);
     }
 
@@ -326,7 +326,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Facsimile.
      */
     public String getContactFacsimile() {
-        return info.getContactInfo().getContactFacsimile();
+        return info.getContactInfo() != null ? info.getContactInfo().getContactFacsimile() : null;
         //return notNull(contactFacsimile);
     }
 
@@ -340,7 +340,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Organization.
      */
     public String getContactOrganization() {
-        return info.getContactInfo().getContactOrganization();
+        return info.getContactInfo() != null ? info.getContactInfo().getContactOrganization() : null;
         //return notNull(contactOrganization);
     }
 
@@ -354,7 +354,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Person.
      */
     public String getContactPerson() {
-        return info.getContactInfo().getContactPerson();
+        return info.getContactInfo() != null ? info.getContactInfo().getContactPerson() : null;
         //return notNull(contactPerson);
     }
 
@@ -368,7 +368,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Position.
      */
     public String getContactPosition() {
-        return info.getContactInfo().getContactPosition();
+        return info.getContactInfo() != null ? info.getContactInfo().getContactPosition() : null;
         //return notNull(contactPosition);
     }
 
@@ -382,7 +382,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return String the contact Phone.
      */
     public String getContactVoice() {
-        return info.getContactInfo().getContactVoice();
+        return info.getContactInfo() != null ? info.getContactInfo().getContactVoice() : null;
         //return notNull(contactVoice);
     }
 

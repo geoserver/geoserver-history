@@ -34,7 +34,6 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.io.CoverageAccess;
-import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.CoverageSource;
 import org.geotools.coverage.io.Driver;
 import org.geotools.coverage.io.CoverageAccess.AccessType;

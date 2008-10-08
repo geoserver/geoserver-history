@@ -330,7 +330,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      * @return DOCUMENT ME!
      */
     public String getNamesSpacePrefix() {
-        return cs.getWorkspace().getName();
+        return cs.getWorkspace() != null ? cs.getWorkspace().getName() : null;
         //return nameSpaceId;
     }
 

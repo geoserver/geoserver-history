@@ -28,6 +28,8 @@
 		<property name="enabled" column="ENABLED"/>
         <!-- many-to-one name="namespace" column="NAMESPACE" 
         	class="org.geoserver.catalog.impl.NamespaceInfoImpl"/ --> <!-- FIX: WorkSpace -->
+        <many-to-one name="workspace" column="WORKSPACE" 
+        	class="org.geoserver.catalog.impl.WorkspaceInfoImpl"/>
         	
         <map name="metadata" table="STORE_METADATA">
         	<key column="STORE_ID"/>
@@ -68,14 +70,28 @@
     
 	<!-- NamespaceInfo -->
     <class name="org.geoserver.catalog.impl.NamespaceInfoImpl" table="NAMESPACES">
-		<id name="id" column="STYLE_ID">
+		<id name="id" column="NS_ID">
             <generator class="native"/>
         </id>
         <property name="prefix" column="PREFIX" unique="true"/>        
         <property name="URI" column="URI" unique="true"/>
 	</class>	
 	
-	 <!-- MetadataLinkInfo -->
+	<!-- WorkspaceInfo -->
+    <class name="org.geoserver.catalog.impl.WorkspaceInfoImpl" table="WORKSPACES">
+		<id name="id" column="WS_ID">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="NAME" unique="true"/>  
+        
+        <map name="metadata" table="WORKSPACE_METADATA">
+        	<key column="WS_ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>      
+	</class>
+	
+	<!-- MetadataLinkInfo -->
     <class name="org.geoserver.catalog.impl.MetadataLinkInfoImpl" table="METADATA_LINKS">
 		<id name="id" column="ID">
             <generator class="native"/>
@@ -295,14 +311,25 @@
 		<property name="onlineResource" column="ONLINE_RESOURCE"/>
 		<property name="schemaBaseUrl" column="SCHEMA_BASE_URL"/>
 		<property name="proxyBaseUrl" column="PROXY_BASE_URL"/>
-		<property name="verbose" column="VERBOSE"/>
+		<property name="verbose" column="VERBOSE_FLAG"/>
 		<property name="verboseExceptions" column="VERBOSE_EXCEPTIONS"/>
-	
+		<property name="loggingLevel" column="LOGGING_LEVEL"/>
+    	<property name="loggingLocation" column="LOGGING_LOCATION"/>
+    	<property name="stdOutLogging" column="STD_OUT_LOGGING"/>
+    	<property name="updateSequence" column="UPDATE_SEQUENCE"/>
+    	
 		<map name="metadata" table="GEOSERVER_METADATA">
         	<key column="ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
-        </map>    
+        </map>
+        
+		<map name="clientProperties" table="GEOSERVER_CLIENT_PROPS">
+        	<key column="ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>
+        
 	 </class>
 
     <!-- ServiceInfo -->
