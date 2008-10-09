@@ -50,9 +50,8 @@ public class KMLReflectorTest extends WMSTestSupport {
             MockData.BASIC_POLYGONS.getLocalPart();
         String requestURL = "kml/wms?layers=" + layerName;
         Document dom = getAsDOM(requestURL);
-        print(dom);
         assertXpathEvaluatesTo(layerName, "kml/Folder/NetworkLink[1]/name", dom);
-        String href = XMLUnit.newXpathEngine().evaluate("kml/Folder/NetworkLink/url/href", dom);
+        String href = XMLUnit.newXpathEngine().evaluate("kml/Folder/NetworkLink/Link/href", dom);
         Pattern badPattern = Pattern.compile("&bbox=", Pattern.CASE_INSENSITIVE);
         assertFalse(badPattern.matcher(href).matches());
     }
@@ -66,7 +65,10 @@ public class KMLReflectorTest extends WMSTestSupport {
 
         final String requestUrl = "kml/wms?layers=" + layerName + "&styles=&superoverlay=true";
         Document dom = getAsDOM(requestUrl);
+        print(dom);
         assertEquals("kml", dom.getDocumentElement().getLocalName());
+        assertXpathExists("kml/Folder/NetworkLink/Link/href", dom);
+        assertXpathExists("kml/Folder/LookAt/longitude", dom);
     }
     
     public void _testWmsRepeatedLayerWithNonStandardStyleAndCqlFiler() throws Exception {
