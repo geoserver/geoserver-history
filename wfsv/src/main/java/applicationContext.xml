@@ -227,5 +227,8 @@
   </bean>
   <bean id="getDiffHtmlOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetDiffHtmlOutputFormat">
   </bean>
+  
+  <!--  security wrapper factories -->
+  <bean id="versionedSecureDataFactory" class="org.geoserver.wfsv.security.VersionedSecureDataFactory"/>
 
 </beans>
