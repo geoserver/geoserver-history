@@ -4,6 +4,8 @@ import static org.easymock.EasyMock.*;
 import junit.framework.TestCase;
 
 import org.acegisecurity.AcegiSecurityException;
+import org.geoserver.security.SecureObjectsTest;
+import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -14,7 +16,7 @@ import org.geotools.feature.NameImpl;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 
-public class ReadOnlyFeatureSourceTest extends TestCase {
+public class ReadOnlyFeatureSourceTest extends SecureObjectsTest {
 
     public void testReadOnlyFeatureSourceDataStore() throws Exception {
         // build up the mock
@@ -28,10 +30,10 @@ public class ReadOnlyFeatureSourceTest extends TestCase {
         expect(fs.getFeatures(new DefaultQuery())).andReturn(fc);
         replay(fs);
         
-        ReadOnlyFeatureSource ro = new ReadOnlyFeatureSource(fs, false);
+        ReadOnlyFeatureSource ro = new ReadOnlyFeatureSource(fs, WrapperPolicy.HIDE);
         assertTrue(ro.getDataStore() instanceof ReadOnlyDataStore); 
         ReadOnlyFeatureCollection collection = (ReadOnlyFeatureCollection) ro.getFeatures();
-        assertFalse(collection.challenge);
+        assertEquals(WrapperPolicy.HIDE, ro.policy);
         assertTrue(ro.getFeatures(Filter.INCLUDE) instanceof ReadOnlyFeatureCollection);
         assertTrue(ro.getFeatures(new DefaultQuery()) instanceof ReadOnlyFeatureCollection);
     }
@@ -45,7 +47,7 @@ public class ReadOnlyFeatureSourceTest extends TestCase {
         expect(fs.getSchema()).andReturn(schema);
         replay(fs);
         
-        ReadOnlyFeatureStore ro = new ReadOnlyFeatureStore(fs, true);
+        ReadOnlyFeatureStore ro = new ReadOnlyFeatureStore(fs, WrapperPolicy.RO_CHALLENGE);
         try {
             ro.addFeatures(createNiceMock(FeatureCollection.class));
             fail("This should have thrown a security exception");
@@ -63,7 +65,7 @@ public class ReadOnlyFeatureSourceTest extends TestCase {
         expect(fs.getDataStore()).andReturn(da);
         replay(fs);
         
-        ReadOnlyFeatureSource ro = new ReadOnlyFeatureSource(fs, true);
+        ReadOnlyFeatureSource ro = new ReadOnlyFeatureSource(fs, WrapperPolicy.RO_CHALLENGE);
         assertTrue(ro.getDataStore() instanceof ReadOnlyDataAccess); 
     }
 }

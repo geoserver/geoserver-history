@@ -957,15 +957,17 @@ public class DataConfig {
             try {
                 dataStore = dataStoreConfig.findDataStore(sc);
 
-                String[] typeNames = dataStore.getTypeNames();
-
-                for (int i = 0; i < typeNames.length; i++) {
-                    typeNames[i] = dataStoreConfig.getId() + SEPARATOR + typeNames[i];
+                if(dataStore != null) {
+                    String[] typeNames = dataStore.getTypeNames();
+    
+                    for (int i = 0; i < typeNames.length; i++) {
+                        typeNames[i] = dataStoreConfig.getId() + SEPARATOR + typeNames[i];
+                    }
+    
+                    List typeNamesList = Arrays.asList(typeNames);
+    
+                    set.addAll(typeNamesList);
                 }
-
-                List typeNamesList = Arrays.asList(typeNames);
-
-                set.addAll(typeNamesList);
             } catch (Throwable ignore) {
                 LOGGER.warning("Could not use " + dataStoreConfig.getId()
                     + " datastore was unavailable!");
