@@ -77,7 +77,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfs:Query typeName=\"topp:archsites\" featureVersion=\"1\"/>\r\n"
                 + "</wfs:GetFeature>\r\n";
         Document doc = postAsDOM(root(), before);
-        print(doc);
+        //print(doc);
         assertXpathEvaluatesTo("4", "count(/wfs:FeatureCollection/gml:featureMember)", doc);
         assertXpathEvaluatesTo("Signature Rock",
                 "//topp:archsites[@fid=\"archsites.1\"]/topp:str1", doc);
@@ -142,7 +142,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "       <ogc:FeatureId fid=\"archsites.5\"/>\r\n" + "    </ogc:Filter>\r\n"
                 + "  </wfs:Query>\r\n" + "</wfsv:GetVersionedFeature>";
         Document doc = postAsDOM(root(), request);
-        print(doc);
+        //print(doc);
         assertXpathEvaluatesTo("1", "count(/wfs:FeatureCollection/gml:featureMembers/topp:archsites)", doc);
         assertXpathEvaluatesTo("1", "count(//topp:archsites[@gml:id=\"archsites.5\"])", doc);
         assertXpathEvaluatesTo("1", "count(//topp:createdBy)", doc);
@@ -170,7 +170,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
         Document doc = postAsDOM(root(), request);
-        print(doc);
+        //print(doc);
         assertXpathEvaluatesTo("1", "count(//topp:changesets)", doc);
         // version 2 and 3 are taken to version enable roads and restricted
         assertXpathEvaluatesTo("Inserting, updating and deleting",
@@ -188,7 +188,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
         Document doc = postAsDOM(root(), request);
-        print(doc);
+        //print(doc);
         assertXpathEvaluatesTo("1", "count(//topp:changesets)", doc);
         // version 2 and 3 are taken to version enable roads and restricted
         assertXpathEvaluatesTo("Inserting, updating and deleting",
@@ -227,7 +227,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"1\"/>\r\n"
                 + "</wfsv:GetDiff>";
         Document doc = postAsDOM(root(), request);
-        print(doc);
+        //print(doc);
         assertXpathEvaluatesTo("1", "count(/wfs:Transaction/wfs:Insert)", doc);
         assertXpathEvaluatesTo("archsites.5", "/wfs:Transaction/wfs:Insert/topp:archsites/@gml:id",
                 doc);
