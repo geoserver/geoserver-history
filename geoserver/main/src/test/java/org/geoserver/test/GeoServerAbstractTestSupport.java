@@ -221,9 +221,13 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     protected void oneTimeTearDown() throws Exception {
         if(getTestData().isTestDataAvailable()) {
             try {
-                //kill the context
+                // kill the context
                 applicationContext.destroy();
+                
+                // kill static caches
+                new GeoServerExtensions().setApplicationContext(null);
         
+                // some tests do need a kick on the GC to fully clean up
                 if(isMemoryCleanRequired()) {
                     System.gc(); 
                     System.runFinalization();
