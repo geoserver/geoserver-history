@@ -6,19 +6,13 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.Test;
 
@@ -34,8 +28,6 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 
 public class KMLTransformerTest extends WMSTestSupport {
@@ -77,10 +69,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
         int nfeatures = featureSource.getFeatures().size();
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        transformer.transform(featureSource.getFeatures(), output);
-        
-        Document document = dom(new ByteArrayInputStream(output.toByteArray()));
+        Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
 
         Element element = document.getDocumentElement();
         assertEquals("kml", element.getNodeName());
@@ -101,11 +90,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
         int nfeatures = featureSource.getFeatures().size();
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        transformer.transform(featureSource.getFeatures(), output);
-        // System.out.println(output.toString());
-        
-        Document document = dom(new ByteArrayInputStream(output.toByteArray()));
+        Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
 
         // make sure we are generating icon styles, but that we're not sticking a color onto them
         XMLAssert.assertXpathEvaluatesTo("" + nfeatures, "count(//Style/IconStyle/Icon/href)", document);
@@ -125,10 +110,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
         featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        transformer.transform(featureSource.getFeatures(), output);
-        
-        Document document = dom(new ByteArrayInputStream(output.toByteArray()));
+        Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
 
         Element element = document.getDocumentElement();
         assertEquals("kml", element.getNodeName());
@@ -183,11 +165,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         KMLRasterTransformer transformer = new KMLRasterTransformer(mapContext);
         transformer.setInline(true);
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        transformer.transform(mapLayer, output);
-
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+        Document document = WMSTestSupport.transform(mapLayer, transformer);
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
 
@@ -205,11 +183,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         KMLRasterTransformer transformer = new KMLRasterTransformer(mapContext);
         transformer.setInline(false);
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        transformer.transform(mapLayer, output);
-
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+        Document document = WMSTestSupport.transform(mapLayer, transformer);
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
 
@@ -322,14 +296,10 @@ public class KMLTransformerTest extends WMSTestSupport {
 //      </Style>
         
         KMLTransformer transformer = new KMLTransformer();
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
         mapContext.removeLayer(mapContext.getLayer(0));
         mapContext.addLayer(createMapLayer(MockData.BASIC_POLYGONS, "allsymbolizers"));
 
-        transformer.transform(mapContext, output);
-        
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+        Document document = WMSTestSupport.transform(mapContext, transformer, false);
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
         assertEquals(3, document.getElementsByTagName("Style").getLength());
@@ -343,11 +313,7 @@ public class KMLTransformerTest extends WMSTestSupport {
     public void testTransformer() throws Exception {
         KMLTransformer transformer = new KMLTransformer();
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        transformer.transform(mapContext, output);
-
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+        Document document = WMSTestSupport.transform(mapContext, transformer);
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
     }
