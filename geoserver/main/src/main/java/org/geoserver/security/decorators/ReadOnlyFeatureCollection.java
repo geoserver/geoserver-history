@@ -8,7 +8,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.geoserver.security.SecureCatalogImpl;
+import org.geoserver.security.SecureCatalogImpl.Response;
+import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.collection.DecoratingFeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
@@ -26,19 +29,20 @@ import org.opengis.filter.sort.SortBy;
  */
 public class ReadOnlyFeatureCollection<T extends FeatureType, F extends Feature> extends
         DecoratingFeatureCollection<T, F> {
-    boolean challenge;
+    WrapperPolicy policy;
 
-    protected ReadOnlyFeatureCollection(FeatureCollection<T, F> delegate, boolean challenge) {
+    ReadOnlyFeatureCollection(FeatureCollection<T, F> delegate, WrapperPolicy policy) {
         super(delegate);
-        this.challenge = challenge;
+        this.policy = policy;
     }
 
     public Iterator iterator() {
-        final Iterator<F> it = delegate.iterator();
-        if (it == null)
-            return null;
-        else
-            return new ReadOnlyIterator(it, challenge);
+        return (Iterator) SecuredObjects.secure(delegate.iterator(), policy);
+    }
+    
+    @Override
+    public org.geotools.feature.FeatureIterator<F> features() {
+        return (FeatureIterator) SecuredObjects.secure(delegate.features(), policy);
     }
 
     public FeatureCollection<T, F> sort(SortBy order) {
@@ -46,7 +50,7 @@ public class ReadOnlyFeatureCollection<T extends FeatureType, F extends Feature>
         if(fc == null)
             return null;
         else
-            return new ReadOnlyFeatureCollection<T, F>(fc, challenge);
+            return (FeatureCollection) SecuredObjects.secure(fc, policy);
     }
 
     public FeatureCollection<T, F> subCollection(Filter filter) {
@@ -54,7 +58,7 @@ public class ReadOnlyFeatureCollection<T extends FeatureType, F extends Feature>
         if(fc == null)
             return null;
         else
-            return new ReadOnlyFeatureCollection<T, F>(fc, challenge);
+            return (FeatureCollection) SecuredObjects.secure(fc, policy);
     }
 
     // ---------------------------------------------------------------------
@@ -85,29 +89,6 @@ public class ReadOnlyFeatureCollection<T extends FeatureType, F extends Feature>
         throw unsupportedOperation();
     }
 
-    class ReadOnlyIterator implements Iterator {
-        Iterator wrapped;
-        boolean challenge;
-
-        public ReadOnlyIterator(Iterator wrapped, boolean challenge) {
-            this.wrapped = wrapped;
-            this.challenge = challenge;
-        }
-
-        public boolean hasNext() {
-            return wrapped.hasNext();
-        }
-
-        public Object next() {
-            return wrapped.next();
-        }
-
-        public void remove() {
-            throw unsupportedOperation();
-        }
-
-    }
-
     /**
      * Notifies the caller the requested operation is not supported, using a plain {@link UnsupportedOperationException}
      * in case we have to conceal the fact the data is actually writable, using an Acegi security exception otherwise
@@ -115,7 +96,7 @@ public class ReadOnlyFeatureCollection<T extends FeatureType, F extends Feature>
      */
     RuntimeException unsupportedOperation() {
         String typeName = getID();
-        if(challenge) {
+        if(policy.response == Response.CHALLENGE) {
             return SecureCatalogImpl.unauthorizedAccess(typeName);
         } else
             return new UnsupportedOperationException("Feature type " + typeName + " is read only");

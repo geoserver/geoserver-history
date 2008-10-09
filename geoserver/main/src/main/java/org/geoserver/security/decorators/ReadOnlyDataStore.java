@@ -7,10 +7,10 @@ package org.geoserver.security.decorators;
 import java.io.IOException;
 
 import org.geoserver.security.SecureCatalogImpl;
+import org.geoserver.security.SecureCatalogImpl.Response;
+import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataStore;
-import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
 import org.opengis.feature.simple.SimpleFeature;
@@ -25,11 +25,13 @@ import org.opengis.filter.Filter;
  * @author Andrea Aime - TOPP
  */
 public class ReadOnlyDataStore extends DecoratingDataStore {
-    boolean challenge;
+    
 
-    public ReadOnlyDataStore(DataStore delegate, boolean challenge) {
+    WrapperPolicy policy;
+
+    protected ReadOnlyDataStore(DataStore delegate, WrapperPolicy policy) {
         super(delegate);
-        this.challenge = challenge;
+        this.policy = policy;
     }
 
     @Override
@@ -53,19 +55,7 @@ public class ReadOnlyDataStore extends DecoratingDataStore {
         if (fs == null)
             return null;
         
-        // if we only have to conceal we're able to write, a read only wrapper would do
-        if(!challenge)
-            return new ReadOnlyFeatureSource(fs, false);
-        
-        // otherwise, not knowing if this call was made to access read or write wise, we have
-        // to create silly wrappers that will complain only if the user actually tries
-        // to write data
-        else if(fs instanceof FeatureLocking)
-            return new ReadOnlyFeatureLocking((FeatureLocking) fs, challenge);
-        else if(fs instanceof FeatureSource)
-            return new ReadOnlyFeatureStore((FeatureStore) fs, challenge);
-        else
-            return new ReadOnlyFeatureSource(fs, challenge);
+        return (FeatureSource) SecuredObjects.secure(fs, policy);
     }
 
     @Override
@@ -106,8 +96,8 @@ public class ReadOnlyDataStore extends DecoratingDataStore {
      * in case we have to conceal the fact the data is actually writable, using an Acegi security exception otherwise
      * to force an authentication from the user
      */
-    RuntimeException notifyUnsupportedOperation() {
-        if(challenge) {
+    protected RuntimeException notifyUnsupportedOperation() {
+        if(policy.response == Response.CHALLENGE) {
             return SecureCatalogImpl.unauthorizedAccess();
         } else
             return new UnsupportedOperationException("This datastore is read only");

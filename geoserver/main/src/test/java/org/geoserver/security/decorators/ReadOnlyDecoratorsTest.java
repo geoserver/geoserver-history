@@ -31,7 +31,7 @@ public class ReadOnlyDecoratorsTest extends AbstractAuthorizationTest {
         ReadOnlyFeatureSource fs = (ReadOnlyFeatureSource) ro.getFeatureSource(
                 null, null);
         assertEquals(ReadOnlyFeatureSource.class, fs.getClass());
-        assertFalse(fs.challenge);
+        assertEquals(WrapperPolicy.HIDE, fs.policy);
         SecuredDataStoreInfo store = (SecuredDataStoreInfo) ro.getStore();
         assertSame(WrapperPolicy.HIDE, ((SecuredDataStoreInfo) store).policy);
     }
@@ -55,7 +55,7 @@ public class ReadOnlyDecoratorsTest extends AbstractAuthorizationTest {
                 WrapperPolicy.RO_CHALLENGE);
         ReadOnlyFeatureStore fs = (ReadOnlyFeatureStore) ro.getFeatureSource(
                 null, null);
-        assertTrue(fs.challenge);
+        assertEquals(WrapperPolicy.RO_CHALLENGE, fs.policy);
         SecuredDataStoreInfo store = (SecuredDataStoreInfo) ro.getStore();
         assertSame(WrapperPolicy.RO_CHALLENGE,
                 ((SecuredDataStoreInfo) store).policy);
@@ -65,7 +65,7 @@ public class ReadOnlyDecoratorsTest extends AbstractAuthorizationTest {
         SecuredDataStoreInfo ro = new SecuredDataStoreInfo(statesStore,
                 WrapperPolicy.HIDE);
         ReadOnlyDataStore dataStore = (ReadOnlyDataStore) ro.getDataStore(null);
-        assertFalse(dataStore.challenge);
+        assertEquals(WrapperPolicy.HIDE, dataStore.policy);
     }
 
     public void testSecuredDataStoreInfoMetadata() throws Exception {

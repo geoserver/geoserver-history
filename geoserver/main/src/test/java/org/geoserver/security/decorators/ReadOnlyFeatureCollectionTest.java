@@ -5,16 +5,16 @@ import static org.easymock.EasyMock.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import junit.framework.TestCase;
-
 import org.acegisecurity.AcegiSecurityException;
+import org.geoserver.security.SecureObjectsTest;
+import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.sort.SortBy;
 
-public class ReadOnlyFeatureCollectionTest extends TestCase {
+public class ReadOnlyFeatureCollectionTest extends SecureObjectsTest {
 
     private FeatureCollection fc;
 
@@ -24,6 +24,8 @@ public class ReadOnlyFeatureCollectionTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
+        super.setUp();
+        
         feature = createNiceMock(Feature.class);
         replay(feature);
         Iterator it = createNiceMock(Iterator.class);
@@ -43,7 +45,7 @@ public class ReadOnlyFeatureCollectionTest extends TestCase {
 
     public void testHide() throws Exception {
 
-        ReadOnlyFeatureCollection ro = new ReadOnlyFeatureCollection(fc, false);
+        ReadOnlyFeatureCollection ro = new ReadOnlyFeatureCollection(fc, WrapperPolicy.HIDE);
 
         // check the easy ones, those that are not implemented in a read only
         // collection
@@ -95,19 +97,19 @@ public class ReadOnlyFeatureCollectionTest extends TestCase {
             // ok
         }
 
-     // check derived collections are still read only and share the same
+        // check derived collections are still read only and share the same
         // challenge policy
         ReadOnlyFeatureCollection sorted = (ReadOnlyFeatureCollection) ro
                 .sort(sort);
-        assertEquals(ro.challenge, sorted.challenge);
+        assertEquals(ro.policy, sorted.policy);
         ReadOnlyFeatureCollection sub = (ReadOnlyFeatureCollection) ro
                 .subCollection(Filter.INCLUDE);
-        assertEquals(ro.challenge, sorted.challenge);
+        assertEquals(ro.policy, sorted.policy);
     }
 
     public void testChallenge() throws Exception {
 
-        ReadOnlyFeatureCollection ro = new ReadOnlyFeatureCollection(fc, true);
+        ReadOnlyFeatureCollection ro = new ReadOnlyFeatureCollection(fc, WrapperPolicy.RO_CHALLENGE);
 
         // check the easy ones, those that are not implemented in a read only
         // collection
@@ -163,9 +165,9 @@ public class ReadOnlyFeatureCollectionTest extends TestCase {
         // challenge policy
         ReadOnlyFeatureCollection sorted = (ReadOnlyFeatureCollection) ro
                 .sort(sort);
-        assertEquals(ro.challenge, sorted.challenge);
+        assertEquals(ro.policy, sorted.policy);
         ReadOnlyFeatureCollection sub = (ReadOnlyFeatureCollection) ro
                 .subCollection(Filter.INCLUDE);
-        assertEquals(ro.challenge, sorted.challenge);
+        assertEquals(ro.policy, sorted.policy);
     }
 }

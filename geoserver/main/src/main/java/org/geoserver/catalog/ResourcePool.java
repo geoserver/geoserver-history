@@ -421,8 +421,7 @@ public class ResourcePool {
                 //only support versioning if on classpath
                 Class clazz = Class.forName("org.geotools.data.VersioningFeatureSource");
                 if ( clazz.isAssignableFrom( fs.getClass() ) ) {
-                    //class implements versioning, reflectively create the 
-                    // versioning wrapper
+                    //class implements versioning, reflectively create the versioning wrapper
                     try {
                     Class wrapper = 
                         Class.forName("org.vfny.geoserver.global.GeoServerVersioningFeatureSource");

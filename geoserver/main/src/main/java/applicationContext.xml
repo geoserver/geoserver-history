@@ -161,4 +161,8 @@
     <property name="resourceLoader" ref="resourceLoader"/>
   </bean>
   
+  <!-- security wrapper factories  -->
+  <bean id="defaultDataSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureDataFactory"/>
+  <bean id="defaultCatalogSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureCatalogFactory"/>
+  
 </beans>
