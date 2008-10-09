@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.xpath.XPath;
@@ -13,6 +14,7 @@ import javax.xml.xpath.XPathFactory;
 import junit.framework.Test;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
+import org.custommonkey.xmlunit.XMLUnit;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.geoserver.data.test.MockData;
@@ -50,6 +52,9 @@ public class KMLReflectorTest extends WMSTestSupport {
         Document dom = getAsDOM(requestURL);
         print(dom);
         assertXpathEvaluatesTo(layerName, "kml/Folder/NetworkLink[1]/name", dom);
+        String href = XMLUnit.newXpathEngine().evaluate("kml/Folder/NetworkLink/url/href", dom);
+        Pattern badPattern = Pattern.compile("&bbox=", Pattern.CASE_INSENSITIVE);
+        assertFalse(badPattern.matcher(href).matches());
     }
 
     /**
