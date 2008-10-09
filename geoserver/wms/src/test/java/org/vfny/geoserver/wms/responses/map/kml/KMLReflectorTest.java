@@ -71,7 +71,7 @@ public class KMLReflectorTest extends WMSTestSupport {
         assertXpathExists("kml/Folder/LookAt/longitude", dom);
     }
     
-    public void _testWmsRepeatedLayerWithNonStandardStyleAndCqlFiler() throws Exception {
+    public void testWmsRepeatedLayerWithNonStandardStyleAndCqlFiler() throws Exception {
         final String layerName = MockData.BASIC_POLYGONS.getPrefix() + ":"
                 + MockData.BASIC_POLYGONS.getLocalPart();
 
