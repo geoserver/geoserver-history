@@ -7,15 +7,19 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import junit.framework.Test;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.geoserver.data.test.TestData;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -38,16 +42,45 @@ import com.vividsolutions.jts.geom.Point;
  * Unit test suite for {@link KMLVectorTransformer}
  * 
  * @author Gabriel Roldan
+ * @todo this test does not need to extend GeoServerAbstractTestSupport but just TestCase. For the
+ *       time being, its a workaround for the build to keep going until we find out why these tests
+ *       produce other ones to fail
  */
-public class KMLVectorTransformerTest extends TestCase {
+public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
 
     private WMSMockData mockData;
 
     /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new KMLVectorTransformerTest());
+    }
+
+    @Override
+    protected TestData buildTestData() throws Exception {
+        return new TestData() {
+            public File getDataDirectoryRoot() {
+                return null;
+            }
+
+            public boolean isTestDataAvailable() {
+                return false;
+            }
+
+            public void setUp() throws Exception {
+            }
+
+            public void tearDown() throws Exception {
+            }
+        };
+    }
+
+    /**
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Override
+    protected void setUpInternal() throws Exception {
         mockData = new WMSMockData();
         mockData.setUp();
 
@@ -59,8 +92,9 @@ public class KMLVectorTransformerTest extends TestCase {
     /**
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @Override
+    protected void tearDownInternal() throws Exception {
+        new GeoServerExtensions().setApplicationContext(null);
     }
 
     /**

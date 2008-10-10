@@ -9,12 +9,15 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import junit.framework.Test;
 
+import org.geoserver.data.test.TestData;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.vfny.geoserver.global.MapLayerInfo;
@@ -30,8 +33,11 @@ import com.vividsolutions.jts.geom.Point;
  * Unit test suite for {@link KMLNetworkLinkTransformer}
  * 
  * @author Gabriel Roldan
+ * @todo this test does not need to extend GeoServerAbstractTestSupport but just TestCase. For the
+ *       time being, its a workaround for the build to keep going until we find out why these tests
+ *       produce other ones to fail
  */
-public class KMLNetworkLinkTransformerTest extends TestCase {
+public class KMLNetworkLinkTransformerTest extends GeoServerAbstractTestSupport {
 
     private WMSMockData mockData;
 
@@ -41,10 +47,36 @@ public class KMLNetworkLinkTransformerTest extends TestCase {
     private GetMapRequest request;
 
     /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new KMLNetworkLinkTransformerTest());
+    }
+
+    @Override
+    protected TestData buildTestData() throws Exception {
+        return new TestData() {
+            public File getDataDirectoryRoot() {
+                return null;
+            }
+
+            public boolean isTestDataAvailable() {
+                return false;
+            }
+
+            public void setUp() throws Exception {
+            }
+
+            public void tearDown() throws Exception {
+            }
+        };
+    }
+
+    /**
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Override
+    protected void setUpInternal() throws Exception {
         mockData = new WMSMockData();
         mockData.setUp();
 
@@ -69,8 +101,8 @@ public class KMLNetworkLinkTransformerTest extends TestCase {
     /**
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @Override
+    protected void tearDownInternal() throws Exception {
         new GeoServerExtensions().setApplicationContext(null);
     }
 

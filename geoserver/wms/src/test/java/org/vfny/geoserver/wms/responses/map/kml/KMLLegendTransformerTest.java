@@ -4,13 +4,17 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+
+import java.io.File;
 import java.util.Map;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import junit.framework.Test;
+
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
-import junit.framework.TestCase;
-
+import org.geoserver.data.test.TestData;
+import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
@@ -33,8 +37,11 @@ import com.vividsolutions.jts.geom.Point;
  * 
  * @author Gabriel Roldan (OpenGeo)
  * @version $Id$
+ * @todo this test does not need to extend GeoServerAbstractTestSupport but just TestCase. For the
+ *       time being, its a workaround for the build to keep going until we find out why these tests
+ *       produce other ones to fail
  */
-public class KMLLegendTransformerTest extends TestCase {
+public class KMLLegendTransformerTest extends GeoServerAbstractTestSupport {
 
     private WMSMockData mockData;
 
@@ -50,10 +57,36 @@ public class KMLLegendTransformerTest extends TestCase {
     private MapLayer mapLayer;
 
     /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new KMLLegendTransformerTest());
+    }
+
+    @Override
+    protected TestData buildTestData() throws Exception {
+        return new TestData() {
+            public File getDataDirectoryRoot() {
+                return null;
+            }
+
+            public boolean isTestDataAvailable() {
+                return false;
+            }
+
+            public void setUp() throws Exception {
+            }
+
+            public void tearDown() throws Exception {
+            }
+        };
+    }
+
+    /**
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Override
+    protected void setUpInternal() throws Exception {
         mockData = new WMSMockData();
         mockData.setUp();
 
@@ -81,8 +114,8 @@ public class KMLLegendTransformerTest extends TestCase {
     /**
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @Override
+    protected void tearDownInternal() throws Exception {
     }
 
     /**
@@ -105,11 +138,11 @@ public class KMLLegendTransformerTest extends TestCase {
         assertXpathEvaluatesTo("pixels", "//kml/ScreenOverlay/overlayXY/@xunits", dom);
         assertXpathEvaluatesTo("pixels", "//kml/ScreenOverlay/overlayXY/@yunits", dom);
 
-        Map<String, String> expectedKVP = KMLReflectorTest.toKvp("http://geoserver.org:8181/geoserver/wms?service=wms&width=20&height=20&style=Default+Style&request=GetLegendGraphic&layer=&format=image%2Fpng&version=1.1.1");
-        Map<String, String> resultantKVP = 
-            KMLReflectorTest.toKvp(xpath.evaluate("//kml/ScreenOverlay/Icon/href", dom));
+        Map<String, String> expectedKVP = KMLReflectorTest
+                .toKvp("http://geoserver.org:8181/geoserver/wms?service=wms&width=20&height=20&style=Default+Style&request=GetLegendGraphic&layer=&format=image%2Fpng&version=1.1.1");
+        Map<String, String> resultantKVP = KMLReflectorTest.toKvp(xpath.evaluate(
+                "//kml/ScreenOverlay/Icon/href", dom));
 
         KMLReflectorTest.assertMapsEqual(expectedKVP, resultantKVP);
     }
-
 }
