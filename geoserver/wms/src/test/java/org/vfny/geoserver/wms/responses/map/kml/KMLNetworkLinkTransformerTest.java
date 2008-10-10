@@ -6,8 +6,11 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 
 import java.util.Collections;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -77,6 +80,7 @@ public class KMLNetworkLinkTransformerTest extends TestCase {
      * @see KMLNetworkLinkTransformer#setEncodeAsRegion(boolean)
      */
     public void testEncodeAsRegion() throws Exception {
+        XpathEngine xpath = XMLUnit.newXpathEngine();
 
         KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer();
         transformer.setEncodeAsRegion(true);
@@ -101,8 +105,10 @@ public class KMLNetworkLinkTransformerTest extends TestCase {
         assertXpathEvaluatesTo("256", "//kml/Folder/NetworkLink/Region/Lod/minLodPixels", dom);
         assertXpathEvaluatesTo("-1", "//kml/Folder/NetworkLink/Region/Lod/maxLodPixels", dom);
 
-        final String expectedHref = "http://geoserver.org:8181/geoserver/wms?format_options=relLinks%3Atrue%3B&service=wms&srs=EPSG%3A4326&width=512&styles=Default+Style&height=256&transparent=false&bbox=-1.0%2C-10.0%2C1.0%2C10.0&request=GetMap&layers=geos%3ATestPoints&format=image%2Fdummy&version=1.1.1";
-        assertXpathEvaluatesTo(expectedHref, "//kml/Folder/NetworkLink/Link/href", dom);
+        final Map<String, String> expectedKvp = KMLReflectorTest.toKvp("http://geoserver.org:8181/geoserver/wms?format_options=relLinks%3Atrue%3B&service=wms&srs=EPSG%3A4326&width=512&styles=Default+Style&height=256&transparent=false&bbox=-1.0%2C-10.0%2C1.0%2C10.0&request=GetMap&layers=geos%3ATestPoints&format=image%2Fdummy&version=1.1.1");
+        final Map<String, String> actualKvp = KMLReflectorTest.toKvp(xpath.evaluate(
+        "//kml/Folder/NetworkLink/Link/href", dom));
+        KMLReflectorTest.assertMapsEqual(expectedKvp, actualKvp);
         assertXpathEvaluatesTo("onRegion", "//kml/Folder/NetworkLink/Link/viewRefreshMode", dom);
 
         // feature type bounds?
@@ -124,7 +130,7 @@ public class KMLNetworkLinkTransformerTest extends TestCase {
      * @throws Exception
      */
     public void testEncodeAsOverlay() throws Exception {
-
+        XpathEngine xpath = XMLUnit.newXpathEngine();
         KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer();
         transformer.setEncodeAsRegion(false);
         transformer.setIndentation(2);
@@ -140,8 +146,11 @@ public class KMLNetworkLinkTransformerTest extends TestCase {
         assertXpathEvaluatesTo("1", "//kml/Folder/NetworkLink/open", dom);
         assertXpathEvaluatesTo("1", "//kml/Folder/NetworkLink/visibility", dom);
 
-        final String expectedHref = "http://geoserver.org:8181/geoserver/wms?format_options=relLinks%3Atrue%3B&service=wms&srs=EPSG%3A4326&width=512&styles=Default+Style&height=256&transparent=false&request=GetMap&layers=geos%3ATestPoints&format=image%2Fdummy&version=1.1.1";
-        assertXpathEvaluatesTo(expectedHref, "//kml/Folder/NetworkLink/Url/href", dom);
+        final Map<String, String> expectedKvp = 
+            KMLReflectorTest.toKvp("http://geoserver.org:8181/geoserver/wms?format_options=relLinks%3Atrue%3B&service=wms&srs=EPSG%3A4326&width=512&styles=Default+Style&height=256&transparent=false&request=GetMap&layers=geos%3ATestPoints&format=image%2Fdummy&version=1.1.1");
+        final Map<String, String> actualKvp = 
+            KMLReflectorTest.toKvp(xpath.evaluate("//kml/Folder/NetworkLink/Url/href", dom));
+        KMLReflectorTest.assertMapsEqual(expectedKvp, actualKvp);
         assertXpathEvaluatesTo("onStop", "//kml/Folder/NetworkLink/Url/viewRefreshMode", dom);
         assertXpathEvaluatesTo("1", "//kml/Folder/NetworkLink/Url/viewRefreshTime", dom);
 
