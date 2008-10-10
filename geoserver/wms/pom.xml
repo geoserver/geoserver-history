@@ -182,7 +182,7 @@
             <!-- this test seems to make other unrelated tests to fail and I have no idea why -->
             <exclude>**/KMLNetworkLinkTransformerTest.java</exclude>
             <exclude>**/KMLLegendTransformerTest.java</exclude>
-            <exclude>**/KMLVectorTransformerTest.java</exclude>
+            <!-- exclude>**/KMLVectorTransformerTest.java</exclude-->
           </excludes>
           <includes>
             <include>**/*Test.java</include>
