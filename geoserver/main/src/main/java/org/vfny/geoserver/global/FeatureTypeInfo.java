@@ -402,6 +402,22 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 new AttributeTypeInfo( ati ).load( adto );
                 featureType.getAttributes().add( ati );
             }    
+        } else {
+            // workaround for GEOS-2277, the upper layers (config/dto) assume that
+            // no attribute should be set if the user did not explicitly specify
+            // the attributes (by changing the schema base and fiddling with types and
+            // names, which is something we don't support fine anyways).
+            SimpleFeatureType ft = ds.getDataStore(null).getSchema(featureType.getName());
+            
+            for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
+                AttributeDescriptor ad = ft.getDescriptor( x );
+                org.geoserver.catalog.AttributeTypeInfo att = catalog.getFactory().createAttribute();
+                att.setName( ad.getLocalName() );
+                att.setMinOccurs( ad.getMinOccurs() );
+                att.setMaxOccurs( ad.getMaxOccurs() );
+                att.setAttribute( ad );
+                featureType.getAttributes().add( att );
+            }
         }
         
        
