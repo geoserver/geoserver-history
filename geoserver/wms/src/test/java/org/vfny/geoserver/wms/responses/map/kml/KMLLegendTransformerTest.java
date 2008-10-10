@@ -4,7 +4,11 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.util.Map;
+
 import static org.custommonkey.xmlunit.XMLAssert.*;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 import junit.framework.TestCase;
 
 import org.geoserver.wms.WMSMockData;
@@ -90,6 +94,7 @@ public class KMLLegendTransformerTest extends TestCase {
     public void testKMLLegendTransformer() throws Exception {
         FeatureCollection<SimpleFeatureType, SimpleFeature> features = FeatureCollections
                 .newCollection();
+        XpathEngine xpath = XMLUnit.newXpathEngine();
 
         KMLLegendTransformer transformer = new KMLLegendTransformer(mapContext);
         transformer.setIndentation(2);
@@ -100,8 +105,11 @@ public class KMLLegendTransformerTest extends TestCase {
         assertXpathEvaluatesTo("pixels", "//kml/ScreenOverlay/overlayXY/@xunits", dom);
         assertXpathEvaluatesTo("pixels", "//kml/ScreenOverlay/overlayXY/@yunits", dom);
 
-        String expectedLegendUrl = "http://geoserver.org:8181/geoserver/wms?service=wms&width=20&height=20&style=Default+Style&request=GetLegendGraphic&layer=&format=image%2Fpng&version=1.1.1";
-        assertXpathEvaluatesTo(expectedLegendUrl, "//kml/ScreenOverlay/Icon/href", dom);
+        Map<String, String> expectedKVP = KMLReflectorTest.toKvp("http://geoserver.org:8181/geoserver/wms?service=wms&width=20&height=20&style=Default+Style&request=GetLegendGraphic&layer=&format=image%2Fpng&version=1.1.1");
+        Map<String, String> resultantKVP = 
+            KMLReflectorTest.toKvp(xpath.evaluate("//kml/ScreenOverlay/Icon/href", dom));
+
+        KMLReflectorTest.assertMapsEqual(expectedKVP, resultantKVP);
     }
 
 }

@@ -18,6 +18,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
+import org.geoserver.ows.kvp.FormatOptionsKvpParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -63,11 +64,7 @@ public class KMLReflectorTest extends WMSTestSupport {
         Map<String, String> resultedKVP = 
            toKvp(xpath.evaluate("kml/Folder/NetworkLink[1]/Url/href", dom));
 
-        for (Map.Entry<String,String> entry : expectedKVP.entrySet())
-            assertEquals(entry.getValue(), expectedKVP.get(entry.getKey()));
-
-        for (String key : expectedKVP.keySet())
-            assertTrue(expectedKVP.containsKey(key));
+        assertMapsEqual(expectedKVP, resultedKVP);
 
         String href = xpath.evaluate("kml/Folder/NetworkLink/Link/href", dom);
         Pattern badPattern = Pattern.compile("&bbox=", Pattern.CASE_INSENSITIVE);
@@ -138,7 +135,7 @@ public class KMLReflectorTest extends WMSTestSupport {
      * @return a map with the key value pairs from the url with all the
      *         parameter names in upper case
      */
-    private Map<String, String> toKvp(String url) {
+    static Map<String, String> toKvp(String url) {
         if (url.indexOf('?') > 0) {
             url = url.substring(url.indexOf('?') + 1);
         }
@@ -160,5 +157,36 @@ public class KMLReflectorTest extends WMSTestSupport {
         }
 
         return kvpMap;
+    }
+
+    static void assertMapsEqual(Map<String, String> expected, Map<String, String> actual) 
+        throws Exception {
+        for (Map.Entry<String, String> entry : expected.entrySet()){
+            if (entry.getKey().equalsIgnoreCase("format_options")){
+                FormatOptionsKvpParser parser = new FormatOptionsKvpParser();
+                Map expectedFormatOptions = (Map) parser.parse(entry.getValue());
+                Map actualFormatOptions = (Map) parser.parse(actual.get(entry.getKey()));
+
+                for (Object o : expectedFormatOptions.entrySet()){
+                    Map.Entry formatOption = (Map.Entry) o;
+                    assertEquals(
+                            formatOption.getValue(), 
+                            actualFormatOptions.get(formatOption.getKey())
+                        );
+                }
+
+                for (Object key : actualFormatOptions.keySet()){
+                    assertTrue(expectedFormatOptions.containsKey(key));
+                }
+
+                // special treatment for the format options
+            } else {
+                assertEquals(entry.getValue(), actual.get(entry.getKey()));
+            }
+        }
+
+        for (String key : actual.keySet()){
+            assertTrue(expected.containsKey(key));
+        }
     }
 }
