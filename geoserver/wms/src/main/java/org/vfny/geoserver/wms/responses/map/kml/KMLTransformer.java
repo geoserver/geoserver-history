@@ -34,6 +34,8 @@ import org.xml.sax.ContentHandler;
  * @author Justin Deoliveira
  * 
  * @version $Id$
+ * @see KMLVectorTransformer
+ * @see KMLRasterTransformer
  */
 public class KMLTransformer extends TransformerBase {
     /**

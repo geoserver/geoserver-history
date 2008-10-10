@@ -223,7 +223,7 @@ public class WMSTestSupport extends GeoServerTestSupport {
         }
         db.setEntityResolver(new EmptyResolver());
     
-        System.out.println(out.toString());
+        //System.out.println(out.toString());
     
         Document doc = db.parse(new ByteArrayInputStream(out.toByteArray()));
         return doc;

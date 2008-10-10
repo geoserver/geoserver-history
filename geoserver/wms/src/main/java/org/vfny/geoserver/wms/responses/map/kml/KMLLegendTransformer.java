@@ -8,6 +8,7 @@ import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -23,6 +24,14 @@ import java.util.Map;
 public class KMLLegendTransformer extends KMLTransformerBase {
     WMSMapContext mapContext;
 
+    /**
+     * TODO: refactor to loose the dependency on mapContext. It is only used to get to the request
+     * base url by doing mapContext.getRequest().getHttpServletRequest() ending up in
+     * {@link Requests#getBaseUrl(javax.servlet.http.HttpServletRequest, org.vfny.geoserver.global.GeoServer)...
+     * Why doesn't it get the proxified base url directly, uh?
+     * 
+     * @param mapContext
+     */
     public KMLLegendTransformer(WMSMapContext mapContext) {
         this.mapContext = mapContext;
         setNamespaceDeclarationEnabled(false);
