@@ -139,11 +139,12 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
         String crsString = crs.getName().toString();
         assertTrue("WGS84 / Simple Mercator".equalsIgnoreCase(crsString));
         assertTrue("EPSG:41001".equalsIgnoreCase(srs));
-        assertTrue(
-                Math.abs(bbox.getMinX() + 1.9236008009077676E7) < 1E-4
-                && Math.abs(bbox.getMinY() + 2.2026354993694823E7) < 1E-4
-                && Math.abs(bbox.getMaxX() - 1.9236008009077676E7) < 1E-4
-                && Math.abs(bbox.getMaxY() - 2.2026354993694823E7) < 1E-4 );
+
+        assertEquals(-1.9236008009077676E7, bbox.getMinX(), 1E-4);
+        assertEquals(-2.2026354993694823E7, bbox.getMinY(), 1E-4);
+        assertEquals(1.9236008009077676E7, bbox.getMaxX(), 1E-4);
+        assertEquals(2.2026354993694823E7, bbox.getMaxY(), 1E-4);
+
         assertEquals("image/gif",format);
         assertEquals(447, width);
         assertEquals(512, height);

@@ -14,6 +14,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
@@ -158,8 +159,13 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
             Element item = (Element) items.item(i);
             double lat = Double.parseDouble(getOrdinate(item, "geo:lat"));
             double lon = Double.parseDouble(getOrdinate(item, "geo:long"));
-            assertTrue(lat >= -90 && lat <= 90);
-            assertTrue(lon >= -180 && lon <= 180);
+            try{ 
+                assertTrue(lat >= -90 && lat <= 90);
+                assertTrue(lon >= -180 && lon <= 180);
+            } catch (AssertionFailedError e){
+                System.out.println("Failing lat/lon: " + lat + ", " + lon);
+                throw e;
+            }
         }
     }
 

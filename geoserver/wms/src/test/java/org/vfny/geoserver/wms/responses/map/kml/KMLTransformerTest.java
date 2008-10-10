@@ -263,6 +263,7 @@ public class KMLTransformerTest extends WMSTestSupport {
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
         if (doPlacemarks) {
+            print(document);
             assertEquals(getFeatureSource(MockData.BASIC_POLYGONS)
                     .getFeatures().size(), document.getElementsByTagName(
                     "Placemark").getLength());
