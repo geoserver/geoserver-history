@@ -224,6 +224,9 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
                 //kill the context
                 applicationContext.destroy();
         
+                // kill static caches
+                new GeoServerExtensions().setApplicationContext(null);
+                
                 if(isMemoryCleanRequired()) {
                     System.gc(); 
                     System.runFinalization();
