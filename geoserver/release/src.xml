@@ -27,14 +27,14 @@
                    <include>org.geoserver:maven</include>
   		</includes>
   		<sources>
- 	  		<outputDirectory>geoserver-1.7.0-RC3/${artifactId}/</outputDirectory>
+ 	  		<outputDirectory>geoserver-1.7.0-RC4/${artifactId}/</outputDirectory>
 	  	</sources>
 	 	</moduleSet>
 	</moduleSets>
 	<fileSets>
 		<fileSet>
 			<directory>.</directory>
- 			<outputDirectory>geoserver-1.7.0-RC3/</outputDirectory>
+ 			<outputDirectory>geoserver-1.7.0-RC4/</outputDirectory>
                         <includes>
                                 <include>pom.xml</include>
                         </includes>

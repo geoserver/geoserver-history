@@ -1,3 +1,19 @@
+GeoServer 1.7.0-RC4 (October 10, 2008)
+-------------------------------------
+
+The fourth release candidate of 1.7.0 which includes a few major bug fixes 
+kicked out by the previous release candidate. Including:
+
+* WFS memory leaks  
+* KML reflector bbox issue
+* Configuration save / persist issues
+
+And more, the changelog can be found here:
+
+http://jira.codehaus.org/browse/GEOS/fixforversion/14627
+
+This release is based on Geotools 2.5.x (revision 31644)
+
 GeoServer 1.7.0-RC3 (September 22, 2008)
 ---------------------------------------
 

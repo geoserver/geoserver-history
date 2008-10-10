@@ -7,7 +7,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>web/target/geoserver</directory>
-			<outputDirectory>geoserver-1.7.0-RC3/webapps/geoserver</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4/webapps/geoserver</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
@@ -22,7 +22,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>web/target/geoserver/WEB-INF</directory>
-			<outputDirectory>geoserver-1.7.0-RC3/webapps/geoserver/conf</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4/webapps/geoserver/conf</outputDirectory>
 			<includes>
 				<include>catalog.xml</include>
 				<include>services.xml</include>
@@ -30,7 +30,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>web/target/geoserver/data</directory>
-			<outputDirectory>geoserver-1.7.0-RC3/webapps/geoserver/conf/data</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4/webapps/geoserver/conf/data</outputDirectory>
 			<includes>
 				<include>nyc/**/*</include>
 				<include>shapefiles/**/*</include>
@@ -39,7 +39,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>web/target/geoserver/data</directory>
-			<outputDirectory>geoserver-1.7.0-RC3/data_dir</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4/data_dir</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
@@ -54,7 +54,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>web/target/geoserver/data</directory>
-			<outputDirectory>geoserver-1.7.0-RC3/data_dir/data</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4/data_dir/data</outputDirectory>
 			<includes>
 				<include>nyc/**/*</include>
 				<include>shapefiles/**/*</include>
@@ -63,7 +63,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>web/target/geoserver/WEB-INF</directory>
-			<outputDirectory>geoserver-1.7.0-RC3/data_dir</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4/data_dir</outputDirectory>
 			<includes>
 				<include>catalog.xml</include>
 				<include>services.xml</include>
@@ -72,7 +72,7 @@
 		
 		<fileSet>
 			<directory>release/target/dependency</directory>
-			<outputDirectory>geoserver-1.7.0-RC3/lib</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4/lib</outputDirectory>
 			<includes>
               <include>ant-*.jar</include>
               <include>commons-el-*.jar</include>
@@ -94,7 +94,7 @@
 			<!-- we gather the .sh files in a separate task below -->
 			<directory>release/bin</directory>
 			<lineEnding>keep</lineEnding>
-			<outputDirectory>geoserver-1.7.0-RC3/bin</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4/bin</outputDirectory>
 			<includes>
 				<include>*.bat</include>
 			</includes>
@@ -102,7 +102,7 @@
 		<fileSet>
 			<directory>release/bin</directory>
 			<lineEnding>unix</lineEnding>
-			<outputDirectory>geoserver-1.7.0-RC3/bin</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4/bin</outputDirectory>
 			<fileMode>0755</fileMode>
 			<directoryMode>0755</directoryMode>
 			<includes>
@@ -111,7 +111,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>release</directory>
-			<outputDirectory>geoserver-1.7.0-RC3</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4</outputDirectory>
 			<includes>
 				<include>LICENSE.txt</include>
 				<include>GPL.txt</include>
@@ -121,14 +121,14 @@
 		</fileSet>
 		<fileSet>
 			<directory>release/jetty</directory>
-			<outputDirectory>geoserver-1.7.0-RC3</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>release/logs</directory>
-			<outputDirectory>geoserver-1.7.0-RC3</outputDirectory>
+			<outputDirectory>geoserver-1.7.0-RC4</outputDirectory>
 		</fileSet>
 	</fileSets>
 </assembly>
