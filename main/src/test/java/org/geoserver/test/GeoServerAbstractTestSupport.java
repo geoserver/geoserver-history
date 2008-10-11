@@ -634,9 +634,27 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      */
     protected Document getAsDOM(final String path)
             throws Exception {
-        return dom(get(path));
+        return getAsDOM(path, false);
     }
 
+    /**
+     * Executes an ows request using the GET method and returns the result as an xml document.
+     * 
+     * @param path
+     *                The portion of the request after the context, example:
+     *                'wms?request=GetMap&version=1.1.1&..."
+     * @param skipDTD
+     *                if true, will avoid loading and validating against the response document
+     *                schema or DTD
+     * 
+     * @return A result of the request parsed into a dom.
+     * 
+     * @throws Exception
+     */
+    protected Document getAsDOM(final String path, final boolean skipDTD)
+    throws Exception {
+        return dom(get(path), skipDTD);
+    }
     
     /**
      * Executes an ows request using the POST method with key value pairs 
