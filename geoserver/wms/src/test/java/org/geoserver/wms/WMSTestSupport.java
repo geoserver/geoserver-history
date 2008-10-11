@@ -171,7 +171,10 @@ public class WMSTestSupport extends GeoServerTestSupport {
 
     /**
      * Utility method to run the transformation on tr with the provided request and returns the
-     * result as a DOM
+     * result as a DOM.
+     * <p>
+     * Parsing the response is done in a namespace aware way.
+     * </p>
      * 
      * @param req,
      *                the Object to run the xml transformation against with {@code tr}, usually an
@@ -180,11 +183,27 @@ public class WMSTestSupport extends GeoServerTestSupport {
      *                the transformer to run the transformation with and produce the result as a DOM
      */
     public static Document transform(Object req, TransformerBase tr) throws Exception {
+        return transform(req, tr, true);
+    }
+    
+    /**
+     * Utility method to run the transformation on tr with the provided request and returns the
+     * result as a DOM
+     * 
+     * @param req,
+     *                the Object to run the xml transformation against with {@code tr}, usually an
+     *                instance of a {@link Request} subclass
+     * @param tr,
+     *                the transformer to run the transformation with and produce the result as a DOM
+     * @param namespaceAware
+     *                whether to use a namespace aware parser for the response or not
+     */
+    public static Document transform(Object req, TransformerBase tr, boolean namespaceAware) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         tr.transform(req, out);
     
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
+        dbf.setNamespaceAware(namespaceAware);
     
         DocumentBuilder db = dbf.newDocumentBuilder();
     
@@ -207,7 +226,7 @@ public class WMSTestSupport extends GeoServerTestSupport {
         }
         db.setEntityResolver(new EmptyResolver());
     
-        // System.out.println(out.toString());
+        //System.out.println(out.toString());
     
         Document doc = db.parse(new ByteArrayInputStream(out.toByteArray()));
         return doc;
