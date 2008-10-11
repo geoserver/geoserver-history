@@ -27,13 +27,11 @@ public class KMLTest extends WMSTestSupport {
         dataDirectory.addStyle("notthere", KMLTest.class.getResource("notthere.sld"));
     }
     
-
     public void testVector() throws Exception {
-        
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
             "&format=" + KMLMapProducer.MIME_TYPE + 
-            "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() + 
+            "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() +
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" 
         );
@@ -41,23 +39,19 @@ public class KMLTest extends WMSTestSupport {
         assertEquals( getFeatureSource(MockData.BASIC_POLYGONS).getFeatures().size(), 
             doc.getElementsByTagName("Placemark").getLength()
         );
-    
     }
    
     public void testVectorWithFeatureId() throws Exception {
-        
-
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
             "&format=" + KMLMapProducer.MIME_TYPE + 
-            "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() + 
+            "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() +
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
             "&featureid=BasicPolygons.1107531493643"
         );
         
         assertEquals( 1, doc.getElementsByTagName("Placemark").getLength());
-        
     }
     
     public void testVectorWithRemoteLayer() throws Exception {
@@ -76,7 +70,6 @@ public class KMLTest extends WMSTestSupport {
         );
         
         assertEquals( 1, doc.getElementsByTagName("Placemark").getLength());
-        
     }
     
     // see GEOS-1948
@@ -88,7 +81,6 @@ public class KMLTest extends WMSTestSupport {
                 "&styles=notthere" + 
                 "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326"
             );
-        print(doc);
         assertEquals( 1, doc.getElementsByTagName("Placemark").getLength());
     }
 }
