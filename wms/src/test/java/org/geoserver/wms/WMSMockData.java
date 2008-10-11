@@ -3,13 +3,16 @@ package org.geoserver.wms;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourcePool;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
@@ -19,15 +22,20 @@ import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.impl.GeoServerImpl;
+import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.platform.ServiceException;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.FeatureStore;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
@@ -40,8 +48,11 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpSession;
+import com.mockrunner.mock.web.MockServletContext;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 
 /**
  * WMS tests utility class to set up a mocked up catalog and geoserver environment so unit tests
@@ -129,7 +140,20 @@ public class WMSMockData {
         };
         catalog.setResourcePool(resourcePool);
 
+        GeoServerInfoImpl geoserverInfo = new GeoServerInfoImpl();
+        geoserverInfo.setId("geoserver");
+
         mockGeoServer = new GeoServerImpl();
+        mockGeoServer.setCatalog(catalog);
+        mockGeoServer.setGlobal(geoserverInfo);
+
+        WMSInfoImpl wmsInfo = new WMSInfoImpl();
+        wmsInfo.setId("wms");
+        wmsInfo.setName("WMS");
+        wmsInfo.setEnabled(true);
+
+        mockGeoServer.add(wmsInfo);
+
         mockWMS = new WMS(mockGeoServer);
     }
 
@@ -143,6 +167,7 @@ public class WMSMockData {
     public static class DummyRasterMapProducer implements RasterMapProducer {
 
         public static final String MIME_TYPE = "image/dummy";
+
         private WMSMapContext mapContext;
 
         public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
@@ -172,7 +197,6 @@ public class WMSMockData {
             return MIME_TYPE;
         }
 
-
         public void setMapContext(WMSMapContext mapContext) {
             this.mapContext = mapContext;
         }
@@ -198,6 +222,10 @@ public class WMSMockData {
         }
     }
 
+    public StyleInfo getDefaultStyle() {
+        return defaultStyle;
+    }
+
     public GetMapRequest createRequest() {
         GetMapRequest request;
 
@@ -214,9 +242,15 @@ public class WMSMockData {
         } catch (IOException e) {
             throw new RuntimeException("shouldn't happen", e);
         }
+        request.setRawKvp(new HashMap<String, Serializable>());
 
         MockHttpServletRequest servletRequest = new MockHttpServletRequest();
         request.setHttpServletRequest(servletRequest);
+        MockHttpSession session = new MockHttpSession();
+        servletRequest.setSession(session);
+        MockServletContext context = new MockServletContext();
+        session.setupServletContext(context);
+
         return request;
     }
 
@@ -230,18 +264,24 @@ public class WMSMockData {
         return getMap;
     }
 
+    /**
+     * Creates a vector layer with associated FeatureType in the internal MemoryDataStore with the
+     * given type and two attributes: name:String and geom:geometryType
+     */
     public MapLayerInfo addFeatureTypeLayer(final String name,
             Class<? extends Geometry> geometryType) throws IOException {
         org.geoserver.catalog.FeatureTypeInfo featureTypeInfo = new FeatureTypeInfoImpl(catalog);
         featureTypeInfo.setName(name);
         featureTypeInfo.setNativeName(name);
         featureTypeInfo.setEnabled(true);
-        ReferencedEnvelope bbox = new ReferencedEnvelope(-180, 180, -90, 90,
-                DefaultGeographicCRS.WGS84);
+
+        final DefaultGeographicCRS wgs84 = DefaultGeographicCRS.WGS84;
+
+        ReferencedEnvelope bbox = new ReferencedEnvelope(-180, 180, -90, 90, wgs84);
         featureTypeInfo.setLatLonBoundingBox(bbox);
         featureTypeInfo.setNamespace(namespaceInfo);
         featureTypeInfo.setNativeBoundingBox(bbox);
-        featureTypeInfo.setNativeCRS(DefaultGeographicCRS.WGS84);
+        featureTypeInfo.setNativeCRS(wgs84);
         featureTypeInfo.setSRS("EPSG:4326");
         featureTypeInfo.setStore(dataStoreInfo);
         catalog.add(featureTypeInfo);
@@ -258,12 +298,26 @@ public class WMSMockData {
         ftb.setNamespaceURI(TEST_NAMESPACE);
         ftb.setName(name);
         ftb.add("name", String.class);
-        ftb.add("geom", geometryType);
+        ftb.add("geom", geometryType, wgs84);
         SimpleFeatureType featureType = ftb.buildFeatureType();
         dataStore.createSchema(featureType);
         FeatureTypeInfo ftinfo = new FeatureTypeInfo(layerInfo, catalog);
         MapLayerInfo layer = new MapLayerInfo(ftinfo);
         return layer;
+    }
+
+    public SimpleFeature addFeature(final SimpleFeatureType featureType, final Object[] values)
+            throws IOException, ParseException {
+        FeatureStore<SimpleFeatureType, SimpleFeature> fs;
+        fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) dataStore
+                .getFeatureSource(featureType.getName());
+
+        SimpleFeatureBuilder sfb = new SimpleFeatureBuilder(featureType);
+        sfb.addAll(values);
+        SimpleFeature feature = sfb.buildFeature(null);
+        fs.addFeatures(DataUtilities.collection(feature));
+
+        return feature;
     }
 
 }
