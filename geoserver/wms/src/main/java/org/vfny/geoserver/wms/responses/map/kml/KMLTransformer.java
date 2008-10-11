@@ -28,6 +28,15 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 
+/**
+ * Transformer to create a KML document from a {@link WMSMapContext}.
+ * 
+ * @author Justin Deoliveira
+ * 
+ * @version $Id$
+ * @see KMLVectorTransformer
+ * @see KMLRasterTransformer
+ */
 public class KMLTransformer extends TransformerBase {
     /**
      * logger
