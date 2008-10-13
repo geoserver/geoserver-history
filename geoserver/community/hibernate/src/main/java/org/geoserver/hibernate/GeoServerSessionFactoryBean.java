@@ -12,22 +12,22 @@ import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
  * classpath:mappings.hbm.xml.
  * 
  * @author Justin Deoliveira, The Open Planning Project
- *
+ * 
  */
-public class GeoServerSessionFactoryBean extends LocalSessionFactoryBean 
-	implements ApplicationContextAware {
+public class GeoServerSessionFactoryBean extends LocalSessionFactoryBean implements
+        ApplicationContextAware {
 
-	ApplicationContext applicationContext;
-	
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+    ApplicationContext applicationContext;
 
-	public void postProcessConfiguration(Configuration config) throws HibernateException {
-		super.postProcessConfiguration(config);
-		
-		ConfigurationInitializer.postProcessConfiguration( config, applicationContext );
-	}
-	
-	
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public void postProcessConfiguration(Configuration config) throws HibernateException {
+        super.postProcessConfiguration(config);
+
+        ConfigurationInitializer.postProcessConfiguration(config, applicationContext);
+        config.configure();
+    }
+
 }

@@ -81,6 +81,11 @@ public interface WatermarkInfo {
     };
     
     /**
+     * WaterMark ID 
+     */
+    String getId();
+    
+    /**
      * Flag indicating if water marking is enabled.
      */
     boolean isEnabled();

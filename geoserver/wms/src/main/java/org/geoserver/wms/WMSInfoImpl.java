@@ -34,5 +34,9 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
     public List<String> getSRS() {
         return srs;
     }
+    
+    public void setSRS(List<String> srs) {
+        this.srs = srs;
+    }
 
 }

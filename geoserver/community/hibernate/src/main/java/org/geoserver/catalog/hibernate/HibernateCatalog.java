@@ -84,10 +84,16 @@ public class HibernateCatalog implements Catalog {
     }
 
     public Session getSession() {
+        if (!sessionFactory.getCurrentSession().getTransaction().isActive())
+            sessionFactory.getCurrentSession().beginTransaction();
+        
         return sessionFactory.getCurrentSession();
     }
 
     public void setSessionFactory(SessionFactory sessionFactory) {
+        if (!sessionFactory.getCurrentSession().getTransaction().isActive())
+            sessionFactory.getCurrentSession().beginTransaction();
+
         this.sessionFactory = sessionFactory;
     }
 
@@ -466,16 +472,22 @@ public class HibernateCatalog implements Catalog {
 
     protected void internalAdd(Object object) {
         getSession().save(object);
+        getSession().flush();
+        getSession().getTransaction().commit();
         added(object);
     }
 
     protected void internalRemove(Object object) {
         getSession().delete(object);
+        getSession().flush();
+        getSession().getTransaction().commit();
         removed(object);
     }
 
     protected void internalSave(Object object) {
-        getSession().save(object);
+        getSession().update(object);
+        getSession().flush();
+        getSession().getTransaction().commit();
         modified(object, null, null, null);
     }
 
@@ -483,10 +495,7 @@ public class HibernateCatalog implements Catalog {
      * Helper method to return the list of a query
      */
     protected List list(String hql) {
-        Transaction transaction = getSession().getTransaction();
-        transaction.begin();
         List list = getSession().createQuery(hql).list();
-        transaction.commit();
         return list;
     }
 
@@ -494,8 +503,6 @@ public class HibernateCatalog implements Catalog {
      * Helper method to return the first object of a query.
      */
     protected Object first(String hql) {
-        Transaction transaction = getSession().getTransaction();
-        transaction.begin();
         Iterator i = getSession().createQuery(hql).iterate();
 
         if (i.hasNext()) {
@@ -503,7 +510,6 @@ public class HibernateCatalog implements Catalog {
             return first;
         }
 
-        transaction.rollback();
         return null;
     }
 
@@ -622,6 +628,8 @@ public class HibernateCatalog implements Catalog {
         events.clear();
 
         resourcePool.dispose();
+        
+        getSession().close();
     }
 
     public WorkspaceInfo getDefaultWorkspace() {

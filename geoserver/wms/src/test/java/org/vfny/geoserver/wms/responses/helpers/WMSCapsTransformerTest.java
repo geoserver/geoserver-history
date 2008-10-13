@@ -4,23 +4,21 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.measure.Measure;
 import javax.measure.quantity.Quantity;
-import javax.measure.unit.BaseUnit;
 import javax.measure.unit.Unit;
 
 import junit.framework.TestCase;
@@ -68,8 +66,6 @@ import org.geotools.temporal.object.Utils;
 import org.geotools.util.SimpleInternationalString;
 import org.opengis.coverage.SampleDimension;
 import org.opengis.geometry.Envelope;
-import org.opengis.metadata.extent.VerticalExtent;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;

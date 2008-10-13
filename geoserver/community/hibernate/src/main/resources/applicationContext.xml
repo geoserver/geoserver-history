@@ -29,7 +29,7 @@
 	  <value>${jdbc.password}</value>
 	</property>
   </bean>
- 
+
   <!-- setup hibernate session factory -->
   <bean id="sessionFactory" class="org.geoserver.hibernate.GeoServerSessionFactoryBean">
     <property name="dataSource" ref="dataSource"/>
@@ -61,10 +61,8 @@
    </props>
   </property>
  </bean>
-   
-  <!--
-    catalog
-  -->
+
+  <!-- catalog -->
   <bean id="catalogTarget" class="org.geoserver.catalog.hibernate.HibernateCatalog">
 	<property name="sessionFactory" ref="sessionFactory"/>
   </bean>

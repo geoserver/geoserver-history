@@ -19,7 +19,7 @@
        CATALOG
     -->
     <!-- StoreInfo -->
-	<class name="org.geoserver.catalog.impl.StoreInfoImpl" table="STORES">
+	<class name="org.geoserver.catalog.impl.StoreInfoImpl" table="STORES" lazy="false">
 		<id name="id" column="STORE_ID">
             <generator class="native"/>
         </id>
@@ -29,7 +29,7 @@
         <!-- many-to-one name="namespace" column="NAMESPACE" 
         	class="org.geoserver.catalog.impl.NamespaceInfoImpl"/ --> <!-- FIX: WorkSpace -->
         <many-to-one name="workspace" column="WORKSPACE" 
-        	class="org.geoserver.catalog.impl.WorkspaceInfoImpl"/>
+        	class="org.geoserver.catalog.impl.WorkspaceInfoImpl" lazy="false"/>
         	
         <map name="metadata" table="STORE_METADATA">
         	<key column="STORE_ID"/>
@@ -176,7 +176,7 @@
 			<element type="java.lang.String"/>
 		</set>
 		<map name="parameters" table="COVERAGE_PARAMETERS">
-        	<key column="STORE_ID"/>
+        	<key column="COVERAGE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.lang.String"></element>
         </map>       
@@ -221,7 +221,7 @@
     
     <!-- MapInfo -->
     <class name="org.geoserver.catalog.impl.MapInfoImpl" table="MAPS">
-	   <id name="id" column="ID">
+	   <id name="id" column="MAP_ID">
 	   	 <generator class="native"/>
 	   </id>
 	   <property name="name" column="NAME"/>
@@ -294,7 +294,7 @@
 	 
 	 <!-- GeoServerInfo -->
      <class name="org.geoserver.config.impl.GeoServerInfoImpl" table="GEOSERVER">
-		<id name="id" column="ID">
+		<id name="id" column="GS_ID">
             <generator class="native"/>
         </id>
     	<one-to-one name="contactInfo" class="org.geoserver.config.impl.ContactInfoImpl"/>
@@ -319,13 +319,13 @@
     	<property name="updateSequence" column="UPDATE_SEQUENCE"/>
     	
 		<map name="metadata" table="GEOSERVER_METADATA">
-        	<key column="ID"/>
+        	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>
         
 		<map name="clientProperties" table="GEOSERVER_CLIENT_PROPS">
-        	<key column="ID"/>
+        	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>
@@ -334,7 +334,7 @@
 
     <!-- ServiceInfo -->
     <class name="org.geoserver.config.impl.ServiceInfoImpl" table="SERVICES">
-		<id name="id" column="ID">
+		<id name="id" column="SERVICE_ID">
             <generator class="native"/>
         </id>
         <property name="enabled" column="ENABLED"/>
@@ -367,10 +367,56 @@
 		<property name="onlineResource" column="ONLINE_RESOURCE"/>
 
 		<map name="metadata" table="SERVICE_METADATA">
-        	<key column="ID"/>
+        	<key column="SERVICE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>    
 	 </class>
+
+    <!-- WMSInfoImpl -->
+    <joined-subclass name="org.geoserver.wms.WMSInfoImpl" 
+		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WMS_SERVICE" lazy="false">
+		<key column="SERVICE_ID"/>
+		
+		<property name="interpolation" column="INTERPOLATION"/>
+		<one-to-one name="watermark" cascade="all" 
+			class="org.geoserver.wms.WatermarkInfoImpl"/>
+		<list name="SRS">
+    	    <key column="SERVICE_ID"/>
+    	    <list-index column="SRS_INDEX"/>
+			<element type="java.lang.String"/>
+    	</list>
+    </joined-subclass>
+
+	<!-- WatermarkInfo -->
+	 <class name="org.geoserver.wms.WatermarkInfoImpl" table="SERVICE_WATERMARKS">
+		<id name="id" column="SRV_WM_ID">
+            <generator class="native"/>
+        </id>
+    	<property name="enabled" column="ENABLED"/>    	    
+		<property name="transparency" column="TRASPARENCY"/>
+		<property name="URL" column="URL"/>
+		<property name="position" column="position"/>
+     </class>
+     
+    <!-- Position -->
+	 <!-- class name="org.geoserver.wms.WatermarkInfo.Position" table="SERVICE_WATERMARKS_POSITION">
+		<id name="id" column="WM_POS_ID">
+            <generator class="native"/>
+        </id>
+		<property name="code" column="CODE"/>
+     </class -->
+     
+    <!-- WFSInfoImpl -->
+    <joined-subclass name="org.geoserver.wfs.WFSInfoImpl" 
+		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WFS_SERVICE">
+		<key column="SERVICE_ID"/>
+    </joined-subclass>
+    
+    <!-- WCSInfoImpl -->
+    <joined-subclass name="org.geoserver.wcs.WCSInfoImpl" 
+		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WCS_SERVICE">
+		<key column="SERVICE_ID"/>
+    </joined-subclass>
     
 </hibernate-mapping>

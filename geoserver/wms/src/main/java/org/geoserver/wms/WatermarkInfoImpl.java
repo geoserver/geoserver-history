@@ -2,6 +2,7 @@ package org.geoserver.wms;
 
 public class WatermarkInfoImpl implements WatermarkInfo {
 
+    String id;
     boolean enabled;
     Position position;
     int transparency;
@@ -37,6 +38,20 @@ public class WatermarkInfoImpl implements WatermarkInfo {
 
     public void setURL(String url) {
         this.url = url;
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 
 }
