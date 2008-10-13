@@ -123,7 +123,8 @@ public class HibernateCatalog implements Catalog {
         }
 
         ((StoreInfoImpl) store).setId(store.getName());
-        internalAdd(store);
+        if (getStoreByName(store.getName(), store.getClass()) == null)
+            internalAdd(store);
     }
 
     public void remove(StoreInfo store) {
@@ -425,7 +426,7 @@ public class HibernateCatalog implements Catalog {
     }
 
     public NamespaceInfo getNamespace(String id) {
-        return null;
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where ns_id = '" + id + "'");
     }
 
     public NamespaceInfo getNamespaceByPrefix(String prefix) {
@@ -437,7 +438,8 @@ public class HibernateCatalog implements Catalog {
     }
 
     public void add(NamespaceInfo namespace) {
-        internalAdd(namespace);
+        if (getNamespaceByPrefix(namespace.getPrefix()) == null)
+            internalAdd(namespace);
     }
 
     public void remove(NamespaceInfo namespace) {
@@ -619,7 +621,8 @@ public class HibernateCatalog implements Catalog {
     }
 
     public void add(WorkspaceInfo workspace) {
-        internalAdd(workspace);
+        if (getWorkspaceByName(workspace.getName()) == null)
+            internalAdd(workspace);
     }
 
     public void dispose() {

@@ -335,8 +335,9 @@
     <!-- ServiceInfo -->
     <class name="org.geoserver.config.impl.ServiceInfoImpl" table="SERVICES">
 		<id name="id" column="SERVICE_ID">
-            <generator class="native"/>
-        </id>
+			<generator class="native"/>
+		</id>
+		<property name="id" column="ID" not-null="true" unique="true"/>
         <property name="enabled" column="ENABLED"/>
 		<property name="name" column="NAME" not-null="true" unique="true"/>
 		<property name="title" column="TITLE"/>
@@ -345,17 +346,17 @@
 		<property name="accessConstraints" column="ACCESS_CONSTRAINTS"/>	
 		<property name="fees" column="FEES"/>	
 		<list name="keywords" table="SERVICE_KEYWORDS">
-		    <key column="SERVICE_ID"/>
+		    <key column="ID"/>
 		    <list-index column="KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>   
     	<list name="exceptionFormats">
-    	    <key column="SERVICE_ID"/>
+    	    <key column="ID"/>
     	    <list-index column="EXCEPTION_FORMAT_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
 		<list name="versions">
-		    <key column="SERVICE_ID"/>
+		    <key column="ID"/>
 		    <list-index column="VERSION_INDEX"/>
 			<element type="org.geotools.util.Version"/>
     	</list>       	
@@ -367,7 +368,7 @@
 		<property name="onlineResource" column="ONLINE_RESOURCE"/>
 
 		<map name="metadata" table="SERVICE_METADATA">
-        	<key column="SERVICE_ID"/>
+        	<key column="ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>    
@@ -376,13 +377,13 @@
     <!-- WMSInfoImpl -->
     <joined-subclass name="org.geoserver.wms.WMSInfoImpl" 
 		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WMS_SERVICE" lazy="false">
-		<key column="SERVICE_ID"/>
+		<key column="ID"/>
 		
 		<property name="interpolation" column="INTERPOLATION"/>
 		<one-to-one name="watermark" cascade="all" 
 			class="org.geoserver.wms.WatermarkInfoImpl"/>
 		<list name="SRS">
-    	    <key column="SERVICE_ID"/>
+    	    <key column="ID"/>
     	    <list-index column="SRS_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
@@ -410,13 +411,13 @@
     <!-- WFSInfoImpl -->
     <joined-subclass name="org.geoserver.wfs.WFSInfoImpl" 
 		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WFS_SERVICE">
-		<key column="SERVICE_ID"/>
+		<key column="ID"/>
     </joined-subclass>
     
     <!-- WCSInfoImpl -->
     <joined-subclass name="org.geoserver.wcs.WCSInfoImpl" 
 		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WCS_SERVICE">
-		<key column="SERVICE_ID"/>
+		<key column="ID"/>
     </joined-subclass>
     
 </hibernate-mapping>

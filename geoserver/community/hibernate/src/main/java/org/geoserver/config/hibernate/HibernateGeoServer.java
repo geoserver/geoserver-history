@@ -92,9 +92,11 @@ public class HibernateGeoServer implements GeoServer {
 
     public void add(ServiceInfo service) {
         service.setGeoServer(getGlobal());
-        getSession().save(service);
-        getSession().flush();
-        getSession().getTransaction().commit();
+        if (getService(service.getId()) == null) {
+            getSession().save(service);
+            getSession().flush();
+            getSession().getTransaction().commit();
+        }
     }
 
     public void remove(ServiceInfo service) {
