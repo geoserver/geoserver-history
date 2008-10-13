@@ -223,17 +223,19 @@ public class Dispatcher extends AbstractController {
         //create the kvp map
         parseKVP(request);
         
-        if ( !request.get && httpRequest.getInputStream().available() > 0) {
-            //wrap the input stream in a buffer input stream
+        if ( !request.get ) { // && httpRequest.getInputStream().available() > 0) {
+            //wrap the input stream in a buffered input stream
             request.input = reader(httpRequest);
 
-            //mark the input stream, support up to 2KB, TODO: make this configuratable
+            //mark the input stream, support up to 2KB, TODO: make this configurable
             request.input.mark(2048);
             
             if (logger.isLoggable(Level.FINE)) {
                 char[] req = new char[1024];
                 int read = request.input.read(req, 0, 1024);
-                if (read < 1024) {
+                if (read == -1) {
+                    request.input = null;
+                } else if (read < 1024) {
                     logger.fine("Raw XML request starts with: " + new String(req));
                 } else {
                     logger.fine("Raw XML request starts with: " + new String(req) + "...");
