@@ -48,7 +48,6 @@ import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.coverage.io.impl.range.BaseFieldType;
 import org.geotools.coverage.io.impl.range.DefaultRangeType;
-import org.geotools.coverage.io.impl.range.NetCDFProductFieldType;
 import org.geotools.coverage.io.range.Axis;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
