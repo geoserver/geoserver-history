@@ -25,6 +25,10 @@
        <name>refractions</name>
        <url>http://lists.refractions.net/m2</url>
     </repository>
+    <repository>
+		<id>Hibernate Spatial repo</id>
+		<url>http://www.hibernatespatial.org/repository</url>
+	</repository>
   </repositories>
 
   <!-- declare depenency on geoserver main -->
