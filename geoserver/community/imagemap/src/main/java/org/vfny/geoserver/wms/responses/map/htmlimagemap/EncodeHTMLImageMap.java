@@ -114,8 +114,7 @@ public class EncodeHTMLImageMap {
 	 * @param styles
 	 * @param q
 	 */
-    private void processRuleForQuery(FeatureTypeStyle[] styles,
-			DefaultQuery q) {
+    private Filter processRuleForQuery(FeatureTypeStyle[] styles) {
 		try {
 
 			// first we check to see if there are >
@@ -156,9 +155,9 @@ public class EncodeHTMLImageMap {
 				{
 					r = rules[u];
 					if (r.getFilter() == null)
-						return; // uh-oh has no filter (want all rows)
+						return null; // uh-oh has no filter (want all rows)
 					if(r.hasElseFilter())
-						return;  // uh-oh has elseRule
+						return null;  // uh-oh has elseRule
 					filtersToDS.add(r.getFilter());
 				}
 			}
@@ -182,14 +181,17 @@ public class EncodeHTMLImageMap {
 							ruleFiltersCombined, newFilter);
 				}
 			}
+			return ruleFiltersCombined;
+			/*
 			// combine with the geometry filter (preexisting)
 			ruleFiltersCombined = filterFactory.or(
 					q.getFilter(), ruleFiltersCombined);
 
 			// set the actual filter
 			q.setFilter(ruleFiltersCombined);
+			*/
 		} catch (Exception e) {
-			
+			return null;
 		}
 	}
 
@@ -281,8 +283,8 @@ public class EncodeHTMLImageMap {
             	// 2) definition query filter
                 Query definitionQuery = layer.getQuery();
                 LOGGER.info("Definition Query: "+definitionQuery.toString());
-                if (definitionQuery != Query.ALL) {
-                    if (q == Query.ALL) {
+                if (!definitionQuery.equals(Query.ALL)) {
+                    if (q.equals(Query.ALL)) {
                         q = (DefaultQuery) definitionQuery;
                     } else {
                         q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery, q, "HTMLImageMapEncoder");
@@ -291,8 +293,16 @@ public class EncodeHTMLImageMap {
                 
                 FeatureTypeStyle[] ftsList=filterFeatureTypeStyles(layer.getStyle(), fSource.getSchema());
             	// 3) rule filters               
-                processRuleForQuery(ftsList, q);
+                Filter ruleFilter=processRuleForQuery(ftsList);
+				if(ruleFilter!=null) {
+					// combine with the geometry filter (preexisting)
+					ruleFilter = filterFactory.or(
+						q.getFilter(), ruleFilter);
 
+					// set the actual filter
+					q.setFilter(ruleFilter);
+                	q = (DefaultQuery) DataUtilities.mixQueries(new DefaultQuery(schema.getTypeName(),ruleFilter), q, "HTMLImageMapEncoder");
+				}
                 //ensure reprojection occurs, do not trust query, use the wrapper  
                 FeatureCollection<SimpleFeatureType, SimpleFeature> fColl = null;//fSource.getFeatures(q);
                 //FeatureCollection fColl=null;

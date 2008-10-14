@@ -167,7 +167,7 @@ public class HTMLImageMapTest extends TestCase {
 
             
         } catch (Exception e) {
-            e.printStackTrace();
+           
             fail(e.getMessage());
         }
         assertNotNull(out);
@@ -219,6 +219,28 @@ public class HTMLImageMapTest extends TestCase {
         assertTestResult("BasicPolygons", this.mapProducer);
 
 	}	
+	
+	public void testMapProducePolygonsWithHoles() throws Exception {
+		
+		final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("PolygonWithHoles");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+        
+        LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        map.setTransparent(false);
+
+        Style basicStyle = getTestStyle("default.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("PolygonWithHoles", this.mapProducer);
+	}
 	
 	public void testMapProduceReproject() throws Exception {
 		final DataStore ds = getProjectedTestDataStore();
@@ -277,6 +299,32 @@ public class HTMLImageMapTest extends TestCase {
         assertTestResult("RoadSegments", this.mapProducer);
 
 	}
+	
+	public void testMapRuleWithFilters() throws Exception {
+		/*Filter f=filterFactory.equals(filterFactory.property("NAME"),filterFactory.literal("Route 5"));
+		DefaultQuery q=new DefaultQuery("RoadSegments",f);*/
+        final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("RoadSegments");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+
+        LOGGER.info("about to create map ctx for RoadSegments with filter on name and bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        
+        map.setTransparent(false);
+                
+        Style basicStyle = getTestStyle("RoadSegmentsFiltered.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("RoadSegmentsFiltered", this.mapProducer);
+
+	}
+	
 	public void testMapProducePoints() throws Exception {
 		
         final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("BuildingCenters");
