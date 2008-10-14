@@ -61,7 +61,7 @@ public class KMLGeometryTransformer extends GeometryTransformer {
                 ) {
             //super(handler, "kml", "http://earth.google.com/kml/2.0" );
             super(handler, null, null, numDecimals, useDummyZ, 3);
-            coordWriter.setNamespaceAware(false);
+            coordWriter = new KMLCoordinateWriter(numDecimals, useDummyZ);
 
             String extrudeValue = 
                 (String)context.getRequest().getFormatOptions().get("extrude");

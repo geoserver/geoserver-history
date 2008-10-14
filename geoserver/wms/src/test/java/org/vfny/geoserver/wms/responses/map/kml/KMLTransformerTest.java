@@ -6,6 +6,8 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,6 +15,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.Test;
 
@@ -28,6 +33,8 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 public class KMLTransformerTest extends WMSTestSupport {
@@ -263,7 +270,6 @@ public class KMLTransformerTest extends WMSTestSupport {
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
         if (doPlacemarks) {
-            print(document);
             assertEquals(getFeatureSource(MockData.BASIC_POLYGONS)
                     .getFeatures().size(), document.getElementsByTagName(
                     "Placemark").getLength());
@@ -273,6 +279,23 @@ public class KMLTransformerTest extends WMSTestSupport {
         }
 
         zipFile.close();
+    }
+
+    public void testSuperOverlayTransformer() throws Exception {
+        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(mapContext);
+        transformer.setIndentation(2);
+
+        mapContext.setAreaOfInterest(new Envelope(-180, 180, -90, 90));
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        transformer.transform(mapLayer, output);
+        
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+
+        assertEquals("kml", document.getDocumentElement().getNodeName());
+        assertEquals( 3, document.getElementsByTagName("Region").getLength() );
+        assertEquals( 2, document.getElementsByTagName("NetworkLink").getLength() );
     }
 
     public void testStyleConverter() throws Exception {

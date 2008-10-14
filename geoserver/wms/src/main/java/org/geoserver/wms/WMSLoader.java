@@ -2,6 +2,7 @@ package org.geoserver.wms;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Logger;
 
