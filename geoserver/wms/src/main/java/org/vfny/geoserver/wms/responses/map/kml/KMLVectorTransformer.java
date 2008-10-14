@@ -68,7 +68,9 @@ public class KMLVectorTransformer extends KMLMapTransformer {
             GeoServer config = mapContext.getRequest().getGeoServer();
             geometryTransformer.setNumDecimals(config.getNumDecimals());
 
-            geometryTranslator = geometryTransformer.createTranslator(contentHandler);
+            geometryTranslator = 
+                (KMLGeometryTransformer.KMLGeometryTranslator)
+                geometryTransformer.createTranslator(contentHandler, mapContext);
         }
 
         public void encode(Object o) throws IllegalArgumentException {
