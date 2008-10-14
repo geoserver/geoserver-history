@@ -3,7 +3,11 @@ package org.geoserver.wfsv;
 import static org.custommonkey.xmlunit.XMLAssert.*;
 import junit.framework.Test;
 
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;
+
+import com.sun.org.apache.xalan.internal.xsltc.cmdline.Transform;
 
 public class HistoryRelatedTest extends WFSVTestSupport {
     
@@ -131,6 +135,24 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 "//topp:archsites[@fid=\"archsites.5\"]/topp:lastUpdateMessage", doc);
     }
     
+    public void testVersionedFeatureCollection10Reproject() throws Exception {
+        // prepare the expected transformation results
+        MathTransform tx = CRS.findMathTransform(CRS.decode("EPSG:26713"), CRS.decode("EPSG:900913"));
+        double[] original = new double[] {604000,4930000};
+        double[] expected = new double[2];
+        tx.transform(original, 0, expected, 0, 1);
+        
+        // gather the results and extract the coordinates using xpath
+        Document doc = getAsDOM(root() + "?service=WFSV&version=1.0.0&request=GetVersionedFeature&srsName=EPSG:900913&typeName=topp:archsites&featureId=archsites.5");
+        String transformed = xpath.evaluate("//topp:archsites[@fid=\"archsites.5\"]/topp:the_geom/gml:Point/gml:coordinates/text()", doc);
+        
+        // parse the coordinate list and check
+        String[] strCoords = transformed.split(",");
+        double[] actual = new double[] {Double.parseDouble(strCoords[0]), Double.parseDouble(strCoords[1])};
+        assertEquals(expected[0], actual[0], 0.000001);
+        assertEquals(expected[1], actual[1], 0.000001);
+    }
+    
     public void testVersionedFeatureCollection11() throws Exception {
         String request = "<wfsv:GetVersionedFeature service=\"WFSV\" version=\"1.1.0\"\r\n"
                 + "  outputFormat=\"GML3\"\r\n"
@@ -156,6 +178,25 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 "//topp:archsites[@gml:id=\"archsites.5\"]/topp:createdBy", doc);
         assertXpathEvaluatesTo("Inserting, updating and deleting",
                 "//topp:archsites[@gml:id=\"archsites.5\"]/topp:lastUpdateMessage", doc);
+    }
+    
+    public void testVersionedFeatureCollection11Reproject() throws Exception {
+        // prepare the expected transformation results
+        MathTransform tx = CRS.findMathTransform(CRS.decode("EPSG:26713"), CRS.decode("EPSG:900913"));
+        double[] original = new double[] {604000,4930000};
+        double[] expected = new double[2];
+        tx.transform(original, 0, expected, 0, 1);
+        
+        // gather the results and extract the coordinates using xpath
+        Document doc = getAsDOM(root() + "?service=WFSV&version=1.1.0&request=GetVersionedFeature&srsName=EPSG:900913&typeName=topp:archsites&featureId=archsites.5");
+        print(doc);
+        String transformed = xpath.evaluate("//topp:archsites[@gml:id=\"archsites.5\"]/topp:the_geom/gml:Point/gml:pos/text()", doc);
+        
+        // parse the coordinate list and check
+        String[] strCoords = transformed.split(" ");
+        double[] actual = new double[] {Double.parseDouble(strCoords[0]), Double.parseDouble(strCoords[1])};
+        assertEquals(expected[0], actual[0], 0.000001);
+        assertEquals(expected[1], actual[1], 0.000001);
     }
 
     public void testLog10() throws Exception {
