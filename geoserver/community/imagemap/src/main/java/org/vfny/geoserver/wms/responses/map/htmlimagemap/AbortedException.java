@@ -11,7 +11,12 @@ package org.vfny.geoserver.wms.responses.map.htmlimagemap;
  * @author Mauro Bartolomeoli 
  */
 public class AbortedException extends Exception {
-    public AbortedException(String msg) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 225177065602384118L;
+
+	public AbortedException(String msg) {
         super(msg);
     }
 }

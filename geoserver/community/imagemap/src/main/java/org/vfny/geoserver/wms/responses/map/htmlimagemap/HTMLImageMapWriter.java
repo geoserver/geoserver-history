@@ -38,6 +38,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.responses.map.htmlimagemap.holes.HolesRemover;
 
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
@@ -549,16 +550,13 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 				Decimator decimator=new Decimator(xform,mapArea);
 	            geom=decimator.decimate(geom);
 			} catch (FactoryException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				
 			} catch (NoninvertibleTransformException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				
 			}
 			 catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				
+			}
 			return geom;
             
             
@@ -766,11 +764,22 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
          * @throws IOException if an error occures during encoding
          */
         protected void writeGeometry(Geometry geom) throws IOException {
-            Polygon poly = (Polygon) decimate(geom);
+        	Polygon poly=null;
+        	if(geom instanceof Polygon) {
+        		poly=(Polygon)geom;
+        		// if we have any hole
+        		// we create a new polygon without holes
+        		// using the HolesRemover
+        		if(poly.getNumInteriorRing()>0) {
+                	poly=HolesRemover.removeHoles(poly);
+                }
+        		poly=(Polygon)decimate(poly);
+        	} else
+        		poly = (Polygon) decimate(geom);
+            
             LineString shell = poly.getExteriorRing();
             
             writePathContent(shell.getCoordinates());
-            //TODO: polygons with holes?
             
         }
     }

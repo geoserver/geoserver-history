@@ -13,7 +13,12 @@ import org.vfny.geoserver.wms.WmsException;
  * @author Mauro Bartolomeoli 
  */
 public class EncoderConfigurationException extends WmsException {
-    public EncoderConfigurationException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -791532675720744977L;
+
+	public EncoderConfigurationException(String message) {
         super(message);
     }
 

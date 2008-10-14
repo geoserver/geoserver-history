@@ -13,13 +13,11 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.Transaction;
+
 import org.geotools.data.property.PropertyDataStore;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
+
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.jts.JTS;
@@ -31,8 +29,8 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
+
+
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -56,8 +54,7 @@ public class HTMLImageMapTest extends TestCase {
 
 	private static final StyleFactory sFac = CommonFactoryFinder.getStyleFactory(null);
 	
-	private final static FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-	
+		
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(HTMLImageMapTest.class.getPackage().getName());
 	
 	GetMapProducerFactorySpi mapFactory=null;
@@ -227,6 +224,28 @@ public class HTMLImageMapTest extends TestCase {
 
 	}	
 	
+	public void testMapProducePolygonsWithHoles() throws Exception {
+		
+		final FeatureSource fs = testDS.getFeatureSource("PolygonWithHoles");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+        
+        LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        map.setTransparent(false);
+
+        Style basicStyle = getTestStyle("default.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("PolygonWithHoles", this.mapProducer);
+	}
+	
 	public void testMapProduceReproject() throws Exception {
 		final DataStore ds = getProjectedTestDataStore();
         final FeatureSource fs = ds.getFeatureSource("ProjectedPolygon");
@@ -260,6 +279,8 @@ public class HTMLImageMapTest extends TestCase {
         this.mapProducer.produceMap();
         assertTestResult("ProjectedPolygon", this.mapProducer);
 	}
+	
+	 
 	
 	public void testMapProduceLines() throws Exception {
 		
