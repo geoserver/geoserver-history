@@ -39,6 +39,15 @@
       <version>1.7-ND-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <!-- As odd as it is, we're depending on the wms module because
+      the WMSInfoImpl class is there, and it carries out the dependencies
+      on the wfs and wcs modules where WFSInfoImpl and WCSInfoImpl classes
+      respectively. We should consider moving them to main. -->
+      <groupId>org.geoserver</groupId>
+      <artifactId>wms</artifactId>
+      <version>1.7-ND-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate</artifactId>
       <version>3.2.1.ga</version>
