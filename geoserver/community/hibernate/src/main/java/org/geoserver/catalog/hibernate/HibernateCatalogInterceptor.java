@@ -72,14 +72,14 @@ public class HibernateCatalogInterceptor extends EmptyInterceptor implements
             Type[] types) {
         if (id == null) {
             // new object
-            catalog().added(entity);
+            catalog().fireAdded(entity);
         }
         return false;
     }
 
     public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames,
             Type[] types) {
-        catalog().removed(entity);
+        catalog().fireRemoved(entity);
     }
 
     public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState,
@@ -98,7 +98,7 @@ public class HibernateCatalogInterceptor extends EmptyInterceptor implements
                 newValues.add(newValue);
             }
         }
-        catalog().modified(entity, propertyNamesChanged, oldValues, newValues);
+        catalog().fireModified(entity, propertyNamesChanged, oldValues, newValues);
         return false;
     }
 
