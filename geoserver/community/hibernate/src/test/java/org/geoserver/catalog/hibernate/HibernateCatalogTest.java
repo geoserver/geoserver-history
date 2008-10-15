@@ -12,6 +12,8 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -36,8 +38,20 @@ public class HibernateCatalogTest extends HibernateTestSupport {
 		Iterator stores = catalog.getDataStores().iterator();
 		assertFalse( stores.hasNext() );
 		
+		//store needs a workspace...
+		WorkspaceInfo ws = catalog.getFactory().createWorkspace();
+		ws.setName("defaultWorkspace");
+
+		assertNull(ws.getId());
+		catalog.add(ws);
+		assertNotNull(ws.getId());
+
+		endTransaction();
+        startNewTransaction();
+        		
 		//create a new store
 		DataStoreInfo store = catalog.getFactory().createDataStore();
+		store.setWorkspace(ws);
 		store.setName("dataStore");
 		store.setDescription( "store description");
 		store.setEnabled( true );
@@ -73,8 +87,17 @@ public class HibernateCatalogTest extends HibernateTestSupport {
 		Iterator stores = catalog.getCoverageStores().iterator();
 		assertFalse( stores.hasNext() );
 		
-		//create a new store
+        //store needs a workspace...
+        WorkspaceInfo ws = catalog.getFactory().createWorkspace();
+        ws.setName("defaultWorkspace");
+        catalog.add(ws);
+		
+        endTransaction();
+        startNewTransaction();
+
+        //create a new store
 		CoverageStoreInfo store = catalog.getFactory().createCoverageStore();
+		store.setWorkspace(ws);
 		store.setName("coverageStore");
 		store.setDescription( "store description");
 		store.setEnabled( true );
@@ -196,8 +219,13 @@ public class HibernateCatalogTest extends HibernateTestSupport {
 		namespace.setURI( "http://" + getName() + ".openplans.org" );
 		catalog.add( namespace );
 		
-		StyleInfo style = catalog.getFactory().createStyle();
-		style.setName( "style1" );
+        //store needs a workspace...
+        WorkspaceInfo ws = catalog.getFactory().createWorkspace();
+        ws.setName("defaultWorkspace");
+        catalog.add(ws);
+
+        StyleInfo style = catalog.getFactory().createStyle();
+        style.setName( "style1" );
 		catalog.add( style );
 		
 		DataStoreInfo dataStore = catalog.getFactory().createDataStore();
