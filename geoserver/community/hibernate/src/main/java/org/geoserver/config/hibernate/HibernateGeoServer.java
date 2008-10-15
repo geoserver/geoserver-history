@@ -80,35 +80,33 @@ public class HibernateGeoServer implements GeoServer {
 
     public void setGlobal(GeoServerInfo configuration) {
         getSession().save(configuration);
-        getSession().flush();
-        getSession().getTransaction().commit();
+//        getSession().flush();
+//        getSession().getTransaction().commit();
     }
 
     public void save(GeoServerInfo geoServer) {
         getSession().save(geoServer);
-        getSession().flush();
-        getSession().getTransaction().commit();
+//        getSession().flush();
+//        getSession().getTransaction().commit();
     }
 
     public void add(ServiceInfo service) {
         service.setGeoServer(getGlobal());
-        if (getService(service.getId()) == null) {
-            getSession().save(service);
-            getSession().flush();
-            getSession().getTransaction().commit();
-        }
+        getSession().save(service);
+//        getSession().flush();
+//        getSession().getTransaction().commit();
     }
 
     public void remove(ServiceInfo service) {
         getSession().delete(service);
-        getSession().flush();
-        getSession().getTransaction().commit();
+//        getSession().flush();
+//        getSession().getTransaction().commit();
     }
 
     public void save(ServiceInfo service) {
         getSession().save(service);
-        getSession().flush();
-        getSession().getTransaction().commit();
+//        getSession().flush();
+//        getSession().getTransaction().commit();
     }
 
     public Collection<? extends ServiceInfo> getServices() {

@@ -1,16 +1,10 @@
 package org.geoserver.config.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-import javax.media.jai.JAI;
-import javax.media.jai.RecyclingTileFactory;
-
-import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerFactory;
@@ -20,8 +14,6 @@ import org.geoserver.config.ServiceLoader;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
-
-import com.sun.media.jai.util.SunTileCache;
 
 /**
  * Imports configuration from a legacy "services.xml" file into a geoserver

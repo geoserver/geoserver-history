@@ -22,4 +22,11 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
         this.serviceLevel = serviceLevel;
     }
 
+    /**
+     * @param gml the gml to set
+     */
+    public void setGML(Map<Version, GMLInfo> gml) {
+        this.gml = gml;
+    }
+
 }

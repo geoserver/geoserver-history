@@ -1,7 +1,14 @@
 package org.geoserver.wfs;
 
-public class GMLInfoImpl implements GMLInfo {
+import java.io.Serializable;
 
+public class GMLInfoImpl implements GMLInfo, Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2955646733867099280L;
+    
     SrsNameStyle srsNameStyle;
     boolean featureBounding;
     

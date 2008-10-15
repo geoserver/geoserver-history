@@ -474,22 +474,22 @@ public class HibernateCatalog implements Catalog {
 
     protected void internalAdd(Object object) {
         getSession().save(object);
-        getSession().flush();
-        getSession().getTransaction().commit();
+//        getSession().flush();
+//        getSession().getTransaction().commit();
         added(object);
     }
 
     protected void internalRemove(Object object) {
         getSession().delete(object);
-        getSession().flush();
-        getSession().getTransaction().commit();
+//        getSession().flush();
+//        getSession().getTransaction().commit();
         removed(object);
     }
 
     protected void internalSave(Object object) {
-        getSession().update(object);
-        getSession().flush();
-        getSession().getTransaction().commit();
+        getSession().save(object);
+//        getSession().flush();
+//        getSession().getTransaction().commit();
         modified(object, null, null, null);
     }
 

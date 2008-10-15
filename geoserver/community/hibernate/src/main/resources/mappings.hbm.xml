@@ -19,7 +19,7 @@
        CATALOG
     -->
     <!-- StoreInfo -->
-	<class name="org.geoserver.catalog.impl.StoreInfoImpl" table="STORES" lazy="false">
+	<class name="org.geoserver.catalog.impl.StoreInfoImpl" table="STORES">
 		<id name="id" column="STORE_ID">
             <generator class="native"/>
         </id>
@@ -29,7 +29,7 @@
         <!-- many-to-one name="namespace" column="NAMESPACE" 
         	class="org.geoserver.catalog.impl.NamespaceInfoImpl"/ --> <!-- FIX: WorkSpace -->
         <many-to-one name="workspace" column="WORKSPACE" 
-        	class="org.geoserver.catalog.impl.WorkspaceInfoImpl" lazy="false"/>
+        	class="org.geoserver.catalog.impl.WorkspaceInfoImpl"/>
         	
         <map name="metadata" table="STORE_METADATA">
         	<key column="STORE_ID"/>
@@ -117,7 +117,7 @@
 		   <key column="RESOURCE_ID"/>
 		   <element type="java.lang.String"/>
 		</set>
-		<set name="metadataLinks" cascade="all">
+		<set name="metadataLinks">
 		   <key column="RESOURCE_ID"/>
 		   <many-to-many 
 		  		class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
@@ -208,8 +208,7 @@
        </set>   
        	   
        <many-to-one name="resource" column="RESOURCE" class="org.geoserver.catalog.impl.ResourceInfoImpl"/>
-       <many-to-one name="legend" column="LEGEND" 
-          cascade="all" class="org.geoserver.catalog.impl.LegendInfoImpl"/>
+       <many-to-one name="legend" column="LEGEND" class="org.geoserver.catalog.impl.LegendInfoImpl"/>
     	
        <property name="enabled" column="ENABLED"/>
        <map name="metadata" table="LAYER_METADATA">
@@ -334,10 +333,7 @@
 
     <!-- ServiceInfo -->
     <class name="org.geoserver.config.impl.ServiceInfoImpl" table="SERVICES">
-		<id name="id" column="SERVICE_ID">
-			<generator class="native"/>
-		</id>
-		<property name="id" column="ID" not-null="true" unique="true"/>
+		<id name="id" column="ID"/>
         <property name="enabled" column="ENABLED"/>
 		<property name="name" column="NAME" not-null="true" unique="true"/>
 		<property name="title" column="TITLE"/>
@@ -360,8 +356,8 @@
 		    <list-index column="VERSION_INDEX"/>
 			<element type="org.geotools.util.Version"/>
     	</list>       	
-		<one-to-one name="metadataLink" cascade="all" 
-			class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
+		<one-to-one name="metadataLink" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
+			
 		<many-to-one name="geoServer" class="org.geoserver.config.impl.GeoServerInfoImpl" column="GEOSERVER"/>
 
 		<property name="citeCompliant" column="CITE_COMPLIANT"/>
@@ -376,12 +372,11 @@
 
     <!-- WMSInfoImpl -->
     <joined-subclass name="org.geoserver.wms.WMSInfoImpl" 
-		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WMS_SERVICE" lazy="false">
+		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WMS_SERVICE">
 		<key column="ID"/>
 		
 		<property name="interpolation" column="INTERPOLATION"/>
-		<one-to-one name="watermark" cascade="all" 
-			class="org.geoserver.wms.WatermarkInfoImpl"/>
+		<many-to-one name="watermark" cascade="all" class="org.geoserver.wms.WatermarkInfoImpl"/>
 		<list name="SRS">
     	    <key column="ID"/>
     	    <list-index column="SRS_INDEX"/>
@@ -397,7 +392,7 @@
     	<property name="enabled" column="ENABLED"/>    	    
 		<property name="transparency" column="TRASPARENCY"/>
 		<property name="URL" column="URL"/>
-		<property name="position" column="position"/>
+		<property name="position" column="POSITION"/>
      </class>
      
     <!-- Position -->
@@ -412,6 +407,12 @@
     <joined-subclass name="org.geoserver.wfs.WFSInfoImpl" 
 		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WFS_SERVICE">
 		<key column="ID"/>
+		<property name="serviceLevel" column="SERVICE_LEVEL"/>
+		<map name="GML" table="WFS_GML">
+        	<key column="ID"/>
+        	<map-key type="java.lang.Enum"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map> 
     </joined-subclass>
     
     <!-- WCSInfoImpl -->

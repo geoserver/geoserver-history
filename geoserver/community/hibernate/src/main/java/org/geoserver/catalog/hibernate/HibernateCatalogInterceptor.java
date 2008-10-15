@@ -22,6 +22,11 @@ public class HibernateCatalogInterceptor extends EmptyInterceptor implements
         ApplicationContextAware {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = -9046884809650001060L;
+
+    /**
      * application context
      */
     ApplicationContext applicationContext;
@@ -30,10 +35,6 @@ public class HibernateCatalogInterceptor extends EmptyInterceptor implements
      * catalog
      */
     HibernateCatalog catalog;
-
-    public HibernateCatalogInterceptor() {
-
-    }
 
     public HibernateCatalogInterceptor(HibernateCatalog catalog) {
         this.catalog = catalog;
