@@ -113,15 +113,17 @@
 		<property name="abstract" column="ABSTRACT"/>
 		<property name="description" column="DESCRIPTION"/>
 		<property name="enabled" column="ENABLED"/>
-	    <set name="keywords" table="RESOURCE_KEYWORDS">
+	    <list name="keywords" table="RESOURCE_KEYWORDS">
 		   <key column="RESOURCE_ID"/>
+           <list-index column="KW_INDEX"/>
 		   <element type="java.lang.String"/>
-		</set>
-		<set name="metadataLinks">
+		</list>
+		<list name="metadataLinks">
 		   <key column="RESOURCE_ID"/>
+           <list-index column="METADATA_LINK_INDEX"/>
 		   <many-to-many 
 		  		class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
-		</set>
+		</list>
 		<property name="nativeBoundingBox" type="boundingBox">
 			<column name="MINX"/>
 			<column name="MINY"/>
@@ -158,23 +160,27 @@
 		extends="org.geoserver.catalog.impl.ResourceInfoImpl" table="COVERAGES">
 		<key column="COVERAGE_ID"/>
 		<property name="nativeFormat" column="NATIVE_FORMAT"/>
-		<set name="supportedFormats">
+		<list name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS">
 		   <key column="COVERAGE_ID"/>
+           <list-index column="FORMAT_INDEX"/>
 		   <element type="java.lang.String"/>
-		</set>
-    	<set name="requestSRS">
+		</list>
+    	<list name="requestSRS" table="COVERAGE_REQUEST_SRS">
 			<key column="COVERAGE_ID"/>
+            <list-index column="REQUEST_SRS_INDEX"/>
 			<element type="java.lang.String"/>
-		</set>
-		<set name="responseSRS">
+		</list>
+		<list name="responseSRS" table="COVERAGE_RESPONSE_SRS">
 			<key column="COVERAGE_ID"/>
+            <list-index column="RESPONSE_SRS_INDEX"/>
 			<element type="java.lang.String"/>
-		</set>
+		</list>
 		<property name="defaultInterpolationMethod" column="DEFAULT_INTERPOLATION_METHOD"/>
-		<set name="interpolationMethods">
+		<list name="interpolationMethods" table="COVERAGE_INTERPOLATION_METHODS">
 			<key column="COVERAGE_ID"/>
+            <list-index column="INTERP_METHOD_INDEX"/>
 			<element type="java.lang.String"/>
-		</set>
+		</list>
 		<map name="parameters" table="COVERAGE_PARAMETERS">
         	<key column="COVERAGE_ID"/>
         	<map-key type="java.lang.String"></map-key>
