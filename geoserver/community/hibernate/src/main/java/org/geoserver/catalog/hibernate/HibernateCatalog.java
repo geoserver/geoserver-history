@@ -81,12 +81,18 @@ public class HibernateCatalog implements Catalog {
 
     private NamespaceInfo defaultNamespace;
 
+    private final HibernateCatalogFactory hibernateCatalogFactory;
+    
+    public HibernateCatalog(){
+        hibernateCatalogFactory = new HibernateCatalogFactory(this);
+    }
+    
     /**
      * @see Catalog#getFactory()
      * @see HibernateCatalogFactory
      */
     public CatalogFactory getFactory() {
-        return new HibernateCatalogFactory(this);
+        return hibernateCatalogFactory;
     }
 
     /**
