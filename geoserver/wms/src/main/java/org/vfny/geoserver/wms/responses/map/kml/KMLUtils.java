@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -464,11 +465,16 @@ public class KMLUtils {
             Data catalog = mapContext.getRequest().getWMS().getData();
             Name name = layer.getFeatureSource().getName();
             stratname = catalog.getFeatureTypeInfo(name).getRegionateStrategy();
-            if (stratname == null)
-                throw new WmsException(
-                        "No default regionating strategy has been configured in "
-                                + name);
+            if (stratname == null){
+                stratname = "best_guess";
+                LOGGER.log(
+                        Level.WARNING,
+                        "No default regionating strategy has been configured in " + name
+                        + "; using automatic best-guess strategy."
+                    );
+            }
         }
+
         if (stratname != null) {
             List<RegionatingStrategyFactory> factories = GeoServerExtensions
                     .extensions(RegionatingStrategyFactory.class);
@@ -483,8 +489,7 @@ public class KMLUtils {
             // if a strategy was specified but we did not find it, let the user
             // know
             if (regionatingStrategy == null)
-                throw new WmsException("Unknown regionating strategy "
-                        + stratname);
+                throw new WmsException("Unknown regionating strategy " + stratname);
         }
 
         // try to load less features by leveraging regionating strategy and the

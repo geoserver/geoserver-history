@@ -399,5 +399,10 @@
       <constructor-arg value="random"/>
       <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.RandomRegionatingStrategy"/>
     </bean>
+    <bean id="bestGuessRegionator"
+        class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
+      <constructor-arg value="best_guess"/>
+      <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.BestGuessRegionatingStrategy"/>
+    </bean>
 
 </beans>
