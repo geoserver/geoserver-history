@@ -171,7 +171,7 @@ public class KMLReflector extends WMService {
         final MapLayerInfo[] layers = serviceRequest.getLayers();
         LOGGER.info("KML NetworkLink sharing " + layers.length + " layer(s) created.");
         
-        if (defaultBbox){
+        if (defaultBbox && serviceRequest.getSuperOverlay()){
             Envelope e = layers[0].getLatLongBoundingBox();
             for (int i = 1; i < layers.length; i++)
                 e.expandToInclude(layers[i].getLatLongBoundingBox());
@@ -328,7 +328,6 @@ public class KMLReflector extends WMService {
                 sb.append("<href><![CDATA[");
                 sb.append(url.toExternalForm());
                 sb.append("]]></href>\n");
-                sb.append("<viewRefreshMode>onRegion</viewRefreshMode>\n");
 
                 sb.append("</Link>\n");
                 sb.append("</NetworkLink>\n");
