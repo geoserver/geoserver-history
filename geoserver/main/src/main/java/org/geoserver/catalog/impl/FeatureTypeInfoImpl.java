@@ -7,6 +7,7 @@ package org.geoserver.catalog.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
@@ -112,6 +113,9 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
             return false;
         return true;
     }
-    
+
+    public void setAlias(List<String> aliases) {
+        this.alias = aliases;
+    }
     
 }

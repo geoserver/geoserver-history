@@ -29,6 +29,11 @@ public interface ResourceInfo {
     Catalog getCatalog();
 
     /**
+     * The catalog the resource is part of.
+     */
+    void setCatalog(Catalog catalog);
+    
+    /**
      * The name of the resource.
      * <p>
      * This name corresponds to the "published" name of the resource.
@@ -75,6 +80,11 @@ public interface ResourceInfo {
      * A set of aliases or alternative names that the resource is also known by. 
      */
     List<String> getAlias();
+    
+    /**
+     * A set of aliases or alternative names that the resource is also known by. 
+     */
+    void setAlias(List<String> aliases);
     
     /**
      * The namespace uri of the resource.

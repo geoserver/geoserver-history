@@ -296,4 +296,16 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
 		return delegate.getNativeSrsWKT();
 	}
 
+    public void setCatalog(Catalog catalog) {
+        delegate.setCatalog(catalog);
+    }
+
+    public void setNativeSrsWKT(String wkt) {
+        delegate.setNativeSrsWKT(wkt);
+    }
+
+    public void setAlias(List<String> aliases) {
+        delegate.setAlias(aliases);
+    }
+
 }

@@ -29,7 +29,7 @@
         <!-- many-to-one name="namespace" column="NAMESPACE" 
         	class="org.geoserver.catalog.impl.NamespaceInfoImpl"/ --> <!-- FIX: WorkSpace -->
         <many-to-one name="workspace" column="WORKSPACE" 
-        	class="org.geoserver.catalog.impl.WorkspaceInfoImpl"/>
+        	class="org.geoserver.catalog.impl.WorkspaceInfoImpl" cascade="all"/>
         	
         <map name="metadata" table="STORE_METADATA">
         	<key column="STORE_ID"/>
@@ -104,25 +104,29 @@
     
 	<!-- ResourceInfo -->    
 	<class name="org.geoserver.catalog.impl.ResourceInfoImpl" table="RESOURCES">
-		<id name="id" column="RESOURCE_ID">
-            <generator class="native"/>
-        </id>
+		<id name="id" column="RESOURCE_ID"/>
         <property name="name" column="NAME"/>
-        <many-to-one name="namespace" column="NAMESPACE" class="org.geoserver.catalog.impl.NamespaceInfoImpl"/>
+        <property name="nativeName" column="NATIVE_NAME"/>
+        <!-- property name="prefixedName" column="PREFIXED_NAME"/ -->
+        <many-to-one name="namespace" column="NAMESPACE" class="org.geoserver.catalog.impl.NamespaceInfoImpl" cascade="all"/>
 		<property name="title" column="TITLE"/>
 		<property name="abstract" column="ABSTRACT"/>
 		<property name="description" column="DESCRIPTION"/>
 		<property name="enabled" column="ENABLED"/>
+		<list name="alias" table="RESOURCE_ALIASES">
+		   <key column="RESOURCE_ID"/>
+           <list-index column="ALIAS_INDEX"/>
+		   <element type="java.lang.String"/>
+		</list>
 	    <list name="keywords" table="RESOURCE_KEYWORDS">
 		   <key column="RESOURCE_ID"/>
            <list-index column="KW_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
-		<list name="metadataLinks">
+		<list name="metadataLinks" cascade="all">
 		   <key column="RESOURCE_ID"/>
            <list-index column="METADATA_LINK_INDEX"/>
-		   <many-to-many 
-		  		class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
+		   <many-to-many class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
 		</list>
 		<property name="nativeBoundingBox" type="boundingBox">
 			<column name="MINX"/>
@@ -139,19 +143,22 @@
 			<column name="LL_CRS"/>
 		</property>
 		<property name="SRS" column="SRS"/>
+		<!-- property name="CRS" column="RESOURCE_CRS" type="java.io.Serializable"/ -->
+		<property name="nativeCRS" column="NATIVE_CRS" type="java.io.Serializable"/>
+		<property name="projectionPolicy" column="PROJECTION_POLICY"/>
         <map name="metadata" table="RESOURCE_METADATA">
         	<key column="RESOURCE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>
-    	<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.StoreInfoImpl"/>
+    	<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.StoreInfoImpl" cascade="all"/>
 	</class>
 	
 	<!-- FeatureTypeInfo -->
 	<joined-subclass name="org.geoserver.catalog.impl.FeatureTypeInfoImpl"
 		extends="org.geoserver.catalog.impl.ResourceInfoImpl" table="FEATURE_TYPES">
 		<key column="FEATURE_TYPE_ID"/>
-		<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.DataStoreInfoImpl"/>
+		<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.DataStoreInfoImpl" cascade="all"/>
 		<property name="filter" column="FILTER" type="filter"/>
     </joined-subclass>
     
@@ -160,6 +167,8 @@
 		extends="org.geoserver.catalog.impl.ResourceInfoImpl" table="COVERAGES">
 		<key column="COVERAGE_ID"/>
 		<property name="nativeFormat" column="NATIVE_FORMAT"/>
+		<property name="nativeSrsWKT" column="NATIVE_SRS"/>
+		<property name="grid" column="GRID_GEOMETRY" type="java.io.Serializable"/>
 		<list name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS">
 		   <key column="COVERAGE_ID"/>
            <list-index column="FORMAT_INDEX"/>
@@ -186,7 +195,7 @@
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.lang.String"></element>
         </map>       
-        <many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.CoverageStoreInfoImpl"/>
+        <many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.CoverageStoreInfoImpl" cascade="all"/>
     </joined-subclass>
     
     <!-- LegendInfo -->
@@ -207,14 +216,14 @@
 	   </id>
 	   <property name="path" column="PATH"/>
 		
-	   <many-to-one name="defaultStyle" column="DEFAULT_STYLE" class="org.geoserver.catalog.impl.StyleInfoImpl"/>
+	   <many-to-one name="defaultStyle" column="DEFAULT_STYLE" class="org.geoserver.catalog.impl.StyleInfoImpl" cascade="all"/>
 	   <set name="styles" table="LAYER_STYLES">
         	<key column="LAYER_ID"/>
 			<many-to-many class="org.geoserver.catalog.impl.StyleInfoImpl"/>
        </set>   
        	   
-       <many-to-one name="resource" column="RESOURCE" class="org.geoserver.catalog.impl.ResourceInfoImpl"/>
-       <many-to-one name="legend" column="LEGEND" class="org.geoserver.catalog.impl.LegendInfoImpl"/>
+       <many-to-one name="resource" column="RESOURCE" class="org.geoserver.catalog.impl.ResourceInfoImpl" cascade="all"/>
+       <many-to-one name="legend" column="LEGEND" class="org.geoserver.catalog.impl.LegendInfoImpl" cascade="all"/>
     	
        <property name="enabled" column="ENABLED"/>
        <map name="metadata" table="LAYER_METADATA">
@@ -364,7 +373,7 @@
     	</list>       	
 		<one-to-one name="metadataLink" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
 			
-		<many-to-one name="geoServer" class="org.geoserver.config.impl.GeoServerInfoImpl" column="GEOSERVER"/>
+		<many-to-one name="geoServer" class="org.geoserver.config.impl.GeoServerInfoImpl" column="GEOSERVER" cascade="all"/>
 
 		<property name="citeCompliant" column="CITE_COMPLIANT"/>
 		<property name="onlineResource" column="ONLINE_RESOURCE"/>

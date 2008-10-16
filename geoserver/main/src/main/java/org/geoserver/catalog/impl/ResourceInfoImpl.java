@@ -392,4 +392,11 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     public void setMetadataLinks(List<MetadataLinkInfo> metadataLinks) {
         this.metadataLinks = metadataLinks;
     }
+
+    /**
+     * @param catalog the catalog to set
+     */
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
 }

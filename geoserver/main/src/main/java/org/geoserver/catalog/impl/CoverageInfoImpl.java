@@ -30,7 +30,7 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     String nativeFormat;
 
     GridGeometry grid;
-    
+
     List<String> supportedFormats = new ArrayList<String>();
 
     List<String> interpolationMethods = new ArrayList<String>();
@@ -40,7 +40,7 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     List<String> requestSRS = new ArrayList<String>();
 
     List<String> responseSRS = new ArrayList<String>();
-    
+
     Map parameters = new HashMap();
 
     private RangeType fields;
@@ -56,11 +56,11 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     private String srsWKT;
 
     public CoverageInfoImpl() {
-        super( null );
+        super(null);
     }
-    
+
     public CoverageInfoImpl(Catalog catalog) {
-        super( catalog );
+        super(catalog);
     }
 
     public CoverageInfoImpl(Catalog catalog, String id) {
@@ -74,11 +74,11 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     public GridGeometry getGrid() {
         return grid;
     }
-    
+
     public void setGrid(GridGeometry grid) {
         this.grid = grid;
     }
-    
+
     public String getNativeFormat() {
         return nativeFormat;
     }
@@ -119,28 +119,30 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
         this.parameters = parameters;
     }
 
-    public GridCoverage getGridCoverage(ProgressListener listener, Hints hints)
-            throws IOException {
-        return catalog.getResourcePool().getGridCoverage(this, null, hints); 
+    public GridCoverage getGridCoverage(ProgressListener listener, Hints hints) throws IOException {
+        return catalog.getResourcePool().getGridCoverage(this, null, hints);
     }
-    
-    public GridCoverage getGridCoverage(ProgressListener listener,
-            ReferencedEnvelope envelope, Hints hints) throws IOException {
+
+    public GridCoverage getGridCoverage(ProgressListener listener, ReferencedEnvelope envelope,
+            Hints hints) throws IOException {
         return catalog.getResourcePool().getGridCoverage(this, envelope, hints);
     }
-    
-    public CoverageAccess getCoverageAccess(ProgressListener listener,
-            Hints hints) throws IOException {
+
+    public CoverageAccess getCoverageAccess(ProgressListener listener, Hints hints)
+            throws IOException {
         return catalog.getResourcePool().getCoverageAccess(getStore(), hints);
     }
 
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((defaultInterpolationMethod == null) ? 0 : defaultInterpolationMethod.hashCode());
+        result = prime
+                * result
+                + ((defaultInterpolationMethod == null) ? 0 : defaultInterpolationMethod.hashCode());
         result = prime * result + ((grid == null) ? 0 : grid.hashCode());
         result = prime * result + ((fields == null) ? 0 : fields.hashCode());
-        result = prime * result + ((interpolationMethods == null) ? 0 : interpolationMethods.hashCode());
+        result = prime * result
+                + ((interpolationMethods == null) ? 0 : interpolationMethods.hashCode());
         result = prime * result + ((nativeFormat == null) ? 0 : nativeFormat.hashCode());
         result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
         result = prime * result + ((requestSRS == null) ? 0 : requestSRS.hashCode());
@@ -150,19 +152,18 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     }
 
     public boolean equals(Object obj) {
-        if ( !( obj instanceof CoverageInfo ) ) {
+        if (!(obj instanceof CoverageInfo)) {
             return false;
         }
-        if ( !super.equals( obj ) ) {
+        if (!super.equals(obj)) {
             return false;
         }
-        
+
         final CoverageInfo other = (CoverageInfo) obj;
         if (defaultInterpolationMethod == null) {
             if (other.getDefaultInterpolationMethod() != null)
                 return false;
-        } else if (!defaultInterpolationMethod
-                .equals(other.getDefaultInterpolationMethod()))
+        } else if (!defaultInterpolationMethod.equals(other.getDefaultInterpolationMethod()))
             return false;
         if (grid == null) {
             if (other.getGrid() != null)
@@ -247,40 +248,54 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
         this.verticalCRS = verticalCRS;
     }
 
-	/* (non-Javadoc)
-	 * @see org.geoserver.catalog.CoverageInfo#getNativeSrsWKT()
-	 */
-	public String getNativeSrsWKT() {
-		// TODO: FIX ME!!!
-		return this.srsWKT;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.geoserver.catalog.CoverageInfo#getNativeSrsWKT()
+     */
+    public String getNativeSrsWKT() {
+        // TODO: FIX ME!!!
+        return this.srsWKT;
+    }
 
     /**
-     * @param supportedFormats the supportedFormats to set
+     * @param supportedFormats
+     *                the supportedFormats to set
      */
     public void setSupportedFormats(List<String> supportedFormats) {
         this.supportedFormats = supportedFormats;
     }
 
     /**
-     * @param interpolationMethods the interpolationMethods to set
+     * @param interpolationMethods
+     *                the interpolationMethods to set
      */
     public void setInterpolationMethods(List<String> interpolationMethods) {
         this.interpolationMethods = interpolationMethods;
     }
 
     /**
-     * @param requestSRS the requestSRS to set
+     * @param requestSRS
+     *                the requestSRS to set
      */
     public void setRequestSRS(List<String> requestSRS) {
         this.requestSRS = requestSRS;
     }
 
     /**
-     * @param responseSRS the responseSRS to set
+     * @param responseSRS
+     *                the responseSRS to set
      */
     public void setResponseSRS(List<String> responseSRS) {
         this.responseSRS = responseSRS;
+    }
+
+    public void setNativeSrsWKT(String wkt) {
+        this.srsWKT = wkt;
+    }
+
+    public void setAlias(List<String> aliases) {
+        this.alias = aliases;
     }
 
 }

@@ -52,4 +52,10 @@ public interface StyleInfo {
      * The style object.
      */
     Style getStyle() throws IOException;
+
+    /**
+     * 
+     * @param hibernateCatalog
+     */
+    void setCatalog(Catalog catalog);
 }

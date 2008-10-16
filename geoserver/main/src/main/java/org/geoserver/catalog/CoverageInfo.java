@@ -55,6 +55,11 @@ public interface CoverageInfo extends ResourceInfo {
     String getNativeSrsWKT();
     
     /**
+     * 
+     */
+    void setNativeSrsWKT(String wkt);
+    
+    /**
      * The native format of the coverage.
      * 
      * @uml.property name="nativeFormat"

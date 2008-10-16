@@ -93,5 +93,8 @@ public class StyleInfoImpl implements StyleInfo {
         return true;
     }
 
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
     
 }

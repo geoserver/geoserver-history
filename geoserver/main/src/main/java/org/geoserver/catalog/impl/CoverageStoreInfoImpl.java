@@ -26,8 +26,8 @@ public class CoverageStoreInfoImpl extends StoreInfoImpl implements
         super(catalog);
     }
 
-    public CoverageStoreInfoImpl(Catalog catalog,String id) {
-        super(catalog,id);
+    public CoverageStoreInfoImpl(Catalog catalog, String id) {
+        super(catalog, id);
     }
 
     public String getType() {

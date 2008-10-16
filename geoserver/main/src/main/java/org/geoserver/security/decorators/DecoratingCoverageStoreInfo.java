@@ -109,4 +109,8 @@ public class DecoratingCoverageStoreInfo extends
         return delegate.getAdapter(adapterClass, hints);
     }
 
+    public void setCatalog(Catalog catalog) {
+        delegate.setCatalog(catalog);
+    }
+
 }

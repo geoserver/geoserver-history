@@ -25,6 +25,11 @@ public interface StoreInfo {
     Catalog getCatalog();
     
     /**
+     * The catalog the store is part of.
+     */
+    void setCatalog(Catalog catalog);
+    
+    /**
      * The store name.
      * <p>
      * This value is unique among all stores and can be used to identify the

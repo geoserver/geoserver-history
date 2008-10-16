@@ -88,8 +88,12 @@ public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> im
         delegate.setWorkspace(workspace);
     }
 
+    public void setCatalog(Catalog catalog) {
+        delegate.setCatalog(catalog);
+    }
+
     public <T> T getAdapter(Class<T> adapterClass, Map<?, ?> hints) {
-        return delegate.getAdapter(adapterClass, hints);
+        return null;
     }
 
 }

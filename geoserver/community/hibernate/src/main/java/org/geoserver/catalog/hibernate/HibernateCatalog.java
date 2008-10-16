@@ -151,14 +151,22 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStore(String, Class)
      */
     public StoreInfo getStore(String id, Class clazz) {
-        return (StoreInfo) first("from " + clazz.getName() + " where id = " + id);
+        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where id = '" + id + "'");
+        if (store != null) {
+            store.setCatalog(this);
+        }
+        return store;
     }
 
     /**
      * @see Catalog#getStoreByName(String, Class)
      */
     public StoreInfo getStoreByName(String name, Class clazz) {
-        return (StoreInfo) first("from " + clazz.getName() + " where name = '" + name + "'");
+        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where name = '" + name + "'");
+        if (store != null) {
+            store.setCatalog(this);
+        }
+        return store;
     }
 
     /**
@@ -174,6 +182,7 @@ public class HibernateCatalog implements Catalog {
         }
 
         ((StoreInfoImpl) store).setId(store.getName());
+        store.setCatalog(this);
         if (getStoreByName(store.getName(), store.getClass()) == null)
             internalAdd(store);
     }
@@ -196,7 +205,12 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStores(Class)
      */
     public List getStores(Class clazz) {
-        return list("from " + clazz.getName());
+        List<StoreInfo> stores = list("from " + clazz.getName());
+        for (StoreInfo store : stores) {
+            store.setCatalog(this);
+        }
+        
+        return stores;
         // return hibernate.find( );
     }
 
@@ -260,7 +274,12 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResource(String, Class)
      */
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
-        return (T) first("from " + clazz.getName() + " where id = " + id);
+        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = '" + id + "'");
+        if (resource != null) {
+            resource.setCatalog(this);
+            return (T) resource;
+        }
+        return null;
     }
 
     /**
@@ -268,9 +287,9 @@ public class HibernateCatalog implements Catalog {
      */
     public ResourceInfo getResourceByName(String name, Class clazz) {
         if (getDefaultNamespace() != null) {
-            ResourceInfo resource = getResourceByName(getDefaultNamespace().getPrefix(), name,
-                    clazz);
+            ResourceInfo resource = getResourceByName(getDefaultNamespace().getPrefix(), name, clazz);
             if (resource != null) {
+                resource.setCatalog(this);
                 return resource;
             }
         }
@@ -307,8 +326,11 @@ public class HibernateCatalog implements Catalog {
         }
 
         if (namespace != null) {
-            return (T) first("from " + clazz.getName() + " where name = '" + name
-                    + "' and namespace = " + namespace.getId());
+            ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where name = '" + name + "' and namespace = " + namespace.getId());
+            if (resource != null) {
+                resource.setCatalog(this);
+                return (T) resource;
+            }
         } else {
             // TODO: throw exception
         }
@@ -359,7 +381,11 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResources(Class)
      */
     public List getResources(Class clazz) {
-        return list("from " + clazz.getName());
+        List<ResourceInfo> resources = list("from " + clazz.getName());
+        for (ResourceInfo resource : resources) {
+            resource.setCatalog(this);
+        }
+        return resources;
         // return hibernate.find( "from " + clazz.getName() );
     }
 
@@ -367,8 +393,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResourcesByNamespace(NamespaceInfo, Class)
      */
     public List getResourcesByNamespace(NamespaceInfo namespace, Class clazz) {
-        return list("select r from " + clazz.getName() + " r, " + NamespaceInfo.class.getName()
-                + " n where r.namespace = n" + " and n.prefix = '" + namespace.getPrefix() + "'");
+        return list("select r from " + clazz.getName() + " r, " + NamespaceInfo.class.getName() + " n where r.namespace = n" + " and n.prefix = '" + namespace.getPrefix() + "'");
     }
 
     /**
@@ -452,7 +477,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getLayerByName(String)
      */
     public LayerInfo getLayerByName(String name) {
-        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where name = " + name);
+        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where name = '" + name + "'");
     }
 
     /**
@@ -513,7 +538,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getMapByName(String)
      */
     public MapInfo getMapByName(String name) {
-        return (MapInfo) first("from " + MapInfo.class.getName() + " where name = " + name);
+        return (MapInfo) first("from " + MapInfo.class.getName() + " where name = '" + name + "'");
     }
 
     /**
@@ -596,15 +621,18 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyle(String)
      */
     public StyleInfo getStyle(String id) {
-        return (StyleInfo) first("from " + StyleInfo.class.getName() + " where id = " + id);
+        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where id = " + id);
+        style.setCatalog(this);
+        return style;
     }
 
     /**
      * @see Catalog#getStyleByName(String)
      */
     public StyleInfo getStyleByName(String name) {
-        return (StyleInfo) first("from " + StyleInfo.class.getName() + " where name = '" + name
-                + "'");
+        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where name = '" + name + "'");
+        style.setCatalog(this);
+        return style;
     }
 
     /**
@@ -632,7 +660,11 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyles()
      */
     public List getStyles() {
-        return list("from " + StyleInfo.class.getName());
+        List<StyleInfo> styles = list("from " + StyleInfo.class.getName());
+        for (StyleInfo style : styles) {
+            style.setCatalog(this);
+        }
+        return styles;
         // return hibernate.find( "from " + StyleInfo.class.getName() );
     }
 
@@ -640,16 +672,14 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getNamespace(String)
      */
     public NamespaceInfo getNamespace(String id) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where ns_id = '"
-                + id + "'");
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where ns_id = '" + id + "'");
     }
 
     /**
      * @see Catalog#getNamespaceByPrefix(String)
      */
     public NamespaceInfo getNamespaceByPrefix(String prefix) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = '"
-                + prefix + "'");
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = '" + prefix + "'");
     }
 
     /**
@@ -657,8 +687,7 @@ public class HibernateCatalog implements Catalog {
      * @todo: revisit: what prevents us from having the same URI in more than one namespace?
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = '"
-                + uri + "'");
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = '" + uri + "'");
     }
 
     /**
@@ -957,16 +986,14 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getWorkspace(String)
      */
     public WorkspaceInfo getWorkspace(String id) {
-        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where id = '" + id
-                + "'");
+        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where id = '" + id + "'");
     }
 
     /**
      * @see Catalog#getWorkspaceByName(String)
      */
     public WorkspaceInfo getWorkspaceByName(String name) {
-        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where name = '"
-                + name + "'");
+        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where name = '" + name + "'");
     }
 
     /**
