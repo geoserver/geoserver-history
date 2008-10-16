@@ -171,7 +171,7 @@ public class KMLReflector extends WMService {
         final MapLayerInfo[] layers = serviceRequest.getLayers();
         LOGGER.info("KML NetworkLink sharing " + layers.length + " layer(s) created.");
         
-        if (defaultBbox && serviceRequest.getSuperOverlay()){
+        if (defaultBbox && (Boolean)serviceRequest.getFormatOptions().get("superoverlay")){
             Envelope e = layers[0].getLatLongBoundingBox();
             for (int i = 1; i < layers.length; i++)
                 e.expandToInclude(layers[i].getLatLongBoundingBox());
@@ -295,7 +295,7 @@ public class KMLReflector extends WMService {
             }
 
             final URL geoserverUrl = new URL(proxifiedBaseUrl);
-            if (serviceRequest.getSuperOverlay()) {
+            if ((Boolean)serviceRequest.getFormatOptions().get("superoverlay")) {
                 Envelope bbox = serviceRequest.getBbox();
 
                 sb.append("<NetworkLink>\n");
@@ -322,6 +322,7 @@ public class KMLReflector extends WMService {
                 queryString.append(style).append("&bbox=").append(requestParams.get("BBOX"));
                 queryString.append(filter).append("&legend=").append(serviceRequest.getLegend());
                 queryString.append("&superoverlay=true");
+                if (requestParams.containsKey("FORMAT_OPTIONS")) queryString.append("&format_options=").append(requestParams.get("FORMAT_OPTIONS"));
                 
                 URL url = new URL(geoserverUrl, queryString.toString());
                 
@@ -343,6 +344,7 @@ public class KMLReflector extends WMService {
                 queryString.append("&KMScore=").append(serviceRequest.getKMScore());
                 queryString.append("&KMAttr=").append(serviceRequest.getKMattr());
                 queryString.append("&legend=").append(serviceRequest.getLegend());
+                if (requestParams.containsKey("FORMAT_OPTIONS")) queryString.append("&format_options=").append(requestParams.get("FORMAT_OPTIONS"));
                 
                 URL url = new URL(geoserverUrl, queryString.toString());
                 

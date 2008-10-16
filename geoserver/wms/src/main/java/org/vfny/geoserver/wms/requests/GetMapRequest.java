@@ -277,19 +277,19 @@ public class GetMapRequest extends WMSRequest {
         return true; //old default
     }
 
-    /**
-     * @return super overlay flag, <code>true</code> if super overlay requested.
-     * @deprecated use <code>getFormatOptions().get( "superoverlay" )</code>
-     */
-    public boolean getSuperOverlay() {
-        Boolean superOverlay = (Boolean) getFormatOptions().get("superoverlay");
-
-        if (superOverlay != null) {
-            return superOverlay.booleanValue();
-        }
-
-        return false; //old default
-    }
+//    /**
+//     * @return super overlay flag, <code>true</code> if super overlay requested.
+//     * @deprecated use <code>getFormatOptions().get( "superoverlay" )</code>
+//     */
+//    public boolean getSuperOverlay() {
+//        Boolean superOverlay = (Boolean) getFormatOptions().get("superoverlay");
+//
+//        if (superOverlay != null) {
+//            return superOverlay.booleanValue();
+//        }
+//
+//        return false; //old default
+//    }
 
     /**
      * @return kml legend flag, <code>true</code> if legend is enabled.

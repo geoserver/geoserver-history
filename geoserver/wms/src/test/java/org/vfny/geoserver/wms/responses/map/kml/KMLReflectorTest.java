@@ -50,6 +50,7 @@ public class KMLReflectorTest extends WMSTestSupport {
         final XpathEngine xpath = XMLUnit.newXpathEngine();
         String requestURL = "kml/wms?layers=" + layerName;
         Document dom = getAsDOM(requestURL);
+        print(dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder)", dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder/NetworkLink)", dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder/LookAt)", dom);

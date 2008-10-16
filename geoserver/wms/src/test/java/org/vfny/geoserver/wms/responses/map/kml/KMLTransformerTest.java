@@ -285,7 +285,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(mapContext);
         transformer.setIndentation(2);
 
-        mapContext.setAreaOfInterest(new Envelope(-180, 180, -90, 90));
+        mapContext.setAreaOfInterest(new Envelope(-180.0, 180.0, -90.0, 90.0));
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(mapLayer, output);
@@ -294,8 +294,8 @@ public class KMLTransformerTest extends WMSTestSupport {
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
-        assertEquals( 3, document.getElementsByTagName("Region").getLength() );
-        assertEquals( 2, document.getElementsByTagName("NetworkLink").getLength() );
+        assertEquals(3, document.getElementsByTagName("Region").getLength());
+        assertEquals(2, document.getElementsByTagName("NetworkLink").getLength());
     }
 
     public void testStyleConverter() throws Exception {

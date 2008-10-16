@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +17,9 @@ import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -109,17 +112,6 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                 encodeNetworkLink(e1, "1", mapLayer);
             }
 
-            //encode the ground overlay(s)
-            if (top == KMLUtils.WORLD_BOUNDS_WGS84) {
-                //special case for top since it does not line up as a propery
-                //tile -> split it in two
-                encodeTileForViewing(mapLayer, i, new Envelope(-180, 0, -90, 90));
-                encodeTileForViewing(mapLayer, i, new Envelope(0, 180, -90, 90));
-            } else {
-                //encode straight up
-                encodeTileForViewing(mapLayer, i, top);
-            }
-
             //end document
             end("Document");
             
@@ -129,15 +121,43 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         }
 
         void encodeTileForViewing(MapLayer mapLayer, int drawOrder, Envelope box){
-            if (isVectorLayer(mapLayer)){
+            if (shouldDrawVectorLayer(mapLayer, box))
                 encodeKMLLink(mapLayer, drawOrder, box);
-            } else {
+            if (shouldDrawWMSOverlay(mapLayer, box))
                 encodeGroundOverlay(mapLayer, drawOrder, box);
-            }
+        }
+
+        private boolean shouldDrawVectorLayer(MapLayer layer, Envelope box){
+            // should draw as vector if the layer is a vector layer, and based on mode
+            // full: yes
+            // bottom: yes
+            // top: is the feature count for this tile below the cutoff?
+            if (!isVectorLayer(layer)) return false;
+
+            String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
+            if ("top".equals(regionateMode)) 
+                // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
+                return featuresInTile(layer, box) <= getFeatureTypeInfo(layer).getRegionateFeatureLimit() * 16; 
+
+            return true;
+        }
+
+        private boolean shouldDrawWMSOverlay(MapLayer layer, Envelope box){
+            // should draw based on the mode:
+            // full: no
+            // bottom: yes
+            // top: is the feature count for this tile above the cutoff?
+            String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
+            if ("bottom".equals(regionateMode)) return true;
+            if ("top".equals(regionateMode))
+                // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
+                return featuresInTile(layer, box) > getFeatureTypeInfo(layer).getRegionateFeatureLimit() * 16;
+
+            return false;
         }
 
         void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box){
-            if (!tileIsEmpty(mapLayer, box)){
+            if (featuresInTile(mapLayer, box) > 0){
                 start("NetworkLink");
                 element("visibility", "1");
                 start("Link");
@@ -161,20 +181,21 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         }
 
         boolean isVectorLayer(MapLayer layer){
-            for (MapLayerInfo info : mapContext.getRequest().getLayers()) {
-                if (info.getName().equals(layer.getTitle())){
-                    if (info.getType() == MapLayerInfo.TYPE_VECTOR 
-                            || info.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            int index = Arrays.asList(mapContext.getLayers()).indexOf(layer);
+            MapLayerInfo info = mapContext.getRequest().getLayers()[index];
+            return (info.getType() == MapLayerInfo.TYPE_VECTOR 
+                    || info.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR);
         }
 
-        boolean tileIsEmpty(MapLayer mapLayer, Envelope bounds){
-            if (!isVectorLayer(mapLayer)) return false;
+        private FeatureTypeInfo getFeatureTypeInfo(MapLayer layer){
+            for (MapLayerInfo info : mapContext.getRequest().getLayers()) 
+                if (info.getName().equals(layer.getTitle()))
+                    return info.getFeature();
+            return null;
+        }
+
+        private int featuresInTile(MapLayer mapLayer, Envelope bounds){
+            if (!isVectorLayer(mapLayer)) return 1; // for coverages, we want raster tiles everywhere
 
             Envelope originalBounds = mapContext.getRequest().getBbox();
             String originalRegionateBy = 
@@ -191,8 +212,12 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                         mapLayer,
                         mapContext
                         ).size()/* == 0*/);
+            } catch (WmsException e) {
+                LOGGER.severe("Caught the WmsException!");
+                numFeatures = -1;
             } catch (HttpErrorCodeException e) {
                 if (e.getErrorCode() == 204){
+                    mapContext.getRequest().getFormatOptions().remove("regionateby");
                     numFeatures = 0;
                 } else {
                     LOGGER.log(
@@ -215,7 +240,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                 mapContext.getRequest().getFormatOptions().remove("regionateby");
             }
 
-            return numFeatures == 0;
+            return numFeatures;
         }
 
         void encodeGroundOverlay(MapLayer mapLayer, int drawOrder, Envelope box) {
@@ -258,7 +283,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         }
 
         void encodeNetworkLink(Envelope box, String name, MapLayer mapLayer) {
-            if (tileIsEmpty(mapLayer, box)) return;
+            if (featuresInTile(mapLayer, box) == 0) return;
 
             start("NetworkLink");
             element("name", name);

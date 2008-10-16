@@ -140,7 +140,9 @@ public class KMLTransformer extends TransformerBase {
                 MapLayerInfo layerInfo = mapContext.getRequest().getLayers()[i];
 
                 //was a super overlay requested?
-                if (mapContext.getRequest().getSuperOverlay()) {
+                Boolean superoverlay = (Boolean)mapContext.getRequest().getFormatOptions().get("superoverlay");
+                superoverlay = (superoverlay == null ? Boolean.FALSE : superoverlay);
+                if (superoverlay) {
                     //encode as super overlay
                     encodeSuperOverlayLayer(mapContext, layer);
                 } else {

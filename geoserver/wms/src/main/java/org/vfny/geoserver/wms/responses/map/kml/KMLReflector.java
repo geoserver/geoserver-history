@@ -72,10 +72,11 @@ public class KMLReflector {
         
         //set the format
         //TODO: create a subclass of GetMapRequest to store these values
-        if ( request.getSuperOverlay() ) {
+        Boolean superoverlay = (Boolean)request.getFormatOptions().get("superoverlay");
+        if (superoverlay == null) superoverlay = Boolean.FALSE;
+        if (superoverlay) {
             request.setFormat( KMLMapProducer.MIME_TYPE );
-        }
-        else {
+        } else {
             request.setFormat( KMZMapProducer.MIME_TYPE );
         }
         
@@ -102,7 +103,7 @@ public class KMLReflector {
         transformer.setIndentation(3);
         Charset encoding = request.getWMS().getCharSet();
         transformer.setEncoding(encoding);
-        transformer.setEncodeAsRegion( request.getSuperOverlay() );
+        transformer.setEncodeAsRegion(superoverlay);
         transformer.transform( request, response.getOutputStream() );
     }
 }
