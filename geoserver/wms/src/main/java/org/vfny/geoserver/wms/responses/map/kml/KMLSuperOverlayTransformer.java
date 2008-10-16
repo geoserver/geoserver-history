@@ -112,6 +112,18 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                 encodeNetworkLink(e1, "1", mapLayer);
             }
 
+            //encode the ground overlay(s)
+            if (top == KMLUtils.WORLD_BOUNDS_WGS84) {
+                //special case for top since it does not line up as a proper
+                //tile -> split it in two
+                encodeTileForViewing(mapLayer, i, new Envelope(-180, 0, -90, 90));
+                encodeTileForViewing(mapLayer, i, new Envelope(0, 180, -90, 90));
+            } else {
+                //encode straight up
+                encodeTileForViewing(mapLayer, i, top);
+            }
+
+
             //end document
             end("Document");
             
