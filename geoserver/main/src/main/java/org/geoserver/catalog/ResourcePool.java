@@ -140,10 +140,11 @@ public class ResourcePool {
      */
     public DataStore getDataStore( DataStoreInfo info ) throws IOException {
         try {
-            DataStore dataStore = (DataStore) dataStoreCache.get(info);
+            String name = info.getName();
+            DataStore dataStore = (DataStore) dataStoreCache.get(name);
             if ( dataStore == null ) {
                 synchronized (dataStoreCache) {
-                    dataStore = (DataStore) dataStoreCache.get( info );
+                    dataStore = (DataStore) dataStoreCache.get( name );
                     if ( dataStore == null ) {
                         //create data store
                         Map connectionParameters = info.getConnectionParameters();
@@ -158,7 +159,7 @@ public class ResourcePool {
                             throw new NullPointerException("Could not aquire datastore '" + info.getName() + "'");
                         }
                         
-                        dataStoreCache.put( info, dataStore );
+                        dataStoreCache.put( name, dataStore );
                     }
                 } 
             }
@@ -643,34 +644,34 @@ public class ResourcePool {
     
     static class DataStoreCache extends LRUMap {
         protected boolean removeLRU(LinkEntry entry) {
-            DataStoreInfo info = (DataStoreInfo) entry.getKey();
-            dispose(info,(DataStore) entry.getValue());
+            String name = (String) entry.getKey();
+            dispose(name,(DataStore) entry.getValue());
             
             return super.removeLRU(entry);
         }
         
-        void dispose(DataStoreInfo info, DataStore dataStore) {
-            LOGGER.info( "Disposing datastore '" + info.getName() + "'" );
+        void dispose(String name, DataStore dataStore) {
+            LOGGER.info( "Disposing datastore '" + name + "'" );
             
             try {
                 dataStore.dispose();
             }
             catch( Exception e ) {
-                LOGGER.warning( "Error occured disposing datastore '" + info.getName() + "'");
+                LOGGER.warning( "Error occured disposing datastore '" + name + "'");
                 LOGGER.log(Level.FINE, "", e );
             }
             
         }
         
         protected void destroyEntry(HashEntry entry) {
-            dispose( (DataStoreInfo) entry.getKey(), (DataStore) entry.getValue() );
+            dispose( (String) entry.getKey(), (DataStore) entry.getValue() );
             super.destroyEntry(entry);
         }
         
         public void clear() {
             for ( Iterator e = entrySet().iterator(); e.hasNext(); ) {
-                Map.Entry<DataStoreInfo,DataStore> entry = 
-                    (Entry<DataStoreInfo, DataStore>) e.next();
+                Map.Entry<String,DataStore> entry = 
+                    (Entry<String, DataStore>) e.next();
                 dispose( entry.getKey(), entry.getValue() );
             }
             super.clear();
