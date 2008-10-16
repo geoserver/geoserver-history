@@ -13,8 +13,11 @@ import java.io.Reader;
 public class BufferedRequestStream extends ServletInputStream{
     Reader myReader;
 
-    public BufferedRequestStream(String buff){
+    public BufferedRequestStream(String buff) throws IOException {
         myReader = new StringReader(buff);
+        myReader.mark(16);
+        myReader.read();
+        myReader.reset();
     }
 
     public int readLine(byte[] b, int off, int len) throws IOException{
