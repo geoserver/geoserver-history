@@ -350,7 +350,15 @@ public class HibernateCatalog implements Catalog {
         }
 
         ((ResourceInfoImpl) resource).setId(resource.getName());
-        internalAdd(resource);
+        resource.setCatalog(this);
+        ResourceInfo dbResource = getResource(resource.getId(), resource.getClass());
+        if (dbResource == null) {
+            internalAdd(resource);
+        } else {
+            // ???? update the db-resource: merge the objects in session
+            internalSave(resource);
+        }
+            
     }
 
     /**
