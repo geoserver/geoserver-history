@@ -352,10 +352,10 @@ public class HibernateCatalogTest extends HibernateTestSupport {
 		catalog.add( coverageStore );
 		
 		CoverageInfo coverage = catalog.getFactory().createCoverage();
-		coverage.setName( "featureType" );
-		coverage.setTitle( "featureType title");
-		coverage.setDescription( "featureType description");
-		coverage.setAbstract( "featureType abstract");
+		coverage.setName( "coverage" );
+		coverage.setTitle( "coverage title");
+		coverage.setDescription( "coverage description");
+		coverage.setAbstract( "coverage abstract");
 		coverage.setSRS( "EPSG:4326" );
 		coverage.setNamespace( namespace );
 		coverage.setStore( coverageStore );
@@ -423,8 +423,8 @@ public class HibernateCatalogTest extends HibernateTestSupport {
         catalog.add( coverageStore );
         
         CoverageInfo coverage = catalog.getFactory().createCoverage();
-        coverage.setName( "featureType" );
-        coverage.setTitle( "featureType title");
+        coverage.setName( "testLayerCoverage" );
+        coverage.setTitle( "testLayerCoverage title");
         coverage.setStore( coverageStore );
         coverage.setNativeBoundingBox( new ReferencedEnvelope( 0,0,0,0,DefaultGeographicCRS.WGS84 ));
         coverage.setLatLonBoundingBox( new ReferencedEnvelope( 0,0,0,0,DefaultGeographicCRS.WGS84 ));

@@ -48,7 +48,7 @@
       <ref local="sessionFactory"/>
     </property>
     <property name="dataSource"><ref local="dataSource"/></property>
-    <property name="entityInterceptor" ref="catalogInterceptor"/>
+    <!--property name="entityInterceptor" ref="catalogInterceptor"/-->
    </bean>
 
  <!-- this is a transactional proxy for services which make calls to 
@@ -56,13 +56,15 @@
  <bean id="transactionalService" abstract="true"
     class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
   <property name="transactionManager"><ref local="transactionManager"/></property>
-  <!-- property name="target"><ref local="catalogTarget"/></property -->
+  <property name="target">
+    <list>
+      <ref local="catalogTarget"/>
+      <ref local="configTarget"/>
+    </list>
+  </property>
   <property name="transactionAttributes">
        <props>
-           <prop key="save*">PROPAGATION_REQUIRED</prop>
-           <prop key="remove*">PROPAGATION_REQUIRED</prop>
-           <prop key="change*">PROPAGATION_REQUIRED</prop>
-           <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+           <prop key="*">PROPAGATION_REQUIRED</prop>
        </props>
    </property>
  </bean>

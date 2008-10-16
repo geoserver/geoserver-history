@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.Wrapper;
+import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.config.util.LegacyLoggingImporter;
@@ -97,30 +98,35 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         }
         
         //load catalog
-        LegacyCatalogImporter catalogImporter = new LegacyCatalogImporter();
-        catalogImporter.setResourceLoader(resourceLoader);
         Catalog catalog = geoserver.getCatalog();
         if(catalog instanceof Wrapper && ((Wrapper) catalog).isWrapperFor(Catalog.class)) {
             catalog = ((Wrapper) catalog).unwrap(Catalog.class);
         }
-        catalogImporter.setCatalog(catalog);
-        
-        try {
-            catalogImporter.imprt( resourceLoader.getBaseDirectory() );
-        }
-        catch(Exception e) {
-            throw new RuntimeException( e );
-        }
-        
-        //load configuration
-        LegacyConfigurationImporter importer = new LegacyConfigurationImporter();
-        importer.setConfiguration(geoserver);
-        
-        try {
-            importer.imprt( resourceLoader.getBaseDirectory() );
-        } 
-        catch (Exception e) {
-            throw new RuntimeException( e );
+        if(catalog instanceof CatalogImpl){
+            LegacyCatalogImporter catalogImporter = new LegacyCatalogImporter();
+            catalogImporter.setResourceLoader(resourceLoader);
+            catalogImporter.setCatalog(catalog);
+            
+            try {
+                catalogImporter.imprt( resourceLoader.getBaseDirectory() );
+            }
+            catch(Exception e) {
+                throw new RuntimeException( e );
+            }
+            
+            //load configuration
+            LegacyConfigurationImporter importer = new LegacyConfigurationImporter();
+            importer.setConfiguration(geoserver);
+            
+            try {
+                importer.imprt( resourceLoader.getBaseDirectory() );
+            } 
+            catch (Exception e) {
+                throw new RuntimeException( e );
+            }
+        }else{
+            LOGGER.info("Found an alternative catalog implementation: "
+                    + catalog.getClass().getName() + ". Skipping legacy catalog import");
         }
         
         //load initializer extensions

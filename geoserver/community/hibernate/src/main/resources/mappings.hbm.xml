@@ -29,7 +29,7 @@
         <!-- many-to-one name="namespace" column="NAMESPACE" 
         	class="org.geoserver.catalog.impl.NamespaceInfoImpl"/ --> <!-- FIX: WorkSpace -->
         <many-to-one name="workspace" column="WORKSPACE" 
-        	class="org.geoserver.catalog.impl.WorkspaceInfoImpl" cascade="all"/>
+        	class="org.geoserver.catalog.hibernate.HbWorkspaceInfo" cascade="all"/>
         	
         <map name="metadata" table="STORE_METADATA">
         	<key column="STORE_ID"/>
@@ -78,12 +78,12 @@
 	</class>	
 	
 	<!-- WorkspaceInfo -->
-    <class name="org.geoserver.catalog.impl.WorkspaceInfoImpl" table="WORKSPACES">
+    <class name="org.geoserver.catalog.hibernate.HbWorkspaceInfo" table="WORKSPACES">
 		<id name="id" column="WS_ID">
             <generator class="native"/>
         </id>
         <property name="name" column="NAME" unique="true"/>  
-        
+        <property name="default" column="IS_DEFAULT"/>
         <map name="metadata" table="WORKSPACE_METADATA">
         	<key column="WS_ID"/>
         	<map-key type="java.lang.String"></map-key>
@@ -103,8 +103,10 @@
     </class>
     
 	<!-- ResourceInfo -->    
-	<class name="org.geoserver.catalog.impl.ResourceInfoImpl" table="RESOURCES">
-		<id name="id" column="RESOURCE_ID"/>
+	<class name="org.geoserver.catalog.impl.ResourceInfoImpl" table="RESOURCES" abstract="true">
+		<id name="id" column="ID">
+            <generator class="native"/>
+        </id>
         <property name="name" column="NAME"/>
         <property name="nativeName" column="NATIVE_NAME"/>
         <!-- property name="prefixedName" column="PREFIXED_NAME"/ -->
@@ -157,7 +159,7 @@
 	<!-- FeatureTypeInfo -->
 	<joined-subclass name="org.geoserver.catalog.impl.FeatureTypeInfoImpl"
 		extends="org.geoserver.catalog.impl.ResourceInfoImpl" table="FEATURE_TYPES">
-		<key column="FEATURE_TYPE_ID"/>
+		<key column="RESOURCE_ID"/>
 		<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.DataStoreInfoImpl" cascade="all"/>
 		<property name="filter" column="FILTER" type="filter"/>
     </joined-subclass>
@@ -165,7 +167,7 @@
     <!-- CoverageInfo -->
     <joined-subclass name="org.geoserver.catalog.impl.CoverageInfoImpl" 
 		extends="org.geoserver.catalog.impl.ResourceInfoImpl" table="COVERAGES">
-		<key column="COVERAGE_ID"/>
+		<key column="RESOURCE_ID"/>
 		<property name="nativeFormat" column="NATIVE_FORMAT"/>
 		<property name="nativeSrsWKT" column="NATIVE_SRS"/>
 		<property name="grid" column="GRID_GEOMETRY" type="java.io.Serializable"/>
@@ -347,7 +349,7 @@
 	 </class>
 
     <!-- ServiceInfo -->
-    <class name="org.geoserver.config.impl.ServiceInfoImpl" table="SERVICES">
+    <class name="org.geoserver.config.impl.ServiceInfoImpl" table="SERVICES" >
 		<id name="id" column="ID"/>
         <property name="enabled" column="ENABLED"/>
 		<property name="name" column="NAME" not-null="true" unique="true"/>

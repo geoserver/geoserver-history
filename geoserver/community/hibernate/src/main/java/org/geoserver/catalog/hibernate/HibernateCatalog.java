@@ -12,7 +12,6 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.MultiHashMap;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -36,8 +35,8 @@ import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
 import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
-import org.geoserver.catalog.impl.ResourceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -84,16 +83,16 @@ public class HibernateCatalog implements Catalog {
     private final HibernateCatalogFactory hibernateCatalogFactory;
 
     private Session session;
-    
-    public HibernateCatalog(){
+
+    public HibernateCatalog() {
         hibernateCatalogFactory = new HibernateCatalogFactory(this);
     }
-    
+
     /**
      * @see Catalog#getFactory()
      * @see HibernateCatalogFactory
      */
-    public CatalogFactory getFactory() {
+    public HibernateCatalogFactory getFactory() {
         return hibernateCatalogFactory;
     }
 
@@ -126,7 +125,7 @@ public class HibernateCatalog implements Catalog {
             } else {
                 this.session = sessionFactory.openSession();
             }
-        } else if(!this.session.isOpen()) {
+        } else if (!this.session.isOpen()) {
             this.session = sessionFactory.openSession();
         }
 
@@ -162,7 +161,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStoreByName(String, Class)
      */
     public StoreInfo getStoreByName(String name, Class clazz) {
-        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where name = '" + name + "'");
+        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where name = '" + name
+                + "'");
         if (store != null) {
             store.setCatalog(this);
         }
@@ -209,7 +209,7 @@ public class HibernateCatalog implements Catalog {
         for (StoreInfo store : stores) {
             store.setCatalog(this);
         }
-        
+
         return stores;
         // return hibernate.find( );
     }
@@ -274,7 +274,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResource(String, Class)
      */
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
-        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = '" + id + "'");
+        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = '"
+                + id + "'");
         if (resource != null) {
             resource.setCatalog(this);
             return (T) resource;
@@ -287,7 +288,8 @@ public class HibernateCatalog implements Catalog {
      */
     public ResourceInfo getResourceByName(String name, Class clazz) {
         if (getDefaultNamespace() != null) {
-            ResourceInfo resource = getResourceByName(getDefaultNamespace().getPrefix(), name, clazz);
+            ResourceInfo resource = getResourceByName(getDefaultNamespace().getPrefix(), name,
+                    clazz);
             if (resource != null) {
                 resource.setCatalog(this);
                 return resource;
@@ -326,7 +328,8 @@ public class HibernateCatalog implements Catalog {
         }
 
         if (namespace != null) {
-            ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where name = '" + name + "' and namespace = " + namespace.getId());
+            ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName()
+                    + " where name = '" + name + "' and namespace = " + namespace.getId());
             if (resource != null) {
                 resource.setCatalog(this);
                 return (T) resource;
@@ -349,16 +352,8 @@ public class HibernateCatalog implements Catalog {
             resource.setNamespace(getDefaultNamespace());
         }
 
-        ((ResourceInfoImpl) resource).setId(resource.getName());
         resource.setCatalog(this);
-        ResourceInfo dbResource = getResource(resource.getId(), resource.getClass());
-        if (dbResource == null) {
-            internalAdd(resource);
-        } else {
-            // ???? update the db-resource: merge the objects in session
-            internalSave(resource);
-        }
-            
+        internalAdd(resource);
     }
 
     /**
@@ -401,7 +396,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResourcesByNamespace(NamespaceInfo, Class)
      */
     public List getResourcesByNamespace(NamespaceInfo namespace, Class clazz) {
-        return list("select r from " + clazz.getName() + " r, " + NamespaceInfo.class.getName() + " n where r.namespace = n" + " and n.prefix = '" + namespace.getPrefix() + "'");
+        return list("select r from " + clazz.getName() + " r, " + NamespaceInfo.class.getName()
+                + " n where r.namespace = n" + " and n.prefix = '" + namespace.getPrefix() + "'");
     }
 
     /**
@@ -485,7 +481,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getLayerByName(String)
      */
     public LayerInfo getLayerByName(String name) {
-        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where name = '" + name + "'");
+        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where name = '" + name
+                + "'");
     }
 
     /**
@@ -629,7 +626,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyle(String)
      */
     public StyleInfo getStyle(String id) {
-        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where id = " + id);
+        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where id = "
+                + id);
         style.setCatalog(this);
         return style;
     }
@@ -638,7 +636,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyleByName(String)
      */
     public StyleInfo getStyleByName(String name) {
-        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where name = '" + name + "'");
+        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where name = '"
+                + name + "'");
         style.setCatalog(this);
         return style;
     }
@@ -680,14 +679,16 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getNamespace(String)
      */
     public NamespaceInfo getNamespace(String id) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where ns_id = '" + id + "'");
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where ns_id = '"
+                + id + "'");
     }
 
     /**
      * @see Catalog#getNamespaceByPrefix(String)
      */
     public NamespaceInfo getNamespaceByPrefix(String prefix) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = '" + prefix + "'");
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = '"
+                + prefix + "'");
     }
 
     /**
@@ -695,7 +696,8 @@ public class HibernateCatalog implements Catalog {
      * @todo: revisit: what prevents us from having the same URI in more than one namespace?
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = '" + uri + "'");
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = '"
+                + uri + "'");
     }
 
     /**
@@ -763,21 +765,21 @@ public class HibernateCatalog implements Catalog {
 
     private void internalAdd(Object object) {
         getSession().save(object);
-//        getSession().flush();
+        // getSession().flush();
         getSession().getTransaction().commit();
         fireAdded(object);
     }
 
     private void internalRemove(Object object) {
         getSession().delete(object);
-//        getSession().flush();
+        // getSession().flush();
         getSession().getTransaction().commit();
         fireRemoved(object);
     }
 
     private void internalSave(Object object) {
         getSession().update(object);
-//        getSession().flush();
+        // getSession().flush();
         getSession().getTransaction().commit();
         fireModified(object, null, null, null);
     }
@@ -994,14 +996,16 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getWorkspace(String)
      */
     public WorkspaceInfo getWorkspace(String id) {
-        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where id = '" + id + "'");
+        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where id = '" + id
+                + "'");
     }
 
     /**
      * @see Catalog#getWorkspaceByName(String)
      */
     public WorkspaceInfo getWorkspaceByName(String name) {
-        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where name = '" + name + "'");
+        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where name = '"
+                + name + "'");
     }
 
     /**
@@ -1043,8 +1047,16 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getDefaultWorkspace()
      * @todo implement getDefaultWorkspace
      */
-    public WorkspaceInfo getDefaultWorkspace() {
-        return /* this.defaultWorkspace */null;
+    public HbWorkspaceInfo getDefaultWorkspace() {
+        String hql = "from " + HbWorkspaceInfo.class.getName() + " where default=?";
+        Query query = getSession().createQuery(hql);
+        query.setBoolean(0, true);
+        List list = query.list();
+        HbWorkspaceInfo info = null;
+        if(list.size() > 0){
+            info = (HbWorkspaceInfo) list.get(0);
+        }
+        return info;
     }
 
     /**
@@ -1052,8 +1064,28 @@ public class HibernateCatalog implements Catalog {
      * @todo implement setDefaultWorkspace
      */
     public void setDefaultWorkspace(WorkspaceInfo workspace) {
-        // TODO: FIX THIS... search the defWorkSpace on the DB
-        // this.defaultWorkspace = workspace;
+        HbWorkspaceInfo currentDefault = getDefaultWorkspace();
+        if(currentDefault != null && currentDefault != workspace){
+            currentDefault.setDefault(false);
+            getSession().update(currentDefault);
+        }
+        ((HbWorkspaceInfo)workspace).setDefault(true);
+        getSession().saveOrUpdate(workspace);
+        getSession().getTransaction().commit();
     }
 
+    /**
+     * Creates the mimimum set of configuration objects, intended to be used to set up a new
+     * database contents
+     */
+    public void bootStrap() {
+        HbWorkspaceInfo defaultWs = getFactory().createWorkspace();
+        defaultWs.setName("Default Workspace");
+        setDefaultWorkspace(defaultWs);
+        
+        NamespaceInfo nsinfo = getFactory().createNamespace();
+        nsinfo.setPrefix("topp");
+        nsinfo.setURI("http://www.opengeo.org");
+        setDefaultNamespace(defaultNamespace);
+    }
 }

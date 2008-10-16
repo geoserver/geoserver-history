@@ -26,7 +26,7 @@
       <ref bean="sessionFactory"/>
     </property>
     <property name="dataSource" ref="dataSource"/>
-    <property name="entityInterceptor" ref="catalogInterceptor"/>
+    <!-- property name="entityInterceptor" ref="catalogInterceptor"/-->
    </bean>
 
  <!-- this is a transactional proxy for services which make calls to 

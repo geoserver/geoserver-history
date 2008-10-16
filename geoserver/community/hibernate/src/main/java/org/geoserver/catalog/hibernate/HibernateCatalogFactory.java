@@ -30,12 +30,12 @@ import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 
 public class HibernateCatalogFactory implements CatalogFactory {
 
-    Catalog catalog;
+    private final HibernateCatalog catalog;
 
     /**
      * @param catalog
      */
-    public HibernateCatalogFactory(Catalog catalog) {
+    public HibernateCatalogFactory(HibernateCatalog catalog) {
         this.catalog = catalog;
     }
 
@@ -91,8 +91,8 @@ public class HibernateCatalogFactory implements CatalogFactory {
         return new LegendInfoImpl();
     }
 
-    public WorkspaceInfo createWorkspace() {
-        return new WorkspaceInfoImpl();
+    public HbWorkspaceInfo createWorkspace() {
+        return new HbWorkspaceInfo();
     }
 
 }
