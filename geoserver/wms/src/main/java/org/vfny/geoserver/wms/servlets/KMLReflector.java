@@ -171,7 +171,9 @@ public class KMLReflector extends WMService {
         final MapLayerInfo[] layers = serviceRequest.getLayers();
         LOGGER.info("KML NetworkLink sharing " + layers.length + " layer(s) created.");
         
-        if (defaultBbox && (Boolean)serviceRequest.getFormatOptions().get("superoverlay")){
+        Boolean superoverlay = (Boolean)serviceRequest.getFormatOptions().get("superoverlay");
+        if (superoverlay == null) superoverlay = Boolean.FALSE;
+        if (defaultBbox && superoverlay){
             Envelope e = layers[0].getLatLongBoundingBox();
             for (int i = 1; i < layers.length; i++)
                 e.expandToInclude(layers[i].getLatLongBoundingBox());
@@ -295,7 +297,7 @@ public class KMLReflector extends WMService {
             }
 
             final URL geoserverUrl = new URL(proxifiedBaseUrl);
-            if ((Boolean)serviceRequest.getFormatOptions().get("superoverlay")) {
+            if (superoverlay) {
                 Envelope bbox = serviceRequest.getBbox();
 
                 sb.append("<NetworkLink>\n");
