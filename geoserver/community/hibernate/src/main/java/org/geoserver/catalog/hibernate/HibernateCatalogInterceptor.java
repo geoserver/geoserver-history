@@ -52,7 +52,7 @@ public class HibernateCatalogInterceptor extends EmptyInterceptor implements
         if (catalog == null) {
             synchronized (this) {
                 if (catalog == null) {
-                    catalog = (HibernateCatalog) applicationContext.getBean("rawCatalog");
+                    catalog = (HibernateCatalog) applicationContext.getBean("catalogTarget");
                 }
             }
         }

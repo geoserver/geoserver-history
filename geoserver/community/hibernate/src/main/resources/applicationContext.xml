@@ -56,7 +56,7 @@
  <bean id="transactionalService" abstract="true"
     class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
   <property name="transactionManager"><ref local="transactionManager"/></property>
-  <property name="target"><ref local="catalogInterceptor"/></property>
+  <!-- property name="target"><ref local="catalogTarget"/></property -->
   <property name="transactionAttributes">
        <props>
            <prop key="save*">PROPAGATION_REQUIRED</prop>

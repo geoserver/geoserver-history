@@ -82,6 +82,8 @@ public class HibernateCatalog implements Catalog {
     private NamespaceInfo defaultNamespace;
 
     private final HibernateCatalogFactory hibernateCatalogFactory;
+
+    private Session session;
     
     public HibernateCatalog(){
         hibernateCatalogFactory = new HibernateCatalogFactory(this);
@@ -111,9 +113,6 @@ public class HibernateCatalog implements Catalog {
      * @param sessionFactory
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
-        if (!sessionFactory.getCurrentSession().getTransaction().isActive())
-            sessionFactory.getCurrentSession().beginTransaction();
-
         this.sessionFactory = sessionFactory;
     }
 
@@ -121,10 +120,20 @@ public class HibernateCatalog implements Catalog {
      * @todo make private?
      */
     public Session getSession() {
-        if (!sessionFactory.getCurrentSession().getTransaction().isActive())
-            sessionFactory.getCurrentSession().beginTransaction();
+        if (this.session == null) {
+            if (sessionFactory.getCurrentSession().isOpen()) {
+                this.session = sessionFactory.getCurrentSession();
+            } else {
+                this.session = sessionFactory.openSession();
+            }
+        } else if(!this.session.isOpen()) {
+            this.session = sessionFactory.openSession();
+        }
 
-        return sessionFactory.getCurrentSession();
+        if (!this.session.getTransaction().isActive())
+            this.session.beginTransaction();
+
+        return this.session;
     }
 
     /**
@@ -718,21 +727,21 @@ public class HibernateCatalog implements Catalog {
     private void internalAdd(Object object) {
         getSession().save(object);
 //        getSession().flush();
-//        getSession().getTransaction().commit();
+        getSession().getTransaction().commit();
         fireAdded(object);
     }
 
     private void internalRemove(Object object) {
         getSession().delete(object);
 //        getSession().flush();
-//        getSession().getTransaction().commit();
+        getSession().getTransaction().commit();
         fireRemoved(object);
     }
 
     private void internalSave(Object object) {
-        getSession().save(object);
+        getSession().update(object);
 //        getSession().flush();
-//        getSession().getTransaction().commit();
+        getSession().getTransaction().commit();
         fireModified(object, null, null, null);
     }
 

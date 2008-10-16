@@ -14,6 +14,7 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.GeoServerFactoryImpl;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.dialect.FirebirdDialect;
 
 public class HibernateGeoServer implements GeoServer {
 
@@ -31,6 +32,8 @@ public class HibernateGeoServer implements GeoServer {
      */
     SessionFactory sessionFactory;
 
+    private Session session;
+
     public HibernateGeoServer() {
     }
 
@@ -47,17 +50,24 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public void setSessionFactory(SessionFactory sessionFactory) {
-        if (!sessionFactory.getCurrentSession().getTransaction().isActive())
-            sessionFactory.getCurrentSession().beginTransaction();
-
         this.sessionFactory = sessionFactory;
     }
 
     public Session getSession() {
-        if (!sessionFactory.getCurrentSession().getTransaction().isActive())
-            sessionFactory.getCurrentSession().beginTransaction();
-
-        return getSessionFactory().getCurrentSession();
+        if (this.session == null) {
+            if (sessionFactory.getCurrentSession().isOpen()) {
+                this.session = sessionFactory.getCurrentSession();
+            } else {
+                this.session = sessionFactory.openSession();
+            }
+        } else if(!this.session.isOpen()) {
+            this.session = sessionFactory.openSession();
+        }
+        
+        if (!this.session.getTransaction().isActive())
+            this.session.beginTransaction();
+            
+        return this.session;
     }
 
     public GeoServerFactory getFactory() {
@@ -81,32 +91,35 @@ public class HibernateGeoServer implements GeoServer {
     public void setGlobal(GeoServerInfo configuration) {
         getSession().save(configuration);
 //        getSession().flush();
-//        getSession().getTransaction().commit();
+        getSession().getTransaction().commit();
     }
 
     public void save(GeoServerInfo geoServer) {
-        getSession().save(geoServer);
+        getSession().update(geoServer);
 //        getSession().flush();
-//        getSession().getTransaction().commit();
+        getSession().getTransaction().commit();
     }
 
     public void add(ServiceInfo service) {
         service.setGeoServer(getGlobal());
-        getSession().save(service);
+        if(getService(service.getId()) == null)
+            getSession().save(service);
+        else
+            getSession().update(service);
 //        getSession().flush();
-//        getSession().getTransaction().commit();
+        getSession().getTransaction().commit();
     }
 
     public void remove(ServiceInfo service) {
         getSession().delete(service);
 //        getSession().flush();
-//        getSession().getTransaction().commit();
+        getSession().getTransaction().commit();
     }
 
     public void save(ServiceInfo service) {
-        getSession().save(service);
+        getSession().update(service);
 //        getSession().flush();
-//        getSession().getTransaction().commit();
+        getSession().getTransaction().commit();
     }
 
     public Collection<? extends ServiceInfo> getServices() {
@@ -133,7 +146,7 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public <T extends ServiceInfo> T getService(String id, Class<T> clazz) {
-        Iterator i = getSession().createQuery("from " + clazz.getName() + " where id = " + id).iterate();
+        Iterator i = getSession().createQuery("from " + clazz.getName() + " where id = '" + id + "'").iterate();
         if (i.hasNext()) {
             T service = (T) i.next();
             return service;
