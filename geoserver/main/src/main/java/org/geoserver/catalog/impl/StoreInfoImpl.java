@@ -38,6 +38,9 @@ public abstract class StoreInfoImpl implements StoreInfo {
     
     Throwable error;
 
+    protected StoreInfoImpl() {
+    }
+    
     protected StoreInfoImpl(Catalog catalog) {
         this.catalog = catalog;
     }

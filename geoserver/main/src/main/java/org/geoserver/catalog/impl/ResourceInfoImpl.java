@@ -64,6 +64,10 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     
     Catalog catalog;
 
+    protected ResourceInfoImpl() {
+        this(null);
+    }
+
     protected ResourceInfoImpl(Catalog catalog) {
         this.catalog = catalog;
     }

@@ -29,6 +29,10 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
     int maxFeatures;
     int numDecimals;
     
+    public FeatureTypeInfoImpl() {
+        super(null);
+    }
+
     public FeatureTypeInfoImpl(Catalog catalog) {
         super(catalog);
     }

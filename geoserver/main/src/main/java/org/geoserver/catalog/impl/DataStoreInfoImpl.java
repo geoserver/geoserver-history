@@ -17,6 +17,10 @@ import org.opengis.util.ProgressListener;
  */
 public class DataStoreInfoImpl extends StoreInfoImpl implements DataStoreInfo {
 
+    protected DataStoreInfoImpl() {
+        super(null);
+    }
+
     public DataStoreInfoImpl(Catalog catalog) {
         super(catalog);
     }
