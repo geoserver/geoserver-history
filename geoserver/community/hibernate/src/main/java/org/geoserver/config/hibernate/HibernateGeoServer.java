@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.hibernate.HibernateCatalog;
 import org.geoserver.config.ConfigurationListener;
@@ -94,7 +95,9 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public GeoServerInfo getGlobal() {
-        Iterator i = getSession().createQuery("from " + GeoServerInfo.class.getName()).iterate();
+        Session session = getSession();
+        session.clear();
+        Iterator i = session.createQuery("from " + GeoServerInfoImpl.class.getName()).iterate();
         GeoServerInfo geoserver;
         if (i.hasNext()) {
             geoserver = (GeoServerInfo) i.next();
@@ -160,22 +163,28 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public void setGlobal(GeoServerInfo configuration) {
-        GeoServerInfo current = getGlobal();
-        if (current == null || current.equals(configuration)) {
-            current = configuration;
+        // GeoServerInfo current = getGlobal();
+        // if (true || current == null || current.equals(configuration)) {
+        // current = configuration;
+        // } else {
+        // try {
+        // String id = current.getId();
+        // //((GeoServerInfoImpl) configuration).setId(id);
+        // PropertyUtilsBean propertyUtilsBean = new PropertyUtilsBean();
+        // propertyUtilsBean.copyProperties(current, configuration);
+        // } catch (Exception e) {
+        // throw new RuntimeException(e);
+        // }
+        // }
+        //
+        Session session = getSession();
+        if (configuration.getId() == null) {
+            session.save(configuration);
         } else {
-            try {
-                String id = current.getId();
-                ((GeoServerInfoImpl) configuration).setId(id);
-                PropertyUtils.copyProperties(current, configuration);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            // use merge, the argument instance may be from another session
+            session.merge(configuration);
         }
-
-        getSession().saveOrUpdate(current);
-        // getSession().flush();
-        getSession().getTransaction().commit();
+        session.getTransaction().commit();
     }
 
     public void save(GeoServerInfo geoServer) {
@@ -202,24 +211,12 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public void save(ServiceInfo service) {
-        Query query = getSession().createQuery(
-                "from " + service.getClass().getName() + " where id = ?");
+        Session session = getSession();
         String id = service.getId();
-        query.setString(0, id);
-        List list = query.list();
-        if (list.size() > 0) {
-            ServiceInfo dbResource = (ServiceInfo) list.get(0);
-            try {
-                PropertyUtils.copyProperties(dbResource, service);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            getSession().update(dbResource);
-        } else {
-            getSession().update(service);
-        }
-        // getSession().flush();
-        getSession().getTransaction().commit();
+
+        // use merge, the argument instance may be from another session
+        session.merge(service);
+        session.getTransaction().commit();
     }
 
     public Collection<? extends ServiceInfo> getServices() {
