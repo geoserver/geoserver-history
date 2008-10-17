@@ -1,20 +1,22 @@
 package org.geoserver.filters;
 
 import javax.servlet.ServletInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.Reader;
 
 /**
  * Wrap a String up as a ServletInputStream so we can read it multiple times.
  * @author David Winslow <dwinslow@openplans.org>
  */
 public class BufferedRequestStream extends ServletInputStream{
-    Reader myReader;
+    InputStream myInputStream;
 
-    public BufferedRequestStream(String buff){
-        myReader = new StringReader(buff);
+    public BufferedRequestStream(String buff) throws IOException {
+        myInputStream = new ByteArrayInputStream(buff.getBytes());
+        myInputStream.mark(16);
+        myInputStream.read();
+        myInputStream.reset();
     }
 
     public int readLine(byte[] b, int off, int len) throws IOException{
@@ -23,7 +25,7 @@ public class BufferedRequestStream extends ServletInputStream{
         int end = off + len;
 
         while (index < end && 
-                (read = myReader.read()) != -1){
+                (read = myInputStream.read()) != -1){
             b[index] = (byte)read; 
             index++;
             if (((char)read)== '\n'){
@@ -35,6 +37,10 @@ public class BufferedRequestStream extends ServletInputStream{
     }
 
     public int read() throws IOException{
-        return myReader.read();
+        return myInputStream.read();
+    }
+
+    public int available() throws IOException {
+        return myInputStream.available();
     }
 }
