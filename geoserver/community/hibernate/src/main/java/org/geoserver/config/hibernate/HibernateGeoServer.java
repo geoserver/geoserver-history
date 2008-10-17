@@ -46,6 +46,8 @@ public class HibernateGeoServer implements GeoServer {
 
     private Session session;
 
+    private boolean createBootstrapConfig;
+
     public HibernateGeoServer() {
     }
 
@@ -96,9 +98,13 @@ public class HibernateGeoServer implements GeoServer {
         if (i.hasNext()) {
             geoserver = (GeoServerInfo) i.next();
         } else {
-            // this is an empty configuration! create the minimal set of required object
-            geoserver = serviceBootStrap();
-            catalog.bootStrap();
+            if (createBootstrapConfig) {
+                // this is an empty configuration! create the minimal set of required object
+                geoserver = serviceBootStrap();
+                catalog.bootStrap();
+            } else {
+                geoserver = null;
+            }
         }
 
         return geoserver;
@@ -108,9 +114,9 @@ public class HibernateGeoServer implements GeoServer {
         GeoServerInfo geoserver;
         geoserver = getFactory().createGlobal();
         geoserver.setContactInfo(getFactory().createContact());
-        //do not call setGlobal or we'll get an infinite loop
+        // do not call setGlobal or we'll get an infinite loop
         getSession().save(geoserver);
-        
+
         WFSInfoImpl wfs = new WFSInfoImpl();
         wfs.setId("wfs");
         wfs.setName("wfs");
@@ -277,6 +283,17 @@ public class HibernateGeoServer implements GeoServer {
         listeners.clear();
 
         getSession().close();
+    }
+
+    /**
+     * Sets whether a minimal empty configuration should be created when {@link #getGlobal()} is
+     * first called and the database is completelly empty. Defaults to true, and this method is
+     * intended to be used by unit tests only
+     * 
+     * @param bootStrap
+     */
+    void setCreateBootstrapConfig(boolean bootStrap) {
+        this.createBootstrapConfig = bootStrap;
     }
 
 }

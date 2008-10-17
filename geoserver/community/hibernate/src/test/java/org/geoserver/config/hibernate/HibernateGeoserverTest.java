@@ -23,6 +23,7 @@ public class HibernateGeoserverTest extends HibernateTestSupport {
 
         catalog = (HibernateCatalog) applicationContext.getBean("catalog");
         geoServer = (HibernateGeoServer) applicationContext.getBean("configTarget");
+        geoServer.setCreateBootstrapConfig(false);
     }
 
     public void testGeoServer() {
@@ -121,7 +122,7 @@ public class HibernateGeoserverTest extends HibernateTestSupport {
         } catch (Exception e) {
             assertTrue(true);
         }
-
+        
         ServiceInfo s = geoServer.getServiceByName("testAddService", ServiceInfo.class);
         assertNotNull(s);
         assertEquals(service, s);
