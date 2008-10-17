@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.hibernate.HibernateCatalog;
 import org.geoserver.config.ConfigurationListener;
@@ -13,6 +14,7 @@ import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.GeoServerFactoryImpl;
+import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.wcs.WCSInfoImpl;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.GMLInfoImpl;
@@ -22,10 +24,9 @@ import org.geoserver.wfs.GMLInfo.SrsNameStyle;
 import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WatermarkInfo;
 import org.geoserver.wms.WatermarkInfoImpl;
-import org.geoserver.wms.WatermarkInfo.Position;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.dialect.FirebirdDialect;
 
 public class HibernateGeoServer implements GeoServer {
 
@@ -107,13 +108,14 @@ public class HibernateGeoServer implements GeoServer {
         GeoServerInfo geoserver;
         geoserver = getFactory().createGlobal();
         geoserver.setContactInfo(getFactory().createContact());
-        setGlobal(geoserver);
-
+        //do not call setGlobal or we'll get an infinite loop
+        getSession().save(geoserver);
+        
         WFSInfoImpl wfs = new WFSInfoImpl();
         wfs.setId("wfs");
         wfs.setName("wfs");
         wfs.setEnabled(true);
-        
+
         wfs.setServiceLevel(WFSInfo.ServiceLevel.COMPLETE);
 
         // gml2
@@ -151,15 +153,29 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public void setGlobal(GeoServerInfo configuration) {
-        getSession().save(configuration);
+        GeoServerInfo current = getGlobal();
+        if (current == null || current.equals(configuration)) {
+            current = configuration;
+        } else {
+            try {
+                String id = current.getId();
+                ((GeoServerInfoImpl) configuration).setId(id);
+                PropertyUtils.copyProperties(current, configuration);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        getSession().saveOrUpdate(current);
         // getSession().flush();
         getSession().getTransaction().commit();
     }
 
     public void save(GeoServerInfo geoServer) {
-        getSession().update(geoServer);
-        // getSession().flush();
-        getSession().getTransaction().commit();
+        setGlobal(geoServer);
+        // getSession().update(geoServer);
+        // // getSession().flush();
+        // getSession().getTransaction().commit();
     }
 
     public void add(ServiceInfo service) {
@@ -179,7 +195,22 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public void save(ServiceInfo service) {
-        getSession().update(service);
+        Query query = getSession().createQuery(
+                "from " + service.getClass().getName() + " where id = ?");
+        String id = service.getId();
+        query.setString(0, id);
+        List list = query.list();
+        if (list.size() > 0) {
+            ServiceInfo dbResource = (ServiceInfo) list.get(0);
+            try {
+                PropertyUtils.copyProperties(dbResource, service);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            getSession().update(dbResource);
+        } else {
+            getSession().update(service);
+        }
         // getSession().flush();
         getSession().getTransaction().commit();
     }
