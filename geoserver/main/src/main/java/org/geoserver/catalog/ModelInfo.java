@@ -158,6 +158,11 @@ public interface ModelInfo {
     String getId();
     
     /**
+     * Identifier.
+     */
+    void setId(String id);
+    
+    /**
      * Name of the model.
      */
     String getName();
@@ -265,7 +270,7 @@ public interface ModelInfo {
     /**
      * Sets the type of data of the model.
      */
-    void setTypeOfData(DataType discipline);
+    void setTypeOfData(DataType type_of_data);
 
     /**
      * The grid-CRS of the model.
@@ -360,6 +365,7 @@ public interface ModelInfo {
      * </p>
      */
     Map<String, Serializable> getInitParams();
+    void setInitParams(Map<String, Serializable> params);
 
     /**
      * A persistent map of out parameters.
@@ -372,13 +378,15 @@ public interface ModelInfo {
      * </p>
      */
     Map<String, Serializable> getOutParams();
+    void setOutParams(Map<String, Serializable> params);
 
     /**
      * A collection of metadata links for the resource.
      * 
      * @see MetadataLinkInfo
      */
-    List<MetadataLinkInfo> getMetadataLinks();
+    List<MetadataLinkInfo> getMetadataLink();
+    void setMetadataLink(List<MetadataLinkInfo> metadataLink);
 
     /**
      * A persistent map of metadata.
@@ -391,10 +399,12 @@ public interface ModelInfo {
      * </p>
      */
     Map<String, Serializable> getMetadata();
+    void setMetadata(Map<String, Serializable> metadata);
     
     /**
      * The runs of the model.
      */
     List<ModelRunInfo> getModelRuns();
+    void setModelRuns(List<ModelRunInfo> runs);
 
 }

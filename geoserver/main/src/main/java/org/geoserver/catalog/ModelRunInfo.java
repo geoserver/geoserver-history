@@ -22,10 +22,20 @@ public interface ModelRunInfo {
     String getId();
 
     /**
+     * Identifier.
+     */
+    void setId(String id);
+
+    /**
      * Model
      */
     ModelInfo getModel();
-    
+
+    /**
+     * Model
+     */
+    void setModel(ModelInfo model);
+
     /**
      * Name of the run.
      */
@@ -114,4 +124,10 @@ public interface ModelRunInfo {
      * The gridCoverages of the run.
      */
     List<CoverageInfo> getGridCoverages();
+    
+    /**
+     * Sets the gridCoverages of the run.
+     */
+    void setGridCoverages(List<CoverageInfo> coverages);
+
 }

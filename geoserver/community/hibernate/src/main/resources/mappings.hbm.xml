@@ -247,7 +247,6 @@
           <list-index column="LAYER_INDEX"/>
 		  <one-to-many class="org.geoserver.catalog.impl.LayerInfoImpl"/>
 		</list>
-		
     </class>
 
     <!--
@@ -339,13 +338,11 @@
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>
-        
 		<map name="clientProperties" table="GEOSERVER_CLIENT_PROPS">
         	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>
-        
 	 </class>
 
     <!-- ServiceInfo -->
@@ -438,4 +435,96 @@
 		<key column="ID"/>
     </joined-subclass>
     
+    <!-- ModelInfo -->
+	 <class name="org.geoserver.catalog.impl.ModelInfoImpl" table="MODEL">
+		<id name="id" column="MODEL_ID">
+            <generator class="native"/>
+        </id>
+    	<property name="abstract" column="ABSTRACT"/>    	    
+    	<property name="CRS" column="CRS" type="java.io.Serializable"/>    	    
+    	<property name="center" column="ORIGINATING_CENTER"/>    	    
+    	<property name="description" column="DESCRIPTION"/>    	    
+    	<property name="discipline" column="DISCIPLINE"/>    	    
+    	<property name="gridCRS" column="GRID_CRS"/>    	    
+    	<property name="gridCS" column="GRID_CS"/>    	    
+    	<property name="gridLowers" column="GRID_LOWERS"/>    	    
+    	<property name="gridOffsets" column="GRID_OFFSETS"/>    	    
+    	<property name="gridOrigin" column="GRID_ORIGIN"/>    	    
+    	<property name="gridType" column="GRID_TYPE"/>    	    
+    	<property name="gridUppers" column="GRID_UPPERS"/>    	    
+    	<property name="name" column="NAME"/>    	    
+    	<property name="subCenter" column="SUB_CENTER"/>    	    
+    	<property name="title" column="TITLE"/>    	    
+    	<property name="typeOfData" column="TYPE_OF_DATA"/>    	    
+    	<property name="version" column="VERSION"/>    	    
+    	<property name="verticalCoordinateMeaning" column="VERT_COORD_MEANING"/>    	    
+		<list name="initParams" table="MODEL_INIT_PARAMS">
+		    <key column="MODEL_ID"/>
+		    <list-index column="PARAM_INDEX"/>
+			<element type="java.lang.String"/>
+    	</list>
+		<list name="outParams" table="MODEL_OUT_PARAMS">
+		    <key column="MODEL_ID"/>
+		    <list-index column="PARAM_INDEX"/>
+			<element type="java.lang.String"/>
+    	</list>
+		<list name="products" table="MODEL_PRODUCTS">
+		    <key column="MODEL_ID"/>
+		    <list-index column="PRODUCT_INDEX"/>
+			<element type="java.lang.String"/>
+    	</list>
+		<list name="keywords" table="MODEL_KEYWORDS">
+		    <key column="MODEL_ID"/>
+		    <list-index column="KEYWORD_INDEX"/>
+			<element type="java.lang.String"/>
+    	</list>
+		<map name="metadata" table="MODEL_METADATA">
+        	<key column="MODEL_ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable"></element>
+        </map>
+		<one-to-one name="metadataLink" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" />
+		
+		<list name="modelRuns" table="MODEL_RUNS">
+    	    <key column="MODEL_ID"/>
+    	    <list-index column="MODEL_RUN_INDEX"/>
+			<one-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
+    	</list>
+     </class>
+    
+    <!-- ModelRunInfo -->
+	 <class name="org.geoserver.catalog.impl.ModelRunInfoImpl" table="MODEL_RUN">
+		<id name="id" column="MODEL_RUN_ID">
+            <generator class="native"/>
+        </id>
+    	<property name="name" column="NAME"/>
+    	<property name="description" column="DESCRIPTION"/>
+    	<property name="updateSequence" column="UPDATE_SEQ"/>
+    	<property name="baseTime" column="BASE_TIME"/>
+    	<property name="executionTime" column="EXECUTION_TIME"/>
+    	<property name="TAU" column="TAU"/>
+    	<property name="TAUunit" column="TAU_UOM"/>
+    	<property name="numTAU" column="TAU_NUM"/>
+    	<property name="outline" type="boundingBox">
+			<column name="OL_MINX"/>
+			<column name="OL_MINY"/>
+			<column name="OL_MAXX"/>
+			<column name="OL_MAXY"/>
+			<column name="OL_CRS"/>
+		</property>
+
+		<list name="keywords" table="MODEL_RUN_KEYWORDS">
+		    <key column="MODEL_RUN_ID"/>
+		    <list-index column="KEYWORD_INDEX"/>
+			<element type="java.lang.String"/>
+    	</list>
+    	
+    	<list name="gridCoverages" table="MODEL_RUN_COVERAGES">
+		    <key column="MODEL_RUN_ID"/>
+		    <list-index column="GC_INDEX"/>
+		    <one-to-many class="org.geoserver.catalog.impl.CoverageInfoImpl"/>
+    	</list>
+    	 
+		<many-to-one name="model" class="org.geoserver.catalog.impl.ModelRunInfoImpl" />
+     </class>
 </hibernate-mapping>
