@@ -239,6 +239,8 @@ public class WMS extends Service {
         //baseMapStyles = config.getBaseMapStyles();
         //baseMapEnvelopes = config.getBaseMapEnvelopes();
         //capabilitiesCrsList = config.getCapabilitiesCrs();
+        
+        gs.save(wms);
     }
 
     ///**

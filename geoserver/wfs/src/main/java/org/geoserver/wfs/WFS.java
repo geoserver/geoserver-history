@@ -151,6 +151,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
         setServiceLevel(config.getServiceLevel());
         setCiteConformanceHacks(config.getCiteConformanceHacks());
         setFeatureBounding(config.isFeatureBounding());
+        gs.save(wfs);
     }
 
     /**
