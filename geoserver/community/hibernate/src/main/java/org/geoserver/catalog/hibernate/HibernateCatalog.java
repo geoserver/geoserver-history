@@ -150,7 +150,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStore(String, Class)
      */
     public StoreInfo getStore(String id, Class clazz) {
-        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where id = '" + id + "'");
+        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where id = ?",
+                new Object[] { id });
         if (store != null) {
             store.setCatalog(this);
         }
@@ -161,8 +162,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStoreByName(String, Class)
      */
     public StoreInfo getStoreByName(String name, Class clazz) {
-        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where name = '" + name
-                + "'");
+        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where name = ?",
+                new Object[] { name });
         if (store != null) {
             store.setCatalog(this);
         }
@@ -274,8 +275,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResource(String, Class)
      */
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
-        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = '"
-                + id + "'");
+        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = ?",
+                new Object[] { id });
         if (resource != null) {
             resource.setCatalog(this);
             return (T) resource;
@@ -329,7 +330,7 @@ public class HibernateCatalog implements Catalog {
 
         if (namespace != null) {
             ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName()
-                    + " where name = '" + name + "' and namespace = " + namespace.getId());
+                    + " where name = ? and namespace = ?", new Object[] { name, namespace.getId() });
             if (resource != null) {
                 resource.setCatalog(this);
                 return (T) resource;
@@ -474,15 +475,16 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getLayer(String)
      */
     public LayerInfo getLayer(String id) {
-        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where id = " + id);
+        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where id = ?",
+                new Object[] { id });
     }
 
     /**
      * @see Catalog#getLayerByName(String)
      */
     public LayerInfo getLayerByName(String name) {
-        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where name = '" + name
-                + "'");
+        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where name = ?",
+                new Object[] { name });
     }
 
     /**
@@ -536,14 +538,16 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getMap(String)
      */
     public MapInfo getMap(String id) {
-        return (MapInfo) first("from " + MapInfo.class.getName() + " where id = " + id);
+        return (MapInfo) first("from " + MapInfo.class.getName() + " where id = ? ",
+                new Object[] { id });
     }
 
     /**
      * @see Catalog#getMapByName(String)
      */
     public MapInfo getMapByName(String name) {
-        return (MapInfo) first("from " + MapInfo.class.getName() + " where name = '" + name + "'");
+        return (MapInfo) first("from " + MapInfo.class.getName() + " where name = ?",
+                new Object[] { name });
     }
 
     /**
@@ -626,8 +630,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyle(String)
      */
     public StyleInfo getStyle(String id) {
-        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where id = "
-                + id);
+        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where id = ?",
+                new Object[] { id });
         style.setCatalog(this);
         return style;
     }
@@ -636,8 +640,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyleByName(String)
      */
     public StyleInfo getStyleByName(String name) {
-        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where name = '"
-                + name + "'");
+        StyleInfo style = (StyleInfo) first(
+                "from " + StyleInfo.class.getName() + " where name = ?", new Object[] { name });
         style.setCatalog(this);
         return style;
     }
@@ -679,16 +683,16 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getNamespace(String)
      */
     public NamespaceInfo getNamespace(String id) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where ns_id = '"
-                + id + "'");
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where id = ?",
+                new Object[] { id });
     }
 
     /**
      * @see Catalog#getNamespaceByPrefix(String)
      */
     public NamespaceInfo getNamespaceByPrefix(String prefix) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = '"
-                + prefix + "'");
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = ?",
+                new Object[] { prefix });
     }
 
     /**
@@ -696,8 +700,8 @@ public class HibernateCatalog implements Catalog {
      * @todo: revisit: what prevents us from having the same URI in more than one namespace?
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = '"
-                + uri + "'");
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = ?",
+                new Object[] { uri });
     }
 
     /**
@@ -796,8 +800,43 @@ public class HibernateCatalog implements Catalog {
      * Helper method to return the first object of a query.
      */
     protected Object first(String hql) {
-        Iterator i = getSession().createQuery(hql).iterate();
+        return first(hql, null);
+    }
 
+    /**
+     * Helper method to return the first object of a query.
+     * 
+     * @param hql
+     *            the hql query, may contain {@code ?} argument placeholders
+     * @param arguments
+     *            the hql query arguments, or {@code null}. Recognized argument types are
+     *            {@link String}, {@link Integer}, {@link Boolean}, {@link Float} and
+     *            {@link Double}. An object of any other type will result in an unchecked exception
+     * @return the first object matching the query or {@code null} if the query returns no results
+     */
+    protected Object first(final String hql, final Object[] arguments) {
+        Query query = getSession().createQuery(hql);
+        if (arguments != null) {
+            for (int argN = 0; argN < arguments.length; argN++) {
+                final Object arg = arguments[argN];
+                final Class c = arg.getClass();
+                if (String.class == c) {
+                    query.setString(argN, (String) arg);
+                } else if (Boolean.class == c) {
+                    query.setBoolean(argN, ((Boolean) arg).booleanValue());
+                } else if (Integer.class == c) {
+                    query.setInteger(argN, ((Integer) arg).intValue());
+                } else if (Float.class == c) {
+                    query.setFloat(argN, ((Float) arg).floatValue());
+                } else if (Double.class == c) {
+                    query.setDouble(argN, ((Double) arg).doubleValue());
+                } else {
+                    throw new IllegalArgumentException("Unrecognized type for argument " + argN
+                            + " in query '" + hql + "': " + c);
+                }
+            }
+        }
+        Iterator i = query.iterate();
         if (i.hasNext()) {
             Object first = i.next();
             return first;
@@ -996,16 +1035,16 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getWorkspace(String)
      */
     public WorkspaceInfo getWorkspace(String id) {
-        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where id = '" + id
-                + "'");
+        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where id = ",
+                new Object[] { id });
     }
 
     /**
      * @see Catalog#getWorkspaceByName(String)
      */
     public WorkspaceInfo getWorkspaceByName(String name) {
-        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where name = '"
-                + name + "'");
+        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where name = ?",
+                new Object[] { name });
     }
 
     /**
@@ -1053,7 +1092,7 @@ public class HibernateCatalog implements Catalog {
         query.setBoolean(0, true);
         List list = query.list();
         HbWorkspaceInfo info = null;
-        if(list.size() > 0){
+        if (list.size() > 0) {
             info = (HbWorkspaceInfo) list.get(0);
         }
         return info;
@@ -1065,11 +1104,11 @@ public class HibernateCatalog implements Catalog {
      */
     public void setDefaultWorkspace(WorkspaceInfo workspace) {
         HbWorkspaceInfo currentDefault = getDefaultWorkspace();
-        if(currentDefault != null && currentDefault != workspace){
+        if (currentDefault != null && currentDefault != workspace) {
             currentDefault.setDefault(false);
             getSession().update(currentDefault);
         }
-        ((HbWorkspaceInfo)workspace).setDefault(true);
+        ((HbWorkspaceInfo) workspace).setDefault(true);
         getSession().saveOrUpdate(workspace);
         getSession().getTransaction().commit();
     }
@@ -1082,7 +1121,7 @@ public class HibernateCatalog implements Catalog {
         HbWorkspaceInfo defaultWs = getFactory().createWorkspace();
         defaultWs.setName("Default Workspace");
         setDefaultWorkspace(defaultWs);
-        
+
         NamespaceInfo nsinfo = getFactory().createNamespace();
         nsinfo.setPrefix("topp");
         nsinfo.setURI("http://www.opengeo.org");
