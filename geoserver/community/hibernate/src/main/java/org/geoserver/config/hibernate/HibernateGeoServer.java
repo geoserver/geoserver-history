@@ -49,6 +49,7 @@ public class HibernateGeoServer implements GeoServer {
     private boolean createBootstrapConfig;
 
     public HibernateGeoServer() {
+        createBootstrapConfig = true;
     }
 
     public Catalog getCatalog() {
