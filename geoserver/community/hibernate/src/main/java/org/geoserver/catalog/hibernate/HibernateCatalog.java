@@ -35,6 +35,8 @@ import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
 import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
+import org.geoserver.catalog.impl.MapInfoImpl;
+import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -54,29 +56,27 @@ public class HibernateCatalog implements Catalog {
      * hibernate access
      */
     // HibernateTemplate hibernate;
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     /**
      * Flag indicating wether events are thrown on commit or as they happen
      */
-    boolean fireEventsOnCommit = false;
+    private boolean fireEventsOnCommit = false;
 
     /**
      * listeners
      */
-    protected List listeners = new ArrayList();
+    private List<CatalogListener> listeners = new ArrayList<CatalogListener>();
 
     /**
      * events
      */
-    Map events = Collections.synchronizedMap(new MultiHashMap());
+    private Map events = Collections.synchronizedMap(new MultiHashMap());
 
     /**
      * resources
      */
-    protected ResourcePool resourcePool = new ResourcePool();
-
-    private WorkspaceInfo defaultWorkspace;
+    private ResourcePool resourcePool = new ResourcePool();
 
     private NamespaceInfo defaultNamespace;
 
@@ -149,9 +149,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getStore(String, Class)
      */
-    public StoreInfo getStore(String id, Class clazz) {
-        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where id = ?",
-                new Object[] { id });
+    public <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
+        T store = (T) first("from " + clazz.getName() + " where id = ?", new Object[] { id });
         if (store != null) {
             store.setCatalog(this);
         }
@@ -161,9 +160,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getStoreByName(String, Class)
      */
-    public StoreInfo getStoreByName(String name, Class clazz) {
-        StoreInfo store = (StoreInfo) first("from " + clazz.getName() + " where name = ?",
-                new Object[] { name });
+    public <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz) {
+        T store = (T) first("from " + clazz.getName() + " where name = ?", new Object[] { name });
         if (store != null) {
             store.setCatalog(this);
         }
@@ -205,14 +203,13 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getStores(Class)
      */
-    public List getStores(Class clazz) {
-        List<StoreInfo> stores = list("from " + clazz.getName());
+    public <T extends StoreInfo> List<T> getStores(Class<T> clazz) {
+        List<T> stores = list(clazz);
         for (StoreInfo store : stores) {
             store.setCatalog(this);
         }
 
         return stores;
-        // return hibernate.find( );
     }
 
     /**
@@ -232,7 +229,7 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getDataStores()
      */
-    public List getDataStores() {
+    public List<DataStoreInfo> getDataStores() {
         return getStores(DataStoreInfo.class);
     }
 
@@ -253,7 +250,7 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getCoverageStores()
      */
-    public List getCoverageStores() {
+    public List<CoverageStoreInfo> getCoverageStores() {
         return getStores(CoverageStoreInfo.class);
     }
 
@@ -287,27 +284,28 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getResourceByName(String, Class)
      */
-    public ResourceInfo getResourceByName(String name, Class clazz) {
+    public <T extends ResourceInfo> T getResourceByName(String name, Class<T> clazz) {
         if (getDefaultNamespace() != null) {
-            ResourceInfo resource = getResourceByName(getDefaultNamespace().getPrefix(), name,
-                    clazz);
+            T resource = getResourceByName(getDefaultNamespace().getPrefix(), name, clazz);
             if (resource != null) {
                 resource.setCatalog(this);
                 return resource;
             }
         }
 
-        List matches = new ArrayList();
+        // TODO: make a query to retrieve the matching list directly
+        List<T> matches = new ArrayList<T>();
         for (Iterator i = getResources(clazz).iterator(); i.hasNext();) {
-            ResourceInfo resource = (ResourceInfo) i.next();
+            T resource = (T) i.next();
             if (name.equals(resource.getName())) {
                 matches.add(resource);
             }
         }
 
         if (matches.size() == 1) {
-            return (ResourceInfo) matches.get(0);
-        }
+            return (T) matches.get(0);
+        }// he, this method contract is odd... imho the method shouldn't even exist. Rather, let
+        // client code care about asking for the resource in the default namespace explicitly
 
         return null;
     }
@@ -384,21 +382,22 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getResources(Class)
      */
-    public List getResources(Class clazz) {
-        List<ResourceInfo> resources = list("from " + clazz.getName());
-        for (ResourceInfo resource : resources) {
+    public <T extends ResourceInfo> List<T> getResources(Class<T> clazz) {
+        List<T> resources = list(clazz);
+        for (T resource : resources) {
             resource.setCatalog(this);
         }
         return resources;
-        // return hibernate.find( "from " + clazz.getName() );
     }
 
     /**
      * @see Catalog#getResourcesByNamespace(NamespaceInfo, Class)
      */
-    public List getResourcesByNamespace(NamespaceInfo namespace, Class clazz) {
-        return list("select r from " + clazz.getName() + " r, " + NamespaceInfo.class.getName()
-                + " n where r.namespace = n" + " and n.prefix = '" + namespace.getPrefix() + "'");
+    public <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace,
+            Class<T> clazz) {
+        String hql = "select r from " + clazz.getName() + " r, " + NamespaceInfo.class.getName()
+                + " n where r.namespace = n" + " and n.prefix = '" + namespace.getPrefix() + "'";
+        return list(hql);
     }
 
     /**
@@ -425,14 +424,14 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getFeatureTypes()
      */
-    public List getFeatureTypes() {
+    public List<FeatureTypeInfo> getFeatureTypes() {
         return getResources(FeatureTypeInfo.class);
     }
 
     /**
      * @see Catalog#getFeatureTypesByNamespace(NamespaceInfo)
      */
-    public List getFeatureTypesByNamespace(NamespaceInfo namespace) {
+    public List<FeatureTypeInfo> getFeatureTypesByNamespace(NamespaceInfo namespace) {
         return getResourcesByNamespace(namespace, FeatureTypeInfo.class);
     }
 
@@ -460,14 +459,14 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getCoverages()
      */
-    public List getCoverages() {
+    public List<CoverageInfo> getCoverages() {
         return getResources(CoverageInfo.class);
     }
 
     /**
      * @see Catalog#getCoveragesByNamespace(NamespaceInfo)
      */
-    public List getCoveragesByNamespace(NamespaceInfo namespace) {
+    public List<CoverageInfo> getCoveragesByNamespace(NamespaceInfo namespace) {
         return getResourcesByNamespace(namespace, CoverageInfo.class);
     }
 
@@ -531,7 +530,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getMaps()
      */
     public List<MapInfo> getMaps() {
-        return list("from " + MapInfo.class.getName());
+        return list(MapInfoImpl.class);
     }
 
     /**
@@ -583,8 +582,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getLayers()
      */
     public List getLayers() {
-        return list("from " + LayerInfo.class.getName());
-        // return hibernate.find( "from " + LayerInfo.class.getName() );
+        return list(LayerInfoImpl.class);
     }
 
     /**
@@ -670,13 +668,12 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getStyles()
      */
-    public List getStyles() {
-        List<StyleInfo> styles = list("from " + StyleInfo.class.getName());
+    public List<StyleInfo> getStyles() {
+        List<StyleInfo> styles = list(StyleInfo.class);
         for (StyleInfo style : styles) {
             style.setCatalog(this);
         }
         return styles;
-        // return hibernate.find( "from " + StyleInfo.class.getName() );
     }
 
     /**
@@ -729,9 +726,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getNamespaces()
      */
-    public List getNamespaces() {
-        return list("from " + NamespaceInfo.class.getName());
-        // return hibernate.find( "from " + NamespaceInfo.class.getName() );
+    public List<NamespaceInfo> getNamespaces() {
+        return list(NamespaceInfoImpl.class);
     }
 
     /**
@@ -753,18 +749,8 @@ public class HibernateCatalog implements Catalog {
      * @todo revisit: we have add and remove listener, it seems like we should return a safe copy
      *       here!
      */
-    public Collection getListeners() {
+    public Collection<CatalogListener> getListeners() {
         return listeners;
-    }
-
-    /**
-     * @todo revisit: where and what for this method comes from?
-     * @param cql
-     * @return
-     */
-    public Iterator search(String cql) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     private void internalAdd(Object object) {
@@ -786,6 +772,10 @@ public class HibernateCatalog implements Catalog {
         // getSession().flush();
         getSession().getTransaction().commit();
         fireModified(object, null, null, null);
+    }
+
+    private List list(Class clazz) {
+        return list("from " + clazz.getName());
     }
 
     /**
@@ -1018,9 +1008,10 @@ public class HibernateCatalog implements Catalog {
 
     /**
      * @see Catalog#getLayerGroups()
+     * @todo missing mapping for LayerGroupInfo
      */
     public List<LayerGroupInfo> getLayerGroups() {
-        return list("from " + LayerGroupInfo.class.getName());
+        return list(LayerGroupInfoImpl.class);
     }
 
     /**
@@ -1051,7 +1042,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getWorkspaces()
      */
     public List<WorkspaceInfo> getWorkspaces() {
-        return list("from " + WorkspaceInfo.class.getName());
+        return list(WorkspaceInfo.class);
     }
 
     /**
