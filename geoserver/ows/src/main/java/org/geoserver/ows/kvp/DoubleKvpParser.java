@@ -26,6 +26,6 @@ public class DoubleKvpParser extends KvpParser {
     }
 
     public Object parse(String value) throws Exception {
-        return Double.valueOf(value);
+        return value != null && value.length() > 0 ? Double.valueOf(value) : null;
     }
 }

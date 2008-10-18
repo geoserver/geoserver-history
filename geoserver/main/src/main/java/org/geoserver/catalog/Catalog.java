@@ -858,6 +858,76 @@ public interface Catalog {
     WorkspaceInfo getWorkspaceByName( String name );
     
     /**
+     * Adds a new model.
+     */
+    void add(ModelInfo model);
+    /**
+     * Adds a new model-run.
+     */
+    void add(ModelRunInfo modelRun);
+
+    /**
+     * Removes an existing model.
+     */
+    void remove(ModelInfo model);
+    /**
+     * Removes an existing model-run.
+     */
+    void remove(ModelRunInfo modelRun);
+
+    /**
+     * Saves a model which has been modified.
+     */
+    void save(ModelInfo model);
+    /**
+     * Saves a model-run which has been modified.
+     */
+    void save(ModelRunInfo modelRun);
+    
+    /**
+     * Returns the model matching a particular id, or <code>null</code> if no
+     * such model could be found.
+     */
+    ModelInfo getModel(String id);
+    /**
+     * Returns the model-run matching a particular id, or <code>null</code> if no
+     * such model-run could be found.
+     */
+    ModelRunInfo getModelRun(String id);
+
+    /**
+     * Returns the model matching a particular name, or <code>null</code> if no
+     * such model could be found. 
+     */
+    ModelInfo getModelByName(String name);
+    /**
+     * Returns the model-run matching a particular name, or <code>null</code> if no
+     * such model-run could be found. 
+     */
+    ModelRunInfo getModelRunByName(String name);
+    
+    /**
+     * All models in the catalog.
+     * <p>
+     * The resulting list should not be used to add or remove models to or from
+     * the catalog, the {@link #add(ModelInfo)} and {@link #remove(ModelInfo)}
+     * methods are used for this purpose.
+     * </p>
+     * 
+     */
+    List<ModelInfo> getModels();
+    /**
+     * All model-runs in the catalog.
+     * <p>
+     * The resulting list should not be used to add or remove model-runs to or from
+     * the catalog, the {@link #add(ModelRunInfo)} and {@link #remove(ModelRunInfo)}
+     * methods are used for this purpose.
+     * </p>
+     * 
+     */
+    List<ModelRunInfo> getModelRuns();
+    
+    /**
      * catalog listeners.
      * 
      */

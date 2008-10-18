@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <bean id="RestConfigDBMapping" class="org.geoserver.rest.RESTMapping">
+	<property name="routes">
+      <map>
+
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables/{variable}.{type}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables/{variable}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables.{type}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/tdomain.{type}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/tdomain</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/vdomain.{type}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/vdomain</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}.{type}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}.{type}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages.{type}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}.{type}</value></key>
+          <value>modelRunInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}</value></key>
+          <value>modelRunInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs.{type}</value></key>
+          <value>modelRunsListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs</value></key>
+          <value>modelRunsListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}.{type}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}</value></key>
+          <value>modelInfoResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models.{type}</value></key>
+          <value>modelsListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models</value></key>
+          <value>modelsListFinder</value>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="modelsListFinder"
+    class="org.geoserver.restconfig.db.ModelListFinder">
+    <property name="geoServer"><ref bean="geoServer2"/></property>
+    <property name="catalog"><ref bean="rawCatalog"/></property>
+  </bean>
+  <bean id="modelRunsListFinder"
+    class="org.geoserver.restconfig.db.ModelRunListFinder">
+    <property name="geoServer"><ref bean="geoServer2"/></property>
+    <property name="catalog"><ref bean="rawCatalog"/></property>
+  </bean>
+
+  <bean id="modelInfoResource"
+    class="org.geoserver.restconfig.db.ModelResource">
+    <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
+    <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
+  </bean>
+  <bean id="modelRunInfoResource"
+    class="org.geoserver.restconfig.db.ModelRunResource">
+    <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
+    <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
+  </bean>
+
+</beans>

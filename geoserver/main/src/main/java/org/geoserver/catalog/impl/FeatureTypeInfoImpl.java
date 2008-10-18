@@ -96,9 +96,9 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
         if ( !(obj instanceof FeatureTypeInfo ) ) {
             return false;
         }
-        if ( !super.equals( obj ) ) {
-            return false;
-        }
+//        if ( !super.equals( obj ) ) {
+//            return false;
+//        }
         
         final FeatureTypeInfo other = (FeatureTypeInfo) obj;
         if (attributes == null) {

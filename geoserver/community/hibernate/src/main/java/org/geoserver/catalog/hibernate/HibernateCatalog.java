@@ -19,6 +19,8 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
+import org.geoserver.catalog.ModelInfo;
+import org.geoserver.catalog.ModelRunInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
@@ -680,16 +682,14 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getNamespace(String)
      */
     public NamespaceInfo getNamespace(String id) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where id = ?",
-                new Object[] { id });
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where id = ?", new Object[] { id });
     }
 
     /**
      * @see Catalog#getNamespaceByPrefix(String)
      */
     public NamespaceInfo getNamespaceByPrefix(String prefix) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = ?",
-                new Object[] { prefix });
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = ?", new Object[] { prefix });
     }
 
     /**
@@ -697,8 +697,7 @@ public class HibernateCatalog implements Catalog {
      * @todo: revisit: what prevents us from having the same URI in more than one namespace?
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = ?",
-                new Object[] { uri });
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = ?", new Object[] { uri });
     }
 
     /**
@@ -1100,8 +1099,11 @@ public class HibernateCatalog implements Catalog {
             getSession().update(currentDefault);
         }
         ((HbWorkspaceInfo) workspace).setDefault(true);
-        getSession().saveOrUpdate(workspace);
-        getSession().getTransaction().commit();
+        
+        if (first("from " + WorkspaceInfo.class.getName() + " where name = ?", new Object[] { workspace.getName() }) == null) {
+            getSession().saveOrUpdate(workspace);
+            getSession().getTransaction().commit();
+        }
     }
 
     /**
@@ -1117,5 +1119,54 @@ public class HibernateCatalog implements Catalog {
         nsinfo.setPrefix("topp");
         nsinfo.setURI("http://www.opengeo.org");
         setDefaultNamespace(defaultNamespace);
+    }
+
+    // Model / ModelRun methods
+    public void add(ModelInfo model) {
+        internalAdd(model);
+    }
+
+    public void add(ModelRunInfo modelRun) {
+        internalAdd(modelRun);
+    }
+
+    public ModelInfo getModel(String id) {
+        return (ModelInfo) first("from " + ModelInfo.class.getName() + " where id = ?", new Object[] { id });
+    }
+
+    public ModelInfo getModelByName(String name) {
+        return (ModelInfo) first("from " + ModelInfo.class.getName() + " where name = ?", new Object[] { name });
+    }
+
+    public ModelRunInfo getModelRun(String id) {
+        return (ModelRunInfo) first("from " + ModelRunInfo.class.getName() + " where id = ?", new Object[] { id });
+    }
+
+    public ModelRunInfo getModelRunByName(String name) {
+        return (ModelRunInfo) first("from " + ModelRunInfo.class.getName() + " where name = ?", new Object[] { name });
+    }
+
+    public List<ModelRunInfo> getModelRuns() {
+        return list(ModelRunInfo.class);
+    }
+
+    public List<ModelInfo> getModels() {
+        return list(ModelInfo.class);
+    }
+
+    public void remove(ModelInfo model) {
+        internalRemove(model);
+    }
+
+    public void remove(ModelRunInfo modelRun) {
+        internalRemove(modelRun);
+    }
+
+    public void save(ModelInfo model) {
+        internalSave(model);
+    }
+
+    public void save(ModelRunInfo modelRun) {
+        internalSave(modelRun);
     }
 }

@@ -22,6 +22,8 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
+import org.geoserver.catalog.ModelInfo;
+import org.geoserver.catalog.ModelRunInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
@@ -819,6 +821,54 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
 
     public void setResourcePool(ResourcePool resourcePool) {
         delegate.setResourcePool(resourcePool);
+    }
+
+    public void add(ModelInfo model) {
+        delegate.add(model);
+    }
+
+    public void add(ModelRunInfo modelRun) {
+        delegate.add(modelRun);
+    }
+
+    public ModelInfo getModel(String id) {
+        return delegate.getModel(id);
+    }
+
+    public ModelInfo getModelByName(String name) {
+        return delegate.getModelByName(name);
+    }
+
+    public ModelRunInfo getModelRun(String id) {
+        return delegate.getModelRun(id);
+    }
+
+    public ModelRunInfo getModelRunByName(String name) {
+        return delegate.getModelRunByName(name);
+    }
+
+    public List<ModelRunInfo> getModelRuns() {
+        return delegate.getModelRuns();
+    }
+
+    public List<ModelInfo> getModels() {
+        return delegate.getModels();
+    }
+
+    public void remove(ModelInfo model) {
+        delegate.remove(model);
+    }
+
+    public void remove(ModelRunInfo modelRun) {
+        delegate.remove(modelRun);
+    }
+
+    public void save(ModelInfo model) {
+        delegate.save(model);
+    }
+
+    public void save(ModelRunInfo modelRun) {
+        delegate.save(modelRun);
     }
 
 }

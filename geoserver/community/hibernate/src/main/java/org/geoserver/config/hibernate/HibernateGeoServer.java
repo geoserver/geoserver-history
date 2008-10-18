@@ -1,14 +1,20 @@
 package org.geoserver.config.hibernate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.ModelRunInfo;
+import org.geoserver.catalog.ModelInfo.DataType;
+import org.geoserver.catalog.ModelInfo.Discipline;
 import org.geoserver.catalog.hibernate.HibernateCatalog;
+import org.geoserver.catalog.impl.ModelInfoImpl;
+import org.geoserver.catalog.impl.ModelRunInfoImpl;
 import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerFactory;
@@ -25,9 +31,12 @@ import org.geoserver.wfs.GMLInfo.SrsNameStyle;
 import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WatermarkInfo;
 import org.geoserver.wms.WatermarkInfoImpl;
-import org.hibernate.Query;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 public class HibernateGeoServer implements GeoServer {
 
@@ -118,6 +127,7 @@ public class HibernateGeoServer implements GeoServer {
         GeoServerInfo geoserver;
         geoserver = getFactory().createGlobal();
         geoserver.setContactInfo(getFactory().createContact());
+        Map<String, Serializable> tmp = geoserver.getMetadata();
         // do not call setGlobal or we'll get an infinite loop
         getSession().save(geoserver);
 
@@ -139,7 +149,8 @@ public class HibernateGeoServer implements GeoServer {
         gml.setFeatureBounding(true);
         gml.setSrsNameStyle(SrsNameStyle.URN);
         wfs.getGML().put(WFSInfo.Version.V_11, gml);
-
+        wfs.setGeoServer(geoserver);
+        
         add(wfs);
 
         WMSInfoImpl wms = new WMSInfoImpl();
@@ -149,16 +160,68 @@ public class HibernateGeoServer implements GeoServer {
         wm.setEnabled(false);
         wm.setPosition(WatermarkInfo.Position.BOT_RIGHT);
         wms.setWatermark(wm);
-
+        wms.setGeoServer(geoserver);
+        
         add(wms);
 
         WCSInfoImpl wcs = new WCSInfoImpl();
         wcs.setId("wcs");
         wcs.setName("wcs");
         wcs.setEnabled(true);
-
+        wcs.setGeoServer(geoserver);
+        
         add(wcs);
 
+        ModelInfoImpl model = new ModelInfoImpl();
+        model.setAbstract("Abstract test.");
+        model.setCenter("NURC");
+        model.setCRS(DefaultGeographicCRS.WGS84);
+        model.setDescription("This is a test model.");
+        model.setDiscipline(Discipline.OCEAN);
+        model.setGridCRS("Grid:2D");
+        model.setGridCS("Grid:square2D");
+        model.setGridLowers(new Double[] {0.0, 0.0});
+        model.setGridOffsets(new Double[] {1.0, 1.0});
+        model.setGridOrigin(new Double[] {0.0, 0.0});
+        model.setGridType("Grid:square2dIn2dCRS");
+        model.setGridUppers(new Double[] {300.0, 300.0});
+        model.setId("TEST");
+        List keywords = new ArrayList();
+        keywords.add("NURC");
+        keywords.add("MilOC");
+        keywords.add("TEST");
+        model.setKeywords(keywords);
+        model.setName("TEST-OCEAN-MODEL");
+        model.setSubCenter("MilOC");
+        model.setTitle("TEST OCEAN MODEL");
+        model.setTypeOfData(DataType.ANALYSYS_AND_FORECAST);
+        model.setVersion("1");
+        model.setVerticalCoordinateMeaning("depth");
+
+        catalog.add(model);
+
+        ModelRunInfoImpl modelRun = new ModelRunInfoImpl();
+        modelRun.setBaseTime(new Date());
+        modelRun.setDescription("A Test Model Run.");
+        modelRun.setExecutionTime(new Date());
+        modelRun.setId("TEST-RUN");
+        modelRun.setKeywords(keywords);
+        modelRun.setModel(model);
+        modelRun.setName("TEST-RUN-001");
+        modelRun.setNumTAU(6);
+        modelRun.setOutline(new ReferencedEnvelope(new Envelope(-24.0,-1.0,32.0,45.0), DefaultGeographicCRS.WGS84));
+        modelRun.setTAU(3);
+        modelRun.setTAUunit("s");
+        modelRun.setUpdateSequence("0");
+        
+        catalog.add(modelRun);
+        
+        List<ModelRunInfo> runs = new ArrayList<ModelRunInfo>();
+        runs.add(modelRun);
+        model.setModelRuns(runs);
+        
+        catalog.save(model);
+        
         return geoserver;
     }
 
@@ -195,7 +258,8 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public void add(ServiceInfo service) {
-        service.setGeoServer(getGlobal());
+        if (service.getGeoServer() == null)
+            service.setGeoServer(getGlobal());
         if (getService(service.getId()) == null)
             getSession().save(service);
         else

@@ -90,11 +90,19 @@
         <module>wps</module>
       </modules>
     </profile>
+
     <profile>
       <id>hibernate</id>
       <modules>
         <module>hibernate</module>
       </modules>
     </profile>
+    <profile>
+      <id>RESTDBConfig</id>
+      <modules>
+        <module>RESTDBConfig</module>
+      </modules>
+    </profile>
+    
   </profiles>
 </project>

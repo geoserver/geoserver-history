@@ -155,9 +155,9 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
         if (!(obj instanceof CoverageInfo)) {
             return false;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
+//        if (!super.equals(obj)) {
+//            return false;
+//        }
 
         final CoverageInfo other = (CoverageInfo) obj;
         if (defaultInterpolationMethod == null) {

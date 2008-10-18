@@ -23,6 +23,8 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
+import org.geoserver.catalog.ModelInfo;
+import org.geoserver.catalog.ModelRunInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
@@ -69,8 +71,18 @@ public class CatalogImpl implements Catalog {
     /**
      * layers
      */
-    protected List layers = new ArrayList();
+    protected List<LayerInfo> layers = new ArrayList<LayerInfo>();
 
+    /**
+     * models
+     */
+    protected List<ModelInfo> models = new ArrayList<ModelInfo>();
+    
+    /**
+     * model-runs
+     */
+    protected List<ModelRunInfo> modelRuns = new ArrayList<ModelRunInfo>();
+    
     /**
      * maps
      */
@@ -762,6 +774,8 @@ public class CatalogImpl implements Catalog {
         workspaces.clear();
         layers.clear();
         layerGroups.clear();
+        models.clear();
+        modelRuns.clear();
         maps.clear();
         styles.clear();
         listeners.clear();
@@ -842,6 +856,112 @@ public class CatalogImpl implements Catalog {
                 listener.handleModifyEvent((CatalogModifyEvent) event);
             }
         }
+    }
+
+    // Model / ModelRun methods
+    public void add(ModelInfo model) {
+        validate(model);
+        
+        ((ModelInfoImpl)model).setId(model.getName());
+        
+        models.add(model);
+        added(model);
+    }
+
+    void validate(ModelInfo model) {
+        if ( model.getName() == null ) {
+            throw new NullPointerException("Model name must not be null");
+        }
+    }
+
+    public void add(ModelRunInfo modelRun) {
+        validate(modelRun);
+        
+        ((ModelRunInfoImpl)modelRun).setId(modelRun.getName());
+        
+        modelRuns.add(modelRun);
+        added(modelRun);
+    }
+
+    void validate(ModelRunInfo modelRun) {
+        if ( modelRun.getName() == null ) {
+            throw new NullPointerException("ModelRun name must not be null");
+        }
+        if ( modelRun.getModel() == null ) {
+            throw new NullPointerException("Model of the ModelRun name must not be null");
+        }
+    }
+
+    public ModelInfo getModel(String id) {
+        for (Iterator m = models.iterator(); m.hasNext();) {
+            ModelInfo model = (ModelInfo) m.next();
+            if (id.equals(model.getId())) {
+                return ModificationProxy.create(model, ModelInfo.class);
+            }
+        }
+
+        return null;
+    }
+
+    public ModelInfo getModelByName(String name) {
+        for (Iterator m = models.iterator(); m.hasNext();) {
+            ModelInfo model = (ModelInfo) m.next();
+            if (name.equals(model.getName())) {
+                return ModificationProxy.create(model, ModelInfo.class);
+            }
+        }
+
+        return null;
+    }
+
+    public ModelRunInfo getModelRun(String id) {
+        for (Iterator mr = modelRuns.iterator(); mr.hasNext();) {
+            ModelRunInfo modelRun = (ModelRunInfo) mr.next();
+            if (id.equals(modelRun.getId())) {
+                return ModificationProxy.create(modelRun, ModelRunInfo.class);
+            }
+        }
+
+        return null;
+    }
+
+    public ModelRunInfo getModelRunByName(String name) {
+        for (Iterator mr = modelRuns.iterator(); mr.hasNext();) {
+            ModelRunInfo modelRun = (ModelRunInfo) mr.next();
+            if (name.equals(modelRun.getName())) {
+                return ModificationProxy.create(modelRun, ModelRunInfo.class);
+            }
+        }
+
+        return null;
+    }
+
+    public List<ModelRunInfo> getModelRuns() {
+        return ModificationProxy.createList(new ArrayList(modelRuns), ModelRunInfo.class);
+    }
+
+    public List<ModelInfo> getModels() {
+        return ModificationProxy.createList(new ArrayList(models), ModelInfo.class);
+    }
+
+    public void remove(ModelInfo model) {
+        models.remove(model);
+        removed(model);
+    }
+
+    public void remove(ModelRunInfo modelRun) {
+        modelRuns.remove(modelRun);
+        removed(modelRun);
+    }
+
+    public void save(ModelInfo model) {
+        validate(model);
+        saved(model);
+    }
+
+    public void save(ModelRunInfo modelRun) {
+        validate(modelRun);
+        saved(modelRun);
     }
     
 }

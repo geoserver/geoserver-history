@@ -466,16 +466,6 @@
       </dependencies>
     </profile>
     <profile>
-      <id>hibernate</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.geoserver</groupId>
-          <artifactId>hibernate</artifactId>
-          <version>1.7-ND-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
       <id>geosearch</id>
       <dependencies>
         <dependency>
@@ -565,5 +555,27 @@
         </dependency>
       </dependencies>
     </profile>
+    
+    <profile>
+      <id>hibernate</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>hibernate</artifactId>
+          <version>1.7-ND-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>RESTDBConfig</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>RESTDBConfig</artifactId>
+          <version>1.7-ND-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
   </profiles>
 </project>

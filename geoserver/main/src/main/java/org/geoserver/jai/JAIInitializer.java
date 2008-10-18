@@ -26,7 +26,10 @@ import com.sun.media.jai.util.SunTileCache;
 public class JAIInitializer implements GeoServerInitializer {
 
     public void initialize(GeoServer geoServer) throws Exception {
-        initJAI( geoServer.getGlobal() );
+        GeoServerInfo info = geoServer.getGlobal();
+        initJAI( info );
+        
+        geoServer.save(info);
         
         geoServer.addListener( new ConfigurationListener() {
 
