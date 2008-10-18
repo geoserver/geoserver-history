@@ -525,7 +525,7 @@
 			<element type="java.lang.String"/>
     	</list>
     	
-    	<list name="gridCoverages" table="MODEL_RUN_COVERAGES" cascade="all" lazy="false">
+    	<list name="gridCoverages" table="MODEL_RUN_COVERAGES" cascade="all">
 		    <key column="MODEL_RUN_ID"/>
 		    <list-index column="GC_INDEX"/>
 		    <one-to-many class="org.geoserver.catalog.impl.CoverageInfoImpl"/>

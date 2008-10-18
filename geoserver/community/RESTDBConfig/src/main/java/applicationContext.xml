@@ -50,25 +50,18 @@
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}</value></key>
           <value>modelInfoResource</value>
         </entry>
-
-        <entry>
-          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}.{type}</value></key>
-          <value>modelInfoResource</value>
-        </entry>
-        <entry>
-          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}</value></key>
-          <value>modelInfoResource</value>
-        </entry>
-
+        
+        
+        
+        
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages.{type}</value></key>
-          <value>modelInfoResource</value>
+          <value>modelRunGridCoveragesListFinder</value>
         </entry>
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages</value></key>
-          <value>modelInfoResource</value>
+          <value>modelRunGridCoveragesListFinder</value>
         </entry>
-
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}.{type}</value></key>
           <value>modelRunInfoResource</value>
@@ -112,6 +105,11 @@
   </bean>
   <bean id="modelRunsListFinder"
     class="org.geoserver.restconfig.db.ModelRunListFinder">
+    <property name="geoServer"><ref bean="geoServer2"/></property>
+    <property name="catalog"><ref bean="rawCatalog"/></property>
+  </bean>
+  <bean id="modelRunGridCoveragesListFinder"
+    class="org.geoserver.restconfig.db.ModelRunGridCoverageListFinder">
     <property name="geoServer"><ref bean="geoServer2"/></property>
     <property name="catalog"><ref bean="rawCatalog"/></property>
   </bean>
