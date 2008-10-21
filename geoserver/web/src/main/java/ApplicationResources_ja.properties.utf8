@@ -147,7 +147,7 @@ label.geoServerChangedFalse=未変更
 label.submit=実行
 label.reset=リセット
 label.credits=クレジット
-label.credits.url=http://docs.codehaus.org/display/GEOS/Contributors
+label.credits.url=http://geoserver.org/display/GEOS/Contributors
 label.newLoginAndPassword=新�?��?�ログイン�?�パスワードを入力�?��?��??�?��?��?�。
 label.wms.svgRenderer=SVG�??画
 label.wms.svgSimple=シンプル(早�?��?�?定�?�れ�?�スタイル)
@@ -824,7 +824,7 @@ mapPreview.title=有効�?�フュー�?ャータイプ�?�最�?地図�
 
 sldValididity.title=.SLDファイル�?�SLDスキーマ�?�従�?��?��?��?��?�ん。
 sldValiditity.help.text=�?�ら�?�ヘルプ�?��?��?��?�利用�?��??�?��?�。
-sldValiditity.help.url=http://docs.codehaus.org/display/GEOS/SLD+Validation
+sldValiditity.help.url=http://geoserver.org/display/GEOS/SLD+Validation
 
 help.citeConformanceHacks=厳密�?�CITEテスト�?�一致を望む�?��?��?��?��?ェック�?��?��??�?��?��?�。CITEテストを実行�?��?��?��?��?��?り�?多分�?�れを�?ェック�?��?��??�?��?��?��?�ょ�?�。
 label.citeConformanceHacks=厳密�?�CITEテスト�?�一致

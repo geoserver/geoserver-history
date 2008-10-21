@@ -3,7 +3,7 @@ GEOSERVER 1.6.0+ SERVICE EXTENSIONS README
 This package contains a versioning WFS service implementation as well
 as a versioning postgis datastore that is distributed as a separate plug-in.  
 This plug-in is still experimental,if you have feedback please let us know.  See 
-http://docs.codehaus.org/display/GEOS/Versioning+WFS+-+Extensions for more info
+http://geoserver.org/display/GEOS/Versioning+WFS+-+Extensions for more info
 
 Please report any bugs with jira (http://jira.codehaus.org/browse/GEOS). 
 

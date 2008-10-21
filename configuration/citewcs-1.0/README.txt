@@ -1,5 +1,5 @@
 There are complete running instructions here:
-http://docs.codehaus.org/display/GEOS/Running+Cite+Tests
+http://geoserver.org/display/GEOS/Running+Cite+Tests
 
 Here's the summary:
 First and IMPORTANT, to run WCS 1.0.0 tests you need to take the geoserver WCS 1.1 module out of the classpath.
