@@ -44,7 +44,7 @@
 		
 		<tr>
 			<td class="label" valign="top">
-			<center><u><b><font size=+1><a href="http://docs.codehaus.org/display/GEOSDOC/Documentation" target="newwindow"><bean:message key="welcome.demo.documentation.title"/></a></font></b></u><br>
+			<center><u><b><font size=+1><a href="http://geoserver.org/display/GEOSDOC/Documentation" target="newwindow"><bean:message key="welcome.demo.documentation.title"/></a></font></b></u><br>
 			<table width="80%" align="center">
               <tr>
                 <td>

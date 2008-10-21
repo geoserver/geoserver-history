@@ -1,5 +1,5 @@
 There are complete running instructions here:
-http://docs.codehaus.org/display/GEOS/Running+Cite+Tests
+http://geoserver.org/display/GEOS/Running+Cite+Tests
 
 Here's the summary:
 1. get postgis 1.0, make a "cite" super-user

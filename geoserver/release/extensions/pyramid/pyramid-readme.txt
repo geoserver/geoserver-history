@@ -20,7 +20,7 @@ INSTALLATION
 
 imagepyramid should now show up as an option in the web admin tool at 
 Config -> Data -> CoverageStores -> New.  Fill out the appropriate params.  For more
-information see http://docs.codehaus.org/display/GEOSDOC/Image+Pyramid
+information see http://geoserver.org/display/GEOSDOC/Image+Pyramid
 
 COMPATIBILITY
 

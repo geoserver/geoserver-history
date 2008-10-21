@@ -21,7 +21,7 @@ import org.geotools.data.postgis.FeatureDiffReader;
  * Each of the methods on this class corresponds to an operation as defined by
  * the Web Feature Specification plus a few custom methods for handling feature
  * versioning. See {@link http://www.opengeospatial.org/standards/wfs} and
- * {@link http://docs.codehaus.org/display/GEOS/Versioning+WFS+-+Protocol+considerations}
+ * {@link http://geoserver.org/display/GEOS/Versioning+WFS+-+Protocol+considerations}
  * for more details.
  * </p>
  * 

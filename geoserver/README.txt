@@ -1,5 +1,5 @@
 For a comprehensive guide for developers, go the main documentation site: 
-http://docs.codehaus.org/display/GEOSDOC/Developers+Guide
+http://geoserver.org/display/GEOSDOC/Developers+Guide
 
 ----------------------------
 
