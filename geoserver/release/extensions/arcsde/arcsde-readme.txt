@@ -19,7 +19,7 @@ INSTALLATION
 
 Note the ArcSDE jars must be on your classpath for the ArcSDE datastore
 to show up on the menu.  For more information see on needed libraries
-and parameters, see: http://docs.codehaus.org/display/GEOSDOC/ArcSDE+DataStore
+and parameters, see: http://geoserver.org/display/GEOSDOC/ArcSDE+DataStore
 
 COMPATIBILITY
 

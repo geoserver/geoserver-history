@@ -25,7 +25,7 @@ and run this application you must do the following:
 
 (1) Download and Install the GeoServer Binary Distribution
 
-There is more help available at the <a href='http://docs.codehaus.org/display/GEOS/Home'>Geoserver WIKI</a> 
+There is more help available at the <a href='http://geoserver.org/display/GEOS/Welcome'>Geoserver WIKI</a> 
 
 * Download a binary distribution of GeoServer from:
 

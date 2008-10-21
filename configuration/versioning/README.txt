@@ -28,4 +28,4 @@ Here's the summary:
    configuration. Also have a look at the sample requests for ideas on the
    versioning WFS protocol.
    
-For more information you can refer to http://docs.codehaus.org/display/GEOS/Versioning+WFS+-+Extensions or ask on the GeoServer users mailing list.
+For more information you can refer to http://geoserver.org/display/GEOS/Versioning+WFS+-+Extensions or ask on the GeoServer users mailing list.

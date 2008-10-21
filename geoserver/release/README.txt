@@ -301,7 +301,7 @@ Major features / improvements of this release include:
 
 - WMS GetMap filter support
 - More robust KML point styling
-- Integration with OSCache, please see: http://docs.codehaus.org/display/GEOSDOC/Caching
+- Integration with OSCache, please see: http://geoserver.org/display/GEOSDOC/Caching
 - Numerous bug fixes and improvements
 
 
@@ -397,7 +397,7 @@ Geoserver 1.3.1
 ---------------
 Fully tested with GeoTools 2.2.x. This release also contains KML and KMZ support for 
 data viewing in Google Earth. For more information visit 
-http://docs.codehaus.org/display/GEOSDOC/Google+Earth 
+http://geoserver.org/display/GEOSDOC/Google+Earth 
 
 
 Geoserver 1.3.1 beta
@@ -658,7 +658,7 @@ Minor Changes
 -------------
 1. bug fixes
 2. set of lite renderer improvements
-3. added a WFS lock tutorial (http://docs.codehaus.org/display/GEOS/Feature+Locking)
+3. added a WFS lock tutorial (http://geoserver.org/display/GEOS/Feature+Locking)
 4. upgraded to latest geotools
 
 
@@ -751,7 +751,7 @@ The documentation is also available for download from sourceforge, and can
 be built from the source downloading using the 'ant document' command.
 
 Additional  wiki-based documentation is available at:
-http://docs.codehaus.org/display/GEOS/Home
+http://geoserver.org/display/GEOS/Welcome
 
 Additional Geotools documentation is available at:
 http://www.geotools.org/

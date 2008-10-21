@@ -14,7 +14,7 @@
     <a href="http://geoserver.org/">GeoServer</a>
   </span>
   <span class="license">
-    <a href="http://docs.codehaus.org/display/GEOSDOC/License">&copy;</a>
+    <a href="http://geoserver.org/display/GEOSDOC/License">&copy;</a>
   </span>
   <h1>LOADING ...</h1>
 <center><br>
