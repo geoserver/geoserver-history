@@ -3,7 +3,7 @@ GEOSERVER 1.5+ DATA STORE EXTRAS README
 This package contains a MySQL DataStore implementation that is 
 distributed as a separate plug-in.  This plug-in is still experimental,
 if you have feedback please let us know.  See 
-http://docs.codehaus.org/display/GEOSDOC/MySQL+DataStore for more info
+http://geoserver.org/display/GEOSDOC/MySQL+DataStore for more info
 
 Please report any bugs with jira (http://jira.codehaus.org/browse/GEOS). 
 

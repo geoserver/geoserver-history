@@ -21,7 +21,7 @@ INSTALLATION
 Note the Oracle jars must be on your classpath for the Oracle datastore
 to show up on the menu.  For more information see on needed libraries
 and parameters, see: 
-http://docs.codehaus.org/display/GEOSDOC/Oracle+DataStore
+http://geoserver.org/display/GEOSDOC/Oracle+DataStore
 
 COMPATIBILITY
 
