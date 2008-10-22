@@ -1,3 +1,38 @@
+GeoServer 1.7.0 (October 22, 2008)
+---------------------------------
+
+The GeoServer 1.7 series brings some exciting new features and improvement. This
+includes:
+
+ * security and authentication on a per layer / dataset basis
+ * ECW, MrSID, JPEG 2K support via GDAL integration
+ * WCS 1.1 and WFS 1.1 XLink implementations
+
+And many many bug fixes. All of which can viewed in the 1.7.x change logs:
+
+ 1.7.0-beta1:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/13881
+
+ 1.7.0-beta2:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14377
+
+ 1.7.0-RC1:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14475
+ 
+ 1.7.0-RC2:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14500
+
+ 1.7.0-RC3:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14538
+
+ 1.7.0-RC4:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14627
+
+ 1.7.0:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/13880
+
+This release is based on GeoTools 2.5.1. 
+
 GeoServer 1.7.0-RC4 (October 10, 2008)
 -------------------------------------
 
