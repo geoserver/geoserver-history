@@ -4,6 +4,7 @@
  */
 package org.geoserver.restconfig;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,11 +32,13 @@ import javax.servlet.ServletContext;
 import com.vividsolutions.jts.geom.Envelope;
 
 import org.restlet.data.MediaType;
+import org.restlet.data.Status;
 
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.RestletException;
 
 /**
  * Restlet for DataStore resources
@@ -99,17 +102,14 @@ public class FeatureTypeResource extends MapResource {
         m.put("WMSPath", myFTC.getWmsPath());
         m.put("MetadataLinks", getMetadataLinks(myFTC));
         m.put("CachingEnabled", Boolean.toString(myFTC.isCachingEnabled()));
-        m.put("CacheTime", (myFTC.isCachingEnabled() ? 
-                    Integer.valueOf(myFTC.getCacheMaxAge()) : 
-                    null
-                    )
-        );
+        m.put("CacheTime", (myFTC.isCachingEnabled() ? Integer.valueOf(myFTC.getCacheMaxAge()) : null));
         m.put("SchemaBase", myFTC.getSchemaBase());
 
         return m;
     }
 
-    protected void putMap(Map m) throws Exception{
+    protected void putMap(Object details) throws RestletException {
+        Map m = (Map) details;
     	// TODO: Don't blindly assume map contains valid config info
         myFTC = findMyFeatureTypeConfig();
 
@@ -117,19 +117,17 @@ public class FeatureTypeResource extends MapResource {
     	String dataStoreName = (String) getRequest().getAttributes().get("folder");
  
         if (myFTC == null){
-            DataStore store = DataStoreUtils.acquireDataStore(
-                    myDSC.getConnectionParams(),
-                    (ServletContext)null
-                    );
-
-            SimpleFeatureType type = store.getSchema(featureTypeName);
+            DataStore store = null;
+            SimpleFeatureType type = null;
+            try {
+                store = DataStoreUtils.acquireDataStore(myDSC.getConnectionParams(), (ServletContext)null);
+                type = store.getSchema(featureTypeName);
+            } catch (IOException e) {
+                throw new RestletException("DataStore" + dataStoreName + " not found.", Status.SERVER_ERROR_INTERNAL, e);
+            }
 
             if (type == null){
-                throw new Exception(
-                        "FeatureType " + featureTypeName + 
-                        " in DataStore " + dataStoreName +
-                        "not found."
-                        );
+                throw new RestletException("FeatureType " + featureTypeName + " in DataStore " + dataStoreName + " not found.", Status.SERVER_ERROR_INTERNAL);
             } else {
                 myFTC = new FeatureTypeConfig(dataStoreName, type, false);
             }
@@ -155,18 +153,12 @@ public class FeatureTypeResource extends MapResource {
         }
 
         List keywords = (List)m.get("Keywords");
-        myFTC.setKeywords(keywords == null ?
-                new TreeSet() :
-                new TreeSet((List)m.get("Keywords"))
-                );
+        myFTC.setKeywords(keywords == null ? new TreeSet() : new TreeSet((List)m.get("Keywords")));
         myFTC.setAbstract((String)m.get("Abstract"));
         myFTC.setWmsPath((String)m.get("WMSPath"));
 
         List metadataLinks = (List)m.get("MetadataLinks");
-        myFTC.setMetadataLinks(metadataLinks == null ?
-                new TreeSet() :
-                new TreeSet((metadataLinks))
-                );
+        myFTC.setMetadataLinks(metadataLinks == null ? new TreeSet() : new TreeSet((metadataLinks)));
         myFTC.setCachingEnabled(Boolean.valueOf((String)m.get("CachingEnabled")));
         myFTC.setCacheMaxAge((String)myFTC.getCacheMaxAge());
         myFTC.setSchemaBase((String)m.get("SchemaBase"));
@@ -177,7 +169,11 @@ public class FeatureTypeResource extends MapResource {
 
         myData.load(myDC.toDTO());
 
-        saveConfiguration();
+        try {
+            saveConfiguration();
+        } catch (ConfigurationException e) {
+            throw new RestletException("Error while persisting configuration.", Status.SERVER_ERROR_INTERNAL, e);
+        }
     }
 
     private void saveConfiguration() throws ConfigurationException{

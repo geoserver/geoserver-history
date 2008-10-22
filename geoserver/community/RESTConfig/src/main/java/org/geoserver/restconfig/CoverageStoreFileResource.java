@@ -68,6 +68,7 @@ public class CoverageStoreFileResource extends Resource {
 
     private static Map myFormats = new HashMap();
     static {
+        myFormats.put("asc", "ArcGrid");
         myFormats.put("tiff", "GeoTIFF");
         myFormats.put("hdf4", "HDF-AVHRR");
         myFormats.put("hdf4-avhrr", "HDF-AVHRR");
@@ -284,9 +285,9 @@ public class CoverageStoreFileResource extends Resource {
                     	cc.setDefaultStyle(form.getFirstValue("style"));
                     else {
                         if (cc.getName().toLowerCase().contains("lowcloud"))
-                        	cc.setDefaultStyle("lowcloud");
+                            cc.setDefaultStyle("lowcloud");
                         else if (cc.getName().toLowerCase().contains("mcsst"))
-                        	cc.setDefaultStyle("mcsst");
+                            cc.setDefaultStyle("mcsst");
                         else if (cc.getName().toLowerCase().contains("sst4"))
                             cc.setDefaultStyle("sst4");
                         else if (cc.getName().toLowerCase().contains("sst"))

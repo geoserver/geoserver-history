@@ -211,11 +211,7 @@ public class CoverageResource extends MapResource {
         myDC.addCoverage(qualified, cc);
         saveConfiguration();
 
-        getResponse().setEntity(
-                new StringRepresentation("Saved configuration for " + qualified + ".",
-                    MediaType.TEXT_PLAIN
-                    )
-                );
+        getResponse().setEntity(new StringRepresentation("Saved configuration for " + qualified + ".", MediaType.TEXT_PLAIN));
         getResponse().setStatus(Status.SUCCESS_OK);
     }
 
