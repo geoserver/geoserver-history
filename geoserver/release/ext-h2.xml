@@ -9,10 +9,14 @@
       <directory>release/target/dependency</directory>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>gt-h2-*.jar</include>
+        <include>gt-jdbc-core-*.jar</include>
+        <include>gt-jdbc-h2-*.jar</include>
         <include>h2-*.jar</include>
         <include>spatialdbbox-*.jar</include>
       </includes>
+      <excludes>
+        <exclude>*-tests-*.jar</exclude>
+      </excludes>
     </fileSet>
   </fileSets>
 </assembly>
