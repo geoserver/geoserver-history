@@ -28,14 +28,13 @@ import org.eclipse.emf.common.util.EList;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
-import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.data.postgis.FeatureDiff;
 import org.geotools.data.postgis.FeatureDiffReader;
+import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -53,7 +52,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  * @author Andrea Aime, TOPP
  *
  */
-public class GetDiffTransactionOutputFormat extends Response {
+public abstract class AbstractTransactionOutputFormat extends Response {
     /**
      * WFS configuration
      */
@@ -63,21 +62,33 @@ public class GetDiffTransactionOutputFormat extends Response {
     /**
      * Xml configuration
      */
-    WFSConfiguration configuration;
+    Configuration configuration;
 
     /**
      * Filter factory used to build fid filters
      */
     FilterFactory filterFactory;
+    
+    /**
+     * The element to be encoded
+     */
+    QName element;
+    
+    /**
+     * The mime type for this output format
+     */
+    String mime;
 
-    public GetDiffTransactionOutputFormat(WFS wfs, Data catalog, WFSConfiguration configuration,
-        FilterFactory filterFactory) {
+    public AbstractTransactionOutputFormat(WFS wfs, Data catalog, Configuration configuration,
+        FilterFactory filterFactory, QName element, String mime) {
         super(FeatureDiffReader[].class);
 
         this.wfs = wfs;
         this.configuration = configuration;
         this.catalog = catalog;
         this.filterFactory = filterFactory;
+        this.element = element;
+        this.mime = mime;
     }
 
     /**
@@ -96,7 +107,7 @@ public class GetDiffTransactionOutputFormat extends Response {
                 GetDiffType.class);
 
         return (request != null)
-        && request.getOutputFormat().equals("text/xml; subtype=wfs-transaction/1.1.0");
+        && request.getOutputFormat().equals(mime);
     }
 
     public void write(Object value, OutputStream output, Operation operation)
@@ -177,8 +188,7 @@ public class GetDiffTransactionOutputFormat extends Response {
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
-        encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-            ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
+        encodeWfsSchemaLocation(encoder, proxifiedBaseUrl);
 
         encoder.setIndenting(true);
         encoder.setEncoding(wfs.getCharSet());
@@ -226,19 +236,22 @@ public class GetDiffTransactionOutputFormat extends Response {
             }
 
             // set the schema location
-            encoder.setSchemaLocation(namespaceURI,
-                ResponseUtils.appendQueryString(proxifiedBaseUrl + "wfs",
-                    "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
-                    + typeNames.toString()));
+            encodeTypeSchemaLocation(encoder, proxifiedBaseUrl, namespaceURI, typeNames);
         }
 
         try {
-            // System.out.println(transaction);
-            encoder.encode(transaction, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTION, output);
+            encoder.encode(transaction, element, output);
         } finally {
         	for (int i = 0; i < diffReaders.length; i++) {
 				diffReaders[i].close();
 			}
         }
     }
+
+    protected abstract void encodeTypeSchemaLocation(Encoder encoder, String proxifiedBaseUrl,
+            String namespaceURI, StringBuffer typeNames);
+    
+
+    protected abstract void encodeWfsSchemaLocation(Encoder encoder, String proxifiedBaseUrl);
+    
 }
