@@ -47,6 +47,8 @@ public class DeleteElementHandler implements TransactionElementHandler {
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
     private WFS wfs;
+    
+    FilterFactory factory = CommonFactoryFinder.getFilterFactory(null);
 
     public DeleteElementHandler(WFS wfs) {
         this.wfs = wfs;
@@ -150,7 +152,6 @@ public class DeleteElementHandler implements TransactionElementHandler {
                     // would be extra work when doing release mode ALL.
                     // 
                     DataStore data = (DataStore) store.getDataStore();
-                    FilterFactory factory = CommonFactoryFinder.getFilterFactory(null);
                     FeatureWriter<SimpleFeatureType, SimpleFeature> writer;
                     writer = data.getFeatureWriter(typeName, filter, store.getTransaction());
 
@@ -172,21 +173,7 @@ public class DeleteElementHandler implements TransactionElementHandler {
             } else {
                 // We don't have to worry about locking right now
                 deleted += store.getFeatures(filter).size();
-//                if(count >= 0) {
-//                    deleted += store.getCount(new DefaultQuery(null, filter));
                     store.removeFeatures(filter);
-//                } else {
-//                    store.getFeatures(filter).size();
-//                    try {
-//                        while (writer.hasNext()) {
-//                            writer.next();
-//                            writer.remove();
-//                            deleted++;
-//                        }
-//                    } finally {
-//                        writer.close();
-//                    }
-//                }
             }
         } catch (IOException e) {
             String msg = e.getMessage();
@@ -198,7 +185,7 @@ public class DeleteElementHandler implements TransactionElementHandler {
             if ( e instanceof FeatureLockException ) {
                 code = "MissingParameterValue";
             }
-            throw new WFSTransactionException(msg, code, eHandle, handle);
+            throw new WFSTransactionException(msg, e, code, eHandle, handle);
         }
 
         // update deletion count
