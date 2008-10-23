@@ -84,7 +84,7 @@ public class LogOrderTest extends WFSVTestSupport {
                 + "  <wfsv:DifferenceQuery typeName=\"topp:archsites\" fromFeatureVersion=\"0\" toFeatureVersion=\"100\"/>\r\n"
                 + "</wfsv:GetLog>";
         Document doc = postAsDOM(root(), request);
-        print(doc);
+        //print(doc);
         XpathEngine xpath = XMLUnit.newXpathEngine();
         NodeList nodes = xpath.getMatchingNodes("//wfs:FeatureCollection/gml:featureMember/topp:changesets/@fid", doc);
         assertEquals(2, nodes.getLength());
