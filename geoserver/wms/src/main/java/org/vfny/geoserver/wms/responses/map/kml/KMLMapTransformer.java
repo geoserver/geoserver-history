@@ -427,7 +427,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     // essentially a polygon this throws up, so we catch it?
                     Style2D style = null;
                     try {
-                        styleFactory.createStyle(feature, symbolizer,
+                        style = styleFactory.createStyle(feature, symbolizer,
                                 scaleRange);
                     } catch (IllegalArgumentException iae) {
                         // Do nothing
