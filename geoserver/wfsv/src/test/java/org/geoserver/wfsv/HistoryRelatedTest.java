@@ -7,8 +7,6 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;
 
-import com.sun.org.apache.xalan.internal.xsltc.cmdline.Transform;
-
 public class HistoryRelatedTest extends WFSVTestSupport {
     
     /**
@@ -108,7 +106,6 @@ public class HistoryRelatedTest extends WFSVTestSupport {
 
     public void testVersionedFeatureCollection10() throws Exception {
         String request = "<wfsv:GetVersionedFeature service=\"WFSV\" version=\"1.0.0\"\r\n"
-                + "  outputFormat=\"GML2\"\r\n"
                 + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
                 + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
                 + "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n"

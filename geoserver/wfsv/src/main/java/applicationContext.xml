@@ -200,10 +200,16 @@
       <constructor-arg ref="geoServer"/>
       <constructor-arg ref="catalog"/>
   </bean>
-  <bean id="transactionOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetDiffTransactionOutputFormat">
+  <bean id="transaction110OutputFormat" class="org.geoserver.wfsv.response.v1_1_0.TransactionOutputFormat">
     <constructor-arg ref="wfs"/>
     <constructor-arg ref="catalog"/>
     <constructor-arg ref="xmlConfiguration-1.1"/>
+    <constructor-arg ref="filterFactory"/>
+  </bean>
+  <bean id="transaction100OutputFormat" class="org.geoserver.wfsv.response.v1_0_0.TransactionOutputFormat">
+    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="catalog"/>
+    <constructor-arg ref="xmlConfiguration-1.0"/>
     <constructor-arg ref="filterFactory"/>
   </bean>
   <bean id="versionedGml3OutputFormat" class="org.geoserver.wfsv.response.v1_1_0.VersionedGML3OutputFormat"> 

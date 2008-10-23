@@ -97,8 +97,11 @@ public class GetVersionedFeatureTypeBinding extends AbstractComplexBinding {
             } else {
                 getFeature.setResultType((ResultTypeType) rt);
             }
-            
-            
+        }
+        
+        if (node.hasAttribute("version")) {
+            getFeature.setVersion((String) node
+                    .getAttributeValue("version"));
         }
 
         // &lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
@@ -106,6 +109,9 @@ public class GetVersionedFeatureTypeBinding extends AbstractComplexBinding {
         if (node.hasAttribute("outputFormat")) {
             getFeature.setOutputFormat((String) node
                     .getAttributeValue("outputFormat"));
+        } else if("1.0.0".equals(getFeature.getVersion())) {
+            // use GML2 output by default for 1.0 requests
+            getFeature.setOutputFormat("GML2");
         }
 
         // &lt;xsd:attribute name="maxFeatures" type="xsd:positiveInteger"
