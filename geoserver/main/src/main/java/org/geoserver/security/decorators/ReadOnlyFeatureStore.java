@@ -6,12 +6,12 @@ package org.geoserver.security.decorators;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import org.geoserver.security.SecureCatalogImpl;
+import org.geoserver.security.SecureCatalogImpl.Response;
+import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataAccess;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.feature.FeatureCollection;
@@ -33,15 +33,14 @@ import org.opengis.filter.identity.FeatureId;
  * @param <T>
  * @param <F>
  */
-public class ReadOnlyFeatureStore<T extends FeatureType, F extends Feature>
-        extends ReadOnlyFeatureSource<T, F> implements FeatureStore<T, F> {
+public class ReadOnlyFeatureStore<T extends FeatureType, F extends Feature> extends
+        ReadOnlyFeatureSource<T, F> implements FeatureStore<T, F> {
 
-    public ReadOnlyFeatureStore(FeatureStore delegate, boolean challenge) {
-        super(delegate, challenge);
+    public ReadOnlyFeatureStore(FeatureStore delegate, WrapperPolicy policy) {
+        super(delegate, policy);
     }
 
-    public List<FeatureId> addFeatures(FeatureCollection<T, F> collection)
-            throws IOException {
+    public List<FeatureId> addFeatures(FeatureCollection<T, F> collection) throws IOException {
         throw unsupportedOperation();
     }
 
@@ -49,13 +48,13 @@ public class ReadOnlyFeatureStore<T extends FeatureType, F extends Feature>
         return null;
     }
 
-    public void modifyFeatures(AttributeDescriptor[] type, Object[] value,
-            Filter filter) throws IOException {
+    public void modifyFeatures(AttributeDescriptor[] type, Object[] value, Filter filter)
+            throws IOException {
         throw unsupportedOperation();
     }
 
-    public void modifyFeatures(AttributeDescriptor type, Object value,
-            Filter filter) throws IOException {
+    public void modifyFeatures(AttributeDescriptor type, Object value, Filter filter)
+            throws IOException {
         throw unsupportedOperation();
     }
 
@@ -77,9 +76,9 @@ public class ReadOnlyFeatureStore<T extends FeatureType, F extends Feature>
      * the fact the data is actually writable, using an Acegi security exception
      * otherwise to force an authentication from the user
      */
-    RuntimeException unsupportedOperation() {
+    protected RuntimeException unsupportedOperation() {
         String typeName = getSchema().getName().getLocalPart();
-        if (challenge) {
+        if (policy.response == Response.CHALLENGE) {
             return SecureCatalogImpl.unauthorizedAccess(typeName);
         } else {
             return new UnsupportedOperationException(typeName + " is read only");

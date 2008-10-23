@@ -7,10 +7,10 @@ package org.geoserver.security.decorators;
 import java.io.IOException;
 
 import org.geoserver.security.SecureCatalogImpl;
+import org.geoserver.security.SecureCatalogImpl.Response;
+import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataAccess;
-import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureStore;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
@@ -28,12 +28,12 @@ public class ReadOnlyDataAccess<T extends FeatureType, F extends Feature> extend
         DecoratingDataAccess<T, F> {
 
     static final String READ_ONLY = "This data access is read only";
-    boolean challenge;
+    private WrapperPolicy policy;
 
-    public ReadOnlyDataAccess(DataAccess<T, F> delegate, boolean challenge) {
+    ReadOnlyDataAccess(DataAccess<T, F> delegate, WrapperPolicy policy) {
         super(delegate);
-        this.challenge = challenge;
-    }
+        this.policy = policy;
+   }
 
     @Override
     public FeatureSource<T, F> getFeatureSource(Name typeName) throws IOException {
@@ -41,19 +41,7 @@ public class ReadOnlyDataAccess<T extends FeatureType, F extends Feature> extend
         if (fs == null)
             return null;
         
-        // if we only have to conceal writability a wrapper would do
-        if(!challenge)
-            return new ReadOnlyFeatureSource(fs, false);
-        
-        // otherwise, not knowing if this call was made to access read or write wise, we have
-        // to create silly wrappers that will complain only if the user actually tries
-        // to write data
-        else if(fs instanceof FeatureLocking)
-            return new ReadOnlyFeatureLocking((FeatureLocking) fs, challenge);
-        else if(fs instanceof FeatureStore)
-            return new ReadOnlyFeatureStore((FeatureStore) fs, challenge);
-        else
-            return new ReadOnlyFeatureSource(fs, challenge);
+        return (FeatureSource) SecuredObjects.secure(fs, policy);
     }
 
     @Override
@@ -72,7 +60,7 @@ public class ReadOnlyDataAccess<T extends FeatureType, F extends Feature> extend
      * to force an authentication from the user
      */
     RuntimeException notifyUnsupportedOperation() {
-        if(challenge) {
+        if(policy.response == Response.CHALLENGE) {
             return SecureCatalogImpl.unauthorizedAccess();
         } else
             return new UnsupportedOperationException("This datastore is read only");

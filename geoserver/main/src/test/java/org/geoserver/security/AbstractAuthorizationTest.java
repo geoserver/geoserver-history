@@ -26,7 +26,7 @@ import org.opengis.util.ProgressListener;
 
 import junit.framework.TestCase;
 
-public abstract class AbstractAuthorizationTest extends TestCase {
+public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
 
     protected Authentication rwUser;
 
@@ -72,6 +72,8 @@ public abstract class AbstractAuthorizationTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
+        super.setUp();
+        
         rwUser = new TestingAuthenticationToken("rw", "supersecret", new GrantedAuthority[] {
                 new GrantedAuthorityImpl("READER"), new GrantedAuthorityImpl("WRITER") });
         roUser = new TestingAuthenticationToken("ro", "supersecret",

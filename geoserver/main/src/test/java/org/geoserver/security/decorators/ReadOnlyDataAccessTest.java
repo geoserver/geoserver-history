@@ -2,23 +2,23 @@ package org.geoserver.security.decorators;
 
 import static org.easymock.EasyMock.*;
 
-import java.io.IOException;
-
-import junit.framework.TestCase;
-
 import org.acegisecurity.AcegiSecurityException;
+import org.geoserver.security.SecureObjectsTest;
+import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataAccess;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.FeatureType;
 
-public class ReadOnlyDataAccessTest extends TestCase {
+public class ReadOnlyDataAccessTest extends SecureObjectsTest {
 
     private DataAccess da;
+
     private NameImpl name;
 
-    @Override
     protected void setUp() throws Exception {
+        super.setUp();
+
         FeatureSource fs = createNiceMock(FeatureSource.class);
         replay(fs);
         FeatureType schema = createNiceMock(FeatureType.class);
@@ -30,9 +30,9 @@ public class ReadOnlyDataAccessTest extends TestCase {
     }
 
     public void testDontChallenge() throws Exception {
-        ReadOnlyDataAccess ro = new ReadOnlyDataAccess(da, false);
+        ReadOnlyDataAccess ro = new ReadOnlyDataAccess(da, WrapperPolicy.HIDE);
         ReadOnlyFeatureSource fs = (ReadOnlyFeatureSource) ro.getFeatureSource(name);
-        assertFalse(fs.challenge);
+        assertEquals(WrapperPolicy.HIDE, fs.policy);
 
         // check the easy ones, those that are not implemented in a read only
         // collection
@@ -47,11 +47,11 @@ public class ReadOnlyDataAccessTest extends TestCase {
         } catch (UnsupportedOperationException e) {
         }
     }
-    
+
     public void testChallenge() throws Exception {
-        ReadOnlyDataAccess ro = new ReadOnlyDataAccess(da, true);
+        ReadOnlyDataAccess ro = new ReadOnlyDataAccess(da, WrapperPolicy.RO_CHALLENGE);
         ReadOnlyFeatureSource fs = (ReadOnlyFeatureSource) ro.getFeatureSource(name);
-        assertTrue(fs.challenge);
+        assertEquals(WrapperPolicy.RO_CHALLENGE, fs.policy);
 
         // check the easy ones, those that are not implemented in a read only
         // collection

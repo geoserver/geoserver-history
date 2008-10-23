@@ -6,9 +6,9 @@ package org.geoserver.security.decorators;
 
 import java.io.IOException;
 
+import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
@@ -22,42 +22,39 @@ import org.opengis.filter.Filter;
  * @param <T>
  * @param <F>
  */
-public class ReadOnlyFeatureLocking<T extends FeatureType, F extends Feature>
-        extends ReadOnlyFeatureStore<T, F> implements FeatureLocking<T, F> {
+public class ReadOnlyFeatureLocking<T extends FeatureType, F extends Feature> extends
+        ReadOnlyFeatureStore<T, F> implements FeatureLocking<T, F> {
 
-    public ReadOnlyFeatureLocking(FeatureLocking delegate, boolean challenge) {
-        super(delegate, challenge);
+    protected ReadOnlyFeatureLocking(FeatureLocking delegate, WrapperPolicy policy) {
+        super(delegate, policy);
     }
 
     public int lockFeatures() throws IOException {
-        unsupportedOperation();
-        return 0;
+        throw unsupportedOperation();
     }
 
     public int lockFeatures(Query query) throws IOException {
-        unsupportedOperation();
-        return 0;
+        throw unsupportedOperation();
     }
 
     public int lockFeatures(Filter filter) throws IOException {
-        unsupportedOperation();
-        return 0;
+        throw unsupportedOperation();
     }
 
     public void setFeatureLock(FeatureLock lock) {
-        unsupportedOperation();
+        throw unsupportedOperation();
     }
 
     public void unLockFeatures() throws IOException {
-        unsupportedOperation();
+        throw unsupportedOperation();
     }
 
     public void unLockFeatures(Filter filter) throws IOException {
-        unsupportedOperation();
+        throw unsupportedOperation();
     }
 
     public void unLockFeatures(Query query) throws IOException {
-        unsupportedOperation();
+        throw unsupportedOperation();
     }
 
 }
