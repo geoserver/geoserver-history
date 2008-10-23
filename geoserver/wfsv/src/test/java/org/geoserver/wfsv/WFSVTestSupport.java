@@ -56,7 +56,7 @@ public class WFSVTestSupport extends GeoServerAbstractTestSupport {
      * @return
      */
     protected String root() {
-         return "wfsv?strict=true";
+         return "wfsv?";
     }
 
 

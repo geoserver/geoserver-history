@@ -39,9 +39,16 @@ public class WfsXmlReader extends XmlRequestReader {
         // TODO: make this configurable?
         configuration.getProperties().add(Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 
+        // check the strict flag to determine if we should validate or not
+        Boolean strict = (Boolean) kvp.get("strict");
+        if ( strict == null ) {
+            strict = Boolean.FALSE;
+        } else if(wfs.getCiteConformanceHacks()) {
+            strict = Boolean.TRUE;
+        }
+
         Parser parser = new Parser(configuration);
-        if (wfs.getCiteConformanceHacks())
-            parser.setValidating(true);
+        parser.setValidating(strict);
 
         // "inject" namespace mappings
         NameSpaceInfo[] namespaces = configuration.getCatalog().getNameSpaces();
