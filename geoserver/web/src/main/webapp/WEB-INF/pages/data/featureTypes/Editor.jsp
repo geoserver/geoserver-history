@@ -425,6 +425,7 @@ function prepareFormData(){
          </td>
          <td class="datum">
              <html:select property="regionateAttribute">
+                <option value="null"> None </option>
                 <html:options property="attributeNames" labelProperty="attributeDescriptions"/>
              </html:select>
          </td>
