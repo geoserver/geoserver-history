@@ -132,6 +132,23 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 "//topp:archsites[@fid=\"archsites.5\"]/topp:lastUpdateMessage", doc);
     }
     
+    public void testValidateInvalidRequest() throws Exception {
+        String request = "<wfsv:GetVersionedFeature service=\"WFSV\" version=\"1.0.0\"\r\n"
+                + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
+                + "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
+                + "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n"
+                + "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n"
+                + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"
+                + "  xsi:schemaLocation=\"http://www.opengis.net/wfsv\r\n"
+                + "                      http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioninig.xsd\">\r\n"
+                + "  <wfs:Query unknownAttribute=\"topp:archsites\">"
+                + "  </wfs:Query>\r\n" + "</wfsv:GetVersionedFeature>";
+
+        Document dom = postAsDOM(root() + "strict=true", request);
+        assertEquals("ServiceExceptionReport", dom.getDocumentElement().getNodeName());
+    }
+    
+    
     public void testVersionedFeatureCollection10Reproject() throws Exception {
         // prepare the expected transformation results
         MathTransform tx = CRS.findMathTransform(CRS.decode("EPSG:26713"), CRS.decode("EPSG:900913"));

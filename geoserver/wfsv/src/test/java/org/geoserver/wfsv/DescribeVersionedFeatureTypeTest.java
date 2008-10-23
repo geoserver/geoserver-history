@@ -21,6 +21,20 @@ public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
         return new OneTimeTestSetup(new DescribeVersionedFeatureTypeTest());
     }
     
+    public void testValidateInvalidRequest() throws Exception {
+        String request = "<DescribeVersionedFeatureType\r\n" + 
+                "  version=\"1.0.0\"\r\n" + 
+                "  service=\"WFSV\" versioned=\"true\"\r\n" + 
+                "  xmlns=\"http://www.opengis.net/wfsv\"\r\n" + 
+                "  xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n" + 
+                "  xmlns:wfsv=\"http://www.opengis.net/wfsv\"\r\n" +
+                "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n>\r\n" + 
+                "    <wfsv:InvalidElement>topp:archsites</wfsv:InvalidElement>\r\n" + 
+                "</DescribeVersionedFeatureType>";
+        Document dom = postAsDOM(root() + "strict=true", request);
+        assertEquals("ServiceExceptionReport", dom.getDocumentElement().getNodeName());
+    }
+    
     public void testDescribeArcsitesPost10() throws Exception {
         String request = "<DescribeVersionedFeatureType\r\n" + 
         		"  version=\"1.0.0\"\r\n" + 
@@ -31,7 +45,7 @@ public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
         		"  xmlns:topp=\"http://www.openplans.org/topp\"\r\n>\r\n" + 
         		"    <wfsv:TypeName>topp:archsites</wfsv:TypeName>\r\n" + 
         		"</DescribeVersionedFeatureType>";
-        Document dom = postAsDOM(root(), request);
+        Document dom = postAsDOM(root() + "strict=true", request);
         //print(dom);
         assertXpathEvaluatesTo("1", "count(//xs:schema)", dom);
         assertXpathEvaluatesTo("http://www.opengis.net/wfsv", "/xs:schema/xs:import/@namespace", dom);
