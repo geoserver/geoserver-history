@@ -6,7 +6,7 @@
 <property name="routes">
   <map>
         <entry>
-          <key><value>/folders/{folder}/layers/{layer}/file.{type}</value></key>
+          <key><value>/folders/{folder}/layers/{layer}/{method}.{type}</value></key>
           <value>folderFileFinder</value>
         </entry>  
         <entry>

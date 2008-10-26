@@ -9,7 +9,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -193,7 +195,11 @@ public class CoverageStoreFileResource extends Resource {
 
         File uploadedFile = null;
         try {
-            uploadedFile = handleUpload(coverageName, extension, getRequest());
+        	String method = (String) getRequest().getAttributes().get("method");
+        	if (method != null && method.equalsIgnoreCase("file"))
+        		uploadedFile = handleBinUpload(coverageName, extension, getRequest());
+        	else if (method != null && method.equalsIgnoreCase("url"))
+        		uploadedFile = handleURLUpload(coverageName, extension, getRequest());
         } catch (Exception e) {
             getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
@@ -341,8 +347,7 @@ public class CoverageStoreFileResource extends Resource {
      * @throws IOException
      * @throws ConfigurationException
      */
-
-    private File handleUpload(String coverageName, String extension,
+    private File handleBinUpload(String coverageName, String extension,
             Request request) throws IOException, ConfigurationException {
 
         // //////
@@ -379,6 +384,60 @@ public class CoverageStoreFileResource extends Resource {
         return newFile;
     }
 
+    /**
+     * This function gets the stream of the request to copy it into a file.
+     * 
+     * @param coverageName
+     * @param extension
+     * @param request
+     * @return File
+     * @throws IOException
+     * @throws ConfigurationException
+     * @throws URISyntaxException 
+     */
+    private File handleURLUpload(String coverageName, String extension, Request request) throws IOException, ConfigurationException, URISyntaxException {
+
+        // //////
+        // TODO: don't manage the temp file manually, java can take care of it
+        // //////
+
+        File dir = GeoserverDataDirectory.findCreateConfigDir("data");
+        File tempFile = new File(dir, coverageName + "." + extension + ".tmp");
+        File newFile  = new File(dir, coverageName + "." + extension);
+
+        InputStreamReader  inReq  = new InputStreamReader(request.getEntity().getStream());
+        StringBuilder sb = new StringBuilder();
+        char[] buffer = new char[1024];
+        int len;
+
+        while ((len = inReq.read(buffer)) >= 0) {
+            char[] read = new char[len];
+            System.arraycopy(buffer, 0, read, 0, len);
+            sb.append(read);
+        }
+
+        inReq.close();
+        
+        URL fileURL = new URL(sb.toString());
+
+        BufferedInputStream stream = new BufferedInputStream(fileURL.openStream());
+
+        FileOutputStream out = new FileOutputStream(tempFile);
+        byte[] binBuffer = new byte[DEFAULT_BUFFER_SIZE];
+        int count = 0;
+        int n = 0;
+        while (-1 != (n = stream.read(binBuffer))) {
+        	out.write(binBuffer, 0, n);
+            count += n;
+        }
+        out.flush();
+        out.close();
+        
+        tempFile.renameTo(newFile);
+
+        return newFile;
+    }
+    
     /**
      * This function manages the save of the configuration for the CoverageStore
      * and the Coverage
