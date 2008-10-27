@@ -123,7 +123,6 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                 encodeTileForViewing(mapLayer, i, top);
             }
 
-
             //end document
             end("Document");
             
@@ -147,9 +146,10 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             if (!isVectorLayer(layer)) return false;
 
             String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
-            if ("top".equals(regionateMode)) 
+            if ("top".equals(regionateMode)) {
                 // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
-                return featuresInTile(layer, box) <= getFeatureTypeInfo(layer).getRegionateFeatureLimit() * 16; 
+                return featuresInTile(layer, box, false) <= getFeatureTypeInfo(layer).getRegionateFeatureLimit() * 16; 
+            }
 
             return true;
         }
@@ -163,13 +163,13 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             if ("bottom".equals(regionateMode)) return true;
             if ("top".equals(regionateMode))
                 // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
-                return featuresInTile(layer, box) > getFeatureTypeInfo(layer).getRegionateFeatureLimit() * 16;
+                return featuresInTile(layer, box, false) > getFeatureTypeInfo(layer).getRegionateFeatureLimit() * 16;
 
             return false;
         }
 
         void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box){
-            if (featuresInTile(mapLayer, box) > 0){
+            if (featuresInTile(mapLayer, box, true) > 0){
                 start("NetworkLink");
                 element("visibility", "1");
                 start("Link");
@@ -206,15 +206,19 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             return null;
         }
 
-        private int featuresInTile(MapLayer mapLayer, Envelope bounds){
+        private int featuresInTile(MapLayer mapLayer, Envelope bounds, boolean regionate){
             if (!isVectorLayer(mapLayer)) return 1; // for coverages, we want raster tiles everywhere
-
             Envelope originalBounds = mapContext.getRequest().getBbox();
-            String originalRegionateBy = 
-            (String)mapContext.getRequest().getFormatOptions().get("regionateby");
-            if (originalRegionateBy == null)
-                 mapContext.getRequest().getFormatOptions().put("regionateby","auto");
             mapContext.getRequest().setBbox(bounds);
+
+            String originalRegionateBy = null;
+            if (regionate){
+                originalRegionateBy = 
+                    (String)mapContext.getRequest().getFormatOptions().get("regionateby");
+                if (originalRegionateBy == null)
+                    mapContext.getRequest().getFormatOptions().put("regionateby","auto");
+            }
+
             int numFeatures = 0;
 
             try{
@@ -234,7 +238,8 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                 } else {
                     LOGGER.log(
                             Level.WARNING,
-                            "Failure while checking whether a regionated child tile contained features!",
+                            "Failure while checking whether a regionated child tile " +
+                            "contained features!",
                             e
                       );
                 }
@@ -248,7 +253,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             }
 
             mapContext.getRequest().setBbox(originalBounds);
-            if (originalRegionateBy == null){
+            if (regionate && originalRegionateBy == null){
                 mapContext.getRequest().getFormatOptions().remove("regionateby");
             }
 
@@ -273,6 +278,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             element("href", href);
             LOGGER.fine(href);
             end("Icon");
+            encodeRegion(box, 256, 512);
 
             encodeLatLonBox(box);
             end("GroundOverlay");
@@ -295,8 +301,6 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         }
 
         void encodeNetworkLink(Envelope box, String name, MapLayer mapLayer) {
-            if (featuresInTile(mapLayer, box) == 0) return;
-
             start("NetworkLink");
             element("name", name);
 
