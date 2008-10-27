@@ -406,8 +406,13 @@ public class CoverageStoreFileResource extends Resource {
         // //////
         // TODO: don't manage the temp file manually, java can take care of it
         // //////
+        
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmsss");
+        String timestamp = sdf.format(new Date());
 
         File dir = GeoserverDataDirectory.findCreateConfigDir("data");
+        	 dir = new File(dir.getAbsolutePath() + File.separator + "coverages" + File.separator + timestamp);
+        	 dir.mkdirs();
         File tempFile = new File(dir, coverageName + "." + extension + ".tmp");
         File newFile  = new File(dir, coverageName + "." + extension);
 
