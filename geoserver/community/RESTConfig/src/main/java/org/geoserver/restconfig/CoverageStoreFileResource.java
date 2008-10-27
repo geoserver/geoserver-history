@@ -206,6 +206,12 @@ public class CoverageStoreFileResource extends Resource {
             return;
         }
 
+        if (!uploadedFile.exists() || uploadedFile.isDirectory()) {
+        	getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + uploadedFile.getAbsolutePath(), MediaType.TEXT_PLAIN));
+            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+            return;
+        }
+        
         int numDataSets = 0;
         AbstractGridCoverage2DReader cvReader;
         if (format instanceof AbstractGridFormat) {
