@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,6 +24,8 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
  *
  */
 public class KMLReflector {
+    private static Logger LOGGER = 
+        org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses.map.kml");
 
     /** default 'kmscore' value */
     public static final Integer KMSCORE = new Integer(50);
@@ -54,6 +57,9 @@ public class KMLReflector {
         if ( request.getHeight() < 1 ) {
             request.setHeight( 1024 );
         }
+
+        // Force srs to lat/lon for KML output.
+        request.setSRS("EPSG:4326");
         
         //set rest of the wms defaults
         wms.reflect( request );
@@ -72,10 +78,11 @@ public class KMLReflector {
         
         //set the format
         //TODO: create a subclass of GetMapRequest to store these values
-        Boolean superoverlay = (Boolean)request.getFormatOptions().get("superoverlay");
+        Boolean superoverlay = (Boolean)fo.get("superoverlay");
         if (superoverlay == null) superoverlay = Boolean.FALSE;
         if (superoverlay) {
-            request.setFormat( KMLMapProducer.MIME_TYPE );
+            request.setFormat(KMLMapProducer.MIME_TYPE);
+            request.setBbox(KMLUtils.expandToTile(request.getBbox()));
         } else {
             request.setFormat( KMZMapProducer.MIME_TYPE );
         }
