@@ -10,6 +10,8 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.platform.GeoServerExtensions;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
@@ -79,6 +81,11 @@ public class GeoServerTemplateLoader implements TemplateLoader {
     private String coverageName;
 
     /**
+     * Reference to the GeoServer catalog so we can look up the prefix for a namespace.
+     */
+    private Catalog catalog;
+
+    /**
      * Constructs the template loader.
      *
      * @param caller The "calling" class, used to look up templates based with
@@ -89,6 +96,9 @@ public class GeoServerTemplateLoader implements TemplateLoader {
     public GeoServerTemplateLoader(Class caller) throws IOException {
         //create a file template loader to delegate to
         fileTemplateLoader = new FileTemplateLoader(GeoserverDataDirectory.getGeoserverDataDirectory());
+
+        //grab the catalog and store a reference
+        catalog = (Catalog)GeoServerExtensions.bean("catalog2");
 
         //create a class template loader to delegate to
         if (caller != null) {
@@ -124,8 +134,10 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         String baseDirName;
         try {
             final String dirName;
+            String namespace = null;
             if (featureType != null) {
                 baseDirName = "featureTypes";
+                namespace = catalog.getNamespaceByURI(featureType.getName().getNamespaceURI()).getPrefix();
                 dirName = GeoserverDataDirectory.findFeatureTypeDirName(featureType);
             } else if (coverageName != null) {
                 baseDirName = "coverages";
@@ -141,6 +153,13 @@ public class GeoServerTemplateLoader implements TemplateLoader {
             if (template != null) {
                 return template;
             }
+
+            if (namespace != null)
+                template = (File) fileTemplateLoader.findTemplateSource(
+                        "namespaces" + File.separator + namespace + File.separator + path
+                        );
+
+            if (template != null) return template;
 
             // next, try relative to featureTypes or coverages directory, as appropriate
             template = (File) fileTemplateLoader.findTemplateSource(baseDirName + File.separator
