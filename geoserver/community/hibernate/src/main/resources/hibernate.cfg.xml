@@ -15,8 +15,8 @@
         <property name="connection.pool_size">5</property -->
 		<property name="connection.driver_class">org.postgresql.Driver</property>
         <property name="connection.url">jdbc:postgresql://localhost/GS_CATALOG</property>
-        <property name="connection.username">postgres</property>
-        <property name="connection.password">postgres</property>
+        <property name="connection.username">geos2</property>
+        <property name="connection.password">geos2</property>
         <property name="connection.pool_size">5</property>
 
         <!-- SQL dialect -->

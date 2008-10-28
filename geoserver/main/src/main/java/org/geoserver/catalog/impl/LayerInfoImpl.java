@@ -4,6 +4,7 @@
  */
 package org.geoserver.catalog.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -79,7 +80,7 @@ public class LayerInfoImpl implements LayerInfo {
     }
 
     public Set getStyles() {
-        return styles;
+        return Collections.synchronizedSet(styles);
     }
 
     public void setStyles(Set styles) {
@@ -111,7 +112,7 @@ public class LayerInfoImpl implements LayerInfo {
     }
 
     public Map getMetadata() {
-        return metadata;
+        return Collections.synchronizedMap(metadata);
     }
 
     public void setMetadata(Map metadata) {

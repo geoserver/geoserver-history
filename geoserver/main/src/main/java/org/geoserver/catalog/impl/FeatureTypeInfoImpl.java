@@ -6,6 +6,7 @@ package org.geoserver.catalog.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
     }
 
     public List<AttributeTypeInfo> getAttributes() {
-        return attributes;
+        return Collections.synchronizedList(attributes);
     }
     
     public Filter getFilter() {

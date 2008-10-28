@@ -6,6 +6,7 @@ package org.geoserver.catalog.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +53,11 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
     }
     
     public List<LayerInfo> getLayers() {
-        return layers;
+        return Collections.synchronizedList(layers);
     }
     
     public List<StyleInfo> getStyles() {
-        return styles;
+        return Collections.synchronizedList(styles);
     }
     
     public ReferencedEnvelope getBounds() {
@@ -68,6 +69,6 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
     }
     
     public Map<String, Serializable> getMetadata() {
-        return metadata;
+        return Collections.synchronizedMap(metadata);
     }
 }

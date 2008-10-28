@@ -6,6 +6,7 @@ package org.geoserver.catalog.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,11 +89,11 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     }
 
     public List<String> getSupportedFormats() {
-        return supportedFormats;
+        return Collections.synchronizedList(supportedFormats);
     }
 
     public List<String> getInterpolationMethods() {
-        return interpolationMethods;
+        return Collections.synchronizedList(interpolationMethods);
     }
 
     public String getDefaultInterpolationMethod() {
@@ -104,15 +105,15 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     }
 
     public List<String> getRequestSRS() {
-        return requestSRS;
+        return Collections.synchronizedList(requestSRS);
     }
 
     public List<String> getResponseSRS() {
-        return responseSRS;
+        return Collections.synchronizedList(responseSRS);
     }
 
     public Map getParameters() {
-        return parameters;
+        return Collections.synchronizedMap(parameters);
     }
 
     public void setParameters(Map parameters) {

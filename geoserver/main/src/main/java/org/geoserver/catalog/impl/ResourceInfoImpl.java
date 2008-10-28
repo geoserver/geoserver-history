@@ -4,7 +4,9 @@
  */
 package org.geoserver.catalog.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +60,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
 
     boolean enabled;
 
-    Map metadata = new HashMap();
+    Map<String, Serializable> metadata = new HashMap<String, Serializable>();
 
     StoreInfo store;
     
@@ -142,11 +144,11 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     }
 
     public List<String> getKeywords() {
-        return keywords;
+        return Collections.synchronizedList(keywords);
     }
 
     public List<MetadataLinkInfo> getMetadataLinks() {
-        return metadataLinks;
+        return Collections.synchronizedList(metadataLinks);
     }
 
     public String getSRS() {
@@ -186,12 +188,15 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         this.enabled = enabled;
     }
 
-    public Map getMetadata() {
-        return metadata;
+    public Map<String, Serializable> getMetadata() {
+        return Collections.synchronizedMap(metadata);
     }
 
-    public void setMetadata(Map metaData) {
-        this.metadata = metaData;
+    /**
+     * @param metadata the metadata to set
+     */
+    public void setMetadata(Map<String, Serializable> metadata) {
+        this.metadata = metadata;
     }
 
     public StoreInfo getStore() {
@@ -212,7 +217,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     }
 
     public List<String> getAlias() {
-        return alias;
+        return Collections.synchronizedList(alias);
     }
 
     public CoordinateReferenceSystem getCRS() throws Exception {
@@ -403,4 +408,12 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
     }
+
+    /**
+     * @param alias the alias to set
+     */
+    public void setAlias(List<String> alias) {
+        this.alias = alias;
+    }
+
 }
