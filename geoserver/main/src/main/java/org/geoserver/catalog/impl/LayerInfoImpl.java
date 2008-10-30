@@ -10,12 +10,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.catalog.LayerInfo.Type;
 
 public class LayerInfoImpl implements LayerInfo {
 

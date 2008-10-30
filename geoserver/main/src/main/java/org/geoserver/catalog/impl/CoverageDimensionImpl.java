@@ -7,7 +7,6 @@ package org.geoserver.catalog.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geotools.util.NumberRange;
 

@@ -6,7 +6,6 @@ package org.geoserver.catalog.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,11 +143,11 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     }
 
     public List<String> getKeywords() {
-        return Collections.synchronizedList(keywords);
+        return keywords;
     }
 
     public List<MetadataLinkInfo> getMetadataLinks() {
-        return Collections.synchronizedList(metadataLinks);
+        return metadataLinks;
     }
 
     public String getSRS() {
@@ -189,7 +188,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     }
 
     public Map<String, Serializable> getMetadata() {
-        return Collections.synchronizedMap(metadata);
+        return metadata;
     }
 
     /**
@@ -217,7 +216,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     }
 
     public List<String> getAlias() {
-        return Collections.synchronizedList(alias);
+        return alias;
     }
 
     public CoordinateReferenceSystem getCRS() throws Exception {
