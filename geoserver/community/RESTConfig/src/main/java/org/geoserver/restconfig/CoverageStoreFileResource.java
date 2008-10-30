@@ -293,16 +293,17 @@ public class CoverageStoreFileResource extends Resource {
                         if (name.getLocalPart().toLowerCase().contains("mcsst"))
                             cc.setDefaultStyle("mcsst");
                     }
+                    qualified = coverageStore + ":" + cc.getName();
+                    myDataConfig.removeCoverage(qualified);
+                    myDataConfig.addCoverage(qualified, cc);
                 }
+                
             } catch (Exception e) {
                 getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                 return;
             }
         }
-
-        myDataConfig.removeCoverage(qualified);
-        myDataConfig.addCoverage(qualified, cc);
 
         save();
 
