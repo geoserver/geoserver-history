@@ -140,7 +140,7 @@ public class HibernateGeoServer implements GeoServer {
             if (createBootstrapConfig) {
                 // this is an empty configuration! create the minimal set of required object
                 geoserver = serviceBootStrap();
-                catalog.bootStrap();
+                //catalog.bootStrap();
             } else {
                 geoserver = null;
             }
@@ -381,20 +381,6 @@ public class HibernateGeoServer implements GeoServer {
     }
 
     public void setGlobal(GeoServerInfo configuration) {
-        // GeoServerInfo current = getGlobal();
-        // if (true || current == null || current.equals(configuration)) {
-        // current = configuration;
-        // } else {
-        // try {
-        // String id = current.getId();
-        // //((GeoServerInfoImpl) configuration).setId(id);
-        // PropertyUtilsBean propertyUtilsBean = new PropertyUtilsBean();
-        // propertyUtilsBean.copyProperties(current, configuration);
-        // } catch (Exception e) {
-        // throw new RuntimeException(e);
-        // }
-        // }
-        //
         Session session = getSession();
         if (configuration.getId() == null) {
             session.save(configuration);
@@ -407,9 +393,6 @@ public class HibernateGeoServer implements GeoServer {
 
     public void save(GeoServerInfo geoServer) {
         setGlobal(geoServer);
-        // getSession().update(geoServer);
-        // // getSession().flush();
-        // getSession().getTransaction().commit();
     }
 
     public void add(ServiceInfo service) {
@@ -419,13 +402,11 @@ public class HibernateGeoServer implements GeoServer {
             getSession().save(service);
         else
             getSession().update(service);
-        // getSession().flush();
         getSession().getTransaction().commit();
     }
 
     public void remove(ServiceInfo service) {
         getSession().delete(service);
-        // getSession().flush();
         getSession().getTransaction().commit();
     }
 

@@ -80,8 +80,6 @@ public class HibernateCatalog implements Catalog {
      */
     private ResourcePool resourcePool = new ResourcePool();
 
-    private NamespaceInfo defaultNamespace;
-
     private final HibernateCatalogFactory hibernateCatalogFactory;
 
     private Session session;
@@ -604,11 +602,18 @@ public class HibernateCatalog implements Catalog {
 
     /**
      * @see Catalog#getDefaultNamespace()
-     * @todo implement getDefaultNamespace
      */
-    public NamespaceInfo getDefaultNamespace() {
-        return this.defaultNamespace; // FIXME: I don't have a namespace (even a default one, and
-        // neither does coverage ...)
+    @SuppressWarnings("unchecked")
+    public HbNamespaceInfo getDefaultNamespace() {
+        String hql = "from " + HbNamespaceInfo.class.getName() + " where default=?";
+        Query query = getSession().createQuery(hql);
+        query.setBoolean(0, true);
+        List<HbNamespaceInfo> list = query.list();
+        HbNamespaceInfo info = null;
+        if (list.size() > 0) {
+            info = list.get(0);
+        }
+        return info;
     }
 
     /**
@@ -616,14 +621,17 @@ public class HibernateCatalog implements Catalog {
      * @todo implement setDefaultNamespace
      */
     public void setDefaultNamespace(NamespaceInfo defaultNamespace) {
-        // NamespaceInfo ns = namespaces.get( defaultNamespace.getPrefix() );
-        // if ( ns == null ) {
-        // throw new IllegalArgumentException( "No such namespace: '" + defaultNamespace.getPrefix()
-        // + "'" );
-        // }
-
-        this.defaultNamespace = defaultNamespace; // FIXME: I don't have a namespace, neither does
-        // coverage - move to DataStoreInfo
+        HbNamespaceInfo previousDefault = getDefaultNamespace();
+        if (previousDefault != null) {
+            previousDefault.setDefault(false);
+            save(previousDefault);
+        }
+        ((HbNamespaceInfo) defaultNamespace).setDefault(true);
+        if (defaultNamespace.getId() == null) {
+            add(defaultNamespace);
+        } else {
+            getSession().merge(defaultNamespace);
+        }
     }
 
     /**
@@ -682,14 +690,16 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getNamespace(String)
      */
     public NamespaceInfo getNamespace(String id) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where id = ?", new Object[] { id });
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where id = ?",
+                new Object[] { id });
     }
 
     /**
      * @see Catalog#getNamespaceByPrefix(String)
      */
-    public NamespaceInfo getNamespaceByPrefix(String prefix) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = ?", new Object[] { prefix });
+    public HbNamespaceInfo getNamespaceByPrefix(String prefix) {
+        return (HbNamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = ?",
+                new Object[] { prefix });
     }
 
     /**
@@ -697,15 +707,26 @@ public class HibernateCatalog implements Catalog {
      * @todo: revisit: what prevents us from having the same URI in more than one namespace?
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = ?", new Object[] { uri });
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = ?",
+                new Object[] { uri });
     }
 
     /**
      * @see Catalog#add(NamespaceInfo)
      */
     public void add(NamespaceInfo namespace) {
-        if (getNamespaceByPrefix(namespace.getPrefix()) == null)
+        if (namespace.getPrefix() == null) {
+            throw new NullPointerException("namespace prefix can't be null");
+        }
+        HbNamespaceInfo existing = getNamespaceByPrefix(namespace.getPrefix());
+        if (existing == null) {
             internalAdd(namespace);
+        } else {
+            ((HbNamespaceInfo)namespace).setId(existing.getId());
+            ((HbNamespaceInfo)namespace).setDefault(existing.isDefault());
+            getSession().merge(namespace);
+            session.getTransaction().commit();
+        }
     }
 
     /**
@@ -725,6 +746,7 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getNamespaces()
      */
+    @SuppressWarnings("unchecked")
     public List<NamespaceInfo> getNamespaces() {
         return list(NamespaceInfoImpl.class);
     }
@@ -799,8 +821,8 @@ public class HibernateCatalog implements Catalog {
      *            the hql query, may contain {@code ?} argument placeholders
      * @param arguments
      *            the hql query arguments, or {@code null}. Recognized argument types are
-     *            {@link String}, {@link Integer}, {@link Boolean}, {@link Float} and
-     *            {@link Double}. An object of any other type will result in an unchecked exception
+     *            {@link String}, {@link Integer}, {@link Boolean}, {@link Float} and {@link Double}
+     *            . An object of any other type will result in an unchecked exception
      * @return the first object matching the query or {@code null} if the query returns no results
      */
     protected Object first(final String hql, final Object[] arguments) {
@@ -959,7 +981,10 @@ public class HibernateCatalog implements Catalog {
 
     }
 
-    /** ***************************************************************************************************** */
+    /**
+     * *********************************************************************************************
+     * ********
+     */
     /** * FIX THIS ** */
 
     /**
@@ -1099,8 +1124,9 @@ public class HibernateCatalog implements Catalog {
             getSession().update(currentDefault);
         }
         ((HbWorkspaceInfo) workspace).setDefault(true);
-        
-        if (first("from " + WorkspaceInfo.class.getName() + " where name = ?", new Object[] { workspace.getName() }) == null) {
+
+        if (first("from " + WorkspaceInfo.class.getName() + " where name = ?",
+                new Object[] { workspace.getName() }) == null) {
             getSession().saveOrUpdate(workspace);
             getSession().getTransaction().commit();
         }
@@ -1118,7 +1144,7 @@ public class HibernateCatalog implements Catalog {
         NamespaceInfo nsinfo = getFactory().createNamespace();
         nsinfo.setPrefix("topp");
         nsinfo.setURI("http://www.opengeo.org");
-        setDefaultNamespace(defaultNamespace);
+        setDefaultNamespace(nsinfo);
     }
 
     // Model / ModelRun methods
@@ -1131,19 +1157,23 @@ public class HibernateCatalog implements Catalog {
     }
 
     public ModelInfo getModel(String id) {
-        return (ModelInfo) first("from " + ModelInfo.class.getName() + " where id = ?", new Object[] { id });
+        return (ModelInfo) first("from " + ModelInfo.class.getName() + " where id = ?",
+                new Object[] { id });
     }
 
     public ModelInfo getModelByName(String name) {
-        return (ModelInfo) first("from " + ModelInfo.class.getName() + " where name = ?", new Object[] { name });
+        return (ModelInfo) first("from " + ModelInfo.class.getName() + " where name = ?",
+                new Object[] { name });
     }
 
     public ModelRunInfo getModelRun(String id) {
-        return (ModelRunInfo) first("from " + ModelRunInfo.class.getName() + " where id = ?", new Object[] { id });
+        return (ModelRunInfo) first("from " + ModelRunInfo.class.getName() + " where id = ?",
+                new Object[] { id });
     }
 
     public ModelRunInfo getModelRunByName(String name) {
-        return (ModelRunInfo) first("from " + ModelRunInfo.class.getName() + " where name = ?", new Object[] { name });
+        return (ModelRunInfo) first("from " + ModelRunInfo.class.getName() + " where name = ?",
+                new Object[] { name });
     }
 
     public List<ModelRunInfo> getModelRuns() {

@@ -53,17 +53,25 @@
 
  <!-- this is a transactional proxy for services which make calls to 
       catalog / config which ensrues transactions / session set up -->
- <bean id="transactionalService" abstract="true"
+ <bean id="transactionalGeoServerService"
     class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-  <property name="transactionManager"><ref local="transactionManager"/></property>
-  <property name="target">
-    <list>
-      <ref local="catalogTarget"/>
-      <ref local="configTarget"/>
-    </list>
-  </property>
+  <property name="transactionManager" ref="transactionManager"/>
+  <property name="target" ref="configTarget"/>
   <property name="transactionAttributes">
        <props>
+           <prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
+           <prop key="*">PROPAGATION_REQUIRED</prop>
+       </props>
+   </property>
+ </bean>
+
+ <bean id="transactionalCatalogService"
+    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+  <property name="transactionManager" ref="transactionManager"/>
+  <property name="target" ref="catalogTarget"/>
+  <property name="transactionAttributes">
+       <props>
+           <prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
            <prop key="*">PROPAGATION_REQUIRED</prop>
        </props>
    </property>

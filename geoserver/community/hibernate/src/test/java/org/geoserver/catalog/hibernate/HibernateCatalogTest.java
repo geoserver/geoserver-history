@@ -235,7 +235,29 @@ public class HibernateCatalogTest extends HibernateTestSupport {
 		assertEquals( 1, resources.size() );
 	}
 	
-	public void testFeatureType() throws Exception {
+    public void testDefaultNamespace() {
+        NamespaceInfo toppNamespace = catalog.getFactory().createNamespace();
+        toppNamespace.setPrefix( "topp2" );
+        toppNamespace.setURI("http://topp.openplans.org/default");
+        catalog.setDefaultNamespace(toppNamespace);
+        
+        NamespaceInfo gsNamespace = catalog.getFactory().createNamespace();
+        gsNamespace.setPrefix( "gs2" );
+        gsNamespace.setURI("http://geoserver.org/default");
+        catalog.add( gsNamespace );
+
+        endTransaction();
+        startNewTransaction();
+        
+        NamespaceInfo defaultNs = catalog.getDefaultNamespace();
+        assertEquals(toppNamespace, defaultNs);
+        
+        catalog.setDefaultNamespace(gsNamespace);
+        defaultNs = catalog.getDefaultNamespace();
+        assertEquals(gsNamespace, defaultNs);
+    }
+
+    public void testFeatureType() throws Exception {
 		NamespaceInfo namespace = catalog.getFactory().createNamespace();
 		namespace.setPrefix( getName() );
 		namespace.setURI( "http://" + getName() + ".openplans.org" );

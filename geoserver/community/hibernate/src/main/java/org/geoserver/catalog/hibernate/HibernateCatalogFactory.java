@@ -71,8 +71,8 @@ public class HibernateCatalogFactory implements CatalogFactory {
         return new StyleInfoImpl(catalog);
     }
 
-    public NamespaceInfo createNamespace() {
-        return new NamespaceInfoImpl(catalog);
+    public HbNamespaceInfo createNamespace() {
+        return new HbNamespaceInfo();
     }
 
     public <T> T create(Class<T> clazz) {

@@ -27,7 +27,7 @@
 		<property name="description" column="DESCRIPTION"/>
 		<property name="enabled" column="ENABLED"/>
         <!-- many-to-one name="namespace" column="NAMESPACE" 
-        	class="org.geoserver.catalog.impl.NamespaceInfoImpl"/ --> <!-- FIX: WorkSpace -->
+        	class="org.geoserver.catalog.hibernate.HbNamespaceInfo"/ --> <!-- FIX: WorkSpace -->
         <many-to-one name="workspace" column="WORKSPACE" 
         	class="org.geoserver.catalog.hibernate.HbWorkspaceInfo" cascade="all"/>
         	
@@ -69,12 +69,13 @@
     </class>
     
 	<!-- NamespaceInfo -->
-    <class name="org.geoserver.catalog.impl.NamespaceInfoImpl" table="NAMESPACES">
+    <class name="org.geoserver.catalog.hibernate.HbNamespaceInfo" table="NAMESPACES">
 		<id name="id" column="NS_ID">
             <generator class="native"/>
         </id>
         <property name="prefix" column="PREFIX" unique="true"/>        
         <property name="URI" column="URI" unique="true"/>
+        <property name="default" column="DEFAULT"/>        
 	</class>	
 	
 	<!-- WorkspaceInfo -->
@@ -110,7 +111,7 @@
         <property name="name" column="NAME"/>
         <property name="nativeName" column="NATIVE_NAME"/>
         <!-- property name="prefixedName" column="PREFIXED_NAME"/ -->
-        <many-to-one name="namespace" column="NAMESPACE" class="org.geoserver.catalog.impl.NamespaceInfoImpl" cascade="all"/>
+        <many-to-one name="namespace" column="NAMESPACE" class="org.geoserver.catalog.hibernate.HbNamespaceInfo" cascade="all"/>
 		<property name="title" column="TITLE"/>
 		<property name="abstract" column="ABSTRACT"/>
 		<property name="description" column="DESCRIPTION"/>
