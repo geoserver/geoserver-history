@@ -78,7 +78,7 @@ public class LayerInfoImpl implements LayerInfo {
     }
 
     public Set getStyles() {
-        return Collections.synchronizedSet(styles);
+        return styles;
     }
 
     public void setStyles(Set styles) {

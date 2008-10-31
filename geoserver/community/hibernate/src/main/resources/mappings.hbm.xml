@@ -73,9 +73,9 @@
 		<id name="id" column="NS_ID">
             <generator class="native"/>
         </id>
-        <property name="prefix" column="PREFIX" unique="true"/>        
-        <property name="URI" column="URI" unique="true"/>
-        <property name="default" column="DEFAULT"/>        
+        <property name="prefix" column="NS_PREFIX" unique="true"/>        
+        <property name="URI" column="NS_URI" unique="true"/>
+        <property name="default" column="NS_DEFAULT"/>        
 	</class>	
 	
 	<!-- WorkspaceInfo -->
