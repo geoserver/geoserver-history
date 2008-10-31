@@ -323,7 +323,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                 tmpCS.setDescription(cs.getDescription());
                 tmpCS.setEnabled(cs.isEnabled());
                 tmpCS.setName(cs.getName());
-                tmpCS.setType(cs.getName());
+                tmpCS.setType(cs.getType());
                 tmpCS.setURL(cs.getURL());
                 tmpCS.setWorkspace(cs.getWorkspace());
                 catalog.save(tmpCS);

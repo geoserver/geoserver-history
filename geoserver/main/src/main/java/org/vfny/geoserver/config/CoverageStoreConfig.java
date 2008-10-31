@@ -298,6 +298,8 @@ public class CoverageStoreConfig {
      * @return Returns the factory.
      */
     public Driver getFactory() {
+        if (this.factory == null)
+            this.factory = CoverageStoreUtils.aquireFactoryByType(getType());
         return factory;
     }
 

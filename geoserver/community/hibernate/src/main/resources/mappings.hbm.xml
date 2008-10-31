@@ -8,12 +8,9 @@
     <!-- 
       TYPE DEFINITIONS 
     -->
-	<typedef class="org.geoserver.catalog.hibernate.FilterType" name="filter">
-    </typedef>
-    <typedef class="org.geoserver.catalog.hibernate.BoundingBoxType" name="boundingBox">
-    </typedef>
-    <typedef class="org.geoserver.catalog.hibernate.NumberRangeType" name="numberRange">
-    </typedef>
+	<typedef class="org.geoserver.catalog.hibernate.FilterType" name="filter"></typedef>
+    <typedef class="org.geoserver.catalog.hibernate.BoundingBoxType" name="boundingBox"></typedef>
+    <typedef class="org.geoserver.catalog.hibernate.NumberRangeType" name="numberRange"></typedef>
     
     <!--
        CATALOG
@@ -28,10 +25,9 @@
 		<property name="enabled" column="ENABLED"/>
         <!-- many-to-one name="namespace" column="NAMESPACE" 
         	class="org.geoserver.catalog.hibernate.HbNamespaceInfo"/ --> <!-- FIX: WorkSpace -->
-        <many-to-one name="workspace" column="WORKSPACE" 
-        	class="org.geoserver.catalog.hibernate.HbWorkspaceInfo" cascade="all"/>
+        <many-to-one name="workspace" column="WORKSPACE" class="org.geoserver.catalog.hibernate.HbWorkspaceInfo"/>
         	
-        <map name="metadata" table="STORE_METADATA">
+        <map name="metadata" table="STORE_METADATA" cascade="all">
         	<key column="STORE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
@@ -42,8 +38,7 @@
     <joined-subclass name="org.geoserver.catalog.impl.DataStoreInfoImpl" 
 		extends="org.geoserver.catalog.impl.StoreInfoImpl" table="DATA_STORES">
 		<key column="DATA_STORE_ID"/>
-		
-		<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS">
+		<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS" cascade="all">
         	<key column="DATA_STORE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
@@ -55,8 +50,8 @@
     <joined-subclass name="org.geoserver.catalog.impl.CoverageStoreInfoImpl" 
 		extends="org.geoserver.catalog.impl.StoreInfoImpl" table="COVERAGE_STORES">
 		<key column="COVERAGE_STORE_ID"/>
-		<property name="type" column="TYPE"/>
-		<property name="URL" column="URL"/>
+		<property name="type" column="COVERAGE_STORE_TYPE"/>
+		<property name="URL" column="COVERAGE_STORE_URL"/>
     </joined-subclass>
     
 	<!-- StyleInfo -->
@@ -64,7 +59,7 @@
 		<id name="id" column="STYLE_ID">
             <generator class="native"/>
         </id>
-        <property name="name" column="NAME"/>
+        <property name="name" column="NAME" unique="true" not-null="true"/>
         <property name="filename" column="FILENAME"/>
     </class>
     
@@ -75,7 +70,7 @@
         </id>
         <property name="prefix" column="NS_PREFIX" unique="true"/>        
         <property name="URI" column="NS_URI" unique="true"/>
-        <property name="default" column="NS_DEFAULT"/>        
+        <property name="default" column="IS_DEFAULT"/>        
 	</class>	
 	
 	<!-- WorkspaceInfo -->
@@ -85,7 +80,7 @@
         </id>
         <property name="name" column="NAME" unique="true"/>  
         <property name="default" column="IS_DEFAULT"/>
-        <map name="metadata" table="WORKSPACE_METADATA">
+        <map name="metadata" table="WORKSPACE_METADATA" cascade="all">
         	<key column="WS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
@@ -108,10 +103,10 @@
 		<id name="id" column="RESOURCE_ID">
             <generator class="native"/>
         </id>
-        <property name="name" column="NAME"/>
+        <property name="name" column="NAME" unique="true" not-null="true"/>
         <property name="nativeName" column="NATIVE_NAME"/>
         <!-- property name="prefixedName" column="PREFIXED_NAME"/ -->
-        <many-to-one name="namespace" column="NAMESPACE" class="org.geoserver.catalog.hibernate.HbNamespaceInfo" cascade="all"/>
+        <many-to-one name="namespace" column="NAMESPACE" class="org.geoserver.catalog.hibernate.HbNamespaceInfo"/>
 		<property name="title" column="TITLE"/>
 		<property name="abstract" column="ABSTRACT"/>
 		<property name="description" column="DESCRIPTION"/>
@@ -156,14 +151,14 @@
 			<element type="java.io.Serializable"></element>
         </map>
         
-    	<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.StoreInfoImpl" cascade="all"/>
+    	<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.StoreInfoImpl"/>
 	</class>
 	
 	<!-- FeatureTypeInfo -->
 	<joined-subclass name="org.geoserver.catalog.impl.FeatureTypeInfoImpl"
 		extends="org.geoserver.catalog.impl.ResourceInfoImpl" table="FEATURE_TYPES">
 		<key column="RESOURCE_ID"/>
-		<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.DataStoreInfoImpl" cascade="all"/>
+		<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.DataStoreInfoImpl"/>
 		<property name="filter" column="FILTER" type="filter"/>
     </joined-subclass>
     
@@ -174,33 +169,34 @@
 		<property name="nativeFormat" column="NATIVE_FORMAT"/>
 		<property name="nativeSrsWKT" column="NATIVE_SRS"/>
 		<property name="grid" column="GRID_GEOMETRY" type="java.io.Serializable"/>
-		<list name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS">
+		<!-- property name="fields" column="FIELDS" type="org.geotools.coverage.io.impl.range.DefaultRangeType"/ -->
+		<list name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS" cascade="all">
 		   <key column="COVERAGE_ID"/>
            <list-index column="FORMAT_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
-    	<list name="requestSRS" table="COVERAGE_REQUEST_SRS">
+    	<list name="requestSRS" table="COVERAGE_REQUEST_SRS" cascade="all">
 			<key column="COVERAGE_ID"/>
             <list-index column="REQUEST_SRS_INDEX"/>
 			<element type="java.lang.String"/>
 		</list>
-		<list name="responseSRS" table="COVERAGE_RESPONSE_SRS">
+		<list name="responseSRS" table="COVERAGE_RESPONSE_SRS" cascade="all">
 			<key column="COVERAGE_ID"/>
             <list-index column="RESPONSE_SRS_INDEX"/>
 			<element type="java.lang.String"/>
 		</list>
 		<property name="defaultInterpolationMethod" column="DEFAULT_INTERPOLATION_METHOD"/>
-		<list name="interpolationMethods" table="COVERAGE_INTERPOLATION_METHODS">
+		<list name="interpolationMethods" table="COVERAGE_INTERPOLATION_METHODS" cascade="all">
 			<key column="COVERAGE_ID"/>
             <list-index column="INTERP_METHOD_INDEX"/>
 			<element type="java.lang.String"/>
 		</list>
-		<map name="parameters" table="COVERAGE_PARAMETERS">
+		<map name="parameters" table="COVERAGE_PARAMETERS" cascade="all">
         	<key column="COVERAGE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.lang.String"></element>
-        </map>       
-        <many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.CoverageStoreInfoImpl" cascade="all"/>
+        </map>
+        <many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.CoverageStoreInfoImpl"/>
     </joined-subclass>
     
     <!-- LegendInfo -->
@@ -220,20 +216,20 @@
 	   	 <generator class="native"/>
 	   </id>
 	   <property name="path" column="PATH"/>
-	   <property name="name" column="NAME"/>
+	   <property name="name" column="NAME" unique="true" not-null="true"/>
 	   <property name="type" column="TYPE" type="java.io.Serializable"/>
 	   
-	   <many-to-one name="defaultStyle" column="DEFAULT_STYLE" class="org.geoserver.catalog.impl.StyleInfoImpl" cascade="all"/>
+	   <many-to-one name="defaultStyle" column="DEFAULT_STYLE" class="org.geoserver.catalog.impl.StyleInfoImpl"/>
 	   <set name="styles" table="LAYER_STYLES">
         	<key column="LAYER_ID"/>
 			<many-to-many class="org.geoserver.catalog.impl.StyleInfoImpl"/>
        </set>   
        	   
-       <many-to-one name="resource" column="RESOURCE" class="org.geoserver.catalog.impl.ResourceInfoImpl" cascade="all"/>
-       <many-to-one name="legend" column="LEGEND" class="org.geoserver.catalog.impl.LegendInfoImpl" cascade="all"/>
+       <many-to-one name="resource" column="RESOURCE" class="org.geoserver.catalog.impl.ResourceInfoImpl"/>
+       <many-to-one name="legend" column="LEGEND" class="org.geoserver.catalog.impl.LegendInfoImpl"/>
     	
        <property name="enabled" column="ENABLED"/>
-       <map name="metadata" table="LAYER_METADATA">
+       <map name="metadata" table="LAYER_METADATA" cascade="all">
         	<key column="LAYER_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
@@ -245,7 +241,7 @@
 	   <id name="id" column="MAP_ID">
 	   	 <generator class="native"/>
 	   </id>
-	   <property name="name" column="NAME"/>
+	   <property name="name" column="NAME" unique="true" not-null="true"/>
 	   <property name="enabled" column="ENABLED"/>
        <list name="layers">
           <key column="MAP_ID"/>
@@ -338,12 +334,12 @@
     	<property name="stdOutLogging" column="STD_OUT_LOGGING"/>
     	<property name="updateSequence" column="UPDATE_SEQUENCE"/>
     	
-		<map name="metadata" table="GEOSERVER_METADATA" cascade="all" lazy="false">
+		<map name="metadata" table="GEOSERVER_METADATA" cascade="all">
         	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>
-		<map name="clientProperties" table="GEOSERVER_CLIENT_PROPS">
+		<map name="clientProperties" table="GEOSERVER_CLIENT_PROPS" cascade="all">
         	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
@@ -360,29 +356,29 @@
 		<property name="abstract" column="ABSTRACT"/>	
 		<property name="accessConstraints" column="ACCESS_CONSTRAINTS"/>	
 		<property name="fees" column="FEES"/>	
-		<list name="keywords" table="SERVICE_KEYWORDS">
+		<list name="keywords" table="SERVICE_KEYWORDS" cascade="all">
 		    <key column="ID"/>
 		    <list-index column="KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>   
-    	<list name="exceptionFormats" table="SERVICE_EXCEPTION_FORMATS">
+    	<list name="exceptionFormats" table="SERVICE_EXCEPTION_FORMATS" cascade="all">
     	    <key column="ID"/>
     	    <list-index column="EXCEPTION_FORMAT_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
-		<list name="versions" table="SERVICE_VERSIONS">
+		<list name="versions" table="SERVICE_VERSIONS" cascade="all">
 		    <key column="ID"/>
 		    <list-index column="VERSION_INDEX"/>
 			<element type="org.geotools.util.Version"/>
     	</list>       	
 		<one-to-one name="metadataLink" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
 			
-		<many-to-one name="geoServer" class="org.geoserver.config.impl.GeoServerInfoImpl" column="GEOSERVER" cascade="all"/>
+		<many-to-one name="geoServer" class="org.geoserver.config.impl.GeoServerInfoImpl" column="GEOSERVER"/>
 
 		<property name="citeCompliant" column="CITE_COMPLIANT"/>
 		<property name="onlineResource" column="ONLINE_RESOURCE"/>
 
-		<map name="metadata" table="SERVICE_METADATA">
+		<map name="metadata" table="SERVICE_METADATA" cascade="all">
         	<key column="ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
@@ -396,7 +392,7 @@
 		
 		<property name="interpolation" column="INTERPOLATION"/>
 		<many-to-one name="watermark" cascade="all" class="org.geoserver.wms.WatermarkInfoImpl"/>
-		<list name="SRS" table="WMS_SRS">
+		<list name="SRS" table="WMS_SRS" cascade="all">
     	    <key column="ID"/>
     	    <list-index column="SRS_INDEX"/>
 			<element type="java.lang.String"/>
@@ -427,7 +423,7 @@
 		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WFS_SERVICE">
 		<key column="ID"/>
 		<property name="serviceLevel" column="SERVICE_LEVEL"/>
-		<map name="GML" table="WFS_GML">
+		<map name="GML" table="WFS_GML" cascade="all">
         	<key column="ID"/>
         	<map-key type="java.lang.Enum"></map-key>
 			<element type="java.io.Serializable"></element>
@@ -464,38 +460,38 @@
     	<property name="version" column="VERSION"/>    	    
     	<property name="verticalCoordinateMeaning" column="VERT_COORD_MEANING"/>    	    
 		
-		<map name="initParams" table="MODEL_INIT_PARAMS" cascade="all" lazy="false">
+		<map name="initParams" table="MODEL_INIT_PARAMS" cascade="all">
         	<key column="MODEL_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>
-    	<map name="outParams" table="MODEL_OUT_PARAMS" cascade="all" lazy="false">
+    	<map name="outParams" table="MODEL_OUT_PARAMS" cascade="all">
         	<key column="MODEL_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>
-		<list name="products" table="MODEL_PRODUCTS" cascade="all" lazy="false">
+		<list name="products" table="MODEL_PRODUCTS" cascade="all">
 		    <key column="MODEL_ID"/>
 		    <list-index column="PRODUCT_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
-		<list name="keywords" table="MODEL_KEYWORDS" cascade="all" lazy="false">
+		<list name="keywords" table="MODEL_KEYWORDS" cascade="all">
 		    <key column="MODEL_ID"/>
 		    <list-index column="KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
-		<map name="metadata" table="MODEL_METADATA" cascade="all" lazy="false">
+		<map name="metadata" table="MODEL_METADATA" cascade="all">
         	<key column="MODEL_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable"></element>
         </map>
-		<list name="modelRuns" table="MODEL_RUNNINGS" cascade="all" lazy="false">
+		<list name="modelRuns" table="MODEL_RUNNINGS" cascade="all">
     	    <key column="MODEL_ID"/>
     	    <list-index column="MODEL_RUN_INDEX"/>
 			<one-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
     	</list>
 
-		<one-to-one name="metadataLink" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" />
+		<one-to-one name="metadataLink" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl"/>
 		
      </class>
     
@@ -520,7 +516,7 @@
 			<column name="OL_CRS"/>
 		</property>
 
-		<list name="keywords" table="MODEL_RUN_KEYWORDS" cascade="all" lazy="false">
+		<list name="keywords" table="MODEL_RUN_KEYWORDS" cascade="all">
 		    <key column="MODEL_RUN_ID"/>
 		    <list-index column="KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
@@ -533,6 +529,5 @@
     	</list>
     	 
 		<many-to-one name="model" class="org.geoserver.catalog.impl.ModelInfoImpl"/>
-		
      </class>
 </hibernate-mapping>

@@ -479,6 +479,7 @@ public class KvpUtils {
                 }
             }
             
+            ArrayList<Throwable> tries = new ArrayList<Throwable>();
             if (matchingParsers.size() > 0) {
                 for (KvpParser parser : matchingParsers) {
                     try {
@@ -494,10 +495,13 @@ public class KvpUtils {
                                 parsed = parser.parse(value);
                     } catch (Throwable t) {
                         //don't throw any exceptions yet, before the service is known
-                        errors.add( t );
+                        tries.add( t );
                     }
                 }
             }
+            
+            if (parsed == null && tries.size() > 0)
+                errors.addAll(tries);
 
             //if noone could parse, just set to string value
             if (parsed != null) {
