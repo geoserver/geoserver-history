@@ -316,7 +316,18 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             CoverageStoreInfoDTO formatDTO = (CoverageStoreInfoDTO) i.next();
             org.geoserver.catalog.CoverageStoreInfo cs = catalog.getFactory().createCoverageStore();
             new CoverageStoreInfo( cs, catalog ).load( formatDTO );
-            catalog.add( cs );
+            
+            org.geoserver.catalog.CoverageStoreInfo tmpCS = catalog.getCoverageStoreByName(cs.getName());
+            if (tmpCS==null) catalog.add(cs);
+            else {
+                tmpCS.setDescription(cs.getDescription());
+                tmpCS.setEnabled(cs.isEnabled());
+                tmpCS.setName(cs.getName());
+                tmpCS.setType(cs.getName());
+                tmpCS.setURL(cs.getURL());
+                tmpCS.setWorkspace(cs.getWorkspace());
+                catalog.save(tmpCS);
+            }
         }
     
         return null;
@@ -391,7 +402,9 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                 ds.setError( e );
             }
             
-            catalog.add( ds );
+            org.geoserver.catalog.DataStoreInfo tmpDS = catalog.getDataStoreByName(ds.getName());
+            if(tmpDS!=null) catalog.remove(tmpDS);
+            catalog.add(ds);
         }
     
         return null;
@@ -453,16 +466,29 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             NameSpaceInfoDTO namespaceDto = (NameSpaceInfoDTO) i.next();
             
             NamespaceInfo ns = catalog.getFactory().createNamespace();
-            new NameSpaceInfo( ns, catalog ).load( namespaceDto );
-            catalog.add( ns );
+            new NameSpaceInfo(ns, catalog).load(namespaceDto);
+            
+            NamespaceInfo tmpNS = catalog.getNamespaceByPrefix(ns.getPrefix());
+            if(tmpNS==null) catalog.add(ns);
+            else {
+                tmpNS.setPrefix(ns.getPrefix());
+                tmpNS.setURI(ns.getURI());
+                catalog.save(tmpNS);
+            }
             
             WorkspaceInfo ws = catalog.getFactory().createWorkspace();
-            ws.setName( ns.getPrefix() );
-            catalog.add( ws );
+            ws.setName(ns.getPrefix());
             
-            if ( namespaceDto.isDefault() ) {
-                catalog.setDefaultNamespace( ns );
-                catalog.setDefaultWorkspace( ws );
+            WorkspaceInfo tmpWS = catalog.getWorkspaceByName(ws.getName());
+            if(tmpWS==null) catalog.add(ws);
+            else {
+                tmpWS.setName(ws.getName());
+                catalog.save(tmpWS);
+            }
+            
+            if (namespaceDto.isDefault()) {
+                catalog.setDefaultNamespace(ns);
+                catalog.setDefaultWorkspace(ws);
             }
             
         }
@@ -504,7 +530,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             CoverageStoreInfoDTO format = (CoverageStoreInfoDTO)dto.getFormats().get(cDTO.getFormatId());
             ci.setNamespace(catalog.getNamespaceByPrefix(format.getNameSpaceId()));
 
-
             LayerInfo layer = catalog.getFactory().createLayer();
             layer.setResource( ci );
             
@@ -523,8 +548,14 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             if ( ci.isEnabled() && ( cs == null || !cs.isEnabled() ) ) {
                 ci.setEnabled(false);
             }
-            catalog.add( ci );
-            catalog.add( layer );
+            
+            org.geoserver.catalog.CoverageInfo tmpCI = catalog.getCoverageByName(ci.getName());
+            if(tmpCI!=null) catalog.remove(tmpCI);
+            catalog.add(ci);
+            
+            LayerInfo tmpLayer = catalog.getLayerByName(layer.getName());
+            if(tmpLayer!=null) catalog.remove(tmpLayer);
+            catalog.add(layer);
             
         }
         
@@ -628,8 +659,14 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             if ( fti.isEnabled() && ( ds == null || !ds.isEnabled() ) ) {
                 fti.setEnabled(false);
             }
-            catalog.add( fti );
-            catalog.add( layer );
+            
+            org.geoserver.catalog.FeatureTypeInfo tmpFti = catalog.getFeatureType(fti.getId()); 
+            if(tmpFti!=null) catalog.remove(tmpFti);
+            catalog.add(fti);
+            
+            LayerInfo tmpLayer = catalog.getLayerByName(layer.getName());
+            if(tmpLayer!=null) catalog.remove(tmpLayer);
+            catalog.add(layer);
             
         }
         
@@ -1324,7 +1361,9 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             s.setName( styleDTO.getId() );
             s.setFilename( styleDTO.getFilename().getName() );
             
-            catalog.add( s );
+            StyleInfo tmpStyle = catalog.getStyleByName(s.getName());
+            if(tmpStyle!=null) catalog.remove(tmpStyle);
+            catalog.add(s);
             
             //clear the resource pool
             catalog.getResourcePool().clear( s );

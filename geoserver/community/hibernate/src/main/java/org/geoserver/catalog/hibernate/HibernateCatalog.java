@@ -648,9 +648,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyleByName(String)
      */
     public StyleInfo getStyleByName(String name) {
-        StyleInfo style = (StyleInfo) first(
-                "from " + StyleInfo.class.getName() + " where name = ?", new Object[] { name });
-        style.setCatalog(this);
+        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where name = ?", new Object[] { name });
+        if(style!=null)style.setCatalog(this);
         return style;
     }
 

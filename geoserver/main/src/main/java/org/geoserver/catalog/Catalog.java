@@ -4,11 +4,10 @@
  */
 package org.geoserver.catalog;
 
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 
 import org.geoserver.catalog.event.CatalogListener;
-import java.util.Collection;
 
 /**
  * The GeoServer catalog which provides access to meta information about the 

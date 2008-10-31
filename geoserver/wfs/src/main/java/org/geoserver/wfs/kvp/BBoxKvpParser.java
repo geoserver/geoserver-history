@@ -18,6 +18,7 @@ import java.util.List;
 public class BBoxKvpParser extends KvpParser {
     public BBoxKvpParser() {
         super("bbox", Envelope.class);
+        setService("WFS");
     }
 
     public Object parse(String value) throws Exception {

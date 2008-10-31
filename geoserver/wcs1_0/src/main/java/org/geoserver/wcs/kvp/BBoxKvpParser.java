@@ -9,14 +9,14 @@ import java.util.List;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.util.Version;
 
 
 public class BBoxKvpParser extends WcsKvpParser {
     public BBoxKvpParser() {
         super("bbox", GeneralEnvelope.class);
+        setService("WCS");
+        setVersion(new Version( "1.0.0" ));
     }
 
     public Object parse(String value) throws Exception {
