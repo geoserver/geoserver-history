@@ -240,8 +240,6 @@ public class CoverageStoreFileResource extends Resource {
             myDataConfig.addDataFormat(csc);
         }
 
-        save();
-
         // //////
         // Configuration for the coverage
         // //////
@@ -287,14 +285,12 @@ public class CoverageStoreFileResource extends Resource {
                     if (form.getFirst("style") != null)
                         cc.setDefaultStyle(form.getFirstValue("style"));
                     else {
-                        if (name.getLocalPart().toLowerCase().contains("lowcloud"))
-                            cc.setDefaultStyle("lowcloud");
-
-                        if (name.getLocalPart().toLowerCase().contains("mcsst"))
-                            cc.setDefaultStyle("mcsst");
+                            cc.setDefaultStyle("raster");
+                    }
+                    if (i==0){
+                        myDataConfig.removeCoverage(qualified);
                     }
                     qualified = coverageStore + ":" + cc.getName();
-                    myDataConfig.removeCoverage(qualified);
                     myDataConfig.addCoverage(qualified, cc);
                 }
                 
