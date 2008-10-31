@@ -77,23 +77,6 @@ public class DefaultDataAccessManager implements DataAccessManager {
 
     DefaultDataAccessManager(Catalog catalog) throws Exception {
         this.catalog = catalog;
-        File security = GeoserverDataDirectory.findConfigDir(GeoserverDataDirectory
-                .getGeoserverDataDirectory(), "security");
-
-        // no security folder, let's work against an empty properties then
-        if (security == null || !security.exists()) {
-            this.root = new SecureTreeNode();
-        } else {
-            // no security config, let's work against an empty properties then
-            layers = new File(security, "layers.properties");
-            if (!layers.exists()) {
-                this.root = new SecureTreeNode();
-            } else {
-                // ok, something is there, let's load it
-                watcher = new PropertyFileWatcher(layers);
-                this.root = buildAuthorizationTree(watcher.getProperties());
-            }
-        }
     }
     
     /**
@@ -101,8 +84,30 @@ public class DefaultDataAccessManager implements DataAccessManager {
      */
     void checkPropertyFile() {
         try {
-            if (watcher != null && watcher.isStale())
+            if (root == null) {
+                // delay building the authorization tree after the 
+                // catalog is fully built and available, otherwise we
+                // end up ignoring the rules because the namespaces are not loaded
+                File security = GeoserverDataDirectory.findConfigDir(GeoserverDataDirectory
+                        .getGeoserverDataDirectory(), "security");
+
+                // no security folder, let's work against an empty properties then
+                if (security == null || !security.exists()) {
+                    this.root = new SecureTreeNode();
+                } else {
+                    // no security config, let's work against an empty properties then
+                    layers = new File(security, "layers.properties");
+                    if (!layers.exists()) {
+                        this.root = new SecureTreeNode();
+                    } else {
+                        // ok, something is there, let's load it
+                        watcher = new PropertyFileWatcher(layers);
+                        this.root = buildAuthorizationTree(watcher.getProperties());
+                    }
+                }
+            } else if(watcher != null && watcher.isStale()) { 
                 root = buildAuthorizationTree(watcher.getProperties());
+            }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to reload data access rules from " + layers
                     + ", keeping old rules", e);
