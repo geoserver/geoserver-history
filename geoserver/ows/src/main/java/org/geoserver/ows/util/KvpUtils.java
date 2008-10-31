@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.util.Version;
 
 /**
  * Utility class for reading Key Value Pairs from a http query string.
@@ -463,15 +464,36 @@ public class KvpUtils {
             //find the parser for this key value pair
             Object parsed = null;
 
+            Collection<KvpParser> matchingParsers = new ArrayList<KvpParser>();
             for (Iterator pitr = parsers.iterator(); pitr.hasNext() && parsed == null;) {
                 KvpParser parser = (KvpParser) pitr.next();
 
                 if (key.equalsIgnoreCase(parser.getKey())) {
+                    matchingParsers.add(parser);
+//                    try {
+//                        parsed = parser.parse(value);
+//                    } catch (Throwable t) {
+//                        //don't throw any exceptions yet, before the service is known
+//                        errors.add( t );
+//                    }
+                }
+            }
+            
+            if (matchingParsers.size() > 0) {
+                for (KvpParser parser : matchingParsers) {
                     try {
-                        parsed = parser.parse(value);
+                        if (parsed == null)
+                            parsed = parser.parse(value);
+                        
+                        // give priority to the parser matching the same service and version
+                        if (parser.getService() != null)
+                            if (parser.getVersion() != null) {
+                                if (parser.getService().equalsIgnoreCase(service) && parser.getVersion().equals(new Version(version)))
+                                    parsed = parser.parse(value);
+                            } else if (parser.getService().equalsIgnoreCase(service))
+                                parsed = parser.parse(value);
                     } catch (Throwable t) {
-                        //dont throw any exceptions yet, befor the service is
-                        // known
+                        //don't throw any exceptions yet, before the service is known
                         errors.add( t );
                     }
                 }

@@ -272,10 +272,10 @@ public class LegacyCatalogImporter {
         importNamespaces(factory, reader.namespaces());
         importStyles(factory, reader.styles());
         importDataStores(factory, reader.dataStores());
-        importFormats(factory, reader.formats());
+        importDrivers(factory, reader.drivers());
     }
 
-    void importFormats(CatalogFactory factory, List formats) {
+    void importDrivers(CatalogFactory factory, List formats) {
         for (Iterator f = formats.iterator(); f.hasNext();) {
             Map map = (Map) f.next();
             CoverageStoreInfo coverageStore = factory.createCoverageStore();
@@ -287,9 +287,9 @@ public class LegacyCatalogImporter {
 
             String namespacePrefix = (String)map.get( "namespace");
             //coverageStore.setNamespace( catalog.getNamespaceByPrefix( namespacePrefix ));
-            coverageStore.setWorkspace( catalog.getWorkspaceByName( namespacePrefix ));
+            coverageStore.setWorkspace(catalog.getWorkspaceByName(namespacePrefix));
             
-            coverageStore.setEnabled( (Boolean) map.get( "enabled" ) );
+            coverageStore.setEnabled((Boolean) map.get( "enabled" ));
             catalog.add(coverageStore);
             
             LOGGER.info( "Processed coverage store '" + coverageStore.getName() + "', " 

@@ -266,7 +266,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         loadNamespaces(config);
         
         //formats = loadFormats(config);
-        loadFormats(config);
+        loadDrivers(config);
         
         //dataStores = loadDataStores(config);
         loadDataStores(config);
@@ -305,7 +305,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //return new HashSet(formats.values());
     }
 
-    private final Map loadFormats(DataDTO dto) {
+    private final Map loadDrivers(DataDTO dto) {
         if ((dto == null) || (dto.getFormats() == null)) {
             return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }

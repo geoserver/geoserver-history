@@ -143,7 +143,7 @@ public class LegacyCatalogReader {
      *
      * @throws Exception If error processing "datastores" element.
      */
-    public List<Map<String,Object>> formats() throws Exception {
+    public List<Map<String,Object>> drivers() throws Exception {
     	Element formatsElement = ReaderUtils.getChildElement(catalog, "formats", true);
 
         NodeList formatElements = formatsElement.getElementsByTagName("format");
@@ -156,8 +156,7 @@ public class LegacyCatalogReader {
             
             format.put( "id", ReaderUtils.getAttribute(formatElement, "id", true ) );
             format.put( "namespace", ReaderUtils.getAttribute(formatElement, "namespace", false ) );
-            format.put( "enabled", 
-    				Boolean.valueOf( ReaderUtils.getBooleanAttribute( formatElement, "enabled", false, true ) ) );
+            format.put( "enabled", Boolean.valueOf( ReaderUtils.getBooleanAttribute( formatElement, "enabled", false, true ) ) );
 
             format.put( "type", ReaderUtils.getChildText(formatElement, "type", true ) );
             format.put( "url", ReaderUtils.getChildText(formatElement, "url", false ) );
