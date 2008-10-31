@@ -6,6 +6,7 @@ package org.vfny.geoserver.global;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,18 +26,26 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageSource;
+import org.geotools.coverage.io.Driver;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.NameImpl;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
+import org.opengis.referencing.crs.CompoundCRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
@@ -1362,8 +1371,12 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             s.setFilename( styleDTO.getFilename().getName() );
             
             StyleInfo tmpStyle = catalog.getStyleByName(s.getName());
-            if(tmpStyle!=null) catalog.remove(tmpStyle);
-            catalog.add(s);
+            if(tmpStyle==null) catalog.add(s);
+            else {
+                tmpStyle.setName(s.getName());
+                tmpStyle.setFilename(s.getFilename());
+                catalog.save(tmpStyle);
+            }
             
             //clear the resource pool
             catalog.getResourcePool().clear( s );
@@ -2131,9 +2144,53 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     
     public synchronized Map getCoverageInfos() {
         Map map = new HashMap();
-        for ( org.geoserver.catalog.CoverageInfo c : catalog.getCoverages() ) {
-            if(c.isEnabled())
-                map.put( c.getPrefixedName(), new CoverageInfo( layer(c), catalog ) );
+        for ( org.geoserver.catalog.CoverageInfo coverage : catalog.getCoverages() ) {
+            if(coverage.isEnabled())
+                map.put( coverage.getPrefixedName(), new CoverageInfo( layer(coverage), catalog ) );
+            
+            // initializing fields, vertical and temporal extent
+            try {
+                org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                Driver driver = coverage.getStore().getDriver();
+                Map params = new HashMap();
+                params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                CoverageAccess cvAccess = driver.connect(params, null, null);
+                if (cvAccess != null) {
+                    CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                    if (cvSource != null) {
+                        coverage.setFields(cvSource.getRangeType(null));
+
+                        CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                        Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                        CoordinateReferenceSystem temporalCRS = null;
+                        CoordinateReferenceSystem verticalCRS = null;
+                        if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                            if (compundCRS instanceof CompoundCRS) {
+                                temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            }
+                        }
+                        Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                        if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                            if (compundCRS instanceof CompoundCRS) {
+                                if (temporalCRS != null)
+                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                                else
+                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            } 
+                        }
+
+                        coverage.setTemporalCRS(temporalCRS);
+                        coverage.setTemporalExtent(temporalExtent);
+
+                        coverage.setVerticalCRS(verticalCRS);
+                        coverage.setVerticalExtent(verticalExtent);
+                    }
+                }
+            } catch (MalformedURLException e) {
+                //e.printStackTrace();
+            } catch (IOException e) {
+                //e.printStackTrace();
+            }
         }
         return map;
         //return Collections.unmodifiableMap(coverages);

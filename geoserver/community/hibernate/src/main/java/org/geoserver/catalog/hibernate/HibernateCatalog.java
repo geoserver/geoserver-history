@@ -272,8 +272,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResource(String, Class)
      */
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
-        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = ?",
-                new Object[] { id });
+        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = ?", new Object[] { id });
         if (resource != null) {
             resource.setCatalog(this);
             return (T) resource;
