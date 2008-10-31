@@ -393,14 +393,23 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 // Grid Envelope
                 String lowers = "";
                 String uppers= "";
-    
+                double res=0;
                 for (int r = 0; r < gridDimension; r++) {
                     if (gridToCRS.getSourceDimensions() > r) {
                         lowers += (grid.getGridRange().getLower(r) + " ");
                         uppers += (grid.getGridRange().getUpper(r) + " ");
                     } else {
-                        lowers += (verticalLimits[0] + " ");
-                        uppers += (verticalLimits[1] + " ");
+                        lowers += (0 + " ");
+                        if (verticalExtent.size()>1){
+                            res = verticalLimits[2];
+                            final double verticalRange = Math.abs(verticalLimits[1]-verticalLimits[0]);
+                            if (res == 0)
+                                res = verticalRange / verticalExtent.size();
+                            final int verticalValues = (int)(verticalRange/res);
+                            uppers += (verticalValues + " ");
+                        }
+                        else
+                            uppers += (0 + " ");
                     }
                 }
                 start("gml:limits");
@@ -456,7 +465,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 
                 if (verticalExtent != null && verticalExtent.size() > 0) {
                     CoordinateSystemAxis vAxis = ((VerticalCRS) ci.getVerticalCRS()).getCoordinateSystem().getAxis(0);
-                    element("gml:offsetVector", "0.0 0.0 " + (vAxis.getDirection().equals(AxisDirection.UP) ? "" : "-") + verticalLimits[2]);
+                    element("gml:offsetVector", "0.0 0.0 " + (vAxis.getDirection().equals(AxisDirection.UP) ? "" : "-") + res);
                 }
 
             end("gml:RectifiedGrid");

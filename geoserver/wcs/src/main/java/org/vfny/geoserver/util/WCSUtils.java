@@ -490,7 +490,7 @@ public class WCSUtils {
         double maxZ = Double.NEGATIVE_INFINITY;
         double resZ = 0.0;
         
-        double[] mcdNumbers = new double[verticalExtent.size()+1];
+        double[] mcdNumbers = new double[verticalExtent.size()];
         
         int n=0;
         for (Envelope env : verticalExtent) {
@@ -502,7 +502,7 @@ public class WCSUtils {
             
             mcdNumbers[n++] = env.getMinimum(0); 
         }
-        mcdNumbers[n] = maxZ;
+//        mcdNumbers[n] = maxZ;
 
         // Computing the minimum distance between the vertical levels
         resZ = Double.POSITIVE_INFINITY;
