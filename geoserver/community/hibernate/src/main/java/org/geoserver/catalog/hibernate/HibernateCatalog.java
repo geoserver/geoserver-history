@@ -605,13 +605,7 @@ public class HibernateCatalog implements Catalog {
     @SuppressWarnings("unchecked")
     public HbNamespaceInfo getDefaultNamespace() {
         String hql = "from " + HbNamespaceInfo.class.getName() + " where default=?";
-        Query query = getSession().createQuery(hql);
-        query.setBoolean(0, true);
-        List<HbNamespaceInfo> list = query.list();
-        HbNamespaceInfo info = null;
-        if (list.size() > 0) {
-            info = list.get(0);
-        }
+        HbNamespaceInfo info = (HbNamespaceInfo) first(hql, new Object[]{Boolean.TRUE});
         return info;
     }
 
@@ -705,7 +699,7 @@ public class HibernateCatalog implements Catalog {
      * @todo: revisit: what prevents us from having the same URI in more than one namespace?
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where uri = ?",
+        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where URI = ?",
                 new Object[] { uri });
     }
 
@@ -1101,19 +1095,12 @@ public class HibernateCatalog implements Catalog {
      */
     public HbWorkspaceInfo getDefaultWorkspace() {
         String hql = "from " + HbWorkspaceInfo.class.getName() + " where default=?";
-        Query query = getSession().createQuery(hql);
-        query.setBoolean(0, true);
-        List list = query.list();
-        HbWorkspaceInfo info = null;
-        if (list.size() > 0) {
-            info = (HbWorkspaceInfo) list.get(0);
-        }
+        HbWorkspaceInfo info = (HbWorkspaceInfo) first(hql, new Object[]{Boolean.TRUE});
         return info;
     }
 
     /**
      * @see Catalog#setDefaultWorkspace(WorkspaceInfo)
-     * @todo implement setDefaultWorkspace
      */
     public void setDefaultWorkspace(WorkspaceInfo workspace) {
         HbWorkspaceInfo currentDefault = getDefaultWorkspace();
@@ -1123,11 +1110,14 @@ public class HibernateCatalog implements Catalog {
         }
         ((HbWorkspaceInfo) workspace).setDefault(true);
 
-        if (first("from " + WorkspaceInfo.class.getName() + " where name = ?",
-                new Object[] { workspace.getName() }) == null) {
-            getSession().saveOrUpdate(workspace);
-            getSession().getTransaction().commit();
+        WorkspaceInfo current = getWorkspaceByName(workspace.getName());
+        if (current == null) {
+            getSession().save(workspace);
+        }else{
+            ((HbWorkspaceInfo)workspace).setId(current.getId());
+            getSession().merge(workspace);
         }
+        getSession().getTransaction().commit();
     }
 
     /**
