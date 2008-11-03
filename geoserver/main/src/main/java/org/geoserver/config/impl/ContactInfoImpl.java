@@ -4,7 +4,9 @@
  */
 package org.geoserver.config.impl;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.geoserver.config.ContactInfo;
+import org.geotools.util.Utilities;
 
 public class ContactInfoImpl implements ContactInfo {
 
@@ -149,5 +151,48 @@ public class ContactInfoImpl implements ContactInfo {
         this.onlineResource = onlineResource;
     }
     
+    public boolean equals(Object obj){
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!( obj instanceof ContactInfo ) ) {
+            return false;
+        }
+        ContactInfo ci = (ContactInfo)obj;
+        boolean equals = Utilities.equals(getAddress(), ci.getAddress());
+        equals &= Utilities.equals(getAddressCity(), ci.getAddressCity());
+        equals &= Utilities.equals(getAddressCountry(), ci.getAddressCountry());
+        equals &= Utilities.equals(getAddressPostalCode(), ci.getAddressPostalCode());
+        equals &= Utilities.equals(getAddressState(), ci.getAddressState());
+        equals &= Utilities.equals(getAddressType(), ci.getAddressType());
+        equals &= Utilities.equals(getContactEmail(), ci.getContactEmail());
+        equals &= Utilities.equals(getContactFacsimile(), ci.getContactFacsimile());
+        equals &= Utilities.equals(getContactOrganization(), ci.getContactOrganization());
+        equals &= Utilities.equals(getContactPerson(), ci.getContactPerson());
+        equals &= Utilities.equals(getContactPosition(), ci.getContactPosition());
+        equals &= Utilities.equals(getContactVoice(), ci.getContactVoice());
+        equals &= Utilities.equals(getOnlineResource(), ci.getOnlineResource());
+
+        return equals;
+    }
     
+    public int hashCode(){
+        HashCodeBuilder builder = new HashCodeBuilder();
+        builder.append(getAddress());
+        builder.append(getAddressCity());
+        builder.append(getAddressCountry());
+        builder.append(getAddressPostalCode());
+        builder.append(getAddressState());
+        builder.append(getAddressType());
+        builder.append(getContactEmail());
+        builder.append(getContactFacsimile());
+        builder.append(getContactOrganization());
+        builder.append(getContactPerson());
+        builder.append(getContactPosition());
+        builder.append(getContactVoice());
+        builder.append(getOnlineResource());
+        int hashCode = builder.toHashCode();
+        return hashCode;
+    }
 }
