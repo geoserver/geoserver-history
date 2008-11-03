@@ -30,7 +30,7 @@
         <map name="metadata" table="STORE_METADATA" cascade="all">
         	<key column="STORE_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>
     </class>
     
@@ -41,7 +41,7 @@
 		<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS" cascade="all">
         	<key column="DATA_STORE_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>
 		
 	</joined-subclass>
@@ -83,7 +83,7 @@
         <map name="metadata" table="WORKSPACE_METADATA" cascade="all">
         	<key column="WS_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>      
 	</class>
 	
@@ -141,14 +141,14 @@
 			<column name="LL_CRS"/>
 		</property>
 		<property name="SRS" column="SRS"/>
-		<!-- property name="CRS" column="RESOURCE_CRS" type="java.io.Serializable"/ -->
-		<property name="nativeCRS" column="NATIVE_CRS" type="java.io.Serializable"/>
+		<!-- property name="CRS" column="RESOURCE_CRS" type="java.io.Serializable" length="100000"/ -->
+		<property name="nativeCRS" column="NATIVE_CRS" type="java.io.Serializable" length="100000"/>
 		<property name="projectionPolicy" column="PROJECTION_POLICY"/>
         
         <map name="metadata" table="RESOURCE_METADATA" cascade="all">
         	<key column="RESOURCE_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>
         
     	<many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.StoreInfoImpl"/>
@@ -168,7 +168,7 @@
 		<key column="RESOURCE_ID"/>
 		<property name="nativeFormat" column="NATIVE_FORMAT"/>
 		<property name="nativeSrsWKT" column="NATIVE_SRS"/>
-		<property name="grid" column="GRID_GEOMETRY" type="java.io.Serializable"/>
+		<property name="grid" column="GRID_GEOMETRY" type="java.io.Serializable" length="100000"/>
 		<!-- property name="fields" column="FIELDS" type="org.geotools.coverage.io.impl.range.DefaultRangeType"/ -->
 		<list name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS" cascade="all">
 		   <key column="COVERAGE_ID"/>
@@ -217,7 +217,7 @@
 	   </id>
 	   <property name="path" column="PATH"/>
 	   <property name="name" column="NAME" unique="true" not-null="true"/>
-	   <property name="type" column="TYPE" type="java.io.Serializable"/>
+	   <property name="type" column="TYPE" type="java.io.Serializable" length="100000"/>
 	   
 	   <many-to-one name="defaultStyle" column="DEFAULT_STYLE" class="org.geoserver.catalog.impl.StyleInfoImpl"/>
 	   <set name="styles" table="LAYER_STYLES">
@@ -232,7 +232,7 @@
        <map name="metadata" table="LAYER_METADATA" cascade="all">
         	<key column="LAYER_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>
     </class>
     
@@ -283,7 +283,7 @@
 	    <map name="metadata" table="IMAGING_METADATA">
         	<key column="ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>    
      </class -->
 
@@ -304,7 +304,7 @@
 	    <map name="metadata" table="IMAGING_METADATA">
         	<key column="ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>    
      </class -->
 	 
@@ -337,12 +337,12 @@
 		<map name="metadata" table="GEOSERVER_METADATA" cascade="all">
         	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>
 		<map name="clientProperties" table="GEOSERVER_CLIENT_PROPS" cascade="all">
         	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>
 	 </class>
 
@@ -381,7 +381,7 @@
 		<map name="metadata" table="SERVICE_METADATA" cascade="all">
         	<key column="ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>    
 	 </class>
 
@@ -426,7 +426,7 @@
 		<map name="GML" table="WFS_GML" cascade="all">
         	<key column="ID"/>
         	<map-key type="java.lang.Enum"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map> 
     </joined-subclass>
     
@@ -442,7 +442,7 @@
             <generator class="native"/>
         </id>
     	<property name="abstract" column="ABSTRACT"/>    	    
-    	<property name="CRS" column="CRS" type="java.io.Serializable"/>    	    
+    	<property name="CRS" column="CRS" type="java.io.Serializable" length="100000"/>    	    
     	<property name="center" column="ORIGINATING_CENTER"/>    	    
     	<property name="description" column="DESCRIPTION"/>    	    
     	<property name="discipline" column="DISCIPLINE"/>    	    
@@ -463,12 +463,12 @@
 		<map name="initParams" table="MODEL_INIT_PARAMS" cascade="all">
         	<key column="MODEL_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>
     	<map name="outParams" table="MODEL_OUT_PARAMS" cascade="all">
         	<key column="MODEL_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>
 		<list name="products" table="MODEL_PRODUCTS" cascade="all">
 		    <key column="MODEL_ID"/>
@@ -483,7 +483,7 @@
 		<map name="metadata" table="MODEL_METADATA" cascade="all">
         	<key column="MODEL_ID"/>
         	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable"></element>
+			<element type="java.io.Serializable" length="100000"></element>
         </map>
 		<list name="modelRuns" table="MODEL_RUNNINGS" cascade="all">
     	    <key column="MODEL_ID"/>
