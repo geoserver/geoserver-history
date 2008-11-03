@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
@@ -52,6 +53,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
+import org.geotools.util.logging.Logging;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.opengis.referencing.crs.CompoundCRS;
@@ -64,6 +66,8 @@ import com.vividsolutions.jts.geom.Envelope;
 
 public class HibernateGeoServer implements GeoServer {
 
+    private static final Logger LOGGER = Logging.getLogger("org.geoserver.config.hibernate");
+    
     /**
      * factory to create config objects.
      */
@@ -130,6 +134,7 @@ public class HibernateGeoServer implements GeoServer {
     public GeoServerInfo getGlobal() {
         Session session = getSession();
         session.clear();
+        LOGGER.finest("Querying geoserver global configuration");
         Iterator i = session.createQuery("from " + GeoServerInfoImpl.class.getName()).iterate();
         GeoServerInfo geoserver;
         if (i.hasNext()) {
@@ -137,9 +142,11 @@ public class HibernateGeoServer implements GeoServer {
         } else {
             if (createBootstrapConfig) {
                 // this is an empty configuration! create the minimal set of required object
+                LOGGER.info("Creating geoserver bootstrap configuration, no prior configuration found on the database");
                 geoserver = serviceBootStrap();
                 //catalog.bootStrap();
             } else {
+                LOGGER.info("Explicitly asked to skip boot strap configuration, database is empty");
                 geoserver = null;
             }
         }
@@ -154,6 +161,7 @@ public class HibernateGeoServer implements GeoServer {
         Map<String, Serializable> tmp = geoserver.getMetadata();
         // do not call setGlobal or we'll get an infinite loop
         getSession().save(geoserver);
+        getSession().getTransaction().commit();
 
         WFSInfoImpl wfs = new WFSInfoImpl();
         wfs.setId("wfs");
