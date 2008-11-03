@@ -83,6 +83,14 @@ public class HibernateGeoserverTest extends HibernateTestSupport {
         geoServer.setGlobal(global);
 
         assertEquals(global, geoServer.getGlobal());
+        
+        GeoServerInfo global2 = geoServer.getFactory().createGlobal();
+        global2.setAdminPassword("secret");
+        geoServer.setGlobal(global2);
+        
+        global = geoServer.getGlobal();
+        
+        assertEquals(global2, global);
     }
 
     public void testModifyGlobal() throws Exception {
@@ -115,6 +123,7 @@ public class HibernateGeoserverTest extends HibernateTestSupport {
 
         ServiceInfo s2 = geoServer.getFactory().createService();
         ((ServiceInfoImpl) s2).setId("id");
+        s2.setName("testAddService2");
 
         try {
             geoServer.add(s2);
