@@ -313,7 +313,12 @@
 		<id name="id" column="GS_ID">
             <generator class="native"/>
         </id>
-    	<one-to-one name="contactInfo" class="org.geoserver.config.impl.ContactInfoImpl"/>
+    	<many-to-one name="contactInfo"
+                     class="org.geoserver.config.impl.ContactInfoImpl" 
+                     cascade="all"
+                     column="CONTACT_INFO_ID"
+                     unique="true"/>
+                     
     	<!-- one-to-one name="imaging" class="org.geoserver.config.impl.ImagingInfoImpl"/ -->
     	
 		<property name="charset" column="CHARSET"/>
