@@ -17,6 +17,7 @@ import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.ModelRunInfo;
 import org.geoserver.catalog.ModelInfo.DataType;
 import org.geoserver.catalog.ModelInfo.Discipline;
+import org.geoserver.catalog.hibernate.HbNamespaceInfo;
 import org.geoserver.catalog.hibernate.HibernateCatalog;
 import org.geoserver.catalog.impl.ModelInfoImpl;
 import org.geoserver.catalog.impl.ModelRunInfoImpl;
@@ -26,6 +27,7 @@ import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.GeoServerFactoryImpl;
+import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.wcs.WCSInfoImpl;
@@ -247,10 +249,10 @@ public class HibernateGeoServer implements GeoServer {
         
         catalog.save(model);
         
-        try {
-                // creating the default workspace
-                catalog.bootStrap();
-                
+        // creating the default workspace
+        catalog.bootStrap();
+
+        try {        
                 CoverageStoreInfo coverageStore = catalog.getFactory().createCoverageStore();
                 coverageStore.setDescription("Example Test Coverage.");
                 coverageStore.setEnabled(false);
@@ -359,8 +361,8 @@ public class HibernateGeoServer implements GeoServer {
                 //parameters
                 //coverage.getParameters().putAll(cInfoReader.parameters());
                 // link to namespace
-                String prefix = coverageStore.getWorkspace().getId();
-                coverage.setNamespace(catalog.getNamespaceByPrefix(prefix));
+                HbNamespaceInfo namespace = catalog.getDefaultNamespace();
+                coverage.setNamespace(namespace);
                 
                 catalog.add(coverage);
                 
@@ -370,18 +372,21 @@ public class HibernateGeoServer implements GeoServer {
                 
                 catalog.save(modelRun);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error creating bootstrap configuration", e);
         }
         
         return geoserver;
     }
 
     public void setGlobal(GeoServerInfo configuration) {
+        GeoServerInfoImpl currentGlobal = (GeoServerInfoImpl) getGlobal();
         Session session = getSession();
-        if (configuration.getId() == null) {
+
+        if(currentGlobal == null){
             session.save(configuration);
         } else {
             // use merge, the argument instance may be from another session
+            ((GeoServerInfoImpl)configuration).setId(currentGlobal.getId());
             session.merge(configuration);
         }
         session.getTransaction().commit();
@@ -391,13 +396,26 @@ public class HibernateGeoServer implements GeoServer {
         setGlobal(geoServer);
     }
 
+    /**
+     * @see GeoServer#add(ServiceInfo)
+     */
     public void add(ServiceInfo service) {
-        if (service.getGeoServer() == null)
-            service.setGeoServer(getGlobal());
-        if (getService(service.getId()) == null)
-            getSession().save(service);
-        else
-            getSession().update(service);
+        final String serviceId = service.getId();
+        if ( serviceId == null ) {
+            throw new NullPointerException( "service id must not be null" );
+        }
+        
+        ServiceInfo existing = getService(serviceId);
+        
+        if(existing != null){
+            throw new IllegalArgumentException( "service with id '" + serviceId + "' already exists" );
+        }
+
+        GeoServerInfo global = getGlobal();
+        service.setGeoServer(global);
+
+        getSession().save(service);
+
         getSession().getTransaction().commit();
     }
 
