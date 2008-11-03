@@ -614,17 +614,19 @@ public class HibernateCatalog implements Catalog {
      * @todo implement setDefaultNamespace
      */
     public void setDefaultNamespace(NamespaceInfo defaultNamespace) {
+        HbNamespaceInfo ns = getNamespaceByPrefix(defaultNamespace.getPrefix());
+        if ( ns == null ) {
+            throw new IllegalArgumentException( "No such namespace: '" + defaultNamespace.getPrefix() + "'" );
+        }
+
         HbNamespaceInfo previousDefault = getDefaultNamespace();
         if (previousDefault != null) {
             previousDefault.setDefault(false);
-            save(previousDefault);
+            getSession().save(previousDefault);
         }
-        ((HbNamespaceInfo) defaultNamespace).setDefault(true);
-        if (defaultNamespace.getId() == null) {
-            add(defaultNamespace);
-        } else {
-            getSession().merge(defaultNamespace);
-        }
+        ns.setDefault(true);
+        getSession().merge(ns);
+        getSession().getTransaction().commit();
     }
 
     /**
@@ -732,7 +734,10 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#save(NamespaceInfo)
      */
     public void save(NamespaceInfo namespace) {
-        internalSave(namespace);
+        //takes care of updating the ns taking into account the isDefault custom field
+        add(namespace);
+        fireModified(namespace, null, null, null);
+        //internalSave(namespace);
     }
 
     /**
