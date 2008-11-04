@@ -11,7 +11,9 @@ import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.wfs.WFSException;
 import org.geotools.gml2.bindings.GML2ParsingUtils;
+import org.geotools.gml3.GML;
 import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.feature.simple.SimpleFeature;
@@ -40,10 +42,11 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class InsertElementTypeBinding extends AbstractComplexBinding {
+public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public InsertElementTypeBinding(WfsFactory wfsfactory) {
+        super( wfsfactory );
         this.wfsfactory = wfsfactory;
     }
 
@@ -107,5 +110,16 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
             insertElement.setSrsName(new URI(srsName));
         }
         return insertElement;
+    }
+    
+    public Object getProperty(Object object, QName name)
+        throws Exception {
+        InsertElementType insert = (InsertElementType) object;
+    
+        if (GML._Feature.equals(name)) {
+            return insert.getFeature();
+        }
+    
+        return super.getProperty(object, name);
     }
 }
