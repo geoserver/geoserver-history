@@ -8,6 +8,7 @@ import java.util.List;
 import org.geoserver.catalog.hibernate.HibernateCatalog;
 import org.geoserver.catalog.hibernate.HibernateTestSupport;
 import org.geoserver.config.ConfigurationListener;
+import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.ServiceInfoImpl;
@@ -86,10 +87,16 @@ public class HibernateGeoserverTest extends HibernateTestSupport {
         
         GeoServerInfo global2 = geoServer.getFactory().createGlobal();
         global2.setAdminPassword("secret");
+        ContactInfo contactInfo = geoServer.getFactory().createContact();
+        contactInfo.setAddress("the address");
+        contactInfo.setAddressCity("the city");
+        global2.setContactInfo(contactInfo);
         geoServer.setGlobal(global2);
         
         global = geoServer.getGlobal();
-        
+
+        ContactInfo contactInfo2 = global.getContactInfo();
+        assertEquals(contactInfo, contactInfo2);
         assertEquals(global2, global);
     }
 
