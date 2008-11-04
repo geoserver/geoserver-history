@@ -144,7 +144,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
                 + "  <wfs:Query unknownAttribute=\"topp:archsites\">"
                 + "  </wfs:Query>\r\n" + "</wfsv:GetVersionedFeature>";
 
-        Document dom = postAsDOM(root() + "strict=true", request);
+        Document dom = postAsDOM(root(true), request);
         assertEquals("ServiceExceptionReport", dom.getDocumentElement().getNodeName());
     }
     

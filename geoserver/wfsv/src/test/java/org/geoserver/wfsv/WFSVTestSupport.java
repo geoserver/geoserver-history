@@ -46,6 +46,7 @@ public abstract class WFSVTestSupport extends GeoServerAbstractTestSupport {
         namespaces.put("gml", "http://www.opengis.net/gml");
         namespaces.put("topp", "http://www.openplans.org/topp"); 
         namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
+        namespaces.put("", "http://www.opengis.net/ogc");
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
         
         xpath = XMLUnit.newXpathEngine();
@@ -56,8 +57,11 @@ public abstract class WFSVTestSupport extends GeoServerAbstractTestSupport {
      * @return
      */
     protected String root() {
-        //return "wfsv?";
-        return "wfsv?strict=true&";
+        return root(true);
+    }
+    
+    protected String root(boolean validate) {
+        return "wfsv?" + (validate ? "strict=true&" : "");
     }
 
 

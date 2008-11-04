@@ -6,6 +6,8 @@ package org.geoserver.wfsv.xml.v1_1_0;
 
 import net.opengis.wfsv.RollbackType;
 import net.opengis.wfsv.WfsvFactory;
+
+import org.geoserver.wfs.WFSException;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -98,9 +100,13 @@ public class RollbackTypeBinding extends AbstractComplexBinding {
         }
 
         rollback.setFilter((Filter) node.getChildValue(Filter.class));
+        if (!node.hasAttribute("typeName")) 
+            throw new WFSException("The typeName attribute is mandatory");
         rollback.setTypeName((QName) node.getAttributeValue("typeName"));
         rollback.setToFeatureVersion((String) node.getAttributeValue("toFeatureVersion"));
         rollback.setVendorId((String) node.getAttributeValue("vendorId"));
+        if (!node.hasAttribute("safeToIgnore")) 
+            throw new WFSException("The attribute safeToIgnore=true|false is mandatory");
         rollback.setSafeToIgnore(((Boolean) node.getAttributeValue("safeToIgnore")).booleanValue());
         rollback.setUser((String) node.getAttributeValue("user"));
 
