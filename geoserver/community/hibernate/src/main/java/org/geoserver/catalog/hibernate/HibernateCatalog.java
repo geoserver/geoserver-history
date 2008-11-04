@@ -1091,6 +1091,7 @@ public class HibernateCatalog implements Catalog {
         NamespaceInfo nsinfo = getFactory().createNamespace();
         nsinfo.setPrefix("topp");
         nsinfo.setURI("http://www.opengeo.org");
+        add(nsinfo);
         setDefaultNamespace(nsinfo);
     }
 
