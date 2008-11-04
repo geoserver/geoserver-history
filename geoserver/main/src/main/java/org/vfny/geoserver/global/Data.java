@@ -7,6 +7,7 @@ package org.vfny.geoserver.global;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geotools.coverage.io.CoverageAccess;
 import org.geotools.coverage.io.CoverageSource;
 import org.geotools.coverage.io.Driver;
@@ -296,6 +298,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //coverages = loadCoverages(config);
     }
 
+    
+    // ////////////////////////////////////////////////////////////////////////
     public synchronized Set getDataStores() {
         Set dataStores = new HashSet();
         for ( org.geoserver.catalog.DataStoreInfo ds : catalog.getDataStores() ) {
@@ -319,8 +323,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
     
-        Map map = new HashMap();
-        
+        List<String> dataDriverNames = new ArrayList<String>();        
         for (Iterator i = dto.getFormats().values().iterator(); i.hasNext();) {
             CoverageStoreInfoDTO formatDTO = (CoverageStoreInfoDTO) i.next();
             org.geoserver.catalog.CoverageStoreInfo cs = catalog.getFactory().createCoverageStore();
@@ -335,7 +338,17 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                 tmpCS.setType(cs.getType());
                 tmpCS.setURL(cs.getURL());
                 tmpCS.setWorkspace(cs.getWorkspace());
+                
                 catalog.save(tmpCS);
+            }
+            
+            dataDriverNames.add(cs.getName());
+        }
+        
+        // cleaning up the Catalog
+        for (org.geoserver.catalog.CoverageStoreInfo cs : catalog.getCoverageStores()) {
+            if (!dataDriverNames.contains(cs.getName())) {
+                catalog.remove(cs);
             }
         }
     
@@ -395,27 +408,44 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
     
+        List<String> dataDataStroreNames = new ArrayList<String>();
         for (Iterator i = dto.getDataStores().values().iterator(); i.hasNext();) {
             DataStoreInfoDTO dataStoreDTO = (DataStoreInfoDTO) i.next();
             org.geoserver.catalog.DataStoreInfo ds = catalog.getFactory().createDataStore();
-            new DataStoreInfo( ds, catalog ).load( dataStoreDTO );
+            new DataStoreInfo(ds, catalog).load(dataStoreDTO);
             
             try {
                 ds.getDataStore(null);
-                ds.setError( null );
+                ds.setError(null);
             }
-            catch( Exception e ) {
-                LOGGER.warning( "Error connecting to data store '" + dataStoreDTO.getId() + "'");
-                LOGGER.log( Level.WARNING, "", e );
+            catch(Exception e) {
+                LOGGER.warning("Error connecting to data store '" + dataStoreDTO.getId() + "'");
+                LOGGER.log(Level.WARNING, "", e);
                 ds.setEnabled(false);
-                ds.setError( e );
+                ds.setError(e);
             }
             
             org.geoserver.catalog.DataStoreInfo tmpDS = catalog.getDataStoreByName(ds.getName());
-            if(tmpDS!=null) catalog.remove(tmpDS);
-            catalog.add(ds);
+            if(tmpDS==null) catalog.add(ds);
+            else {
+                tmpDS.setDescription(ds.getDescription());
+                tmpDS.setEnabled(ds.isEnabled());
+                tmpDS.setName(ds.getName());
+                tmpDS.setWorkspace(ds.getWorkspace());
+                
+                catalog.save(tmpDS);
+            }
+            
+            dataDataStroreNames.add(ds.getName());
         }
     
+        // cleaning up the Catalog
+        for (org.geoserver.catalog.DataStoreInfo ds : catalog.getDataStores()) {
+            if (!dataDataStroreNames.contains(ds.getName())) {
+                catalog.remove(ds);
+            }
+        }
+
         return null;
         
         //Map map = new HashMap(dto.getDataStores().size());
@@ -471,6 +501,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
     
+        List<String> dataNameSpaceNames = new ArrayList<String>();
         for (Iterator i = dto.getNameSpaces().values().iterator(); i.hasNext();) {
             NameSpaceInfoDTO namespaceDto = (NameSpaceInfoDTO) i.next();
             
@@ -482,6 +513,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             else {
                 tmpNS.setPrefix(ns.getPrefix());
                 tmpNS.setURI(ns.getURI());
+                
                 catalog.save(tmpNS);
             }
             
@@ -492,6 +524,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             if(tmpWS==null) catalog.add(ws);
             else {
                 tmpWS.setName(ws.getName());
+                
                 catalog.save(tmpWS);
             }
             
@@ -500,8 +533,18 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                 catalog.setDefaultWorkspace(ws);
             }
             
+            dataNameSpaceNames.add(ns.getPrefix());
         }
     
+        // cleaning up the Catalog
+        for (org.geoserver.catalog.NamespaceInfo ns : catalog.getNamespaces()) {
+            if (!dataNameSpaceNames.contains(ns.getPrefix())) {
+                WorkspaceInfo ws = catalog.getWorkspaceByName(ns.getPrefix());
+                catalog.remove(ws);
+                catalog.remove(ns);
+            }
+        }
+
         return null;
         
         //Map map = new HashMap(dto.getNameSpaces().size());
@@ -520,8 +563,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     }
 
     private final void loadCoverages(DataDTO dto) {
-        
-        for ( Iterator i = dto.getCoverages().values().iterator(); i.hasNext(); ) {
+        List<String> dataCoverageNames = new ArrayList<String>();
+        for (Iterator i = dto.getCoverages().values().iterator(); i.hasNext();) {
             CoverageInfoDTO cDTO = (CoverageInfoDTO) i.next();
             org.geoserver.catalog.CoverageStoreInfo cs = catalog.getCoverageStoreByName(cDTO.getFormatId());
             
@@ -540,7 +583,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             ci.setNamespace(catalog.getNamespaceByPrefix(format.getNameSpaceId()));
 
             LayerInfo layer = catalog.getFactory().createLayer();
-            layer.setResource( ci );
+            layer.setResource(ci);
             
             try {
                 new CoverageInfo(layer,catalog).load( cDTO );
@@ -554,18 +597,72 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                 }
             }
             
-            if ( ci.isEnabled() && ( cs == null || !cs.isEnabled() ) ) {
+            if (ci.isEnabled() && ( cs == null || !cs.isEnabled())) {
                 ci.setEnabled(false);
             }
             
             org.geoserver.catalog.CoverageInfo tmpCI = catalog.getCoverageByName(ci.getName());
-            if(tmpCI!=null) catalog.remove(tmpCI);
-            catalog.add(ci);
+            if(tmpCI==null) catalog.add(ci);
+            else {
+                tmpCI.setCatalog(catalog);
+                tmpCI.setAbstract(ci.getAbstract());
+                tmpCI.setAlias(ci.getAlias());
+                tmpCI.setDefaultInterpolationMethod(ci.getDefaultInterpolationMethod());
+                tmpCI.setDescription(ci.getDescription());
+                tmpCI.setEnabled(ci.isEnabled());
+                tmpCI.setGrid(ci.getGrid());
+                tmpCI.setLatLonBoundingBox(ci.getLatLonBoundingBox());
+                tmpCI.setName(ci.getName());
+                tmpCI.setNamespace(ci.getNamespace());
+                tmpCI.setNativeBoundingBox(ci.getNativeBoundingBox());
+                tmpCI.setNativeCRS(ci.getNativeCRS());
+                tmpCI.setNativeFormat(ci.getNativeFormat());
+                tmpCI.setNativeName(ci.getNativeName());
+                tmpCI.setNativeSrsWKT(ci.getNativeSrsWKT());
+                tmpCI.setProjectionPolicy(ci.getProjectionPolicy());
+                tmpCI.setSRS(ci.getSRS());
+                tmpCI.setTitle(ci.getTitle());
+                
+                tmpCI.setFields(ci.getFields());
+
+                tmpCI.setTemporalCRS(ci.getTemporalCRS());
+                tmpCI.setTemporalExtent(ci.getTemporalExtent());
+
+                tmpCI.setVerticalCRS(ci.getVerticalCRS());
+                tmpCI.setVerticalExtent(ci.getVerticalExtent());
+                
+                catalog.save(tmpCI);
+            }
             
-            LayerInfo tmpLayer = catalog.getLayerByName(layer.getName());
-            if(tmpLayer!=null) catalog.remove(tmpLayer);
-            catalog.add(layer);
             
+            LayerInfo tmpLayer = catalog.getLayerByName(ci.getName());
+            if(tmpLayer==null) {
+                layer.setName(ci.getName());
+                //layer.setDefaultStyle()
+                layer.setType(LayerInfo.Type.RASTER);
+                catalog.add(layer);
+            } else {
+                tmpLayer.setDefaultStyle(layer.getDefaultStyle());
+                tmpLayer.setEnabled(layer.isEnabled());
+                tmpLayer.setLegend(layer.getLegend());
+                tmpLayer.setName(ci.getName());
+                tmpLayer.setPath(layer.getPath());
+                tmpLayer.setResource(tmpCI);
+                tmpLayer.setType(layer.getType());
+                
+                catalog.save(tmpLayer);
+            }
+            
+            dataCoverageNames.add(ci.getName());
+        }
+        
+        // cleaning up the Catalog
+        for (org.geoserver.catalog.CoverageInfo ci : catalog.getCoverages()) {
+            if (!dataCoverageNames.contains(ci.getName())) {
+                LayerInfo layer = catalog.getLayerByName(ci.getName());
+                catalog.remove(layer);
+                catalog.remove(ci);
+            }
         }
         
         //if ((dto == null) || (dto.getCoverages() == null)) {
@@ -635,7 +732,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
      *             DOCUMENT ME!
      */
     private final void loadFeatureTypes(DataDTO dto) {
-
+        List<String> dataFeatureTypeNames = new ArrayList<String>();
         for ( Iterator i = dto.getFeaturesTypes().values().iterator(); i.hasNext(); ) {
             FeatureTypeInfoDTO ftDTO = (FeatureTypeInfoDTO) i.next();
             org.geoserver.catalog.DataStoreInfo ds = catalog.getDataStoreByName(ftDTO.getDataStoreId());
@@ -669,16 +766,59 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                 fti.setEnabled(false);
             }
             
-            org.geoserver.catalog.FeatureTypeInfo tmpFti = catalog.getFeatureType(fti.getId()); 
-            if(tmpFti!=null) catalog.remove(tmpFti);
-            catalog.add(fti);
+            org.geoserver.catalog.FeatureTypeInfo tmpFti = catalog.getFeatureTypeByName(fti.getName()); 
+            if(tmpFti==null) catalog.add(fti);
+            else {
+                tmpFti.setAbstract(fti.getAbstract());
+                tmpFti.setAlias(fti.getAlias());
+                tmpFti.setDescription(fti.getDescription());
+                tmpFti.setEnabled(fti.isEnabled());
+                tmpFti.setFilter(fti.getFilter());
+                tmpFti.setLatLonBoundingBox(fti.getLatLonBoundingBox());
+                tmpFti.setMaxFeatures(fti.getMaxFeatures());
+                tmpFti.setName(fti.getName());
+                tmpFti.setNamespace(fti.getNamespace());
+                tmpFti.setNativeBoundingBox(fti.getNativeBoundingBox());
+                tmpFti.setNativeCRS(fti.getNativeCRS());
+                tmpFti.setNativeName(fti.getNativeName());
+                tmpFti.setNumDecimals(fti.getNumDecimals());
+                tmpFti.setProjectionPolicy(fti.getProjectionPolicy());
+                tmpFti.setSRS(fti.getSRS());
+                tmpFti.setStore(fti.getStore());
+                tmpFti.setTitle(fti.getTitle());
+                
+                catalog.save(tmpFti);
+            }
             
-            LayerInfo tmpLayer = catalog.getLayerByName(layer.getName());
-            if(tmpLayer!=null) catalog.remove(tmpLayer);
-            catalog.add(layer);
+            LayerInfo tmpLayer = catalog.getLayerByName(fti.getName());
+            if(tmpLayer==null) {
+                layer.setName(fti.getName());
+                //layer.setDefaultStyle()
+                layer.setType(LayerInfo.Type.VECTOR);
+                catalog.add(layer);
+            } else {
+                tmpLayer.setDefaultStyle(layer.getDefaultStyle());
+                tmpLayer.setEnabled(layer.isEnabled());
+                tmpLayer.setLegend(layer.getLegend());
+                tmpLayer.setName(fti.getName());
+                tmpLayer.setPath(layer.getPath());
+                tmpLayer.setResource(tmpFti);
+                tmpLayer.setType(layer.getType());
+                
+                catalog.save(tmpLayer);
+            }
             
+            dataFeatureTypeNames.add(fti.getName());
         }
         
+        // cleaning up the Catalog
+        for (org.geoserver.catalog.FeatureTypeInfo fti : catalog.getFeatureTypes()) {
+            if (!dataFeatureTypeNames.contains(fti.getName())) {
+                LayerInfo layer = catalog.getLayerByName(fti.getName());
+                catalog.remove(layer);
+                catalog.remove(fti);
+            }
+        }
 //        
 //                
 //            errors = new HashMap();
@@ -1364,6 +1504,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
     
+        List<String> dataStyleNames = new ArrayList<String>();
         for (Iterator i = dto.getStyles().values().iterator(); i.hasNext();) {
             StyleDTO styleDTO = (StyleDTO) i.next();
             StyleInfo s = catalog.getFactory().createStyle();
@@ -1375,13 +1516,23 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             else {
                 tmpStyle.setName(s.getName());
                 tmpStyle.setFilename(s.getFilename());
+                
                 catalog.save(tmpStyle);
             }
             
+            dataStyleNames.add(s.getName());
+            
             //clear the resource pool
-            catalog.getResourcePool().clear( s );
+            catalog.getResourcePool().clear(s);
         }
         
+        // cleaning up the Catalog
+        for (org.geoserver.catalog.StyleInfo s : catalog.getStyles()) {
+            if (!dataStyleNames.contains(s.getName())) {
+                catalog.remove(s);
+            }
+        }
+
         return null;
         
         //Map map = new HashMap();
@@ -2134,11 +2285,13 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //return Collections.unmodifiableMap(featureTypes);
     }
 
-    LayerInfo layer( ResourceInfo r ) {
+    LayerInfo layer(ResourceInfo r) {
         final List<LayerInfo> layers = catalog.getLayers(r);
-        if(layers.size() > 0)
-            return layers.get( 0 );
-        else
+        LayerInfo lyr;
+        if(layers.size() > 0) {
+            lyr = layers.get(0);
+            return lyr;
+        } else
             return null;
     }
     
@@ -2146,7 +2299,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         Map map = new HashMap();
         for ( org.geoserver.catalog.CoverageInfo coverage : catalog.getCoverages() ) {
             if(coverage.isEnabled())
-                map.put( coverage.getPrefixedName(), new CoverageInfo( layer(coverage), catalog ) );
+                map.put( coverage.getPrefixedName(), new CoverageInfo(layer(coverage), catalog));
             
             // initializing fields, vertical and temporal extent
             try {

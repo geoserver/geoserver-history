@@ -40,9 +40,8 @@ import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.catalog.impl.MapInfoImpl;
 import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
+import org.geoserver.hibernate.GeoServerDAO;
 import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 /**
@@ -55,10 +54,9 @@ import org.hibernate.Transaction;
 public class HibernateCatalog implements Catalog {
 
     /**
-     * hibernate access
+     * 
      */
-    // HibernateTemplate hibernate;
-    private SessionFactory sessionFactory;
+    private GeoServerDAO gsDAO;
 
     /**
      * Flag indicating wether events are thrown on commit or as they happen
@@ -82,10 +80,13 @@ public class HibernateCatalog implements Catalog {
 
     private final HibernateCatalogFactory hibernateCatalogFactory;
 
-    private Session session;
-
-    public HibernateCatalog() {
+    private HibernateCatalog() {
         hibernateCatalogFactory = new HibernateCatalogFactory(this);
+    }
+
+    public HibernateCatalog(GeoServerDAO gsDAO) {
+        this();
+        this.gsDAO = gsDAO;
     }
 
     /**
@@ -94,45 +95,6 @@ public class HibernateCatalog implements Catalog {
      */
     public HibernateCatalogFactory getFactory() {
         return hibernateCatalogFactory;
-    }
-
-    /**
-     * Session factory getter
-     * 
-     * @see #setSessionFactory(SessionFactory)
-     */
-    public SessionFactory getSessionFactory() {
-        return sessionFactory;
-        // return hibernate.getSessionFactory();
-    }
-
-    /**
-     * Session factory setter aimed for setter injection in a IOC container
-     * 
-     * @param sessionFactory
-     */
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    /**
-     * @todo make private?
-     */
-    public Session getSession() {
-        if (this.session == null) {
-            if (sessionFactory.getCurrentSession().isOpen()) {
-                this.session = sessionFactory.getCurrentSession();
-            } else {
-                this.session = sessionFactory.openSession();
-            }
-        } else if (!this.session.isOpen()) {
-            this.session = sessionFactory.openSession();
-        }
-
-        if (!this.session.getTransaction().isActive())
-            this.session.beginTransaction();
-
-        return this.session;
     }
 
     /**
@@ -272,7 +234,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResource(String, Class)
      */
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
-        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = ?", new Object[] { id });
+        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = ?",
+                new Object[] { id });
         if (resource != null) {
             resource.setCatalog(this);
             return (T) resource;
@@ -410,7 +373,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getFeatureTypeByName(String)
      */
     public FeatureTypeInfo getFeatureTypeByName(String name) {
-        return (FeatureTypeInfo) getResourceByName(null, name, FeatureTypeInfo.class);
+        return (FeatureTypeInfo) getResourceByName(name, FeatureTypeInfo.class);
     }
 
     /**
@@ -445,7 +408,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoverageByName(String)
      */
     public CoverageInfo getCoverageByName(String name) {
-        return (CoverageInfo) getResource(name, CoverageInfo.class);
+        return (CoverageInfo) getResourceByName(name, CoverageInfo.class);
     }
 
     /**
@@ -473,16 +436,14 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getLayer(String)
      */
     public LayerInfo getLayer(String id) {
-        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where id = ?",
-                new Object[] { id });
+        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where id = ?", new Object[] { id });
     }
 
     /**
      * @see Catalog#getLayerByName(String)
      */
     public LayerInfo getLayerByName(String name) {
-        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where name = ?",
-                new Object[] { name });
+        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where name = ?", new Object[] { name });
     }
 
     /**
@@ -591,7 +552,10 @@ public class HibernateCatalog implements Catalog {
         List<LayerInfo> matches = new ArrayList<LayerInfo>();
         for (Iterator l = getLayers().iterator(); l.hasNext();) {
             LayerInfo layer = (LayerInfo) l.next();
-            if (resource.equals(layer.getResource())) {
+            ResourceInfo targetResource = getResource(layer.getResource().getId(), resource
+                    .getClass());
+            if (resource.equals(targetResource)) {
+                layer.setResource(resource);
                 matches.add(layer);
             }
         }
@@ -605,7 +569,7 @@ public class HibernateCatalog implements Catalog {
     @SuppressWarnings("unchecked")
     public HbNamespaceInfo getDefaultNamespace() {
         String hql = "from " + HbNamespaceInfo.class.getName() + " where default=?";
-        HbNamespaceInfo info = (HbNamespaceInfo) first(hql, new Object[]{Boolean.TRUE});
+        HbNamespaceInfo info = (HbNamespaceInfo) first(hql, new Object[] { Boolean.TRUE });
         return info;
     }
 
@@ -615,18 +579,19 @@ public class HibernateCatalog implements Catalog {
      */
     public void setDefaultNamespace(NamespaceInfo defaultNamespace) {
         HbNamespaceInfo ns = getNamespaceByPrefix(defaultNamespace.getPrefix());
-        if ( ns == null ) {
-            throw new IllegalArgumentException( "No such namespace: '" + defaultNamespace.getPrefix() + "'" );
+        if (ns == null) {
+            throw new IllegalArgumentException("No such namespace: '"
+                    + defaultNamespace.getPrefix() + "'");
         }
 
         HbNamespaceInfo previousDefault = getDefaultNamespace();
         if (previousDefault != null) {
             previousDefault.setDefault(false);
-            getSession().save(previousDefault);
+            this.gsDAO.save(previousDefault);
         }
         ns.setDefault(true);
-        getSession().merge(ns);
-        getSession().getTransaction().commit();
+        this.gsDAO.merge((Object) ns);
+        this.gsDAO.commit();
     }
 
     /**
@@ -643,8 +608,10 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyleByName(String)
      */
     public StyleInfo getStyleByName(String name) {
-        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where name = ?", new Object[] { name });
-        if(style!=null)style.setCatalog(this);
+        StyleInfo style = (StyleInfo) first(
+                "from " + StyleInfo.class.getName() + " where name = ?", new Object[] { name });
+        if (style != null)
+            style.setCatalog(this);
         return style;
     }
 
@@ -692,8 +659,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getNamespaceByPrefix(String)
      */
     public HbNamespaceInfo getNamespaceByPrefix(String prefix) {
-        return (HbNamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where prefix = ?",
-                new Object[] { prefix });
+        return (HbNamespaceInfo) first("from " + NamespaceInfo.class.getName()
+                + " where prefix = ?", new Object[] { prefix });
     }
 
     /**
@@ -716,10 +683,10 @@ public class HibernateCatalog implements Catalog {
         if (existing == null) {
             internalAdd(namespace);
         } else {
-            ((HbNamespaceInfo)namespace).setId(existing.getId());
-            ((HbNamespaceInfo)namespace).setDefault(existing.isDefault());
-            getSession().merge(namespace);
-            session.getTransaction().commit();
+            ((HbNamespaceInfo) namespace).setId(existing.getId());
+            ((HbNamespaceInfo) namespace).setDefault(existing.isDefault());
+            this.gsDAO.merge(namespace);
+            this.gsDAO.commit();
         }
     }
 
@@ -734,10 +701,10 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#save(NamespaceInfo)
      */
     public void save(NamespaceInfo namespace) {
-        //takes care of updating the ns taking into account the isDefault custom field
+        // takes care of updating the ns taking into account the isDefault custom field
         add(namespace);
         fireModified(namespace, null, null, null);
-        //internalSave(namespace);
+        // internalSave(namespace);
     }
 
     /**
@@ -772,23 +739,20 @@ public class HibernateCatalog implements Catalog {
     }
 
     private void internalAdd(Object object) {
-        getSession().save(object);
-        // getSession().flush();
-        getSession().getTransaction().commit();
+        this.gsDAO.save(object);
+        this.gsDAO.commit();
         fireAdded(object);
     }
 
     private void internalRemove(Object object) {
-        getSession().delete(object);
-        // getSession().flush();
-        getSession().getTransaction().commit();
+        this.gsDAO.delete(object);
+        this.gsDAO.commit();
         fireRemoved(object);
     }
 
     private void internalSave(Object object) {
-        getSession().update(object);
-        // getSession().flush();
-        getSession().getTransaction().commit();
+        this.gsDAO.update(object);
+        this.gsDAO.commit();
         fireModified(object, null, null, null);
     }
 
@@ -800,7 +764,7 @@ public class HibernateCatalog implements Catalog {
      * Helper method to return the list of a query
      */
     private List list(String hql) {
-        List list = getSession().createQuery(hql).list();
+        List list = this.gsDAO.createQuery(hql).list();
         return list;
     }
 
@@ -822,8 +786,8 @@ public class HibernateCatalog implements Catalog {
      *            . An object of any other type will result in an unchecked exception
      * @return the first object matching the query or {@code null} if the query returns no results
      */
-    protected Object first(final String hql, final Object[] arguments) {
-        Query query = getSession().createQuery(hql);
+    protected synchronized Object first(final String hql, final Object[] arguments) {
+        Query query = this.gsDAO.createQuery(hql);
         if (arguments != null) {
             for (int argN = 0; argN < arguments.length; argN++) {
                 final Object arg = arguments[argN];
@@ -839,8 +803,7 @@ public class HibernateCatalog implements Catalog {
                 } else if (Double.class == c) {
                     query.setDouble(argN, ((Double) arg).doubleValue());
                 } else {
-                    throw new IllegalArgumentException("Unrecognized type for argument " + argN
-                            + " in query '" + hql + "': " + c);
+                    throw new IllegalArgumentException("Unrecognized type for argument " + argN + " in query '" + hql + "': " + c);
                 }
             }
         }
@@ -904,7 +867,7 @@ public class HibernateCatalog implements Catalog {
     private void fireEvent(CatalogEvent event) {
         if (fireEventsOnCommit) {
             // store for later
-            events.put(getSession().getTransaction(), event);
+            events.put(this.gsDAO.getTransaction(), event);
         } else {
             // fire now
             doFireEvent(event);
@@ -979,12 +942,6 @@ public class HibernateCatalog implements Catalog {
     }
 
     /**
-     * *********************************************************************************************
-     * ********
-     */
-    /** * FIX THIS ** */
-
-    /**
      * @see Catalog#add(LayerGroupInfo)
      */
     public void add(LayerGroupInfo layerGroup) {
@@ -1004,13 +961,10 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#dispose()
      */
     public void dispose() {
-        sessionFactory.close();
         listeners.clear();
         events.clear();
 
         resourcePool.dispose();
-
-        getSession().close();
     }
 
     /**
@@ -1100,7 +1054,7 @@ public class HibernateCatalog implements Catalog {
      */
     public HbWorkspaceInfo getDefaultWorkspace() {
         String hql = "from " + HbWorkspaceInfo.class.getName() + " where default=?";
-        HbWorkspaceInfo info = (HbWorkspaceInfo) first(hql, new Object[]{Boolean.TRUE});
+        HbWorkspaceInfo info = (HbWorkspaceInfo) first(hql, new Object[] { Boolean.TRUE });
         return info;
     }
 
@@ -1111,18 +1065,18 @@ public class HibernateCatalog implements Catalog {
         HbWorkspaceInfo currentDefault = getDefaultWorkspace();
         if (currentDefault != null && currentDefault != workspace) {
             currentDefault.setDefault(false);
-            getSession().update(currentDefault);
+            this.gsDAO.update(currentDefault);
         }
         ((HbWorkspaceInfo) workspace).setDefault(true);
 
         WorkspaceInfo current = getWorkspaceByName(workspace.getName());
         if (current == null) {
-            getSession().save(workspace);
-        }else{
-            ((HbWorkspaceInfo)workspace).setId(current.getId());
-            getSession().merge(workspace);
+            this.gsDAO.save(workspace);
+        } else {
+            ((HbWorkspaceInfo) workspace).setId(current.getId());
+            this.gsDAO.merge(workspace);
         }
-        getSession().getTransaction().commit();
+        this.gsDAO.commit();
     }
 
     /**

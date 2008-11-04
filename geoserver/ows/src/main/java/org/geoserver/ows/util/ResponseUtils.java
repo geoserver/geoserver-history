@@ -198,7 +198,7 @@ public class ResponseUtils {
      * @param path The path to be appended to the url.
      *
      * @return The full url with the path appended.
-     * TODO: remove this and replace with Requetss.appendContextPath
+     * TODO: remove this and replace with Requests.appendContextPath
      */
     public static String appendPath(String url, String path) {
         if (path.startsWith("/")) {

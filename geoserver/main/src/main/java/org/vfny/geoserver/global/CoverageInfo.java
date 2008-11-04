@@ -285,8 +285,8 @@ public final class CoverageInfo extends GlobalLayerSupertype {
             layer.getStyles().add( catalog.getStyleByName( styleName ) );
         }
         layer.setPath(dto.getWmsPath());
-        layer.setName( coverage.getName() );
-        layer.setType( LayerInfo.Type.RASTER );
+        layer.setName(coverage.getName());
+        layer.setType(LayerInfo.Type.RASTER);
         
         //label = dto.getLabel();
         //srsWKT = dto.getSrsWKT();

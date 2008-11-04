@@ -66,7 +66,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     Catalog catalog;
 
     protected ResourceInfoImpl() {
-        this(null);
+        this((Catalog)null);
     }
 
     protected ResourceInfoImpl(Catalog catalog) {
@@ -78,6 +78,28 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         setId(id);
     }
 
+//    public ResourceInfoImpl(ResourceInfo resource) {
+//        setAbstract(resource.getAbstract());
+//        setAlias(resource.getAlias());
+//        setCatalog(resource.getCatalog());
+//        setDescription(resource.getDescription());
+//        setEnabled(resource.isEnabled());
+//        setId(resource.getId());
+//        setKeywords(resource.getKeywords());
+//        setLatLonBoundingBox(resource.getLatLonBoundingBox());
+//        setMetadata(resource.getMetadata());
+//        setMetadataLinks(resource.getMetadataLinks());
+//        setName(resource.getName());
+//        setNamespace(resource.getNamespace());
+//        setNativeBoundingBox(resource.getNativeBoundingBox());
+//        setNativeCRS(resource.getNativeCRS());
+//        setNativeName(resource.getNativeName());
+//        setProjectionPolicy(resource.getProjectionPolicy());
+//        setSRS(resource.getSRS());
+//        setStore(resource.getStore());
+//        setTitle(resource.getTitle());
+//    }
+    
     public void setId(String id) {
         this.id = id;
     }
@@ -391,14 +413,14 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
      * @param keywords the keywords to set
      */
     public void setKeywords(List<String> keywords) {
-        this.keywords = keywords;
+        this.keywords = new ArrayList<String>(keywords);
     }
 
     /**
      * @param metadataLinks the metadataLinks to set
      */
     public void setMetadataLinks(List<MetadataLinkInfo> metadataLinks) {
-        this.metadataLinks = metadataLinks;
+        this.metadataLinks = new ArrayList<MetadataLinkInfo>(metadataLinks);
     }
 
     /**
@@ -412,7 +434,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
      * @param alias the alias to set
      */
     public void setAlias(List<String> alias) {
-        this.alias = alias;
+        this.alias = new ArrayList<String>(alias);
     }
 
 }

@@ -335,7 +335,7 @@ public class CoverageConfig {
         keywords = new ArrayList(10);
         keywords.add("WCS");
         keywords.add(formatId);
-        keywords.add(name);
+        keywords.add(name.toString());
         nativeFormat = driver.getName();
         dirName = new StringBuffer(formatId).append("_").append(name).toString();
         requestCRSs = new ArrayList(); 

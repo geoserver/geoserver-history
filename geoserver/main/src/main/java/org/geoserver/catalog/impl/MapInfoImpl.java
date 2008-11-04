@@ -47,7 +47,7 @@ public class MapInfoImpl implements MapInfo {
     }
      
     public List<LayerInfo> getLayers() {
-        return layers; 
+        return layers;
     }
     
     public void setLayers( List<LayerInfo> layers ) {

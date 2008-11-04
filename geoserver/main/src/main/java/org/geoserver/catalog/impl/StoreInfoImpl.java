@@ -103,7 +103,7 @@ public abstract class StoreInfoImpl implements StoreInfo {
     }
 
     public void setConnectionParameters(Map connectionParameters) {
-        this.connectionParameters = connectionParameters;
+        this.connectionParameters = new HashMap(connectionParameters);
     }
 
     public Map getMetadata() {
@@ -111,7 +111,7 @@ public abstract class StoreInfoImpl implements StoreInfo {
     }
 
     public void setMetadata(Map metadata) {
-        this.metadata = metadata;
+        this.metadata = new HashMap(metadata);
     }
 
     public Object getAdapter(Class adapterClass, Map hints) {

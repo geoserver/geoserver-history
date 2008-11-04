@@ -110,14 +110,12 @@ public class LayerInfoImpl implements LayerInfo {
     }
 
     public Map getMetadata() {
-        return Collections.synchronizedMap(metadata);
+        return metadata;
     }
 
     public void setMetadata(Map metadata) {
         this.metadata = metadata;
     }
-    
-    
     
     @Override
     public int hashCode() {

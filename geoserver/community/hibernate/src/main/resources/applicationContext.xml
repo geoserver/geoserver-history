@@ -2,93 +2,123 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
-  <!-- property file config -->
-  <bean id="placeholderConfig"
-     class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<!-- property file config -->
+	<bean id="placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
-		  <value>classpath:h2.properties</value>
-  		  <!--value>classpath:postgresql.properties</value-->
+			<value>classpath:h2.properties</value>
+			<!--value>classpath:postgresql.properties</value-->
 		</property>
 		<property name="systemPropertiesModeName">
-		  <value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
+			<value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
 		</property>
-  </bean>
-  
-  <!-- data source -->
-  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-	<property name="driverClassName">
-	  <value>${jdbc.driver}</value>
-	</property>
-	<property name="url">
-	  <value>${jdbc.url}</value>
-	</property>
-	<property name="username">
-	  <value>${jdbc.user}</value>
-	</property>
-	<property name="password">
-	  <value>${jdbc.password}</value>
-	</property>
-  </bean>
+	</bean>
 
-  <!-- setup hibernate session factory -->
-  <bean id="sessionFactory" class="org.geoserver.hibernate.GeoServerSessionFactoryBean">
-    <property name="dataSource" ref="dataSource"/>
-    <property name="schemaUpdate" value="false"/>
-    <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
-  </bean>
- 
-   <!-- setup transaction manager	-->
-   <bean id="catalogInterceptor" 
-      class="org.geoserver.catalog.hibernate.HibernateCatalogInterceptor">
-      <constructor-arg ref="catalogTarget"/>
-   </bean>
-   
-   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-    <property name="sessionFactory">
-      <ref local="sessionFactory"/>
-    </property>
-    <property name="dataSource"><ref local="dataSource"/></property>
-    <!--property name="entityInterceptor" ref="catalogInterceptor"/-->
-   </bean>
+	<!-- data source -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName">
+			<value>${jdbc.driver}</value>
+		</property>
+		<property name="url">
+			<value>${jdbc.url}</value>
+		</property>
+		<property name="username">
+			<value>${jdbc.user}</value>
+		</property>
+		<property name="password">
+			<value>${jdbc.password}</value>
+		</property>
+	</bean>
 
- <!-- this is a transactional proxy for services which make calls to 
-      catalog / config which ensrues transactions / session set up -->
- <bean id="transactionalGeoServerService"
-    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-  <property name="transactionManager" ref="transactionManager"/>
-  <property name="target" ref="configTarget"/>
-  <property name="transactionAttributes">
-       <props>
-           <prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
-           <prop key="*">PROPAGATION_REQUIRED</prop>
-       </props>
-   </property>
- </bean>
+	<!-- setup hibernate session factory -->
+	<bean id="sessionFactory" class="org.geoserver.hibernate.GeoServerSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="schemaUpdate" value="false" />
+		<property name="configLocation" value="classpath:hibernate.cfg.xml" />
+	</bean>
 
- <bean id="transactionalCatalogService"
-    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-  <property name="transactionManager" ref="transactionManager"/>
-  <property name="target" ref="catalogTarget"/>
-  <property name="transactionAttributes">
-       <props>
-           <prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
-           <prop key="*">PROPAGATION_REQUIRED</prop>
-       </props>
-   </property>
- </bean>
+	<!-- setup transaction manager	-->
+	<bean id="catalogInterceptor"
+		class="org.geoserver.catalog.hibernate.HibernateCatalogInterceptor">
+		<constructor-arg ref="catalogTarget" />
+	</bean>
 
-  <!-- catalog -->
-  <bean id="catalogTarget" class="org.geoserver.catalog.hibernate.HibernateCatalog">
-	<property name="sessionFactory"><ref local="sessionFactory"/></property>
-  </bean>
-  <alias name="catalogTarget" alias="rawCatalog"/>
- 
-  <bean id="configFactory" class="org.geoserver.config.impl.GeoServerFactoryImpl"/>
-  <bean id="configTarget" class="org.geoserver.config.hibernate.HibernateGeoServer">
-    <property name="sessionFactory"><ref local="sessionFactory"/></property>
-    <property name="factory" ref="configFactory"/>
-    <property name="catalog" ref="catalogTarget"/>
-  </bean>
-  <alias name="configTarget" alias="geoServer2"/>
-  
+	<!--
+		Transaction manager for a single Hibernate SessionFactory (alternative to JTA)
+	-->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="entityInterceptor" ref="catalogInterceptor" />
+	</bean>
+
+	<!--
+		this is a transactional proxy for services which make calls to catalog
+		/ config which ensrues transactions / session set up
+	-->
+	<bean id="transactionalCatalogService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref local="transactionManager" />
+		</property>
+		<property name="target">
+			<ref local="catalogTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="transactionalGeoServerService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref local="transactionManager" />
+		</property>
+		<property name="target">
+			<ref local="configTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="hibGeoServerDAO" class="org.geoserver.hibernate.GeoServerDAO"
+		singleton="true">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+
+	<!-- catalog -->
+	<bean id="catalogTarget" class="org.geoserver.catalog.hibernate.HibernateCatalog">
+		<constructor-arg ref="hibGeoServerDAO"></constructor-arg>
+		<!--
+			property name="sessionFactory"> <ref local="sessionFactory" />
+			</property
+		-->
+	</bean>
+	<alias name="catalogTarget" alias="rawCatalog" />
+
+	<bean id="configFactory" class="org.geoserver.config.impl.GeoServerFactoryImpl" />
+	<bean id="configTarget" class="org.geoserver.config.hibernate.HibernateGeoServer">
+		<constructor-arg ref="hibGeoServerDAO"></constructor-arg>
+		<!--
+			property name="sessionFactory"> <ref local="sessionFactory" />
+			</property
+		-->
+		<property name="factory" ref="configFactory" />
+		<property name="catalog" ref="catalogTarget" />
+	</bean>
+	<alias name="configTarget" alias="geoServer2" />
+
 </beans>
