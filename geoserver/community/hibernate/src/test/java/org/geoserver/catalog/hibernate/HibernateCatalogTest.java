@@ -237,6 +237,8 @@ public class HibernateCatalogTest extends HibernateTestSupport {
         NamespaceInfo toppNamespace = catalog.getFactory().createNamespace();
         toppNamespace.setPrefix("topp2");
         toppNamespace.setURI("http://topp.openplans.org/default");
+        
+        catalog.add(toppNamespace);
         catalog.setDefaultNamespace(toppNamespace);
 
         NamespaceInfo gsNamespace = catalog.getFactory().createNamespace();
