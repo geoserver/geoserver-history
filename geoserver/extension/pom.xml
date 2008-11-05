@@ -30,12 +30,20 @@
         <module>h2</module>
       </modules>
     </profile>
+    
+    <profile>
+      <id>wfsv</id>
+      <modules>
+        <module>wfsv</module>
+      </modules>
+    </profile>
 
     <!-- release profile, includes all modules -->
     <profile>
       <id>release</id>
       <modules>
         <module>h2</module>
+        <module>wfsv</module>
       </modules>
     </profile>
   </profiles>
