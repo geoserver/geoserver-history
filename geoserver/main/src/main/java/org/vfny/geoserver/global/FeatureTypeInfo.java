@@ -30,7 +30,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
-import org.opengis.layer.Layer;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -396,6 +395,22 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 new AttributeTypeInfo( ati ).load( adto );
                 featureType.getAttributes().add( ati );
             }    
+        } else {
+            // workaround for GEOS-2277, the upper layers (config/dto) assume that
+            // no attribute should be set if the user did not explicitly specify
+            // the attributes (by changing the schema base and fiddling with types and
+            // names, which is something we don't support fine anyways).
+            SimpleFeatureType ft = ds.getDataStore(null).getSchema(featureType.getNativeName());
+            
+            for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
+                AttributeDescriptor ad = ft.getDescriptor( x );
+                org.geoserver.catalog.AttributeTypeInfo att = catalog.getFactory().createAttribute();
+                att.setName( ad.getLocalName() );
+                att.setMinOccurs( ad.getMinOccurs() );
+                att.setMaxOccurs( ad.getMaxOccurs() );
+                att.setAttribute( ad );
+                featureType.getAttributes().add( att );
+            }
         }
         
        
@@ -405,8 +420,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         
         featureType.setProjectionPolicy( ProjectionPolicy.get( dto.getSRSHandling() ) );
         featureType.setNativeCRS( CRS.decode( featureType.getSRS() ) );
-        featureType.setNativeBoundingBox( 
-            new ReferencedEnvelope( dto.getNativeBBox(), featureType.getCRS() ) );
+        if(dto.getNativeBBox() != null)
+            featureType.setNativeBoundingBox(new ReferencedEnvelope( dto.getNativeBBox(), featureType.getCRS() ) );
         setCacheMaxAge( dto.getCacheMaxAge() );
         setCachingEnabled( dto.isCachingEnabled() );
         setIndexingEnabled( dto.isIndexingEnabled() );
