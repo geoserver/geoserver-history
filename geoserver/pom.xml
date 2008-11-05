@@ -1106,7 +1106,6 @@
   <module>wcs1_1</module>
   <module>wfs</module>
   <module>wfs11</module>
-  <module>wfsv</module>
   <module>wms</module>
   <module>validation</module>
   <module>web</module>
