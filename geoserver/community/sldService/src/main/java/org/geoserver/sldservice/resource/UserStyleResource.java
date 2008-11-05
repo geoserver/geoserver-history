@@ -19,10 +19,12 @@ import org.fao.styling.impl.RedColorRamp;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.NamedLayer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyledLayerDescriptor;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
@@ -59,16 +61,13 @@ public class UserStyleResource extends BaseResource {
         style = this.dt.getStyle(this.userStyleID);
         try {
             getResponse().setEntity(
-                    new StringRepresentation(this.fetchUserStyle(),
-                            MediaType.TEXT_PLAIN));
+                    new StringRepresentation(this.fetchUserStyle(), MediaType.TEXT_PLAIN));
         } catch (Exception e) {
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            getResponse().setEntity("Couldn't find requested resource",
-                    MediaType.TEXT_PLAIN);
+            getResponse().setEntity("Couldn't find requested resource", MediaType.TEXT_PLAIN);
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -79,21 +78,20 @@ public class UserStyleResource extends BaseResource {
     private String fetchUserStyle() {
         String userStyleSz;
 
-        userStyleSz = "{'name':'" + style.getName() + "','title':'"
-                + style.getTitle() + "','abstract':'" + style.getAbstract()
-                + "','featureTypeStyles':[";
+        userStyleSz = "{'name':'" + style.getName() + "','title':'" + style.getTitle()
+                + "','abstract':'" + style.getAbstract() + "','featureTypeStyles':[";
         FeatureTypeStyle[] ftStyleA = style.getFeatureTypeStyles();
 
         String fTypeStyleSz;
         FeatureTypeStyle fTypeStyle = ftStyleA[0];
-        fTypeStyleSz = "{'name':'" + fTypeStyle.getName() + "','link':'"
-                + getBaseUrl() + "/0','id':'0'}";
+        fTypeStyleSz = "{'name':'" + fTypeStyle.getName() + "','link':'" + getBaseUrl()
+                + "/0','id':'0'}";
         userStyleSz += fTypeStyleSz;
 
         for (int i = 1; i < ftStyleA.length; i++) {
             fTypeStyle = ftStyleA[i];
-            fTypeStyleSz = "{'name':'" + fTypeStyle.getName() + "','link':'"
-                    + getBaseUrl() + "/" + i + "','id':,'" + i + "'}";
+            fTypeStyleSz = "{'name':'" + fTypeStyle.getName() + "','link':'" + getBaseUrl() + "/"
+                    + i + "','id':,'" + i + "'}";
             userStyleSz += "," + fTypeStyleSz;
         }
         userStyleSz += "]}";
@@ -103,14 +101,15 @@ public class UserStyleResource extends BaseResource {
     public boolean allowPost() {
         return true;
     }
+
     public boolean allowPut() {
         return true;
     }
-    
-    private Color getColor(Form params, String paramName, boolean required) throws ParameterException {
-        if (params.getFirst(paramName) == null
-                && params.getFirst(paramName).getValue() == null) {
-            if(required)
+
+    private Color getColor(Form params, String paramName, boolean required)
+            throws ParameterException {
+        if (params.getFirst(paramName) == null && params.getFirst(paramName).getValue() == null) {
+            if (required)
                 throw new ParameterException("Required color parameter '" + paramName + "' missing");
             else
                 return null;
@@ -119,8 +118,8 @@ public class UserStyleResource extends BaseResource {
         try {
             return Color.decode(params.getFirst(paramName).getValue());
         } catch (NumberFormatException e) {
-            throw new ParameterException("Invalid color expression for parameter " 
-                    + paramName + " (valid ones are expressed as 0xRRGGBB");
+            throw new ParameterException("Invalid color expression for parameter " + paramName
+                    + " (valid ones are expressed as 0xRRGGBB");
         }
     }
 
@@ -141,7 +140,7 @@ public class UserStyleResource extends BaseResource {
              */
             FeatureTypeInfo ftInf = null;
             Object obj = findLayer(attributes);
-            if (obj == null || !(obj instanceof FeatureTypeInfo)) 
+            if (obj == null || !(obj instanceof FeatureTypeInfo))
                 throw new ParameterException("Can't locate feaureType resource");
 
             /*
@@ -150,50 +149,46 @@ public class UserStyleResource extends BaseResource {
             ftInf = (FeatureTypeInfo) obj;
 
             /*
-             * Check userStyle exist and if so should be in featureType sld list
-             * if It dosn't exist we have to create and add to featureType sld list
+             * Check userStyle exist and if so should be in featureType sld list if It dosn't exist
+             * we have to create and add to featureType sld list
              */
-            
+
             final Style confStyle = dt.getStyle(userStyleId);
-            if (this.dt.getStyle(userStyleId) == null
-                    || (!ftInf.getStyles().contains(confStyle))
+            if (this.dt.getStyle(userStyleId) == null || (!ftInf.getStyles().contains(confStyle))
                     && !ftInf.getDefaultStyle().equals(confStyle))
                 throw new ParameterException(
                         "Can't locate UserStyle resource for this feature type");
 
-
             List<Rule> rulesL = null;
             try {
-            
-            	rulesL= createRules(ftInf);
-            
-            	if (rulesL != null) {
+
+                rulesL = createRules(ftInf);
+
+                if (rulesL != null) {
                     Rule[] rules = new Rule[rulesL.size()];
                     rules = rulesL.toArray(rules);
                     Style style = this.dt.getStyle(userStyleId);
-                    
-                    
+
                     style.getFeatureTypeStyles()[0].setRules(rules);
-                    
+
                     // grab the style location
                     StyleConfig styleConfig = dataConfig.getStyle(userStyleId);
-                   
-                    
+
                     // save the style on disk
                     SLDTransformer transformer = new SLDTransformer();
-                    
+
                     // check transformation can work fine before writing on disk
                     transformer.setIndentation(2);
-                    transformer.transform(style); 
+                    transformer.transform(style);
                     transformer.transform(style, new FileOutputStream(styleConfig.getFilename()));
-    
+
                     /*
                      * creation ok
                      */
                     getResponse().setStatus(Status.SUCCESS_CREATED);
                     getResponse().setEntity("Classification succesfully created",
                             MediaType.TEXT_PLAIN);
-                } 
+                }
             } catch (Exception e) {
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                 getResponse().setEntity(e.toString(), MediaType.TEXT_PLAIN);
@@ -207,7 +202,7 @@ public class UserStyleResource extends BaseResource {
         }
 
     }
-    
+
     public synchronized void handlePut() {
         String userStyleId = null;
         String featureTypeName = null;
@@ -225,7 +220,7 @@ public class UserStyleResource extends BaseResource {
              */
             FeatureTypeInfo ftInf = null;
             Object obj = findLayer(attributes);
-            if (obj == null || !(obj instanceof FeatureTypeInfo)) 
+            if (obj == null || !(obj instanceof FeatureTypeInfo))
                 throw new ParameterException("Can't locate feaureType resource");
 
             /*
@@ -235,45 +230,53 @@ public class UserStyleResource extends BaseResource {
 
             List<Rule> rulesL = null;
             try {
-            	rulesL=createRules(ftInf);
-            	if (rulesL != null) {
+                rulesL = createRules(ftInf);
+                if (rulesL != null) {
                     Rule[] rules = new Rule[rulesL.size()];
                     rules = rulesL.toArray(rules);
-                     Style  style;
+                    Style style;
+                    StyledLayerDescriptor styledLayerDescriptor;
                     StyleConfig styleConfig;
-                    if (dt.getStyles().containsKey(userStyleId)){
-                    	style = dt.getStyle(userStyleId);
-						// grab the style location
-						styleConfig= dataConfig.getStyle(userStyleId);
+                    if (dt.getStyles().containsKey(userStyleId)) {
+                        StyleFactory factory = CommonFactoryFinder.getStyleFactory(GeoTools.getDefaultHints());
+                        style = dt.getStyle(userStyleId);
+                        styledLayerDescriptor = factory.createStyledLayerDescriptor();
+                        NamedLayer namedLayer = factory.createNamedLayer();
+                        namedLayer.addStyle(style);
+                        styledLayerDescriptor.addStyledLayer(namedLayer);
+                        // grab the style location
+                        styleConfig = dataConfig.getStyle(userStyleId);
                     } else {
-                     style = this.createStyle(userStyleId);
-                     styleConfig = new StyleConfig();
-                     File styleDir = GeoserverDataDirectory.findCreateConfigDir("styles");
-                     File newSLDFile = new File(styleDir, userStyleId + ".sld");
-                     styleConfig.setFilename(newSLDFile);
-                     styleConfig.setId( userStyleId);
-                     dataConfig.addStyle(userStyleId, styleConfig)	; 
-                   }
+                        styledLayerDescriptor = this.createStyle(userStyleId);
+                        style = ((NamedLayer)styledLayerDescriptor.getStyledLayers()[0]).getStyles()[0];
+                        styleConfig = new StyleConfig();
+                        File styleDir = GeoserverDataDirectory.findCreateConfigDir("styles");
+                        File newSLDFile = new File(styleDir, userStyleId + ".sld");
+                        styleConfig.setFilename(newSLDFile);
+                        styleConfig.setId(userStyleId);
+                        dataConfig.addStyle(userStyleId, styleConfig);
+                    }
 
                     style.getFeatureTypeStyles()[0].setRules(rules);
                     // save the style on disk
                     SLDTransformer transformer = new SLDTransformer();
-                    
+
                     // check transformation can work fine before writing on disk
                     transformer.setIndentation(2);
-                    transformer.transform(style); 
-                    transformer.transform(style, new FileOutputStream(styleConfig.getFilename()));
-                    
-                    if ( !ftInf.getStyles().contains(style)){
-                   String qualifiedName=ftInf.getDataStoreInfo().getId()+":"+ftInf.getNativeTypeName();
-                    	FeatureTypeConfig ftC = dataConfig.getFeatureTypeConfig(qualifiedName); 
-                    
-                    ftC.addStyle(userStyleId);
-                    ftC.setDefaultStyle(userStyleId);
-               //     dataConfig.removeFeatureType(qualifiedName);
-                //	dataConfig.addFeatureType(qualifiedName, ftC); // TODO: This isn't needed, is it?
-                	dt.load(dataConfig.toDTO());
-                    
+                    transformer.transform(styledLayerDescriptor);
+                    transformer.transform(styledLayerDescriptor, new FileOutputStream(styleConfig.getFilename()));
+
+                    if (!ftInf.getStyles().contains(style)) {
+                        String qualifiedName = ftInf.getDataStoreInfo().getId() + ":" + ftInf.getNativeTypeName();
+                        FeatureTypeConfig ftC = dataConfig.getFeatureTypeConfig(qualifiedName);
+
+                        ftC.addStyle(userStyleId);
+                        ftC.setDefaultStyle(userStyleId);
+                        // dataConfig.removeFeatureType(qualifiedName);
+                        // dataConfig.addFeatureType(qualifiedName, ftC); // TODO: This isn't
+                        // needed, is it?
+                        dt.load(dataConfig.toDTO());
+
                     }
                     /*
                      * creation ok
@@ -285,7 +288,7 @@ public class UserStyleResource extends BaseResource {
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     getResponse().setEntity("Unable to complete classfication",
                             MediaType.TEXT_PLAIN);
-    
+
                 }
             } catch (Exception e) {
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
@@ -300,199 +303,193 @@ public class UserStyleResource extends BaseResource {
         }
 
     }
-    
-    /*create the list  of rule based on parameters passed by post or put request*/
+
+    /* create the list of rule based on parameters passed by post or put request */
     private List<Rule> createRules(FeatureTypeInfo ftInf) {
-    	Integer classNum = null;
+        Integer classNum = null;
         Color startColor = null;
         Color endColor = null;
         Color midColor = null;
         RulesBuilder ruBuild;
-    	try{
-        /*
-         * Retrive and check mandatory post pram: classMethod property
-         */
-        Request req = getRequest();
-        Form params = req.getEntityAsForm();
-
-        Set<String> validMethods = new HashSet<String>(Arrays.asList(
-                "unique", "equalInterval", "quantile"));
-        if (params.getFirst("classMethod") == null)
-            throw new ParameterException("Missing classMethod parameter value (possible values: "
-                            + validMethods);
-        String classMethod = params.getFirst("classMethod").getValue();
-        if (!validMethods.contains(classMethod))
-            throw new ParameterException("Bad classMethod parameter value " + classMethod
-                            + "' (possible values: " + validMethods);
-
-        if (params.getFirst("property") == null
-                || params.getFirst("property").getValue() == null) 
-            throw new ParameterException("Required parameter 'property' missing (valid values "
-                            + ftInf.getAttributeNames() + ")");
-        String property = params.getFirst("property").getValue();
-        if (!(ftInf.getAttributeNames().contains(property)))
-            throw new ParameterException("Invalid value for arameter 'property' (valid values "
-                            + ftInf.getAttributeNames() + ")");
-
-        /*
-         * Retriving or setting default value for optional param
-         * ClassNum,startColor, endColor, midColor,colorRamp
-         */
-        if (params.getFirst("classNum") == null
-                || params.getFirst("classNum").getValue() == null) {
-            classNum = 4;
-        } else
-            classNum = Integer.parseInt(params.getFirst("classNum")
-                    .getValue());
-        classNum = (classNum < 2) ? 4 : classNum;
-
-        /*
-         * Looks for color ramp type [red, blue, gray, random , custom]
-         */
-        Set<String> validRamps = new HashSet<String>(Arrays.asList("red",
-                "blue", "gray", "random", "custom"));
-        if (params.getFirst("colorRamp") == null
-                || params.getFirst("colorRamp").getValue() == null) 
-            throw new ParameterException("Required parameter 'colorRamp' missing (valid values "
-                            + validRamps + ")");
-        String colorRamp = params.getFirst("colorRamp").getValue();
-        if (!(validRamps.contains(colorRamp)))
-            throw new ParameterException("Invalid 'colorRamp' value (valid values "
-                    + validRamps + ")");
-
-
-        /*
-         * if is custom looking for custom color
-         */
-        if (colorRamp.equalsIgnoreCase("custom")) {
-            startColor = getColor(params, "startColor", true);
-            endColor = getColor(params, "endColor", true);
-            midColor = getColor(params, "midColor", false);
-        }
-        
-        /*
-         * See if the users wants open or closed classification
-         */
-        boolean open;
-        if (params.getFirst("open") == null
-                || params.getFirst("open").getValue() == null 
-                || !params.getFirst("open").getValue().toLowerCase().equals("true")) {
-            open = false;
-        } else {
-            open = true;
-        }
-        
-        /*
-         * Now we can start to create classification
-         */
-        ruBuild = new RulesBuilder();
-        List<Rule> rulesL = null;
         try {
-            if (classMethod.equals("quantile"))
-                rulesL = ruBuild.quantileClassification(ftInf
-                        .getFeatureSource().getFeatures(), property,
-                        classNum, open);
-            else if (classMethod.equals("equalInterval"))
-                rulesL = ruBuild.equalIntervalClassification(ftInf
-                        .getFeatureSource().getFeatures(), property,
-                        classNum, open);
-            else if (classMethod.equals("unique"))
-                rulesL = ruBuild.uniqueIntervalClassification(ftInf
-                        .getFeatureSource().getFeatures(), property);
-            Class geomT = ftInf.getFeatureType().getGeometryDescriptor().getType().getBinding();
+            /*
+             * Retrive and check mandatory post pram: classMethod property
+             */
+            Request req = getRequest();
+            Form params = req.getEntityAsForm();
+
+            Set<String> validMethods = new HashSet<String>(Arrays.asList("unique", "equalInterval",
+                    "quantile"));
+            if (params.getFirst("classMethod") == null)
+                throw new ParameterException(
+                        "Missing classMethod parameter value (possible values: " + validMethods);
+            String classMethod = params.getFirst("classMethod").getValue();
+            if (!validMethods.contains(classMethod))
+                throw new ParameterException("Bad classMethod parameter value " + classMethod
+                        + "' (possible values: " + validMethods);
+
+            if (params.getFirst("property") == null
+                    || params.getFirst("property").getValue() == null)
+                throw new ParameterException("Required parameter 'property' missing (valid values "
+                        + ftInf.getAttributeNames() + ")");
+            String property = params.getFirst("property").getValue();
+            if (!(ftInf.getAttributeNames().contains(property)))
+                throw new ParameterException("Invalid value for arameter 'property' (valid values "
+                        + ftInf.getAttributeNames() + ")");
 
             /*
-             * Check the number of class if more then 100 refuse to produce
-             * sld
-             * 
+             * Retriving or setting default value for optional param ClassNum,startColor, endColor,
+             * midColor,colorRamp
              */
-            if (rulesL.size() > 100) {
-                getResponse().setStatus(Status.CLIENT_ERROR_NOT_ACCEPTABLE);
-                getResponse()
-                        .setEntity(
-                                "This classification produce more then 100 class, change method or attribute",
-                                MediaType.TEXT_PLAIN);
-                return null;
+            if (params.getFirst("classNum") == null
+                    || params.getFirst("classNum").getValue() == null) {
+                classNum = 4;
+            } else
+                classNum = Integer.parseInt(params.getFirst("classNum").getValue());
+            classNum = (classNum < 2) ? 4 : classNum;
+
+            /*
+             * Looks for color ramp type [red, blue, gray, random , custom]
+             */
+            Set<String> validRamps = new HashSet<String>(Arrays.asList("red", "blue", "gray",
+                    "random", "custom"));
+            if (params.getFirst("colorRamp") == null
+                    || params.getFirst("colorRamp").getValue() == null)
+                throw new ParameterException(
+                        "Required parameter 'colorRamp' missing (valid values " + validRamps + ")");
+            String colorRamp = params.getFirst("colorRamp").getValue();
+            if (!(validRamps.contains(colorRamp)))
+                throw new ParameterException("Invalid 'colorRamp' value (valid values "
+                        + validRamps + ")");
+
+            /*
+             * if is custom looking for custom color
+             */
+            if (colorRamp.equalsIgnoreCase("custom")) {
+                startColor = getColor(params, "startColor", true);
+                endColor = getColor(params, "endColor", true);
+                midColor = getColor(params, "midColor", false);
             }
 
             /*
-             * now we have to create symbolizer choose the correct color
-             * ramp
+             * See if the users wants open or closed classification
              */
-            ColorRamp ramp = null;
-            if (colorRamp.equalsIgnoreCase("random"))
-                ramp = (ColorRamp) new RandomColorRamp();
-            else if (colorRamp.equalsIgnoreCase("red"))
-                ramp = (ColorRamp) new RedColorRamp();
-            else if (colorRamp.equalsIgnoreCase("blue"))
-                ramp = (ColorRamp) new BlueColorRamp();
-            else if (colorRamp.equalsIgnoreCase("custom")) {
-                if (startColor != null && endColor != null) {
-                    CustomColorRamp tramp = new CustomColorRamp();
-                    tramp.setStartColor(startColor);
-                    tramp.setEndColor(endColor);
-                    if (midColor != null)
-                        tramp.setMid(midColor);
-                    ramp = (ColorRamp) tramp;
+            boolean open;
+            if (params.getFirst("open") == null || params.getFirst("open").getValue() == null
+                    || !params.getFirst("open").getValue().toLowerCase().equals("true")) {
+                open = false;
+            } else {
+                open = true;
+            }
 
+            /*
+             * Now we can start to create classification
+             */
+            ruBuild = new RulesBuilder();
+            List<Rule> rulesL = null;
+            try {
+                if (classMethod.equals("quantile"))
+                    rulesL = ruBuild.quantileClassification(ftInf.getFeatureSource().getFeatures(),
+                            property, classNum, open);
+                else if (classMethod.equals("equalInterval"))
+                    rulesL = ruBuild.equalIntervalClassification(ftInf.getFeatureSource()
+                            .getFeatures(), property, classNum, open);
+                else if (classMethod.equals("unique"))
+                    rulesL = ruBuild.uniqueIntervalClassification(ftInf.getFeatureSource()
+                            .getFeatures(), property);
+                Class geomT = ftInf.getFeatureType().getGeometryDescriptor().getType().getBinding();
+
+                /*
+                 * Check the number of class if more then 100 refuse to produce sld
+                 */
+                if (rulesL.size() > 100) {
+                    getResponse().setStatus(Status.CLIENT_ERROR_NOT_ACCEPTABLE);
+                    getResponse()
+                            .setEntity(
+                                    "This classification produce more then 100 class, change method or attribute",
+                                    MediaType.TEXT_PLAIN);
+                    return null;
                 }
-            } else if (ramp == null)
-                ramp = (ColorRamp) new GrayColorRamp();
 
-            /*
-             * Line Symbolizer
-             */
+                /*
+                 * now we have to create symbolizer choose the correct color ramp
+                 */
+                ColorRamp ramp = null;
+                if (colorRamp.equalsIgnoreCase("random"))
+                    ramp = (ColorRamp) new RandomColorRamp();
+                else if (colorRamp.equalsIgnoreCase("red"))
+                    ramp = (ColorRamp) new RedColorRamp();
+                else if (colorRamp.equalsIgnoreCase("blue"))
+                    ramp = (ColorRamp) new BlueColorRamp();
+                else if (colorRamp.equalsIgnoreCase("custom")) {
+                    if (startColor != null && endColor != null) {
+                        CustomColorRamp tramp = new CustomColorRamp();
+                        tramp.setStartColor(startColor);
+                        tramp.setEndColor(endColor);
+                        if (midColor != null)
+                            tramp.setMid(midColor);
+                        ramp = (ColorRamp) tramp;
 
-            if (geomT == LineString.class || geomT == MultiLineString.class) {
-                ruBuild.lineStyle(rulesL, ramp);
+                    }
+                } else if (ramp == null)
+                    ramp = (ColorRamp) new GrayColorRamp();
+
+                /*
+                 * Line Symbolizer
+                 */
+
+                if (geomT == LineString.class || geomT == MultiLineString.class) {
+                    ruBuild.lineStyle(rulesL, ramp);
+                }
+
+                /*
+                 * Polygon Symbolyzer
+                 */
+                else if (geomT == MultiPolygon.class || geomT == Polygon.class
+                        || geomT == Point.class || geomT == MultiPoint.class) {
+                    ruBuild.polygonStyle(rulesL, ramp);
+                }
+
+                return rulesL;
+            } catch (Exception e) {
+                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                getResponse().setEntity(e.toString(), MediaType.TEXT_PLAIN);
+                return null;
+
             }
 
-            /*
-             * Polygon Symbolyzer
-             */
-            else if (geomT == MultiPolygon.class || geomT == Polygon.class
-                    || geomT == Point.class || geomT == MultiPoint.class) {
-                ruBuild.polygonStyle(rulesL, ramp);
-            }
-
-            
-        	return rulesL;
-        } catch (Exception e) {
-            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-            getResponse().setEntity(e.toString(), MediaType.TEXT_PLAIN);
-            return null;
-
-        }
-    	
-    	}catch (ParameterException e) {
+        } catch (ParameterException e) {
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
             getResponse().setEntity(e.getMessage(), MediaType.TEXT_PLAIN);
             return null;
-    	}
-    	
-    
+        }
+
     }
-    
-    
-    /*creaate a dummy empty style where to put rules*/
-    private Style createStyle(String name){
-    	Style style;
-    	StyleFactory factory = CommonFactoryFinder.getStyleFactory(GeoTools
-                .getDefaultHints());
-       style = factory.createStyle();
-       style.setAbstract("Created by sldService");
-       style.setTitle("Title");
-       style.setName(name);
-      
-       FeatureTypeStyle ftS = factory.createFeatureTypeStyle();
-      
-       style.addFeatureTypeStyle(ftS);
-       /**
-        * named layer
-        * 	userStyle
-        * 	featuretypestyle
-        */
-    	return style;
+
+    /* creaate a dummy empty style where to put rules */
+    private StyledLayerDescriptor createStyle(String name) {
+        Style style;
+        StyleFactory factory = CommonFactoryFinder.getStyleFactory(GeoTools.getDefaultHints());
+        style = factory.createStyle();
+        style.setAbstract("Created by sldService");
+        style.setTitle("Title");
+        style.setName(name);
+
+        FeatureTypeStyle ftS = factory.createFeatureTypeStyle();
+
+        style.addFeatureTypeStyle(ftS);
+        
+        NamedLayer namedLayer = factory.createNamedLayer();
+        
+        namedLayer.addStyle(style);
+        
+        StyledLayerDescriptor sldDescriptor = factory.createStyledLayerDescriptor();
+        
+        sldDescriptor.addStyledLayer(namedLayer);
+        /**
+         * named layer userStyle featuretypestyle
+         */
+        return sldDescriptor;
     }
-    
+
 }

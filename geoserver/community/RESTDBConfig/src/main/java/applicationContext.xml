@@ -5,55 +5,62 @@
   <bean id="RestConfigDBMapping" class="org.geoserver.rest.RESTMapping">
 	<property name="routes">
       <map>
-
+		<entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables/{variable}/axis/{axis}.{type}</value></key>
+          <value>modelGridCoverageVariableAxisResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables/{variable}/axis/{axis}</value></key>
+          <value>modelGridCoverageVariableAxisResource</value>
+        </entry>
+		<entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables/{variable}/sampledim/{sd}.{type}</value></key>
+          <value>modelGridCoverageVariableSampleDimResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables/{variable}/sampledim/{sd}</value></key>
+          <value>modelGridCoverageVariableSampleDimResource</value>
+        </entry>
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables/{variable}.{type}</value></key>
-          <value>modelInfoResource</value>
+          <value>modelGridCoverageVariableResource</value>
         </entry>
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables/{variable}</value></key>
-          <value>modelInfoResource</value>
+          <value>modelGridCoverageVariableResource</value>
         </entry>
-
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables.{type}</value></key>
-          <value>modelInfoResource</value>
+          <value>modelRunGridCoverageVariablesListFinder</value>
         </entry>
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables</value></key>
-          <value>modelInfoResource</value>
+          <value>modelRunGridCoverageVariablesListFinder</value>
         </entry>
-
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/tdomain.{type}</value></key>
-          <value>modelInfoResource</value>
+          <value>modelGridCoverageTDomainResource</value>
         </entry>
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/tdomain</value></key>
-          <value>modelInfoResource</value>
+          <value>modelGridCoverageTDomainResource</value>
         </entry>
-
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/vdomain.{type}</value></key>
-          <value>modelInfoResource</value>
+          <value>modelGridCoverageVDomainResource</value>
         </entry>
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/vdomain</value></key>
-          <value>modelInfoResource</value>
+          <value>modelGridCoverageVDomainResource</value>
         </entry>
-
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}.{type}</value></key>
-          <value>modelInfoResource</value>
+          <value>modelGridCoverageResource</value>
         </entry>
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}</value></key>
-          <value>modelInfoResource</value>
+          <value>modelGridCoverageResource</value>
         </entry>
-        
-        
-        
-        
         <entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages.{type}</value></key>
           <value>modelRunGridCoveragesListFinder</value>
@@ -113,6 +120,11 @@
     <property name="geoServer"><ref bean="geoServer2"/></property>
     <property name="catalog"><ref bean="rawCatalog"/></property>
   </bean>
+  <bean id="modelRunGridCoverageVariablesListFinder"
+    class="org.geoserver.restconfig.db.ModelRunGridCoverageVariableListFinder">
+    <property name="geoServer"><ref bean="geoServer2"/></property>
+    <property name="catalog"><ref bean="rawCatalog"/></property>
+  </bean>
 
   <bean id="modelInfoResource"
     class="org.geoserver.restconfig.db.ModelResource">
@@ -124,5 +136,35 @@
     <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
     <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
   </bean>
-
+  <bean id="modelGridCoverageResource"
+    class="org.geoserver.restconfig.db.ModelGridCoverageResource">
+    <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
+    <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
+  </bean>
+  <bean id="modelGridCoverageVDomainResource"
+    class="org.geoserver.restconfig.db.ModelGridCoverageVerticalDomainResource">
+    <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
+    <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
+  </bean>
+  <bean id="modelGridCoverageTDomainResource"
+    class="org.geoserver.restconfig.db.ModelGridCoverageTemporalDomainResource">
+    <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
+    <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
+  </bean>
+  <bean id="modelGridCoverageVariableResource"
+    class="org.geoserver.restconfig.db.ModelGridCoverageVariableResource">
+    <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
+    <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
+  </bean>
+  <bean id="modelGridCoverageVariableAxisResource"
+    class="org.geoserver.restconfig.db.ModelGridCoverageVariableAxisResource">
+    <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
+    <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
+  </bean>
+  <bean id="modelGridCoverageVariableSampleDimResource"
+    class="org.geoserver.restconfig.db.ModelGridCoverageVariableSampleDimResource">
+    <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
+    <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
+  </bean>
+  
 </beans>

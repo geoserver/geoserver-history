@@ -1,6 +1,8 @@
 package org.geoserver.config.hibernate;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,7 +17,10 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ModelRunInfo;
+import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.catalog.ModelInfo.DataType;
 import org.geoserver.catalog.ModelInfo.Discipline;
 import org.geoserver.catalog.hibernate.HbNamespaceInfo;
@@ -215,19 +220,24 @@ public class HibernateGeoServer implements GeoServer {
 
         catalog.add(model);
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:sssZ");
         ModelRunInfoImpl modelRun = new ModelRunInfoImpl();
-        modelRun.setBaseTime(new Date());
         modelRun.setDescription("A Test Model Run.");
-        modelRun.setExecutionTime(new Date());
+        try {
+            modelRun.setExecutionTime(sdf.parse("2001-05-25T02:00:000+0200"));
+            modelRun.setBaseTime(sdf.parse("2001-05-25T02:00:000+0200"));
+        } catch (ParseException e1) {
+            modelRun.setExecutionTime(new Date());
+            modelRun.setBaseTime(new Date());
+        }
         modelRun.setId("TEST-RUN");
         modelRun.setKeywords(keywords);
         modelRun.setModel(model);
         modelRun.setName("TEST-RUN-001");
-        modelRun.setNumTAU(6);
-        modelRun.setOutline(new ReferencedEnvelope(new Envelope(-24.0, -1.0, 32.0, 45.0),
-                DefaultGeographicCRS.WGS84));
-        modelRun.setTAU(3);
-        modelRun.setTAUunit("s");
+        modelRun.setNumTAU(1);
+        modelRun.setOutline(new ReferencedEnvelope(new Envelope(27.40437126159668, 32.995628356933594, 41.01088333129883, 42.589115142822266), DefaultGeographicCRS.WGS84));
+        modelRun.setTAU(1);
+        modelRun.setTAUunit("day");
         modelRun.setUpdateSequence("0");
 
         catalog.add(modelRun);
@@ -244,7 +254,7 @@ public class HibernateGeoServer implements GeoServer {
         try {
             CoverageStoreInfo coverageStore = catalog.getFactory().createCoverageStore();
             coverageStore.setDescription("Example Test Coverage.");
-            coverageStore.setEnabled(false);
+            coverageStore.setEnabled(true);
             coverageStore.setName("TEST-COVERAGE-STORE");
             coverageStore.setType("NetCDF");
             coverageStore.setURL(getClass().getResource("updatedoagCF.nc").toURI().toString());
@@ -259,26 +269,27 @@ public class HibernateGeoServer implements GeoServer {
             coverage.setDescription("An Example Test Coverage.");
             coverage.getKeywords().addAll(keywords);
             Map<String, Object> envelope = new HashMap<String, Object>();
-            envelope.put("x1", -24.0);
-            envelope.put("x2", -1.0);
-            envelope.put("y1", 32.0);
-            envelope.put("y2", 45.0);
+            envelope.put("x1", 27.40437126159668);
+            envelope.put("x2", 32.995628356933594);
+            envelope.put("y1", 41.01088333129883);
+            envelope.put("y2", 42.589115142822266);
             envelope.put("srsName", "EPSG:4326");
-            envelope
-                    .put(
-                            "crs",
-                            "GEOGCS[\"WGS84(DD)\", \r\n  DATUM[\"WGS84\", \r\n    SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \r\n  PRIMEM[\"Greenwich\", 0.0], \r\n  UNIT[\"degree\", 0.017453292519943295], \r\n  AXIS[\"Geodetic longitude\", EAST], \r\n  AXIS[\"Geodetic latitude\", NORTH]]");
+            envelope.put("crs", "GEOGCS[\"WGS84(DD)\", \r\n  DATUM[\"WGS84\", \r\n    SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \r\n  PRIMEM[\"Greenwich\", 0.0], \r\n  UNIT[\"degree\", 0.017453292519943295], \r\n  AXIS[\"Geodetic longitude\", EAST], \r\n  AXIS[\"Geodetic latitude\", NORTH]]");
             String userDefinedCrsIdentifier = (String) envelope.get("srsName");
             String nativeCrsWkt = (String) envelope.get("crs");
             coverage.setSRS(userDefinedCrsIdentifier);
             CoordinateReferenceSystem crs = CRS.parseWKT(nativeCrsWkt);
             coverage.setNativeCRS(crs);
-            ReferencedEnvelope bounds = new ReferencedEnvelope((Double) envelope.get("x1"),
-                    (Double) envelope.get("x2"), (Double) envelope.get("y1"), (Double) envelope
-                            .get("y2"), crs);
+            ReferencedEnvelope bounds = 
+                new ReferencedEnvelope(
+                    (Double) envelope.get("x1"),
+                    (Double) envelope.get("x2"), 
+                    (Double) envelope.get("y1"), 
+                    (Double) envelope.get("y2"), 
+                    crs
+                );
             coverage.setNativeBoundingBox(bounds);
-            GeneralEnvelope boundsLatLon = CoverageStoreUtils
-                    .getWGS84LonLatEnvelope(new GeneralEnvelope(bounds));
+            GeneralEnvelope boundsLatLon = CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope(bounds));
             coverage.setLatLonBoundingBox(new ReferencedEnvelope(boundsLatLon));
             GeneralEnvelope gridEnvelope = new GeneralEnvelope(bounds);
             Map grid = new HashMap();
@@ -298,50 +309,40 @@ public class HibernateGeoServer implements GeoServer {
                     matrix[4] = tx.get("scaleY") != null ? tx.get("scaleY") : matrix[4];
                     matrix[5] = tx.get("translateY") != null ? tx.get("translateY") : matrix[5];
                     matrix[8] = 1.0;
-                    MathTransform gridToCRS = new DefaultMathTransformFactory()
-                            .createAffineTransform(new GeneralMatrix(3, 3, matrix));
+                    MathTransform gridToCRS = new DefaultMathTransformFactory().createAffineTransform(new GeneralMatrix(3, 3, matrix));
                     coverage.setGrid(new GridGeometry2D(range, gridToCRS, crs));
                 } else {
                     coverage.setGrid(new GridGeometry2D(range, gridEnvelope));
                 }
             } else {
                 // new grid range
-                GeneralGridRange range = new GeneralGridRange(new int[] { 0, 0 },
-                        new int[] { 1, 1 });
+                GeneralGridRange range = new GeneralGridRange(new int[] { 0, 0 }, new int[] { 1, 1 });
                 coverage.setGrid(new GridGeometry2D(range, gridEnvelope));
             }
             Driver driver = coverageStore.getDriver();
             Map params = new HashMap();
-            params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI()
-                    .toURL());
+            params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
             CoverageAccess cvAccess = driver.connect(params, null, null);
             if (cvAccess != null) {
-                CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null,
-                        AccessType.READ_ONLY, null, null);
+                CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
                 if (cvSource != null) {
                     coverage.setFields(cvSource.getRangeType(null));
-                    CoordinateReferenceSystem compundCRS = cvSource
-                            .getCoordinateReferenceSystem(null);
-                    Set<TemporalGeometricPrimitive> temporalExtent = cvSource
-                            .getTemporalDomain(null);
+                    CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                    Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
                     CoordinateReferenceSystem temporalCRS = null;
                     CoordinateReferenceSystem verticalCRS = null;
                     if (temporalExtent != null && !temporalExtent.isEmpty()) {
                         if (compundCRS instanceof CompoundCRS) {
-                            temporalCRS = ((CompoundCRS) compundCRS)
-                                    .getCoordinateReferenceSystems().get(0);
+                            temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
                         }
                     }
-                    Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(
-                            false, null);
+                    Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
                     if (verticalExtent != null && !verticalExtent.isEmpty()) {
                         if (compundCRS instanceof CompoundCRS) {
                             if (temporalCRS != null)
-                                verticalCRS = ((CompoundCRS) compundCRS)
-                                        .getCoordinateReferenceSystems().get(1);
+                                verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
                             else
-                                verticalCRS = ((CompoundCRS) compundCRS)
-                                        .getCoordinateReferenceSystems().get(0);
+                                verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
                         }
                     }
                     coverage.setTemporalCRS(temporalCRS);
@@ -353,8 +354,7 @@ public class HibernateGeoServer implements GeoServer {
             coverage.setNativeFormat("NetCDF");
             coverage.getSupportedFormats().addAll(Arrays.asList(new String[] { "GeoTIFF" }));
             coverage.setDefaultInterpolationMethod("nearest neighbour");
-            coverage.getInterpolationMethods().addAll(
-                    Arrays.asList(new String[] { "bilinear", "bicubic" }));
+            coverage.getInterpolationMethods().addAll(Arrays.asList(new String[] { "bilinear", "bicubic" }));
             coverage.getRequestSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
             coverage.getResponseSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
             coverage.setEnabled(coverageStore.isEnabled());
@@ -363,9 +363,28 @@ public class HibernateGeoServer implements GeoServer {
             // link to namespace
             HbNamespaceInfo namespace = catalog.getDefaultNamespace();
             coverage.setNamespace(namespace);
+            
+            coverage.getMetadata().put("dirName", coverageStore.getName() + "_" + coverage.getName());
 
             catalog.add(coverage);
 
+            StyleInfo style = catalog.getFactory().createStyle();
+            style.setName("raster");
+            style.setFilename("raster.sld");
+            
+            catalog.add(style);
+            
+            LayerInfo layer = catalog.getFactory().createLayer();
+            layer.setDefaultStyle(style);
+            layer.setEnabled(coverage.isEnabled());
+            //layer.setLegend(legend);
+            layer.setName(coverage.getName());
+            layer.setPath("/");
+            layer.setResource(coverage);
+            layer.setType(Type.RASTER);
+            
+            catalog.add(layer);
+            
             List<CoverageInfo> coverages = new ArrayList<CoverageInfo>();
             coverages.add(coverage);
             modelRun.setGridCoverages(coverages);

@@ -1008,10 +1008,8 @@ public class WMSCapsTransformer extends TransformerBase {
                 }
 
                 if (coverage.getVerticalExtent() != null && coverage.getVerticalExtent().size() > 0) {
-                    CoordinateSystemAxis vAxis = coverage.getVerticalCRS().getCoordinateSystem()
-                            .getAxis(0);
-                    double[] verticalLimits = WCSUtils.getVerticalExtentLimits(coverage
-                            .getVerticalExtent());
+                    CoordinateSystemAxis vAxis = coverage.getVerticalCRS().getCoordinateSystem().getAxis(0);
+                    double[] verticalLimits = WCSUtils.getVerticalExtentLimits(coverage.getVerticalExtent());
 
                     AttributesImpl elevDim = new AttributesImpl();
                     elevDim.addAttribute("", "name", "name", "", "elevation");
@@ -1030,8 +1028,7 @@ public class WMSCapsTransformer extends TransformerBase {
                         defaultElevation = lowerLimit;
                     }
                     
-                    elevDim.addAttribute("", "default", "default", "", String
-                            .valueOf(defaultElevation));
+                    elevDim.addAttribute("", "default", "default", "", String.valueOf(defaultElevation));
                     element("Extent", lowerLimit + "/" + upperLimit + "/" + resolution, elevDim);
                 }
 
