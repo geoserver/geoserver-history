@@ -92,6 +92,6 @@ public interface AttributeTypeInfo extends Serializable {
     /**
      * Sets the underlying attribute descriptor.
      */
-    //void setAttribute( AttributeDescriptor attribute );
+    void setAttribute( AttributeDescriptor attribute );
     
 }

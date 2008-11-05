@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.geoserver.catalog.AttributeTypeInfo;
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.opengis.feature.type.AttributeDescriptor;
 
@@ -68,9 +67,9 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
         return attribute;
     }
     
-//    public void setAttribute(AttributeDescriptor attribute) {
-//        this.attribute = attribute;
-//    }
+    public void setAttribute(AttributeDescriptor attribute) {
+        this.attribute = attribute;
+    }
     
     public Map<String, Serializable> getMetadata() {
         return metadata;
