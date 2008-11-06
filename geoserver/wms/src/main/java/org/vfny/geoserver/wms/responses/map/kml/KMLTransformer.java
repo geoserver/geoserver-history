@@ -44,21 +44,6 @@ public class KMLTransformer extends TransformerBase {
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.kml");
         
     /**
-     * Factory used to create filter objects
-     */
-    FilterFactory filterFactory = (FilterFactory) CommonFactoryFinder.getFilterFactory(null);
-    
-    private static final CoordinateReferenceSystem WGS84;
-    
-    static {
-        try {
-            WGS84 = CRS.decode("EPSG:4326");
-        } catch(Exception e) {
-            throw new RuntimeException("Cannot decode EPSG:4326, the CRS subsystem must be badly broken...");
-        }
-    }
-
-    /**
      * Flag controlling wether kmz was requested.
      */
     boolean kmz = false;
@@ -69,10 +54,6 @@ public class KMLTransformer extends TransformerBase {
 
     public Translator createTranslator(ContentHandler handler) {
         return new KMLTranslator(handler);
-    }
-
-    public void setFilterFactory(FilterFactory filterFactory) {
-        this.filterFactory = filterFactory;
     }
 
     public void setKmz(boolean kmz) {
@@ -114,9 +95,9 @@ public class KMLTransformer extends TransformerBase {
                        RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), mapContext.getMapWidth(), mapContext.getMapHeight(), null);
             } 
             catch( Exception e ) {
-               LOGGER.log( Level.WARNING, "Error calculating scale denominator", e );
+               LOGGER.log(Level.WARNING, "Error calculating scale denominator", e);
             }
-            LOGGER.fine( "scale denominator = " + scaleDenominator );
+            LOGGER.log(Level.FINE, "scale denominator = " + scaleDenominator);
 
             //if we have more than one layer ( or a legend was requested ),
             //use the name "GeoServer" to group them

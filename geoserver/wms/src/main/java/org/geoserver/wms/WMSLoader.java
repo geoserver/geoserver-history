@@ -24,8 +24,6 @@ import org.geotools.util.logging.Logging;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import sun.rmi.runtime.Log;
-
 public class WMSLoader extends LegacyServiceLoader {
 
     static Logger LOGGER = Logging.getLogger( "org.geoserver.wms" );
