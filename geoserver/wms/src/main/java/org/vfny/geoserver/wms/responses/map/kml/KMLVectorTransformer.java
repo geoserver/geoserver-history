@@ -184,13 +184,13 @@ public class KMLVectorTransformer extends KMLMapTransformer {
 
         protected void encode(FeatureCollection<SimpleFeatureType, SimpleFeature> features,
                 FeatureTypeStyle[] styles) {
-           //grab a feader and process
+           //grab a reader and process
             FeatureIterator<SimpleFeature> reader = null;
 
             HashMap<String,Boolean> ht = new HashMap<String,Boolean>();
             
             try {
-                //grab a feader and process
+                //grab a reader and process
                 reader = features.features();
                 
                 // Write Styles
@@ -215,7 +215,7 @@ public class KMLVectorTransformer extends KMLMapTransformer {
                     SimpleFeature feature = (SimpleFeature) reader.next();
                     try {
                         // Check whether encoding the style succeeded
-                        if(ht.get(feature.getID())) {
+                        if(ht.containsKey(feature.getID()) && ht.get(feature.getID())) {
                             encodePlacemark(feature,styles);
                         }
                     } catch (RuntimeException t) {
