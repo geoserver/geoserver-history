@@ -17,11 +17,14 @@ import com.vividsolutions.jts.geom.Geometry;
 /**
  * Geometry transformer for KML geometries.
  * <p>
- * This class does nothing beyond the normal gml2 geometry transformer
- * besides ensure no gml prefix is used.
+ * While KML geometry encoding is quite similar to GML, there are a couple of tweaks:
+ * <ul><li>the GML namespace is not used </li>
+ *     <li>there are a couple of extra tags that can be inserted to tell the client 
+ *         how to treat 3d data (eg, <code>&lt;extrude&gt;</code> and 
+ *         <code>&lt;altitudeMode&gt;</code>) </li>
+ * </ul>
  * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
  */
 public class KMLGeometryTransformer extends GeometryTransformer {
     static final String[] validAltitudeModes= new String[]{
@@ -110,14 +113,6 @@ public class KMLGeometryTransformer extends GeometryTransformer {
                 insertExtrudeTags();
             }
         }
-
-        /*
-         * protected void start(String element){
-            super.start(element);
-            if (isGeometryElement(element)){
-                insertExtrudeTags();
-            }
-        } */
 
         private boolean inspectGeometry(Geometry g){
             double d = g.getCoordinate().z;

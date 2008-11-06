@@ -55,7 +55,7 @@ public class KMLCoordinateWriter extends CoordinateWriter {
         super(numDecimals, isDummyZEnabled);
         // atts = new org.xml.sax.helpers.AttributesImpl();
         scale = Math.pow(10, numDecimals);
-        D = 2;
+        D = 3;
         // dummyZ = 0;
     }
 
@@ -81,6 +81,11 @@ public class KMLCoordinateWriter extends CoordinateWriter {
             coordBuff.append(coordinateDelimiter);
             // format y into buffer
             formatDecimal(y, coordBuff);
+
+            if (coordSeqDimension > 2 && !Double.isNaN(c.getOrdinate(i, 2))){
+                coordBuff.append(coordinateDelimiter);
+                formatDecimal(c.getOrdinate(i, 2), coordBuff);
+            }
 
             // if there is another coordinate, tack on a tuple delimiter
             if (i + 1 < coordCount) {
