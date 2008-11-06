@@ -32,6 +32,13 @@
     </profile>
     
     <profile>
+      <id>sqlserver</id>
+      <modules>
+        <module>sqlserver</module>
+      </modules>
+    </profile>
+
+    <profile>
       <id>wfsv</id>
       <modules>
         <module>wfsv</module>
@@ -43,6 +50,7 @@
       <id>allExtensions</id>
       <modules>
         <module>h2</module>
+        <module>sqlserver</module>
         <module>wfsv</module>
       </modules>
     </profile>
@@ -54,6 +62,7 @@
       <id>release</id>
       <modules>
         <module>h2</module>
+        <module>sqlserver</module>
         <module>wfsv</module>
       </modules>
     </profile>

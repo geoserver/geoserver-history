@@ -533,5 +533,19 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>sqlserver</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.extension</groupId>
+          <artifactId>sqlserver</artifactId> 
+          <version>1.7.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>com.microsoft</groupId>
+          <artifactId>sqljdbc</artifactId> 
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>

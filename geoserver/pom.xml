@@ -252,6 +252,16 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
+    <groupId>com.microsoft</groupId>
+    <artifactId>sqljdbc</artifactId>
+    <version>1.2</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-jdbc-sqlserver</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
     <groupId>org.geotools</groupId>
     <artifactId>gt-wfs</artifactId>
     <version>${gt.version}</version>
@@ -903,6 +913,7 @@
       <descriptor>release/ext-gwc.xml</descriptor>
       <descriptor>release/ext-gdal.xml</descriptor>
       <descriptor>release/ext-h2.xml</descriptor>
+      <descriptor>release/ext-sqlserver.xml</descriptor>
      </descriptors>
      <finalName>geoserver-1.7.1-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
