@@ -304,12 +304,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             List symbolizerList = new ArrayList();
             for (int j = 0; j < styles.length; j++) {
                 Rule[] rules;
-                if(isVector) {
-                    rules = KMLUtils.filterRules(styles[j], feature, 0);
-                } else {
                     rules = KMLUtils.filterRules(styles[j], feature,
                             scaleDenominator);
-                }
                 for (int i = 0; i < rules.length; i++) {
                     symbolizerList.addAll(Arrays.asList(rules[i]
                             .getSymbolizers()));
@@ -444,7 +440,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                         try {
                             Style2D style = styleFactory.createStyle(feature,
                                     sym, scaleRange);
-                            encodePointStyle(style, sym);
+                            encodePointStyle(feature, style, sym);
                         } catch (IllegalArgumentException iae) {
                             LOGGER.fine(iae.getMessage() + " for "
                                     + sym.toString());
@@ -462,7 +458,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                         try {
                             TextStyle2D style = (TextStyle2D) styleFactory
                                 .createStyle(feature, sym, scaleRange);
-                            encodeTextStyle(style, sym);
+                            encodeTextStyle(feature, style, sym);
                         } catch (IllegalArgumentException iae) {
                             LOGGER.fine(iae.getMessage() + " for "
                                     + sym.toString());
@@ -478,7 +474,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                         try {
                             LineStyle2D style = (LineStyle2D) styleFactory
                                     .createStyle(feature, sym, scaleRange);
-                            encodeLineStyle(style, sym);
+                            encodeLineStyle(feature, style, sym);
                         } catch (IllegalArgumentException iae) {
                             LOGGER.fine(iae.getMessage() + " for "
                                     + sym.toString());
@@ -495,7 +491,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                             PolygonStyle2D style = (PolygonStyle2D) styleFactory
                                     .createStyle(feature, sym, scaleRange);
                             // The last argument is forced outline
-                            encodePolygonStyle(style, sym, !lineStyles
+                            encodePolygonStyle(feature, style, sym, !lineStyles
                                     .isEmpty());
                         } catch (IllegalArgumentException iae) {
                             LOGGER.fine(iae.getMessage() + " for "
@@ -514,7 +510,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          * Encodes a KML IconStyle + PolyStyle from a polygon style and
          * symbolizer.
          */
-        protected void encodePolygonStyle(PolygonStyle2D style,
+        protected void encodePolygonStyle(SimpleFeature feature, PolygonStyle2D style,
                 PolygonSymbolizer symbolizer, boolean forceOutline) {
             // star the polygon style
             start("PolyStyle");
@@ -522,14 +518,14 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             // fill
             if (symbolizer.getFill() != null) {
                 // get opacity
-                double opacity = SLD.opacity(symbolizer.getFill());
+                double opacity = ((Number)symbolizer.getFill().getOpacity().evaluate(feature)).doubleValue();
 
                 if (Double.isNaN(opacity)) {
                     // none specified, default to full opacity
                     opacity = 1.0;
                 }
 
-                encodeColor(SLD.color(symbolizer.getFill()), opacity);
+                encodeColor((Color)symbolizer.getFill().getColor().evaluate(feature, Color.class), opacity);
             } else {
                 // make it transparent
                 encodeColor("00aaaaaa");
@@ -549,7 +545,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 start("LineStyle");
 
                 // opacity
-                double opacity = SLD.opacity(symbolizer.getStroke());
+                double opacity = 
+                    ((Number)symbolizer.getStroke().getOpacity().evaluate(feature)).doubleValue();
 
                 if (Double.isNaN(opacity)) {
                     // none specified, default to full opacity
@@ -557,12 +554,17 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 }
 
                 if (style != null) {
-                    encodeColor(KMLUtils.colorToHex((Color) style.getContour(),
-                            opacity));
+                    encodeColor(
+                            KMLUtils.colorToHex(
+                                (Color)
+                                symbolizer.getStroke().getColor().evaluate(feature, Color.class),
+                                opacity
+                                )
+                            );
                 }
 
                 // width
-                int width = SLD.width(symbolizer.getStroke());
+                int width = (Integer)symbolizer.getStroke().getWidth().evaluate(feature);
 
                 if (width != SLD.NOTFOUND) {
                     element("width", Integer.toString(width));
@@ -576,14 +578,14 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          * Encodes a KML IconStyle + LineStyle from a polygon style and
          * symbolizer.
          */
-        protected void encodeLineStyle(LineStyle2D style,
+        protected void encodeLineStyle(SimpleFeature feature, LineStyle2D style,
                 LineSymbolizer symbolizer) {
             start("LineStyle");
 
             // stroke
             if (symbolizer.getStroke() != null) {
                 // opacity
-                double opacity = SLD.opacity(symbolizer.getStroke());
+                double opacity = ((Number)symbolizer.getStroke().getOpacity().evaluate(feature)).doubleValue();
 
                 if (Double.isNaN(opacity)) {
                     // default to full opacity
@@ -591,8 +593,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 }
 
                 if (symbolizer.getStroke().getColor() != null) {
-                    encodeW3CColor(
-                            symbolizer.getStroke().getColor().toString(), "ff");
+                    encodeColor((Color)symbolizer.getStroke().getColor().evaluate(feature, Color.class), opacity);
                 } else if (style != null) {
                     encodeColor((Color) style.getContour(), opacity);
                 }
@@ -615,7 +616,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML IconStyle from a point style and symbolizer.
          */
-        protected void encodePointStyle(Style2D style,
+        protected void encodePointStyle(SimpleFeature feature, Style2D style,
                 PointSymbolizer symbolizer) {
             start("IconStyle");
 
@@ -623,7 +624,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 Mark mark = SLD.mark(symbolizer);
 
                 if (mark != null) {
-                    double opacity = SLD.opacity(mark.getFill());
+                    double opacity = ((Number)mark.getFill().getOpacity().evaluate(feature)).doubleValue();
 
                     if (Double.isNaN(opacity)) {
                         // default to full opacity
@@ -631,7 +632,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     }
 
                     if (mark.getFill() != null) {
-                        final Color color = SLD.color(mark.getFill());
+                        final Color color = (Color)mark.getFill().getColor().evaluate(feature, Color.class);
                         encodeColor(color, opacity);
                     }
                 }
@@ -687,19 +688,19 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML LabelStyle from a text style and symbolizer.
          */
-        protected void encodeTextStyle(TextStyle2D style,
+        protected void encodeTextStyle(SimpleFeature feature, TextStyle2D style,
                 TextSymbolizer symbolizer) {
             start("LabelStyle");
 
             if (symbolizer.getFill() != null) {
-                double opacity = SLD.opacity(symbolizer.getFill());
+                double opacity = ((Number)symbolizer.getFill().getOpacity().evaluate(feature)).doubleValue();
 
                 if (Double.isNaN(opacity)) {
                     // default to full opacity
                     opacity = 1.0;
                 }
 
-                encodeColor(SLD.color(symbolizer.getFill()), opacity);
+                encodeColor((Color)symbolizer.getFill().getColor().evaluate(feature), opacity);
             } else {
                 // default
                 encodeColor("ffffffff");
@@ -729,20 +730,6 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          */
         void encodeColor(String hex) {
             element("color", hex);
-        }
-
-        /**
-         * Converts web (CSS / HTML) color code to KML equivalent. rrggbb + aa ->
-         * aabbggrr
-         * 
-         * @param w3cHex
-         *            the web representation, like #rrggbb
-         * @param opacity
-         *            as string, ff for 1.0
-         */
-        void encodeW3CColor(String w3cHex, String opacity) {
-            element("color", opacity + w3cHex.substring(5, 7)
-                    + w3cHex.substring(3, 5) + w3cHex.substring(1, 3));
         }
 
         /**

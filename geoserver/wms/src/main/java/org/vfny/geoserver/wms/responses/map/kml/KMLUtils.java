@@ -361,7 +361,7 @@ public class KMLUtils {
      * @param c The color to convert.
      * @param opacity Opacity / alpha, double from 0 to 1.0.
      *
-     * @return A String of the form "#AABBGGRR".
+     * @return A String of the form "AABBGGRR".
      */
     public static String colorToHex(Color c, double opacity) {
         return new StringBuffer().append(
