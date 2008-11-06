@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -37,6 +39,7 @@ import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
+import org.vfny.geoserver.wms.responses.map.kml.KMLReflector;
 import org.vfny.geoserver.wms.servlets.Capabilities;
 import org.vfny.geoserver.wms.servlets.DescribeLayer;
 import org.vfny.geoserver.wms.servlets.GetFeatureInfo;
@@ -137,7 +140,16 @@ public class DefaultWebMapService implements WebMapService,
         return (GetLegendGraphicResponse) getLegendGraphic.getResponse();
     }
 
-    // refector operations
+    public void kml(GetMapRequest getMap, HttpServletResponse response){
+        try{
+            KMLReflector.wms(getMap, response, this);
+            // return response;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    // reflector operations
     public GetMapResponse reflect(GetMapRequest request) {
         return getMapReflect(request);
     }

@@ -49,7 +49,11 @@ public class KMLReflector {
     }
 
     public void wms(GetMapRequest request, HttpServletResponse response) throws Exception {
+        wms(request, response, wms);
+    }
         
+    public static void wms(GetMapRequest request, HttpServletResponse response, WebMapService wms)
+        throws Exception {
         //first set up some of the normal wms defaults
         if ( request.getWidth() < 1 ) {
             request.setWidth( 1024 );
