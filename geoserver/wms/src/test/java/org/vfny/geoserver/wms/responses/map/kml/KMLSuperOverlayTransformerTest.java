@@ -81,8 +81,8 @@ public class KMLSuperOverlayTransformerTest extends WMSTestSupport {
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
-        assertEquals(3, document.getElementsByTagName("Region").getLength());
-        assertEquals(2, document.getElementsByTagName("NetworkLink").getLength());
+        assertEquals(5, document.getElementsByTagName("Region").getLength());
+        assertEquals(4, document.getElementsByTagName("NetworkLink").getLength());
         assertEquals(0, document.getElementsByTagName("GroundOverlay").getLength());
     }
 

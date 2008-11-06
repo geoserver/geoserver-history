@@ -5,6 +5,8 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -294,36 +296,20 @@ public class KMLTransformerTest extends WMSTestSupport {
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
-        assertEquals(3, document.getElementsByTagName("Region").getLength());
-        assertEquals(2, document.getElementsByTagName("NetworkLink").getLength());
+        assertEquals(5, document.getElementsByTagName("Region").getLength());
+        assertEquals(4, document.getElementsByTagName("NetworkLink").getLength());
     }
 
     public void testStyleConverter() throws Exception {
-//      <Style id="GeoServerStyleBasicPolygons.1107531493630">
-//      <IconStyle>
-//      <colorMode>normal</colorMode>
-//      <Icon>
-//      <href>http://maps.google.com/mapfiles/kml/pal4/icon25.png</href>
-//      </Icon>
-//      </IconStyle>
-//      <LineStyle>
-//      <color>ffBA3E00</color>
-//      <width>2</width>
-//      </LineStyle>
-//      <PolyStyle>
-//      <color>b24d4dff</color>
-//      <outline>1</outline>   
-//      </PolyStyle>
-//      <LabelStyle>
-//      <color>ffffffff</color>
-//      </LabelStyle>
-//      </Style>
-        
         KMLTransformer transformer = new KMLTransformer();
         mapContext.removeLayer(mapContext.getLayer(0));
         mapContext.addLayer(createMapLayer(MockData.BASIC_POLYGONS, "allsymbolizers"));
+        mapContext.setAreaOfInterest(new Envelope(-180,0,-90,90));
+        mapContext.setMapHeight(256);
+        mapContext.setMapWidth(256);
 
         Document document = WMSTestSupport.transform(mapContext, transformer, false);
+        print(document);
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
         assertEquals(3, document.getElementsByTagName("Style").getLength());
@@ -331,7 +317,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         XMLAssert.assertXpathEvaluatesTo("http://maps.google.com/mapfiles/kml/pal4/icon25.png", "//Style[1]/IconStyle/Icon/href", document);
         XMLAssert.assertXpathEvaluatesTo("b24d4dff", "//Style[1]/PolyStyle/color", document);
         XMLAssert.assertXpathEvaluatesTo("1", "//Style[1]/PolyStyle/outline", document);
-        XMLAssert.assertXpathEvaluatesTo("ffBA3E00", "//Style[1]/LineStyle/color", document);
+        XMLAssert.assertXpathEvaluatesTo("ffba3e00", "//Style[1]/LineStyle/color", document);
     }
 
     public void testTransformer() throws Exception {
