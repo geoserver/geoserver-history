@@ -38,7 +38,18 @@
       </modules>
     </profile>
 
+    <!-- allExtensions profile, includes all modules -->
+    <profile>
+      <id>allExtensions</id>
+      <modules>
+        <module>h2</module>
+        <module>wfsv</module>
+      </modules>
+    </profile>
+
     <!-- release profile, includes all modules -->
+    <!-- TODO: perhaps figure a way to trigger the allExtensions profile
+         instead of copying all the modules -->
     <profile>
       <id>release</id>
       <modules>
