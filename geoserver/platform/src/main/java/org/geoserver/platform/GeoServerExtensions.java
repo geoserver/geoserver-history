@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.web.context.WebApplicationContext;
 
 
 /**
@@ -225,4 +226,55 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
             LOGGER.severe( "Extension lookup occured, but ApplicationContext is unset.");
         }
     }
+    
+    /**
+     * Looks up for a named string property into the following contexts (in order):
+     * <ul>
+     * <li>System Property</li>
+     * <li>web.xml init parameters</li>
+     * <li>Environment variable</li>
+     * </ul>
+     * and returns the first non null, non empty value found.
+     * @param propertyName The property name to be searched
+     * @return The property value, or null if not found
+     */
+    public static String getProperty(String propertyName) {
+        // TODO: this code comes from the data directory lookup and it's useful as 
+        // long as we don't provide a way for the user to manually inspect the three contexts
+        // (when trying to debug why the variable they thing they've set, and so on, see also
+        // http://jira.codehaus.org/browse/GEOS-2343
+        // Once that is fixed, we can remove the logging code that makes this method more complex
+        // than strictly necessary
+
+        final String[] typeStrs = { "Java environment variable ", "Servlet context parameter ",
+                "System environment variable " };
+
+        String result = null;
+        for (int j = 0; j < typeStrs.length; j++) {
+            // Lookup section
+            switch (j) {
+            case 0:
+                result = System.getProperty(propertyName);
+                break;
+            case 1:
+                if (context instanceof WebApplicationContext) {
+                    result = ((WebApplicationContext) context).getServletContext()
+                            .getInitParameter(propertyName);
+                }
+                break;
+            case 2:
+                result = System.getenv(propertyName);
+                break;
+            }
+
+            if (result == null || result.equalsIgnoreCase("")) {
+                LOGGER.finer("Found " + typeStrs[j] + ": '" + propertyName + "' to be unset");
+            } else {
+                break;
+            }
+        }
+
+        return result;
+    }
+    
 }
