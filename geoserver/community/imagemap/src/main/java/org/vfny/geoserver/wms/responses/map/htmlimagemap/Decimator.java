@@ -158,23 +158,35 @@ public final class Decimator {
 			LiteCoordinateSequence lseq=new LiteCoordinateSequence(seq.toCoordinateArray());
 			
 			if (decimateOnEnvelope(line, lseq)) {
-				return gFac.createLineString(lseq);
+				if(lseq.size()>=2)
+					return gFac.createLineString(lseq);
 			}
-			return gFac.createLineString(decimate(lseq));
+			if(lseq.size()>=2)
+				return gFac.createLineString(decimate(lseq));
+			return null;
 		} else if (geom instanceof Polygon) {
 			Polygon line = (Polygon) geom;
 			Coordinate[] exterior=decimate(line.getExteriorRing()).getCoordinates();
 			forceClosed(exterior);
-			LinearRing ring=gFac.createLinearRing(exterior);
-						
-			final int numRings = line.getNumInteriorRing();
-			LinearRing[] rings=new LinearRing[numRings];
-			for (int i = 0; i < numRings; i++) {
-				Coordinate[] interior=decimate(line.getInteriorRingN(i)).getCoordinates();
-				forceClosed(interior);
-				rings[i]=gFac.createLinearRing(interior);
+			if(exterior.length>3) {
+				LinearRing ring=gFac.createLinearRing(exterior);
+							
+				final int numRings = line.getNumInteriorRing();
+				LinearRing[] rings=new LinearRing[numRings];
+				for (int i = 0; i < numRings; i++) {
+					Coordinate[] interior=decimate(line.getInteriorRingN(i)).getCoordinates();
+					forceClosed(interior);
+					if(interior.length>3)
+						rings[i]=gFac.createLinearRing(interior);
+	
+	
+	
+	
+	
+				}
+				return gFac.createPolygon(ring, rings);
 			}
-			return gFac.createPolygon(ring, rings);
+			return null;
 		}
 		return geom;
 	}

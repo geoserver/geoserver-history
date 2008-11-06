@@ -246,6 +246,28 @@ public class HTMLImageMapTest extends TestCase {
         assertTestResult("PolygonWithHoles", this.mapProducer);
 	}
 	
+	public void testMapProducePolygonsWithSkippedHoles() throws Exception {
+		
+		final FeatureSource fs = testDS.getFeatureSource("PolygonWithSkippedHoles");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+        
+        LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        map.setTransparent(false);
+
+        Style basicStyle = getTestStyle("default.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("PolygonWithSkippedHoles", this.mapProducer);
+	}
+	
 	public void testMapProduceReproject() throws Exception {
 		final DataStore ds = getProjectedTestDataStore();
         final FeatureSource fs = ds.getFeatureSource("ProjectedPolygon");

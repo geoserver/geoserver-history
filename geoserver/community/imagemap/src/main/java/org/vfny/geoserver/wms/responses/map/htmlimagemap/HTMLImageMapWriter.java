@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses.map.htmlimagemap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -19,6 +20,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.IllegalAttributeException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
@@ -34,6 +36,7 @@ import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.opengis.filter.Filter;
 import org.opengis.filter.expression.Expression;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -72,6 +75,10 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
     
     /** rect representing screen coordinates space **/
     Rectangle mapArea=null;
+    ReferencedEnvelope mapEnv=null;
+    Polygon clippingBox=null;
+    
+    
     
     /** 
      * Transformation from layer (world) coordinates to "screen" coordinates. 
@@ -86,14 +93,28 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
      */
     public HTMLImageMapWriter(OutputStream out, WMSMapContext mapContext) {
         super(out);        
-        this.mapContext=mapContext;
-        ReferencedEnvelope space = mapContext.getAreaOfInterest();
+        this.mapContext=mapContext;        
+        mapEnv = mapContext.getAreaOfInterest();
+        clippingBox=envToGeometry(mapEnv);
         mapArea=new Rectangle(mapContext.getMapWidth(),mapContext.getMapHeight());
-        worldToScreen=RendererUtilities.worldToScreenTransform(space, mapArea);
+        worldToScreen=RendererUtilities.worldToScreenTransform(mapEnv, mapArea);
         initWriters();
     }
 
-    /**
+    private Polygon envToGeometry(ReferencedEnvelope env) {
+		GeometryFactory gFac=new GeometryFactory();
+		Coordinate[] coordinates=new Coordinate[] {
+				new Coordinate(env.getMinX(),env.getMinY()),
+				new Coordinate(env.getMaxX(),env.getMinY()),
+				new Coordinate(env.getMaxX(),env.getMaxY()),
+				new Coordinate(env.getMinX(),env.getMaxY()),
+				new Coordinate(env.getMinX(),env.getMinY())
+		};
+		LinearRing bbox=gFac.createLinearRing(coordinates);
+		return gFac.createPolygon(bbox, new LinearRing[] {});
+	}
+
+	/**
      * Initializes every type of writer (one for every kind of geometry).
      *
      */
@@ -134,8 +155,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
             FeatureType featureType = fColl.getSchema();
             Class gtype = featureType.getDefaultGeometry().getType();
 
-            // retrieves the right feature writer (based on the geometry type of the feature)
-            HTMLImageMapFeatureWriter featureWriter = (HTMLImageMapFeatureWriter) writers.get(gtype);                       
+                                   
 
             
         	                      
@@ -143,6 +163,19 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
             iter=fColl.features();
             while (iter.hasNext()) {
                 ft = iter.next();      
+                Geometry geo=ft.getDefaultGeometry();
+                // TODO: gestire anche le GeometryCollection
+                
+                if(!clippingBox.contains(geo)) {
+                	try {
+                		geo=clippingBox.intersection(geo);                	
+						ft.setDefaultGeometry(geo);
+					} catch (Throwable e) {
+						// ignore and use the original geo
+					}
+                }
+                // retrieves the right feature writer (based on the geometry type of the feature)
+                HTMLImageMapFeatureWriter featureWriter = (HTMLImageMapFeatureWriter) writers.get(geo.getClass());
                 // encodes a single feature, using the supplied style and the current featureWriter
                 featureWriter.writeFeature(ft,style,ftsList);    
                 ft = null;
@@ -291,12 +324,14 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
     		if(processStyle(ft,style,fts)) {
 	    		// encodes starting element
 	            startElement(ft,"");        
+	            Geometry geo=ft.getDefaultGeometry();
+	            
 	            // pre geometry encoding phase
-	            startGeometry(ft.getDefaultGeometry());
+	            startGeometry(geo);
 	            // actual geometry encoding phase
-	            writeGeometry(ft.getDefaultGeometry());
+	            writeGeometry(geo);
 	            // post geometry encoding phase
-	            endGeometry(ft.getDefaultGeometry());
+	            endGeometry(geo);
 	//          encodes ending element
 	            endElement(ft);
     		}
@@ -326,11 +361,14 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
     		reset(ft);
     		if(processStyle(ft,style,fts)) {
 	    		GeometryCollection geomCollection = (GeometryCollection) ft.getDefaultGeometry();
+	    		
 	    		for (int i = 0; i < geomCollection.getNumGeometries(); i++) {
-		            startElement(ft,"."+i);        
-		            startGeometry(geomCollection.getGeometryN(i));
-		            writeGeometry(geomCollection.getGeometryN(i));
-		            endGeometry(geomCollection.getGeometryN(i));        
+		            startElement(ft,"."+i);      
+		            Geometry geo=geomCollection.getGeometryN(i);
+		            
+		            startGeometry(geo);
+		            writeGeometry(geo);
+		            endGeometry(geo);
 		            endElement(ft);
 	    		}
     		}
@@ -704,17 +742,18 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 				Geometry buffered=l.buffer(buffer*bufferMultiplier);
 				if(buffered instanceof Polygon) {
 					Polygon poly=(Polygon)decimate(buffered);
-					LineString shell = poly.getExteriorRing();
-		            
-		            writePathContent(shell.getCoordinates());
+					if(poly!=null) {
+						LineString shell = poly.getExteriorRing();
+			            
+			            writePathContent(shell.getCoordinates());
+					}
 				} else {
 					//TODO: what kind of geometry can a buffer operation
 					// return?
 				}
 				
 			} catch (NoninvertibleTransformException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
 			}
             	
 
@@ -771,15 +810,16 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         		// we create a new polygon without holes
         		// using the HolesRemover
         		if(poly.getNumInteriorRing()>0) {
-                	poly=HolesRemover.removeHoles(poly);
+                	poly=HolesRemover.removeHoles(poly,clippingBox,1.0/worldToScreen.getScaleX());                	
                 }
         		poly=(Polygon)decimate(poly);
         	} else
         		poly = (Polygon) decimate(geom);
-            
-            LineString shell = poly.getExteriorRing();
-            
-            writePathContent(shell.getCoordinates());
+            if(poly!=null) {
+	            LineString shell = poly.getExteriorRing();
+	            
+	            writePathContent(shell.getCoordinates());
+            }
             
         }
     }
@@ -889,7 +929,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         /**
          * Actually write the geometry (through the delegate).
          */
-		protected void writeGeometry(Geometry geom) throws IOException {
+		protected void writeGeometry(Geometry geom) throws IOException {						
 			delegateWriter.writeGeometry(geom);			
 		}
         
