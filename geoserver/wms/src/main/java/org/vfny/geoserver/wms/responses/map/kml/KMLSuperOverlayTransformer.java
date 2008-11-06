@@ -140,36 +140,57 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
         private boolean shouldDrawVectorLayer(MapLayer layer, Envelope box){
             // should draw as vector if the layer is a vector layer, and based on mode
-            // full: yes
-            // bottom: yes
-            // top: is the feature count for this tile below the cutoff?
+            // full: yes, if any regionated vectors are present at this zoom level
+            // bottom: yes, if any regionated vectors are present at this zoom level
+            // top: is the non-regionated feature count for this tile below the cutoff?
             if (!isVectorLayer(layer)) return false;
 
             String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
             if ("top".equals(regionateMode)) {
                 // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
-                return featuresInTile(layer, box, false) <= getFeatureTypeInfo(layer).getRegionateFeatureLimit() * 16; 
+                return featuresInTile(layer, box, false) <= getFeatureTypeInfo(layer).getRegionateFeatureLimit(); 
             }
 
-            return true;
+            return featuresInTile(layer, box, true) > 0;
         }
 
         private boolean shouldDrawWMSOverlay(MapLayer layer, Envelope box){
             // should draw based on the mode:
             // full: no
             // bottom: yes
-            // top: is the feature count for this tile above the cutoff?
+            // top: is the non-regionated feature count for this tile above the cutoff?
             String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
             if ("bottom".equals(regionateMode)) return true;
             if ("top".equals(regionateMode))
-                // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
-                return featuresInTile(layer, box, false) > getFeatureTypeInfo(layer).getRegionateFeatureLimit() * 16;
+                return featuresInTile(layer, box, false) > getFeatureTypeInfo(layer).getRegionateFeatureLimit();
 
             return false;
         }
 
         void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box){
-            if (featuresInTile(mapLayer, box, true) > 0){
+            String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
+            if ("top".equalsIgnoreCase(regionateMode)){
+                start("NetworkLink");
+                element("visibility", "1");
+                start("Link");
+                element("href", KMLUtils.getMapUrl(
+                            mapContext,
+                            mapLayer,
+                            0,
+                            box,
+                            new String[] { 
+                            "width", "256",
+                            "height", "256",
+                            "format_options", "",
+                            "superoverlay", "false"
+                            },
+                            true
+                            )
+                       );
+                end("Link");
+                encodeRegion(box, 128, -1);
+                end("NetworkLink");
+            } else {
                 start("NetworkLink");
                 element("visibility", "1");
                 start("Link");
@@ -210,6 +231,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             if (!isVectorLayer(mapLayer)) return 1; // for coverages, we want raster tiles everywhere
             Envelope originalBounds = mapContext.getRequest().getBbox();
             mapContext.getRequest().setBbox(bounds);
+            mapContext.setAreaOfInterest(bounds);
 
             String originalRegionateBy = null;
             if (regionate){
@@ -253,6 +275,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             }
 
             mapContext.getRequest().setBbox(originalBounds);
+            mapContext.setAreaOfInterest(originalBounds);
             if (regionate && originalRegionateBy == null){
                 mapContext.getRequest().getFormatOptions().remove("regionateby");
             }
