@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,11 +13,11 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +26,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.commons.io.FileUtils;
 import org.geotools.filter.FilterTransformer;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.util.InternationalString;
@@ -1778,7 +1778,7 @@ public class XMLConfigWriter {
      */
     public static class WriterUtils {
         /** Used internally to create log information to detect errors. */
-        private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+        private static final Logger LOGGER = Logging.getLogger("org.vfny.geoserver.global");
 
         /**
          * WriterUtils constructor.

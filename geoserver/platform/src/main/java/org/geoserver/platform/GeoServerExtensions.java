@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletContext;
+
 import org.geotools.factory.FactoryRegistry;
 import org.geotools.util.SoftValueHashMap;
 import org.geotools.util.logging.Logging;
@@ -231,14 +233,35 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      * Looks up for a named string property into the following contexts (in order):
      * <ul>
      * <li>System Property</li>
+     * <li>web.xml init parameters (only works if the context is a {@link WebApplicationContext}</li>
+     * <li>Environment variable</li>
+     * </ul>
+     * and returns the first non null, non empty value found.
+     * @param propertyName The property name to be searched
+     * @param context The Spring context (may be null)
+     * @return The property value, or null if not found
+     */
+    public static String getProperty(String propertyName, ApplicationContext context) {
+        if (context instanceof WebApplicationContext) {
+            return getProperty(propertyName, ((WebApplicationContext) context).getServletContext());
+        } else {
+            return getProperty(propertyName, (ServletContext) null);
+        }
+    }
+    
+    /**
+     * Looks up for a named string property into the following contexts (in order):
+     * <ul>
+     * <li>System Property</li>
      * <li>web.xml init parameters</li>
      * <li>Environment variable</li>
      * </ul>
      * and returns the first non null, non empty value found.
      * @param propertyName The property name to be searched
+     * @param context The servlet context used to look into web.xml (may be null)
      * @return The property value, or null if not found
      */
-    public static String getProperty(String propertyName) {
+    public static String getProperty(String propertyName, ServletContext context) {
         // TODO: this code comes from the data directory lookup and it's useful as 
         // long as we don't provide a way for the user to manually inspect the three contexts
         // (when trying to debug why the variable they thing they've set, and so on, see also
@@ -257,9 +280,8 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
                 result = System.getProperty(propertyName);
                 break;
             case 1:
-                if (context instanceof WebApplicationContext) {
-                    result = ((WebApplicationContext) context).getServletContext()
-                            .getInitParameter(propertyName);
+                if (context != null) {
+                    result = context.getInitParameter(propertyName);
                 }
                 break;
             case 2:
