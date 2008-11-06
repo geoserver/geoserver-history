@@ -654,7 +654,6 @@ public class ApplicationState implements InitializingBean {
         if (xmlTimestamp == null) {
             //DJB: changed for geoserver_data_dir
             File dataDir = config.dataDirectory();
-            boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
 
             //We're just checking if it's actually a data_dir, not trying to
             //to do backwards compatibility.  So if an old data_dir is made in
