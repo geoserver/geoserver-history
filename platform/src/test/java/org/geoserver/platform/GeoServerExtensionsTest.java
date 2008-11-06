@@ -8,9 +8,11 @@ import static org.easymock.EasyMock.*;
 
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
+import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Unit test suite for {@link GeoServerExtensions}
@@ -22,10 +24,12 @@ public class GeoServerExtensionsTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        System.setProperty("TEST_PROPERTY", "ABC");
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
+        System.setProperty("TEST_PROPERTY", "");
     }
 
     public void testSetApplicationContext() {
@@ -141,5 +145,22 @@ public class GeoServerExtensionsTest extends TestCase {
     public void _testCheckContext() {
         fail("Not yet implemented");
     }
+    
+    public void testSystemProperty() {
+        // check for a property we did set up in the setUp
+        assertEquals("ABC", GeoServerExtensions.getProperty("TEST_PROPERTY", (ApplicationContext) null));
+        assertEquals("ABC", GeoServerExtensions.getProperty("TEST_PROPERTY", (ServletContext) null));
+    }
+    
+    public void testWebProperty() {
+        ServletContext servletContext = createMock(ServletContext.class);
+        expect(servletContext.getInitParameter("TEST_PROPERTY")).andReturn("DEF").anyTimes();
+        expect(servletContext.getInitParameter("WEB_PROPERTY")).andReturn("WWW").anyTimes();
+        replay(servletContext);
+        
+        assertEquals("ABC", GeoServerExtensions.getProperty("TEST_PROPERTY", servletContext));
+        assertEquals("WWW", GeoServerExtensions.getProperty("WEB_PROPERTY", servletContext));
+    }
+    
 
 }

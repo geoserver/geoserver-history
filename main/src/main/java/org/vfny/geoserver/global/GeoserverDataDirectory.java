@@ -52,7 +52,6 @@ public class GeoserverDataDirectory {
     private static Data catalog;
     private static ApplicationContext appContext;
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
-    private static boolean isTrueDataDir = false;
 
     /**
      * See the class documentation for more details. 1. search for the "GEOSERVER_DATA_DIR" system property. 2. search for a
@@ -116,16 +115,6 @@ public class GeoserverDataDirectory {
         CoverageInfo coverageInfo = data.getCoverageInfo(coverageName);
         String dirName = coverageInfo.getDirName();
         return dirName;
-    }
-
-    /**
-     * Returns whether GeoServer is using a true data directory, loaded from outside the webapp, or if its defaulting to the webapp embedded
-     * dataDir. We're in the process of moving away from storing anything in the webapp but are keeping this to ease the transition.
-     *
-     * @return <tt>true</tt> if the directory being used for loading is not embedded in the webapp.
-     */
-    static public boolean isTrueDataDir() {
-        return isTrueDataDir;
     }
 
     /**
@@ -284,40 +273,16 @@ public class GeoserverDataDirectory {
 
             String dataDirStr = findGeoServerDataDir(servContext);
 
-            if (dataDirStr != null) {
-                // its defined!!
-                isTrueDataDir = true;
-                dataDir = new File(dataDirStr);
-                loader.setBaseDirectory(dataDir);
-                loader.addSearchLocation(new File(dataDir, "data"));
-                loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                LOGGER
-                        .severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                                + dataDir.getAbsolutePath()
-                                + "\n----------------------------------");
+            dataDir = new File(dataDirStr);
+            loader.setBaseDirectory(dataDir);
+            loader.addSearchLocation(new File(dataDir, "data"));
+            loader.addSearchLocation(new File(dataDir, "WEB-INF"));
+            LOGGER
+                    .severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                            + dataDir.getAbsolutePath()
+                            + "\n----------------------------------");
 
                 return;
-            } else {
-
-                // Return default
-                isTrueDataDir = false;
-
-                String rootDir = servContext.getRealPath("/data");
-                dataDir = new File(rootDir);
-
-                // set the base directory of the loader
-                loader.setBaseDirectory(dataDir);
-                loader.addSearchLocation(new File(dataDir, "data"));
-                loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                LOGGER
-                        .severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                                + dataDir.getAbsolutePath()
-                                + "\n----------------------------------");
-                // loader.addSearchLocation(new
-                // File(servContext.getRealPath("WEB-INF")));
-                //loader.addSearchLocation(new File(servContext.getRealPath("data")));
-            }
-
         }
     }
 
@@ -337,7 +302,7 @@ public class GeoserverDataDirectory {
      * @param servContext
      * @return String representation of path, null otherwise
      */
-    private static String findGeoServerDataDir(ServletContext servContext) {
+    public static String findGeoServerDataDir(ServletContext servContext) {
         final String[] typeStrs = { "Java environment variable ",
                 "Servlet context parameter ", "System environment variable " };
 
@@ -400,6 +365,10 @@ public class GeoserverDataDirectory {
             }
         }
         
+        // fall back to embedded data dir
+        if(dataDirStr == null)
+            dataDirStr = servContext.getRealPath("/data");
+        
         return dataDirStr;
     }
     /**
@@ -410,7 +379,6 @@ public class GeoserverDataDirectory {
      */
     public static void destroy() {
         loader = null;
-        isTrueDataDir = false;
         catalog = null;
     }
     
