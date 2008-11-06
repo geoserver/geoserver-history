@@ -38,6 +38,15 @@
       </modules>
     </profile>
 
+    <!-- allExtensions profile, includes all modules -->
+    <profile>
+      <id>allExtensions</id>
+      <modules>
+        <module>h2</module>
+        <module>wfsv</module>
+      </modules>
+    </profile>
+
     <!-- release profile, includes all modules -->
     <profile>
       <id>release</id>
