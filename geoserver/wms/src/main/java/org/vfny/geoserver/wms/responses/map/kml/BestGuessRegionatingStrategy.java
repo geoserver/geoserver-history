@@ -11,13 +11,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.wms.WMSMapContext;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineSegment;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * Make a best guess as to the appropriate strategy to use for a featuretype
@@ -35,30 +29,15 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author David Winslow <dwinslow@opengeo.org>
  */
 public class BestGuessRegionatingStrategy implements RegionatingStrategy {
-    /**
-     * A list of the Classes representing the geometry types that we'll
-     * try to sort.
-     */
-    private static final Class[] SORTABLE_GEOM_TYPES = 
-        new Class[]{
-            Polygon.class,
-            MultiPolygon.class,
-            LineSegment.class,
-            LinearRing.class,
-            LineString.class,
-            MultiLineString.class
-        };
 
     public Filter getFilter(WMSMapContext context, MapLayer layer) {
         SimpleFeatureType type = 
             ((FeatureSource<SimpleFeatureType, SimpleFeature>)layer.getFeatureSource()).getSchema();
         Class geomtype = type.getGeometryDescriptor().getType().getBinding();
 
+        if (Point.class.isAssignableFrom(geomtype))
+            return new RandomRegionatingStrategy().getFilter(context, layer);
 
-        for (Class clazz : SORTABLE_GEOM_TYPES)
-            if (clazz.isAssignableFrom(geomtype))
-                return new GeometryRegionatingStrategy().getFilter(context, layer);
-
-        return new RandomRegionatingStrategy().getFilter(context, layer);
+        return new GeometryRegionatingStrategy().getFilter(context, layer);
     }
 }
