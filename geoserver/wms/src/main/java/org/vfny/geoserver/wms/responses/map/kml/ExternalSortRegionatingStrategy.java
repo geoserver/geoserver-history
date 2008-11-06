@@ -184,14 +184,14 @@ public class ExternalSortRegionatingStrategy extends
             MathTransform tx = null;
             double[] coords = new double[2];
             if (!CRS.equalsIgnoreMetadata(nativeCrs, WGS84))
-                tx = CRS.findMathTransform(nativeCrs, WGS84);
+                tx = CRS.findMathTransform(nativeCrs, WGS84, true);
 
             // read all the features and fill the index table
             // make it so the insertion is a single big transaction, should
             // be faster,
             // provided it does not kill H2...
             conn.setAutoCommit(false);
-            fi = fs.getFeatures().features();
+            fi = fs.getFeatures(q).features();
             while (fi.hasNext()) {
                 // grab the centroid and transform it in 4326 if necessary
                 SimpleFeature f = (SimpleFeature) fi.next();
