@@ -73,36 +73,8 @@ public class OWS11ServiceExceptionHandler extends ServiceExceptionHandler {
     public void handleServiceException(ServiceException exception, Request request) {
         Ows11Factory factory = Ows11Factory.eINSTANCE;
 
-        ExceptionType e = factory.createExceptionType();
-
-        if (exception.getCode() != null) {
-            e.setExceptionCode(exception.getCode());
-        } else {
-            //set a default
-            e.setExceptionCode("NoApplicableCode");
-        }
-
-        e.setLocator(exception.getLocator());
-
-        //add the message
-        StringBuffer sb = new StringBuffer();
-        dumpExceptionMessages(exception, sb, true);
-        e.getExceptionText().add(sb.toString());
-        e.getExceptionText().addAll(exception.getExceptionText());
-
-        if(verboseExceptions) {
-            //add the entire stack trace
-            //exception.
-            e.getExceptionText().add("Details:");
-            ByteArrayOutputStream trace = new ByteArrayOutputStream();
-            exception.printStackTrace(new PrintStream(trace));
-            e.getExceptionText().add(new String(trace.toByteArray()));
-        }
-
-        ExceptionReportType report = factory.createExceptionReportType();
-        report.setVersion("1.1.0");
-        report.getException().add(e);
-
+        ExceptionReportType report = Ows11Util.exceptionReport( exception, verboseExceptions );
+        
         HttpServletResponse response = request.getHttpResponse();
         response.setContentType("application/xml");
 

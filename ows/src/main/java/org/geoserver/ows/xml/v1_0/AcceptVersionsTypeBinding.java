@@ -7,6 +7,7 @@ package org.geoserver.ows.xml.v1_0;
 import net.opengis.ows10.AcceptVersionsType;
 import net.opengis.ows10.Ows10Factory;
 import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import javax.xml.namespace.QName;
@@ -33,10 +34,12 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class AcceptVersionsTypeBinding extends AbstractComplexBinding {
+public class AcceptVersionsTypeBinding extends AbstractComplexEMFBinding {
+    
     Ows10Factory owsfactory;
-
+    
     public AcceptVersionsTypeBinding(Ows10Factory owsfactory) {
+        super( owsfactory );
         this.owsfactory = owsfactory;
     }
 

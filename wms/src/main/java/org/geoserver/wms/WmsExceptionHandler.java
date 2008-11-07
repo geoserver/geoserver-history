@@ -5,7 +5,6 @@
 package org.geoserver.wms;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -31,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.geoserver.ows.LegacyServiceExceptionHandler;
 import org.geoserver.ows.OWS;
 import org.geoserver.ows.Request;
-import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
@@ -117,7 +116,7 @@ public class WmsExceptionHandler extends LegacyServiceExceptionHandler {
 
         // message
         if ((exception.getMessage() != null)) {
-            dumpExceptionMessages(exception, sb, false);
+            OwsUtils.dumpExceptionMessages(exception, sb, false);
 
             if (geoServer.isVerboseExceptions()) {
                 ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();

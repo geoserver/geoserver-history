@@ -4,19 +4,19 @@
  */
 package org.geoserver.wfs.response;
 
-import org.geoserver.ows.DefaultServiceExceptionHandler;
-import org.geoserver.ows.Request;
-import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.platform.Service;
-import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
-import org.geotools.util.Version;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpServletResponse;
+
+import org.geoserver.ows.DefaultServiceExceptionHandler;
+import org.geoserver.ows.Request;
+import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.WFS;
 
 
 /**
@@ -80,7 +80,7 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
 
             if (e.getMessage() != null) {
                 s.append("\n" + tab + tab);
-                dumpExceptionMessages(e, s, true);
+                OwsUtils.dumpExceptionMessages(e, s, true);
 
                 if(verboseExceptions) {
                   ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
@@ -102,56 +102,4 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
             throw new RuntimeException(ioe);
         }
     }
-
-    //	public void handle1_1( ServiceException e,
-    //			 HttpServletResponse response ) {
-    //		
-    //		try {
-    //			String tab = "   ";
-    //			
-    //			StringBuffer s = new StringBuffer();
-    //			s.append( "<?xml version=\"1.0\" ?>\n" );
-    //			s.append( "<ExceptionReport\n" );
-    //			s.append( tab + "version=\"1.1.0\"\n" );
-    //			s.append( tab + "xmlns=\"http://www.opengis.net/ows\"\n" );
-    //			s.append( tab + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" );
-    //			s.append( tab );
-    //			s.append( "xsi:schemaLocation=\"http://www.opengis.net/ows " );
-    //			//TODO: dont hardcode schmea location
-    //			s.append( "http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd\">\n" );
-    //
-    //			s.append( tab + "<Exception" );
-    //			s.append( " exceptionCode=\"" + e.getCode() + "\"" );
-    //			
-    //			if ( e.getLocator() != null && !e.getLocator().equals( "" ) ) {
-    //	            s.append(" locator=\"" + e.getLocator() + "\"" );
-    //	        }
-    //			s.append( ">");
-    //			
-    //			if ( e.getMessage() != null && !e.getMessage().equals( "" ) ) {
-    //				s.append( "\n" + tab + tab );
-    //				s.append( "<ExceptionText>\n");
-    //				s.append( ResponseUtils.encodeXML( e.getMessage() ) );
-    //				
-    //				ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
-    //				e.printStackTrace( new PrintStream( stackTrace ) );
-    //				
-    //				s.append( ResponseUtils.encodeXML( new String( stackTrace.toByteArray() ) ) );
-    //				s.append( "</ExceptionText>\n");
-    //			}
-    //			
-    //
-    //			s.append( "\n</Exception>" );
-    //			s.append( "</ExceptionReport>" );
-    //			
-    //			response.setContentType( "text/xml" );
-    //			response.setCharacterEncoding( "UTF-8" );
-    //			response.getOutputStream().write( s.toString().getBytes() );
-    //			response.getOutputStream().flush();
-    //			
-    //		} 
-    //		catch (IOException ioe) {
-    //			throw new RuntimeException( ioe );
-    //		}
-    //	}
 }
