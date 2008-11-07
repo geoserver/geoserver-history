@@ -6,6 +6,7 @@ package org.geoserver.wfs.xml.v1_0_0;
 
 import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import javax.xml.namespace.QName;
@@ -35,11 +36,9 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class GetCapabilitiesBinding extends AbstractComplexBinding {
-    WfsFactory wfsfactory;
-
+public class GetCapabilitiesBinding extends AbstractComplexEMFBinding {
     public GetCapabilitiesBinding(WfsFactory wfsfactory) {
-        this.wfsfactory = wfsfactory;
+        super( wfsfactory );
     }
 
     /**
@@ -47,27 +46,5 @@ public class GetCapabilitiesBinding extends AbstractComplexBinding {
      */
     public QName getTarget() {
         return WFS.GETCAPABILITIES;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public Class getType() {
-        return null;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public Object parse(ElementInstance instance, Node node, Object value)
-        throws Exception {
-        //TODO: implement
-        return null;
     }
 }
