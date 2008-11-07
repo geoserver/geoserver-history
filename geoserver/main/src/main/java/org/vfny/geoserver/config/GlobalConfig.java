@@ -129,7 +129,7 @@ public class GlobalConfig {
      * these names seem taken from the jdk14 logging framework and GeoServer
      * seems to also use log4j.
      * 
-     * See http://docs.codehaus.org/display/GEOS/GSIP+13+-+Logging
+     * See http://geoserver.org/display/GEOS/GSIP+13+-+Logging
      * for how this is now implemented.
      * </p>
      */

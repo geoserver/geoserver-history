@@ -44,6 +44,7 @@ import junit.framework.TestCase;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.data.test.TestData;
+import org.geoserver.logging.LoggingInitializer;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -146,8 +147,8 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Could not configure log4j logging redirection", e);
         }
-        GeoServer.suppressLoggingConfiguration();
-        GeoServer.configureGeoServerLogging(getClass().getResourceAsStream(getLogConfiguration()), false, true, null);
+        System.setProperty(LoggingInitializer.RELINQUISH_LOG4J_CONTROL, "true");
+        LoggingInitializer.configureGeoServerLogging(getClass().getResourceAsStream(getLogConfiguration()), false, true, null);
 
         // set up test data and, if succeeds, create a mock servlet context and start up the spring configuration
         testData = buildTestData();

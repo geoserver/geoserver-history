@@ -1,3 +1,38 @@
+GeoServer 1.7.0 (October 22, 2008)
+---------------------------------
+
+The GeoServer 1.7 series brings some exciting new features and improvement. This
+includes:
+
+ * security and authentication on a per layer / dataset basis
+ * ECW, MrSID, JPEG 2K support via GDAL integration
+ * WCS 1.1 and WFS 1.1 XLink implementations
+
+And many many bug fixes. All of which can viewed in the 1.7.x change logs:
+
+ 1.7.0-beta1:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/13881
+
+ 1.7.0-beta2:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14377
+
+ 1.7.0-RC1:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14475
+ 
+ 1.7.0-RC2:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14500
+
+ 1.7.0-RC3:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14538
+
+ 1.7.0-RC4:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14627
+
+ 1.7.0:
+   http://jira.codehaus.org/browse/GEOS/fixforversion/13880
+
+This release is based on GeoTools 2.5.1. 
+
 GeoServer 1.7.0-RC4 (October 10, 2008)
 -------------------------------------
 
@@ -367,7 +402,7 @@ Major features / improvements of this release include:
 
 - WMS GetMap filter support
 - More robust KML point styling
-- Integration with OSCache, please see: http://docs.codehaus.org/display/GEOSDOC/Caching
+- Integration with OSCache, please see: http://geoserver.org/display/GEOSDOC/Caching
 - Numerous bug fixes and improvements
 
 
@@ -463,7 +498,7 @@ Geoserver 1.3.1
 ---------------
 Fully tested with GeoTools 2.2.x. This release also contains KML and KMZ support for 
 data viewing in Google Earth. For more information visit 
-http://docs.codehaus.org/display/GEOSDOC/Google+Earth 
+http://geoserver.org/display/GEOSDOC/Google+Earth 
 
 
 Geoserver 1.3.1 beta
@@ -724,7 +759,7 @@ Minor Changes
 -------------
 1. bug fixes
 2. set of lite renderer improvements
-3. added a WFS lock tutorial (http://docs.codehaus.org/display/GEOS/Feature+Locking)
+3. added a WFS lock tutorial (http://geoserver.org/display/GEOS/Feature+Locking)
 4. upgraded to latest geotools
 
 
@@ -817,7 +852,7 @@ The documentation is also available for download from sourceforge, and can
 be built from the source downloading using the 'ant document' command.
 
 Additional  wiki-based documentation is available at:
-http://docs.codehaus.org/display/GEOS/Home
+http://geoserver.org/display/GEOS/Home
 
 Additional Geotools documentation is available at:
 http://www.geotools.org/

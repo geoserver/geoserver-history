@@ -6,8 +6,8 @@ package org.geoserver.security.decorators;
 
 import java.io.IOException;
 
+import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataAccess;
-import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
@@ -29,22 +29,19 @@ import org.opengis.filter.Filter;
 public class ReadOnlyFeatureSource<T extends FeatureType, F extends Feature>
         extends DecoratingFeatureSource<T, F> {
 
-    boolean challenge;
+    WrapperPolicy policy;
 
-    public ReadOnlyFeatureSource(FeatureSource<T, F> delegate, boolean challenge) {
+    protected ReadOnlyFeatureSource(FeatureSource<T, F> delegate, WrapperPolicy policy) {
         super(delegate);
-        this.challenge = challenge;
+        this.policy = policy;
     }
 
     public DataAccess<T, F> getDataStore() {
         final DataAccess<T, F> store = delegate.getDataStore();
         if (store == null)
             return null;
-        else if (store instanceof DataStore)
-            return (DataAccess) new ReadOnlyDataStore((DataStore) store,
-                    challenge);
-        else
-            return new ReadOnlyDataAccess(store, challenge);
+        else 
+            return (DataAccess) SecuredObjects.secure(store, policy);
     }
 
     public FeatureCollection<T, F> getFeatures() throws IOException {
@@ -52,7 +49,7 @@ public class ReadOnlyFeatureSource<T extends FeatureType, F extends Feature>
         if (fc == null)
             return null;
         else
-            return new ReadOnlyFeatureCollection<T, F>(fc, challenge);
+            return (FeatureCollection) SecuredObjects.secure(fc, policy);
     }
 
     public FeatureCollection<T, F> getFeatures(Filter filter)
@@ -61,7 +58,7 @@ public class ReadOnlyFeatureSource<T extends FeatureType, F extends Feature>
         if (fc == null)
             return null;
         else
-            return new ReadOnlyFeatureCollection<T, F>(fc, challenge);
+            return (FeatureCollection) SecuredObjects.secure(fc, policy);
     }
 
     public FeatureCollection<T, F> getFeatures(Query query) throws IOException {
@@ -69,6 +66,6 @@ public class ReadOnlyFeatureSource<T extends FeatureType, F extends Feature>
         if (fc == null)
             return null;
         else
-            return new ReadOnlyFeatureCollection<T, F>(fc, challenge);
+            return (FeatureCollection) SecuredObjects.secure(fc, policy);
     }
 }

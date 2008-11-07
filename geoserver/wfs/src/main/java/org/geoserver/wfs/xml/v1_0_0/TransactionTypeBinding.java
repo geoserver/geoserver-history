@@ -12,6 +12,7 @@ import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import java.util.Iterator;
@@ -98,10 +99,11 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class TransactionTypeBinding extends AbstractComplexBinding {
+public class TransactionTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public TransactionTypeBinding(WfsFactory wfsfactory) {
+        super( wfsfactory );
         this.wfsfactory = wfsfactory;
     }
 

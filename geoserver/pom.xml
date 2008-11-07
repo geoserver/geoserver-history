@@ -7,7 +7,7 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>1.7.0-SNAPSHOT</version>
+ <version>1.7.1-SNAPSHOT</version>
  <name>GeoServer</name>
 
  <scm>
@@ -248,7 +248,17 @@
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt-h2</artifactId>
+    <artifactId>gt-jdbc-h2</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>com.microsoft</groupId>
+    <artifactId>sqljdbc</artifactId>
+    <version>1.2</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-jdbc-sqlserver</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
@@ -860,7 +870,7 @@
      <dependency>
       <groupId>org.geoserver.maven</groupId>
       <artifactId>build-configs</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.1-SNAPSHOT</version>
      </dependency>
     </dependencies>
    </plugin>
@@ -903,8 +913,9 @@
       <descriptor>release/ext-gwc.xml</descriptor>
       <descriptor>release/ext-gdal.xml</descriptor>
       <descriptor>release/ext-h2.xml</descriptor>
+      <descriptor>release/ext-sqlserver.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.7.0-SNAPSHOT</finalName>
+     <finalName>geoserver-1.7.1-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -1106,7 +1117,6 @@
   <module>wcs1_1</module>
   <module>wfs</module>
   <module>wfs11</module>
-  <module>wfsv</module>
   <module>wms</module>
   <module>validation</module>
   <module>web</module>
@@ -1116,7 +1126,7 @@
  </modules>
 
  <properties>
-  <gs.version>1.7.0-SNAPSHOT</gs.version>
+  <gs.version>1.7.1-SNAPSHOT</gs.version>
   <gt.version>2.5-SNAPSHOT</gt.version>
   <spring.version>2.5.5</spring.version>
   <java.awt.headless>true</java.awt.headless>

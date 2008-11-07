@@ -21,8 +21,7 @@ public class SecuredLayerGroupInfo extends DecoratingLayerGroupINfo {
      * @param delegate
      * @param layers
      */
-    public SecuredLayerGroupInfo(LayerGroupInfo delegate,
-            List<LayerInfo> layers) {
+    public SecuredLayerGroupInfo(LayerGroupInfo delegate, List<LayerInfo> layers) {
         super(delegate);
         this.layers = layers;
     }

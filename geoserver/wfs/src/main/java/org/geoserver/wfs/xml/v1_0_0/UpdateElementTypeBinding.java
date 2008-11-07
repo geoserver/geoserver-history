@@ -8,6 +8,7 @@ import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.Filter;
@@ -49,10 +50,11 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class UpdateElementTypeBinding extends AbstractComplexBinding {
+public class UpdateElementTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public UpdateElementTypeBinding(WfsFactory wfsfactory) {
+        super(wfsfactory);
         this.wfsfactory = wfsfactory;
     }
 
@@ -98,5 +100,10 @@ public class UpdateElementTypeBinding extends AbstractComplexBinding {
         updateElement.setTypeName((QName) node.getAttributeValue("typeName"));
 
         return updateElement;
+    }
+    
+    @Override
+    public Object getProperty(Object object, QName name) throws Exception {
+        return super.getProperty(object, name);
     }
 }

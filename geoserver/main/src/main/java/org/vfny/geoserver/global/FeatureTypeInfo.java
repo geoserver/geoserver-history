@@ -407,7 +407,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             // no attribute should be set if the user did not explicitly specify
             // the attributes (by changing the schema base and fiddling with types and
             // names, which is something we don't support fine anyways).
-            SimpleFeatureType ft = ds.getDataStore(null).getSchema(featureType.getName());
+            SimpleFeatureType ft = ds.getDataStore(null).getSchema(featureType.getNativeName());
             
             for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
                 AttributeDescriptor ad = ft.getDescriptor( x );
@@ -427,8 +427,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         
         featureType.setProjectionPolicy( ProjectionPolicy.get( dto.getSRSHandling() ) );
         featureType.setNativeCRS( CRS.decode( featureType.getSRS() ) );
-        featureType.setNativeBoundingBox( 
-            new ReferencedEnvelope( dto.getNativeBBox(), featureType.getCRS() ) );
+        if(dto.getNativeBBox() != null)
+            featureType.setNativeBoundingBox(new ReferencedEnvelope( dto.getNativeBBox(), featureType.getCRS() ) );
         setCacheMaxAge( dto.getCacheMaxAge() );
         setCachingEnabled( dto.isCachingEnabled() );
         setIndexingEnabled( dto.isIndexingEnabled() );

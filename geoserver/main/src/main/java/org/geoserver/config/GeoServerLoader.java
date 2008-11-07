@@ -49,6 +49,7 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
 
     static Logger LOGGER = Logging.getLogger( "org.geoserver" );
     
+    ApplicationContext applicationContext;
     GeoServerResourceLoader resourceLoader;
     GeoServer geoserver;
     
@@ -59,6 +60,7 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
         GeoserverDataDirectory.init((WebApplicationContext)applicationContext);
+        this.applicationContext = applicationContext;
     }
     
     public final Object postProcessAfterInitialization(Object bean, String beanName)
@@ -90,7 +92,7 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         try {
             LoggingInitializer loggingIniter = new LoggingInitializer();
             loggingIniter.setResourceLoader( resourceLoader );
-            loggingIniter.initialize( geoserver );
+            loggingIniter.initialize( geoserver, applicationContext );
         } 
         catch (Exception e) {
             throw new RuntimeException(e);

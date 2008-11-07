@@ -22,7 +22,7 @@
  * of 5.  It also performs the calculation from a GPoint to the appropriate
  * BBOX to pass the WMS.  The overlays could be more accurate, and if you 
  * figure out a way to make them so please contribute information back to
- * http://docs.codehaus.org/display/GEOSDOC/Google+Maps.  There is much
+ * http://geoserver.org/display/GEOSDOC/Google+Maps.  There is much
  * information at: 
  * http://cfis.savagexi.com/articles/2006/05/03/google-maps-deconstructed
  * 

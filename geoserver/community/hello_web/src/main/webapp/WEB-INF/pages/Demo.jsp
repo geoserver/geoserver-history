@@ -41,7 +41,7 @@
 		<tr>
 			<td width=70/>
 			<td width=600 class="label" valign="top">
-			<center><u><b><font size=+2><a href="http://docs.codehaus.org/display/GEOSDOC/Documentation" target="newwindow"><bean:message key="welcome.demo.documentation.title"/></a></font></b></u><br>
+			<center><u><b><font size=+2><a href="http://geoserver.org/display/GEOSDOC/Documentation" target="newwindow"><bean:message key="welcome.demo.documentation.title"/></a></font></b></u><br>
 			<p>
 			<bean:message key="welcome.demo.documentation.short"/>
 			</p>

@@ -40,7 +40,7 @@ public class SecuredDataStoreInfo extends DecoratingDataStoreInfo {
         else if(policy == WrapperPolicy.METADATA)
             throw SecureCatalogImpl.unauthorizedAccess(this.getName());
         else
-            return new ReadOnlyDataStore(ds, policy.response == Response.CHALLENGE);
+            return (DataStore) SecuredObjects.secure(ds, policy);
     }
 
 }

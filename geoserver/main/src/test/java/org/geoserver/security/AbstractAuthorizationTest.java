@@ -19,14 +19,11 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geotools.data.DataStore;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.factory.Hints;
 import org.opengis.util.ProgressListener;
 
-import junit.framework.TestCase;
-
-public abstract class AbstractAuthorizationTest extends TestCase {
+public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
 
     protected Authentication rwUser;
 
@@ -72,6 +69,8 @@ public abstract class AbstractAuthorizationTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
+        super.setUp();
+        
         rwUser = new TestingAuthenticationToken("rw", "supersecret", new GrantedAuthority[] {
                 new GrantedAuthorityImpl("READER"), new GrantedAuthorityImpl("WRITER") });
         roUser = new TestingAuthenticationToken("ro", "supersecret",

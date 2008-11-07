@@ -387,7 +387,7 @@ public class CoverageConfig {
                 supportedFormats.add("TIFF");
             } else if (fName.toLowerCase().startsWith("geotiff")) {
                 // TODO check if coverage can encode Format
-                supportedFormats.add("GeoTIFF");
+                supportedFormats.add("GEOTIFF");
             } else {
                 // TODO check if coverage can encode Format
                 supportedFormats.add(fName);

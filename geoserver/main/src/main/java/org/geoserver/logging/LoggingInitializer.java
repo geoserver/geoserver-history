@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.logging;
 
 import java.io.File;
@@ -16,13 +20,15 @@ import org.apache.log4j.PropertyConfigurator;
 import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
-import org.geoserver.config.GeoServerInitializer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ExtensionPriority;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.util.logging.Logging;
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+
 
 /**
  * Initializes GeoServer logging funcionality based on configuration settings.
@@ -30,7 +36,8 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class LoggingInitializer implements GeoServerInitializer, ExtensionPriority {
+public class LoggingInitializer {
+    public static final String RELINQUISH_LOG4J_CONTROL = "RELINQUISH_LOG4J_CONTROL";  
 
     /**
      * logging instance
@@ -48,45 +55,38 @@ public class LoggingInitializer implements GeoServerInitializer, ExtensionPriori
         return ExtensionPriority.HIGHEST - 10;
     }
     
-    public void initialize(GeoServer geoServer) throws Exception {
-        initLogging( geoServer.getGlobal() );
+    public void initialize(GeoServer geoServer, ApplicationContext context) throws Exception {
+        String strValue = GeoServerExtensions.getProperty(RELINQUISH_LOG4J_CONTROL, context);
+        boolean relinquishLoggingControl = Boolean.valueOf(strValue);
         
+        if(relinquishLoggingControl)
+            return;
+        
+        initLogging( geoServer.getGlobal() );
         geoServer.addListener( new ConfigurationListener() {
 
             public void handleGlobalChange(GeoServerInfo global,
                     List<String> propertyNames, List<Object> oldValues,
                     List<Object> newValues) {
-                
-                //TODO: get rid of this hack checking singleton
-                if ( !org.vfny.geoserver.global.GeoServer.suppressLoggingConfiguration ) {
-                    
-                    boolean reload = false;
-                    String loggingLevel = global.getLoggingLevel();
-                    String loggingLocation = global.getLoggingLocation();
-                    Boolean stdOutLogging = global.isStdOutLogging();
-                    
-                    if ( propertyNames.contains( "loggingLevel") ) {
-                        loggingLevel = (String) newValues.get( propertyNames.indexOf( "loggingLevel" ) );
-                        reload = true;
+            
+                boolean reload = false;
+                if ( propertyNames.contains( "loggingLevel") ) {
+                    reload = true;
+                }
+                if ( propertyNames.contains( "loggingLocation") ) {
+                    reload = true;
+                }
+                if ( propertyNames.contains( "stdOutLogging" ) ) {
+                    reload = true;
+                }
+               
+                if ( reload ) {
+                    try {
+                        initLogging( global );
+                    } 
+                    catch (Exception e) {
+                        throw new RuntimeException( e );
                     }
-                    if ( propertyNames.contains( "loggingLocation") ) {
-                        loggingLocation = (String) newValues.get( propertyNames.indexOf( "loggingLocation" ) );
-                        reload = true;
-                    }
-                    if ( propertyNames.contains( "stdOutLogging" ) ) {
-                        stdOutLogging = (Boolean) newValues.get( propertyNames.indexOf( "stdOutLogging" ) );
-                        reload = true;
-                    }
-                   
-                    if ( reload ) {
-                        try {
-                            initLogging( global );
-                        } 
-                        catch (Exception e) {
-                            throw new RuntimeException( e );
-                        }
-                    }
-                    
                 }
             }
 

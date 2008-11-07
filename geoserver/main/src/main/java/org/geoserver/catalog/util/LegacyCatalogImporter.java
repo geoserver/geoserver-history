@@ -565,15 +565,15 @@ public class LegacyCatalogImporter {
         ReferencedEnvelope bounds = new ReferencedEnvelope( 
             (Double) envelope.get( "x1" ), (Double) envelope.get( "x2" ), 
             (Double) envelope.get( "y1" ), (Double) envelope.get( "y2" ), 
-            crs
+            CRS.decode(userDefinedCrsIdentifier, true)
         );
+        //coverage.setNativeBoundingBox(bounds.transform(crs, true));
         coverage.setNativeBoundingBox(bounds);
         
-        GeneralEnvelope boundsLatLon = 
-            CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope( bounds ) ); 
+        GeneralEnvelope boundsLatLon = CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope(bounds)); 
         coverage.setLatLonBoundingBox(new ReferencedEnvelope( boundsLatLon ) );
         
-        GeneralEnvelope gridEnvelope = new GeneralEnvelope( bounds );
+        GeneralEnvelope gridEnvelope = new GeneralEnvelope(bounds);
         Map grid = cInfoReader.grid();
         if ( grid != null ) {
             int[] low = (int[]) grid.get( "low" );

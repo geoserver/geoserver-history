@@ -33,6 +33,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Status;
@@ -143,6 +144,8 @@ public class DataStoreFileResource extends Resource{
         String extension = (String)getRequest().getAttributes().get("type");
         String format = (String) myFormats.get(extension);
 
+        Form form = getRequest().getResourceRef().getQueryAsForm();
+        
         LOG.info("Shapefile PUTted, mimetype was " + getRequest().getEntity().getMediaType());
 
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
@@ -170,7 +173,10 @@ public class DataStoreFileResource extends Resource{
             myDataConfig.addDataStore(dsc);
             dsc = (DataStoreConfig)myDataConfig.getDataStore(storeName);
             dsc.setEnabled(true);
-            dsc.setNameSpaceId(myDataConfig.getDefaultNameSpace().getPrefix());
+            if (form.getFirst("namespace") != null)
+                dsc.setNameSpaceId(form.getFirstValue("namespace"));
+            else
+                dsc.setNameSpaceId(myDataConfig.getDefaultNameSpace().getPrefix());
             dsc.setAbstract("Autoconfigured by RESTConfig"); // TODO: something better exists, I hope
             
             DataStoreFactorySpi factory = dsc.getFactory();
@@ -216,7 +222,7 @@ public class DataStoreFileResource extends Resource{
             String[] typeNames = theData.getTypeNames();
             if (typeNames.length == 1){
                 System.out.println("Auto-configuring featuretype: " + storeName + ":" + typeNames[0]);
-                myDataConfig.addFeatureType(storeName + ":" + typeNames[0], autoConfigure(theData, storeName, typeNames[0]));
+                myDataConfig.addFeatureType(storeName + ":" + typeNames[0], autoConfigure(form, theData, storeName, typeNames[0]));
             }
         } catch (Exception e){
             LOG.severe("Failure while autoconfiguring uploaded datastore of type " + format);
@@ -322,32 +328,41 @@ public class DataStoreFileResource extends Resource{
         getDataConfig().update(data.toDTO());
     }
 
-    private FeatureTypeConfig autoConfigure(DataStore store, String storeName, String featureTypeName) throws Exception{
+    private FeatureTypeConfig autoConfigure(Form form, DataStore store, String storeName, String featureTypeName) throws Exception{
         FeatureTypeConfig ftc = new FeatureTypeConfig(storeName, store.getSchema(featureTypeName), true);
 
-        ftc.setDefaultStyle("polygon");
+        if (form.getFirst("style") != null)
+            ftc.setDefaultStyle(form.getFirstValue("style"));
+        else
+            ftc.setDefaultStyle("polygon");
 
+        if (form.getFirst("wmspath") != null)
+            ftc.setWmsPath(form.getFirstValue("wmspath"));
+        
         FeatureSource<SimpleFeatureType, SimpleFeature> source = store.getFeatureSource(featureTypeName);
 
         CoordinateReferenceSystem crs = source.getSchema().getCoordinateReferenceSystem();
-        LOG.info("Trying to autoconfigure " + featureTypeName + "; found CRS " + crs);
-        String s = CRS.lookupIdentifier(crs, true);
-        if (s == null){
-            ftc.setSRS(4326); // TODO: Don't be so lame.
-        } else if (s.indexOf(':') != -1) {
-            ftc.setSRS(Integer.valueOf(s.substring(s.indexOf(':') + 1)));
-        } else {
-            ftc.setSRS(Integer.valueOf(s));
+        if (ftc.getSRS() <= 0) {
+            LOG.info("Trying to autoconfigure " + featureTypeName + "; found CRS " + crs);
+            String s = CRS.lookupIdentifier(crs, true);
+            if (s == null){
+                ftc.setSRS(4326); // TODO: Don't be so lame.
+            } else if (s.indexOf(':') != -1) {
+                ftc.setSRS(Integer.valueOf(s.substring(s.indexOf(':') + 1)));
+            } else {
+                ftc.setSRS(Integer.valueOf(s));
+            }
         }
 
-        Envelope latLonBbox = FeatureSourceUtils.getBoundingBoxEnvelope(source);
+        Envelope nativeBBox = FeatureSourceUtils.getBoundingBoxEnvelope(source);
+        ftc.setNativeBBox(nativeBBox);
+        
+        Envelope latLonBbox =  convertBBoxToLatLon(nativeBBox, "EPSG:" + ftc.getSRS());//convertBBoxFromLatLon(latLonBbox, "EPSG:" + ftc.getSRS());
         if (latLonBbox.isNull()){
             latLonBbox = new Envelope(-180, 180, -90, 90);
         }
 
         ftc.setLatLongBBox(latLonBbox);
-        Envelope nativeBBox = convertBBoxFromLatLon(latLonBbox, "EPSG:" + ftc.getSRS());
-        ftc.setNativeBBox(nativeBBox);
 
         return ftc;
     }
@@ -359,25 +374,45 @@ public class DataStoreFileResource extends Resource{
      * @return the converted bounding box
      * @throws Exception if anything goes wrong
      */
-    private Envelope convertBBoxFromLatLon(Envelope latLonBbox, String crsName) throws Exception {
-            CoordinateReferenceSystem latLon = CRS.decode("EPSG:4326");
-            CoordinateReferenceSystem nativeCRS = CRS.decode(crsName);
-            Envelope env = null;
+    private Envelope convertBBoxFromLatLon(Envelope latLonBbox, String crsName)
+            throws Exception {
+        CoordinateReferenceSystem latLon = CRS.decode("EPSG:4326");
+        CoordinateReferenceSystem nativeCRS = CRS.decode(crsName);
+        Envelope env = null;
 
-            if (!CRS.equalsIgnoreMetadata(latLon, nativeCRS)) {
-                MathTransform xform = CRS.findMathTransform(latLon, nativeCRS, true);
-                env = JTS.transform(latLonBbox, null, xform, 10); //convert data bbox to lat/long
-            } else {
-                env = latLonBbox;
-            }
+        if (!CRS.equalsIgnoreMetadata(latLon, nativeCRS)) {
+            MathTransform xform = CRS
+                    .findMathTransform(latLon, nativeCRS, true);
+            env = JTS.transform(latLonBbox, null, xform, 10); // convert data
+            // bbox to
+            // lat/long
+        } else {
+            env = latLonBbox;
+        }
 
-            return env;
+        return env;
     }
-    
-	/**
-	 * @return the myFormats
-	 */
-	public static Map getAllowedFormats() {
-		return myFormats;
-	}
+
+    private Envelope convertBBoxToLatLon(Envelope bbox, String crsName)
+            throws Exception {
+        CoordinateReferenceSystem latLon = CRS.decode("EPSG:4326");
+        CoordinateReferenceSystem nativeCRS = CRS.decode(crsName);
+        Envelope env = null;
+
+        if (!CRS.equalsIgnoreMetadata(latLon, nativeCRS)) {
+            MathTransform xform = CRS.findMathTransform(nativeCRS, latLon, true);
+            env = JTS.transform(bbox, null, xform, 10); // convert data bbox to lat/long
+        } else {
+            env = bbox;
+        }
+
+        return env;
+    }
+
+    /**
+     * @return the myFormats
+     */
+    public static Map getAllowedFormats() {
+        return myFormats;
+    }
 }

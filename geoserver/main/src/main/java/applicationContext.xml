@@ -155,4 +155,8 @@
     
   <!-- jai initializer -->
   <bean id="jaiInitializer" class="org.geoserver.jai.JAIInitializer"/>
+  <!-- security wrapper factories  -->
+  <bean id="defaultDataSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureDataFactory"/>
+  <bean id="defaultCatalogSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureCatalogFactory"/>
+  
 </beans>

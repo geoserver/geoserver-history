@@ -5,36 +5,27 @@
 package org.vfny.geoserver.global;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 
-import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
-import javax.media.jai.RecyclingTileFactory;
 import javax.servlet.ServletContext;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.helpers.LogLog;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerInfo;
-
 import org.geoserver.jai.JAIInfo;
-import org.geotools.data.DataStoreFactorySpi;
+import org.geoserver.logging.LoggingInitializer;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
@@ -124,7 +115,6 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     
     private int updateSequence;
     */
-    public static boolean suppressLoggingConfiguration;
     
     /**
      * Default constructor only to facilitate unit testing mock ups; real
@@ -1211,12 +1201,4 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         //nothing to do
     }
     
-    /**
-     * Call this method if you want GeoServer not to configure the logging subsystem as instructed
-     * in the configuration file. To be used mainly in unit testing where we want to control
-     * logging programmatically.
-     */
-    public static void suppressLoggingConfiguration() {
-        suppressLoggingConfiguration = true;
-    }
 }

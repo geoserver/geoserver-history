@@ -9,9 +9,13 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +72,7 @@ public class CoverageStoreFileResource extends Resource {
 
     private static Map myFormats = new HashMap();
     static {
+        myFormats.put("asc", "ArcGrid");
         myFormats.put("tiff", "GeoTIFF");
         myFormats.put("hdf4", "HDF-AVHRR");
         myFormats.put("hdf4-avhrr", "HDF-AVHRR");
@@ -164,7 +169,7 @@ public class CoverageStoreFileResource extends Resource {
      * coverage store and the coverage if necessary.
      */
 
-    public void handlePut() {
+    public synchronized void handlePut() {
         String coverageStore = (String) getRequest().getAttributes().get("folder");
         String coverageName = (String) getRequest().getAttributes().get("layer");
         coverageName = coverageName == null ? coverageStore : coverageName;
@@ -190,13 +195,23 @@ public class CoverageStoreFileResource extends Resource {
 
         File uploadedFile = null;
         try {
-            uploadedFile = handleUpload(coverageName, extension, getRequest());
+        	String method = (String) getRequest().getAttributes().get("method");
+        	if (method != null && method.equalsIgnoreCase("file"))
+        		uploadedFile = handleBinUpload(coverageName, extension, getRequest());
+        	else if (method != null && method.equalsIgnoreCase("url"))
+        		uploadedFile = handleURLUpload(coverageName, extension, getRequest());
         } catch (Exception e) {
             getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             return;
         }
 
+        if (!uploadedFile.exists() || uploadedFile.isDirectory()) {
+        	getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + uploadedFile.getAbsolutePath(), MediaType.TEXT_PLAIN));
+            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+            return;
+        }
+        
         int numDataSets = 0;
         AbstractGridCoverage2DReader cvReader;
         if (format instanceof AbstractGridFormat) {
@@ -215,6 +230,8 @@ public class CoverageStoreFileResource extends Resource {
             // //////
             String realCoverageStore = coverageStore + (c > 0 ? "_" + c : "");
             String realCoverageName = coverageName + (c > 0 ? "_" + c : "");
+            String qualified = realCoverageStore + ":" + realCoverageName;
+
             CoverageStoreConfig csc = myDataConfig.getDataFormat(realCoverageStore);
 
             if (csc == null) {
@@ -239,15 +256,23 @@ public class CoverageStoreFileResource extends Resource {
                 csc.setAbstract("Autoconfigured by RESTConfig");
 
                 myDataConfig.addDataFormat(csc);
+            } else {
+                try {
+                    csc.setUrl(uploadedFile.toURL().toExternalForm() + (c > 0 ? ":" + c : ""));
+                } catch (MalformedURLException e) {
+                    getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
+                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                    return;
+                }
+                
+                myDataConfig.removeCoverage(qualified);
             }
 
-            save();
+            //save();
 
             // //////
             // Configuration for the coverage
             // //////
-            String qualified = realCoverageStore + ":" + realCoverageName;
-
             CoverageConfig cc = (CoverageConfig) myDataConfig.getCoverages().get(qualified);
 
             if (cc == null) {
@@ -284,9 +309,9 @@ public class CoverageStoreFileResource extends Resource {
                     	cc.setDefaultStyle(form.getFirstValue("style"));
                     else {
                         if (cc.getName().toLowerCase().contains("lowcloud"))
-                        	cc.setDefaultStyle("lowcloud");
+                            cc.setDefaultStyle("lowcloud");
                         else if (cc.getName().toLowerCase().contains("mcsst"))
-                        	cc.setDefaultStyle("mcsst");
+                            cc.setDefaultStyle("mcsst");
                         else if (cc.getName().toLowerCase().contains("sst4"))
                             cc.setDefaultStyle("sst4");
                         else if (cc.getName().toLowerCase().contains("sst"))
@@ -296,6 +321,9 @@ public class CoverageStoreFileResource extends Resource {
                         else if (cc.getName().toLowerCase().contains("salinity"))
                             cc.setDefaultStyle("salinity");
                     }
+                    
+                    if (form.getFirst("wmspath") != null)
+                        cc.setWmsPath(form.getFirstValue("wmspath"));
                 } catch (Exception e) {
                     getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
@@ -304,11 +332,12 @@ public class CoverageStoreFileResource extends Resource {
 
             }
 
+            qualified = realCoverageStore + ":" + cc.getName();
             myDataConfig.removeCoverage(qualified);
             myDataConfig.addCoverage(qualified, cc);
-
-            save();
         }
+
+        save();
 
         getResponse().setEntity(new StringRepresentation("Handling PUT on a CoverageStoreFileResource", MediaType.TEXT_PLAIN));
         getResponse().setStatus(Status.SUCCESS_OK);
@@ -324,15 +353,19 @@ public class CoverageStoreFileResource extends Resource {
      * @throws IOException
      * @throws ConfigurationException
      */
-
-    private File handleUpload(String coverageName, String extension,
+    private File handleBinUpload(String coverageName, String extension,
             Request request) throws IOException, ConfigurationException {
 
         // //////
         // TODO: don't manage the temp file manually, java can take care of it
         // //////
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmsss");
+        String timestamp = sdf.format(new Date());
+        
         File dir = GeoserverDataDirectory.findCreateConfigDir("data");
+             dir = new File(dir.getAbsolutePath() + File.separator + "coverages" + File.separator + timestamp);
+             dir.mkdirs();
         File tempFile = new File(dir, coverageName + "." + extension + ".tmp");
         File newFile = new File(dir, coverageName + "." + extension);
 
@@ -349,11 +382,73 @@ public class CoverageStoreFileResource extends Resource {
         out.flush();
         out.close();
 
+        if (newFile.exists())
+            newFile.delete();
+        
         tempFile.renameTo(newFile);
 
         return newFile;
     }
 
+    /**
+     * This function gets the stream of the request to copy it into a file.
+     * 
+     * @param coverageName
+     * @param extension
+     * @param request
+     * @return File
+     * @throws IOException
+     * @throws ConfigurationException
+     * @throws URISyntaxException 
+     */
+    private File handleURLUpload(String coverageName, String extension, Request request) throws IOException, ConfigurationException, URISyntaxException {
+
+        // //////
+        // TODO: don't manage the temp file manually, java can take care of it
+        // //////
+        
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmsss");
+        String timestamp = sdf.format(new Date());
+
+        File dir = GeoserverDataDirectory.findCreateConfigDir("data");
+        	 dir = new File(dir.getAbsolutePath() + File.separator + "coverages" + File.separator + timestamp);
+        	 dir.mkdirs();
+        File tempFile = new File(dir, coverageName + "." + extension + ".tmp");
+        File newFile  = new File(dir, coverageName + "." + extension);
+
+        InputStreamReader  inReq  = new InputStreamReader(request.getEntity().getStream());
+        StringBuilder sb = new StringBuilder();
+        char[] buffer = new char[1024];
+        int len;
+
+        while ((len = inReq.read(buffer)) >= 0) {
+            char[] read = new char[len];
+            System.arraycopy(buffer, 0, read, 0, len);
+            sb.append(read);
+        }
+
+        inReq.close();
+        
+        URL fileURL = new URL(sb.toString());
+
+        BufferedInputStream stream = new BufferedInputStream(fileURL.openStream());
+
+        FileOutputStream out = new FileOutputStream(tempFile);
+        byte[] binBuffer = new byte[DEFAULT_BUFFER_SIZE];
+        int count = 0;
+        int n = 0;
+        while (-1 != (n = stream.read(binBuffer))) {
+        	out.write(binBuffer, 0, n);
+            count += n;
+        }
+        out.flush();
+        out.close();
+        
+        tempFile.renameTo(newFile);
+
+        return newFile;
+    }
+    
     /**
      * This function manages the save of the configuration for the CoverageStore
      * and the Coverage

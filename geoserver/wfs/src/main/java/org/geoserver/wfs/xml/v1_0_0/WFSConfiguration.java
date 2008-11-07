@@ -13,6 +13,7 @@ import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.WfsFactory;
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
+import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 
@@ -114,6 +115,7 @@ public class WFSConfiguration extends Configuration {
         context.registerComponentInstance(WfsFactory.eINSTANCE);
         context.registerComponentInstance(new WFSHandlerFactory(catalog, schemaBuilder));
         context.registerComponentInstance(catalog);
+        context.registerComponentImplementation(PropertyTypePropertyExtractor.class);
         
         //TODO: this code is copied from the 1.1 configuration, FACTOR IT OUT!!!
         //seed the cache with entries from the catalog

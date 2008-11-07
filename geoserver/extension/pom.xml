@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -30,12 +30,40 @@
         <module>h2</module>
       </modules>
     </profile>
+    
+    <profile>
+      <id>sqlserver</id>
+      <modules>
+        <module>sqlserver</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>wfsv</id>
+      <modules>
+        <module>wfsv</module>
+      </modules>
+    </profile>
+
+    <!-- allExtensions profile, includes all modules -->
+    <profile>
+      <id>allExtensions</id>
+      <modules>
+        <module>h2</module>
+        <module>sqlserver</module>
+        <module>wfsv</module>
+      </modules>
+    </profile>
 
     <!-- release profile, includes all modules -->
+    <!-- TODO: perhaps figure a way to trigger the allExtensions profile
+         instead of copying all the modules -->
     <profile>
       <id>release</id>
       <modules>
         <module>h2</module>
+        <module>sqlserver</module>
+        <module>wfsv</module>
       </modules>
     </profile>
   </profiles>
