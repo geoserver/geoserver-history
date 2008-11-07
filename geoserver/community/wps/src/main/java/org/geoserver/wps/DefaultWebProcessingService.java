@@ -5,13 +5,17 @@
 
 package org.geoserver.wps;
 
+import net.opengis.wps.ExecuteResponseType;
 import net.opengis.wps.ExecuteType;
 import net.opengis.wps.GetCapabilitiesType;
 import net.opengis.wps.DescribeProcessType;
+import net.opengis.wps.ProcessDescriptionsType;
+import net.opengis.wps.WPSCapabilitiesType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.config.GeoServer;
 import org.geotools.xml.transform.TransformerBase;
 
 import org.springframework.beans.BeansException;
@@ -28,29 +32,30 @@ public class DefaultWebProcessingService implements WebProcessingService, Applic
 
     protected ApplicationContext context;
 
-    public DefaultWebProcessingService(WPSInfo wps) {
-        this.wps = wps;
+    public DefaultWebProcessingService(GeoServer gs) {
+        this.wps = gs.getService( WPSInfo.class );
     }
 
     /**
      * @see org.geoserver.wps.WebProcessingService#getCapabilities
      */
-    public TransformerBase getCapabilities(GetCapabilitiesType request) throws WPSException {
+    public WPSCapabilitiesType getCapabilities(GetCapabilitiesType request) throws WPSException {
         return new GetCapabilities(this.wps).run(request);
     }
-
+    
+    
     /**
      * @see org.geoserver.wps.WebProcessingService#describeProcess
      */
-    public TransformerBase describeProcess(DescribeProcessType request) throws WPSException {
-        return new DescribeProcess(this.wps).run(request);
+    public ProcessDescriptionsType describeProcess(DescribeProcessType request) throws WPSException {
+        return new DescribeProcess(this.wps,context).run(request);
     }
 
     /**
      * @see org.geoserver.wps.WebProcessingService#execute
      */
-    public void execute(ExecuteType request, HttpServletResponse response) throws WPSException {
-        new Execute.WPS1_0(this.wps).run(request, response);
+    public ExecuteResponseType execute(ExecuteType request) throws WPSException {
+        return new Execute(wps,context).run(request);
     }
 
     /**

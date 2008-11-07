@@ -32,7 +32,8 @@ public class WPSLoader extends XStreamServiceLoader {
     protected ServiceInfo createServiceFromScratch(GeoServer gs) {
         WPSInfoImpl wps = new WPSInfoImpl();
         wps.setId(getServiceId());
-
+        wps.setGeoServer( gs.getGlobal() );
+        
         return wps;
     }
 }
