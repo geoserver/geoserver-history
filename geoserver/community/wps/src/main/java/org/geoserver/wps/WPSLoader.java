@@ -18,11 +18,15 @@ import org.geoserver.platform.GeoServerResourceLoader;
  */
 public class WPSLoader extends XStreamServiceLoader {
     public WPSLoader(GeoServerResourceLoader resourceLoader) {
-        super(resourceLoader);
+        super(resourceLoader, "wps");
     }
 
     public String getServiceId() {
         return "wps";
+    }
+    
+    public Class<WPSInfo> getServiceClass() {
+        return WPSInfo.class;
     }
 
     protected ServiceInfo createServiceFromScratch(GeoServer gs) {
