@@ -9,40 +9,15 @@
 -->
 
 <beans>
-    <!-- WPS Configuration bean -->
-    <bean id="wps" class="org.geoserver.wps.WPSInfoImpl" depends-on="config">
-        <!-- the depends-on attribute ensures config was initialized before
-            trying to instantiate this bean.
-        -->
-    </bean>
-
     <bean id="wpsServiceLoader" class="org.geoserver.wps.WPSLoader">
         <constructor-arg ref="resourceLoader"/>
     </bean>
 
-    <bean id="wpsRegisterar"
-        class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
-        <constructor-arg type="java.lang.String" value="WPS" />
-        <constructor-arg ref="wps" />
-    </bean>
-
     <!-- WPS Service -->
-    <bean id="wpsServiceTarget"
-        class="org.geoserver.wps.DefaultWebProcessingService">
-        <constructor-arg ref="wps" />
-    </bean>
+    
 
-    <bean id="wpsService"
-        class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="proxyInterfaces">
-            <value>org.geoserver.wps.WebProcessingService</value>
-        </property>
-        <property name="interceptorNames">
-            <list>
-                <!-- <value>wpsLogger</value> -->
-                <value>wpsServiceTarget</value>
-            </list>
-        </property>
+    <bean id="wpsService" class="org.geoserver.wps.DefaultWebProcessingService">
+        <constructor-arg ref="geoServer2" />
     </bean>
 
     <!-- Service Descriptor(s) -->
@@ -52,14 +27,6 @@
         <constructor-arg index="1" ref="wpsService" />
         <constructor-arg index="2" value="1.0.0" />
     </bean>
-
-    <!-- Responses -->
-    <bean id="wpsGetCapabilitiesResponse"
-        class="org.geoserver.wps.response.GetCapabilitiesResponse"
-        singleton="false" />
-    <bean id="wpsDescribeProcessResponse"
-        class="org.geoserver.wps.response.DescribeProcessResponse"
-        singleton="false" />
 
     <!-- KVP Parsers -->
     <!-- KVP Request Readers -->
@@ -97,5 +64,22 @@
                 <prop key="/wps/*">dispatcher</prop>
             </props>
         </property>
+    </bean>
+    
+    <!-- responses -->
+    <bean id="wpsCapabilitiesResponse" class="org.geoserver.ows.XmlObjectEncodingResponse">
+      <constructor-arg index="0" value="net.opengis.wps.WPSCapabilitiesType"/>
+      <constructor-arg index="1" value="Capabilities"/>
+      <constructor-arg index="2" value="org.geoserver.wps.xml.WPSConfiguration"/> 
+    </bean>
+    <bean id="wpsDescribeProcessResponse" class="org.geoserver.ows.XmlObjectEncodingResponse">
+      <constructor-arg index="0" value="net.opengis.wps.ProcessDescriptionsType"/>
+      <constructor-arg index="1" value="ProcessDescriptions"/>
+      <constructor-arg index="2" value="org.geoserver.wps.xml.WPSConfiguration"/> 
+    </bean>
+    <bean id="wpsExecuteResponse" class="org.geoserver.ows.XmlObjectEncodingResponse">
+      <constructor-arg index="0" value="net.opengis.wps.ExecuteResponseType"/>
+      <constructor-arg index="1" value="ExecuteResponse"/>
+      <constructor-arg index="2" value="org.geoserver.wps.xml.WPSConfiguration"/> 
     </bean>
 </beans>
