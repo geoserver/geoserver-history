@@ -1,10 +1,9 @@
 package org.geoserver.wps;
 
-import junit.framework.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
 import static org.custommonkey.xmlunit.XMLAssert.*;
+import junit.framework.Test;
+
+import org.w3c.dom.Document;
 public class DescribeProcessTest extends WPSTestSupport {
 
     //read-only test
