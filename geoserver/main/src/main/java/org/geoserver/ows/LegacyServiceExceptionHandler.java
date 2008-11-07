@@ -4,6 +4,7 @@
  */
 package org.geoserver.ows;
 
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
@@ -164,7 +165,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         //message
         if ((exception.getMessage() != null)) {
             sb.append("\n" + tab + tab);
-            dumpExceptionMessages(exception, sb, true);
+            OwsUtils.dumpExceptionMessages(exception, sb, true);
 
             if(geoServer.isVerboseExceptions()) {
                 ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();

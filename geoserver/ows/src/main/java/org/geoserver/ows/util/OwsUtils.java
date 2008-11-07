@@ -6,13 +6,15 @@ package org.geoserver.ows.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.Map;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.util.SoftValueHashMap;
 
 
 /**
- * Utility class for performing reflective operations.
+ * Utility class for performing reflective operations and other ows utility functions.
  *
  * @author Justin Deoliveira, The Open Planning Project
  *
@@ -176,5 +178,47 @@ public class OwsUtils {
         }
 
         return null;
+    }
+    
+    /**
+     * Dumps a stack of service exception messages to a string buffer.
+     *
+     */
+    public static void dumpExceptionMessages(ServiceException e, StringBuffer s, boolean xmlEscape) {
+        Throwable ex = e;
+        do {
+            Throwable cause = ex.getCause();
+            final String message = ex.getMessage();
+            String lastMessage = message;
+            if(!"".equals(message)) {
+                if(xmlEscape)
+                    s.append(ResponseUtils.encodeXML(message));
+                else
+                    s.append(message);
+                if(ex instanceof ServiceException) {
+                    for ( Iterator t = ((ServiceException) ex).getExceptionText().iterator(); t.hasNext(); ) {
+                        s.append("\n");
+                        String msg = (String) t.next();
+                        if(!lastMessage.equals(msg)) {
+                            if(xmlEscape)
+                                s.append(ResponseUtils.encodeXML(msg));
+                            else
+                                s.append( t.next() );
+                            lastMessage = msg;
+                        }
+                        
+                    }
+                }
+                if(cause != null)
+                    s.append("\n");
+            }
+            
+            // avoid infinite loop if someone did the very stupid thing of setting
+            // the cause as the exception itself (I only found this situation once, but...)
+            if(ex == cause || cause == null)
+                break;
+            else
+                ex = cause;
+        } while(true);
     }
 }

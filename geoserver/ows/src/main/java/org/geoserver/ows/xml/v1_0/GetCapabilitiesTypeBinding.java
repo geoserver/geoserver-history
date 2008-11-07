@@ -10,6 +10,7 @@ import net.opengis.ows10.GetCapabilitiesType;
 import net.opengis.ows10.Ows10Factory;
 import net.opengis.ows10.SectionsType;
 import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.Binding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -56,10 +57,11 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
+public class GetCapabilitiesTypeBinding extends AbstractComplexEMFBinding {
     Ows10Factory owsfactory;
 
     public GetCapabilitiesTypeBinding(Ows10Factory owsfactory) {
+        super(owsfactory);
         this.owsfactory = owsfactory;
     }
 

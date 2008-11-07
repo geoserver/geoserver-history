@@ -15,6 +15,7 @@ import net.opengis.ows10.ExceptionReportType;
 import net.opengis.ows10.ExceptionType;
 import net.opengis.ows10.Ows10Factory;
 
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
 import org.geoserver.platform.ServiceException;
@@ -71,7 +72,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
 
         //add the message
         StringBuffer sb = new StringBuffer();
-        dumpExceptionMessages(exception, sb, true);
+        OwsUtils.dumpExceptionMessages(exception, sb, true);
         e.getExceptionText().add(sb.toString());
         e.getExceptionText().addAll(exception.getExceptionText());
 

@@ -4,15 +4,12 @@
  */
 package org.geoserver.ows;
 
-import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.platform.Service;
-import org.geoserver.platform.ServiceException;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.geoserver.platform.Service;
+import org.geoserver.platform.ServiceException;
 
 
 /**
@@ -84,49 +81,4 @@ public abstract class ServiceExceptionHandler {
      * @param request The informations collected by the dispatcher about the request
      */
     public abstract void handleServiceException(ServiceException exception, Request request);
-    
-    /**
-     * Dumps an exception message along all its causes messages (since more often
-     * than not the real cause, such as "unknown property xxx" is a few levels down)
-     * @param e
-     * @param s
-     * @param xmlEscape 
-     */
-    protected void dumpExceptionMessages(ServiceException e, StringBuffer s, boolean xmlEscape) {
-        Throwable ex = e;
-        do {
-            Throwable cause = ex.getCause();
-            final String message = ex.getMessage();
-            String lastMessage = message;
-            if(!"".equals(message)) {
-                if(xmlEscape)
-                    s.append(ResponseUtils.encodeXML(message));
-                else
-                    s.append(message);
-                if(ex instanceof ServiceException) {
-                    for ( Iterator t = ((ServiceException) ex).getExceptionText().iterator(); t.hasNext(); ) {
-                        s.append("\n");
-                        String msg = (String) t.next();
-                        if(!lastMessage.equals(msg)) {
-                            if(xmlEscape)
-                                s.append(ResponseUtils.encodeXML(msg));
-                            else
-                                s.append( t.next() );
-                            lastMessage = msg;
-                        }
-                        
-                    }
-                }
-                if(cause != null)
-                    s.append("\n");
-            }
-            
-            // avoid infinite loop if someone did the very stupid thing of setting
-            // the cause as the exception itself (I only found this situation once, but...)
-            if(ex == cause || cause == null)
-                break;
-            else
-                ex = cause;
-        } while(true);
-    }
 }
