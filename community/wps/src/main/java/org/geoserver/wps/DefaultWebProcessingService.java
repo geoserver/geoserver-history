@@ -5,19 +5,18 @@
 
 package org.geoserver.wps;
 
-import net.opengis.wps.ExecuteResponseType;
-import net.opengis.wps.ExecuteType;
-import net.opengis.wps.GetCapabilitiesType;
-import net.opengis.wps.DescribeProcessType;
-import net.opengis.wps.ProcessDescriptionsType;
-import net.opengis.wps.WPSCapabilitiesType;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.geoserver.config.GeoServer;
-import org.geotools.xml.transform.TransformerBase;
+import net.opengis.wps.DescribeProcessType;
+import net.opengis.wps.ExecuteResponseType;
+import net.opengis.wps.ExecuteType;
+import net.opengis.wps.GetCapabilitiesType;
+import net.opengis.wps.ProcessDescriptionsType;
+import net.opengis.wps.WPSCapabilitiesType;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -29,11 +28,12 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class DefaultWebProcessingService implements WebProcessingService, ApplicationContextAware {
     protected WPSInfo  wps;
-
+    protected GeoServerInfo gs;
     protected ApplicationContext context;
 
     public DefaultWebProcessingService(GeoServer gs) {
         this.wps = gs.getService( WPSInfo.class );
+        this.gs = gs.getGlobal();
     }
 
     /**
@@ -55,7 +55,7 @@ public class DefaultWebProcessingService implements WebProcessingService, Applic
      * @see org.geoserver.wps.WebProcessingService#execute
      */
     public ExecuteResponseType execute(ExecuteType request) throws WPSException {
-        return new Execute(wps,context).run(request);
+        return new Execute(wps,gs,context).run(request);
     }
 
     /**

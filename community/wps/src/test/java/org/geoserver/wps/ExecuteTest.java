@@ -43,6 +43,11 @@ public class ExecuteTest extends WPSTestSupport {
          "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
+        print(d);
+        
+        // remove these hacks once the XSD encoder issues have been fixed
+        checkValidationErrors(d, WPS_SCHEMA, "'lang'", "'creationTime'");
+        
         assertEquals( "wps:ExecuteResponse", d.getDocumentElement().getNodeName() );
         
         assertXpathExists( "/wps:ExecuteResponse/wps:Status/wps:ProcessSucceeded", d);
