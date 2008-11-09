@@ -1,5 +1,7 @@
 package org.geoserver.test;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,6 +43,7 @@ import javax.xml.validation.Validator;
 
 import junit.framework.TestCase;
 
+import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.data.test.TestData;
@@ -65,6 +68,7 @@ import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -814,6 +818,19 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
             }
             fail(sb.toString());
         }
+    }
+    
+    /**
+     * Performs basic checks on an OWS 1.1 exception, to ensure it's well formed
+     * @param dom
+     * @throws Exception
+     */
+    protected void checkOws11Exception(Document dom) throws Exception {
+        assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
+        assertXpathEvaluatesTo("1.1.0", "/ows:ExceptionReport/@version", dom);
+        Node root  = XMLUnit.newXpathEngine().getMatchingNodes("/ows:ExceptionReport", dom).item(0);
+        Node attr = root.getAttributes().getNamedItem("xmlns:ows");
+        assertEquals("http://www.opengis.net/ows/1.1", attr.getTextContent());
     }
         
     
