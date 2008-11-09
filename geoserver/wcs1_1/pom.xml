@@ -39,22 +39,6 @@
       <artifactId>gt-xsd-filter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.geotools.xsd</groupId>
-      <artifactId>gt-xsd-ows</artifactId>
-      <!-- This is due to the fact the ows model jars come from geoserver but are
-           deployed separately for gt2 as well... this results in a conflict -->
-      <exclusions>
-        <exclusion>
-          <groupId>net.opengis</groupId>
-          <artifactId>ows</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>net.opengis</groupId>
-          <artifactId>ows11</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <version>1.4</version>
