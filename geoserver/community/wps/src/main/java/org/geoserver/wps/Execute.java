@@ -10,61 +10,41 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.io.IOException;
-import java.util.GregorianCalendar;
 
-import javax.xml.datatype.DatatypeFactory;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import net.opengis.wps.ComplexDataType;
+import net.opengis.wps.DataType;
+import net.opengis.wps.DocumentOutputDefinitionType;
+import net.opengis.wps.ExecuteResponseType;
+import net.opengis.wps.ExecuteType;
+import net.opengis.wps.InputReferenceType;
+import net.opengis.wps.InputType;
+import net.opengis.wps.LiteralDataType;
+import net.opengis.wps.MethodType;
+import net.opengis.wps.OutputDataType;
+import net.opengis.wps.OutputDefinitionsType;
+import net.opengis.wps.OutputReferenceType;
+import net.opengis.wps.ProcessBriefType;
+import net.opengis.wps.ProcessFailedType;
+import net.opengis.wps.ProcessOutputsType1;
 import net.opengis.wps.WpsFactory;
-import net.opengis.ows11.CodeType;
-import net.opengis.ows11.Ows11Factory;
-import net.opengis.ows11.LanguageStringType;
-import net.opengis.ows11.ReferenceType;
 
-import org.geotools.xml.EMFUtils;
-import org.geotools.xml.Encoder;
-import org.geotools.xml.Configuration;
-import org.geotools.xml.EncoderDelegate;
-import org.geotools.util.Converters;
-import org.geotools.wps.WPSConfiguration;
-
-import org.geotools.data.Parameter;
-import org.geotools.process.Process;
-import org.geotools.process.ProcessFactory;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geoserver.wps.ppio.LiteralPPIO;
 import org.geoserver.wps.ppio.ProcessParameterIO;
 import org.geoserver.wps.ppio.ReferencePPIO;
 import org.geoserver.wps.ppio.XMLPPIO;
-import org.geoserver.wps.transmute.Transmuter;
-import org.geoserver.wps.transmute.ComplexTransmuter;
-import org.geoserver.wps.transmute.LiteralTransmuter;
+import org.geotools.data.Parameter;
+import org.geotools.process.Process;
+import org.geotools.process.ProcessFactory;
+import org.geotools.util.Converters;
+import org.geotools.xml.EMFUtils;
 import org.springframework.context.ApplicationContext;
-import org.xml.sax.ContentHandler;
-
-import net.opengis.wps.DataType;
-import net.opengis.wps.DocumentOutputDefinitionType;
-import net.opengis.wps.InputReferenceType;
-import net.opengis.wps.InputType;
-import net.opengis.wps.MethodType;
-import net.opengis.wps.OutputDefinitionType;
-import net.opengis.wps.OutputDefinitionsType;
-import net.opengis.wps.OutputReferenceType;
-import net.opengis.wps.ProcessFailedType;
-import net.opengis.wps.StatusType;
-import net.opengis.wps.ExecuteType;
-import net.opengis.wps.OutputDataType;
-import net.opengis.wps.LiteralDataType;
-import net.opengis.wps.ComplexDataType;
-import net.opengis.wps.ProcessBriefType;
-import net.opengis.wps.ProcessOutputsType1;
-import net.opengis.wps.ExecuteResponseType;
 
 /**
  * Main class used to handle Execute requests
@@ -73,10 +53,12 @@ import net.opengis.wps.ExecuteResponseType;
  */
 public class Execute {
     WPSInfo             wps;
+    GeoServerInfo gs;
     ApplicationContext  context;
 
-    public Execute(WPSInfo wps, ApplicationContext context) {
+    public Execute(WPSInfo wps, GeoServerInfo gs, ApplicationContext context) {
         this.wps      = wps;
+        this.gs = gs;
         this.context = context;
     }
 
@@ -167,10 +149,16 @@ public class Execute {
         //build the response
         WpsFactory f = WpsFactory.eINSTANCE;
         ExecuteResponseType response = f.createExecuteResponseType();
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), gs.getProxyBaseUrl());
+        response.setServiceInstance(proxifiedBaseUrl + "ows?");
        
         //process 
-        response.setProcess( f.createProcessBriefType() );
-        response.getProcess().setIdentifier( Ows11Util.code( request.getIdentifier() ) );
+        final ProcessBriefType process = f.createProcessBriefType();
+        response.setProcess( process );
+        process.setIdentifier( Ows11Util.code( request.getIdentifier() ) );
+        process.setProcessVersion(pf.getVersion());
+        process.setTitle( Ows11Util.languageString( pf.getTitle().toString() ) );
+        process.setAbstract( Ows11Util.languageString( pf.getDescription().toString() ) );
        
         //status
         response.setStatus( f.createStatusType() );
@@ -230,6 +218,8 @@ public class Execute {
         
         for ( String key : result.keySet() ) {
             OutputDataType output = f.createOutputDataType();
+            output.setIdentifier(Ows11Util.code(key));
+            output.setTitle(Ows11Util.languageString(pf.getResultInfo(null).get( key ).description));
             processOutputs.getOutput().add( output );
             
             final Object o = result.get( key );
