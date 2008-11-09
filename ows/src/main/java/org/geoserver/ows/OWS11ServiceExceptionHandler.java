@@ -4,19 +4,15 @@
  */
 package org.geoserver.ows;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.opengis.ows11.ExceptionReportType;
-import net.opengis.ows11.ExceptionType;
 import net.opengis.ows11.Ows11Factory;
 
 import org.geoserver.ows.util.RequestUtils;

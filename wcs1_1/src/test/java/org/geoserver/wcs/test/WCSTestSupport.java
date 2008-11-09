@@ -4,25 +4,18 @@
  */
 package org.geoserver.wcs.test;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
-import org.geoserver.data.test.MockData;
-import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.vfny.geoserver.global.WCS;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 /**
  * Base support class for wcs tests.
@@ -76,13 +69,5 @@ public abstract class WCSTestSupport extends CoverageTestSupport {
     @Override
     protected boolean isMemoryCleanRequired() {
         return IS_WINDOWS;
-    }
-
-    protected void checkOws11Exception(Document dom) throws Exception {
-        assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
-        assertXpathEvaluatesTo("1.1.0", "/ows:ExceptionReport/@version", dom);
-        Node root  = xpath.getMatchingNodes("/ows:ExceptionReport", dom).item(0);
-        Node attr = root.getAttributes().getNamedItem("xmlns:ows");
-        assertEquals("http://www.opengis.net/ows/1.1", attr.getTextContent());
     }
 }
