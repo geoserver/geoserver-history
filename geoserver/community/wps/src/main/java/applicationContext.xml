@@ -53,6 +53,12 @@
         <constructor-arg index="1" value="1.0.0" />
         <constructor-arg index="2" ref="wpsXmlConfiguration-1.0.0" />
     </bean>
+    <bean id="wpsCapabilitieseXmlReader-1.0.0"
+        class="org.geoserver.wps.xml.v1_0_0.WpsXmlReader">
+        <constructor-arg index="0" value="GetCapabilities" />
+        <constructor-arg index="1" value="1.0.0" />
+        <constructor-arg index="2" ref="wpsXmlConfiguration-1.0.0" />
+    </bean>
 
     <!-- HTTP URL Mapping -->
     <bean id="wpsURLMapping"
@@ -81,5 +87,14 @@
       <constructor-arg index="0" value="net.opengis.wps.ExecuteResponseType"/>
       <constructor-arg index="1" value="ExecuteResponse"/>
       <constructor-arg index="2" value="org.geoserver.wps.xml.WPSConfiguration"/> 
+    </bean>
+    
+    <!-- Exception handler, we need to output ows 1.1 exceptions -->
+    <bean id="wpsExceptionHandler" class="org.geoserver.ows.OWS11ServiceExceptionHandler">
+      <constructor-arg index="0">
+        <list>
+          <ref local="wpsService-1.0.0" />
+        </list>
+      </constructor-arg>
     </bean>
 </beans>
