@@ -5,21 +5,19 @@
 
 package org.geoserver.wps;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import net.opengis.ows11.CodeType;
-import net.opengis.ows11.KeywordsType;
-import net.opengis.ows11.LanguageStringType;
-import net.opengis.ows11.OnlineResourceType;
 import net.opengis.ows11.OperationType;
 import net.opengis.ows11.OperationsMetadataType;
 import net.opengis.ows11.Ows11Factory;
 import net.opengis.ows11.ResponsiblePartySubsetType;
-import net.opengis.ows11.ResponsiblePartyType;
 import net.opengis.ows11.ServiceIdentificationType;
 import net.opengis.ows11.ServiceProviderType;
+import net.opengis.wps.DefaultType2;
 import net.opengis.wps.GetCapabilitiesType;
+import net.opengis.wps.LanguagesType;
 import net.opengis.wps.LanguagesType1;
 import net.opengis.wps.ProcessBriefType;
 import net.opengis.wps.ProcessOfferingsType;
@@ -28,7 +26,7 @@ import net.opengis.wps.WpsFactory;
 
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
-import org.geoserver.wps.CapabilitiesTransformer;
+import org.geoserver.ows.util.RequestUtils;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
 
@@ -43,11 +41,25 @@ public class GetCapabilities {
     }
 
     public WPSCapabilitiesType run(GetCapabilitiesType request) throws WPSException {
+        // do the version negotiation dance
+        List<String> provided = Collections.singletonList("1.0.0");
+        List<String> accepted = null;
+        if (request.getAcceptVersions() != null)
+            accepted = request.getAcceptVersions().getVersion();
+        String version = RequestUtils.getVersionOws11(provided, accepted);
 
+        if (!"1.0.0".equals(version)) {
+            throw new WPSException("Could not understand version:" + version);
+        }
+
+        // TODO: add update sequence negotiation
+        
+        // encode the response
         WpsFactory wpsf = WpsFactory.eINSTANCE;
         Ows11Factory owsf = Ows11Factory.eINSTANCE;
         
         WPSCapabilitiesType caps = wpsf.createWPSCapabilitiesType();
+        caps.setVersion("1.0.0");
         
         //ServiceIdentification
         ServiceIdentificationType si = owsf.createServiceIdentificationType();
@@ -93,6 +105,7 @@ public class GetCapabilities {
         
         for(ProcessFactory pf : Processors.getProcessFactories()) {
             ProcessBriefType p = wpsf.createProcessBriefType();
+            p.setProcessVersion(pf.getVersion());
             po.getProcess().add( p );
             
             p.setIdentifier( Ows11Util.code( pf.getName()) );
@@ -101,9 +114,15 @@ public class GetCapabilities {
         }
 
         LanguagesType1 l = wpsf.createLanguagesType1();
+        final DefaultType2 defaultLang = wpsf.createDefaultType2();
+        defaultLang.setLanguage("en");
+        l.setDefault(defaultLang);
+        LanguagesType language = wpsf.createLanguagesType();
+        language.setLanguage("en");
+        l.setSupported(language);
         caps.setLanguages( l );
         
-        l.setDefault( wpsf.createDefaultType2() );
+        l.setDefault( defaultLang );
         l.getDefault().setLanguage( Locale.getDefault().getLanguage() );
         
         return caps;
