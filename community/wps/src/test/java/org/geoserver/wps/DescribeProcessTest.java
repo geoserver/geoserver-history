@@ -11,11 +11,32 @@ public class DescribeProcessTest extends WPSTestSupport {
         return new OneTimeTestSetup(new DescribeProcessTest());
     }
     
-    public void test() throws Exception {
-        Document d = getAsDOM( "wps?service=wps&request=describeprocess&identifier=buffer");
-        print( d );
+    public void testGetBuffer() throws Exception {
+        Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=buffer");
         
-        assertEquals( "wps:ProcessDescriptions", d.getDocumentElement().getNodeName() );
+        testBufferDescription(d);
+    }
+    
+    public void testPostBuffer() throws Exception {
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + 
+        		"<DescribeProcess xmlns=\"http://www.opengis.net/wps/1.0.0\" " +
+        		"xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
+        		"xmlns:xlink=\"http://www.w3.org/1999/xlink\" " +
+        		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" + 
+        		"    <ows:Identifier>intersection</ows:Identifier>\r\n" + 
+        		"    <ows:Identifier>union</ows:Identifier>\r\n" + 
+        		"</DescribeProcess>";
+        Document d = postAsDOM(root(), request);
+        testBufferDescription(d);
+    }
+
+    private void testBufferDescription(Document d) throws Exception {
+        print(d);
+        
+        // first off, let's check it's schema compliant ... it's not unfortunately, prefix issues
+        // prevent even the most basic validation...
+        // checkValidationErrors(d, WPS_SCHEMA, "'lang'");
+        
         assertXpathExists( "/wps:ProcessDescriptions", d );
         
         String base = "/wps:ProcessDescriptions/wps:ProcessDescription/wps:DataInputs";
