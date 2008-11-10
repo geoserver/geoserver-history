@@ -28,5 +28,15 @@ public interface CatalogListener {
      * Handles the event of a modification to an object in the catalog.
      */
     void handleModifyEvent(CatalogModifyEvent event);
+    
+    /**
+     * A callback notifying when GeoServer configuration has been reloaded.
+     * <p>
+     * This method will be removed in recent version as the idea of a "reload" will not
+     * exist.
+     * </p>
+     * @deprecated.
+     */
+    void reloaded();
 	
 }
