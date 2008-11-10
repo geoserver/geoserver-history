@@ -211,6 +211,10 @@ function prepareFormData(){
       <!----- This will add the bounding box of the data (in its CRS) to the page --->
       <!----- Its only added if its actually been calculated (i.e. they presed the generate bbox button) --->
 
+<html:hidden property="nativeMinX"/>
+<html:hidden property="nativeMinY"/>
+<html:hidden property="nativeMaxX"/>
+<html:hidden property="nativeMaxY"/>
 <html:hidden property="dataMinX"/>
 <html:hidden property="dataMinY"/>
 <html:hidden property="dataMaxX"/>
