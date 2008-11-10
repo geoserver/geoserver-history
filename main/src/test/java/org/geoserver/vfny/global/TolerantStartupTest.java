@@ -28,9 +28,7 @@ public class TolerantStartupTest extends GeoServerTestSupport {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(MockData.KEY_STYLE, styleName);
         props.put(MockData.KEY_SRS_HANDLINGS, ProjectionPolicy.REPROJECT_TO_DECLARED.getCode());
-        props.put(MockData.KEY_SRS_NUMBER, "900913");
-        Envelope env = new Envelope(-13000000, -7500000, 2800000, 6400000);
-        props.put(MockData.KEY_NATIVE_ENVELOPE, env);
+        props.put(MockData.KEY_SRS_NUMBER, "123456");
         md.addPropertiesType(name, properties, props);
         
         md.addWellKnownTypes(new QName[] {MockData.BUILDINGS});
