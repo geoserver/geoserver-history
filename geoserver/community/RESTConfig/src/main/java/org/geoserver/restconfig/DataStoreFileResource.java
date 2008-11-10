@@ -22,6 +22,7 @@ import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.resource.Resource;
@@ -129,6 +130,7 @@ public class DataStoreFileResource extends Resource{
         		LOGGER.info("Shapefile PUTted, mimetype was " + getRequest().getEntity().getMediaType());
 
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
+        Form form = getRequest().getResourceRef().getQueryAsForm();
 
         if (format == null){
         	final StringBuilder builder= new StringBuilder("Unrecognized extension: ").append(extension);
