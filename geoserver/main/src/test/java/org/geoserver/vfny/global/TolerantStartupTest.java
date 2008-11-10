@@ -6,13 +6,10 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
-import org.springframework.core.io.ResourceLoader;
 import org.vfny.geoserver.global.Config;
-import org.vfny.geoserver.global.Data;
 
 import com.vividsolutions.jts.geom.Envelope;
 
