@@ -1583,9 +1583,15 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         tmp = new HashMap();
         for ( Iterator e = getFeatureTypeInfos().entrySet().iterator(); e.hasNext(); ) {
             Map.Entry entry = (Entry) e.next();
-            String key = (String) entry.getKey();
-            FeatureTypeInfo fti = (FeatureTypeInfo) entry.getValue();
-            tmp.put( key, fti.toDTO() );
+            try {
+                String key = (String) entry.getKey();
+                FeatureTypeInfo fti = (FeatureTypeInfo) entry.getValue();
+                tmp.put( key, fti.toDTO() );
+            } catch(Exception ex) {
+                // live and let die, we don't want to prevent the full startup because one
+                // layer is not loading properly
+                LOGGER.log(Level.SEVERE, "Could not load feature type " + entry.getKey(), ex);
+            }
         }
         //i = errors.keySet().iterator();
         //
@@ -1601,9 +1607,15 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         tmp = new HashMap();
         for ( Iterator e = getCoverageInfos().entrySet().iterator(); e.hasNext(); ) {
             Map.Entry entry = (Entry) e.next();
-            String key = (String) entry.getKey();
-            CoverageInfo ci = (CoverageInfo) entry.getValue();
-            tmp.put( key, ci.toDTO() );
+            try {
+                String key = (String) entry.getKey();
+                CoverageInfo ci = (CoverageInfo) entry.getValue();
+                tmp.put( key, ci.toDTO() );
+            } catch(Exception ex) {
+                // live and let die, we don't want to prevent the full startup because one
+                // layer is not loading properly
+                LOGGER.log(Level.SEVERE, "Could not load feature type " + entry.getKey(), ex);
+            }
         }
         //i = coverages.keySet().iterator();
         //
