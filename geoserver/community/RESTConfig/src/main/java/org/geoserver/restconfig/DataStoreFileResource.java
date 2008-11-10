@@ -139,7 +139,7 @@ public class DataStoreFileResource extends Resource{
         return true;
     }
 
-    public void handlePut(){
+    public synchronized void handlePut() {
         String storeName = (String)getRequest().getAttributes().get("folder");
         String extension = (String)getRequest().getAttributes().get("type");
         String format = (String) myFormats.get(extension);
@@ -341,16 +341,20 @@ public class DataStoreFileResource extends Resource{
         
         FeatureSource<SimpleFeatureType, SimpleFeature> source = store.getFeatureSource(featureTypeName);
 
-        CoordinateReferenceSystem crs = source.getSchema().getCoordinateReferenceSystem();
+        CoordinateReferenceSystem crs = (source.getSchema().getCoordinateReferenceSystem() != null ? source.getSchema().getCoordinateReferenceSystem() : source.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem());
         if (ftc.getSRS() <= 0) {
-            LOG.info("Trying to autoconfigure " + featureTypeName + "; found CRS " + crs);
-            String s = CRS.lookupIdentifier(crs, true);
-            if (s == null){
-                ftc.setSRS(4326); // TODO: Don't be so lame.
-            } else if (s.indexOf(':') != -1) {
-                ftc.setSRS(Integer.valueOf(s.substring(s.indexOf(':') + 1)));
-            } else {
-                ftc.setSRS(Integer.valueOf(s));
+            if (crs == null)
+                ftc.setSRS(4326);
+            else {
+                LOG.info("Trying to autoconfigure " + featureTypeName + "; found CRS " + crs);
+                String s = CRS.lookupIdentifier(crs, true);
+                if (s == null){
+                    ftc.setSRS(4326); // TODO: Don't be so lame.
+                } else if (s.indexOf(':') != -1) {
+                    ftc.setSRS(Integer.valueOf(s.substring(s.indexOf(':') + 1)));
+                } else {
+                    ftc.setSRS(Integer.valueOf(s));
+                }
             }
         }
 
