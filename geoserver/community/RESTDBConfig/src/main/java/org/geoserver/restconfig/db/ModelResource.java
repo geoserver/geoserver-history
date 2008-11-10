@@ -5,7 +5,6 @@
 package org.geoserver.restconfig.db;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,32 +71,17 @@ public class ModelResource extends MapResource {
 
         m.put("Abstract", (theModel.getAbstract() != null ? theModel.getAbstract() : "[None]"));
         m.put("OriginatingCenter", (theModel.getCenter() != null ? theModel.getCenter() : "[None]"));
-        try {
-            m.put("CRS", (theModel.getCRS() != null ? /* CRS.lookupIdentifier(theModel.getCRS(), true) */ theModel.getCRS().toWKT() : "[None]"));
-        } catch (Exception e) {
-            m.put("CRS", "[None]");
-        }
         m.put("Description", (theModel.getDescription() != null ? theModel.getDescription() : "[None]"));
         m.put("Discipline", (theModel.getDiscipline() != null ? theModel.getDiscipline().getDescription() : "[None]"));
-        m.put("GridCRS", (theModel.getGridCRS() != null ? theModel.getGridCRS() : "[None]")); 
-        m.put("GridCS", (theModel.getGridCS() != null ? theModel.getGridCS() : "[None]"));
-        m.put("GridLowers", getGridLowers(theModel));
-        m.put("GridOffsets", getGridOffsets(theModel));
-        m.put("GridOrigin", getGridOrigin(theModel));
-        m.put("GridType", (theModel.getGridType() != null ? theModel.getGridType() : "[None]"));
-        m.put("GridUppers", getGridUppers(theModel));
         m.put("Keywords", getKeywords(theModel));
-        m.put("InitParams", getInitParams(theModel));
         m.put("Metadata", getMetadata(theModel));
         m.put("MetadataLink", getMetadataLinks(theModel));
         m.put("Name", theModel.getName());
-        m.put("OutParams", getOutParams(theModel));
         m.put("Products", getProducts(theModel));
         m.put("SubCenter", (theModel.getSubCenter() != null ? theModel.getSubCenter() : "[None]"));
         m.put("Title", (theModel.getTitle() != null ? theModel.getTitle() : "[None]"));
         m.put("TypeOfData", (theModel.getTypeOfData() != null ? theModel.getTypeOfData().getDescription() : "[None]"));
         m.put("Version", (theModel.getVersion() != null ? theModel.getVersion() : "[None]"));
-        m.put("VerticalCoordinateMeaning", (theModel.getVerticalCoordinateMeaning() != null ? theModel.getVerticalCoordinateMeaning() : "[None]"));
 
         return m;
     }
@@ -122,70 +106,6 @@ public class ModelResource extends MapResource {
             return l;
         
         l.addAll(model.getProducts());
-        return l;
-    }
-
-    private static Object getInitParams(ModelInfo model) {
-        List l = new ArrayList();
-        if(model.getInitParams() == null)
-            return null;
-        
-        Iterator i = model.getInitParams().entrySet().iterator();
-        while (i.hasNext()) {
-            Entry entry = (Entry) i.next();
-            l.add(entry.getKey() + "=" + entry.getValue());
-        }
-        
-        return l;
-    }
-
-    private static Object getOutParams(ModelInfo model) {
-        List l = new ArrayList();
-        if(model.getOutParams() == null)
-            return null;
-        
-        Iterator i = model.getOutParams().entrySet().iterator();
-        while (i.hasNext()) {
-            Entry entry = (Entry) i.next();
-            l.add(entry.getKey() + "=" + entry.getValue());
-        }
-        
-        return l;
-    }
-
-    private static Object getGridOrigin(ModelInfo model) {
-        List l = new ArrayList();
-        if(model.getGridOrigin() == null)
-            return l;
-        
-        l.addAll(Arrays.asList(model.getGridOrigin()));
-        return l;
-    }
-
-    private static Object getGridOffsets(ModelInfo model) {
-        List l = new ArrayList();
-        if(model.getGridOffsets() == null)
-            return l;
-        
-        l.addAll(Arrays.asList(model.getGridOffsets()));
-        return l;
-    }
-
-    private static Object getGridLowers(ModelInfo model) {
-        List l = new ArrayList();
-        if(model.getGridLowers() == null)
-            return l;
-        
-        l.addAll(Arrays.asList(model.getGridLowers()));
-        return l;
-    }
-
-    private static Object getGridUppers(ModelInfo model) {
-        List l = new ArrayList();
-        if(model.getGridUppers() == null)
-            return l;
-        
-        l.addAll(Arrays.asList(model.getGridUppers()));
         return l;
     }
 

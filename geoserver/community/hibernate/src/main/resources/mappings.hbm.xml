@@ -447,34 +447,15 @@
             <generator class="native"/>
         </id>
     	<property name="abstract" column="ABSTRACT"/>    	    
-    	<property name="CRS" column="CRS" type="java.io.Serializable" length="100000"/>    	    
     	<property name="center" column="ORIGINATING_CENTER"/>    	    
     	<property name="description" column="DESCRIPTION"/>    	    
     	<property name="discipline" column="DISCIPLINE"/>    	    
-    	<property name="gridCRS" column="GRID_CRS"/>    	    
-    	<property name="gridCS" column="GRID_CS"/>    	    
-    	<property name="gridLowers" column="GRID_LOWERS"/>    	    
-    	<property name="gridOffsets" column="GRID_OFFSETS"/>    	    
-    	<property name="gridOrigin" column="GRID_ORIGIN"/>    	    
-    	<property name="gridType" column="GRID_TYPE"/>    	    
-    	<property name="gridUppers" column="GRID_UPPERS"/>    	    
     	<property name="name" column="NAME"/>    	    
     	<property name="subCenter" column="SUB_CENTER"/>    	    
     	<property name="title" column="TITLE"/>    	    
     	<property name="typeOfData" column="TYPE_OF_DATA"/>    	    
     	<property name="version" column="VERSION"/>    	    
-    	<property name="verticalCoordinateMeaning" column="VERT_COORD_MEANING"/>    	    
 		
-		<map name="initParams" table="MODEL_INIT_PARAMS" cascade="all">
-        	<key column="MODEL_ID"/>
-        	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable" length="100000"></element>
-        </map>
-    	<map name="outParams" table="MODEL_OUT_PARAMS" cascade="all">
-        	<key column="MODEL_ID"/>
-        	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable" length="100000"></element>
-        </map>
 		<list name="products" table="MODEL_PRODUCTS" cascade="all">
 		    <key column="MODEL_ID"/>
 		    <list-index column="PRODUCT_INDEX"/>
@@ -513,6 +494,15 @@
     	<property name="TAU" column="TAU"/>
     	<property name="TAUunit" column="TAU_UOM"/>
     	<property name="numTAU" column="TAU_NUM"/>
+    	<property name="CRS" column="CRS" type="java.io.Serializable" length="100000"/>    	    
+    	<property name="gridCRS" column="GRID_CRS"/>    	    
+    	<property name="gridCS" column="GRID_CS"/>    	    
+    	<property name="gridLowers" column="GRID_LOWERS"/>    	    
+    	<property name="gridOffsets" column="GRID_OFFSETS"/>    	    
+    	<property name="gridOrigin" column="GRID_ORIGIN"/>    	    
+    	<property name="gridType" column="GRID_TYPE"/>    	    
+    	<property name="gridUppers" column="GRID_UPPERS"/>    	    
+    	<property name="verticalCoordinateMeaning" column="VERT_COORD_MEANING"/>    	    
     	<property name="outline" type="boundingBox">
 			<column name="OL_MINX"/>
 			<column name="OL_MINY"/>
@@ -520,6 +510,17 @@
 			<column name="OL_MAXY"/>
 			<column name="OL_CRS"/>
 		</property>
+
+		<map name="initParams" table="MODEL_INIT_PARAMS" cascade="all">
+        	<key column="MODEL_ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable" length="100000"></element>
+        </map>
+    	<map name="outParams" table="MODEL_OUT_PARAMS" cascade="all">
+        	<key column="MODEL_ID"/>
+        	<map-key type="java.lang.String"></map-key>
+			<element type="java.io.Serializable" length="100000"></element>
+        </map>
 
 		<list name="keywords" table="MODEL_RUN_KEYWORDS" cascade="all">
 		    <key column="MODEL_RUN_ID"/>

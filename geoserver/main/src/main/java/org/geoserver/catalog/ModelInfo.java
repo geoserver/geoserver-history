@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 /**
  * A matematical model.
  * 
@@ -271,114 +269,6 @@ public interface ModelInfo {
      * Sets the type of data of the model.
      */
     void setTypeOfData(DataType type_of_data);
-
-    /**
-     * The grid-CRS of the model.
-     */
-    String getGridCRS();
-
-    /**
-     * Sets the grid-CRS of the model.
-     */
-    void setGridCRS(String gridCRS);
-
-    /**
-     * The grid-type of the model.
-     */
-    String getGridType();
-
-    /**
-     * Sets the grid-type of the model.
-     */
-    void setGridType(String gridType);
-    
-    /**
-     * The grid-CS of the model.
-     */
-    String getGridCS();
-
-    /**
-     * Sets the grid-CS of the model.
-     */
-    void setGridCS(String gridCS);
-
-    /**
-     * The grid-origin of the model.
-     */
-    Double[] getGridOrigin();
-
-    /**
-     * Sets the grid-origin of the model.
-     */
-    void setGridOrigin(Double[] gridOrigin);
-
-    /**
-     * The grid-offsets of the model.
-     */
-    Double[] getGridOffsets();
-
-    /**
-     * Sets the grid-offsets of the model.
-     */
-    void setGridOffsets(Double[] gridOffsets);
-
-    /**
-     * The grid-resolution of the model.
-     */
-    Double[] getGridLowers();
-    Double[] getGridUppers();
-
-    /**
-     * Sets the grid-resolution of the model.
-     */
-    void setGridLowers(Double[] gridLowers);
-    void setGridUppers(Double[] gridUppers);
-
-    /**
-     * The CRS of the model.
-     */
-    CoordinateReferenceSystem getCRS();
-
-    /**
-     * Sets the CRS of the model.
-     */
-    void setCRS(CoordinateReferenceSystem crs);
-
-    /**
-     * The vertical coordinate meaning of the model.
-     */
-    String getVerticalCoordinateMeaning();
-
-    /**
-     * Sets the vertical coordinate meaning of the model.
-     */
-    void setVerticalCoordinateMeaning(String vertical_coordinate_meaning);
-    
-    /**
-     * A persistent map of init parameters.
-     * <p>
-     * Represents a map of custom parameters used to initialize the model.
-     * </p>
-     * <p>
-     * The key values of this map are of type {@link String} and values are of
-     * type {@link Serializable}.
-     * </p>
-     */
-    Map<String, Serializable> getInitParams();
-    void setInitParams(Map<String, Serializable> params);
-
-    /**
-     * A persistent map of out parameters.
-     * <p>
-     * Represents a map of custom parameters used to produce the outcomes of the model.
-     * </p>
-     * <p>
-     * The key values of this map are of type {@link String} and values are of
-     * type {@link Serializable}.
-     * </p>
-     */
-    Map<String, Serializable> getOutParams();
-    void setOutParams(Map<String, Serializable> params);
 
     /**
      * A collection of metadata links for the resource.

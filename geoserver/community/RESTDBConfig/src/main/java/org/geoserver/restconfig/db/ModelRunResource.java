@@ -6,9 +6,12 @@ package org.geoserver.restconfig.db;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.ModelInfo;
@@ -78,6 +81,21 @@ public class ModelRunResource extends MapResource {
         m.put("Name", (theModelRun.getName() != null ? theModelRun.getName() : "[None]"));
         m.put("Keywords", getKeywords(theModelRun));
         m.put("NumTAU", (theModelRun.getNumTAU() != null ? theModelRun.getNumTAU() : "[None]"));
+        try {
+            m.put("CRS", (theModelRun.getCRS() != null ? /* CRS.lookupIdentifier(theModel.getCRS(), true) */ theModelRun.getCRS().toWKT() : "[None]"));
+        } catch (Exception e) {
+            m.put("CRS", "[None]");
+        }
+        m.put("GridCRS", (theModelRun.getGridCRS() != null ? theModelRun.getGridCRS() : "[None]")); 
+        m.put("GridCS", (theModelRun.getGridCS() != null ? theModelRun.getGridCS() : "[None]"));
+        m.put("GridLowers", getGridLowers(theModelRun));
+        m.put("GridOffsets", getGridOffsets(theModelRun));
+        m.put("GridOrigin", getGridOrigin(theModelRun));
+        m.put("GridType", (theModelRun.getGridType() != null ? theModelRun.getGridType() : "[None]"));
+        m.put("GridUppers", getGridUppers(theModelRun));
+        m.put("InitParams", getInitParams(theModelRun));
+        m.put("OutParams", getOutParams(theModelRun));
+        m.put("VerticalCoordinateMeaning", (theModelRun.getVerticalCoordinateMeaning() != null ? theModelRun.getVerticalCoordinateMeaning() : "[None]"));
         m.put("Outline", getBoundingBox(theModelRun));
         m.put("TAU", (theModelRun.getTAU() != null ? theModelRun.getTAU() : "[None]"));
         m.put("TAUunit", (theModelRun.getTAUunit() != null ? theModelRun.getTAUunit() : "[None]"));
@@ -106,6 +124,70 @@ public class ModelRunResource extends MapResource {
             return l;
         
         l.addAll(modelRun.getKeywords());
+        return l;
+    }
+
+    private static Object getInitParams(ModelRunInfo model) {
+        List l = new ArrayList();
+        if(model.getInitParams() == null)
+            return null;
+        
+        Iterator i = model.getInitParams().entrySet().iterator();
+        while (i.hasNext()) {
+            Entry entry = (Entry) i.next();
+            l.add(entry.getKey() + "=" + entry.getValue());
+        }
+        
+        return l;
+    }
+
+    private static Object getOutParams(ModelRunInfo model) {
+        List l = new ArrayList();
+        if(model.getOutParams() == null)
+            return null;
+        
+        Iterator i = model.getOutParams().entrySet().iterator();
+        while (i.hasNext()) {
+            Entry entry = (Entry) i.next();
+            l.add(entry.getKey() + "=" + entry.getValue());
+        }
+        
+        return l;
+    }
+
+    private static Object getGridOrigin(ModelRunInfo model) {
+        List l = new ArrayList();
+        if(model.getGridOrigin() == null)
+            return l;
+        
+        l.addAll(Arrays.asList(model.getGridOrigin()));
+        return l;
+    }
+
+    private static Object getGridOffsets(ModelRunInfo model) {
+        List l = new ArrayList();
+        if(model.getGridOffsets() == null)
+            return l;
+        
+        l.addAll(Arrays.asList(model.getGridOffsets()));
+        return l;
+    }
+
+    private static Object getGridLowers(ModelRunInfo model) {
+        List l = new ArrayList();
+        if(model.getGridLowers() == null)
+            return l;
+        
+        l.addAll(Arrays.asList(model.getGridLowers()));
+        return l;
+    }
+
+    private static Object getGridUppers(ModelRunInfo model) {
+        List l = new ArrayList();
+        if(model.getGridUppers() == null)
+            return l;
+        
+        l.addAll(Arrays.asList(model.getGridUppers()));
         return l;
     }
 
