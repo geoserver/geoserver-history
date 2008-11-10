@@ -1,23 +1,24 @@
 package org.geoserver.restconfig;
 
-import org.geoserver.rest.MapResource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
-
+import org.geoserver.rest.MapResource;
 import org.restlet.data.MediaType;
-
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.restlet.data.Status;
+import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.Data;
 
 public class VirtualLayerResource extends MapResource {
     Data myData;
@@ -56,8 +57,7 @@ public class VirtualLayerResource extends MapResource {
     }
 
     public Map getMap(){
-        Map m = new HashMap();
-        Map folders = FolderListFinder.getVirtualFolderMap(getDataConfig());
+        Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
         String folderName = (String)getRequest().getAttributes().get("folder");
         String layerName  = (String)getRequest().getAttributes().get("layer");
 
@@ -75,4 +75,71 @@ public class VirtualLayerResource extends MapResource {
 
         return null;
     }
+
+	@Override
+	public boolean allowDelete() {
+		return true;
+	}
+
+	@Override
+	public synchronized void handleDelete() {
+        Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
+        String folderName = (String)getRequest().getAttributes().get("folder");
+        String layerName  = (String)getRequest().getAttributes().get("layer");
+
+        if (folders.containsKey(folderName) && folders.get(folderName) instanceof Map){
+            Map folder = (Map)folders.get(folderName);
+            if (folder.containsKey(layerName)){
+                Object layer = folder.get(layerName);
+                if (layer instanceof DataStoreConfig){
+                	//not implemented yet
+                } else if (layer instanceof CoverageStoreConfig){
+                	final CoverageStoreConfig coverageStoreConfig=(CoverageStoreConfig) layer;
+                	final String coverageStoreConfigId=coverageStoreConfig.getId();
+                	final Iterator it=myDataConfig.getCoverages().values().iterator();
+                	final List<CoverageConfig> coverageConfigs= new ArrayList<CoverageConfig>();
+                	while(it.hasNext()){
+                		final CoverageConfig coverageConfig = (CoverageConfig) it.next();
+                		final String coverageConfigId=coverageConfig.getFormatId();
+                		if(coverageConfigId.equalsIgnoreCase(coverageStoreConfigId))
+                			coverageConfigs.add(coverageConfig);
+                		
+                	}
+                	if(!coverageConfigs.isEmpty())
+                	{
+                		boolean error=false;
+                		for(CoverageConfig coverageConfig:coverageConfigs)
+                		{
+                			if(myDataConfig.removeCoverage(coverageStoreConfigId+":"+coverageConfig.getName())==null)
+                				error=true;
+                		}
+                		if(!error)
+                		{
+                			if(myDataConfig.removeDataFormat(coverageStoreConfig.getId())!=null)
+								try {
+									RESTUtils.saveConfiguration(getDataConfig(), getData());
+								} catch (ConfigurationException e) {
+							        getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
+							        getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+							        return;
+								}
+							else
+                				error=true;
+                		}
+                		if(true)
+							try {
+								RESTUtils.reloadConfiguration();
+							} catch (Exception e) {
+								getResponse().setEntity(new StringRepresentation("Failure while reloading configuration: " + e, MediaType.TEXT_PLAIN));
+						        getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+						        return;
+							}
+                			
+                	}
+                }
+            }
+        }
+	}
+	
+	
 }

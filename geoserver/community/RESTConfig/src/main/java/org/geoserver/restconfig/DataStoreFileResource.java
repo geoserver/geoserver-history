@@ -4,38 +4,25 @@
  */
 package org.geoserver.restconfig;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javax.servlet.ServletContext;
 
-import org.geoserver.config.GeoServerLoader;
 import org.geoserver.feature.FeatureSourceUtils;
-import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
-import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.restlet.data.Form;
 import org.restlet.data.MediaType;
-import org.restlet.data.Request;
 import org.restlet.data.Status;
 import org.restlet.resource.Resource;
 import org.restlet.resource.StringRepresentation;
@@ -43,12 +30,8 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.GlobalConfig;
-import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.vfny.geoserver.util.DataStoreUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -58,7 +41,7 @@ public class DataStoreFileResource extends Resource{
     private Data myData;
     private GeoServer myGeoServer;
     private GlobalConfig myGlobalConfig; 
-    protected static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
 
     /**
      * A map from .xxx file extensions to datastorefactory id's.
@@ -66,14 +49,12 @@ public class DataStoreFileResource extends Resource{
      * to instances of some class that knows how to autoconfigure datastores.
      * But you know, baby steps.
      */
-    private static Map myFormats = new HashMap();
+    private static Map<String, String> myFormats = new HashMap<String, String>();
     static {
     	myFormats.put("shp", "Shapefile");
     }
     
     private DataStoreFileResource(){
-        //myFormats = new HashMap();
-        //myFormats.put("shp", "Shapefile");
     }
 
     public DataStoreFileResource(Data data, DataConfig dataConfig, GeoServer gs, GlobalConfig gc) {
@@ -139,33 +120,50 @@ public class DataStoreFileResource extends Resource{
         return true;
     }
 
-    public synchronized void handlePut() {
+    public synchronized void handlePut(){
         String storeName = (String)getRequest().getAttributes().get("folder");
         String extension = (String)getRequest().getAttributes().get("type");
-        String format = (String) myFormats.get(extension);
+        String format = myFormats.get(extension);
 
-        Form form = getRequest().getResourceRef().getQueryAsForm();
-        
-        LOG.info("Shapefile PUTted, mimetype was " + getRequest().getEntity().getMediaType());
+        if(LOGGER.isLoggable(Level.INFO))
+        		LOGGER.info("Shapefile PUTted, mimetype was " + getRequest().getEntity().getMediaType());
 
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
 
         if (format == null){
-            getResponse().setEntity(new StringRepresentation("Unrecognized extension: " + extension, MediaType.TEXT_PLAIN));
+        	final StringBuilder builder= new StringBuilder("Unrecognized extension: ").append(extension);
+        	final String message=builder.toString();
+        	if(LOGGER.isLoggable(Level.SEVERE))
+        		LOGGER.severe(message);
+            getResponse().setEntity(new StringRepresentation(message, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-                    
             return;
         }
 
         File uploadedFile = null;
         try {
-            uploadedFile = handleUpload(storeName, extension, getRequest());
-        } catch (Exception e){
-            getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
+        	String method = (String) getRequest().getAttributes().get("method");
+        	if (method != null && method.equalsIgnoreCase("file"))
+        		uploadedFile = RESTUtils.handleBinUpload(storeName, extension, getRequest());
+        	else if (method != null && method.equalsIgnoreCase("url"))
+        		uploadedFile = RESTUtils.handleURLUpload(storeName, extension, getRequest());
+        	else{
+            	final StringBuilder builder= new StringBuilder("Unrecognized upload method: ").append(method);
+            	final String message=builder.toString();        		
+            	if(LOGGER.isLoggable(Level.SEVERE))
+            		LOGGER.severe(message);
+                getResponse().setEntity(new StringRepresentation(message, MediaType.TEXT_PLAIN));
+                getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);    
+                return;
+        	}
+        } catch (Throwable t) {
+        	if(LOGGER.isLoggable(Level.SEVERE))
+        		LOGGER.log(Level.SEVERE,t.getLocalizedMessage(),t);
+            getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + t, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             return;
-        }
-
+        }        
+        
         DataStoreConfig dsc = (DataStoreConfig)myDataConfig.getDataStores().get(storeName);
 
         if (dsc == null){
@@ -181,36 +179,45 @@ public class DataStoreFileResource extends Resource{
             
             DataStoreFactorySpi factory = dsc.getFactory();
             Param[] parameters = factory.getParametersInfo();
-            Map connectionParameters = new HashMap();
+            Map<String, Serializable> connectionParameters = new HashMap<String, Serializable>();
             for (int i = 0; i < parameters.length; i++){
                 Param p = parameters[i];
                 if (p.required){
-                    connectionParameters.put(p.key, p.sample); // TODO: would be nice to do better here as well
+                    connectionParameters.put(p.key, (Serializable) p.sample); // TODO: would be nice to do better here as well
                 }
             }
 
             if (format.equals("Shapefile")){
-                try{
-                    unpackZippedShapefileSet(storeName, uploadedFile);
-
-                    connectionParameters.put("url", 
-                            // uploadedFile.toURL());
-                    		"file:data/" + storeName + "/" + storeName + ".shp");
-                } catch(Exception mue){
-                    getResponse().setEntity(new StringRepresentation("Failure while setting up datastore: " + mue,MediaType.TEXT_PLAIN));
-                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                final File outDir=RESTUtils.unpackZippedDataset(storeName, uploadedFile);
+                connectionParameters.put("url", 
+                        // uploadedFile.toURL());
+                		"file:/data/" + storeName + "/" + storeName + ".shp");
+           
+                if(outDir==null) {
+	            	if(LOGGER.isLoggable(Level.SEVERE))
+	            		LOGGER.severe("Failure while setting up datastore: Unable to unzip zipped dataset");
+	                getResponse().setEntity(new StringRepresentation("Failure while setting up datastore: Unable to unzip zipped dataset"));
+	                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+	                return;
                 }
+                
             }
 
             if (factory.canProcess(connectionParameters)){
-                System.out.println("Params look okay to me.");
+            	if(LOGGER.isLoggable(Level.INFO))
+            		LOGGER.info("Params look okay to me.");
             } else {
-                System.out.println("Couldn't handle params, oh dear.");
+            	if(LOGGER.isLoggable(Level.SEVERE))
+            		LOGGER.severe("Couldn't handle params.");
+                getResponse().setEntity(new StringRepresentation("Couldn't handle params.",MediaType.TEXT_PLAIN));
+                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                return;            	
             }
 
             dsc.setConnectionParams(connectionParameters);
         } else {
-            System.out.println("Not autoconfigging since there's already a datastore here");
+        	if(LOGGER.isLoggable(Level.INFO))
+        		LOGGER.info("Not autoconfiguring since there's already a datastore here");
         }
 
         myDataConfig.addDataStore(dsc); 
@@ -221,19 +228,26 @@ public class DataStoreFileResource extends Resource{
 
             String[] typeNames = theData.getTypeNames();
             if (typeNames.length == 1){
-                System.out.println("Auto-configuring featuretype: " + storeName + ":" + typeNames[0]);
-                myDataConfig.addFeatureType(storeName + ":" + typeNames[0], autoConfigure(form, theData, storeName, typeNames[0]));
+            	if(LOGGER.isLoggable(Level.INFO))
+            		LOGGER.info(new StringBuilder("Auto-configuring featuretype: ").append(storeName).append(":").append(typeNames[0]).toString());
+                myDataConfig.addFeatureType(storeName + ":" + typeNames[0], autoConfigure(theData, storeName, typeNames[0]));
             }
         } catch (Exception e){
-            LOG.severe("Failure while autoconfiguring uploaded datastore of type " + format);
-            e.printStackTrace();
+        	if(LOGGER.isLoggable(Level.SEVERE))
+        		LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+            getResponse().setEntity(new StringRepresentation("Failure while setting up datastore: " + e,MediaType.TEXT_PLAIN));
+            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+            return;
+            
         }
 
         myData.load(myDataConfig.toDTO());
         try{
-            saveConfiguration();
-            reloadConfiguration();
+        	RESTUtils.saveConfiguration(getDataConfig(), getData());
+            RESTUtils.reloadConfiguration();
         } catch (Exception e){
+        	if(LOGGER.isLoggable(Level.INFO))
+        		LOGGER.log(Level.INFO,e.getLocalizedMessage(),e);
             getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             return;
@@ -243,180 +257,45 @@ public class DataStoreFileResource extends Resource{
         getResponse().setStatus(Status.SUCCESS_OK);
     }
 
-    private File handleUpload(String storeName, String extension, Request request) 
-        throws IOException, ConfigurationException{
-            // TODO: don't manage the temp file manually, java can take care of it
-            File dir = GeoserverDataDirectory.findCreateConfigDir("data");
-            File tempFile = new File(dir, storeName + "." + extension + ".tmp");
-            File newFile = new File(dir, storeName + "." + extension);
-            InputStream in = new BufferedInputStream(request.getEntity().getStream());
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(tempFile));
 
-            copy(in, out);
-
-            tempFile.renameTo(newFile);
-            return newFile;
-        }
-
-    private void unpackZippedShapefileSet(String storeName, File zipFile) throws Exception{
-        ZipFile archive = new ZipFile(zipFile);
-        Enumeration entries = archive.entries();
-        File outputDirectory = new File(GeoserverDataDirectory.findCreateConfigDir("data"), storeName);
-        if (!outputDirectory.exists()){
-            outputDirectory.mkdir();
-        }
-        while (entries.hasMoreElements()){
-            ZipEntry entry = (ZipEntry)entries.nextElement();
-
-            if (!entry.isDirectory()){
-                String name = entry.getName();
-                String extension = null;
-                int extensionStartIndex = name.lastIndexOf(".");
-                if (extensionStartIndex != -1){
-                    extension = name.substring(extensionStartIndex + 1);
-                }
-                
-                // TODO: make sure only 'good' stuff gets uploaded
-                if (extension != null && extension.length() > 0){
-                    InputStream in = new BufferedInputStream(archive.getInputStream(entry));
-                    File outFile = new File(outputDirectory, storeName + "." + extension);
-                    OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile));
-
-                    copy(in, out);
-                }
-            }
-        }
-        archive.close();
-        zipFile.delete();
-        File[] contents = outputDirectory.listFiles();
-        for (int i = 0; i < contents.length; i++){
-            System.out.println("Got " + contents[i] + " from the zip archive.");
-        }
-    }
-
-    private void copy(InputStream in, OutputStream out) throws IOException{
-        byte[] data = new byte[1024]; 
-        int amountRead = 0;
-        while ((amountRead = in.read(data)) != -1){
-            out.write(data, 0, amountRead);
-        }
-        out.flush();
-        out.close();
-    }
-
-    private void saveConfiguration() throws ConfigurationException{
-        getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(), GeoserverDataDirectory.getGeoserverDataDirectory());
-    }
-    
-    private void reloadConfiguration() throws Exception{
-        GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class );
-        try {
-            loader.reload();
-        } 
-        catch (Exception e) {
-            throw new RuntimeException( e );
-        }
-        
-        // Update Config
-        GeoServer gs = getGeoServer();
-        gs.init();
-        getGlobalConfig().update(gs.toDTO());
-        
-        Data data = getData();
-//        data.init();
-        getDataConfig().update(data.toDTO());
-    }
-
-    private FeatureTypeConfig autoConfigure(Form form, DataStore store, String storeName, String featureTypeName) throws Exception{
+	private FeatureTypeConfig autoConfigure(DataStore store, String storeName, String featureTypeName) throws Exception{
         FeatureTypeConfig ftc = new FeatureTypeConfig(storeName, store.getSchema(featureTypeName), true);
 
-        if (form.getFirst("style") != null)
-            ftc.setDefaultStyle(form.getFirstValue("style"));
-        else
-            ftc.setDefaultStyle("polygon");
+        ftc.setDefaultStyle("polygon");
 
-        if (form.getFirst("wmspath") != null)
-            ftc.setWmsPath(form.getFirstValue("wmspath"));
-        
         FeatureSource<SimpleFeatureType, SimpleFeature> source = store.getFeatureSource(featureTypeName);
 
-        CoordinateReferenceSystem crs = (source.getSchema().getCoordinateReferenceSystem() != null ? source.getSchema().getCoordinateReferenceSystem() : source.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem());
-        if (ftc.getSRS() <= 0) {
-            if (crs == null)
-                ftc.setSRS(4326);
-            else {
-                LOG.info("Trying to autoconfigure " + featureTypeName + "; found CRS " + crs);
-                String s = CRS.lookupIdentifier(crs, true);
-                if (s == null){
-                    ftc.setSRS(4326); // TODO: Don't be so lame.
-                } else if (s.indexOf(':') != -1) {
-                    ftc.setSRS(Integer.valueOf(s.substring(s.indexOf(':') + 1)));
-                } else {
-                    ftc.setSRS(Integer.valueOf(s));
-                }
-            }
+        CoordinateReferenceSystem crs = source.getSchema().getCoordinateReferenceSystem();
+        if(LOGGER.isLoggable(Level.INFO))
+    		LOGGER.info("Trying to autoconfigure " + featureTypeName + "; found CRS " + crs);
+        String s = CRS.lookupIdentifier(crs, true);
+        if (s == null){
+            ftc.setSRS(4326); // TODO: Don't be so lame.
+        } else if (s.indexOf(':') != -1) {
+            ftc.setSRS(Integer.valueOf(s.substring(s.indexOf(':') + 1)));
+        } else {
+            ftc.setSRS(Integer.valueOf(s));
         }
 
-        Envelope nativeBBox = FeatureSourceUtils.getBoundingBoxEnvelope(source);
-        ftc.setNativeBBox(nativeBBox);
-        
-        Envelope latLonBbox =  convertBBoxToLatLon(nativeBBox, "EPSG:" + ftc.getSRS());//convertBBoxFromLatLon(latLonBbox, "EPSG:" + ftc.getSRS());
+        Envelope latLonBbox = FeatureSourceUtils.getBoundingBoxEnvelope(source);
         if (latLonBbox.isNull()){
             latLonBbox = new Envelope(-180, 180, -90, 90);
         }
 
         ftc.setLatLongBBox(latLonBbox);
+        Envelope nativeBBox = RESTUtils.convertBBoxFromLatLon(latLonBbox, "EPSG:" + ftc.getSRS());
+        ftc.setNativeBBox(nativeBBox);
 
         return ftc;
     }
 
-    /**
-     * Convert a bounding box in latitude/longitude coordinates to another CRS, specified by name.
-     * @param latLonBbox the latitude/longitude bounding box
-     * @param crsName the name of the CRS to which it should be converted
-     * @return the converted bounding box
-     * @throws Exception if anything goes wrong
-     */
-    private Envelope convertBBoxFromLatLon(Envelope latLonBbox, String crsName)
-            throws Exception {
-        CoordinateReferenceSystem latLon = CRS.decode("EPSG:4326");
-        CoordinateReferenceSystem nativeCRS = CRS.decode(crsName);
-        Envelope env = null;
 
-        if (!CRS.equalsIgnoreMetadata(latLon, nativeCRS)) {
-            MathTransform xform = CRS
-                    .findMathTransform(latLon, nativeCRS, true);
-            env = JTS.transform(latLonBbox, null, xform, 10); // convert data
-            // bbox to
-            // lat/long
-        } else {
-            env = latLonBbox;
-        }
+    
+	/**
+	 * @return the myFormats
+	 */
+	public static Map<String, String> getAllowedFormats() {
+		return myFormats;
+	}
 
-        return env;
-    }
-
-    private Envelope convertBBoxToLatLon(Envelope bbox, String crsName)
-            throws Exception {
-        CoordinateReferenceSystem latLon = CRS.decode("EPSG:4326");
-        CoordinateReferenceSystem nativeCRS = CRS.decode(crsName);
-        Envelope env = null;
-
-        if (!CRS.equalsIgnoreMetadata(latLon, nativeCRS)) {
-            MathTransform xform = CRS.findMathTransform(nativeCRS, latLon, true);
-            env = JTS.transform(bbox, null, xform, 10); // convert data bbox to lat/long
-        } else {
-            env = bbox;
-        }
-
-        return env;
-    }
-
-    /**
-     * @return the myFormats
-     */
-    public static Map getAllowedFormats() {
-        return myFormats;
-    }
 }

@@ -85,27 +85,7 @@ public class FeatureTypeResource extends MapResource {
     }
 
     public Map getMap(){
-        return getMap(findMyFeatureTypeConfig());
-    }
-
-    public static Map getMap(FeatureTypeConfig myFTC) {
-        Map m = new HashMap();
-
-        m.put("Style", myFTC.getDefaultStyle());
-        m.put("AdditionalStyles", myFTC.getStyles());
-        m.put("SRS", myFTC.getSRS());
-        m.put("SRSHandling", getSRSHandling(myFTC));
-        m.put("Title", myFTC.getTitle());
-        m.put("BBox", getBoundingBox(myFTC)); 
-        m.put("Keywords", getKeywords(myFTC));
-        m.put("Abstract", myFTC.getAbstract());
-        m.put("WMSPath", myFTC.getWmsPath());
-        m.put("MetadataLinks", getMetadataLinks(myFTC));
-        m.put("CachingEnabled", Boolean.toString(myFTC.isCachingEnabled()));
-        m.put("CacheTime", (myFTC.isCachingEnabled() ? Integer.valueOf(myFTC.getCacheMaxAge()) : null));
-        m.put("SchemaBase", myFTC.getSchemaBase());
-
-        return m;
+        return RESTUtils.getMap(findMyFeatureTypeConfig());
     }
 
     protected void putMap(Object details) throws RestletException {
@@ -183,14 +163,6 @@ public class FeatureTypeResource extends MapResource {
             );
     }
     
-    private static String getSRSHandling(FeatureTypeConfig myFTC){
-        try{
-            return (new String[]{"Force","Reproject","Ignore"})[myFTC.getSRSHandling()];
-        } catch (Exception e){
-            return "Ignore";
-        }
-    }
-    
     private int decodeSRSHandling(String handling){
        List decoder = Arrays.asList(new String[]{
     		   "Force",
@@ -231,28 +203,6 @@ public class FeatureTypeResource extends MapResource {
             return env;
     }
 
-
-    private static List getBoundingBox(FeatureTypeConfig myFTC){
-        List l = new ArrayList();
-        Envelope e = myFTC.getLatLongBBox();
-        l.add(e.getMinX());
-        l.add(e.getMaxX());
-        l.add(e.getMinY());
-        l.add(e.getMaxY());
-        return l;
-    }
-
-    private static List getKeywords(FeatureTypeConfig myFTC){
-        List l = new ArrayList();
-        l.addAll(myFTC.getKeywords());
-        return l;
-    }
-
-    private static List getMetadataLinks(FeatureTypeConfig myFTC){
-        List l = new ArrayList();
-        l.addAll(myFTC.getMetadataLinks());
-        return l;
-    }
 
     private FeatureTypeConfig findMyFeatureTypeConfig() {
         Map attributes = getRequest().getAttributes();

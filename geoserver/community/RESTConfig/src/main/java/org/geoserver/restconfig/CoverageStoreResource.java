@@ -4,31 +4,26 @@
  */
 package org.geoserver.restconfig;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
+import org.geoserver.data.util.CoverageStoreUtils;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.MapResource;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.data.MediaType;
 import org.restlet.resource.StringRepresentation;
-
 import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.global.xml.XMLConfigWriter;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.dto.DataDTO;
-import org.geoserver.data.util.CoverageStoreUtils;
-
-import org.geoserver.rest.MapResource;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.JSONFormat;
+import org.vfny.geoserver.global.xml.XMLConfigWriter;
 
 public class CoverageStoreResource extends MapResource {
     private DataConfig myDataConfig;

@@ -43,7 +43,8 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
 /**
  * Restlet for Style resources
  *
- * @author David Winslow <dwinslow@openplans.org> , The Open Planning Project
+ * @author $Author: Tobia Di Pisa (tobia.dipisa@geo-solutions.it) $ (last modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@geo-solutions.it) $ (last
  */
 public class CoverageResource extends MapResource {
     private DataConfig myDC;
@@ -269,4 +270,5 @@ public class CoverageResource extends MapResource {
                 GeoserverDataDirectory.getGeoserverDataDirectory()
                 );
     }
+
 }

@@ -40,7 +40,7 @@ public class FolderConfigFinder extends Finder {
     public Resource findTarget(Request request, Response response){
         String folder = (String)request.getAttributes().get("folder");
         Resource r = null;
-        Map folders = FolderListFinder.getVirtualFolderMap(getDataConfig());
+        Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
         Object resource = folders.get(folder);
         if (resource instanceof Map){
             r = new VirtualFolderResource(resource);
