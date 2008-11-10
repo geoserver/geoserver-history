@@ -16,18 +16,22 @@
 			<directory>release/target/dependency</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
-				<include>commons-beanutils-core-*.jar</include>
-				<include>commons-configuration-*.jar</include>
-				<include>commons-logging-api-*.jar</include>
+				<!-- include>commons-beanutils-core-*.jar</include -->
+				<!-- include>commons-configuration-*.jar</include -->
+				<!-- include>commons-logging-api-*.jar</include -->
 				<include>geowebcache-*.jar</include>
 				<include>gwc-*.jar</include>
-				<include>tomcat-util*</include>
-				<include>xmlrpc-*</include>
+				<!-- include>tomcat-util*</include -->
+				<!-- include>xmlrpc-*</include -->
+				<include>com.noelios.restlet-*</include>
+				<include>com.noelios.restlet.ext.servlet-*</include>
 				<include>com.noelios.restlet.ext.simple-*</include>
 				<include>jettison-*</include>
 				<include>org.restlet.ext.spring-*</include>
 				<include>org.restlet.ext.json-*</include>
+				<include>org.restlet-*</include>
 				<include>org.simpleframework-*</include>
+				<include>xpp3_min-*</include>
 				<include>stax-api-*</include>
 				<include>org.json-*</include>
 				<include>xstream-*</include>
