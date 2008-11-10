@@ -14,7 +14,10 @@ import org.apache.struts.util.MessageResources;
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataStore;
+import org.geotools.data.FeatureSource;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.FactoryException;
@@ -215,12 +218,47 @@ public class TypesEditorForm extends ActionForm {
 
     /** these store the bounding box of DATASET - in it coordinate system.
          *  normally, you'll have these set to "" or null.
-         *  They're only for information purposes (presentation), they are never persisted or used in any calculations.
          */
     private String dataMinX;
     private String dataMinY;
     private String dataMaxX;
     private String dataMaxY;
+    public String getNativeMinX() {
+        return nativeMinX;
+    }
+
+    public void setNativeMinX(String nativeMinX) {
+        this.nativeMinX = nativeMinX;
+    }
+
+    public String getNativeMinY() {
+        return nativeMinY;
+    }
+
+    public void setNativeMinY(String nativeMinY) {
+        this.nativeMinY = nativeMinY;
+    }
+
+    public String getNativeMaxX() {
+        return nativeMaxX;
+    }
+
+    public void setNativeMaxX(String nativeMaxX) {
+        this.nativeMaxX = nativeMaxX;
+    }
+
+    public String getNativeMaxY() {
+        return nativeMaxY;
+    }
+
+    public void setNativeMaxY(String nativeMaxY) {
+        this.nativeMaxY = nativeMaxY;
+    }
+
+    private String nativeMinX;
+    private String nativeMinY;
+    private String nativeMaxX;
+    private String nativeMaxY;
     private CoordinateReferenceSystem declaredCRS;
     private CoordinateReferenceSystem nativeCRS;
 
@@ -299,15 +337,35 @@ public class TypesEditorForm extends ActionForm {
         Envelope nativeBounds = type.getNativeBBox();
 
         if ((nativeBounds == null) || nativeBounds.isNull()) {
-            dataMinX = "";
-            dataMinY = "";
-            dataMaxX = "";
-            dataMaxY = "";
+            nativeMinX = "";
+            nativeMinY = "";
+            nativeMaxX = "";
+            nativeMaxY = "";
         } else {
-            dataMinX = Double.toString(nativeBounds.getMinX());
-            dataMinY = Double.toString(nativeBounds.getMinY());
-            dataMaxX = Double.toString(nativeBounds.getMaxX());
-            dataMaxY = Double.toString(nativeBounds.getMaxY());
+            nativeMinX = Double.toString(nativeBounds.getMinX());
+            nativeMinY = Double.toString(nativeBounds.getMinY());
+            nativeMaxX = Double.toString(nativeBounds.getMaxX());
+            nativeMaxY = Double.toString(nativeBounds.getMaxY());
+            if(type.getSRSHandling() == FeatureTypeInfo.REPROJECT) {
+                Envelope declared = getDeclaredEnvelope(nativeBounds, type.getDataStoreId(), type.getName(), type.getSRS());
+                if(declared == null) {
+                    dataMinX = "";
+                    dataMinY = "";
+                    dataMaxX = "";
+                    dataMaxY = "";
+                } else {
+                    dataMinX = Double.toString(declared.getMinX());
+                    dataMinY = Double.toString(declared.getMinY());
+                    dataMaxX = Double.toString(declared.getMaxX());
+                    dataMaxY = Double.toString(declared.getMaxY());
+                }
+            } else {
+                dataMinX = nativeMinX;
+                dataMinY = nativeMinY;
+                dataMaxX = nativeMaxX;
+                dataMaxY = nativeMaxY;
+            }
+            
         }
 
         typeName = type.getName();
@@ -461,6 +519,29 @@ public class TypesEditorForm extends ActionForm {
         if (attribute instanceof org.vfny.geoserver.form.data.AttributeDisplay) {
             ;
         }
+    }
+    
+    private Envelope getDeclaredEnvelope(Envelope nativ, String dataStoreId, String typeName, int srsCode) {
+        if(nativ == null)
+            return nativ;
+        
+        final ServletContext context = getServlet().getServletContext();
+        DataConfig dataConfig = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
+        DataStoreConfig dsConfig = dataConfig.getDataStore(dataStoreId);
+        DataStore dataStore = null;
+        try {
+            dataStore = dsConfig.findDataStore(context);
+            SimpleFeatureType featureType = dataStore.getSchema(typeName);
+            FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+            fs = dataStore.getFeatureSource(featureType.getTypeName());
+
+            CoordinateReferenceSystem nativeCRS = fs.getSchema().getCoordinateReferenceSystem();
+            CoordinateReferenceSystem declaredCRS = CRS.decode("EPSG:" + srsCode);
+            return new ReferencedEnvelope(nativ, nativeCRS).transform(declaredCRS, true);
+        } catch(Exception e) {
+            return null;
+        }
+
     }
 
     private Object lookUpAttribute(String name) {

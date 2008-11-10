@@ -287,6 +287,12 @@ public class TypesEditorAction extends ConfigAction {
             typeForm.setDataMaxX(Double.toString(declaredEnvelope.getMaxX()));
             typeForm.setDataMinY(Double.toString(declaredEnvelope.getMinY()));
             typeForm.setDataMaxY(Double.toString(declaredEnvelope.getMaxY()));
+            
+            // preserve the actual native envelope as well
+            typeForm.setNativeMinX(Double.toString(envelope.getMinX()));
+            typeForm.setNativeMaxX(Double.toString(envelope.getMaxX()));
+            typeForm.setNativeMinY(Double.toString(envelope.getMinY()));
+            typeForm.setNativeMaxY(Double.toString(envelope.getMaxY()));
 
             MathTransform xform = CRS.findMathTransform(original, crsLatLong, true);
             Envelope xformed_envelope = JTS.transform(envelope, xform); //convert data bbox to lat/long
@@ -364,24 +370,9 @@ public class TypesEditorAction extends ConfigAction {
         config.setSRS(Integer.parseInt(form.getSRS()));
         config.setTitle(form.getTitle());
         Envelope latLonBbox = getBoundingBox(form);
-        // if the lat/lon bbox did not change, don't try to update stuff, since we don't have
-        // the native bbox calculated
-        if(!(config.getLatLongBBox().equals(latLonBbox) && config.getSRS() == (Integer.parseInt(form.getSRS()))))  {
-            config.setLatLongBBox(latLonBbox);
-            try{
-                Envelope nativeBBox = convertBBoxFromLatLon(latLonBbox, "EPSG: " + config.getSRS());
-                config.setNativeBBox(nativeBBox);
-            } catch (Exception e){
-                LOGGER.severe("Couldn't convert new BBox to native coordinate system! Error was" + e);
-            }
-        } else {
-            config.setNativeBBox(getNativeBBox(form));
-        }
-        // may the native bbox have been changed due to a change
-//        // in the CRS code by the user
-//         if(config.getNativeBBox() != null || (nativeBbox != null && !config.getNativeBBox().equals(nativeBbox))){
-//             config.setNativeBBox(nativeBbox);            
-//         }
+        config.setLatLongBBox(latLonBbox);
+        config.setNativeBBox(getNativeBBox(form));
+        
         config.setKeywords(keyWords(form));
         config.setMetadataLinks(metadataLinks(form));
         config.setWmsPath(form.getWmsPath());
@@ -593,9 +584,9 @@ public class TypesEditorAction extends ConfigAction {
         // here, we try to use the native bbox computed during "generate", but if the
         // user specified the bbox by hand, we have to resort to back-project the lat/lon one
         try {
-            return new Envelope(Double.parseDouble(typeForm.getDataMinX()),
-                Double.parseDouble(typeForm.getDataMaxX()), Double.parseDouble(typeForm.getDataMinY()),
-                Double.parseDouble(typeForm.getDataMaxY()));
+            return new Envelope(Double.parseDouble(typeForm.getNativeMinX()),
+                Double.parseDouble(typeForm.getNativeMaxX()), Double.parseDouble(typeForm.getNativeMinY()),
+                Double.parseDouble(typeForm.getNativeMaxY()));
         } catch(NumberFormatException e) {
             return null;
         }
