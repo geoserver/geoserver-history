@@ -141,12 +141,16 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         private boolean shouldDrawVectorLayer(MapLayer layer, Envelope box){
             // should draw as vector if the layer is a vector layer, and based on mode
             // full: yes, if any regionated vectors are present at this zoom level
-            // bottom: yes, if any regionated vectors are present at this zoom level
-            // top: is the non-regionated feature count for this tile below the cutoff?
+            // background: yes, if any regionated vectors are present at this zoom level
+            // overview: is the non-regionated feature count for this tile below the cutoff?
+            // raster: no
             if (!isVectorLayer(layer)) return false;
 
             String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
-            if ("top".equals(regionateMode)) {
+
+            if ("raster".equals(regionateMode)) return false;
+
+            if ("overview".equals(regionateMode)) {
                 // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
                 return featuresInTile(layer, box, false) <= getFeatureTypeInfo(layer).getRegionateFeatureLimit(); 
             }
@@ -157,11 +161,11 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         private boolean shouldDrawWMSOverlay(MapLayer layer, Envelope box){
             // should draw based on the mode:
             // full: no
-            // bottom: yes
-            // top: is the non-regionated feature count for this tile above the cutoff?
+            // background: yes
+            // overview: is the non-regionated feature count for this tile above the cutoff?
             String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
-            if ("bottom".equals(regionateMode)) return true;
-            if ("top".equals(regionateMode))
+            if ("background".equals(regionateMode) || "raster".equals(regionateMode)) return true;
+            if ("overview".equals(regionateMode))
                 return featuresInTile(layer, box, false) > getFeatureTypeInfo(layer).getRegionateFeatureLimit();
 
             return false;
@@ -169,7 +173,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
         void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box){
             String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
-            if ("top".equalsIgnoreCase(regionateMode)){
+            if ("overview".equalsIgnoreCase(regionateMode)){
                 start("NetworkLink");
                 element("visibility", "1");
                 start("Link");
