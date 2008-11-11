@@ -10,9 +10,11 @@
     <constructor-arg value="format_options=regionateby:auto"/>
   </bean>
 
-  <!-- Auxilliary XML Configuration, place geowebcache.xml in WEB-INF/classes to activate -->
+  <!-- Auxilliary XML Configuration, place geowebcache.xml in $GEOSERVER_DATA_DIR/gwc or WEB-INF/classes to activate -->
   <bean id="gwcXmlConfig" class="org.geowebcache.util.XMLConfiguration">
     <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="gwcCacheFactory" />
+    <!-- used to find $GEOSERVER_DATA_DIR or GEOWEBCACHE_CACHE_DIR -->
+    <property name="fileCache" ref="gwcCacheFile" />
   </bean>
 
   <!-- controller for handling all incoming requests -->
