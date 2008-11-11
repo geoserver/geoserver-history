@@ -140,8 +140,8 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
 
         Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
 
-     // setup quiet logging (we need to to this here because Data
-        // is loaded before GeoServer has a chance to setup logging for good)
+        // setup quiet logging (we need to to this here because Data
+        // is loaded before GoeServer has a chance to setup logging for good)
         try {
             Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
         } catch (Exception e) {

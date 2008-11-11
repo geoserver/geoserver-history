@@ -2,6 +2,7 @@ package org.geoserver.wms;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -22,8 +23,6 @@ import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import sun.rmi.runtime.Log;
 
 public class WMSLoader extends LegacyServiceLoader {
 

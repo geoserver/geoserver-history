@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -165,8 +166,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             LOGGER.log(Level.SEVERE,
                     "Error occurred while pre-processing regionated features",
                     t);
-            // shouldn't we rethrow the exception and fail with a OGC service
-            // exception or a 505?
+            throw new WmsException("Failure while pre-processing regionated features");
         }
 
         // This okay, just means the tile is empty
@@ -484,16 +484,10 @@ public abstract class CachedHierarchyRegionatingStrategy implements
      * @return
      */
     protected String getDatabaseName(WMSMapContext con, MapLayer layer)
-            throws Exception {
-        MapLayerInfo[] config = con.getRequest().getLayers();
-        for (int i = 0; i < config.length; i++) {
-            MapLayerInfo theLayer = config[i];
-            if (theLayer.getName().equals(layer.getTitle())) {
-                return theLayer.getDirName();
-            }
-        }
-        throw new RuntimeException("Weren't able to find the layer "
-                + "inside the map context, this is most disturbing...");
+        throws Exception {
+            int index = Arrays.asList(con.getLayers()).indexOf(layer);
+            MapLayerInfo info = con.getRequest().getLayers()[index];
+            return info.getDirName();
     }
 
     /**

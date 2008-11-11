@@ -48,8 +48,9 @@ public class KMLReflectorTest extends WMSTestSupport {
         final String layerName = MockData.BASIC_POLYGONS.getPrefix() + ":" +
             MockData.BASIC_POLYGONS.getLocalPart();
         final XpathEngine xpath = XMLUnit.newXpathEngine();
-        String requestURL = "kml/wms?layers=" + layerName;
+        String requestURL = "kml/wms?mode=onstop&layers=" + layerName;
         Document dom = getAsDOM(requestURL);
+        print(dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder)", dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder/NetworkLink)", dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder/LookAt)", dom);
@@ -60,7 +61,7 @@ public class KMLReflectorTest extends WMSTestSupport {
         
         assertXpathEvaluatesTo("onStop", "kml/Folder/NetworkLink[1]/Url/viewRefreshMode", dom);
         assertXpathEvaluatesTo("1", "kml/Folder/NetworkLink[1]/Url/viewRefreshTime", dom);
-        Map<String, String> expectedKVP = toKvp("http://localhost:80/geoserver/wms?format_options=KMPLACEMARK%3Afalse%3BKMATTR%3Atrue%3BKMSCORE%3A50%3B&service=wms&srs=EPSG%3A4326&width=1024&styles=BasicPolygons&height=1024&transparent=false&request=GetMap&layers=cite%3ABasicPolygons&format=application%2Fvnd.google-earth.kmz%2Bxml&version=1.1.1");
+        Map<String, String> expectedKVP = toKvp("http://localhost:80/geoserver/wms?format_options=KMPLACEMARK%3Afalse%3BKMATTR%3Atrue%3BKMSCORE%3A50%3BSUPEROVERLAY%3Afalse%3B&service=wms&srs=EPSG%3A4326&width=1024&styles=BasicPolygons&height=1024&transparent=false&request=GetMap&layers=cite%3ABasicPolygons&format=application%2Fvnd.google-earth.kmz%2Bxml&version=1.1.1");
         Map<String, String> resultedKVP = 
            toKvp(xpath.evaluate("kml/Folder/NetworkLink[1]/Url/href", dom));
 
@@ -90,7 +91,7 @@ public class KMLReflectorTest extends WMSTestSupport {
         final String layerName = MockData.BASIC_POLYGONS.getPrefix() + ":"
                 + MockData.BASIC_POLYGONS.getLocalPart();
 
-        String requestUrl = "kml/wms?layers=" + layerName + "," + layerName
+        String requestUrl = "kml/wms?mode=onstop&layers=" + layerName + "," + layerName
                 + "&styles=Default,Default&cql_filter=att1<10;att1>1000";
         Document dom = getAsDOM(requestUrl);
 
@@ -176,7 +177,7 @@ public class KMLReflectorTest extends WMSTestSupport {
                 }
 
                 for (Object key : actualFormatOptions.keySet()){
-                    assertTrue(expectedFormatOptions.containsKey(key));
+                    assertTrue("found unexpected key " + key + " in format options", expectedFormatOptions.containsKey(key));
                 }
 
                 // special treatment for the format options
