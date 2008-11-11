@@ -4,13 +4,23 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.namespace.QName;
 
+import org.geoserver.ows.HttpErrorCodeException;
+import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -21,23 +31,6 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.kml");
-
-    /**
-     * the world bounds
-     */
-    final static ReferencedEnvelope world = new ReferencedEnvelope(-180, 180, -90, 90,
-            DefaultGeographicCRS.WGS84);
-
-    /**
-     * resolutions
-     */
-    final static double[] resolutions = new double[100];
-
-    static {
-        for (int i = 0; i < resolutions.length; i++) {
-            resolutions[i] = world.getWidth() / ((0x01 << i) * 256);
-        }
-    }
 
     /**
      * The map context
@@ -63,60 +56,12 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             //calculate closest resolution
             ReferencedEnvelope extent = mapContext.getAreaOfInterest();
-            double resolution = Math.max(extent.getWidth() / 256d, extent.getHeight() / 256d);
-
-            //calculate the closest zoom level
-            int i = 1;
-
-            for (; i < resolutions.length; i++) {
-                if (resolution > resolutions[i]) {
-                    i--;
-
-                    break;
-                }
-            }
-
-            LOGGER.fine("resolution = " + resolution);
-            LOGGER.fine("zoom level = " + i);
-
+            
             //zoom out until the entire bounds requested is covered by a 
             //single tile
-            Envelope top = null;
+            Envelope top = KMLUtils.expandToTile(extent);
+            int i = KMLUtils.findZoomLevel(extent);
 
-            while (i > 0) {
-                resolution = resolutions[i];
-
-                double tilelon = resolution * 256;
-                double tilelat = resolution * 256;
-
-                double lon0 = extent.getMinX() - world.getMinX();
-                double lon1 = extent.getMaxX() - world.getMinX();
-
-                int col0 = (int) Math.floor(lon0 / tilelon);
-                int col1 = (int) Math.floor((lon1 / tilelon) - 1E-9);
-
-                double lat0 = extent.getMinY() - world.getMinY();
-                double lat1 = extent.getMaxY() - world.getMinY();
-
-                int row0 = (int) Math.floor(lat0 / tilelat);
-                int row1 = (int) Math.floor((lat1 / tilelat) - 1E-9);
-
-                if ((col0 == col1) && (row0 == row1)) {
-                    double tileoffsetlon = world.getMinX() + (col0 * tilelon);
-                    double tileoffsetlat = world.getMinY() + (row0 * tilelat);
-
-                    top = new Envelope(tileoffsetlon, tileoffsetlon + tilelon, tileoffsetlat,
-                            tileoffsetlat + tilelat);
-
-                    break;
-                } else {
-                    i--;
-                }
-            }
-
-            if (top == null) {
-                top = world;
-            }
 
             LOGGER.fine("request = " + extent);
             LOGGER.fine("top level = " + top);
@@ -132,7 +77,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             encodeRegion(top, 256, 1024);
 
             //encode the network links
-            if (top != world) {
+            if (top != KMLUtils.WORLD_BOUNDS_WGS84) {
                 //top left
                 Envelope e00 = new Envelope(top.getMinX(), top.getMinX() + (top.getWidth() / 2d),
                         top.getMaxY() - (top.getHeight() / 2d), top.getMaxY());
@@ -164,14 +109,14 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             }
 
             //encode the ground overlay(s)
-            if (top == world) {
-                //special case for top since it does not line up as a propery
-                // tile -> split it in two
-                encodeGroundOverlay(mapLayer, i, new Envelope(-180, 0, -90, 90));
-                encodeGroundOverlay(mapLayer, i, new Envelope(0, 180, -90, 90));
+            if (top == KMLUtils.WORLD_BOUNDS_WGS84) {
+                //special case for top since it does not line up as a proper
+                //tile -> split it in two
+                encodeTileForViewing(mapLayer, i, new Envelope(-180, 0, -90, 90));
+                encodeTileForViewing(mapLayer, i, new Envelope(0, 180, -90, 90));
             } else {
                 //encode straight up
-                encodeGroundOverlay(mapLayer, i, top);
+                encodeTileForViewing(mapLayer, i, top);
             }
 
             //end document
@@ -182,6 +127,162 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             }
         }
 
+        void encodeTileForViewing(MapLayer mapLayer, int drawOrder, Envelope box){
+            if (shouldDrawVectorLayer(mapLayer, box))
+                encodeKMLLink(mapLayer, drawOrder, box);
+            if (shouldDrawWMSOverlay(mapLayer, box))
+                encodeGroundOverlay(mapLayer, drawOrder, box);
+        }
+
+        private boolean shouldDrawVectorLayer(MapLayer layer, Envelope box){
+            // should draw as vector if the layer is a vector layer, and based on mode
+            // full: yes, if any regionated vectors are present at this zoom level
+            // background: yes, if any regionated vectors are present at this zoom level
+            // overview: is the non-regionated feature count for this tile below the cutoff?
+            // raster: no
+            if (!isVectorLayer(layer)) return false;
+
+            String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
+
+            if ("raster".equals(regionateMode)) return false;
+
+            if ("overview".equals(regionateMode)) {
+                // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
+                return featuresInTile(layer, box, false) <= getFeatureTypeInfo(layer).getRegionateFeatureLimit(); 
+            }
+
+            return featuresInTile(layer, box, true) > 0;
+        }
+
+        private boolean shouldDrawWMSOverlay(MapLayer layer, Envelope box){
+            // should draw based on the mode:
+            // full: no
+            // background: yes
+            // overview: is the non-regionated feature count for this tile above the cutoff?
+            String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
+            if ("background".equals(regionateMode) || "raster".equals(regionateMode)) return true;
+            if ("overview".equals(regionateMode))
+                return featuresInTile(layer, box, false) > getFeatureTypeInfo(layer).getRegionateFeatureLimit();
+
+            return false;
+        }
+
+        void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box){
+            String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
+            if ("overview".equalsIgnoreCase(regionateMode)){
+                start("NetworkLink");
+                element("visibility", "1");
+                start("Link");
+                element("href", KMLUtils.getMapUrl(
+                            mapContext,
+                            mapLayer,
+                            0,
+                            box,
+                            new String[] { 
+                            "width", "256",
+                            "height", "256",
+                            "format_options", "",
+                            "superoverlay", "false"
+                            },
+                            true
+                            )
+                       );
+                end("Link");
+                encodeRegion(box, 128, -1);
+                end("NetworkLink");
+            } else {
+                start("NetworkLink");
+                element("visibility", "1");
+                start("Link");
+                element("href", KMLUtils.getMapUrl(
+                            mapContext,
+                            mapLayer,
+                            0,
+                            box,
+                            new String[] { 
+                            "width", "256",
+                            "height", "256",
+                            "format_options", "regionateBy:auto"
+                            },
+                            true
+                            )
+                       );
+                end("Link");
+                encodeRegion(box, 128, -1);
+                end("NetworkLink");
+            }
+        }
+
+        boolean isVectorLayer(MapLayer layer){
+            int index = Arrays.asList(mapContext.getLayers()).indexOf(layer);
+            MapLayerInfo info = mapContext.getRequest().getLayers()[index];
+            return (info.getType() == MapLayerInfo.TYPE_VECTOR 
+                    || info.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR);
+        }
+
+        private FeatureTypeInfo getFeatureTypeInfo(MapLayer layer){
+            for (MapLayerInfo info : mapContext.getRequest().getLayers()) 
+                if (info.getName().equals(layer.getTitle()))
+                    return info.getFeature();
+            return null;
+        }
+
+        private int featuresInTile(MapLayer mapLayer, Envelope bounds, boolean regionate){
+            if (!isVectorLayer(mapLayer)) return 1; // for coverages, we want raster tiles everywhere
+            Envelope originalBounds = mapContext.getRequest().getBbox();
+            mapContext.getRequest().setBbox(bounds);
+            mapContext.setAreaOfInterest(bounds);
+
+            String originalRegionateBy = null;
+            if (regionate){
+                originalRegionateBy = 
+                    (String)mapContext.getRequest().getFormatOptions().get("regionateby");
+                if (originalRegionateBy == null)
+                    mapContext.getRequest().getFormatOptions().put("regionateby","auto");
+            }
+
+            int numFeatures = 0;
+
+            try{
+                numFeatures = 
+                    (KMLUtils.loadFeatureCollection(
+                        (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource(),
+                        mapLayer,
+                        mapContext
+                        ).size()/* == 0*/);
+            } catch (WmsException e) {
+                LOGGER.severe("Caught the WmsException!");
+                numFeatures = -1;
+            } catch (HttpErrorCodeException e) {
+                if (e.getErrorCode() == 204){
+                    mapContext.getRequest().getFormatOptions().remove("regionateby");
+                    numFeatures = 0;
+                } else {
+                    LOGGER.log(
+                            Level.WARNING,
+                            "Failure while checking whether a regionated child tile " +
+                            "contained features!",
+                            e
+                      );
+                }
+            } catch (Exception e){
+                // Probably just trying to regionate a raster layer...
+                LOGGER.log(
+                        Level.WARNING,
+                        "Failure while checking whether a regionated child tile contained features!",
+                        e
+                  );
+            }
+
+            mapContext.getRequest().setBbox(originalBounds);
+            mapContext.setAreaOfInterest(originalBounds);
+            if (regionate && originalRegionateBy == null){
+                mapContext.getRequest().getFormatOptions().remove("regionateby");
+            }
+
+            return numFeatures;
+        }
+
         void encodeGroundOverlay(MapLayer mapLayer, int drawOrder, Envelope box) {
             start("GroundOverlay");
             element("drawOrder", "" + drawOrder);
@@ -189,10 +290,18 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             start("Icon");
 
             String href = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box,
-                    new String[] { "width", "256", "height", "256" }, true);
+                    new String[] { 
+                        "width", "256", 
+                        "height", "256", 
+                        "format", "image/png",
+                        "transparent", "true"
+                    },
+                    true
+                    );
             element("href", href);
             LOGGER.fine(href);
             end("Icon");
+            encodeRegion(box, 256, 512);
 
             encodeLatLonBox(box);
             end("GroundOverlay");

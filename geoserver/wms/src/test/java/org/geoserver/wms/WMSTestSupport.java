@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class WMSTestSupport extends GeoServerTestSupport {
+public abstract class WMSTestSupport extends GeoServerTestSupport {
    
     /**
      * @return The global wms singleton from the application context.

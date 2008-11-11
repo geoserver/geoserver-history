@@ -158,8 +158,8 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
             Element item = (Element) items.item(i);
             double lat = Double.parseDouble(getOrdinate(item, "geo:lat"));
             double lon = Double.parseDouble(getOrdinate(item, "geo:long"));
-            assertTrue(lat >= -90 && lat <= 90);
-            assertTrue(lon >= -180 && lon <= 180);
+            assertTrue("Expected valid latitude value: " + lat, lat >= -90 && lat <= 90);
+            assertTrue("Expected valid longitude value: " + lon, lon >= -180 && lon <= 180);
         }
     }
 

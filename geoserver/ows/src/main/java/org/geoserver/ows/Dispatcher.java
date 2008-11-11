@@ -228,11 +228,11 @@ public class Dispatcher extends AbstractController {
             request.input = reader(httpRequest);
 
             //mark the input stream, support up to 2KB, TODO: make this configurable
+            char[] req = new char[1024];
             request.input.mark(2048);
+            int read = request.input.read(req, 0, 1024);
             
             if (logger.isLoggable(Level.FINE)) {
-                char[] req = new char[1024];
-                int read = request.input.read(req, 0, 1024);
                 if (read == -1) {
                     request.input = null;
                 } else if (read < 1024) {
@@ -240,8 +240,11 @@ public class Dispatcher extends AbstractController {
                 } else {
                     logger.fine("Raw XML request starts with: " + new String(req) + "...");
                 }
-                request.input.reset();
             }
+            if (read == -1)
+                request.input = null;
+            else
+                request.input.reset();
         }
 
         return request;

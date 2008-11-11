@@ -105,7 +105,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 cdata( href );
                 end( "href" );
                 
-                element( "viewRefreshMode", "onRegion" );
+//                element( "viewRefreshMode", "onRegion" );
                 end( "Link" );
                 
                 end( "NetworkLink");
