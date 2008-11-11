@@ -261,7 +261,7 @@ public class EncodeHTMLImageMap {
             try {
             	ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
                 
-                CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCRS();
+                CoordinateReferenceSystem sourceCrs = schema.getGeometryDescriptor().getCoordinateReferenceSystem();
 
                 boolean reproject = (sourceCrs != null)
                 && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs); 
@@ -270,7 +270,7 @@ public class EncodeHTMLImageMap {
                 }
             	// apply filters.
                 // 1) bbox filter
-                BBOX bboxFilter = filterFactory.bbox(schema.getDefaultGeometry().getLocalName(), 
+                BBOX bboxFilter = filterFactory.bbox(schema.getGeometryDescriptor().getLocalName(), 
                         aoi.getMinX() , aoi.getMinY(), aoi.getMaxX(), aoi.getMaxY(), null);
                 DefaultQuery q = new DefaultQuery(schema.getTypeName(), bboxFilter);
                 

@@ -26,7 +26,7 @@ public class HTMLImageMapMapProducerFactory implements GetMapProducerFactorySpi 
      */
     static final String MIME_TYPE = "text/html";
     
-    private static final Set<String> SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
+    static final Set<String> SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
      * Creates a new HTMLImageMapMapProducerFactory object.

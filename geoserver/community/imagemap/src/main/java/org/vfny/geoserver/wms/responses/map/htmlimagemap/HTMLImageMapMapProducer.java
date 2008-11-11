@@ -27,23 +27,11 @@ public class HTMLImageMapMapProducer extends AbstractGetMapProducer implements G
 
     
 
-    /**
-     * Gets ContentType for the produced map.
-     *
-     * @return text/html
-     */
-    public String getContentType() {
-        return HTMLImageMapMapProducerFactory.MIME_TYPE;
-    }
+    public HTMLImageMapMapProducer() {
+		super(HTMLImageMapMapProducerFactory.MIME_TYPE,HTMLImageMapMapProducerFactory.SUPPORTED_FORMATS.toArray(new String[]{}));
+		// TODO Auto-generated constructor stub
+	}
 
-    /**
-     * TODO: add support for different encodings
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getContentEncoding() {
-        return null;
-    }
 
     /**
      * Aborts the encoding.
@@ -82,8 +70,4 @@ public class HTMLImageMapMapProducer extends AbstractGetMapProducer implements G
         this.htmlImageMapEncoder.encode(out);
     }
 
-    public String getContentDisposition() {
-        // can be null
-        return null;
-    }
 }
