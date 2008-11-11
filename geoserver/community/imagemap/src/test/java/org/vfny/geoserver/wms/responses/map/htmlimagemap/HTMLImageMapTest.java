@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.wms.WMSExtensions;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -53,7 +54,7 @@ public class HTMLImageMapTest extends TestCase {
 	
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(HTMLImageMapTest.class.getPackage().getName());
 	
-	GetMapProducerFactorySpi mapFactory=null;
+	//GetMapProducerFactorySpi mapFactory=null;
 	GetMapProducer mapProducer=null;
 	
 	CoordinateReferenceSystem WGS84=null;
@@ -81,32 +82,31 @@ public class HTMLImageMapTest extends TestCase {
         testDS=getTestDataStore();
         
         // initializes GetMapProducer factory and actual producer
-        this.mapFactory = getProducerFactory();
+        //this.mapFactory = getProducerFactory();
         this.mapProducer=getProducerInstance();
         super.setUp();
     }
 	
 	public void tearDown() throws Exception {
-        this.mapFactory = null;
+        //this.mapFactory = null;
         this.mapProducer=null;
         super.tearDown();
     }
 	
-	protected GetMapProducerFactorySpi getProducerFactory() {
+	/*protected GetMapProducerFactorySpi getProducerFactory() {
 	    return new HTMLImageMapMapProducerFactory();
-	}
+	}*/
 	
 	protected GetMapProducer getProducerInstance() {
-		if(mapFactory!=null)
-			return mapFactory.createMapProducer("text/html", null);
+		/*if(mapFactory!=null)
+			return mapFactory.createMapProducer("text/html", null);*/
+		return new HTMLImageMapMapProducer();
 		
-		
-		return null;
 	}
 	
-	public void testGetMapProducerFactory() throws Exception {		
+	/*public void testGetMapProducerFactory() throws Exception {		
 		assertNotNull(mapFactory);		
-	}
+	}*/
 	
 	public void testGetMapProducer() throws Exception {
 		assertNotNull(mapProducer);				

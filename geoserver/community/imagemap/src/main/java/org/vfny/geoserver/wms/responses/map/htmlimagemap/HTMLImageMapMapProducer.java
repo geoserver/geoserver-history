@@ -10,6 +10,8 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -25,10 +27,15 @@ public class HTMLImageMapMapProducer extends AbstractGetMapProducer implements G
     /** HTMLImageMapEncoder: encodes features in HTMLImageMap format */
     private EncodeHTMLImageMap htmlImageMapEncoder;
 
+    /**
+     * The ImageMap is served as text/html: it is an HTML fragment, after all.   
+     */
+    static final String MIME_TYPE = "text/html";
     
+    static final Set<String> SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     public HTMLImageMapMapProducer() {
-		super(HTMLImageMapMapProducerFactory.MIME_TYPE,HTMLImageMapMapProducerFactory.SUPPORTED_FORMATS.toArray(new String[]{}));
+		super(MIME_TYPE,SUPPORTED_FORMATS.toArray(new String[]{}));
 		// TODO Auto-generated constructor stub
 	}
 
