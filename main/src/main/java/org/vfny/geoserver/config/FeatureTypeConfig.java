@@ -260,7 +260,7 @@ public class FeatureTypeConfig {
         indexingEnabled = false;
         regionateAttribute = "";
         regionateStrategy = "sld";
-        regionateFeatureLimit = 50;
+        regionateFeatureLimit = 15;
     }
 
     /**

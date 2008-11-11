@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.awt.Color;
@@ -12,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,7 +68,10 @@ import com.vividsolutions.jts.geom.Polygon;
  * Common utility adapter for kml raster/vector transformers.
  * 
  * @author Wayne Fang, Refractions Research, wfang@refractions.net
+ * @author Arne Kepp - OpenGeo
+ * @author Justin Deoliveira - OpenGeo
  * 
+ * @version $Id$
  */
 public abstract class KMLMapTransformer extends KMLTransformerBase {
     /**
@@ -289,16 +297,15 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         protected boolean encodeStyle(SimpleFeature feature,
                 FeatureTypeStyle[] styles, boolean isVector) {
 
+            /**
+             * KML requires sorting, should we do it here ? 
+             */
             // encode the Line/Poly styles
             List symbolizerList = new ArrayList();
             for (int j = 0; j < styles.length; j++) {
                 Rule[] rules;
-                if(isVector) {
-                    rules = KMLUtils.filterRules(styles[j], feature, 0);
-                } else {
                     rules = KMLUtils.filterRules(styles[j], feature,
                             scaleDenominator);
-                }
                 for (int i = 0; i < rules.length; i++) {
                     symbolizerList.addAll(Arrays.asList(rules[i]
                             .getSymbolizers()));
@@ -392,77 +399,105 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          */
         protected void encodeStyle(SimpleFeature feature,
                 Symbolizer[] symbolizers) {
-            // look for line symbolizers, if there is any, we should tell the
-            // polygon style to have an outline
-            boolean forceOutline = false;
-            for (int i = 0; i < symbolizers.length; i++) {
-                if (symbolizers[i] instanceof LineSymbolizer) {
-                    forceOutline = true;
-                    break;
-                }
-            }
-
-            // if this is a polygon or line, it should also be given a point
-            boolean lacksPointSymbolizer = true;
-            boolean lacksTextSymbolizer = true;
-            Symbolizer multiPointSymbolizer = null;
-
-            // create a 2-D style
             try {
+                /**
+                 * This causes some performance overhead, but we should separate
+                 * out repeated styles anyway...
+                 * 
+                 * In order of appearance, according to KML specs
+                 */
+                LinkedList<PointSymbolizer> iconStyles = new LinkedList<PointSymbolizer>();
+                LinkedList<TextSymbolizer> labelStyles = new LinkedList<TextSymbolizer>();
+                LinkedList<LineSymbolizer> lineStyles = new LinkedList<LineSymbolizer>();
+                LinkedList<PolygonSymbolizer> polyStyles = new LinkedList<PolygonSymbolizer>();
+                // * Not used: <kml:BalloonStyle>
+                // * Not used: <kml:ListStyle>
 
                 for (int i = 0; i < symbolizers.length; i++) {
-                    Symbolizer symbolizer = symbolizers[i];
-                    LOGGER.finer(new StringBuffer("Applying symbolizer ")
-                            .append(symbolizer).toString());
-
-                    // Used for custom placemark icon, sometimes even the
-                    // smallest placemarks will cover up the underlying polygons.
-
-                    // But if we pass a PointSymbolizer to something that is
-                    // essentially a polygon this throws up, so we catch it?
-                    Style2D style = null;
-                    try {
-                        styleFactory.createStyle(feature, symbolizer,
-                                scaleRange);
-                    } catch (IllegalArgumentException iae) {
-                        // Do nothing
+                    Symbolizer sym = symbolizers[i];
+                    if (sym instanceof PointSymbolizer) {
+                        iconStyles.add((PointSymbolizer) sym);
+                    } else if (sym instanceof TextSymbolizer) {
+                        labelStyles.add((TextSymbolizer) sym);
+                    } else if (sym instanceof LineSymbolizer) {
+                        lineStyles.add((LineSymbolizer) sym);
+                    } else if (sym instanceof PolygonSymbolizer) {
+                        polyStyles.add((PolygonSymbolizer) sym);
                     }
-
-                    // split out each type of symbolizer
-                    if (symbolizer instanceof TextSymbolizer) {
-                        encodeTextStyle((TextStyle2D) style,
-                                (TextSymbolizer) symbolizer);
-                        lacksTextSymbolizer = false;
-                    }
-
-                    if (symbolizer instanceof PolygonSymbolizer) {
-                        encodePolygonStyle((PolygonStyle2D) style,
-                                (PolygonSymbolizer) symbolizer, forceOutline);
-                        multiPointSymbolizer = symbolizer;
-                    }
-
-                    if (symbolizer instanceof LineSymbolizer) {
-                        encodeLineStyle((LineStyle2D) style,
-                                (LineSymbolizer) symbolizer);
-                        multiPointSymbolizer = symbolizer;
-                    }
-
-                    if (symbolizer instanceof PointSymbolizer) {
-                        encodePointStyle(style, (PointSymbolizer) symbolizer);
-                        lacksPointSymbolizer = false;
-                    }
-
-                }
-                
-                // Add a default txt symbolizer that effectively hides the <name> tag
-                if (lacksTextSymbolizer) {
-                    encodeDefaultTextStyle();
+                    LOGGER.finer(new StringBuffer("Adding symbolizer ").append(
+                            sym).toString());
                 }
 
-                // Add a default point symbolizer, so people have something
-                // to click on in the Google Earth
-                if (multiPointSymbolizer != null && lacksPointSymbolizer) {
+                // Points / Icons
+                if (iconStyles.isEmpty()) {
+                    // Add a default point symbolizer, so people have something
+                    // to click on
                     encodeDefaultIconStyle(feature);
+                } else {
+                    Iterator<PointSymbolizer> iter = iconStyles.iterator();
+                    while (iter.hasNext()) {
+                        PointSymbolizer sym = (PointSymbolizer) iter.next();
+                        try {
+                            Style2D style = styleFactory.createStyle(feature,
+                                    sym, scaleRange);
+                            encodePointStyle(feature, style, sym);
+                        } catch (IllegalArgumentException iae) {
+                            LOGGER.fine(iae.getMessage() + " for "
+                                    + sym.toString());
+                        }
+                    }
+                }
+
+                // Labels / Text
+                if (labelStyles.isEmpty()) {
+                    encodeDefaultTextStyle();
+                } else {
+                    Iterator<TextSymbolizer> iter = labelStyles.iterator();
+                    while (iter.hasNext()) {
+                        TextSymbolizer sym = (TextSymbolizer) iter.next();
+                        try {
+                            TextStyle2D style = (TextStyle2D) styleFactory
+                                .createStyle(feature, sym, scaleRange);
+                            encodeTextStyle(feature, style, sym);
+                        } catch (IllegalArgumentException iae) {
+                            LOGGER.fine(iae.getMessage() + " for "
+                                    + sym.toString());
+                        }
+                    }
+                }
+
+                // Lines
+                if (!lineStyles.isEmpty()) {
+                    Iterator<LineSymbolizer> iter = lineStyles.iterator();
+                    while (iter.hasNext()) {
+                        LineSymbolizer sym = (LineSymbolizer) iter.next();
+                        try {
+                            LineStyle2D style = (LineStyle2D) styleFactory
+                                    .createStyle(feature, sym, scaleRange);
+                            encodeLineStyle(feature, style, sym);
+                        } catch (IllegalArgumentException iae) {
+                            LOGGER.fine(iae.getMessage() + " for "
+                                    + sym.toString());
+                        }
+                    }
+                }
+
+                // Polygons
+                if (!polyStyles.isEmpty()) {
+                    Iterator<PolygonSymbolizer> iter = polyStyles.iterator();
+                    while (iter.hasNext()) {
+                        PolygonSymbolizer sym = (PolygonSymbolizer) iter.next();
+                        try {
+                            PolygonStyle2D style = (PolygonStyle2D) styleFactory
+                                    .createStyle(feature, sym, scaleRange);
+                            // The last argument is forced outline
+                            encodePolygonStyle(feature, style, sym, !lineStyles
+                                    .isEmpty());
+                        } catch (IllegalArgumentException iae) {
+                            LOGGER.fine(iae.getMessage() + " for "
+                                    + sym.toString());
+                        }
+                    }
                 }
 
             } catch (Exception e) {
@@ -475,7 +510,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          * Encodes a KML IconStyle + PolyStyle from a polygon style and
          * symbolizer.
          */
-        protected void encodePolygonStyle(PolygonStyle2D style,
+        protected void encodePolygonStyle(SimpleFeature feature, PolygonStyle2D style,
                 PolygonSymbolizer symbolizer, boolean forceOutline) {
             // star the polygon style
             start("PolyStyle");
@@ -483,14 +518,14 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             // fill
             if (symbolizer.getFill() != null) {
                 // get opacity
-                double opacity = SLD.opacity(symbolizer.getFill());
+                double opacity = ((Number)symbolizer.getFill().getOpacity().evaluate(feature)).doubleValue();
 
                 if (Double.isNaN(opacity)) {
                     // none specified, default to full opacity
                     opacity = 1.0;
                 }
 
-                encodeColor(SLD.color(symbolizer.getFill()), opacity);
+                encodeColor((Color)symbolizer.getFill().getColor().evaluate(feature, Color.class), opacity);
             } else {
                 // make it transparent
                 encodeColor("00aaaaaa");
@@ -510,7 +545,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 start("LineStyle");
 
                 // opacity
-                double opacity = SLD.opacity(symbolizer.getStroke());
+                double opacity = 
+                    ((Number)symbolizer.getStroke().getOpacity().evaluate(feature)).doubleValue();
 
                 if (Double.isNaN(opacity)) {
                     // none specified, default to full opacity
@@ -518,12 +554,17 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 }
 
                 if (style != null) {
-                    encodeColor(KMLUtils.colorToHex((Color) style.getContour(),
-                            opacity));
+                    encodeColor(
+                            KMLUtils.colorToHex(
+                                (Color)
+                                symbolizer.getStroke().getColor().evaluate(feature, Color.class),
+                                opacity
+                                )
+                            );
                 }
 
                 // width
-                int width = SLD.width(symbolizer.getStroke());
+                int width = (Integer)symbolizer.getStroke().getWidth().evaluate(feature);
 
                 if (width != SLD.NOTFOUND) {
                     element("width", Integer.toString(width));
@@ -537,14 +578,14 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          * Encodes a KML IconStyle + LineStyle from a polygon style and
          * symbolizer.
          */
-        protected void encodeLineStyle(LineStyle2D style,
+        protected void encodeLineStyle(SimpleFeature feature, LineStyle2D style,
                 LineSymbolizer symbolizer) {
             start("LineStyle");
 
             // stroke
             if (symbolizer.getStroke() != null) {
                 // opacity
-                double opacity = SLD.opacity(symbolizer.getStroke());
+                double opacity = ((Number)symbolizer.getStroke().getOpacity().evaluate(feature)).doubleValue();
 
                 if (Double.isNaN(opacity)) {
                     // default to full opacity
@@ -552,8 +593,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 }
 
                 if (symbolizer.getStroke().getColor() != null) {
-                    encodeW3CColor(
-                            symbolizer.getStroke().getColor().toString(), "ff");
+                    encodeColor((Color)symbolizer.getStroke().getColor().evaluate(feature, Color.class), opacity);
                 } else if (style != null) {
                     encodeColor((Color) style.getContour(), opacity);
                 }
@@ -576,7 +616,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML IconStyle from a point style and symbolizer.
          */
-        protected void encodePointStyle(Style2D style,
+        protected void encodePointStyle(SimpleFeature feature, Style2D style,
                 PointSymbolizer symbolizer) {
             start("IconStyle");
 
@@ -584,7 +624,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 Mark mark = SLD.mark(symbolizer);
 
                 if (mark != null) {
-                    double opacity = SLD.opacity(mark.getFill());
+                    double opacity = ((Number)mark.getFill().getOpacity().evaluate(feature)).doubleValue();
 
                     if (Double.isNaN(opacity)) {
                         // default to full opacity
@@ -592,7 +632,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     }
 
                     if (mark.getFill() != null) {
-                        final Color color = SLD.color(mark.getFill());
+                        final Color color = (Color)mark.getFill().getColor().evaluate(feature, Color.class);
                         encodeColor(color, opacity);
                     }
                 }
@@ -648,19 +688,19 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML LabelStyle from a text style and symbolizer.
          */
-        protected void encodeTextStyle(TextStyle2D style,
+        protected void encodeTextStyle(SimpleFeature feature, TextStyle2D style,
                 TextSymbolizer symbolizer) {
             start("LabelStyle");
 
             if (symbolizer.getFill() != null) {
-                double opacity = SLD.opacity(symbolizer.getFill());
+                double opacity = ((Number)symbolizer.getFill().getOpacity().evaluate(feature)).doubleValue();
 
                 if (Double.isNaN(opacity)) {
                     // default to full opacity
                     opacity = 1.0;
                 }
 
-                encodeColor(SLD.color(symbolizer.getFill()), opacity);
+                encodeColor((Color)symbolizer.getFill().getColor().evaluate(feature), opacity);
             } else {
                 // default
                 encodeColor("ffffffff");
@@ -690,20 +730,6 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          */
         void encodeColor(String hex) {
             element("color", hex);
-        }
-
-        /**
-         * Converts web (CSS / HTML) color code to KML equivalent. rrggbb + aa ->
-         * aabbggrr
-         * 
-         * @param w3cHex
-         *            the web representation, like #rrggbb
-         * @param opacity
-         *            as string, ff for 1.0
-         */
-        void encodeW3CColor(String w3cHex, String opacity) {
-            element("color", opacity + w3cHex.substring(5, 7)
-                    + w3cHex.substring(3, 5) + w3cHex.substring(1, 3));
         }
 
         /**
