@@ -2,12 +2,19 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-  <!-- Configuration -->
+  <!-- Automatic getCapabilities Configuration -->
   <bean id="gwcGSConfig" class="org.geowebcache.util.GeoServerConfiguration">
     <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="gwcCacheFactory"/>
     <constructor-arg value="image/png,image/png8,image/jpeg,image/gif,application/vnd.google-earth.kml+xml"/>
     <constructor-arg value="4x4"/>
     <constructor-arg value="format_options=regionateby:auto"/>
+  </bean>
+
+  <!-- Auxilliary XML Configuration, place geowebcache.xml in $GEOSERVER_DATA_DIR/gwc or WEB-INF/classes to activate -->
+  <bean id="gwcXmlConfig" class="org.geowebcache.util.XMLConfiguration">
+    <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="gwcCacheFactory" />
+    <!-- used to find $GEOSERVER_DATA_DIR or GEOWEBCACHE_CACHE_DIR -->
+    <property name="fileCache" ref="gwcCacheFile" />
   </bean>
 
   <!-- controller for handling all incoming requests -->
@@ -21,6 +28,7 @@
     <property name="config">
       <list>
 	<ref bean="gwcGSConfig"/>
+	<ref bean="gwcXmlConfig"/>
       </list>
     </property>
   </bean>
@@ -38,7 +46,7 @@
   </bean>
   
   <!-- Stuff for the REST dispatcher -->
-  <bean id="gwcXmlConfig" class="org.geowebcache.util.XMLConfiguration" />
+  <!-- bean id="gwcXmlConfig" class="org.geowebcache.util.XMLConfiguration" / -->
   
   <bean id="gwcRESTDispatcher" class="org.geowebcache.rest.RESTDispatcher">
     <constructor-arg type="org.geowebcache.layer.TileLayerDispatcher" ref="gwcTLDispatcher"/>

@@ -558,6 +558,7 @@ public class MockData implements TestData {
         featureTypeDir.mkdir();
 
         File info = new File(featureTypeDir, "info.xml");
+        info.delete();
         info.createNewFile();
 
         FileWriter writer = new FileWriter(info);
@@ -583,9 +584,9 @@ public class MockData implements TestData {
 
         Envelope nativeEnvelope = (Envelope) params.get(KEY_NATIVE_ENVELOPE);
         if(nativeEnvelope != null)
-            writer.write("<nativeBBox dynamic=\"false\" minx=\"" + llEnvelope.getMinX()
-                    + "\" miny=\"" + llEnvelope.getMinY() + "\" maxx=\"" + llEnvelope.getMaxX()
-                    + "\" maxy=\"" + llEnvelope.getMaxY() + "\"/>");
+            writer.write("<nativeBBox dynamic=\"false\" minx=\"" + nativeEnvelope.getMinX()
+                    + "\" miny=\"" + nativeEnvelope.getMinY() + "\" maxx=\"" + nativeEnvelope.getMaxX()
+                    + "\" maxy=\"" + nativeEnvelope.getMaxY() + "\"/>");
 
 
         String style = (String) params.get(KEY_STYLE);

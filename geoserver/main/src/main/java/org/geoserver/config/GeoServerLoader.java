@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.Wrapper;
+import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.config.util.LegacyLoggingImporter;
@@ -135,6 +136,16 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 //TODO: log this
                 t.printStackTrace();
             }
+        }
+        
+        //load listeners
+        List<CatalogListener> catalogListeners = GeoServerExtensions.extensions( CatalogListener.class );
+        for ( CatalogListener l : catalogListeners ) {
+            catalog.addListener( l );
+        }
+        List<ConfigurationListener> configListeners = GeoServerExtensions.extensions( ConfigurationListener.class );
+        for ( ConfigurationListener l : configListeners ) {
+            geoserver.addListener( l );
         }
     }
     

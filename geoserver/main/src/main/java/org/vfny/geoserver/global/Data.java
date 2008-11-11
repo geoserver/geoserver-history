@@ -6,6 +6,8 @@ package org.vfny.geoserver.global;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +27,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.catalog.event.CatalogListener;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
@@ -250,6 +253,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         }
         
         // Step 0: dispose datastore and readers as needed
+        Collection<CatalogListener> listeners = new ArrayList<CatalogListener>( catalog.getListeners() );
         catalog.dispose();
         
         //DataStoreCache.getInstance().dispose();
@@ -285,6 +289,12 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //layerNames.clear();
         //featureTypes = loadFeatureTypes(config);
         //coverages = loadCoverages(config);
+        
+        for ( CatalogListener l : listeners ) {
+            catalog.addListener( l );
+            l.reloaded();
+        }
+        
     }
 
     public synchronized Set getDataStores() {
@@ -1588,9 +1598,15 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         tmp = new HashMap();
         for ( Iterator e = getFeatureTypeInfos().entrySet().iterator(); e.hasNext(); ) {
             Map.Entry entry = (Entry) e.next();
-            String key = (String) entry.getKey();
-            FeatureTypeInfo fti = (FeatureTypeInfo) entry.getValue();
-            tmp.put( key, fti.toDTO() );
+            try {
+                String key = (String) entry.getKey();
+                FeatureTypeInfo fti = (FeatureTypeInfo) entry.getValue();
+                tmp.put( key, fti.toDTO() );
+            } catch(Exception ex) {
+                // live and let die, we don't want to prevent the full startup because one
+                // layer is not loading properly
+                LOGGER.log(Level.SEVERE, "Could not load feature type " + entry.getKey(), ex);
+            }
         }
         //i = errors.keySet().iterator();
         //
@@ -1606,9 +1622,15 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         tmp = new HashMap();
         for ( Iterator e = getCoverageInfos().entrySet().iterator(); e.hasNext(); ) {
             Map.Entry entry = (Entry) e.next();
-            String key = (String) entry.getKey();
-            CoverageInfo ci = (CoverageInfo) entry.getValue();
-            tmp.put( key, ci.toDTO() );
+            try {
+                String key = (String) entry.getKey();
+                CoverageInfo ci = (CoverageInfo) entry.getValue();
+                tmp.put( key, ci.toDTO() );
+            } catch(Exception ex) {
+                // live and let die, we don't want to prevent the full startup because one
+                // layer is not loading properly
+                LOGGER.log(Level.SEVERE, "Could not load feature type " + entry.getKey(), ex);
+            }
         }
         //i = coverages.keySet().iterator();
         //

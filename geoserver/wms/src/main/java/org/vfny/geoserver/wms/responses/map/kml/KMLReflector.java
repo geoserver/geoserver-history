@@ -75,7 +75,6 @@ public class KMLReflector {
 
         options = new HashMap();
         options.put("superoverlay", false);
-        options.put("refreshmode", "onstop");
         temp.put("onstop", options);
 
         MODES = temp;
@@ -108,11 +107,11 @@ public class KMLReflector {
                 
         //first set up some of the normal wms defaults
         if ( request.getWidth() < 1 ) {
-            request.setWidth(256);
+            request.setWidth(mode.equals("onstop") ? 1024 : 256);
         } 
 
         if ( request.getHeight() < 1 ) {
-            request.setHeight(256);
+            request.setHeight(mode.equals("onstop") ? 1024 : 256);
         }
 
         // Force srs to lat/lon for KML output.

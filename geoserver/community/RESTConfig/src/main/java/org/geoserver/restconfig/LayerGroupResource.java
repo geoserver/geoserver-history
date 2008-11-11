@@ -171,7 +171,7 @@ class LayerGroupResource extends MapResource {
 
     private String listAsDelimitedString(List values, String delimiter){
         if (values == null) return "";
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         Iterator it = values.iterator();
 
         while (it.hasNext()){

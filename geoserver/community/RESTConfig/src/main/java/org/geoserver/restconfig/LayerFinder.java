@@ -40,7 +40,7 @@ public class LayerFinder extends Finder {
     public Resource findTarget(Request request, Response response){
         String folder = (String) request.getAttributes().get("folder");
         Resource r = null;
-        Map folders = FolderListFinder.getVirtualFolderMap(getDataConfig());
+        Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
         Object o = folders.get(folder);
 
         if (o instanceof Map){

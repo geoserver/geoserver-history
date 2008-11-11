@@ -395,6 +395,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         featureType.setNumDecimals( dto.getNumDecimals() );
         
         featureType.getAttributes().clear();
+        SimpleFeatureType ft = ds.getDataStore(null).getSchema(featureType.getNativeName());
         if ( dto.getSchemaAttributes() != null ) {
             for ( Iterator i = dto.getSchemaAttributes().iterator(); i.hasNext(); ) {
                 AttributeTypeInfoDTO adto = (AttributeTypeInfoDTO) i.next();
@@ -407,8 +408,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             // no attribute should be set if the user did not explicitly specify
             // the attributes (by changing the schema base and fiddling with types and
             // names, which is something we don't support fine anyways).
-            SimpleFeatureType ft = ds.getDataStore(null).getSchema(featureType.getNativeName());
-            
             for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
                 AttributeDescriptor ad = ft.getDescriptor( x );
                 org.geoserver.catalog.AttributeTypeInfo att = catalog.getFactory().createAttribute();
@@ -425,10 +424,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         setSchemaName( dto.getSchemaName() );
         setSchemaFile( dto.getSchemaFile() );
         
+        // make sure the native CRS is really the native one, not the declared one (same goes for the native bbox)
         featureType.setProjectionPolicy( ProjectionPolicy.get( dto.getSRSHandling() ) );
-        featureType.setNativeCRS( CRS.decode( featureType.getSRS() ) );
+        featureType.setNativeCRS( ft.getCoordinateReferenceSystem() );
         if(dto.getNativeBBox() != null)
-            featureType.setNativeBoundingBox(new ReferencedEnvelope( dto.getNativeBBox(), featureType.getCRS() ) );
+            featureType.setNativeBoundingBox(new ReferencedEnvelope( dto.getNativeBBox(), ft.getCoordinateReferenceSystem() ) );
         setCacheMaxAge( dto.getCacheMaxAge() );
         setCachingEnabled( dto.isCachingEnabled() );
         setIndexingEnabled( dto.isIndexingEnabled() );
@@ -477,7 +477,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setMetadataLinks(getMetadataLinks());
         try {
             dto.setLatLongBBox( getLatLongBoundingBox() );
-            dto.setNativeBBox( getBoundingBox() );
+            dto.setNativeBBox( featureType.getNativeBoundingBox() );
         }
         catch( IOException e ) {
             throw new RuntimeException( e );
@@ -889,7 +889,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     public ReferencedEnvelope getBoundingBox() throws IOException {
         try {
             return featureType.getBoundingBox();
-        } catch (Exception e) {
+        } catch (Exception e) { 
             throw (IOException) new IOException().initCause(e);
         }
         //CoordinateReferenceSystem declaredCRS = getDeclaredCRS();

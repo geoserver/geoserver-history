@@ -57,7 +57,9 @@ public class HolesRemover {
 	private CyclicalList convexVertices = new CyclicalList();
 	private CyclicalList reflexVertices = new CyclicalList();
 
-	
+	// minimum area to consider a hole;
+	// holes with a lesser area will be skipped
+	private static final double HOLE_AREA_TOLERANCE=100.0;
 	
 	protected HolesRemover(LineString boundary, LineString hole,
 			GeometryFactory fac) {
@@ -73,7 +75,7 @@ public class HolesRemover {
 	 * @param poly
 	 * @return
 	 */
-	public static Polygon removeHoles(Polygon poly) {
+	public static Polygon removeHoles(Polygon poly,double scale) {
 		GeometryFactory gFac=new GeometryFactory(poly.getPrecisionModel(),poly.getSRID());
 		// extracts the exterior ring that will be used as
 		// a starting polygon from which holes will be cut
@@ -81,13 +83,28 @@ public class HolesRemover {
 		// cut every hole from the exterior ring
 		for(int holeCount=0;holeCount<poly.getNumInteriorRing();holeCount++) {
 			LineString hole=poly.getInteriorRingN(holeCount);
-			// call holes remover to cut the current hole
-			HolesRemover remover=new HolesRemover(result,hole,gFac);
-			result=remover.cutHole();
+			if(!skipHole(hole,scale)) {
+				// call holes remover to cut the current hole
+				HolesRemover remover=new HolesRemover(result,hole,gFac);
+				result=remover.cutHole();
+			}
 		}
 		// return a new polygon from the new boundary
 		LinearRing resultRing=gFac.createLinearRing(result.getCoordinates());
 		return gFac.createPolygon(resultRing, new LinearRing[] {});
+	}
+
+	
+	
+	private static boolean skipHole(LineString hole,double scale) {
+		GeometryFactory gFac=new GeometryFactory(hole.getPrecisionModel(),hole.getSRID());
+		LinearRing ext=gFac.createLinearRing(hole.getCoordinates());
+		Polygon holePoly=gFac.createPolygon(ext, new LinearRing[] {});
+		// if hole area is less than the tolerance, skip it
+		if(holePoly.getArea()<HOLE_AREA_TOLERANCE*scale*scale)			
+			return true;
+		
+		return false;
 	}
 
 	/**
