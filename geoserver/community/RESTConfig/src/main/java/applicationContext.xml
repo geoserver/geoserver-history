@@ -6,6 +6,14 @@
 <property name="routes">
   <map>
         <entry>
+          <key><value>/folders/{folder}/layers/{layer}/default</value></key>
+          <value>defaultLayerConfigFinder</value>
+        </entry>
+        <entry>
+          <key><value>/folders/{folder}/layers/{layer}/default.{type}</value></key>
+          <value>defaultLayerConfigFinder</value>
+        </entry>
+         <entry>
           <key><value>/folders/{folder}/layers/{layer}/{method}.{type}</value></key>
           <value>folderFileFinder</value>
         </entry>  
@@ -13,7 +21,7 @@
           <key><value>/folders/{folder}/file.{type}</value></key>
           <value>folderFileFinder</value>
         </entry>  
-        <entry>
+       <entry>
           <key><value>/folders/{folder}/layers/{layer}.{type}</value></key>
           <value>layerFinder</value>
         </entry>
@@ -45,7 +53,6 @@
           <key><value>/folders</value></key>
           <value>folderListFinder</value>
         </entry>
-
         <entry>
           <key><value>/styles/{style}.{type}</value></key>
           <value>styleFinder</value>
@@ -62,35 +69,6 @@
           <key><value>/styles</value></key>
           <value>styleListFinder</value>
         </entry>
-<!--    Leave out everything but the data and styles for now 
-        <entry>
-          <key><value>/layergroups/{group}.{type}</value></key>
-          <value>layerGroupFinder</value>
-        </entry>
-        <entry>
-          <key><value>/layergroups/{group}</value></key>
-          <value>layerGroupFinder</value>
-        </entry>
-        <entry>
-          <key><value>/layergroups.{type}</value></key>
-          <value>layerGroupListFinder</value>
-        </entry>
-        <entry>
-          <key><value>/layergroups</value></key>
-          <value>layerGroupListFinder</value>
-        </entry>
-        <entry>
-          <key><value>/projections/{projection}</value></key>
-          <value>dummyRestlet</value>
-        </entry>
-        <entry>
-          <key><value>/projections</value></key>
-          <value>dummyRestlet</value>
-        </entry>
-        <entry>
-          <key><value>/dummy.{type}</value></key>
-          <value>dummyRestlet</value>
-        </entry> -->
   </map>
 </property>
 </bean>
@@ -100,6 +78,10 @@
     <property name="data"><ref bean="data"/></property>
 </bean>
 <bean id="layerListFinder" class="org.geoserver.restconfig.LayerListFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
+</bean>
+<bean id="defaultLayerConfigFinder" class="org.geoserver.restconfig.DefaultLayerConfigFinder">
     <property name="dataConfig"><ref bean="dataConfig"/></property>
     <property name="data"><ref bean="data"/></property>
 </bean>

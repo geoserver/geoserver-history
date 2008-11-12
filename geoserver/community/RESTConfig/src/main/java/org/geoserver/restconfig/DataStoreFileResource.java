@@ -260,12 +260,18 @@ public class DataStoreFileResource extends Resource{
     }
 
 
-	private FeatureTypeConfig autoConfigure(DataStore store, String storeName, String featureTypeName) throws Exception{
-        FeatureTypeConfig ftc = new FeatureTypeConfig(storeName, store.getSchema(featureTypeName), true);
+    static FeatureTypeConfig autoConfigure(
+            DataStore store, 
+            String storeName, 
+            String featureTypeName
+            ) throws Exception{
+        FeatureTypeConfig ftc = 
+            new FeatureTypeConfig(storeName, store.getSchema(featureTypeName), true);
 
         ftc.setDefaultStyle("polygon");
 
-        FeatureSource<SimpleFeatureType, SimpleFeature> source = store.getFeatureSource(featureTypeName);
+        FeatureSource<SimpleFeatureType, SimpleFeature> source =
+            store.getFeatureSource(featureTypeName);
 
         CoordinateReferenceSystem crs = source.getSchema().getCoordinateReferenceSystem();
         if(LOGGER.isLoggable(Level.INFO))
