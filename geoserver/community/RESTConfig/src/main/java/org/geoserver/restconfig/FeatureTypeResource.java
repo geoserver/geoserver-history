@@ -114,8 +114,16 @@ public class FeatureTypeResource extends MapResource {
         } 
 
         myFTC.setDefaultStyle((String)m.get("Style"));
-        ArrayList styles = new ArrayList((List)m.get("AdditionalStyles"));
-        myFTC.setStyles(styles == null ? new ArrayList() : styles);
+
+        List styles = (List)m.get("AdditionalStyles");
+        if (styles == null){
+            myFTC.setStyles(new ArrayList());
+        } else if (styles instanceof ArrayList) {
+            myFTC.setStyles((ArrayList) styles);
+        } else {
+            myFTC.setStyles(new ArrayList(styles));
+        }
+
         myFTC.setSRS(
                 m.get("SRS") instanceof Number 
                 ? ((Number) m.get("SRS")).intValue() 
