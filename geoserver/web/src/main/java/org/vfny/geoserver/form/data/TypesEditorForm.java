@@ -540,6 +540,8 @@ public class TypesEditorForm extends ActionForm {
             return new ReferencedEnvelope(nativ, nativeCRS).transform(declaredCRS, true);
         } catch(Exception e) {
             return null;
+        } finally {
+            if(dataStore != null) dataStore.dispose();
         }
 
     }
