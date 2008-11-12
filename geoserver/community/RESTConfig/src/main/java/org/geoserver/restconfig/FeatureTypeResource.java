@@ -114,9 +114,13 @@ public class FeatureTypeResource extends MapResource {
         } 
 
         myFTC.setDefaultStyle((String)m.get("Style"));
-        ArrayList styles = (ArrayList)m.get("AdditionalStyles");
+        ArrayList styles = new ArrayList((List)m.get("AdditionalStyles"));
         myFTC.setStyles(styles == null ? new ArrayList() : styles);
-        myFTC.setSRS(Integer.valueOf((String)m.get("SRS")));
+        myFTC.setSRS(
+                m.get("SRS") instanceof Number 
+                ? ((Number) m.get("SRS")).intValue() 
+                : Integer.valueOf(m.get("SRS").toString())
+                );
         myFTC.setSRSHandling(decodeSRSHandling((String)m.get("SRSHandling")));
         myFTC.setTitle((String)m.get("Title"));
 
@@ -174,10 +178,18 @@ public class FeatureTypeResource extends MapResource {
     }
     
     private Envelope decodeBoundingBox(List l){
-    	double xmin = Double.valueOf((String)l.get(0));
-    	double xmax = Double.valueOf((String)l.get(1));
-    	double ymin = Double.valueOf((String)l.get(2));
-    	double ymax = Double.valueOf((String)l.get(3));
+        double xmin = l.get(0) instanceof Number 
+            ? ((Number)l.get(0)).doubleValue()
+            : Double.valueOf(l.get(0).toString());
+        double xmax = l.get(1) instanceof Number 
+            ? ((Number)l.get(1)).doubleValue()
+            : Double.valueOf(l.get(1).toString());
+        double ymin = l.get(2) instanceof Number 
+            ? ((Number)l.get(2)).doubleValue()
+            : Double.valueOf(l.get(2).toString());
+        double ymax = l.get(3) instanceof Number 
+            ? ((Number)l.get(3)).doubleValue()
+            : Double.valueOf(l.get(3).toString());
     	return new Envelope(xmin, xmax, ymin, ymax);
     }
     
