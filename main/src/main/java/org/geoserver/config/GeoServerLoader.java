@@ -23,6 +23,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.Wrapper;
+import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.catalog.util.LegacyFeatureTypeInfoReader;
@@ -259,6 +260,16 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 //TODO: log this
                 t.printStackTrace();
             }
+        }
+        
+        //load listeners
+        List<CatalogListener> catalogListeners = GeoServerExtensions.extensions( CatalogListener.class );
+        for ( CatalogListener l : catalogListeners ) {
+            catalog.addListener( l );
+        }
+        List<ConfigurationListener> configListeners = GeoServerExtensions.extensions( ConfigurationListener.class );
+        for ( ConfigurationListener l : configListeners ) {
+            geoserver.addListener( l );
         }
     }
     
