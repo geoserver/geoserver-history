@@ -889,5 +889,7 @@ public class CatalogImplTest extends TestCase {
             removed.add( event );
         }
         
+        public void reloaded() {
+        }
     }
 }
