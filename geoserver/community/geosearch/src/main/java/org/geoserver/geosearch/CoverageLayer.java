@@ -25,9 +25,9 @@ public class CoverageLayer implements Layer {
                     convertBBoxToLatLon(
                         makeEnvelope(
                             myCoverage.getEnvelope()),
-                        myCoverage.getCrs()
+                        myCoverage.getNativeCrs()
                         ),
-                    myCoverage.getCrs()
+                    myCoverage.getNativeCrs()
                     );
         } catch (Exception e){
             return myCoverage.getEnvelope();
