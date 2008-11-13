@@ -40,6 +40,8 @@ import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.RestletException;
 
+import net.sf.json.JSONNull;
+
 /**
  * Restlet for DataStore resources
  *
@@ -153,7 +155,12 @@ public class FeatureTypeResource extends MapResource {
         myFTC.setMetadataLinks(metadataLinks == null ? new TreeSet() : new TreeSet((metadataLinks)));
         myFTC.setCachingEnabled(Boolean.valueOf((String)m.get("CachingEnabled")));
         myFTC.setCacheMaxAge((String)myFTC.getCacheMaxAge());
-        myFTC.setSchemaBase((String)m.get("SchemaBase"));
+
+        if (m.get("SchemaBase") instanceof JSONNull){
+            myFTC.setSchemaBase(null);
+        } else {
+            myFTC.setSchemaBase(m.get("SchemaBase").toString());
+        }
 
         String qualifiedName = dataStoreName + ":" + featureTypeName;
         myDC.removeFeatureType(qualifiedName);
