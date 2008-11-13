@@ -160,8 +160,8 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
     }
 
     private boolean isIndexable(MapLayerInfo l){
-        return ( l.getFeature() != null )
-            && ( l.getFeature().isIndexingEnabled() );
+        return (l.getFeature() != null)
+            && (l.getFeature().isIndexingEnabled());
     }
 
     private Element createNetworkLink(String namespace, MapLayerInfo layer){
@@ -177,12 +177,15 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
         networkLink.addContent(snippet);
         Element url = new Element("Url", KML);
         Element href = new Element("href", KML);
-        href.setText(GEOSERVER_URL + "/" + namespace + "/" + layer.getName().split(":",2)[1] + ".kml?startindex=0&maxfeatures=100");
+        href.setText(
+                GEOSERVER_URL + "/" + namespace + "/" + layer.getName().split(":",2)[1] 
+                + ".kml?startindex=0&maxfeatures=100"
+                );
         url.addContent(href);
         networkLink.addContent(url);
         return networkLink;
     }
-
+/*
     private Layer getLayer(String namespace, String layer){
         Object o = getDataConfig().getCoverages().get(namespace+":"+layer);
         if (o == null){
@@ -195,9 +198,10 @@ public class NamespaceIndexRestlet extends GeoServerProxyAwareRestlet{
         } else if (o instanceof FeatureTypeConfig){
             return new FeatureTypeLayer((FeatureTypeConfig)o);
         }
+
         return null;
     }
-
+*/
     private List getLayers(String namespace){
         List results = new ArrayList();
 
