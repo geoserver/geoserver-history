@@ -122,9 +122,9 @@ public class ModelRunGridCoverageListFinder extends Finder {
             theModel  = catalog.getModelByName(modelName);
 
             if (theModel != null && theModel.getModelRuns() != null) {
-                for (ModelRunInfo mr : theModel.getModelRuns()) {
+                for (ModelRunInfo mr : catalog.getModelRuns(theModel)) {
                     if (mr.getName().equals(modelRunName)) {
-                        Iterator it =  mr.getGridCoverages().iterator();
+                        Iterator it = catalog.getGridCoverages(mr).iterator();
                         while (it.hasNext()) {
                             CoverageInfoImpl entry = (CoverageInfoImpl)it.next();
                             modelRunGridCoverages.put(entry.getName(), entry);

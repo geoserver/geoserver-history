@@ -1,12 +1,16 @@
 package org.geoserver.catalog.hibernate;
 
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -37,12 +41,18 @@ import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
 import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
-import org.geoserver.catalog.impl.MapInfoImpl;
-import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
-import org.geoserver.hibernate.GeoServerDAO;
-import org.hibernate.Query;
+import org.geoserver.hibernate.dao.IGeoServerDAO;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageSource;
+import org.geotools.coverage.io.Driver;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
+import org.geotools.feature.NameImpl;
 import org.hibernate.Transaction;
+import org.opengis.referencing.crs.CompoundCRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.temporal.TemporalGeometricPrimitive;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * A {@link Catalog} implementation based on Hibernate
@@ -56,7 +66,7 @@ public class HibernateCatalog implements Catalog {
     /**
      * 
      */
-    private GeoServerDAO gsDAO;
+    private IGeoServerDAO catalogDAO;
 
     /**
      * Flag indicating wether events are thrown on commit or as they happen
@@ -81,12 +91,8 @@ public class HibernateCatalog implements Catalog {
     private final HibernateCatalogFactory hibernateCatalogFactory;
 
     private HibernateCatalog() {
+        super();
         hibernateCatalogFactory = new HibernateCatalogFactory(this);
-    }
-
-    public HibernateCatalog(GeoServerDAO gsDAO) {
-        this();
-        this.gsDAO = gsDAO;
     }
 
     /**
@@ -112,7 +118,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStore(String, Class)
      */
     public <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
-        T store = (T) first("from " + clazz.getName() + " where id = ?", new Object[] { id });
+        T store = this.catalogDAO.getStore(id, clazz);
         if (store != null) {
             store.setCatalog(this);
         }
@@ -123,7 +129,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStoreByName(String, Class)
      */
     public <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz) {
-        T store = (T) first("from " + clazz.getName() + " where name = ?", new Object[] { name });
+        T store = this.catalogDAO.getStoreByName(name, clazz);
         if (store != null) {
             store.setCatalog(this);
         }
@@ -166,7 +172,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStores(Class)
      */
     public <T extends StoreInfo> List<T> getStores(Class<T> clazz) {
-        List<T> stores = list(clazz);
+        List<T> stores = this.catalogDAO.getStores(clazz);
         for (StoreInfo store : stores) {
             store.setCatalog(this);
         }
@@ -234,10 +240,10 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResource(String, Class)
      */
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
-        ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName() + " where id = ?",
-                new Object[] { id });
+        ResourceInfo resource = this.catalogDAO.getResource(id, clazz);
         if (resource != null) {
             resource.setCatalog(this);
+            resource.getStore().setCatalog(this);
             return (T) resource;
         }
         return null;
@@ -251,6 +257,7 @@ public class HibernateCatalog implements Catalog {
             T resource = getResourceByName(getDefaultNamespace().getPrefix(), name, clazz);
             if (resource != null) {
                 resource.setCatalog(this);
+                resource.getStore().setCatalog(this);
                 return resource;
             }
         }
@@ -289,10 +296,10 @@ public class HibernateCatalog implements Catalog {
         }
 
         if (namespace != null) {
-            ResourceInfo resource = (ResourceInfo) first("from " + clazz.getName()
-                    + " where name = ? and namespace = ?", new Object[] { name, namespace.getId() });
+            ResourceInfo resource = this.catalogDAO.getResourceByName(namespace.getId(), name, clazz);
             if (resource != null) {
                 resource.setCatalog(this);
+                resource.getStore().setCatalog(this);
                 return (T) resource;
             }
         } else {
@@ -345,9 +352,10 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResources(Class)
      */
     public <T extends ResourceInfo> List<T> getResources(Class<T> clazz) {
-        List<T> resources = list(clazz);
+        List<T> resources = this.catalogDAO.getResources(clazz);
         for (T resource : resources) {
             resource.setCatalog(this);
+            resource.getStore().setCatalog(this);
         }
         return resources;
     }
@@ -355,11 +363,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getResourcesByNamespace(NamespaceInfo, Class)
      */
-    public <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace,
-            Class<T> clazz) {
-        String hql = "select r from " + clazz.getName() + " r, " + NamespaceInfo.class.getName()
-                + " n where r.namespace = n" + " and n.prefix = '" + namespace.getPrefix() + "'";
-        return list(hql);
+    public <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace, Class<T> clazz) {
+        return this.catalogDAO.getResourcesByNamespace(namespace, clazz);
     }
 
     /**
@@ -401,49 +406,298 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoverage(String)
      */
     public CoverageInfo getCoverage(String id) {
-        return (CoverageInfo) getResource(id, CoverageInfo.class);
+        CoverageInfo coverage = (CoverageInfo) getResource(id, CoverageInfo.class);
+        if ( coverage != null ) {
+            // initializing fields, vertical and temporal extent
+            try {
+                org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                Driver driver = coverage.getStore().getDriver();
+                Map params = new HashMap();
+                params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                CoverageAccess cvAccess = driver.connect(params, null, null);
+                if (cvAccess != null) {
+                    CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                    if (cvSource != null) {
+                        coverage.setFields(cvSource.getRangeType(null));
+
+                        CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                        Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                        CoordinateReferenceSystem temporalCRS = null;
+                        CoordinateReferenceSystem verticalCRS = null;
+                        if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                            if (compundCRS instanceof CompoundCRS) {
+                                temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            }
+                        }
+                        Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                        if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                            if (compundCRS instanceof CompoundCRS) {
+                                if (temporalCRS != null)
+                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                                else
+                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            } 
+                        }
+
+                        coverage.setTemporalCRS(temporalCRS);
+                        coverage.setTemporalExtent(temporalExtent);
+
+                        coverage.setVerticalCRS(verticalCRS);
+                        coverage.setVerticalExtent(verticalExtent);
+                    }
+                }
+            } catch (MalformedURLException e) {
+                //e.printStackTrace();
+            } catch (IOException e) {
+                //e.printStackTrace();
+            }
+        }
+        return coverage;
     }
 
     /**
      * @see Catalog#getCoverageByName(String)
      */
     public CoverageInfo getCoverageByName(String name) {
-        return (CoverageInfo) getResourceByName(name, CoverageInfo.class);
+        CoverageInfo coverage = (CoverageInfo) getResourceByName(name, CoverageInfo.class);
+        if ( coverage != null ) {
+            // initializing fields, vertical and temporal extent
+            try {
+                org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                Driver driver = coverage.getStore().getDriver();
+                Map params = new HashMap();
+                params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                CoverageAccess cvAccess = driver.connect(params, null, null);
+                if (cvAccess != null) {
+                    CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                    if (cvSource != null) {
+                        coverage.setFields(cvSource.getRangeType(null));
+
+                        CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                        Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                        CoordinateReferenceSystem temporalCRS = null;
+                        CoordinateReferenceSystem verticalCRS = null;
+                        if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                            if (compundCRS instanceof CompoundCRS) {
+                                temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            }
+                        }
+                        Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                        if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                            if (compundCRS instanceof CompoundCRS) {
+                                if (temporalCRS != null)
+                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                                else
+                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            } 
+                        }
+
+                        coverage.setTemporalCRS(temporalCRS);
+                        coverage.setTemporalExtent(temporalExtent);
+
+                        coverage.setVerticalCRS(verticalCRS);
+                        coverage.setVerticalExtent(verticalExtent);
+                    }
+                }
+            } catch (MalformedURLException e) {
+                //e.printStackTrace();
+            } catch (IOException e) {
+                //e.printStackTrace();
+            }
+        }
+        return coverage;
     }
 
     /**
      * @see Catalog#getCoverageByName(String, String)
      */
     public CoverageInfo getCoverageByName(String ns, String name) {
-        return (CoverageInfo) getResourceByName(ns, name, CoverageInfo.class);
+        CoverageInfo coverage = (CoverageInfo) getResourceByName(ns, name, CoverageInfo.class);
+        if ( coverage != null ) {
+            // initializing fields, vertical and temporal extent
+            try {
+                org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                Driver driver = coverage.getStore().getDriver();
+                Map params = new HashMap();
+                params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                CoverageAccess cvAccess = driver.connect(params, null, null);
+                if (cvAccess != null) {
+                    CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                    if (cvSource != null) {
+                        coverage.setFields(cvSource.getRangeType(null));
+
+                        CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                        Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                        CoordinateReferenceSystem temporalCRS = null;
+                        CoordinateReferenceSystem verticalCRS = null;
+                        if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                            if (compundCRS instanceof CompoundCRS) {
+                                temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            }
+                        }
+                        Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                        if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                            if (compundCRS instanceof CompoundCRS) {
+                                if (temporalCRS != null)
+                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                                else
+                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            } 
+                        }
+
+                        coverage.setTemporalCRS(temporalCRS);
+                        coverage.setTemporalExtent(temporalExtent);
+
+                        coverage.setVerticalCRS(verticalCRS);
+                        coverage.setVerticalExtent(verticalExtent);
+                    }
+                }
+            } catch (MalformedURLException e) {
+                //e.printStackTrace();
+            } catch (IOException e) {
+                //e.printStackTrace();
+            }
+        }
+        return coverage;
     }
 
     /**
      * @see Catalog#getCoverages()
      */
     public List<CoverageInfo> getCoverages() {
-        return getResources(CoverageInfo.class);
+        List<CoverageInfo> coverages = getResources(CoverageInfo.class);
+        if ( coverages != null && coverages.size() > 0 ) {
+            for (CoverageInfo coverage : coverages) {
+                // initializing fields, vertical and temporal extent
+                try {
+                    org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                    Driver driver = coverage.getStore().getDriver();
+                    Map params = new HashMap();
+                    params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL())
+                            .toURI().toURL());
+                    CoverageAccess cvAccess = driver.connect(params, null, null);
+                    if (cvAccess != null) {
+                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()),
+                                null, AccessType.READ_ONLY, null, null);
+                        if (cvSource != null) {
+                            coverage.setFields(cvSource.getRangeType(null));
+
+                            CoordinateReferenceSystem compundCRS = cvSource
+                                    .getCoordinateReferenceSystem(null);
+                            Set<TemporalGeometricPrimitive> temporalExtent = cvSource
+                                    .getTemporalDomain(null);
+                            CoordinateReferenceSystem temporalCRS = null;
+                            CoordinateReferenceSystem verticalCRS = null;
+                            if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    temporalCRS = ((CompoundCRS) compundCRS)
+                                            .getCoordinateReferenceSystems().get(0);
+                                }
+                            }
+                            Set<org.opengis.geometry.Envelope> verticalExtent = cvSource
+                                    .getVerticalDomain(false, null);
+                            if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    if (temporalCRS != null)
+                                        verticalCRS = ((CompoundCRS) compundCRS)
+                                                .getCoordinateReferenceSystems().get(1);
+                                    else
+                                        verticalCRS = ((CompoundCRS) compundCRS)
+                                                .getCoordinateReferenceSystems().get(0);
+                                }
+                            }
+
+                            coverage.setTemporalCRS(temporalCRS);
+                            coverage.setTemporalExtent(temporalExtent);
+
+                            coverage.setVerticalCRS(verticalCRS);
+                            coverage.setVerticalExtent(verticalExtent);
+                        }
+                    }
+                } catch (MalformedURLException e) {
+                    // e.printStackTrace();
+                } catch (IOException e) {
+                    // e.printStackTrace();
+                }
+            }
+        }
+        return coverages;
     }
 
     /**
      * @see Catalog#getCoveragesByNamespace(NamespaceInfo)
      */
     public List<CoverageInfo> getCoveragesByNamespace(NamespaceInfo namespace) {
-        return getResourcesByNamespace(namespace, CoverageInfo.class);
+        List<CoverageInfo> coverages = getResourcesByNamespace(namespace, CoverageInfo.class);
+        if ( coverages != null && coverages.size() > 0 ) {
+            for (CoverageInfo coverage : coverages) {
+                // initializing fields, vertical and temporal extent
+                try {
+                    org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                    Driver driver = coverage.getStore().getDriver();
+                    Map params = new HashMap();
+                    params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                    CoverageAccess cvAccess = driver.connect(params, null, null);
+                    if (cvAccess != null) {
+                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()),
+                                null, AccessType.READ_ONLY, null, null);
+                        if (cvSource != null) {
+                            coverage.setFields(cvSource.getRangeType(null));
+
+                            CoordinateReferenceSystem compundCRS = cvSource
+                                    .getCoordinateReferenceSystem(null);
+                            Set<TemporalGeometricPrimitive> temporalExtent = cvSource
+                                    .getTemporalDomain(null);
+                            CoordinateReferenceSystem temporalCRS = null;
+                            CoordinateReferenceSystem verticalCRS = null;
+                            if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    temporalCRS = ((CompoundCRS) compundCRS)
+                                            .getCoordinateReferenceSystems().get(0);
+                                }
+                            }
+                            Set<org.opengis.geometry.Envelope> verticalExtent = cvSource
+                                    .getVerticalDomain(false, null);
+                            if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    if (temporalCRS != null)
+                                        verticalCRS = ((CompoundCRS) compundCRS)
+                                                .getCoordinateReferenceSystems().get(1);
+                                    else
+                                        verticalCRS = ((CompoundCRS) compundCRS)
+                                                .getCoordinateReferenceSystems().get(0);
+                                }
+                            }
+
+                            coverage.setTemporalCRS(temporalCRS);
+                            coverage.setTemporalExtent(temporalExtent);
+
+                            coverage.setVerticalCRS(verticalCRS);
+                            coverage.setVerticalExtent(verticalExtent);
+                        }
+                    }
+                } catch (MalformedURLException e) {
+                    // e.printStackTrace();
+                } catch (IOException e) {
+                    // e.printStackTrace();
+                }
+            }
+        }
+        return coverages;
     }
 
     /**
      * @see Catalog#getLayer(String)
      */
     public LayerInfo getLayer(String id) {
-        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where id = ?", new Object[] { id });
+        return this.catalogDAO.getLayer(id);
     }
 
     /**
      * @see Catalog#getLayerByName(String)
      */
     public LayerInfo getLayerByName(String name) {
-        return (LayerInfo) first("from " + LayerInfo.class.getName() + " where name = ?", new Object[] { name });
+        return this.catalogDAO.getLayerByName(name);
     }
 
     /**
@@ -490,23 +744,21 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getMaps()
      */
     public List<MapInfo> getMaps() {
-        return list(MapInfoImpl.class);
+        return this.catalogDAO.getMaps();
     }
 
     /**
      * @see Catalog#getMap(String)
      */
     public MapInfo getMap(String id) {
-        return (MapInfo) first("from " + MapInfo.class.getName() + " where id = ? ",
-                new Object[] { id });
+        return this.catalogDAO.getMap(id);
     }
 
     /**
      * @see Catalog#getMapByName(String)
      */
     public MapInfo getMapByName(String name) {
-        return (MapInfo) first("from " + MapInfo.class.getName() + " where name = ?",
-                new Object[] { name });
+        return this.catalogDAO.getMapByName(name);
     }
 
     /**
@@ -541,8 +793,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getLayers()
      */
-    public List getLayers() {
-        return list(LayerInfoImpl.class);
+    public List<LayerInfo> getLayers() {
+        return this.catalogDAO.getLayers();
     }
 
     /**
@@ -552,25 +804,17 @@ public class HibernateCatalog implements Catalog {
         List<LayerInfo> matches = new ArrayList<LayerInfo>();
         for (Iterator l = getLayers().iterator(); l.hasNext();) {
             LayerInfo layer = (LayerInfo) l.next();
-            ResourceInfo targetResource = getResource(layer.getResource().getId(), resource
-                    .getClass());
+            ResourceInfo targetResource = getResource(layer.getResource().getId(), layer.getResource().getClass());
             if (resource.equals(targetResource)) {
                 layer.setResource(resource);
+                layer.getDefaultStyle().setCatalog(this);
+                for (StyleInfo style : layer.getStyles())
+                    style.setCatalog(this);
                 matches.add(layer);
             }
         }
 
         return matches;
-    }
-
-    /**
-     * @see Catalog#getDefaultNamespace()
-     */
-    @SuppressWarnings("unchecked")
-    public HbNamespaceInfo getDefaultNamespace() {
-        String hql = "from " + HbNamespaceInfo.class.getName() + " where default=?";
-        HbNamespaceInfo info = (HbNamespaceInfo) first(hql, new Object[] { Boolean.TRUE });
-        return info;
     }
 
     /**
@@ -580,26 +824,23 @@ public class HibernateCatalog implements Catalog {
     public void setDefaultNamespace(NamespaceInfo defaultNamespace) {
         HbNamespaceInfo ns = getNamespaceByPrefix(defaultNamespace.getPrefix());
         if (ns == null) {
-            throw new IllegalArgumentException("No such namespace: '"
-                    + defaultNamespace.getPrefix() + "'");
+            throw new IllegalArgumentException("No such namespace: '" + defaultNamespace.getPrefix() + "'");
         }
 
-        HbNamespaceInfo previousDefault = getDefaultNamespace();
+        HbNamespaceInfo previousDefault = this.catalogDAO.getDefaultNamespace();
         if (previousDefault != null) {
             previousDefault.setDefault(false);
-            this.gsDAO.save(previousDefault);
+            this.catalogDAO.update(previousDefault);
         }
         ns.setDefault(true);
-        this.gsDAO.merge((Object) ns);
-        this.gsDAO.commit();
+        this.catalogDAO.merge((Object) ns);
     }
 
     /**
      * @see Catalog#getStyle(String)
      */
     public StyleInfo getStyle(String id) {
-        StyleInfo style = (StyleInfo) first("from " + StyleInfo.class.getName() + " where id = ?",
-                new Object[] { id });
+        StyleInfo style = this.catalogDAO.getStyle(id);
         style.setCatalog(this);
         return style;
     }
@@ -608,8 +849,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyleByName(String)
      */
     public StyleInfo getStyleByName(String name) {
-        StyleInfo style = (StyleInfo) first(
-                "from " + StyleInfo.class.getName() + " where name = ?", new Object[] { name });
+        StyleInfo style = this.catalogDAO.getStyleByName(name);
         if (style != null)
             style.setCatalog(this);
         return style;
@@ -640,7 +880,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getStyles()
      */
     public List<StyleInfo> getStyles() {
-        List<StyleInfo> styles = list(StyleInfo.class);
+        List<StyleInfo> styles = this.catalogDAO.getStyles();
         for (StyleInfo style : styles) {
             style.setCatalog(this);
         }
@@ -651,16 +891,14 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getNamespace(String)
      */
     public NamespaceInfo getNamespace(String id) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where id = ?",
-                new Object[] { id });
+        return this.catalogDAO.getNamespace(id);
     }
 
     /**
      * @see Catalog#getNamespaceByPrefix(String)
      */
     public HbNamespaceInfo getNamespaceByPrefix(String prefix) {
-        return (HbNamespaceInfo) first("from " + NamespaceInfo.class.getName()
-                + " where prefix = ?", new Object[] { prefix });
+        return this.catalogDAO.getNamespaceByPrefix(prefix);
     }
 
     /**
@@ -668,8 +906,7 @@ public class HibernateCatalog implements Catalog {
      * @todo: revisit: what prevents us from having the same URI in more than one namespace?
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
-        return (NamespaceInfo) first("from " + NamespaceInfo.class.getName() + " where URI = ?",
-                new Object[] { uri });
+        return this.catalogDAO.getNamespaceByURI(uri);
     }
 
     /**
@@ -685,8 +922,7 @@ public class HibernateCatalog implements Catalog {
         } else {
             ((HbNamespaceInfo) namespace).setId(existing.getId());
             ((HbNamespaceInfo) namespace).setDefault(existing.isDefault());
-            this.gsDAO.merge(namespace);
-            this.gsDAO.commit();
+            this.catalogDAO.merge(namespace);
         }
     }
 
@@ -710,9 +946,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getNamespaces()
      */
-    @SuppressWarnings("unchecked")
     public List<NamespaceInfo> getNamespaces() {
-        return list(NamespaceInfoImpl.class);
+        return this.catalogDAO.getNamespaces();
     }
 
     /**
@@ -739,81 +974,18 @@ public class HibernateCatalog implements Catalog {
     }
 
     private void internalAdd(Object object) {
-        this.gsDAO.save(object);
-        this.gsDAO.commit();
+        this.catalogDAO.save(object);
         fireAdded(object);
     }
 
     private void internalRemove(Object object) {
-        this.gsDAO.delete(object);
-        this.gsDAO.commit();
+        this.catalogDAO.delete(object);
         fireRemoved(object);
     }
 
     private void internalSave(Object object) {
-        this.gsDAO.update(object);
-        this.gsDAO.commit();
+        this.catalogDAO.update(object);
         fireModified(object, null, null, null);
-    }
-
-    private List list(Class clazz) {
-        return list("from " + clazz.getName());
-    }
-
-    /**
-     * Helper method to return the list of a query
-     */
-    private List list(String hql) {
-        List list = this.gsDAO.createQuery(hql).list();
-        return list;
-    }
-
-    /**
-     * Helper method to return the first object of a query.
-     */
-    protected Object first(String hql) {
-        return first(hql, null);
-    }
-
-    /**
-     * Helper method to return the first object of a query.
-     * 
-     * @param hql
-     *            the hql query, may contain {@code ?} argument placeholders
-     * @param arguments
-     *            the hql query arguments, or {@code null}. Recognized argument types are
-     *            {@link String}, {@link Integer}, {@link Boolean}, {@link Float} and {@link Double}
-     *            . An object of any other type will result in an unchecked exception
-     * @return the first object matching the query or {@code null} if the query returns no results
-     */
-    protected synchronized Object first(final String hql, final Object[] arguments) {
-        Query query = this.gsDAO.createQuery(hql);
-        if (arguments != null) {
-            for (int argN = 0; argN < arguments.length; argN++) {
-                final Object arg = arguments[argN];
-                final Class c = arg.getClass();
-                if (String.class == c) {
-                    query.setString(argN, (String) arg);
-                } else if (Boolean.class == c) {
-                    query.setBoolean(argN, ((Boolean) arg).booleanValue());
-                } else if (Integer.class == c) {
-                    query.setInteger(argN, ((Integer) arg).intValue());
-                } else if (Float.class == c) {
-                    query.setFloat(argN, ((Float) arg).floatValue());
-                } else if (Double.class == c) {
-                    query.setDouble(argN, ((Double) arg).doubleValue());
-                } else {
-                    throw new IllegalArgumentException("Unrecognized type for argument " + argN + " in query '" + hql + "': " + c);
-                }
-            }
-        }
-        Iterator i = query.iterate();
-        if (i.hasNext()) {
-            Object first = i.next();
-            return first;
-        }
-
-        return null;
     }
 
     /**
@@ -867,7 +1039,7 @@ public class HibernateCatalog implements Catalog {
     private void fireEvent(CatalogEvent event) {
         if (fireEventsOnCommit) {
             // store for later
-            events.put(this.gsDAO.getTransaction(), event);
+            events.put(this.catalogDAO, event);
         } else {
             // fire now
             doFireEvent(event);
@@ -986,14 +1158,13 @@ public class HibernateCatalog implements Catalog {
      * @todo missing mapping for LayerGroupInfo
      */
     public List<LayerGroupInfo> getLayerGroups() {
-        return list(LayerGroupInfoImpl.class);
+        return this.catalogDAO.getLayerGroups();
     }
 
     /**
      * @see Catalog#getStoresByWorkspace(WorkspaceInfo, Class)
      */
-    public <T extends StoreInfo> List<T> getStoresByWorkspace(WorkspaceInfo workspace,
-            Class<T> clazz) {
+    public <T extends StoreInfo> List<T> getStoresByWorkspace(WorkspaceInfo workspace, Class<T> clazz) {
         return null;
     }
 
@@ -1001,23 +1172,21 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getWorkspace(String)
      */
     public WorkspaceInfo getWorkspace(String id) {
-        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where id = ",
-                new Object[] { id });
+        return this.catalogDAO.getWorkspace(id);
     }
 
     /**
      * @see Catalog#getWorkspaceByName(String)
      */
     public WorkspaceInfo getWorkspaceByName(String name) {
-        return (WorkspaceInfo) first("from " + WorkspaceInfo.class.getName() + " where name = ?",
-                new Object[] { name });
+        return this.catalogDAO.getWorkspaceByName(name);
     }
 
     /**
      * @see Catalog#getWorkspaces()
      */
     public List<WorkspaceInfo> getWorkspaces() {
-        return list(WorkspaceInfo.class);
+        return this.catalogDAO.getWorkspaces();
     }
 
     /**
@@ -1053,9 +1222,7 @@ public class HibernateCatalog implements Catalog {
      * @todo implement getDefaultWorkspace
      */
     public HbWorkspaceInfo getDefaultWorkspace() {
-        String hql = "from " + HbWorkspaceInfo.class.getName() + " where default=?";
-        HbWorkspaceInfo info = (HbWorkspaceInfo) first(hql, new Object[] { Boolean.TRUE });
-        return info;
+        return this.catalogDAO.getDefaultWorkspace();
     }
 
     /**
@@ -1065,18 +1232,17 @@ public class HibernateCatalog implements Catalog {
         HbWorkspaceInfo currentDefault = getDefaultWorkspace();
         if (currentDefault != null && currentDefault != workspace) {
             currentDefault.setDefault(false);
-            this.gsDAO.update(currentDefault);
+            this.catalogDAO.update(currentDefault);
         }
         ((HbWorkspaceInfo) workspace).setDefault(true);
 
         WorkspaceInfo current = getWorkspaceByName(workspace.getName());
         if (current == null) {
-            this.gsDAO.save(workspace);
+            this.catalogDAO.save(workspace);
         } else {
             ((HbWorkspaceInfo) workspace).setId(current.getId());
-            this.gsDAO.merge(workspace);
+            this.catalogDAO.merge(workspace);
         }
-        this.gsDAO.commit();
     }
 
     /**
@@ -1085,9 +1251,10 @@ public class HibernateCatalog implements Catalog {
      */
     public void bootStrap() {
         HbWorkspaceInfo defaultWs = getFactory().createWorkspace();
-        defaultWs.setName("Default Workspace");
+        defaultWs.setDefault(Boolean.TRUE);
+        defaultWs.setName("topp");
         setDefaultWorkspace(defaultWs);
-
+        
         NamespaceInfo nsinfo = getFactory().createNamespace();
         nsinfo.setPrefix("topp");
         nsinfo.setURI("http://www.opengeo.org");
@@ -1105,33 +1272,37 @@ public class HibernateCatalog implements Catalog {
     }
 
     public ModelInfo getModel(String id) {
-        return (ModelInfo) first("from " + ModelInfo.class.getName() + " where id = ?",
-                new Object[] { id });
+        return this.catalogDAO.getModel(id);
     }
 
     public ModelInfo getModelByName(String name) {
-        return (ModelInfo) first("from " + ModelInfo.class.getName() + " where name = ?",
-                new Object[] { name });
+        return this.catalogDAO.getModelByName(name);
     }
 
     public ModelRunInfo getModelRun(String id) {
-        return (ModelRunInfo) first("from " + ModelRunInfo.class.getName() + " where id = ?",
-                new Object[] { id });
+        return this.catalogDAO.getModelRun(id);
     }
 
     public ModelRunInfo getModelRunByName(String name) {
-        return (ModelRunInfo) first("from " + ModelRunInfo.class.getName() + " where name = ?",
-                new Object[] { name });
+        return this.catalogDAO.getModelRunByName(name);
     }
 
     public List<ModelRunInfo> getModelRuns() {
-        return list(ModelRunInfo.class);
+        return this.catalogDAO.getModelRuns();
+    }
+    
+    public List<ModelRunInfo> getModelRuns(ModelInfo model) {
+        return this.catalogDAO.getModelRuns(model);
     }
 
     public List<ModelInfo> getModels() {
-        return list(ModelInfo.class);
+        return this.catalogDAO.getModels();
     }
 
+    public List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun) {
+        return this.catalogDAO.getGridCoverages(modelRun);
+    }
+    
     public void remove(ModelInfo model) {
         internalRemove(model);
     }
@@ -1147,4 +1318,23 @@ public class HibernateCatalog implements Catalog {
     public void save(ModelRunInfo modelRun) {
         internalSave(modelRun);
     }
+
+    /**
+     * @return the catalogDAO
+     */
+    public IGeoServerDAO getCatalogDAO() {
+        return catalogDAO;
+    }
+
+    /**
+     * @param catalogDAO the catalogDAO to set
+     */
+    public void setCatalogDAO(IGeoServerDAO catalogDAO) {
+        this.catalogDAO = catalogDAO;
+    }
+
+    public NamespaceInfo getDefaultNamespace() {
+        return this.catalogDAO.getDefaultNamespace();
+    }
+    
 }

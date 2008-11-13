@@ -321,7 +321,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
      * @return NameSpaceInfo the namespace for this datastore.
      */
     public NameSpaceInfo getNameSpace() {
-        NamespaceInfo ns =catalog.getNamespaceByPrefix( dataStore.getWorkspace().getName() );
+        NamespaceInfo ns = catalog.getNamespaceByPrefix( dataStore.getWorkspace().getName() );
         return new NameSpaceInfo( ns, catalog );
         //return (NameSpaceInfo) data.getNameSpace(getNamesSpacePrefix());
     }

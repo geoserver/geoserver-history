@@ -14,8 +14,7 @@ import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-public class GeoServerSessionFactoryBean extends LocalSessionFactoryBean implements
-        ApplicationContextAware {
+public class GeoServerSessionFactoryBean extends LocalSessionFactoryBean implements ApplicationContextAware {
 
     ApplicationContext applicationContext;
 

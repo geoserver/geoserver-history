@@ -41,7 +41,7 @@
   </property>
  </bean>
    
-  <bean id="hibGeoServerDAO" class="org.geoserver.hibernate.GeoServerDAO"
+  <bean id="hibGeoServerDAO" class="org.geoserver.hibernate.dao.GeoServerDAO"
     singleton="true">
     <property name="sessionFactory">
       <ref local="sessionFactory" />

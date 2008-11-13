@@ -128,17 +128,18 @@ public class ModelRunGridCoverageVariableListFinder extends Finder {
             theModel  = catalog.getModelByName(modelName);
             
             if (theModel != null && theModel.getModelRuns() != null) {
-                for (ModelRunInfo mr : theModel.getModelRuns()) {
+                for (ModelRunInfo mr : catalog.getModelRuns(theModel)) {
                     if (mr.getName().equals(modelRunName))
                         theModelRun = mr;
                 }
             }
             
             if (theModelRun != null && theModelRun.getGridCoverages() != null) {
-                for (CoverageInfo ci : theModelRun.getGridCoverages()) {
+                for (CoverageInfo ci : catalog.getGridCoverages(theModelRun)) {
                     if (ci.getName().equals(gridcoverageName)) {
-                        if (ci.getFields() != null) {
-                            RangeType range = ci.getFields();
+                        CoverageInfo coverage = catalog.getCoverage(ci.getId());
+                        if (coverage.getFields() != null) {
+                            RangeType range = coverage.getFields();
                             Iterator<Name> it =  range.getFieldTypeNames().iterator();
                             while (it.hasNext()) {
                                 Name entry = it.next();

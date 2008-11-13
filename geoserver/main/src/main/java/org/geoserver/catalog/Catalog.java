@@ -925,6 +925,18 @@ public interface Catalog {
      * 
      */
     List<ModelRunInfo> getModelRuns();
+    /**
+     * 
+     * @param theModel
+     * @return
+     */
+    List<ModelRunInfo> getModelRuns(ModelInfo model);
+    /**
+     * 
+     * @param mr
+     * @return
+     */
+    List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun);
     
     /**
      * catalog listeners.
@@ -960,4 +972,5 @@ public interface Catalog {
      * Disposes the catalog, freeing up any resources.
      */
     void dispose();
+
 }

@@ -168,13 +168,16 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
         if (grid == null) {
             if (other.getGrid() != null)
                 return false;
-        } else if (!grid.equals(other.getGrid()))
-            return false;
-        if (fields == null) {
-            if (other.getFields() != null)
+        } else {
+            if (grid.getGridRange().getDimension() != other.getGrid().getGridRange().getDimension())
                 return false;
-        } else if (!fields.equals(other.getFields()))
-            return false;
+        }
+            
+//        if (fields == null) {
+//            if (other.getFields() != null)
+//                return false;
+//        } else if (!fields.equals(other.getFields()))
+//            return false;
         if (interpolationMethods == null) {
             if (other.getInterpolationMethods() != null)
                 return false;

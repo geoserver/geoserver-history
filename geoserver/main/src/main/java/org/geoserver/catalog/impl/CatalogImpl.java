@@ -944,6 +944,14 @@ public class CatalogImpl implements Catalog {
         return ModificationProxy.createList(new ArrayList(models), ModelInfo.class);
     }
 
+    public List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun) {
+        return ModificationProxy.createList(new ArrayList(modelRun.getGridCoverages()), CoverageInfo.class);
+    }
+
+    public List<ModelRunInfo> getModelRuns(ModelInfo model) {
+        return ModificationProxy.createList(new ArrayList(model.getModelRuns()), ModelRunInfo.class);
+    }
+
     public void remove(ModelInfo model) {
         models.remove(model);
         removed(model);
@@ -963,5 +971,5 @@ public class CatalogImpl implements Catalog {
         validate(modelRun);
         saved(modelRun);
     }
-    
+
 }

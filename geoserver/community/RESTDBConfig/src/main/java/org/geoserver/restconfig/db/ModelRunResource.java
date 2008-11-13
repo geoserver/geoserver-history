@@ -205,7 +205,7 @@ public class ModelRunResource extends MapResource {
             theModel  = rawCatalog.getModelByName(modelName);
             
             if (theModel != null && theModel.getModelRuns() != null) {
-                for (ModelRunInfo mr : theModel.getModelRuns()) {
+                for (ModelRunInfo mr : rawCatalog.getModelRuns(theModel)) {
                     if (mr.getName().equals(modelRunName))
                         theModelRun = mr;
                 }

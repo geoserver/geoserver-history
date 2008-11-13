@@ -4,17 +4,6 @@
  */
 package org.vfny.geoserver.config;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.DefaultRepository;
-import org.geotools.data.Repository;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
-import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
-import org.vfny.geoserver.global.dto.StyleDTO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +17,22 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletContext;
+import javax.sql.DataSource;
+
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geotools.data.DataStore;
+import org.geotools.data.DefaultRepository;
+import org.geotools.data.Repository;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.dto.CoverageInfoDTO;
+import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
+import org.vfny.geoserver.global.dto.StyleDTO;
 
 
 /**

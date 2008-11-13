@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
 	<!-- property file config -->
 	<bean id="placeholderConfig"
@@ -9,9 +13,9 @@
 			<value>classpath:h2.properties</value>
 			<!--value>classpath:postgresql.properties</value-->
 		</property>
-		<property name="systemPropertiesModeName">
+		<!-- property name="systemPropertiesModeName">
 			<value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
-		</property>
+		</property -->
 	</bean>
 
 	<!-- data source -->
@@ -35,73 +39,89 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="schemaUpdate" value="false" />
 		<property name="configLocation" value="classpath:hibernate.cfg.xml" />
+		<!-- property name="configurationClass">
+			<value>org.hibernate.cfg.AnnotationConfiguration</value>
+		</property -->
 	</bean>
 
-	<!-- setup transaction manager	-->
+	<!-- Interceptors -->
 	<bean id="catalogInterceptor"
 		class="org.geoserver.catalog.hibernate.HibernateCatalogInterceptor">
 		<constructor-arg ref="catalogTarget" />
 	</bean>
 
+	<!-- setup transaction manager	-->
 	<!--
-		Transaction manager for a single Hibernate SessionFactory (alternative to JTA)
+		Transaction manager for a single Hibernate SessionFactory (alternative
+		to JTA)
 	-->
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-		<property name="sessionFactory">
-			<ref local="sessionFactory" />
-		</property>
-		<property name="dataSource">
-			<ref local="dataSource" />
-		</property>
-		<property name="entityInterceptor" ref="catalogInterceptor" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<!--
+			property name="dataSource"> <ref local="dataSource" /> </property
+		-->
+		<!-- property name="entityInterceptor" ref="catalogInterceptor" / -->
 	</bean>
-
+	<!--
+		Instruct Spring to retrieve and apply @AspectJ aspects which are
+		defined as beans in this context (such as the UsageLogAspect below).
+	-->
+	<!-- aop:aspectj-autoproxy / -->
+	
+	<!--
+		Activates various annotations to be detected in bean classes:
+		Spring's @Required and @Autowired, as well as JSR 250's @Resource.
+	-->
+	<!-- context:annotation-config/ -->
+	
+	<!--
+		Instruct Spring to perform declarative transaction management
+		automatically on annotated classes.
+	-->
+	<tx:annotation-driven transaction-manager="transactionManager" />
 	<!--
 		this is a transactional proxy for services which make calls to catalog
 		/ config which ensrues transactions / session set up
 	-->
-	<bean id="transactionalCatalogService"
+	<!-- bean id="transactionalCatalogService"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-		<property name="transactionManager">
-			<ref local="transactionManager" />
-		</property>
+		<property name="transactionManager" ref="transactionManager" />
 		<property name="target">
 			<ref local="catalogTarget" />
 		</property>
 		<property name="transactionAttributes">
 			<props>
-				<prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
-				<prop key="*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">
+					PROPAGATION_REQUIRED,-OrderException,-OrderMinimumAmountException,-DataIntegrityViolationException
+				</prop>
 			</props>
 		</property>
 	</bean>
 	<bean id="transactionalGeoServerService"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-		<property name="transactionManager">
-			<ref local="transactionManager" />
-		</property>
+		<property name="transactionManager" ref="transactionManager" />
 		<property name="target">
 			<ref local="configTarget" />
 		</property>
 		<property name="transactionAttributes">
 			<props>
-				<prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
-				<prop key="*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">
+					PROPAGATION_REQUIRED,-OrderException,-OrderMinimumAmountException,-DataIntegrityViolationException
+				</prop>
 			</props>
 		</property>
-	</bean>
+	</bean -->
 
-	<bean id="hibGeoServerDAO" class="org.geoserver.hibernate.GeoServerDAO"
-		singleton="true">
-		<property name="sessionFactory">
-			<ref local="sessionFactory" />
-		</property>
+	<bean id="hibGeoServerDAO" class="org.geoserver.hibernate.dao.GeoServerDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
 	<!-- catalog -->
 	<bean id="catalogTarget" class="org.geoserver.catalog.hibernate.HibernateCatalog">
-		<constructor-arg ref="hibGeoServerDAO"></constructor-arg>
+		<property name="catalogDAO">
+			<ref local="hibGeoServerDAO" />
+		</property>
 		<!--
 			property name="sessionFactory"> <ref local="sessionFactory" />
 			</property
@@ -111,7 +131,9 @@
 
 	<bean id="configFactory" class="org.geoserver.config.impl.GeoServerFactoryImpl" />
 	<bean id="configTarget" class="org.geoserver.config.hibernate.HibernateGeoServer">
-		<constructor-arg ref="hibGeoServerDAO"></constructor-arg>
+		<property name="catalogDAO">
+			<ref local="hibGeoServerDAO" />
+		</property>
 		<!--
 			property name="sessionFactory"> <ref local="sessionFactory" />
 			</property

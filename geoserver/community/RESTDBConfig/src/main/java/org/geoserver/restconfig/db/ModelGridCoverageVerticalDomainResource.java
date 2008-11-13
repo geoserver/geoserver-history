@@ -226,16 +226,16 @@ public class ModelGridCoverageVerticalDomainResource extends MapResource {
             theModel  = rawCatalog.getModelByName(modelName);
             
             if (theModel != null && theModel.getModelRuns() != null) {
-                for (ModelRunInfo mr : theModel.getModelRuns()) {
+                for (ModelRunInfo mr : rawCatalog.getModelRuns(theModel)) {
                     if (mr.getName().equals(modelRunName))
                         theModelRun = mr;
                 }
             }
             
             if (theModelRun != null && theModelRun.getGridCoverages() != null) {
-                for (CoverageInfo ci : theModelRun.getGridCoverages()) {
+                for (CoverageInfo ci : rawCatalog.getGridCoverages(theModelRun)) {
                     if (ci.getName().equals(gridcoverageName)) {
-                        coverage = ci;
+                        coverage = rawCatalog.getCoverage(ci.getId());
                     }
                 }
             }

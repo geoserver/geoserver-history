@@ -1,6 +1,5 @@
 package org.geoserver.config.hibernate;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +22,7 @@ import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.catalog.ModelInfo.DataType;
 import org.geoserver.catalog.ModelInfo.Discipline;
 import org.geoserver.catalog.hibernate.HbNamespaceInfo;
+import org.geoserver.catalog.hibernate.HbWorkspaceInfo;
 import org.geoserver.catalog.hibernate.HibernateCatalog;
 import org.geoserver.catalog.impl.ModelInfoImpl;
 import org.geoserver.catalog.impl.ModelRunInfoImpl;
@@ -35,7 +34,7 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.GeoServerFactoryImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.data.util.CoverageStoreUtils;
-import org.geoserver.hibernate.GeoServerDAO;
+import org.geoserver.hibernate.dao.IGeoServerDAO;
 import org.geoserver.wcs.WCSInfoImpl;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.GMLInfoImpl;
@@ -85,18 +84,14 @@ public class HibernateGeoServer implements GeoServer {
     /**
      * 
      */
-    private GeoServerDAO gsDAO;
+    private IGeoServerDAO catalogDAO;
 
     /**
      * 
      */
     private HibernateGeoServer() {
+        super();
         createBootstrapConfig = true;
-    }
-
-    public HibernateGeoServer(GeoServerDAO gsDAO) {
-        this();
-        this.gsDAO = gsDAO;
     }
 
     /**
@@ -120,15 +115,11 @@ public class HibernateGeoServer implements GeoServer {
 
     public GeoServerInfo getGlobal() {
         LOGGER.finest("Querying geoserver global configuration");
-        Iterator i = this.gsDAO.createQuery("from " + GeoServerInfoImpl.class.getName()).iterate();
-        GeoServerInfo geoserver;
-        if (i.hasNext()) {
-            geoserver = (GeoServerInfo) i.next();
-        } else {
+        GeoServerInfo geoserver = this.catalogDAO.getGeoServer();
+        if (geoserver == null) {
             if (createBootstrapConfig) {
                 // this is an empty configuration! create the minimal set of required object
-                LOGGER
-                        .info("Creating geoserver bootstrap configuration, no prior configuration found on the database");
+                LOGGER.info("Creating geoserver bootstrap configuration, no prior configuration found on the database");
                 geoserver = serviceBootStrap();
                 // catalog.bootStrap();
             } else {
@@ -144,10 +135,10 @@ public class HibernateGeoServer implements GeoServer {
         GeoServerInfo geoserver;
         geoserver = getFactory().createGlobal();
         geoserver.setContactInfo(getFactory().createContact());
-        Map<String, Serializable> tmp = geoserver.getMetadata();
+        //Map<String, Serializable> tmp = geoserver.getMetadata();
+        
         // do not call setGlobal or we'll get an infinite loop
-        this.gsDAO.save(geoserver);
-        this.gsDAO.commit();
+        this.catalogDAO.save(geoserver);
 
         WFSInfoImpl wfs = new WFSInfoImpl();
         wfs.setId("wfs");
@@ -189,36 +180,43 @@ public class HibernateGeoServer implements GeoServer {
         wcs.setGeoServer(geoserver);
 
         add(wcs);
+        
+        HbNamespaceInfo defaultNameSpace = catalog.getFactory().createNamespace();
+        defaultNameSpace.setDefault(Boolean.TRUE);
+        defaultNameSpace.setPrefix("topp");
+        defaultNameSpace.setURI("http://www.openplans.org/topp");
+        
+        this.catalogDAO.save(defaultNameSpace);
 
+        HbWorkspaceInfo defaultWs = catalog.getFactory().createWorkspace();
+        defaultWs.setDefault(Boolean.TRUE);
+        defaultWs.setName("topp");
+        
+        this.catalogDAO.save(defaultWs);
+        
+        // creating the default workspace
+        catalog.bootStrap();
+        
         /** TEST-DATA **/
 
         ModelInfoImpl model = new ModelInfoImpl();
         model.setAbstract("Abstract test.");
         model.setCenter("NURC");
-        model.setCRS(DefaultGeographicCRS.WGS84);
         model.setDescription("This is a test model.");
         model.setDiscipline(Discipline.OCEAN);
-        model.setGridCRS("Grid:2D");
-        model.setGridCS("Grid:square2D");
-        model.setGridLowers(new Double[] { 0.0, 0.0 });
-        model.setGridOffsets(new Double[] { 1.0, 1.0 });
-        model.setGridOrigin(new Double[] { 0.0, 0.0 });
-        model.setGridType("Grid:square2dIn2dCRS");
-        model.setGridUppers(new Double[] { 300.0, 300.0 });
         model.setId("TEST");
         List keywords = new ArrayList();
-        keywords.add("NURC");
-        keywords.add("MilOC");
-        keywords.add("TEST");
-        model.setKeywords(keywords);
+            keywords.add("NURC");
+            keywords.add("MilOC");
+            keywords.add("TEST");
+        //model.setKeywords(keywords);
         model.setName("TEST-OCEAN-MODEL");
         model.setSubCenter("MilOC");
         model.setTitle("TEST OCEAN MODEL");
         model.setTypeOfData(DataType.ANALYSYS_AND_FORECAST);
         model.setVersion("1");
-        model.setVerticalCoordinateMeaning("depth");
 
-        catalog.add(model);
+        this.catalogDAO.save(model);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:sssZ");
         ModelRunInfoImpl modelRun = new ModelRunInfoImpl();
@@ -235,21 +233,27 @@ public class HibernateGeoServer implements GeoServer {
         modelRun.setModel(model);
         modelRun.setName("TEST-RUN-001");
         modelRun.setNumTAU(1);
+        modelRun.setCRS(DefaultGeographicCRS.WGS84);
+        modelRun.setGridCRS("Grid:2D");
+        modelRun.setGridCS("Grid:square2D");
+        modelRun.setGridLowers(new Double[] { 0.0, 0.0 });
+        modelRun.setGridOffsets(new Double[] { 1.0, 1.0 });
+        modelRun.setGridOrigin(new Double[] { 0.0, 0.0 });
+        modelRun.setGridType("Grid:square2dIn2dCRS");
+        modelRun.setGridUppers(new Double[] { 300.0, 300.0 });
+        modelRun.setVerticalCoordinateMeaning("depth");
         modelRun.setOutline(new ReferencedEnvelope(new Envelope(27.40437126159668, 32.995628356933594, 41.01088333129883, 42.589115142822266), DefaultGeographicCRS.WGS84));
         modelRun.setTAU(1);
         modelRun.setTAUunit("day");
         modelRun.setUpdateSequence("0");
 
-        catalog.add(modelRun);
+        this.catalogDAO.save(modelRun);
 
         List<ModelRunInfo> runs = new ArrayList<ModelRunInfo>();
         runs.add(modelRun);
         model.setModelRuns(runs);
 
-        catalog.save(model);
-
-        // creating the default workspace
-        catalog.bootStrap();
+        this.catalogDAO.update(model);
 
         try {
             CoverageStoreInfo coverageStore = catalog.getFactory().createCoverageStore();
@@ -258,8 +262,9 @@ public class HibernateGeoServer implements GeoServer {
             coverageStore.setName("TEST-COVERAGE-STORE");
             coverageStore.setType("NetCDF");
             coverageStore.setURL(getClass().getResource("updatedoagCF.nc").toURI().toString());
+            coverageStore.setWorkspace(defaultWs);
 
-            catalog.add(coverageStore);
+            this.catalogDAO.save(coverageStore);
 
             CoverageInfo coverage = catalog.getFactory().createCoverage();
             coverage.setStore(coverageStore);
@@ -361,18 +366,18 @@ public class HibernateGeoServer implements GeoServer {
             // parameters
             // coverage.getParameters().putAll(cInfoReader.parameters());
             // link to namespace
-            HbNamespaceInfo namespace = catalog.getDefaultNamespace();
+            HbNamespaceInfo namespace = this.catalogDAO.getDefaultNamespace();
             coverage.setNamespace(namespace);
             
             coverage.getMetadata().put("dirName", coverageStore.getName() + "_" + coverage.getName());
 
-            catalog.add(coverage);
+            this.catalogDAO.save(coverage);
 
             StyleInfo style = catalog.getFactory().createStyle();
             style.setName("raster");
             style.setFilename("raster.sld");
             
-            catalog.add(style);
+            this.catalogDAO.save(style);
             
             LayerInfo layer = catalog.getFactory().createLayer();
             layer.setDefaultStyle(style);
@@ -383,13 +388,13 @@ public class HibernateGeoServer implements GeoServer {
             layer.setResource(coverage);
             layer.setType(Type.RASTER);
             
-            catalog.add(layer);
+            this.catalogDAO.save(layer);
             
             List<CoverageInfo> coverages = new ArrayList<CoverageInfo>();
             coverages.add(coverage);
             modelRun.setGridCoverages(coverages);
 
-            catalog.save(modelRun);
+            this.catalogDAO.update(modelRun);
         } catch (Exception e) {
             throw new RuntimeException("Error creating bootstrap configuration", e);
         }
@@ -400,13 +405,12 @@ public class HibernateGeoServer implements GeoServer {
     public void setGlobal(GeoServerInfo configuration) {
         GeoServerInfoImpl currentGlobal = (GeoServerInfoImpl) getGlobal();
         if (currentGlobal == null) {
-            this.gsDAO.save(configuration);
+            this.catalogDAO.save(configuration);
         } else {
             // use merge, the argument instance may be from another session
             ((GeoServerInfoImpl) configuration).setId(currentGlobal.getId());
-            this.gsDAO.merge(configuration);
+            this.catalogDAO.merge(configuration);
         }
-        this.gsDAO.commit();
     }
 
     public void save(GeoServerInfo geoServer) {
@@ -431,32 +435,42 @@ public class HibernateGeoServer implements GeoServer {
         GeoServerInfo global = getGlobal();
         service.setGeoServer(global);
 
-        this.gsDAO.save(service);
-        this.gsDAO.commit();
+        this.catalogDAO.save(service);
     }
 
+    /**
+     * 
+     */
     public void remove(ServiceInfo service) {
-        this.gsDAO.delete(service);
-        this.gsDAO.commit();
+        this.catalogDAO.delete(service);
     }
 
+    /**
+     * 
+     */
     public void save(ServiceInfo service) {
-        String id = service.getId();
-
-        // use merge, the argument instance may be from another session
-        this.gsDAO.merge(service);
-        this.gsDAO.commit();
+        this.catalogDAO.merge(service);
     }
 
+    /**
+     * 
+     */
     public Collection<? extends ServiceInfo> getServices() {
         return getServices(ServiceInfo.class);
     }
 
+    /**
+     * 
+     * @param clazz
+     * @return
+     */
     public Collection<? extends ServiceInfo> getServices(Class<?> clazz) {
-        List list = this.gsDAO.createQuery("from " + clazz.getName()).list();
-        return list;
+        return this.catalogDAO.getServices(clazz);
     }
 
+    /**
+     * 
+     */
     public <T extends ServiceInfo> T getService(Class<T> clazz) {
         for (ServiceInfo si : getServices(clazz)) {
             if (clazz.isAssignableFrom(si.getClass())) {
@@ -467,34 +481,36 @@ public class HibernateGeoServer implements GeoServer {
         return null;
     }
 
+    /**
+     * 
+     * @param id
+     * @return
+     */
     public ServiceInfo getService(String id) {
         return getService(id, ServiceInfo.class);
     }
 
+    /**
+     * 
+     */
     public <T extends ServiceInfo> T getService(String id, Class<T> clazz) {
-        Iterator i = this.gsDAO.createQuery("from " + clazz.getName() + " where id = '" + id + "'")
-                .iterate();
-        if (i.hasNext()) {
-            T service = (T) i.next();
-            return service;
-        }
-
-        return null;
+        return this.catalogDAO.getService(id, clazz);
     }
 
+    /**
+     * 
+     * @param name
+     * @return
+     */
     public ServiceInfo getServiceByName(String name) {
         return getServiceByName(name, ServiceInfo.class);
     }
 
+    /**
+     * 
+     */
     public <T extends ServiceInfo> T getServiceByName(String name, Class<T> clazz) {
-        Iterator i = this.gsDAO.createQuery(
-                "from " + clazz.getName() + " where name = '" + name + "'").iterate();
-        if (i.hasNext()) {
-            T service = (T) i.next();
-            return service;
-        }
-
-        return null;
+        return this.catalogDAO.getServiceByName(name, clazz);
     }
 
     public void addListener(ConfigurationListener listener) {
@@ -519,6 +535,20 @@ public class HibernateGeoServer implements GeoServer {
      */
     void setCreateBootstrapConfig(boolean bootStrap) {
         this.createBootstrapConfig = bootStrap;
+    }
+
+    /**
+     * @return the catalogDAO
+     */
+    public IGeoServerDAO getCatalogDAO() {
+        return catalogDAO;
+    }
+
+    /**
+     * @param catalogDAO the catalogDAO to set
+     */
+    public void setCatalogDAO(IGeoServerDAO catalogDAO) {
+        this.catalogDAO = catalogDAO;
     }
 
 }

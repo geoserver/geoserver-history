@@ -863,6 +863,14 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.remove(modelRun);
     }
 
+    public List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun) {
+        return delegate.getGridCoverages(modelRun);
+    }
+
+    public List<ModelRunInfo> getModelRuns(ModelInfo model) {
+        return delegate.getModelRuns(model);
+    }
+
     public void save(ModelInfo model) {
         delegate.save(model);
     }

@@ -119,7 +119,7 @@ public class ModelRunListFinder extends Finder {
         }
 
         if (theModel != null && theModel.getModelRuns() != null) {
-            Iterator it =  theModel.getModelRuns().iterator();
+            Iterator it = catalog.getModelRuns(theModel).iterator();
             while (it.hasNext()) {
                 ModelRunInfo entry = (ModelRunInfo)it.next();
                 modelRuns.put(entry.getName(), entry);
