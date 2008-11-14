@@ -214,6 +214,13 @@ public class CoverageStoreFileResource extends Resource {
             return;
         }
 
+				// /////////////////////////////////////////////////////////////////////
+				//
+				// Add overviews to the Coverage
+				//
+				// /////////////////////////////////////////////////////////////////////
+	      if (form.getFirst("overviews") != null && form.getFirstValue("overviews").equalsIgnoreCase("yes"))
+	      		/* TODO: Add overviews here */;
 
         try{
             final File outputDir=RESTUtils.unpackZippedDataset(coverageStore, uploadedFile);
@@ -350,6 +357,7 @@ public class CoverageStoreFileResource extends Resource {
                     
                     if (form.getFirst("wmspath") != null)
                         cc.setWmsPath(form.getFirstValue("wmspath"));
+                        
                 } catch (Exception e) {
                 	if(LOGGER.isLoggable(Level.SEVERE))
                 		LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);                  	
