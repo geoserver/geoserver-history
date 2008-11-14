@@ -127,6 +127,14 @@ public interface GeoServer {
     void removeListener( ConfigurationListener listener );
     
     /**
+     * Returns all configuration listeners.
+     * <p>
+     * This list should not be modified by client code.
+     * </p>
+     */
+    Collection<ConfigurationListener> getListeners();
+    
+    /**
      * Disposes the configuration.
      */
     void dispose();

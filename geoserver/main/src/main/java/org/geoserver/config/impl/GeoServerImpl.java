@@ -164,6 +164,10 @@ public class GeoServerImpl implements GeoServer {
         listeners.remove( listener );
     }
     
+    public Collection<ConfigurationListener> getListeners() {
+        return listeners;
+    }
+    
     public void dispose() {
         if ( global != null ) global.dispose();
         if ( catalog != null ) catalog.dispose();
