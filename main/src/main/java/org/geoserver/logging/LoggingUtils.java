@@ -5,10 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Appender;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -39,6 +43,19 @@ public class LoggingUtils {
 
     public static void configureGeoServerLogging(InputStream loggingConfigStream, boolean suppressStdOutLogging, boolean suppressFileLogging, String logFileName) throws FileNotFoundException, IOException,
                             ConfigurationException {
+            //JD: before we wipe out the logging configuration, save any appenders that are not 
+            // console or file based. This allows for other types of appenders to remain in tact
+            // when geoserver is reloaded.
+            List<Appender> appenders = new ArrayList();
+            Enumeration a = LogManager.getRootLogger().getAllAppenders();
+            while( a.hasMoreElements() ) {
+                Appender appender = (Appender) a.nextElement();
+                if ( !( appender instanceof ConsoleAppender || appender instanceof FileAppender )  ){ 
+                    //save it 
+                    appenders.add( appender );
+                }
+            }
+    
             Properties lprops = new Properties();
             lprops.load(loggingConfigStream);
             LogManager.resetConfiguration();
@@ -80,6 +97,11 @@ public class LoggingUtils {
                     }
                 }
             } 
+            
+            //add the appenders we saved above
+            for ( Appender appender : appenders ) {
+                LogManager.getRootLogger().addAppender( appender );
+            }
             LoggingInitializer.LOGGER.fine("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
         }
 
