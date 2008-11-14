@@ -80,6 +80,8 @@ public class LoggingInitializer implements GeoServerInitializer, ApplicationCont
                     List<Object> newValues) {
             }
             
+            public void reloaded() {
+            }
         });
     }
 

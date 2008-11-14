@@ -31,4 +31,14 @@ public interface ConfigurationListener {
      * @param newValue The new values for the properties that were changed.
      */
     void handleServiceChange( ServiceInfo service, List<String> propertyNames, List<Object> oldValues, List<Object> newValues );
+    
+    /**
+     * A callback notifying when GeoServer configuration has been reloaded.
+     * <p>
+     * This method will be removed in recent version as the idea of a "reload" will not
+     * exist.
+     * </p>
+     * @deprecated.
+     */
+    void reloaded();
 }
