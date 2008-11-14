@@ -42,6 +42,9 @@ public class JAIInitializer implements GeoServerInitializer {
                     List<Object> newValues) {
             }
             
+            public void reloaded() {
+            }
+            
         });
     }
 

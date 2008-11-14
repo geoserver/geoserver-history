@@ -160,6 +160,10 @@ public class GeoServerImpl implements GeoServer {
         listeners.remove( listener );
     }
     
+    public Collection<ConfigurationListener> getListeners() {
+        return listeners;
+    }
+    
     public void dispose() {
         global.dispose();
         catalog.dispose();

@@ -136,5 +136,8 @@ public class GeoServerImplTest extends TestCase {
             sNewValues.addAll( newValues );
         }
         
+        public void reloaded() {
+        }
+        
     }
 }

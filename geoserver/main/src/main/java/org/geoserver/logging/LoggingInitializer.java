@@ -95,6 +95,8 @@ public class LoggingInitializer {
                     List<Object> newValues) {
             }
             
+            public void reloaded() {
+            }
         });
     }
     

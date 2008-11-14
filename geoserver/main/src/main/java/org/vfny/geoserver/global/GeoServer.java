@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -22,8 +23,10 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.geoserver.catalog.ResourcePool;
+import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.logging.LoggingInitializer;
 import org.springframework.beans.factory.DisposableBean;
@@ -53,6 +56,35 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
          * Callback fired when application state has changed.
          */
         void changed();
+        
+    }
+    
+    /**
+     * Wrapper around {@link Listener} which implements the new {@link ConfigurationListener} 
+     * api and forwards events to the old style listener.
+     *
+     */
+    static class ListenerWrapper implements ConfigurationListener {
+
+        Listener listener;
+        
+        ListenerWrapper( Listener listener ) {
+            this.listener = listener;
+        }
+        
+        public void handleGlobalChange(GeoServerInfo global,
+                List<String> propertyNames, List<Object> oldValues,
+                List<Object> newValues) {
+        }
+
+        public void handleServiceChange(ServiceInfo service,
+                List<String> propertyNames, List<Object> oldValues,
+                List<Object> newValues) {
+        }
+
+        public void reloaded() {
+            listener.changed();
+        }
         
     }
     
@@ -160,16 +192,28 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * Adds a listener to be notified of state change.
      */
     public void addListener( Listener listener ) {
-        //TODO: forward listener
-        //listeners.add( listener );
+        gs.addListener( new ListenerWrapper( listener ) );
     }
 
     /**
      * Removes a listener.
      */
     public void removeListener( Listener listener ) {
-        //TODO: forward listener.
-        //listeners.remove( listener );
+        ListenerWrapper toRemove = null;
+        for( ConfigurationListener l : gs.getListeners() ) {
+            if ( l instanceof ListenerWrapper ) {
+                ListenerWrapper lw = (ListenerWrapper) l;
+                if ( lw.listener.equals( listener ) ) {
+                    toRemove = lw;
+                    break;
+                }
+            }
+        }
+        
+        if ( toRemove != null ) {
+            gs.removeListener( toRemove );    
+        }
+        
     }
     
     /**
@@ -611,6 +655,9 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             
             gs.save( info );
             
+            for ( ConfigurationListener l : gs.getListeners() ) {
+                l.reloaded();
+            }
             //maxFeatures = dto.getMaxFeatures();
             //numDecimals = dto.getNumDecimals();
             //onlineResource = dto.getContact().getOnlineResource();
