@@ -36,8 +36,9 @@ public abstract class ProcessParameterIO {
         defaults.add( new LiteralPPIO( Integer.class ) );
         defaults.add( new LiteralPPIO( String.class ) );
         
-        defaults.add( new GMLPPIO.GML2.Geometry());
         defaults.add( new GMLPPIO.GML3.Geometry() );
+        defaults.add( new GMLPPIO.GML2.Geometry());
+        defaults.add( new WFSPPIO() );
         
     }
     
