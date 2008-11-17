@@ -158,6 +158,8 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                     //read the file
                     try {
                         ResourceInfo resource = depersist( xp, info, ResourceInfo.class );
+                        resource.setCatalog( catalog );
+                        
                         catalog.add( resource );
                     }
                     catch (Exception e) {
@@ -313,7 +315,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             }
             
             String dirName = r.getStore().getName() + "_" + r.getNativeName();
-            dirName = URLEncoder.encode( dirName, "UTF-8" );
+            //dirName = URLEncoder.encode( dirName, "UTF-8" );
             
             File dir = new File( workspace, dirName );
             if ( !dir.exists() ) {
