@@ -262,11 +262,20 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         protected void encodePlacemarkDescription(SimpleFeature feature,
                 FeatureTypeStyle[] styles) throws IOException {
 
-            String description = template.description(feature);
+            StringBuilder description = new StringBuilder(template.description(feature));
+            try{
+            	// just see if the geosearch module is loaded.  HACK! blame dwinslow@opengeo.org
+            	Class.forName("org.geoserver.geosearch.LayerAboutPage"); 
+                description.append("<div> <a href=\"")
+                    .append(getFeatureTypeURL())
+                    .append(".html")
+                	.append("\">About this dataset</a> </div>");
+            } catch (ClassNotFoundException cnfe) {/* don't do anything, the link is already omitted */}
+            
 
             if (description != null) {
                 start("description");
-                cdata(description);
+                cdata(description.toString());
                 end("description");
             }
         }
@@ -934,17 +943,11 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
 
             // If you prefer pretty code, this is a good point to close your
             // eyes:
-            String baseUrl = request.getHttpServletRequest().getRequestURL()
-                    .toString();
-            int searchIdx = baseUrl.indexOf("rest/geosearch");
-            if (searchIdx < 0) {
-                // LOGGER.log(Level.WARNING, "Unable to find rest/geosearch in
-                // URL " + baseUrl);
-            } else {
-                baseUrl = baseUrl.substring(0, searchIdx);
-            }
-            baseUrl = RequestUtils.proxifiedBaseURL(baseUrl, request
-                    .getGeoServer().getProxyBaseUrl());
+            String baseUrl = RequestUtils.baseURL(request.getHttpServletRequest());
+            baseUrl = RequestUtils.proxifiedBaseURL(
+            		baseUrl,
+            		request.getGeoServer().getProxyBaseUrl()
+            		);
 
             return baseUrl + "rest/geosearch/" + ns.getPrefix() + "/"
                     + featureTypeName;
