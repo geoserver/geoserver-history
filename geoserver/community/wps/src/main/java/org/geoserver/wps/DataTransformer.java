@@ -5,44 +5,42 @@
 
 package org.geoserver.wps;
 
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.ArrayList;
-
-import java.net.URL;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import net.opengis.wps10.ComplexDataType;
+import net.opengis.wps10.DataType;
+import net.opengis.wps10.InputReferenceType;
+import net.opengis.wps10.InputType;
+import net.opengis.wps10.LiteralDataType;
+
+import org.geoserver.wps.transmute.ComplexTransmuter;
+import org.geoserver.wps.transmute.DoubleTransmuter;
+import org.geoserver.wps.transmute.GML2LineStringTransmuter;
+import org.geoserver.wps.transmute.GML2LinearRingTransmuter;
+import org.geoserver.wps.transmute.GML2MultiLineStringTransmuter;
+import org.geoserver.wps.transmute.GML2MultiPointTransmuter;
+import org.geoserver.wps.transmute.GML2MultiPolygonTransmuter;
+import org.geoserver.wps.transmute.GML2PointTransmuter;
+import org.geoserver.wps.transmute.GML2PolygonTransmuter;
+import org.geoserver.wps.transmute.LiteralTransmuter;
+import org.geoserver.wps.transmute.Transmuter;
 import org.geotools.data.Parameter;
 import org.geotools.process.ProcessFactory;
 
-import net.opengis.wps.DataType;
-import net.opengis.wps.InputType;
-import net.opengis.wps.ComplexDataType;
-import net.opengis.wps.LiteralDataType;
-import net.opengis.wps.InputReferenceType;
-
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.MultiLineString;
-
-import org.geoserver.wps.transmute.Transmuter;
-import org.geoserver.wps.transmute.DoubleTransmuter;
-import org.geoserver.wps.transmute.ComplexTransmuter;
-import org.geoserver.wps.transmute.LiteralTransmuter;
-import org.geoserver.wps.transmute.GML2PointTransmuter;
-import org.geoserver.wps.transmute.GML2PolygonTransmuter;
-import org.geoserver.wps.transmute.GML2LineStringTransmuter;
-import org.geoserver.wps.transmute.GML2LinearRingTransmuter;
-import org.geoserver.wps.transmute.GML2MultiPointTransmuter;
-import org.geoserver.wps.transmute.GML2MultiPolygonTransmuter;
-import org.geoserver.wps.transmute.GML2MultiLineStringTransmuter;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Class for parsing and encoding inputs and results to processes

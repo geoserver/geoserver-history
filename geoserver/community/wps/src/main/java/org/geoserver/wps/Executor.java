@@ -5,19 +5,19 @@
 
 package org.geoserver.wps;
 
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import net.opengis.ows11.CodeType;
+import net.opengis.wps10.DataInputsType1;
+import net.opengis.wps10.ExecuteType;
+import net.opengis.wps10.InputType;
 
 import org.geotools.data.Parameter;
 import org.geotools.process.Process;
-import org.geotools.process.Processors;
 import org.geotools.process.ProcessFactory;
-
-import net.opengis.wps.InputType;
-import net.opengis.ows11.CodeType;
-import net.opengis.wps.ExecuteType;
-import net.opengis.wps.DataInputsType1;
+import org.geotools.process.Processors;
 import org.opengis.util.ProgressListener;
 
 /**

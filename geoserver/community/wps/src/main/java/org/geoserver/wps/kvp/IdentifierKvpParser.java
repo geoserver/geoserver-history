@@ -5,15 +5,15 @@
 
 package org.geoserver.wps.kvp;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import org.geoserver.ows.KvpParser;
-import org.geoserver.ows.util.KvpUtils;
+import java.util.List;
 
 import net.opengis.ows11.CodeType;
 import net.opengis.ows11.Ows11Factory;
 import net.opengis.ows11.impl.Ows11FactoryImpl;
+
+import org.geoserver.ows.KvpParser;
+import org.geoserver.ows.util.KvpUtils;
 
 /**
  * Identifier attribute KVP parser

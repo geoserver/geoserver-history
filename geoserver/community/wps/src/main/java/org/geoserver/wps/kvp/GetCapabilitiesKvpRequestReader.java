@@ -8,7 +8,7 @@ package org.geoserver.wps.kvp;
 import java.util.Map;
 
 import net.opengis.ows11.AcceptVersionsType;
-import net.opengis.wps.GetCapabilitiesType;
+import net.opengis.wps10.GetCapabilitiesType;
 
 import org.geoserver.ows.kvp.OWS11AcceptVersionsKvpParser;
 
