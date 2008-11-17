@@ -13,22 +13,22 @@ import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import net.opengis.wps.ComplexDataType;
-import net.opengis.wps.DataType;
-import net.opengis.wps.DocumentOutputDefinitionType;
-import net.opengis.wps.ExecuteResponseType;
-import net.opengis.wps.ExecuteType;
-import net.opengis.wps.InputReferenceType;
-import net.opengis.wps.InputType;
-import net.opengis.wps.LiteralDataType;
-import net.opengis.wps.MethodType;
-import net.opengis.wps.OutputDataType;
-import net.opengis.wps.OutputDefinitionsType;
-import net.opengis.wps.OutputReferenceType;
-import net.opengis.wps.ProcessBriefType;
-import net.opengis.wps.ProcessFailedType;
-import net.opengis.wps.ProcessOutputsType1;
-import net.opengis.wps.WpsFactory;
+import net.opengis.wps10.ComplexDataType;
+import net.opengis.wps10.DataType;
+import net.opengis.wps10.DocumentOutputDefinitionType;
+import net.opengis.wps10.ExecuteResponseType;
+import net.opengis.wps10.ExecuteType;
+import net.opengis.wps10.InputReferenceType;
+import net.opengis.wps10.InputType;
+import net.opengis.wps10.LiteralDataType;
+import net.opengis.wps10.MethodType;
+import net.opengis.wps10.OutputDataType;
+import net.opengis.wps10.OutputDefinitionsType;
+import net.opengis.wps10.OutputReferenceType;
+import net.opengis.wps10.ProcessBriefType;
+import net.opengis.wps10.ProcessFailedType;
+import net.opengis.wps10.ProcessOutputsType1;
+import net.opengis.wps10.Wps10Factory;
 
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
@@ -126,6 +126,12 @@ public class Execute {
                 else if ( data.getComplexData() != null ) {
                     ComplexDataType complex = data.getComplexData();
                     decoded = complex.getData().get( 0 );
+                    try {
+                        decoded = ((ComplexPPIO)ppio).decode( decoded );
+                    } 
+                    catch (Exception e) {
+                        throw new WPSException( "Unable to decode input: " + input.getIdentifier().getValue() );
+                    }
                 }
                 
             }
@@ -147,7 +153,7 @@ public class Execute {
         }
         
         //build the response
-        WpsFactory f = WpsFactory.eINSTANCE;
+        Wps10Factory f = Wps10Factory.eINSTANCE;
         ExecuteResponseType response = f.createExecuteResponseType();
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), gs.getProxyBaseUrl());
         response.setServiceInstance(proxifiedBaseUrl + "ows?");
