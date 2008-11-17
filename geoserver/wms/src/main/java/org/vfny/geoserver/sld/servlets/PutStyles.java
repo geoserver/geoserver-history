@@ -5,6 +5,7 @@
 package org.vfny.geoserver.sld.servlets;
 
 import org.geoserver.ows.util.XmlCharsetDetector;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
@@ -19,6 +20,7 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.sld.SldException;
@@ -64,8 +66,8 @@ public class PutStyles extends AbstractService {
     public final String success_mime_type = "application/vnd.ogc.success+xml";
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
-    public PutStyles( WMS wms ) {
-        super("WMS", "PutStyles", wms);
+    public PutStyles() {
+        super("WMS", "PutStyles", (Service) GeoServerExtensions.bean("wms"));
     }
 
     protected boolean isServiceEnabled(HttpServletRequest req) {
@@ -137,14 +139,12 @@ public class PutStyles extends AbstractService {
      *
      *
      */
-    public void doPost(HttpServletRequest request, HttpServletResponse response, Reader requestXml)
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         LOGGER.fine("PutStyles POST");
 
-        if (requestXml == null) {
-            requestXml = new BufferedReader(XmlCharsetDetector.getCharsetAwareReader(
+        Reader requestXml = new BufferedReader(XmlCharsetDetector.getCharsetAwareReader(
                         request.getInputStream()));
-        }
 
         File temp = File.createTempFile("putStylesPost", "xml");
         temp.deleteOnExit();
