@@ -13,6 +13,7 @@ import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.xml.BindingWalkerFactory;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.geotools.xml.SchemaIndex;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.global.Data;
@@ -22,10 +23,10 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindings.GMLAbstractFeatureTypeBinding {
     GeometryFactory geometryFactory;
     Data catalog;
-
+    SchemaIndex schemaIndex;
     public GMLAbstractFeatureTypeBinding(FeatureTypeCache featureTypeCache,
-        BindingWalkerFactory bwFactory, GeometryFactory geometryFactory, Data catalog) {
-        super(featureTypeCache, bwFactory);
+        BindingWalkerFactory bwFactory, SchemaIndex schemaIndex, GeometryFactory geometryFactory, Data catalog) {
+        super(featureTypeCache, bwFactory, schemaIndex);
         this.geometryFactory = geometryFactory;
         this.catalog = catalog;
     }
