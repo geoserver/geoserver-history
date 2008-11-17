@@ -822,15 +822,25 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     
     /**
      * Performs basic checks on an OWS 1.1 exception, to ensure it's well formed
-     * @param dom
-     * @throws Exception
      */
     protected void checkOws11Exception(Document dom) throws Exception {
-        assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
-        assertXpathEvaluatesTo("1.1.0", "/ows:ExceptionReport/@version", dom);
-        Node root  = XMLUnit.newXpathEngine().getMatchingNodes("/ows:ExceptionReport", dom).item(0);
-        Node attr = root.getAttributes().getNamedItem("xmlns:ows");
-        assertEquals("http://www.opengis.net/ows/1.1", attr.getTextContent());
+        checkOws11Exception(dom,null);
+    }
+    /**
+     * Performs basic checks on an OWS 1.1 exception, to ensure it's well formed
+     * and ensuring that a particular exceptionCode is used.
+     */
+    protected void checkOws11Exception(Document dom, String exceptionCode) throws Exception {
+        Element root = dom.getDocumentElement();
+        assertEquals("ows:ExceptionReport", root.getNodeName() );
+        assertEquals( "1.1.0", root.getAttribute( "version") );
+        assertEquals("http://www.opengis.net/ows/1.1", root.getAttribute( "xmlns:ows"));
+        
+        if ( exceptionCode != null ) {
+            assertEquals( 1, dom.getElementsByTagName( "ows:Exception").getLength() );
+            Element ex = (Element) dom.getElementsByTagName( "ows:Exception").item(0);
+            assertEquals( exceptionCode, ex.getAttribute( "exceptionCode") );
+        }
     }
         
     
