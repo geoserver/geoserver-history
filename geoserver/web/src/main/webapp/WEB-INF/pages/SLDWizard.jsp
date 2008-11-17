@@ -273,9 +273,7 @@ function generatePointSLD()
 	// check values to make sure they are in range and valid
 	if (propertyName != "none" && (labelColor == null || labelColor == "") )
 		return "ERROR: label name specified, but no text color specified.";
-	if (labelColor == null || labelColor == "")
-		return "ERROR: Label color cannot be empty";
-	if (labelColor.length != 7)
+	if (propertyName != "none" && labelColor.length != 7)
 		return "ERROR: Label color must be 7 characters long in hexadecimal (#00ff23).";
 	if (fillColor == null || fillColor == "")
 		return "ERROR: Point color cannot be empty";
@@ -329,9 +327,7 @@ function generateLineSLD()
 	// check values to make sure they are in range and valid
 	if (propertyName != "none" && (labelColor == null || labelColor == "") )
 		return "ERROR: label name specified, but no text color specified.";
-	if (labelColor == null || labelColor == "")
-		return "ERROR: Label color cannot be empty";
-	if (labelColor.length != 7)
+	if (propertyName != "none" && labelColor.length != 7)
 		return "ERROR: Label color must be 7 characters long in hexadecimal (#00ff23).";
 	if (lineColor == null || lineColor == "")
 		return "ERROR: Line color cannot be empty";
@@ -383,9 +379,7 @@ function generatePolygonSLD()
 	// check values to make sure they are in range and valid
 	if (propertyName != "none" && (labelColor == null || labelColor == "") )
 		return "ERROR: label name specified, but no text color specified.";
-	if (labelColor == null || labelColor == "")
-		return "ERROR: Label color cannot be empty";
-	if (labelColor.length != 7)
+	if (propertyName != "none" && labelColor.length != 7)
 		return "ERROR: Label color must be 7 characters long in hexadecimal (#00ff23).";
 	if (fillColor == null || fillColor == "")
 		return "ERROR: Polygon fill color cannot be empty";
