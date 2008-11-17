@@ -29,6 +29,11 @@ public interface ResourceInfo extends Serializable {
     Catalog getCatalog();
 
     /**
+     * Sets teh catalog the resource is part of.
+     */
+    void setCatalog( Catalog catalog );
+    
+    /**
      * The name of the resource.
      * <p>
      * This name corresponds to the "published" name of the resource.

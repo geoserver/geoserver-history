@@ -84,6 +84,10 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     public Catalog getCatalog() {
         return catalog;
     }
+    
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
 
     public String getName() {
         return name;
