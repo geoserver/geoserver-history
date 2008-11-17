@@ -95,8 +95,6 @@ public class KMLReflector {
         
     public static void wms(GetMapRequest request, HttpServletResponse response, WebMapService wms)
         throws Exception {
-
-
         String mode = "vector";
 
         for (Object key : request.getHttpServletRequest().getParameterMap().keySet())
@@ -138,9 +136,10 @@ public class KMLReflector {
         Boolean superoverlay = (Boolean)fo.get("superoverlay");
         if (superoverlay == null) superoverlay = Boolean.FALSE;
         if (superoverlay) {
+            // require KML so relative links will work
             request.setFormat(KMLMapProducer.MIME_TYPE);
             request.setBbox(KMLUtils.expandToTile(request.getBbox()));
-        } else {
+        } else if (!request.getFormat().equals(KMLMapProducer.MIME_TYPE)){
             request.setFormat( KMZMapProducer.MIME_TYPE );
         }
 
