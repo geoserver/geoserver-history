@@ -6,7 +6,8 @@
 package org.geoserver.wps.kvp;
 
 import java.util.Map;
-import net.opengis.wps.DescribeProcessType;
+
+import net.opengis.wps10.DescribeProcessType;
 
 /**
  * DescribeProcess KVP request reader
