@@ -26,4 +26,8 @@ public abstract class ComplexPPIO extends ProcessParameterIO {
     }
     
     public abstract Object decode( InputStream input ) throws Exception;
+    
+    public Object decode( Object input ) throws Exception {
+        return input;
+    }
 }
