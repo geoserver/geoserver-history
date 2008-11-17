@@ -83,29 +83,48 @@ public abstract class ProcessParameterIO {
     }
     
     /**
-     * java class of the decoded parameter.
+     * java class of parameter when reading and writing i/o.
      */
-    final protected Class type;
+    final protected Class externalType;
+    /**
+     * java class of parameter when running internal process.
+     */
+    final protected Class internalType; 
     
     /**
      * identifier for the parameter
      */
     protected String identifer;
     
-    protected ProcessParameterIO( Class type ) {
-        this( type, null );
+    protected ProcessParameterIO( Class externalType, Class internalType ) {
+        this( externalType, internalType, null );
     }
     
-    protected ProcessParameterIO( Class type, String identifier ) {
-        this.type = type;
+    protected ProcessParameterIO( Class externalType, Class internalType, String identifier ) {
+        this.externalType = externalType;
+        this.internalType = internalType;
         this.identifer = identifier;
     }
     
     /**
-     * The java class of the decoded parameter. 
+     * The type of the parameter with regard to doing I/O.
+     * <p>
+     * The external type is used when reading and writing the parameter from an 
+     * external source.
+     * </p>
+     */
+    public final Class getExternalType() {
+        return externalType;
+    }
+    
+    /**
+     * The type of the parameter corresponding to {@link Parameter#type}.
+     * <p>
+     * The internal type is used when going to and from the internal process engine. 
+     * </p>
      */
     public final Class getType() {
-        return type;
+        return internalType;
     }
     
     /**

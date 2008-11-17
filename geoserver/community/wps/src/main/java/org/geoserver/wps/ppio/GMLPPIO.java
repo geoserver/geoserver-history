@@ -24,7 +24,7 @@ public class GMLPPIO extends XMLPPIO {
     Configuration xml;
     
     protected GMLPPIO(Class type,String mimeType,QName element) {
-        super(type, mimeType,element);
+        super(type, type, mimeType,element);
     }
 
     @Override
