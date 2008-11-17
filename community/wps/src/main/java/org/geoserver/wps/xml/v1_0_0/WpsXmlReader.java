@@ -41,11 +41,9 @@ public class WpsXmlReader extends XmlRequestReader {
         Parser parser = new Parser(configuration);
         parser.setValidating(true);
 
-        InputSource source = new InputSource(reader);
-
         Object parsed;
         try {
-            parsed = parser.parse(source);
+            parsed = parser.parse(reader);
         } catch(Exception e) {
             throw new WPSException("Could not parse XML request.", e);
         }
