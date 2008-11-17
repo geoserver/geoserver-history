@@ -95,7 +95,7 @@ public class GMLPPIO extends XMLPPIO {
          */
         public static class Geometry extends GML3 {
             public Geometry() {
-                super(com.vividsolutions.jts.geom.Geometry.class,null);
+                super(com.vividsolutions.jts.geom.Geometry.class,org.geotools.gml3.GML._Geometry);
                 xml = new org.geotools.gml3.GMLConfiguration();
             }
             
