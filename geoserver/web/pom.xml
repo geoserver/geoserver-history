@@ -399,6 +399,16 @@
       </dependencies>
     </profile>
     <profile>
+      <id>oracle-ng</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt-jdbc-oracle</artifactId>
+          <version>${gt.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>wfsv</id>
       <activation>
         <property>
