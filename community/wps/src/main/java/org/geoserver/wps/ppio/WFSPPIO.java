@@ -15,12 +15,12 @@ import org.xml.sax.ContentHandler;
 public class WFSPPIO extends XMLPPIO {
 
     protected WFSPPIO() {
-        super( FeatureCollection.class, WFS.FeatureCollection );
-        
+        super( FeatureCollectionType.class, FeatureCollection.class, WFS.FeatureCollection );
     }
 
     @Override
     public Object decode(InputStream input) throws Exception {
+        //TODO: parse the input stream as a wfs:FeatureCollection
         return null;
     }
     
@@ -42,7 +42,4 @@ public class WFSPPIO extends XMLPPIO {
         e.getNamespaces().declarePrefix( "feature", featureType.getName().getNamespaceURI() );
         e.encode( fc, WFS.FeatureCollection, handler );
     }
-
-   
-
 }

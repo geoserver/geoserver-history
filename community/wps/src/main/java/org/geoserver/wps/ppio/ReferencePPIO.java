@@ -1,19 +1,13 @@
 package org.geoserver.wps.ppio;
 
-import java.net.URI;
+import java.net.URL;
 
 public abstract class ReferencePPIO extends ProcessParameterIO {
 
-    protected ReferencePPIO(Class type) {
-        super(type);
+    protected ReferencePPIO(Class externalType, Class internalType) {
+        super(externalType, internalType);
     }
-
-    protected ReferencePPIO(Class type, String identifier) {
-        super(type, identifier);
-    }
-
-    public abstract String encode( Object value );
     
-    public abstract Object decode( String uri ) throws Exception;
+    public abstract URL encode( Object o ); 
 
 }
