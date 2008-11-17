@@ -7,6 +7,7 @@ package org.geoserver.config.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +42,6 @@ import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.ContactInfo;
-import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
@@ -50,7 +50,6 @@ import org.geoserver.ows.util.OwsUtils;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.thoughtworks.xstream.XStream;
@@ -202,7 +201,7 @@ public class XStreamPersister {
         obj = GeoServerImpl.unwrap( obj );
         obj = CatalogImpl.unwrap( obj );
         
-        xs.toXML(obj, out);
+        xs.toXML(obj, new OutputStreamWriter( out, "UTF-8" ));
     }
     
     /**
