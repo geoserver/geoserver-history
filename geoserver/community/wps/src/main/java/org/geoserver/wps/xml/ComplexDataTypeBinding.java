@@ -5,26 +5,17 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wps.ComplexDataType;
-import net.opengis.wps.WpsFactory;
+import net.opengis.wps10.ComplexDataType;
+import net.opengis.wps10.Wps10Factory;
 
 import org.geoserver.wps.ComplexDataEncoderDelegate;
 import org.geotools.wps.WPS;
 import org.geotools.xml.AbstractComplexEMFBinding;
 
-public class ComplexDataTypeBinding extends AbstractComplexEMFBinding {
+public class ComplexDataTypeBinding extends org.geotools.wps.bindings.ComplexDataTypeBinding {
 
-    public ComplexDataTypeBinding( WpsFactory factory ) {
+    public ComplexDataTypeBinding( Wps10Factory factory ) {
         super( factory );
-    }
-    
-    public QName getTarget() {
-        return WPS.ComplexDataType;
-    }
-    
-    @Override
-    public int getExecutionMode() {
-        return OVERRIDE;
     }
 
     @Override
