@@ -1,10 +1,8 @@
 package org.geoserver.wps;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
 import junit.framework.Test;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 public class GetCapabilitiesTest extends WPSTestSupport {
 
@@ -13,13 +11,10 @@ public class GetCapabilitiesTest extends WPSTestSupport {
         return new OneTimeTestSetup(new GetCapabilitiesTest());
     }
     
-//    @Override
-//    protected String getLogConfiguration() {
-//        return "/DEFAULT_LOGGING.properties";
-//    }
     
     public void testGetBasic() throws Exception {
         Document d = getAsDOM( "wps?service=wps&request=getcapabilities" );
+        print(d);
         basicCapabilitiesTest(d);
     }
 
@@ -33,16 +28,12 @@ public class GetCapabilitiesTest extends WPSTestSupport {
     }
     
     private void basicCapabilitiesTest(Document d) throws Exception {
-//        print(d);
-        
-        // TODO: remove validation hacks and have a really compliant document
-        checkValidationErrors(d, WPS_SCHEMA, "'lang'", "wps:Languages", "'version'");
+        print(d);
+        checkValidationErrors(d);
         
         assertEquals( "wps:Capabilities", d.getDocumentElement().getNodeName() );
         int np = d.getElementsByTagName( "wps:Process" ).getLength();
         assertTrue( np > 0 );
-        
-        
     }
 
     public void testUnsupportedVersionPost() throws Exception {
@@ -55,18 +46,16 @@ public class GetCapabilitiesTest extends WPSTestSupport {
                 + "  </ows:AcceptVersions>" // 
                 + "</wps:GetCapabilities>";
         Document dom = postAsDOM(root(), request);
-        print(dom);
-        checkValidationErrors(dom, WPS_SCHEMA);
-        checkOws11Exception(dom);
-        assertXpathEvaluatesTo("VersionNegotiationFailed", "ows:ExceptionReport/ows:Exception/@exceptionCode", dom);
+        
+        checkValidationErrors(dom);
+        checkOws11Exception(dom, "VersionNegotiationFailed");
     }
     
     public void testUnsupportedVersionGet() throws Exception {
         Document dom = getAsDOM(root() + "request=GetCapabilities&service=WPS&acceptVersions=9.9.9,8.8.8");
-        print(dom);
-        checkValidationErrors(dom, WPS_SCHEMA);
-        checkOws11Exception(dom);
-        assertXpathEvaluatesTo("VersionNegotiationFailed", "ows:ExceptionReport/ows:Exception/@exceptionCode", dom);
+        
+        checkValidationErrors(dom);
+        checkOws11Exception(dom, "VersionNegotiationFailed");
     }
     
     public void testSupportedVersionGet() throws Exception {
@@ -85,6 +74,7 @@ public class GetCapabilitiesTest extends WPSTestSupport {
                 + "  </ows:AcceptVersions>" // 
                 + "</wps:GetCapabilities>";
         Document dom = postAsDOM(root(), request);
+        print( dom );
         assertEquals("wps:Capabilities", dom.getFirstChild().getNodeName());
     }
     
