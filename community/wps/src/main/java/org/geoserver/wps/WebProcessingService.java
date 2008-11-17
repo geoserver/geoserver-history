@@ -8,12 +8,12 @@ package org.geoserver.wps;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.opengis.wps.DescribeProcessType;
-import net.opengis.wps.ExecuteResponseType;
-import net.opengis.wps.ExecuteType;
-import net.opengis.wps.GetCapabilitiesType;
-import net.opengis.wps.ProcessDescriptionsType;
-import net.opengis.wps.WPSCapabilitiesType;
+import net.opengis.wps10.DescribeProcessType;
+import net.opengis.wps10.ExecuteResponseType;
+import net.opengis.wps10.ExecuteType;
+import net.opengis.wps10.GetCapabilitiesType;
+import net.opengis.wps10.ProcessDescriptionsType;
+import net.opengis.wps10.WPSCapabilitiesType;
 
 /**
  * @author Lucas Reed, Refractions Research Inc

@@ -7,22 +7,20 @@ package org.geoserver.wps;
 
 import java.util.Locale;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.AttributesImpl;
-
 import net.opengis.ows11.CodeType;
-import net.opengis.wps.DescribeProcessType;
-
-import org.geotools.data.Parameter;
-import org.geotools.process.Processors;
-import org.geotools.process.ProcessFactory;
-import org.geotools.xml.transform.Translator;
-import org.geotools.xml.transform.TransformerBase;
+import net.opengis.wps10.DescribeProcessType;
 
 import org.geoserver.ows.xml.v1_0.OWS;
-import org.geoserver.wps.transmute.Transmuter;
 import org.geoserver.wps.transmute.ComplexTransmuter;
 import org.geoserver.wps.transmute.LiteralTransmuter;
+import org.geoserver.wps.transmute.Transmuter;
+import org.geotools.data.Parameter;
+import org.geotools.process.ProcessFactory;
+import org.geotools.process.Processors;
+import org.geotools.xml.transform.TransformerBase;
+import org.geotools.xml.transform.Translator;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * DescribeProcess request response transformer
