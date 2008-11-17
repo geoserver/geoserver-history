@@ -9,17 +9,21 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.emf.ecore.EObject;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.ServiceException;
+import org.geotools.xml.EMFUtils;
 import org.opengis.util.InternationalString;
 
 import net.opengis.ows11.CodeType;
+import net.opengis.ows11.DCPType;
 import net.opengis.ows11.DomainMetadataType;
 import net.opengis.ows11.ExceptionReportType;
 import net.opengis.ows11.ExceptionType;
 import net.opengis.ows11.KeywordsType;
 import net.opengis.ows11.LanguageStringType;
 import net.opengis.ows11.Ows11Factory;
+import net.opengis.ows11.RequestMethodType;
 
 public class Ows11Util {
 
@@ -36,6 +40,9 @@ public class Ows11Util {
     }
     
     public static KeywordsType keywords( List<String> keywords) {
+        if ( keywords == null || keywords.size() == 0 ) {
+            return null;
+        }
         KeywordsType kw = f.createKeywordsType();
         for ( String keyword : keywords ) {
             kw.getKeyword().add( languageString( keyword ) );
@@ -95,5 +102,29 @@ public class Ows11Util {
         report.getException().add(e);
         
         return report;
+    }
+    
+    public static DCPType dcp( String service, String operation, EObject request ) {
+        String baseUrl = (String) EMFUtils.get( request, "baseUrl" );
+        if ( baseUrl == null ) {
+            throw new IllegalArgumentException( "Request object" + request + " has no 'baseUrl' property.");
+        }
+        
+        //TODO: version
+        String href = baseUrl + "?service=" + service + "&request=" + operation + "&";
+            
+        DCPType dcp = f.createDCPType();
+        dcp.setHTTP( f.createHTTPType() );
+        
+        RequestMethodType get = f.createRequestMethodType();
+        get.setHref( href );
+        dcp.getHTTP().getGet().add( get );
+        
+        RequestMethodType post = f.createRequestMethodType();
+        post.setHref( baseUrl );
+        dcp.getHTTP().getPost().add( post );
+        
+        return dcp;
+       
     }
 }
