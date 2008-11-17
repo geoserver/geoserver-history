@@ -13,7 +13,6 @@ public class DescribeProcessTest extends WPSTestSupport {
     
     public void testGetBuffer() throws Exception {
         Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=buffer");
-        
         testBufferDescription(d);
     }
     
@@ -23,20 +22,16 @@ public class DescribeProcessTest extends WPSTestSupport {
         		"xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
         		"xmlns:xlink=\"http://www.w3.org/1999/xlink\" " +
         		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" + 
-        		"    <ows:Identifier>intersection</ows:Identifier>\r\n" + 
-        		"    <ows:Identifier>union</ows:Identifier>\r\n" + 
+        		"    <ows:Identifier>buffer</ows:Identifier>\r\n" + 
         		"</DescribeProcess>";
         Document d = postAsDOM(root(), request);
         testBufferDescription(d);
     }
 
     private void testBufferDescription(Document d) throws Exception {
-        print(d);
-        
         // first off, let's check it's schema compliant ... it's not unfortunately, prefix issues
         // prevent even the most basic validation...
-        // checkValidationErrors(d, WPS_SCHEMA, "'lang'");
-        
+        checkValidationErrors(d);
         assertXpathExists( "/wps:ProcessDescriptions", d );
         
         String base = "/wps:ProcessDescriptions/wps:ProcessDescription/wps:DataInputs";
@@ -54,11 +49,11 @@ public class DescribeProcessTest extends WPSTestSupport {
         assertXpathExists( base + "/wps:ComplexData", d );
         
         base += "/wps:ComplexData";
-        assertXpathEvaluatesTo("text/xml; subtype=gml/2.1.2", 
-                base + "/wps:Default/wps:Format/wps:MimeType/child::text()", d);
-        assertXpathEvaluatesTo("text/xml; subtype=gml/2.1.2", 
-                base + "/wps:Supported/wps:Format[1]/wps:MimeType/child::text()", d);
         assertXpathEvaluatesTo("text/xml; subtype=gml/3.1.1", 
+                base + "/wps:Default/wps:Format/wps:MimeType/child::text()", d);
+        assertXpathEvaluatesTo("text/xml; subtype=gml/3.1.1", 
+                base + "/wps:Supported/wps:Format[1]/wps:MimeType/child::text()", d);
+        assertXpathEvaluatesTo("text/xml; subtype=gml/2.1.2", 
                 base + "/wps:Supported/wps:Format[2]/wps:MimeType/child::text()", d);
     
         //output
