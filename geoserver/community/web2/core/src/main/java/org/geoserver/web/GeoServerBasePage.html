@@ -27,11 +27,11 @@
       <input id="password" type="password" name="password" value="password" onfocus="if(this.value=='password') this.value='';" onblur="if(this.value=='') this.value='password';" />
       <label class="shown" for="_acegi_security_remember_me">Remember me</label>
       <input id="_acegi_security_remember_me" type="checkbox" name="_acegi_security_remember_me" />
-      <button class="button-login positive" type="submit">Login</button>
+      <button class="button-login positive icon" type="submit"><div>Login</div></button>
     </form>
     <div wicket:id="logoutform">
+      <a class="button-logout icon" href="j_acegi_logout"><div>Logout</div></a>
       <span class="username">Logged in as <span wicket:id="username">User von Testenheimer</span></span>.
-      <a class="button-logout" href="j_acegi_logout">Logout</a>
     </div>
     </div>
   </div><!-- /#header -->
@@ -59,8 +59,8 @@
       <li class="navigation-tab">
       
        <div class="button-group selfclear">
-         <button class="button-save positive" type="submit" wicket:id="save">Save</button>
-         <button class="button-revert negative" type="submit" wicket:id="load">Revert</button>
+         <button class="button-save positive icon" type="submit" wicket:id="save"><div>Save</div></button>
+         <button class="button-revert negative icon" type="submit" wicket:id="load"><div>Revert</div></button>
        </div>
       
       </li>
