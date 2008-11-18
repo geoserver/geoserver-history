@@ -11,6 +11,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.NameSpaceInfo;
+import org.geoserver.geosearch.GeoServerProxyAwareRestlet;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.rest.DataFormat;
 import org.geoserver.rest.FreemarkerFormat;
@@ -20,11 +21,14 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import freemarker.template.SimpleHash;
 
 public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     private final DataFormat format =
@@ -49,7 +53,29 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
         String namespace = (String)request.getAttributes().get("namespace");
         String layer = (String)request.getAttributes().get("layer");
 
-        response.setEntity(format.makeRepresentation(lookupType(namespace, layer)));
+        response.setEntity(format.makeRepresentation(getContext(namespace, layer)));
+    }
+    
+    private SimpleHash getContext(String namespace, String layer){
+    	FeatureTypeInfo info = lookupType(namespace, layer);
+    	
+    	SimpleHash map = new SimpleHash();
+    	
+    	map.put("name", info.getName());
+    	map.put("srs", info.getSRS());
+		map.put("declaredCRS", info.getDeclaredCRS());	    	
+    	try{
+        	map.put("nativeCRS", info.getNativeCRS());
+        	map.put("boundingBox", info.getBoundingBox());
+        	map.put("lonLatBoundingBox", info.getLatLongBoundingBox());
+    	}catch(IOException e){
+    		//well shucks.
+    	}
+    	map.put("keywords", info.getKeywords());
+    	map.put("title", info.getTitle());
+    	map.put("abstract", info.getAbstract());
+    	
+    	return map;
     }
 
     private FeatureTypeInfo lookupType(String namespace, String layer){
