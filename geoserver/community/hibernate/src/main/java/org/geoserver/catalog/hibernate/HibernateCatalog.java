@@ -407,7 +407,7 @@ public class HibernateCatalog implements Catalog {
      */
     public CoverageInfo getCoverage(String id) {
         CoverageInfo coverage = (CoverageInfo) getResource(id, CoverageInfo.class);
-        if ( coverage != null ) {
+        if ( coverage != null && coverage.getFields() == null ) {
             // initializing fields, vertical and temporal extent
             try {
                 org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
@@ -460,7 +460,7 @@ public class HibernateCatalog implements Catalog {
      */
     public CoverageInfo getCoverageByName(String name) {
         CoverageInfo coverage = (CoverageInfo) getResourceByName(name, CoverageInfo.class);
-        if ( coverage != null ) {
+        if ( coverage != null && coverage.getFields() == null ) {
             // initializing fields, vertical and temporal extent
             try {
                 org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
@@ -513,7 +513,7 @@ public class HibernateCatalog implements Catalog {
      */
     public CoverageInfo getCoverageByName(String ns, String name) {
         CoverageInfo coverage = (CoverageInfo) getResourceByName(ns, name, CoverageInfo.class);
-        if ( coverage != null ) {
+        if ( coverage != null && coverage.getFields() == null ) {
             // initializing fields, vertical and temporal extent
             try {
                 org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
@@ -568,56 +568,58 @@ public class HibernateCatalog implements Catalog {
         List<CoverageInfo> coverages = getResources(CoverageInfo.class);
         if ( coverages != null && coverages.size() > 0 ) {
             for (CoverageInfo coverage : coverages) {
-                // initializing fields, vertical and temporal extent
-                try {
-                    org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
-                    Driver driver = coverage.getStore().getDriver();
-                    Map params = new HashMap();
-                    params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL())
-                            .toURI().toURL());
-                    CoverageAccess cvAccess = driver.connect(params, null, null);
-                    if (cvAccess != null) {
-                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()),
-                                null, AccessType.READ_ONLY, null, null);
-                        if (cvSource != null) {
-                            coverage.setFields(cvSource.getRangeType(null));
+                if (coverage.getFields() == null) {
+                    // initializing fields, vertical and temporal extent
+                    try {
+                        org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                        Driver driver = coverage.getStore().getDriver();
+                        Map params = new HashMap();
+                        params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL())
+                                .toURI().toURL());
+                        CoverageAccess cvAccess = driver.connect(params, null, null);
+                        if (cvAccess != null) {
+                            CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()),
+                                    null, AccessType.READ_ONLY, null, null);
+                            if (cvSource != null) {
+                                coverage.setFields(cvSource.getRangeType(null));
 
-                            CoordinateReferenceSystem compundCRS = cvSource
-                                    .getCoordinateReferenceSystem(null);
-                            Set<TemporalGeometricPrimitive> temporalExtent = cvSource
-                                    .getTemporalDomain(null);
-                            CoordinateReferenceSystem temporalCRS = null;
-                            CoordinateReferenceSystem verticalCRS = null;
-                            if (temporalExtent != null && !temporalExtent.isEmpty()) {
-                                if (compundCRS instanceof CompoundCRS) {
-                                    temporalCRS = ((CompoundCRS) compundCRS)
-                                            .getCoordinateReferenceSystems().get(0);
-                                }
-                            }
-                            Set<org.opengis.geometry.Envelope> verticalExtent = cvSource
-                                    .getVerticalDomain(false, null);
-                            if (verticalExtent != null && !verticalExtent.isEmpty()) {
-                                if (compundCRS instanceof CompoundCRS) {
-                                    if (temporalCRS != null)
-                                        verticalCRS = ((CompoundCRS) compundCRS)
-                                                .getCoordinateReferenceSystems().get(1);
-                                    else
-                                        verticalCRS = ((CompoundCRS) compundCRS)
+                                CoordinateReferenceSystem compundCRS = cvSource
+                                        .getCoordinateReferenceSystem(null);
+                                Set<TemporalGeometricPrimitive> temporalExtent = cvSource
+                                        .getTemporalDomain(null);
+                                CoordinateReferenceSystem temporalCRS = null;
+                                CoordinateReferenceSystem verticalCRS = null;
+                                if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                                    if (compundCRS instanceof CompoundCRS) {
+                                        temporalCRS = ((CompoundCRS) compundCRS)
                                                 .getCoordinateReferenceSystems().get(0);
+                                    }
                                 }
+                                Set<org.opengis.geometry.Envelope> verticalExtent = cvSource
+                                        .getVerticalDomain(false, null);
+                                if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                                    if (compundCRS instanceof CompoundCRS) {
+                                        if (temporalCRS != null)
+                                            verticalCRS = ((CompoundCRS) compundCRS)
+                                                    .getCoordinateReferenceSystems().get(1);
+                                        else
+                                            verticalCRS = ((CompoundCRS) compundCRS)
+                                                    .getCoordinateReferenceSystems().get(0);
+                                    }
+                                }
+
+                                coverage.setTemporalCRS(temporalCRS);
+                                coverage.setTemporalExtent(temporalExtent);
+
+                                coverage.setVerticalCRS(verticalCRS);
+                                coverage.setVerticalExtent(verticalExtent);
                             }
-
-                            coverage.setTemporalCRS(temporalCRS);
-                            coverage.setTemporalExtent(temporalExtent);
-
-                            coverage.setVerticalCRS(verticalCRS);
-                            coverage.setVerticalExtent(verticalExtent);
                         }
+                    } catch (MalformedURLException e) {
+                        // e.printStackTrace();
+                    } catch (IOException e) {
+                        // e.printStackTrace();
                     }
-                } catch (MalformedURLException e) {
-                    // e.printStackTrace();
-                } catch (IOException e) {
-                    // e.printStackTrace();
                 }
             }
         }
@@ -631,55 +633,57 @@ public class HibernateCatalog implements Catalog {
         List<CoverageInfo> coverages = getResourcesByNamespace(namespace, CoverageInfo.class);
         if ( coverages != null && coverages.size() > 0 ) {
             for (CoverageInfo coverage : coverages) {
-                // initializing fields, vertical and temporal extent
-                try {
-                    org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
-                    Driver driver = coverage.getStore().getDriver();
-                    Map params = new HashMap();
-                    params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
-                    CoverageAccess cvAccess = driver.connect(params, null, null);
-                    if (cvAccess != null) {
-                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()),
-                                null, AccessType.READ_ONLY, null, null);
-                        if (cvSource != null) {
-                            coverage.setFields(cvSource.getRangeType(null));
+                if (coverage.getFields() == null) {
+                 // initializing fields, vertical and temporal extent
+                    try {
+                        org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                        Driver driver = coverage.getStore().getDriver();
+                        Map params = new HashMap();
+                        params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                        CoverageAccess cvAccess = driver.connect(params, null, null);
+                        if (cvAccess != null) {
+                            CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()),
+                                    null, AccessType.READ_ONLY, null, null);
+                            if (cvSource != null) {
+                                coverage.setFields(cvSource.getRangeType(null));
 
-                            CoordinateReferenceSystem compundCRS = cvSource
-                                    .getCoordinateReferenceSystem(null);
-                            Set<TemporalGeometricPrimitive> temporalExtent = cvSource
-                                    .getTemporalDomain(null);
-                            CoordinateReferenceSystem temporalCRS = null;
-                            CoordinateReferenceSystem verticalCRS = null;
-                            if (temporalExtent != null && !temporalExtent.isEmpty()) {
-                                if (compundCRS instanceof CompoundCRS) {
-                                    temporalCRS = ((CompoundCRS) compundCRS)
-                                            .getCoordinateReferenceSystems().get(0);
-                                }
-                            }
-                            Set<org.opengis.geometry.Envelope> verticalExtent = cvSource
-                                    .getVerticalDomain(false, null);
-                            if (verticalExtent != null && !verticalExtent.isEmpty()) {
-                                if (compundCRS instanceof CompoundCRS) {
-                                    if (temporalCRS != null)
-                                        verticalCRS = ((CompoundCRS) compundCRS)
-                                                .getCoordinateReferenceSystems().get(1);
-                                    else
-                                        verticalCRS = ((CompoundCRS) compundCRS)
+                                CoordinateReferenceSystem compundCRS = cvSource
+                                        .getCoordinateReferenceSystem(null);
+                                Set<TemporalGeometricPrimitive> temporalExtent = cvSource
+                                        .getTemporalDomain(null);
+                                CoordinateReferenceSystem temporalCRS = null;
+                                CoordinateReferenceSystem verticalCRS = null;
+                                if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                                    if (compundCRS instanceof CompoundCRS) {
+                                        temporalCRS = ((CompoundCRS) compundCRS)
                                                 .getCoordinateReferenceSystems().get(0);
+                                    }
                                 }
+                                Set<org.opengis.geometry.Envelope> verticalExtent = cvSource
+                                        .getVerticalDomain(false, null);
+                                if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                                    if (compundCRS instanceof CompoundCRS) {
+                                        if (temporalCRS != null)
+                                            verticalCRS = ((CompoundCRS) compundCRS)
+                                                    .getCoordinateReferenceSystems().get(1);
+                                        else
+                                            verticalCRS = ((CompoundCRS) compundCRS)
+                                                    .getCoordinateReferenceSystems().get(0);
+                                    }
+                                }
+
+                                coverage.setTemporalCRS(temporalCRS);
+                                coverage.setTemporalExtent(temporalExtent);
+
+                                coverage.setVerticalCRS(verticalCRS);
+                                coverage.setVerticalExtent(verticalExtent);
                             }
-
-                            coverage.setTemporalCRS(temporalCRS);
-                            coverage.setTemporalExtent(temporalExtent);
-
-                            coverage.setVerticalCRS(verticalCRS);
-                            coverage.setVerticalExtent(verticalExtent);
                         }
+                    } catch (MalformedURLException e) {
+                        // e.printStackTrace();
+                    } catch (IOException e) {
+                        // e.printStackTrace();
                     }
-                } catch (MalformedURLException e) {
-                    // e.printStackTrace();
-                } catch (IOException e) {
-                    // e.printStackTrace();
                 }
             }
         }

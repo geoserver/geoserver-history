@@ -17,6 +17,7 @@
     -->
     <!-- StoreInfo -->
 	<class name="org.geoserver.catalog.impl.StoreInfoImpl" table="STORES">
+		<cache usage="read-write" />
 		<id name="id" column="STORE_ID">
             <generator class="native"/>
         </id>
@@ -56,6 +57,7 @@
     
 	<!-- StyleInfo -->
 	<class name="org.geoserver.catalog.impl.StyleInfoImpl" table="STYLES">
+		<cache usage="read-write" />
 		<id name="id" column="STYLE_ID">
             <generator class="native"/>
         </id>
@@ -65,6 +67,7 @@
     
 	<!-- NamespaceInfo -->
     <class name="org.geoserver.catalog.hibernate.HbNamespaceInfo" table="NAMESPACES">
+		<cache usage="read-write" />
 		<id name="id" column="NS_ID">
             <generator class="native"/>
         </id>
@@ -75,6 +78,7 @@
 	
 	<!-- WorkspaceInfo -->
     <class name="org.geoserver.catalog.hibernate.HbWorkspaceInfo" table="WORKSPACES">
+		<cache usage="read-write" />
 		<id name="id" column="WS_ID">
             <generator class="native"/>
         </id>
@@ -89,6 +93,7 @@
 	
 	<!-- MetadataLinkInfo -->
     <class name="org.geoserver.catalog.impl.MetadataLinkInfoImpl" table="METADATA_LINKS">
+		<cache usage="read-write" />
 		<id name="id" column="ID">
             <generator class="native"/>
         </id>
@@ -100,6 +105,7 @@
     
 	<!-- ResourceInfo -->    
 	<class name="org.geoserver.catalog.impl.ResourceInfoImpl" table="RESOURCES" abstract="true">
+		<cache usage="read-write" />
 		<id name="id" column="RESOURCE_ID">
             <generator class="native"/>
         </id>
@@ -201,6 +207,7 @@
     
     <!-- LegendInfo -->
     <class name="org.geoserver.catalog.impl.LegendInfoImpl" table="LEGENDS">
+	   <cache usage="read-write" />
        <id name="id" column="LEGEND_ID">
 	   	 <generator class="native"/>
 	   </id>
@@ -212,6 +219,7 @@
     
     <!-- LayerInfo -->
     <class name="org.geoserver.catalog.impl.LayerInfoImpl" table="LAYERS">
+	   <cache usage="read-write" />
 	   <id name="id" column="LAYER_ID">
 	   	 <generator class="native"/>
 	   </id>
@@ -238,6 +246,7 @@
     
     <!-- MapInfo -->
     <class name="org.geoserver.catalog.impl.MapInfoImpl" table="MAPS">
+	   <cache usage="read-write" />
 	   <id name="id" column="MAP_ID">
 	   	 <generator class="native"/>
 	   </id>
@@ -250,11 +259,9 @@
 		</list>
     </class>
 
-    <!--
-    SERVICES
-    -->
     <!-- ContactInfo -->
     <class name="org.geoserver.config.impl.ContactInfoImpl" table="CONTACT">
+		<cache usage="read-write" />
 		<id name="id" column="ID">
             <generator class="native"/>
         </id>
@@ -310,6 +317,7 @@
 	 
 	 <!-- GeoServerInfo -->
      <class name="org.geoserver.config.impl.GeoServerInfoImpl" table="GEOSERVER">
+		<cache usage="read-write" />
 		<id name="id" column="GS_ID">
             <generator class="native"/>
         </id>
@@ -354,6 +362,7 @@
 
     <!-- ServiceInfo -->
     <class name="org.geoserver.config.impl.ServiceInfoImpl" table="SERVICES" >
+		<cache usage="read-write" />
 		<id name="id" column="ID"/>
         <property name="enabled" column="ENABLED"/>
 		<property name="name" column="NAME" not-null="true" unique="true"/>
@@ -407,6 +416,7 @@
 
 	<!-- WatermarkInfo -->
 	 <class name="org.geoserver.wms.WatermarkInfoImpl" table="SERVICE_WATERMARKS">
+		<cache usage="read-write" />
 		<id name="id" column="SRV_WM_ID">
             <generator class="native"/>
         </id>
@@ -442,8 +452,25 @@
 		<key column="ID"/>
     </joined-subclass>
     
+    <!-- GeophysicParamInfo -->    
+	<class name="org.geoserver.catalog.impl.GeophysicParamInfoImpl" table="GEOPHYSIC_PARAMS">
+		<cache usage="read-write" />
+		<id name="id" column="GEOPHYSIC_PARAM_ID">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="NAME" unique="true" not-null="true"/>
+		<property name="title" column="TITLE"/>
+		<property name="description" column="DESCRIPTION"/>
+		<list name="alias" table="GEOPHYSIC_PARAMS_ALIASES" cascade="all" lazy="false">
+		   <key column="GEOPHYSIC_PARAM_ID"/>
+           <list-index column="ALIAS_INDEX"/>
+		   <element type="java.lang.String"/>
+		</list>
+	</class>
+	
     <!-- ModelInfo -->
 	 <class name="org.geoserver.catalog.impl.ModelInfoImpl" table="MODEL">
+		<cache usage="read-write" />
 		<id name="id" column="MODEL_ID">
             <generator class="native"/>
         </id>
@@ -484,6 +511,7 @@
     
     <!-- ModelRunInfo -->
 	 <class name="org.geoserver.catalog.impl.ModelRunInfoImpl" table="MODEL_RUN">
+		<cache usage="read-write" />
 		<id name="id" column="MODEL_RUN_ID">
             <generator class="native"/>
         </id>

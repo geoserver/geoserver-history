@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A matematical model.
+ * A mathematical model.
  * 
  * @author Alessio Fabiani, GeoSolutions
  */

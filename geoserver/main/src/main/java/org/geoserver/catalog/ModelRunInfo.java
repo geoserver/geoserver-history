@@ -13,7 +13,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
- * A matematical model run.
+ * A mathematical model run.
  * 
  * @author Alessio Fabiani, GeoSolutions
  */

@@ -70,7 +70,7 @@ public class GeoServerDAO implements IGeoServerDAO {
      * 
      * @see org.geoserver.hibernate.dao.IGeoServerDAO#save(java.lang.Object)
      */
-    public void save(Object entity) {
+    public synchronized void save(Object entity) {
         sessionFactory.getCurrentSession().save(entity);
     }
 

@@ -2180,49 +2180,52 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         }
         
         if ( coverage != null ) {
-         // initializing fields, vertical and temporal extent
-            try {
-                org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
-                Driver driver = coverage.getStore().getDriver();
-                Map params = new HashMap();
-                params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
-                CoverageAccess cvAccess = driver.connect(params, null, null);
-                if (cvAccess != null) {
-                    CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
-                    if (cvSource != null) {
-                        coverage.setFields(cvSource.getRangeType(null));
+            if (coverage.getFields() == null) {
+             // initializing fields, vertical and temporal extent
+                try {
+                    org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                    Driver driver = coverage.getStore().getDriver();
+                    Map params = new HashMap();
+                    params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                    CoverageAccess cvAccess = driver.connect(params, null, null);
+                    if (cvAccess != null) {
+                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                        if (cvSource != null) {
+                            coverage.setFields(cvSource.getRangeType(null));
 
-                        CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
-                        Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
-                        CoordinateReferenceSystem temporalCRS = null;
-                        CoordinateReferenceSystem verticalCRS = null;
-                        if (temporalExtent != null && !temporalExtent.isEmpty()) {
-                            if (compundCRS instanceof CompoundCRS) {
-                                temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                            Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                            CoordinateReferenceSystem temporalCRS = null;
+                            CoordinateReferenceSystem verticalCRS = null;
+                            if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                                }
                             }
-                        }
-                        Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
-                        if (verticalExtent != null && !verticalExtent.isEmpty()) {
-                            if (compundCRS instanceof CompoundCRS) {
-                                if (temporalCRS != null)
-                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
-                                else
-                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
-                            } 
-                        }
+                            Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                            if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    if (temporalCRS != null)
+                                        verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                                    else
+                                        verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                                } 
+                            }
 
-                        coverage.setTemporalCRS(temporalCRS);
-                        coverage.setTemporalExtent(temporalExtent);
+                            coverage.setTemporalCRS(temporalCRS);
+                            coverage.setTemporalExtent(temporalExtent);
 
-                        coverage.setVerticalCRS(verticalCRS);
-                        coverage.setVerticalExtent(verticalExtent);
+                            coverage.setVerticalCRS(verticalCRS);
+                            coverage.setVerticalExtent(verticalExtent);
+                        }
                     }
+                } catch (MalformedURLException e) {
+                    //e.printStackTrace();
+                } catch (IOException e) {
+                    //e.printStackTrace();
                 }
-            } catch (MalformedURLException e) {
-                //e.printStackTrace();
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
+            }            
+            
             return new CoverageInfo( layer(coverage),catalog); 
         }
         //
@@ -2259,49 +2262,52 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     public synchronized CoverageInfo getCoverageInfo(String name, String uri) {
         org.geoserver.catalog.CoverageInfo coverage = catalog.getCoverageByName(uri, name);
         if ( coverage != null ) {
-            // initializing fields, vertical and temporal extent
-            try {
-                org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
-                Driver driver = coverage.getStore().getDriver();
-                Map params = new HashMap();
-                params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
-                CoverageAccess cvAccess = driver.connect(params, null, null);
-                if (cvAccess != null) {
-                    CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
-                    if (cvSource != null) {
-                        coverage.setFields(cvSource.getRangeType(null));
+            if (coverage.getFields() == null) {
+             // initializing fields, vertical and temporal extent
+                try {
+                    org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                    Driver driver = coverage.getStore().getDriver();
+                    Map params = new HashMap();
+                    params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                    CoverageAccess cvAccess = driver.connect(params, null, null);
+                    if (cvAccess != null) {
+                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                        if (cvSource != null) {
+                            coverage.setFields(cvSource.getRangeType(null));
 
-                        CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
-                        Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
-                        CoordinateReferenceSystem temporalCRS = null;
-                        CoordinateReferenceSystem verticalCRS = null;
-                        if (temporalExtent != null && !temporalExtent.isEmpty()) {
-                            if (compundCRS instanceof CompoundCRS) {
-                                temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                            Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                            CoordinateReferenceSystem temporalCRS = null;
+                            CoordinateReferenceSystem verticalCRS = null;
+                            if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                                }
                             }
-                        }
-                        Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
-                        if (verticalExtent != null && !verticalExtent.isEmpty()) {
-                            if (compundCRS instanceof CompoundCRS) {
-                                if (temporalCRS != null)
-                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
-                                else
-                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
-                            } 
-                        }
+                            Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                            if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    if (temporalCRS != null)
+                                        verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                                    else
+                                        verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                                } 
+                            }
 
-                        coverage.setTemporalCRS(temporalCRS);
-                        coverage.setTemporalExtent(temporalExtent);
+                            coverage.setTemporalCRS(temporalCRS);
+                            coverage.setTemporalExtent(temporalExtent);
 
-                        coverage.setVerticalCRS(verticalCRS);
-                        coverage.setVerticalExtent(verticalExtent);
+                            coverage.setVerticalCRS(verticalCRS);
+                            coverage.setVerticalExtent(verticalExtent);
+                        }
                     }
+                } catch (MalformedURLException e) {
+                    //e.printStackTrace();
+                } catch (IOException e) {
+                    //e.printStackTrace();
                 }
-            } catch (MalformedURLException e) {
-                //e.printStackTrace();
-            } catch (IOException e) {
-                //e.printStackTrace();
             }
+            
             return new CoverageInfo( layer(coverage), catalog );
         }
         
@@ -2383,48 +2389,50 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     public synchronized Map getCoverageInfos() {
         Map map = new HashMap();
         for ( org.geoserver.catalog.CoverageInfo coverage : catalog.getCoverages() ) {
-            // initializing fields, vertical and temporal extent
-            try {
-                org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
-                Driver driver = coverage.getStore().getDriver();
-                Map params = new HashMap();
-                params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
-                CoverageAccess cvAccess = driver.connect(params, null, null);
-                if (cvAccess != null) {
-                    CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
-                    if (cvSource != null) {
-                        coverage.setFields(cvSource.getRangeType(null));
+            if ( coverage.getFields() == null ) {
+             // initializing fields, vertical and temporal extent
+                try {
+                    org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                    Driver driver = coverage.getStore().getDriver();
+                    Map params = new HashMap();
+                    params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                    CoverageAccess cvAccess = driver.connect(params, null, null);
+                    if (cvAccess != null) {
+                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                        if (cvSource != null) {
+                            coverage.setFields(cvSource.getRangeType(null));
 
-                        CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
-                        Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
-                        CoordinateReferenceSystem temporalCRS = null;
-                        CoordinateReferenceSystem verticalCRS = null;
-                        if (temporalExtent != null && !temporalExtent.isEmpty()) {
-                            if (compundCRS instanceof CompoundCRS) {
-                                temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                            CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                            Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                            CoordinateReferenceSystem temporalCRS = null;
+                            CoordinateReferenceSystem verticalCRS = null;
+                            if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                                }
                             }
-                        }
-                        Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
-                        if (verticalExtent != null && !verticalExtent.isEmpty()) {
-                            if (compundCRS instanceof CompoundCRS) {
-                                if (temporalCRS != null)
-                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
-                                else
-                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
-                            } 
-                        }
+                            Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                            if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                                if (compundCRS instanceof CompoundCRS) {
+                                    if (temporalCRS != null)
+                                        verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                                    else
+                                        verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                                } 
+                            }
 
-                        coverage.setTemporalCRS(temporalCRS);
-                        coverage.setTemporalExtent(temporalExtent);
+                            coverage.setTemporalCRS(temporalCRS);
+                            coverage.setTemporalExtent(temporalExtent);
 
-                        coverage.setVerticalCRS(verticalCRS);
-                        coverage.setVerticalExtent(verticalExtent);
+                            coverage.setVerticalCRS(verticalCRS);
+                            coverage.setVerticalExtent(verticalExtent);
+                        }
                     }
+                } catch (MalformedURLException e) {
+                    //e.printStackTrace();
+                } catch (IOException e) {
+                    //e.printStackTrace();
                 }
-            } catch (MalformedURLException e) {
-                //e.printStackTrace();
-            } catch (IOException e) {
-                //e.printStackTrace();
             }
             
             if(coverage.isEnabled())
