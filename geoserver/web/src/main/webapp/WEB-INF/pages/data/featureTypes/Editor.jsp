@@ -140,11 +140,11 @@ function prepareFormData(){
         </tr>
         </table>
 	</td></tr>
-	<!------------------------->
+ <!-- ===================================================================== -->
 	
 	
 	
-	<!------ This puts in the SRS WKT definition --->
+	 <!--  This puts in the SRS WKT definition  -->
 	
 	<tr>
 	<td class="label">
@@ -183,7 +183,7 @@ function prepareFormData(){
 	</tr>
 	
 	
-	<!-------------------------->
+	 <!-- ================= -->
 
     <tr>
       <td class="label">
@@ -207,9 +207,9 @@ function prepareFormData(){
           <bean:message key="config.data.calculateBoundingBox.label"/>
         </html:submit><br/>
         
-      <!-------------------------------------------------------------->
-      <!----- This will add the bounding box of the data (in its CRS) to the page --->
-      <!----- Its only added if its actually been calculated (i.e. they presed the generate bbox button) --->
+       <!-- =========================================================================== -->
+       <!-- This will add the bounding box of the data (in its CRS) to the page  -->
+       <!-- Its only added if its actually been calculated (i.e. they presed the generate bbox button) -->
 
 <html:hidden property="nativeMinX"/>
 <html:hidden property="nativeMinY"/>
@@ -261,7 +261,7 @@ function prepareFormData(){
         </table>
         
 </logic:notEmpty>        
-<!-------------------------------------------------------------->
+ <!-- ========================================================= -->
         
         
         <table border=0>

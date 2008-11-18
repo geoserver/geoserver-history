@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<!---   
+ <!-- -   
           This JSP expect to have a:
           
           <form-bean 
@@ -30,10 +30,10 @@
 	   as strings.
 	   The BBoxList contains the bounding box coordinates of 
 	   the feature type represented as a string.
-  --->
+  - -->
 
 <!-- ALL THIS STUFF TAKEN FROM MAINLAYOUT.JSP -->
-<!------------------------------------------------------------------------>
+ <!-- ======================================== -->
 <html:html locale="true" xhtml="true">
   <head>
     <title>
@@ -91,13 +91,13 @@
         </td>
 	</tr>
 	</table>
-<!------------------------------------------------------------------------>
+ <!-- ===================================================================== -->
 
 <h1 align="center"> <bean:message key="mapPreview.title"/> </h1>
 
-<!------------------------------------------------------------------------>
-<!-- DISPLAY THE LIST OF FEATURE TYPES AND THEIR INFORMATION             ->
-<!------------------------------------------------------------------------>
+ <!-- ===================================================================== -->
+<!-- DISPLAY THE LIST OF FEATURE TYPES AND THEIR INFORMATION             -->
+ <!-- ===================================================================== -->
 
 
 <table border=1 cellpadding=4 align="center">

@@ -344,8 +344,8 @@ function generateColorPicker(colorFieldName, fieldValue)
       	* <bean:message key="help.coverage.nativeCRS"/>
       </td>
 	</tr>
-	<!------------------------->
-	<!------ This puts in the SRS WKT definition --->
+	 <!-- ================== -->
+	 <!--  This puts in the SRS WKT definition -->
 	
 	<tr>
 	<td class="label">
@@ -360,7 +360,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	</tr>
 	
 	
-	<!-------------------------->
+	 <!-- ================== -->
 	
     <tr>
       <td class="label">
