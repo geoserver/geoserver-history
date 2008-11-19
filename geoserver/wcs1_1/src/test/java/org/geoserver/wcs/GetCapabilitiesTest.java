@@ -3,6 +3,7 @@ package org.geoserver.wcs;
 import static org.custommonkey.xmlunit.XMLAssert.*;
 import junit.framework.Test;
 
+import org.geoserver.data.test.MockData;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -28,6 +29,12 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         geoServer = (GeoServer) applicationContext.getBean("geoServer");
     }
     
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.disableCoverageStore(WORLD.getLocalPart());
+    }
+    
 //    @Override
 //    protected String getDefaultLogConfiguration() {
 //        return "/GEOTOOLS_DEVELOPER_LOGGING.properties";
@@ -35,12 +42,15 @@ public class GetCapabilitiesTest extends WCSTestSupport {
 
     public void testGetBasic() throws Exception {
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&acceptversions=1.1.1");
-//         print(dom);
+         print(dom);
         checkValidationErrors(dom, WCS11_SCHEMA);
         
         // make sure we provided the store values
         assertXpathEvaluatesTo("TrueFalse", "/wcs:Capabilities/ows:OperationsMetadata" +
         		"/ows:Operation[@name=\"GetCoverage\"]/ows:Parameter/ows:AllowedValues", dom);
+        
+        // make sure the disabled coverage store is really disabled
+        assertXpathEvaluatesTo("0", "count(//ows:Title[text()='World'])", dom);
     }
     
     
