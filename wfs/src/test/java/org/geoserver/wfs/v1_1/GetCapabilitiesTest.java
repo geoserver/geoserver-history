@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import junit.framework.Test;
 
+import org.geoserver.data.test.MockData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSTestSupport;
@@ -20,6 +21,12 @@ public class GetCapabilitiesTest extends WFSTestSupport {
      */
     public static Test suite() {
         return new OneTimeTestSetup(new GetCapabilitiesTest());
+    }
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.disableDataStore(MockData.CITE_PREFIX);
     }
 
     public void testGet() throws Exception {
