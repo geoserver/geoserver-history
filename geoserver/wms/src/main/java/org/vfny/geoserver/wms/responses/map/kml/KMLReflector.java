@@ -90,10 +90,10 @@ public class KMLReflector {
     }
 
     public void wms(GetMapRequest request, HttpServletResponse response) throws Exception {
-        wms(request, response, wms);
+        doWms(request, response, wms);
     }
         
-    public static void wms(GetMapRequest request, HttpServletResponse response, WebMapService wms)
+    public static void doWms(GetMapRequest request, HttpServletResponse response, WebMapService wms)
         throws Exception {
         String mode = "vector";
 
