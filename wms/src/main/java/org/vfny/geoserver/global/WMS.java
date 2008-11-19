@@ -14,6 +14,7 @@ import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WatermarkInfo;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * WMS
@@ -48,6 +51,8 @@ import java.util.TreeSet;
  * @deprecated use {@link WMSInfo}
  */
 public class WMS extends Service {
+    private static final Logger LOGGER = Logging.getLogger(WMS.class);
+    
     /** WMS version spec implemented */
     private static final String WMS_VERSION = "1.1.1";
 
@@ -455,17 +460,18 @@ public class WMS extends Service {
                 
                 if ( layerName.contains( ":" ) ) {
                     resource = gs.getCatalog().getResourceByName( layerName.split(":")[0], layerName.split(":")[1], ResourceInfo.class );
-                }
-                else {
+                } else {
                     resource = gs.getCatalog().getResourceByName( layerName, ResourceInfo.class );
                 }
                 
-                if ( resource == null ) {
-                    throw new RuntimeException( "No such layer: " + layerName );
+                LayerInfo layer = null;
+                if ( resource != null ) {
+                    layer = gs.getCatalog().getLayers( resource ).get( 0 );
                 }
-                LayerInfo layer = gs.getCatalog().getLayers( resource ).get( 0 );
-                if ( layer == null ) {
-                    throw new RuntimeException( "No such layer: " + layerName );
+                
+                if(layer == null) {
+                    LOGGER.log(Level.SEVERE, "No such layer: " + layerName + ", ignoring it in the base map " + name);
+                    continue;
                 }
                 
                 baseMap.getLayers().add( layer );
