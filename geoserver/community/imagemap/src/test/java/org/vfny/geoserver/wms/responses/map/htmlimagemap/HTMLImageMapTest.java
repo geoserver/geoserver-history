@@ -16,6 +16,7 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.property.PropertyDataStore;
+import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.factory.CommonFactoryFinder;
 
 import org.geotools.feature.SchemaException;
@@ -196,6 +197,27 @@ public class HTMLImageMapTest extends TestCase {
         System.out.println(s);
     }
 	
+	public void testStates() throws Exception {
+		File shapeFile=TestData.file(this, "featureTypes/states.shp");		
+		ShapefileDataStore ds=new ShapefileDataStore(shapeFile.toURL());
+		
+		final FeatureSource<SimpleFeatureType,SimpleFeature> fs = ds.getFeatureSource("states");
+		final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+		
+		final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        map.setTransparent(false);
+
+        Style basicStyle = getTestStyle("Population.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("States", this.mapProducer);
+	}
 	
 	public void testMapProduceBasicPolygons() throws Exception {
 		
@@ -417,6 +439,28 @@ public class HTMLImageMapTest extends TestCase {
         this.mapProducer.produceMap();
         assertTestResult("CollectionSample", this.mapProducer);
 
+	}
+	
+	public void testMapProduceNoCoords() throws Exception {
+		final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("NoCoords");
+        final ReferencedEnvelope env = new ReferencedEnvelope(2.0,6.0,2.0,6.0,WGS84);
+     
+        LOGGER.info("about to create map ctx for NamedPlaces with bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        
+        map.setTransparent(false);
+                
+        Style basicStyle = getTestStyle("NamedPlaces.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("NoCoords", this.mapProducer);
 	}
 	
 	
