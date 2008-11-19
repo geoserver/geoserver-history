@@ -269,7 +269,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 description.append("<div> <a href=\"")
                     .append(getFeatureTypeURL())
                     .append(".html")
-                	.append("\">About this dataset</a> </div>");
+                	.append("\">Full dataset info and download</a> </div>");
             } catch (ClassNotFoundException cnfe) {/* don't do anything, the link is already omitted */}
             
 
