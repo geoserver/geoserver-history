@@ -4,7 +4,7 @@ General styles
 body {
 background: #fff;
 color: #0076a1;
-font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+font-family: Calibri, "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 text-align:left !important; /* override blueprint's ie.css */
 }
 
@@ -15,7 +15,7 @@ h4,
 h5, 
 h6 {
 color: #0082b6;
-font-family: "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+font-family: Calibri, "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 height: auto; /* override blueprint's screen.css */
 }
 
@@ -24,7 +24,7 @@ em,
 dt, 
 b, 
 i {
-font-family: "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+font-family: Calibri, "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 }
 
 a {
@@ -342,8 +342,8 @@ td.locator {
  border-color: #c6e09b;
 }
 span.locator {
- font-size: 0.65em;
- color: #c6e09b;
+ font-size: 0.8em;
+ color: #9cb07a;
  padding-bottom: 0.5em;
 }
 span.locator a {
@@ -395,11 +395,18 @@ td.title h1 {
  white-space: nowrap; 
  margin: 2px;
 }
+
+td.title .abstract {
+ font-size: 0.9em;
+ color: #444;
+}
+
 /* menuator */
 table.menu {
  width: 6em;
  vertical-align: top;
  white-space: nowrap; 
+ font-size: 1.18em;
 }
 td.item {
  text-align: left;
@@ -486,30 +493,27 @@ table.info {
 table.info td.label {
  vertical-align: top;
  text-align: right;
- width: 9em;
  color: #262523;
+ font-size: 0.8em;
 }
 table.info td.datum {
  vertical-align: top;
  color: #0082b6;
 }
-td.datum textarea {
- font-family: serif;
-}
-td.datum text {
- font-family: serif;
-}
-td.datum password {
- font-family: serif;
+td.datum textarea,
+td.datum input,
+td.datum select {
+ font-size:0.9em;
+ font-family: Calibri, "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 }
 
-td.greyedout  {
+.greyedout  {
 font-family: serif;
 text-align: right;
 color: #969696;
 }
 
-td.greyedout2  {
+.greyedout2  {
 font-family: "Courier New", Courier, monospace;
 font-size: 11px;
 color: #969696;
@@ -518,5 +522,7 @@ color: #969696;
 font-family : "Courier New", Courier, monospace;
 }
 
-
+.info-text {
+font-size: 0.8em;
+}
 

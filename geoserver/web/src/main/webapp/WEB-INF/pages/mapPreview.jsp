@@ -118,7 +118,7 @@
 				</b>
 	     </td>
 	     <!-- 
-	     <td class="greyedOut2">
+	     <td class="greyedout2">
 				 <bean:write property='<%= "DSNameList[" + idx + "]" %>' name="mapPreviewForm"/>
 	     </td>
 	      -->

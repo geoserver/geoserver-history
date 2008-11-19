@@ -46,7 +46,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	result += 'onChange="relateColor(\''+colorFieldName+'\', fieldValue);"> ';
 	result += '<a href="javascript:pickColor(\''+colorFieldName+'\');" id="pick'+colorFieldName+'" name="pick'+colorFieldName+'" style="border: 1px solid #000000; font-family:Verdana; font-size:10px; background=#FFFF33; ';
 	result += 'text-decoration: none; " ><img src="colorpicker.jpg" width=12 height=12 border="none"></a>';
-	result += '<script language="javascript">relateColor(\'pick'+colorFieldName+'\', getObj(\''+colorFieldName+'\').value);</script> ';
+	result += '<scr' + 'ipt language="javascript">relateColor(\'pick'+colorFieldName+'\', getObj(\''+colorFieldName+'\').value);</scr'+'ipt> ';
 
 	return result;
 }
@@ -340,7 +340,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	<tr>
 	  <td>
 	  </td>
-	  <td class="greyedOut2">
+	  <td class="greyedout2">
       	* <bean:message key="help.coverage.nativeCRS"/>
       </td>
 	</tr>
@@ -353,7 +353,7 @@ function generateColorPicker(colorFieldName, fieldValue)
           <bean:message key="label.type.crswkt"/>:
         </span>
 	  </td>
-	  <td class="greyedOut2">
+	  <td class="greyedout2">
               <bean:write name="coveragesEditorForm" property="nativeCrsWKT"/>
 			  <html:hidden property="nativeCrsWKT"/>
             </td>

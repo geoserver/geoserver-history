@@ -106,7 +106,7 @@
 	     <td valign="top" align="right">
 	          <bean:write property='<%= "srsIDList[" + idx + "]" %>' name="srsInfoForm"/>
 	     </td>
-	     <td class="greyedOut2">
+	     <td class="greyedout2">
 	     	<pre><bean:write property='<%= "srsDefinitionList[" + idx + "]" %>' name="srsInfoForm"/></pre>
 	     </td>
 	</tr>
