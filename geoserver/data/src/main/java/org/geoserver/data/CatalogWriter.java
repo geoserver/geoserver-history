@@ -4,19 +4,22 @@
  */
 package org.geoserver.data;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**
@@ -90,7 +93,7 @@ public class CatalogWriter {
      *
      *
      */
-    public void dataStores(Map /* <String,Map> */ dataStores, Map /*<String,String>*/ namespaces) {
+    public void dataStores(Map /* <String,Map> */ dataStores, Map /*<String,String>*/ namespaces, Set/*<String>*/ disabled) {
         Element dataStoresElement = document.createElement("datastores");
         catalog.appendChild(dataStoresElement);
 
@@ -104,6 +107,7 @@ public class CatalogWriter {
 
             // set the datastore id
             dataStoreElement.setAttribute("id", id);
+            dataStoreElement.setAttribute("enabled", Boolean.toString(!disabled.contains(id)));
 
             //set the namespace
             dataStoreElement.setAttribute("namespace", (String) namespaces.get(id));
@@ -136,7 +140,7 @@ public class CatalogWriter {
      * @param coverageStores
      * @param coverageStoresNamespaces
      */
-    public void coverageStores(HashMap coverageStores, HashMap namespaces) {
+    public void coverageStores(HashMap coverageStores, HashMap namespaces, Set disabled) {
         Element formatsElement = document.createElement("formats");
         catalog.appendChild(formatsElement);
         
@@ -150,6 +154,7 @@ public class CatalogWriter {
 
             // set the datastore id
             formatElement.setAttribute("id", id);
+            formatElement.setAttribute("enabled", Boolean.toString(!disabled.contains(id)));
 
             //set the namespace
             formatElement.setAttribute("namespace", (String) namespaces.get(id));

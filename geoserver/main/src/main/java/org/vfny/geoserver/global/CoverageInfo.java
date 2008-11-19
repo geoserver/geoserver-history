@@ -373,7 +373,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     }
 
     public boolean isEnabled() {
-        return coverage.isEnabled();
+        return coverage.isEnabled() && coverage.getStore().isEnabled();
         //return (getFormatInfo() != null) && (getFormatInfo().isEnabled());
     }
 

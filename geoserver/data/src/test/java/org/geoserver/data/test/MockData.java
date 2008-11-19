@@ -13,9 +13,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -264,6 +266,9 @@ public class MockData implements TestData {
     /** The datastore definition map */
     HashMap dataStores = new HashMap();
     
+    /** The set of disabled data stores */
+    Set disabledDataStores = new HashSet();
+    
     /** The datastore to namespace map */
     private HashMap dataStoreNamepaces = new HashMap();
     
@@ -275,6 +280,9 @@ public class MockData implements TestData {
     
     /** The coverage store map */
     private HashMap coverageStores = new HashMap();
+    
+    /** The set of disabled coverage stores */
+    Set disabledCoverageStores = new HashSet();
     
     /** The coverage store id to namespace map */
     private HashMap coverageStoresNamespaces = new HashMap();
@@ -510,6 +518,22 @@ public class MockData implements TestData {
     }
     
     /**
+     * Disables the specificed datastore (it's still configured, but with enabled=false)
+     * @param datastoreId
+     */
+    public void disableDataStore(String datastoreId) {
+        disabledDataStores.add(datastoreId);
+    }
+    
+    /**
+     * Disables the specificed coveragestore (it's still configured, but with enabled=false)
+     * @param datastoreId
+     */
+    public void disableCoverageStore(String datastoreId) {
+        disabledCoverageStores.add(datastoreId);
+    }
+    
+    /**
      * Sets up the catalog in the data directory
      *
      * @throws IOException
@@ -517,8 +541,8 @@ public class MockData implements TestData {
     protected void setUpCatalog() throws IOException {
         // create the catalog.xml
         CatalogWriter writer = new CatalogWriter();
-        writer.dataStores(dataStores, dataStoreNamepaces);
-        writer.coverageStores(coverageStores, coverageStoresNamespaces);
+        writer.dataStores(dataStores, dataStoreNamepaces, disabledDataStores);
+        writer.coverageStores(coverageStores, coverageStoresNamespaces, disabledCoverageStores);
         writer.namespaces(namespaces);
         writer.styles(layerStyles);
         writer.write(new File(data, "catalog.xml"));

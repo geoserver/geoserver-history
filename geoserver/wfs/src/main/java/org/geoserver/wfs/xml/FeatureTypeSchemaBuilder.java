@@ -194,6 +194,10 @@ public abstract class FeatureTypeSchemaBuilder {
 
         for (Iterator i = featureTypeInfos.iterator(); i.hasNext();) {
             FeatureTypeInfo meta = (FeatureTypeInfo) i.next();
+            
+            // don't build schemas for disabled feature types
+            if(!meta.isEnabled())
+                continue;
 
             //build the schema for the types in the single namespace
             XSDSchema schema = build(new FeatureTypeInfo[] { meta }, null);

@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import junit.framework.Test;
 
+import org.geoserver.data.test.MockData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,11 +19,17 @@ public class GetCapabilitiesTest extends WFSTestSupport {
     public static Test suite() {
         return new OneTimeTestSetup(new GetCapabilitiesTest());
     }
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.disableDataStore(MockData.CITE_PREFIX);
+    }
+    
 
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities");
-        assertEquals("WFS_Capabilities", doc.getDocumentElement()
-                .getNodeName());
+        assertEquals("WFS_Capabilities", doc.getDocumentElement().getNodeName());
     }
 
     public void testPost() throws Exception {

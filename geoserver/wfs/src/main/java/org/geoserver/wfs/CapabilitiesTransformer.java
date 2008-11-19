@@ -1186,7 +1186,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
                 for (Iterator i = featureTypes.iterator(); i.hasNext();) {
                     FeatureTypeInfo featureType = (FeatureTypeInfo) i.next();
-                    featureType(featureType);
+                    if(featureType.isEnabled())
+                        featureType(featureType);
                 }
 
                 end("FeatureTypeList");
