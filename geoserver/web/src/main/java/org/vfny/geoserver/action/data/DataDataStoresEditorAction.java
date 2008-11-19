@@ -18,6 +18,7 @@ import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.form.data.DataDataStoresEditorForm;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
@@ -111,8 +112,17 @@ public class DataDataStoresEditorAction extends ConfigAction {
         // put magic namespace into the mix
         // not sure if we want to do this, as we want the full namespace, not
         //the id.  But getParams in DataStore may override this - ch
-        connectionParams.put("namespace", dataStoresForm.getNamespaceId());
-        paramTexts.put("namespace", dataStoresForm.getNamespaceId());
+        NameSpaceConfig nsConfig = getDataConfig().getNameSpace(dataStoresForm.getNamespaceId());
+        if(nsConfig != null) {
+            connectionParams.put("namespace", nsConfig.getUri());
+            paramTexts.put("namespace", nsConfig.getUri());
+        } else {
+            // just because the code before the GEOS-2383 fix looked like this, I kept it,
+            // but we should never really get here
+            connectionParams.put("namespace", dataStoresForm.getNamespaceId());
+            paramTexts.put("namespace", dataStoresForm.getNamespaceId());
+        }
+        
 
         //dump("editor", connectionParams );
         //dump("texts ",paramTexts );        
