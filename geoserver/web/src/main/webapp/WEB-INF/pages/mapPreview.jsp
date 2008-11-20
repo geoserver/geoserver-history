@@ -56,40 +56,39 @@
   <body>
  <table class="page">
   <tbody>
-	<tr class="header">
-        <td class="gutter">
-          <span class="project">
-            <a href="<bean:message key="link.geoserver"/>">
-              <bean:message key="geoserver.logo"/>
-            </a>
-          </span>
-		</td>
-        <td style="width: 1em">
-        </td>
-		<td style="vertical-align: bottom; white-space: nowrap;">
-          <span class="site">
-<logic:notEmpty name="GeoServer" property="title">
-              <bean:write name="GeoServer" property="title"/>
-</logic:notEmpty>
-<logic:empty name="GeoServer" property="title">
-              <bean:message key="message.noTitle"/>
-</logic:empty>            
-          </span>			
-		</td>	
-		<td style="vertical-align: bottom; white-space: nowrap; text-align: right;">
-			<span class="contact">
-			   <a href="<bean:message key="label.credits.url"/>"><bean:message key="label.credits"/></a>
-			</span>
-<logic:notEmpty name="GeoServer" property="contactParty">
-            <span class="contact">		
-              <bean:message key="label.contact"/>: 	
-              <html:link forward="contact">
-                <bean:write name="GeoServer" property="contactParty"/>
-              </html:link>
-            </span>            
-</logic:notEmpty>                
-        </td>
-	</tr>
+		<tr class="header" height="1%">
+	        <td class="gutter">
+	          <span class="project">
+	            <a href="<bean:message key="link.geoserver"/>">
+	              <bean:message key="geoserver.logo"/>
+	            </a>
+	          </span>
+			</td>
+	        <td style="width: 1em">
+	        </td>
+			<td style="vertical-align: bottom; white-space: nowrap;">
+	          <div class="site-head">
+		         <div class="selfclear">
+	<span class="site"><a href="/geoserver/welcome.do"><logic:notEmpty name="GeoServer" property="title">
+	              <bean:write name="GeoServer" property="title"/>
+	</logic:notEmpty>
+	<logic:empty name="GeoServer" property="title">
+	              <bean:message key="message.noTitle"/>
+	</logic:empty></a></span>
+
+				 <span class="contact">
+				   <a href="<bean:message key="label.credits.url"/>"><bean:message key="label.credits"/></a>
+	<logic:notEmpty name="GeoServer" property="contactParty">		
+	              <bean:message key="label.contact"/>: 	
+	              <html:link forward="contact">
+	                <bean:write name="GeoServer" property="contactParty"/>
+	              </html:link>         
+	</logic:notEmpty>
+					</span>     
+	      </div>       
+	      </div>          
+	        </td>
+		</tr>
 	</table>
  <!-- ===================================================================== -->
 
