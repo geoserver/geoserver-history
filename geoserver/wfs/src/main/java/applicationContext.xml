@@ -198,6 +198,10 @@
     <bean id="strictKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
         <constructor-arg value="strict"/>
     </bean>
+    <bean id="wfsFormatOptionsKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser"/>
+    <bean id="charsetKvpParser" class="org.geoserver.ows.kvp.CharsetKVPParser">
+        <constructor-arg value="charset"/>
+    </bean>
     
 	<!-- kvp request readers -->
 	<bean id="wfsGetCapabilitiesKvpReader"  

@@ -110,7 +110,7 @@
  	<bean id="heightKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
 		<constructor-arg value="height"/>
  	</bean>
- 	<bean id="formatOptionsKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser"/>
+ 	<bean id="wmsFormatOptionsKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser"/>
  	<bean id="bgColorKvpParser" class="org.geoserver.wms.kvp.ColorKvpParser">
 		<constructor-arg value="bgcolor"/>
  	</bean> 	

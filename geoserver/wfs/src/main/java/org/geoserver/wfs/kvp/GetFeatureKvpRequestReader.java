@@ -4,13 +4,23 @@
  */
 package org.geoserver.wfs.kvp;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+
+import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
+
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WebFeatureService;
-
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.util.Version;
@@ -23,15 +33,8 @@ import org.opengis.filter.spatial.BBOX;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import javax.xml.namespace.QName;
+import com.vividsolutions.jts.geom.Envelope;
 
 
 public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
@@ -62,7 +65,7 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
      */
     public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         request = super.read(request, kvp, rawKvp);
-
+        
         // make sure the filter is specified in just one way
         ensureMutuallyExclusive(kvp, new String[] { "featureId", "filter", "bbox", "cql_filter" });
 
@@ -203,6 +206,11 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         if (kvp.containsKey("featureVersion")) {
             querySet(eObject, "featureVersion",
                 Collections.singletonList((String) kvp.get("featureVersion")));
+        }
+        
+        if(kvp.containsKey("format_options")) {
+            GetFeatureType gft = (GetFeatureType) eObject;
+            gft.getFormatOptions().putAll((Map) kvp.get("format_options"));
         }
 
         return request;
