@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.catalog.ModelInfo;
 import org.geoserver.catalog.ModelRunInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -44,6 +45,7 @@ public class ModelRunInfoImpl implements ModelRunInfo {
     private Integer TAU;
     private String TAUunit;
     private String updateSequence;
+    private List<GeophysicParamInfo> params;
 
     /* (non-Javadoc)
      * @see org.geoserver.catalog.ModelRunInfo#getBaseTime()
@@ -364,6 +366,14 @@ public class ModelRunInfoImpl implements ModelRunInfo {
 
     public void setModel(ModelInfo model) {
         this.model = model;
+    }
+
+    public List<GeophysicParamInfo> getGeophysicalParameters() {
+        return this.params;
+    }
+
+    public void setGeophysicalParameters(List<GeophysicParamInfo> params) {
+        this.params = params;
     }
 
 }

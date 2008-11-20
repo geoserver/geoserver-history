@@ -76,5 +76,17 @@ public interface GeophysicParamInfo {
      * 
      */
     void setDescription(String description);
-
+    
+    /**
+     * 
+     */
+    List<ModelRunInfo> getModelRuns();
+    void setModelRuns(List<ModelRunInfo> modelRuns);
+    
+    /**
+     * 
+     */
+    List<CoverageInfo> getGridCoverages();
+    void setGridCoverages(List<CoverageInfo> gridCoverages);
+    
 }

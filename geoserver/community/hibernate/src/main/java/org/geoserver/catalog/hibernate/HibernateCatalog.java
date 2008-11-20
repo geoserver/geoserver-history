@@ -20,6 +20,7 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
@@ -1095,58 +1096,143 @@ public class HibernateCatalog implements Catalog {
     }
 
     // Model / ModelRun methods
+    /**
+     * 
+     */
     public void add(ModelInfo model) {
         internalAdd(model);
     }
 
+    /**
+     * 
+     */
     public void add(ModelRunInfo modelRun) {
         internalAdd(modelRun);
     }
 
+    /**
+     * 
+     */
     public ModelInfo getModel(String id) {
         return this.catalogDAO.getModel(id);
     }
 
+    /**
+     * 
+     */
     public ModelInfo getModelByName(String name) {
         return this.catalogDAO.getModelByName(name);
     }
 
+    /**
+     * 
+     */
     public ModelRunInfo getModelRun(String id) {
         return this.catalogDAO.getModelRun(id);
     }
 
+    /**
+     * 
+     */
     public ModelRunInfo getModelRunByName(String name) {
         return this.catalogDAO.getModelRunByName(name);
     }
 
+    /**
+     * 
+     */
     public List<ModelRunInfo> getModelRuns() {
         return this.catalogDAO.getModelRuns();
     }
     
+    /**
+     * 
+     */
     public List<ModelRunInfo> getModelRuns(ModelInfo model) {
         return this.catalogDAO.getModelRuns(model);
     }
+    
+    /**
+     * 
+     * @param param
+     * @return
+     */
+    public List<ModelRunInfo> getModelRuns(GeophysicParamInfo param) {
+        return this.catalogDAO.getModelRuns(param);
+    }
 
+    /**
+     * 
+     */
     public List<ModelInfo> getModels() {
         return this.catalogDAO.getModels();
     }
 
+    /**
+     * 
+     */
+    public List<GeophysicParamInfo> getGeophysicParams() {
+        return this.catalogDAO.getGeophysicalParameters();
+    }
+
+    /**
+     * 
+     */
     public List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun) {
         return this.catalogDAO.getGridCoverages(modelRun);
     }
     
+    /**
+     * 
+     * @param param
+     * @return
+     */
+    public List<CoverageInfo> getGridCoverages(GeophysicParamInfo param) {
+        return this.catalogDAO.getGridCoverages(param);
+    }
+    
+    /**
+     * 
+     * @param model
+     * @return
+     */
+    public List<GeophysicParamInfo> getGeophysicalParameters(ModelInfo model) {
+        return this.catalogDAO.getGeophysicalParameters(model);
+    }
+
+    /**
+     * 
+     * @param modelRun
+     * @return
+     */
+    public List<GeophysicParamInfo> getGeophysicalParameters(ModelRunInfo modelRun) {
+        return this.catalogDAO.getGeophysicalParameters(modelRun);
+    }
+
+    /**
+     * 
+     */
     public void remove(ModelInfo model) {
         internalRemove(model);
     }
 
+    /**
+     * 
+     */
     public void remove(ModelRunInfo modelRun) {
         internalRemove(modelRun);
     }
 
+    /**
+     * 
+     */
     public void save(ModelInfo model) {
         internalSave(model);
     }
 
+    /**
+     * 
+     */
     public void save(ModelRunInfo modelRun) {
         internalSave(modelRun);
     }
@@ -1165,8 +1251,11 @@ public class HibernateCatalog implements Catalog {
         this.catalogDAO = catalogDAO;
     }
 
+    /**
+     * 
+     */
     public NamespaceInfo getDefaultNamespace() {
         return this.catalogDAO.getDefaultNamespace();
     }
-    
+
 }

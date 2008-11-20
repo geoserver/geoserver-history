@@ -5,19 +5,23 @@ package org.geoserver.catalog.impl;
 
 import java.util.List;
 
+import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.GeophysicParamInfo;
+import org.geoserver.catalog.ModelRunInfo;
 
 /**
  * @author Alessio Fabiani, GeoSolutions
  *
  */
-public abstract class GeophysicParamInfoImpl implements GeophysicParamInfo {
+public class GeophysicParamInfoImpl implements GeophysicParamInfo {
 
     private List<String> aliases;
     private String description;
     private String id;
     private String name;
     private String title;
+    private List<CoverageInfo> gridcoverages;
+    private List<ModelRunInfo> modelRuns;
 
     /* (non-Javadoc)
      * @see org.geoserver.catalog.GeophysicParamInfo#getAlias()
@@ -87,6 +91,22 @@ public abstract class GeophysicParamInfoImpl implements GeophysicParamInfo {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public List<CoverageInfo> getGridCoverages() {
+        return this.gridcoverages;
+    }
+
+    public List<ModelRunInfo> getModelRuns() {
+        return this.modelRuns;
+    }
+
+    public void setGridCoverages(List<CoverageInfo> gridCoverages) {
+        this.gridcoverages = gridCoverages;
+    }
+
+    public void setModelRuns(List<ModelRunInfo> modelRuns) {
+        this.modelRuns = modelRuns;
     }
 
 }

@@ -5,6 +5,53 @@
   <bean id="RestConfigDBMapping" class="org.geoserver.rest.RESTMapping">
 	<property name="routes">
       <map>
+      
+        <entry>
+          <key><value>/EoMet/geophysicalparams/{parameter}/gridcoverages/{gridcoverage}.{type}</value></key>
+          <value>modelGridCoverageVariableResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/geophysicalparams/{parameter}/gridcoverages/{gridcoverage}</value></key>
+          <value>modelGridCoverageVariableResource</value>
+        </entry>
+
+        <entry>
+          <key><value>/EoMet/geophysicalparams/{parameter}/gridcoverages.{type}</value></key>
+          <value>modelRunGridCoverageVariablesListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/geophysicalparams/{parameter}/gridcoverages</value></key>
+          <value>modelRunGridCoverageVariablesListFinder</value>
+        </entry>
+
+        <entry>
+          <key><value>/EoMet/geophysicalparams/{parameter}/models.{type}</value></key>
+          <value>modelRunGridCoverageVariablesListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/geophysicalparams/{parameter}/models</value></key>
+          <value>modelRunGridCoverageVariablesListFinder</value>
+        </entry>
+      
+        <entry>
+          <key><value>/EoMet/geophysicalparams/{parameter}.{type}</value></key>
+          <value>modelGridCoverageVariableResource</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/geophysicalparams/{parameter}</value></key>
+          <value>modelGridCoverageVariableResource</value>
+        </entry>
+      
+      
+      
+        <entry>
+          <key><value>/EoMet/geophysicalparams.{type}</value></key>
+          <value>geophysicalParamsListFinder</value>
+        </entry>
+        <entry>
+          <key><value>/EoMet/geophysicalparams</value></key>
+          <value>geophysicalParamsListFinder</value>
+        </entry>
 		<entry>
           <key><value>/EoMet/models/{model}/runs/{run}/gridcoverages/{gridcoverage}/variables/{variable}/axis/{axis}.{type}</value></key>
           <value>modelGridCoverageVariableAxisResource</value>
@@ -122,6 +169,11 @@
   </bean>
   <bean id="modelRunGridCoverageVariablesListFinder"
     class="org.geoserver.restconfig.db.ModelRunGridCoverageVariableListFinder">
+    <property name="geoServer"><ref bean="geoServer2"/></property>
+    <property name="catalog"><ref bean="rawCatalog"/></property>
+  </bean>
+  <bean id="geophysicalParamsListFinder"
+    class="org.geoserver.restconfig.db.GeophysicalParamsListFinder">
     <property name="geoServer"><ref bean="geoServer2"/></property>
     <property name="catalog"><ref bean="rawCatalog"/></property>
   </bean>

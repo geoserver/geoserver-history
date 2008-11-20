@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.ModelInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.DataFormat;
@@ -26,7 +26,7 @@ import org.restlet.resource.Resource;
  *
  * @author Alessio Fabiani <alessio.fabiani@geo-solutions.it> , GeoSolutions S.a.S.
  */
-public class ModelListFinder extends Finder {
+public class GeophysicalParamsListFinder extends Finder {
 
     private GeoServer geoServer;
     private Catalog rawCatalog;
@@ -48,15 +48,15 @@ public class ModelListFinder extends Finder {
     }
 
     public Resource findTarget(Request request, Response response){
-        Resource r = new ModelList();
+        Resource r = new GeophysicParamsList();
         r.init(getContext(), request, response);
         return r;
     }
 
-    protected class ModelList extends MapResource{
+    protected class GeophysicParamsList extends MapResource{
         private Map myPostFormats;
 
-        public ModelList(){
+        public GeophysicParamsList(){
             super();
             myPostFormats = new HashMap();
             myPostFormats.put(MediaType.TEXT_XML, new AutoXMLFormat());
@@ -68,12 +68,12 @@ public class ModelListFinder extends Finder {
             Map m = new HashMap();
             m.put("html",
                     new FreemarkerFormat(
-                        "HTMLTemplates/models.ftl",
+                        "HTMLTemplates/geophysicparams.ftl",
                         getClass(),
                         MediaType.TEXT_HTML)
                  );
             m.put("json", new JSONFormat());
-            m.put("xml", new AutoXMLFormat("Models"));
+            m.put("xml", new AutoXMLFormat("GeophysicParams"));
             m.put(null, m.get("html"));
             return m;
         }
@@ -81,11 +81,11 @@ public class ModelListFinder extends Finder {
         public Map getMap() {
             Map m = new HashMap();
             List l = new ArrayList();
-            Map models = getVirtualModelsMap(getCatalog());
+            Map geophysicParams = getVirtualGeophysicParamsMap(getCatalog());
             
-            l.addAll(models.keySet());
+            l.addAll(geophysicParams.keySet());
             Collections.sort(l);
-            m.put("Models", l);
+            m.put("GeophysicParams", l);
             
             return m;
         }
@@ -97,7 +97,7 @@ public class ModelListFinder extends Finder {
         // TODO: POST support for folders/ url
         public void handlePost(){
             MediaType type = getRequest().getEntity().getMediaType();
-            LOG.info("Model posted, mediatype is:" + type);
+            LOG.info("GeophysicParam posted, mediatype is:" + type);
             DataFormat format = (DataFormat)myPostFormats.get(type);
             LOG.info("Using post format: " + format);
             Map m = (Map)format.readRepresentation(getRequest().getEntity());
@@ -105,14 +105,14 @@ public class ModelListFinder extends Finder {
         }
     }
 
-    public static Map getVirtualModelsMap(Catalog catalog){
-        Map models = new HashMap();
-        Iterator it =  catalog.getModels().iterator();
+    public static Map getVirtualGeophysicParamsMap(Catalog catalog){
+        Map geophysicParams = new HashMap();
+        Iterator it =  catalog.getGeophysicParams().iterator();
         while (it.hasNext()) {
-            ModelInfo entry = (ModelInfo)it.next();
-            models.put(entry.getName(), entry);
+            GeophysicParamInfo entry = (GeophysicParamInfo)it.next();
+            geophysicParams.put(entry.getName(), entry);
         }
 
-        return models;
+        return geophysicParams;
     }
 }

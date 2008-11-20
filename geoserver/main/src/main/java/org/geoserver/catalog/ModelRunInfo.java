@@ -241,4 +241,10 @@ public interface ModelRunInfo {
      */
     void setGridCoverages(List<CoverageInfo> coverages);
 
+    /**
+     * The geophysical parameters of the model.
+     */
+    List<GeophysicParamInfo> getGeophysicalParameters();
+    void setGeophysicalParameters(List<GeophysicParamInfo> params);
+
 }

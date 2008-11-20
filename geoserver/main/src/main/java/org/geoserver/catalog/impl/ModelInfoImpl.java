@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.ModelInfo;
 import org.geoserver.catalog.ModelRunInfo;
@@ -32,6 +33,7 @@ public class ModelInfoImpl implements ModelInfo {
     private String title;
     private DataType typeOfData;
     private String version;
+    private List<GeophysicParamInfo> params;
 
     /* (non-Javadoc)
      * @see org.geoserver.catalog.ModelInfo#getAbstract()
@@ -229,6 +231,14 @@ public class ModelInfoImpl implements ModelInfo {
 
     public void setMetadataLink(List<MetadataLinkInfo> metadataLink) {
         this.metadataLink = metadataLink;
+    }
+
+    public List<GeophysicParamInfo> getGeophysicalParameters() {
+        return this.params;
+    }
+
+    public void setGeophysicalParameters(List<GeophysicParamInfo> params) {
+        this.params = params;
     }
 
 }

@@ -914,6 +914,16 @@ public interface Catalog {
      * </p>
      * 
      */
+    List<GeophysicParamInfo> getGeophysicParams();
+    /**
+     * All models in the catalog.
+     * <p>
+     * The resulting list should not be used to add or remove models to or from
+     * the catalog, the {@link #add(ModelInfo)} and {@link #remove(ModelInfo)}
+     * methods are used for this purpose.
+     * </p>
+     * 
+     */
     List<ModelInfo> getModels();
     /**
      * All model-runs in the catalog.

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
@@ -284,6 +285,13 @@ public interface IGeoServerDAO {
 
     /**
      * 
+     * @param param
+     * @return
+     */
+    public abstract List<ModelRunInfo> getModelRuns(GeophysicParamInfo param);
+
+    /**
+     * 
      * @param modelRun
      * @return
      */
@@ -291,10 +299,23 @@ public interface IGeoServerDAO {
 
     /**
      * 
+     * @param param
+     * @return
+     */
+    public abstract List<CoverageInfo> getGridCoverages(GeophysicParamInfo param);
+
+    /**
+     * 
      * @return
      */
     public abstract List<ModelInfo> getModels();
-    
+
+    /**
+     * 
+     * @return
+     */
+    public abstract List<GeophysicParamInfo> getGeophysicalParameters();
+
     /**
      * 
      * @return
@@ -325,5 +346,19 @@ public interface IGeoServerDAO {
      * @return
      */
     public abstract Collection<? extends ServiceInfo> getServices(Class<?> clazz);
+
+    /**
+     * 
+     * @param model
+     * @return
+     */
+    public abstract List<GeophysicParamInfo> getGeophysicalParameters(ModelInfo model);
+
+    /**
+     * 
+     * @param modelRun
+     * @return
+     */
+    public abstract List<GeophysicParamInfo> getGeophysicalParameters(ModelRunInfo modelRun);
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
@@ -388,8 +389,45 @@ public class GeoServerDAO implements IGeoServerDAO {
     /**
      * 
      */
+    public List<ModelRunInfo> getModelRuns(GeophysicParamInfo param) {
+        Query query = sessionFactory.getCurrentSession().createQuery("select gp.modelRuns from " + GeophysicParamInfo.class.getName() + " as gp where gp = ?");
+        query.setEntity(0, param);
+        return query.list();
+    }
+
+    /**
+     * 
+     */
     public List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun) {
-        Query query = sessionFactory.getCurrentSession().createQuery("select mr.gridCoverages from " + ModelRunInfo.class.getName() + " as mr");
+        Query query = sessionFactory.getCurrentSession().createQuery("select mr.gridCoverages from " + ModelRunInfo.class.getName() + " as mr where mr = ?");
+        query.setEntity(0, modelRun);
+        return query.list();
+    }
+
+    /**
+     * 
+     */
+    public List<CoverageInfo> getGridCoverages(GeophysicParamInfo param) {
+        Query query = sessionFactory.getCurrentSession().createQuery("select gp.gridCoverages from " + GeophysicParamInfo.class.getName() + " as gp where gp = ?");
+        query.setEntity(0, param);
+        return query.list();
+    }
+
+    /**
+     * 
+     */
+    public List<GeophysicParamInfo> getGeophysicalParameters(ModelInfo model) {
+        Query query = sessionFactory.getCurrentSession().createQuery("select m.geophysicalParameters from " + ModelInfo.class.getName() + " as m where m = ?");
+        query.setEntity(0, model);
+        return query.list();
+    }
+
+    /**
+     * 
+     */
+    public List<GeophysicParamInfo> getGeophysicalParameters(ModelRunInfo modelRun) {
+        Query query = sessionFactory.getCurrentSession().createQuery("select mr.geophysicalParameters from " + ModelRunInfo.class.getName() + " as mr where mr = ?");
+        query.setEntity(0, modelRun);
         return query.list();
     }
 
@@ -398,6 +436,13 @@ public class GeoServerDAO implements IGeoServerDAO {
      */
     public synchronized List<ModelInfo> getModels() {
         return (List<ModelInfo>) list(ModelInfo.class);
+    }
+
+    /**
+     * 
+     */
+    public List<GeophysicParamInfo> getGeophysicalParameters() {
+        return (List<GeophysicParamInfo>) list(GeophysicParamInfo.class);
     }
 
     /**

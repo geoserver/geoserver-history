@@ -182,4 +182,17 @@ public interface CoverageInfo extends ResourceInfo {
      * The live coverage resource, an instance of of {@link CoverageResource}.
      */
     //CoverageResource getResource(ProgressListener listener) throws IOException;
+    
+    /**
+     * 
+     */
+    List<ModelRunInfo> getModelRuns();
+    void setModelRuns(List<ModelRunInfo> modelRuns);
+ 
+    /**
+     * The geophysical parameters of the model.
+     */
+    List<GeophysicParamInfo> getGeophysicalParameters();
+    void setGeophysicalParameters(List<GeophysicParamInfo> params);
+    
 }

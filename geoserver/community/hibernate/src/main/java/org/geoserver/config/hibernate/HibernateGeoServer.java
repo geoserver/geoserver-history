@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ModelRunInfo;
 import org.geoserver.catalog.StyleInfo;
@@ -24,6 +25,7 @@ import org.geoserver.catalog.ModelInfo.Discipline;
 import org.geoserver.catalog.hibernate.HbNamespaceInfo;
 import org.geoserver.catalog.hibernate.HbWorkspaceInfo;
 import org.geoserver.catalog.hibernate.HibernateCatalog;
+import org.geoserver.catalog.impl.GeophysicParamInfoImpl;
 import org.geoserver.catalog.impl.ModelInfoImpl;
 import org.geoserver.catalog.impl.ModelRunInfoImpl;
 import org.geoserver.config.ConfigurationListener;
@@ -198,7 +200,80 @@ public class HibernateGeoServer implements GeoServer {
         catalog.bootStrap();
         
         /** TEST-DATA **/
+        GeophysicParamInfo dynht = new GeophysicParamInfoImpl();
+        dynht.setName("dynht");
+        dynht.setTitle("dynht");
+        dynht.setDescription("dynht");
+        
+        this.catalogDAO.save(dynht);
 
+        GeophysicParamInfo dynhterr = new GeophysicParamInfoImpl();
+        dynhterr.setName("dynhterr");
+        dynhterr.setTitle("dynhterr");
+        dynhterr.setDescription("dynhterr");
+
+        this.catalogDAO.save(dynhterr);
+
+        GeophysicParamInfo dynhtmean = new GeophysicParamInfoImpl();
+        dynhtmean.setName("dynhtmean");
+        dynhtmean.setTitle("dynhtmean");
+        dynhtmean.setDescription("dynhtmean");
+
+        this.catalogDAO.save(dynhtmean);
+
+        GeophysicParamInfo salt = new GeophysicParamInfoImpl();
+        salt.setName("salt");
+        salt.setTitle("salt");
+        salt.setDescription("salt");
+
+        this.catalogDAO.save(salt);
+
+        GeophysicParamInfo salterr = new GeophysicParamInfoImpl();
+        salterr.setName("salterr");
+        salterr.setTitle("salterr");
+        salterr.setDescription("salterr");
+
+        this.catalogDAO.save(salterr);
+
+        GeophysicParamInfo saltmean = new GeophysicParamInfoImpl();
+        saltmean.setName("saltmean");
+        saltmean.setTitle("saltmean");
+        saltmean.setDescription("saltmean");
+
+        this.catalogDAO.save(saltmean);
+
+        GeophysicParamInfo temp = new GeophysicParamInfoImpl();
+        temp.setName("temp");
+        temp.setTitle("temp");
+        temp.setDescription("temp");
+
+        this.catalogDAO.save(temp);
+
+        GeophysicParamInfo temperr = new GeophysicParamInfoImpl();
+        temperr.setName("temperr");
+        temperr.setTitle("temperr");
+        temperr.setDescription("temperr");
+
+        this.catalogDAO.save(temperr);
+
+        GeophysicParamInfo tempmean = new GeophysicParamInfoImpl();
+        tempmean.setName("tempmean");
+        tempmean.setTitle("tempmean");
+        tempmean.setDescription("tempmean");
+
+        this.catalogDAO.save(tempmean);
+
+        List<GeophysicParamInfo> geophysicParams = new ArrayList<GeophysicParamInfo>();
+        geophysicParams.add(dynht);
+        geophysicParams.add(dynhterr);
+        geophysicParams.add(dynhtmean);
+        geophysicParams.add(salt);
+        geophysicParams.add(salterr);
+        geophysicParams.add(saltmean);
+        geophysicParams.add(temp);
+        geophysicParams.add(temperr);
+        geophysicParams.add(tempmean);
+        
         ModelInfoImpl model = new ModelInfoImpl();
         model.setAbstract("Abstract test.");
         model.setCenter("NURC");
@@ -215,7 +290,9 @@ public class HibernateGeoServer implements GeoServer {
         model.setTitle("TEST OCEAN MODEL");
         model.setTypeOfData(DataType.ANALYSYS_AND_FORECAST);
         model.setVersion("1");
-
+        
+        model.setGeophysicalParameters(geophysicParams);
+        
         this.catalogDAO.save(model);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:sssZ");
@@ -246,6 +323,8 @@ public class HibernateGeoServer implements GeoServer {
         modelRun.setTAU(1);
         modelRun.setTAUunit("day");
         modelRun.setUpdateSequence("0");
+        
+        modelRun.setGeophysicalParameters(geophysicParams);
 
         this.catalogDAO.save(modelRun);
 
@@ -371,6 +450,8 @@ public class HibernateGeoServer implements GeoServer {
             
             coverage.getMetadata().put("dirName", coverageStore.getName() + "_" + coverage.getName());
 
+            coverage.setGeophysicalParameters(geophysicParams);
+            
             this.catalogDAO.save(coverage);
 
             StyleInfo style = catalog.getFactory().createStyle();

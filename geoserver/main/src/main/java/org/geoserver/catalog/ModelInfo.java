@@ -296,5 +296,11 @@ public interface ModelInfo {
      */
     List<ModelRunInfo> getModelRuns();
     void setModelRuns(List<ModelRunInfo> runs);
-
+    
+    /**
+     * The geophysical parameters of the model.
+     */
+    List<GeophysicParamInfo> getGeophysicalParameters();
+    void setGeophysicalParameters(List<GeophysicParamInfo> params);
+    
 }

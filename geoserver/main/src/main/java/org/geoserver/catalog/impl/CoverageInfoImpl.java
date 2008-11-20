@@ -14,6 +14,8 @@ import java.util.Set;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
+import org.geoserver.catalog.ModelRunInfo;
 import org.geotools.coverage.io.CoverageAccess;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.factory.Hints;
@@ -54,6 +56,10 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     private CoordinateReferenceSystem verticalCRS;
 
     private String srsWKT;
+
+    private List<GeophysicParamInfo> geophysicalParams;
+
+    private List<ModelRunInfo> modelRuns;
 
     public CoverageInfoImpl() {
         super(null);
@@ -299,6 +305,22 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
 
     public void setAlias(List<String> aliases) {
         this.alias = aliases;
+    }
+
+    public List<GeophysicParamInfo> getGeophysicalParameters() {
+        return this.geophysicalParams;
+    }
+
+    public List<ModelRunInfo> getModelRuns() {
+        return this.modelRuns;
+    }
+
+    public void setGeophysicalParameters(List<GeophysicParamInfo> params) {
+        this.geophysicalParams = params;
+    }
+
+    public void setModelRuns(List<ModelRunInfo> modelRuns) {
+        this.modelRuns = modelRuns;
     }
 
 }

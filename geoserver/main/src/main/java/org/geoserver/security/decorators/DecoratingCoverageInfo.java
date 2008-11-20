@@ -13,7 +13,9 @@ import java.util.Set;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.ModelRunInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StoreInfo;
@@ -306,6 +308,22 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
 
     public void setAlias(List<String> aliases) {
         delegate.setAlias(aliases);
+    }
+
+    public List<GeophysicParamInfo> getGeophysicalParameters() {
+        return delegate.getGeophysicalParameters();
+    }
+
+    public List<ModelRunInfo> getModelRuns() {
+        return delegate.getModelRuns();
+    }
+
+    public void setGeophysicalParameters(List<GeophysicParamInfo> params) {
+        delegate.setGeophysicalParameters(params);
+    }
+
+    public void setModelRuns(List<ModelRunInfo> modelRuns) {
+        delegate.setModelRuns(modelRuns);
     }
 
 }
