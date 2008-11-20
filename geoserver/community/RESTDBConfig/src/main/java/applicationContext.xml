@@ -5,45 +5,31 @@
   <bean id="RestConfigDBMapping" class="org.geoserver.rest.RESTMapping">
 	<property name="routes">
       <map>
-      
-        <entry>
-          <key><value>/EoMet/geophysicalparams/{parameter}/gridcoverages/{gridcoverage}.{type}</value></key>
-          <value>modelGridCoverageVariableResource</value>
-        </entry>
-        <entry>
-          <key><value>/EoMet/geophysicalparams/{parameter}/gridcoverages/{gridcoverage}</value></key>
-          <value>modelGridCoverageVariableResource</value>
-        </entry>
 
         <entry>
           <key><value>/EoMet/geophysicalparams/{parameter}/gridcoverages.{type}</value></key>
-          <value>modelRunGridCoverageVariablesListFinder</value>
+          <value>geophysicalParamGridCoveragesListFinder</value>
         </entry>
         <entry>
           <key><value>/EoMet/geophysicalparams/{parameter}/gridcoverages</value></key>
-          <value>modelRunGridCoverageVariablesListFinder</value>
+          <value>geophysicalParamGridCoveragesListFinder</value>
         </entry>
-
         <entry>
           <key><value>/EoMet/geophysicalparams/{parameter}/models.{type}</value></key>
-          <value>modelRunGridCoverageVariablesListFinder</value>
+          <value>geophysicalParamModelsListFinder</value>
         </entry>
         <entry>
           <key><value>/EoMet/geophysicalparams/{parameter}/models</value></key>
-          <value>modelRunGridCoverageVariablesListFinder</value>
+          <value>geophysicalParamModelsListFinder</value>
         </entry>
-      
         <entry>
           <key><value>/EoMet/geophysicalparams/{parameter}.{type}</value></key>
-          <value>modelGridCoverageVariableResource</value>
+          <value>geophysicalParamResource</value>
         </entry>
         <entry>
           <key><value>/EoMet/geophysicalparams/{parameter}</value></key>
-          <value>modelGridCoverageVariableResource</value>
+          <value>geophysicalParamResource</value>
         </entry>
-      
-      
-      
         <entry>
           <key><value>/EoMet/geophysicalparams.{type}</value></key>
           <value>geophysicalParamsListFinder</value>
@@ -177,6 +163,16 @@
     <property name="geoServer"><ref bean="geoServer2"/></property>
     <property name="catalog"><ref bean="rawCatalog"/></property>
   </bean>
+  <bean id="geophysicalParamModelsListFinder"
+    class="org.geoserver.restconfig.db.GeophysicalParamModelsListFinder">
+    <property name="geoServer"><ref bean="geoServer2"/></property>
+    <property name="catalog"><ref bean="rawCatalog"/></property>
+  </bean>
+  <bean id="geophysicalParamGridCoveragesListFinder"
+    class="org.geoserver.restconfig.db.GeophysicalParamGridCoveragesListFinder">
+    <property name="geoServer"><ref bean="geoServer2"/></property>
+    <property name="catalog"><ref bean="rawCatalog"/></property>
+  </bean>
 
   <bean id="modelInfoResource"
     class="org.geoserver.restconfig.db.ModelResource">
@@ -215,6 +211,11 @@
   </bean>
   <bean id="modelGridCoverageVariableSampleDimResource"
     class="org.geoserver.restconfig.db.ModelGridCoverageVariableSampleDimResource">
+    <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
+    <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
+  </bean>
+  <bean id="geophysicalParamResource"
+    class="org.geoserver.restconfig.db.GeophysicalParamResource">
     <constructor-arg index="0"><ref bean="geoServer2"/></constructor-arg>
     <constructor-arg index="1"><ref bean="rawCatalog"/></constructor-arg>
   </bean>

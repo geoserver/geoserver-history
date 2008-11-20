@@ -20,6 +20,7 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
@@ -108,11 +109,16 @@ public class CatalogImpl implements Catalog {
      */
     protected ResourcePool resourcePool = new ResourcePool();
 
+    private List<GeophysicParamInfo> geophysicparams;
+
     public CatalogFactory getFactory() {
         return new CatalogFactoryImpl( this );
     }
 
     // Store methods
+    /**
+     * 
+     */
     public void add(StoreInfo store) {
         
         if ( store.getWorkspace() == null ) {
@@ -128,15 +134,24 @@ public class CatalogImpl implements Catalog {
         added(store);
     }
 
+    /**
+     * 
+     */
     public void remove(StoreInfo store) {
         stores.remove(store.getClass(), store);
         removed(store);
     }
 
+    /**
+     * 
+     */
     public void save(StoreInfo store) {
         saved(store);
     }
 
+    /**
+     * 
+     */
     public <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
         List l = lookup(clazz, stores);
         for (Iterator i = l.iterator(); i.hasNext();) {
@@ -150,6 +165,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz) {
         List l = lookup(clazz, stores);
         for (Iterator i = l.iterator(); i.hasNext();) {
@@ -162,6 +180,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
     
+    /**
+     * 
+     */
     public <T extends StoreInfo> List<T> getStoresByWorkspace(
             WorkspaceInfo workspace, Class<T> clazz) {
 
@@ -178,35 +199,59 @@ public class CatalogImpl implements Catalog {
         return ModificationProxy.createList(matches,clazz);
     }
 
+    /**
+     * 
+     */
     public List getStores(Class clazz) {
         return ModificationProxy.createList(lookup(clazz, stores) , clazz);
     }
 
+    /**
+     * 
+     */
     public DataStoreInfo getDataStore(String id) {
         return (DataStoreInfo) getStore(id, DataStoreInfo.class);
     }
 
+    /**
+     * 
+     */
     public DataStoreInfo getDataStoreByName(String name) {
         return (DataStoreInfo) getStoreByName(name, DataStoreInfo.class);
     }
 
+    /**
+     * 
+     */
     public List getDataStores() {
         return getStores(DataStoreInfo.class);
     }
 
+    /**
+     * 
+     */
     public CoverageStoreInfo getCoverageStore(String id) {
         return (CoverageStoreInfo) getStore(id, CoverageStoreInfo.class);
     }
 
+    /**
+     * 
+     */
     public CoverageStoreInfo getCoverageStoreByName(String name) {
         return (CoverageStoreInfo) getStoreByName(name, CoverageStoreInfo.class);
     }
 
+    /**
+     * 
+     */
     public List getCoverageStores() {
         return getStores(CoverageStoreInfo.class);
     }
 
     // Resource methods
+    /**
+     * 
+     */
     public void add(ResourceInfo resource) {
         validate(resource);
         
@@ -220,23 +265,36 @@ public class CatalogImpl implements Catalog {
         added(resource);
     }
 
+    /**
+     * 
+     * @param resource
+     */
     void validate(ResourceInfo resource) {
         if ( resource.getStore() == null ) {
             throw new IllegalArgumentException( "source must be part of a store");
         }
     }
     
+    /**
+     * 
+     */
     public void remove(ResourceInfo resource) {
         resources.remove(resource.getClass(), resource);
         removed(resource);
     }
 
+    /**
+     * 
+     */
     public void save(ResourceInfo resource) {
         validate(resource);
         
         saved(resource);
     }
 
+    /**
+     * 
+     */
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
         List l = lookup(clazz, resources);
         for (Iterator i = l.iterator(); i.hasNext();) {
@@ -249,6 +307,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
 
         List l = lookup(clazz, resources);
@@ -265,6 +326,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public <T extends ResourceInfo> T getResourceByName( String name, Class<T> clazz ) {
         if ( getDefaultNamespace() != null ) {
             ResourceInfo resource = getResourceByName( getDefaultNamespace().getPrefix(), name, clazz );
@@ -289,10 +353,16 @@ public class CatalogImpl implements Catalog {
         return null;
     }
     
+    /**
+     * 
+     */
     public List getResources(Class clazz) {
         return ModificationProxy.createList( lookup(clazz,resources), clazz );
     }
 
+    /**
+     * 
+     */
     public List getResourcesByNamespace(NamespaceInfo namespace, Class clazz) {
         List all = lookup(clazz, resources);
         List matches = new ArrayList();
@@ -307,48 +377,81 @@ public class CatalogImpl implements Catalog {
         return matches;
     }
 
+    /**
+     * 
+     */
     public FeatureTypeInfo getFeatureType(String id) {
         return (FeatureTypeInfo) getResource(id, FeatureTypeInfo.class);
     }
 
+    /**
+     * 
+     */
     public FeatureTypeInfo getFeatureTypeByName(String ns, String name) {
         return (FeatureTypeInfo) getResourceByName(ns, name,
                 FeatureTypeInfo.class);
     }
 
+    /**
+     * 
+     */
     public FeatureTypeInfo getFeatureTypeByName(String name) {
         return (FeatureTypeInfo) getResourceByName(name, FeatureTypeInfo.class);
     }
     
+    /**
+     * 
+     */
     public List getFeatureTypes() {
         return getResources(FeatureTypeInfo.class);
     }
 
+    /**
+     * 
+     */
     public List getFeatureTypesByNamespace(NamespaceInfo namespace) {
         return getResourcesByNamespace(namespace, FeatureTypeInfo.class);
     }
 
+    /**
+     * 
+     */
     public CoverageInfo getCoverage(String id) {
         return (CoverageInfo) getResource(id, CoverageInfo.class);
     }
 
+    /**
+     * 
+     */
     public CoverageInfo getCoverageByName(String ns, String name) {
         return (CoverageInfo) getResourceByName(ns, name, CoverageInfo.class);
     }
     
+    /**
+     * 
+     */
     public CoverageInfo getCoverageByName(String name) {
         return (CoverageInfo) getResourceByName( name, CoverageInfo.class );
     }
 
+    /**
+     * 
+     */
     public List getCoverages() {
         return getResources(CoverageInfo.class);
     }
 
+    /**
+     * 
+     */
     public List getCoveragesByNamespace(NamespaceInfo namespace) {
         return getResourcesByNamespace(namespace, CoverageInfo.class);
     }
 
     // Layer methods
+    /**
+     * 
+     */
     public void add(LayerInfo layer) {
         validate(layer);
         
@@ -370,6 +473,10 @@ public class CatalogImpl implements Catalog {
         added(layer);
     }
 
+    /**
+     * 
+     * @param layer
+     */
     void validate( LayerInfo layer ) {
         if ( layer.getName() == null ) {
             throw new NullPointerException( "Layer name must not be null" );
@@ -383,16 +490,25 @@ public class CatalogImpl implements Catalog {
         //}
     }
     
+    /**
+     * 
+     */
     public void remove(LayerInfo layer) {
         layers.remove(layer);
         removed(layer);
     }
 
+    /**
+     * 
+     */
     public void save(LayerInfo layer) {
         validate( layer );
         saved(layer);
     }
 
+    /**
+     * 
+     */
     public LayerInfo getLayer(String id) {
         for (Iterator l = layers.iterator(); l.hasNext();) {
             LayerInfo layer = (LayerInfo) l.next();
@@ -404,6 +520,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
     
+    /**
+     * 
+     */
     public LayerInfo getLayerByName(String name) {
         for (Iterator l = layers.iterator(); l.hasNext();) {
             LayerInfo layer = (LayerInfo) l.next();
@@ -415,6 +534,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public List<LayerInfo> getLayers(ResourceInfo resource) {
         List<LayerInfo> matches = new ArrayList<LayerInfo>();
         for (Iterator l = layers.iterator(); l.hasNext();) {
@@ -427,11 +549,17 @@ public class CatalogImpl implements Catalog {
         return ModificationProxy.createList(matches,LayerInfo.class);
     }
     
+    /**
+     * 
+     */
     public List getLayers() {
         return ModificationProxy.createList( new ArrayList(layers), LayerInfo.class );
     }
 
     // Map methods
+    /**
+     * 
+     */
     public MapInfo getMap(String id) {
         for (MapInfo map : maps) {
             if (id.equals(map.getId())) {
@@ -442,6 +570,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public MapInfo getMapByName(String name) {
         for (MapInfo map : maps) {
             if (name.equals(map.getName())) {
@@ -452,29 +583,47 @@ public class CatalogImpl implements Catalog {
         return null;
     }
     
+    /**
+     * 
+     */
     public List<MapInfo> getMaps() {
         return ModificationProxy.createList( new ArrayList(maps), MapInfo.class );
     }
 
+    /**
+     * 
+     */
     public void add(LayerGroupInfo layerGroup) {
         ((LayerGroupInfoImpl)layerGroup).setId( layerGroup.getName() );
         layerGroups.add( layerGroup );
         added( layerGroup );
     }
     
+    /**
+     * 
+     */
     public void remove(LayerGroupInfo layerGroup) {
         layerGroups.remove( layerGroup );
         removed( layerGroup );
     }
     
+    /**
+     * 
+     */
     public void save(LayerGroupInfo layerGroup) {
         saved(layerGroup);
     }
     
+    /**
+     * 
+     */
     public List<LayerGroupInfo> getLayerGroups() {
         return ModificationProxy.createList( new ArrayList(layerGroups), LayerGroupInfo.class );
     }
     
+    /**
+     * 
+     */
     public LayerGroupInfo getLayerGroup(String id) {
         for (LayerGroupInfo layerGroup : layerGroups ) {
             if ( id.equals( layerGroup.getId() ) ) {
@@ -485,6 +634,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
     
+    /**
+     * 
+     */
     public LayerGroupInfo getLayerGroupByName(String name) {
         for (LayerGroupInfo layerGroup : layerGroups ) {
             if ( name.equals( layerGroup.getName() ) ) {
@@ -495,22 +647,34 @@ public class CatalogImpl implements Catalog {
         return null;
     }
     
+    /**
+     * 
+     */
     public void add(MapInfo map) {
         ((MapInfoImpl)map).setId(map.getName());
         maps.add(map);
         added(map);
     }
 
+    /**
+     * 
+     */
     public void remove(MapInfo map) {
         maps.remove(map);
         removed(map);
     }
 
+    /**
+     * 
+     */
     public void save(MapInfo map) {
         saved( map );
     }
     
     // Namespace methods
+    /**
+     * 
+     */
     public NamespaceInfo getNamespace(String id) {
         for (NamespaceInfo namespace : namespaces.values() ) {
             if (id.equals(namespace.getId())) {
@@ -521,11 +685,17 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public NamespaceInfo getNamespaceByPrefix(String prefix) {
         NamespaceInfo ns = namespaces.get( prefix ); 
         return ns != null ? ModificationProxy.create(ns, NamespaceInfo.class ) : null;
     }
 
+    /**
+     * 
+     */
     public NamespaceInfo getNamespaceByURI(String uri) {
         for (NamespaceInfo namespace : namespaces.values() ) {
             if (uri.equals(namespace.getURI())) {
@@ -536,6 +706,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public List getNamespaces() {
         ArrayList<NamespaceInfo> ns = new ArrayList<NamespaceInfo>();
         for ( Map.Entry<String,NamespaceInfo> e : namespaces.entrySet() ) {
@@ -547,6 +720,9 @@ public class CatalogImpl implements Catalog {
         return ModificationProxy.createList( ns, NamespaceInfo.class );
     }
 
+    /**
+     * 
+     */
     public void add(NamespaceInfo namespace) {
         validate(namespace);
         ((NamespaceInfoImpl)namespace).setId(namespace.getPrefix());
@@ -561,6 +737,10 @@ public class CatalogImpl implements Catalog {
         added(namespace);
     }
 
+    /**
+     * 
+     * @param namespace
+     */
     void validate(NamespaceInfo namespace) {
         if ( namespace.getPrefix() == null ) {
             throw new NullPointerException( "Namespace prefix must not be null");
@@ -570,11 +750,17 @@ public class CatalogImpl implements Catalog {
         }
     }
     
+    /**
+     * 
+     */
     public void remove(NamespaceInfo namespace) {
         namespaces.remove(namespace.getPrefix());
         removed(namespace);
     }
 
+    /**
+     * 
+     */
     public void save(NamespaceInfo namespace) {
         validate(namespace);
         
@@ -592,11 +778,17 @@ public class CatalogImpl implements Catalog {
         saved(namespace);
     }
 
+    /**
+     * 
+     */
     public NamespaceInfo getDefaultNamespace() {
         return namespaces.containsKey(null) ? 
                 ModificationProxy.create(namespaces.get( null ),NamespaceInfo.class) : null;
     }
 
+    /**
+     * 
+     */
     public void setDefaultNamespace(NamespaceInfo defaultNamespace) {
         NamespaceInfo ns = namespaces.get( defaultNamespace.getPrefix() );
         if ( ns == null ) {
@@ -607,6 +799,9 @@ public class CatalogImpl implements Catalog {
     }
 
     // Workspace methods
+    /**
+     * 
+     */
     public void add(WorkspaceInfo workspace) {
         validate(workspace);
         
@@ -625,17 +820,27 @@ public class CatalogImpl implements Catalog {
         added( workspace );
     }
     
+    /**
+     * 
+     * @param workspace
+     */
     void validate(WorkspaceInfo workspace) {
         if ( workspace.getName() == null ) {
             throw new NullPointerException( "workspace name must not be null");
         }
     }
     
+    /**
+     * 
+     */
     public void remove(WorkspaceInfo workspace) {
         workspaces.remove( workspace.getName() );
         removed( workspace );
     }
     
+    /**
+     * 
+     */
     public void save(WorkspaceInfo workspace) {
         validate(workspace);
         
@@ -653,15 +858,24 @@ public class CatalogImpl implements Catalog {
         saved(workspace);
     }
     
+    /**
+     * 
+     */
     public WorkspaceInfo getDefaultWorkspace() {
         return workspaces.containsKey( null ) ? 
                 ModificationProxy.create( workspaces.get( null ), WorkspaceInfo.class ) : null;
     }
     
+    /**
+     * 
+     */
     public void setDefaultWorkspace(WorkspaceInfo workspace) {
         workspaces.put( null, workspace );
     }
     
+    /**
+     * 
+     */
     public List<WorkspaceInfo> getWorkspaces() {
         ArrayList<WorkspaceInfo> ws = new ArrayList<WorkspaceInfo>();
         
@@ -677,16 +891,25 @@ public class CatalogImpl implements Catalog {
         return ModificationProxy.createList( ws, WorkspaceInfo.class );
     }
     
+    /**
+     * 
+     */
     public WorkspaceInfo getWorkspace(String id) {
         return getWorkspaceByName(id);
     }
     
+    /**
+     * 
+     */
     public WorkspaceInfo getWorkspaceByName(String name) {
         return workspaces.containsKey(name) ? 
                 ModificationProxy.create( workspaces.get( name ), WorkspaceInfo.class ) : null;
     }
     
     // Style methods
+    /**
+     * 
+     */
     public StyleInfo getStyle(String id) {
         for (Iterator s = styles.iterator(); s.hasNext();) {
             StyleInfo style = (StyleInfo) s.next();
@@ -698,6 +921,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public StyleInfo getStyleByName(String name) {
         for (Iterator s = styles.iterator(); s.hasNext();) {
             StyleInfo style = (StyleInfo) s.next();
@@ -709,10 +935,16 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public List getStyles() {
         return Collections.unmodifiableList(styles);
     }
 
+    /**
+     * 
+     */
     public void add(StyleInfo style) {
         validate(style);
         
@@ -721,6 +953,10 @@ public class CatalogImpl implements Catalog {
         added(style);
     }
 
+    /**
+     * 
+     * @param style
+     */
     void validate( StyleInfo style ) {
         if ( style.getName() == null ) {
             throw new NullPointerException( "Style name must not be null");
@@ -730,43 +966,72 @@ public class CatalogImpl implements Catalog {
         }
     }
     
+    /**
+     * 
+     */
     public void remove(StyleInfo style) {
         styles.remove(style);
         removed(style);
     }
 
+    /**
+     * 
+     */
     public void save(StyleInfo style) {
         validate(style);
         saved( style );
     }
 
     // Event methods
+    /**
+     * 
+     */
     public Collection getListeners() {
         return Collections.unmodifiableCollection(listeners);
     }
 
+    /**
+     * 
+     */
     public void addListener(CatalogListener listener) {
         listeners.add(listener);
 
     }
 
+    /**
+     * 
+     */
     public void removeListener(CatalogListener listener) {
         listeners.remove(listener);
     }
 
+    /**
+     * 
+     * @param cql
+     * @return
+     */
     public Iterator search(String cql) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * 
+     */
     public ResourcePool getResourcePool() {
         return resourcePool;
     }
     
+    /**
+     * 
+     */
     public void setResourcePool(ResourcePool resourcePool) {
         this.resourcePool = resourcePool;
     }
     
+    /**
+     * 
+     */
     public void dispose() {
         stores.clear();
         resources.clear();
@@ -783,6 +1048,12 @@ public class CatalogImpl implements Catalog {
         resourcePool.dispose();
     }
     
+    /**
+     * 
+     * @param clazz
+     * @param map
+     * @return
+     */
     List lookup(Class clazz, MultiHashMap map) {
         ArrayList result = new ArrayList();
         for (Iterator k = map.keySet().iterator(); k.hasNext();) {
@@ -795,10 +1066,18 @@ public class CatalogImpl implements Catalog {
         return result;
     }
 
+    /**
+     * 
+     * @param object
+     */
     protected void added(Object object) {
         fireAdded( object );
     }
     
+    /**
+     * 
+     * @param object
+     */
     protected void fireAdded(Object object) {
         CatalogAddEventImpl event = new CatalogAddEventImpl();
         event.setSource(object);
@@ -806,6 +1085,10 @@ public class CatalogImpl implements Catalog {
         event(event);
     }
 
+    /**
+     * 
+     * @param object
+     */
     protected void saved(Object object) {
         //this object is a proxy
         ModificationProxy h = 
@@ -826,6 +1109,13 @@ public class CatalogImpl implements Catalog {
         h.commit();    
     }
     
+    /**
+     * 
+     * @param object
+     * @param propertyNames
+     * @param oldValues
+     * @param newValues
+     */
     protected void fireModified(Object object, List propertyNames, List oldValues,
             List newValues) {
         CatalogModifyEventImpl event = new CatalogModifyEventImpl();
@@ -838,6 +1128,10 @@ public class CatalogImpl implements Catalog {
         event(event);
     }
 
+    /**
+     * 
+     * @param object
+     */
     protected void removed(Object object) {
         CatalogRemoveEventImpl event = new CatalogRemoveEventImpl();
         event.setSource(object);
@@ -845,6 +1139,10 @@ public class CatalogImpl implements Catalog {
         event(event);
     }
 
+    /**
+     * 
+     * @param event
+     */
     protected void event(CatalogEvent event) {
         for (Iterator l = listeners.iterator(); l.hasNext();) {
             CatalogListener listener = (CatalogListener) l.next();
@@ -859,6 +1157,9 @@ public class CatalogImpl implements Catalog {
     }
 
     // Model / ModelRun methods
+    /**
+     * 
+     */
     public void add(ModelInfo model) {
         validate(model);
         
@@ -868,12 +1169,19 @@ public class CatalogImpl implements Catalog {
         added(model);
     }
 
+    /**
+     * 
+     * @param model
+     */
     void validate(ModelInfo model) {
         if ( model.getName() == null ) {
             throw new NullPointerException("Model name must not be null");
         }
     }
 
+    /**
+     * 
+     */
     public void add(ModelRunInfo modelRun) {
         validate(modelRun);
         
@@ -883,6 +1191,10 @@ public class CatalogImpl implements Catalog {
         added(modelRun);
     }
 
+    /**
+     * 
+     * @param modelRun
+     */
     void validate(ModelRunInfo modelRun) {
         if ( modelRun.getName() == null ) {
             throw new NullPointerException("ModelRun name must not be null");
@@ -892,6 +1204,9 @@ public class CatalogImpl implements Catalog {
         }
     }
 
+    /**
+     * 
+     */
     public ModelInfo getModel(String id) {
         for (Iterator m = models.iterator(); m.hasNext();) {
             ModelInfo model = (ModelInfo) m.next();
@@ -903,6 +1218,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public ModelInfo getModelByName(String name) {
         for (Iterator m = models.iterator(); m.hasNext();) {
             ModelInfo model = (ModelInfo) m.next();
@@ -914,6 +1232,44 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
+    public List<ModelInfo> getModels(GeophysicParamInfo param) {
+        for (Iterator gp = geophysicparams.iterator(); gp.hasNext();) {
+            GeophysicParamInfo tmpParam = (GeophysicParamInfo) gp.next();
+            if (tmpParam.getName().equals(param.getName())) {
+                return ModificationProxy.createList(new ArrayList(param.getModels()), ModelInfo.class);
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * 
+     */
+    public List<GeophysicParamInfo> getGeophysicalParams(CoverageInfo coverage) {
+        return ModificationProxy.createList(new ArrayList(coverage.getGeophysicalParameters()), GeophysicParamInfo.class);
+    }
+
+    /**
+     * 
+     */
+    public GeophysicParamInfo getGeophysicParamByName(String variableName) {
+        for (Iterator gp = geophysicparams.iterator(); gp.hasNext();) {
+            GeophysicParamInfo param = (GeophysicParamInfo) gp.next();
+            if (variableName.equals(param.getName())) {
+                return ModificationProxy.create(param, GeophysicParamInfo.class);
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * 
+     */
     public ModelRunInfo getModelRun(String id) {
         for (Iterator mr = modelRuns.iterator(); mr.hasNext();) {
             ModelRunInfo modelRun = (ModelRunInfo) mr.next();
@@ -925,6 +1281,9 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public ModelRunInfo getModelRunByName(String name) {
         for (Iterator mr = modelRuns.iterator(); mr.hasNext();) {
             ModelRunInfo modelRun = (ModelRunInfo) mr.next();
@@ -936,40 +1295,71 @@ public class CatalogImpl implements Catalog {
         return null;
     }
 
+    /**
+     * 
+     */
     public List<ModelRunInfo> getModelRuns() {
         return ModificationProxy.createList(new ArrayList(modelRuns), ModelRunInfo.class);
     }
 
+    /**
+     * 
+     */
     public List<ModelInfo> getModels() {
         return ModificationProxy.createList(new ArrayList(models), ModelInfo.class);
     }
 
+    /**
+     * 
+     */
     public List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun) {
         return ModificationProxy.createList(new ArrayList(modelRun.getGridCoverages()), CoverageInfo.class);
     }
 
+    /**
+     * 
+     */
     public List<ModelRunInfo> getModelRuns(ModelInfo model) {
         return ModificationProxy.createList(new ArrayList(model.getModelRuns()), ModelRunInfo.class);
     }
 
+    /**
+     * 
+     */
     public void remove(ModelInfo model) {
         models.remove(model);
         removed(model);
     }
 
+    /**
+     * 
+     */
     public void remove(ModelRunInfo modelRun) {
         modelRuns.remove(modelRun);
         removed(modelRun);
     }
 
+    /**
+     * 
+     */
     public void save(ModelInfo model) {
         validate(model);
         saved(model);
     }
 
+    /**
+     * 
+     */
     public void save(ModelRunInfo modelRun) {
         validate(modelRun);
         saved(modelRun);
+    }
+
+    /**
+     * 
+     */
+    public List<GeophysicParamInfo> getGeophysicParams() {
+        return this.geophysicparams;
     }
 
 }

@@ -1151,7 +1151,14 @@ public class HibernateCatalog implements Catalog {
     public List<ModelRunInfo> getModelRuns(ModelInfo model) {
         return this.catalogDAO.getModelRuns(model);
     }
-    
+
+    /**
+     * 
+     */
+    public List<ModelInfo> getModels(GeophysicParamInfo param) {
+        return this.catalogDAO.getModels(param);
+    }
+
     /**
      * 
      * @param param
@@ -1207,6 +1214,20 @@ public class HibernateCatalog implements Catalog {
      */
     public List<GeophysicParamInfo> getGeophysicalParameters(ModelRunInfo modelRun) {
         return this.catalogDAO.getGeophysicalParameters(modelRun);
+    }
+
+    /**
+     * 
+     */
+    public List<GeophysicParamInfo> getGeophysicalParams(CoverageInfo coverage) {
+        return this.catalogDAO.getGeophysicalParameters(coverage);
+    }
+
+    /**
+     * 
+     */
+    public GeophysicParamInfo getGeophysicParamByName(String variableName) {
+        return this.catalogDAO.getGeophysicParamByName(variableName);
     }
 
     /**

@@ -22,7 +22,7 @@ import org.restlet.data.Response;
 import org.restlet.resource.Resource;
 
 /**
- * Restlet for GeophysicParamsList resources
+ * Restlet for GeophysicalParamGridCoveragesList resources
  *
  * @author Alessio Fabiani <alessio.fabiani@geo-solutions.it> , GeoSolutions S.a.S.
  */

@@ -255,7 +255,14 @@ public interface IGeoServerDAO {
      * @return
      */
     public abstract ModelInfo getModelByName(String name);
-    
+
+    /**
+     * 
+     * @param param
+     * @return
+     */
+    public abstract List<ModelInfo> getModels(GeophysicParamInfo param);
+
     /**
      * 
      * @param id
@@ -360,5 +367,19 @@ public interface IGeoServerDAO {
      * @return
      */
     public abstract List<GeophysicParamInfo> getGeophysicalParameters(ModelRunInfo modelRun);
+
+    /**
+     * 
+     * @param coverage
+     * @return
+     */
+    public abstract List<GeophysicParamInfo> getGeophysicalParameters(CoverageInfo coverage);
+
+    /**
+     * 
+     * @param variableName
+     * @return
+     */
+    public abstract GeophysicParamInfo getGeophysicParamByName(String variableName);
 
 }

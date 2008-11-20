@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.GeophysicParamInfo;
+import org.geoserver.catalog.ModelInfo;
 import org.geoserver.catalog.ModelRunInfo;
 
 /**
@@ -22,6 +23,7 @@ public class GeophysicParamInfoImpl implements GeophysicParamInfo {
     private String title;
     private List<CoverageInfo> gridcoverages;
     private List<ModelRunInfo> modelRuns;
+    private List<ModelInfo> models;
 
     /* (non-Javadoc)
      * @see org.geoserver.catalog.GeophysicParamInfo#getAlias()
@@ -107,6 +109,14 @@ public class GeophysicParamInfoImpl implements GeophysicParamInfo {
 
     public void setModelRuns(List<ModelRunInfo> modelRuns) {
         this.modelRuns = modelRuns;
+    }
+
+    public List<ModelInfo> getModels() {
+        return this.models;
+    }
+
+    public void setModels(List<ModelInfo> models) {
+        this.models = models;
     }
 
 }

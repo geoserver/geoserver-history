@@ -895,6 +895,12 @@ public interface Catalog {
     ModelRunInfo getModelRun(String id);
 
     /**
+     * 
+     * @param variableName
+     * @return
+     */
+    GeophysicParamInfo getGeophysicParamByName(String variableName);
+    /**
      * Returns the model matching a particular name, or <code>null</code> if no
      * such model could be found. 
      */
@@ -947,7 +953,19 @@ public interface Catalog {
      * @return
      */
     List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun);
-    
+    /**
+     * 
+     * @param param
+     * @return
+     */
+    List<ModelInfo> getModels(GeophysicParamInfo param);
+    /**
+     * 
+     * @param coverage
+     * @return
+     */
+    List<GeophysicParamInfo> getGeophysicalParams(CoverageInfo coverage);
+
     /**
      * catalog listeners.
      * 

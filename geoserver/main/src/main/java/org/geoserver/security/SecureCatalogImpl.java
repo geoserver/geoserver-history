@@ -19,6 +19,7 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.GeophysicParamInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
@@ -877,6 +878,22 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
 
     public void save(ModelRunInfo modelRun) {
         delegate.save(modelRun);
+    }
+
+    public List<GeophysicParamInfo> getGeophysicParams() {
+        return delegate.getGeophysicParams();
+    }
+
+    public GeophysicParamInfo getGeophysicParamByName(String variableName) {
+        return delegate.getGeophysicParamByName(variableName);
+    }
+
+    public List<ModelInfo> getModels(GeophysicParamInfo param) {
+        return delegate.getModels(param);
+    }
+
+    public List<GeophysicParamInfo> getGeophysicalParams(CoverageInfo coverage) {
+        return delegate.getGeophysicalParams(coverage);
     }
 
 }

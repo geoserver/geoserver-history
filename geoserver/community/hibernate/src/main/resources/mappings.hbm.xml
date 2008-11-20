@@ -119,17 +119,17 @@
 		<property name="enabled" column="ENABLED"/>
 		<list name="alias" table="RESOURCE_ALIASES" cascade="all" lazy="false">
 		   <key column="RESOURCE_ID"/>
-           <list-index column="ALIAS_INDEX"/>
+           <list-index column="RES_ALIAS_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
 	    <list name="keywords" table="RESOURCE_KEYWORDS" cascade="all" lazy="false">
 		   <key column="RESOURCE_ID"/>
-           <list-index column="KW_INDEX"/>
+           <list-index column="RES_KW_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
 		<list name="metadataLinks" table="RESOURCE_METADATA_LINK" cascade="all" lazy="false">
 		   <key column="RESOURCE_ID"/>
-           <list-index column="METADATA_LINK_INDEX"/>
+           <list-index column="RES_METADATA_LINK_INDEX"/>
 		   <many-to-many class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false"/>
 		</list>
 		<property name="nativeBoundingBox" type="boundingBox">
@@ -179,19 +179,19 @@
 		
 		<list name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS" cascade="all" lazy="false">
 		   <key column="COVERAGE_ID"/>
-           <list-index column="FORMAT_INDEX"/>
+           <list-index column="CV_FORMAT_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
     	
     	<list name="requestSRS" table="COVERAGE_REQUEST_SRS" cascade="all" lazy="false">
 			<key column="COVERAGE_ID"/>
-            <list-index column="REQUEST_SRS_INDEX"/>
+            <list-index column="CV_REQUEST_SRS_INDEX"/>
 			<element type="java.lang.String"/>
 		</list>
 		
 		<list name="responseSRS" table="COVERAGE_RESPONSE_SRS" cascade="all" lazy="false">
 			<key column="COVERAGE_ID"/>
-            <list-index column="RESPONSE_SRS_INDEX"/>
+            <list-index column="CV_RESPONSE_SRS_INDEX"/>
 			<element type="java.lang.String"/>
 		</list>
 		
@@ -199,7 +199,7 @@
 		
 		<list name="interpolationMethods" table="COVERAGE_INTERPOLATION_METHODS" cascade="all" lazy="false">
 			<key column="COVERAGE_ID"/>
-            <list-index column="INTERP_METHOD_INDEX"/>
+            <list-index column="CV_INTERP_METHOD_INDEX"/>
 			<element type="java.lang.String"/>
 		</list>
 		
@@ -211,14 +211,14 @@
         
         <list name="modelRuns" table="COVERAGE_MODEL_RUNNINGS" cascade="all">
     	    <key column="COVERAGE_ID"/>
-    	    <list-index column="MODEL_RUN_INDEX"/>
+    	    <list-index column="CV_MODEL_RUN_INDEX"/>
 			<one-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
     	</list>
     	
     	<list name="geophysicalParameters" table="COVERAGE_GEOPHYSIC_PARAMS" cascade="all">
 		    <key column="COVERAGE_ID"/>
-		    <list-index column="GP_INDEX"/>
-		    <one-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
+		    <list-index column="CV_GP_INDEX"/>
+		    <many-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
     	</list>
     	
         <many-to-one name="store" column="STORE" class="org.geoserver.catalog.impl.CoverageStoreInfoImpl" lazy="false"/>
@@ -273,7 +273,7 @@
 	   <property name="enabled" column="ENABLED"/>
        <list name="layers">
           <key column="MAP_ID"/>
-          <list-index column="LAYER_INDEX"/>
+          <list-index column="MAP_LAYER_INDEX"/>
 		  <one-to-many class="org.geoserver.catalog.impl.LayerInfoImpl"/>
 		</list>
     </class>
@@ -392,17 +392,17 @@
 		<property name="fees" column="FEES"/>	
 		<list name="keywords" table="SERVICE_KEYWORDS" cascade="all" lazy="false">
 		    <key column="ID"/>
-		    <list-index column="KEYWORD_INDEX"/>
+		    <list-index column="SRV_KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>   
     	<list name="exceptionFormats" table="SERVICE_EXCEPTION_FORMATS" cascade="all" lazy="false">
     	    <key column="ID"/>
-    	    <list-index column="EXCEPTION_FORMAT_INDEX"/>
+    	    <list-index column="SRV_EXCEPTION_FORMAT_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
 		<list name="versions" table="SERVICE_VERSIONS" cascade="all" lazy="false">
 		    <key column="ID"/>
-		    <list-index column="VERSION_INDEX"/>
+		    <list-index column="SRV_VERSION_INDEX"/>
 			<element type="org.geotools.util.Version"/>
     	</list>       	
 		<one-to-one name="metadataLink" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false"/>
@@ -428,7 +428,7 @@
 		<many-to-one name="watermark" cascade="all" class="org.geoserver.wms.WatermarkInfoImpl" lazy="false"/>
 		<list name="SRS" table="WMS_SRS" cascade="all" lazy="false">
     	    <key column="ID"/>
-    	    <list-index column="SRS_INDEX"/>
+    	    <list-index column="WMS_SRS_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
     </joined-subclass>
@@ -489,13 +489,13 @@
 		
 		<list name="products" table="MODEL_PRODUCTS" cascade="all" lazy="false">
 		    <key column="MODEL_ID"/>
-		    <list-index column="PRODUCT_INDEX"/>
+		    <list-index column="M_PRODUCT_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
 		
 		<list name="keywords" table="MODEL_KEYWORDS" cascade="all" lazy="false">
 		    <key column="MODEL_ID"/>
-		    <list-index column="KEYWORD_INDEX"/>
+		    <list-index column="M_KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
 		
@@ -507,14 +507,14 @@
         
 		<list name="modelRuns" table="MODEL_RUNNINGS" cascade="all">
     	    <key column="MODEL_ID"/>
-    	    <list-index column="MODEL_RUN_INDEX"/>
-			<one-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
+    	    <list-index column="M_MODEL_RUN_INDEX"/>
+			<many-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
     	</list>
 
 		<list name="geophysicalParameters" table="MODEL_GEOPHYSIC_PARAMS" cascade="all">
 		    <key column="MODEL_ID"/>
-		    <list-index column="GP_INDEX"/>
-		    <one-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
+		    <list-index column="M_GP_INDEX"/>
+		    <many-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
     	</list>
     	
 		<one-to-one name="metadataLink" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false"/>
@@ -566,20 +566,20 @@
 
 		<list name="keywords" table="MODEL_RUN_KEYWORDS" cascade="all" lazy="false">
 		    <key column="MODEL_RUN_ID"/>
-		    <list-index column="KEYWORD_INDEX"/>
+		    <list-index column="MR_KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
     	
     	<list name="gridCoverages" table="MODEL_RUN_COVERAGES" cascade="all">
 		    <key column="MODEL_RUN_ID"/>
-		    <list-index column="GC_INDEX"/>
-		    <one-to-many class="org.geoserver.catalog.impl.CoverageInfoImpl"/>
+		    <list-index column="MR_GC_INDEX"/>
+		    <many-to-many class="org.geoserver.catalog.impl.CoverageInfoImpl"/>
     	</list>
     	
     	<list name="geophysicalParameters" table="MODEL_RUN_GEOPHYSIC_PARAMS" cascade="all">
 		    <key column="MODEL_RUN_ID"/>
-		    <list-index column="GP_INDEX"/>
-		    <one-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
+		    <list-index column="MR_GP_INDEX"/>
+		    <many-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
     	</list>
     	 
 		<many-to-one name="model" class="org.geoserver.catalog.impl.ModelInfoImpl"/>
@@ -598,20 +598,26 @@
 		
 		<list name="alias" table="GEOPHYSIC_PARAMS_ALIASES" cascade="all" lazy="false">
 		   <key column="GEOPHYSIC_PARAM_ID"/>
-           <list-index column="ALIAS_INDEX"/>
+           <list-index column="GP_ALIAS_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
     	
+    	<list name="models" table="GEOPHYSIC_PARAMS_MODELS" cascade="all">
+    	    <key column="GEOPHYSIC_PARAM_ID"/>
+    	    <list-index column="GP_MODEL_INDEX"/>
+			<many-to-many class="org.geoserver.catalog.impl.ModelInfoImpl"/>
+    	</list>
+    	
     	<list name="modelRuns" table="GEOPHYSIC_PARAMS_MODEL_RUNNINGS" cascade="all">
     	    <key column="GEOPHYSIC_PARAM_ID"/>
-    	    <list-index column="MODEL_RUN_INDEX"/>
-			<one-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
+    	    <list-index column="GP_MODEL_RUN_INDEX"/>
+			<many-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
     	</list>
     	
     	<list name="gridCoverages" table="GEOPHYSIC_PARAMS_COVERAGES" cascade="all">
 		    <key column="GEOPHYSIC_PARAM_ID"/>
-		    <list-index column="GC_INDEX"/>
-		    <one-to-many class="org.geoserver.catalog.impl.CoverageInfoImpl"/>
+		    <list-index column="GP_GC_INDEX"/>
+		    <many-to-many class="org.geoserver.catalog.impl.CoverageInfoImpl"/>
     	</list>
 		
      </class>

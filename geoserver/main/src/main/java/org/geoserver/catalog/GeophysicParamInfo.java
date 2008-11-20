@@ -80,6 +80,12 @@ public interface GeophysicParamInfo {
     /**
      * 
      */
+    List<ModelInfo> getModels();
+    void setModels(List<ModelInfo> models);
+
+    /**
+     * 
+     */
     List<ModelRunInfo> getModelRuns();
     void setModelRuns(List<ModelRunInfo> modelRuns);
     
