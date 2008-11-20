@@ -142,7 +142,7 @@ public class DefaultWebMapService implements WebMapService,
 
     public void kml(GetMapRequest getMap, HttpServletResponse response){
         try{
-            KMLReflector.wms(getMap, response, this);
+            KMLReflector.doWms(getMap, response, this);
             // return response;
         } catch (Exception e){
             throw new RuntimeException(e);
