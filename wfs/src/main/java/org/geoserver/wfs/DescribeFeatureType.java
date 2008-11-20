@@ -110,6 +110,9 @@ O:
 
                 for (Iterator h = infos.iterator(); h.hasNext();) {
                     FeatureTypeInfo meta = (FeatureTypeInfo) h.next();
+                    if(!meta.isEnabled())
+                        continue;
+                    
                     String namespace = meta.getNameSpace().getURI();
                     String local = meta.getTypeName();
 
@@ -131,8 +134,13 @@ O:
                 throw new WFSException(msg);
             }
         } else {
-            //if there are no specific requested types then get all.
-            requested.addAll(infos);
+            //if there are no specific requested types then get all the ones that
+            //are enabled
+            for (Iterator it = infos.iterator(); it.hasNext();) {
+                FeatureTypeInfo ftInfo = (FeatureTypeInfo) it.next();
+                if(ftInfo.isEnabled())
+                    requested.add(ftInfo);
+            }
         }
 
         return (FeatureTypeInfo[]) requested.toArray(new FeatureTypeInfo[requested.size()]);

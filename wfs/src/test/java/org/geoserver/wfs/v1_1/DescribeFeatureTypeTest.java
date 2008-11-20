@@ -16,6 +16,12 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
     public static Test suite() {
         return new OneTimeTestSetup(new DescribeFeatureTypeTest());
     }
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.disableDataStore(MockData.CITE_PREFIX);
+    }
 
     public void testDateMappings() throws Exception {
         
