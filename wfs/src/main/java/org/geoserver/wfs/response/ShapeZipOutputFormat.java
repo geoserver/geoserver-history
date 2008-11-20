@@ -8,6 +8,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
@@ -16,12 +17,18 @@ import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,9 +47,10 @@ import javax.xml.namespace.QName;
  * @author ported to gs 1.6.x by Saul Farber, MassGIS, saul.farber@state.ma.us
  *
  */
-public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
+public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements ApplicationContextAware {
     private final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(this.getClass().toString());
     private String outputFileName;
+    private ApplicationContext applicationContext;
 
     public ShapeZipOutputFormat() {
         super("SHAPE-ZIP");
@@ -90,7 +98,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
         //write out multiple shapefile sets, one for each query response.
         File tempDir = createTempDirectory();
         ZipOutputStream zipOut = new ZipOutputStream(output);
-
+        
         try {
             Iterator<FeatureCollection<SimpleFeatureType, SimpleFeature>> outputFeatureCollections;
             outputFeatureCollections = featureCollection.getFeature().iterator();
@@ -98,51 +106,19 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
 
             while (outputFeatureCollections.hasNext()) {
                 curCollection = outputFeatureCollections.next();
-                writeCollectionToShapefile(curCollection, tempDir);
+                writeCollectionToShapefile(curCollection, tempDir, getShapefileCharset(getFeature));
 
                 String name = curCollection.getSchema().getTypeName();
                 String outputName = name.replaceAll("\\.", "_");
 
                 // read in and write out .shp
-                File f = new File(tempDir, name + ".shp");
-                ZipEntry entry = new ZipEntry(outputName + ".shp");
-                zipOut.putNextEntry(entry);
-
-                InputStream shp_in = new FileInputStream(f);
-                readInWriteOutBytes(zipOut, shp_in);
-                zipOut.closeEntry();
-                shp_in.close();
-
-                // read in and write out .dbf
-                f = new File(tempDir, name + ".dbf");
-                entry = new ZipEntry(outputName + ".dbf");
-                zipOut.putNextEntry(entry);
-
-                InputStream dbf_in = new FileInputStream(f);
-                readInWriteOutBytes(zipOut, dbf_in);
-                zipOut.closeEntry();
-                dbf_in.close();
-
-                // read in and write out .shx
-                f = new File(tempDir, name + ".shx");
-                entry = new ZipEntry(outputName + ".shx");
-                zipOut.putNextEntry(entry);
-
-                InputStream shx_in = new FileInputStream(f);
-                readInWriteOutBytes(zipOut, shx_in);
-                zipOut.closeEntry();
-                shx_in.close();
-
-                // if we generated the prj file, include it as well
-                f = new File(tempDir, name + ".prj");
-                if(f.exists()) {
-                    entry = new ZipEntry(outputName + ".prj");
-                    zipOut.putNextEntry(entry);
-                    InputStream prj_in = new FileInputStream(f);
-                    readInWriteOutBytes(zipOut, prj_in);
-                    zipOut.closeEntry();
-                    prj_in.close();
-                }
+                File f;
+                ZipEntry entry;
+                addFile(tempDir, zipOut, name, outputName, ".shp");
+                addFile(tempDir, zipOut, name, outputName, ".dbf");
+                addFile(tempDir, zipOut, name, outputName, ".shx");
+                addFile(tempDir, zipOut, name, outputName, ".prj");
+                addFile(tempDir, zipOut, name, outputName, ".cst");
             }
 
             zipOut.finish();
@@ -157,6 +133,44 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
                 LOGGER.warning("Could not delete temp directory: " + tempDir.getAbsolutePath());
             }
         }
+    }
+
+    private void addFile(File tempDir, ZipOutputStream zipOut, String name, String outputName,
+            final String extension) throws IOException, FileNotFoundException {
+        File f = new File(tempDir, name + extension);
+            if(f.exists()) {
+            ZipEntry entry = new ZipEntry(outputName + extension);
+            zipOut.putNextEntry(entry);
+    
+            InputStream in = new FileInputStream(f);
+            int c;
+            byte[] buffer = new byte[4 * 1024];
+            while (-1 != (c = in.read(buffer))) {
+                zipOut.write(buffer,0,c);
+            }
+            zipOut.closeEntry();
+            in.close();
+        }
+    }
+
+    /**
+     * Looks up the charset parameter, either in the GetFeature request or as a global parameter
+     * @param getFeature
+     * @return the found charset, or the platform's default one if none was specified
+     */
+    private Charset getShapefileCharset(Operation getFeature) {
+        Charset result = null;
+        
+        GetFeatureType gft = (GetFeatureType) getFeature.getParameters()[0];
+        if(gft.getFormatOptions() != null && gft.getFormatOptions().get("CHARSET") != null) {
+           result = (Charset) gft.getFormatOptions().get("CHARSET");
+        } else {
+            final String charsetName = GeoServerExtensions.getProperty("GS-SHAPEFILE-CHARSET", applicationContext);
+            if(charsetName != null)
+                result = Charset.forName(charsetName);
+        }
+        
+        return result != null ? result : Charset.defaultCharset();
     }
 
     private boolean removeDirectory(File tempDir) {
@@ -182,36 +196,29 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
     }
 
     /**
-     * readInWriteOutBytes Description: Reads in the bytes from the
-     * input stream and writes them to the output stream.
-     *
-     * @param output
-     * @param in
-     *
-     * @throws IOException
-     */
-    private void readInWriteOutBytes(OutputStream output, InputStream in)
-        throws IOException {
-        int c;
-
-        byte[] buffer = new byte[4 * 1024];
-
-        while (-1 != (c = in.read(buffer))) {
-            output.write(buffer,0,c);
-        }
-    }
-
-    /**
      * Write one featurecollection to an appropriately named shapefile.
      * @param c the featurecollection to write
      * @param tempDir the temp directory into which it should be written
      */
-    private void writeCollectionToShapefile(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir) {
+    private void writeCollectionToShapefile(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
         SimpleFeatureType schema = c.getSchema();
 
         try {
             File file = new File(tempDir, schema.getTypeName() + ".shp");
             ShapefileDataStore sfds = new ShapefileDataStore(file.toURL());
+            
+            // handle shapefile encoding
+            // and dump the charset into a .cst file, for debugging and control purposes
+            // (.cst is not a standard extension)
+            sfds.setStringCharset(charset);
+            File charsetFile = new File(tempDir, schema.getTypeName()+ ".cst");
+            PrintWriter pw = null;
+            try {
+                pw  = new PrintWriter(charsetFile);
+                pw.write(charset.name());
+            } finally {
+                if(pw != null) pw.close();
+            }
 
             try {
                 sfds.createSchema(schema);
@@ -262,5 +269,9 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
             throw new ServiceException(
                 "Error in shapefile schema. It is possible you don't have a geometry set in the output.");
         }
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

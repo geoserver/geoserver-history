@@ -56,7 +56,7 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
      */
     public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         request = super.read(request, kvp, rawKvp);
-
+        
         // make sure the filter is specified in just one way
         ensureMutuallyExclusive(kvp, new String[] { "featureId", "filter", "bbox", "cql_filter" });
 
@@ -196,6 +196,11 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         if (kvp.containsKey("featureVersion")) {
             querySet(eObject, "featureVersion",
                 Collections.singletonList((String) kvp.get("featureVersion")));
+        }
+        
+        if(kvp.containsKey("format_options")) {
+            GetFeatureType gft = (GetFeatureType) eObject;
+            gft.getFormatOptions().putAll((Map) kvp.get("format_options"));
         }
 
         return request;
