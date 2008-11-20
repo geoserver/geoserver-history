@@ -5,7 +5,7 @@
 package org.geoserver.catalog;
 
 public enum ProjectionPolicy {
- 
+
     /**
      * Force the declared projection, ignoring the native one.
      */
@@ -14,15 +14,15 @@ public enum ProjectionPolicy {
             return 0;
         }
     },
-    
+
     /**
-     * Reproject from the native projection to the declared one. 
+     * Reproject from the native projection to the declared one.
      */
     REPROJECT_TO_DECLARED {
         public Integer getCode() {
             return 1;
         }
-    }, 
+    },
     /**
      * Do nothing.
      */
@@ -31,16 +31,26 @@ public enum ProjectionPolicy {
             return 2;
         }
     };
-    
+
     public abstract Integer getCode();
-    
-    public static ProjectionPolicy get( Integer code ) {
-        for ( ProjectionPolicy p : ProjectionPolicy.values() ) {
-            if ( code.equals( p.getCode() ) ) {
+
+    /**
+     * Looks up the projection policy by code, if the lookup fails the default,
+     * {@link #FORCE_DECLARED}, is returned.
+     * 
+     * @param code
+     * @return
+     */
+    public static ProjectionPolicy get(Integer code) {
+        if (code == null)
+            return FORCE_DECLARED;
+
+        for (ProjectionPolicy p : ProjectionPolicy.values()) {
+            if (code.equals(p.getCode())) {
                 return p;
             }
         }
-        
-        return null;
+
+        return FORCE_DECLARED;
     }
 }
