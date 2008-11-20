@@ -7,6 +7,8 @@ package org.vfny.geoserver.wms.responses.map.htmlimagemap.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jj2000.j2k.util.ArrayUtil;
 
@@ -39,6 +41,8 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public class GeometryTypeConverterFactory implements ConverterFactory {
 
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses.map.htmlimagemap.utils.GeometryTypeConverterFactory");
+	
 	static GeometryFactory gFac=new GeometryFactory();
 	
 	public Converter createConverter(Class<?> source, Class<?> target,
@@ -113,14 +117,22 @@ public class GeometryTypeConverterFactory implements ConverterFactory {
 						return gFac.createGeometryCollection(new Geometry[] {(Geometry)source});						
 					
 					// target is a point: we return the centroid of any complex geometry
-					if(Point.class.isAssignableFrom(target))
+					if(Point.class.isAssignableFrom(target)) {
+						if(LOGGER.isLoggable(Level.FINE))
+							LOGGER.fine("Converting Geometry "+source.toString()+" to Point. This could be unsafe");
 						return ((Geometry)source).getCentroid();
+					}
 					
 					// target is a linestring: we return the linestring connecting all the geometry coordinates
-					if(LineString.class.isAssignableFrom(target))
+					if(LineString.class.isAssignableFrom(target)) {
+						if(LOGGER.isLoggable(Level.FINE))
+							LOGGER.fine("Converting Geometry "+source.toString()+" to LineString. This could be unsafe");
 						return gFac.createLineString(getLineStringCoordinates(((Geometry)source).getCoordinates()));
+					}
 					// target is a polygon: we return a polygon connecting all the coordinates of the given geometry
 					if(Polygon.class.isAssignableFrom(target)) {
+						if(LOGGER.isLoggable(Level.FINE))
+							LOGGER.fine("Converting Geometry "+source.toString()+" to Polygon. This could be unsafe");
 						Coordinate[] coords=getPolygonCoordinates(((Geometry)source).getCoordinates());
 						return gFac.createPolygon(gFac.createLinearRing(coords), new LinearRing[] {});
 					}
