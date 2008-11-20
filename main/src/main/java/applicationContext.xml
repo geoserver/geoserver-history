@@ -165,4 +165,5 @@
   <bean id="defaultDataSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureDataFactory"/>
   <bean id="defaultCatalogSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureCatalogFactory"/>
   
+  <bean id="disabledServiceChecker" class="org.geoserver.ows.DisabledServiceCheck"/>
 </beans>

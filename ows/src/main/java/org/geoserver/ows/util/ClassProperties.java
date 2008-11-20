@@ -94,7 +94,7 @@ public class ClassProperties {
                     return getter;
                 } else {
                     Class target = getter.getReturnType();
-                    if(target.equals(type) || 
+                    if(type.isAssignableFrom(target) || 
                             (target.isPrimitive() && type == wrapper(target)) ||
                             (type.isPrimitive() && target == wrapper(type))) {
                         return getter;
