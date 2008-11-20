@@ -48,6 +48,7 @@ import org.geoserver.platform.ServiceException;
 import org.geotools.util.Version;
 import org.geotools.xml.EMFUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.xmlpull.v1.XmlPullParser;
@@ -117,10 +118,16 @@ public class Dispatcher extends AbstractController {
     /** The security interceptor to be used for authorization checks **/
     OperationInterceptor securityInterceptor = null;
     
+    /** thread local variable for the request */
     public static final ThreadLocal<Request> REQUEST = new ThreadLocal<Request>();
     
     static final Charset UTF8 = Charset.forName("UTF-8");
 
+    /**
+     * list of callbacks 
+     */
+    List<DispatcherCallback> callbacks = Collections.EMPTY_LIST;
+    
     /**
      * Sets the flag to control wether the dispatcher is cite compliante.
      * <p>
@@ -140,7 +147,13 @@ public class Dispatcher extends AbstractController {
     public boolean isCiteCompliant() {
         return citeCompliant;
     }
-
+    
+    @Override
+    protected void initApplicationContext(ApplicationContext context) {
+        //load life cycle callbacks
+        callbacks = GeoServerExtensions.extensions( DispatcherCallback.class, context);
+    }
+    
     protected void preprocessRequest(HttpServletRequest request)
         throws Exception {
         //set the charset
@@ -176,7 +189,7 @@ public class Dispatcher extends AbstractController {
             
             //initialize the request
             init(request);
-
+            
             //find the service
             try {
                 service = service(request);
@@ -185,7 +198,7 @@ public class Dispatcher extends AbstractController {
 
                 return null;
             }
-
+            
             //throw any outstanding errors
             if (request.error != null) {
                 throw request.error;
@@ -201,6 +214,8 @@ public class Dispatcher extends AbstractController {
             if (result != null) {
                 response(result, request, operation);
             }
+            
+            fireFinishedCallback(request);
         } catch (AcegiSecurityException e) {
             // make Acegi exceptions flow so that exception transformer filter can handle them
             throw e;
@@ -213,6 +228,12 @@ public class Dispatcher extends AbstractController {
         return null;
     }
 
+    void fireFinishedCallback(Request req) {
+        for ( DispatcherCallback cb : callbacks ) {
+            cb.finished( req );
+        }
+    }
+    
     Request init(Request request) throws ServiceException, IOException {
         HttpServletRequest httpRequest = request.httpRequest;
 
@@ -245,9 +266,17 @@ public class Dispatcher extends AbstractController {
                 request.input.reset();
         }
 
-        return request;
+        return fireInitCallback(request);
     }
 
+    Request fireInitCallback(Request req) {
+        for ( DispatcherCallback cb : callbacks ) {
+            Request r = cb.init( req );
+            req = r != null ? r : req;
+        }
+        return req;
+    }
+    
     BufferedReader reader(HttpServletRequest httpRequest)
         throws IOException {
         //create a buffer so we can reset the input stream
@@ -329,7 +358,16 @@ public class Dispatcher extends AbstractController {
         }
 
         //load from teh context
-        return findService(service, req.version);
+        Service serviceDescriptor = findService(service, req.version);
+        return fireServiceDispatchedCallback(req,serviceDescriptor);
+    }
+    
+    Service fireServiceDispatchedCallback(Request req, Service service ) {
+        for ( DispatcherCallback cb : callbacks ) {
+            Service s = cb.serviceDispatched( req, service );
+            service = s != null ? s : service;
+        }
+        return service;
     }
 
     String normalize(String value) {
@@ -496,9 +534,18 @@ public class Dispatcher extends AbstractController {
             }
         }
 
-        return new Operation(req.request, serviceDescriptor, operation, parameters);
+        Operation op = new Operation(req.request, serviceDescriptor, operation, parameters);
+        return fireOperationDispatchedCallback(req,op);
     }
 
+    Operation fireOperationDispatchedCallback(Request req, Operation op ) {
+        for ( DispatcherCallback cb : callbacks ) {
+            Operation o = cb.operationDispatched( req, op );
+            op = o != null ? o : op;
+        }
+        return op;
+    }
+    
     String lookupRequestBeanProperty(Object requestBean, String property, boolean allowDefaultValues) {
         if (requestBean instanceof EObject && EMFUtils.has((EObject) requestBean, property)) {
             //special case hack for eObject, we should move 
@@ -542,9 +589,17 @@ public class Dispatcher extends AbstractController {
             }
         }
 
-        return result;
+        return fireOperationExecutedCallback(req, opDescriptor, result);
     }
 
+    Object fireOperationExecutedCallback(Request req, Operation op, Object result ) {
+        for ( DispatcherCallback cb : callbacks ) {
+            Object r = cb.operationExecuted( req, op, result );
+            result = r != null ? r : result;
+        }
+        return result;
+    }
+    
     void response(Object result, Request req, Operation opDescriptor)
         throws Throwable {
         //step 6: write response
@@ -630,6 +685,7 @@ public class Dispatcher extends AbstractController {
             }
 
             Response response = (Response) responses.get(0);
+            response = fireResponseDispatchedCallback(req,opDescriptor,result,response);
 
             //load the output strategy to be used
             ServiceStrategy outputStrategy = findOutputStrategy(req.httpResponse);
@@ -661,6 +717,14 @@ public class Dispatcher extends AbstractController {
         }
     }
 
+    Response fireResponseDispatchedCallback(Request req, Operation op, Object result, Response response ) {
+        for ( DispatcherCallback cb : callbacks ) {
+            Response r = cb.responseDispatched(req, op, result, response);
+            response = r != null ? r : response;
+        }
+        return response;
+    }
+    
     Collection loadServices() {
         Collection services = GeoServerExtensions.extensions(Service.class);
 
