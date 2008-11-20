@@ -4,7 +4,7 @@ General styles
 body {
 background: #fff url(../img/globalbg.png) -60px 0 repeat-y;
 color: #0076a1;
-font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+font-family: Tahoma, "Lucida Sans Unicode", "Lucida Grande", Verdana, sans-serif;
 text-align:left !important; /* override blueprint's ie.css */
 }
 
@@ -15,7 +15,7 @@ h4,
 h5, 
 h6 {
 color: #0082b6;
-font-family: "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+font-family: Tahoma, "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, sans-serif;
 height: auto; /* override blueprint's screen.css */
 }
 
@@ -28,7 +28,7 @@ em,
 dt, 
 b, 
 i {
-font-family: "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+font-family: Tahoma, "Lucida Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, sans-serif;
 }
 
 a {
