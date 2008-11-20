@@ -1731,7 +1731,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
     
     public int getSrsHandling() {
-        return featureType.getProjectionPolicy().getCode();
-        //return srsHandling;
+        ProjectionPolicy policy = featureType.getProjectionPolicy();
+        if(policy != null)
+            return policy.getCode();
+        else
+            return ProjectionPolicy.FORCE_DECLARED.getCode();
     }
 }

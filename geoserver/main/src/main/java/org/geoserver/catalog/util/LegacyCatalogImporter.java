@@ -400,9 +400,6 @@ public class LegacyCatalogImporter {
         featureType.setSRS("EPSG:" + ftInfoReader.srs());
         
         ProjectionPolicy pp = ProjectionPolicy.get( ftInfoReader.srsHandling() );
-        if ( pp == null ) {
-            pp = ProjectionPolicy.FORCE_DECLARED;
-        }
         featureType.setProjectionPolicy(pp);
         
         featureType.setTitle(ftInfoReader.title());
