@@ -154,10 +154,13 @@ public class GeoServerTemplateLoader implements TemplateLoader {
                 return template;
             }
 
-            if (namespace != null)
+            if (namespace != null) {
+                //try looking up the template in the default location for the particular namespaces
+                // under templates/<namespace>
                 template = (File) fileTemplateLoader.findTemplateSource(
-                        "namespaces" + File.separator + namespace + File.separator + path
+                        "templates" + File.separator + namespace + File.separator + path
                         );
+            }
 
             if (template != null) return template;
 
