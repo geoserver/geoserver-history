@@ -6,7 +6,7 @@
 
   <parent>
     <groupId>org.geoserver</groupId>
-    <artifactId>community</artifactId>
+    <artifactId>geoserver</artifactId>
     <version>1.7.1-SNAPSHOT</version>
   </parent>
 
