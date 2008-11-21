@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -57,7 +59,9 @@ public class ShapeZipTest extends WFSTestSupport {
         fct.getFeature().add(fs.getFeatures());
         
         // add the charset
-        gft.getFormatOptions().put("CHARSET", Charset.forName("ISO-8859-15"));
+        Map options = new HashMap();
+        options.put("CHARSET", Charset.forName("ISO-8859-15"));
+        gft.setFormatOptions(options);
         zip.write(fct, bos, op);
         
         checkShapefileIntegrity(new ByteArrayInputStream(bos.toByteArray()));
