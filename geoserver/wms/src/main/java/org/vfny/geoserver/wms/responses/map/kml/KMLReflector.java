@@ -145,7 +145,8 @@ public class KMLReflector {
         if (superoverlay) {
             request.setFormat(KMLMapProducer.MIME_TYPE);
             request.setBbox(KMLUtils.expandToTile(request.getBbox()));
-        } else {
+        } else if (!KMLMapProducer.OUTPUT_FORMATS.contains( request.getFormat() ) ) {
+            //if the user did not explicitly request kml give them back KMZ
             request.setFormat( KMZMapProducer.MIME_TYPE );
         }
 
