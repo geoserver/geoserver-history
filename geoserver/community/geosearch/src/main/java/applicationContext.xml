@@ -10,19 +10,19 @@
           <value>sitemap</value>
         </entry>
         <entry>
-          <key><value>/geosearch/{namespace}.kml</value></key>
+          <key><value>/{namespace}.kml</value></key>
           <value>namespaceindex</value>
         </entry>
         <entry>
-          <key><value>/geosearch/{namespace}/{layer}.kml</value></key>
+          <key><value>/{namespace}/{layer}.kml</value></key>
           <value>feature</value>
         </entry>
         <entry>
-          <key><value>/geosearch/{namespace}/{layer}.html</value></key>
+          <key><value>/{namespace}/{layer}.html</value></key>
           <value>aboutpage</value>
         </entry>
         <entry>
-          <key><value>/geosearch/{namespace}/{layer}/{feature}.kml</value></key>
+          <key><value>/{namespace}/{layer}/{feature}.kml</value></key>
           <value>feature</value>
         </entry>
   </map>

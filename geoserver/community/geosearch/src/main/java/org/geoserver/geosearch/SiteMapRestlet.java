@@ -85,7 +85,7 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
             }
             
             if ( add ) {
-                addUrl(urlset, GEOSERVER_ROOT + "/geosearch/" + namespaces[i].getPrefix() + ".kml");
+                addUrl(urlset, GEOSERVER_ROOT + "/" + namespaces[i].getPrefix() + ".kml");
             }
         }
 
