@@ -259,7 +259,7 @@ public class FeatureTypeConfig {
 
         indexingEnabled = false;
         regionateAttribute = "";
-        regionateStrategy = "sld";
+        regionateStrategy = "best_guess";
         regionateFeatureLimit = 15;
     }
 
