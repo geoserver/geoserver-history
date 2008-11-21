@@ -37,7 +37,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
