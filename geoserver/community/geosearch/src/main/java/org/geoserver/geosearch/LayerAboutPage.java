@@ -76,17 +76,20 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     	map.put("title", info.getTitle());
     	map.put("abstract", info.getAbstract());
     	
-    	//metadata
+    	//Metadata
     	map.put("keywords", info.getKeywords());
 		map.put("declaredCRS", info.getDeclaredCRS());	    	
+		map.put("metadataLinks", info.getMetadataLinks());
 		try{
 			map.put("nativeCRS", info.getNativeCRS());
 		}catch(Exception e){
 			//need to find a logger
 		}
     	
+		String baseUrl = RESTUtils.getBaseURL(request);
+		map.put("base", baseUrl);    			
+		
 		//general parameters for data requests
-		map.put("base", RESTUtils.getBaseURL(request));
     	map.put("name", info.getName());
     	map.put("srs", "EPSG:" + info.getSRS());
     	
@@ -109,8 +112,15 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
         	map.put("lonLatBoundingBox", info.getLatLongBoundingBox());
     	}catch(IOException e){
     		//well shucks.
-    	}
+    	}	
     	
+    	//Fields of Access
+    	map.put("gwc", isGWCAround() + "");
+    	
+    	String gwcLink = baseUrl.substring(0,baseUrl.length()-4) + "gwc/";
+    	map.put("gwcLink", gwcLink);
+    	
+    	map.put("attributes", info.getAttributes());
     	
     	return map;
     }
@@ -230,11 +240,18 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
 
 		return ((w > h) ? w : h) / 256;
 	}
-	
-    /*
+
     //returns true if this GeoServer instance uses GWC, false otherwise.
-    private boolean hasGWC()){
-    	String url = 
+    private boolean isGWCAround(){
+    	boolean GWCisAround = false;
+
+    	try {
+    	  Class.forName("org.geowebcache.GeoWebCacheDispatcher");
+    	  GWCisAround = true;
+    	} catch (ClassNotFoundException cnfe) {
+    	  // guess it's not there.
+    	}
+    	    	
+    	return GWCisAround;
     }
-    */
 }
