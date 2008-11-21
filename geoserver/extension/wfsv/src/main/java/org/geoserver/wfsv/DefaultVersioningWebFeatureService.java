@@ -28,6 +28,7 @@ import org.geoserver.wfs.GetFeature;
 import org.geoserver.wfs.LockFeature;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.util.Version;
 import org.geotools.xml.transform.TransformerBase;
@@ -79,6 +80,10 @@ public class DefaultVersioningWebFeatureService
         versions = new ArrayList();
         versions.add( new Version("1.0.0" ) );
         versions.add( new Version("1.1.0" ) );
+    }
+    
+    public WFSInfo getServiceInfo() {
+        return wfs.getInfo();
     }
 
     public List<Version> getVersions() {
