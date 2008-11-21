@@ -84,8 +84,7 @@ public class DemoRequestAction extends GeoServerAction {
         if(demo.indexOf('/') != -1 || demo.indexOf('\\') != -1)
             throw new IllegalArgumentException("Invalid path " + demo);
 
-        String service = demo.substring(0, demo.indexOf('_')).toLowerCase();
-        String url = baseUrl + service;
+        String url = baseUrl + "ows";
 
         File file = new File(dir, demo);
         BufferedReader reader = new BufferedReader(new FileReader(file));
