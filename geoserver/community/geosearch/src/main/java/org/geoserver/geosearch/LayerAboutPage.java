@@ -35,12 +35,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import freemarker.template.SimpleHash;
 
 public class LayerAboutPage extends GeoServerProxyAwareRestlet {
-	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("TODO-- get this right");	
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");	
 	
     private final DataFormat format =
         new FreemarkerFormat("layerpage.ftl", getClass(), MediaType.TEXT_HTML);
@@ -83,7 +84,7 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
 		try{
 			map.put("nativeCRS", info.getNativeCRS());
 		}catch(Exception e){
-			//need to find a logger
+            LOGGER.log(Level.WARNING, "Error trying to get nativeCRS from " + info.getName() + "FeatureTypeInfo", e);
 		}
     	
 		String baseUrl = RESTUtils.getBaseURL(request);
@@ -111,7 +112,7 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
         	map.put("boundingBox", info.getBoundingBox());
         	map.put("lonLatBoundingBox", info.getLatLongBoundingBox());
     	}catch(IOException e){
-    		//well shucks.
+            LOGGER.log(Level.WARNING, "Error trying to access bounding box or lonLatBoundingBox for " + info.getName() + "FeatureTypeInfo", e);
     	}	
     	
     	//Fields of Access

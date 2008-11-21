@@ -1,9 +1,9 @@
 <html>
-<#assign wmsUrl="../../../wms?request=GetMap&version=1.1.1" 
-         wfsUrl="../../../wfs?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetFeature"
+<#assign wmsUrl="../../wms?request=GetMap&version=1.1.1" 
+         wfsUrl="../../wfs?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetFeature"
          layersParam = "&layers="+name
          nameParam = "&typeName="+name
-         kmlUrl="../../../wms/kml?superoverlay=true"
+         kmlUrl="../../wms/kml?"
          gml2="GML2"
          gml2gzip="GML2-GZIP"
          gml3="gml3"
@@ -12,11 +12,11 @@
          bboxParam="&bbox="+bbox
          dimParams="&width="+width+"&height="+height
          srsParam="&srs="+srs
-         imgUrl="../../../images/"
+         imgUrl="../../images/"
 >
   <head>
     <title>${title} - Powered by GeoServer </title>
-    <link rel="stylesheet" type="text/css" href="../../../openlayers/theme/default/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../../openlayers/theme/default/style.css"/>
     <!-- Basic CSS definitions -->
     <style type="text/css">
         /* General settings */
@@ -243,7 +243,7 @@ border: 1px solid #666;
 
   </style>
 
-    <script src="../../../openlayers/OpenLayers.js" type="text/javascript">
+    <script src="../../openlayers/OpenLayers.js" type="text/javascript">
     </script>
     <script defer="defer" type="text/javascript">
 
@@ -266,7 +266,7 @@ border: 1px solid #666;
         
         // setup tiled layer
         tiled = new OpenLayers.Layer.WMS(
-            "${name} - Tiled", "../../../wms",
+            "${name} - Tiled", "../../wms",
             {
                 height: '${height}',
                 width: '${width}',
@@ -282,7 +282,7 @@ border: 1px solid #666;
 
         // setup single tiled layer
         untiled = new OpenLayers.Layer.WMS(
-            "${name} - Untiled", "../../../wms",
+            "${name} - Untiled", "../../wms",
             {
                 height: '${height}',
                 width: '${width}',
@@ -319,7 +319,7 @@ border: 1px solid #666;
           <a class="pdf" href="${wmsUrl + PDFParam + layersParam + bboxParam + '&styles=' + srsParam + dimParams }">PDF</a>
         </li>
         <li>
-          <a class="google-earth" href="${kmlUrl + layersParam}">Google Earth</a>
+          <a class="google-earth" href="${kmlUrl + 'superoverlay=true' + layersParam}">Google Earth</a>
         </li>
       </ul><!-- /#view-data -->
     </div>
@@ -349,20 +349,20 @@ border: 1px solid #666;
           <td><#list keywords as keyword>${keyword}, </#list></td>
         </tr>
         <tr>
-          <th scope="row">Native CRS</th>
-          <td>${nativeCRS}</td>
-        </tr>
-        <tr>
-          <th scope="row">Declared CRS</th>
-          <td>${declaredCRS}</td>
-        </tr>
-        <tr>
           <th scope="row">Extent</th>
           <td>${bbox}</td>
         </tr>
         <tr>
           <th scope="row">SRS</th>
           <td>${srs}</td>
+        </tr>
+        <tr>
+          <th scope="row">Native CRS</th>
+          <td>${nativeCRS}</td>
+        </tr>
+        <tr>
+          <th scope="row">Declared CRS</th>
+          <td>${declaredCRS}</td>
         </tr>
         <!--
         <#if metadataLinks?size != 0>
@@ -377,18 +377,24 @@ border: 1px solid #666;
     
     <#if gwc == "true">
     <h2>Access tiles</h2>
-    Access the tiles through these API's:
+    Access the tiles, cached with GeoWebCache, through these API's:
     <dl>
-<!--  <li>OpenLayers/WMS-Caching</li> -->
-      <dt>Google Maps API</dt>
-      <dd>
-       <a href="http://geowebcache.org/trac/wiki/google_maps">Use GeoWebCache tiles in GoogleMaps</a> with the following code snippet:
-        <code>tileUrlTemplate: '${gwcLink}service/gmaps?layers=${name}&zoom={Z}&x={X}&y={Y}',</code>
+      <dt>OpenLayers</dt>
+      <dd><a href="http://geowebcache.org/trac/wiki/openlayers">Use tiles in OpenLayers</a> with the following code snippet:
+        <pre>var layerstates = new OpenLayers.Layer.WMS( 
+                "States EPSG:4326 JPEG",
+                "${gwcLink}service/wms",
+                {layers: '${name}', format: 'image/jpeg'} );</pre>
       </dd>
-      <dt>Virtual Earth API</dt>
+      <dt>Google Maps</dt>
       <dd>
-        <a href="http://geowebcache.org/trac/wiki/virtual_earth">Use GeoWebCache tiles in Virtual Earth</a> with the following code snippet:
-        <code>var tileLayerURL = '${gwcLink}service/ve?quadkey=%4&format=image/png&layers=${name}';</code>
+       <a href="http://geowebcache.org/trac/wiki/google_maps">Use tiles in GoogleMaps</a> with the following code snippet:
+        <pre>tileUrlTemplate: '${gwcLink}service/gmaps?layers=${name}&zoom={Z}&x={X}&y={Y}',</pre>
+      </dd>
+      <dt>Virtual Earth</dt>
+      <dd>
+        <a href="http://geowebcache.org/trac/wiki/virtual_earth">Use tiles in Virtual Earth</a> with the following code snippet:
+        <pre>var tileLayerURL = '${gwcLink}service/ve?quadkey=%4&format=image/png&layers=${name}';</pre>
       </dd>
     </dl>
     </#if>
