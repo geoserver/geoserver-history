@@ -932,24 +932,13 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     .getName().getLocalPart();
             GetMapRequest request = mapContext.getRequest();
 
-            // TODO The old code, commented out below, results in
-            // link =
-            // http://localhost:8080/geoserver/rest/geosearch/topp/states.kml?st
-            // due to getBaseUrl()
-            //
-            // String link = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
-            // request.getGeoServer().getProxyBaseUrl());
-            //
-
-            // If you prefer pretty code, this is a good point to close your
-            // eyes:
             String baseUrl = RequestUtils.baseURL(request.getHttpServletRequest());
             baseUrl = RequestUtils.proxifiedBaseURL(
             		baseUrl,
             		request.getGeoServer().getProxyBaseUrl()
             		);
 
-            return baseUrl + "rest/geosearch/" + ns.getPrefix() + "/"
+            return baseUrl + "rest/" + ns.getPrefix() + "/"
                     + featureTypeName;
         }
 

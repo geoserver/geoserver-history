@@ -19,7 +19,6 @@ import org.geotools.map.MapLayer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
@@ -40,12 +39,12 @@ public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProd
      */
     public static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
     
-    public static final String[] OUTPUT_FORMATS = {
-            MIME_TYPE,
+    public static final List<String> OUTPUT_FORMATS = Arrays.asList(
+                MIME_TYPE,
             "application/vnd.google-earth.kml",
             "kml",
             "application/vnd.google-earth.kml xml"
-    };
+        );
 
     /** kml transformer which turns the map context into kml */
 	protected KMLTransformer transformer;

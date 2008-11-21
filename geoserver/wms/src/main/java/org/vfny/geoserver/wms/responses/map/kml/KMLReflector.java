@@ -144,7 +144,8 @@ public class KMLReflector {
             // require KML so relative links will work
             request.setFormat(KMLMapProducer.MIME_TYPE);
             request.setBbox(KMLUtils.expandToTile(request.getBbox()));
-        } else if (!request.getFormat().equals(KMLMapProducer.MIME_TYPE)){
+        } else if (!KMLMapProducer.OUTPUT_FORMATS.contains( request.getFormat() ) ) {
+            //if the user did not explicitly request kml give them back KMZ
             request.setFormat( KMZMapProducer.MIME_TYPE );
         }
 
