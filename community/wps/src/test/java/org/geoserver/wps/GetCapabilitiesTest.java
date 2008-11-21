@@ -3,6 +3,7 @@ package org.geoserver.wps;
 import junit.framework.Test;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 public class GetCapabilitiesTest extends WPSTestSupport {
 
@@ -78,11 +79,11 @@ public class GetCapabilitiesTest extends WPSTestSupport {
         assertEquals("wps:Capabilities", dom.getFirstChild().getNodeName());
     }
     
-    public void testUpdateSequenceInferiorGet() throws Exception {
-        Document dom = getAsDOM(root() + "request=GetCapabilities&service=WPS&updateSequence=-1");
-        basicCapabilitiesTest(dom);
-    }
-    
+//    public void testUpdateSequenceInferiorGet() throws Exception {
+//        Document dom = getAsDOM(root() + "request=GetCapabilities&service=WPS&updateSequence=-1");
+//        basicCapabilitiesTest(dom);
+//    }
+//    
 //    public void testUpdateSequenceInferiorPost() throws Exception {
 //        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 //                + "<wps:GetCapabilities service=\"WPS\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" "
@@ -94,9 +95,8 @@ public class GetCapabilitiesTest extends WPSTestSupport {
 //    }
 //    
 //    public void testUpdateSequenceEqualsGet() throws Exception {
-//        Document dom = getAsDOM(root() + "?request=GetCapabilities&service=WCS&updateSequence=0");
-//        // TODO: remove validation hacks and have a really compliant document
-//        checkValidationErrors(dom, WPS_SCHEMA, "'lang'", "wps:Languages", "'version'");
+//        Document dom = getAsDOM(root() + "request=GetCapabilities&service=WPS&updateSequence=0");
+//        checkValidationErrors(dom);
 //        final Node root = dom.getFirstChild();
 //        assertEquals("wps:Capabilities", root.getNodeName());
 //        assertEquals(0, root.getChildNodes().getLength());
@@ -109,8 +109,7 @@ public class GetCapabilitiesTest extends WPSTestSupport {
 //                + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 //                + " updateSequence=\"0\"/>";
 //        Document dom = postAsDOM(root(), request);
-//        // TODO: remove validation hacks and have a really compliant document
-//        checkValidationErrors(dom, WPS_SCHEMA, "'lang'", "wps:Languages", "'version'");
+//        checkValidationErrors(dom);
 //        final Node root = dom.getFirstChild();
 //        assertEquals("wcs:Capabilities", root.getNodeName());
 //        assertEquals(0, root.getChildNodes().getLength());
@@ -118,7 +117,7 @@ public class GetCapabilitiesTest extends WPSTestSupport {
 //    
 //    public void testUpdateSequenceSuperiorGet() throws Exception {
 //        Document dom = getAsDOM(root() + "request=GetCapabilities&service=WPS&updateSequence=1");
-//        checkValidationErrors(dom, WPS_SCHEMA);
+//        checkValidationErrors(dom);
 ////        print(dom);
 //        checkOws11Exception(dom);
 //    }
@@ -130,7 +129,7 @@ public class GetCapabilitiesTest extends WPSTestSupport {
 //                + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 //                + " updateSequence=\"1\"/>";
 //        Document dom = postAsDOM(root(), request);
-//        checkValidationErrors(dom, WPS_SCHEMA);
+//        checkValidationErrors(dom);
 ////        print(dom);
 //        checkOws11Exception(dom);
 //    }
