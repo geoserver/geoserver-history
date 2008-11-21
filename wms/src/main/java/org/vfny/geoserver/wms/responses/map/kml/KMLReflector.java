@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.wms.WebMapService;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 
@@ -104,6 +105,10 @@ public class KMLReflector {
                 Object value = request.getHttpServletRequest().getParameter((String)key);
                 mode = (value instanceof String) ? ((String) value).toLowerCase() : mode;
             }
+
+        if (!MODES.containsKey(mode)){
+            throw new WmsException("Unknown KML mode: " + mode);
+        }
                 
         //first set up some of the normal wms defaults
         if ( request.getWidth() < 1 ) {
