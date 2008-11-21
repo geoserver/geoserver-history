@@ -25,7 +25,7 @@
     </dependency>
 	<dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt2-sample-data</artifactId>
+      <artifactId>gt-sample-data</artifactId>
       <version>${gt.version}</version>
     </dependency>
 	<dependency>  
