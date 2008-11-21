@@ -87,10 +87,23 @@ public class DefaultWebMapService implements WebMapService,
             new Envelope(-180, 180, -90, 90), DefaultGeographicCRS.WGS84);
 
     /**
+     * wms configuration 
+     */
+    WMS wms;
+    
+    /**
      * Application context
      */
     ApplicationContext context;
 
+    public DefaultWebMapService( WMS wms ) {
+        this.wms = wms;
+    }
+    
+    public WMSInfo getServiceInfo() {
+        return wms.getInfo();
+    }
+    
     public void setApplicationContext(ApplicationContext context)
             throws BeansException {
         this.context = context;

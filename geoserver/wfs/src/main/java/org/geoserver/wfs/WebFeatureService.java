@@ -40,6 +40,11 @@ public interface WebFeatureService {
     List<Version> getVersions();
     
     /**
+     * The configuration of the service.
+     */
+    WFSInfo getServiceInfo();
+    
+    /**
      * WFS GetCapabilities operation.
      *
      * @param request The get capabilities request.

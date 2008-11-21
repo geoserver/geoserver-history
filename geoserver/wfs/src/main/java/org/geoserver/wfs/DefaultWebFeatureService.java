@@ -19,6 +19,7 @@ import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Service;
 import org.geotools.util.Version;
@@ -69,6 +70,10 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
         this.catalog = catalog;
     }
 
+    public WFSInfo getServiceInfo() {
+        return wfs.getInfo();
+    }
+    
     /**
      * The list of verions of wfs supported.
      */

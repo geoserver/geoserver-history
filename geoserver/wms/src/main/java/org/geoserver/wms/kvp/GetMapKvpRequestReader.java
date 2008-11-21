@@ -210,7 +210,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 			processSld(getMap, sld, styleNameList);
 		} else if (getMap.getSld() != null) {
 			if (LOGGER.isLoggable(Level.FINE)) {
-				LOGGER.fine("Getting layers and styles from reomte SLD");
+				LOGGER.fine("Getting layers and styles from reomte SLD:" + getMap.getSld() );
 			}
 
 			URL sldUrl = getMap.getSld();

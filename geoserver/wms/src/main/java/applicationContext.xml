@@ -85,7 +85,9 @@
 	</bean>	
 	
 	<!-- wms service + descriptor -->
- 	<bean id="wmsService2" class="org.geoserver.wms.DefaultWebMapService"/>
+ 	<bean id="wmsService2" class="org.geoserver.wms.DefaultWebMapService">
+ 	  <constructor-arg ref="wms"/>
+ 	</bean>
  	<alias name="wmsService2" alias="webMapService"/>
  	
  	<bean id="wmsServiceDescriptor" class="org.geoserver.platform.Service">
