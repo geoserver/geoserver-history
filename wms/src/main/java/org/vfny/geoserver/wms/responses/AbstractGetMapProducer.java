@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
@@ -57,15 +58,19 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     }
 
     protected AbstractGetMapProducer(final String mime, final String[] outputFormats) {
+        this(mime,outputFormats != null ? Arrays.asList(outputFormats) : null);
+    }
+    
+    protected AbstractGetMapProducer(final String mime, Collection<String> outputFormats ) {
         this.mime = mime;
-        if (outputFormats == null) {
-            outputFormatNames = Collections.emptySet();
-        } else {
-            // Using a set that performs case insensitive look ups directly.
-            Set<String> names = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-            names.addAll(Arrays.asList(outputFormats));
-            outputFormatNames = Collections.unmodifiableSet(names);
+        if( outputFormats == null ) {
+            outputFormats = Collections.emptySet();
         }
+        // Using a set that performs case insensitive look ups directly.
+        Set<String> names = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        names.addAll(outputFormats);
+        outputFormatNames = Collections.unmodifiableSet(names);
+         
     }
 
     protected AbstractGetMapProducer() {
