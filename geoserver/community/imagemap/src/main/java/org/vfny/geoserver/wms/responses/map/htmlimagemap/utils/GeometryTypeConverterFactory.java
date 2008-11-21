@@ -153,6 +153,15 @@ public class GeometryTypeConverterFactory implements ConverterFactory {
 						
 					return null;
 				}
+				
+				@SuppressWarnings("unchecked")
+				private <T> T[] arrayCopy(T[] original,int length) {
+					Class<?> arrayType = original.getClass().getComponentType();
+					T[] copy = (T[])java.lang.reflect.Array.newInstance(arrayType, length);
+					System.arraycopy(original, 0, copy, 0, original.length<length ? original.length : length);					
+					return copy;
+				}
+
 
 				/**
 				 * Add dummy coordinates to the given array to reach
@@ -165,7 +174,7 @@ public class GeometryTypeConverterFactory implements ConverterFactory {
 				 */
 				private Coordinate[] growCoordinatesNum(Coordinate[] input,int numpoints) {
 					if(input.length<numpoints) {
-						Coordinate[] newCoordinates=Arrays.copyOf(input,numpoints);
+						Coordinate[] newCoordinates=arrayCopy(input,numpoints);
 						Arrays.fill(newCoordinates, input.length, numpoints,input[0]);
 						
 						input=newCoordinates;
@@ -199,7 +208,7 @@ public class GeometryTypeConverterFactory implements ConverterFactory {
 					coordinates=growCoordinatesNum(coordinates, 4);
 					
 					if(!coordinates[coordinates.length-1].equals(coordinates[0])) {
-						Coordinate[] newCoordinates=Arrays.copyOf(coordinates,coordinates.length+1);
+						Coordinate[] newCoordinates=arrayCopy(coordinates,coordinates.length+1);
 						newCoordinates[newCoordinates.length-1]=newCoordinates[0];
 						
 						coordinates=newCoordinates;

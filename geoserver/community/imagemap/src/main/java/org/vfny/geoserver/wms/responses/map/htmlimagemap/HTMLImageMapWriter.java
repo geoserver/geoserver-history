@@ -773,7 +773,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 				}
 				
 			} catch (NoninvertibleTransformException e) {
-				throw new IOException(e);
+				throw new IOException(e.getMessage());
 			} 
         }
     }
