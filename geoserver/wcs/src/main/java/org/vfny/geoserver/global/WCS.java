@@ -85,6 +85,10 @@ public final class WCS extends Service {
         init();
     }
     
+    public WCSInfo getInfo() {
+        return wcs;
+    }
+    
     public void init() {
         wcs = gs.getService(WCSInfo.class);
         service = wcs;

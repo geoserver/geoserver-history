@@ -31,6 +31,11 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  */
 public interface WebFeatureService {
     /**
+     * The configuration of the service.
+     */
+    WFSInfo getServiceInfo();
+    
+    /**
      * WFS GetCapabilities operation.
      *
      * @param request The get capabilities request.

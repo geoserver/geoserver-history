@@ -136,6 +136,10 @@ public class WFS extends org.vfny.geoserver.global.Service {
         service = wfs;
     }
     
+    public WFSInfo getInfo() {
+        return wfs;
+    }
+    
     /**
      * load purpose.
      *

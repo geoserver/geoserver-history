@@ -27,6 +27,12 @@ import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
  *
  */
 public interface WebMapService {
+    
+    /**
+     * WMS service configuration.
+     */
+    WMSInfo getServiceInfo();
+    
     /**
      * GetCapabilities operation.
      */

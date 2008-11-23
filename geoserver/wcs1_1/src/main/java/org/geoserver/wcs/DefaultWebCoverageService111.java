@@ -87,6 +87,10 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         this.wcs = wcs;
         this.catalog = catalog;
     }
+    
+    public WCSInfo getServiceInfo() {
+        return wcs.getInfo();
+    }
 
     public WCSCapsTransformer getCapabilities(GetCapabilitiesType request) {
         // do the version negotiation dance
