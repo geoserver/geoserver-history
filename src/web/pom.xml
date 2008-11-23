@@ -368,7 +368,7 @@
     <profile>
       <id>release</id>
       <properties>
-        <configDirectory>${basedir}/../../configuration</configDirectory>
+        <configDirectory>${basedir}/../../data</configDirectory>
         <configId>release</configId>
       </properties>
     </profile>
