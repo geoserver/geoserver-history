@@ -8,6 +8,7 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wms.WMSInfo;
@@ -193,6 +194,10 @@ public class WMS extends Service {
         super( gs.getService(WMSInfo.class), gs );
         init();
         //wms.setName( FIXED_SERVICE_NAME );
+    }
+    
+    public WMSInfo getInfo() {
+        return wms;
     }
     
     public void init() {

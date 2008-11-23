@@ -63,6 +63,10 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
         this.filterFactory = filterFactory;
     }
 
+    public WFSInfo getServiceInfo() {
+        return wfs.getInfo();
+    }
+    
     /**
      * WFS GetCapabilities operation.
      *

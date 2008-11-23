@@ -25,6 +25,12 @@ import org.opengis.coverage.grid.GridCoverage;
  *
  */
 public interface WebCoverageService111 {
+    
+    /**
+     * WCS service info.
+     */
+    WCSInfo getServiceInfo();
+    
     /**
     * GetCapabilities operation.
     */

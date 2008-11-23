@@ -35,7 +35,7 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
         GetMapRequest request = new GetMapRequest(getWMS());
 
         /* Create the reflector */
-        DefaultWebMapService reflector = new DefaultWebMapService();
+        DefaultWebMapService reflector = new DefaultWebMapService(getWMS());
 
         /* Run the reflector */
         request.setLayers(mockGMR.getLayers());
@@ -72,7 +72,7 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
         GetMapRequest request = new GetMapRequest(getWMS());
 
         /* Create the reflector */
-        DefaultWebMapService reflector = new DefaultWebMapService();
+        DefaultWebMapService reflector = new DefaultWebMapService(getWMS());
 
         /* Run the reflector */
         request.setSRS("EPSG:41001");
@@ -120,7 +120,7 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
         GetMapRequest request = new GetMapRequest(getWMS());
 
         /* Create the reflector */
-        DefaultWebMapService reflector = new DefaultWebMapService();
+        DefaultWebMapService reflector = new DefaultWebMapService(getWMS());
 
         /* Run the reflector */
         request.setSRS("EPSG:41001");

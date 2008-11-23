@@ -23,6 +23,12 @@ import org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse;
  *
  */
 public interface WebCoverageService {
+    
+    /**
+     * WCS Service configuration.
+     */
+    WCSInfo getServiceInfo();
+    
     /**
     * GetCapabilities operation.
     */
