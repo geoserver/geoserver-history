@@ -11,6 +11,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerInitializer;
 import org.geoserver.config.ServiceInfo;
+import org.geotools.image.jai.Registry;
 
 import com.sun.media.jai.util.SunTileCache;
 
@@ -84,5 +85,8 @@ public class JAIInitializer implements GeoServerInitializer {
         
         // ImageIO Caching
         ImageIO.setUseCache(jai.isImageIOCache());
+        
+        // Workaround for native mosaic BUG
+        Registry.setNativeAccelerationAllowed("Mosaic", false, jaiDef);
     }
 }

@@ -513,35 +513,35 @@ public class XMLConfigReader {
                 }
             }
 
-            double jaiMemoryCapacity = 0;
+            double jaiMemoryCapacity = GeoServerDTO.Defaults.JaiMemoryCapacity;
             elem = ReaderUtils.getChildElement(globalElem, "JaiMemoryCapacity", false);
 
             if (elem != null) {
                 jaiMemoryCapacity = ReaderUtils.getDoubleAttribute(elem, "value", false);
             }
 
-            double jaiMemoryThreshold = 0.0;
+            double jaiMemoryThreshold =GeoServerDTO.Defaults.JaiMemoryThreshold;
             elem = ReaderUtils.getChildElement(globalElem, "JaiMemoryThreshold", false);
 
             if (elem != null) {
                 jaiMemoryThreshold = ReaderUtils.getDoubleAttribute(elem, "value", false);
             }
 
-            int jaiTileThreads = 7;
+            int jaiTileThreads = GeoServerDTO.Defaults.JaiTileThreads;
             elem = ReaderUtils.getChildElement(globalElem, "JaiTileThreads", false);
 
             if (elem != null) {
                 jaiTileThreads = ReaderUtils.getIntAttribute(elem, "value", false, 7);
             }
 
-            int jaiTilePriority = 5;
+            int jaiTilePriority = GeoServerDTO.Defaults.JaiTilePriority;
             elem = ReaderUtils.getChildElement(globalElem, "JaiTilePriority", false);
 
             if (elem != null) {
                 jaiTilePriority = ReaderUtils.getIntAttribute(elem, "value", false, 5);
             }
 
-            Boolean jaiRecycling = Boolean.FALSE;
+            Boolean jaiRecycling = GeoServerDTO.Defaults.JaiRecycling;
             elem = ReaderUtils.getChildElement(globalElem, "JaiRecycling", false);
 
             if (elem != null) {
@@ -549,7 +549,7 @@ public class XMLConfigReader {
                         false, false));
             }
 
-            Boolean imageIOCache = Boolean.FALSE;
+            Boolean imageIOCache =GeoServerDTO.Defaults.ImageIOCache;
             elem = ReaderUtils.getChildElement(globalElem, "ImageIOCache", false);
 
             if (elem != null) {
@@ -557,7 +557,7 @@ public class XMLConfigReader {
                         false, false));
             }
 
-            Boolean jaiJPEGNative = Boolean.TRUE;
+            Boolean jaiJPEGNative = GeoServerDTO.Defaults.JaiJPEGNative;
             elem = ReaderUtils.getChildElement(globalElem, "JaiJPEGNative", false);
 
             if (elem != null) {
@@ -565,13 +565,21 @@ public class XMLConfigReader {
                         false, false));
             }
 
-            Boolean jaiPNGNative = Boolean.TRUE;
+            Boolean jaiPNGNative = GeoServerDTO.Defaults.JaiPNGNative;
             elem = ReaderUtils.getChildElement(globalElem, "JaiPNGNative", false);
 
             if (elem != null) {
                 jaiPNGNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
                         false, false));
             }
+            
+            Boolean jaiMosaicNative = GeoServerDTO.Defaults.JaiMosaicNative;
+            elem = ReaderUtils.getChildElement(globalElem, "JaiMosaicNative", false);
+
+            if (elem != null) {
+            	jaiMosaicNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
+                        false, false));
+            }            
 
             geoServer.setJaiMemoryCapacity(jaiMemoryCapacity);
             geoServer.setJaiMemoryThreshold(jaiMemoryThreshold);
@@ -581,6 +589,7 @@ public class XMLConfigReader {
             geoServer.setImageIOCache(imageIOCache);
             geoServer.setJaiJPEGNative(jaiJPEGNative);
             geoServer.setJaiPNGNative(jaiPNGNative);
+            geoServer.setJaiMosaicNative(jaiMosaicNative);
 
             elem = ReaderUtils.getChildElement(globalElem, "ContactInformation");
             geoServer.setContact(loadContact(elem));

@@ -152,6 +152,12 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
             jaiPNGNative = false;
         }
 
+        
+        boolean jaiMosaicNative = form.isJaiMosaicNative();
+        if (form.isJaiMosaicNativeChecked()== false) {
+        	jaiMosaicNative = false;
+        }        
+        
         String tileCache = form.getTileCache();
 
         if ((tileCache == null) || "".equals(tileCache.trim())) {
@@ -180,6 +186,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setJaiJPEGNative(jaiJPEGNative);
         globalConfig.setJaiPNGNative(jaiPNGNative);
         globalConfig.setTileCache(tileCache);
+        globalConfig.setJaiMosaicNative(jaiMosaicNative);
 
         ContactConfig contactConfig = globalConfig.getContact();
         contactConfig.setContactPerson(form.getContactPerson());
