@@ -9,6 +9,7 @@ worthy for this release includes:
   * KML Super Overlay and Regionating Support
   * KML Extrude Support
   * KML Reflector Improvements
+  * Layer Overview Page
   * Mac OS X Installer 
   * New SQL Server DataStore Extension
   * Improved Oracle DataStore Extension
