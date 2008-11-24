@@ -24,6 +24,7 @@ public class JAIInfo implements Serializable {
     boolean imageIOCache;
     boolean pngAcceleration;
     boolean jpegAcceleration;
+    boolean allowNativeMosaic;
 
     /**
      * @uml.property name="allowInterpolation"
@@ -148,5 +149,13 @@ public class JAIInfo implements Serializable {
     public void setTileCache( SunTileCache tileCache ) {
         this.tileCache = tileCache;
     }
+
+	public boolean isAllowNativeMosaic() {
+		return allowNativeMosaic;
+	}
+
+	public void setAllowNativeMosaic(boolean allowNativeMosaic) {
+		this.allowNativeMosaic = allowNativeMosaic;
+	}
     
 }

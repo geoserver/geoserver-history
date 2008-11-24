@@ -4,13 +4,11 @@
  */
 package org.vfny.geoserver.config;
 
-import org.vfny.geoserver.global.Data;
+import java.nio.charset.Charset;
+
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
-import java.nio.charset.Charset;
-import java.util.logging.Level;
 
 
 /**
@@ -162,6 +160,8 @@ public class GlobalConfig {
     
     private int updateSequence;
 
+	private boolean jaiMosaicNative;
+
     /**
      * GlobalConfig constructor.
      *
@@ -231,7 +231,7 @@ public class GlobalConfig {
         imageIOCache = g.getImageIOCache().booleanValue();
         jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
         jaiPNGNative = g.getJaiPNGNative().booleanValue();
-
+        jaiMosaicNative=g.getJaiMosaicNative();
         tileCache = g.getTileCache();
         
         updateSequence = g.getUpdateSequence();
@@ -326,6 +326,7 @@ public class GlobalConfig {
         g.setJaiRecycling(Boolean.valueOf(jaiRecycling));
         g.setImageIOCache(Boolean.valueOf(imageIOCache));
         g.setJaiJPEGNative(Boolean.valueOf(jaiJPEGNative));
+        g.setJaiMosaicNative(jaiMosaicNative);
         g.setJaiPNGNative(Boolean.valueOf(jaiPNGNative));
         g.setProxyBaseUrl(proxyBaseUrl);
         g.setTileCache(tileCache);
@@ -725,5 +726,17 @@ public class GlobalConfig {
 	 */
 	public void setUpdateSequence(int updateSequence) {
 		this.updateSequence = updateSequence;
+	}
+
+	public Boolean getJaiMosaicNative() {
+		return jaiMosaicNative;
+	}
+
+	public void setJaiMosaicNative(Boolean jaiMosaicNative) {
+		this.jaiMosaicNative = jaiMosaicNative;
+	}
+
+	public void setJaiMosaicNative(boolean jaiMosaicNative) {
+		this.jaiMosaicNative = jaiMosaicNative;
 	}
 }

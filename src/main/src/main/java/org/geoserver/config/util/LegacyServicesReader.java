@@ -78,7 +78,7 @@ public class LegacyServicesReader {
     public Map<String,Object> global() throws Exception {
         Element globalElement = ReaderUtils.getChildElement(
                 serverConfiguration, "global");
-        HashMap global = new HashMap();
+        HashMap<String,Object> global = new HashMap<String,Object>();
 
         value("verbose", globalElement, global, Boolean.class);
         value("verboseExceptions", globalElement, global, Boolean.class);
@@ -100,6 +100,7 @@ public class LegacyServicesReader {
         value("ImageIOCache", globalElement, global, Boolean.class);
         value("JaiJPEGNative", globalElement, global, Boolean.class);
         value("JaiPNGNative", globalElement, global, Boolean.class);
+        value("JaiMosaicNative", globalElement, global, Boolean.class);
         
         return global;
     }
@@ -234,7 +235,7 @@ public class LegacyServicesReader {
         
         Element keywordsElement = ReaderUtils.getChildElement( serviceElement, "keywords" );
         Element[] keywordElements = ReaderUtils.getChildElements( keywordsElement, "keyword" );
-        ArrayList keywords = new ArrayList();
+        ArrayList<String> keywords = new ArrayList<String>();
         if(keywordElements != null) {
             for ( int i = 0; i < keywordElements.length; i++ ) {
                 keywords.add( keywordElements[i].getFirstChild().getTextContent() );
@@ -271,7 +272,7 @@ public class LegacyServicesReader {
         value( parameter, element, map, clazz, false, null );
     }
     
-    <T> void value(String parameter, Element element, Map map, Class<T> clazz, boolean man, T def ) 
+    <T> void value(String parameter, Element element, Map<String, Object> map, Class<T> clazz, boolean man, T def ) 
         throws Exception {
         
         Element valueElement = ReaderUtils.getChildElement(element, parameter);
@@ -308,7 +309,7 @@ public class LegacyServicesReader {
        text(parameter,element,map,clazz,false,null);
     }
     
-    <T> void text(String parameter, Element element, Map map, Class<T> clazz, boolean man, T def)
+    <T> void text(String parameter, Element element, Map<String, Object> map, Class<T> clazz, boolean man, T def)
         throws Exception {
         
         String text = ReaderUtils.getChildText(element, parameter);

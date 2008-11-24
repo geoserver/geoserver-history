@@ -226,6 +226,7 @@ public class XMLConfigWriter {
             cw.valueTag("ImageIOCache", "" + g.getImageIOCache());
             cw.valueTag("JaiJPEGNative", "" + g.getJaiJPEGNative());
             cw.valueTag("JaiPNGNative", "" + g.getJaiPNGNative());
+            cw.valueTag("JaiMosaicNative", "" + g.getJaiMosaicNative());
 
             /*
              * if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){ cw.comment("The

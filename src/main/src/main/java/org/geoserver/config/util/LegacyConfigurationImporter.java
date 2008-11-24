@@ -20,6 +20,7 @@ import org.geoserver.config.ServiceLoader;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 
 import com.sun.media.jai.util.SunTileCache;
 
@@ -88,7 +89,7 @@ public class LegacyConfigurationImporter extends LegacyImporterSupport {
 
         LegacyServicesReader reader = reader( dir );
         
-        //TODO: this routine needs to be safer about accessing paramerters, 
+        //TODO: this routine needs to be safer about accessing parameters, 
         // wrapping in null checks
         
         GeoServerFactory factory = geoServer.getFactory();
@@ -134,14 +135,15 @@ public class LegacyConfigurationImporter extends LegacyImporterSupport {
         
         //jai
         JAIInfo jai = new JAIInfo();
-        jai.setMemoryCapacity( (Double) value( global.get( "JaiMemoryCapacity"), 0.5 ) );
-        jai.setMemoryThreshold( (Double) value( global.get( "JaiMemoryThreshold"), 0.75) );
-        jai.setTileThreads( (Integer) value( global.get( "JaiTileThreads"), 7 ) );
-        jai.setTilePriority( (Integer) value( global.get( "JaiTilePriority"), 5 ) );
-        jai.setImageIOCache( (Boolean) value( global.get( "ImageIOCache" ), false) );
-        jai.setJPEGAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ), true) );
-        jai.setPNGAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), true)  );
-        jai.setRecycling( (Boolean) value( global.get( "JaiRecycling" ), true)  );
+        jai.setMemoryCapacity( (Double) value( global.get( "JaiMemoryCapacity"),GeoServerDTO.Defaults.JaiMemoryCapacity ) );
+        jai.setMemoryThreshold( (Double) value( global.get( "JaiMemoryThreshold"), GeoServerDTO.Defaults.JaiMemoryThreshold) );
+        jai.setTileThreads( (Integer) value( global.get( "JaiTileThreads"), GeoServerDTO.Defaults.JaiTileThreads ) );
+        jai.setTilePriority( (Integer) value( global.get( "JaiTilePriority"), GeoServerDTO.Defaults.JaiTilePriority ) );
+        jai.setImageIOCache( (Boolean) value( global.get( "ImageIOCache" ), GeoServerDTO.Defaults.ImageIOCache) );
+        jai.setJPEGAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ),GeoServerDTO.Defaults.JaiJPEGNative ) );
+        jai.setPNGAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), GeoServerDTO.Defaults.JaiPNGNative)  );
+        jai.setRecycling( (Boolean) value( global.get( "JaiRecycling" ), GeoServerDTO.Defaults.JaiRecycling)  );
+        jai.setAllowNativeMosaic((Boolean) value( global.get( "JaiRecycling" ), GeoServerDTO.Defaults.JaiMosaicNative) );
         
         info.getMetadata().put( JAIInfo.KEY, jai );
         
