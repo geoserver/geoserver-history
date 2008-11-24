@@ -80,8 +80,8 @@
     <interpolationMethods>nearest neighbor,bilinear,bicubic</interpolationMethods>
   </supportedInterpolations>
   <parameters >
-    <parameter value = "#000000" name = "OutputTransparentColor" />
-    <parameter value = "NaN" name = "InputImageThresholdValue" />
-    <parameter value = "" name = "InputTransparentColor" />
+    <parameter name = "OutputTransparentColor" value = "#000000" />
+    <parameter name = "InputTransparentColor" value = "" />
+    <parameter name = "InputImageThresholdValue" value = "NaN" />
   </parameters>
 </coverage>

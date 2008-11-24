@@ -4,16 +4,23 @@
     native wich EPGS code for the FeatureTypeInfoDTO
   -->
   <SRS>4326</SRS>
+  <SRSHandling>0</SRSHandling>
   <title>giant_polygon_Type</title>
   <abstract>Generated from DS_giant_polygon</abstract>
-  <numDecimals value = "8" />
-  <keywords>DS_giant_polygon giant_polygon</keywords>
+  <wmspath>/</wmspath>
+  <numDecimals value = "0" />
+  <keywords>DS_giant_polygon, giant_polygon</keywords>
   <latLonBoundingBox dynamic = "false" maxx = "180.0" maxy = "90.0" minx = "-180.0" miny = "-90.0" />
-  <nativeBBox dynamic = "true" />
+  <nativeBBox dynamic = "false" maxx = "180.0" maxy = "90.0" minx = "-180.0" miny = "-90.0" />
   <!--
     the default style this FeatureTypeInfoDTO can be represented by.
     at least must contain the "default" attribute
   -->
   <styles default = "giant_polygon" />
   <cacheinfo enabled = "true" maxage = "3600" />
+  <searchable enabled = "false" />
+  <regionateAttribute value = "" />
+  <regionateStrategy value = "" />
+  <regionateFeatureLimit value = "10" />
+  <maxFeatures>0</maxFeatures>
 </featureType>
