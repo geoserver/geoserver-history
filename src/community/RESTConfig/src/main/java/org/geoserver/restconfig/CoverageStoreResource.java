@@ -7,6 +7,7 @@ package org.geoserver.restconfig;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.FreemarkerFormat;
@@ -174,7 +175,9 @@ public class CoverageStoreResource extends MapResource {
     }
 
     private void saveConfiguration() throws ConfigurationException{
-        getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(), GeoserverDataDirectory.getGeoserverDataDirectory());
+        synchronized (GeoServer.CONFIGURATION_LOCK) {
+            getData().load(getDataConfig().toDTO());
+            XMLConfigWriter.store((DataDTO)getData().toDTO(), GeoserverDataDirectory.getGeoserverDataDirectory());
+        }
     }
 }

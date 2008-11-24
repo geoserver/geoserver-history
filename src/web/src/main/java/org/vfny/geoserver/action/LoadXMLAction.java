@@ -80,7 +80,9 @@ public class LoadXMLAction extends ConfigAction {
         
         GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class );
         try {
-            loader.reload();
+            synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
+                loader.reload();
+            }
         } 
         catch (Exception e) {
             throw new RuntimeException( e );

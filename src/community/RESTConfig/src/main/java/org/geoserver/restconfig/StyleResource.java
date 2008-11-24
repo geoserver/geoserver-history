@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.util.logging.Logger;
 
+import org.geoserver.config.GeoServer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.styling.SLDParser;
@@ -204,9 +205,11 @@ class StyleResource extends Resource {
     }
 
     private void saveConfiguration() throws ConfigurationException{
-        getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(),
-            GeoserverDataDirectory.getGeoserverDataDirectory()
-            );
+        synchronized (GeoServer.CONFIGURATION_LOCK) {
+            getData().load(getDataConfig().toDTO());
+            XMLConfigWriter.store((DataDTO)getData().toDTO(),
+                GeoserverDataDirectory.getGeoserverDataDirectory()
+                );
+        }
     }
 }

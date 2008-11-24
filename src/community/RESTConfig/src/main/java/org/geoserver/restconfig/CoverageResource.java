@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
+import org.geoserver.config.GeoServer;
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
@@ -264,11 +265,13 @@ public class CoverageResource extends MapResource {
         return m;
     }
 
-    private void saveConfiguration() throws ConfigurationException{
-        getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(),
-                GeoserverDataDirectory.getGeoserverDataDirectory()
-                );
+    private void saveConfiguration() throws ConfigurationException {
+        synchronized (GeoServer.CONFIGURATION_LOCK) {
+            getData().load(getDataConfig().toDTO());
+            XMLConfigWriter.store((DataDTO)getData().toDTO(),
+                    GeoserverDataDirectory.getGeoserverDataDirectory()
+                    );
+        }
     }
 
 }

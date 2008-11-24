@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipFile;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.jts.JTS;
@@ -67,12 +68,14 @@ class RESTUtils {
 	 * Reload the configuration resetting all pending changes.ù
 	 */
 	static void reloadConfiguration(){
-		GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class );
-	    try {
-	        loader.reload();
-	    } 
-	    catch (Exception e) {
-	        throw new RuntimeException( e );
+	    synchronized (GeoServer.CONFIGURATION_LOCK) {
+    		GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class );
+    	    try {
+    	        loader.reload();
+    	    } 
+    	    catch (Exception e) {
+    	        throw new RuntimeException( e );
+    	    }
 	    }
     
 //        // Update Config
@@ -90,10 +93,10 @@ class RESTUtils {
 	 * @throws ConfigurationException
 	 */
     static void saveConfiguration(DataConfig dataConfig, Data data) throws ConfigurationException {
-//		final Data data=getData();
-//		final DataConfig dataConfig=getDataConfig();
-		data.load(dataConfig.toDTO());
-	    XMLConfigWriter.store((DataDTO) data.toDTO(), GeoserverDataDirectory.getGeoserverDataDirectory());
+        synchronized (GeoServer.CONFIGURATION_LOCK) {
+    		data.load(dataConfig.toDTO());
+    	    XMLConfigWriter.store((DataDTO) data.toDTO(), GeoserverDataDirectory.getGeoserverDataDirectory());
+        }
 	}
     
     /**

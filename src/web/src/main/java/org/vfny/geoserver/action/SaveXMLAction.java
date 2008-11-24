@@ -7,6 +7,7 @@ package org.vfny.geoserver.action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.geoserver.config.GeoServer;
 import org.geotools.validation.dto.PlugInDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
 import org.geotools.validation.xml.XMLWriter;
@@ -60,10 +61,12 @@ public class SaveXMLAction extends ConfigAction {
         File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
         try {
-            XMLConfigWriter.store((WCSDTO) getWCS(request).toDTO(),
-                (WMSDTO) getWMS(request).toDTO(), (WFSDTO) getWFS(request).toDTO(),
-                (GeoServerDTO) getWFS(request).getGeoServer().toDTO(),
-                (DataDTO) getWFS(request).getRawData().toDTO(), rootDir);
+            synchronized (GeoServer.CONFIGURATION_LOCK) {
+                XMLConfigWriter.store((WCSDTO) getWCS(request).toDTO(),
+                        (WMSDTO) getWMS(request).toDTO(), (WFSDTO) getWFS(request).toDTO(),
+                        (GeoServerDTO) getWFS(request).getGeoServer().toDTO(),
+                        (DataDTO) getWFS(request).getRawData().toDTO(), rootDir);
+            }
         } catch (ConfigurationException e) {
             e.printStackTrace();
             throw new ServletException(e);

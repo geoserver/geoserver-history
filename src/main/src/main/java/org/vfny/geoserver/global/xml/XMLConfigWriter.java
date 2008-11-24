@@ -168,7 +168,7 @@ public class XMLConfigWriter {
         }
     }
 
-    public static void store(WCSDTO wcs, WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
+    public synchronized static void store(WCSDTO wcs, WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer,
             DataDTO data, File root) throws ConfigurationException {
         store(wcs, wms, wfs, geoServer, root);
         store(data, root);

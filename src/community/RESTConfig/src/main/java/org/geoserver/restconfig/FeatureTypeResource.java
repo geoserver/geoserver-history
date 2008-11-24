@@ -34,6 +34,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.FreemarkerFormat;
@@ -176,10 +177,12 @@ public class FeatureTypeResource extends MapResource {
     }
 
     private void saveConfiguration() throws ConfigurationException{
-        getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(),
-            GeoserverDataDirectory.getGeoserverDataDirectory()
-            );
+        synchronized (GeoServer.CONFIGURATION_LOCK) {
+            getData().load(getDataConfig().toDTO());
+            XMLConfigWriter.store((DataDTO)getData().toDTO(),
+                GeoserverDataDirectory.getGeoserverDataDirectory()
+                );
+        }
     }
     
     private int decodeSRSHandling(String handling){
