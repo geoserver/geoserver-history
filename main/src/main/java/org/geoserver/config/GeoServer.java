@@ -16,6 +16,11 @@ import org.geoserver.catalog.Catalog;
  * TODO: events
  */
 public interface GeoServer {
+    
+    /**
+     * Single centralized lock to be used whenever saving, applying or loading the GeoServer configuration
+     */
+    public static final Object CONFIGURATION_LOCK = new Object(); 
 
     /**
      * The global geoserver configuration.

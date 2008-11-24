@@ -10,6 +10,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.data.util.CoverageStoreUtils;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.MapResource;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -197,9 +204,9 @@ public class CoverageStoreResource extends MapResource {
     }
 
     private void saveConfiguration() throws ConfigurationException{
-        getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(),
-            GeoserverDataDirectory.getGeoserverDataDirectory()
-            );
+        synchronized (GeoServer.CONFIGURATION_LOCK) {
+            getData().load(getDataConfig().toDTO());
+            XMLConfigWriter.store((DataDTO)getData().toDTO(), GeoserverDataDirectory.getGeoserverDataDirectory());
+        }
     }
 }

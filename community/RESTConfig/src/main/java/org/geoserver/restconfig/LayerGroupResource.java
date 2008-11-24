@@ -298,13 +298,15 @@ class LayerGroupResource extends MapResource {
 
 
     private void saveConfiguration() throws ConfigurationException{
-        getWMS().load(getWMSConfig().toDTO());
-        XMLConfigWriter.store(
-                (WCSDTO)getWCS().toDTO(),
-                (WMSDTO)getWMS().toDTO(),
-                (WFSDTO)getWFS().toDTO(),
-                (GeoServerDTO)getGeoserver().toDTO(),
-                GeoserverDataDirectory.getGeoserverDataDirectory()
-                );
+        synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
+            getWMS().load(getWMSConfig().toDTO());
+            XMLConfigWriter.store(
+                    (WCSDTO)getWCS().toDTO(),
+                    (WMSDTO)getWMS().toDTO(),
+                    (WFSDTO)getWFS().toDTO(),
+                    (GeoServerDTO)getGeoserver().toDTO(),
+                    GeoserverDataDirectory.getGeoserverDataDirectory()
+                    );
+        }
     }
 }

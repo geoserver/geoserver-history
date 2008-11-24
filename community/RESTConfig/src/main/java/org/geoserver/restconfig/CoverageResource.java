@@ -10,6 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
+import org.geoserver.config.GeoServer;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.MapResource;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 
@@ -192,9 +198,9 @@ public class CoverageResource extends MapResource {
         cc = (CoverageConfig) myDC.getCoverages().get(qualified);
 
         cc.setWmsPath((String) details.get("WMSPath"));
-        cc.setCrs(CRS.decode((String)details.get("CRS")));
 
         GeneralEnvelope env = listAsEnvelope((List) details.get("Envelope"), (String)details.get("CRS"));
+        env.setCoordinateReferenceSystem(CRS.decode((String)details.get("CRS")));
         cc.setEnvelope(env);
         cc.setDefaultStyle((String) details.get("DefaultStyle"));
         
@@ -249,7 +255,6 @@ public class CoverageResource extends MapResource {
     public static Map getMap(CoverageConfig cc) {
         Map m = new HashMap();
         m.put("WMSPath", cc.getWmsPath());
-        m.put("CRS", cc.getCrs().getIdentifiers().toArray()[0].toString());
 
         GeneralEnvelope env = cc.getEnvelope();
         List envPoints = new ArrayList();
@@ -258,6 +263,7 @@ public class CoverageResource extends MapResource {
         envPoints.add(env.getUpperCorner().getOrdinate(0));
         envPoints.add(env.getUpperCorner().getOrdinate(1));
         m.put("Envelope", envPoints);
+        m.put("CRS", env.getCoordinateReferenceSystem().getIdentifiers().toArray()[0].toString());
         m.put("DefaultStyle", cc.getDefaultStyle());
         m.put("SupplementaryStyles", cc.getStyles()); // TODO: does this return a list of strings or something else?
         m.put("Label", cc.getLabel());
@@ -274,10 +280,12 @@ public class CoverageResource extends MapResource {
         return m;
     }
 
-    private void saveConfiguration() throws ConfigurationException{
-        getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(),
-                GeoserverDataDirectory.getGeoserverDataDirectory()
-                );
+    private void saveConfiguration() throws ConfigurationException {
+        synchronized (GeoServer.CONFIGURATION_LOCK) {
+            getData().load(getDataConfig().toDTO());
+            XMLConfigWriter.store((DataDTO)getData().toDTO(),
+                    GeoserverDataDirectory.getGeoserverDataDirectory()
+                    );
+        }
     }
 }

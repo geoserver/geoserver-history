@@ -57,6 +57,7 @@
     <profile>
       <id>RESTConfig</id>
       <modules> 
+        <module>rest</module>
         <module>RESTConfig</module>
       </modules>
     </profile>
