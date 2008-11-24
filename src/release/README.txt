@@ -1,3 +1,24 @@
+GeoServer 1.7.1 (November 25, 2008)
+----------------------------------
+
+The second release of the 1.7.1 series includes some great KML and Google Earth
+improvements, along with other new features and bug fixes. The new and note 
+worthy for this release includes:
+
+  * KML SiteMap and GeoSearch Support
+  * KML Super Overlay and Regionating Support
+  * KML Extrude Support
+  * KML Reflector Improvements
+  * Mac OS X Installer 
+  * New SQL Server DataStore Extension
+  * Improved Oracle DataStore Extension
+
+And much more. The entire changelog can be found at :
+
+  http://jira.codehaus.org/browse/GEOS/fixforversion/14502
+
+This release is based on GeoTools 2.5.2.
+
 GeoServer 1.7.0 (October 22, 2008)
 ---------------------------------
 
