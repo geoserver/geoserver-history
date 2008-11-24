@@ -28,6 +28,7 @@ import javax.media.jai.JAI;
 import javax.media.jai.LookupTableJAI;
 import javax.media.jai.operator.LookupDescriptor;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
@@ -37,6 +38,9 @@ import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Style;
 import org.geotools.styling.visitor.DuplicatingStyleVisitor;
 import org.opengis.feature.simple.SimpleFeature;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -73,7 +77,7 @@ import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
  * @version $Id$
  */
 public abstract class DefaultRasterMapProducer extends
-		AbstractRasterMapProducer implements RasterMapProducer {
+		AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware {
 	private final static Interpolation NN_INTERPOLATION = new InterpolationNearest();
 
 	private final static Interpolation BIL_INTERPOLATION = new InterpolationBilinear();
@@ -114,7 +118,10 @@ public abstract class DefaultRasterMapProducer extends
 	
 	/** The Watermark Painter instance **/
 	private WatermarkPainter wmPainter;
-
+	
+	private static Boolean USE_NG_LABELLER = null;
+	 
+	private ApplicationContext applicationContext;
 
 	/**
 	 * 
@@ -292,6 +299,11 @@ public abstract class DefaultRasterMapProducer extends
 		    rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
 		}
+		if(isNgLabellerEnabled()) {
+		    GSLabelCache labelCache = new GSLabelCache();
+		    labelCache.setOutlineRenderingEnabled(true);
+		    rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
+		}
 
         boolean kmplacemark = false;
         if (mapContext.getRequest().getFormatOptions().get("kmplacemark") != null)
@@ -406,4 +418,16 @@ public abstract class DefaultRasterMapProducer extends
         return LookupDescriptor.create(source, IDENTITY_TABLE, hints);
     }
 
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    private boolean isNgLabellerEnabled() {
+        if (USE_NG_LABELLER == null) {
+            String enabled = GeoServerExtensions.getProperty("USE_NG_LABELLER", applicationContext);
+            USE_NG_LABELLER = Boolean.valueOf(enabled);
+        }
+        return USE_NG_LABELLER;
+    }
+        
 }

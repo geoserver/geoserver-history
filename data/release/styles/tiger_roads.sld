@@ -85,6 +85,15 @@
 					</Fill>
 					
 					<VendorOption name="group">true</VendorOption>
+					<!-- To make the following set USE_NG_LABELLER to true
+					     either as a web.xml init param, as a java system
+					     variable (-DUSE_NG_LABELLER=true) or as an
+					     enviroment variable (export USE_NG_LABELLER=true)
+					-->
+					<VendorOption name="followLine">true</VendorOption>
+					<VendorOption name="maxDisplacement">50</VendorOption>
+					<VendorOption name="repeat">300</VendorOption>
+					
 					
 				</TextSymbolizer>
 			</Rule>

@@ -173,9 +173,15 @@
 			<CssParameter name="font-size">14</CssParameter>
 			<CssParameter name="font-weight">bold</CssParameter>
 		    </Font>
-		    
+		    <LabelPlacement>
+              <PointPlacement>
+                <AnchorPoint>
+                  <AnchorPointX>0.5</AnchorPointX>
+                  <AnchorPointY>0.5</AnchorPointY>
+                </AnchorPoint>
+              </PointPlacement>
+            </LabelPlacement>
 		    <Halo>
-		    
 			    <Radius>
 			   	 <ogc:Literal>1</ogc:Literal>
 			    </Radius>
@@ -188,6 +194,7 @@
 		    <Fill>
 			<CssParameter name="fill">#000000</CssParameter>
 		    </Fill>
+		    <VendorOption name="group">true</VendorOption>
 	</TextSymbolizer>
     </Rule>
             
