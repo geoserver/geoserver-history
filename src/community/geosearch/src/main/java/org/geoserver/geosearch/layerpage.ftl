@@ -184,6 +184,11 @@ background: url(${imgUrl}page_white_text.png) 0 50% no-repeat;
 background: url(${imgUrl}page_white_acrobat.png) 0 50% no-repeat; 
 }
 
+#view-data ul li a.google-earth,
+#download-data ul li a.google-earth {
+background: url(${imgUrl}kml-16x16.png) 0 50% no-repeat; 
+}
+
 #view-data ul li a.kml,
 #download-data ul li a.kml {
 background: url(${imgUrl}kml-16x16.png) 0 50% no-repeat; 
@@ -239,6 +244,31 @@ white-space: nowrap;
 #metadata td {
 padding: 0.2em;
 border: 1px solid #666;
+}
+
+/*-*/
+#access-tiles dt {
+font-weight: bold;
+margin: 0;
+padding: 0;
+}
+
+#access-tiles dd {
+margin: 0 0 1em;
+padding: 0;
+}
+
+#access-tiles dd p {
+margin: 0 0 0.5em;
+padding: 0;
+}
+
+code.example {
+display: block;
+font-size: 1.1em;
+margin: 0.3em;
+padding: 0.3em;
+border: 1px solid #0082b6;
 }
 
   </style>
@@ -346,7 +376,7 @@ border: 1px solid #666;
       <table border="1">
         <tr>
           <th scope="row">Keywords</td>
-          <td><#list keywords as keyword>${keyword}, </#list></td>
+          <td><#list keywords as keyword>${keyword}<#if keyword != keywords?last>, </#if></#list></td>
         </tr>
         <tr>
           <th scope="row">Extent</th>
@@ -376,27 +406,29 @@ border: 1px solid #666;
     </div><!-- /#metadata -->    
     
     <#if gwc == "true">
-    <h2>Access tiles</h2>
-    Access the tiles, cached with GeoWebCache, through these API's:
-    <dl>
-      <dt>OpenLayers</dt>
-      <dd><a href="http://geowebcache.org/trac/wiki/openlayers">Use tiles in OpenLayers</a> with the following code snippet:
-        <pre>var layerstates = new OpenLayers.Layer.WMS( 
-                "States EPSG:4326 JPEG",
-                "${gwcLink}service/wms",
-                {layers: '${name}', format: 'image/jpeg'} );</pre>
-      </dd>
-      <dt>Google Maps</dt>
-      <dd>
-       <a href="http://geowebcache.org/trac/wiki/google_maps">Use tiles in GoogleMaps</a> with the following code snippet:
-        <pre>tileUrlTemplate: '${gwcLink}service/gmaps?layers=${name}&zoom={Z}&x={X}&y={Y}',</pre>
-      </dd>
-      <dt>Virtual Earth</dt>
-      <dd>
-        <a href="http://geowebcache.org/trac/wiki/virtual_earth">Use tiles in Virtual Earth</a> with the following code snippet:
-        <pre>var tileLayerURL = '${gwcLink}service/ve?quadkey=%4&format=image/png&layers=${name}';</pre>
-      </dd>
-    </dl>
+    <div id="access-tiles">
+      <h2>Access tiles</h2>
+      Access the tiles, cached with GeoWebCache, through these API's:
+      <dl>
+        <dt>OpenLayers (<a href="http://geowebcache.org/trac/wiki/openlayers">Tutorial</a>)</dt>
+        <dd>Use tiles in OpenLayers with the following code snippet:
+          <code class="example">var layerstates = new OpenLayers.Layer.WMS(</br />
+                  "${name} EPSG:4326 JPEG",</br />
+                  "${gwcLink}service/wms",</br />
+                  {layers: '${name}', format: 'image/jpeg'} );</code>
+        </dd>
+        <dt>Google Maps (<a href="http://geowebcache.org/trac/wiki/google_maps">Tutorial</a>)</dt>
+        <dd>
+         Use tiles in GoogleMaps with the following code snippet:
+          <code class="example">tileUrlTemplate: '${gwcLink}service/gmaps?layers=${name}&zoom={Z}&x={X}&y={Y}',</code>
+        </dd>
+        <dt>Virtual Earth (<a href="http://geowebcache.org/trac/wiki/virtual_earth">Tutorial</a>)</dt>
+        <dd>
+          Use tiles in Virtual Earth with the following code snippet:
+          <code class="example">var tileLayerURL = '${gwcLink}service/ve?quadkey=%4&format=image/png&layers=${name}';</code>
+        </dd>
+      </dl>
+    </div>
     </#if>
     
   </body>
