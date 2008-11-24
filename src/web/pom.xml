@@ -389,21 +389,11 @@
       </dependencies>
     </profile>
     <profile>
-      <id>oracle</id>
+      <id>oracle-old</id>
       <dependencies>
         <dependency>
           <groupId>org.geotools</groupId>
           <artifactId>gt-oracle-spatial</artifactId>
-          <version>${gt.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>oracle-ng</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-jdbc-oracle</artifactId>
           <version>${gt.version}</version>
         </dependency>
       </dependencies>
