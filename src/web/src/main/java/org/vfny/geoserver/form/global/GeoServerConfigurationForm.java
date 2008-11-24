@@ -109,7 +109,9 @@ public class GeoServerConfigurationForm extends ActionForm {
     private boolean jaiJPEGNative;
     private boolean jaiJPEGNativeChecked;
     private boolean jaiPNGNative;
+    private boolean jaiMosaicNative;
     private boolean jaiPNGNativeChecked;
+    private boolean jaiMosaicNativeChecked;
 
     /** tile cache location, full url or relative path */
     private String tileCache;
@@ -150,7 +152,8 @@ public class GeoServerConfigurationForm extends ActionForm {
         jaiJPEGNativeChecked = false;
         jaiPNGNative = globalConfig.isJaiPNGNative();
         jaiPNGNativeChecked = false;
-
+        jaiMosaicNative=globalConfig.getJaiMosaicNative();
+        jaiMosaicNativeChecked=false;
         tileCache = globalConfig.getTileCache();
 
         ContactConfig contactConfig = globalConfig.getContact();
@@ -807,4 +810,21 @@ public class GeoServerConfigurationForm extends ActionForm {
     public void setTileCache(String tileCache) {
         this.tileCache = tileCache;
     }
+
+	public boolean isJaiMosaicNative() {
+		return jaiMosaicNative;
+	}
+
+	public void setJaiMosaicNative(boolean jaiMosaicNative) {
+		this.jaiMosaicNativeChecked=true;
+		this.jaiMosaicNative = jaiMosaicNative;
+	}
+
+	public boolean isJaiMosaicNativeChecked() {
+		return jaiMosaicNativeChecked;
+	}
+
+	public void setJaiMosaicNativeChecked(boolean jaiMosaicNativeChecked) {
+		this.jaiMosaicNativeChecked = jaiMosaicNativeChecked;
+	}
 }

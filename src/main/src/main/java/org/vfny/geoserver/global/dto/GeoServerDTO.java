@@ -60,10 +60,11 @@ public final class GeoServerDTO implements DataTransferObject {
         public static final double JaiMemoryThreshold = 0.75;
         public static final int JaiTileThreads = 7;
         public static final int JaiTilePriority = Thread.NORM_PRIORITY;
-        public static final Boolean JaiRecycling = Boolean.TRUE;
+        public static final Boolean JaiRecycling = Boolean.FALSE;
         public static final Boolean ImageIOCache = Boolean.FALSE;
-        public static final Boolean JaiJPEGNative = Boolean.TRUE;
-        public static final Boolean JaiPNGNative = Boolean.TRUE;
+        public static final Boolean JaiJPEGNative = Boolean.FALSE;
+        public static final Boolean JaiPNGNative = Boolean.FALSE;
+        public static final Boolean JaiMosaicNative = Boolean.FALSE;
         public static final String BaseURL = null;
         public static final String Log4jConfigFile = null;
         /** Default of wether to log to StdOut as well **/
@@ -187,6 +188,8 @@ public final class GeoServerDTO implements DataTransferObject {
     private Boolean imageIOCache = Defaults.ImageIOCache;
     private Boolean jaiJPEGNative = Defaults.JaiJPEGNative;
     private Boolean jaiPNGNative = Defaults.JaiPNGNative;
+    private Boolean jaiMosaicNative = Defaults.JaiMosaicNative;
+
 
     /** tile cache location, full url or relative path */
     private String tileCache;
@@ -771,5 +774,13 @@ public final class GeoServerDTO implements DataTransferObject {
 	 */
 	public void setUpdateSequence(int updateSequence) {
 		this.updateSequence = updateSequence;
+	}
+
+	public Boolean getJaiMosaicNative() {
+		return jaiMosaicNative;
+	}
+
+	public void setJaiMosaicNative(Boolean jaiMosaicNative) {
+		this.jaiMosaicNative = jaiMosaicNative;
 	}
 }

@@ -646,6 +646,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             jai.setImageIOCache( dto.getImageIOCache() );
             jai.setPngAcceleration( dto.getJaiPNGNative() );
             jai.setJpegAcceleration( dto.getJaiJPEGNative() );
+            jai.setAllowNativeMosaic(dto.getJaiMosaicNative());
             //initJAI(jai);
             info.getMetadata().put( JAIInfo.KEY, jai );
             
@@ -830,6 +831,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         dto.setImageIOCache(getImageIOCache());
         dto.setJaiJPEGNative(getJPEGNativeAcceleration());
         dto.setJaiPNGNative(getPNGNativeAcceleration());
+        dto.setJaiMosaicNative(getMosaicNativeAcceleration());
         dto.setUpdateSequence(getUpdateSequence());
         
         //dto.setLog4jConfigFile(log4jConfigFile);
@@ -1048,6 +1050,10 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     public Boolean getPNGNativeAcceleration() {
         return jai().isPngAcceleration();
         //return PNGnativeAcc;
+    }
+    
+    public Boolean getMosaicNativeAcceleration() {
+        return jai().isAllowNativeMosaic();
     }
 
     public double getMemoryThreshold() {

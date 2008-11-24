@@ -212,7 +212,16 @@
 	  	<html:checkbox property="jaiPNGNative"/>
 	  </td>
 	 </tr> 
-
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.jaiMosaicNative"/>">
+			<bean:message key="label.jaiMosaicNative"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:checkbox property="jaiMosaicNative"/>
+	  </td>
+	 </tr> 
 	<tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.global.tileCache"/>">
