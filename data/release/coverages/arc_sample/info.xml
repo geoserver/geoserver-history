@@ -2,29 +2,16 @@
   <name>Arc_Sample</name>
   <label>A sample ArcGrid file</label>
   <description>Generated from arcGridSample</description>
-  <metadataLink about = "http://gdal.velocet.ca/projects/aigrid/index.html" metadataType = "other" >
-    
-    
-    
-    
-    
-
-
-null
-
-
-
-    
-  
-  
-  
-  </metadataLink>
+  <wmspath>/</wmspath>
   <keywords>WCS,arcGridSample,arcGridSample_Coverage</keywords>
   <!--
     the default style this CoverageInfoDTO can be represented by.
     at least must contain the "default" attribute
   -->
   <styles default = "raster" />
+  <!--
+    crs: native CRS definition, srsName: user defined CRS identifier
+  -->
   <envelope crs = "GEOGCS['WGS 84', 
   DATUM['World Geodetic System 1984', 
     SPHEROID['WGS 84', 6378137.0, 298.257223563, AUTHORITY['EPSG','7030']], 
@@ -40,8 +27,15 @@ null
   <grid dimension = "2" >
     <low>0 0 </low>
     <high>720 360 </high>
-    <axisName>Geodetic longitude</axisName>
-    <axisName>Geodetic latitude</axisName>
+    <axisName>precip30min</axisName>
+    <geoTransform >
+      <scaleX>0.5</scaleX>
+      <scaleY>-0.5</scaleY>
+      <shearX>0.0</shearX>
+      <shearY>0.0</shearY>
+      <translateX>-179.75</translateX>
+      <translateY>89.75</translateY>
+    </geoTransform>
   </grid>
   <CoverageDimension >
     <name>precip30min</name>
@@ -51,7 +45,6 @@ null
       <max>8849.0</max>
     </interval>
     <nullValues >
-      <value>-9999.0</value>
     </nullValues>
   </CoverageDimension>
   <supportedCRSs >
