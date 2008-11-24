@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.util.MapEntry;
@@ -93,8 +97,16 @@ import freemarker.template.TemplateModelException;
  * @author Gabriel Roldan, TOPP
  */
 public class FeatureWrapper extends BeansWrapper {
+    static Catalog gsCatalog;
+
     public FeatureWrapper() {
         setSimpleMapWrapper(true);
+    }
+
+    private Catalog getCatalog() {
+        if (gsCatalog != null) 
+            return gsCatalog;
+        return (gsCatalog = (Catalog)GeoServerExtensions.bean("catalog2"));
     }
 
     /**
@@ -210,6 +222,26 @@ public class FeatureWrapper extends BeansWrapper {
             // first add the feature id
             map.put("fid", feature.getID());
             map.put("typeName", feature.getFeatureType().getTypeName());
+
+            Catalog cat = getCatalog();
+
+            if (cat != null){
+                NamespaceInfo ns = cat.getNamespaceByURI(
+                        feature.getFeatureType().getName().getNamespaceURI()
+                        );
+
+                if (ns != null){
+                    FeatureTypeInfo info = cat.getResourceByName(
+                            ns.getPrefix(),
+                            feature.getFeatureType().getName().getLocalPart(),
+                            FeatureTypeInfo.class
+                            );
+
+                    if (info != null){
+                        map.put("type", info);
+                    }
+                }
+            }
 
             // next create the Map representing the per attribute useful
             // properties for a template
