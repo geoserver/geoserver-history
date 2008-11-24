@@ -1,34 +1,25 @@
 package org.geoserver.geosearch;
 
-import org.restlet.Restlet;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Method;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-
-import org.geoserver.ows.util.RequestUtils;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpaceInfo;
+import java.util.Iterator;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.restlet.data.Method;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.NameSpaceInfo;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
+public class SiteMapIndexRestlet extends GeoServerProxyAwareRestlet {
 
     private Data myData;
     private DataConfig myDataConfig;
     private String GEOSERVER_ROOT;
     private Namespace SITEMAP = Namespace.getNamespace("http://www.sitemaps.org/schemas/sitemap/0.9");
-    private Namespace GEOSITEMAP = Namespace.getNamespace("geo","http://www.google.com/geo/schemas/sitemap/1.0");
 
     public Data getData(){
         return myData;
@@ -65,46 +56,37 @@ public class SiteMapRestlet extends GeoServerProxyAwareRestlet {
      */
     public void doGet(Request request, Response response){
         Document d = new Document();
-        Element urlset = new Element("urlset", SITEMAP);
-	urlset.addNamespaceDeclaration(GEOSITEMAP);
-        d.setRootElement(urlset);
+        Element sitemapindex = new Element("sitemapindex", SITEMAP);
+	//urlset.addNamespaceDeclaration(GEOSITEMAP);
+        d.setRootElement(sitemapindex);
 
+        
         NameSpaceInfo[] namespaces = getData().getNameSpaces();
         for (int i = 0; i < namespaces.length; i++){
-            boolean add = false;
-            for ( Iterator t = namespaces[i].getTypeNames().iterator(); !add && t.hasNext(); ) {
+            for ( Iterator t = namespaces[i].getTypeNames().iterator(); t.hasNext(); ) {
                 try {
                     FeatureTypeInfo fti = getData().getFeatureTypeInfo((String)t.next());
                     if ( fti != null && fti.isIndexingEnabled() ) {
-                        add = true;
+                        addSitemap(sitemapindex, GEOSERVER_ROOT + "/layers/" + fti.getName() + "/sitemap.xml");
                     }
                 }
                 catch( Exception e ) {
-                    
+                    // Do nothing ?
                 }
             }
             
-            if ( add ) {
-                addUrl(urlset, GEOSERVER_ROOT + "/" + namespaces[i].getPrefix() + ".kml");
-            }
         }
 
         response.setEntity(new JDOMRepresentation(d));
     }
 
-    private void addUrl(Element urlset, String url){
-        Element urlElement = new Element("url", SITEMAP);
+    private void addSitemap(Element sitemapindex, String url){
+        Element sitemapElement = new Element("sitemap", SITEMAP);
         Element loc = new Element("loc", SITEMAP);
         loc.setText(url);
-        urlElement.addContent(loc);
+        sitemapElement.addContent(loc);
 
-        Element geo = new Element("geo",GEOSITEMAP);
-        Element geoformat = new Element("format",GEOSITEMAP);
-        geoformat.setText("kml");    
-        geo.addContent(geoformat);
-        urlElement.addContent(geo);
-
-        urlset.addContent(urlElement);
+        sitemapindex.addContent(sitemapElement);
     }
 
     public static String getParentUrl(String url){

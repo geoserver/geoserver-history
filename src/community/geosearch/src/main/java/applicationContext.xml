@@ -7,13 +7,13 @@
   <map>
         <entry>
           <key><value>/sitemap.xml</value></key>
-          <value>sitemap</value>
+          <value>sitemapindex</value>
         </entry>
         <entry>
-          <key><value>/{namespace}.kml</value></key>
-          <value>namespaceindex</value>
+          <key><value>/layers/{layer}/sitemap.xml</value></key>
+          <value>layersitemap</value>
         </entry>
-        <entry>
+	<entry>
           <key><value>/{namespace}/{layer}.kml</value></key>
           <value>feature</value>
         </entry>
@@ -21,20 +21,16 @@
           <key><value>/{namespace}/{layer}.html</value></key>
           <value>aboutpage</value>
         </entry>
-        <entry>
-          <key><value>/{namespace}/{layer}/{feature}.kml</value></key>
-          <value>feature</value>
-        </entry>
   </map>
 </property>
 </bean>
 
-<bean id="sitemap" class="org.geoserver.geosearch.SiteMapRestlet">
+<bean id="sitemapindex" class="org.geoserver.geosearch.SiteMapIndexRestlet">
     <property name="dataConfig"><ref bean="dataConfig"/></property>
     <property name="data"><ref bean="data"/></property>
     <property name="geoServer"><ref bean="geoServer"/></property>
 </bean>
-<bean id="namespaceindex" class="org.geoserver.geosearch.NamespaceIndexRestlet">
+<bean id="layersitemap" class="org.geoserver.geosearch.LayerSiteMapRestlet">
     <property name="dataConfig"><ref bean="dataConfig"/></property>
     <property name="data"><ref bean="data"/></property>
     <property name="geoServer"><ref bean="geoServer"/></property>
