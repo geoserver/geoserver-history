@@ -68,7 +68,7 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
         response.setEntity(format.makeRepresentation(getContext(namespace, layer, request)));
     }
     
-    private SimpleHash getContext(String namespace, String layer, Request request){
+    SimpleHash getContext(String namespace, String layer, Request request){
     	FeatureTypeInfo info = lookupType(namespace, layer);
     	
     	SimpleHash map = new SimpleHash();
