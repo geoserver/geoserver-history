@@ -557,5 +557,19 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>oracle</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.extension</groupId>
+          <artifactId>oracle</artifactId> 
+          <version>1.7.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>com.oracle</groupId>
+          <artifactId>ojdbc14</artifactId> 
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>
