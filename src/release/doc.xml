@@ -7,7 +7,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>release/GEOSDOC</directory>
-			<outputDirectory>geoserver-1.7.0/doc</outputDirectory>
+			<outputDirectory>geoserver-1.7.1/doc</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
