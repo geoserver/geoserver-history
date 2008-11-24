@@ -26,6 +26,7 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.vfny.geoserver.util.DataStoreUtils;
 
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.FreemarkerFormat;
@@ -215,10 +216,12 @@ public class DataStoreResource extends MapResource {
     }
     
     private void saveConfiguration() throws ConfigurationException{
-        getData().load(getDataConfig().toDTO());
-        XMLConfigWriter.store((DataDTO)getData().toDTO(),
-        		GeoserverDataDirectory.getGeoserverDataDirectory()
-        		);
+        synchronized (GeoServer.CONFIGURATION_LOCK) {
+            getData().load(getDataConfig().toDTO());
+            XMLConfigWriter.store((DataDTO)getData().toDTO(),
+            		GeoserverDataDirectory.getGeoserverDataDirectory()
+            		);
+        }
     }
 
     public boolean allowDelete(){
