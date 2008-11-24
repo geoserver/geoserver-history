@@ -11,11 +11,10 @@
     <JaiMemoryThreshold value = "0.75" />
     <JaiTileThreads value = "7" />
     <JaiTilePriority value = "5" />
-    <JaiRecycling value = "false" />
+    <JaiRecycling value = "true" />
     <ImageIOCache value = "false" />
     <JaiJPEGNative value = "true" />
     <JaiPNGNative value = "true" />
-    <JaiMosaicNative value = "false" />
     <!--
       Sets the max number of Features returned by GetFeature
     -->

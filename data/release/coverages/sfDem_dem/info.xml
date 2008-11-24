@@ -3,15 +3,15 @@
   <label>dem is a Tagged Image File Format with Geographic information</label>
   <description>Generated from sfDem</description>
   <wmspath>/</wmspath>
+  <metadataLink about = "http://www.remotesensing.org:16080/websites/geotiff/geotiff.html" metadataType = "other" >
+    null
+  </metadataLink>
   <keywords>WCS,sfDem,dem</keywords>
   <!--
     the default style this CoverageInfoDTO can be represented by.
     at least must contain the "default" attribute
   -->
   <styles default = "raster" />
-  <!--
-    crs: native CRS definition, srsName: user defined CRS identifier
-  -->
   <envelope crs = "PROJCS['NAD27 / UTM zone 13N', 
   GEOGCS['NAD27', 
     DATUM['North American Datum 1927', 
@@ -23,7 +23,7 @@
     AXIS['Geodetic longitude', EAST], 
     AXIS['Geodetic latitude', NORTH], 
     AUTHORITY['EPSG','4267']], 
-  PROJECTION['Transverse_Mercator'], 
+  PROJECTION['Transverse Mercator', AUTHORITY['EPSG','9807']], 
   PARAMETER['central_meridian', -105.0], 
   PARAMETER['latitude_of_origin', 0.0], 
   PARAMETER['scale_factor', 0.9996], 
@@ -39,17 +39,8 @@
   <grid dimension = "2" >
     <low>0 0 </low>
     <high>633 466 </high>
-    <axisName>Red band</axisName>
-    <axisName>Green band</axisName>
-    <axisName>Blue band</axisName>
-    <geoTransform >
-      <scaleX>30.0</scaleX>
-      <scaleY>-30.0</scaleY>
-      <shearX>0.0</shearX>
-      <shearY>0.0</shearY>
-      <translateX>590025.0</translateX>
-      <translateY>4927985.0</translateY>
-    </geoTransform>
+    <axisName>Easting</axisName>
+    <axisName>Northing</axisName>
   </grid>
   <CoverageDimension >
     <name>Red band</name>
@@ -58,8 +49,6 @@
       <min>0.0</min>
       <max>255.0</max>
     </interval>
-    <nullValues >
-    </nullValues>
   </CoverageDimension>
   <CoverageDimension >
     <name>Green band</name>
@@ -68,8 +57,6 @@
       <min>0.0</min>
       <max>255.0</max>
     </interval>
-    <nullValues >
-    </nullValues>
   </CoverageDimension>
   <CoverageDimension >
     <name>Blue band</name>
@@ -78,8 +65,6 @@
       <min>0.0</min>
       <max>255.0</max>
     </interval>
-    <nullValues >
-    </nullValues>
   </CoverageDimension>
   <supportedCRSs >
     <requestCRSs>EPSG:26713</requestCRSs>
