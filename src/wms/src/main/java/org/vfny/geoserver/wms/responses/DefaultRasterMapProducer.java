@@ -292,9 +292,6 @@ public abstract class DefaultRasterMapProducer extends
 		    rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
 		}
-		final GSLabelCache labelCache = new GSLabelCache();
-		labelCache.setOutlineRenderingEnabled(true);
-        rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
 
         boolean kmplacemark = false;
         if (mapContext.getRequest().getFormatOptions().get("kmplacemark") != null)
