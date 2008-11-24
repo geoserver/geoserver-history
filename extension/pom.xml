@@ -30,6 +30,13 @@
         <module>h2</module>
       </modules>
     </profile>
+
+    <profile>
+      <id>oracle</id>
+      <modules>
+        <module>oracle</module>
+      </modules>
+    </profile>
     
     <profile>
       <id>wfsv</id>
@@ -43,6 +50,7 @@
       <id>allExtensions</id>
       <modules>
         <module>h2</module>
+        <module>oracle</module>
         <module>wfsv</module>
       </modules>
     </profile>

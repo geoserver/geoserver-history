@@ -16,7 +16,8 @@
 			<directory>release/target/dependency</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
-				<include>gt-oracle*.jar</include>
+				<include>gt-jdbc-core-*.jar</include>
+				<include>gt-jdbc-oracle-*.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
