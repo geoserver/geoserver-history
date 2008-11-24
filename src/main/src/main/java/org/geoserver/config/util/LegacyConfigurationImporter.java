@@ -143,7 +143,7 @@ public class LegacyConfigurationImporter extends LegacyImporterSupport {
         jai.setJPEGAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ),GeoServerDTO.Defaults.JaiJPEGNative ) );
         jai.setPNGAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), GeoServerDTO.Defaults.JaiPNGNative)  );
         jai.setRecycling( (Boolean) value( global.get( "JaiRecycling" ), GeoServerDTO.Defaults.JaiRecycling)  );
-        jai.setAllowNativeMosaic((Boolean) value( global.get( "JaiRecycling" ), GeoServerDTO.Defaults.JaiMosaicNative) );
+        jai.setAllowNativeMosaic((Boolean) value( global.get( "JaiMosaicNative" ), GeoServerDTO.Defaults.JaiMosaicNative) );
         
         info.getMetadata().put( JAIInfo.KEY, jai );
         
