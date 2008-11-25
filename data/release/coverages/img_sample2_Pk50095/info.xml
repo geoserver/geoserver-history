@@ -1,43 +1,17 @@
 <coverage format = "img_sample2" >
   <name>Pk50095</name>
-  <label>Pk50095 is a A raster file accompanied by a spatial data file</label>
-  <description>Generated from img_sample2</description>
+  <label>Sample scanned and georerenced map</label>
+  <description>This is a sample for the world image format (wld + prj + tiff)</description>
   <wmspath>/</wmspath>
-  <metadataLink about = "http://www.geotools.org/WorldImageReader+formats" metadataType = "other" >
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-null
-
-
-    
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </metadataLink>
   <keywords>WCS,img_sample2,Pk50095</keywords>
   <!--
     the default style this CoverageInfoDTO can be represented by.
     at least must contain the "default" attribute
   -->
   <styles default = "raster" />
+  <!--
+    crs: native CRS definition, srsName: user defined CRS identifier
+  -->
   <envelope crs = "PROJCS['WGS 84 / UTM zone 33N', 
   GEOGCS['WGS 84', 
     DATUM['World Geodetic System 1984', 
@@ -64,8 +38,17 @@ null
   <grid dimension = "2" >
     <low>0 0 </low>
     <high>545 490 </high>
-    <axisName>Easting</axisName>
-    <axisName>Northing</axisName>
+    <axisName>Red band</axisName>
+    <axisName>Green band</axisName>
+    <axisName>Blue band</axisName>
+    <geoTransform >
+      <scaleX>42.34136799999989</scaleX>
+      <scaleY>-42.34136800000026</scaleY>
+      <shearX>0.0</shearX>
+      <shearY>0.0</shearY>
+      <translateX>347671.1015525911</translateX>
+      <translateY>5196940.182175256</translateY>
+    </geoTransform>
   </grid>
   <CoverageDimension >
     <name>Red band</name>
@@ -74,6 +57,8 @@ null
       <min>0.0</min>
       <max>255.0</max>
     </interval>
+    <nullValues >
+    </nullValues>
   </CoverageDimension>
   <CoverageDimension >
     <name>Green band</name>
@@ -82,6 +67,8 @@ null
       <min>0.0</min>
       <max>255.0</max>
     </interval>
+    <nullValues >
+    </nullValues>
   </CoverageDimension>
   <CoverageDimension >
     <name>Blue band</name>
@@ -90,6 +77,8 @@ null
       <min>0.0</min>
       <max>255.0</max>
     </interval>
+    <nullValues >
+    </nullValues>
   </CoverageDimension>
   <supportedCRSs >
     <requestCRSs>EPSG:32633</requestCRSs>

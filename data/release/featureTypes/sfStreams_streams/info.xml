@@ -4,11 +4,12 @@
     native wich EPGS code for the FeatureTypeInfoDTO
   -->
   <SRS>26713</SRS>
-  <title>streams_Type</title>
-  <abstract>Generated from sfStreams</abstract>
+  <SRSHandling>0</SRSHandling>
+  <title>Spearfish streams</title>
+  <abstract>Sample data from GRASS, streams, Spearfish, South Dakota, USA</abstract>
   <wmspath>/</wmspath>
-  <numDecimals value = "8" />
-  <keywords>sfStreams streams</keywords>
+  <numDecimals value = "0" />
+  <keywords>sfStreams, streams, spearfish</keywords>
   <latLonBoundingBox dynamic = "false" maxx = "-103.62287788915457" maxy = "44.502218486214815" minx = "-103.87789019829768" miny = "44.372335260095554" />
   <nativeBBox dynamic = "false" maxx = "609518.2117427464" maxy = "4928071.049965891" minx = "589434.4971235897" miny = "4913947.342298816" />
   <!--
@@ -17,4 +18,9 @@
   -->
   <styles default = "simple_streams" />
   <cacheinfo enabled = "true" maxage = "3600" />
+  <searchable enabled = "false" />
+  <regionateAttribute value = "null" />
+  <regionateStrategy value = "best_guess" />
+  <regionateFeatureLimit value = "10" />
+  <maxFeatures>0</maxFeatures>
 </featureType>
