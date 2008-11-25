@@ -23,9 +23,11 @@ import com.vividsolutions.jts.geom.CoordinateSequence;
  * See 
  * 
  * @author Arne Kepp - OpenGeo
+ * @deprecated This class is a copy of CoordinateWriter in geotools, we should reuse that
+ * version and create any options we might need to customize.
  */
 public class KMLCoordinateWriter extends CoordinateWriter {
-    // private AttributesImpl atts;
+     private AttributesImpl atts;
 
     private static final double DECIMAL_MIN = Math.pow(10, -3);
 
@@ -53,7 +55,7 @@ public class KMLCoordinateWriter extends CoordinateWriter {
 
     public KMLCoordinateWriter(int numDecimals, boolean isDummyZEnabled) {
         super(numDecimals, isDummyZEnabled);
-        // atts = new org.xml.sax.helpers.AttributesImpl();
+         atts = new org.xml.sax.helpers.AttributesImpl();
         scale = Math.pow(10, numDecimals);
         D = 3;
         // dummyZ = 0;
@@ -62,7 +64,7 @@ public class KMLCoordinateWriter extends CoordinateWriter {
     public void writeCoordinates(CoordinateSequence c, ContentHandler output)
             throws SAXException {
 
-        output.startElement("", "coordinates", "coordinates", null);
+        output.startElement("", "coordinates", "coordinates", atts);
 
         final int coordCount = c.size();
         // used to check whether the coordseq handles a third dimension or not
