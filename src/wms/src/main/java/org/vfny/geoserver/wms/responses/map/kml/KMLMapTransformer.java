@@ -534,7 +534,10 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor((Color)symbolizer.getFill().getColor().evaluate(feature, Color.class), opacity);
+                encodeColor(
+                        (Color)symbolizer.getFill().getColor().evaluate(feature, Color.class),
+                        opacity
+                        );
             } else {
                 // make it transparent
                 encodeColor("00aaaaaa");
@@ -709,7 +712,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor((Color)symbolizer.getFill().getColor().evaluate(feature), opacity);
+                encodeColor((Color)symbolizer.getFill().getColor().evaluate(feature, Color.class), opacity);
             } else {
                 // default
                 encodeColor("ffffffff");
