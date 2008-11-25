@@ -46,34 +46,24 @@
       is used.
     -->
     <charSet value = "UTF-8" />
-    <!--
-      Defines the user name of the administrator for log in
-      to the web based administration tool.
-    -->
-    <adminUserName>admin</adminUserName>
-    <!--
-      Defines the password of the administrator for log in
-      to the web based administration tool.
-    -->
-    <adminPassword>geoserver</adminPassword>
     <ContactInformation >
       <ContactPersonPrimary >
-        <ContactPerson></ContactPerson>
-        <ContactOrganization></ContactOrganization>
+        <ContactPerson>Claudius Ptolomaeus</ContactPerson>
+        <ContactOrganization>The ancient geographes INC</ContactOrganization>
       </ContactPersonPrimary>
-      <ContactPosition></ContactPosition>
+      <ContactPosition>Chief geographer</ContactPosition>
       <ContactAddress >
-        <AddressType></AddressType>
+        <AddressType>Work</AddressType>
         <Address></Address>
-        <City></City>
+        <City>Alexandria</City>
         <StateOrProvince></StateOrProvince>
         <PostCode></PostCode>
-        <Country></Country>
+        <Country>Egypt</Country>
       </ContactAddress>
       <ContactVoiceTelephone></ContactVoiceTelephone>
       <ContactFacsimileTelephone></ContactFacsimileTelephone>
-      <ContactElectronicMailAddress></ContactElectronicMailAddress>
-      <ContactOnlineResource></ContactOnlineResource>
+      <ContactElectronicMailAddress>claudius.ptolomaeus@gmail.com</ContactElectronicMailAddress>
+      <ContactOnlineResource>http://geoserver.org</ContactOnlineResource>
     </ContactInformation>
   </global>
   <services >
