@@ -4,12 +4,14 @@
     native wich EPGS code for the FeatureTypeInfoDTO
   -->
   <SRS>4326</SRS>
-  <title>tasmania_water_bodies_Type</title>
-  <abstract>Generated from tasmania_water_bodies_shapefile</abstract>
-  <numDecimals value = "8" />
-  <keywords>Tasmania Australia Water Bodies Lakes</keywords>
+  <SRSHandling>0</SRSHandling>
+  <title>Tasmania water bodies</title>
+  <abstract>Tasmania water bodies</abstract>
+  <wmspath>/</wmspath>
+  <numDecimals value = "0" />
+  <keywords>Lakes, Bodies, Australia, Water, Tasmania</keywords>
   <latLonBoundingBox dynamic = "false" maxx = "147.219696" maxy = "-41.775558" minx = "145.97161899999998" miny = "-43.031944" />
-  <nativeBBox dynamic = "true" />
+  <nativeBBox dynamic = "false" maxx = "147.219696" maxy = "-41.775558" minx = "145.97161899999998" miny = "-43.031944" />
   <!--
     the default style this FeatureTypeInfoDTO can be represented by.
     at least must contain the "default" attribute
