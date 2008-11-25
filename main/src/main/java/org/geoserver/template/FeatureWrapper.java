@@ -26,6 +26,7 @@ import org.geotools.util.MapEntry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -105,7 +106,12 @@ public class FeatureWrapper extends BeansWrapper {
     private Catalog getCatalog() {
         if (gsCatalog != null) 
             return gsCatalog;
-        return (gsCatalog = (Catalog)GeoServerExtensions.bean("catalog2"));
+
+        try {
+            return (gsCatalog = (Catalog)GeoServerExtensions.bean("catalog2"));
+        } catch (NoSuchBeanDefinitionException e){
+            return null;
+        }
     }
 
     /**
