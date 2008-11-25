@@ -13,8 +13,12 @@
           <key><value>/layers/{layer}/sitemap.xml</value></key>
           <value>layersitemap</value>
         </entry>
-	<entry>
+        <entry>
           <key><value>/{namespace}/{layer}.kml</value></key>
+          <value>feature</value>
+        </entry>
+        <entry>
+          <key><value>/{namespace}/{layer}/{feature}.kml</value></key>
           <value>feature</value>
         </entry>
         <entry>
