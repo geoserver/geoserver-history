@@ -62,7 +62,7 @@ public class KMLCoordinateWriter extends CoordinateWriter {
     public void writeCoordinates(CoordinateSequence c, ContentHandler output)
             throws SAXException {
 
-        output.startElement(null, "coordinates", "coordinates", null);
+        output.startElement("", "coordinates", "coordinates", null);
 
         final int coordCount = c.size();
         // used to check whether the coordseq handles a third dimension or not
