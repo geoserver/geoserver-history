@@ -163,6 +163,7 @@ margin: 0 0 0.75em;
 margin: 0;
 padding: 0; 
 float: left;
+min-height: 20px;
 }
 
 #view-data ul li,
@@ -175,7 +176,7 @@ padding: 0;
 
 #view-data ul li a,
 #download-data ul li a {
-padding: 0 0 0 20px;
+padding: 10px 0 10px 20px;
 background: url(${imgUrl}page_white_text.png) 0 50% no-repeat;
 }
 
@@ -349,7 +350,7 @@ border: 1px solid #0082b6;
           <a class="pdf" href="${wmsUrl + PDFParam + layersParam + bboxParam + '&styles=' + srsParam + dimParams }">PDF</a>
         </li>
         <li>
-          <a class="google-earth" href="${kmlUrl + 'superoverlay=true' + layersParam}">Google Earth</a>
+          <a class="google-earth" href="${kmlUrl + layersParam}">Google Earth</a>
         </li>
       </ul><!-- /#view-data -->
     </div>
