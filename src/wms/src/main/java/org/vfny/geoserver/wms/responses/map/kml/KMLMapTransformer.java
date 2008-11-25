@@ -576,7 +576,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 }
 
                 // width
-                int width = (Integer)symbolizer.getStroke().getWidth().evaluate(feature);
+                int width = ((Number)symbolizer.getStroke().getWidth().evaluate(feature)).intValue();
 
                 if (width != SLD.NOTFOUND) {
                     element("width", Integer.toString(width));
