@@ -13,6 +13,7 @@ public class GSLabelCacheItem extends LabelCacheItem {
     boolean allowOverruns = true;
     boolean followLineEnabled = false;
     double maxAngleDelta;
+    int autoWrap = 100;
 
     public GSLabelCacheItem(String layerId, TextStyle2D textStyle, LiteShape2 shape, String label) {
         super(layerId, textStyle, shape, label);
@@ -80,6 +81,14 @@ public class GSLabelCacheItem extends LabelCacheItem {
 
     public void setMaxAngleDelta(double maxAngleDelta) {
         this.maxAngleDelta = maxAngleDelta;
+    }
+
+    public int getAutoWrap() {
+        return autoWrap;
+    }
+
+    public void setAutoWrap(int autoWrap) {
+        this.autoWrap = autoWrap;
     }
 
 }

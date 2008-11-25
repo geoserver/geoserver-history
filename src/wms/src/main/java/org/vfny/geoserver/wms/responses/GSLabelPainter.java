@@ -4,15 +4,27 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
-import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.LineBreakMeasurer;
 import java.awt.font.LineMetrics;
+import java.awt.font.TextAttribute;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
+import java.text.Bidi;
+import java.text.BreakIterator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.geotools.geometry.jts.LiteShape2;
 import org.geotools.renderer.lite.StyledShapePainter;
@@ -25,25 +37,109 @@ public class GSLabelPainter {
 
     GSLabelCacheItem labelItem;
 
-    GlyphVector glyphVector;
+    List<LineInfo> lines;
 
     Graphics2D graphics;
 
     boolean outlineRenderingEnabled;
 
     GeometryFactory gf = new GeometryFactory();
-
-    FontRenderContext fontContext = new FontRenderContext(new AffineTransform(), true, false);
+    
+    Rectangle2D labelBounds;
 
     public GSLabelPainter(Graphics2D graphics, boolean outlineRenderingEnabled) {
         this.graphics = graphics;
         this.outlineRenderingEnabled = outlineRenderingEnabled;
     }
 
-    public void setLabel(GSLabelCacheItem label) {
-        this.labelItem = label;
-        label.getTextStyle().setLabel(label.getLabel());
-        glyphVector = label.getTextStyle().getTextGlyphVector(graphics);
+    public void setLabel(GSLabelCacheItem labelItem) {
+        this.labelItem = labelItem;
+        labelItem.getTextStyle().setLabel(labelItem.getLabel());
+        
+        // reset previous caches
+        labelBounds = null;
+        lines = null;
+        
+        // split the label into lines
+        String text = labelItem.getLabel();
+        if(!text.contains("\n") && (labelItem.getAutoWrap() == Integer.MAX_VALUE || labelItem.getAutoWrap() > 0)) {
+            // no layout needed
+            LineInfo line = new LineInfo(text, layoutSentence(text, labelItem));
+            labelBounds = line.gv.getVisualBounds();
+            lines = Collections.singletonList(line);
+        } else {
+            // first split along the newlines
+            String[] splitted = text.split("\\n");
+            
+            // then perform an auto-wrap using the java2d facilities. This
+            // is done using a LineBreakMeasurer, but first we need to create
+            // some extra objects
+            
+            // setup the attributes
+            Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
+            map.put(TextAttribute.FONT, labelItem.getTextStyle().getFont());
+            
+            // accumulate the lines and compute the total bounds
+            lines = new ArrayList<LineInfo>();
+            for (int i = 0; i < splitted.length; i++) {
+                String line = splitted[i];
+
+                // build the line break iterator
+                AttributedString attributed = new AttributedString(line, map);
+                AttributedCharacterIterator iter = attributed.getIterator();
+                LineBreakMeasurer lineMeasurer = new LineBreakMeasurer(iter, BreakIterator.getWordInstance(),
+                        graphics.getFontRenderContext());
+
+                // setup iteration and start splitting at word boundaries
+                int prevPosition = 0;
+                double minY = 0;
+                while (lineMeasurer.getPosition() < iter.getEndIndex()) {
+                    // grab the next portion of text within the wrapping limits
+                    TextLayout layout = lineMeasurer.nextLayout(labelItem.getAutoWrap());
+                    int newPosition = lineMeasurer.getPosition();
+                    
+                    // extract the text, and trim it since leading and trailing and ... spaces can affect
+                    // label alignment in an unpleasant way (improper left or right alignment, or bad centering)
+                    String extracted = line.substring(prevPosition, newPosition).trim();
+                    prevPosition = newPosition;
+                    
+                    LineInfo info = new LineInfo(extracted, layoutSentence(extracted, labelItem), layout);
+                    lines.add(info);
+                    
+                    Rectangle2D currBounds = info.gv.getVisualBounds();
+                    
+                    // the position at which we start to draw, x and y
+                    // for x we have to take into consideration alignment as well since that affects
+                    // the horizontal size of the bounds, for y we don't care right now as we're computing
+                    // only the total bounds for a text located in the origin 
+                    double minX = (labelItem.getAutoWrap() - layout.getAdvance()) * labelItem.getTextStyle().getAnchorX();
+                    info.minX = minX;
+                                       
+                    if(labelBounds == null) {
+                        labelBounds = currBounds;
+                        minY = currBounds.getMinY() + layout.getAscent() + layout.getDescent() + layout.getLeading();
+                    } else {
+                        Rectangle2D translated = new Rectangle2D.Double(minX, minY, 
+                                currBounds.getWidth(), currBounds.getHeight());
+                        minY += layout.getAscent() + layout.getDescent() + layout.getLeading();
+                        labelBounds = labelBounds.createUnion(translated);
+                    }
+                        
+                }
+            }
+        }
+    }
+    
+    GlyphVector layoutSentence(String label, GSLabelCacheItem item) {
+        final Font font = item.getTextStyle().getFont(); 
+        final char[] chars = label.toCharArray();
+        final int length = label.length();
+        if(Bidi.requiresBidi(chars, 0, length) && 
+                new Bidi(label, Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT).isRightToLeft())
+            return font.layoutGlyphVector(graphics.getFontRenderContext(), chars, 
+                    0, length, Font.LAYOUT_RIGHT_TO_LEFT);
+        else
+            return font.createGlyphVector(graphics.getFontRenderContext(), chars);
     }
 
     public GSLabelCacheItem getLabel() {
@@ -56,7 +152,10 @@ public class GSLabelPainter {
      * @return
      */
     public int getLineHeight() {
-        return (int) Math.round(glyphVector.getVisualBounds().getHeight());
+        if(getLineCount() == 1)
+            return (int) Math.round(getLabelBounds().getHeight());
+        else
+            return (int) Math.round(lines.get(0).gv.getVisualBounds().getHeight());
     }
 
     /**
@@ -65,7 +164,15 @@ public class GSLabelPainter {
      * @return
      */
     public int getStraightLabelWidth() {
-        return (int) Math.round(glyphVector.getVisualBounds().getWidth());
+        return (int) Math.round(getLabelBounds().getWidth());
+    }
+    
+    /**
+     * Number of lines for this label (more than 1 if the label has embedded newlines or if we're auto-wrapping it)
+     * @return
+     */
+    public int getLineCount() {
+        return lines.size();
     }
 
     /**
@@ -76,7 +183,7 @@ public class GSLabelPainter {
      */
     public Rectangle2D getFullLabelBounds() {
         // base bounds
-        Rectangle2D bounds = glyphVector.getVisualBounds();
+        Rectangle2D bounds = getLabelBounds();
 
         // take into account halo
         int haloRadius = Math.round(labelItem.getTextStyle().getHaloFill() != null ? labelItem
@@ -104,11 +211,11 @@ public class GSLabelPainter {
      * @return
      */
     public Rectangle2D getLabelBounds() {
-        return glyphVector.getVisualBounds();
+        return labelBounds;
     }
 
     public void paintStraightLabel(AffineTransform transform) throws Exception {
-        Rectangle2D glyphBounds = glyphVector.getVisualBounds();
+        Rectangle2D glyphBounds = getLabelBounds();
         glyphBounds = transform.createTransformedShape(glyphBounds).getBounds();
 
         AffineTransform oldTransform = graphics.getTransform();
@@ -134,19 +241,35 @@ public class GSLabelPainter {
                 graphics.setTransform(transform);
             }
 
-            java.awt.Shape outline = glyphVector.getOutline();
-            if (labelItem.getTextStyle().getHaloFill() != null) {
-                configureHalo();
-                graphics.draw(outline);
+            if(lines.size() == 1) {
+                drawGlyphVector(lines.get(0).gv);   
+            } else {
+                double yOffset = 0;
+                AffineTransform lineTx = new AffineTransform(transform);
+                for (LineInfo line : lines) {
+                    lineTx.setTransform(transform);
+                    lineTx.translate(line.minX, yOffset);
+                    graphics.setTransform(lineTx);
+                    yOffset +=  line.layout.getAscent() + line.layout.getDescent() + line.layout.getLeading();
+                    drawGlyphVector(line.gv);   
+                }
             }
-            configureLabelStyle();
-            if (outlineRenderingEnabled)
-                graphics.fill(outline);
-            else
-                graphics.drawGlyphVector(glyphVector, 0, 0);
         } finally {
             graphics.setTransform(oldTransform);
         }
+    }
+
+    private void drawGlyphVector(GlyphVector gv ) {
+        java.awt.Shape outline = gv.getOutline();
+        if (labelItem.getTextStyle().getHaloFill() != null) {
+            configureHalo();
+            graphics.draw(outline);
+        }
+        configureLabelStyle();
+        if (outlineRenderingEnabled)
+            graphics.fill(outline);
+        else
+            graphics.drawGlyphVector(gv, 0, 0);
     }
 
     private void configureHalo() {
@@ -187,6 +310,7 @@ public class GSLabelPainter {
      * @param cursor
      */
     public void paintCurvedLabel(LineStringCursor cursor) {
+        GlyphVector glyphVector = lines.get(0).gv;
         AffineTransform oldTransform = graphics.getTransform();
         try {
             // first off, check if we are walking the line so that the label is
@@ -258,7 +382,7 @@ public class GSLabelPainter {
      */
     public double getLinePlacementYAnchor() {
         TextStyle2D textStyle = getLabel().getTextStyle();
-        LineMetrics lm = textStyle.getFont().getLineMetrics(textStyle.getLabel(), fontContext);
+        LineMetrics lm = textStyle.getFont().getLineMetrics(textStyle.getLabel(), graphics.getFontRenderContext());
         return (Math.abs(lm.getStrikethroughOffset()) + lm.getDescent() + lm.getLeading() / 2)
                 / lm.getHeight();
     }
@@ -277,5 +401,31 @@ public class GSLabelPainter {
         // normalize the angle so that it's comprised between 0 and 360°
         labelAngle = labelAngle % (Math.PI * 2);
         return labelAngle >= 0 && labelAngle < Math.PI;
+    }
+    
+    /**
+     * Core information needed to draw out a line of text
+     */
+    private static class LineInfo {
+        public double minX;
+        String text;
+        GlyphVector gv;
+        TextLayout layout;
+        
+        public LineInfo(String text, GlyphVector gv, TextLayout layout) {
+            super();
+            this.text = text;
+            this.gv = gv;
+            this.layout = layout;
+        }
+
+        public LineInfo(String text, GlyphVector gv) {
+            super();
+            this.text = text;
+            this.gv = gv;
+        }
+        
+        
+        
     }
 }

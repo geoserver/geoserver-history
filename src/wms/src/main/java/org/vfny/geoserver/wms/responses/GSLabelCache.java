@@ -25,6 +25,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -164,6 +165,9 @@ public final class GSLabelCache implements LabelCache {
     
     // The angle delta at which we switch from curved rendering to straight rendering  
     static final double MIN_CURVED_DELTA = Math.PI / 60;
+    
+    // Auto wrapping long labels default  
+    static final int DEFAULT_AUTO_WRAP = Integer.MAX_VALUE;
 	
 	/**
 	 * When true, the text is rendered as its GlyphVector outline (as a geometry) instead of using
@@ -344,6 +348,7 @@ public final class GSLabelCache implements LabelCache {
         item.setFollowLineEnabled(getBooleanOption(symbolizer, "followLine", DEFAULT_FOLLOW_LINE));
         double maxAngleDelta = getDoubleOption(symbolizer, "maxAngleDelta", DEFAULT_MAX_ANGLE_DELTA);
         item.setMaxAngleDelta(Math.toRadians(maxAngleDelta));
+        item.setAutoWrap(getIntOption(symbolizer, "autoWrap", DEFAULT_AUTO_WRAP));
         return item;
     }
 
@@ -556,7 +561,12 @@ public final class GSLabelCache implements LabelCache {
 	 * @param glyphVector
 	 * @param representativeGeom
 	 */
-	private double goodnessOfFit(Rectangle2D glyphBounds, Geometry representativeGeom) {
+	/**
+	 * @param glyphBounds
+	 * @param representativeGeom
+	 * @return
+	 */
+	private double goodnessOfFit(GSLabelPainter painter, Rectangle2D glyphBounds, Geometry representativeGeom) {
 		if (representativeGeom instanceof Point) {
 			return 1.0;
 		}
@@ -565,24 +575,24 @@ public final class GSLabelCache implements LabelCache {
 		}
 		if (representativeGeom instanceof Polygon) {
 			try {
+			    // do a sampling, how many points sitting on the labels are also within a certain distance of the polygon?
 				Polygon p = simplifyPoly((Polygon) representativeGeom);
 				int count = 0;
 				int n = 10;
-				double mindistance = (glyphBounds.getHeight());
-				for (int t = 1; t < (n + 1); t++) {
-					Coordinate c = new Coordinate(glyphBounds.getX()
-							+ ((double) glyphBounds.getWidth())
-							* (((double) t) / (n + 1)), glyphBounds
-							.getCenterY());
-					Point pp = new Point(c, representativeGeom
-							.getPrecisionModel(), representativeGeom.getSRID());
-					if (p.distance(pp) < mindistance)
-
-					{
-						count++;
-					}
+				double mindistance = painter.getLineHeight();
+				Coordinate c = new Coordinate();
+				Point pp = gf.createPoint(c);
+				for(int i = 1; i < (painter.getLineCount() + 1); i++) {
+				    double y = glyphBounds.getY() + ((double) glyphBounds.getHeight()) * (((double) i) / (painter.getLineCount() + 1));
+    				for (int j = 1; j < (n + 1); j++) {
+    				    c.x = glyphBounds.getX() + ((double) glyphBounds.getWidth()) * (((double) j) / (n + 1));
+    				    c.y = y;
+    				    pp.geometryChanged();
+    					if (p.distance(pp) < mindistance)
+    						count++;
+    				}
 				}
-				return ((double) count) / n;
+				return ((double) count) / (n * painter.getLineCount());
 			} catch (Exception e) {
 				representativeGeom.geometryChanged(); // djb -- jessie should
 				// do this during
@@ -736,8 +746,9 @@ public final class GSLabelCache implements LabelCache {
                                     // if the max angle is very small, draw it like a straight line
                                     if(maxAngleChange < MIN_CURVED_DELTA)
                                         painter.paintStraightLabel(tx);
-                                    else
+                                    else {
                                         painter.paintCurvedLabel(cursor);
+                                    }
             		                painted = true;
             		            }
         		            }
@@ -927,16 +938,17 @@ public final class GSLabelCache implements LabelCache {
 		}
 
 		TextStyle2D textStyle = labelItem.getTextStyle();
-		Rectangle2D textBounds = painter.getLabelBounds();
-		tempTransform.translate(centroid.getX(), centroid.getY());
+		Rectangle2D textBounds = painter.getFullLabelBounds();
+		System.out.println(textBounds);
 		double displacementX = 0;
 		double displacementY = 0;
 
 		// DJB: this now does "centering"
 		displacementX = (textStyle.getAnchorX() * (-textBounds.getWidth()))
 				+ textStyle.getDisplacementX();
-		displacementY = (textStyle.getAnchorY() * (textBounds.getHeight()))
+		displacementY = (textStyle.getAnchorY() * (-textBounds.getHeight()))
 				- textStyle.getDisplacementY();
+		tempTransform.translate(centroid.getX() + displacementX - textBounds.getMinX(), centroid.getY() + displacementY - textBounds.getMinY());
 
 		if (!textStyle.isPointPlacement()) {
 			// lineplacement. We're cheating here, since we've reduced the
@@ -954,14 +966,18 @@ public final class GSLabelCache implements LabelCache {
 			rotation = 0; // weird number
 
 		tempTransform.rotate(rotation);
-		tempTransform.translate(displacementX, displacementY);
 		
 		Rectangle2D transformed = tempTransform.createTransformedShape(painter.getFullLabelBounds()).getBounds2D();
 		if (!displayArea.contains(transformed) 
 		        || glyphs.labelsWithinDistance(transformed, labelItem.getSpaceAround()) 
-		        || goodnessOfFit(transformed, geom) < MIN_GOODNESS_FIT)
+		        || goodnessOfFit(painter, transformed, geom) < MIN_GOODNESS_FIT)
             return false;
 		
+//		painter.graphics.setStroke(new BasicStroke(2));
+//        painter.graphics.setColor(Color.BLACK);
+//        painter.graphics.draw(tempTransform.createTransformedShape(painter.getFullLabelBounds()));
+//        painter.graphics.setColor(Color.WHITE);
+//        painter.graphics.draw(new Line2D.Double(centroid.getX(), centroid.getY(), centroid.getX(), centroid.getY()));
 		painter.paintStraightLabel(tempTransform);
 		glyphs.addLabel(labelItem, transformed);
 		return true;
