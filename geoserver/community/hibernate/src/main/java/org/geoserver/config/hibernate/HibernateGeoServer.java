@@ -263,7 +263,7 @@ public class HibernateGeoServer implements GeoServer {
             coverageStore.setEnabled(true);
             coverageStore.setName("TEST-COVERAGE-STORE");
             coverageStore.setType("NetCDF");
-            coverageStore.setURL(getClass().getResource("updatedoagCF.nc").toURI().toString());
+            coverageStore.setURL("file:data/coverages/updatedoagCF.nc" /* getClass().getResource("updatedoagCF.nc").toURI().toString() */);
             coverageStore.setWorkspace(defaultWs);
 
             this.catalogDAO.save(coverageStore);
