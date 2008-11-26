@@ -15,7 +15,8 @@
          imgUrl="../../images/"
 >
   <head>
-    <title>${title} - Powered by GeoServer </title
+    <title>${title} - Powered by GeoServer </title>
+    <link type="image/gif" href="${imgUrl}/gs.gif" rel="icon"/>
     <link rel="stylesheet" type="text/css" href="../../openlayers/theme/default/style.css"/>
     <!-- Basic CSS definitions -->
     <style type="text/css">
