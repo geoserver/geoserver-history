@@ -221,92 +221,256 @@ public class HibernateGeoServer implements GeoServer {
         this.catalogDAO.save(model);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:sssZ");
-        ModelRunInfoImpl modelRun = new ModelRunInfoImpl();
-        modelRun.setDescription("A Test Model Run.");
+        
+        // ////////////////////////////////////////////////////////////////////
+        //
+        // Defining Model-Runs
+        //
+        // ////////////////////////////////////////////////////////////////////
+        /** Model Run 0 **/
+        ModelRunInfoImpl modelRun_0 = new ModelRunInfoImpl();
+        modelRun_0.setDescription("A Test Model Run.");
         try {
-            modelRun.setExecutionTime(sdf.parse("2001-05-25T02:00:000+0200"));
-            modelRun.setBaseTime(sdf.parse("2001-05-25T02:00:000+0200"));
+            modelRun_0.setExecutionTime(sdf.parse("2001-05-25T02:00:000+0200"));
+            modelRun_0.setBaseTime(sdf.parse("2001-05-25T02:00:000+0200"));
         } catch (ParseException e1) {
-            modelRun.setExecutionTime(new Date());
-            modelRun.setBaseTime(new Date());
+            modelRun_0.setExecutionTime(new Date());
+            modelRun_0.setBaseTime(new Date());
         }
-        modelRun.setId("TEST-RUN");
-        modelRun.setKeywords(keywords);
-        modelRun.setModel(model);
-        modelRun.setName("TEST-RUN-001");
-        modelRun.setNumTAU(1);
-        modelRun.setCRS(DefaultGeographicCRS.WGS84);
-        modelRun.setGridCRS("Grid:2D");
-        modelRun.setGridCS("Grid:square2D");
-        modelRun.setGridLowers(new Double[] { 0.0, 0.0 });
-        modelRun.setGridOffsets(new Double[] { 1.0, 1.0 });
-        modelRun.setGridOrigin(new Double[] { 0.0, 0.0 });
-        modelRun.setGridType("Grid:square2dIn2dCRS");
-        modelRun.setGridUppers(new Double[] { 300.0, 300.0 });
-        modelRun.setVerticalCoordinateMeaning("depth");
-        modelRun.setOutline(new ReferencedEnvelope(new Envelope(27.40437126159668, 32.995628356933594, 41.01088333129883, 42.589115142822266), DefaultGeographicCRS.WGS84));
-        modelRun.setTAU(1);
-        modelRun.setTAUunit("day");
-        modelRun.setUpdateSequence("0");
+        modelRun_0.setId("TEST-RUN-0");
+        modelRun_0.setKeywords(keywords);
+        modelRun_0.setModel(model);
+        modelRun_0.setName("TEST-RUN-000");
+        modelRun_0.setNumTAU(1);
+        modelRun_0.setCRS(DefaultGeographicCRS.WGS84);
+        modelRun_0.setGridCRS("Grid:2D");
+        modelRun_0.setGridCS("Grid:square2D");
+        modelRun_0.setGridLowers(new Double[] { 0.0, 0.0 });
+        modelRun_0.setGridOffsets(new Double[] { 1.0, 1.0 });
+        modelRun_0.setGridOrigin(new Double[] { 0.0, 0.0 });
+        modelRun_0.setGridType("Grid:square2dIn2dCRS");
+        modelRun_0.setGridUppers(new Double[] { 300.0, 300.0 });
+        modelRun_0.setVerticalCoordinateMeaning("depth");
+        modelRun_0.setOutline(new ReferencedEnvelope(new Envelope(27.40437126159668, 32.995628356933594, 41.01088333129883, 42.589115142822266), DefaultGeographicCRS.WGS84));
+        modelRun_0.setTAU(1);
+        modelRun_0.setTAUunit("day");
+        modelRun_0.setUpdateSequence("0");
 
-        this.catalogDAO.save(modelRun);
+        this.catalogDAO.save(modelRun_0);
 
-        List<ModelRunInfo> runs = new ArrayList<ModelRunInfo>();
-        runs.add(modelRun);
-        model.setModelRuns(runs);
+        /** Model Run 1 **/
+        ModelRunInfoImpl modelRun_1 = new ModelRunInfoImpl();
+        modelRun_1.setDescription("A Test Model Run.");
+        try {
+            modelRun_1.setExecutionTime(sdf.parse("2008-09-24T02:00:000+0200"));
+            modelRun_1.setBaseTime(sdf.parse("2008-09-24T02:00:000+0200"));
+        } catch (ParseException e1) {
+            modelRun_1.setExecutionTime(new Date());
+            modelRun_1.setBaseTime(new Date());
+        }
+        modelRun_1.setId("TEST-RUN-1");
+        modelRun_1.setKeywords(keywords);
+        modelRun_1.setModel(model);
+        modelRun_1.setName("TEST-RUN-001");
+        modelRun_1.setNumTAU(1);
+        modelRun_1.setCRS(DefaultGeographicCRS.WGS84);
+        modelRun_1.setGridCRS("Grid:2D");
+        modelRun_1.setGridCS("Grid:square2D");
+        modelRun_1.setGridLowers(new Double[] { 0.0, 0.0 });
+        modelRun_1.setGridOffsets(new Double[] { 1.0, 1.0 });
+        modelRun_1.setGridOrigin(new Double[] { 0.0, 0.0 });
+        modelRun_1.setGridType("Grid:square2dIn2dCRS");
+        modelRun_1.setGridUppers(new Double[] { 300.0, 300.0 });
+        modelRun_1.setVerticalCoordinateMeaning("depth");
+        modelRun_1.setOutline(new ReferencedEnvelope(new Envelope(6.875, 12.0, 42.00975799560547, 44.28925704956055), DefaultGeographicCRS.WGS84));
+        modelRun_1.setTAU(1);
+        modelRun_1.setTAUunit("day");
+        modelRun_1.setUpdateSequence("0");
+
+        this.catalogDAO.save(modelRun_1);
+
+        /** Model Run 2 **/
+        ModelRunInfoImpl modelRun_2 = new ModelRunInfoImpl();
+        modelRun_2.setDescription("A Test Model Run.");
+        try {
+            modelRun_2.setExecutionTime(sdf.parse("2008-09-25T02:00:000+0200"));
+            modelRun_2.setBaseTime(sdf.parse("2008-09-25T02:00:000+0200"));
+        } catch (ParseException e1) {
+            modelRun_2.setExecutionTime(new Date());
+            modelRun_2.setBaseTime(new Date());
+        }
+        modelRun_2.setId("TEST-RUN-2");
+        modelRun_2.setKeywords(keywords);
+        modelRun_2.setModel(model);
+        modelRun_2.setName("TEST-RUN-002");
+        modelRun_2.setNumTAU(1);
+        modelRun_2.setCRS(DefaultGeographicCRS.WGS84);
+        modelRun_2.setGridCRS("Grid:2D");
+        modelRun_2.setGridCS("Grid:square2D");
+        modelRun_2.setGridLowers(new Double[] { 0.0, 0.0 });
+        modelRun_2.setGridOffsets(new Double[] { 1.0, 1.0 });
+        modelRun_2.setGridOrigin(new Double[] { 0.0, 0.0 });
+        modelRun_2.setGridType("Grid:square2dIn2dCRS");
+        modelRun_2.setGridUppers(new Double[] { 300.0, 300.0 });
+        modelRun_2.setVerticalCoordinateMeaning("depth");
+        modelRun_2.setOutline(new ReferencedEnvelope(new Envelope(6.875, 12.0, 42.00975799560547, 44.28925704956055), DefaultGeographicCRS.WGS84));
+        modelRun_2.setTAU(1);
+        modelRun_2.setTAUunit("day");
+        modelRun_2.setUpdateSequence("0");
+
+        this.catalogDAO.save(modelRun_2);
+
+        /** Model Run 3 **/
+        ModelRunInfoImpl modelRun_3 = new ModelRunInfoImpl();
+        modelRun_3.setDescription("A Test Model Run.");
+        try {
+            modelRun_3.setExecutionTime(sdf.parse("2008-09-26T02:00:000+0200"));
+            modelRun_3.setBaseTime(sdf.parse("2008-09-26T02:00:000+0200"));
+        } catch (ParseException e1) {
+            modelRun_3.setExecutionTime(new Date());
+            modelRun_3.setBaseTime(new Date());
+        }
+        modelRun_3.setId("TEST-RUN-3");
+        modelRun_3.setKeywords(keywords);
+        modelRun_3.setModel(model);
+        modelRun_3.setName("TEST-RUN-003");
+        modelRun_3.setNumTAU(1);
+        modelRun_3.setCRS(DefaultGeographicCRS.WGS84);
+        modelRun_3.setGridCRS("Grid:2D");
+        modelRun_3.setGridCS("Grid:square2D");
+        modelRun_3.setGridLowers(new Double[] { 0.0, 0.0 });
+        modelRun_3.setGridOffsets(new Double[] { 1.0, 1.0 });
+        modelRun_3.setGridOrigin(new Double[] { 0.0, 0.0 });
+        modelRun_3.setGridType("Grid:square2dIn2dCRS");
+        modelRun_3.setGridUppers(new Double[] { 300.0, 300.0 });
+        modelRun_3.setVerticalCoordinateMeaning("depth");
+        modelRun_3.setOutline(new ReferencedEnvelope(new Envelope(6.875, 12.0, 42.00975799560547, 44.28925704956055), DefaultGeographicCRS.WGS84));
+        modelRun_3.setTAU(1);
+        modelRun_3.setTAUunit("day");
+        modelRun_3.setUpdateSequence("0");
+
+        this.catalogDAO.save(modelRun_3);
+
+        // //
+        // Updating Model
+        // //
+        List<ModelRunInfo> runsAll = new ArrayList<ModelRunInfo>();
+        runsAll.add(modelRun_0);
+        runsAll.add(modelRun_1);
+        runsAll.add(modelRun_2);
+        runsAll.add(modelRun_3);
+        model.setModelRuns(runsAll);
 
         this.catalogDAO.update(model);
 
+        List<ModelRunInfo> runs_0 = new ArrayList<ModelRunInfo>();
+        runs_0.add(modelRun_0);
+
+        List<ModelRunInfo> runs_1 = new ArrayList<ModelRunInfo>();
+        runs_1.add(modelRun_1);
+        runs_1.add(modelRun_2);
+        runs_1.add(modelRun_3);
+
         try {
-            CoverageStoreInfo coverageStore = catalog.getFactory().createCoverageStore();
-            coverageStore.setDescription("Example Test Coverage.");
-            coverageStore.setEnabled(true);
-            coverageStore.setName("TEST-COVERAGE-STORE");
-            coverageStore.setType("NetCDF");
-            coverageStore.setURL("file:data/coverages/updatedoagCF.nc" /* getClass().getResource("updatedoagCF.nc").toURI().toString() */);
-            coverageStore.setWorkspace(defaultWs);
+        	// ////////////////////////////////////////////////////////////////
+        	//
+        	// Defining Sample Coverage Stores
+        	//
+        	// ////////////////////////////////////////////////////////////////
+            CoverageStoreInfo coverageStore_0 = catalog.getFactory().createCoverageStore();
+            coverageStore_0.setDescription("updatedoadCF.");
+            coverageStore_0.setEnabled(true);
+            coverageStore_0.setName("TEST-COVERAGE-STORE-0");
+            coverageStore_0.setType("NetCDF");
+            coverageStore_0.setURL("file:coverages/updatedoagCF.nc" /* getClass().getResource("updatedoagCF.nc").toURI().toString() */);
+            coverageStore_0.setWorkspace(defaultWs);
 
-            this.catalogDAO.save(coverageStore);
+            this.catalogDAO.save(coverageStore_0);
 
-            CoverageInfo coverage = catalog.getFactory().createCoverage();
-            coverage.setStore(coverageStore);
-            coverage.setName("updatedoagCF_0");
-            coverage.setNativeName("updatedoagCF_0");
-            coverage.setTitle("TEST-COVERAGE-001");
-            coverage.setDescription("An Example Test Coverage.");
-            coverage.getKeywords().addAll(keywords);
-            Map<String, Object> envelope = new HashMap<String, Object>();
-            envelope.put("x1", 27.40437126159668);
-            envelope.put("x2", 32.995628356933594);
-            envelope.put("y1", 41.01088333129883);
-            envelope.put("y2", 42.589115142822266);
-            envelope.put("srsName", "EPSG:4326");
-            envelope.put("crs", "GEOGCS[\"WGS84(DD)\", \r\n  DATUM[\"WGS84\", \r\n    SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \r\n  PRIMEM[\"Greenwich\", 0.0], \r\n  UNIT[\"degree\", 0.017453292519943295], \r\n  AXIS[\"Geodetic longitude\", EAST], \r\n  AXIS[\"Geodetic latitude\", NORTH]]");
-            String userDefinedCrsIdentifier = (String) envelope.get("srsName");
-            String nativeCrsWkt = (String) envelope.get("crs");
-            coverage.setSRS(userDefinedCrsIdentifier);
-            CoordinateReferenceSystem crs = CRS.parseWKT(nativeCrsWkt);
-            coverage.setNativeCRS(crs);
-            ReferencedEnvelope bounds = 
+            CoverageStoreInfo coverageStore_1 = catalog.getFactory().createCoverageStore();
+            coverageStore_1.setDescription("ext-mercatorPsy2v3R1v_med_mean_20080924_R20080924.");
+            coverageStore_1.setEnabled(true);
+            coverageStore_1.setName("TEST-COVERAGE-STORE-1");
+            coverageStore_1.setType("NetCDF");
+            coverageStore_1.setURL("file:coverages/ext-mercatorPsy2v3R1v_med_mean_20080924_R20080924.nc");
+            coverageStore_1.setWorkspace(defaultWs);
+
+            this.catalogDAO.save(coverageStore_1);
+
+            CoverageStoreInfo coverageStore_2 = catalog.getFactory().createCoverageStore();
+            coverageStore_2.setDescription("ext-mercatorPsy2v3R1v_med_mean_20080925_R20080924.");
+            coverageStore_2.setEnabled(true);
+            coverageStore_2.setName("TEST-COVERAGE-STORE-2");
+            coverageStore_2.setType("NetCDF");
+            coverageStore_2.setURL("file:coverages/ext-mercatorPsy2v3R1v_med_mean_20080925_R20080924.nc");
+            coverageStore_2.setWorkspace(defaultWs);
+
+            this.catalogDAO.save(coverageStore_2);
+
+            CoverageStoreInfo coverageStore_3 = catalog.getFactory().createCoverageStore();
+            coverageStore_3.setDescription("ext-mercatorPsy2v3R1v_med_mean_20080926_R20080924.");
+            coverageStore_3.setEnabled(true);
+            coverageStore_3.setName("TEST-COVERAGE-STORE-3");
+            coverageStore_3.setType("NetCDF");
+            coverageStore_3.setURL("file:coverages/ext-mercatorPsy2v3R1v_med_mean_20080926_R20080924.nc");
+            coverageStore_3.setWorkspace(defaultWs);
+
+            this.catalogDAO.save(coverageStore_3);
+
+            // //
+            // Default Raster Style
+            // //
+            StyleInfo style = catalog.getFactory().createStyle();
+            style.setName("raster");
+            style.setFilename("raster.sld");
+            
+            this.catalogDAO.save(style);
+
+        	// ////////////////////////////////////////////////////////////////
+        	//
+        	// Defining Sample Coverages
+        	//
+        	// ////////////////////////////////////////////////////////////////
+            /** Coverage 0 **/
+            CoverageInfo coverage_0 = catalog.getFactory().createCoverage();
+            coverage_0.setStore(coverageStore_0);
+            coverage_0.setName("updatedoagCF_0");
+            coverage_0.setNativeName("updatedoagCF_0");
+            coverage_0.setTitle("TEST-COVERAGE-000");
+            coverage_0.setDescription("An Example Test Coverage.");
+            coverage_0.getKeywords().addAll(keywords);
+            Map<String, Object> envelope_0 = new HashMap<String, Object>();
+            envelope_0.put("x1", 27.40437126159668);
+            envelope_0.put("x2", 32.995628356933594);
+            envelope_0.put("y1", 41.01088333129883);
+            envelope_0.put("y2", 42.589115142822266);
+            envelope_0.put("srsName", "EPSG:4326");
+            envelope_0.put("crs", "GEOGCS[\"WGS84(DD)\", \r\n  DATUM[\"WGS84\", \r\n    SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \r\n  PRIMEM[\"Greenwich\", 0.0], \r\n  UNIT[\"degree\", 0.017453292519943295], \r\n  AXIS[\"Geodetic longitude\", EAST], \r\n  AXIS[\"Geodetic latitude\", NORTH]]");
+            String userDefinedCrsIdentifier_0 = (String) envelope_0.get("srsName");
+            String nativeCrsWkt_0 = (String) envelope_0.get("crs");
+            coverage_0.setSRS(userDefinedCrsIdentifier_0);
+            CoordinateReferenceSystem crs_0 = CRS.parseWKT(nativeCrsWkt_0);
+            coverage_0.setNativeCRS(crs_0);
+            ReferencedEnvelope bounds_0 = 
                 new ReferencedEnvelope(
-                    (Double) envelope.get("x1"),
-                    (Double) envelope.get("x2"), 
-                    (Double) envelope.get("y1"), 
-                    (Double) envelope.get("y2"), 
-                    crs
+                    (Double) envelope_0.get("x1"),
+                    (Double) envelope_0.get("x2"), 
+                    (Double) envelope_0.get("y1"), 
+                    (Double) envelope_0.get("y2"), 
+                    crs_0
                 );
-            coverage.setNativeBoundingBox(bounds);
-            GeneralEnvelope boundsLatLon = CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope(bounds));
-            coverage.setLatLonBoundingBox(new ReferencedEnvelope(boundsLatLon));
-            GeneralEnvelope gridEnvelope = new GeneralEnvelope(bounds);
-            Map grid = new HashMap();
-            grid.put("low", new int[] { 0, 0 });
-            grid.put("high", new int[] { 300, 300 });
-            if (grid != null) {
-                int[] low = (int[]) grid.get("low");
-                int[] high = (int[]) grid.get("high");
+            coverage_0.setNativeBoundingBox(bounds_0);
+            GeneralEnvelope boundsLatLon_0 = CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope(bounds_0));
+            coverage_0.setLatLonBoundingBox(new ReferencedEnvelope(boundsLatLon_0));
+            GeneralEnvelope gridEnvelope_0 = new GeneralEnvelope(bounds_0);
+            Map grid_0 = new HashMap();
+            grid_0.put("low", new int[] { 0, 0 });
+            grid_0.put("high", new int[] { 300, 300 });
+            if (grid_0 != null) {
+                int[] low = (int[]) grid_0.get("low");
+                int[] high = (int[]) grid_0.get("high");
                 GeneralGridRange range = new GeneralGridRange(low, high);
-                Map<String, Double> tx = (Map<String, Double>) grid.get("geoTransform");
+                Map<String, Double> tx = (Map<String, Double>) grid_0.get("geoTransform");
                 if (tx != null) {
                     double[] matrix = new double[3 * 3];
                     matrix[0] = tx.get("scaleX") != null ? tx.get("scaleX") : matrix[0];
@@ -317,23 +481,23 @@ public class HibernateGeoServer implements GeoServer {
                     matrix[5] = tx.get("translateY") != null ? tx.get("translateY") : matrix[5];
                     matrix[8] = 1.0;
                     MathTransform gridToCRS = new DefaultMathTransformFactory().createAffineTransform(new GeneralMatrix(3, 3, matrix));
-                    coverage.setGrid(new GridGeometry2D(range, gridToCRS, crs));
+                    coverage_0.setGrid(new GridGeometry2D(range, gridToCRS, crs_0));
                 } else {
-                    coverage.setGrid(new GridGeometry2D(range, gridEnvelope));
+                    coverage_0.setGrid(new GridGeometry2D(range, gridEnvelope_0));
                 }
             } else {
                 // new grid range
                 GeneralGridRange range = new GeneralGridRange(new int[] { 0, 0 }, new int[] { 1, 1 });
-                coverage.setGrid(new GridGeometry2D(range, gridEnvelope));
+                coverage_0.setGrid(new GridGeometry2D(range, gridEnvelope_0));
             }
-            Driver driver = coverageStore.getDriver();
-            Map params = new HashMap();
-            params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
-            CoverageAccess cvAccess = driver.connect(params, null, null);
-            if (cvAccess != null) {
-                CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+            Driver driver_0 = coverageStore_0.getDriver();
+            Map params_0 = new HashMap();
+            params_0.put("url", GeoserverDataDirectory.findDataFile(coverageStore_0.getURL()).toURI().toURL());
+            CoverageAccess cvAccess_0 = driver_0.connect(params_0, null, null);
+            if (cvAccess_0 != null) {
+                CoverageSource cvSource = cvAccess_0.access(new NameImpl(coverage_0.getName()), null, AccessType.READ_ONLY, null, null);
                 if (cvSource != null) {
-                    coverage.setFields(cvSource.getRangeType(null));
+                    coverage_0.setFields(cvSource.getRangeType(null));
                     CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
                     Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
                     CoordinateReferenceSystem temporalCRS = null;
@@ -352,54 +516,406 @@ public class HibernateGeoServer implements GeoServer {
                                 verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
                         }
                     }
-                    coverage.setTemporalCRS(temporalCRS);
-                    coverage.setTemporalExtent(temporalExtent);
-                    coverage.setVerticalCRS(verticalCRS);
-                    coverage.setVerticalExtent(verticalExtent);
+                    coverage_0.setTemporalCRS(temporalCRS);
+                    coverage_0.setTemporalExtent(temporalExtent);
+                    coverage_0.setVerticalCRS(verticalCRS);
+                    coverage_0.setVerticalExtent(verticalExtent);
                 }
             }
-            coverage.setNativeFormat("NetCDF");
-            coverage.getSupportedFormats().addAll(Arrays.asList(new String[] { "GeoTIFF" }));
-            coverage.setDefaultInterpolationMethod("nearest neighbour");
-            coverage.getInterpolationMethods().addAll(Arrays.asList(new String[] { "bilinear", "bicubic" }));
-            coverage.getRequestSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
-            coverage.getResponseSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
-            coverage.setEnabled(coverageStore.isEnabled());
-            // parameters
-            // coverage.getParameters().putAll(cInfoReader.parameters());
-            // link to namespace
-            HbNamespaceInfo namespace = this.catalogDAO.getDefaultNamespace();
-            coverage.setNamespace(namespace);
-            
-            coverage.getMetadata().put("dirName", coverageStore.getName() + "_" + coverage.getName());
+            coverage_0.setNativeFormat("NetCDF");
+            coverage_0.getSupportedFormats().addAll(Arrays.asList(new String[] { "GeoTIFF" }));
+            coverage_0.setDefaultInterpolationMethod("nearest neighbor");
+            coverage_0.getInterpolationMethods().addAll(Arrays.asList(new String[] { "nearest neighbor", "bilinear", "bicubic" }));
+            coverage_0.getRequestSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
+            coverage_0.getResponseSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
+            coverage_0.setEnabled(coverageStore_0.isEnabled());
+            coverage_0.setNamespace(this.catalogDAO.getDefaultNamespace());
+            coverage_0.getMetadata().put("dirName", coverageStore_0.getName() + "_" + coverage_0.getName());
 
-            this.catalogDAO.save(coverage);
-
-            StyleInfo style = catalog.getFactory().createStyle();
-            style.setName("raster");
-            style.setFilename("raster.sld");
-            
-            this.catalogDAO.save(style);
-            
-            LayerInfo layer = catalog.getFactory().createLayer();
-            layer.setDefaultStyle(style);
-            layer.setEnabled(coverage.isEnabled());
+            this.catalogDAO.save(coverage_0);
+                        
+            LayerInfo layer_0 = catalog.getFactory().createLayer();
+            layer_0.setDefaultStyle(style);
+            layer_0.setEnabled(coverage_0.isEnabled());
             //layer.setLegend(legend);
-            layer.setName(coverage.getName());
-            layer.setPath("/");
-            layer.setResource(coverage);
-            layer.setType(Type.RASTER);
+            layer_0.setName(coverage_0.getName());
+            layer_0.setPath("/");
+            layer_0.setResource(coverage_0);
+            layer_0.setType(Type.RASTER);
             
-            this.catalogDAO.save(layer);
+            this.catalogDAO.save(layer_0);
             
-            List<CoverageInfo> coverages = new ArrayList<CoverageInfo>();
-            coverages.add(coverage);
-            modelRun.setGridCoverages(coverages);
+            /** Coverage 1 **/
+            CoverageInfo coverage_1 = catalog.getFactory().createCoverage();
+            coverage_1.setStore(coverageStore_1);
+            coverage_1.setName("ext-mercatorPsy2v3R1v_med_mean_20080924_R20080924_0");
+            coverage_1.setNativeName("ext-mercatorPsy2v3R1v_med_mean_20080924_R20080924_0");
+            coverage_1.setTitle("TEST-COVERAGE-001");
+            coverage_1.setDescription("An Example Test Coverage.");
+            coverage_1.getKeywords().addAll(keywords);
+            Map<String, Object> envelope_1 = new HashMap<String, Object>();
+            envelope_1.put("x1", 6.875);
+            envelope_1.put("x2", 12.0);
+            envelope_1.put("y1", 42.00975799560547);
+            envelope_1.put("y2", 44.28925704956055);
+            envelope_1.put("srsName", "EPSG:4326");
+            envelope_1.put("crs", "GEOGCS[\"WGS84(DD)\", \r\n  DATUM[\"WGS84\", \r\n    SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \r\n  PRIMEM[\"Greenwich\", 0.0], \r\n  UNIT[\"degree\", 0.017453292519943295], \r\n  AXIS[\"Geodetic longitude\", EAST], \r\n  AXIS[\"Geodetic latitude\", NORTH]]");
+            String userDefinedCrsIdentifier_1 = (String) envelope_1.get("srsName");
+            String nativeCrsWkt_1 = (String) envelope_1.get("crs");
+            coverage_1.setSRS(userDefinedCrsIdentifier_1);
+            CoordinateReferenceSystem crs_1 = CRS.parseWKT(nativeCrsWkt_1);
+            coverage_1.setNativeCRS(crs_1);
+            ReferencedEnvelope bounds_1 = 
+                new ReferencedEnvelope(
+                    (Double) envelope_1.get("x1"),
+                    (Double) envelope_1.get("x2"), 
+                    (Double) envelope_1.get("y1"), 
+                    (Double) envelope_1.get("y2"), 
+                    crs_1
+                );
+            coverage_1.setNativeBoundingBox(bounds_1);
+            GeneralEnvelope boundsLatLon_1 = CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope(bounds_1));
+            coverage_1.setLatLonBoundingBox(new ReferencedEnvelope(boundsLatLon_1));
+            GeneralEnvelope gridEnvelope_1 = new GeneralEnvelope(bounds_1);
+            Map grid_1 = new HashMap();
+            grid_1.put("low", new int[] { 0, 0 });
+            grid_1.put("high", new int[] { 300, 300 });
+            if (grid_1 != null) {
+                int[] low = (int[]) grid_1.get("low");
+                int[] high = (int[]) grid_1.get("high");
+                GeneralGridRange range = new GeneralGridRange(low, high);
+                Map<String, Double> tx = (Map<String, Double>) grid_1.get("geoTransform");
+                if (tx != null) {
+                    double[] matrix = new double[3 * 3];
+                    matrix[0] = tx.get("scaleX") != null ? tx.get("scaleX") : matrix[0];
+                    matrix[1] = tx.get("shearX") != null ? tx.get("shearX") : matrix[1];
+                    matrix[2] = tx.get("translateX") != null ? tx.get("translateX") : matrix[2];
+                    matrix[3] = tx.get("shearY") != null ? tx.get("shearY") : matrix[3];
+                    matrix[4] = tx.get("scaleY") != null ? tx.get("scaleY") : matrix[4];
+                    matrix[5] = tx.get("translateY") != null ? tx.get("translateY") : matrix[5];
+                    matrix[8] = 1.0;
+                    MathTransform gridToCRS = new DefaultMathTransformFactory().createAffineTransform(new GeneralMatrix(3, 3, matrix));
+                    coverage_1.setGrid(new GridGeometry2D(range, gridToCRS, crs_1));
+                } else {
+                    coverage_1.setGrid(new GridGeometry2D(range, gridEnvelope_1));
+                }
+            } else {
+                // new grid range
+                GeneralGridRange range = new GeneralGridRange(new int[] { 0, 0 }, new int[] { 1, 1 });
+                coverage_1.setGrid(new GridGeometry2D(range, gridEnvelope_1));
+            }
+            Driver driver_1 = coverageStore_1.getDriver();
+            Map params_1 = new HashMap();
+            params_1.put("url", GeoserverDataDirectory.findDataFile(coverageStore_1.getURL()).toURI().toURL());
+            CoverageAccess cvAccess_1 = driver_1.connect(params_1, null, null);
+            if (cvAccess_1 != null) {
+                CoverageSource cvSource = cvAccess_1.access(new NameImpl(coverage_1.getName()), null, AccessType.READ_ONLY, null, null);
+                if (cvSource != null) {
+                    coverage_1.setFields(cvSource.getRangeType(null));
+                    CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                    Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                    CoordinateReferenceSystem temporalCRS = null;
+                    CoordinateReferenceSystem verticalCRS = null;
+                    if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                        if (compundCRS instanceof CompoundCRS) {
+                            temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                        }
+                    }
+                    Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                    if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                        if (compundCRS instanceof CompoundCRS) {
+                            if (temporalCRS != null)
+                                verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                            else
+                                verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                        }
+                    }
+                    coverage_1.setTemporalCRS(temporalCRS);
+                    coverage_1.setTemporalExtent(temporalExtent);
+                    coverage_1.setVerticalCRS(verticalCRS);
+                    coverage_1.setVerticalExtent(verticalExtent);
+                }
+            }
+            coverage_1.setNativeFormat("NetCDF");
+            coverage_1.getSupportedFormats().addAll(Arrays.asList(new String[] { "GeoTIFF" }));
+            coverage_1.setDefaultInterpolationMethod("nearest neighbor");
+            coverage_1.getInterpolationMethods().addAll(Arrays.asList(new String[] { "nearest neighbor", "bilinear", "bicubic" }));
+            coverage_1.getRequestSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
+            coverage_1.getResponseSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
+            coverage_1.setEnabled(coverageStore_1.isEnabled());
+            coverage_1.setNamespace(this.catalogDAO.getDefaultNamespace());
+            coverage_1.getMetadata().put("dirName", coverageStore_1.getName() + "_" + coverage_1.getName());
 
-            this.catalogDAO.update(modelRun);
+            this.catalogDAO.save(coverage_1);
+                        
+            LayerInfo layer_1 = catalog.getFactory().createLayer();
+            layer_1.setDefaultStyle(style);
+            layer_1.setEnabled(coverage_1.isEnabled());
+            //layer.setLegend(legend);
+            layer_1.setName(coverage_1.getName());
+            layer_1.setPath("/");
+            layer_1.setResource(coverage_1);
+            layer_1.setType(Type.RASTER);
             
+            this.catalogDAO.save(layer_1);
+
+            /** Coverage 2 **/
+            CoverageInfo coverage_2 = catalog.getFactory().createCoverage();
+            coverage_2.setStore(coverageStore_2);
+            coverage_2.setName("ext-mercatorPsy2v3R1v_med_mean_20080925_R20080924_0");
+            coverage_2.setNativeName("ext-mercatorPsy2v3R1v_med_mean_20080925_R20080924_0");
+            coverage_2.setTitle("TEST-COVERAGE-002");
+            coverage_2.setDescription("An Example Test Coverage.");
+            coverage_2.getKeywords().addAll(keywords);
+            Map<String, Object> envelope_2 = new HashMap<String, Object>();
+            envelope_2.put("x1", 6.875);
+            envelope_2.put("x2", 12.0);
+            envelope_2.put("y1", 42.00975799560547);
+            envelope_2.put("y2", 44.28925704956055);
+            envelope_2.put("srsName", "EPSG:4326");
+            envelope_2.put("crs", "GEOGCS[\"WGS84(DD)\", \r\n  DATUM[\"WGS84\", \r\n    SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \r\n  PRIMEM[\"Greenwich\", 0.0], \r\n  UNIT[\"degree\", 0.017453292519943295], \r\n  AXIS[\"Geodetic longitude\", EAST], \r\n  AXIS[\"Geodetic latitude\", NORTH]]");
+            String userDefinedCrsIdentifier_2 = (String) envelope_2.get("srsName");
+            String nativeCrsWkt_2 = (String) envelope_2.get("crs");
+            coverage_2.setSRS(userDefinedCrsIdentifier_2);
+            CoordinateReferenceSystem crs_2 = CRS.parseWKT(nativeCrsWkt_2);
+            coverage_2.setNativeCRS(crs_2);
+            ReferencedEnvelope bounds_2 = 
+                new ReferencedEnvelope(
+                    (Double) envelope_2.get("x1"),
+                    (Double) envelope_2.get("x2"), 
+                    (Double) envelope_2.get("y1"), 
+                    (Double) envelope_2.get("y2"), 
+                    crs_2
+                );
+            coverage_2.setNativeBoundingBox(bounds_2);
+            GeneralEnvelope boundsLatLon_2 = CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope(bounds_2));
+            coverage_2.setLatLonBoundingBox(new ReferencedEnvelope(boundsLatLon_2));
+            GeneralEnvelope gridEnvelope_2 = new GeneralEnvelope(bounds_2);
+            Map grid_2 = new HashMap();
+            grid_2.put("low", new int[] { 0, 0 });
+            grid_2.put("high", new int[] { 300, 300 });
+            if (grid_2 != null) {
+                int[] low = (int[]) grid_2.get("low");
+                int[] high = (int[]) grid_2.get("high");
+                GeneralGridRange range = new GeneralGridRange(low, high);
+                Map<String, Double> tx = (Map<String, Double>) grid_2.get("geoTransform");
+                if (tx != null) {
+                    double[] matrix = new double[3 * 3];
+                    matrix[0] = tx.get("scaleX") != null ? tx.get("scaleX") : matrix[0];
+                    matrix[1] = tx.get("shearX") != null ? tx.get("shearX") : matrix[1];
+                    matrix[2] = tx.get("translateX") != null ? tx.get("translateX") : matrix[2];
+                    matrix[3] = tx.get("shearY") != null ? tx.get("shearY") : matrix[3];
+                    matrix[4] = tx.get("scaleY") != null ? tx.get("scaleY") : matrix[4];
+                    matrix[5] = tx.get("translateY") != null ? tx.get("translateY") : matrix[5];
+                    matrix[8] = 1.0;
+                    MathTransform gridToCRS = new DefaultMathTransformFactory().createAffineTransform(new GeneralMatrix(3, 3, matrix));
+                    coverage_2.setGrid(new GridGeometry2D(range, gridToCRS, crs_2));
+                } else {
+                    coverage_2.setGrid(new GridGeometry2D(range, gridEnvelope_2));
+                }
+            } else {
+                // new grid range
+                GeneralGridRange range = new GeneralGridRange(new int[] { 0, 0 }, new int[] { 1, 1 });
+                coverage_2.setGrid(new GridGeometry2D(range, gridEnvelope_2));
+            }
+            Driver driver_2 = coverageStore_2.getDriver();
+            Map params_2 = new HashMap();
+            params_2.put("url", GeoserverDataDirectory.findDataFile(coverageStore_2.getURL()).toURI().toURL());
+            CoverageAccess cvAccess_2 = driver_2.connect(params_2, null, null);
+            if (cvAccess_2 != null) {
+                CoverageSource cvSource = cvAccess_2.access(new NameImpl(coverage_2.getName()), null, AccessType.READ_ONLY, null, null);
+                if (cvSource != null) {
+                    coverage_2.setFields(cvSource.getRangeType(null));
+                    CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                    Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                    CoordinateReferenceSystem temporalCRS = null;
+                    CoordinateReferenceSystem verticalCRS = null;
+                    if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                        if (compundCRS instanceof CompoundCRS) {
+                            temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                        }
+                    }
+                    Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                    if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                        if (compundCRS instanceof CompoundCRS) {
+                            if (temporalCRS != null)
+                                verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                            else
+                                verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                        }
+                    }
+                    coverage_2.setTemporalCRS(temporalCRS);
+                    coverage_2.setTemporalExtent(temporalExtent);
+                    coverage_2.setVerticalCRS(verticalCRS);
+                    coverage_2.setVerticalExtent(verticalExtent);
+                }
+            }
+            coverage_2.setNativeFormat("NetCDF");
+            coverage_2.getSupportedFormats().addAll(Arrays.asList(new String[] { "GeoTIFF" }));
+            coverage_2.setDefaultInterpolationMethod("nearest neighbor");
+            coverage_2.getInterpolationMethods().addAll(Arrays.asList(new String[] { "nearest neighbor", "bilinear", "bicubic" }));
+            coverage_2.getRequestSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
+            coverage_2.getResponseSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
+            coverage_2.setEnabled(coverageStore_2.isEnabled());
+            coverage_2.setNamespace(this.catalogDAO.getDefaultNamespace());
+            coverage_2.getMetadata().put("dirName", coverageStore_2.getName() + "_" + coverage_2.getName());
+
+            this.catalogDAO.save(coverage_2);
+                        
+            LayerInfo layer_2 = catalog.getFactory().createLayer();
+            layer_2.setDefaultStyle(style);
+            layer_2.setEnabled(coverage_2.isEnabled());
+            //layer.setLegend(legend);
+            layer_2.setName(coverage_2.getName());
+            layer_2.setPath("/");
+            layer_2.setResource(coverage_2);
+            layer_2.setType(Type.RASTER);
+            
+            this.catalogDAO.save(layer_2);
+
+            /** Coverage 2 **/
+            CoverageInfo coverage_3 = catalog.getFactory().createCoverage();
+            coverage_3.setStore(coverageStore_3);
+            coverage_3.setName("ext-mercatorPsy2v3R1v_med_mean_20080926_R20080924_0");
+            coverage_3.setNativeName("ext-mercatorPsy2v3R1v_med_mean_20080926_R20080924_0");
+            coverage_3.setTitle("TEST-COVERAGE-003");
+            coverage_3.setDescription("An Example Test Coverage.");
+            coverage_3.getKeywords().addAll(keywords);
+            Map<String, Object> envelope_3 = new HashMap<String, Object>();
+            envelope_3.put("x1", 6.875);
+            envelope_3.put("x2", 12.0);
+            envelope_3.put("y1", 42.00975799560547);
+            envelope_3.put("y2", 44.28925704956055);
+            envelope_3.put("srsName", "EPSG:4326");
+            envelope_3.put("crs", "GEOGCS[\"WGS84(DD)\", \r\n  DATUM[\"WGS84\", \r\n    SPHEROID[\"WGS84\", 6378137.0, 298.257223563]], \r\n  PRIMEM[\"Greenwich\", 0.0], \r\n  UNIT[\"degree\", 0.017453292519943295], \r\n  AXIS[\"Geodetic longitude\", EAST], \r\n  AXIS[\"Geodetic latitude\", NORTH]]");
+            String userDefinedCrsIdentifier_3 = (String) envelope_3.get("srsName");
+            String nativeCrsWkt_3 = (String) envelope_3.get("crs");
+            coverage_3.setSRS(userDefinedCrsIdentifier_3);
+            CoordinateReferenceSystem crs_3 = CRS.parseWKT(nativeCrsWkt_3);
+            coverage_3.setNativeCRS(crs_3);
+            ReferencedEnvelope bounds_3 = 
+                new ReferencedEnvelope(
+                    (Double) envelope_3.get("x1"),
+                    (Double) envelope_3.get("x2"), 
+                    (Double) envelope_3.get("y1"), 
+                    (Double) envelope_3.get("y2"), 
+                    crs_3
+                );
+            coverage_3.setNativeBoundingBox(bounds_3);
+            GeneralEnvelope boundsLatLon_3 = CoverageStoreUtils.getWGS84LonLatEnvelope(new GeneralEnvelope(bounds_3));
+            coverage_3.setLatLonBoundingBox(new ReferencedEnvelope(boundsLatLon_3));
+            GeneralEnvelope gridEnvelope_3 = new GeneralEnvelope(bounds_3);
+            Map grid_3 = new HashMap();
+            grid_3.put("low", new int[] { 0, 0 });
+            grid_3.put("high", new int[] { 300, 300 });
+            if (grid_3 != null) {
+                int[] low = (int[]) grid_3.get("low");
+                int[] high = (int[]) grid_3.get("high");
+                GeneralGridRange range = new GeneralGridRange(low, high);
+                Map<String, Double> tx = (Map<String, Double>) grid_3.get("geoTransform");
+                if (tx != null) {
+                    double[] matrix = new double[3 * 3];
+                    matrix[0] = tx.get("scaleX") != null ? tx.get("scaleX") : matrix[0];
+                    matrix[1] = tx.get("shearX") != null ? tx.get("shearX") : matrix[1];
+                    matrix[2] = tx.get("translateX") != null ? tx.get("translateX") : matrix[2];
+                    matrix[3] = tx.get("shearY") != null ? tx.get("shearY") : matrix[3];
+                    matrix[4] = tx.get("scaleY") != null ? tx.get("scaleY") : matrix[4];
+                    matrix[5] = tx.get("translateY") != null ? tx.get("translateY") : matrix[5];
+                    matrix[8] = 1.0;
+                    MathTransform gridToCRS = new DefaultMathTransformFactory().createAffineTransform(new GeneralMatrix(3, 3, matrix));
+                    coverage_3.setGrid(new GridGeometry2D(range, gridToCRS, crs_3));
+                } else {
+                    coverage_3.setGrid(new GridGeometry2D(range, gridEnvelope_3));
+                }
+            } else {
+                // new grid range
+                GeneralGridRange range = new GeneralGridRange(new int[] { 0, 0 }, new int[] { 1, 1 });
+                coverage_3.setGrid(new GridGeometry2D(range, gridEnvelope_3));
+            }
+            Driver driver_3 = coverageStore_3.getDriver();
+            Map params_3 = new HashMap();
+            params_3.put("url", GeoserverDataDirectory.findDataFile(coverageStore_3.getURL()).toURI().toURL());
+            CoverageAccess cvAccess_3 = driver_3.connect(params_3, null, null);
+            if (cvAccess_3 != null) {
+                CoverageSource cvSource = cvAccess_3.access(new NameImpl(coverage_3.getName()), null, AccessType.READ_ONLY, null, null);
+                if (cvSource != null) {
+                    coverage_3.setFields(cvSource.getRangeType(null));
+                    CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
+                    Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+                    CoordinateReferenceSystem temporalCRS = null;
+                    CoordinateReferenceSystem verticalCRS = null;
+                    if (temporalExtent != null && !temporalExtent.isEmpty()) {
+                        if (compundCRS instanceof CompoundCRS) {
+                            temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                        }
+                    }
+                    Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                    if (verticalExtent != null && !verticalExtent.isEmpty()) {
+                        if (compundCRS instanceof CompoundCRS) {
+                            if (temporalCRS != null)
+                                verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                            else
+                                verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                        }
+                    }
+                    coverage_3.setTemporalCRS(temporalCRS);
+                    coverage_3.setTemporalExtent(temporalExtent);
+                    coverage_3.setVerticalCRS(verticalCRS);
+                    coverage_3.setVerticalExtent(verticalExtent);
+                }
+            }
+            coverage_3.setNativeFormat("NetCDF");
+            coverage_3.getSupportedFormats().addAll(Arrays.asList(new String[] { "GeoTIFF" }));
+            coverage_3.setDefaultInterpolationMethod("nearest neighbor");
+            coverage_3.getInterpolationMethods().addAll(Arrays.asList(new String[] { "nearest neighbor", "bilinear", "bicubic" }));
+            coverage_3.getRequestSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
+            coverage_3.getResponseSRS().addAll(Arrays.asList(new String[] { "EPSG:4326" }));
+            coverage_3.setEnabled(coverageStore_3.isEnabled());
+            coverage_3.setNamespace(this.catalogDAO.getDefaultNamespace());
+            coverage_3.getMetadata().put("dirName", coverageStore_3.getName() + "_" + coverage_3.getName());
+
+            this.catalogDAO.save(coverage_3);
+                        
+            LayerInfo layer_3 = catalog.getFactory().createLayer();
+            layer_3.setDefaultStyle(style);
+            layer_3.setEnabled(coverage_3.isEnabled());
+            //layer.setLegend(legend);
+            layer_3.setName(coverage_3.getName());
+            layer_3.setPath("/");
+            layer_3.setResource(coverage_3);
+            layer_3.setType(Type.RASTER);
+            
+            this.catalogDAO.save(layer_3);
+
+            // //
+            // Updating Model Runs
+            // //
+            List<CoverageInfo> coverages_0 = new ArrayList<CoverageInfo>();
+            coverages_0.add(coverage_0);
+            modelRun_0.setGridCoverages(coverages_0);
+
+            this.catalogDAO.update(modelRun_0);
+
+            List<CoverageInfo> coverages_1 = new ArrayList<CoverageInfo>();
+            coverages_1.add(coverage_1);
+            modelRun_1.setGridCoverages(coverages_1);
+
+            this.catalogDAO.update(modelRun_1);
+
+            List<CoverageInfo> coverages_2 = new ArrayList<CoverageInfo>();
+            coverages_2.add(coverage_2);
+            modelRun_2.setGridCoverages(coverages_2);
+
+            this.catalogDAO.update(modelRun_2);
+
+            List<CoverageInfo> coverages_3 = new ArrayList<CoverageInfo>();
+            coverages_3.add(coverage_3);
+            modelRun_3.setGridCoverages(coverages_3);
+
+            this.catalogDAO.update(modelRun_3);
+
             // ////
-            // Updating Variables ...
+            // Updating Variables
             // ////
             List<ModelInfo> models = new ArrayList<ModelInfo>();
             models.add(model);
@@ -409,8 +925,8 @@ public class HibernateGeoServer implements GeoServer {
             dynht.setTitle("dynht");
             dynht.setDescription("dynht");
             dynht.setModels(models);
-            dynht.setModelRuns(runs);
-            dynht.setGridCoverages(coverages);
+            dynht.setModelRuns(runsAll);
+            dynht.setGridCoverages(coverages_0);
             
             this.catalogDAO.save(dynht);
 
@@ -419,8 +935,8 @@ public class HibernateGeoServer implements GeoServer {
             dynhterr.setTitle("dynhterr");
             dynhterr.setDescription("dynhterr");
             dynhterr.setModels(models);
-            dynhterr.setModelRuns(runs);
-            dynhterr.setGridCoverages(coverages);
+            dynhterr.setModelRuns(runsAll);
+            dynhterr.setGridCoverages(coverages_0);
 
             this.catalogDAO.save(dynhterr);
 
@@ -429,18 +945,26 @@ public class HibernateGeoServer implements GeoServer {
             dynhtmean.setTitle("dynhtmean");
             dynhtmean.setDescription("dynhtmean");
             dynhtmean.setModels(models);
-            dynhtmean.setModelRuns(runs);
-            dynhtmean.setGridCoverages(coverages);
+            dynhtmean.setModelRuns(runsAll);
+            dynhtmean.setGridCoverages(coverages_0);
 
             this.catalogDAO.save(dynhtmean);
 
             GeophysicParamInfo salt = new GeophysicParamInfoImpl();
             salt.setName("salt");
+            List<String> saltAliases = new ArrayList<String>();
+            saltAliases.add("salinity");
+			salt.setAlias(saltAliases);
             salt.setTitle("salt");
             salt.setDescription("salt");
             salt.setModels(models);
-            salt.setModelRuns(runs);
-            salt.setGridCoverages(coverages);
+            salt.setModelRuns(runsAll);
+            List<CoverageInfo> saltCoverages = new ArrayList<CoverageInfo>();
+            saltCoverages.addAll(coverages_0);
+            saltCoverages.addAll(coverages_1);
+            saltCoverages.addAll(coverages_2);
+            saltCoverages.addAll(coverages_3);
+            salt.setGridCoverages(saltCoverages);
 
             this.catalogDAO.save(salt);
 
@@ -449,8 +973,8 @@ public class HibernateGeoServer implements GeoServer {
             salterr.setTitle("salterr");
             salterr.setDescription("salterr");
             salterr.setModels(models);
-            salterr.setModelRuns(runs);
-            salterr.setGridCoverages(coverages);
+            salterr.setModelRuns(runsAll);
+            salterr.setGridCoverages(coverages_0);
 
             this.catalogDAO.save(salterr);
 
@@ -459,18 +983,26 @@ public class HibernateGeoServer implements GeoServer {
             saltmean.setTitle("saltmean");
             saltmean.setDescription("saltmean");
             saltmean.setModels(models);
-            saltmean.setModelRuns(runs);
-            saltmean.setGridCoverages(coverages);
+            saltmean.setModelRuns(runsAll);
+            saltmean.setGridCoverages(coverages_0);
 
             this.catalogDAO.save(saltmean);
 
             GeophysicParamInfo temp = new GeophysicParamInfoImpl();
             temp.setName("temp");
+            List<String> tempAliases = new ArrayList<String>();
+            tempAliases.add("temperature");
+			temp.setAlias(tempAliases);
             temp.setTitle("temp");
             temp.setDescription("temp");
             temp.setModels(models);
-            temp.setModelRuns(runs);
-            temp.setGridCoverages(coverages);
+            temp.setModelRuns(runsAll);
+            List<CoverageInfo> tempCoverages = new ArrayList<CoverageInfo>();
+            tempCoverages.addAll(coverages_0);
+            tempCoverages.addAll(coverages_1);
+            tempCoverages.addAll(coverages_2);
+            tempCoverages.addAll(coverages_3);
+            temp.setGridCoverages(tempCoverages);
 
             this.catalogDAO.save(temp);
 
@@ -479,8 +1011,8 @@ public class HibernateGeoServer implements GeoServer {
             temperr.setTitle("temperr");
             temperr.setDescription("temperr");
             temperr.setModels(models);
-            temperr.setModelRuns(runs);
-            temperr.setGridCoverages(coverages);
+            temperr.setModelRuns(runsAll);
+            temperr.setGridCoverages(coverages_0);
 
             this.catalogDAO.save(temperr);
 
@@ -489,34 +1021,97 @@ public class HibernateGeoServer implements GeoServer {
             tempmean.setTitle("tempmean");
             tempmean.setDescription("tempmean");
             tempmean.setModels(models);
-            tempmean.setModelRuns(runs);
-            tempmean.setGridCoverages(coverages);
+            tempmean.setModelRuns(runsAll);
+            tempmean.setGridCoverages(coverages_0);
 
             this.catalogDAO.save(tempmean);
 
-            List<GeophysicParamInfo> geophysicParams = new ArrayList<GeophysicParamInfo>();
-            geophysicParams.add(dynht);
-            geophysicParams.add(dynhterr);
-            geophysicParams.add(dynhtmean);
-            geophysicParams.add(salt);
-            geophysicParams.add(salterr);
-            geophysicParams.add(saltmean);
-            geophysicParams.add(temp);
-            geophysicParams.add(temperr);
-            geophysicParams.add(tempmean);
-            
-            model.setGeophysicalParameters(geophysicParams);
+            GeophysicParamInfo u = new GeophysicParamInfoImpl();
+            u.setName("u");
+            u.setTitle("u");
+            u.setDescription("u");
+            u.setModels(models);
+            u.setModelRuns(runs_1);
+            List<CoverageInfo> uCoverages = new ArrayList<CoverageInfo>();
+            uCoverages.addAll(coverages_1);
+            uCoverages.addAll(coverages_2);
+            uCoverages.addAll(coverages_3);
+            u.setGridCoverages(uCoverages);
+
+            this.catalogDAO.save(u);
+
+            GeophysicParamInfo v = new GeophysicParamInfoImpl();
+            v.setName("v");
+            v.setTitle("v");
+            v.setDescription("v");
+            v.setModels(models);
+            v.setModelRuns(runs_1);
+            List<CoverageInfo> vCoverages = new ArrayList<CoverageInfo>();
+            vCoverages.addAll(coverages_1);
+            vCoverages.addAll(coverages_2);
+            vCoverages.addAll(coverages_3);
+            v.setGridCoverages(vCoverages);
+
+            this.catalogDAO.save(v);
+
+            List<GeophysicParamInfo> geophysicParamsAll = new ArrayList<GeophysicParamInfo>();
+            geophysicParamsAll.add(dynht);
+            geophysicParamsAll.add(dynhterr);
+            geophysicParamsAll.add(dynhtmean);
+            geophysicParamsAll.add(salt);
+            geophysicParamsAll.add(salterr);
+            geophysicParamsAll.add(saltmean);
+            geophysicParamsAll.add(temp);
+            geophysicParamsAll.add(temperr);
+            geophysicParamsAll.add(v);
+
+            model.setGeophysicalParameters(geophysicParamsAll);
 
             this.catalogDAO.update(model);
 
-            modelRun.setGeophysicalParameters(geophysicParams);
-            
-            this.catalogDAO.update(modelRun);
-            
-            coverage.setGeophysicalParameters(geophysicParams);
+            /** UpdateOAG **/
+            List<GeophysicParamInfo> geophysicParams_0 = new ArrayList<GeophysicParamInfo>();
+            geophysicParams_0.add(dynht);
+            geophysicParams_0.add(dynhterr);
+            geophysicParams_0.add(dynhtmean);
+            geophysicParams_0.add(salt);
+            geophysicParams_0.add(salterr);
+            geophysicParams_0.add(saltmean);
+            geophysicParams_0.add(temp);
+            geophysicParams_0.add(temperr);
+            geophysicParams_0.add(tempmean);
 
-            this.catalogDAO.update(coverage);
+            modelRun_0.setGeophysicalParameters(geophysicParams_0);
+            
+            this.catalogDAO.update(modelRun_0);
+            
+            coverage_0.setGeophysicalParameters(geophysicParams_0);
 
+            this.catalogDAO.update(coverage_0);
+
+            /** ext-Mercatore **/
+            List<GeophysicParamInfo> geophysicParams_1 = new ArrayList<GeophysicParamInfo>();
+            geophysicParams_1.add(salt);
+            geophysicParams_1.add(temp);
+            geophysicParams_1.add(u);
+            geophysicParams_1.add(v);
+
+            modelRun_1.setGeophysicalParameters(geophysicParams_1);
+            modelRun_2.setGeophysicalParameters(geophysicParams_1);
+            modelRun_3.setGeophysicalParameters(geophysicParams_1);
+            
+            this.catalogDAO.update(modelRun_1);
+            this.catalogDAO.update(modelRun_2);
+            this.catalogDAO.update(modelRun_3);
+            
+            coverage_1.setGeophysicalParameters(geophysicParams_1);
+            coverage_2.setGeophysicalParameters(geophysicParams_1);
+            coverage_3.setGeophysicalParameters(geophysicParams_1);
+
+            this.catalogDAO.update(coverage_1);
+            this.catalogDAO.update(coverage_2);
+            this.catalogDAO.update(coverage_3);
+            
         } catch (Exception e) {
             throw new RuntimeException("Error creating bootstrap configuration", e);
         }

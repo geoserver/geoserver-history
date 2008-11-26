@@ -7,9 +7,7 @@ package org.geoserver.wcs;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
 import java.awt.Rectangle;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -259,7 +257,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
 
                 final CoverageReadRequest cvRequest = new DefaultCoverageReadRequest();
                 
-                cvRequest.setDomainSubset(destinationSize, intersected);
+                cvRequest.setDomainSubset(destinationSize, destinationEnvelope /*intersected*/);
                 if (fieldName != null) {
                     FieldType field = meta.getFields().getFieldType(fieldName);
                     if (field != null) {
@@ -309,6 +307,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                  * Band Select (works on just one field)
                  */
                 GridCoverage2D bandSelectedCoverage = coverage;
+                //ImageIOUtilities.visualize(coverage.getRenderedImage());
                 String interpolationType = null;
                 if (request.getRangeSubset() != null) {
                     if (request.getRangeSubset().getAxisSubset().size() > 1) {
@@ -370,7 +369,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                         interpolation = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
                     } else if (interpolationType.equalsIgnoreCase("bicubic")) {
                         interpolation = Interpolation.getInstance(Interpolation.INTERP_BICUBIC);
-                    } else if (interpolationType.equalsIgnoreCase("nearest")) {
+                    } else if (interpolationType.equalsIgnoreCase("nearest neighbor")) {
                         interpolation = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
                     }
                 }

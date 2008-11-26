@@ -115,6 +115,8 @@ public class Wcs10GetCoverageResponse extends Response {
 
         // grab the coverage info for Coverages document encoding
         final GridCoverage2D coverage = (GridCoverage2D) coverages[0];
+        //ImageIOUtilities.visualize(coverage.getRenderedImage());
+        
         
         // write the coverage
         try {
