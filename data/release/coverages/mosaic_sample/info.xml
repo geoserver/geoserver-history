@@ -1,7 +1,7 @@
 <coverage format = "mosaic" >
   <name>mosaic</name>
-  <label>mosaic is a Image mosaicking plugin</label>
-  <description>Generated from mosaic</description>
+  <label>Sample PNG mosaic</label>
+  <description>Subsampled satellite imagery loaded as a mosaic of PNG images</description>
   <wmspath>/</wmspath>
   <keywords>WCS,mosaic,mosaic</keywords>
   <!--
@@ -27,20 +27,20 @@
   <grid dimension = "2" >
     <low>0 0 </low>
     <high>250 250 </high>
-    <axisName>mosaic</axisName>
-    <axisName>mosaic</axisName>
-    <axisName>mosaic</axisName>
+    <axisName>mosaic [0 ... 255]</axisName>
+    <axisName>mosaic [0 ... 255]</axisName>
+    <axisName>mosaic [0 ... 255]</axisName>
     <geoTransform >
       <scaleX>0.057934032977228433</scaleX>
       <scaleY>-0.04039598061277999</scaleY>
       <shearX>0.0</shearX>
       <shearY>0.0</shearY>
-      <translateX>6.34617490847439</translateX>
-      <translateY>46.5907669751351</translateY>
+      <translateX>6.375141924963005</translateX>
+      <translateY>46.570568984828704</translateY>
     </geoTransform>
   </grid>
   <CoverageDimension >
-    <name>mosaic</name>
+    <name>mosaic [0 ... 255]</name>
     <description>GridSampleDimension[0.0,255.0]</description>
     <interval >
       <min>0.0</min>
@@ -50,7 +50,7 @@
     </nullValues>
   </CoverageDimension>
   <CoverageDimension >
-    <name>mosaic</name>
+    <name>mosaic [0 ... 255]</name>
     <description>GridSampleDimension[0.0,255.0]</description>
     <interval >
       <min>0.0</min>
@@ -60,7 +60,7 @@
     </nullValues>
   </CoverageDimension>
   <CoverageDimension >
-    <name>mosaic</name>
+    <name>mosaic [0 ... 255]</name>
     <description>GridSampleDimension[0.0,255.0]</description>
     <interval >
       <min>0.0</min>
@@ -74,14 +74,16 @@
     <responseCRSs>EPSG:4326</responseCRSs>
   </supportedCRSs>
   <supportedFormats nativeFormat = "ImageMosaic" >
-    <formats>IMAGEMOSAIC,ARCGRID,GEOTIFF,GTOPO30,GIF,PNG,JPEG,TIFF</formats>
+    <formats>GTOPO30,GEOTIFF,IMAGEMOSAIC,ARCGRID,GIF,PNG,JPEG,TIFF</formats>
   </supportedFormats>
   <supportedInterpolations default = "nearest neighbor" >
-    <interpolationMethods>nearest neighbor,bilinear,bicubic</interpolationMethods>
+    <interpolationMethods>nearest neighbor,bilinear,bicubic,bicubic_2</interpolationMethods>
   </supportedInterpolations>
   <parameters >
-    <parameter value = "#000000" name = "OutputTransparentColor" />
-    <parameter value = "NaN" name = "InputImageThresholdValue" />
-    <parameter value = "" name = "InputTransparentColor" />
+    <parameter name = "InputImageROIThreshold" value = "1" />
+    <parameter name = "InputImageROI" value = "false" />
+    <parameter name = "ReadGridGeometry2D" value = "" />
+    <parameter name = "FinalAlpha" value = "false" />
+    <parameter name = "AlphaThreshold" value = "1.0" />
   </parameters>
 </coverage>
