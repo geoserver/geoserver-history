@@ -15,7 +15,7 @@
          imgUrl="../../images/"
 >
   <head>
-    <title>${title} - Powered by GeoServer </title>
+    <title>${title} - Powered by GeoServer </title
     <link rel="stylesheet" type="text/css" href="../../openlayers/theme/default/style.css"/>
     <!-- Basic CSS definitions -->
     <style type="text/css">
@@ -350,14 +350,14 @@ border: 1px solid #0082b6;
           <a class="pdf" href="${wmsUrl + PDFParam + layersParam + bboxParam + '&styles=' + srsParam + dimParams }">PDF</a>
         </li>
         <li>
-          <a class="google-earth" href="${kmlUrl + layersParam}">Google Earth</a>
+          <a class="google-earth" href="${kmlUrl + 'layers=' + name}">Google Earth</a>
         </li>
       </ul><!-- /#view-data -->
     </div>
     <div id="download-data" class="selfclear">
       <p>Download the data as:</p>
       <ul>
-        <li><a class="kml" href="${kmlUrl + layersParam + '&mode=flat'}">KML</a></li>
+        <li><a class="kml" href="${kmlUrl + 'mode=flat' + layersParam }">KML</a></li>
         <li><a class="shapefile" href="${wfsUrl + nameParam + '&outputFormat=' + 'SHAPE-ZIP'}">Shapefile</a></li>   
         <li><a class="json" href="${wfsUrl + nameParam + '&outputFormat=' + json}">JSON</a></li>
         <li><a class="gml2" href="${wfsUrl + nameParam + '&outputFormat=' + gml2}">GML2</a></li>
