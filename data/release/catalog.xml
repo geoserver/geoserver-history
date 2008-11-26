@@ -100,7 +100,7 @@
       a format configuration element serves as a common data source
       parameters repository for all coverages it holds.
     -->
-    <format id = "sfdem" enabled = "true" namespace = "topp" >
+    <format id = "sfdem" enabled = "true" namespace = "sf" >
       <title>sfdem</title>
       <type>GeoTIFF</type>
       <url>file:data/sf/sfdem.tif</url>
