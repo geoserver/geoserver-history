@@ -15,7 +15,6 @@
     <ImageIOCache value = "false" />
     <JaiJPEGNative value = "true" />
     <JaiPNGNative value = "true" />
-    <JaiMosaicNative value = "true" />
     <!--
       Sets the max number of Features returned by GetFeature
     -->
