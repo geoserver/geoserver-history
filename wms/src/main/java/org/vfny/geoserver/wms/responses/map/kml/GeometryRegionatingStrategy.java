@@ -38,7 +38,7 @@ public class GeometryRegionatingStrategy extends
             attribute = typeInfo.getRegionateAttribute();
         }
         if (attribute == null || ft.getDescriptor(attribute) == null) {
-            LOGGER.log(Level.INFO, "No attribute specified, falling "
+            LOGGER.log(Level.FINER, "No attribute specified, falling "
                     + "back on geometry attribute");
             attribute = ft.getGeometryDescriptor().getLocalName();
         } else {
