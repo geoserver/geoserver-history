@@ -1346,6 +1346,7 @@ public class HibernateGeoServer implements GeoServer {
             temp.setName("temp");
             List<String> tempAliases = new ArrayList<String>();
             tempAliases.add("temperature");
+            tempAliases.add("water_temp");
 			temp.setAlias(tempAliases);
             temp.setTitle("temp");
             temp.setDescription("temp");
@@ -1418,11 +1419,16 @@ public class HibernateGeoServer implements GeoServer {
             geophysicParamsAll.add(saltmean);
             geophysicParamsAll.add(temp);
             geophysicParamsAll.add(temperr);
+            geophysicParamsAll.add(u);
             geophysicParamsAll.add(v);
 
             model.setGeophysicalParameters(geophysicParamsAll);
 
             this.catalogDAO.update(model);
+
+            ncom.setGeophysicalParameters(geophysicParamsAll);
+
+            this.catalogDAO.update(ncom);
 
             /** UpdateOAG **/
             List<GeophysicParamInfo> geophysicParams_0 = new ArrayList<GeophysicParamInfo>();
