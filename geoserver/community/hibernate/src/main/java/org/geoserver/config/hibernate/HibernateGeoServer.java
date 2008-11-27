@@ -387,7 +387,7 @@ public class HibernateGeoServer implements GeoServer {
         }
         modelRun_4.setId("TEST-RUN-4");
         modelRun_4.setKeywords(ncom_keywords);
-        modelRun_4.setModel(model);
+        modelRun_4.setModel(ncom);
         modelRun_4.setName("TEST-RUN-004");
         modelRun_4.setNumTAU(1);
         modelRun_4.setCRS(DefaultGeographicCRS.WGS84);
@@ -418,7 +418,7 @@ public class HibernateGeoServer implements GeoServer {
         }
         modelRun_5.setId("TEST-RUN-5");
         modelRun_5.setKeywords(ncom_keywords);
-        modelRun_5.setModel(model);
+        modelRun_5.setModel(ncom);
         modelRun_5.setName("TEST-RUN-005");
         modelRun_5.setNumTAU(1);
         modelRun_5.setCRS(DefaultGeographicCRS.WGS84);
