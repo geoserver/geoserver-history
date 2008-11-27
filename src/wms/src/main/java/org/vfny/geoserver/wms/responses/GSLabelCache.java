@@ -167,7 +167,7 @@ public final class GSLabelCache implements LabelCache {
     static final double MIN_CURVED_DELTA = Math.PI / 60;
     
     // Auto wrapping long labels default  
-    static final int DEFAULT_AUTO_WRAP = Integer.MAX_VALUE;
+    static final int DEFAULT_AUTO_WRAP = 0;
 	
 	/**
 	 * When true, the text is rendered as its GlyphVector outline (as a geometry) instead of using
@@ -813,12 +813,57 @@ public final class GSLabelCache implements LabelCache {
         Coordinate[] newCoords = (Coordinate[]) simplified.toArray(new Coordinate[simplified.size()]);
         return line.getFactory().createLineString(newCoords);
     }
+    
+    /**
+     * Sets up the transformation needed to position the label at the specified point,
+     * using the positioning information loaded from the the text style
+     * @param tempTransform
+     * @param centroid
+     * @param textStyle
+     * @param textBounds
+     */
+    private void setupPointTransform(AffineTransform tempTransform, Point centroid,
+            TextStyle2D textStyle, GSLabelPainter painter) {
+        Rectangle2D textBounds = painter.getLabelBounds();
+        // This now does "centering" taking into account the anchoring
+        // and the real positioning of the text bounds (the bounds are placed
+        // so that the baseline is in the origin, and the text goes up in
+        // the negative coordinates)
+        double displacementX = (textStyle.getAnchorX() * (-textBounds.getWidth()))
+                + textStyle.getDisplacementX();
+        double displacementY = (textStyle.getAnchorY() * (textBounds.getHeight()))
+                - textStyle.getDisplacementY() - textBounds.getHeight() + painter.getLineHeight();
+        if (!textStyle.isPointPlacement()) {
+            // lineplacement. We're cheating here, since we've reduced the
+            // polygon to a point, when we should be trying to do something
+            // a little smarter (like find its median axis!)
+            // just move it up (yes, its cheating)
+            displacementY -= textStyle.getPerpendicularOffset(); 
+        }
+        tempTransform.translate(centroid.getX() + displacementX, 
+                centroid.getY() + displacementY);
 
+        double rotation = textStyle.getRotation();
+        if (rotation != rotation) // IEEE def'n x=x for all x except when x is
+            // NaN
+            rotation = 0.0;
+        if (Double.isInfinite(rotation))
+            rotation = 0; // weird number
+
+        tempTransform.rotate(rotation);
+    }
+
+    /**
+     * Sets up the transformation needed to position the label at the current location
+     * of the line string, using the positioning information loaded from the the text style
+     * @param tempTransform
+     * @param centroid
+     * @param textStyle
+     * @param textBounds
+     */
     private void setupLineTransform(GSLabelPainter painter, LineStringCursor cursor, 
             Coordinate centroid, AffineTransform tempTransform) {
         tempTransform.translate(centroid.x, centroid.y);
-		double displacementX = 0;
-		double displacementY = 0;
 
 		TextStyle2D textStyle = painter.getLabel().getTextStyle();
 		double anchorX = textStyle.getAnchorX();
@@ -826,6 +871,8 @@ public final class GSLabelCache implements LabelCache {
 
 		// undo the above if its point placement!
 		double rotation;
+        double displacementX = 0;
+	    double displacementY = 0;
 		if (textStyle.isPointPlacement()) {
 		    // use the one the user supplied!
 			rotation = textStyle.getRotation(); 
@@ -864,40 +911,17 @@ public final class GSLabelCache implements LabelCache {
 			return false;
 
 		TextStyle2D textStyle = labelItem.getTextStyle();
-		Rectangle2D textBounds = painter.getLabelBounds();
-		tempTransform.translate(point.getX(), point.getY());
-		double displacementX = 0;
-		double displacementY = 0;
-
-		// DJB: this probably isnt doing what you think its doing - see others
-		displacementX = (textStyle.getAnchorX() * (-textBounds.getWidth()))
-				+ textStyle.getDisplacementX();
-		displacementY = (textStyle.getAnchorY() * (textBounds.getHeight()))
-				- textStyle.getDisplacementY();
-
-		if (!textStyle.isPointPlacement()) {
-			// lineplacement. We're cheating here, since we cannot line label a
-			// point
-	        // just move it up (yes, its cheating)
-			displacementY -= textStyle.getPerpendicularOffset(); 
-		}
-
-		double rotation = textStyle.getRotation();
-		if (rotation != rotation) // IEEE def'n x=x for all x except when x is
-			// NaN
-			rotation = 0.0;
-		if (Double.isInfinite(rotation))
-			rotation = 0; // weird number
-
-		tempTransform.rotate(rotation);
-		tempTransform.translate(displacementX, displacementY);
-		
+		setupPointTransform(tempTransform, point, textStyle, painter);
+				
 		// check for overlaps and paint
 		Rectangle2D transformed = tempTransform.createTransformedShape(painter.getFullLabelBounds()).getBounds2D();
 		if(!displayArea.contains(transformed) 
 		        || glyphs.labelsWithinDistance(transformed, labelItem.getSpaceAround())) {
 		    return false;
 		} else {
+//		    painter.graphics.setStroke(new BasicStroke());
+//		    painter.graphics.setColor(Color.BLACK);
+//		    painter.graphics.draw(transformed);
 		    painter.paintStraightLabel(tempTransform);
 		    glyphs.addLabel(labelItem, transformed);
 		    return true;
@@ -937,35 +961,9 @@ public final class GSLabelCache implements LabelCache {
 			}
 		}
 
+		// compute the transformation used to position the label
 		TextStyle2D textStyle = labelItem.getTextStyle();
-		Rectangle2D textBounds = painter.getFullLabelBounds();
-		System.out.println(textBounds);
-		double displacementX = 0;
-		double displacementY = 0;
-
-		// DJB: this now does "centering"
-		displacementX = (textStyle.getAnchorX() * (-textBounds.getWidth()))
-				+ textStyle.getDisplacementX();
-		displacementY = (textStyle.getAnchorY() * (-textBounds.getHeight()))
-				- textStyle.getDisplacementY();
-		tempTransform.translate(centroid.getX() + displacementX - textBounds.getMinX(), centroid.getY() + displacementY - textBounds.getMinY());
-
-		if (!textStyle.isPointPlacement()) {
-			// lineplacement. We're cheating here, since we've reduced the
-			// polygon to a point, when we should be trying to do something
-			// a little smarter (like find its median axis!)
-		    // just move it up (yes, its cheating)
-			displacementY -= textStyle.getPerpendicularOffset(); 
-		}
-
-		double rotation = textStyle.getRotation();
-		if (rotation != rotation) // IEEE def'n x=x for all x except when x is
-			// NaN
-			rotation = 0.0;
-		if (Double.isInfinite(rotation))
-			rotation = 0; // weird number
-
-		tempTransform.rotate(rotation);
+		setupPointTransform(tempTransform, centroid, textStyle, painter);
 		
 		Rectangle2D transformed = tempTransform.createTransformedShape(painter.getFullLabelBounds()).getBounds2D();
 		if (!displayArea.contains(transformed) 

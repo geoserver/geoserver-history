@@ -62,7 +62,9 @@ public class GSLabelPainter {
         
         // split the label into lines
         String text = labelItem.getLabel();
-        if(!text.contains("\n") && (labelItem.getAutoWrap() == Integer.MAX_VALUE || labelItem.getAutoWrap() > 0)) {
+        // set the multiline labeller only if we're not using curved labels, and also only if
+        // if makes sense to have multiple lines (at least a newline
+        if(!(text.contains("\n") || labelItem.getAutoWrap() > 0) || labelItem.isFollowLineEnabled()) {
             // no layout needed
             LineInfo line = new LineInfo(text, layoutSentence(text, labelItem));
             labelBounds = line.gv.getVisualBounds();
@@ -92,7 +94,7 @@ public class GSLabelPainter {
 
                 // setup iteration and start splitting at word boundaries
                 int prevPosition = 0;
-                double minY = 0;
+                double maxWidth = 0;
                 while (lineMeasurer.getPosition() < iter.getEndIndex()) {
                     // grab the next portion of text within the wrapping limits
                     TextLayout layout = lineMeasurer.nextLayout(labelItem.getAutoWrap());
@@ -106,15 +108,22 @@ public class GSLabelPainter {
                     LineInfo info = new LineInfo(extracted, layoutSentence(extracted, labelItem), layout);
                     lines.add(info);
                     
+                    maxWidth = Math.max(info.gv.getVisualBounds().getWidth(), maxWidth);
+                }
+                
+                // now that we know how big each line is we can layout the items
+                double minY = 0;
+                for (LineInfo info : lines) {
                     Rectangle2D currBounds = info.gv.getVisualBounds();
+                    TextLayout layout = info.layout;
                     
                     // the position at which we start to draw, x and y
                     // for x we have to take into consideration alignment as well since that affects
                     // the horizontal size of the bounds, for y we don't care right now as we're computing
                     // only the total bounds for a text located in the origin 
-                    double minX = (labelItem.getAutoWrap() - layout.getAdvance()) * labelItem.getTextStyle().getAnchorX();
+                    double minX = (maxWidth - currBounds.getWidth()) * labelItem.getTextStyle().getAnchorX() - currBounds.getMinX();
                     info.minX = minX;
-                                       
+                    
                     if(labelBounds == null) {
                         labelBounds = currBounds;
                         minY = currBounds.getMinY() + layout.getAscent() + layout.getDescent() + layout.getLeading();
@@ -124,7 +133,6 @@ public class GSLabelPainter {
                         minY += layout.getAscent() + layout.getDescent() + layout.getLeading();
                         labelBounds = labelBounds.createUnion(translated);
                     }
-                        
                 }
             }
         }
@@ -183,7 +191,7 @@ public class GSLabelPainter {
      */
     public Rectangle2D getFullLabelBounds() {
         // base bounds
-        Rectangle2D bounds = getLabelBounds();
+        Rectangle2D bounds = (Rectangle2D) getLabelBounds().clone();
 
         // take into account halo
         int haloRadius = Math.round(labelItem.getTextStyle().getHaloFill() != null ? labelItem
@@ -238,7 +246,7 @@ public class GSLabelPainter {
                 labelItem.getTextStyle().getGraphic().setMinMaxScale(0.0, 10.0);
                 new StyledShapePainter(null).paint(graphics, tempShape, labelItem.getTextStyle()
                         .getGraphic(), 5.0);
-                graphics.setTransform(transform);
+                // graphics.setTransform(transform);
             }
 
             if(lines.size() == 1) {
@@ -353,7 +361,6 @@ public class GSLabelPainter {
                 transforms[i] = t;
 
                 cursor.moveTo(cursor.getCurrentOrdinate() + advance + nextAdvance);
-                // System.out.println(cursor.getCurrentOrdinate());
             }
 
             // draw halo and label
