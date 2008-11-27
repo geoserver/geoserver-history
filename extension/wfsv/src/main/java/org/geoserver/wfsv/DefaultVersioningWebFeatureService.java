@@ -109,7 +109,7 @@ public class DefaultVersioningWebFeatureService
      */
     public TransformerBase getCapabilities(GetCapabilitiesType request)
         throws WFSException {
-        return new GetCapabilities(wfs, catalog, versions).run(request);
+        return new GetCapabilities(wfs, catalog).run(request);
     }
 
     /**
