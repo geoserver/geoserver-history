@@ -12,8 +12,8 @@ import org.vfny.geoserver.global.Data;
 public class GetVersionedFeatureRequestReader extends GetFeatureKvpRequestReader {
 
     public GetVersionedFeatureRequestReader(Data catalog,
-            FilterFactory filterFactory, WebFeatureService wfs) {
-        super(GetVersionedFeatureType.class, catalog, filterFactory, wfs);
+            FilterFactory filterFactory) {
+        super(GetVersionedFeatureType.class, catalog, filterFactory);
         factory = WfsvFactory.eINSTANCE;
     }
     
