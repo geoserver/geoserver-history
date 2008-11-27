@@ -11,7 +11,7 @@ import com.vividsolutions.jts.geom.LineString;
  * curvilinear coordinate system and either absolute distances (from the start
  * of the line) or offsets relative to the current position, to return the
  * absolute position of the cursor as a Point, and to get the orientation of the
- * current segment
+ * current segment.
  * 
  * @author Andrea Aime
  * 
@@ -48,12 +48,17 @@ public class LineStringCursor {
      * segment
      */
     double[] segmentStartOrdinate;
-    
+
     /**
      * A cache for the orientation of each segment (we use it a lot)
      */
     double[] segmentAngles;
 
+    /**
+     * Builds a new cursor
+     * 
+     * @param ls
+     */
     public LineStringCursor(LineString ls) {
         this.lineString = ls;
         coords = ls.getCoordinateSequence();
@@ -84,12 +89,17 @@ public class LineStringCursor {
             if (i < coords.size() - 1)
                 segmentStartOrdinate[i] = segmentStartOrdinate[i - 1] + distance;
         }
-        
+
         // fill up the segment angles cache with placeholders
         segmentAngles = new double[segmentLenghts.length];
         Arrays.fill(segmentAngles, Double.NaN);
     }
-    
+
+    /**
+     * Copy constructor
+     * 
+     * @param cursor
+     */
     public LineStringCursor(LineStringCursor cursor) {
         this.lineString = cursor.lineString;
         this.coords = cursor.coords;
@@ -116,14 +126,17 @@ public class LineStringCursor {
      */
     public void moveTo(double ordinate) {
         double position = 0;
-        
-        if(ordinate < 0) {
+
+        if (ordinate < 0) {
+            // before start
             segment = 0;
             offsetDistance = 0;
-        } else if(ordinate > getLineStringLength()) {
+        } else if (ordinate > getLineStringLength()) {
+            // after end
             segment = segmentLenghts.length - 1;
             offsetDistance = segmentLenghts[segment];
         } else {
+            // find the segment and the offset within the segment
             for (int i = 0; i < segmentLenghts.length; i++) {
                 double length = segmentLenghts[i];
                 if (ordinate < (length + position)) {
@@ -225,9 +238,9 @@ public class LineStringCursor {
     public double getCurrentAngle() {
         return getSegmentAngle(segment);
     }
-    
+
     protected double getSegmentAngle(int segmentIdx) {
-        if(Double.isNaN(segmentAngles[segmentIdx])) {
+        if (Double.isNaN(segmentAngles[segmentIdx])) {
             double dx = (coords.getX(segmentIdx + 1) - coords.getX(segmentIdx));
             double dy = (coords.getY(segmentIdx + 1) - coords.getY(segmentIdx));
             segmentAngles[segmentIdx] = Math.atan2(dy, dx);
@@ -246,63 +259,82 @@ public class LineStringCursor {
         double slope = dy / dx;
         return Math.atan(slope);
     }
-    
+
+    /**
+     * Returns the maximum angle change (in radians) between two subsequent
+     * segments between the specified curvilinear coordinates.
+     * 
+     * @param startOrdinate
+     * @param endOrdinate
+     * @return
+     */
     public double getMaxAngleChange(double startOrdinate, double endOrdinate) {
-//        System.out.println("Computing max angle");
-        if(startOrdinate > endOrdinate)
+        if (startOrdinate > endOrdinate)
             throw new IllegalArgumentException("Invalid arguments, endOrdinate < starOrdinate");
-        
+
         // compute the begin and end segments
         LineStringCursor delegate = new LineStringCursor(this);
         delegate.moveTo(startOrdinate);
         int startSegment = delegate.segment;
         delegate.moveTo(endOrdinate);
         int endSegment = delegate.segment;
-        
+
         // everything inside the same segment
-        if(startSegment == endSegment)
+        if (startSegment == endSegment)
             return 0;
-        
+
         double maxDifference = 0;
         double prevAngle = getSegmentAngle(startSegment);
         for (int i = startSegment + 1; i <= endSegment; i++) {
             double currAngle = getSegmentAngle(i);
             double difference = Math.abs(currAngle - prevAngle);
-            if(difference > maxDifference)
+            if (difference > maxDifference)
                 maxDifference = difference;
             prevAngle = currAngle;
         }
-        
+
         return maxDifference;
     }
 
     /**
      * Returns a line string cursor based on the opposite walking direction.
+     * 
      * @return
      */
     public LineStringCursor reverse() {
         return new LineStringCursor(lineString.reverse());
     }
 
+    /**
+     * The linestrings wrapped by this cursor
+     * @return
+     */
     public LineString getLineString() {
         return lineString;
     }
 
+    /**
+     * Returns the linestring that starts and ends at the specified curvilinear
+     * coordinates.
+     * @param startOrdinate
+     * @param endOrdinate
+     * @return
+     */
     public LineString getSubLineString(double startOrdinate, double endOrdinate) {
-         LineStringCursor clone = new LineStringCursor(this);
-         clone.moveTo(startOrdinate);
-         int startSegment = clone.segment;
-         Coordinate start = clone.getCurrentPosition();
-         clone.moveTo(endOrdinate);
-         int endSegment = clone.segment;
-         Coordinate end = clone.getCurrentPosition();
-         
-         Coordinate[] subCoords = new Coordinate[endSegment - startSegment + 2];
-         subCoords[0] = start;
-         for (int i = startSegment; i < endSegment; i++) {
+        LineStringCursor clone = new LineStringCursor(this);
+        clone.moveTo(startOrdinate);
+        int startSegment = clone.segment;
+        Coordinate start = clone.getCurrentPosition();
+        clone.moveTo(endOrdinate);
+        int endSegment = clone.segment;
+        Coordinate end = clone.getCurrentPosition();
+
+        Coordinate[] subCoords = new Coordinate[endSegment - startSegment + 2];
+        subCoords[0] = start;
+        for (int i = startSegment; i < endSegment; i++) {
             subCoords[i - startSegment + 1] = coords.getCoordinate(i + 1);
-         }
-         subCoords[subCoords.length - 1] = end;
-         return lineString.getFactory().createLineString(subCoords);
+        }
+        subCoords[subCoords.length - 1] = end;
+        return lineString.getFactory().createLineString(subCoords);
     }
 }
