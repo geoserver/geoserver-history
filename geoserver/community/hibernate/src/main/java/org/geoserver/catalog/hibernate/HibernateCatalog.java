@@ -43,15 +43,22 @@ import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
 import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
+import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.hibernate.dao.IGeoServerDAO;
 import org.geotools.coverage.io.CoverageAccess;
 import org.geotools.coverage.io.CoverageSource;
 import org.geotools.coverage.io.Driver;
 import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.feature.NameImpl;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.util.NullProgressListener;
 import org.hibernate.Transaction;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CompoundCRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.temporal.TemporalGeometricPrimitive;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
@@ -105,7 +112,8 @@ public class HibernateCatalog implements Catalog {
     }
 
     /**
-     * Sets whether to fire events on commits, intended to be used by unit tests only?
+     * Sets whether to fire events on commits, intended to be used by unit tests
+     * only?
      */
     void setFireEventsOnCommit(boolean fireEventsOnCommit) {
         this.fireEventsOnCommit = fireEventsOnCommit;
@@ -146,7 +154,8 @@ public class HibernateCatalog implements Catalog {
         }
 
         if (store.getWorkspace() == null) {
-            throw new IllegalArgumentException("no workspace set and no default available");
+            throw new IllegalArgumentException(
+                    "no workspace set and no default available");
         }
 
         ((StoreInfoImpl) store).setId(store.getName());
@@ -253,9 +262,11 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getResourceByName(String, Class)
      */
-    public <T extends ResourceInfo> T getResourceByName(String name, Class<T> clazz) {
+    public <T extends ResourceInfo> T getResourceByName(String name,
+            Class<T> clazz) {
         if (getDefaultNamespace() != null) {
-            T resource = getResourceByName(getDefaultNamespace().getPrefix(), name, clazz);
+            T resource = getResourceByName(getDefaultNamespace().getPrefix(),
+                    name, clazz);
             if (resource != null) {
                 resource.setCatalog(this);
                 resource.getStore().setCatalog(this);
@@ -274,8 +285,10 @@ public class HibernateCatalog implements Catalog {
 
         if (matches.size() == 1) {
             return (T) matches.get(0);
-        }// he, this method contract is odd... imho the method shouldn't even exist. Rather, let
-        // client code care about asking for the resource in the default namespace explicitly
+        }// he, this method contract is odd... imho the method shouldn't even
+         // exist. Rather, let
+        // client code care about asking for the resource in the default
+        // namespace explicitly
 
         return null;
     }
@@ -283,7 +296,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getResourceByName(String, String, Class)
      */
-    public <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
+    public <T extends ResourceInfo> T getResourceByName(String ns, String name,
+            Class<T> clazz) {
         NamespaceInfo namespace = null;
         if (ns == null) {
             namespace = getDefaultNamespace();
@@ -297,7 +311,8 @@ public class HibernateCatalog implements Catalog {
         }
 
         if (namespace != null) {
-            ResourceInfo resource = this.catalogDAO.getResourceByName(namespace.getId(), name, clazz);
+            ResourceInfo resource = this.catalogDAO.getResourceByName(namespace
+                    .getId(), name, clazz);
             if (resource != null) {
                 resource.setCatalog(this);
                 resource.getStore().setCatalog(this);
@@ -326,8 +341,8 @@ public class HibernateCatalog implements Catalog {
     }
 
     /**
-     * Checks whether a resource to be added is in a valid state (ie, it's attached to a
-     * {@link StoreInfo})
+     * Checks whether a resource to be added is in a valid state (ie, it's
+     * attached to a {@link StoreInfo})
      */
     void validate(ResourceInfo resource) {
         if (resource.getStore() == null) {
@@ -364,7 +379,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getResourcesByNamespace(NamespaceInfo, Class)
      */
-    public <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace, Class<T> clazz) {
+    public <T extends ResourceInfo> List<T> getResourcesByNamespace(
+            NamespaceInfo namespace, Class<T> clazz) {
         return this.catalogDAO.getResourcesByNamespace(namespace, clazz);
     }
 
@@ -386,7 +402,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getFeatureTypeByName(String, String)
      */
     public FeatureTypeInfo getFeatureTypeByName(String ns, String name) {
-        return (FeatureTypeInfo) getResourceByName(ns, name, FeatureTypeInfo.class);
+        return (FeatureTypeInfo) getResourceByName(ns, name,
+                FeatureTypeInfo.class);
     }
 
     /**
@@ -399,7 +416,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getFeatureTypesByNamespace(NamespaceInfo)
      */
-    public List<FeatureTypeInfo> getFeatureTypesByNamespace(NamespaceInfo namespace) {
+    public List<FeatureTypeInfo> getFeatureTypesByNamespace(
+            NamespaceInfo namespace) {
         return getResourcesByNamespace(namespace, FeatureTypeInfo.class);
     }
 
@@ -407,10 +425,11 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoverage(String)
      */
     public CoverageInfo getCoverage(String id) {
-        CoverageInfo coverage = (CoverageInfo) getResource(id, CoverageInfo.class);
-        if ( coverage != null && coverage.getFields() == null ) {
+        CoverageInfo coverage = (CoverageInfo) getResource(id,
+                CoverageInfo.class);
+        if (coverage != null && coverage.getFields() == null) {
             // initializing fields, vertical and temporal extent
-           initCoverage(coverage);
+            initCoverage(coverage);
         }
         return coverage;
     }
@@ -419,8 +438,9 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoverageByName(String)
      */
     public CoverageInfo getCoverageByName(String name) {
-        CoverageInfo coverage = (CoverageInfo) getResourceByName(name, CoverageInfo.class);
-        if ( coverage != null && coverage.getFields() == null ) {
+        CoverageInfo coverage = (CoverageInfo) getResourceByName(name,
+                CoverageInfo.class);
+        if (coverage != null && coverage.getFields() == null) {
             // initializing fields, vertical and temporal extent
             initCoverage(coverage);
         }
@@ -431,8 +451,9 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoverageByName(String, String)
      */
     public CoverageInfo getCoverageByName(String ns, String name) {
-        CoverageInfo coverage = (CoverageInfo) getResourceByName(ns, name, CoverageInfo.class);
-        if ( coverage != null && coverage.getFields() == null ) {
+        CoverageInfo coverage = (CoverageInfo) getResourceByName(ns, name,
+                CoverageInfo.class);
+        if (coverage != null && coverage.getFields() == null) {
             // initializing fields, vertical and temporal extent
             initCoverage(coverage);
         }
@@ -440,51 +461,85 @@ public class HibernateCatalog implements Catalog {
     }
 
     private void initCoverage(final CoverageInfo coverage) {
-        if (coverage != null){
+        if (coverage != null) {
             try {
-                org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
+                org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage
+                        .getStore();
                 Driver driver = coverage.getStore().getDriver();
                 Map params = new HashMap();
-                params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
+                params.put("url", GeoserverDataDirectory.findDataFile(
+                        coverageStore.getURL()).toURI().toURL());
                 CoverageAccess cvAccess = driver.connect(params, null, null);
                 if (cvAccess != null) {
-                    CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                    CoverageSource cvSource = cvAccess.access(new NameImpl(
+                            coverage.getName()), null, AccessType.READ_ONLY,
+                            null, null);
                     if (cvSource != null) {
+                        coverage
+                                .setNativeBoundingBox((ReferencedEnvelope) cvSource
+                                        .getHorizontalDomain(false,
+                                                new NullProgressListener())
+                                        .get(0));
+                        coverage.setNativeCRS(coverage.getNativeBoundingBox()
+                                .getCoordinateReferenceSystem());
+                        coverage
+                                .setLatLonBoundingBox(new ReferencedEnvelope(
+                                        CoverageStoreUtils
+                                                .getWGS84LonLatEnvelope(new GeneralEnvelope(
+                                                        coverage
+                                                                .getNativeBoundingBox()))));
+
                         coverage.setFields(cvSource.getRangeType(null));
-    
-                        CoordinateReferenceSystem compundCRS = cvSource.getCoordinateReferenceSystem(null);
-                        Set<TemporalGeometricPrimitive> temporalExtent = cvSource.getTemporalDomain(null);
+
+                        CoordinateReferenceSystem compundCRS = cvSource
+                                .getCoordinateReferenceSystem(null);
+                        Set<TemporalGeometricPrimitive> temporalExtent = cvSource
+                                .getTemporalDomain(null);
                         CoordinateReferenceSystem temporalCRS = null;
                         CoordinateReferenceSystem verticalCRS = null;
                         if (temporalExtent != null && !temporalExtent.isEmpty()) {
                             if (compundCRS instanceof CompoundCRS) {
-                                temporalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
+                                temporalCRS = ((CompoundCRS) compundCRS)
+                                        .getCoordinateReferenceSystems().get(0);
                             }
                         }
-                        Set<org.opengis.geometry.Envelope> verticalExtent = cvSource.getVerticalDomain(false, null);
+                        Set<org.opengis.geometry.Envelope> verticalExtent = cvSource
+                                .getVerticalDomain(false, null);
                         if (verticalExtent != null && !verticalExtent.isEmpty()) {
                             if (compundCRS instanceof CompoundCRS) {
                                 if (temporalCRS != null)
-                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(1);
+                                    verticalCRS = ((CompoundCRS) compundCRS)
+                                            .getCoordinateReferenceSystems()
+                                            .get(1);
                                 else
-                                    verticalCRS = ((CompoundCRS) compundCRS).getCoordinateReferenceSystems().get(0);
-                            } 
+                                    verticalCRS = ((CompoundCRS) compundCRS)
+                                            .getCoordinateReferenceSystems()
+                                            .get(0);
+                            }
                         }
-    
+
                         coverage.setTemporalCRS(temporalCRS);
                         coverage.setTemporalExtent(temporalExtent);
-    
+
                         coverage.setVerticalCRS(verticalCRS);
                         coverage.setVerticalExtent(verticalExtent);
                     }
                 }
             } catch (MalformedURLException e) {
-                //e.printStackTrace();
+                // e.printStackTrace();
             } catch (IOException e) {
-                //e.printStackTrace();
+                // e.printStackTrace();
+            } catch (MismatchedDimensionException e) {
+                // e.printStackTrace();
+            } catch (IndexOutOfBoundsException e) {
+                // e.printStackTrace();
+            } catch (FactoryException e) {
+                // e.printStackTrace();
+            } catch (TransformException e) {
+                // e.printStackTrace();
             }
         }
-        
+
     }
 
     /**
@@ -492,7 +547,7 @@ public class HibernateCatalog implements Catalog {
      */
     public List<CoverageInfo> getCoverages() {
         List<CoverageInfo> coverages = getResources(CoverageInfo.class);
-        if ( coverages != null && coverages.size() > 0 ) {
+        if (coverages != null && coverages.size() > 0) {
             for (CoverageInfo coverage : coverages) {
                 if (coverage.getFields() == null) {
                     // initializing fields, vertical and temporal extent
@@ -507,11 +562,12 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoveragesByNamespace(NamespaceInfo)
      */
     public List<CoverageInfo> getCoveragesByNamespace(NamespaceInfo namespace) {
-        List<CoverageInfo> coverages = getResourcesByNamespace(namespace, CoverageInfo.class);
-        if ( coverages != null && coverages.size() > 0 ) {
+        List<CoverageInfo> coverages = getResourcesByNamespace(namespace,
+                CoverageInfo.class);
+        if (coverages != null && coverages.size() > 0) {
             for (CoverageInfo coverage : coverages) {
                 if (coverage.getFields() == null) {
-                 // initializing fields, vertical and temporal extent
+                    // initializing fields, vertical and temporal extent
                     initCoverage(coverage);
                 }
             }
@@ -562,7 +618,8 @@ public class HibernateCatalog implements Catalog {
         }
         // (JD): not sure if default style should be mandatory
         // if ( layer.getDefaultStyle() == null ){
-        // throw new NullPointerException( "Layer default style must not be null" );
+        // throw new NullPointerException(
+        // "Layer default style must not be null" );
         // }
     }
 
@@ -637,7 +694,8 @@ public class HibernateCatalog implements Catalog {
         List<LayerInfo> matches = new ArrayList<LayerInfo>();
         for (Iterator l = getLayers().iterator(); l.hasNext();) {
             LayerInfo layer = (LayerInfo) l.next();
-            ResourceInfo targetResource = getResource(layer.getResource().getId(), layer.getResource().getClass());
+            ResourceInfo targetResource = getResource(layer.getResource()
+                    .getId(), layer.getResource().getClass());
             if (resource.equals(targetResource)) {
                 layer.setResource(resource);
                 layer.getDefaultStyle().setCatalog(this);
@@ -657,7 +715,8 @@ public class HibernateCatalog implements Catalog {
     public void setDefaultNamespace(NamespaceInfo defaultNamespace) {
         HbNamespaceInfo ns = getNamespaceByPrefix(defaultNamespace.getPrefix());
         if (ns == null) {
-            throw new IllegalArgumentException("No such namespace: '" + defaultNamespace.getPrefix() + "'");
+            throw new IllegalArgumentException("No such namespace: '"
+                    + defaultNamespace.getPrefix() + "'");
         }
 
         HbNamespaceInfo previousDefault = this.catalogDAO.getDefaultNamespace();
@@ -736,7 +795,8 @@ public class HibernateCatalog implements Catalog {
 
     /**
      * @see Catalog#getNamespaceByURI(String)
-     * @todo: revisit: what prevents us from having the same URI in more than one namespace?
+     * @todo: revisit: what prevents us from having the same URI in more than
+     *        one namespace?
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
         return this.catalogDAO.getNamespaceByURI(uri);
@@ -770,7 +830,8 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#save(NamespaceInfo)
      */
     public void save(NamespaceInfo namespace) {
-        // takes care of updating the ns taking into account the isDefault custom field
+        // takes care of updating the ns taking into account the isDefault
+        // custom field
         add(namespace);
         fireModified(namespace, null, null, null);
         // internalSave(namespace);
@@ -799,8 +860,8 @@ public class HibernateCatalog implements Catalog {
 
     /**
      * @see Catalog#getListeners()
-     * @todo revisit: we have add and remove listener, it seems like we should return a safe copy
-     *       here!
+     * @todo revisit: we have add and remove listener, it seems like we should
+     *       return a safe copy here!
      */
     public Collection<CatalogListener> getListeners() {
         return listeners;
@@ -845,7 +906,8 @@ public class HibernateCatalog implements Catalog {
      * @param newValues
      *            the modified properties new values
      */
-    void fireModified(Object modifiedObject, List propertyNames, List oldValues, List newValues) {
+    void fireModified(Object modifiedObject, List propertyNames,
+            List oldValues, List newValues) {
         CatalogModifyEventImpl event = new CatalogModifyEventImpl();
 
         event.setSource(modifiedObject);
@@ -860,7 +922,8 @@ public class HibernateCatalog implements Catalog {
      * Fires a removed event
      * 
      * @param removedObject
-     *            the object removed from the catalog, to be set as the event's source
+     *            the object removed from the catalog, to be set as the event's
+     *            source
      */
     void fireRemoved(Object removedObject) {
         CatalogRemoveEventImpl event = new CatalogRemoveEventImpl();
@@ -932,7 +995,8 @@ public class HibernateCatalog implements Catalog {
     private List diff(Object o1, Object o2) {
 
         List changed = new ArrayList();
-        PropertyDescriptor[] properties = PropertyUtils.getPropertyDescriptors(o1);
+        PropertyDescriptor[] properties = PropertyUtils
+                .getPropertyDescriptors(o1);
 
         BeanComparator comparator = new BeanComparator();
         for (int i = 0; i < properties.length; i++) {
@@ -997,7 +1061,8 @@ public class HibernateCatalog implements Catalog {
     /**
      * @see Catalog#getStoresByWorkspace(WorkspaceInfo, Class)
      */
-    public <T extends StoreInfo> List<T> getStoresByWorkspace(WorkspaceInfo workspace, Class<T> clazz) {
+    public <T extends StoreInfo> List<T> getStoresByWorkspace(
+            WorkspaceInfo workspace, Class<T> clazz) {
         return null;
     }
 
@@ -1079,15 +1144,15 @@ public class HibernateCatalog implements Catalog {
     }
 
     /**
-     * Creates the mimimum set of configuration objects, intended to be used to set up a new
-     * database contents
+     * Creates the mimimum set of configuration objects, intended to be used to
+     * set up a new database contents
      */
     public void bootStrap() {
         HbWorkspaceInfo defaultWs = getFactory().createWorkspace();
         defaultWs.setDefault(Boolean.TRUE);
         defaultWs.setName("topp");
         setDefaultWorkspace(defaultWs);
-        
+
         NamespaceInfo nsinfo = getFactory().createNamespace();
         nsinfo.setPrefix("topp");
         nsinfo.setURI("http://www.opengeo.org");
@@ -1144,7 +1209,7 @@ public class HibernateCatalog implements Catalog {
     public List<ModelRunInfo> getModelRuns() {
         return this.catalogDAO.getModelRuns();
     }
-    
+
     /**
      * 
      */
@@ -1188,7 +1253,7 @@ public class HibernateCatalog implements Catalog {
     public List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun) {
         return this.catalogDAO.getGridCoverages(modelRun);
     }
-    
+
     /**
      * 
      * @param param
@@ -1197,7 +1262,7 @@ public class HibernateCatalog implements Catalog {
     public List<CoverageInfo> getGridCoverages(GeophysicParamInfo param) {
         return this.catalogDAO.getGridCoverages(param);
     }
-    
+
     /**
      * 
      * @param model
@@ -1212,7 +1277,8 @@ public class HibernateCatalog implements Catalog {
      * @param modelRun
      * @return
      */
-    public List<GeophysicParamInfo> getGeophysicalParameters(ModelRunInfo modelRun) {
+    public List<GeophysicParamInfo> getGeophysicalParameters(
+            ModelRunInfo modelRun) {
         return this.catalogDAO.getGeophysicalParameters(modelRun);
     }
 
@@ -1266,7 +1332,8 @@ public class HibernateCatalog implements Catalog {
     }
 
     /**
-     * @param catalogDAO the catalogDAO to set
+     * @param catalogDAO
+     *            the catalogDAO to set
      */
     public void setCatalogDAO(IGeoServerDAO catalogDAO) {
         this.catalogDAO = catalogDAO;
