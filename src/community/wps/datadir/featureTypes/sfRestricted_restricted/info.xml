@@ -1,0 +1,26 @@
+<featureType datastore = "sfRestricted" >
+  <name>restricted</name>
+  <!--
+    native wich EPGS code for the FeatureTypeInfoDTO
+  -->
+  <SRS>26713</SRS>
+  <SRSHandling>0</SRSHandling>
+  <title>restricted_Type</title>
+  <abstract>Generated from sfRestricted</abstract>
+  <wmspath>/</wmspath>
+  <numDecimals value = "0" />
+  <keywords>restricted, sfRestricted</keywords>
+  <latLonBoundingBox dynamic = "false" miny = "44.39436387625042" maxy = "44.48215752041131" maxx = "-103.74741494853805" minx = "-103.85057172920756" />
+  <nativeBBox dynamic = "false" miny = "4916236.662227167" maxy = "4925872.146218054" maxx = "599648.9251686076" minx = "591579.1858092896" />
+  <!--
+    the default style this FeatureTypeInfoDTO can be represented by.
+    at least must contain the "default" attribute
+  -->
+  <styles default = "restricted" />
+  <cacheinfo enabled = "true" maxage = "3600" />
+  <searchable enabled = "false" />
+  <regionateAttribute />
+  <regionateStrategy />
+  <regionateFeatureLimit value = "10" />
+  <maxFeatures>0</maxFeatures>
+</featureType>
