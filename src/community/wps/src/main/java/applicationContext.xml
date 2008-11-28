@@ -82,10 +82,10 @@
       <constructor-arg index="1" value="ProcessDescriptions"/>
       <constructor-arg index="2" value="org.geoserver.wps.xml.WPSConfiguration"/> 
     </bean>
-    <bean id="wpsExecuteResponse" class="org.geoserver.ows.XmlObjectEncodingResponse">
+    <bean id="wpsExecuteResponse" class="org.geoserver.wps.response.ExecuteProcessResponse">
       <constructor-arg index="0" value="net.opengis.wps10.ExecuteResponseType"/>
       <constructor-arg index="1" value="ExecuteResponse"/>
-      <constructor-arg index="2" value="org.geoserver.wps.xml.WPSConfiguration"/> 
+      <constructor-arg index="2" value="org.geoserver.wps.xml.WPSConfiguration"/>
     </bean>
     
     <!-- Exception handler, we need to output ows 1.1 exceptions -->
