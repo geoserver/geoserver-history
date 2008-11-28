@@ -128,7 +128,6 @@ public class ExecuteTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
-        // print( d );
         checkValidationErrors(d);
         
         assertEquals( "wps:ExecuteResponse", d.getDocumentElement().getNodeName() );
@@ -137,6 +136,40 @@ public class ExecuteTest extends WPSTestSupport {
         assertXpathExists( 
             "/wps:ExecuteResponse/wps:ProcessOutputs/wps:Output/wps:Data/wps:ComplexData/wfs:FeatureCollection", d);
     }
+    
+//    public void testFeatureCollectionInlineRawOutput() throws Exception {
+//        String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
+//              "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
+//              "<ows:Identifier>BufferFeatureCollection</ows:Identifier>" + 
+//               "<wps:DataInputs>" + 
+//                  "<wps:Input>" + 
+//                      "<ows:Identifier>features</ows:Identifier>" + 
+//                      "<wps:Data>" +
+//                        "<wps:ComplexData>" + 
+//                             readFileIntoString("states-FeatureCollection.xml") + 
+//                        "</wps:ComplexData>" + 
+//                      "</wps:Data>" +     
+//                  "</wps:Input>" + 
+//                  "<wps:Input>" + 
+//                     "<ows:Identifier>buffer</ows:Identifier>" + 
+//                     "<wps:Data>" + 
+//                       "<wps:LiteralData>10</wps:LiteralData>" + 
+//                     "</wps:Data>" + 
+//                  "</wps:Input>" + 
+//                 "</wps:DataInputs>" +
+//                 "<wps:ResponseForm>" + 
+//                 "  <wps:RawDataOutput>" + 
+//                 "      <ows:Identifier>geom-buffered</ows:Identifier>" + 
+//                 "  </wps:RawDataOutput>" + 
+//                 "</wps:ResponseForm>" +
+//               "</wps:Execute>";
+//        
+//        Document d = postAsDOM( "wps", xml );
+//        print( d );
+//        checkValidationErrors(d, new GMLConfiguration());
+//        
+//        assertEquals( "wfs:FeatureCollection", d.getDocumentElement().getNodeName() );
+//    }
     
     String readFileIntoString( String filename ) throws IOException {
         BufferedReader in = 
