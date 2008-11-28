@@ -34,7 +34,7 @@ public class WPSTestSupport extends GeoServerTestSupport {
     }
     
     /**
-     * Workaround for XSD bindings to encode the xml:lang attribute 
+     * Validates a document based on the WPS schema 
      * @throws TransformerException 
      * @throws ParserConfigurationException 
      */
