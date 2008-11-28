@@ -14,7 +14,6 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.XmlObjectEncodingResponse;
-import org.geoserver.platform.ExtensionPriority;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wps.ComplexDataEncoderDelegate;
@@ -46,9 +45,18 @@ public class ExecuteProcessResponse extends Response {
         } else {
             // raw response, let's see what the output is
             ExecuteResponseType response = (ExecuteResponseType) value;
-            OutputDefinitionType definition = (OutputDefinitionType) response
+            OutputDataType result = (OutputDataType) response
+                    .getProcessOutputs().getOutput().get(0);
+            LiteralDataType literal = result.getData().getLiteralData();
+            if(literal != null) {
+                // literals are encoded as plain strings
+                return "text/plain";
+            } else {
+                // Execute should have properly setup the mime type
+                OutputDefinitionType definition = (OutputDefinitionType) response
                     .getOutputDefinitions().getOutput().get(0);
-            return definition.getMimeType();
+                return definition.getMimeType();
+            }
         }
 
     }
@@ -111,13 +119,8 @@ public class ExecuteProcessResponse extends Response {
      */
     void writeLiteral(OutputStream output, LiteralDataType literal) {
         PrintWriter writer = new PrintWriter(output);
-        String converted = Converters.convert(literal, String.class);
-        if (converted == null) {
-            throw new WPSException("Could not convert the literal result "
-                    + "to a string, please code a proper converter for class "
-                    + literal.getClass());
-        }
-        writer.write(converted);
+        writer.write(literal.getValue());
+        writer.flush();
     }
 
     

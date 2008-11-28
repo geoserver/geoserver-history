@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import org.geotools.gml3.GMLConfiguration;
 import org.w3c.dom.Document;
 
+import com.mockrunner.mock.web.MockHttpServletResponse;
+
 import static org.custommonkey.xmlunit.XMLAssert.*;
 
 public class ExecuteTest extends WPSTestSupport {
@@ -181,5 +183,38 @@ public class ExecuteTest extends WPSTestSupport {
         }
         in.close();
         return sb.toString();
+    }
+    
+    public void testPlainAddition() throws Exception {
+        String xml = 
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n" + 
+            "<wps:Execute service=\"WPS\" version=\"1.0.0\"\r\n" + 
+            "        xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + 
+            "        xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n" + 
+            "        <ows:Identifier>DoubleAddition</ows:Identifier>\r\n" + 
+            "        <wps:DataInputs>\r\n" + 
+            "                <wps:Input>\r\n" + 
+            "                        <ows:Identifier>input_a</ows:Identifier>\r\n" + 
+            "                        <wps:Data>\r\n" + 
+            "                                <wps:LiteralData>7</wps:LiteralData>\r\n" + 
+            "                        </wps:Data>\r\n" + 
+            "                </wps:Input>\r\n" + 
+            "                <wps:Input>\r\n" + 
+            "                        <ows:Identifier>input_b</ows:Identifier>\r\n" + 
+            "                        <wps:Data>\r\n" + 
+            "                                <wps:LiteralData>7</wps:LiteralData>\r\n" + 
+            "                        </wps:Data>\r\n" + 
+            "                </wps:Input>\r\n" + 
+            "        </wps:DataInputs>\r\n" + 
+            "        <wps:ResponseForm>\r\n" + 
+            "                <wps:RawDataOutput>\r\n" + 
+            "                        <ows:Identifier>result</ows:Identifier>\r\n" + 
+            "                </wps:RawDataOutput>\r\n" + 
+            "        </wps:ResponseForm>\r\n" + 
+            "</wps:Execute>";
+        
+         MockHttpServletResponse response = postAsServletResponse(root(), xml);
+         assertEquals("text/plain", response.getContentType());
+         assertEquals("14.0", response.getOutputStreamContent());
     }
 }
