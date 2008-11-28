@@ -1,0 +1,20 @@
+<featureType datastore = "sfArchsites" >
+  <name>archsites</name>
+  <!--
+    native wich EPGS code for the FeatureTypeInfoDTO
+  -->
+  <SRS>26713</SRS>
+  <title>archsites_Type</title>
+  <abstract>Generated from sfArchsites</abstract>
+  <wmspath>/</wmspath>
+  <numDecimals value = "8" />
+  <keywords>archsites sfArchsites</keywords>
+  <latLonBoundingBox dynamic = "false" maxx = "-103.63794182141925" maxy = "44.48804280772808" minx = "-103.8725637911543" miny = "44.37740330855979" />
+  <nativeBBox dynamic = "false" maxx = "608346.4603107043" maxy = "4926501.8980334345" minx = "589851.4376666048" miny = "4914490.882968263" />
+  <!--
+    the default style this FeatureTypeInfoDTO can be represented by.
+    at least must contain the "default" attribute
+  -->
+  <styles default = "point" />
+  <cacheinfo enabled = "true" maxage = "3600" />
+</featureType>
