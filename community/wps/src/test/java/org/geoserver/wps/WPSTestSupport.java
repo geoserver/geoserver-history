@@ -12,6 +12,7 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geoserver.wps.xml.WPSConfiguration;
+import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 import org.w3c.dom.Document;
 
@@ -39,8 +40,16 @@ public class WPSTestSupport extends GeoServerTestSupport {
      * @throws ParserConfigurationException 
      */
     protected void checkValidationErrors(Document dom) throws Exception {
-        
-        Parser p = new Parser( new WPSConfiguration() );
+        checkValidationErrors(dom, new WPSConfiguration());
+    }
+
+    /**
+     * Validates a document against the 
+     * @param dom
+     * @param configuration
+     */
+    protected void checkValidationErrors(Document dom, Configuration configuration) throws Exception {
+        Parser p = new Parser(configuration);
         p.setValidating( true );
         p.parse( new DOMSource( dom ) );
     
