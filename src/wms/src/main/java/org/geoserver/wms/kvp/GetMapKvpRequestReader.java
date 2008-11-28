@@ -1098,7 +1098,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
             try {
                 WFSDataStoreFactory factory = new WFSDataStoreFactory();
                 Map params = new HashMap(factory.getImplementationHints());
-                params.put(WFSDataStoreFactory.URL.key, remoteOwsUrl + "request=GetCapabilities&service=WFS");
+                params.put(WFSDataStoreFactory.URL.key, remoteOwsUrl + "&request=GetCapabilities&service=WFS");
                 params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
                 return factory.createDataStore(params);
             } catch(Exception e) {
