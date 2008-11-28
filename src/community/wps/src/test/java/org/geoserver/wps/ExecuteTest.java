@@ -61,32 +61,32 @@ public class ExecuteTest extends WPSTestSupport {
 
     public void testFeatureCollectionInline() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
-        "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-      "<ows:Identifier>BufferFeatureCollection</ows:Identifier>" + 
-       "<wps:DataInputs>" + 
-          "<wps:Input>" + 
-              "<ows:Identifier>features</ows:Identifier>" + 
-              "<wps:Data>" +
-                "<wps:ComplexData>" + 
-                     readFileIntoString("states-FeatureCollection.xml") + 
-                "</wps:ComplexData>" + 
-              "</wps:Data>" +     
-          "</wps:Input>" + 
-          "<wps:Input>" + 
-             "<ows:Identifier>buffer</ows:Identifier>" + 
-             "<wps:Data>" + 
-               "<wps:LiteralData>10</wps:LiteralData>" + 
-             "</wps:Data>" + 
-          "</wps:Input>" + 
-     "</wps:DataInputs>" +
-     "<wps:ResponseForm>" +  
-       "<wps:ResponseDocument storeExecuteResponse='false'>" + 
-         "<wps:Output>" +
-           "<ows:Identifier>geom-buffered</ows:Identifier>" +
-         "</wps:Output>" + 
-       "</wps:ResponseDocument>" +
-     "</wps:ResponseForm>" + 
-   "</wps:Execute>";
+              "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
+              "<ows:Identifier>BufferFeatureCollection</ows:Identifier>" + 
+               "<wps:DataInputs>" + 
+                  "<wps:Input>" + 
+                      "<ows:Identifier>features</ows:Identifier>" + 
+                      "<wps:Data>" +
+                        "<wps:ComplexData>" + 
+                             readFileIntoString("states-FeatureCollection.xml") + 
+                        "</wps:ComplexData>" + 
+                      "</wps:Data>" +     
+                  "</wps:Input>" + 
+                  "<wps:Input>" + 
+                     "<ows:Identifier>buffer</ows:Identifier>" + 
+                     "<wps:Data>" + 
+                       "<wps:LiteralData>10</wps:LiteralData>" + 
+                     "</wps:Data>" + 
+                  "</wps:Input>" + 
+                 "</wps:DataInputs>" +
+                 "<wps:ResponseForm>" +  
+                   "<wps:ResponseDocument storeExecuteResponse='false'>" + 
+                     "<wps:Output>" +
+                       "<ows:Identifier>geom-buffered</ows:Identifier>" +
+                     "</wps:Output>" + 
+                   "</wps:ResponseDocument>" +
+                 "</wps:ResponseForm>" + 
+               "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
         print( d );
