@@ -456,14 +456,6 @@ public class HibernateGeoServer implements GeoServer {
 
         this.catalogDAO.update(ncom);
 
-        List<ModelRunInfo> runs_0 = new ArrayList<ModelRunInfo>();
-        runs_0.add(modelRun_0);
-
-        List<ModelRunInfo> runs_1 = new ArrayList<ModelRunInfo>();
-        runs_1.add(modelRun_1);
-        runs_1.add(modelRun_2);
-        runs_1.add(modelRun_3);
-
         try {
             // ////////////////////////////////////////////////////////////////
             //
@@ -1271,7 +1263,8 @@ public class HibernateGeoServer implements GeoServer {
             // Updating Variables
             // ////
             List<ModelInfo> models = new ArrayList<ModelInfo>();
-            models.add(model);
+                models.add(model);
+                models.add(ncom);
 
             GeophysicParamInfo dynht = new GeophysicParamInfoImpl();
             dynht.setName("dynht");
@@ -1307,17 +1300,20 @@ public class HibernateGeoServer implements GeoServer {
             salt.setName("salt");
             List<String> saltAliases = new ArrayList<String>();
             saltAliases.add("salinity");
-			salt.setAlias(saltAliases);
+            salt.setAlias(saltAliases);
             salt.setTitle("salt");
             salt.setDescription("salt");
             salt.setModels(models);
-            salt.setModelRuns(runsAll);
+            List<ModelRunInfo> runsSalt = new ArrayList<ModelRunInfo>();
+                runsSalt.addAll(runsAll);
+                runsSalt.add(modelRun_4);
+            salt.setModelRuns(runsSalt);
             List<CoverageInfo> saltCoverages = new ArrayList<CoverageInfo>();
-            saltCoverages.addAll(coverages_0);
-            saltCoverages.addAll(coverages_1);
-            saltCoverages.addAll(coverages_2);
-            saltCoverages.addAll(coverages_3);
-            saltCoverages.addAll(coverages_4);
+                saltCoverages.addAll(coverages_0);
+                saltCoverages.addAll(coverages_1);
+                saltCoverages.addAll(coverages_2);
+                saltCoverages.addAll(coverages_3);
+                saltCoverages.addAll(coverages_4);
             salt.setGridCoverages(saltCoverages);
 
             this.catalogDAO.save(salt);
@@ -1347,17 +1343,20 @@ public class HibernateGeoServer implements GeoServer {
             List<String> tempAliases = new ArrayList<String>();
             tempAliases.add("temperature");
             tempAliases.add("water_temp");
-			temp.setAlias(tempAliases);
+            temp.setAlias(tempAliases);
             temp.setTitle("temp");
             temp.setDescription("temp");
             temp.setModels(models);
-            temp.setModelRuns(runsAll);
+            List<ModelRunInfo> runsTemp = new ArrayList<ModelRunInfo>();
+                runsTemp.addAll(runsAll);
+                runsTemp.add(modelRun_5);
+            temp.setModelRuns(runsTemp);
             List<CoverageInfo> tempCoverages = new ArrayList<CoverageInfo>();
-            tempCoverages.addAll(coverages_0);
-            tempCoverages.addAll(coverages_1);
-            tempCoverages.addAll(coverages_2);
-            tempCoverages.addAll(coverages_3);
-            tempCoverages.addAll(coverages_5);
+                tempCoverages.addAll(coverages_0);
+                tempCoverages.addAll(coverages_1);
+                tempCoverages.addAll(coverages_2);
+                tempCoverages.addAll(coverages_3);
+                tempCoverages.addAll(coverages_5);
             temp.setGridCoverages(tempCoverages);
 
             this.catalogDAO.save(temp);
@@ -1381,6 +1380,14 @@ public class HibernateGeoServer implements GeoServer {
             tempmean.setGridCoverages(coverages_0);
 
             this.catalogDAO.save(tempmean);
+
+            List<ModelRunInfo> runs_0 = new ArrayList<ModelRunInfo>();
+                runs_0.add(modelRun_0);
+
+            List<ModelRunInfo> runs_1 = new ArrayList<ModelRunInfo>();
+                runs_1.add(modelRun_1);
+                runs_1.add(modelRun_2);
+                runs_1.add(modelRun_3);
 
             GeophysicParamInfo u = new GeophysicParamInfoImpl();
             u.setName("u");
