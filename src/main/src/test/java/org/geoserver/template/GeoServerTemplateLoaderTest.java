@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.geoserver.test.GeoServerTestSupport;
+import org.geotools.data.DataUtilities;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 
 public class GeoServerTemplateLoaderTest extends GeoServerTestSupport {
@@ -50,6 +52,13 @@ public class GeoServerTemplateLoaderTest extends GeoServerTestSupport {
         assertFalse(source instanceof File);
         templateLoader.getReader(source, "UTF-8");
         
+    }
+    
+    public void testRemoteType() throws Exception {
+        SimpleFeatureType ft = DataUtilities.createType("remoteType", "the_geom:MultiPolygon,FID:String,ADDRESS:String");
+        GeoServerTemplateLoader loader = new GeoServerTemplateLoader(getClass());
+        loader.setFeatureType(ft);
+        loader.findTemplateSource("header.ftl");
     }
 
     void delete(File file) throws IOException {
