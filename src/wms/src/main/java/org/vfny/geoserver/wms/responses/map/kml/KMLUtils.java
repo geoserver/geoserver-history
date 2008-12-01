@@ -459,7 +459,7 @@ public class KMLUtils {
             Data catalog = mapContext.getRequest().getWMS().getData();
             Name name = layer.getFeatureSource().getName();
             stratname = catalog.getFeatureTypeInfo(name).getRegionateStrategy();
-            if (stratname == null){
+            if (stratname == null || "".equals( stratname ) ){
                 stratname = "best_guess";
                 LOGGER.log(
                         Level.WARNING,
