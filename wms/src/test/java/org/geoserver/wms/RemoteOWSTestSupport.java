@@ -5,6 +5,7 @@
 package org.geoserver.wms;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,30 +25,29 @@ public class RemoteOWSTestSupport {
     
     // support for remote OWS layers
     public static final String TOPP_STATES = "topp:states";
-    public static final String WFS_SERVER_URL = "http://sigma.openplans.org:8080/geoserver/wfs?";
+    public static final String WFS_SERVER_URL = "http://demo.opengeo.org/geoserver/wfs?";
     static Boolean remoteStatesAvailable;
     
     public static boolean isRemoteStatesAvailable() {
-    	// todo: re-enable when http://jira.codehaus.org/browse/GEOS-1547 is fixed
-    	return false;
-//        if(remoteStatesAvailable == null) {
-//            // let's check if the remote WFS tests are runnable
-//            try {
-//                WFSDataStoreFactory factory = new WFSDataStoreFactory();
-//                Map params = new HashMap(factory.getImplementationHints());
-//                URL url = new URL(WFS_SERVER_URL + "service=WFS&request=GetCapabilities");
-//                params.put(WFSDataStoreFactory.URL.key, url);
-//                params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
-//                DataStore remoteStore = factory.createDataStore(params);
-//                remoteStore.getFeatureSource(TOPP_STATES);
-//                remoteStatesAvailable = Boolean.TRUE;
-//            } catch(IOException e) {
-//                LOGGER.log(Level.WARNING, "Skipping remote OWS test, either sigma " +
-//                        "is down or the topp:states layer is not there", e);
-//                remoteStatesAvailable = Boolean.FALSE;
-//            }
-//        } 
-//        return remoteStatesAvailable.booleanValue();
-        // see GEOS-
-    }
+        if(remoteStatesAvailable == null) {
+            // let's check if the remote WFS tests are runnable
+            try {
+                WFSDataStoreFactory factory = new WFSDataStoreFactory();
+                Map<String, Serializable> params = new HashMap(factory.getImplementationHints());
+                URL url = new URL(WFS_SERVER_URL + "service=WFS&request=GetCapabilities");
+                params.put(WFSDataStoreFactory.URL.key, url);
+                params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
+                //give it five seconds to respond...
+                params.put(WFSDataStoreFactory.TIMEOUT.key, Integer.valueOf(5000));
+                DataStore remoteStore = factory.createDataStore(params);
+                remoteStore.getFeatureSource(TOPP_STATES);
+                remoteStatesAvailable = Boolean.TRUE;
+            } catch(IOException e) {
+                LOGGER.log(Level.WARNING, "Skipping remote OWS test, either sigma " +
+                        "is down or the topp:states layer is not there", e);
+                remoteStatesAvailable = Boolean.FALSE;
+            }
+        } 
+        return remoteStatesAvailable.booleanValue();
+   }
 }

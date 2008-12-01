@@ -276,7 +276,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
         
         assertEquals("WFS", request.getRemoteOwsType()); // TODO: handle case?
-        assertEquals(new URL("http://sigma.openplans.org:8080/geoserver/wfs?"), request.getRemoteOwsURL());
+        assertEquals(new URL(RemoteOWSTestSupport.WFS_SERVER_URL), request.getRemoteOwsURL());
         assertEquals(1, request.getLayers().length);
         assertEquals(MapLayerInfo.TYPE_REMOTE_VECTOR, request.getLayers()[0].getType());
         assertEquals("topp:states", request.getLayers()[0].getRemoteFeatureSource().getSchema().getTypeName());
