@@ -80,10 +80,8 @@
     <interpolationMethods>nearest neighbor,bilinear,bicubic,bicubic_2</interpolationMethods>
   </supportedInterpolations>
   <parameters >
-    <parameter name = "InputImageROIThreshold" value = "1" />
-    <parameter name = "InputImageROI" value = "false" />
-    <parameter name = "ReadGridGeometry2D" value = "" />
-    <parameter name = "FinalAlpha" value = "false" />
-    <parameter name = "AlphaThreshold" value = "1.0" />
+    <parameter value = "#000000" name = "OutputTransparentColor" />
+    <parameter value = "NaN" name = "InputImageThresholdValue" />
+    <parameter value = "" name = "InputTransparentColor" />
   </parameters>
 </coverage>
