@@ -191,8 +191,6 @@ public class KMLVectorTransformer extends KMLMapTransformer {
            //grab a reader and process
             FeatureIterator<SimpleFeature> reader = null;
 
-            HashMap<String,Boolean> ht = new HashMap<String,Boolean>();
-            
             try {
                 //grab a reader and process
                 reader = features.features();
@@ -201,26 +199,8 @@ public class KMLVectorTransformer extends KMLMapTransformer {
                 while (reader.hasNext()) {
                     SimpleFeature feature = (SimpleFeature) reader.next();
                     try {
-                        ht.put(feature.getID(), encodeStyle(feature, styles, true));
-                    } catch (RuntimeException t) {
-                        // if the stream has been closed by the client don't keep on going forward, this is not
-                        // a feature local issue
-                        if(t.getCause() instanceof SAXException)
-                            throw t;
-                        else
-                            LOGGER.log(Level.WARNING, "Failure tranforming feature to KML:" + feature.getID(), t);
-                    } 
-                }
-                
-                // Write Placemarks
-                reader = features.features();           
-                // Write Styles
-                while (reader.hasNext()) {
-                    SimpleFeature feature = (SimpleFeature) reader.next();
-                    try {
-                        // Check whether encoding the style succeeded
-                        if(ht.containsKey(feature.getID()) && ht.get(feature.getID())) {
-                            encodePlacemark(feature,styles);
+                        if ( encodeStyle(feature, styles, true) ) {
+                            encodePlacemark(feature, styles);    
                         }
                     } catch (RuntimeException t) {
                         // if the stream has been closed by the client don't keep on going forward, this is not
@@ -231,7 +211,6 @@ public class KMLVectorTransformer extends KMLMapTransformer {
                             LOGGER.log(Level.WARNING, "Failure tranforming feature to KML:" + feature.getID(), t);
                     } 
                 }
-                
             } finally {
                 //make sure we always close
                 features.close(reader);
