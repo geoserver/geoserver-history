@@ -74,7 +74,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             start("Document");
 
             //encode top level region
-            encodeRegion(top, 256, 1024);
+            encodeRegion(top, 256, -1);
 
             //encode the network links
             if (top != KMLUtils.WORLD_BOUNDS_WGS84) {
@@ -327,7 +327,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             start("NetworkLink");
             element("name", name);
 
-            encodeRegion(box, 512, 2048);
+            encodeRegion(box, 512, -1);
 
             start("Link");
 
