@@ -66,8 +66,9 @@ public class KMLTest extends WMSTestSupport {
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +
             "&remote_ows_type=wfs" +
             "&remote_ows_url=" + RemoteOWSTestSupport.WFS_SERVER_URL +
-            "&featureid=states.1"
+            "&cql_filter=PERSONS>20000000"
         );
+        print(doc);
         
         assertEquals( 1, doc.getElementsByTagName("Placemark").getLength());
     }
