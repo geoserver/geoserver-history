@@ -197,6 +197,13 @@ public class ExternalSortRegionatingStrategy extends
                 SimpleFeature f = (SimpleFeature) fi.next();
                 Geometry g = (Geometry) f.getDefaultGeometry();
                 Point centroid = g.getCentroid();
+                
+                //robustness check for bad geometries
+                if ( Double.isNaN( centroid.getX() ) || Double.isNaN( centroid.getY() ) ) {
+                    LOGGER.warning( "Could not calculate centroid for feature " + f.getID() + "; g =  " + g.toText() );
+                    continue;
+                }
+                
                 coords[0] = centroid.getX();
                 coords[1] = centroid.getY();
                 if (tx != null)

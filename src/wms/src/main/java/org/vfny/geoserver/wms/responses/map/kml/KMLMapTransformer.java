@@ -196,7 +196,6 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             
             if (title == null || "".equals(title)) {
                 title = feature.getID();
-                
             }
             
             if(title.equals(feature.getID())) {
@@ -204,6 +203,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             }
             
             if(trySLD) {
+                LOGGER.severe("Ok. Trying the SLD label because the ftl was dumb.");
                 StringBuffer label = new StringBuffer();
                 for (int i = 0; i < styles.length; i++) {
                     Rule[] rules = KMLUtils.filterRules(styles[i], feature, scaleDenominator);
