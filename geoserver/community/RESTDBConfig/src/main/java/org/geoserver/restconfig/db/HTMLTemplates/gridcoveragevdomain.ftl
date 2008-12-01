@@ -4,6 +4,7 @@
 <li> Vertical Lower Limit: ${lowerLimit}</li>
 <li> Vertical Upper Limit: ${upperLimit}</li>
 <li> Vertical Resolution: ${resolution}</li>
+<li> Vertical Values: ${verticalValues}</li>
 <li> Vertical Datum Type: ${verticalDatumType}</li>
 <li> Vertical Axis Dimension: ${verticalAxisDimension}</li>
 <li> Vertical Axis Abbreviation: ${verticalAxisAbbr}</li>

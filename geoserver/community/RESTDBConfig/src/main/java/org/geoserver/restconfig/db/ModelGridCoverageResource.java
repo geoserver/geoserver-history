@@ -141,10 +141,24 @@ public class ModelGridCoverageResource extends MapResource {
         final double upperLimit = verticalLimits[1];
         final double resolution = verticalLimits[2];
         
+        StringBuilder verticalValues = new StringBuilder();
+        for (Envelope vEnvelope : verticalExtent) {
+            double lowerValue = vEnvelope.getLowerCorner().getOrdinate(0);
+            double upperValue = vEnvelope.getUpperCorner().getOrdinate(0);
+            
+            if (verticalValues.length() > 0)
+                verticalValues.append(",");
+            
+            if (lowerValue == upperValue)
+                verticalValues.append(lowerValue);
+            else
+                verticalValues.append(lowerValue).append(",").append(upperValue);
+        }
+        
         l.add("lowerLimit=" + String.valueOf(lowerLimit));
         l.add("upperLimit=" + String.valueOf(upperLimit));
         l.add("resolution=" + String.valueOf(resolution));
-        
+        l.add("verticalValues=" + verticalValues.toString());
         l.add("verticalDatumType=" + verticalDatum.getVerticalDatumType().identifier());
         l.add("verticalAxisDimension=" + ((VerticalCRS)coverage.getVerticalCRS()).getCoordinateSystem().getDimension());
         l.add("verticalAxisAbbr=" + verticalAxis.getAbbreviation());

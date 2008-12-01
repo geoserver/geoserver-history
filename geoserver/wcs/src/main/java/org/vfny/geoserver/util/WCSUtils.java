@@ -215,17 +215,15 @@ public class WCSUtils {
      * @param destinationEnvelopeInSourceCRS
      * @return GridCoverage2D
      */
-    public static GridCoverage2D scale(final GridCoverage2D coverage, 
+    public static GridCoverage2D resample(final GridCoverage2D coverage, 
             final GridGeometry2D scaledGridGeometry) {
         final ParameterValueGroup param = (ParameterValueGroup) resampleParams.clone();
         param.parameter("Source").setValue(coverage);
         param.parameter("CoordinateReferenceSystem").setValue(coverage.getCoordinateReferenceSystem());
         param.parameter("GridGeometry").setValue(scaledGridGeometry);
-        param.parameter("InterpolationType")
-             .setValue(Interpolation.getInstance(Interpolation.INTERP_NEAREST));
+        param.parameter("InterpolationType").setValue(Interpolation.getInstance(Interpolation.INTERP_NEAREST));
 
-        final GridCoverage2D scaledGridCoverage = (GridCoverage2D) resampleFactory.doOperation(param,
-                hints);
+        final GridCoverage2D scaledGridCoverage = (GridCoverage2D) resampleFactory.doOperation(param, hints);
 
         return scaledGridCoverage;
     }

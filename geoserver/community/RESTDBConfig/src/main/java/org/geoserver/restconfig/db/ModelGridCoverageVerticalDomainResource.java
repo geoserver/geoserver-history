@@ -101,6 +101,7 @@ public class ModelGridCoverageVerticalDomainResource extends MapResource {
         m.put("verticalAxisAbbr", vDomain.get(5) != null ? vDomain.get(5) : "[None]");
         m.put("verticalAxisDirection", vDomain.get(6) != null ? vDomain.get(6) : "[None]");
         m.put("verticalAxisUnit", vDomain.get(7) != null ? vDomain.get(7) : "[None]");
+        m.put("verticalValues", vDomain.get(8) != null ? vDomain.get(8) : "[None]");
 
         return m;
     }
@@ -127,6 +128,21 @@ public class ModelGridCoverageVerticalDomainResource extends MapResource {
         l.add(verticalAxis.getAbbreviation());
         l.add(verticalAxis.getDirection().identifier());
         l.add(verticalAxis.getUnit().toString());
+        
+        StringBuilder verticalValues = new StringBuilder();
+        for (Envelope vEnvelope : verticalExtent) {
+            double lowerValue = vEnvelope.getLowerCorner().getOrdinate(0);
+            double upperValue = vEnvelope.getUpperCorner().getOrdinate(0);
+            
+            if (verticalValues.length() > 0)
+                verticalValues.append(",");
+            
+            if (lowerValue == upperValue)
+                verticalValues.append(lowerValue);
+            else
+                verticalValues.append(lowerValue).append(",").append(upperValue);
+        }
+        l.add(verticalValues.toString());
         
         return l;
     }

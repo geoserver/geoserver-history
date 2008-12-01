@@ -382,7 +382,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 /**
                  * Scale
                  */
-                final GridCoverage2D scaledCoverage = WCSUtils.scale(croppedGridCoverage, destinationGridGeometry);
+                final GridCoverage2D scaledCoverage = WCSUtils.resample(croppedGridCoverage, destinationGridGeometry);
     
                 /**
                  * Re-project

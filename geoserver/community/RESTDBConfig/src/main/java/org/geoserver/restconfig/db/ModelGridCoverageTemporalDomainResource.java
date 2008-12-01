@@ -104,32 +104,6 @@ public class ModelGridCoverageTemporalDomainResource extends MapResource {
         return m;
     }
 
-    private static List<String> getVdomain(CoverageInfo coverage){
-        List<String> l = new ArrayList<String>();
-        Set<Envelope> verticalExtent = coverage.getVerticalExtent();
-        if (verticalExtent == null || verticalExtent.size() <= 0)
-            return l;
-        
-        VerticalDatum verticalDatum = ((VerticalCRS)coverage.getVerticalCRS()).getDatum();
-        CoordinateSystemAxis verticalAxis = ((VerticalCRS)coverage.getVerticalCRS()).getCoordinateSystem().getAxis(0);
-        final double[] verticalLimits = (verticalExtent != null && verticalExtent.size() > 0 ? WCSUtils.getVerticalExtentLimits(verticalExtent) : null);
-        final double lowerLimit = verticalLimits[0];
-        final double upperLimit = verticalLimits[1];
-        final double resolution = verticalLimits[2];
-        
-        l.add(String.valueOf(lowerLimit));
-        l.add(String.valueOf(upperLimit));
-        l.add(String.valueOf(resolution));
-        
-        l.add(verticalDatum.getVerticalDatumType().identifier());
-        l.add(String.valueOf(((VerticalCRS)coverage.getVerticalCRS()).getCoordinateSystem().getDimension()));
-        l.add(verticalAxis.getAbbreviation());
-        l.add(verticalAxis.getDirection().identifier());
-        l.add(verticalAxis.getUnit().toString());
-        
-        return l;
-    }
-    
     private static List<String> getTdomain(CoverageInfo coverage){
         List<String> l = new ArrayList<String>();
         Set<TemporalGeometricPrimitive> temporalExtent = coverage.getTemporalExtent();

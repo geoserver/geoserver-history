@@ -224,7 +224,7 @@ public class GeophysicalParamGridCoveragesListFinder extends Finder {
         if (coordinates.length != 4)
             return false;
         
-        ReferencedEnvelope bbox = new ReferencedEnvelope(coordinates[0], coordinates[1], coordinates[2], coordinates[2], outline.getCoordinateReferenceSystem());
+        ReferencedEnvelope bbox = new ReferencedEnvelope(coordinates[0], coordinates[2], coordinates[1], coordinates[3], outline.getCoordinateReferenceSystem());
 
         BoundingBox bounds;
         try {
@@ -264,10 +264,11 @@ public class GeophysicalParamGridCoveragesListFinder extends Finder {
             
             for (TemporalGeometricPrimitive temporalObject : temporalExtent) {
                 if (temporalObject instanceof Period) {
-                    beginPosition = ((Period) temporalObject).getBeginning().getPosition();
+                    beginPosition = beginPosition == null ? ((Period) temporalObject).getBeginning().getPosition() : beginPosition;
                     endPosition = ((Period) temporalObject).getEnding().getPosition();
                 } else if (temporalObject instanceof Instant) {
-                    beginPosition = endPosition = ((Instant) temporalObject).getPosition();
+                    beginPosition = beginPosition == null ? ((Instant) temporalObject).getPosition() : beginPosition;
+                    endPosition = ((Instant) temporalObject).getPosition();
                 }
             }
             
