@@ -5,11 +5,11 @@
   -->
   <SRS>26713</SRS>
   <SRSHandling>0</SRSHandling>
-  <title>restricted_Type</title>
-  <abstract>Generated from sfRestricted</abstract>
+  <title>Spearfish restricted areas</title>
+  <abstract>Sample data from GRASS, restricted areas, Spearfish, South Dakota, USA</abstract>
   <wmspath>/</wmspath>
-  <numDecimals value = "8" />
-  <keywords>restricted sfRestricted</keywords>
+  <numDecimals value = "0" />
+  <keywords>restricted, sfRestricted, spearfish, areas</keywords>
   <latLonBoundingBox dynamic = "false" maxx = "-103.74741494853805" maxy = "44.48215752041131" minx = "-103.85057172920756" miny = "44.39436387625042" />
   <nativeBBox dynamic = "false" maxx = "599648.9251686076" maxy = "4925872.146218054" minx = "591579.1858092896" miny = "4916236.662227167" />
   <!--
@@ -18,4 +18,9 @@
   -->
   <styles default = "restricted" />
   <cacheinfo enabled = "true" maxage = "3600" />
+  <searchable enabled = "false" />
+  <regionateAttribute value = "null" />
+  <regionateStrategy value = "best_guess" />
+  <regionateFeatureLimit value = "10" />
+  <maxFeatures>0</maxFeatures>
 </featureType>
