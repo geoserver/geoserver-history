@@ -372,11 +372,13 @@
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
         </map>
+        
 		<map name="clientProperties" table="GEOSERVER_CLIENT_PROPS" cascade="all" lazy="false">
         	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
         </map>
+        
 	 </class>
 
     <!-- ServiceInfo -->

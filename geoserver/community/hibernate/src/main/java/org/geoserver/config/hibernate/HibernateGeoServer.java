@@ -38,6 +38,7 @@ import org.geoserver.config.impl.GeoServerFactoryImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.hibernate.dao.IGeoServerDAO;
+import org.geoserver.jai.JAIInfo;
 import org.geoserver.wcs.WCSInfoImpl;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.GMLInfoImpl;
@@ -138,7 +139,29 @@ public class HibernateGeoServer implements GeoServer {
         GeoServerInfo geoserver;
         geoserver = getFactory().createGlobal();
         geoserver.setContactInfo(getFactory().createContact());
-        //Map<String, Serializable> tmp = geoserver.getMetadata();
+        
+        geoserver.setMaxFeatures(10000);
+        geoserver.setNumDecimals(8);
+        
+        geoserver.setLoggingLevel("DEFAULT_LOGGING.properties");
+        geoserver.setLoggingLocation("logs/geoserver.log");
+        geoserver.setStdOutLogging(false);
+
+        geoserver.setVerbose(false);
+        geoserver.setVerboseExceptions(false);
+
+        //jai
+        JAIInfo jai = new JAIInfo();
+        jai.setMemoryCapacity( (Double) 0.5);
+        jai.setMemoryThreshold( (Double) 0.75 );
+        jai.setTileThreads( (Integer) 5 );
+        jai.setTilePriority( (Integer) 5 );
+        jai.setImageIOCache( (Boolean) false );
+        jai.setJPEGAcceleration( (Boolean) false );
+        jai.setPNGAcceleration( (Boolean) false );
+        jai.setRecycling( (Boolean) false );
+        
+        geoserver.getMetadata().put( JAIInfo.KEY, jai );
         
         // do not call setGlobal or we'll get an infinite loop
         this.catalogDAO.save(geoserver);
