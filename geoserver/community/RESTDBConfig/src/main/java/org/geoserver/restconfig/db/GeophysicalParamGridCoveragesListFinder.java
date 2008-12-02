@@ -21,10 +21,12 @@ import org.geoserver.rest.DataFormat;
 import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
+import org.geotools.coverage.io.range.RangeType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.temporal.object.DefaultPeriod;
 import org.geotools.temporal.object.DefaultPosition;
+import org.opengis.feature.type.Name;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.operation.TransformException;
@@ -200,7 +202,16 @@ public class GeophysicalParamGridCoveragesListFinder extends Finder {
                             if (validRange) {
                                 for (GeophysicParamInfo param : catalog.getGeophysicalParams(cv)) {
                                     if (variableName.equals(param.getName()) || param.getAlias().contains(variableName)) {
-                                        coverages.add(cv.getName());
+                                        RangeType range = cv.getFields();
+                                        if (range != null && range.getFieldTypes().size() > 0) {
+                                            for (java.util.Iterator<Name> i = range.getFieldTypeNames().iterator(); i.hasNext();) {
+                                                String cvVarName = i.next().getLocalPart();
+                                                if (cvVarName.equals(param.getName()) || param.getAlias().contains(cvVarName))
+                                                    coverages.add(cv.getName() + "@" + cvVarName);
+                                            }
+                                        } else {
+                                            coverages.add(cv.getName());
+                                        }
                                     }
                                 }
                             }

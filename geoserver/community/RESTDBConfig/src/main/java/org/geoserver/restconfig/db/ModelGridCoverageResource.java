@@ -281,6 +281,12 @@ public class ModelGridCoverageResource extends MapResource {
             modelRunName = (String) attributes.get("run");
             gridcoverageName = (String) attributes.get("gridcoverage");
             
+            String coverageName = gridcoverageName.indexOf("@") > 0 ? gridcoverageName.substring(0, gridcoverageName.indexOf("@")) : gridcoverageName;
+            String fieldName = gridcoverageName.indexOf("@") > 0 ? gridcoverageName.substring(gridcoverageName.indexOf("@")+1) : null;
+            
+            // stripping namespace
+            gridcoverageName = coverageName.contains(":") ? coverageName.substring(coverageName.indexOf(":")+1) : coverageName;
+            
             theModel  = rawCatalog.getModelByName(modelName);
             
             if (theModel != null && theModel.getModelRuns() != null) {
