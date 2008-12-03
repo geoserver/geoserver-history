@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -143,14 +144,14 @@ public class KMLReflector {
         Boolean superoverlay = (Boolean)fo.get("superoverlay");
         if (superoverlay == null) superoverlay = Boolean.FALSE;
         if (superoverlay) {
-            request.setFormat(KMLMapProducer.MIME_TYPE);
+            request.setFormat(KMZMapProducer.MIME_TYPE);
             request.setBbox(KMLUtils.expandToTile(request.getBbox()));
-        } else if (!KMLMapProducer.OUTPUT_FORMATS.contains( request.getFormat() ) ) {
+        } else if (!Arrays.asList(KMZMapProducer.OUTPUT_FORMATS).contains( request.getFormat() ) ) {
             //if the user did not explicitly request kml give them back KMZ
-            request.setFormat( KMZMapProducer.MIME_TYPE );
+            request.setFormat(KMLMapProducer.MIME_TYPE);
         }
 
-        response.setContentType( KMLMapProducer.MIME_TYPE );
+        response.setContentType(request.getFormat());
 
         //set the content disposition
         StringBuffer filename = new StringBuffer();
@@ -165,6 +166,7 @@ public class KMLReflector {
 
             filename.append(name + "_");
         }
+
         filename.setLength(filename.length()-1);
         response.setHeader("Content-Disposition", 
                 "attachment; filename=" + filename.toString() + ".kml");
