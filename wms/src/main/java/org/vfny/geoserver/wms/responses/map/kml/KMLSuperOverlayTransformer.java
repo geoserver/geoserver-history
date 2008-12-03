@@ -159,6 +159,8 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             // full: no
             // background: yes
             // overview: is the non-regionated feature count for this tile above the cutoff?
+            if (!isVectorLayer(layer)) return true;
+
             String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
             if ("background".equals(regionateMode) || "raster".equals(regionateMode)) return true;
             if ("overview".equals(regionateMode))
