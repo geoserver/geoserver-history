@@ -731,13 +731,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                         });
 
                 while (it.hasNext()) {
-                    try {
-                        sortedFunctions.add(it.next());
-                    }
-                    catch( Throwable t ) {
-                        LOGGER.warning( "Function failed to load (set logging to FINE to view stack trace)" );
-                        LOGGER.log( Level.FINE, "", t );
-                    }
+                    sortedFunctions.add(it.next());
                 }
 
                 //write them now that functions are sorted by name
@@ -783,6 +777,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
         }
 
         class CapabilitiesTranslator1_1 extends TranslatorSupport {
+            private static final String GML_3_1_1_FORMAT = "text/xml; subtype=gml/3.1.1";
             GetCapabilitiesType request;
             
             public CapabilitiesTranslator1_1(ContentHandler handler) {
@@ -1066,7 +1061,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             void describeFeatureType() {
                 //TODO: process extension point
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
+                        parameter("outputFormat", new String[] { GML_3_1_1_FORMAT })
                     };
 
                 operation("DescribeFeatureType", parameters, true, true);
@@ -1078,7 +1073,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             void getFeature() {
                 Map.Entry[] parameters = new Map.Entry[] {
                     parameter("resultType", new String[] { "results", "hits" }),
-                    parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
+                    parameter("outputFormat", new String[] { GML_3_1_1_FORMAT })
                 };
                 Map.Entry[] constraints = new Map.Entry[] {
                     parameter("LocalTraverseXLinkScope", new String[]{ "2" } )
@@ -1093,7 +1088,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             void getFeatureWithLock() {
                 Map.Entry[] parameters = new Map.Entry[] {
                         parameter("resultType", new String[] { "results", "hits" }),
-                        parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
+                        parameter("outputFormat", new String[] { GML_3_1_1_FORMAT })
                     };
 
                 operation("GetFeatureWithLock", parameters, true, true);
@@ -1115,7 +1110,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                  */
             void transaction() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("inputFormat", new String[] { "text/gml; subtype=gml/3.1.1" }),
+                        parameter("inputFormat", new String[] { GML_3_1_1_FORMAT }),
                         parameter("idgen",
                             new String[] { "GenerateNew", "UseExisting", "ReplaceDuplicate" }),
                         parameter("releaseAction", new String[] { "ALL", "SOME" })
@@ -1451,13 +1446,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                             });
 
                     while (itr.hasNext()) {
-                        try {
-                            sortedFunctions.add(itr.next());
-                        }
-                        catch( Throwable t ) {
-                            LOGGER.warning( "Function failed to load (set logging to FINE to view stack trace)" );
-                            LOGGER.log( Level.FINE, "", t );
-                        }
+                        sortedFunctions.add(itr.next());
                     }
 
                     //write them now that functions are sorted by name
