@@ -140,16 +140,16 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         private boolean shouldDrawVectorLayer(MapLayer layer, Envelope box){
             // should draw as vector if the layer is a vector layer, and based on mode
             // full: yes, if any regionated vectors are present at this zoom level
-            // background: yes, if any regionated vectors are present at this zoom level
+            // hybrid: yes, if any regionated vectors are present at this zoom level
             // overview: is the non-regionated feature count for this tile below the cutoff?
             // raster: no
             if (!isVectorLayer(layer)) return false;
 
-            String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
+            String overlayMode = (String)mapContext.getRequest().getFormatOptions().get("overlayMode");
 
-            if ("raster".equals(regionateMode)) return false;
+            if ("raster".equals(overlayMode)) return false;
 
-            if ("overview".equals(regionateMode)) {
+            if ("overview".equals(overlayMode)) {
                 // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
                 return featuresInTile(layer, box, false) <= getFeatureTypeInfo(layer).getRegionateFeatureLimit(); 
             }
@@ -160,13 +160,13 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         private boolean shouldDrawWMSOverlay(MapLayer layer, Envelope box){
             // should draw based on the mode:
             // full: no
-            // background: yes
+            // hybrid: yes
             // overview: is the non-regionated feature count for this tile above the cutoff?
             if (!isVectorLayer(layer)) return true;
 
-            String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
-            if ("background".equals(regionateMode) || "raster".equals(regionateMode)) return true;
-            if ("overview".equals(regionateMode))
+            String overlayMode = (String)mapContext.getRequest().getFormatOptions().get("overlayMode");
+            if ("hybrid".equals(overlayMode) || "raster".equals(overlayMode)) return true;
+            if ("overview".equals(overlayMode))
                 return featuresInTile(layer, box, false) > getFeatureTypeInfo(layer).getRegionateFeatureLimit();
 
             return false;
@@ -182,9 +182,9 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             fo.remove( "superoverlay");
             
             //get the regionate mode
-            String regionateMode = (String)fo.get("regionateMode");
+            String overlayMode = (String)fo.get("overlayMode");
             
-            if ("overview".equalsIgnoreCase(regionateMode)){ 
+            if ("overview".equalsIgnoreCase(overlayMode)){ 
                 //overview mode, turn off regionation
                 fo.remove( "regionateBy" );
             }
