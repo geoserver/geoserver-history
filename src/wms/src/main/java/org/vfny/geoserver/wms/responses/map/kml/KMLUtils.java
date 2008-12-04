@@ -468,7 +468,7 @@ public class KMLUtils {
             if (stratname == null || "".equals( stratname ) ){
                 stratname = "best_guess";
                 LOGGER.log(
-                        Level.WARNING,
+                        Level.FINE,
                         "No default regionating strategy has been configured in " + name
                         + "; using automatic best-guess strategy."
                     );
