@@ -170,49 +170,54 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         }
 
         void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box){
-            String regionateMode = (String)mapContext.getRequest().getFormatOptions().get("regionateMode");
-            if ("overview".equalsIgnoreCase(regionateMode)){
-                start("NetworkLink");
-                element("visibility", "1");
-                start("Link");
-                element("href", KMLUtils.getMapUrl(
-                            mapContext,
-                            mapLayer,
-                            0,
-                            box,
-                            new String[] { 
-                            "width", "256",
-                            "height", "256",
-                            "format_options", "",
-                            "superoverlay", "false"
-                            },
-                            true
-                            )
-                       );
-                end("Link");
-                encodeRegion(box, 128, -1);
-                end("NetworkLink");
-            } else {
-                start("NetworkLink");
-                element("visibility", "1");
-                start("Link");
-                element("href", KMLUtils.getMapUrl(
-                            mapContext,
-                            mapLayer,
-                            0,
-                            box,
-                            new String[] { 
-                            "width", "256",
-                            "height", "256",
-                            "format_options", "regionateBy:auto"
-                            },
-                            true
-                            )
-                       );
-                end("Link");
-                encodeRegion(box, 128, -1);
-                end("NetworkLink");
+            //copy the format options
+            CaseInsensitiveMap fo = new CaseInsensitiveMap(new HashMap());
+            fo.putAll( mapContext.getRequest().getFormatOptions() );
+                
+            //we want to pass through format options except for superoverlay, we need to 
+            // turn it off so we get actual placemarks back, and not more links 
+            fo.remove( "superoverlay");
+            
+            //get the regionate mode
+            String regionateMode = (String)fo.get("regionateMode");
+            
+            if ("overview".equalsIgnoreCase(regionateMode)){ 
+                //overview mode, turn off regionation
+                fo.remove( "regionateBy" );
             }
+            else {
+                //specify regionateBy=auto if not specified
+                if ( !fo.containsKey( "regionateBy") ) {
+                    fo.put( "regionateBy", "auto");    
+                }
+                
+            }
+            
+            String foEncoded = WMSRequests.encodeFormatOptions(fo);
+            
+            //encode the link
+            start("NetworkLink");
+            element("visibility", "1");
+            start("Link");
+
+            element("href", KMLUtils.getMapUrl(
+                    mapContext,
+                    mapLayer,
+                    0,
+                    box,
+                    new String[] { 
+                    "width", "256",
+                    "height", "256",
+                    "format_options", foEncoded,
+                    "superoverlay", "false"
+                    },
+                    true
+                    )
+               );
+        
+            end("Link");
+            encodeRegion(box, 128, -1);
+            end("NetworkLink");
         }
 
         boolean isVectorLayer(MapLayer layer){
