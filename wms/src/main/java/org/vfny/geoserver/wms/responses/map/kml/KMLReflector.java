@@ -51,33 +51,17 @@ public class KMLReflector {
         
         options = new HashMap();
         options.put("superoverlay", true);
-        options.put("regionatemode", "overview");
-        temp.put("overview", options);
-
-        options = new HashMap();
-        options.put("superoverlay", true);
-        options.put("regionatemode", "background");
-        temp.put("background", options);
+        temp.put("superoverlay", options);
 
         options = new HashMap();
         options.put("superoverlay", false);
         options.put("regionatemode", null);
         options.put("kmscore", null);
-        temp.put("flat", options);
-
-        options = new HashMap();
-        options.put("superoverlay", true);
-        options.put("regionatemode", null);
-        temp.put("vector", options);
-
-        options = new HashMap();
-        options.put("superoverlay", true);
-        options.put("regionatemode", "raster");
-        temp.put("raster", options);
+        temp.put("download", options);
 
         options = new HashMap();
         options.put("superoverlay", false);
-        temp.put("onstop", options);
+        temp.put("refresh", options);
 
         MODES = temp;
     }
@@ -98,26 +82,60 @@ public class KMLReflector {
     public static void doWms(GetMapRequest request, HttpServletResponse response, WebMapService wms)
         throws Exception {
 
-
-        String mode = "vector";
-
-        for (Object key : request.getHttpServletRequest().getParameterMap().keySet())
-            if (key instanceof String && "mode".equalsIgnoreCase((String)key)){
-                Object value = request.getHttpServletRequest().getParameter((String)key);
-                mode = (value instanceof String) ? ((String) value).toLowerCase() : mode;
-            }
+        String mode = caseInsensitiveParam(
+                request.getHttpServletRequest().getParameterMap(), 
+                "mode",
+                "superoverlay"
+                );
 
         if (!MODES.containsKey(mode)){
             throw new WmsException("Unknown KML mode: " + mode);
         }
+
+        Map modeOptions = new HashMap(MODES.get(mode));
+
+
+        if ("superoverlay".equals(mode)){
+            String submode = caseInsensitiveParam(
+                request.getHttpServletRequest().getParameterMap(), 
+                "superoverlay_mode",
+                "auto"
+                );
+
+            if ("raster".equalsIgnoreCase(submode)) {
+                modeOptions.put("overlaymode", "raster");
+            } else if ("overview".equalsIgnoreCase(submode)) {
+                modeOptions.put("overlaymode", "overview");
+            } else if ("hybrid".equalsIgnoreCase(submode)) {
+                modeOptions.put("overlaymode", "hybrid");
+            } else if ("auto".equalsIgnoreCase(submode)) {
+                modeOptions.put("overlaymode", "auto");
+            } else {
+                throw new WmsException("Unknown overlay mode: " + submode);
+            }
+        } else if ("refresh".equals(mode)){
+            String submode = caseInsensitiveParam(
+                request.getHttpServletRequest().getParameterMap(), 
+                "refresh_mode",
+                null
+                );
+        } else if ("download".equals(mode)){
+            String submode = caseInsensitiveParam(
+                request.getHttpServletRequest().getParameterMap(), 
+                "download_mode",
+                null
+                );
+        }
+
+        
                 
         //first set up some of the normal wms defaults
         if ( request.getWidth() < 1 ) {
-            request.setWidth(mode.equals("onstop") ? 1024 : 256);
+            request.setWidth(mode.equals("refresh") ? 1024 : 256);
         } 
 
         if ( request.getHeight() < 1 ) {
-            request.setHeight(mode.equals("onstop") ? 1024 : 256);
+            request.setHeight(mode.equals("refresh") ? 1024 : 256);
         }
 
         // Force srs to lat/lon for KML output.
@@ -128,6 +146,9 @@ public class KMLReflector {
         
         //set some kml specific defaults
         Map fo = request.getFormatOptions();
+
+        merge(fo, modeOptions);
+
         if ( fo.get( "kmattr") == null ) {
             fo.put( "kmattr", KMATTR );
         } if ( fo.get( "kmscore" ) == null ) {
@@ -136,7 +157,6 @@ public class KMLReflector {
             fo.put("kmplacemark", KMPLACEMARK);
         }
 
-        merge(fo, MODES.get(mode));
         
         //set the format
         //TODO: create a subclass of GetMapRequest to store these values
@@ -144,6 +164,7 @@ public class KMLReflector {
         Boolean superoverlay = (Boolean)fo.get("superoverlay");
         if (superoverlay == null) superoverlay = Boolean.FALSE;
         if (superoverlay) {
+            // require KML so relative links will work
             request.setFormat(KMZMapProducer.MIME_TYPE);
             request.setBbox(KMLUtils.expandToTile(request.getBbox()));
         } else if (!Arrays.asList(KMZMapProducer.OUTPUT_FORMATS).contains( request.getFormat() ) ) {
@@ -171,7 +192,7 @@ public class KMLReflector {
         response.setHeader("Content-Disposition", 
                 "attachment; filename=" + filename.toString() + ".kml");
 
-        if ("flat".equals(mode)){
+        if ("download".equals(mode)){
             GetMapResponse wmsResponse = wms.getMap(request);
             wmsResponse.execute(request);
             wmsResponse.writeTo(response.getOutputStream());
@@ -183,6 +204,22 @@ public class KMLReflector {
             transformer.setEncodeAsRegion(superoverlay);
             transformer.transform( request, response.getOutputStream() );
         }
+    }
+
+    private static String caseInsensitiveParam(Map params, String paramname, String defaultValue){
+        String value = defaultValue;
+
+        for (Object o : params.entrySet()) {
+            Map.Entry entry = (Map.Entry)o;
+            if (entry.getKey() instanceof String) {
+                if (paramname.equalsIgnoreCase((String) entry.getKey())){
+                    Object obj = entry.getValue();
+                    value = (obj instanceof String[]) ? ((String[]) obj)[0].toLowerCase() : value;
+                }
+            }
+        }
+
+        return value;
     }
 
     private static void merge(Map options, Map addition){
