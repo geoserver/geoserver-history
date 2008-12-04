@@ -347,13 +347,18 @@ public class WMSRequests {
 
     /**
      * Encodes a map of formation options to be used as the value in a kvp.
-     * 
+     *
      * @param formatOptions The map of formation options.
      * 
-     * @return A string of the form 'key1:value1,value2;key2:value1;...'
+     * @return A string of the form 'key1:value1,value2;key2:value1;...', or the empty 
+     *  string if the formatOptions map is empty. 
      *
      */
     public static String encodeFormatOptions( Map formatOptions ) {
+        if ( formatOptions == null || formatOptions.isEmpty() ) {
+            return "";
+        }
+        
         StringBuffer sb = new StringBuffer();
         for ( Iterator e = formatOptions.entrySet().iterator(); e.hasNext(); ) {
             Map.Entry entry = (Map.Entry) e.next();
