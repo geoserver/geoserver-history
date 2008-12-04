@@ -48,7 +48,7 @@ public class KMLReflectorTest extends WMSTestSupport {
         final String layerName = MockData.BASIC_POLYGONS.getPrefix() + ":" +
             MockData.BASIC_POLYGONS.getLocalPart();
         final XpathEngine xpath = XMLUnit.newXpathEngine();
-        String requestURL = "kml/wms?mode=onstop&layers=" + layerName;
+        String requestURL = "kml/wms?mode=refresh&layers=" + layerName;
         Document dom = getAsDOM(requestURL);
         print(dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder)", dom);
@@ -91,7 +91,7 @@ public class KMLReflectorTest extends WMSTestSupport {
         final String layerName = MockData.BASIC_POLYGONS.getPrefix() + ":"
                 + MockData.BASIC_POLYGONS.getLocalPart();
 
-        String requestUrl = "kml/wms?mode=onstop&layers=" + layerName + "," + layerName
+        String requestUrl = "kml/wms?mode=refresh&layers=" + layerName + "," + layerName
                 + "&styles=Default,Default&cql_filter=att1<10;att1>1000";
         Document dom = getAsDOM(requestUrl);
 
