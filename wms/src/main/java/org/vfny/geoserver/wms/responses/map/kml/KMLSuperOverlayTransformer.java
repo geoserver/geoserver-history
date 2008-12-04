@@ -5,11 +5,14 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import org.geoserver.ows.HttpErrorCodeException;
+import org.geoserver.ows.util.CaseInsensitiveMap;
+import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
