@@ -11,6 +11,7 @@ import freemarker.template.Configuration;
 
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -134,10 +135,8 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         String baseDirName;
         try {
             final String dirName;
-            String namespace = null;
             if (featureType != null) {
                 baseDirName = "featureTypes";
-                namespace = catalog.getNamespaceByURI(featureType.getName().getNamespaceURI()).getPrefix();
                 dirName = GeoserverDataDirectory.findFeatureTypeDirName(featureType);
             } else if (coverageName != null) {
                 baseDirName = "coverages";
@@ -154,12 +153,17 @@ public class GeoServerTemplateLoader implements TemplateLoader {
                 return template;
             }
 
-            if (namespace != null) {
-                //try looking up the template in the default location for the particular namespaces
-                // under templates/<namespace>
-                template = (File) fileTemplateLoader.findTemplateSource(
-                        "templates" + File.separator + namespace + File.separator + path
-                        );
+            if (featureType != null) {
+                final NamespaceInfo nsInfo = catalog.getNamespaceByURI(featureType.getName().getNamespaceURI());
+                // the feature type might not be registered, it may come from WMS feature portrayal, be a 
+                // remote one
+                if(nsInfo != null) {
+                    //try looking up the template in the default location for the particular namespaces
+                    // under templates/<namespace>
+                    template = (File) fileTemplateLoader.findTemplateSource(
+                            "templates" + File.separator + nsInfo.getPrefix() + File.separator + path
+                            );
+                }
             }
 
             if (template != null) return template;
