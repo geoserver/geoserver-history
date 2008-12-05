@@ -87,7 +87,7 @@ public final class AtomUtils {
                 )
             + "wms/reflect?format=application/atom+xml&layers=" 
             + ns.getPrefix() + ":" + feature.getType().getTypeName() 
-            + "&fid=" + feature.getID();
+            + "&featureid=" + feature.getID();
     }
 
     public static String getEntryURI(SimpleFeature feature, WMSMapContext context){
