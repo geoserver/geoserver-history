@@ -3,43 +3,14 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
- <!-- -   
-          This JSP expect to have a:
-          
-          <form-bean 
-	    name="mapPreviewForm" 
-	    type="org.apache.struts.action.DynaActionForm">
-	    <form-property 
-	        name="DSNameList"
-	        type="java.lang.String[]" 
-	    />
-	    <form-property 
-	        name="FTNameList" 
-	        type="java.lang.String[]" 
-	    />
-	    <form-property 
-	        name="BBoxList" 
-	        type="java.lang.String[]" 
-	    />
-	    </form-bean>
-	
-	   given to it.  
-	   The DSNameList list is a list of strings - these are the 
-	   names of the data stores for the FeatureType.
-	   The FTNameList is the list of FeatureTypes represented
-	   as strings.
-	   The BBoxList contains the bounding box coordinates of 
-	   the feature type represented as a string.
-  - -->
-
-<!-- ALL THIS STUFF TAKEN FROM MAINLAYOUT.JSP -->
- <!-- ======================================== -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html:html locale="true" xhtml="true">
   <head>
     <title>
       <bean:message key="geoserver.logo"/>
       Geoserver
     </title>
+
     <meta content="text/html; charset=iso-8859-1" http-equiv="content-type"/>
     <meta content="text/css" http-equiv="content-style-type"/>  
     <meta name="keywords"
@@ -52,6 +23,37 @@
   
     <link type="image/gif" href="<html:rewrite forward='icon'/>" rel="icon"/>
     <link href="<html:rewrite forward='favicon'/>" rel="SHORTCUT ICON"/>
+		 <!-- -   
+		          This JSP expect to have a:
+
+		          <form-bean 
+			    name="mapPreviewForm" 
+			    type="org.apache.struts.action.DynaActionForm">
+			    <form-property 
+			        name="DSNameList"
+			        type="java.lang.String[]" 
+			    />
+			    <form-property 
+			        name="FTNameList" 
+			        type="java.lang.String[]" 
+			    />
+			    <form-property 
+			        name="BBoxList" 
+			        type="java.lang.String[]" 
+			    />
+			    </form-bean>
+
+			   given to it.  
+			   The DSNameList list is a list of strings - these are the 
+			   names of the data stores for the FeatureType.
+			   The FTNameList is the list of FeatureTypes represented
+			   as strings.
+			   The BBoxList contains the bounding box coordinates of 
+			   the feature type represented as a string.
+		  - -->
+
+		<!-- ALL THIS STUFF TAKEN FROM MAINLAYOUT.JSP -->
+		 <!-- ======================================== -->
   </head>
   <body>
  <table class="page">
