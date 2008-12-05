@@ -111,7 +111,20 @@ public class LegacyServicesReader {
         text("onlineResource", globalElement, global, String.class, false, "http://geoserver.org");
         text("ProxyBaseUrl", globalElement, global, String.class );
         
-        value("JaiMemoryCapacity", globalElement, global, Double.class);
+        try {
+            //we try first as an integer to be backwards compatable
+            value("JaiMemoryCapacity", globalElement, global, Integer.class);
+            Integer jmc = (Integer) global.get( "JaiMemoryCapacity" );
+            if ( jmc != null ) {
+                double d =  (double) (jmc/Runtime.getRuntime().maxMemory());
+                d = d > 1d ? 1d : d;
+                global.put("JaiMemoryCapacity", d );
+            }
+        }
+        catch( Exception e ) {
+            value("JaiMemoryCapacity", globalElement, global, Double.class);
+        }
+        
         value("JaiMemoryThreshold", globalElement, global, Double.class);
         value("JaiTileThreads", globalElement, global, Integer.class);
         value("JaiTilePriority", globalElement, global, Integer.class);
