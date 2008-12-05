@@ -35,14 +35,6 @@ parameters repository for all featuretypes it holds.
 <parameter value = "file:data/cite_DividedRoutes/DividedRoutes.shp" name = "url"  />
 </connectionParams>
 </datastore>
-<datastore namespace = "topp" enabled = "true" id = "bc_shapefile" >
-<abstract>
-				British Columbia sample road shapefiles
-			</abstract>
-<connectionParams>
-<parameter value = "file:data/bc_roads/bc_roads.shp" name = "url"  />
-</connectionParams>
-</datastore>
 <datastore namespace = "cite" enabled = "true" id = "BasicPolygons" >
 <connectionParams>
 <parameter value = "file:data/cite_BasicPolygons/BasicPolygons.shp" name = "url"  />
