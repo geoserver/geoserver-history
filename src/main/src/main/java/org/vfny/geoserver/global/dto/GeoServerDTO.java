@@ -56,7 +56,7 @@ public final class GeoServerDTO implements DataTransferObject {
          */
         public static final boolean VerboseExceptions = false;
 ;
-        public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
+        public static final double JaiMemoryCapacity = 0.5;
         public static final double JaiMemoryThreshold = 0.75;
         public static final int JaiTileThreads = 7;
         public static final int JaiTilePriority = Thread.NORM_PRIORITY;

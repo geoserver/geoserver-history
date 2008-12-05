@@ -181,7 +181,7 @@ public class GeoServerConfigurationForm extends ActionForm {
         if ((jaiMemoryCapacity < 0) || (jaiMemoryCapacity > Defaults.JaiMemoryCapacity)) {
             errors.add("jaiMemCapacity",
                 new ActionError("error.geoserver.JAIMemCapacity",
-                    new Long(Defaults.JaiMemoryCapacity)));
+                    Defaults.JaiMemoryCapacity));
         }
 
         if ((jaiMemoryThreshold < 0.0) || (jaiMemoryThreshold > 1.0)) {
