@@ -163,10 +163,11 @@ public class KMLReflector {
  
         Boolean superoverlay = (Boolean)fo.get("superoverlay");
         if (superoverlay == null) superoverlay = Boolean.FALSE;
-        if (superoverlay) {
-            // require KML so relative links will work
+        if (superoverlay){
             request.setFormat(KMZMapProducer.MIME_TYPE);
             request.setBbox(KMLUtils.expandToTile(request.getBbox()));
+        } else if (mode.equals("refresh")) {
+            request.setFormat(KMZMapProducer.MIME_TYPE);
         } else if (!Arrays.asList(KMZMapProducer.OUTPUT_FORMATS).contains( request.getFormat() ) ) {
             //if the user did not explicitly request kml give them back KMZ
             request.setFormat(KMLMapProducer.MIME_TYPE);
