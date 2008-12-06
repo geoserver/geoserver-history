@@ -72,7 +72,19 @@ class StyleResource extends Resource {
         return myData;
     }
     
-    public void handleGet() {
+	public boolean allowPost() {
+		return true;
+	}
+
+	public boolean allowGet() {
+		return true;
+	}
+
+	public void handlePost() {
+		handleGet();
+	}
+	
+	public void handleGet() {
         Request req = getRequest();
 
         String styleName = (String) req.getAttributes().get("style");

@@ -55,10 +55,18 @@ public class ClessifierResource extends Resource {
         this.dt = dt;
     }
 
+    public boolean allowPost() {
+        return true;
+    }
+    
     public boolean allowGet() {
         return true;
     }
 
+    public void handlePost() {
+    	  handleGet();
+    }
+    
     public void handleGet() {
         Request req = getRequest();
         Map attributes = req.getAttributes();

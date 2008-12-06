@@ -22,33 +22,35 @@ import org.vfny.geoserver.global.Data;
 
 public class VirtualLayerResource extends MapResource {
     Data myData;
+
     DataConfig myDataConfig;
 
-    public VirtualLayerResource(Data d, DataConfig dc){
+    public VirtualLayerResource(Data d, DataConfig dc) {
         myData = d;
         myDataConfig = dc;
     }
 
-    public void setData(Data d){
+    public void setData(Data d) {
         myData = d;
     }
 
-    public void setDataConfig(DataConfig dc){
-        myDataConfig =dc;
+    public void setDataConfig(DataConfig dc) {
+        myDataConfig = dc;
     }
 
-    public Data getData(){
+    public Data getData() {
         return myData;
     }
 
-    public DataConfig getDataConfig(){
+    public DataConfig getDataConfig() {
         return myDataConfig;
     }
 
-    public Map getSupportedFormats(){
+    public Map getSupportedFormats() {
         HashMap m = new HashMap();
 
-        m.put("html", new FreemarkerFormat("HTMLTemplates/vlayer.ftl", getClass(), MediaType.TEXT_HTML));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/vlayer.ftl",
+                getClass(), MediaType.TEXT_HTML));
         m.put("xml", new AutoXMLFormat());
         m.put("json", new JSONFormat());
         m.put(null, m.get("xml"));
@@ -56,19 +58,21 @@ public class VirtualLayerResource extends MapResource {
         return m;
     }
 
-    public Map getMap(){
+    public Map getMap() {
         Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
-        String folderName = (String)getRequest().getAttributes().get("folder");
-        String layerName  = (String)getRequest().getAttributes().get("layer");
+        String folderName = (String) getRequest().getAttributes().get("folder");
+        String layerName = (String) getRequest().getAttributes().get("layer");
 
-        if (folders.containsKey(folderName) && folders.get(folderName) instanceof Map){
-            Map folder = (Map)folders.get(folderName);
-            if (folder.containsKey(layerName)){
+        if (folders.containsKey(folderName)
+                && folders.get(folderName) instanceof Map) {
+            Map folder = (Map) folders.get(folderName);
+            if (folder.containsKey(layerName)) {
                 Object layer = folder.get(layerName);
-                if (layer instanceof DataStoreConfig){
-                    return DataStoreResource.getMap((DataStoreConfig)layer);
-                } else if (layer instanceof CoverageStoreConfig){
-                    return CoverageStoreResource.getMap((CoverageStoreConfig)layer);
+                if (layer instanceof DataStoreConfig) {
+                    return DataStoreResource.getMap((DataStoreConfig) layer);
+                } else if (layer instanceof CoverageStoreConfig) {
+                    return CoverageStoreResource
+                            .getMap((CoverageStoreConfig) layer);
                 }
             }
         }
@@ -76,70 +80,87 @@ public class VirtualLayerResource extends MapResource {
         return null;
     }
 
-	@Override
-	public boolean allowDelete() {
-		return true;
-	}
+    @Override
+    public boolean allowDelete() {
+        return true;
+    }
 
-	@Override
-	public synchronized void handleDelete() {
+    @Override
+    public synchronized void handleDelete() {
         Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
-        String folderName = (String)getRequest().getAttributes().get("folder");
-        String layerName  = (String)getRequest().getAttributes().get("layer");
+        String folderName = (String) getRequest().getAttributes().get("folder");
+        String layerName = (String) getRequest().getAttributes().get("layer");
 
-        if (folders.containsKey(folderName) && folders.get(folderName) instanceof Map){
-            Map folder = (Map)folders.get(folderName);
-            if (folder.containsKey(layerName)){
+        if (folders.containsKey(folderName)
+                && folders.get(folderName) instanceof Map) {
+            Map folder = (Map) folders.get(folderName);
+            if (folder.containsKey(layerName)) {
                 Object layer = folder.get(layerName);
-                if (layer instanceof DataStoreConfig){
-                	//not implemented yet
-                } else if (layer instanceof CoverageStoreConfig){
-                	final CoverageStoreConfig coverageStoreConfig=(CoverageStoreConfig) layer;
-                	final String coverageStoreConfigId=coverageStoreConfig.getId();
-                	final Iterator it=myDataConfig.getCoverages().values().iterator();
-                	final List<CoverageConfig> coverageConfigs= new ArrayList<CoverageConfig>();
-                	while(it.hasNext()){
-                		final CoverageConfig coverageConfig = (CoverageConfig) it.next();
-                		final String coverageConfigId=coverageConfig.getFormatId();
-                		if(coverageConfigId.equalsIgnoreCase(coverageStoreConfigId))
-                			coverageConfigs.add(coverageConfig);
-                		
-                	}
-                	if(!coverageConfigs.isEmpty())
-                	{
-                		boolean error=false;
-                		for(CoverageConfig coverageConfig:coverageConfigs)
-                		{
-                			if(myDataConfig.removeCoverage(coverageStoreConfigId+":"+coverageConfig.getName())==null)
-                				error=true;
-                		}
-                		if(!error)
-                		{
-                			if(myDataConfig.removeDataFormat(coverageStoreConfig.getId())!=null)
-								try {
-									RESTUtils.saveConfiguration(getDataConfig(), getData());
-								} catch (ConfigurationException e) {
-							        getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
-							        getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-							        return;
-								}
-							else
-                				error=true;
-                		}
-                		if(true)
-							try {
-								RESTUtils.reloadConfiguration();
-							} catch (Exception e) {
-								getResponse().setEntity(new StringRepresentation("Failure while reloading configuration: " + e, MediaType.TEXT_PLAIN));
-						        getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-						        return;
-							}
-                			
-                	}
+                if (layer instanceof DataStoreConfig) {
+                    // not implemented yet
+                } else if (layer instanceof CoverageStoreConfig) {
+                    final CoverageStoreConfig coverageStoreConfig = (CoverageStoreConfig) layer;
+                    final String coverageStoreConfigId = coverageStoreConfig
+                            .getId();
+                    final Iterator it = myDataConfig.getCoverages().values()
+                            .iterator();
+                    final List<CoverageConfig> coverageConfigs = new ArrayList<CoverageConfig>();
+                    while (it.hasNext()) {
+                        final CoverageConfig coverageConfig = (CoverageConfig) it
+                                .next();
+                        final String coverageConfigId = coverageConfig
+                                .getFormatId();
+                        if (coverageConfigId
+                                .equalsIgnoreCase(coverageStoreConfigId))
+                            coverageConfigs.add(coverageConfig);
+
+                    }
+                    if (!coverageConfigs.isEmpty()) {
+                        boolean error = false;
+                        for (CoverageConfig coverageConfig : coverageConfigs) {
+                            if (myDataConfig
+                                    .removeCoverage(coverageStoreConfigId + ":"
+                                            + coverageConfig.getName()) == null)
+                                error = true;
+                        }
+                        if (!error) {
+                            if (myDataConfig
+                                    .removeDataFormat(coverageStoreConfig
+                                            .getId()) != null)
+                                try {
+                                    RESTUtils.saveConfiguration(
+                                            getDataConfig(), getData());
+                                } catch (ConfigurationException e) {
+                                    getResponse().setEntity(
+                                            new StringRepresentation(
+                                                    "Failure while saving configuration: "
+                                                            + e,
+                                                    MediaType.TEXT_PLAIN));
+                                    getResponse().setStatus(
+                                            Status.SERVER_ERROR_INTERNAL);
+                                    return;
+                                }
+                            else
+                                error = true;
+                        }
+                        if (true)
+                            try {
+                                RESTUtils.reloadConfiguration();
+                            } catch (Exception e) {
+                                getResponse().setEntity(
+                                        new StringRepresentation(
+                                                "Failure while reloading configuration: "
+                                                        + e,
+                                                MediaType.TEXT_PLAIN));
+                                getResponse().setStatus(
+                                        Status.SERVER_ERROR_INTERNAL);
+                                return;
+                            }
+
+                    }
                 }
             }
         }
-	}
-	
-	
+    }
+
 }

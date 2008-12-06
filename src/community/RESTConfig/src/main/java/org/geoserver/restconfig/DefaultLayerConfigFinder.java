@@ -55,7 +55,7 @@ public DataConfig getDataConfig(){
     }
 
     public Resource findTarget(Request request, Response response){
-        String folder = (String) request.getAttributes().get("folder");
+        String layer = (String) request.getAttributes().get("layer");
         Resource r;
 
 //        if ( /* getDataConfig().getDataFormatIds().contains(type) */ 
@@ -63,7 +63,7 @@ public DataConfig getDataConfig(){
 //            r = new CoverageStoreFileResource(getData(), getDataConfig(), getGeoServer(), getGlobalConfig());           
 //        } else 
         
-        if (getDataConfig().getDataStores().containsKey(folder)) {
+        if (getDataConfig().getDataStores().containsKey(layer)) {
                 r = new DefaultFeatureTypeConfigResource(
                     getData(),
                     getDataConfig()

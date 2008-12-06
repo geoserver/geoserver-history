@@ -6,14 +6,14 @@
 <property name="routes">
   <map>
         <entry>
+          <key><value>/folders/{folder}/layers/{layer}/default.{type}</value></key>
+          <value>defaultLayerConfigFinder</value>
+        </entry>
+        <entry>
           <key><value>/folders/{folder}/layers/{layer}/default</value></key>
           <value>defaultLayerConfigFinder</value>
         </entry>
         <entry>
-          <key><value>/folders/{folder}/layers/{layer}/default.{type}</value></key>
-          <value>defaultLayerConfigFinder</value>
-        </entry>
-         <entry>
           <key><value>/folders/{folder}/layers/{layer}/{method}.{type}</value></key>
           <value>folderFileFinder</value>
         </entry>  

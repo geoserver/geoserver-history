@@ -97,14 +97,14 @@ public class FeatureTypeResource extends MapResource {
         myFTC = findMyFeatureTypeConfig();
 
         String featureTypeName = (String) getRequest().getAttributes().get("layer");
-    	String dataStoreName = (String) getRequest().getAttributes().get("folder");
+    	String dataStoreName   = (String) getRequest().getAttributes().get("folder");
  
         if (myFTC == null){
             DataStore store = null;
             SimpleFeatureType type = null;
             try {
                 store = DataStoreUtils.acquireDataStore(myDSC.getConnectionParams(), (ServletContext)null);
-                type = store.getSchema(featureTypeName);
+                type  = store.getSchema(featureTypeName);
             } catch (IOException e) {
                 throw new RestletException("DataStore" + dataStoreName + " not found.", Status.SERVER_ERROR_INTERNAL, e);
             }
@@ -160,7 +160,8 @@ public class FeatureTypeResource extends MapResource {
         if (m.get("SchemaBase") instanceof JSONNull){
             myFTC.setSchemaBase(null);
         } else {
-            myFTC.setSchemaBase(m.get("SchemaBase").toString());
+            if (m.containsKey("SchemaBase"))
+                myFTC.setSchemaBase((String) m.get("SchemaBase"));
         }
 
         String qualifiedName = dataStoreName + ":" + featureTypeName;
