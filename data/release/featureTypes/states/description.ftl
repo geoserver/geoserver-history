@@ -4,4 +4,4 @@ kilometers, and only ${PUBTRANS.value} take public transportation.
 <br>
 <br>
 
-Map by:<br> <a href="http://topp.openplans.org/geoserver"><img alt="TOPP" src="http://topp.openplans.org/images/logo.jpg"></a>
+Map by:<br> <a href="http://opengeo.org"><img alt="OpenGeo" src="http://files.opengeo.org/OpenGeoLogo-201x50.png"></a>
