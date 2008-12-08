@@ -10,6 +10,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
+import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -226,7 +227,18 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                 element("href", "layer_" + mapLayerOrder + ".png");
             } else {
                 //reference the image as a remote wms call
-                element("href", KMLUtils.getMapUrl(mapContext, mapLayer, 0, false));
+                element("href",  
+                        WMSRequests.getGetMapUrl(
+                            mapContext.getRequest(),
+                            mapLayer,
+                            0,
+                            mapContext.getAreaOfInterest(),
+                            new String[]{
+                                "format", "image/png",
+                                "transparent", "true"
+                            }
+                            )
+                       );
             }
         }
     }
