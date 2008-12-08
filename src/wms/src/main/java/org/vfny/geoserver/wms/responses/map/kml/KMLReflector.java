@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.wms.WebMapService;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
@@ -127,15 +128,33 @@ public class KMLReflector {
                 );
         }
 
-        
+        //set the content disposition
+        StringBuffer filename = new StringBuffer();
+        boolean containsRasterData = false;
+        for ( int i = 0; i < request.getLayers().length; i++ ) {
+            MapLayerInfo layer = request.getLayers()[i];
+            String name = layer.getName();
+            
+            containsRasterData = containsRasterData || 
+                (layer.getType() == MapLayerInfo.TYPE_RASTER) ||
+                (layer.getType() == MapLayerInfo.TYPE_BASEMAP);
+
+            //strip off prefix
+            int j = name.indexOf(':');
+            if ( j > -1 ) {
+                name = name.substring( j + 1 );
+            }
+
+            filename.append(name + "_");
+        }
                 
         //first set up some of the normal wms defaults
         if ( request.getWidth() < 1 ) {
-            request.setWidth(mode.equals("refresh") ? 1024 : 256);
+            request.setWidth(mode.equals("refresh") || containsRasterData ? 1024 : 256);
         } 
 
         if ( request.getHeight() < 1 ) {
-            request.setHeight(mode.equals("refresh") ? 1024 : 256);
+            request.setHeight(mode.equals("refresh") || containsRasterData ? 1024 : 256);
         }
 
         // Force srs to lat/lon for KML output.
@@ -157,41 +176,28 @@ public class KMLReflector {
             fo.put("kmplacemark", KMPLACEMARK);
         }
 
-        
         //set the format
         //TODO: create a subclass of GetMapRequest to store these values
  
         Boolean superoverlay = (Boolean)fo.get("superoverlay");
         if (superoverlay == null) superoverlay = Boolean.FALSE;
+        String formatExtension = ".kmz";
         if (superoverlay){
             request.setFormat(KMZMapProducer.MIME_TYPE);
             request.setBbox(KMLUtils.expandToTile(request.getBbox()));
-        } else if (mode.equals("refresh")) {
+        } else if (mode.equals("refresh") || containsRasterData) {
             request.setFormat(KMZMapProducer.MIME_TYPE);
         } else if (!Arrays.asList(KMZMapProducer.OUTPUT_FORMATS).contains( request.getFormat() ) ) {
             //if the user did not explicitly request kml give them back KMZ
             request.setFormat(KMLMapProducer.MIME_TYPE);
+            formatExtension = ".kml";
         }
 
         response.setContentType(request.getFormat());
 
-        //set the content disposition
-        StringBuffer filename = new StringBuffer();
-        for ( int i = 0; i < request.getLayers().length; i++ ) {
-            String name = request.getLayers()[i].getName();
-
-            //strip off prefix
-            int j = name.indexOf(':');
-            if ( j > -1 ) {
-                name = name.substring( j + 1 );
-            }
-
-            filename.append(name + "_");
-        }
-
         filename.setLength(filename.length()-1);
         response.setHeader("Content-Disposition", 
-                "attachment; filename=" + filename.toString() + ".kml");
+                "attachment; filename=" + filename.toString() + formatExtension);
 
         if ("download".equals(mode)){
             GetMapResponse wmsResponse = wms.getMap(request);
