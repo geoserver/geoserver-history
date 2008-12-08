@@ -215,9 +215,6 @@ public class FeatureWrapper extends BeansWrapper {
             // create the model
             SimpleHash map = new SimpleHash();
 
-            // first add the feature id
-            map.put("fid", feature.getID());
-            map.put("typeName", feature.getFeatureType().getTypeName());
 
             Catalog cat = getCatalog();
 
@@ -243,6 +240,11 @@ public class FeatureWrapper extends BeansWrapper {
             // properties for a template
             Map attributeMap = new FeatureAttributesMap(feature);
             map.putAll(attributeMap);
+
+
+            // Add the metadata after setting the attributes so they aren't masked by feature attributes
+            map.put("fid", feature.getID());
+            map.put("typeName", feature.getFeatureType().getTypeName());
 
             // create a variable "attributes" which his a list of all the
             // attributes, but at the same time, is a map keyed by name
