@@ -3,15 +3,15 @@
   <label>Sample PNG mosaic</label>
   <description>Subsampled satellite imagery loaded as a mosaic of PNG images</description>
   <wmspath>/</wmspath>
+  <metadataLink about = "" type = "" metadataType = "" >
+    null
+  </metadataLink>
   <keywords>WCS,mosaic,mosaic</keywords>
   <!--
     the default style this CoverageInfoDTO can be represented by.
     at least must contain the "default" attribute
   -->
   <styles default = "raster" />
-  <!--
-    crs: native CRS definition, srsName: user defined CRS identifier
-  -->
   <envelope crs = "GEOGCS['WGS 84', 
   DATUM['World Geodetic System 1984', 
     SPHEROID['WGS 84', 6378137.0, 298.257223563, AUTHORITY['EPSG','7030']], 
@@ -80,8 +80,8 @@
     <interpolationMethods>nearest neighbor,bilinear,bicubic,bicubic_2</interpolationMethods>
   </supportedInterpolations>
   <parameters >
-    <parameter value = "#000000" name = "OutputTransparentColor" />
-    <parameter value = "NaN" name = "InputImageThresholdValue" />
-    <parameter value = "" name = "InputTransparentColor" />
+    <parameter name = "InputTransparentColor" value = "" />
+    <parameter name = "OutputTransparentColor" value = "#000000" />
+    <parameter name = "InputImageThresholdValue" value = "NaN" />
   </parameters>
 </coverage>

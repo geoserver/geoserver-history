@@ -11,7 +11,7 @@
     <JaiMemoryThreshold value = "0.75" />
     <JaiTileThreads value = "7" />
     <JaiTilePriority value = "5" />
-    <JaiRecycling value = "true" />
+    <JaiRecycling value = "false" />
     <ImageIOCache value = "false" />
     <JaiJPEGNative value = "true" />
     <JaiPNGNative value = "true" />

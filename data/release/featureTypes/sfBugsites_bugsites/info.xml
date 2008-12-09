@@ -9,7 +9,7 @@
   <abstract>Sample data from GRASS, bug sites location, Spearfish, South Dakota, USA</abstract>
   <wmspath>/</wmspath>
   <numDecimals value = "0" />
-  <keywords>sfBugsites, bugsites, insects, spearfish, tiger_beetles</keywords>
+  <keywords>spearfish, sfBugsites, insects, bugsites, tiger_beetles</keywords>
   <latLonBoundingBox dynamic = "false" maxx = "-103.63773523234195" maxy = "44.43418821380063" minx = "-103.86796131703647" miny = "44.373938816704396" />
   <nativeBBox dynamic = "false" maxx = "608462.4604629107" maxy = "4920523.89081033" minx = "590223.4382724703" miny = "4914107.882513998" />
   <!--
@@ -18,9 +18,5 @@
   -->
   <styles default = "capitals" />
   <cacheinfo enabled = "true" maxage = "3600" />
-  <searchable enabled = "false" />
-  <regionateAttribute value = "null" />
-  <regionateStrategy value = "best_guess" />
-  <regionateFeatureLimit value = "10" />
   <maxFeatures>0</maxFeatures>
 </featureType>

@@ -3,15 +3,15 @@
   <label>Sample scanned and georerenced map</label>
   <description>This is a sample for the world image format (wld + prj + tiff)</description>
   <wmspath>/</wmspath>
+  <metadataLink about = "" type = "" metadataType = "" >
+    null
+  </metadataLink>
   <keywords>WCS,img_sample2,Pk50095</keywords>
   <!--
     the default style this CoverageInfoDTO can be represented by.
     at least must contain the "default" attribute
   -->
   <styles default = "raster" />
-  <!--
-    crs: native CRS definition, srsName: user defined CRS identifier
-  -->
   <envelope crs = "PROJCS['WGS 84 / UTM zone 33N', 
   GEOGCS['WGS 84', 
     DATUM['World Geodetic System 1984', 

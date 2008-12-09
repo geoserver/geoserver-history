@@ -18,9 +18,5 @@
   -->
   <styles default = "cite_lakes" />
   <cacheinfo enabled = "true" maxage = "3600" />
-  <searchable enabled = "false" />
-  <regionateAttribute value = "null" />
-  <regionateStrategy value = "best_guess" />
-  <regionateFeatureLimit value = "10" />
   <maxFeatures>0</maxFeatures>
 </featureType>

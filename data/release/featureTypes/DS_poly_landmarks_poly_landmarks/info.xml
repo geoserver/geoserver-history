@@ -9,7 +9,7 @@
   <abstract>Manhattan landmarks, identifies water, lakes, parks, interesting buildilngs</abstract>
   <wmspath>/</wmspath>
   <numDecimals value = "0" />
-  <keywords>DS_poly_landmarks, poly_landmarks, landmarks, manhattan</keywords>
+  <keywords>landmarks, DS_poly_landmarks, manhattan, poly_landmarks</keywords>
   <latLonBoundingBox dynamic = "false" maxx = "-73.90782" maxy = "40.882078" minx = "-74.047185" miny = "40.679648" />
   <nativeBBox dynamic = "false" maxx = "-73.90782" maxy = "40.882078" minx = "-74.047185" miny = "40.679648" />
   <!--
@@ -18,9 +18,5 @@
   -->
   <styles default = "poly_landmarks" />
   <cacheinfo enabled = "true" maxage = "3600" />
-  <searchable enabled = "false" />
-  <regionateAttribute value = "null" />
-  <regionateStrategy value = "best_guess" />
-  <regionateFeatureLimit value = "10" />
   <maxFeatures>0</maxFeatures>
 </featureType>

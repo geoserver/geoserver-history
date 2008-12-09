@@ -9,7 +9,7 @@
   <abstract>Tasmania state boundaries</abstract>
   <wmspath>/</wmspath>
   <numDecimals value = "0" />
-  <keywords>tasmania_state_boundaries, Tasmania, boundaries</keywords>
+  <keywords>boundaries, tasmania_state_boundaries, Tasmania</keywords>
   <latLonBoundingBox dynamic = "false" maxx = "148.47914100000003" maxy = "-39.573891" minx = "143.83482400000003" miny = "-43.648056" />
   <nativeBBox dynamic = "false" maxx = "148.47914100000003" maxy = "-39.573891" minx = "143.83482400000003" miny = "-43.648056" />
   <!--
@@ -18,9 +18,5 @@
   -->
   <styles default = "green" />
   <cacheinfo enabled = "true" maxage = "3600" />
-  <searchable enabled = "false" />
-  <regionateAttribute value = "null" />
-  <regionateStrategy value = "best_guess" />
-  <regionateFeatureLimit value = "10" />
   <maxFeatures>0</maxFeatures>
 </featureType>
