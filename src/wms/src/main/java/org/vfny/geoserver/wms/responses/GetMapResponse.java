@@ -471,6 +471,8 @@ public class GetMapResponse implements Response {
                 }
                 combined = filterFac.and(layerDefinitionFilter, userRequestedFilter);
                 combinedList[i] = combined;
+            } else if(layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+                combinedList[i] = userRequestedFilter;
             }
         }
         return combinedList;
