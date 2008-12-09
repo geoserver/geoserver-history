@@ -135,7 +135,7 @@
       <svgRenderer>Batik</svgRenderer>
       <BaseMapGroups >
         <BaseMapGroup baseMapTitle = "tiger-ny" >
-          <baseMapLayers>poly_landmarks,tiger_roads,poi</baseMapLayers>
+          <baseMapLayers>giant_polygon,poly_landmarks,tiger_roads,poi</baseMapLayers>
           <baseMapStyles></baseMapStyles>
           <baseMapEnvelope srsName = "EPSG:4326" >
             <pos>-74.047185 40.679648</pos>
