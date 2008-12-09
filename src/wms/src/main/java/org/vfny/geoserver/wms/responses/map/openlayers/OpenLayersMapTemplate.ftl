@@ -206,6 +206,7 @@
                         WIDTH: map.size.w,
                         HEIGHT: map.size.h,
                         format: format};
+                    updateFeatureInfoFilters(params);
                     OpenLayers.loadURL("${baseUrl}/wms", params, this, setHTML, setHTML);
                     OpenLayers.Event.stop(e);
                 });
@@ -328,8 +329,14 @@
             }
             
             function updateFilter(){
-                if(pureCoverage)
-                  return;
+                // merge the new filter definitions
+                var filterParams = getFilterParams();
+                mergeNewParams(filterParams);
+            }
+            
+            function getFilterParams() {
+              if(pureCoverage)
+                  return null;
             
                 var filterType = document.getElementById('filterType').value;
                 var filter = document.getElementById('filter').value;
@@ -348,8 +355,17 @@
                     if (filterType == "fid") 
                         filterParams["featureId"] = filter;
                 }
-                // merge the new filter definitions
-                mergeNewParams(filterParams);
+                return filterParams;
+            }
+            
+            function updateFeatureInfoFilters(featureInfoParams){
+                var filterParams = getFilterParams();
+                if(!filterParams)
+                  return;
+                  
+                featureInfoParams["cql_filter"] = filterParams["cql_filter"];
+                featureInfoParams["filter"] = filterParams["filter"];
+                featureInfoParams["featureId"] = filterParams["featureId"];
             }
             
             function resetFilter() {
