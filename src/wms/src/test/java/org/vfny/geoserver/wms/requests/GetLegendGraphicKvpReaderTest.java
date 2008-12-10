@@ -130,4 +130,26 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
         assertNotNull(selectedStyle);
         assertEquals("Lakes", selectedStyle.getName());
     }
+    
+    public void testMissingLayerParameter(){
+        requiredParameters.remove("LAYER");
+        requestReader = new GetLegendGraphicKvpReader(requiredParameters, wms);
+        try{
+            requestReader.getRequest(httpRequest);
+            fail("Expected ServiceException");
+        }catch(ServiceException e){
+            assertEquals("LayerNotDefined", e.getCode());
+        }
+    }
+
+    public void testMissingFormatParameter(){
+        requiredParameters.remove("FORMAT");
+        requestReader = new GetLegendGraphicKvpReader(requiredParameters, wms);
+        try{
+            requestReader.getRequest(httpRequest);
+            fail("Expected ServiceException");
+        }catch(ServiceException e){
+            assertEquals("MissingFormat", e.getCode());
+        }
+    }
 }
