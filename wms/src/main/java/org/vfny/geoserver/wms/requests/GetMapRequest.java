@@ -18,6 +18,9 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.image.IndexColorModel;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -130,12 +133,11 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * @return the non null list of layers, may be empty
      */
     public MapLayerInfo[] getLayers() {
-        return this.mandatoryParams.layers;
+        List<MapLayerInfo> layers = mandatoryParams.layers;
+        return layers.toArray(new MapLayerInfo[layers.size()]);
     }
 
     /**
@@ -434,11 +436,13 @@ public class GetMapRequest extends WMSRequest {
      * @param layers DOCUMENT ME!
      */
     public void setLayers(MapLayerInfo[] layers) {
-        this.mandatoryParams.layers = layers;
+        this.mandatoryParams.layers = layers == null ? Collections.EMPTY_LIST : Arrays
+                .asList(layers);
     }
 
-    public void setLayers(List /*<MapLayerInfo>*/ layers) {
-        this.mandatoryParams.layers = (MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers.size()]);
+    public void setLayers(List<MapLayerInfo> layers) {
+        this.mandatoryParams.layers = layers == null ? Collections.EMPTY_LIST
+                : new ArrayList<MapLayerInfo>(layers);
     }
 
     /**
@@ -446,8 +450,8 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param styles List&lt;org.geotools.styling.Style&gt;
      */
-    public void setStyles(List styles) {
-        this.mandatoryParams.styles = styles;
+    public void setStyles(List<Style> styles) {
+        this.mandatoryParams.styles = styles == null? Collections.EMPTY_LIST : new ArrayList<Style>(styles);
     }
 
     /**
@@ -687,13 +691,13 @@ public class GetMapRequest extends WMSRequest {
      */
     private class MandatoryParameters {
         /** ordered list of requested layers */
-        MapLayerInfo[] layers;
+        List<MapLayerInfo> layers = Collections.EMPTY_LIST;
 
         /**
          * ordered list of requested layers' styles, in a one to one
          * relationship with <code>layers</code>
          */
-        List styles;
+        List<Style> styles = Collections.EMPTY_LIST;
 
         /** DOCUMENT ME!  */
         Envelope bbox;
@@ -809,10 +813,9 @@ public class GetMapRequest extends WMSRequest {
         returnString.append("\n bbox: " + mandatoryParams.bbox);
         returnString.append("\n layers: ");
 
-        for (int i = 0; i < mandatoryParams.layers.length; i++) {
-            returnString.append(mandatoryParams.layers[i].getName());
-
-            if (i < (mandatoryParams.layers.length - 1)) {
+        for (Iterator<MapLayerInfo> i = mandatoryParams.layers.iterator();i.hasNext();) {
+            returnString.append(i.next().getName());
+            if (i.hasNext()) {
                 returnString.append(",");
             }
         }
