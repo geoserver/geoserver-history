@@ -117,7 +117,15 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         // throw new WmsException("Invalid SLD version number \"" + version
         // + "\"");
         // }
-        String layer = getValue("LAYER");
+        final String layer = getValue("LAYER");
+        final String format = getValue("FORMAT");
+        if(layer == null){
+            throw new ServiceException("LAYER parameter not present for GetLegendGraphic", "LayerNotDefined");
+        }
+        if(format == null){
+            throw new ServiceException("Missing FORMAT parameter for GetLegendGraphic", "MissingFormat");
+        }
+
         MapLayerInfo mli = new MapLayerInfo();
 
         try {
@@ -154,8 +162,6 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         } catch (IOException e) {
             throw new WmsException("Can't obtain the schema for the required layer.");
         }
-
-        String format = getValue("FORMAT");
 
         if (!GetLegendGraphicResponse.supportsFormat(format)) {
             throw new WmsException(new StringBuffer("Invalid graphic format: ").append(format)
