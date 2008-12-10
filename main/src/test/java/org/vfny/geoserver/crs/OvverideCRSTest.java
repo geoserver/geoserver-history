@@ -2,6 +2,7 @@ package org.vfny.geoserver.crs;
 
 import java.io.File;
 
+import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.datum.BursaWolfParameters;
@@ -10,15 +11,16 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.ProjectedCRS;
 
 public class OvverideCRSTest extends GeoServerTestSupport {
-
-    @Override
-    protected void setUpInternal() throws Exception {
-        super.setUpInternal();
-        
-        new File(getTestData().getDataDirectoryRoot(), "epsg").mkdir();
-        getTestData().copyTo(OvverideCRSTest.class.getResourceAsStream("override_epsg.properties"), "epsg/override_epsg.properties");
-    }
     
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory)
+            throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        
+        new File(dataDirectory.getDataDirectoryRoot(), "user_projections").mkdir();
+        dataDirectory.copyTo(OvverideCRSTest.class.getResourceAsStream("override_epsg_test.properties"), "user_projections/epsg_overrides.properties");
+    }
+
     public void testOvveride() throws Exception {
         CoordinateReferenceSystem epsg3003 = CRS.decode("EPSG:3003");
         DefaultGeodeticDatum datum3003 = (DefaultGeodeticDatum) (((ProjectedCRS)  epsg3003).getDatum());
@@ -27,7 +29,7 @@ public class OvverideCRSTest extends GeoServerTestSupport {
         BursaWolfParameters bw3003 = bwParamArray3003[0];
         assertEquals(-104.1, bw3003.dx);
         assertEquals(-49.1, bw3003.dy);
-        assertEquals(-9.9, bw3003.dz);
+        assertEquals(-9.9, bw3003.dz); 
         assertEquals(0.971, bw3003.ex);
         assertEquals(-2.917, bw3003.ey);
         assertEquals(0.714, bw3003.ez);
