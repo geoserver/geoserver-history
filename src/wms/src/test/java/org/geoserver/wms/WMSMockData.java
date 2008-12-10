@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.geoserver.catalog.DataStoreInfo;
@@ -20,13 +21,11 @@ import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.platform.ServiceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.factory.CommonFactoryFinder;
@@ -38,15 +37,15 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.GeometryDescriptor;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpSession;
@@ -54,7 +53,6 @@ import com.mockrunner.mock.web.MockServletContext;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * WMS tests utility class to set up a mocked up catalog and geoserver environment so unit tests
@@ -83,12 +81,16 @@ public class WMSMockData {
 
     private StyleInfoImpl defaultStyle;
 
+    private GetMapProducer mockMapProducer;
+
     private GeoServer mockGeoServer;
 
     private WMS mockWMS;
 
     @SuppressWarnings("deprecation")
     public void setUp() throws Exception {
+        mockMapProducer = new DummyRasterMapProducer();
+
         catalog = new CatalogImpl();
 
         namespaceInfo = new NamespaceInfoImpl(catalog);
@@ -166,7 +168,15 @@ public class WMSMockData {
 
         public static final String MIME_TYPE = "image/dummy";
 
-        private WMSMapContext mapContext;
+        public WMSMapContext mapContext;
+
+        public boolean abortCalled;
+
+        public boolean produceMapCalled;
+
+        public String outputFormat;
+
+        public boolean writeToCalled;
 
         public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
                 throws WmsException, IOException {
@@ -179,7 +189,7 @@ public class WMSMockData {
         }
 
         public void abort() {
-            // do nothing
+            this.abortCalled = true;
         }
 
         public String getContentDisposition() {
@@ -208,15 +218,15 @@ public class WMSMockData {
         }
 
         public void produceMap() throws WmsException {
-            // do nothing
+            this.produceMapCalled = true;
         }
 
         public void setOutputFormat(String format) {
-            // do nothing
+            this.outputFormat = format;
         }
 
         public void writeTo(OutputStream out) throws ServiceException, IOException {
-            // do nothing
+            this.writeToCalled = true;
         }
     }
 
@@ -252,15 +262,15 @@ public class WMSMockData {
         return request;
     }
 
-    // public GetMapResponse createResponse() {
-    // return createResponse(Collections.singletonList(mockMapProducer));
-    // }
-    //
-    // public GetMapResponse createResponse(List<GetMapProducer> availableProducers) {
-    // GetMapResponse getMap;
-    // getMap = new GetMapResponse(availableProducers);
-    // return getMap;
-    // }
+    public GetMapResponse createResponse() {
+        return createResponse(Collections.singletonList(mockMapProducer));
+    }
+
+    public GetMapResponse createResponse(List<GetMapProducer> availableProducers) {
+        GetMapResponse getMap;
+        getMap = new GetMapResponse(availableProducers);
+        return getMap;
+    }
 
     /**
      * Creates a vector layer with associated FeatureType in the internal MemoryDataStore with the

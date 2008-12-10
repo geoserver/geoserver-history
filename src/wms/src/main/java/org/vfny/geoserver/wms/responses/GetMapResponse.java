@@ -6,12 +6,12 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,13 +36,11 @@ import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -63,7 +61,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
+    static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger(GetMapResponse.class.getPackage().getName());
 
     private static FilterFactory filterFac = CommonFactoryFinder.getFilterFactory(null);
@@ -80,28 +78,30 @@ public class GetMapResponse implements Response {
     private WMSMapContext map;
 
     /**
-     * WMS module
-     */
-    private WMS wms;
-
-    /**
      * custom response headers
      */
     private HashMap responseHeaders;
 
     String headerContentDisposition;
 
-    private ApplicationContext applicationContext;
+    private Collection<GetMapProducer> availableProducers;
 
     /**
      * Creates a new GetMapResponse object.
      * 
-     * @param applicationContext
+     * @param availableProducers
+     *                the list of available map producers where to get one to handle the request
+     *                format at {@link #execute(Request)}
      */
-    public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
-        this.wms = wms;
-        this.applicationContext = applicationContext;
-        responseHeaders = new HashMap();
+    public GetMapResponse(Collection<GetMapProducer> availableProducers) {
+        if(availableProducers == null){
+            throw new NullPointerException("availableProducers");
+        }
+        if(availableProducers.size() == 0){
+            throw new IllegalArgumentException("No available map producers provided");
+        }
+        this.availableProducers = new ArrayList<GetMapProducer>(availableProducers);
+        responseHeaders = null;
     }
 
     /**
@@ -110,13 +110,21 @@ public class GetMapResponse implements Response {
      * 
      */
     public HashMap getResponseHeaders() {
-        return new HashMap(responseHeaders);
+        return responseHeaders == null? null : new HashMap(responseHeaders);
     }
 
     /**
      * Implements the map production logic for a WMS GetMap request, delegating
      * the encoding to the appropriate output format to a {@link GetMapProducer}
      * appropriate for the required format.
+     * 
+     * <p>
+     * Preconditions:
+     * <ul>
+     * <li>request.getLayers().length > 0
+     * <li>request.getStyles().length == request.getLayers().length
+     * </ul>
+     * </p>
      * 
      * @param req
      *            a {@link GetMapRequest}
@@ -132,6 +140,7 @@ public class GetMapResponse implements Response {
     @SuppressWarnings("unchecked")
     public void execute(Request req) throws ServiceException {
         GetMapRequest request = (GetMapRequest) req;
+        assertMandatory(request);
 
         final String outputFormat = request.getFormat();
 
@@ -140,6 +149,8 @@ public class GetMapResponse implements Response {
         // final WMSMapContext map = new WMSMapContext();
         map = new WMSMapContext(request);
         this.delegate.setMapContext(map);
+
+        final Envelope env = request.getBbox();
 
         // enable on the fly meta tiling if request looks like a tiled one
         if (MetatileMapProducer.isRequestTiled(request, delegate)) {
@@ -154,17 +165,6 @@ public class GetMapResponse implements Response {
         final MapLayerInfo[] layers = request.getLayers();
         final Style[] styles = (Style[]) request.getStyles().toArray(new Style[] {});
         final Filter[] filters = buildLayersFilters(request.getFilter(), layers);
-
-        // DJB: the WMS spec says that the request must not be 0 area
-        // if it is, throw a service exception!
-        final Envelope env = request.getBbox();
-        if (env == null) {
-            throw new WmsException("GetMap requests must include a BBOX parameter.");
-        }
-        if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
-            throw new WmsException(new StringBuffer("The request bounding box has zero area: ")
-                    .append(env).toString());
-        }
 
         // DJB DONE: replace by setAreaOfInterest(Envelope,
         // CoordinateReferenceSystem)
@@ -416,6 +416,9 @@ public class GetMapResponse implements Response {
             this.delegate.produceMap();
 
             if (cachingPossible) {
+                if(responseHeaders == null){
+                    responseHeaders = new HashMap();
+                }
                 responseHeaders.put("Cache-Control", "max-age=" + maxAge + ", must-revalidate");
             }
 
@@ -428,6 +431,49 @@ public class GetMapResponse implements Response {
             throw new WmsException(e, "Internal error ", "");
         }
     }
+    
+    /**
+     * Asserts the mandatory GetMap parameters have been provided.
+     * <p>
+     * With the exception of the SRS and STYLES parameters, for which default values are assigned.
+     * </p>
+     * 
+     * @param request
+     * @throws ServiceException
+     *             if any mandatory parameter has not been set on the request
+     */
+    private void assertMandatory(GetMapRequest request) throws ServiceException {
+        if (0 >= request.getWidth() || 0 >= request.getHeight()) {
+            throw new ServiceException("Missing or invalid requested map size. Parameters"
+                    + " WIDTH and HEIGHT shall be present and be integers > 0. Got " + "WIDTH="
+                    + request.getWidth() + ", HEIGHT=" + request.getHeight(),
+                    "MissingOrInvalidParameter");
+        }
+
+        if (request.getLayers().length == 0) {
+            throw new ServiceException("No layers have been requested", "LayerNotDefined");
+        }
+
+        if (request.getStyles().size() == 0) {
+            throw new ServiceException("No styles have been requested", "StyleNotDefined");
+        }
+
+        if (request.getFormat() == null) {
+            throw new ServiceException("No output map format requested", "InvalidFormat");
+        }
+
+        // DJB: the WMS spec says that the request must not be 0 area
+        // if it is, throw a service exception!
+        final Envelope env = request.getBbox();
+        if (env == null) {
+            throw new WmsException("GetMap requests must include a BBOX parameter.", "MissingBBox");
+        }
+        if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
+            throw new WmsException(new StringBuffer("The request bounding box has zero area: ")
+                    .append(env).toString(), "InvalidBBox");
+        }
+    }
+    
 
     /**
      * Returns the list of filters resulting of comining the layers definition
@@ -600,10 +646,10 @@ public class GetMapResponse implements Response {
      */
     private GetMapProducer getDelegate(final String outputFormat) throws WmsException {
         final GetMapProducer producer = WMSExtensions.findMapProducer(outputFormat,
-                applicationContext);
+                availableProducers);
         if (producer == null) {
             WmsException e = new WmsException("There is no support for creating maps in "
-                    + outputFormat + " format");
+                    + outputFormat + " format", "InvalidFormat");
             e.setCode("InvalidFormat");
             throw e;
         }

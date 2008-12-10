@@ -51,6 +51,12 @@ public class WMSExtensions {
         final Collection<GetMapProducer> producers;
         producers = WMSExtensions.findMapProducers(applicationContext);
 
+        return findMapProducer(outputFormat, producers);
+    }
+
+    public static GetMapProducer findMapProducer(String outputFormat,
+            Collection<GetMapProducer> producers) {
+
         Set<String> producerFormats;
         for (GetMapProducer producer : producers) {
             producerFormats = producer.getOutputFormatNames();
