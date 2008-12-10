@@ -8,15 +8,11 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import junit.framework.TestCase;
 
-import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.data.test.MockData;
 import org.geoserver.ows.adapters.ResponseAdapter;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSMockData;
@@ -25,7 +21,6 @@ import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 
