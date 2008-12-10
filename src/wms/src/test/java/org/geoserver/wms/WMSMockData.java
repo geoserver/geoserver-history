@@ -168,7 +168,15 @@ public class WMSMockData {
 
         public static final String MIME_TYPE = "image/dummy";
 
-        private WMSMapContext mapContext;
+        public WMSMapContext mapContext;
+
+        public boolean abortCalled;
+
+        public boolean produceMapCalled;
+
+        public String outputFormat;
+
+        public boolean writeToCalled;
 
         public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
                 throws WmsException, IOException {
@@ -181,7 +189,7 @@ public class WMSMockData {
         }
 
         public void abort() {
-            // do nothing
+            this.abortCalled = true;
         }
 
         public String getContentDisposition() {
@@ -210,15 +218,15 @@ public class WMSMockData {
         }
 
         public void produceMap() throws WmsException {
-            // do nothing
+            this.produceMapCalled = true;
         }
 
         public void setOutputFormat(String format) {
-            // do nothing
+            this.outputFormat = format;
         }
 
         public void writeTo(OutputStream out) throws ServiceException, IOException {
-            // do nothing
+            this.writeToCalled = true;
         }
     }
 

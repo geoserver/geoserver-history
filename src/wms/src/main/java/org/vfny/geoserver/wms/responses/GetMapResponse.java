@@ -140,6 +140,7 @@ public class GetMapResponse implements Response {
     @SuppressWarnings("unchecked")
     public void execute(Request req) throws ServiceException {
         GetMapRequest request = (GetMapRequest) req;
+        assertMandatory(request);
 
         final String outputFormat = request.getFormat();
 
@@ -149,17 +150,7 @@ public class GetMapResponse implements Response {
         map = new WMSMapContext(request);
         this.delegate.setMapContext(map);
 
-        // DJB: the WMS spec says that the request must not be 0 area
-        // if it is, throw a service exception!
         final Envelope env = request.getBbox();
-        if (env == null) {
-            throw new WmsException("GetMap requests must include a BBOX parameter.", "MissingBBox");
-        }
-        if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
-            throw new WmsException(new StringBuffer("The request bounding box has zero area: ")
-                    .append(env).toString());
-        }
-
 
         // enable on the fly meta tiling if request looks like a tiled one
         if (MetatileMapProducer.isRequestTiled(request, delegate)) {
@@ -440,6 +431,49 @@ public class GetMapResponse implements Response {
             throw new WmsException(e, "Internal error ", "");
         }
     }
+    
+    /**
+     * Asserts the mandatory GetMap parameters have been provided.
+     * <p>
+     * With the exception of the SRS and STYLES parameters, for which default values are assigned.
+     * </p>
+     * 
+     * @param request
+     * @throws ServiceException
+     *             if any mandatory parameter has not been set on the request
+     */
+    private void assertMandatory(GetMapRequest request) throws ServiceException {
+        if (0 >= request.getWidth() || 0 >= request.getHeight()) {
+            throw new ServiceException("Missing or invalid requested map size. Parameters"
+                    + " WIDTH and HEIGHT shall be present and be integers > 0. Got " + "WIDTH="
+                    + request.getWidth() + ", HEIGHT=" + request.getHeight(),
+                    "MissingOrInvalidParameter");
+        }
+
+        if (request.getLayers().length == 0) {
+            throw new ServiceException("No layers have been requested", "LayerNotDefined");
+        }
+
+        if (request.getStyles().size() == 0) {
+            throw new ServiceException("No styles have been requested", "StyleNotDefined");
+        }
+
+        if (request.getFormat() == null) {
+            throw new ServiceException("No output map format requested", "InvalidFormat");
+        }
+
+        // DJB: the WMS spec says that the request must not be 0 area
+        // if it is, throw a service exception!
+        final Envelope env = request.getBbox();
+        if (env == null) {
+            throw new WmsException("GetMap requests must include a BBOX parameter.", "MissingBBox");
+        }
+        if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
+            throw new WmsException(new StringBuffer("The request bounding box has zero area: ")
+                    .append(env).toString(), "InvalidBBox");
+        }
+    }
+    
 
     /**
      * Returns the list of filters resulting of comining the layers definition

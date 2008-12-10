@@ -8,14 +8,19 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import junit.framework.TestCase;
 
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.data.test.MockData;
 import org.geoserver.ows.adapters.ResponseAdapter;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSMockData;
+import org.geoserver.wms.WMSMockData.DummyRasterMapProducer;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
@@ -40,7 +45,8 @@ import com.vividsolutions.jts.geom.Point;
  * @version $Id$
  * @since 2.5.x
  * @source $URL:
- *         https://svn.codehaus.org/geoserver/branches/1.7.x/geoserver/wms/src/test/java/org/vfny/geoserver/wms/responses/GetMapResponseTest.java $
+ *         https://svn.codehaus.org/geoserver/branches/1.7.x/geoserver/wms/src/test/java/org/vfny
+ *         /geoserver/wms/responses/GetMapResponseTest.java $
  */
 public class GetMapResponseTest extends TestCase {
 
@@ -57,6 +63,10 @@ public class GetMapResponseTest extends TestCase {
         mockData.setUp();
 
         request = mockData.createRequest();
+        //add a layer so its a valid request
+        MapLayerInfo layer = mockData.addFeatureTypeLayer("testType", Point.class);
+        request.setLayers(new MapLayerInfo[] { layer });
+
         response = mockData.createResponse();
     }
 
@@ -85,23 +95,12 @@ public class GetMapResponseTest extends TestCase {
      * Test method for {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
      */
     public void testDelegateLookup() {
-        request.setFormat("non-existent-output-format");
-        try {
-            response.execute(request);
-            fail("Asked for a non existent format, expected ServiceException");
-        } catch (WmsException e) {
-            assertEquals("InvalidFormat", e.getCode());
-        }
-
         GetMapProducer producer = new WMSMockData.DummyRasterMapProducer();
         response = new GetMapResponse(Collections.singleton(producer));
         request.setFormat(WMSMockData.DummyRasterMapProducer.MIME_TYPE);
-        try {
-            response.execute(request);
-            fail("should have failed by any reason, we just want to check it looked up the map producer");
-        } catch (Exception e) {
-            assertTrue(true);
-        }
+
+        response.execute(request);
+
         GetMapProducer delegate = response.getDelegate();
         assertSame(producer, delegate);
     }
@@ -109,24 +108,14 @@ public class GetMapResponseTest extends TestCase {
     /**
      * Test method for {@link GetMapResponse#execute(org.vfny.geoserver.Request)}.
      */
-    public void testExecuteNullExtent() {
+    public void testExecuteNoExtent() {
         request.setBbox(null);
-        try {
-            response.execute(request);
-            fail("request provided null envelope, expected ServiceException");
-        } catch (ServiceException e) {
-            assertEquals("MissingBBox", e.getCode());
-        }
+        assertInvalidMandatoryParam("MissingBBox");
     }
 
     public void testExecuteEmptyExtent() {
         request.setBbox(new Envelope());
-        try {
-            response.execute(request);
-            fail("request provided empty envelope, expected ServiceException");
-        } catch (ServiceException e) {
-            assertTrue(true);
-        }
+        assertInvalidMandatoryParam("InvalidBBox");
     }
 
     public void testExecuteTilingRequested() {
@@ -149,9 +138,69 @@ public class GetMapResponseTest extends TestCase {
     }
 
     public void testSingleVectorLayer() throws IOException {
-        MapLayerInfo layer = mockData.addFeatureTypeLayer("testType", Point.class);
+        DummyRasterMapProducer producer = new DummyRasterMapProducer();
+        response = new GetMapResponse(Collections.singleton((GetMapProducer) producer));
+        request.setFormat(DummyRasterMapProducer.MIME_TYPE);
+
+        MapLayerInfo layer = mockData.addFeatureTypeLayer("testSingleVectorLayer", Point.class);
         request.setLayers(new MapLayerInfo[] { layer });
 
         response.execute(request);
+        
+        assertNotNull(producer.mapContext);
+        
+        assertEquals(1, producer.mapContext.getLayerCount());
+        
+        assertEquals(DummyRasterMapProducer.MIME_TYPE, producer.outputFormat);
+        
+        assertFalse(producer.abortCalled);
+        
+        assertTrue(producer.produceMapCalled);
     }
+
+    public void testExecuteNoLayers() throws Exception {
+        request.setLayers((List<MapLayerInfo>) null);
+        assertInvalidMandatoryParam("LayerNotDefined");
+    }
+
+    public void testExecuteNoWidth() {
+        request.setWidth(0);
+        assertInvalidMandatoryParam("MissingOrInvalidParameter");
+
+        request.setWidth(-1);
+        assertInvalidMandatoryParam("MissingOrInvalidParameter");
+    }
+
+    public void testExecuteNoHeight() {
+        request.setHeight(0);
+        assertInvalidMandatoryParam("MissingOrInvalidParameter");
+
+        request.setHeight(-1);
+        assertInvalidMandatoryParam("MissingOrInvalidParameter");
+    }
+
+    public void testExecuteInvalidFormat() {
+        request.setFormat("non-existent-output-format");
+        assertInvalidMandatoryParam("InvalidFormat");
+    }
+
+    public void testExecuteNoFormat() {
+        request.setFormat(null);
+        assertInvalidMandatoryParam("InvalidFormat");
+    }
+
+    public void testExecuteNoStyles() {
+        request.setStyles(null);
+        assertInvalidMandatoryParam("StyleNotDefined");
+    }
+
+    private void assertInvalidMandatoryParam(String expectedExceptionCode) {
+        try {
+            response.execute(request);
+            fail("Expected ServiceException");
+        } catch (ServiceException e) {
+            assertEquals(expectedExceptionCode, e.getCode());
+        }
+    }
+
 }
