@@ -8,7 +8,7 @@ import org.geoserver.ows.util.KvpMap;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
-import org.geotools.data.wms.response.GetFeatureInfoResponse;
+
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
