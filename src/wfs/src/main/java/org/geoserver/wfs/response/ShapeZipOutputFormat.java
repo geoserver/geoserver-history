@@ -4,37 +4,60 @@
  */
 package org.geoserver.wfs.response;
 
-import net.opengis.wfs.FeatureCollectionType;
-import net.opengis.wfs.GetFeatureType;
-import net.opengis.wfs.QueryType;
-import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.platform.Operation;
-import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFSGetFeatureOutputFormat;
-import org.geotools.data.FeatureStore;
-import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import javax.xml.namespace.QName;
+
+import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
+
+import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSGetFeatureOutputFormat;
+import org.geotools.data.DataStore;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.FeatureWriter;
+import org.geotools.data.Transaction;
+import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -51,6 +74,16 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
     private final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(this.getClass().toString());
     private String outputFileName;
     private ApplicationContext applicationContext;
+    
+    /**
+     * Tuple used when fanning out a collection with generic geometry types to multiple outputs 
+     * @author Administrator
+     *
+     */
+    private static class StoreWriter {
+        DataStore dstore;
+        FeatureWriter<SimpleFeatureType, SimpleFeature> writer;
+    }
 
     public ShapeZipOutputFormat() {
         super("SHAPE-ZIP");
@@ -106,19 +139,33 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
 
             while (outputFeatureCollections.hasNext()) {
                 curCollection = outputFeatureCollections.next();
-                writeCollectionToShapefile(curCollection, tempDir, getShapefileCharset(getFeature));
+                
+                if(curCollection.getSchema().getGeometryDescriptor() == null) {
+                    throw new WFSException("Cannot write geometryless shapefiles, yet " 
+                            + curCollection.getSchema() + " has no geometry field");
+                } 
+                Class geomType = curCollection.getSchema().getGeometryDescriptor().getType().getBinding();
+                if(GeometryCollection.class.equals(geomType)) {
+                    throw new WFSException("GeometryCollection is not a supported output type for shapefiles");
+                } else if(Geometry.class.equals(geomType)) {
+                    // in this case we fan out the output to multiple shapefiles
+                    writeCollectionToShapefiles(curCollection, tempDir, getShapefileCharset(getFeature));
+                } else {
+                    // simple case, only one and supported type
+                    writeCollectionToShapefile(curCollection, tempDir, getShapefileCharset(getFeature));
+                }
 
-                String name = curCollection.getSchema().getTypeName();
-                String outputName = name.replaceAll("\\.", "_");
-
-                // read in and write out .shp
-                File f;
-                ZipEntry entry;
-                addFile(tempDir, zipOut, name, outputName, ".shp");
-                addFile(tempDir, zipOut, name, outputName, ".dbf");
-                addFile(tempDir, zipOut, name, outputName, ".shx");
-                addFile(tempDir, zipOut, name, outputName, ".prj");
-                addFile(tempDir, zipOut, name, outputName, ".cst");
+                // zip all the files produced
+                File[] files = tempDir.listFiles(new FilenameFilter() {
+                
+                    public boolean accept(File dir, String name) {
+                        return name.endsWith(".shp") || name.endsWith(".shx") || name.endsWith(".dbf")
+                               || name.endsWith(".prj") || name.endsWith(".cst");
+                    }
+                });
+                for (File file : files) {
+                    addFile(file, zipOut);
+                }
             }
 
             zipOut.finish();
@@ -134,19 +181,154 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
             }
         }
     }
-
-    private void addFile(File tempDir, ZipOutputStream zipOut, String name, String outputName,
-            final String extension) throws IOException, FileNotFoundException {
-        File f = new File(tempDir, name + extension);
-            if(f.exists()) {
-            ZipEntry entry = new ZipEntry(outputName + extension);
-            zipOut.putNextEntry(entry);
     
-            InputStream in = new FileInputStream(f);
-            int c;
-            byte[] buffer = new byte[4 * 1024];
-            while (-1 != (c = in.read(buffer))) {
-                zipOut.write(buffer,0,c);
+    /**
+     * Write one featurecollection to an appropriately named shapefile.
+     * @param c the featurecollection to write
+     * @param tempDir the temp directory into which it should be written
+     */
+    private void writeCollectionToShapefile(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
+        SimpleFeatureType schema = c.getSchema();
+
+        FeatureStore<SimpleFeatureType, SimpleFeature> fstore = null;
+        DataStore dstore = null;
+        try {
+            dstore = buildStore(tempDir, charset,  schema); 
+            fstore = (FeatureStore<SimpleFeatureType, SimpleFeature>) dstore.getFeatureSource(schema.getTypeName());
+            fstore.addFeatures(c);
+        } catch (IOException ioe) {
+            LOGGER.log(Level.WARNING,
+                "Error while writing featuretype '" + schema.getTypeName() + "' to shapefile.", ioe);
+            throw new ServiceException(ioe);
+        } finally {
+            if(dstore != null) {
+                dstore.dispose();
+            }
+        }
+    }
+    
+    /**
+     * Write one featurecollection to a group of appropriately named shapefiles, one per geometry
+     * type. This method assume the features will have a Geometry type and the actual type of each
+     * feature will be discovered during the scan. Each feature will be routed to a shapefile that
+     * contains only a specific geometry type chosen among point, multipoint, polygons and lines.
+     * @param c the featurecollection to write
+     * @param tempDir the temp directory into which it should be written
+     */
+    private void writeCollectionToShapefiles(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
+        SimpleFeatureType schema = c.getSchema();
+        
+        Map<Class, StoreWriter> writers = new HashMap<Class, StoreWriter>();
+        FeatureIterator<SimpleFeature> it;
+        try {
+            it = c.features(); 
+            while(it.hasNext()) {
+                SimpleFeature f = it.next();
+                
+                if(f.getDefaultGeometry() == null) {
+                    LOGGER.warning("Skipping " + f.getID() + " as its geometry is null");
+                    continue;
+                }
+                
+                FeatureWriter<SimpleFeatureType, SimpleFeature> writer = getFeatureWriter(f, writers, tempDir, charset);
+                SimpleFeature fw = writer.next();
+                
+                // we cannot trust attribute order, shapefile changes the location and name of the geometry
+                for (AttributeDescriptor d : fw.getFeatureType().getAttributeDescriptors()) {
+                    fw.setAttribute(d.getLocalName(), f.getAttribute(d.getLocalName()));
+                }
+                fw.setDefaultGeometry(f.getDefaultGeometry());
+                writer.write();
+            }
+            
+        } catch (IOException ioe) {
+            LOGGER.log(Level.WARNING,
+                "Error while writing featuretype '" + schema.getTypeName() + "' to shapefile.", ioe);
+            throw new ServiceException(ioe);
+        } finally {
+            // close all writers, dispose all datastores, even if an exception occurs
+            // during closeup (shapefile datastore will have to copy the shapefiles, that migh
+            // fail in many ways)
+            IOException stored = null;
+            for (StoreWriter sw : writers.values()) {
+                try {
+                    sw.writer.close();
+                    sw.dstore.dispose();
+                } catch(IOException e) {
+                    stored = e;
+                }
+            }
+            // if an exception occurred make the world aware of it
+            if(stored != null)
+                throw new ServiceException(stored);
+        }
+    }
+    
+    private FeatureWriter<SimpleFeatureType, SimpleFeature> getFeatureWriter(SimpleFeature f, 
+            Map<Class, StoreWriter> writers, File tempDir, Charset charset) throws IOException {
+        // get the target class
+        Class<?> target;
+        Geometry g = (Geometry) f.getDefaultGeometry();
+        String suffix = null;
+        
+        if(g instanceof Point) {
+            target = Point.class;
+            suffix = "Point";
+        } else if(g instanceof MultiPoint) {
+            target = MultiPoint.class;
+            suffix = "MPoint";
+        } else if(g instanceof MultiPolygon || g instanceof Polygon) {
+            target = MultiPolygon.class;
+            suffix = "Polygon";
+        } else if(g instanceof LineString || g instanceof MultiLineString) {
+            target = MultiLineString.class;
+            suffix = "Line";
+        } else {
+            throw new RuntimeException("This should never happen, " +
+            		"there's a bug in the SHAPE-ZIP output format. I got a geometry of type " + g.getClass());
+        }
+        
+        // see if we already have a cached writer
+        StoreWriter storeWriter = writers.get(target);
+        if(storeWriter == null) {
+            // retype the schema
+            SimpleFeatureType original = f.getFeatureType();
+            SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+            for (AttributeDescriptor d : original.getAttributeDescriptors()) {
+                if(Geometry.class.isAssignableFrom(d.getType().getBinding())) {
+                    GeometryDescriptor gd = (GeometryDescriptor) d;
+                    builder.add(gd.getLocalName(), target, gd.getCoordinateReferenceSystem());
+                    builder.setDefaultGeometry(gd.getLocalName());
+                } else {
+                    builder.add(d);
+                }
+            }
+            builder.setName(original.getTypeName() + suffix);
+            builder.setNamespaceURI(original.getName().getURI());
+            SimpleFeatureType retyped = builder.buildFeatureType();
+            
+            // create the datastore for the current geom type
+            DataStore dstore = buildStore(tempDir, charset, retyped);
+            
+            // cache it
+            storeWriter = new StoreWriter();
+            storeWriter.dstore = dstore;
+            storeWriter.writer = dstore.getFeatureWriter(retyped.getTypeName(), Transaction.AUTO_COMMIT);
+            writers.put(target, storeWriter);
+        }
+        return storeWriter.writer;
+    }
+
+    private void addFile(File file, ZipOutputStream zipOut) throws IOException, FileNotFoundException {
+            if(file.exists()) {
+                ZipEntry entry = new ZipEntry(file.getName());
+                zipOut.putNextEntry(entry);
+        
+                InputStream in = new FileInputStream(file);
+                int c;
+                byte[] buffer = new byte[4 * 1024];
+                while (-1 != (c = in.read(buffer))) {
+                    zipOut.write(buffer,0,c);
             }
             zipOut.closeEntry();
             in.close();
@@ -196,54 +378,52 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
     }
 
     /**
-     * Write one featurecollection to an appropriately named shapefile.
-     * @param c the featurecollection to write
-     * @param tempDir the temp directory into which it should be written
+     * Creates a shapefile data store for the specified schema 
+     * @param tempDir
+     * @param charset
+     * @param schema
+     * @return
+     * @throws MalformedURLException
+     * @throws FileNotFoundException
+     * @throws IOException
      */
-    private void writeCollectionToShapefile(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
-        SimpleFeatureType schema = c.getSchema();
+    private DataStore buildStore(File tempDir,
+            Charset charset, SimpleFeatureType schema) throws MalformedURLException,
+            FileNotFoundException, IOException {
+        File file = new File(tempDir, schema.getTypeName() + ".shp");
+        ShapefileDataStore sfds = new ShapefileDataStore(file.toURL());
+        
+        // handle shapefile encoding
+        // and dump the charset into a .cst file, for debugging and control purposes
+        // (.cst is not a standard extension)
+        sfds.setStringCharset(charset);
+        File charsetFile = new File(tempDir, schema.getTypeName()+ ".cst");
+        PrintWriter pw = null;
+        try {
+            pw  = new PrintWriter(charsetFile);
+            pw.write(charset.name());
+        } finally {
+            if(pw != null) pw.close();
+        }
 
         try {
-            File file = new File(tempDir, schema.getTypeName() + ".shp");
-            ShapefileDataStore sfds = new ShapefileDataStore(file.toURL());
-            
-            // handle shapefile encoding
-            // and dump the charset into a .cst file, for debugging and control purposes
-            // (.cst is not a standard extension)
-            sfds.setStringCharset(charset);
-            File charsetFile = new File(tempDir, schema.getTypeName()+ ".cst");
-            PrintWriter pw = null;
-            try {
-                pw  = new PrintWriter(charsetFile);
-                pw.write(charset.name());
-            } finally {
-                if(pw != null) pw.close();
-            }
-
-            try {
-                sfds.createSchema(schema);
-            } catch (NullPointerException e) {
-                LOGGER.warning(
-                    "Error in shapefile schema. It is possible you don't have a geometry set in the output. \n"
-                    + "Please specify a <wfs:PropertyName>geom_column_name</wfs:PropertyName> in the request");
-                throw new ServiceException(
-                    "Error in shapefile schema. It is possible you don't have a geometry set in the output.");
-            }
-
-            FeatureStore<SimpleFeatureType, SimpleFeature> store;
-            store = (FeatureStore<SimpleFeatureType, SimpleFeature>) sfds.getFeatureSource(schema.getTypeName());
-            store.addFeatures(c);
-            try {
-                if(schema.getCoordinateReferenceSystem() != null)
-                    sfds.forceSchemaCRS(schema.getCoordinateReferenceSystem());
-            } catch(Exception e) {
-                LOGGER.log(Level.WARNING, "Could not properly create the .prj file", e);
-            }
-        } catch (IOException ioe) {
-            LOGGER.log(Level.WARNING,
-                "Error while writing featuretype '" + schema.getTypeName() + "' to shapefile.", ioe);
-            throw new ServiceException(ioe);
+            sfds.createSchema(schema);
+        } catch (NullPointerException e) {
+            LOGGER.warning(
+                "Error in shapefile schema. It is possible you don't have a geometry set in the output. \n"
+                + "Please specify a <wfs:PropertyName>geom_column_name</wfs:PropertyName> in the request");
+            throw new ServiceException(
+                "Error in shapefile schema. It is possible you don't have a geometry set in the output.");
         }
+        
+        try {
+            if(schema.getCoordinateReferenceSystem() != null)
+                sfds.forceSchemaCRS(schema.getCoordinateReferenceSystem());
+        } catch(Exception e) {
+            LOGGER.log(Level.WARNING, "Could not properly create the .prj file", e);
+        }
+
+        return sfds;
     }
 
     /**
@@ -274,4 +454,6 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+    
+    
 }

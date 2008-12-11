@@ -8,10 +8,13 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import javax.xml.namespace.QName;
 
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
@@ -27,9 +30,18 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 public class ShapeZipTest extends WFSTestSupport {
-    
+
+    private static final QName ALL_TYPES = new QName(MockData.CITE_URI, "AllTypes", MockData.CITE_PREFIX);
     private Operation op;
     private GetFeatureType gft;
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        Map params = new HashMap();
+        params.put(MockData.KEY_SRS_NUMBER, "4326");
+        dataDirectory.addPropertiesType(ALL_TYPES, ShapeZipTest.class.getResource("AllTypes.properties"), params);
+    }   
 
     @Override
     protected void setUpInternal() throws Exception {
@@ -47,7 +59,7 @@ public class ShapeZipTest extends WFSTestSupport {
         fct.getFeature().add(fs.getFeatures());
         zip.write(fct, bos, op);
         
-        checkShapefileIntegrity(new ByteArrayInputStream(bos.toByteArray()));
+        checkShapefileIntegrity(new String[] {"BasicPolygons"}, new ByteArrayInputStream(bos.toByteArray()));
     }
     
     public void testCharset() throws Exception {
@@ -64,19 +76,38 @@ public class ShapeZipTest extends WFSTestSupport {
         gft.setFormatOptions(options);
         zip.write(fct, bos, op);
         
-        checkShapefileIntegrity(new ByteArrayInputStream(bos.toByteArray()));
+        checkShapefileIntegrity(new String[] {"BasicPolygons"}, new ByteArrayInputStream(bos.toByteArray()));
         assertEquals("ISO-8859-15", getCharset(new ByteArrayInputStream(bos.toByteArray())));
     }
+    
+    public void testMultiType() throws Exception {
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+        fs = getCatalog().getFeatureTypeInfo(ALL_TYPES).getFeatureSource(true);
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(fs.getFeatures());
+        zip.write(fct, bos, op);
+        
+        final String[] expectedTypes = new String[] {"AllTypesPoint", "AllTypesMPoint", "AllTypesPolygon", "AllTypesLine"};
+        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
+    }
 
-    private void checkShapefileIntegrity(final InputStream in) throws IOException {
+    private void checkShapefileIntegrity(String[] typeNames, final InputStream in) throws IOException {
         ZipInputStream zis = new ZipInputStream(in);
         ZipEntry entry = null;
-        Set names = new HashSet(Arrays.asList(new String[] {".shp", ".shx", ".dbf", ".prj", ".cst"}));
+        
+        final String[] extensions = new String[] {".shp", ".shx", ".dbf", ".prj", ".cst"};
+        Set names = new HashSet();
+        for (String name : typeNames) {
+            for (String extension : extensions) {
+                names.add(name + extension);
+            }
+        }
         while((entry = zis.getNextEntry()) != null) {
             final String name = entry.getName();
-            final String extension = name.substring(name.length() - 4, name.length());
-            assertTrue(names.contains(extension));
-            names.remove(extension);
+            assertTrue(names.contains(name));
+            names.remove(name);
             zis.closeEntry();
         }
         zis.close();
