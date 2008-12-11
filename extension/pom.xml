@@ -29,7 +29,7 @@
       <modules>
         <module>arcsde</module>
       </modules>
-    <profile>
+    </profile>
 
     <profile>
       <id>h2</id>
