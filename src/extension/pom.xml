@@ -25,6 +25,13 @@
   <profiles>
     <!-- profiles for individual modules -->
     <profile>
+      <id>arcsde</id>
+      <modules>
+        <module>arcsde</module>
+      </modules>
+    <profile>
+
+    <profile>
       <id>h2</id>
       <modules>
         <module>h2</module>
@@ -49,6 +56,7 @@
     <profile>
       <id>allExtensions</id>
       <modules>
+        <module>arcsde</module>
         <module>h2</module>
         <module>oracle</module>
         <module>wfsv</module>
@@ -59,7 +67,9 @@
     <profile>
       <id>release</id>
       <modules>
+        <module>arcsde</module>
         <module>h2</module>
+        <module>oracle</module>
         <module>wfsv</module>
       </modules>
     </profile>

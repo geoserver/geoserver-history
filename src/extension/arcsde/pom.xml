@@ -10,20 +10,34 @@
   </parent>
 
   <groupId>org.geoserver.extension</groupId>
-  <artifactId>oracle</artifactId>
+  <artifactId>arcsde</artifactId>
   <packaging>jar</packaging>
-  <name>Oracle DataStore Extension</name>
+  <name>ArcSDE DataStore Extension</name>
 
   <dependencies>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt-jdbc-oracle</artifactId>
+      <artifactId>gt-arcsde</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc14</artifactId> 
-      <version>10.2.0.3.0</version>
+      <groupId>com.esri</groupId>
+      <artifactId>jsde_sdk</artifactId>
+      <version>${sde.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.esri</groupId>
+      <artifactId>jsde_jpe_sdk</artifactId>
+      <version>${sde.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>3.4.4</version>
     </dependency>
   </dependencies>
+
+  <properties>
+    <sde.version>9.2</sde.version>
+  </properties>
 
 </project>
