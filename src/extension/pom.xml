@@ -63,7 +63,7 @@
     <profile>
       <id>allExtensions</id>
       <modules>
-        <module>arcsde</module>
+        <!--module>arcsde</module-->
         <module>h2</module>
         <module>sqlserver</module>
         <module>oracle</module>
@@ -77,7 +77,7 @@
     <profile>
       <id>release</id>
       <modules>
-        <module>arcsde</module>
+        <!--module>arcsde</module-->
         <module>h2</module>
         <module>sqlserver</module>
         <module>oracle</module>
