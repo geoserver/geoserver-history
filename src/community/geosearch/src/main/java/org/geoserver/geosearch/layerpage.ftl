@@ -358,7 +358,7 @@ border: 1px solid #0082b6;
     <div id="download-data" class="selfclear">
       <p>Download the data as:</p>
       <ul>
-        <li><a class="kml" href="${kmlUrl + 'mode=flat' + layersParam }">KML</a></li>
+        <li><a class="kml" href="${kmlUrl + 'mode=download' + layersParam }">KML</a></li>
         <li><a class="shapefile" href="${wfsUrl + nameParam + '&outputFormat=' + 'SHAPE-ZIP'}">Shapefile</a></li>   
         <li><a class="json" href="${wfsUrl + nameParam + '&outputFormat=' + json}">JSON</a></li>
         <li><a class="gml2" href="${wfsUrl + nameParam + '&outputFormat=' + gml2}">GML2</a></li>
