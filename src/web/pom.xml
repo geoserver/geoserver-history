@@ -377,28 +377,17 @@
       </properties>
     </profile>
     <profile>
-      <id>includeArcSDEJars</id>
-      <activation>
-        <property>
-          <name>haveSDEJars</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-arcsde</artifactId>
-          <version>${gt.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
       <id>oracle-old</id>
       <dependencies>
         <dependency>
           <groupId>org.geotools</groupId>
           <artifactId>gt-oracle-spatial</artifactId>
           <version>${gt.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.oracle</groupId>
+          <artifactId>ojdbc14</artifactId>
+          <version>10.2.0.3.0</version>
         </dependency>
       </dependencies>
     </profile>
@@ -535,10 +524,6 @@
           <artifactId>sqlserver</artifactId> 
           <version>1.7.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
-          <groupId>com.microsoft</groupId>
-          <artifactId>sqljdbc</artifactId> 
-        </dependency>
       </dependencies>
     </profile>
     <profile>
@@ -549,10 +534,16 @@
           <artifactId>oracle</artifactId> 
           <version>1.7.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
-          <groupId>com.oracle</groupId>
-          <artifactId>ojdbc14</artifactId> 
-        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>arcsde</id>
+      <dependencies>
+       <dependency>
+        <groupId>org.geoserver.extension</groupId>
+        <artifactId>arcsde</artifactId>
+        <version>1.7.1-SNAPSHOT</version>
+       </dependency>
       </dependencies>
     </profile>
   </profiles>

@@ -262,14 +262,9 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
-    <groupId>com.microsoft</groupId>
-    <artifactId>sqljdbc</artifactId>
-    <version>1.2</version>
-   </dependency>
-   <dependency>
-    <groupId>com.oracle</groupId>
-    <artifactId>ojdbc14</artifactId>
-    <version>10.2.0.3.0</version>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-arcsde</artifactId>
+    <version>${gt.version}</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
