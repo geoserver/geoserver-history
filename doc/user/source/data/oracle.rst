@@ -1,0 +1,4 @@
+.. _oracle:
+
+Oracle
+======
