@@ -7,5 +7,6 @@ Information and guidelines for GeoServer documentation contributors.
    :maxdepth: 1
 
    style-guidelines/
+   sphinx-stuff/
    tutorials/
 
