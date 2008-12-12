@@ -11,7 +11,9 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
@@ -309,8 +311,15 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         try {
             SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
             builder.setName(coverageName);
+            final Set<String> bandNames=new HashSet<String>();
             for (int i = 0; i < sampleDimensions.length; i++) {
-                builder.add(sampleDimensions[i].getDescription().toString(), Double.class);
+            	String name=sampleDimensions[i].getDescription().toString();
+            	//GEOS-2518
+            	if(bandNames.contains(name))
+            		// it might happen again that the name already exists but it pretty difficult I'd say
+            		name= new StringBuilder(name).append("_Band").append(i).toString();
+            	bandNames.add(name);
+                builder.add(name, Double.class);
             }
             gridType = builder.buildFeatureType();
         } catch(Exception e) {
