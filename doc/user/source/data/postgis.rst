@@ -1,15 +1,22 @@
-.. _postgis:
+
+
 
 PostGIS
 =======
 
-`PostGIS <http://postgis.refractions.net>`_ is an open source spatial database based on PostgreSQL and is currently the most popular open source spatial database today. PostGIS was developed by `Refractions Research <http://www.refractions.net>`_.
+`PostGIS <http://postgis.refractions.net>`_ is an open source spatial
+database based on PostgreSQL and is currently the most popular open
+source spatial database today. PostGIS was developed by `Refractions
+Research <http://www.refractions.net>`_.
 
 
 Adding a PostGIS database
 -------------------------
 
-As with all vector formats, adding a PostGIS database to GeoServer involves adding a new data store through the web administration tool. This process is described step by step in the :ref:`postgis_quickstart` tutorial.
+As with all vector formats, adding a PostGIS database to GeoServer
+involves adding a new data store through the web administration
+tool. This process is described step by step in the
+:ref:`postgis_quickstart` tutorial.
 
 .. image:: postgis.png
    :align: center

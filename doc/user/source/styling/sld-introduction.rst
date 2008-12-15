@@ -6,8 +6,7 @@ Introduction to SLD
 *Styled Layer Descriptor* (SLD) is an XML based language for
  specifying the portrayal of Web Map Service (WMS) layers. Like WMS,
  SLD is itself an OGC standard. The current version of SLD is 1.1 and
- the specification is freely available `here
- <http://www.opengeospatial.org/standards/sld>`_.
+ the specification is `freely available  <http://www.opengeospatial.org/standards/sld>`_.
 
 The specification provides a good overview of SLD and map styling in
 general. It is a recommended read. In this document some of the key
@@ -34,7 +33,10 @@ symbolizer:
      * - ``TextSymbolizer``
        - Used to portray *labels*. Supports the ability to specify label font, size, color, offset, etc... See :ref:`labeling` for more information.
 
-Consider the following simple symbolizer::
+Consider the following simple symbolizer
+
+.. code-block:: xml 
+   :linenos: 
 
    <PointSymbolizer>
      <Graphic>
@@ -69,7 +71,11 @@ There are three types of filters:
 Attribute filters
 ^^^^^^^^^^^^^^^^^
 
-Attribute filters are used to constrain the non-spatial attributes of a feature. Example::
+Attribute filters are used to constrain the non-spatial attributes of a feature. Example
+
+.. code-block:: xml 
+   :linenos: 
+   
 
    <PropertyIsEqualTo>
       <PropertyName>NAME</PropertyName>
@@ -89,7 +95,10 @@ The above filter selects those features which have a {{NAME}} attribute which ha
 Spatial filters
 ^^^^^^^^^^^^^^^
 
-Spatial filters used to constrain the spatial attributes of a feature. Example::
+Spatial filters used to constrain the spatial attributes of a feature. Example
+
+.. code-block:: xml 
+   :linenos: 
 
    <Intersects>
       <PropertyName>GEOMETRY</PropertyName>
@@ -115,8 +124,12 @@ The above filter selects those features with a geometry that intersects the poin
 Logical filters
 ^^^^^^^^^^^^^^^
 
-Logical filters are used to create combinations of filters using the logical operators And, Or, and Not. Example::
+Logical filters are used to create combinations of filters using the logical operators And, Or, and Not. Example
 
+.. code-block:: xml 
+   :linenos: 
+
+  
    <And>
       <PropertyIsEqualTo>
          <PropertyName>NAME</PropertyName>
@@ -137,7 +150,9 @@ Logical filters are used to create combinations of filters using the logical ope
 Rules
 -----
 
-A *rule* combines a number of symbolizers with a filter to define the portrayal of a feature. Consider the following example::
+A *rule* combines a number of symbolizers with a filter to define the portrayal of a feature. Consider the following example:: 
+
+
 
   <Rule>
      <ogc:Filter>
@@ -155,9 +170,12 @@ A *rule* combines a number of symbolizers with a filter to define the portrayal 
      </PointSymbolizer>
   </Rule>
 
+
+
 The above rule applies only to features which have a ``POPULATION`` attribute greater than ``100,000`` and symbolizes then with a red point. 
 
 An SLD document can contain many rules. Multiple rule SLD's are the basis for  :ref:`thematic_styling`. Consider the above example expanded::
+
 
   <Rule>
      <ogc:Filter>
@@ -192,7 +210,9 @@ An SLD document can contain many rules. Multiple rule SLD's are the basis for  :
 
 The above snippet defines an additional rule which engages when ``POPULATION`` is less than 100,000 and symbolizes the feature as a green point.
 
-Rules support the notion of *scale dependence* which allows one to specify the scale at which a rule should engage. This allows for different portrayals of a feature based on map scale. Consider the following example::
+Rules support the notion of *scale dependence* which allows one to specify the scale at which a rule should engage. This allows for different portrayals of a feature based on map scale. Consider the following example:: 
+
+
 
   <Rule>
      <MaxScaleDenominator>20000</MaxScaleDenominator>
