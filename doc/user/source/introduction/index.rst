@@ -8,7 +8,7 @@ Welcome to the GeoServer User Guide. This document is a comprehensive guide to a
 For those who wish to get started with GeoServer right away can skip to the :ref:`installation` section. For those who want more information about just what GeoServer is and what it can do for you can continue on to the :ref:`geoserver_overview` section. Thanks for choosing GeoServer! 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    geoserver-overview
    getting-involved

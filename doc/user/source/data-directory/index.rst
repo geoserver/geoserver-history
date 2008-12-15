@@ -8,7 +8,7 @@ The GeoServer *data directory* is the location on the file system where GeoServe
 To learn more about the structure of the GeoServer data directory continue onto the :ref:`data_dir_intro` section. Or to learn how to create a directory for a GeoServer installation jump to the :ref:`data_dir_creating` section.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    data-dir-intro/
    data-dir-creating/

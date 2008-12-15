@@ -3,14 +3,22 @@
 Introduction to SLD
 ===================
 
-*Styled Layer Descriptor* (SLD) is an XML based language for specifying the portrayal of Web Map Service (WMS) layers. Like WMS, SLD is itself an OGC standard. The current version of SLD is 1.1 and the specification is freely available `here <http://www.opengeospatial.org/standards/sld>`_.
+*Styled Layer Descriptor* (SLD) is an XML based language for
+ specifying the portrayal of Web Map Service (WMS) layers. Like WMS,
+ SLD is itself an OGC standard. The current version of SLD is 1.1 and
+ the specification is freely available `here
+ <http://www.opengeospatial.org/standards/sld>`_.
 
-The specification provides a good overview of SLD and map styling in general. It is a recommended read. In this document some of the key concepts will be further introduced.
+The specification provides a good overview of SLD and map styling in
+general. It is a recommended read. In this document some of the key
+concepts will be further introduced.
 
 Symbolizers
 -----------
 
-The notion of a *symbolizer* is at the heart of SLD. A symbolizer specifies exactly how data should be visualized. There are 5 types of symbolizer:
+The notion of a *symbolizer* is at the heart of SLD. A symbolizer
+specifies exactly how data should be visualized. There are 5 types of
+symbolizer:
 
   .. list-table::
      :widths: 20 80

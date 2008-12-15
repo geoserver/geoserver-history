@@ -4,7 +4,7 @@ Working with Data
 =================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    shapefile/
    postgis/
