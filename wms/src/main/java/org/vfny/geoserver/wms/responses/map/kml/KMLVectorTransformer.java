@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.batik.dom.util.HashTable;
@@ -13,6 +14,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Symbolizer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -199,16 +201,22 @@ public class KMLVectorTransformer extends KMLMapTransformer {
                 while (reader.hasNext()) {
                     SimpleFeature feature = (SimpleFeature) reader.next();
                     try {
-                        if ( encodeStyle(feature, styles, true) ) {
-                            encodePlacemark(feature, styles);    
+                        List<Symbolizer> symbolizers = filterSymbolizers(feature, styles);
+                        if (symbolizers.size() > 0) {
+                            encodePlacemark(feature, symbolizers);    
                         }
                     } catch (RuntimeException t) {
-                        // if the stream has been closed by the client don't keep on going forward, this is not
-                        // a feature local issue
+                        // if the stream has been closed by the client don't keep on going forward,
+                        // this is not a feature local issue
+                        //
                         if(t.getCause() instanceof SAXException)
                             throw t;
                         else
-                            LOGGER.log(Level.WARNING, "Failure tranforming feature to KML:" + feature.getID(), t);
+                            LOGGER.log(
+                                    Level.WARNING,
+                                    "Failure tranforming feature to KML:" + feature.getID(),
+                                    t
+                                );
                     } 
                 }
             } finally {

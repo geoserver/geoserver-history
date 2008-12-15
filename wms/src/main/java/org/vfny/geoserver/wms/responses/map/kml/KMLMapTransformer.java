@@ -182,8 +182,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML Placemark name from a feature by processing a template.
          */
-        protected void encodePlacemarkName(SimpleFeature feature,
-                FeatureTypeStyle[] styles) throws IOException {
+        protected void encodePlacemarkName(SimpleFeature feature, List<Symbolizer> symbolizers) 
+            throws IOException {
 
             // Algorithm for finding name / label of a placemark
             // 1. The title template for feature
@@ -205,35 +205,29 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             
             if(trySLD) {
                 StringBuffer label = new StringBuffer();
-                for (int i = 0; i < styles.length; i++) {
-                    Rule[] rules = KMLUtils.filterRules(styles[i], feature, scaleDenominator);
-                    for (int j = 0; j < rules.length; j++) {
-                        
-                        Symbolizer[] syms = rules[j].getSymbolizers();
-                        for (int k = 0; k < syms.length; k++) {
-                            if (syms[k] instanceof TextSymbolizer) {
-                                Expression e = SLD.textLabel((TextSymbolizer) syms[k]);
-                                Object object = null;
-                                if (e != null)
-                                    object = e.evaluate(feature);
-                                String value = null;
 
-                                if (object instanceof String) {
-                                    value = (String) object;
-                                } else {
-                                    if (object != null) {
-                                        value = object.toString();
-                                    }
-                                }
+                for (Symbolizer sym : symbolizers) {
+                    if (sym instanceof TextSymbolizer) {
+                        Expression e = SLD.textLabel((TextSymbolizer) sym);
+                        Object object = null;
+                        if (e != null)
+                            object = e.evaluate(feature);
+                        String value = null;
 
-                                if ((value != null) && !"".equals(value.trim())) {
-                                    label.append(value);
-                                }
+                        if (object instanceof String) {
+                            value = (String) object;
+                        } else {
+                            if (object != null) {
+                                value = object.toString();
                             }
+                        }
+
+                        if ((value != null) && !"".equals(value.trim())) {
+                            label.append(value);
                         }
                     }
                 }
-            
+
 
                 if (label.length() > 0) {
                     title = label.toString();
@@ -251,16 +245,15 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          * @param feature
          * @param styles
          */
-        protected void encodePlacemarkSnippet(SimpleFeature feature,
-                FeatureTypeStyle[] styles) {
+        protected void encodePlacemarkSnippet(SimpleFeature feature, List<Symbolizer> styles) {
             // does nothing at the moment
         }
 
         /**
          * Encodes a KML Placemark description from a feature
          */
-        protected void encodePlacemarkDescription(SimpleFeature feature,
-                FeatureTypeStyle[] styles) throws IOException {
+        protected void encodePlacemarkDescription(SimpleFeature feature, List<Symbolizer> styles)
+            throws IOException {
 
             StringBuilder description = new StringBuilder(template.description(feature));
             try{
@@ -270,7 +263,9 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     .append(getFeatureTypeURL())
                     .append(".html")
                     .append("\">Full dataset info and download</a> </div>");
-            } catch (ClassNotFoundException cnfe) {/* don't do anything, the link is already omitted */}
+            } catch (ClassNotFoundException cnfe) {
+                /* don't do anything, the link is already omitted */
+            }
 
             if (description != null) {
                 start("description");
@@ -280,7 +275,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         }
 
         /**
-         * Encods a KML Placemark LookAt from a geometry + centroid.
+         * Encodes a KML Placemark LookAt from a geometry + centroid.
          */
         protected void encodePlacemarkLookAt(Coordinate centroid) {
             start("LookAt");
@@ -295,50 +290,47 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         }
 
         /**
-         * Encodes the provided set of rules as KML styles.
+         * Extract the symbolizers for a particular feature from a list of styles.
+         *
+         * @param feature the SimpleFeature for which symbolizers should be extracted
+         * @param styles an array of FeatureTypeStyle's to be filtered
+         * @return a List<Symbolizer> containing only the symbolizers that apply to this placemark
          */
-        protected boolean encodeStyle(SimpleFeature feature,
-                FeatureTypeStyle[] styles) {
-            return encodeStyle(feature, styles, false);
-        }
-        
-        protected boolean encodeStyle(SimpleFeature feature,
-                FeatureTypeStyle[] styles, boolean isVector) {
-
-            /**
-             * KML requires sorting, should we do it here ? 
-             */
+        protected List<Symbolizer> filterSymbolizers(
+                SimpleFeature feature,
+                FeatureTypeStyle[] styles
+                ) {
             // encode the Line/Poly styles
-            List symbolizerList = new ArrayList();
+            List<Symbolizer> symbolizerList = new ArrayList<Symbolizer>();
             for (int j = 0; j < styles.length; j++) {
-                Rule[] rules;
-                    rules = KMLUtils.filterRules(styles[j], feature,
-                            scaleDenominator);
+                Rule[] rules = KMLUtils.filterRules(styles[j], feature, scaleDenominator);
                 for (int i = 0; i < rules.length; i++) {
-                    symbolizerList.addAll(Arrays.asList(rules[i]
-                            .getSymbolizers()));
+                    symbolizerList.addAll(Arrays.asList(rules[i].getSymbolizers()));
                 }
             }
 
-            if (!symbolizerList.isEmpty()) {
+            return symbolizerList;
+        }
+        
+        /**
+         * Encode a KML Style for a particular feature.
+         *
+         * @param feature the SimpleFeature whose style is being encoded.  This is needed to help 
+         *     with guessing default values if none are specified by the style.
+         * @param symbolizers a list of Symbolizers which apply to the feature.
+         */
+        protected void encodeStyle(SimpleFeature feature, List<Symbolizer> symbolizers) {
+            if (!symbolizers.isEmpty()) {
                 // start the style
-                start("Style", KMLUtils.attributes(new String[] { "id",
-                        "GeoServerStyle" + feature.getID() }));
+                start("Style");
 
-                Symbolizer[] symbolizers = (Symbolizer[]) symbolizerList
-                        .toArray(new Symbolizer[symbolizerList.size()]);
-                encodeStyle(feature, symbolizers);
+                Symbolizer[] symbolizerArray = 
+                    (Symbolizer[]) symbolizers.toArray(new Symbolizer[symbolizers.size()]);
+                encodeStyle(feature, symbolizerArray);
 
                 // end the style
                 end("Style");
-
-                // return true to specify that the feature has a style
-                return true;
-            } else {
-                // dont encode
-                return false;
             }
-
         }
 
         /**
@@ -405,8 +397,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         /**
          * Encodes the provided set of symbolizers as KML styles.
          */
-        protected void encodeStyle(SimpleFeature feature,
-                Symbolizer[] symbolizers) {
+        protected void encodeStyle(SimpleFeature feature, Symbolizer[] symbolizers) {
             try {
                 /**
                  * This causes some performance overhead, but we should separate
@@ -813,27 +804,28 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             }
         }
 
-        protected void encodePlacemark(SimpleFeature feature,
-                FeatureTypeStyle[] styles) {
-            encodePlacemark(feature, styles, null);
+        protected void encodePlacemark(SimpleFeature feature, List<Symbolizer> symbolizers) {
+            encodePlacemark(feature, symbolizers, null);
         }
 
         /**
          * Encodes a KML Placemark from a feature and optional name.
          */
-        protected void encodePlacemark(SimpleFeature feature,
-                FeatureTypeStyle[] styles, Geometry markGeometry) {
+        protected void encodePlacemark(
+                SimpleFeature feature,
+                List<Symbolizer> symbolizers,
+                Geometry markGeometry
+                ) {
             Geometry geometry = featureGeometry(feature);
             Coordinate centroid = geometryCentroid(geometry);
 
-            start("Placemark", KMLUtils.attributes(new String[] { "id",
-                    feature.getID() }));
+            start("Placemark", KMLUtils.attributes(new String[] { "id", feature.getID() }));
 
             // encode name + description only if kmattr was specified
             if (mapContext.getRequest().getKMattr()) {
                 // name
                 try {
-                    encodePlacemarkName(feature, styles);
+                    encodePlacemarkName(feature, symbolizers);
                 } catch (Exception e) {
                     String msg = "Error occured processing 'title' template.";
                     LOGGER.log(Level.WARNING, msg, e);
@@ -841,7 +833,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
 
                 // snippet (only used by OWS5 prototype at the moment)
                 try {
-                    encodePlacemarkSnippet(feature, styles);
+                    encodePlacemarkSnippet(feature, symbolizers);
                 } catch (Exception e) {
                     String msg = "Error occured processing 'description' template.";
                     LOGGER.log(Level.WARNING, msg, e);
@@ -849,7 +841,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
 
                 // description
                 try {
-                    encodePlacemarkDescription(feature, styles);
+                    encodePlacemarkDescription(feature, symbolizers);
                 } catch (Exception e) {
                     String msg = "Error occured processing 'description' template.";
                     LOGGER.log(Level.WARNING, msg, e);
@@ -857,7 +849,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             }
 
             String selfLinks = (String) mapContext.getRequest()
-                    .getFormatOptions().get("selfLinks");
+                .getFormatOptions().get("selfLinks");
             if (selfLinks != null && selfLinks.equalsIgnoreCase("true")) {
                 GetMapRequest request = mapContext.getRequest();
                 String link = "";
@@ -873,7 +865,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 link = link + "/" + id[1] + ".kml";
 
                 element("atom:link", null, KMLUtils.attributes(new String[] {
-                        "rel", "self", "href", link }));
+                            "rel", "self", "href", link }));
             }
 
             // look at
@@ -881,23 +873,22 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
 
             // time
             try {
-                encodePlacemarkTime(feature, styles);
+                encodePlacemarkTime(feature, symbolizers);
             } catch (Exception e) {
                 String msg = "Error occured processing 'time' template: "
-                        + e.getMessage();
+                    + e.getMessage();
                 LOGGER.log(Level.WARNING, msg);
                 LOGGER.log(Level.FINE, "", e);
             }
 
-            // style reference
-            element("styleUrl", "#GeoServerStyle" + feature.getID());
+            encodeStyle(feature, symbolizers);
 
             // encode extended data (kml 2.2)
             encodeExtendedData(feature);
 
             // geometry
             if (markGeometry == null) {
-                encodePlacemarkGeometry(geometry, centroid, styles);
+                encodePlacemarkGeometry(geometry, centroid, symbolizers);
             } else {
                 // if given a specific placemark geometry, encode a point
                 // at the geometry coordinates
@@ -947,25 +938,25 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML TimePrimitive geometry from a feature.
          */
-        protected void encodePlacemarkTime(SimpleFeature feature,
-                FeatureTypeStyle[] styles) throws IOException {
-            try {
-                String[] time = new FeatureTimeTemplate(template)
+        protected void encodePlacemarkTime(SimpleFeature feature, List<Symbolizer> symbolizers)
+            throws IOException {
+                try {
+                    String[] time = new FeatureTimeTemplate(template)
                         .execute(feature);
-                if (time.length == 0) {
-                    return;
-                }
+                    if (time.length == 0) {
+                        return;
+                    }
 
-                if (time.length == 1) {
-                    encodeKmlTimeStamp(parseDateTime(time[0]));
-                } else {
-                    encodeKmlTimeSpan(parseDateTime(time[0]),
-                            parseDateTime(time[1]));
+                    if (time.length == 1) {
+                        encodeKmlTimeStamp(parseDateTime(time[0]));
+                    } else {
+                        encodeKmlTimeSpan(parseDateTime(time[0]),
+                                parseDateTime(time[1]));
+                    }
+                } catch (Exception e) {
+                    throw (IOException) new IOException().initCause(e);
                 }
-            } catch (Exception e) {
-                throw (IOException) new IOException().initCause(e);
             }
-        }
 
         /**
          * Encodes the time pairs into a kml TimeSpan (from and to will be
@@ -1082,13 +1073,16 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          * 
          * @param styles
          */
-        protected void encodePlacemarkGeometry(Geometry geometry,
-                Coordinate centroid, FeatureTypeStyle[] styles) {
+        protected void encodePlacemarkGeometry(
+                Geometry geometry,
+                Coordinate centroid,
+                List<Symbolizer> symbolizers
+                ) {
             // if point, just encode a single point, otherwise encode the
             // geometry + centroid
             if (geometry instanceof Point || (geometry instanceof MultiPoint)
                     && ((MultiPoint) geometry).getNumPoints() == 1) {
-                
+
                 // This adds attributes that violate the KML specs
                 // encodeGeometry( geometry, styles );
 
@@ -1124,7 +1118,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 end("Point");
 
                 // the actual geometry
-                encodeGeometry(geometry, styles);
+                encodeGeometry(geometry, symbolizers);
 
                 end("MultiGeometry");
             }
@@ -1136,14 +1130,13 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          * 
          * @param styles
          */
-        protected void encodeGeometry(Geometry geometry,
-                FeatureTypeStyle[] styles) {
+        protected void encodeGeometry(Geometry geometry, List<Symbolizer> symbolizers) {
             if (geometry instanceof GeometryCollection) {
                 // unwrap the collection
                 GeometryCollection collection = (GeometryCollection) geometry;
 
                 for (int i = 0; i < collection.getNumGeometries(); i++) {
-                    encodeGeometry(collection.getGeometryN(i), styles);
+                    encodeGeometry(collection.getGeometryN(i), symbolizers);
                 }
             } else {
                 geometryTranslator.encode(geometry);
