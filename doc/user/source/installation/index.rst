@@ -1,7 +1,7 @@
 .. _installation:
 
-GeoServer Installation
-======================
+Installation
+============
 
 In order to run GeoServer a Java SE Development Kit (JDK) must be installed on the system. 
 
