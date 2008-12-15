@@ -3,14 +3,14 @@
 Installing Java
 ===============
 
-Installing a Java JDK is dependent on operating system. Follow the instructions below for the target platform.
+The instructions for installing a Java Development Kit (JDK) are dependent on your operating system.  Please follow the  instructions below for your operating system.
 
 Windows
 -------
 
-1. Visit http://java.sun.com/javase/downloads/index.jsp. The current version of Java is 1.6/6.0. Choose the ``Java SE Development Kit (JDK) 6 ...`` option.
-2. Choose the appropriate platform, ``Windows`` or ``Windows x64``, and proceed with the download. 
-3. Run the installer accepting the defaults.
+#. Visit the `Sun Java downloads <http://java.sun.com/javase/downloads/index.jsp>`_ page. The most recent version of Java is Java 1.6 (which is also known as Java 6). Choose the ``Java SE Development Kit (JDK) 6 ...`` option.
+#. Choose the appropriate platform, ``Windows`` or ``Windows x64``, and proceed with the download. 
+#. Run the installer accepting the defaults.
 
    .. image:: java-install1.png
       :align: center
@@ -25,7 +25,7 @@ Windows
 
 4. Create a new environment variable named ``JAVA_HOME`` and set it to the location of the JDK installed in the previous step.
 
-   .. image:: java_home.png
+   .. image:: java_home_alt.png
       :align: center
 
 

@@ -3,12 +3,11 @@
 Installation
 ============
 
-In order to run GeoServer a Java SE Development Kit (JDK) must be installed on the system. 
+GeoServer is written in Java, and requires a Java Development Kit (JDK) installed on a system in order to run.  The JDK is different from a Java Runtime Evnironment (JRE), which is what is most often installed on systems.  
 
-.. note::
-   A JDK with version greater than 1.5 is required to run GeoServer.
+The following pages explain how to install Java, and then to install GeoServer.  Specific instructions are also given for upgrading a pre-existing GeoServer instance.
 
-If a Java JDK is already installed on the system jump ahead to the :ref:`geoserver_install` section. Otherwise continue on to the next section, :ref:`java_install`.
+If a Java JDK is already installed on the system you can jump ahead to the :ref:`geoserver_install` section. Otherwise continue on to the next section, :ref:`java_install`.
 
 .. toctree::
    :maxdepth: 2
@@ -16,4 +15,4 @@ If a Java JDK is already installed on the system jump ahead to the :ref:`geoserv
    java-install/
    geoserver-install/
    geoserver-upgrade/
-
+   
