@@ -18,6 +18,7 @@ import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Symbolizer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -26,6 +27,7 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.ContentHandler;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 
 
@@ -184,7 +186,8 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                         SimpleFeature ftr = iter.next();
                         geom = (Geometry) ftr.getDefaultGeometry();
 
-                        encodeStyle(ftr, fts);
+                        List<Symbolizer> symbolizers = filterSymbolizers(ftr, fts);
+                        if (symbolizers.size() != 0) encodeStyle(ftr, symbolizers);
 
                         // if this is a multipolygon, get the largest polygon
                         // that intersects the AOI
@@ -206,7 +209,7 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                         if (g1.isEmpty())
                             continue;
                         centroidGeom = g1.getCentroid();
-                        encodePlacemark(ftr, fts, centroidGeom);
+                        encodePlacemark(ftr, symbolizers, centroidGeom);
                     }
                 }
             }
