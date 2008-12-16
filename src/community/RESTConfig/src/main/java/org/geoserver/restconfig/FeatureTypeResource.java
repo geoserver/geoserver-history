@@ -12,10 +12,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import javax.servlet.ServletContext;
+
+import net.sf.json.JSONNull;
+
+import org.geoserver.config.GeoServer;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.RestletException;
+import org.geotools.data.DataStore;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.restlet.data.MediaType;
+import org.restlet.data.Status;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
@@ -25,23 +39,8 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.vfny.geoserver.util.DataStoreUtils;
-import org.geotools.data.DataStore;
-import org.opengis.feature.simple.SimpleFeatureType;
-import javax.servlet.ServletContext;
 
 import com.vividsolutions.jts.geom.Envelope;
-
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-
-import org.geoserver.config.GeoServer;
-import org.geoserver.rest.MapResource;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
-import org.geoserver.rest.RestletException;
-
-import net.sf.json.JSONNull;
 
 /**
  * Restlet for DataStore resources

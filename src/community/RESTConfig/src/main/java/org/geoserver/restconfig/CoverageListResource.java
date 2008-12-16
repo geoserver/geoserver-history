@@ -10,17 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.restlet.Context;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.MapResource;
 import org.restlet.data.MediaType;
 import org.vfny.geoserver.config.DataConfig;
-
-
-import org.geoserver.rest.MapResource;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.JSONFormat;
 
 /**
  * Restlet for Style resources
@@ -54,13 +49,37 @@ public class CoverageListResource extends MapResource {
     }
 
     public Map getMap() {
-        String coverageStoreName = (String)getRequest().getAttributes().get("folder");
         Map m = new HashMap();
-        Map coverages = myDC.getCoverages();
         List coverageList = new ArrayList();
 
-        Iterator it = coverages.entrySet().iterator();
+        Map coverages = myDC.getCoverages();
 
+
+        String coverageStoreName = (String)getRequest().getAttributes().get("folder");
+        Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
+        Object resource = folders.get(coverageStoreName);
+        if (resource instanceof Map){
+            Iterator it = ((Map) resource).keySet().iterator();
+            while (it.hasNext()) {
+                coverageStoreName = (String) it.next();
+                addCoverage(coverageStoreName, coverageList, coverages);
+            }
+        } else {
+            addCoverage(coverageStoreName, coverageList, coverages);
+        }
+
+        m.put("coverages", coverageList);
+
+        return m;
+    }
+
+    /**
+     * @param coverageStoreName
+     * @param coverageList
+     * @param it
+     */
+    private void addCoverage(String coverageStoreName, List coverageList, Map coverages) {
+        Iterator it = coverages.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
             String key = (String)entry.getKey();
@@ -68,9 +87,5 @@ public class CoverageListResource extends MapResource {
                 coverageList.add(key.substring(coverageStoreName.length() + 1));
             }
         }
-
-        m.put("coverages", coverageList);
-
-        return m;
     }
 }

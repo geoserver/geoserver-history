@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
@@ -276,12 +275,11 @@ class RESTUtils {
 	 * @throws ConfigurationException
 	 */
 	static File handleURLUpload(String datasetName, String extension, Request request) throws IOException, ConfigurationException {
-	
-		////
-		//
-		// Get the dir where to write and create a file there
-		//
-		////
+	    ////
+	    //
+	    // Get the dir where to write and create a file there
+	    //
+	    ////
 	    File dir = GeoserverDataDirectory.findCreateConfigDir("data");
 	    //this may exists already, but we don't fail here since 
 	    //it might be old and unused, if needed we fail later while copying
@@ -292,26 +290,46 @@ class RESTUtils {
 	    final String stringURL=IOUtils.getStringFromStream(inStream);
 	    final URL fileURL=new URL(stringURL);
 	    
-		////
-		//
-		// Now do the real upload
-		//
-		////
+	    ////
+	    //
+	    // Now do the real upload
+	    //
+	    ////
 	    //check if it is a file
 	    final File inputFile= IOUtils.URLToFile(fileURL);
-	    if(inputFile!=null&&inputFile.exists()&&inputFile.canRead())
-	    {
+	    if(inputFile!=null && inputFile.exists() && inputFile.canRead()) {
 	    	IOUtils.copyFile(inputFile, newFile);
-	    	
-	    }
-	    else {
+	    } else {
 	        final InputStream inputStream =  fileURL.openStream();
 	        final OutputStream outStream = new FileOutputStream(newFile);
 	        IOUtils.copyStream(inputStream, outStream, true, true);
 	    }
+	    
 	    return newFile;
 	}
 	
+	/**
+         * Handles the referencing of a dataset using the URL method.
+	 * 
+	 * @param coverageName
+	 * @param extension
+	 * @param request
+	 * @return
+	 * 
+	 * @throws IOException 
+	 */
+	public static File handleEXTERNALUpload(String coverageName, String extension, Request request) throws IOException {
+	    //get the URL for this file to upload
+	    final InputStream inStream=request.getEntity().getStream();
+	    final String stringURL=IOUtils.getStringFromStream(inStream);
+	    final URL fileURL=new URL(stringURL);
+
+	    final File inputFile= IOUtils.URLToFile(fileURL);
+	    if(inputFile!=null && inputFile.exists() && inputFile.canRead())
+	        return inputFile;
+
+	    return null;
+	}
 
 	/**
 	 * Unzip a zipped dataset.

@@ -4,6 +4,8 @@
  */
 package org.geoserver.restconfig;
 
+import java.util.Map;
+
 import org.restlet.Finder;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -37,6 +39,12 @@ public class LayerListFinder extends Finder {
         String folder = (String)request.getAttributes().get("folder");
         Resource r;
 
+        Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
+        Object resource = folders.get(folder);
+        if (resource instanceof Map){
+            folder = (String) ((Map) resource).keySet().iterator().next();
+        }
+        
         if (getDataConfig().getDataFormatIds().contains(folder)){
             r = new CoverageListResource(getDataConfig());
         } else {

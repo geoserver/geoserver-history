@@ -195,7 +195,7 @@ public class CoverageResource extends MapResource {
         
         ArrayList styles = new ArrayList();
         if (details.get("SupplementaryStyles") != null){
-        styles.addAll((List) details.get("SupplementaryStyles"));
+            styles.addAll((List) details.get("SupplementaryStyles"));
         }
         cc.setStyles(styles);
 
@@ -243,10 +243,10 @@ public class CoverageResource extends MapResource {
 
         GeneralEnvelope env = cc.getEnvelope();
         List envPoints = new ArrayList();
-        envPoints.add(env.getLowerCorner().getOrdinate(0));
-        envPoints.add(env.getLowerCorner().getOrdinate(1));
-        envPoints.add(env.getUpperCorner().getOrdinate(0));
-        envPoints.add(env.getUpperCorner().getOrdinate(1));
+            envPoints.add(env.getLowerCorner().getOrdinate(0));
+            envPoints.add(env.getLowerCorner().getOrdinate(1));
+            envPoints.add(env.getUpperCorner().getOrdinate(0));
+            envPoints.add(env.getUpperCorner().getOrdinate(1));
         m.put("Envelope", envPoints);
         m.put("CRS", env.getCoordinateReferenceSystem().getIdentifiers().toArray()[0].toString());
         m.put("DefaultStyle", cc.getDefaultStyle());

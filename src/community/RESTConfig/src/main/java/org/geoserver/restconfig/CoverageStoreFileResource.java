@@ -6,22 +6,15 @@
 package org.geoserver.restconfig;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipFile;
 
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -33,7 +26,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
-import org.restlet.data.Request;
 import org.restlet.data.Status;
 import org.restlet.resource.Resource;
 import org.restlet.resource.StringRepresentation;
@@ -41,25 +33,22 @@ import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.GlobalConfig;
-import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.xml.XMLConfigWriter;
 
 /**
  * This class extends Resource to handle the GET and PUT requests to manage the
  * upload of the GeoTIFF files.
  * 
- * @author $Author: Tobia Di Pisa (tobia.dipisa@geo-solutions.it) $ (last modification)
+ * @author $Author: Tobia Di Pisa (tobia.dipisa@geo-solutions.it) $ (last
+ *         modification)
  * @author $Author: Alessio Fabiani (alessio.fabiani@geo-solutions.it) $ (last
  *         modification)
  */
 
 public class CoverageStoreFileResource extends Resource {
-	
-	private DataConfig myDataConfig;
+
+    private DataConfig myDataConfig;
 
     private Data myData;
 
@@ -71,17 +60,17 @@ public class CoverageStoreFileResource extends Resource {
     // A map from .xxx file extensions
     // //////
 
-    private static Map<String,String> myFormats = new HashMap<String,String>();
+    private static Map<String, String> myFormats = new HashMap<String, String>();
     static {
-    	final Format[] formats = CoverageStoreUtils.formats;
-    	for(Format format:formats)
-    	{
-    		myFormats.put(format.getName().toLowerCase(), format.getName());
-    	}
-        
+        final Format[] formats = CoverageStoreUtils.formats;
+        for (Format format : formats) {
+            myFormats.put(format.getName().toLowerCase(), format.getName());
+        }
+
     }
 
-    private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CoverageStoreFileResource.class);
+    private final static Logger LOGGER = org.geotools.util.logging.Logging
+            .getLogger(CoverageStoreFileResource.class);
 
     private CoverageStoreFileResource() {
     }
@@ -137,12 +126,15 @@ public class CoverageStoreFileResource extends Resource {
      */
 
     public synchronized void handleGet() {
-        String coverageStore = (String) getRequest().getAttributes().get("folder");
-        String coverageName = (String) getRequest().getAttributes().get("layer");
+        String coverageStore = (String) getRequest().getAttributes().get(
+                "folder");
+        String coverageName = (String) getRequest().getAttributes()
+                .get("layer");
         String qualified = coverageStore + ":" + coverageName;
 
         CoverageStoreConfig csc = myDataConfig.getDataFormat(coverageStore);
-        CoverageConfig cc = (CoverageConfig) myDataConfig.getCoverages().get(qualified);
+        CoverageConfig cc = (CoverageConfig) myDataConfig.getCoverages().get(
+                qualified);
 
         if (csc == null || cc == null) {
             getResponse().setEntity(
@@ -164,20 +156,19 @@ public class CoverageStoreFileResource extends Resource {
         return true;
     }
 
-    
     /**
      * This function handles the PUT requests managing the construction of the
      * coverage store and the coverage if necessary.
      */
 
-	public synchronized void handlePut() {
+    public synchronized void handlePut() {
         String coverageStore = (String) getRequest().getAttributes().get("folder");
         String coverageName = (String) getRequest().getAttributes().get("layer");
         coverageName = coverageName == null ? coverageStore : coverageName;
         String extension = (String) getRequest().getAttributes().get("type");
-        
+
         Form form = getRequest().getResourceRef().getQueryAsForm();
-        
+
         String formatId = (String) myFormats.get(extension);
         Format format;
         try {
@@ -196,61 +187,58 @@ public class CoverageStoreFileResource extends Resource {
 
         File uploadedFile = null;
         try {
-        	String method = (String) getRequest().getAttributes().get("method");
-        	if (method != null && method.equalsIgnoreCase("file"))
-        		uploadedFile = RESTUtils.handleBinUpload(coverageName, extension, getRequest());
-        	else if (method != null && method.equalsIgnoreCase("url"))
-        		uploadedFile = RESTUtils.handleURLUpload(coverageName, extension, getRequest());
-        	else{
+            String method = (String) getRequest().getAttributes().get("method");
+            if (method != null && method.equalsIgnoreCase("file"))
+                uploadedFile = RESTUtils.handleBinUpload(coverageName, extension, getRequest());
+            else if (method != null && method.equalsIgnoreCase("url"))
+                uploadedFile = RESTUtils.handleURLUpload(coverageName, extension, getRequest());
+            else if (method != null && method.equalsIgnoreCase("external"))
+                uploadedFile = RESTUtils.handleEXTERNALUpload(coverageName, extension, getRequest());
+            else {
                 getResponse().setEntity(new StringRepresentation("Unrecognized upload method: " + method, MediaType.TEXT_PLAIN));
-                getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);    
+                getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                 return;
-        	}
+            }
         } catch (Throwable t) {
-        	if(LOGGER.isLoggable(Level.SEVERE))
-        		LOGGER.log(Level.SEVERE,t.getLocalizedMessage(),t);
-            getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + t, MediaType.TEXT_PLAIN));
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + t,MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             return;
         }
 
-				// /////////////////////////////////////////////////////////////////////
-				//
-				// Add overviews to the Coverage
-				//
-				// /////////////////////////////////////////////////////////////////////
-	      if (form.getFirst("overviews") != null && form.getFirstValue("overviews").equalsIgnoreCase("yes"))
-	      		/* TODO: Add overviews here */;
+        // /////////////////////////////////////////////////////////////////////
+        //
+        // Add overviews to the Coverage
+        //
+        // /////////////////////////////////////////////////////////////////////
+        if (form.getFirst("overviews") != null && form.getFirstValue("overviews").equalsIgnoreCase("yes"))
+            /* TODO: Add overviews here */;
 
-        try{
-            final File outputDir=RESTUtils.unpackZippedDataset(coverageStore, uploadedFile);
-            if(outputDir!=null&&outputDir.exists()&&outputDir.canRead())
-            {
-            	final File[] files = outputDir.listFiles();
-            	boolean found=false;
-            	for(File file:files)
-            	{
-            		if((((AbstractGridFormat)format)).accepts(file))
-            		{
-            			uploadedFile=file;
-            			found=true;
-            			break;
-            		}
-            	}
-            	
-            	if(!found)
-            	{
-                    getResponse().setEntity(new StringRepresentation("Failure while setting up datastore: Unable to handle source in zip file",MediaType.TEXT_PLAIN));
+        try {
+            final File outputDir = RESTUtils.unpackZippedDataset(coverageStore, uploadedFile);
+            if (outputDir != null && outputDir.exists() && outputDir.canRead()) {
+                final File[] files = outputDir.listFiles();
+                boolean found = false;
+                for (File file : files) {
+                    if ((((AbstractGridFormat) format)).accepts(file)) {
+                        uploadedFile = file;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    getResponse().setEntity(new StringRepresentation("Failure while setting up datastore: Unable to handle source in zip file", MediaType.TEXT_PLAIN));
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     return;
-            	}
+                }
             }
 
-
-        } catch(Exception mue){
-        	if(LOGGER.isLoggable(Level.SEVERE))
-        		LOGGER.log(Level.SEVERE,mue.getLocalizedMessage(),mue);        	
-            getResponse().setEntity(new StringRepresentation("Failure while setting up datastore: " + mue,MediaType.TEXT_PLAIN));
+        } catch (Exception mue) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, mue.getLocalizedMessage(), mue);
+            getResponse().setEntity(new StringRepresentation("Failure while setting up datastore: " + mue, MediaType.TEXT_PLAIN));
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             return;
         }
@@ -261,9 +249,9 @@ public class CoverageStoreFileResource extends Resource {
             cvReader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(uploadedFile);
 
             try {
-            	numDataSets = cvReader.getGridCoverageCount();
+                numDataSets = cvReader.getGridCoverageCount();
             } catch (UnsupportedOperationException e) {
-            	numDataSets = 1;
+                numDataSets = 1;
             }
         }
 
@@ -281,14 +269,14 @@ public class CoverageStoreFileResource extends Resource {
                 csc = new CoverageStoreConfig(realCoverageStore, format);
                 csc.setEnabled(true);
                 if (form.getFirst("namespace") != null)
-                	csc.setNameSpaceId(form.getFirstValue("namespace"));
+                    csc.setNameSpaceId(form.getFirstValue("namespace"));
                 else
-                	csc.setNameSpaceId(myDataConfig.getDefaultNameSpace().getPrefix());
+                    csc.setNameSpaceId(myDataConfig.getDefaultNameSpace().getPrefix());
                 try {
                     csc.setUrl(uploadedFile.toURL().toExternalForm() + (c > 0 ? ":" + c : ""));
                 } catch (MalformedURLException e) {
-                	if(LOGGER.isLoggable(Level.SEVERE))
-                		LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);                  	
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
                     getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     return;
@@ -305,16 +293,15 @@ public class CoverageStoreFileResource extends Resource {
                 try {
                     csc.setUrl(uploadedFile.toURL().toExternalForm() + (c > 0 ? ":" + c : ""));
                 } catch (MalformedURLException e) {
-                	if(LOGGER.isLoggable(Level.SEVERE))
-                		LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);                  	
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
                     getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: " + e, MediaType.TEXT_PLAIN));
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     return;
                 }
-                
+
                 myDataConfig.removeCoverage(qualified);
             }
-
 
             // //////
             // Configuration for the coverage
@@ -323,13 +310,13 @@ public class CoverageStoreFileResource extends Resource {
 
             if (cc == null) {
                 try {
-                	AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(new URL(csc.getUrl()));
+                    AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(new URL(csc.getUrl()));
 
-                	if (reader == null) {
-                		getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: Invalid GeoTIFF file!", MediaType.TEXT_PLAIN));
-                		getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-                		return;
-                	}
+                    if (reader == null) {
+                        getResponse().setEntity(new StringRepresentation("Error while storing uploaded file: Invalid GeoTIFF file!", MediaType.TEXT_PLAIN));
+                        getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                        return;
+                    }
                     cc = new CoverageConfig(csc.getId(), format, reader, myDataConfig);
 
                     if ("UNKNOWN".equals(cc.getUserDefinedCrsIdentifier())) {
@@ -341,7 +328,7 @@ public class CoverageStoreFileResource extends Resource {
                         envelope.setCoordinateReferenceSystem(targetCRS);
 
                         cc.setUserDefinedCrsIdentifier("EPSG:4326");
-                        //cc.setCrs(targetCRS);
+                        // cc.setCrs(targetCRS);
                         cc.setEnvelope(envelope);
                     }
 
@@ -350,17 +337,16 @@ public class CoverageStoreFileResource extends Resource {
 
                     cc.setRequestCRSs(requestResponseCRSs);
                     cc.setResponseCRSs(requestResponseCRSs);
-                    
+
                     if (form.getFirst("style") != null)
-                    	cc.setDefaultStyle(form.getFirstValue("style"));
-       
-                    
+                        cc.setDefaultStyle(form.getFirstValue("style"));
+
                     if (form.getFirst("wmspath") != null)
                         cc.setWmsPath(form.getFirstValue("wmspath"));
-                        
+
                 } catch (Exception e) {
-                	if(LOGGER.isLoggable(Level.SEVERE))
-                		LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);                  	
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
                     getResponse().setEntity(new StringRepresentation("Failure while saving configuration: " + e, MediaType.TEXT_PLAIN));
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     return;
@@ -379,9 +365,6 @@ public class CoverageStoreFileResource extends Resource {
         getResponse().setStatus(Status.SUCCESS_OK);
     }
 
-   
-
-   
     /**
      * This function manages the save of the configuration for the CoverageStore
      * and the Coverage
