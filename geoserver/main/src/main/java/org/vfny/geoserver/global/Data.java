@@ -2189,7 +2189,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                     params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
                     CoverageAccess cvAccess = driver.connect(params, null, null);
                     if (cvAccess != null) {
-                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getNativeName()), null, AccessType.READ_ONLY, null, null);
                         if (cvSource != null) {
                             coverage.setFields(cvSource.getRangeType(null));
 
@@ -2271,7 +2271,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                     params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
                     CoverageAccess cvAccess = driver.connect(params, null, null);
                     if (cvAccess != null) {
-                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getNativeName()), null, AccessType.READ_ONLY, null, null);
                         if (cvSource != null) {
                             coverage.setFields(cvSource.getRangeType(null));
 
@@ -2398,7 +2398,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                     params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
                     CoverageAccess cvAccess = driver.connect(params, null, null);
                     if (cvAccess != null) {
-                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getName()), null, AccessType.READ_ONLY, null, null);
+                        CoverageSource cvSource = cvAccess.access(new NameImpl(coverage.getNativeName()), null, AccessType.READ_ONLY, null, null);
                         if (cvSource != null) {
                             coverage.setFields(cvSource.getRangeType(null));
 

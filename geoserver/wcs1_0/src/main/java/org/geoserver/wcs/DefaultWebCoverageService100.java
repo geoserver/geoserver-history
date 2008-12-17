@@ -183,7 +183,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             final CoverageAccess cvAccess = driver.connect(params, HINTS, null);
             
             if (cvAccess != null) {
-                final CoverageSource cvSource = cvAccess.access(new NameImpl(coverageName), null, AccessType.READ_ONLY, HINTS, null);
+                final CoverageSource cvSource = cvAccess.access(new NameImpl(meta.getCoverageNativeName()), null, AccessType.READ_ONLY, HINTS, null);
                 // handle spatial domain subset, if needed
                 final GeneralEnvelope originalEnvelope = new GeneralEnvelope(cvSource.getHorizontalDomain(false, null).get(0));
                 GeneralEnvelope destinationEnvelope = (GeneralEnvelope) request.getDomainSubset().getSpatialSubset().getEnvelope().get(0);

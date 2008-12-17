@@ -472,7 +472,7 @@ public class HibernateCatalog implements Catalog {
                 CoverageAccess cvAccess = driver.connect(params, null, null);
                 if (cvAccess != null) {
                     CoverageSource cvSource = cvAccess.access(new NameImpl(
-                            coverage.getName()), null, AccessType.READ_ONLY,
+                            coverage.getNativeName()), null, AccessType.READ_ONLY,
                             null, null);
                     if (cvSource != null) {
                         coverage

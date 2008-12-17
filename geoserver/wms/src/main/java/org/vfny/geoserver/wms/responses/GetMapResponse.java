@@ -435,7 +435,7 @@ public class GetMapResponse implements Response {
 
         final String layerName = stripNsPrefix(layer.getName());
         final CoverageInfo coverageInfo = layer.getCoverage();
-        final CoverageSource cvSource = cvAccess.access(new NameImpl(layerName), null, AccessType.READ_ONLY, null, null);
+        final CoverageSource cvSource = cvAccess.access(new NameImpl(coverageInfo.getCoverageNativeName()), null, AccessType.READ_ONLY, null, null);
         try{
             // handle spatial domain subset, if needed
             Rectangle destinationSize = new Rectangle(0, 0, request.getWidth(), request.getHeight());

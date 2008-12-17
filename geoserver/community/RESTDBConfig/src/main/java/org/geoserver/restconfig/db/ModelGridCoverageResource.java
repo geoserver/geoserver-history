@@ -291,15 +291,17 @@ public class ModelGridCoverageResource extends MapResource {
             
             if (theModel != null && theModel.getModelRuns() != null) {
                 for (ModelRunInfo mr : rawCatalog.getModelRuns(theModel)) {
-                    if (mr.getName().equals(modelRunName))
+                    if (mr.getName().equals(modelRunName)) {
                         theModelRun = mr;
-                }
-            }
-            
-            if (theModelRun != null && theModelRun.getGridCoverages() != null) {
-                for (CoverageInfo ci : rawCatalog.getGridCoverages(theModelRun)) {
-                    if (ci.getName().equals(gridcoverageName)) {
-                        coverage = rawCatalog.getCoverage(ci.getId());
+
+                        if (theModelRun != null && theModelRun.getGridCoverages() != null) {
+                            for (CoverageInfo ci : rawCatalog.getGridCoverages(theModelRun)) {
+                                if (ci.getName().equals(gridcoverageName)) {
+                                    coverage = rawCatalog.getCoverage(ci.getId());
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -543,9 +543,9 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 if (fields != null && fields.getNumFieldTypes() <= 0) {
                     CoverageSource cvSource = null;
                     try {
-                        cvSource = ci.getCoverageAccess().access(new NameImpl(ci.getCoverageName()), null, AccessType.READ_ONLY, null, null);
+                        cvSource = ci.getCoverageAccess().access(new NameImpl(ci.getCoverageNativeName()), null, AccessType.READ_ONLY, null, null);
                         DefaultCoverageReadRequest cvReadRequest = new DefaultCoverageReadRequest();
-                        cvReadRequest.setName(new NameImpl(ci.getCoverageName()));
+                        cvReadRequest.setName(new NameImpl(ci.getCoverageNativeName()));
                         CoverageResponse cvResponse = cvSource.read(cvReadRequest, null);
                         if (cvResponse.getStatus().equals(Status.SUCCESS)) {
                             Coverage coverage = cvResponse.getResults(null).iterator().next();

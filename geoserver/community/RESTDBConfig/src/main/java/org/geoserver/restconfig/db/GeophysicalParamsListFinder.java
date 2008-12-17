@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.GeophysicParamInfo;
+import org.geoserver.catalog.ModelInfo;
+import org.geoserver.catalog.ModelInfo.Discipline;
 import org.geoserver.config.GeoServer;
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.DataFormat;
@@ -16,6 +18,7 @@ import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
 import org.restlet.Finder;
+import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -79,9 +82,10 @@ public class GeophysicalParamsListFinder extends Finder {
         }
 
         public Map getMap() {
+            Form parameters = getRequest().getResourceRef().getQueryAsForm();
             Map m = new HashMap();
             List l = new ArrayList();
-            Map geophysicParams = getVirtualGeophysicParamsMap(getCatalog());
+            Map geophysicParams = getVirtualGeophysicParamsMap(getCatalog(), parameters);
             
             l.addAll(geophysicParams.keySet());
             Collections.sort(l);
@@ -105,12 +109,26 @@ public class GeophysicalParamsListFinder extends Finder {
         }
     }
 
-    public static Map getVirtualGeophysicParamsMap(Catalog catalog){
+    public static Map getVirtualGeophysicParamsMap(Catalog catalog, Form parameters){
+        Discipline discipline = null;
+        if (parameters.getFirst("discipline") != null) {
+            discipline = Discipline.valueOf(parameters.getFirstValue("discipline"));
+        }
+        
         Map geophysicParams = new HashMap();
         Iterator it =  catalog.getGeophysicParams().iterator();
         while (it.hasNext()) {
             GeophysicParamInfo entry = (GeophysicParamInfo)it.next();
-            geophysicParams.put(entry.getName(), entry);
+            if (discipline == null)
+                geophysicParams.put(entry.getName(), entry);
+            else {
+                for (ModelInfo m : catalog.getModels(entry)) {
+                    if (m.getDiscipline().equals(discipline)) {
+                        geophysicParams.put(entry.getName(), entry);
+                        break;
+                    }
+                }
+            }
         }
 
         return geophysicParams;

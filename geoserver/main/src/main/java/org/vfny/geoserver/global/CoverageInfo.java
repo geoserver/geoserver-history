@@ -540,6 +540,10 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         return coverage.getName();
     }
     
+    public String getCoverageNativeName() {
+        return coverage.getNativeName();
+    }
+    
     /**
      * @return Returns the name.
      */

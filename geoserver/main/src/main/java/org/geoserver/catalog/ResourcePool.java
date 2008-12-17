@@ -546,9 +546,9 @@ public class ResourcePool {
 //                    reader.getFormat().getReadParameters(), info.getParameters()));
         GridCoverage gc  = null;
         
-        CoverageSource source = driver.access(new NameImpl(info.getName()), info.getParameters(), AccessType.READ_ONLY, hints, null);
+        CoverageSource source = driver.access(new NameImpl(info.getNativeName()), info.getParameters(), AccessType.READ_ONLY, hints, null);
         CoverageReadRequest request = new DefaultCoverageReadRequest();
-        request.setName(new NameImpl(info.getName()));
+        request.setName(new NameImpl(info.getNativeName()));
         
         // TODO set the all the read request metadata in order to get the spatial, vertical, temporal and range subset
         

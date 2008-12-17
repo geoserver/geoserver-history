@@ -222,7 +222,7 @@ public class CoverageResponse implements Response {
             // Setting coverage reading params.
             //
             // /////////////////////////////////////////////////////////
-            final CoverageSource cvSource = cvAccess.access(new NameImpl(meta.getCoverageName()), cvAccess.getConnectParameters(), AccessType.READ_ONLY, hints, null);
+            final CoverageSource cvSource = cvAccess.access(new NameImpl(meta.getCoverageNativeName()), cvAccess.getConnectParameters(), AccessType.READ_ONLY, hints, null);
             final GridCoverage2D finalCoverage = getFinalCoverage(request, meta, cvSource,
                     /* CoverageUtils.getParametersKVP(params) */ // TODO: CHECK THIS;
                     cvAccess.getConnectParameters());
