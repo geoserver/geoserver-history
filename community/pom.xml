@@ -85,5 +85,11 @@
         <module>wps</module>
       </modules>
     </profile>
+    <profile>
+      <id>security</id>
+      <modules>
+        <module>web-security</module>
+      </modules>
+    </profile>
   </profiles>
 </project>
