@@ -55,7 +55,7 @@ public class CoverageListResource extends MapResource {
         Map coverages = myDC.getCoverages();
 
 
-        String coverageStoreName = (String)getRequest().getAttributes().get("folder");
+        String coverageStoreName = getRequest().getAttributes().get("layer")!= null ? (String)getRequest().getAttributes().get("layer") : (String)getRequest().getAttributes().get("folder");
         Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
         Object resource = folders.get(coverageStoreName);
         if (resource instanceof Map){

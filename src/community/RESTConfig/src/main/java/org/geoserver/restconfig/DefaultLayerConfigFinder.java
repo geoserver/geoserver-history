@@ -58,16 +58,18 @@ public DataConfig getDataConfig(){
         String layer = (String) request.getAttributes().get("layer");
         Resource r;
 
-//        if ( /* getDataConfig().getDataFormatIds().contains(type) */ 
-//        	CoverageStoreFileResource.getAllowedFormats().containsKey(type)) {
-//            r = new CoverageStoreFileResource(getData(), getDataConfig(), getGeoServer(), getGlobalConfig());           
-//        } else 
+        if (getDataConfig().getDataFormatIds().contains(layer)) {
+            r = new CoverageResource(
+                    getData(), 
+                    getDataConfig() 
+            );
+        } else 
         
         if (getDataConfig().getDataStores().containsKey(layer)) {
                 r = new DefaultFeatureTypeConfigResource(
                     getData(),
                     getDataConfig()
-                    );
+                );
         } else {
             response.setEntity(
                 new StringRepresentation(

@@ -126,15 +126,12 @@ public class CoverageStoreFileResource extends Resource {
      */
 
     public synchronized void handleGet() {
-        String coverageStore = (String) getRequest().getAttributes().get(
-                "folder");
-        String coverageName = (String) getRequest().getAttributes()
-                .get("layer");
+        String coverageStore = (String) getRequest().getAttributes().get("folder");
+        String coverageName = (String) getRequest().getAttributes().get("layer");
         String qualified = coverageStore + ":" + coverageName;
 
         CoverageStoreConfig csc = myDataConfig.getDataFormat(coverageStore);
-        CoverageConfig cc = (CoverageConfig) myDataConfig.getCoverages().get(
-                qualified);
+        CoverageConfig cc = (CoverageConfig) myDataConfig.getCoverages().get(qualified);
 
         if (csc == null || cc == null) {
             getResponse().setEntity(

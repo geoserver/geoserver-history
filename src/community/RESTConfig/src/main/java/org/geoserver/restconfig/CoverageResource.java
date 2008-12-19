@@ -136,7 +136,7 @@ public class CoverageResource extends MapResource {
                 }
             });
         m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("coveragestore"));
+        m.put("xml", new AutoXMLFormat("coverage"));
         m.put(null, m.get("html"));
 
         return m;
@@ -166,11 +166,24 @@ public class CoverageResource extends MapResource {
     }
 
     public Map getMap() {
-        String coverageStore = (String) getRequest().getAttributes().get("folder");
-        String coverageName = (String) getRequest().getAttributes().get("layer");
-        String qualified = coverageStore + ":" + coverageName;
-        CoverageConfig cc = (CoverageConfig) myDC.getCoverages().get(qualified);
+//        String coverageStore = (String) getRequest().getAttributes().get("folder");
+//        String coverageName = (String) getRequest().getAttributes().get("layer");
+//        String qualified = coverageStore + ":" + coverageName;
+//        CoverageConfig cc = (CoverageConfig) myDC.getCoverages().get(qualified);
+        Map coverages = myDC.getCoverages();
 
+        String coverageStoreName = (String)getRequest().getAttributes().get("layer");
+        CoverageConfig cc = null;
+        
+        Iterator it = coverages.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            String key = (String)entry.getKey();
+            if (key.startsWith(coverageStoreName)){
+                cc = (CoverageConfig) entry.getValue();
+            }
+        }
+        
         return getMap(cc);
     }
 
@@ -239,6 +252,7 @@ public class CoverageResource extends MapResource {
 
     public static Map getMap(CoverageConfig cc) {
         Map m = new HashMap();
+        m.put("Name", cc.getName());
         m.put("WMSPath", cc.getWmsPath());
 
         GeneralEnvelope env = cc.getEnvelope();
@@ -253,7 +267,7 @@ public class CoverageResource extends MapResource {
         m.put("SupplementaryStyles", cc.getStyles()); // TODO: does this return a list of strings or something else?
         m.put("Label", cc.getLabel());
         m.put("Description", cc.getDescription());
-        m.put("OnlineResource", cc.getMetadataLink().getAbout()); // TODO: get the actual URL, this may take some digging
+        m.put("OnlineResource", "" /*cc.getMetadataLink().getAbout()*/); // TODO: get the actual URL, this may take some digging
         m.put("Keywords", cc.getKeywords());
         m.put("SupportedRequestCRSs", cc.getRequestCRSs());
         m.put("SupportedResponseCRSs", cc.getResponseCRSs());
