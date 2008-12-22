@@ -7,7 +7,7 @@ import net.opengis.wfs.WfsFactory;
 
 import org.geotools.feature.FeatureCollection;
 import org.geotools.wfs.WFS;
-import org.geotools.wfs.WFSConfiguration;
+import org.geotools.wfs.v1_0.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.xml.sax.ContentHandler;
