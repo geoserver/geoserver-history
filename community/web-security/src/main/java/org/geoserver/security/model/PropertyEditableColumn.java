@@ -10,6 +10,11 @@ import org.apache.wicket.extensions.markup.html.tree.table.PropertyRenderableCol
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.security.web.EditablePanel;
 
+/**
+ * 
+ * @author Francesco Izzi (geoSDI)
+ */
+
 public class PropertyEditableColumn extends PropertyRenderableColumn {
 
 	public PropertyEditableColumn(ColumnLocation location, String header,

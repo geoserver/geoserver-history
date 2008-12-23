@@ -1,27 +1,28 @@
-package org.geoserver.security.model;
+package org.geoserver.security.model.configuration;
 
-import java.io.Serializable;
 
 /**
- * This is a model for per layer security
+ * Configuration
  * 
  * @author Francesco Izzi (geoSDI)
  */
 
-public class LayerSecurityModel implements Serializable {
+public class ConfigurationSingleton {
 
+	// field
+	
 	private String namespace;
 	private String layer;
 	private String access;
 	private String role;
-
-	public LayerSecurityModel(String namespace, String layer, String access,
-			String role) {
-		this.namespace = namespace;
-		this.layer = layer;
-		this.access = access;
-		this.role = role;
-	}
+	
+	private static ConfigurationSingleton singleton = new ConfigurationSingleton();
+	
+	private ConfigurationSingleton(){}
+	
+	public static ConfigurationSingleton getInstance() {
+        return singleton;
+    }
 
 	public String getNamespace() {
 		return namespace;
@@ -54,11 +55,8 @@ public class LayerSecurityModel implements Serializable {
 	public void setRole(String role) {
 		this.role = role;
 	}
-
-	@Override
-	public String toString() {
-		return getNamespace() + "." + getLayer() + "." + getAccess() + "="
-				+ getRole();
-	}
-
+	
+	public static void setSingleton(ConfigurationSingleton aSingleton) {
+        singleton = aSingleton;
+    }
 }
