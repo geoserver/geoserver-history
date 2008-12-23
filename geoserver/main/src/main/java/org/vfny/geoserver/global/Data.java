@@ -659,7 +659,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         for (org.geoserver.catalog.CoverageInfo ci : catalog.getCoverages()) {
             if (!dataCoverageNames.contains(ci.getName())) {
                 LayerInfo layer = catalog.getLayerByName(ci.getName());
-                catalog.remove(layer);
+                if (layer != null)
+                    catalog.remove(layer);
                 catalog.remove(ci);
             }
         }
@@ -768,23 +769,23 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             org.geoserver.catalog.FeatureTypeInfo tmpFti = catalog.getFeatureTypeByName(fti.getName()); 
             if(tmpFti==null) catalog.add(fti);
             else {
-                tmpFti.setAbstract(fti.getAbstract());
-                tmpFti.setAlias(fti.getAlias());
-                tmpFti.setDescription(fti.getDescription());
-                tmpFti.setEnabled(fti.isEnabled());
-                tmpFti.setFilter(fti.getFilter());
-                tmpFti.setLatLonBoundingBox(fti.getLatLonBoundingBox());
-                tmpFti.setMaxFeatures(fti.getMaxFeatures());
-                tmpFti.setName(fti.getName());
-                tmpFti.setNamespace(fti.getNamespace());
-                tmpFti.setNativeBoundingBox(fti.getNativeBoundingBox());
-                tmpFti.setNativeCRS(fti.getNativeCRS());
-                tmpFti.setNativeName(fti.getNativeName());
-                tmpFti.setNumDecimals(fti.getNumDecimals());
-                tmpFti.setProjectionPolicy(fti.getProjectionPolicy());
-                tmpFti.setSRS(fti.getSRS());
-                tmpFti.setStore(fti.getStore());
-                tmpFti.setTitle(fti.getTitle());
+//                tmpFti.setAbstract(fti.getAbstract());
+//                tmpFti.setAlias(fti.getAlias());
+//                tmpFti.setDescription(fti.getDescription());
+//                tmpFti.setEnabled(fti.isEnabled());
+//                tmpFti.setFilter(fti.getFilter());
+//                tmpFti.setLatLonBoundingBox(fti.getLatLonBoundingBox());
+//                tmpFti.setMaxFeatures(fti.getMaxFeatures());
+//                tmpFti.setName(fti.getName());
+//                tmpFti.setNamespace(fti.getNamespace());
+//                tmpFti.setNativeBoundingBox(fti.getNativeBoundingBox());
+//                tmpFti.setNativeCRS(fti.getNativeCRS());
+//                tmpFti.setNativeName(fti.getNativeName());
+//                tmpFti.setNumDecimals(fti.getNumDecimals());
+//                tmpFti.setProjectionPolicy(fti.getProjectionPolicy());
+//                tmpFti.setSRS(fti.getSRS());
+//                tmpFti.setStore(fti.getStore());
+//                tmpFti.setTitle(fti.getTitle());
                 
                 catalog.save(tmpFti);
             }

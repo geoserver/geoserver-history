@@ -253,14 +253,17 @@
        </set>   
        	   
        <many-to-one name="resource" column="RESOURCE" class="org.geoserver.catalog.impl.ResourceInfoImpl" lazy="false"/>
+       
        <many-to-one name="legend" column="LEGEND" class="org.geoserver.catalog.impl.LegendInfoImpl" lazy="false"/>
     	
        <property name="enabled" column="ENABLED"/>
+       
        <map name="metadata" table="LAYER_METADATA" cascade="all" lazy="false">
         	<key column="LAYER_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
         </map>
+        
     </class>
     
     <!-- MapInfo -->

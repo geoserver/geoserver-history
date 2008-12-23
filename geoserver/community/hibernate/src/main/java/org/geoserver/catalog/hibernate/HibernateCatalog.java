@@ -695,8 +695,7 @@ public class HibernateCatalog implements Catalog {
         List<LayerInfo> matches = new ArrayList<LayerInfo>();
         for (Iterator l = getLayers().iterator(); l.hasNext();) {
             LayerInfo layer = (LayerInfo) l.next();
-            ResourceInfo targetResource = getResource(layer.getResource()
-                    .getId(), layer.getResource().getClass());
+            ResourceInfo targetResource = getResource(layer.getResource().getId(), layer.getResource().getClass());
             if (resource.equals(targetResource)) {
                 layer.setResource(resource);
                 layer.getDefaultStyle().setCatalog(this);

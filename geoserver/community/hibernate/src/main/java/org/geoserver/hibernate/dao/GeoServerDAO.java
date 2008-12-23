@@ -100,6 +100,7 @@ public class GeoServerDAO implements IGeoServerDAO {
      */
     public synchronized void delete(Object entity) {
         getSessionFactory().getCurrentSession().delete(entity);
+        getSessionFactory().getCurrentSession().flush();
     }
 
     /*
