@@ -22,6 +22,7 @@ import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+
 import org.restlet.data.MediaType;
 
 /**

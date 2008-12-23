@@ -28,7 +28,7 @@
         	class="org.geoserver.catalog.hibernate.HbNamespaceInfo"/ --> <!-- FIX: WorkSpace -->
         <many-to-one name="workspace" column="WORKSPACE" class="org.geoserver.catalog.hibernate.HbWorkspaceInfo" lazy="false"/>
         	
-        <map name="metadata" table="STORE_METADATA" cascade="delete,save-update" lazy="false">
+        <map name="metadata" table="STORE_METADATA" cascade="all" lazy="false">
         	<key column="STORE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
@@ -39,7 +39,7 @@
     <joined-subclass name="org.geoserver.catalog.impl.DataStoreInfoImpl" 
 		extends="org.geoserver.catalog.impl.StoreInfoImpl" table="DATA_STORES">
 		<key column="DATA_STORE_ID"/>
-		<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS" cascade="delete,save-update" lazy="false">
+		<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS" cascade="all" lazy="false">
         	<key column="DATA_STORE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
@@ -84,7 +84,7 @@
         </id>
         <property name="name" column="NAME" unique="true"/>  
         <property name="default" column="IS_DEFAULT"/>
-        <map name="metadata" table="WORKSPACE_METADATA" cascade="delete,save-update" lazy="false">
+        <map name="metadata" table="WORKSPACE_METADATA" cascade="all" lazy="false">
         	<key column="WS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
@@ -117,17 +117,17 @@
 		<property name="abstract" column="ABSTRACT"/>
 		<property name="description" column="DESCRIPTION"/>
 		<property name="enabled" column="ENABLED"/>
-		<list name="alias" table="RESOURCE_ALIASES" cascade="delete,save-update" lazy="false">
+		<list name="alias" table="RESOURCE_ALIASES" cascade="all" lazy="false">
 		   <key column="RESOURCE_ID"/>
            <list-index column="RES_ALIAS_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
-	    <list name="keywords" table="RESOURCE_KEYWORDS" cascade="delete,save-update" lazy="false">
+	    <list name="keywords" table="RESOURCE_KEYWORDS" cascade="all" lazy="false">
 		   <key column="RESOURCE_ID"/>
            <list-index column="RES_KW_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
-		<list name="metadataLinks" table="RESOURCE_METADATA_LINK" cascade="delete,save-update" lazy="false">
+		<list name="metadataLinks" table="RESOURCE_METADATA_LINK" cascade="all" lazy="false">
 		   <key column="RESOURCE_ID"/>
            <list-index column="RES_METADATA_LINK_INDEX"/>
 		   <many-to-many class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false"/>
@@ -151,7 +151,7 @@
 		<property name="nativeCRS" column="NATIVE_CRS" type="java.io.Serializable" length="100000"/>
 		<property name="projectionPolicy" column="PROJECTION_POLICY"/>
         
-        <map name="metadata" table="RESOURCE_METADATA" cascade="delete,save-update" lazy="false">
+        <map name="metadata" table="RESOURCE_METADATA" cascade="all" lazy="false">
         	<key column="RESOURCE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
@@ -177,19 +177,19 @@
 		<property name="grid" column="GRID_GEOMETRY" type="java.io.Serializable" length="100000"/>
 		<!-- property name="fields" column="FIELDS" type="org.geotools.coverage.io.impl.range.DefaultRangeType"/ -->
 		
-		<list name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS" cascade="delete,save-update" lazy="false">
+		<list name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS" cascade="all" lazy="false">
 		   <key column="COVERAGE_ID"/>
            <list-index column="CV_FORMAT_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
     	
-    	<list name="requestSRS" table="COVERAGE_REQUEST_SRS" cascade="delete,save-update" lazy="false">
+    	<list name="requestSRS" table="COVERAGE_REQUEST_SRS" cascade="all" lazy="false">
 			<key column="COVERAGE_ID"/>
             <list-index column="CV_REQUEST_SRS_INDEX"/>
 			<element type="java.lang.String"/>
 		</list>
 		
-		<list name="responseSRS" table="COVERAGE_RESPONSE_SRS" cascade="delete,save-update" lazy="false">
+		<list name="responseSRS" table="COVERAGE_RESPONSE_SRS" cascade="all" lazy="false">
 			<key column="COVERAGE_ID"/>
             <list-index column="CV_RESPONSE_SRS_INDEX"/>
 			<element type="java.lang.String"/>
@@ -197,25 +197,25 @@
 		
 		<property name="defaultInterpolationMethod" column="DEFAULT_INTERPOLATION_METHOD"/>
 		
-		<list name="interpolationMethods" table="COVERAGE_INTERPOLATION_METHODS" cascade="delete,save-update" lazy="false">
+		<list name="interpolationMethods" table="COVERAGE_INTERPOLATION_METHODS" cascade="all" lazy="false">
 			<key column="COVERAGE_ID"/>
             <list-index column="CV_INTERP_METHOD_INDEX"/>
 			<element type="java.lang.String"/>
 		</list>
 		
-		<map name="parameters" table="COVERAGE_PARAMETERS" cascade="delete,save-update" lazy="false">
+		<map name="parameters" table="COVERAGE_PARAMETERS" cascade="all" lazy="false">
         	<key column="COVERAGE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.lang.String"></element>
         </map>
         
-        <list name="modelRuns" table="COVERAGE_MODEL_RUNNINGS" cascade="delete,save-update">
+        <list name="modelRuns" table="COVERAGE_MODEL_RUNNINGS" cascade="all">
     	    <key column="COVERAGE_ID"/>
     	    <list-index column="CV_MODEL_RUN_INDEX"/>
 			<one-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
     	</list>
     	
-    	<list name="geophysicalParameters" table="COVERAGE_GEOPHYSIC_PARAMS" cascade="delete,save-update">
+    	<list name="geophysicalParameters" table="COVERAGE_GEOPHYSIC_PARAMS" cascade="all">
 		    <key column="COVERAGE_ID"/>
 		    <list-index column="CV_GP_INDEX"/>
 		    <many-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
@@ -256,7 +256,7 @@
        <many-to-one name="legend" column="LEGEND" class="org.geoserver.catalog.impl.LegendInfoImpl" lazy="false"/>
     	
        <property name="enabled" column="ENABLED"/>
-       <map name="metadata" table="LAYER_METADATA" cascade="delete,save-update" lazy="false">
+       <map name="metadata" table="LAYER_METADATA" cascade="all" lazy="false">
         	<key column="LAYER_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
@@ -342,7 +342,7 @@
         </id>
     	<many-to-one name="contactInfo"
                      class="org.geoserver.config.impl.ContactInfoImpl" 
-                     cascade="delete,save-update"
+                     cascade="all"
                      column="CONTACT_INFO_ID"
                      unique="true"
                      lazy="false" />
@@ -367,13 +367,13 @@
     	<property name="stdOutLogging" column="STD_OUT_LOGGING"/>
     	<property name="updateSequence" column="UPDATE_SEQUENCE"/>
     	
-		<map name="metadata" table="GEOSERVER_METADATA" cascade="delete,save-update" lazy="false">
+		<map name="metadata" table="GEOSERVER_METADATA" cascade="all" lazy="false">
         	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
         </map>
         
-		<map name="clientProperties" table="GEOSERVER_CLIENT_PROPS" cascade="delete,save-update" lazy="false">
+		<map name="clientProperties" table="GEOSERVER_CLIENT_PROPS" cascade="all" lazy="false">
         	<key column="GS_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
@@ -392,17 +392,17 @@
 		<property name="abstract" column="ABSTRACT"/>	
 		<property name="accessConstraints" column="ACCESS_CONSTRAINTS"/>	
 		<property name="fees" column="FEES"/>	
-		<list name="keywords" table="SERVICE_KEYWORDS" cascade="delete,save-update" lazy="false">
+		<list name="keywords" table="SERVICE_KEYWORDS" cascade="all" lazy="false">
 		    <key column="ID"/>
 		    <list-index column="SRV_KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>   
-    	<list name="exceptionFormats" table="SERVICE_EXCEPTION_FORMATS" cascade="delete,save-update" lazy="false">
+    	<list name="exceptionFormats" table="SERVICE_EXCEPTION_FORMATS" cascade="all" lazy="false">
     	    <key column="ID"/>
     	    <list-index column="SRV_EXCEPTION_FORMAT_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
-		<list name="versions" table="SERVICE_VERSIONS" cascade="delete,save-update" lazy="false">
+		<list name="versions" table="SERVICE_VERSIONS" cascade="all" lazy="false">
 		    <key column="ID"/>
 		    <list-index column="SRV_VERSION_INDEX"/>
 			<element type="org.geotools.util.Version"/>
@@ -414,7 +414,7 @@
 		<property name="citeCompliant" column="CITE_COMPLIANT"/>
 		<property name="onlineResource" column="ONLINE_RESOURCE"/>
 
-		<map name="metadata" table="SERVICE_METADATA" cascade="delete,save-update" lazy="false">
+		<map name="metadata" table="SERVICE_METADATA" cascade="all" lazy="false">
         	<key column="ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
@@ -427,8 +427,8 @@
 		<key column="ID"/>
 		
 		<property name="interpolation" column="INTERPOLATION"/>
-		<many-to-one name="watermark" cascade="delete,save-update" class="org.geoserver.wms.WatermarkInfoImpl" lazy="false"/>
-		<list name="SRS" table="WMS_SRS" cascade="delete,save-update" lazy="false">
+		<many-to-one name="watermark" cascade="all" class="org.geoserver.wms.WatermarkInfoImpl" lazy="false"/>
+		<list name="SRS" table="WMS_SRS" cascade="all" lazy="false">
     	    <key column="ID"/>
     	    <list-index column="WMS_SRS_INDEX"/>
 			<element type="java.lang.String"/>
@@ -460,7 +460,7 @@
 		extends="org.geoserver.config.impl.ServiceInfoImpl" table="WFS_SERVICE">
 		<key column="ID"/>
 		<property name="serviceLevel" column="SERVICE_LEVEL"/>
-		<map name="GML" table="WFS_GML" cascade="delete,save-update" lazy="false">
+		<map name="GML" table="WFS_GML" cascade="all" lazy="false">
         	<key column="ID"/>
         	<map-key type="java.lang.Enum"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
@@ -489,31 +489,31 @@
     	<property name="typeOfData" column="TYPE_OF_DATA"/>    	    
     	<property name="version" column="VERSION"/>    	    
 		
-		<list name="products" table="MODEL_PRODUCTS" cascade="delete,save-update" lazy="false">
+		<list name="products" table="MODEL_PRODUCTS" cascade="all" lazy="false">
 		    <key column="MODEL_ID"/>
 		    <list-index column="M_PRODUCT_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
 		
-		<list name="keywords" table="MODEL_KEYWORDS" cascade="delete,save-update" lazy="false">
+		<list name="keywords" table="MODEL_KEYWORDS" cascade="all" lazy="false">
 		    <key column="MODEL_ID"/>
 		    <list-index column="M_KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
 		
-		<map name="metadata" table="MODEL_METADATA" cascade="delete,save-update" lazy="false">
+		<map name="metadata" table="MODEL_METADATA" cascade="all" lazy="false">
         	<key column="MODEL_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
         </map>
         
-		<list name="modelRuns" table="MODEL_RUNNINGS" cascade="delete,save-update">
+		<list name="modelRuns" table="MODEL_RUNNINGS" cascade="all">
     	    <key column="MODEL_ID"/>
     	    <list-index column="M_MODEL_RUN_INDEX"/>
 			<many-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
     	</list>
 
-		<list name="geophysicalParameters" table="MODEL_GEOPHYSIC_PARAMS" cascade="delete,save-update">
+		<list name="geophysicalParameters" table="MODEL_GEOPHYSIC_PARAMS" cascade="all">
 		    <key column="MODEL_ID"/>
 		    <list-index column="M_GP_INDEX"/>
 		    <many-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
@@ -554,31 +554,31 @@
 			<column name="OL_CRS"/>
 		</property>
 
-		<map name="initParams" table="MODEL_RUN_INIT_PARAMS" cascade="delete,save-update" lazy="false">
+		<map name="initParams" table="MODEL_RUN_INIT_PARAMS" cascade="all" lazy="false">
         	<key column="MODEL_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
         </map>
         
-    	<map name="outParams" table="MODEL_RUN_OUT_PARAMS" cascade="delete,save-update" lazy="false">
+    	<map name="outParams" table="MODEL_RUN_OUT_PARAMS" cascade="all" lazy="false">
         	<key column="MODEL_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
         </map>
 
-		<list name="keywords" table="MODEL_RUN_KEYWORDS" cascade="delete,save-update" lazy="false">
+		<list name="keywords" table="MODEL_RUN_KEYWORDS" cascade="all" lazy="false">
 		    <key column="MODEL_RUN_ID"/>
 		    <list-index column="MR_KEYWORD_INDEX"/>
 			<element type="java.lang.String"/>
     	</list>
     	
-    	<list name="gridCoverages" table="MODEL_RUN_COVERAGES" cascade="delete,save-update">
+    	<list name="gridCoverages" table="MODEL_RUN_COVERAGES" cascade="all">
 		    <key column="MODEL_RUN_ID"/>
 		    <list-index column="MR_GC_INDEX"/>
 		    <many-to-many class="org.geoserver.catalog.impl.CoverageInfoImpl"/>
     	</list>
     	
-    	<list name="geophysicalParameters" table="MODEL_RUN_GEOPHYSIC_PARAMS" cascade="delete,save-update">
+    	<list name="geophysicalParameters" table="MODEL_RUN_GEOPHYSIC_PARAMS" cascade="all">
 		    <key column="MODEL_RUN_ID"/>
 		    <list-index column="MR_GP_INDEX"/>
 		    <many-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
@@ -598,25 +598,25 @@
 		<property name="title" column="TITLE"/>
 		<property name="description" column="DESCRIPTION"/>
 		
-		<list name="alias" table="GEOPHYSIC_PARAMS_ALIASES" cascade="delete,save-update" lazy="false">
+		<list name="alias" table="GEOPHYSIC_PARAMS_ALIASES" cascade="all" lazy="false">
 		   <key column="GEOPHYSIC_PARAM_ID"/>
            <list-index column="GP_ALIAS_INDEX"/>
 		   <element type="java.lang.String"/>
 		</list>
     	
-    	<list name="models" table="GEOPHYSIC_PARAMS_MODELS" cascade="delete,save-update">
+    	<list name="models" table="GEOPHYSIC_PARAMS_MODELS" cascade="all">
     	    <key column="GEOPHYSIC_PARAM_ID"/>
     	    <list-index column="GP_MODEL_INDEX"/>
 			<many-to-many class="org.geoserver.catalog.impl.ModelInfoImpl"/>
     	</list>
     	
-    	<list name="modelRuns" table="GEOPHYSIC_PARAMS_MODEL_RUNNINGS" cascade="delete,save-update">
+    	<list name="modelRuns" table="GEOPHYSIC_PARAMS_MODEL_RUNNINGS" cascade="all">
     	    <key column="GEOPHYSIC_PARAM_ID"/>
     	    <list-index column="GP_MODEL_RUN_INDEX"/>
 			<many-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
     	</list>
     	
-    	<list name="gridCoverages" table="GEOPHYSIC_PARAMS_COVERAGES" cascade="delete,save-update">
+    	<list name="gridCoverages" table="GEOPHYSIC_PARAMS_COVERAGES" cascade="all">
 		    <key column="GEOPHYSIC_PARAM_ID"/>
 		    <list-index column="GP_GC_INDEX"/>
 		    <many-to-many class="org.geoserver.catalog.impl.CoverageInfoImpl"/>
