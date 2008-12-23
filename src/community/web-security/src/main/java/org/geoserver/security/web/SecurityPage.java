@@ -26,8 +26,14 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.security.SecureCatalogImpl;
+import org.geoserver.security.dao.DAOConfigurationProperties;
+import org.geoserver.security.dao.DAOException;
+import org.geoserver.security.dao.IDAOConfiguration;
 import org.geoserver.security.model.LayerSecurityModel;
 import org.geoserver.security.model.PropertyEditableColumn;
+import org.geoserver.security.model.configuration.ConfigurationSingleton;
+import org.geoserver.security.model.configuration.ConfigureChainOfResponsibility;
 import org.geoserver.web.admin.ServerAdminPage;
 
 /**
@@ -41,7 +47,6 @@ public class SecurityPage extends ServerAdminPage {
 	private TreeTable tree;
 
 	private Catalog catalog;
-	
 
 	public SecurityPage() {
 		add(new Label("label",
@@ -68,6 +73,16 @@ public class SecurityPage extends ServerAdminPage {
 
 		IModel resourceListModel = new LoadableDetachableModel() {
 			public Object load() {
+				
+				IDAOConfiguration dao = new DAOConfigurationProperties();
+				
+				try {
+					ConfigureChainOfResponsibility configuration = dao.loadConfiguration();
+					configuration.run(ConfigurationSingleton.getInstance());
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				List<String> result = new ArrayList<String>();
 
 				// gather layer and group names
@@ -85,33 +100,46 @@ public class SecurityPage extends ServerAdminPage {
 
 				// alphabetical sort
 				Collections.sort(result);
+
 				return result;
 			}
 		};
-		
-		ListView listview = new ListView("listview", resourceListModel) {
-			   protected void populateItem(ListItem item) {
-			     final Object itemModel = (Object) item.getModelObject();
-			     item.add(new Label("label-test", itemModel.toString()));
-			     item.add(new Link("delete") {
 
-			       @Override
-			       public void onClick() {
-			         System.out.println("Delete " + itemModel);
-			       }
-			     });
-			   }
-			};
-
-			add(listview); 
-		
-		
+//		ListView listview = new ListView("listview", resourceListModel) {
+//			protected void populateItem(ListItem item) {
+//				final Object itemModel = (Object) item.getModelObject();
+//				item.add(new Label("label-test", itemModel.toString()));
+//				item.add(new Link("delete") {
+//
+//					@Override
+//					public void onClick() {
+//						System.out.println("Delete " + itemModel);
+//						try {
+//							SecureCatalogImpl catalogo = new SecureCatalogImpl(
+//									getCatalog());
+//							System.out.println(catalogo.getNamespaces());
+//							System.out.println(catalogo.getLayers());
+//						
+//						} catch (Exception e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//				});
+//			}
+//		};
+//
+//		add(listview);
 
 	}
 
 	protected TreeModel createTreeModel() {
 		List<Object> l1 = new ArrayList<Object>();
 
+		
+		
+		
+		
 		return convertToTreeModel(l1);
 	}
 
