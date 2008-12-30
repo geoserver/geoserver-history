@@ -57,6 +57,11 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
     static SoftValueHashMap<Class, String[]> extensionsCache = new SoftValueHashMap<Class, String[]>(40);
     
     /**
+     * SPI lookups are very  expensive, we need to cache them
+     */
+    static SoftValueHashMap<Class, List<Object>> spiCache = new SoftValueHashMap<Class, List<Object>>(40);
+    
+    /**
      * A static application context
      */
     static ApplicationContext context;
@@ -117,15 +122,24 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
             }
         }
         
-        //look up all the beans
+        // look up all the beans
         List result = new ArrayList(names.length);
         for (int i = 0; i < names.length; i++) {
             result.add(context.getBean(names[i]));
         }
         
-        //load from factory spi
-        Iterator i = FactoryRegistry.lookupProviders(extensionPoint);
-        while( i.hasNext() ) result.add( i.next() );
+        // load from factory spi
+        List<Object> spiExtensions = spiCache.get(extensionPoint);
+        if(spiExtensions == null) {
+            spiExtensions = new ArrayList<Object>();
+            Iterator i = FactoryRegistry.lookupProviders(extensionPoint);
+            while( i.hasNext() ) {
+                spiExtensions.add( i.next() );
+            }
+            spiCache.put(extensionPoint, spiExtensions);
+        }
+        result.addAll(spiExtensions);
+        
         
         //sort the results based on ExtensionPriority
         Collections.sort( result, new Comparator() {
