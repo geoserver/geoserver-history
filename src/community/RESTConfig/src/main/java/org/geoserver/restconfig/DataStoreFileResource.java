@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 
 import org.geoserver.feature.FeatureSourceUtils;
+import org.geoserver.rest.RestletException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.FeatureSource;
@@ -191,9 +192,14 @@ public class DataStoreFileResource extends Resource{
 
             if (format.equals("Shapefile")){
                 final File outDir=RESTUtils.unpackZippedDataset(storeName, uploadedFile);
-                connectionParameters.put("url", 
-                        // uploadedFile.toURL());
-                		"file:/data/" + storeName + "/" + storeName + ".shp");
+                try{
+                    connectionParameters.put("url", outDir.toURL() + "/" + storeName + ".shp");
+                } catch (Exception e) {
+                    throw new RestletException(
+                            "Malformed url when autoconfiguring shapefile.", 
+                            Status.SERVER_ERROR_INTERNAL
+                        );
+                }
            
                 if(outDir==null) {
 	            	if(LOGGER.isLoggable(Level.SEVERE))
