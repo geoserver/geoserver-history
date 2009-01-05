@@ -40,16 +40,16 @@ import org.vfny.geoserver.global.GeoServer;
 /**
  * Servlet Filter that performs URL translation on content based on configured mime types.
  * <p>
- * This filter does the job of a content filtering reverse proxy, like apache2 <code>mod_html</code>,
- * but meant to be used out of the box for situations where the UI needs to be exposed through a
+ * This filter does the job of a content filtering reverse proxy, like apache2 <code>mod_html</code>
+ * , but meant to be used out of the box for situations where the UI needs to be exposed through a
  * proxy server but for one reason or another the external reverse proxy is not installed or can't
  * be configured to perform URL translation on contents.
  * </p>
  * <p>
  * <h2>Init parameters</h2>
  * <ul>
- * <li><b><code>enabled</code></b>: one of <code>true</code> or <code>false</code>,
- * defaults to <code>false</code>. Indicates whether to enable this filter or not.
+ * <li><b><code>enabled</code></b>: one of <code>true</code> or <code>false</code>, defaults to
+ * <code>false</code>. Indicates whether to enable this filter or not.
  * <li><b><code>mime-types</code></b>: comma separated list of java regular expressions used to
  * match the response mime type and decide whether to perform URL translation on the response
  * content or not.
@@ -77,7 +77,8 @@ import org.vfny.geoserver.global.GeoServer;
  * @version $Id$
  * @since 2.5.x
  * @source $URL:
- *         https://svn.codehaus.org/geoserver/trunk/geoserver/web/src/main/java/org/geoserver/filters/ReverseProxyFilter.java $
+ *         https://svn.codehaus.org/geoserver/trunk/geoserver/web/src/main/java/org/geoserver/filters
+ *         /ReverseProxyFilter.java $
  */
 public class ReverseProxyFilter implements Filter {
 
@@ -104,14 +105,15 @@ public class ReverseProxyFilter implements Filter {
     private GeoServer geoServer;
 
     /**
-     * Parses the <code>mime-types</code> init parameter, which is a comma separated list of
-     * regular expressions used to match the response mime types to decide whether to apply the URL
+     * Parses the <code>mime-types</code> init parameter, which is a comma separated list of regular
+     * expressions used to match the response mime types to decide whether to apply the URL
      * translation on content or not.
      */
     public void init(final FilterConfig filterConfig) throws ServletException {
         final String enabledInitParam = filterConfig.getInitParameter(ENABLED_INIT_PARAM);
-        
-        geoServer = (GeoServer) filterConfig.getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
+
+        geoServer = (GeoServer) filterConfig.getServletContext().getAttribute(
+                GeoServer.WEB_CONTAINER_KEY);
 
         filterIsEnabled = Boolean.valueOf(enabledInitParam).booleanValue();
         if (filterIsEnabled) {
@@ -144,21 +146,19 @@ public class ReverseProxyFilter implements Filter {
      * <p>
      * When a matching mime type is found, the full response is cached during
      * <code>chain.doFilter</code>, and the content is assumed to be textual in the
-     * <code>response.getCharacterEncoding()</code> charset. If the mime type does not match any
-     * of the configured ones no translation nor response cacheing is performed.
+     * <code>response.getCharacterEncoding()</code> charset. If the mime type does not match any of
+     * the configured ones no translation nor response cacheing is performed.
      * <p>
      * </p>
      * The URL translation is a two-step process, done line by line from the cached content and
      * written to the actual response output stream. It first translates the
-     * <code>protocol://host:port</code> section of URL's and then replaces the servlet context
-     * from the server URL by the proxy base URL context. This accounts for absolute urls as well as
-     * relative, root based, urls as used in javascript code and css.
-     * </p>
+     * <code>protocol://host:port</code> section of URL's and then replaces the servlet context from
+     * the server URL by the proxy base URL context. This accounts for absolute urls as well as
+     * relative, root based, urls as used in javascript code and css. </p>
      */
-    public void doFilter(final ServletRequest request,
-            final ServletResponse response,
+    public void doFilter(final ServletRequest request, final ServletResponse response,
             final FilterChain chain) throws IOException, ServletException {
-
+        System.err.println("filtering " + ((HttpServletRequest) request).getRequestURL());
         if (!filterIsEnabled || !(request instanceof HttpServletRequest)) {
             chain.doFilter(request, response);
             return;
@@ -198,7 +198,7 @@ public class ReverseProxyFilter implements Filter {
             final String baseUrl;
             {
                 String _baseUrl = RequestUtils.baseURL((HttpServletRequest) request);
-                if(_baseUrl.endsWith("/")){
+                if (_baseUrl.endsWith("/")) {
                     _baseUrl = _baseUrl.substring(0, _baseUrl.length() - 1);
                 }
                 baseUrl = _baseUrl;
@@ -216,19 +216,19 @@ public class ReverseProxyFilter implements Filter {
             String translatedLine;
             LOGGER.finer("translating " + ((HttpServletRequest) request).getRequestURI());
             while ((line = reader.readLine()) != null) {
-                //ugh, we need to revert any already translated URL, like in the case
-                //of the server config form where the proxyBaseUrl is set. Otherwise
-                //it could be mangled
-                if(line.indexOf(proxyBaseUrl) != -1){
+                // ugh, we need to revert any already translated URL, like in the case
+                // of the server config form where the proxyBaseUrl is set. Otherwise
+                // it could be mangled
+                if (line.indexOf(proxyBaseUrl) != -1) {
                     translatedLine = line.replaceAll(proxyBaseUrl, baseUrl);
-                }else{
+                } else {
                     translatedLine = line;
                 }
 
-                //now apply the translation from servlet url to proxy url
+                // now apply the translation from servlet url to proxy url
                 translatedLine = translatedLine.replaceAll(serverBase, proxyBase);
                 translatedLine = translatedLine.replaceAll(context, proxyContext);
-                if (LOGGER.isLoggable(Level.FINEST)) {
+                if (LOGGER.isLoggable(Level.FINE)) {
                     if (!line.equals(translatedLine)) {
                         LOGGER.finest("translated '" + line + "'");
                         LOGGER.finest("        as '" + translatedLine + "'");
@@ -273,7 +273,8 @@ public class ReverseProxyFilter implements Filter {
      * @version $Id$
      * @since 2.5.x
      * @source $URL:
-     *         https://svn.codehaus.org/geoserver/trunk/geoserver/web/src/main/java/org/geoserver/filters/ReverseProxyFilter.java $
+     *         https://svn.codehaus.org/geoserver/trunk/geoserver/web/src/main/java/org/geoserver
+     *         /filters/ReverseProxyFilter.java $
      */
     private static class CacheingResponseWrapper extends HttpServletResponseWrapper {
 
@@ -281,19 +282,19 @@ public class ReverseProxyFilter implements Filter {
 
         private boolean cacheContent;
 
-        private ServletOutputStream outputStream;
+        private DeferredCacheingOutputStream outputStream;
 
         private PrintWriter writer;
 
-        private ByteArrayOutputStream cache;
-
         /**
-         * @param response the wrapped response
-         * @param cacheingMimeTypes the patterns to do mime type matching with to decide whether to
-         *            cache content or not
+         * @param response
+         *            the wrapped response
+         * @param cacheingMimeTypes
+         *            the patterns to do mime type matching with to decide whether to cache content
+         *            or not
          */
         public CacheingResponseWrapper(final HttpServletResponse response,
-                                       Set<Pattern> cacheingMimeTypes) {
+                Set<Pattern> cacheingMimeTypes) {
             super(response);
             this.cacheingMimeTypes = cacheingMimeTypes;
             // we can't know until setContentType is called
@@ -312,13 +313,13 @@ public class ReverseProxyFilter implements Filter {
          * @return the cached contend, as long as <code>isCacheing() == true</code>
          */
         public byte[] getCachedContent() {
-            return cache.toByteArray();
+            return outputStream.getCachedContent();
         }
 
         /**
          * Among setting the response content type, determines whether the response content should
-         * be cached or not, depending on the <code>mimeType</code> matching one of the patterns
-         * or not.
+         * be cached or not, depending on the <code>mimeType</code> matching one of the patterns or
+         * not.
          */
         @Override
         public void setContentType(final String mimeType) {
@@ -348,22 +349,61 @@ public class ReverseProxyFilter implements Filter {
             }
         }
 
+        /**
+         * Waits until the first write operation to decide whether to cache the contents or not.
+         * This way it tolerates calls to {@link ServletResponse#getOutputStream()} before calling
+         * {@link ServletResponse#setContentType(String)}.
+         * 
+         * @author Gabriel Roldan
+         */
+        private class DeferredCacheingOutputStream extends ServletOutputStream {
+            /**
+             * non null iif {@link CacheingResponseWrapper#isCacheing()} == false
+             */
+            private ServletOutputStream actualStream;
+
+            /**
+             * non null iif {@link CacheingResponseWrapper#isCacheing()} == true
+             */
+            private ByteArrayOutputStream cache;
+
+            @Override
+            public void write(int b) throws IOException {
+                if (isCacheing()) {
+                    if (cache == null) {
+                        cache = new ByteArrayOutputStream();
+                    }
+                    cache.write(b);
+                } else {
+                    if (actualStream == null) {
+                        actualStream = getOutputStreamInternal();
+                    }
+                    actualStream.write(b);
+                }
+            }
+
+            public byte[] getCachedContent() {
+                return cache.toByteArray();
+            }
+
+            @Override
+            public void flush() throws IOException {
+                if (actualStream != null) {
+                    actualStream.flush();
+                }
+            }
+        }
+
         @Override
         public ServletOutputStream getOutputStream() throws IOException {
             if (outputStream == null) {
-                if (cacheContent) {
-                    cache = new ByteArrayOutputStream();
-                    outputStream = new ServletOutputStream() {
-                        @Override
-                        public void write(int b) throws IOException {
-                            cache.write(b);
-                        }
-                    };
-                } else {
-                    outputStream = super.getOutputStream();
-                }
+                outputStream = new DeferredCacheingOutputStream();
             }
             return outputStream;
+        }
+
+        private ServletOutputStream getOutputStreamInternal() throws IOException {
+            return super.getOutputStream();
         }
 
         /**
