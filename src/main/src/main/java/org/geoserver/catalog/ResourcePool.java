@@ -71,6 +71,19 @@ public class ResourcePool {
     
     /** logging */
     static Logger LOGGER = Logging.getLogger( "org.geoserver.catalog");
+    
+    static Class VERSIONING_FS = null;
+    static Class GS_VERSIONING_FS = null;
+    
+    static {
+        try {
+            // only support versioning if on classpath
+            VERSIONING_FS = Class.forName("org.geotools.data.VersioningFeatureSource");
+            GS_VERSIONING_FS = Class.forName("org.vfny.geoserver.global.GeoServerVersioningFeatureSource");
+        } catch (ClassNotFoundException e) {
+            //fall through
+        }
+    }
 
     HashMap<String, CoordinateReferenceSystem> crsCache;
     DataStoreCache dataStoreCache;
@@ -365,17 +378,14 @@ public class ResourcePool {
             }
 
             //
-            //versioning
+            // versioning
             //
             try {
-                //only support versioning if on classpath
-                Class clazz = Class.forName("org.geotools.data.VersioningFeatureSource");
-                if ( clazz.isAssignableFrom( fs.getClass() ) ) {
+                // only support versioning if on classpath
+                if (VERSIONING_FS != null && GS_VERSIONING_FS != null && VERSIONING_FS.isAssignableFrom( fs.getClass() ) ) {
                     //class implements versioning, reflectively create the versioning wrapper
                     try {
-                    Class wrapper = 
-                        Class.forName("org.vfny.geoserver.global.GeoServerVersioningFeatureSource");
-                    Method m = wrapper.getMethod( "create", clazz, 
+                    Method m = GS_VERSIONING_FS.getMethod( "create", VERSIONING_FS, 
                         SimpleFeatureType.class, Filter.class, CoordinateReferenceSystem.class, int.class );
                     return (FeatureSource) m.invoke(null, fs, schema, info.getFilter(), 
                         resultCRS, info.getProjectionPolicy().getCode());
@@ -385,12 +395,9 @@ public class ResourcePool {
                                 "Creation of a versioning wrapper failed", e);
                     }
                 }
-            }
-            catch( ClassCastException e ) {
+            } catch( ClassCastException e ) {
                 //fall through
-            } catch (ClassNotFoundException e) {
-                //fall through
-            }
+            } 
             
             //return a normal 
             return GeoServerFeatureLocking.create(fs, schema,
