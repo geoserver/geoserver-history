@@ -36,7 +36,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = u'GeoServer'
-copyright = u'2008, GeoServer'
+copyright = u'2009 GeoServer'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.

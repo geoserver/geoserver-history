@@ -25,7 +25,7 @@ Windows
 
 4. Create a new environment variable named ``JAVA_HOME`` and set it to the location of the JDK installed in the previous step.
 
-   .. image:: java_home_alt.png
+   .. image:: java_home.png
       :align: center
 
 
