@@ -509,17 +509,18 @@ public class GetMapResponse implements Response {
         for (int i = 0; i < nLayers; i++) {
             layer = layers[i];
             userRequestedFilter = requestFilters.get(i);
-            if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
+            if (layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+                combinedList[i] = userRequestedFilter;
+            } else if (layer.getType() != MapLayerInfo.TYPE_RASTER) {
                 layerDefinitionFilter = layer.getFeature().getDefinitionQuery();
+
                 // heck, how I wish we use the null objects more
                 if (layerDefinitionFilter == null) {
                     layerDefinitionFilter = Filter.INCLUDE;
                 }
                 combined = filterFac.and(layerDefinitionFilter, userRequestedFilter);
                 combinedList[i] = combined;
-            } else if(layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
-                combinedList[i] = userRequestedFilter;
-            }
+            }        
         }
         return combinedList;
     }
