@@ -33,6 +33,7 @@ import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
+import org.geotools.renderer.label.LabelCacheImpl;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Style;
@@ -300,7 +301,7 @@ public abstract class DefaultRasterMapProducer extends
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
 		}
 		if(isNgLabellerEnabled()) {
-		    GSLabelCache labelCache = new GSLabelCache();
+		    LabelCacheImpl labelCache = new LabelCacheImpl();
 		    labelCache.setOutlineRenderingEnabled(true);
 		    rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
 		}
@@ -425,7 +426,11 @@ public abstract class DefaultRasterMapProducer extends
     private boolean isNgLabellerEnabled() {
         if (USE_NG_LABELLER == null) {
             String enabled = GeoServerExtensions.getProperty("USE_NG_LABELLER", applicationContext);
-            USE_NG_LABELLER = Boolean.valueOf(enabled);
+            // default to true, but allow switching off
+            if(enabled == null)
+                USE_NG_LABELLER = true;
+            else
+                USE_NG_LABELLER = Boolean.valueOf(enabled);
         }
         return USE_NG_LABELLER;
     }
