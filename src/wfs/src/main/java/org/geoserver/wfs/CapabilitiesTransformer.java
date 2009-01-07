@@ -4,7 +4,20 @@
  */
 package org.geoserver.wfs;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.opengis.wfs.GetCapabilitiesType;
 
@@ -13,7 +26,6 @@ import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.response.GetCapabilitiesResponse;
 import org.geotools.factory.FactoryRegistry;
 import org.geotools.filter.FunctionExpression;
 import org.geotools.filter.v1_0.OGC;
@@ -29,21 +41,8 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -1071,10 +1070,12 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                  * Encodes the GetFeature ows:Operation element.
                  */
             void getFeature() {
+                String[] oflist = getoutputFormatNames();
                 Map.Entry[] parameters = new Map.Entry[] {
-                    parameter("resultType", new String[] { "results", "hits" }),
-                    parameter("outputFormat", new String[] { GML_3_1_1_FORMAT })
+                        parameter("resultType", new String[] { "results", "hits" }),
+                        parameter("outputFormat", oflist)
                 };
+                    
                 Map.Entry[] constraints = new Map.Entry[] {
                     parameter("LocalTraverseXLinkScope", new String[]{ "2" } )
                 };
@@ -1082,13 +1083,26 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 operation("GetFeature", parameters, constraints, true, true);
             }
 
+            private String[] getoutputFormatNames() {
+                List<String> oflist = new ArrayList<String>();
+                Collection featureProducers = GeoServerExtensions.extensions(WFSGetFeatureOutputFormat.class);
+                for (Iterator i = featureProducers.iterator(); i.hasNext();) {
+                    WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
+                    for ( Iterator f = format.getOutputFormats().iterator(); f.hasNext(); ) {
+                        oflist.add(f.next().toString());
+                    }
+                }
+                return (String[]) oflist.toArray(new String[oflist.size()]);
+            }
+
             /**
                  * Encodes the GetFeatureWithLock ows:Operation element.
                  */
             void getFeatureWithLock() {
+                String[] oflist = getoutputFormatNames();
                 Map.Entry[] parameters = new Map.Entry[] {
                         parameter("resultType", new String[] { "results", "hits" }),
-                        parameter("outputFormat", new String[] { GML_3_1_1_FORMAT })
+                        parameter("outputFormat", oflist)
                     };
 
                 operation("GetFeatureWithLock", parameters, true, true);
@@ -1292,19 +1306,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 //default srs
                 //element("DefaultSRS", "urn:x-ogc:def:crs:EPSG:6.11.2:" + featureType.getSRS());
                 element("DefaultSRS", "urn:x-ogc:def:crs:EPSG:" + featureType.getSRS());
-                
                 //TODO: other srs's
-                start("OutputFormats");
-
-                Collection featureProducers = GeoServerExtensions.extensions(WFSGetFeatureOutputFormat.class);
-                for (Iterator i = featureProducers.iterator(); i.hasNext();) {
-                    WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
-                    for ( Iterator f = format.getOutputFormats().iterator(); f.hasNext(); ) {
-                        element( "Format", f.next().toString() );
-                    }
-                }
-                    
-                end("OutputFormats");
 
                 Envelope bbox = null;
 
@@ -1455,7 +1457,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     while (itr.hasNext()) {
                         Function fe = (Function) itr.next();
                         String name = fe.getName();
-                        int nargs = fe.getParameters().size();
+                        int nargs = 0;
+                        if(fe instanceof FunctionExpression)
+                            nargs = ((FunctionExpression) fe).getArgCount();
 
                         element("ogc:FunctionName", name,
                             attributes(new String[] { "nArgs", "" + nargs }));
