@@ -13,6 +13,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
@@ -52,6 +53,20 @@ public class GeometryRegionatingStrategy extends
 
         // geometry size is a double
         h2Type = "DOUBLE";
+    }
+
+    @Override 
+    protected String checkAttribute(FeatureTypeInfo cfg){
+        String attribute = cfg.getRegionateAttribute();
+        try{
+            if ((attribute != null) && (cfg.getFeatureType().getDescriptor(attribute) != null))
+                return attribute;
+
+            return cfg.getFeatureType().getGeometryDescriptor().getLocalName();
+        } catch (Exception e) {
+            LOGGER.severe("Couldn't get attribute name due to " + e);
+            return null;
+        }
     }
 
     @Override
