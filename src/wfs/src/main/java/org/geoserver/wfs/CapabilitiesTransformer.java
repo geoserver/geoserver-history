@@ -1092,6 +1092,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                         oflist.add(f.next().toString());
                     }
                 }
+                Collections.sort(oflist);
+                if(oflist.contains(GML_3_1_1_FORMAT)) {
+                    oflist.remove(GML_3_1_1_FORMAT);
+                    oflist.add(0, GML_3_1_1_FORMAT);
+                }
                 return (String[]) oflist.toArray(new String[oflist.size()]);
             }
 
