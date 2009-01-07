@@ -28,6 +28,7 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
@@ -89,6 +90,12 @@ public class ExternalSortRegionatingStrategy extends
         return super.getDatabaseName(con, layer) + "_" + attribute;
     }
 
+    @Override
+    protected final String getDatabaseName(FeatureTypeInfo cfg)
+            throws Exception { 
+        return super.getDatabaseName(cfg) + "_" + checkAttribute(cfg);
+    }
+
     protected void checkAttribute(WMSMapContext con, SimpleFeatureType ft) {
         // find out which attribute we're going to use
         Map options = con.getRequest().getFormatOptions();
@@ -112,6 +119,10 @@ public class ExternalSortRegionatingStrategy extends
             throw new WmsException("Attribute type " + ad.getType()
                     + " is not " + "supported for external sorting on "
                     + typeInfo.getName() + "#" + attribute);
+    }
+
+    protected String checkAttribute(FeatureTypeInfo cfg){
+        return cfg.getRegionateAttribute();
     }
 
     public FeatureIterator getSortedFeatures(ReferencedEnvelope envelope,

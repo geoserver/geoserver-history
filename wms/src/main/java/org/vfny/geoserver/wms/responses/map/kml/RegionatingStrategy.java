@@ -3,6 +3,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import org.geotools.map.MapLayer;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 
 /**
  * Common interface for classes defining a mechanism for regionating KML placemarks.  
@@ -19,4 +20,10 @@ public interface RegionatingStrategy {
      * @param layer
      */
     public Filter getFilter(WMSMapContext context, MapLayer layer);
+
+    /**
+     * Clear any cached work (indexing, etc.) for a particular feature type's default regionating 
+     * options.
+     */
+    public void clearCache(FeatureTypeInfo cfg);
 }

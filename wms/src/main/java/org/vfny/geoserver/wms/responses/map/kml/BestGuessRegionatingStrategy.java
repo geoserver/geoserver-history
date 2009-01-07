@@ -10,6 +10,8 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -39,5 +41,9 @@ public class BestGuessRegionatingStrategy implements RegionatingStrategy {
             return new RandomRegionatingStrategy().getFilter(context, layer);
 
         return new GeometryRegionatingStrategy().getFilter(context, layer);
+    }
+
+    public void clearCache(FeatureTypeInfo cfg){
+        new GeometryRegionatingStrategy().clearCache(cfg);
     }
 }
