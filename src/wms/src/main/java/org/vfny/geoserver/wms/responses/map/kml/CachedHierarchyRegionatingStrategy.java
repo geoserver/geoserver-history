@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.h2.tools.DeleteDbFiles;
 import org.geoserver.ows.HttpErrorCodeException;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.jdbc.JDBCUtils;
@@ -34,7 +35,9 @@ import org.opengis.filter.identity.FeatureId;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -179,6 +182,18 @@ public abstract class CachedHierarchyRegionatingStrategy implements
                 ids.add(ff.featureId(fid));
             }
             return ff.id(ids);
+        }
+    }
+
+    public void clearCache(FeatureTypeInfo cfg){
+        try{
+            DeleteDbFiles.execute(
+                GeoserverDataDirectory.findCreateConfigDir("geosearch").getCanonicalPath(),
+                "h2cache_" + getDatabaseName(cfg),
+                true
+                );
+        } catch (Exception ioe) {
+            LOGGER.severe("Couldn't clear out config dir due to: " + ioe);
         }
     }
 
@@ -488,6 +503,11 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             int index = Arrays.asList(con.getLayers()).indexOf(layer);
             MapLayerInfo info = con.getRequest().getLayers()[index];
             return info.getDirName();
+    }
+
+    protected String getDatabaseName(FeatureTypeInfo cfg)
+        throws Exception {
+            return cfg.getDirName();
     }
 
     /**

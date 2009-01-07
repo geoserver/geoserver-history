@@ -470,16 +470,8 @@ public class KMLUtils {
         }
 
         if (stratname != null) {
-            List<RegionatingStrategyFactory> factories = GeoServerExtensions
-                    .extensions(RegionatingStrategyFactory.class);
-            Iterator<RegionatingStrategyFactory> it = factories.iterator();
-            while (it.hasNext()) {
-                RegionatingStrategyFactory factory = it.next();
-                if (factory.canHandle(stratname)) {
-                    regionatingStrategy = factory.createStrategy();
-                    break;
-                }
-            }
+            regionatingStrategy = findStrategyByName(stratname);
+            
             // if a strategy was specified but we did not find it, let the user
             // know
             if (regionatingStrategy == null)
@@ -489,9 +481,10 @@ public class KMLUtils {
         // try to load less features by leveraging regionating strategy and the
         // SLD
         Filter regionatingFilter = Filter.INCLUDE;
+
         if (regionatingStrategy != null)
-            regionatingFilter = regionatingStrategy
-                    .getFilter(mapContext, layer);
+            regionatingFilter = regionatingStrategy.getFilter(mapContext, layer);
+
         Filter ruleFilter = summarizeRuleFilters(getLayerRules(featureSource
                 .getSchema(), layer.getStyle()));
         Filter finalFilter = joinFilters(q.getFilter(), joinFilters(ruleFilter,
@@ -505,6 +498,20 @@ public class KMLUtils {
         }
 
         return featureSource.getFeatures(q);
+    }
+
+    public static RegionatingStrategy findStrategyByName(String name) {
+        List<RegionatingStrategyFactory> factories = GeoServerExtensions
+            .extensions(RegionatingStrategyFactory.class);
+        Iterator<RegionatingStrategyFactory> it = factories.iterator();
+        while (it.hasNext()) {
+            RegionatingStrategyFactory factory = it.next();
+            if (factory.canHandle(name)) {
+                return factory.createStrategy();
+            }
+        }
+
+        return null;
     }
 
     /**

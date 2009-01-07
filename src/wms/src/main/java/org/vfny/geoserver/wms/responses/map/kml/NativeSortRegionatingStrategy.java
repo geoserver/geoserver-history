@@ -24,6 +24,7 @@ import org.opengis.filter.spatial.BBOX;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 
 /**
  * An attribute based regionating strategy assuming it's possible (and fast) to
@@ -71,6 +72,11 @@ public class NativeSortRegionatingStrategy extends
 
         // make sure a special db for this layer and attribute will be created
         return super.getDatabaseName(con, layer) + "_" + attribute;
+    }
+
+    @Override
+    protected String getDatabaseName(FeatureTypeInfo cfg) throws Exception {
+        return super.getDatabaseName(cfg) + "_" + cfg.getRegionateAttribute();
     }
 
     public FeatureIterator getSortedFeatures(ReferencedEnvelope env,
