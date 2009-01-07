@@ -2,16 +2,19 @@ package org.geoserver.wfs.v1_1;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import junit.framework.Test;
 
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class GetCapabilitiesTest extends WFSTestSupport {
@@ -35,6 +38,7 @@ public class GetCapabilitiesTest extends WFSTestSupport {
         assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement()
                 .getNodeName());
         assertEquals("1.1.0", doc.getDocumentElement().getAttribute("version"));
+        print(doc);
     }
 
     public void testPost() throws Exception {
@@ -65,24 +69,37 @@ public class GetCapabilitiesTest extends WFSTestSupport {
     public void testOutputFormats() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities&version=1.1.0");
         
-        Element outputFormats = getFirstElementByTagName(doc, "OutputFormats");
-        NodeList formats = outputFormats.getElementsByTagName("Format");
+        // print(doc);
+
+        // let's look for the outputFormat parameter values inside of the GetFeature operation metadata
+        XpathEngine engine = XMLUnit.newXpathEngine();
+        NodeList formats = engine.getMatchingNodes(
+                "//ows:Operation[@name=\"GetFeature\"]/ows:Parameter[@name=\"outputFormat\"]/ows:Value", doc);
         
-        TreeSet s1 = new TreeSet();
+        Set<String> s1 = new TreeSet<String>();
         for ( int i = 0; i < formats.getLength(); i++ ) {
             String format = formats.item(i).getFirstChild().getNodeValue();
             s1.add( format );
         }
         
-        List extensions = GeoServerExtensions.extensions( WFSGetFeatureOutputFormat.class );
+        List<WFSGetFeatureOutputFormat> extensions = GeoServerExtensions.extensions( WFSGetFeatureOutputFormat.class );
         
-        TreeSet s2 = new TreeSet();
+        Set<String> s2 = new TreeSet<String>();
         for ( Iterator e = extensions.iterator(); e.hasNext(); ) {
             WFSGetFeatureOutputFormat extension = (WFSGetFeatureOutputFormat) e.next();
             s2.addAll( extension.getOutputFormats() );
         }
         
         assertEquals( s1, s2 );
+    }
+    
+    public void testFunctionArgCount() throws Exception {
+        Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities&version=1.1.0");
+        
+        // print(doc);
+
+        // let's check the argument count of "abs" function
+        XMLAssert.assertXpathEvaluatesTo("1", "//ogc:FunctionName[text()=\"abs\"]/@nArgs", doc);
     }
 
 }
