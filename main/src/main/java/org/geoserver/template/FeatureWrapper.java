@@ -8,6 +8,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -215,6 +216,10 @@ public class FeatureWrapper extends BeansWrapper {
             // create the model
             SimpleHash map = new SimpleHash();
 
+            // next create the Map representing the per attribute useful
+            // properties for a template
+            Map attributeMap = new FeatureAttributesMap(feature);
+            map.putAll(attributeMap);
 
             Catalog cat = getCatalog();
 
@@ -236,11 +241,9 @@ public class FeatureWrapper extends BeansWrapper {
                 }
             }
 
-            // next create the Map representing the per attribute useful
-            // properties for a template
-            Map attributeMap = new FeatureAttributesMap(feature);
-            map.putAll(attributeMap);
-
+            if (map.get("type") == null){
+                map.put("type", buildDummyFeatureTypeInfo(feature));
+            }
 
             // Add the metadata after setting the attributes so they aren't masked by feature attributes
             map.put("fid", feature.getID());
@@ -254,6 +257,21 @@ public class FeatureWrapper extends BeansWrapper {
         }
 
         return super.wrap(object);
+    }
+
+    private Map<String, Object> buildDummyFeatureTypeInfo(SimpleFeature f){
+        Map<String, Object> dummy = new HashMap<String, Object>();
+        dummy.put("name", f.getFeatureType().getTypeName());
+        dummy.put("title", "Layer: " + f.getFeatureType().getTypeName());
+        dummy.put("abstract", "[No Abstract Provided]");
+        dummy.put("description", "[No Description Provided]");
+        dummy.put("keywords", new ArrayList<String>());
+        dummy.put("metadataLinks", new ArrayList<String>());
+        dummy.put("SRS", "[SRS]");
+        dummy.put("nativeCRS",
+                f.getFeatureType().getGeometryDescriptor().getCoordinateReferenceSystem()
+            );
+        return dummy;
     }
 
     /**
