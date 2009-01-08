@@ -18,15 +18,11 @@ public class FeatureRestletTest extends GeoServerTestSupport {
     public void testSingleFeature() throws Exception{
         QName typename = MockData.BASIC_POLYGONS;
         final String path = 
-            "/rest/geosearch/" + typename.getPrefix() + "/" + typename.getLocalPart() + "/1107531493630.kml";
+            "/rest/" + typename.getPrefix() + "/" + typename.getLocalPart() + "/1107531493630.kml";
 
         getFeatureTypeInfo(typename).setIndexingEnabled(true);
 
         MockHttpServletResponse response = getAsServletResponse(path);
         assertEquals(200, response.getStatusCode());
-
-//        Document document = getAsDOM(path);
-//        NodeList placemarks = document.getElementsByTagName("Placemark");
-//        assertEquals(1, placemarks.getLength());
     }
 }
