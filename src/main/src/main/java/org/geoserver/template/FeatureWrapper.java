@@ -16,10 +16,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.FeatureCollection;
@@ -27,12 +27,12 @@ import org.geotools.util.MapEntry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import com.vividsolutions.jts.geom.Geometry;
 
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.CollectionModel;
-import freemarker.ext.beans.IteratorModel;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
 import freemarker.template.TemplateModel;
@@ -98,25 +98,21 @@ import freemarker.template.TemplateModelException;
  * @author Gabriel Roldan, TOPP
  */
 public class FeatureWrapper extends BeansWrapper {
-    protected static Catalog catalog;
-
-    private static Logger LOGGER = 
-        org.geotools.util.logging.Logging.getLogger("org.geoserver.template");
-    
-    protected Catalog getCatalog() {
-        if (catalog == null){
-            try{
-                catalog = (Catalog)GeoServerExtensions.bean("catalog2");
-            } catch (Exception e){
-                // TODO: Log exception
-            }
-        }
-
-        return catalog;
-    }
+    static Catalog gsCatalog;
 
     public FeatureWrapper() {
         setSimpleMapWrapper(true);
+    }
+
+    private Catalog getCatalog() {
+        if (gsCatalog != null) 
+            return gsCatalog;
+
+        try {
+            return (gsCatalog = (Catalog)GeoServerExtensions.bean("catalog2"));
+        } catch (NoSuchBeanDefinitionException e){
+            return null;
+        }
     }
 
     /**
@@ -186,19 +182,10 @@ public class FeatureWrapper extends BeansWrapper {
         if (object instanceof FeatureCollection) {
             // create a model with just one variable called 'features'
             SimpleHash map = new SimpleHash();
-            FeatureCollection featureCollection = (FeatureCollection) object;
-
-            // this will load all the features into memory!
-            //List<SimpleFeature> features = DataUtilities.list( featureCollection );
-            //map.put("features", new CollectionModel( features, this));
-            
-            // this has the risk of leaking memory (if anything goes wrong)
-            // map.put("features", new IteratorModel( featureCollection.iterator(), this));
-            
-            // this one is almost right; depends on finalizer to close iterator
-            map.put("features", new FeatureCollectionModel( featureCollection, this ) );
+            map.put("features", new CollectionModel(DataUtilities.list((FeatureCollection) object), this));
             map.put("type", wrap(((FeatureCollection) object).getSchema()));
-            return map;            
+
+            return map;
         } else if (object instanceof SimpleFeatureType) {
             SimpleFeatureType ft = (SimpleFeatureType) object;
 
@@ -211,11 +198,7 @@ public class FeatureWrapper extends BeansWrapper {
                 Map attribute = new HashMap();
                 attribute.put("name", type.getLocalName());
                 attribute.put("type", type.getType().getBinding().getName());
-                attribute.put("isGeometry",
-                        Boolean.valueOf(Geometry.class.isAssignableFrom(
-                                type.getType().getBinding()
-                            ))
-                        );
+                attribute.put("isGeometry", Boolean.valueOf(Geometry.class.isAssignableFrom(type.getType().getBinding())));
 
                 attributeMap.put(type.getLocalName(), attribute);
             }
@@ -233,36 +216,38 @@ public class FeatureWrapper extends BeansWrapper {
             // create the model
             SimpleHash map = new SimpleHash();
 
-
             // next create the Map representing the per attribute useful
             // properties for a template
             Map attributeMap = new FeatureAttributesMap(feature);
             map.putAll(attributeMap);
 
+            Catalog cat = getCatalog();
 
-            // Add the metadata after setting the attributes so they aren't masked by feature 
-            // attributes
-            map.put("fid", feature.getID());
-            map.put("typeName", feature.getFeatureType().getTypeName());
+            if (cat != null){
+                NamespaceInfo ns = cat.getNamespaceByURI(
+                        feature.getFeatureType().getName().getNamespaceURI()
+                        );
 
-            Catalog gsCatalog = getCatalog();
-            Object o = null;
-            try {
-                o = gsCatalog.getResourceByName(
-                            gsCatalog.getNamespaceByURI(
-                                feature.getFeatureType().getName().getNamespaceURI()
-                                ).getPrefix(),
+                if (ns != null){
+                    FeatureTypeInfo info = cat.getResourceByName(
+                            ns.getPrefix(),
                             feature.getFeatureType().getName().getLocalPart(),
                             FeatureTypeInfo.class
                             );
-            } catch (NullPointerException npe) {
-                // It's okay, 'o' will be null and we handle that anyway
-                LOGGER.fine("Couldn't find feature type info for " + feature.getFeatureType());
+
+                    if (info != null){
+                        map.put("type", info);
+                    }
+                }
             }
 
-            if (o == null) o = buildDummyFeatureTypeInfo(feature);
+            if (map.get("type") == null){
+                map.put("type", buildDummyFeatureTypeInfo(feature));
+            }
 
-            map.put("type", o);
+            // Add the metadata after setting the attributes so they aren't masked by feature attributes
+            map.put("fid", feature.getID());
+            map.put("typeName", feature.getFeatureType().getTypeName());
 
             // create a variable "attributes" which his a list of all the
             // attributes, but at the same time, is a map keyed by name
