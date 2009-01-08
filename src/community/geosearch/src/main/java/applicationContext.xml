@@ -7,30 +7,34 @@
   <map>
         <entry>
           <key><value>/sitemap.xml</value></key>
-          <value>sitemap</value>
+          <value>sitemapindex</value>
         </entry>
         <entry>
-          <key><value>/geosearch/{namespace}.kml</value></key>
-          <value>namespaceindex</value>
+          <key><value>/layers/{layer}/sitemap.xml</value></key>
+          <value>layersitemap</value>
         </entry>
         <entry>
-          <key><value>/geosearch/{namespace}/{layer}.kml</value></key>
+          <key><value>/{namespace}/{layer}.kml</value></key>
           <value>feature</value>
         </entry>
         <entry>
-          <key><value>/geosearch/{namespace}/{layer}/{feature}.kml</value></key>
+          <key><value>/{namespace}/{layer}/{feature}.kml</value></key>
           <value>feature</value>
+        </entry>
+        <entry>
+          <key><value>/{namespace}/{layer}.html</value></key>
+          <value>aboutpage</value>
         </entry>
   </map>
 </property>
 </bean>
 
-<bean id="sitemap" class="org.geoserver.geosearch.SiteMapRestlet">
+<bean id="sitemapindex" class="org.geoserver.geosearch.SiteMapIndexRestlet">
     <property name="dataConfig"><ref bean="dataConfig"/></property>
     <property name="data"><ref bean="data"/></property>
     <property name="geoServer"><ref bean="geoServer"/></property>
 </bean>
-<bean id="namespaceindex" class="org.geoserver.geosearch.NamespaceIndexRestlet">
+<bean id="layersitemap" class="org.geoserver.geosearch.LayerSiteMapRestlet">
     <property name="dataConfig"><ref bean="dataConfig"/></property>
     <property name="data"><ref bean="data"/></property>
     <property name="geoServer"><ref bean="geoServer"/></property>
@@ -38,6 +42,9 @@
 <bean id="feature" class="org.geoserver.geosearch.FeatureRestlet">
     <property name="wms"><ref bean="wms"/></property>
     <property name="webMapService"><ref bean="webMapService"/></property>
+    <property name="catalog"><ref bean="catalog"/></property>
+</bean>
+<bean id="aboutpage" class="org.geoserver.geosearch.LayerAboutPage">
     <property name="catalog"><ref bean="catalog"/></property>
 </bean>
 
