@@ -34,11 +34,12 @@ public class DAOConfigurationProperties implements IDAOConfiguration {
 			Properties properties = loadProperties(security.getAbsolutePath()
 					+ "/" + "layers.properties");
 			
+			LOGGER.log(Level.INFO, "SCANNING MAP FILE");
 			for(Map.Entry entry : properties.entrySet()){
 				final String ruleKey = (String) entry.getKey();
 	            final String ruleValue = (String) entry.getValue();
 	            final String rule = ruleKey + "=" + ruleValue;
-	            LOGGER.log(Level.INFO, rule);
+	            LOGGER.log(Level.INFO, "RULE"+rule);
 			}
 			
 			chain = new ConfigureChainOfResponsibility();
