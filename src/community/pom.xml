@@ -91,5 +91,11 @@
         <module>web-security</module>
       </modules>
     </profile>
+    <profile>
+      <id>app-schema</id>
+      <modules>
+        <module>app-schema</module>
+      </modules>
+    </profile>
   </profiles>
 </project>
