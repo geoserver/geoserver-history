@@ -82,11 +82,41 @@ public class KMLReflector {
         
     public static void doWms(GetMapRequest request, HttpServletResponse response, WebMapService wms)
         throws Exception {
+            //set the content disposition
+        StringBuffer filename = new StringBuffer();
+        boolean containsRasterData = false;
+        boolean isRegionatingFriendly = true;
+        for ( int i = 0; i < request.getLayers().length; i++ ) {
+            MapLayerInfo layer = request.getLayers()[i];
+            String name = layer.getName();
+ 
+            containsRasterData = containsRasterData || 
+                (layer.getType() == MapLayerInfo.TYPE_RASTER) ||
+                (layer.getType() == MapLayerInfo.TYPE_BASEMAP);
+
+            if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
+                System.out.println(layer.getFeature().getFeatureSource().getClass());
+                isRegionatingFriendly = isRegionatingFriendly && 
+                    layer.getFeature().getFeatureSource().getQueryCapabilities().isReliableFIDSupported(); 
+            } else if (layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+                isRegionatingFriendly = isRegionatingFriendly &&
+                    layer.getRemoteFeatureSource().getQueryCapabilities().isReliableFIDSupported();
+            }
+
+            //strip off prefix
+            int j = name.indexOf(':');
+            if ( j > -1 ) {
+                name = name.substring( j + 1 );
+            }
+
+            filename.append(name + "_");
+        }
+
 
         String mode = caseInsensitiveParam(
                 request.getHttpServletRequest().getParameterMap(), 
                 "mode",
-                "superoverlay"
+                isRegionatingFriendly ? "superoverlay" : "refresh"
                 );
 
         if (!MODES.containsKey(mode)){
@@ -128,26 +158,6 @@ public class KMLReflector {
                 );
         }
 
-        //set the content disposition
-        StringBuffer filename = new StringBuffer();
-        boolean containsRasterData = false;
-        for ( int i = 0; i < request.getLayers().length; i++ ) {
-            MapLayerInfo layer = request.getLayers()[i];
-            String name = layer.getName();
-            
-            containsRasterData = containsRasterData || 
-                (layer.getType() == MapLayerInfo.TYPE_RASTER) ||
-                (layer.getType() == MapLayerInfo.TYPE_BASEMAP);
-
-            //strip off prefix
-            int j = name.indexOf(':');
-            if ( j > -1 ) {
-                name = name.substring( j + 1 );
-            }
-
-            filename.append(name + "_");
-        }
-                
         //first set up some of the normal wms defaults
         if ( request.getWidth() < 1 ) {
             request.setWidth(mode.equals("refresh") || containsRasterData ? 1024 : 256);
