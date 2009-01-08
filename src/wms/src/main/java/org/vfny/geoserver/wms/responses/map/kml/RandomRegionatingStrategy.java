@@ -31,17 +31,13 @@ public class RandomRegionatingStrategy extends
         CachedHierarchyRegionatingStrategy {
 
     @Override
-    public FeatureIterator getSortedFeatures(ReferencedEnvelope env,
+    public FeatureIterator getSortedFeatures(GeometryDescriptor geom, ReferencedEnvelope env,
             Connection cacheConn) throws Exception {
         FeatureSource fs = typeInfo.getFeatureSource();
         
         // build the bbox filter
-        GeometryDescriptor geom = fs.getSchema().getGeometryDescriptor();
-        CoordinateReferenceSystem nativeCrs = geom
-                .getCoordinateReferenceSystem();
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-        if (!CRS.equalsIgnoreMetadata(WGS84, nativeCrs))
-            env = env.transform(nativeCrs, true);
+        
         BBOX filter = ff.bbox(geom.getLocalName(), env.getMinX(),
                 env.getMinY(), env.getMaxX(), env.getMaxY(), null);
 

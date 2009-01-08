@@ -14,6 +14,7 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.operation.projection.ProjectionException;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -79,15 +80,10 @@ public class NativeSortRegionatingStrategy extends
         return super.getDatabaseName(cfg) + "_" + cfg.getRegionateAttribute();
     }
 
-    public FeatureIterator getSortedFeatures(ReferencedEnvelope env,
-            Connection cacheConn) throws Exception {
+    public FeatureIterator getSortedFeatures(GeometryDescriptor geom,
+    		ReferencedEnvelope env, Connection cacheConn) throws Exception {
         // build the bbox filter
-        GeometryDescriptor geom = fs.getSchema().getGeometryDescriptor();
-        CoordinateReferenceSystem nativeCrs = geom
-                .getCoordinateReferenceSystem();
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-        if (!CRS.equalsIgnoreMetadata(WGS84, nativeCrs))
-            env = env.transform(nativeCrs, true);
         BBOX filter = ff.bbox(geom.getLocalName(), env.getMinX(),
                 env.getMinY(), env.getMaxX(), env.getMaxY(), null);
 
