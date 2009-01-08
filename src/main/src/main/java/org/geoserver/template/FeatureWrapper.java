@@ -8,6 +8,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,7 +16,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.util.MapEntry;
@@ -93,6 +98,23 @@ import freemarker.template.TemplateModelException;
  * @author Gabriel Roldan, TOPP
  */
 public class FeatureWrapper extends BeansWrapper {
+    protected static Catalog catalog;
+
+    private static Logger LOGGER = 
+        org.geotools.util.logging.Logging.getLogger("org.geoserver.template");
+    
+    protected Catalog getCatalog() {
+        if (catalog == null){
+            try{
+                catalog = (Catalog)GeoServerExtensions.bean("catalog2");
+            } catch (Exception e){
+                // TODO: Log exception
+            }
+        }
+
+        return catalog;
+    }
+
     public FeatureWrapper() {
         setSimpleMapWrapper(true);
     }
@@ -189,7 +211,11 @@ public class FeatureWrapper extends BeansWrapper {
                 Map attribute = new HashMap();
                 attribute.put("name", type.getLocalName());
                 attribute.put("type", type.getType().getBinding().getName());
-                attribute.put("isGeometry", Boolean.valueOf(Geometry.class.isAssignableFrom(type.getType().getBinding())));
+                attribute.put("isGeometry",
+                        Boolean.valueOf(Geometry.class.isAssignableFrom(
+                                type.getType().getBinding()
+                            ))
+                        );
 
                 attributeMap.put(type.getLocalName(), attribute);
             }
@@ -214,9 +240,29 @@ public class FeatureWrapper extends BeansWrapper {
             map.putAll(attributeMap);
 
 
-            // Add the metadata after setting the attributes so they aren't masked by feature attributes
+            // Add the metadata after setting the attributes so they aren't masked by feature 
+            // attributes
             map.put("fid", feature.getID());
             map.put("typeName", feature.getFeatureType().getTypeName());
+
+            Catalog gsCatalog = getCatalog();
+            Object o = null;
+            try {
+                o = gsCatalog.getResourceByName(
+                            gsCatalog.getNamespaceByURI(
+                                feature.getFeatureType().getName().getNamespaceURI()
+                                ).getPrefix(),
+                            feature.getFeatureType().getName().getLocalPart(),
+                            FeatureTypeInfo.class
+                            );
+            } catch (NullPointerException npe) {
+                // It's okay, 'o' will be null and we handle that anyway
+                LOGGER.fine("Couldn't find feature type info for " + feature.getFeatureType());
+            }
+
+            if (o == null) o = buildDummyFeatureTypeInfo(feature);
+
+            map.put("type", o);
 
             // create a variable "attributes" which his a list of all the
             // attributes, but at the same time, is a map keyed by name
@@ -226,6 +272,21 @@ public class FeatureWrapper extends BeansWrapper {
         }
 
         return super.wrap(object);
+    }
+
+    private Map<String, Object> buildDummyFeatureTypeInfo(SimpleFeature f){
+        Map<String, Object> dummy = new HashMap<String, Object>();
+        dummy.put("name", f.getFeatureType().getTypeName());
+        dummy.put("title", "Layer: " + f.getFeatureType().getTypeName());
+        dummy.put("abstract", "[No Abstract Provided]");
+        dummy.put("description", "[No Description Provided]");
+        dummy.put("keywords", new ArrayList<String>());
+        dummy.put("metadataLinks", new ArrayList<String>());
+        dummy.put("SRS", "[SRS]");
+        dummy.put("nativeCRS",
+                f.getFeatureType().getGeometryDescriptor().getCoordinateReferenceSystem()
+            );
+        return dummy;
     }
 
     /**
