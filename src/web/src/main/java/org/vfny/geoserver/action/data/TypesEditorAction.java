@@ -399,11 +399,15 @@ public class TypesEditorAction extends ConfigAction {
         }
 
         if (regionatorNeedsCleaning) {
-            String qualifiedname = 
-                getData().getDataStoreInfo(config.getDataStoreId()).getNamesSpacePrefix() 
-                + ":" + config.getName();
-            FeatureTypeInfo fti = getData().getFeatureTypeInfo(qualifiedname);
-            KMLUtils.findStrategyByName(config.getRegionateStrategy()).clearCache(fti);
+            String dsName = config.getDataStoreId();
+            if (dsName != null && getData().getDataStoreInfo(dsName) != null){
+                String nsPrefix = getData().getDataStoreInfo(dsName).getNamesSpacePrefix();
+                String qualifiedname = 
+                    getData().getDataStoreInfo(config.getDataStoreId()).getNamesSpacePrefix() 
+                    + ":" + config.getName();
+                FeatureTypeInfo fti = getData().getFeatureTypeInfo(qualifiedname);
+                KMLUtils.findStrategyByName(config.getRegionateStrategy()).clearCache(fti);
+            }
         } 
 
         config.setRegionateAttribute(form.getRegionateAttribute());
