@@ -21,6 +21,8 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 
 /**
  * Encodes an RSS feed tagged with geo information.
@@ -105,35 +107,59 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
             throws IOException {
             start("item");
 
+            String title = feature.getID();
+            String link = null; 
+            String description = "[Error while loading description]";
+
             try {
-                element("title", AtomUtils.getFeatureTitle(feature));
-            }
-            catch( Exception e ) {
+                title = AtomUtils.getFeatureTitle(feature);
+                link = AtomUtils.getEntryURL(feature, map);
+                description = AtomUtils.getFeatureDescription(feature);
+            } catch( Exception e ) {
                 String msg = "Error occured executing title template for: " + feature.getID();
                 LOGGER.log( Level.WARNING, msg, e );
             }
+
+            element("title", title);
             
             //create the link as getFeature request with fid filter
             start("link");
-            cdata(AtomUtils.getEntryURL(feature, map));
+            cdata(link);
             end("link");
 
             start("guid");
-            cdata(AtomUtils.getEntryURL(feature, map));
+            cdata(link);
             end("guid");
 
-            try {
-                start("description");
-                cdata(AtomUtils.getFeatureDescription(feature));
-                end("description");
-            }
-            catch( Exception e ) {
-                String msg = "Error occured executing description template for: " + feature.getID();
-                LOGGER.log( Level.WARNING, msg, e );
-            }
+            start("description");
+            cdata(AtomUtils.getFeatureDescription(feature));
+            end("description");
             
-            encodeGeometry(feature);
+            GeometryCollection col = feature.getDefaultGeometry() instanceof GeometryCollection 
+                ? (GeometryCollection) feature.getDefaultGeometry()
+                : null;
 
+            if (geometryEncoding == GeometryEncoding.LATLONG 
+                || (col == null && feature.getDefaultGeometry() != null)) {
+                geometryEncoding.encode((Geometry)feature.getDefaultGeometry(), this);
+                end("item");
+            } else {
+                geometryEncoding.encode(col.getGeometryN(0), this);
+                end("item");
+
+                for (int i = 1; i < col.getNumGeometries(); i++){
+                    encodeRelatedGeometryItem(col.getGeometryN(i), title, link, i);
+                }
+            }
+        }
+
+        void encodeRelatedGeometryItem(Geometry g, String title, String link, int count){
+            start("item");
+            element("title", "Continuation of " + title);
+            element("link", link);
+            element("guid", link + "#" + count);
+            element("description", "Continuation of " + title);
+            geometryEncoding.encode(g, this);
             end("item");
         }
     }
