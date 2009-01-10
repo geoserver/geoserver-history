@@ -125,8 +125,8 @@ public class ExternalSortRegionatingStrategy extends
         return cfg.getRegionateAttribute();
     }
 
-    public FeatureIterator getSortedFeatures(ReferencedEnvelope envelope,
-            Connection cacheConn) throws Exception {
+    public FeatureIterator getSortedFeatures(GeometryDescriptor geom, 
+    		ReferencedEnvelope envelope, Connection cacheConn) throws Exception {
         // first of all, let's check if the geometry index table is there
         Statement st = null;
         try {

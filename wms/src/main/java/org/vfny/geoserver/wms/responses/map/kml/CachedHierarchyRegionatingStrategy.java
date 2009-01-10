@@ -26,9 +26,11 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.operation.projection.ProjectionException;
 import org.geotools.util.CanonicalSet;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
@@ -363,8 +365,25 @@ public abstract class CachedHierarchyRegionatingStrategy implements
         FeatureIterator fi = null;
         try {
             // grab the features
-            ReferencedEnvelope tileEnvelope = tile.getEnvelope();
-            fi = getSortedFeatures(tileEnvelope, conn);
+            FeatureSource fs = typeInfo.getFeatureSource();
+            GeometryDescriptor geom = fs.getSchema().getGeometryDescriptor();
+            CoordinateReferenceSystem nativeCrs = geom
+                    .getCoordinateReferenceSystem();
+
+            ReferencedEnvelope nativeTileEnvelope = null;
+
+            if (!CRS.equalsIgnoreMetadata(WGS84, nativeCrs)) {
+                try {
+                    nativeTileEnvelope = tile.getEnvelope().transform(nativeCrs, true);
+                } catch (ProjectionException pe) {
+                    // NULL ?
+                    nativeTileEnvelope = typeInfo.getBoundingBox();
+                }
+            } else {
+                nativeTileEnvelope = tile.getEnvelope();
+            }
+
+            fi = getSortedFeatures(geom, nativeTileEnvelope, conn);
 
             // if the crs is not wgs84, we'll need to transform the point
             MathTransform tx = null;
@@ -419,7 +438,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements
      * @throws Exception
      */
     protected abstract FeatureIterator getSortedFeatures(
-            ReferencedEnvelope envelope, Connection indexConnection)
+    		GeometryDescriptor geom, ReferencedEnvelope envelope, 
+    		Connection indexConnection)
             throws Exception;
 
     /**
