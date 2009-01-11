@@ -174,6 +174,8 @@ public class WFSConfiguration extends Configuration {
 
             for (Iterator f = featureTypes.iterator(); f.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
+                if ( !meta.isEnabled() ) continue;
+                
                 SimpleFeatureType featureType = meta.getFeatureType();
 
                 featureTypeCache.put(featureType);
