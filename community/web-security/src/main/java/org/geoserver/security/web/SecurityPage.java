@@ -1,7 +1,6 @@
 package org.geoserver.security.web;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,12 +18,8 @@ import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignm
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.security.dao.DAOConfigurationProperties;
 import org.geoserver.security.dao.DAOException;
 import org.geoserver.security.dao.IDAOConfiguration;
@@ -46,6 +41,10 @@ public class SecurityPage extends ServerAdminPage {
 	private TreeTable tree;
 
 	private Catalog catalog;
+	
+	private ConfigurationSingleton singleton = ConfigurationSingleton.getInstance();
+	
+	static final Logger LOGGER = Logging.getLogger(SecurityPage.class);
 
 	public SecurityPage() {
 		
@@ -53,7 +52,7 @@ public class SecurityPage extends ServerAdminPage {
 		
 		try {
 			ConfigureChainOfResponsibility configuration = dao.loadConfiguration();
-			configuration.run(ConfigurationSingleton.getInstance());
+			configuration.run(singleton);
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,15 +61,21 @@ public class SecurityPage extends ServerAdminPage {
 		add(new Label("label",
 				"Per layer security sub system, protect your data!"));
 
+		List list = new ArrayList();
+		
+		for (LayerInfo layer:getCatalog().getLayers()){
+			list.add(layer.getName());
+		}
+		
 		IColumn columns[] = new IColumn[] {
 				new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 18,
 						Unit.EM), "NAME_SPACE", "userObject.namespace"),
 				new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT,
-						12, Unit.EM), "LAYER", "userObject.layer"),
+						12, Unit.EM), "LAYER", "userObject.layer", list),
 				new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT,
-						12, Unit.EM), "ACCESS", "userObject.access"),
+						12, Unit.EM), "ACCESS", "userObject.access",list),
 				new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT,
-						12, Unit.EM), "ROLE", "userObject.role"),
+						12, Unit.EM), "ROLE", "userObject.role",list),
 
 		};
 
@@ -80,41 +85,41 @@ public class SecurityPage extends ServerAdminPage {
 		tree = new TreeTable("treeTable", createTreeModel(), columns);
 		form.add(tree);
 		tree.getTreeState().expandAll();
-
-		IModel resourceListModel = new LoadableDetachableModel() {
-			public Object load() {
-				
-				IDAOConfiguration dao = new DAOConfigurationProperties();
-				
-				try {
-					ConfigureChainOfResponsibility configuration = dao.loadConfiguration();
-					configuration.run(ConfigurationSingleton.getInstance());
-				} catch (DAOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				List<String> result = new ArrayList<String>();
-
-				// gather layer and group names
-				List<LayerInfo> layers = getCatalog().getLayers();
-				for (LayerInfo layer : layers) {
-					ResourceInfo resource = layer.getResource();
-					if (layer.isEnabled() && resource.isEnabled()) {
-						result.add(resource.getPrefixedName());
-					}
-				}
-				List<LayerGroupInfo> groups = getCatalog().getLayerGroups();
-				for (LayerGroupInfo group : groups) {
-					result.add(group.getName());
-				}
-
-				// alphabetical sort
-				Collections.sort(result);
-
-				return result;
-			}
-		};
-
+		
+//		IModel resourceListModel = new LoadableDetachableModel() {
+//			public Object load() {
+//				
+//				IDAOConfiguration dao = new DAOConfigurationProperties();
+//				
+//				try {
+//					ConfigureChainOfResponsibility configuration = dao.loadConfiguration();
+//					configuration.run(ConfigurationSingleton.getInstance());
+//				} catch (DAOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				List<String> result = new ArrayList<String>();
+//
+//				// gather layer and group names
+//				List<LayerInfo> layers = getCatalog().getLayers();
+//				for (LayerInfo layer : layers) {
+//					ResourceInfo resource = layer.getResource();
+//					if (layer.isEnabled() && resource.isEnabled()) {
+//						result.add(resource.getPrefixedName());
+//					}
+//				}
+//				List<LayerGroupInfo> groups = getCatalog().getLayerGroups();
+//				for (LayerGroupInfo group : groups) {
+//					result.add(group.getName());
+//				}
+//
+//				// alphabetical sort
+//				Collections.sort(result);
+//
+//				return result;
+//			}
+//		};
+//
 //		ListView listview = new ListView("listview", resourceListModel) {
 //			protected void populateItem(ListItem item) {
 //				final Object itemModel = (Object) item.getModelObject();
@@ -143,20 +148,16 @@ public class SecurityPage extends ServerAdminPage {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	protected TreeModel createTreeModel() {
-		List<Object> l1 = new ArrayList<Object>();
+//		List<Object> configuration = new ArrayList<Object>();
 
-		
-		
-		
-		
-		return convertToTreeModel(l1);
+		return convertToTreeModel(singleton.getLayerSecurityModelList());
 	}
 
 	private TreeModel convertToTreeModel(List<Object> list) {
 		TreeModel model = null;
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(
-				new LayerSecurityModel("topp", "*", "w", "ROLE_ADMINISTRATOR"));
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode();
 		add(rootNode, list);
 		model = new DefaultTreeModel(rootNode);
 		return model;
@@ -172,9 +173,7 @@ public class SecurityPage extends ServerAdminPage {
 				parent.add(child);
 				add(child, (List<Object>) o);
 			} else {
-				DefaultMutableTreeNode child = new DefaultMutableTreeNode(
-						new LayerSecurityModel(o.toString(), o.toString(), o
-								.toString(), o.toString()));
+				DefaultMutableTreeNode child = new DefaultMutableTreeNode((LayerSecurityModel)o);
 				parent.add(child);
 			}
 		}

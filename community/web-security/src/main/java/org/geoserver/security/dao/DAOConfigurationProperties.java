@@ -9,6 +9,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.security.model.LayerSecurityModel;
+import org.geoserver.security.model.configuration.ConfiguratorLayers;
 import org.geoserver.security.model.configuration.ConfigureChainOfResponsibility;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -35,14 +37,21 @@ public class DAOConfigurationProperties implements IDAOConfiguration {
 			Properties properties = loadProperties(security.getAbsolutePath()
 					+ "/" + "layers.properties");
 
+			ConfiguratorLayers confLayers = new ConfiguratorLayers();
 			for (Map.Entry entry : properties.entrySet()) {
 				final String ruleKey = (String) entry.getKey();
 				final String ruleValue = (String) entry.getValue();
 				final String rule = ruleKey + "=" + ruleValue;
-				LOGGER.log(Level.INFO, "RULE " + rule);
+				String[] elements = parseElements(ruleKey);
+	            final String workspace = elements[0];
+	            final String layerName = elements[1];
+	            final String modeAlias = elements[2];				
+				LayerSecurityModel row = new LayerSecurityModel(workspace,layerName,modeAlias,ruleValue);
+				confLayers.addLayerSecurityModel(row);
 			}
 
 			chain = new ConfigureChainOfResponsibility();
+			chain.addConfiguratore(confLayers);
 
 		} catch (IOException e) {
 			throw new DAOException("Error while loading configuration\n"
@@ -67,6 +76,11 @@ public class DAOConfigurationProperties implements IDAOConfiguration {
 			}
 		}
 		return properties;
+	}
+
+	private String[] parseElements(String path) {
+		// regexp: ignore extra spaces
+		return path.split("\\s*\\.\\s*");
 	}
 
 }
