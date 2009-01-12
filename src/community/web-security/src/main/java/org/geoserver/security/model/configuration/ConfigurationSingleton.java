@@ -1,5 +1,11 @@
 package org.geoserver.security.model.configuration;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.geoserver.security.model.LayerSecurityModel;
+
 
 /**
  * Configuration
@@ -7,7 +13,7 @@ package org.geoserver.security.model.configuration;
  * @author Francesco Izzi (geoSDI)
  */
 
-public class ConfigurationSingleton {
+public class ConfigurationSingleton implements Serializable{
 
 	// field
 	
@@ -15,6 +21,7 @@ public class ConfigurationSingleton {
 	private String layer;
 	private String access;
 	private String role;
+	private List layerSecurityModelList = new ArrayList();
 	
 	private static ConfigurationSingleton singleton = new ConfigurationSingleton();
 	
@@ -59,4 +66,13 @@ public class ConfigurationSingleton {
 	public static void setSingleton(ConfigurationSingleton aSingleton) {
         singleton = aSingleton;
     }
+
+	public List getLayerSecurityModelList() {
+		return layerSecurityModelList;
+	}
+
+	public void setLayerSecurityModelList(
+			List layerSecurityModelList) {
+		this.layerSecurityModelList = layerSecurityModelList;
+	}
 }
