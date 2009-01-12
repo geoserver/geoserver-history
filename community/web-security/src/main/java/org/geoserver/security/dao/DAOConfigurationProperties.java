@@ -22,7 +22,8 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 public class DAOConfigurationProperties implements IDAOConfiguration {
 
-	static final Logger LOGGER = Logging.getLogger(DAOConfigurationProperties.class);
+	static final Logger LOGGER = Logging
+			.getLogger(DAOConfigurationProperties.class);
 
 	public ConfigureChainOfResponsibility loadConfiguration()
 			throws DAOException {
@@ -33,17 +34,15 @@ public class DAOConfigurationProperties implements IDAOConfiguration {
 					"security");
 			Properties properties = loadProperties(security.getAbsolutePath()
 					+ "/" + "layers.properties");
-			
-			LOGGER.log(Level.INFO, "SCANNING MAP FILE");
-			for(Map.Entry entry : properties.entrySet()){
+
+			for (Map.Entry entry : properties.entrySet()) {
 				final String ruleKey = (String) entry.getKey();
-	            final String ruleValue = (String) entry.getValue();
-	            final String rule = ruleKey + "=" + ruleValue;
-	            LOGGER.log(Level.INFO, "RULE"+rule);
+				final String ruleValue = (String) entry.getValue();
+				final String rule = ruleKey + "=" + ruleValue;
+				LOGGER.log(Level.INFO, "RULE " + rule);
 			}
-			
+
 			chain = new ConfigureChainOfResponsibility();
-			
 
 		} catch (IOException e) {
 			throw new DAOException("Error while loading configuration\n"
