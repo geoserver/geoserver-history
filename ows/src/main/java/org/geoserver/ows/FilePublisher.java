@@ -83,6 +83,16 @@ public class FilePublisher extends AbstractController {
             return null;
         }
 
+        if (file.isDirectory()) {
+            String uri = request.getRequestURI().toString();
+            uri += uri.endsWith("/") ? "index.html" : "/index.html";
+            
+            response.addHeader("Location", uri);
+            response.sendError(HttpServletResponse.SC_MOVED_TEMPORARILY);
+            
+            return null;
+        }
+
         String mime = getServletContext().getMimeType(file.getName());
         if (mime == null) {
             //return a 415: Unsupported Media Type
