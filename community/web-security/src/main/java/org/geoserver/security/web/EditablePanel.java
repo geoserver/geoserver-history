@@ -9,6 +9,8 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.LayerInfo;
 
 /**
@@ -22,11 +24,12 @@ public class EditablePanel extends Panel {
 //	private static final List LAYERS = Arrays.asList(new String[] {"layer1", "layer2", "layer3" });
 	
 	public EditablePanel(String id, IModel inputModel,List layers) {
-		super(id);
+		super(id, inputModel);
 
 		
+		
 //		TextField field = new TextField("textfield", inputModel);
-		DropDownChoice field = new DropDownChoice("textfield", layers);
+		DropDownChoice field = new DropDownChoice("textfield", new PropertyModel(this,""), layers);
 		
 		
 		add(field);

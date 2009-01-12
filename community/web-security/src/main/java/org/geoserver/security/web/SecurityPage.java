@@ -68,14 +68,14 @@ public class SecurityPage extends ServerAdminPage {
 		}
 		
 		IColumn columns[] = new IColumn[] {
-				new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 18,
+				new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 10,
 						Unit.EM), "NAME_SPACE", "userObject.namespace"),
 				new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT,
-						12, Unit.EM), "LAYER", "userObject.layer", list),
+						24, Unit.EM), "LAYER", "userObject.layer", list),
 				new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT,
-						12, Unit.EM), "ACCESS", "userObject.access",list),
+						6, Unit.EM), "ACCESS", "userObject.access",list),
 				new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT,
-						12, Unit.EM), "ROLE", "userObject.role",list),
+						10, Unit.EM), "ROLE", "userObject.role",list),
 
 		};
 
