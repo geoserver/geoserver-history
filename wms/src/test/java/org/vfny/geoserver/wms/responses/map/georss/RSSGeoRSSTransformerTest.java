@@ -92,6 +92,7 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
         map.addLayer(createMapLayer(MockData.BASIC_POLYGONS));
 
         Document document = getRSSResponse(map, GeoRSSTransformerBase.GeometryEncoding.SIMPLE);
+        print(document);
 
         Element element = document.getDocumentElement();
         assertEquals("rss", element.getNodeName());

@@ -21,6 +21,9 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+
 public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
     public Translator createTranslator(ContentHandler handler) {
         return new AtomGeoRSSTranslator(handler);
@@ -89,7 +92,6 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
                     }
                 }
             }
-            
         }
 
         void encodeEntry(SimpleFeature feature, WMSMapContext map) {
@@ -105,10 +107,9 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
             //id
             element("id", AtomUtils.getEntryURI(feature, map));
 
+            String link = AtomUtils.getEntryURL(feature, map);
             AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute(null, "href", "href", null, 
-                    AtomUtils.getEntryURL(feature, map)
-            );
+            atts.addAttribute(null, "href", "href", null, link);
             atts.addAttribute(null, "rel", "rel", null, "self");
             element("link", null, atts);
 
@@ -121,10 +122,36 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
             element("content", AtomUtils.getFeatureDescription(feature), atts);
 
             //where
-            start("georss:where");
-            encodeGeometry(feature);
-            end("georss:where");
+            if (geometryEncoding == GeometryEncoding.LATLONG 
+                || !(feature.getDefaultGeometry() instanceof GeometryCollection)){
+                start("georss:where");
+                geometryEncoding.encode((Geometry)feature.getDefaultGeometry(), this);
+                end("georss:where");
+                end("entry");
+            } else {
+                GeometryCollection col = (GeometryCollection)feature.getDefaultGeometry();
+                start("georss:where");
+                geometryEncoding.encode(col.getGeometryN(0), this);
+                end("georss:where");
+                end("entry");
 
+                for (int i = 1; i < col.getNumGeometries(); i++){
+                    encodeRelatedGeometryEntry(col.getGeometryN(i), feature.getID(), link, link + "#" + i);
+                }
+            }
+        }
+
+        void encodeRelatedGeometryEntry(Geometry g, String title, String link, String id){
+            start("entry");
+            element("id", id);
+            AttributesImpl atts = new AttributesImpl();
+            atts.addAttribute(null, "href", "href", null, link);
+            atts.addAttribute(null, "rel", "rel", null, "related");
+            element("link", null, atts);
+            element("title", title);
+            start("georss:where");
+            geometryEncoding.encode(g, this);
+            end("georss:where");
             end("entry");
         }
     }
