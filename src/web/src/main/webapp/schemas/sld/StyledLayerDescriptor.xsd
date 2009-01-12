@@ -568,9 +568,12 @@
             <xsd:element ref="sld:LabelPlacement" minOccurs="0"/>
             <xsd:element ref="sld:Halo" minOccurs="0"/>
             <xsd:element ref="sld:Fill" minOccurs="0"/>
+            
+            <!-- GeoServer specific extensions, these are not part of the SLD 1.0 standard -->
+            <xsd:element ref="sld:Graphic" minOccurs="0"/>
             <xsd:element ref="sld:Priority" minOccurs="0"/>
-        
             <xsd:element ref="sld:VendorOption" minOccurs="0" maxOccurs="unbounded" />                 
+                 
 
           </xsd:sequence>
         </xsd:extension>
