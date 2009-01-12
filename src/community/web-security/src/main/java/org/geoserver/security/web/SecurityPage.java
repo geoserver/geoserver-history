@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -17,16 +19,12 @@ import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignm
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
-import org.geoserver.security.SecureCatalogImpl;
 import org.geoserver.security.dao.DAOConfigurationProperties;
 import org.geoserver.security.dao.DAOException;
 import org.geoserver.security.dao.IDAOConfiguration;
@@ -35,6 +33,7 @@ import org.geoserver.security.model.PropertyEditableColumn;
 import org.geoserver.security.model.configuration.ConfigurationSingleton;
 import org.geoserver.security.model.configuration.ConfigureChainOfResponsibility;
 import org.geoserver.web.admin.ServerAdminPage;
+import org.geotools.util.logging.Logging;
 
 /**
  * A panel for Security Page
@@ -49,6 +48,17 @@ public class SecurityPage extends ServerAdminPage {
 	private Catalog catalog;
 
 	public SecurityPage() {
+		
+		IDAOConfiguration dao = new DAOConfigurationProperties();
+		
+		try {
+			ConfigureChainOfResponsibility configuration = dao.loadConfiguration();
+			configuration.run(ConfigurationSingleton.getInstance());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		add(new Label("label",
 				"Per layer security sub system, protect your data!"));
 
