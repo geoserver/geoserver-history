@@ -1,17 +1,25 @@
-package org.geoserver.data.test;
+package org.geoserver.data.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.geotools.util.logging.Logging;
 
 /**
  * Utility class for IO related utilities
@@ -20,8 +28,10 @@ import java.util.Map;
  * 
  */
 public class IOUtils {
+    private static final Logger LOGGER = Logging.getLogger(IOUtils.class);
+    
     private IOUtils() {
-
+        // singleton
     }
 
     /**
@@ -160,31 +170,112 @@ public class IOUtils {
             throw new IOException("Could not create the temp directory " + tempDir.getPath());
         return tempDir;
     }
+    
+    /**
+     * Creates a temporary directory whose name will start by prefix
+     *
+     * Strategy is to leverage the system temp directory, then create a sub-directory.
+     * @return
+     */
+    public static File createTempDirectory(String prefix) throws IOException {
+        File dummyTemp = File.createTempFile("blah", null);
+        String sysTempDir = dummyTemp.getParentFile().getAbsolutePath();
+        dummyTemp.delete();
+
+        File reqTempDir = new File(sysTempDir + File.separator + "wfsshptemp" + Math.random());
+        reqTempDir.mkdir();
+
+        return reqTempDir;
+    }
 
     /**
-     * Recursively deletes the contents of the specified directory. If a file
-     * cannot be deleted a log statement will be issued, but no exception will
-     * be thrown
+     * Recursively deletes the contents of the specified directory, 
+     * and finally wipes out the directory itself. For each
+     * file that cannot be deleted a warning log will be issued. 
      * 
      * @param dir
      * @throws IOException
+     * @returns true if the directory could be deleted, false otherwise
      */
-    public static void delete(File directory) throws IOException {
+    public static boolean delete(File directory) throws IOException {
+        emptyDirectory(directory);
+        return directory.delete();
+    }
+
+    /**
+     * Recursively deletes the contents of the specified directory 
+     * (but not the directory itself). For each
+     * file that cannot be deleted a warning log will be issued.
+     * 
+     * @param dir
+     * @throws IOException
+     * @returns true if all the directory contents could be deleted, false otherwise
+     */
+    public static boolean emptyDirectory(File directory) throws IOException {
         if (!directory.isDirectory())
             throw new IllegalArgumentException(directory
                     + " does not appear to be a directory at all...");
 
+        boolean allClean = true;
         File[] files = directory.listFiles();
 
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
-                delete(files[i]);
+                allClean &= delete(files[i]);
             } else {
-                if (!files[i].delete())
-                    System.out.println("Could not delete " + files[i].getAbsolutePath());
+                if (!files[i].delete()) {
+                    LOGGER.log(Level.WARNING, "Could not delete {0}", files[i].getAbsolutePath());
+                    allClean = false;
+                }
             }
         }
-
-        directory.delete();
+        
+        return allClean;
+    }
+    
+    /**
+     * Zips up the directory contents into the specified {@link ZipOutputStream}. 
+     * @param directory The directory whose contents have to be zipped up
+     * @param zipout The {@link ZipOutputStream} that will be populated by the files found
+     * @param filter An optional filter that can be used to select only certain files. 
+     * Can be null, in that case all files in the directory will be zipped
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    public static void zipDirectory(File directory, ZipOutputStream zipout, final FilenameFilter filter)
+            throws IOException, FileNotFoundException {
+        zipDirectory(directory, "", zipout, filter);
+    }
+    
+    /**
+     * See {@link #zipDirectory(File, ZipOutputStream, FilenameFilter)}, this version handles the prefix needed
+     * to recursively zip data preserving the relative path of each
+     */
+    private static void zipDirectory(File directory, String prefix, ZipOutputStream zipout, final FilenameFilter filter)
+            throws IOException, FileNotFoundException {
+        File[] files = directory.listFiles(filter);
+        for (File file : files) {
+            if (file.exists()) {
+                if(file.isDirectory()) {
+                    // recurse and append 
+                    zipDirectory(file, prefix + file.getName() + "/", zipout, filter);
+                } else {
+                    ZipEntry entry = new ZipEntry(prefix  + file.getName());
+                    zipout.putNextEntry(entry);
+    
+                    // copy file by reading 4k at a time (faster than buffered reading)
+                    InputStream in = new FileInputStream(file);
+                    int c;
+                    byte[] buffer = new byte[4 * 1024];
+                    while (-1 != (c = in.read(buffer))) {
+                        zipout.write(buffer, 0, c);
+                    }
+                    zipout.closeEntry();
+                    in.close();
+                }
+            }
+        }
+        zipout.finish();
+        zipout.flush();
     }
 }

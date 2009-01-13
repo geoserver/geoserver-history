@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 import org.geoserver.data.CatalogWriter;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
+import org.geoserver.data.util.IOUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;

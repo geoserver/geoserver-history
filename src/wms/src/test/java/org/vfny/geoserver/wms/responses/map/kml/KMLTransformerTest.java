@@ -24,8 +24,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
-import org.geoserver.data.test.IOUtils;
 import org.geoserver.data.test.MockData;
+import org.geoserver.data.util.IOUtils;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.map.MapLayer;
