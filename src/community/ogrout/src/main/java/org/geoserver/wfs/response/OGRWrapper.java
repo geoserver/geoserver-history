@@ -5,7 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.geotools.util.logging.Logging;
 
 /**
  * Helper used to invoke ogr2ogr
@@ -15,19 +20,16 @@ import java.util.List;
  */
 public class OGRWrapper {
 
-    private File outputDirectory;
-
-    private OgrParameters format;
+    private static final Logger LOGGER = Logging.getLogger(OGRWrapper.class);
 
     private String ogrExecutable;
 
-    public OGRWrapper(File outputDirectory, OgrParameters format, String ogrExecutable) {
-        this.outputDirectory = outputDirectory;
-        this.format = format;
+    public OGRWrapper(String ogrExecutable) {
         this.ogrExecutable = ogrExecutable;
     }
 
-    public void convert(File inputData, String typeName, String crsName) throws IOException, InterruptedException {
+    public void convert(File inputData, File outputDirectory, String typeName,
+            OgrParameters format, String crsName) throws IOException, InterruptedException {
         // build the command line
         List<String> cmd = new ArrayList<String>();
         cmd.add(ogrExecutable);
@@ -48,22 +50,95 @@ public class OGRWrapper {
         cmd.add(new File(outputDirectory, outFileName).getAbsolutePath());
         cmd.add(inputData.getAbsolutePath());
 
-        // run the process and grab the output for error reporting purposes
-        ProcessBuilder builder = new ProcessBuilder(cmd);
-        builder.redirectErrorStream(true);
-        Process p = builder.start();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
         StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append("\n");
-            sb.append(line);
-        }
-        int exitCode = p.waitFor();
+        int exitCode = run(cmd, sb);
 
         if (exitCode != 0)
             throw new IOException("ogr2ogr did not terminate successfully, exit code " + exitCode
                     + "\n" + sb);
     }
 
+    /**
+     * Returns a list of the ogr2ogr supported formats
+     * 
+     * @return
+     */
+    public List<String> getSupportedFormats() {
+        try {
+            List<String> commands = new ArrayList<String>();
+            commands.add(ogrExecutable);
+            commands.add("--help");
+
+            StringBuilder sb = new StringBuilder();
+            int exitCode = run(commands, sb);
+
+            if (exitCode != 0) {
+                LOGGER
+                        .warning("Could not get the list of output formats supported by ogr2ogr, output was:\n"
+                                + sb);
+                return Collections.emptyList();
+            }
+
+            List<String> formats = new ArrayList<String>();
+            String[] lines = sb.toString().split("\n");
+            for (String line : lines) {
+                if (line.matches("\\s*-f \"")) {
+                    String format = line.substring(line.indexOf('"'), line.lastIndexOf('"'));
+                    formats.add(format);
+                }
+            }
+
+            Collections.sort(formats);
+            return formats;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE,
+                    "Could not get the list of output formats supported by ogr2ogr", e);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Returns true if ogr2ogr is available, that is, if executing
+     * "ogr2ogr --version" returns 0 as the exit code
+     * 
+     * @return
+     */
+    public boolean isAvailable() {
+        List<String> commands = new ArrayList<String>();
+        commands.add(ogrExecutable);
+        commands.add("--version");
+
+        try {
+            return run(commands, null) == 0;
+        } catch(Exception e) {
+            LOGGER.log(Level.SEVERE, "Ogr2Ogr is not available", e);
+            return false;
+        }
+    }
+
+    /**
+     * Runs the specified command appending the output to the string builder and
+     * returning the exit code
+     * 
+     * @param cmd
+     * @param sb
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    int run(List<String> cmd, StringBuilder sb) throws IOException, InterruptedException {
+        // run the process and grab the output for error reporting purposes
+        ProcessBuilder builder = new ProcessBuilder(cmd);
+        builder.redirectErrorStream(true);
+        Process p = builder.start();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            if (sb != null) {
+                sb.append("\n");
+                sb.append(line);
+            }
+        }
+        return p.waitFor();
+    }
 }

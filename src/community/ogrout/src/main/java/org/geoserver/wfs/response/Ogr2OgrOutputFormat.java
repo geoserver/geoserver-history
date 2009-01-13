@@ -112,7 +112,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
         File tempOGR = org.geoserver.data.util.IOUtils.createTempDirectory("ogrtmpout");
 
         // build the ogr wrapper used to run the ogr2ogr commands
-        OGRWrapper wrapper = new OGRWrapper(tempOGR, format, ogrExecutable);
+        OGRWrapper wrapper = new OGRWrapper(ogrExecutable);
 
         // actually export each feature collection
         try {
@@ -139,7 +139,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
                 final CoordinateReferenceSystem crs = schema.getCoordinateReferenceSystem();
                 if (crs != null)
                     epsgCode = "EPSG:" + GML2EncodingUtils.epsgCode(crs);
-                wrapper.convert(gml, schema.getTypeName(), epsgCode);
+                wrapper.convert(gml, tempOGR, schema.getTypeName(), format, epsgCode);
 
                 // wipe out the input dir contents
                 IOUtils.emptyDirectory(tempGS);

@@ -1,9 +1,7 @@
 package org.geoserver.wfs.response;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,17 +28,8 @@ public class Ogr2OgrTestUtil {
                 if(OGR2OGR == null)
                     OGR2OGR = "ogr2ogr";
                 
-                // run the process so that whatever output is generates goes to /dev/null
-                // but at the same time having it block trying to write to its stdout/stderr
-                ProcessBuilder pb = new ProcessBuilder(OGR2OGR, "--version");
-                pb.redirectErrorStream();
-                Process proc = pb.start();
-                InputStreamReader isr = new InputStreamReader(proc.getInputStream());
-                BufferedReader br = new BufferedReader(isr);
-                while (br.readLine() != null);
-                
-                int exitStatus = proc.waitFor();
-                IS_OGR_AVAILABLE = exitStatus == 0;
+                OGRWrapper ogr = new OGRWrapper(OGR2OGR);
+                IS_OGR_AVAILABLE = ogr.isAvailable();
             } catch (Exception e) {
                 IS_OGR_AVAILABLE = false;
                 e.printStackTrace();
