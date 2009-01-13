@@ -20,7 +20,7 @@ application directory.
 <script type="text/javascript" src="js_color_picker_v2.js"></script>
 
 <!-- ================================ -->
-<!-- ---------- JAVASCRIPT ---------- -->
+<!--            JAVASCRIPT            -->
 <!-- ================================ -->
 <script language="JavaScript" type="text/JavaScript">
 <!--
@@ -1010,7 +1010,7 @@ function nothing()
 -->
 </script>
 <!-- ================================ -->
-<!-- --- END -- JAVASCRIPT ---------- -->
+<!--     END  - JAVASCRIPT            -->
 <!-- ================================ -->
 
 
