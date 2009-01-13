@@ -28,6 +28,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
+import org.geoserver.data.util.IOUtils;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
@@ -42,6 +43,7 @@ import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -71,7 +73,7 @@ import com.vividsolutions.jts.geom.Polygon;
  *
  */
 public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements ApplicationContextAware {
-    private final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(this.getClass().toString());
+    private static final Logger LOGGER = Logging.getLogger(ShapeZipOutputFormat.class);
     private String outputFileName;
     private ApplicationContext applicationContext;
     
@@ -129,8 +131,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         Operation getFeature) throws IOException, ServiceException {
         //We might get multiple featurecollections in our response (multiple queries?) so we need to
         //write out multiple shapefile sets, one for each query response.
-        File tempDir = createTempDirectory();
-        ZipOutputStream zipOut = new ZipOutputStream(output);
+        File tempDir = IOUtils.createTempDirectory("wfsshptemp");
         
         try {
             Iterator<FeatureCollection<SimpleFeatureType, SimpleFeature>> outputFeatureCollections;
@@ -155,21 +156,18 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
                     writeCollectionToShapefile(curCollection, tempDir, getShapefileCharset(getFeature));
                 }
 
-                // zip all the files produced
-                File[] files = tempDir.listFiles(new FilenameFilter() {
-                
-                    public boolean accept(File dir, String name) {
-                        return name.endsWith(".shp") || name.endsWith(".shx") || name.endsWith(".dbf")
-                               || name.endsWith(".prj") || name.endsWith(".cst");
-                    }
-                });
-                for (File file : files) {
-                    addFile(file, zipOut);
-                }
             }
-
-            zipOut.finish();
-            zipOut.flush();
+            
+            // zip all the files produced
+            final FilenameFilter filter = new FilenameFilter() {
+            
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".shp") || name.endsWith(".shx") || name.endsWith(".dbf")
+                           || name.endsWith(".prj") || name.endsWith(".cst");
+                }
+            };
+            ZipOutputStream zipOut = new ZipOutputStream(output);
+            IOUtils.zipDirectory(tempDir, zipOut, filter);
 
             // This is an error, because this closes the output stream too... it's
             // not the right place to do so
@@ -181,7 +179,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
             }
         }
     }
-    
+
     /**
      * Write one featurecollection to an appropriately named shapefile.
      * @param c the featurecollection to write
@@ -318,22 +316,9 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         }
         return storeWriter.writer;
     }
+    
+    
 
-    private void addFile(File file, ZipOutputStream zipOut) throws IOException, FileNotFoundException {
-            if(file.exists()) {
-                ZipEntry entry = new ZipEntry(file.getName());
-                zipOut.putNextEntry(entry);
-        
-                InputStream in = new FileInputStream(file);
-                int c;
-                byte[] buffer = new byte[4 * 1024];
-                while (-1 != (c = in.read(buffer))) {
-                    zipOut.write(buffer,0,c);
-            }
-            zipOut.closeEntry();
-            in.close();
-        }
-    }
 
     /**
      * Looks up the charset parameter, either in the GetFeature request or as a global parameter
@@ -424,31 +409,6 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         }
 
         return sfds;
-    }
-
-    /**
-     * Creates a temporary directory into which we'll write the various shapefile components for this response.
-     *
-     * Strategy is to leverage the system temp directory, then create a sub-directory.
-     * @return
-     */
-    private File createTempDirectory() {
-        try {
-            File dummyTemp = File.createTempFile("blah", null);
-            String sysTempDir = dummyTemp.getParentFile().getAbsolutePath();
-            dummyTemp.delete();
-
-            File reqTempDir = new File(sysTempDir + File.separator + "wfsshptemp" + Math.random());
-            reqTempDir.mkdir();
-
-            return reqTempDir;
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING,
-                "Unable to properly create a temporary directory when trying to output a shapefile.  Is the system temp directory writeable?",
-                e);
-            throw new ServiceException(
-                "Error in shapefile schema. It is possible you don't have a geometry set in the output.");
-        }
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

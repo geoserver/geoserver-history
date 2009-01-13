@@ -1,7 +1,5 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import junit.framework.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
@@ -10,18 +8,13 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.geoserver.data.test.IOUtils;
+import junit.framework.Test;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
-import org.geotools.data.FeatureSource;
 import org.geotools.map.MapLayer;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import com.vividsolutions.jts.geom.Envelope;
 
