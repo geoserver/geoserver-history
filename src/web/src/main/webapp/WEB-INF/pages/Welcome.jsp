@@ -10,7 +10,7 @@
 </logic:notPresent>
 
 </span>
-
+<div class="info-text">
 <p>
 <bean:message key="text.welcome1"/>
 </p>
@@ -53,7 +53,7 @@
 <p>
 	<bean:message key="text.visitDemoPage"/>
 </p>
-
+</div>
 	<a href="./ows?service=WCS&request=GetCapabilities">WCS Capabilities</a>
 	<br>
 	<a href="./ows?service=WFS&request=GetCapabilities">WFS Capabilities</a>

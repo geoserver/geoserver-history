@@ -20,7 +20,7 @@ application directory.
 <script type="text/javascript" src="js_color_picker_v2.js"></script>
 
 <!-- ================================ -->
-<!-- ---------- JAVASCRIPT ---------- -->
+<!--            JAVASCRIPT            -->
 <!-- ================================ -->
 <script language="JavaScript" type="text/JavaScript">
 <!--
@@ -180,7 +180,7 @@ function generateColorPicker(colorFieldName)
 	
 	result = '<input name="'+colorFieldName+'" id="'+colorFieldName+'" size="7" ';
 	result += 'onChange="relateColor(\''+colorFieldName+'\', this.value);"> ';
-	result += '<script language="javascript">relateColor(\'pick'+colorFieldName+'\', getObj(\''+colorFieldName+'\').value);</scr'+'ipt> ';
+	result += '<scr' + 'ipt language="javascript">relateColor(\'pick'+colorFieldName+'\', getObj(\''+colorFieldName+'\').value);</scr'+'ipt> ';
 	result += '<a href="javascript:pickColor(\''+colorFieldName+'\');" id="pick'+colorFieldName+'" name="pick'+colorFieldName+'" style="border: 1px solid #000000; font-family:Verdana; font-size:10px; background=#FFFF33; ';
 	result += 'text-decoration: none; " ><img src="../../images/colorpicker.jpg" width=12 height=12 border="none"></a>';
 
@@ -1004,7 +1004,7 @@ function nothing()
 -->
 </script>
 <!-- ================================ -->
-<!-- --- END -- JAVASCRIPT ---------- -->
+<!--     END  - JAVASCRIPT            -->
 <!-- ================================ -->
 
 

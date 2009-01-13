@@ -3,7 +3,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<!---   
+ <!-- -   
           This JSP expect to have a:
           
           <form-bean 
@@ -21,10 +21,10 @@
 	
 	   given to it.  The id list is a list of integers (as strings) - these are the EPSG:# codes.
 	   The Definition list is the WKT of that EPSG code.
-  --->
+  - -->
 
 <!-- ALL THIS STUFF TAKEN FROM MAINLAYOUT.JSP -->
-<!------------------------------------------------------------------------>
+ <!-- ================================================== -->
 <html:html locale="true" xhtml="true">
   <head>
     <title>
@@ -83,13 +83,13 @@
         </td>
 	</tr>
 	</table>
-<!------------------------------------------------------------------------>
+ <!-- ================================================== -->
 
 <h1> <bean:message key="srsList.title"/> </h1>
 
-<!------------------------------------------------------------------------>
-<!-- DISPLAY THE LIST OF SRS AND THEIR DEFINITIONS                       ->
-<!------------------------------------------------------------------------>
+ <!-- ================================================== -->
+<!-- DISPLAY THE LIST OF SRS AND THEIR DEFINITIONS                       -->
+ <!-- ================================================== -->
 
 
 <table border=1 cellspacing="0" cellpadding="2" width=95%>
@@ -106,7 +106,7 @@
 	     <td valign="top" align="right">
 	          <bean:write property='<%= "srsIDList[" + idx + "]" %>' name="srsInfoForm"/>
 	     </td>
-	     <td class="greyedOut2">
+	     <td class="greyedout2">
 	     	<pre><bean:write property='<%= "srsDefinitionList[" + idx + "]" %>' name="srsInfoForm"/></pre>
 	     </td>
 	</tr>
