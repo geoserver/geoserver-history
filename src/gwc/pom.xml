@@ -29,7 +29,7 @@
    <dependency>
      <groupId>org.opengeo</groupId>
      <artifactId>geowebcache</artifactId>
-     <version>1.0-SNAPSHOT</version>
+     <version>1.0.x-SNAPSHOT</version>
      <exclusions>
        <!-- GeoTools - Also not very successful-->
        <exclusion>
