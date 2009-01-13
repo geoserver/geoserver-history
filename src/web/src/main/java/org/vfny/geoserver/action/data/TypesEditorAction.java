@@ -388,9 +388,11 @@ public class TypesEditorAction extends ConfigAction {
         Integer limit = null;
         
         regionatorNeedsCleaning 
-            |= config.getRegionateAttribute().equals(form.getRegionateAttribute());
+            |= config.getRegionateAttribute() != null 
+            && !config.getRegionateAttribute().equals(form.getRegionateAttribute());
         regionatorNeedsCleaning 
-            |= config.getRegionateStrategy().equals(form.getRegionateStrategy());
+            |= config.getRegionateStrategy() != null 
+            && config.getRegionateStrategy().equals(form.getRegionateStrategy());
         try {
             limit = Integer.valueOf(form.getRegionateFeatureLimit());
             regionatorNeedsCleaning |= limit.intValue() == (config.getRegionateFeatureLimit());
