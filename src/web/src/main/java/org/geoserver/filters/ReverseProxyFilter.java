@@ -158,7 +158,7 @@ public class ReverseProxyFilter implements Filter {
      */
     public void doFilter(final ServletRequest request, final ServletResponse response,
             final FilterChain chain) throws IOException, ServletException {
-        System.err.println("filtering " + ((HttpServletRequest) request).getRequestURL());
+        LOGGER.finer("filtering " + ((HttpServletRequest) request).getRequestURL());
         if (!filterIsEnabled || !(request instanceof HttpServletRequest)) {
             chain.doFilter(request, response);
             return;
