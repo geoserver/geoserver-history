@@ -63,7 +63,7 @@ public class LoggingStartupContextListener implements ServletContextListener {
                 LoggingUtils.initLogging(loader, loggingImporter.getConfigFileName(), loggingImporter
                         .getSuppressStdOutLogging(), loggingImporter.getLogFile());
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Could not configure log4j overrides", e);
+                getLogger().log(Level.SEVERE, "Could not configure log4j overrides", e);
             }
         }
     }
