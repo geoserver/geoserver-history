@@ -140,11 +140,11 @@ function prepareFormData(){
         </tr>
         </table>
 	</td></tr>
-	<!------------------------->
+ <!-- ===================================================================== -->
 	
 	
 	
-	<!------ This puts in the SRS WKT definition --->
+	 <!--  This puts in the SRS WKT definition  -->
 	
 	<tr>
 	<td class="label">
@@ -152,7 +152,7 @@ function prepareFormData(){
           <bean:message key="label.type.srswkt"/>:
         </span>
 	  </td>
-	  <td class="greyedOut2">
+	  <td class="greyedout2">
               <bean:write name="typesEditorForm" property="SRSWKT"/>
             </td>
 	</tr>
@@ -163,7 +163,7 @@ function prepareFormData(){
           <bean:message key="label.type.crswkt"/>:
         </span>
 	  </td>
-	  <td class="greyedOut2">
+	  <td class="greyedout2">
               <bean:write name="typesEditorForm" property="nativeSRSWKT"/>
             </td>
 	</tr>
@@ -175,7 +175,7 @@ function prepareFormData(){
           <bean:message key="label.type.srshandling"/>:
         </span>
 	  </td>
-	  <td class="greyedOut2">
+	  <td class="greyedout2">
               <html:select property="srsHandling">
 	             <html:options property="allSrsHandling"/>
               </html:select>
@@ -183,7 +183,7 @@ function prepareFormData(){
 	</tr>
 	
 	
-	<!-------------------------->
+	 <!-- ================= -->
 
     <tr>
       <td class="label">
@@ -207,9 +207,9 @@ function prepareFormData(){
           <bean:message key="config.data.calculateBoundingBox.label"/>
         </html:submit><br/>
         
-      <!-------------------------------------------------------------->
-      <!----- This will add the bounding box of the data (in its CRS) to the page --->
-      <!----- Its only added if its actually been calculated (i.e. they presed the generate bbox button) --->
+       <!-- =========================================================================== -->
+       <!-- This will add the bounding box of the data (in its CRS) to the page  -->
+       <!-- Its only added if its actually been calculated (i.e. they presed the generate bbox button) -->
 
 <html:hidden property="nativeMinX"/>
 <html:hidden property="nativeMinY"/>
@@ -223,45 +223,45 @@ function prepareFormData(){
 <logic:notEmpty name="typesEditorForm"  property="dataMinX">
         <table border=0 width=90%>
           <tr>
-            <td class="greyedOut">
+            <td class="greyedout">
               <span class="help" title="<bean:message key="help.type.dataminx"/>">
                 <bean:message key="label.type.dataminx"/>:
               </span>
             </td>
-            <td class="greyedOut">
+            <td class="greyedout">
               <bean:write name="typesEditorForm" property="dataMinX"/>
             </td>
-            <td class="greyedOut">
+            <td class="greyedout">
               <span class="help" title="<bean:message key="help.type.dataminy"/>">
                 <bean:message key="label.type.dataminy"/>:
               </span>
             </td>
-            <td class="greyedOut">
+            <td class="greyedout">
               <bean:write name="typesEditorForm" property="dataMinY"/>
             </td>
           </tr>
           <tr>
-            <td class="greyedOut">
+            <td class="greyedout">
               <span class="help" title="<bean:message key="help.type.datamaxx"/>">
                 <bean:message key="label.type.datamaxx"/>:
               </span>
             </td>
-            <td class="greyedOut">
+            <td class="greyedout">
              <bean:write name="typesEditorForm" property="dataMaxX"/>
             </td>
-            <td class="greyedOut">
+            <td class="greyedout">
               <span class="help" title="<bean:message key="help.type.datamaxy"/>">
                 <bean:message key="label.type.datamaxy"/>:
               </span>
             </td>
-            <td class="greyedOut">
+            <td class="greyedout">
              <bean:write name="typesEditorForm" property="dataMaxY"/>
             </td>
           </tr>
         </table>
         
 </logic:notEmpty>        
-<!-------------------------------------------------------------->
+ <!-- ========================================================= -->
         
         
         <table border=0>
