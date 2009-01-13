@@ -428,6 +428,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         setRegionateAttribute( dto.getRegionateAttribute() );
         setRegionateStrategy( dto.getRegionateStrategy());
         setRegionateFeatureLimit( dto.getRegionateFeatureLimit() );
+        setNameTemplate(dto.getNameTemplate());
         featureType.setMaxFeatures( dto.getMaxFeatures() );
         featureType.setTitle( dto.getTitle() );
         featureType.setEnabled( ds.isEnabled() );
@@ -521,6 +522,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     	dto.setRegionateAttribute(getRegionateAttribute());
         dto.setRegionateStrategy(getRegionateStrategy());
         dto.setRegionateFeatureLimit(getRegionateFeatureLimit());
+        dto.setNameTemplate(getNameTemplate());
     	
         //
         //dto.setAbstract(_abstract);
@@ -1680,6 +1682,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return (Integer)featureType.getMetadata().get("kml.regionateFeatureLimit");
     }
 
+    public String getNameTemplate(){
+        return (String) featureType.getMetadata().get("template.name");
+    }
+
     /**
      * Sets whether we should add the cache-control: max-age header to maps containing this layer
      * @param cachingEnabled true if we should add the header, false if we should omit the header
@@ -1713,6 +1719,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
     public void setRegionateFeatureLimit(int limit){
         featureType.getMetadata().put("kml.regionateFeatureLimit", limit);
+    }
+
+    public void setNameTemplate(String name){
+        featureType.getMetadata().put("template.name", name);
     }
     
     /**
