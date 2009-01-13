@@ -14,8 +14,8 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.geoserver.data.test.IOUtils;
 import org.geoserver.data.test.MockData;
+import org.geoserver.data.util.IOUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;

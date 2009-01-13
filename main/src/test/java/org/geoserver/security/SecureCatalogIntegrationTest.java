@@ -3,8 +3,8 @@ package org.geoserver.security;
 import java.io.File;
 
 import org.acegisecurity.AcegiSecurityException;
-import org.geoserver.data.test.IOUtils;
 import org.geoserver.data.test.MockData;
+import org.geoserver.data.util.IOUtils;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
