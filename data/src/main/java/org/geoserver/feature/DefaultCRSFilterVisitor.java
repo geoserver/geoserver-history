@@ -60,7 +60,6 @@ public class DefaultCRSFilterVisitor extends DuplicatingFilterVisitor {
             return super.visit(expression, extraData);
         
         // clone the geometry and assign the new crs
-        CoordinateReferenceSystem geomCRS = (CoordinateReferenceSystem) geom.getUserData();
         Geometry clone = geom.getFactory().createGeometry(geom);
         clone.setUserData(defaultCrs);
 
