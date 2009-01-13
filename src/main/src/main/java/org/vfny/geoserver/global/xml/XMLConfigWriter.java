@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
@@ -1266,6 +1267,19 @@ public class XMLConfigWriter {
 
             cw.closeTag("featureType");
             fw.close();
+
+
+            if (ft.getNameTemplate() != null) {
+                PrintWriter ftl = new PrintWriter(
+                        new OutputStreamWriter(
+                            new FileOutputStream(new File(dir, "title.ftl"))
+                            )
+                        );
+
+                ftl.println("${" + ft.getNameTemplate() + ".value}");
+                ftl.flush();
+                ftl.close();
+            }
         } catch (IOException e) {
             throw new ConfigurationException(e);
         } catch (TransformerException e) {

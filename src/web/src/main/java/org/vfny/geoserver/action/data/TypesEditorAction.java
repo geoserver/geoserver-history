@@ -410,6 +410,10 @@ public class TypesEditorAction extends ConfigAction {
             }
         } 
 
+        if (!(null == form.getNameTemplate() || "null".equals(form.getNameTemplate()))){
+            config.setNameTemplate(form.getNameTemplate());
+        }
+
         config.setRegionateAttribute(form.getRegionateAttribute());
         config.setRegionateStrategy(form.getRegionateStrategy());
         if (limit != null) config.setRegionateFeatureLimit(limit);

@@ -163,6 +163,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
      private int regionateFeatureLimit;
 
+     private String nameTemplate;
+
     /**
      * FeatureTypeInfo constructor.
      *
@@ -246,6 +248,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         regionateAttribute = dto.getRegionateAttribute();
         regionateStrategy = dto.getRegionateStrategy();
         regionateFeatureLimit = dto.getRegionateFeatureLimit();
+        nameTemplate = dto.getNameTemplate();
 
         
         maxFeatures = dto.getMaxFeatures();
@@ -933,6 +936,10 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         return regionateFeatureLimit;
     }
 
+    public String getNameTemplate() {
+        return nameTemplate;
+    }
+
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
     }
@@ -953,6 +960,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         this.regionateFeatureLimit = limit;
     }
 
+    public void setNameTemplate(String name){
+        this.nameTemplate = name;
+    }
     public String getCacheMaxAge() {
         return cacheMaxAge;
     }

@@ -193,6 +193,8 @@ public class FeatureTypeConfig {
     private String regionateStrategy;
 
     private int regionateFeatureLimit;
+
+    private String nameTemplate;
     
     /**
      * The maximum number of features to be served for this feature type (it's understood
@@ -261,6 +263,7 @@ public class FeatureTypeConfig {
         regionateAttribute = "";
         regionateStrategy = "best-guess";
         regionateFeatureLimit = 15;
+        nameTemplate = null;
     }
 
     /**
@@ -376,6 +379,7 @@ public class FeatureTypeConfig {
         regionateAttribute = dto.getRegionateAttribute();
         regionateStrategy = dto.getRegionateStrategy();
         regionateFeatureLimit = dto.getRegionateFeatureLimit();
+        nameTemplate = null;
     }
 
     /**
@@ -451,6 +455,7 @@ public class FeatureTypeConfig {
         f.setRegionateAttribute(regionateAttribute);
         f.setRegionateStrategy(regionateStrategy);
         f.setRegionateFeatureLimit(regionateFeatureLimit);
+        f.setNameTemplate(nameTemplate);
 
         return f;
     }
@@ -846,6 +851,10 @@ public class FeatureTypeConfig {
 
     public void setIndexingEnabled(boolean indexingEnabled){
         this.indexingEnabled = indexingEnabled;
+    }
+
+    public void setNameTemplate(String name){
+        this.nameTemplate = name;
     }
 
     /**

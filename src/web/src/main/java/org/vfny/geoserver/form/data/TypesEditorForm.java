@@ -157,6 +157,7 @@ public class TypesEditorForm extends ActionForm {
     private String regionateAttribute;
     private String regionateStrategy;
     private String regionateFeatureLimit;
+    private String nameTemplate;
 
     private SortedSet availableStrategies;
 
@@ -300,6 +301,7 @@ public class TypesEditorForm extends ActionForm {
         regionateAttribute = type.getRegionateAttribute();
         regionateStrategy = type.getRegionateStrategy();
         regionateFeatureLimit = Integer.toString(type.getRegionateFeatureLimit());
+        nameTemplate = null;
 
         this.availableStrategies = new TreeSet();
         List<RegionatingStrategyFactory> factories = GeoServerExtensions.extensions(RegionatingStrategyFactory.class);
@@ -823,6 +825,10 @@ public class TypesEditorForm extends ActionForm {
         return availableStrategies;
     }
 
+    public String getNameTemplate(){
+        return nameTemplate;
+    }
+
     /**
      * Set abstact (or description) to description.
      *
@@ -846,6 +852,10 @@ public class TypesEditorForm extends ActionForm {
 
     public void setAvailableStrategies(SortedSet strategies){
         this.availableStrategies = strategies;
+    }
+
+    public void setNameTemplate(String attr){
+        this.nameTemplate = attr;
     }
 
     /**
