@@ -25,6 +25,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.wms.responses.map.kml.KMLUtils;
+import org.vfny.geoserver.wms.responses.map.kml.RegionatingStrategy;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.JTS;
@@ -392,11 +393,11 @@ public class TypesEditorAction extends ConfigAction {
             |= config.getRegionateAttribute() != null
             && !config.getRegionateAttribute().equals(form.getRegionateAttribute());
         regionatorNeedsCleaning 
-            |= config.getRegionateAttribute() != null
+            |= config.getRegionateStrategy() != null 
             && !config.getRegionateStrategy().equals(form.getRegionateStrategy());
         try {
             limit = Integer.valueOf(form.getRegionateFeatureLimit());
-            regionatorNeedsCleaning |= limit.intValue() == (config.getRegionateFeatureLimit());
+            regionatorNeedsCleaning |= limit.intValue() != (config.getRegionateFeatureLimit());
         } catch (NumberFormatException nfe){
             // leave the previous value
         }
@@ -408,9 +409,10 @@ public class TypesEditorAction extends ConfigAction {
                 String qualifiedname = 
                     getData().getDataStoreInfo(config.getDataStoreId()).getNamesSpacePrefix() 
                     + ":" + config.getName();
-                    try{
+                    try {
                         FeatureTypeInfo fti = getData().getFeatureTypeInfo(qualifiedname);
-                        KMLUtils.findStrategyByName(config.getRegionateStrategy()).clearCache(fti);
+                        RegionatingStrategy rs = KMLUtils.findStrategyByName(config.getRegionateStrategy());
+                        if (rs != null) rs.clearCache(fti);
                     } catch (NoSuchElementException e){
                         LOGGER.log(
                             Level.FINE,
