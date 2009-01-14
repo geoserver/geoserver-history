@@ -296,12 +296,12 @@ public class EncodeHTMLImageMap {
                 Filter ruleFilter=processRuleForQuery(ftsList);
 				if(ruleFilter!=null) {
 					// combine with the geometry filter (preexisting)
-					ruleFilter = filterFactory.or(
+					ruleFilter = filterFactory.and(
 						q.getFilter(), ruleFilter);
 
 					// set the actual filter
 					q.setFilter(ruleFilter);
-                	q = (DefaultQuery) DataUtilities.mixQueries(new DefaultQuery(schema.getTypeName(),ruleFilter), q, "HTMLImageMapEncoder");
+                	//q = (DefaultQuery) DataUtilities.mixQueries(new DefaultQuery(schema.getTypeName(),ruleFilter), q, "HTMLImageMapEncoder");
 				}
                 //ensure reprojection occurs, do not trust query, use the wrapper  
                 FeatureCollection<SimpleFeatureType, SimpleFeature> fColl = null;//fSource.getFeatures(q);
