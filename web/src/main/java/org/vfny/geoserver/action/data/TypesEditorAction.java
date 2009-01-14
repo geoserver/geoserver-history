@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -407,8 +408,15 @@ public class TypesEditorAction extends ConfigAction {
                 String qualifiedname = 
                     getData().getDataStoreInfo(config.getDataStoreId()).getNamesSpacePrefix() 
                     + ":" + config.getName();
-                FeatureTypeInfo fti = getData().getFeatureTypeInfo(qualifiedname);
-                KMLUtils.findStrategyByName(config.getRegionateStrategy()).clearCache(fti);
+                    try{
+                        FeatureTypeInfo fti = getData().getFeatureTypeInfo(qualifiedname);
+                        KMLUtils.findStrategyByName(config.getRegionateStrategy()).clearCache(fti);
+                    } catch (NoSuchElementException e){
+                        LOGGER.log(
+                            Level.FINE,
+                            "Changed regionating settings on new featuretype, no cleanup needed."
+                            );
+                    }
             }
         } 
 
