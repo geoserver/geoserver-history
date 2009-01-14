@@ -13,6 +13,7 @@ public class Ogr2OgrTestUtil {
 
     private static Boolean IS_OGR_AVAILABLE;
     private static String OGR2OGR;
+    private static String GDAL_DATA;
 
     public static boolean isOgrAvailable() {
 
@@ -27,8 +28,9 @@ public class Ogr2OgrTestUtil {
                 // assume it's in the path if the property file hasn't been configured
                 if(OGR2OGR == null)
                     OGR2OGR = "ogr2ogr";
+                GDAL_DATA = p.getProperty("gdalData");
                 
-                OGRWrapper ogr = new OGRWrapper(OGR2OGR);
+                OGRWrapper ogr = new OGRWrapper(OGR2OGR, GDAL_DATA);
                 IS_OGR_AVAILABLE = ogr.isAvailable();
             } catch (Exception e) {
                 IS_OGR_AVAILABLE = false;
@@ -44,6 +46,13 @@ public class Ogr2OgrTestUtil {
     public static String getOgr2Ogr() {
         if(isOgrAvailable())
             return OGR2OGR;
+        else
+            return null;
+    }
+    
+    public static String getGdalData() {
+        if(isOgrAvailable())
+            return GDAL_DATA;
         else
             return null;
     }

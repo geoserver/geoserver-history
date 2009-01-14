@@ -40,6 +40,11 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
      * The full path to ogr2ogr
      */
     String ogrExecutable = "ogr2ogr";
+    
+    /**
+     * The GDAL_DATA folder
+     */
+    String gdalData = null;
 
     /**
      * The output formats we can generate using ogr2ogr. Using a concurrent
@@ -70,6 +75,22 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
      */
     public void setOgrExecutable(String ogrExecutable) {
         this.ogrExecutable = ogrExecutable;
+    }
+    
+    /**
+     * Returns the location of the gdal data folder (required to set the output srs)
+     * @return
+     */
+    public String getGdalData() {
+        return gdalData;
+    }
+
+    /**
+     * Sets the location of the gdal data folder (requierd to set the output srs)
+     * @param gdalData
+     */
+    public void setGdalData(String gdalData) {
+        this.gdalData = gdalData;
     }
 
     /**
@@ -118,7 +139,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
         File tempOGR = org.geoserver.data.util.IOUtils.createTempDirectory("ogrtmpout");
 
         // build the ogr wrapper used to run the ogr2ogr commands
-        OGRWrapper wrapper = new OGRWrapper(ogrExecutable);
+        OGRWrapper wrapper = new OGRWrapper(ogrExecutable, gdalData);
 
         // actually export each feature collection
         try {
@@ -128,13 +149,6 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
             while (outputFeatureCollections.hasNext()) {
                 curCollection = (FeatureCollection<SimpleFeatureType, SimpleFeature>) outputFeatureCollections
                         .next();
-
-                // if(curCollection.getSchema().getGeometryDescriptor() == null)
-                // {
-                // throw new
-                // WFSException("Cannot write geometryless shapefiles, yet "
-                // + curCollection.getSchema() + " has no geometry field");
-                // }
 
                 // write out the gml
                 File gml = writeGML(tempGS, curCollection);

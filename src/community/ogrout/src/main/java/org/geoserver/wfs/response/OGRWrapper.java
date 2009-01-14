@@ -29,9 +29,11 @@ public class OGRWrapper {
     private static final Logger LOGGER = Logging.getLogger(OGRWrapper.class);
 
     private String ogrExecutable;
+    private String gdalData;
 
-    public OGRWrapper(String ogrExecutable) {
+    public OGRWrapper(String ogrExecutable, String gdalData) {
         this.ogrExecutable = ogrExecutable;
+        this.gdalData = gdalData;
     }
 
     public void convert(File inputData, File outputDirectory, String typeName,
@@ -128,6 +130,8 @@ public class OGRWrapper {
     int run(List<String> cmd, StringBuilder sb) throws IOException, InterruptedException {
         // run the process and grab the output for error reporting purposes
         ProcessBuilder builder = new ProcessBuilder(cmd);
+        if(gdalData != null)
+            builder.environment().put("GDAL_DATA", gdalData);
         builder.redirectErrorStream(true);
         Process p = builder.start();
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));

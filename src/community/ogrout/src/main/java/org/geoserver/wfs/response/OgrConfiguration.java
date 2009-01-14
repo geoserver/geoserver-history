@@ -12,18 +12,19 @@ class OgrConfiguration {
     public static final OgrConfiguration DEFAULT;
     static {
         DEFAULT = new OgrConfiguration();
-        // assume it's in the classpath
+        // assume it's in the classpath and GDAL_DATA is properly set in the enviroment
         DEFAULT.ogr2ogrLocation = "ogr2ogr";
         // add some default formats
         DEFAULT.formats = new OgrFormat[] {
-                new OgrFormat("MapInfo file", "OGR-TAB", ".tab"),
-                new OgrFormat("MapInfo file", "OGR-MIF", ".mif",  "-dsco", "FORMAT=MIF"),
+                new OgrFormat("MapInfo File", "OGR-TAB", ".tab"),
+                new OgrFormat("MapInfo File", "OGR-MIF", ".mif",  "-dsco", "FORMAT=MIF"),
                 new OgrFormat("CSV", "OGR-CSV", ".csv"),
                 new OgrFormat("KML", "OGR-KML", ".kml"),
         };
     }
     
     String ogr2ogrLocation;
+    String gdalData;
     OgrFormat[] formats;
     
     public static void main(String[] args) {

@@ -4,5 +4,10 @@
 <beans>
 
     <bean id="ogr2ogrOutputFormat" class="org.geoserver.wfs.response.Ogr2OgrOutputFormat"/>
+    <bean id="ogr2ogrConfigurator" class="org.geoserver.wfs.response.Ogr2OgrConfigurator">
+        <constructor-arg>
+            <ref local="ogr2ogrOutputFormat"/>
+        </constructor-arg>
+    </bean>
     
 </beans>

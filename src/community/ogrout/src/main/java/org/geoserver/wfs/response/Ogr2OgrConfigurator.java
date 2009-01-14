@@ -64,8 +64,10 @@ public class Ogr2OgrConfigurator {
         }
 
         // let's load the configuration
-        OGRWrapper wrapper = new OGRWrapper(configuration.ogr2ogrLocation);
+        OGRWrapper wrapper = new OGRWrapper(configuration.ogr2ogrLocation, configuration.gdalData);
         Set<String> supported = wrapper.getSupportedFormats();
+        of.setOgrExecutable(configuration.ogr2ogrLocation);
+        of.setGdalData(configuration.gdalData);
         of.clearFormats();
         for (OgrFormat format : configuration.formats) {
             if (supported.contains(format.ogrFormat)) {
@@ -91,11 +93,15 @@ public class Ogr2OgrConfigurator {
     }
     
     private class ConfigurationPoller extends TimerTask {
-        long lastModified = -1;
+        Long lastModified = null;
+        
+        public ConfigurationPoller() {
+            run();
+        }
         
         public void run() {
             long newLastModified = configFile.exists() ? configFile.lastModified() : -1;
-            if(newLastModified != lastModified) {
+            if(lastModified == null || newLastModified != lastModified) {
                 lastModified = newLastModified;
                 loadConfiguration();
             }

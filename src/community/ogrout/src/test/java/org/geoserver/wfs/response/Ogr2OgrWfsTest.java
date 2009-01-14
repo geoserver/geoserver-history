@@ -1,14 +1,32 @@
 package org.geoserver.wfs.response;
 
+import java.io.ByteArrayInputStream;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import junit.framework.Test;
 import junit.framework.TestResult;
 
+import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
+import org.w3c.dom.Document;
+
+import com.mockrunner.mock.web.MockHttpServletResponse;
 
 public class Ogr2OgrWfsTest extends GeoServerTestSupport {
 
     public static Test suite() {
+        OgrConfiguration.DEFAULT.ogr2ogrLocation = Ogr2OgrTestUtil.getOgr2Ogr();
+        OgrConfiguration.DEFAULT.gdalData = Ogr2OgrTestUtil.getGdalData();
+        
         return new OneTimeTestSetup(new Ogr2OgrWfsTest());
+    }
+
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
     }
     
     @Override
@@ -20,18 +38,24 @@ public class Ogr2OgrWfsTest extends GeoServerTestSupport {
     }
 
     public void testSimpleRequest() throws Exception {
-//        String request = "wfs?request=GetFeature&typename=" + getLayerId(MockData.BUILDINGS) + "&version=1.0.0&service=wfs&outputFormat=mapinfo-tab";
-//        MockHttpServletResponse resp = getAsServletResponse(request);
-//        assertEquals("application/zip", resp.getContentType());
-//        
-//        // check we got the expected entries
-//        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream( resp.getOutputStreamContent().getBytes()));
-//        Set<String> entryNames = new TreeSet<String>();
-//        ZipEntry entry = null;
-//        while((entry = zis.getNextEntry()) != null)
-//            entry.getName();
-//        zis.close();
-//        
-//        System.out.println(entryNames);
+        String request = "wfs?request=GetFeature&typename=" + getLayerId(MockData.BUILDINGS) + "&version=1.0.0&service=wfs&outputFormat=OGR-KML";
+        MockHttpServletResponse resp = getAsServletResponse(request);
+        assertEquals("application/zip", resp.getContentType());
+        
+        // read back
+        ZipInputStream zis = new ZipInputStream(getBinaryInputStream(resp));
+        ZipEntry entry = zis.getNextEntry();
+        assertNotNull(entry);
+        assertEquals("Buildings.kml", entry.getName());
+
+        // parse the kml to check it's really xml... 
+        Document dom = dom(zis);
+        // print(dom);
+
+        // some very light assumptions on the contents, since we
+        // cannot control how ogr encodes the kml... let's just assess
+        // it's kml with the proper number of features
+        assertEquals("kml", dom.getDocumentElement().getTagName());
+        assertEquals(2, dom.getElementsByTagName("Placemark").getLength());
     }
 }

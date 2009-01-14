@@ -70,6 +70,7 @@ public class Ogr2OgrFormatTest extends TestCase {
         ogr.addFormat(new OgrFormat("SHP", "OGR-SHP", ".shp"));
         ogr.addFormat(new OgrFormat("MapInfo File", "OGR-MIF", ".mif", "-dsco", "FORMAT=MIF"));
         ogr.setOgrExecutable(Ogr2OgrTestUtil.getOgr2Ogr());
+        ogr.setGdalData(Ogr2OgrTestUtil.getGdalData());
 
         // the EMF objects used to talk with the output format
         gft = WfsFactory.eINSTANCE.createGetFeatureType();

@@ -19,7 +19,7 @@ public class OGRWrapperTest extends TestCase {
     
     @Override
     protected void setUp() throws Exception {
-        ogr = new OGRWrapper(Ogr2OgrTestUtil.getOgr2Ogr());
+        ogr = new OGRWrapper(Ogr2OgrTestUtil.getOgr2Ogr(), Ogr2OgrTestUtil.getGdalData());
     }
     
     public void testAvaialable() {
