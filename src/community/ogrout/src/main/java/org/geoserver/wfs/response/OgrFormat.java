@@ -4,13 +4,17 @@
  */
 package org.geoserver.wfs.response;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Parameters defining an output format generated using ogr2ogr from
  * either a GML or shapefile dump 
  * @author Andrea Aime - OpenGeo
  *
  */
-public class OgrParameters {
+public class OgrFormat {
     /**
      * The -f parameter
      */
@@ -29,14 +33,16 @@ public class OgrParameters {
     /**
      * The options that will be added to the command line
      */
-    public String[] options;
+    public List<String> options;
 
-    public OgrParameters(String ogrFormat, String formatName, String fileExtension, String[] options) {
+    public OgrFormat(String ogrFormat, String formatName, String fileExtension, String... options) {
         super();
         this.ogrFormat = ogrFormat;
         this.formatName = formatName;
         this.fileExtension = fileExtension;
-        this.options = options;
+        if(options != null) {
+            this.options = new ArrayList<String>(Arrays.asList(options));
+        }
     }
 
     

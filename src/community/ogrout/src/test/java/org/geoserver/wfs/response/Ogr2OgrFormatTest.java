@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -63,9 +65,10 @@ public class Ogr2OgrFormatTest extends TestCase {
 
         // the output format (and let's add a few output formats to play with
         ogr = new Ogr2OgrOutputFormat();
-        ogr.addFormat(new OgrParameters("KML", "OGR-KML", ".kml", null));
-        ogr.addFormat(new OgrParameters("CSV", "OGR-CSV", ".csv", null));
-        ogr.addFormat(new OgrParameters("SHP", "OGR-SHP", ".shp", null));
+        ogr.addFormat(new OgrFormat("KML", "OGR-KML", ".kml"));
+        ogr.addFormat(new OgrFormat("CSV", "OGR-CSV", ".csv"));
+        ogr.addFormat(new OgrFormat("SHP", "OGR-SHP", ".shp"));
+        ogr.addFormat(new OgrFormat("MapInfo File", "OGR-MIF", ".mif", "-dsco", "FORMAT=MIF"));
         ogr.setOgrExecutable(Ogr2OgrTestUtil.getOgr2Ogr());
 
         // the EMF objects used to talk with the output format
@@ -138,6 +141,29 @@ public class Ogr2OgrFormatTest extends TestCase {
         // headers and the two lines
         assertEquals(3, lines.length);
         assertTrue(csv.contains("123 Main Street"));
+    }
+    
+    public void testSimpleMIF() throws Exception {
+        // prepare input
+        FeatureCollection fc = dataStore.getFeatureSource("Buildings").getFeatures();
+        fct.getFeature().add(fc);
+
+        // write out
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        gft.setOutputFormat("OGR-MIF");
+        ogr.write(fct, bos, op);
+
+        // read back
+        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bos.toByteArray()));
+        
+        // we should get two files at least, a .mif and a .mid
+        Set<String> fileNames = new HashSet<String>();
+        ZipEntry entry = null;
+        while((entry = zis.getNextEntry()) != null) {
+            fileNames.add(entry.getName());
+        }
+        assertTrue(fileNames.contains("Buildings.mif"));
+        assertTrue(fileNames.contains("Buildings.mid"));
     }
     
     public void testGeometrylessCSV() throws Exception {

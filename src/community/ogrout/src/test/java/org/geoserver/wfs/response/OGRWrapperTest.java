@@ -1,6 +1,6 @@
 package org.geoserver.wfs.response;
 
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 import junit.framework.TestResult;
@@ -28,7 +28,7 @@ public class OGRWrapperTest extends TestCase {
     }
     
     public void testFormats() {
-        List<String> formats = ogr.getSupportedFormats();
+        Set<String> formats = ogr.getSupportedFormats();
         // well, we can't know which formats ogr was complied with, but at least there will be one, right?
         assertTrue(formats.size() > 0);
         

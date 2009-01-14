@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipOutputStream;
 
 import net.opengis.wfs.FeatureCollectionType;
@@ -41,9 +42,10 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
     String ogrExecutable = "ogr2ogr";
 
     /**
-     * The output formats we can generate using ogr2ogr. Marking it as
+     * The output formats we can generate using ogr2ogr. Using a concurrent
+     * one so that it can be reconfigured while the output format is working
      */
-    static Map<String, OgrParameters> formats = new HashMap<String, OgrParameters>();
+    static Map<String, OgrFormat> formats = new ConcurrentHashMap<String, OgrFormat>();
 
     public Ogr2OgrOutputFormat() {
         // initialize with the key set of formats, so that it will change as
@@ -82,17 +84,17 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
      * 
      * @param parameters
      */
-    public void addFormat(OgrParameters parameters) {
+    public void addFormat(OgrFormat parameters) {
         formats.put(parameters.formatName, parameters);
     }
 
     /**
-     * Programmatically removes a format
+     * Programmatically removes all formats
      * 
      * @param parameters
      */
-    public void removeFormat(String format) {
-        formats.remove(format);
+    public void clearFormats() {
+        formats.clear();
     }
 
     /**
@@ -106,7 +108,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
 
         // figure out which output format we're going to generate
         GetFeatureType gft = (GetFeatureType) getFeature.getParameters()[0];
-        OgrParameters format = formats.get(gft.getOutputFormat());
+        OgrFormat format = formats.get(gft.getOutputFormat());
         if (format == null)
             throw new WFSException("Unknown output format " + gft.getOutputFormat());
 

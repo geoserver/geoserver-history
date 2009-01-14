@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,12 +35,12 @@ public class OGRWrapper {
     }
 
     public void convert(File inputData, File outputDirectory, String typeName,
-            OgrParameters format, String crsName) throws IOException, InterruptedException {
+            OgrFormat format, String crsName) throws IOException, InterruptedException {
         // build the command line
         List<String> cmd = new ArrayList<String>();
         cmd.add(ogrExecutable);
         cmd.add("-f");
-        cmd.add(format.ogrFormat);
+        cmd.add("\"" + format.ogrFormat + "\"");
         if (crsName != null) {
             cmd.add("-a_srs");
             cmd.add(crsName);
@@ -59,7 +61,7 @@ public class OGRWrapper {
 
         if (exitCode != 0)
             throw new IOException("ogr2ogr did not terminate successfully, exit code " + exitCode
-                    + "\n" + sb);
+                    + ". Was trying to run: " + cmd + "\nResulted in:\n" + sb);
     }
 
     /**
@@ -67,7 +69,7 @@ public class OGRWrapper {
      * 
      * @return
      */
-    public List<String> getSupportedFormats() {
+    public Set<String> getSupportedFormats() {
         try {
             List<String> commands = new ArrayList<String>();
             commands.add(ogrExecutable);
@@ -77,7 +79,7 @@ public class OGRWrapper {
             // can't trust the exit code, --help exits with -1 on my pc
             run(commands, sb);
 
-            List<String> formats = new ArrayList<String>();
+            Set<String> formats = new HashSet<String>();
             String[] lines = sb.toString().split("\n");
             for (String line : lines) {
                 if (line.matches("\\s*-f \".*")) {
@@ -86,12 +88,11 @@ public class OGRWrapper {
                 }
             }
 
-            Collections.sort(formats);
             return formats;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,
                     "Could not get the list of output formats supported by ogr2ogr", e);
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
     }
 
