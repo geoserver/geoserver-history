@@ -38,7 +38,7 @@ public class Ogr2OgrConfigurator {
         this.of = format;
         configFile = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), "ogr2ogr.xml");
         timer = new Timer(true);
-        timer.schedule(new ConfigurationPoller(), 0);
+        timer.schedule(new ConfigurationPoller(), pollInterval);
     }
     
     public Ogr2OgrConfigurator(Ogr2OgrOutputFormat format) {

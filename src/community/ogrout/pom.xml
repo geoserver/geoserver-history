@@ -9,7 +9,7 @@
     <version>1.7.2-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.geoserver</groupId>
+  <groupId>org.geoserver.community</groupId>
   <artifactId>ogrout</artifactId>
   <packaging>jar</packaging>
   <name>ogr2ogr based output format</name>
