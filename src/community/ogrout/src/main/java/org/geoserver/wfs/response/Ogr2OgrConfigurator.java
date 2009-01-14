@@ -6,7 +6,6 @@ public class Ogr2OgrConfigurator {
 
     public Ogr2OgrConfigurator(Ogr2OgrOutputFormat format) {
         this.format = format;
-        
     }
     
     

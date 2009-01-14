@@ -70,20 +70,14 @@ public class OGRWrapper {
             commands.add("--help");
 
             StringBuilder sb = new StringBuilder();
-            int exitCode = run(commands, sb);
-
-            if (exitCode != 0) {
-                LOGGER
-                        .warning("Could not get the list of output formats supported by ogr2ogr, output was:\n"
-                                + sb);
-                return Collections.emptyList();
-            }
+            // can't trust the exit code, --help exits with -1 on my pc
+            run(commands, sb);
 
             List<String> formats = new ArrayList<String>();
             String[] lines = sb.toString().split("\n");
             for (String line : lines) {
-                if (line.matches("\\s*-f \"")) {
-                    String format = line.substring(line.indexOf('"'), line.lastIndexOf('"'));
+                if (line.matches("\\s*-f \".*")) {
+                    String format = line.substring(line.indexOf('"') + 1, line.lastIndexOf('"'));
                     formats.add(format);
                 }
             }
