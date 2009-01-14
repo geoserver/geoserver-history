@@ -129,7 +129,12 @@
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>h2</artifactId>
-   <version>1.7.0-SNAPSHOT</version>
+   <version>${project.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>db2</artifactId>
+   <version>${project.version}</version>
   </dependency>
  </dependencies>
  <build>

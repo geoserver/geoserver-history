@@ -52,6 +52,13 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>db2</id>
+      <modules>
+        <module>db2</module>
+      </modules>
+    </profile>
+
     <!-- allExtensions profile, includes all modules -->
     <profile>
       <id>allExtensions</id>
@@ -60,6 +67,7 @@
         <module>h2</module>
         <module>oracle</module>
         <module>wfsv</module>
+        <module>db2</module>
       </modules>
     </profile>
 
@@ -71,6 +79,7 @@
         <module>h2</module>
         <module>oracle</module>
         <module>wfsv</module>
+        <module>db2</module>
       </modules>
     </profile>
   </profiles>
