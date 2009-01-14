@@ -388,9 +388,11 @@ public class TypesEditorAction extends ConfigAction {
         Integer limit = null;
         
         regionatorNeedsCleaning 
-            |= config.getRegionateAttribute().equals(form.getRegionateAttribute());
+            |= config.getRegionateAttribute() != null
+            && !config.getRegionateAttribute().equals(form.getRegionateAttribute());
         regionatorNeedsCleaning 
-            |= config.getRegionateStrategy().equals(form.getRegionateStrategy());
+            |= config.getRegionateAttribute() != null
+            && !config.getRegionateStrategy().equals(form.getRegionateStrategy());
         try {
             limit = Integer.valueOf(form.getRegionateFeatureLimit());
             regionatorNeedsCleaning |= limit.intValue() == (config.getRegionateFeatureLimit());
@@ -409,6 +411,10 @@ public class TypesEditorAction extends ConfigAction {
                 KMLUtils.findStrategyByName(config.getRegionateStrategy()).clearCache(fti);
             }
         } 
+
+        if (!(null == form.getNameTemplate() || "null".equals(form.getNameTemplate()))){
+            config.setNameTemplate(form.getNameTemplate());
+        }
 
         config.setRegionateAttribute(form.getRegionateAttribute());
         config.setRegionateStrategy(form.getRegionateStrategy());
