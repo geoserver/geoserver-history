@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.geoserver.data.CatalogWriter;
-import org.geoserver.data.test.IOUtils;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.test.TestData;
+import org.geoserver.data.util.IOUtils;
 import org.geotools.data.SampleDataAccess;
 import org.geotools.data.SampleDataAccessData;
 import org.geotools.data.SampleDataAccessFactory;
