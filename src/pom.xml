@@ -263,6 +263,11 @@
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
+    <artifactId>gt-jdbc-db2</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools</groupId>
     <artifactId>gt-arcsde</artifactId>
     <version>${gt.version}</version>
    </dependency>
