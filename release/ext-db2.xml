@@ -16,7 +16,8 @@
 			<directory>release/target/dependency</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
-				<include>gt-db2*.jar</include>
+				<include>gt-jdbc-core-*.jar</include>
+				<include>gt-jdbc-db2-*.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
