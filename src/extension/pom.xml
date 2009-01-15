@@ -75,7 +75,7 @@
         <module>oracle</module>
         <module>wfsv</module>
         <module>db2</module>
-        <module>imagemap</module>
+        <!--module>imagemap</module-->
       </modules>
     </profile>
 
@@ -88,7 +88,7 @@
         <module>oracle</module>
         <module>wfsv</module>
         <module>db2</module>
-        <module>imagemap</module>
+        <!--module>imagemap</module-->
       </modules>
     </profile>
   </profiles>
