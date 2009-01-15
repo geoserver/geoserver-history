@@ -636,15 +636,16 @@ public class WMSCapsTransformer extends TransformerBase {
             Collections.sort(data, new FeatureTypeInfoTitleComparator());
             for (Iterator it = data.iterator(); it.hasNext();) {
                 fLayer = (FeatureTypeInfo) it.next();
-
+                
+                boolean geometryless = true;
                 try {
-                    if (fLayer.isEnabled() && !fLayer.isGeometryless()) {
-                        handleFeatureType(fLayer);
-                    }
-                } catch (Exception e) {
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
-                    }
+                    geometryless = fLayer.isGeometryless();
+                } catch(Exception e) {
+                    LOGGER.log(Level.SEVERE, "An error occurred trying to determine if the layer is geometryless", e);
+                }
+
+                if (fLayer.isEnabled() && !geometryless) {
+                    handleFeatureType(fLayer);
                 }
             }
 
