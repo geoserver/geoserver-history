@@ -141,6 +141,11 @@
    <artifactId>db2</artifactId>
    <version>1.7.2-SNAPSHOT</version>
   </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>imagemap</artifactId>
+   <version>1.7.2-SNAPSHOT</version>
+  </dependency>
  </dependencies>
  <build>
   <plugins>

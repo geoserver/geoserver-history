@@ -66,6 +66,13 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>imagemap</id>
+      <modules>
+        <module>imagemap</module>
+      </modules>
+    </profile>
+
     <!-- allExtensions profile, includes all modules -->
     <profile>
       <id>allExtensions</id>
@@ -76,6 +83,7 @@
         <module>oracle</module>
         <module>wfsv</module>
         <module>db2</module>
+        <module>imagemap</module>
       </modules>
     </profile>
 
@@ -91,6 +99,7 @@
         <module>oracle</module>
         <module>wfsv</module>
         <module>db2</module>
+        <module>imagemap</module>
       </modules>
     </profile>
   </profiles>
