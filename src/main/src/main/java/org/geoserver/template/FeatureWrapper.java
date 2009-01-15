@@ -27,6 +27,7 @@ import org.geotools.util.MapEntry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -268,9 +269,9 @@ public class FeatureWrapper extends BeansWrapper {
         dummy.put("keywords", new ArrayList<String>());
         dummy.put("metadataLinks", new ArrayList<String>());
         dummy.put("SRS", "[SRS]");
-        dummy.put("nativeCRS",
-                f.getFeatureType().getGeometryDescriptor().getCoordinateReferenceSystem()
-            );
+        final GeometryDescriptor gd = f.getFeatureType().getGeometryDescriptor();
+        if(gd != null)
+            dummy.put("nativeCRS", gd.getCoordinateReferenceSystem());
         return dummy;
     }
 
