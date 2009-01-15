@@ -72,65 +72,81 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
     
     public void testGetFeatureWithProjectedBoxGet() throws Exception {
-        String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName=" + 
-            MockData.POLYGONS.getLocalPart();
-        Document dom = getAsDOM( q );
-        print(dom);
-        Element envelope = getFirstElementByTagName(dom, "gml:Envelope" );
-        String lc = getFirstElementByTagName(envelope, "gml:lowerCorner" )
-            .getFirstChild().getNodeValue();
-        String uc = getFirstElementByTagName(envelope, "gml:upperCorner" )
-            .getFirstChild().getNodeValue();
-        double[] c = new double[]{
-            Double.parseDouble(lc.split( " " )[0]), Double.parseDouble(lc.split( " " )[1]),
-            Double.parseDouble(uc.split( " " )[0]), Double.parseDouble(uc.split( " " )[1]) 
-        };
-        double[] cr = new double[4];
-        tx.transform(c, 0, cr, 0, 2);
-        
-        q += "&bbox=" + cr[0] + "," + cr[1] + "," + cr[2] + "," + cr[3] + "," + TARGET_CRS_CODE;
-        dom = getAsDOM( q );
-        
-        assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
+        // enable feature bounds computation
+        boolean oldFeatureBounding = getWFS().isFeatureBounding();
+        getWFS().setFeatureBounding(true);
+        try {
+            String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName=" + 
+                MockData.POLYGONS.getLocalPart();
+            Document dom = getAsDOM( q );
+            
+            Element envelope = getFirstElementByTagName(dom, "gml:Envelope" );
+            String lc = getFirstElementByTagName(envelope, "gml:lowerCorner" )
+                .getFirstChild().getNodeValue();
+            String uc = getFirstElementByTagName(envelope, "gml:upperCorner" )
+                .getFirstChild().getNodeValue();
+            double[] c = new double[]{
+                Double.parseDouble(lc.split( " " )[0]), Double.parseDouble(lc.split( " " )[1]),
+                Double.parseDouble(uc.split( " " )[0]), Double.parseDouble(uc.split( " " )[1]) 
+            };
+            double[] cr = new double[4];
+            tx.transform(c, 0, cr, 0, 2);
+            
+            q += "&bbox=" + cr[0] + "," + cr[1] + "," + cr[2] + "," + cr[3] + "," + TARGET_CRS_CODE;
+            dom = getAsDOM( q );
+            
+            assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
+        }
+        finally {
+            getWFS().setFeatureBounding(oldFeatureBounding);
+        }
     }
     
     public void testGetFeatureWithProjectedBoxPost() throws Exception {
-        String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName=" + 
-            MockData.POLYGONS.getLocalPart();
-        Document dom = getAsDOM( q );
-        Element envelope = getFirstElementByTagName(dom, "gml:Envelope" );
-        String lc = getFirstElementByTagName(envelope, "gml:lowerCorner" )
-            .getFirstChild().getNodeValue();
-        String uc = getFirstElementByTagName(envelope, "gml:upperCorner" )
-            .getFirstChild().getNodeValue();
-        double[] c = new double[]{
-            Double.parseDouble(lc.split( " " )[0]), Double.parseDouble(lc.split( " " )[1]),
-            Double.parseDouble(uc.split( " " )[0]), Double.parseDouble(uc.split( " " )[1]) 
-        };
-        double[] cr = new double[4];
-        tx.transform(c, 0, cr, 0, 2);
-        
-        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\""
-            + " xmlns:" + MockData.POLYGONS.getPrefix() + "=\"" + MockData.POLYGONS.getNamespaceURI() + "\""
-            + " xmlns:ogc=\"http://www.opengis.net/ogc\" "
-            + " xmlns:gml=\"http://www.opengis.net/gml\" "
-            + " xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
-            + "<wfs:Query typeName=\"" + MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart() + "\">"
-            + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> "
-            + "<ogc:Filter>" 
-            +  "<ogc:BBOX>"
-            +   "<ogc:PropertyName>polygonProperty</ogc:PropertyName>" 
-            +   "<gml:Envelope srsName=\"" + TARGET_CRS_CODE + "\">"
-            +      "<gml:lowerCorner>" + cr[0] + " " + cr[1] + "</gml:lowerCorner>"
-            +      "<gml:upperCorner>" + cr[2] + " " + cr[3] + "</gml:upperCorner>"
-            +   "</gml:Envelope>"  
-            +  "</ogc:BBOX>" 
-            + "</ogc:Filter>"
-            + "</wfs:Query> " + "</wfs:GetFeature>";
-        
-        dom = postAsDOM( "wfs", xml );
-        
-        assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
+        // enable feature bounds computation
+        boolean oldFeatureBounding = getWFS().isFeatureBounding();
+        getWFS().setFeatureBounding(true);
+        try {
+            String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName=" + 
+                MockData.POLYGONS.getLocalPart();
+            Document dom = getAsDOM( q );
+            Element envelope = getFirstElementByTagName(dom, "gml:Envelope" );
+            String lc = getFirstElementByTagName(envelope, "gml:lowerCorner" )
+                .getFirstChild().getNodeValue();
+            String uc = getFirstElementByTagName(envelope, "gml:upperCorner" )
+                .getFirstChild().getNodeValue();
+            double[] c = new double[]{
+                Double.parseDouble(lc.split( " " )[0]), Double.parseDouble(lc.split( " " )[1]),
+                Double.parseDouble(uc.split( " " )[0]), Double.parseDouble(uc.split( " " )[1]) 
+            };
+            double[] cr = new double[4];
+            tx.transform(c, 0, cr, 0, 2);
+            
+            String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\""
+                + " xmlns:" + MockData.POLYGONS.getPrefix() + "=\"" + MockData.POLYGONS.getNamespaceURI() + "\""
+                + " xmlns:ogc=\"http://www.opengis.net/ogc\" "
+                + " xmlns:gml=\"http://www.opengis.net/gml\" "
+                + " xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
+                + "<wfs:Query typeName=\"" + MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart() + "\">"
+                + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> "
+                + "<ogc:Filter>" 
+                +  "<ogc:BBOX>"
+                +   "<ogc:PropertyName>polygonProperty</ogc:PropertyName>" 
+                +   "<gml:Envelope srsName=\"" + TARGET_CRS_CODE + "\">"
+                +      "<gml:lowerCorner>" + cr[0] + " " + cr[1] + "</gml:lowerCorner>"
+                +      "<gml:upperCorner>" + cr[2] + " " + cr[3] + "</gml:upperCorner>"
+                +   "</gml:Envelope>"  
+                +  "</ogc:BBOX>" 
+                + "</ogc:Filter>"
+                + "</wfs:Query> " + "</wfs:GetFeature>";
+            
+            dom = postAsDOM( "wfs", xml );
+            
+            assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
+        }
+        finally {
+            getWFS().setFeatureBounding(oldFeatureBounding);
+        }
     }
     
     private void runTest( Document dom1, Document dom2 ) throws Exception {
