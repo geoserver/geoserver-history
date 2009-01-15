@@ -644,6 +644,12 @@ public class ResourcePool {
                     
                     StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
                     File styleFile = GeoserverDataDirectory.findStyleFile(filename);
+                    // a meaningful error now instead of a NPE later
+                    if(styleFile == null)
+                        throw new IOException("Could not load layer " 
+                                + info.getName() + " as the backing file could not be found: " 
+                                + filename);
+                    
                     SLDParser stylereader;
                   
                     try {
