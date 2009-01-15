@@ -11,6 +11,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.xml.BindingWalkerFactory;
+import org.geotools.xml.Configuration;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.geotools.xml.SchemaIndex;
@@ -23,10 +24,10 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindings.GMLAbstractFeatureTypeBinding {
     GeometryFactory geometryFactory;
     Data catalog;
-    SchemaIndex schemaIndex;
+    //SchemaIndex schemaIndex;
     public GMLAbstractFeatureTypeBinding(FeatureTypeCache featureTypeCache,
-        BindingWalkerFactory bwFactory, SchemaIndex schemaIndex, GeometryFactory geometryFactory, Data catalog) {
-        super(featureTypeCache, bwFactory, schemaIndex);
+        BindingWalkerFactory bwFactory, SchemaIndex schemaIndex, GeometryFactory geometryFactory, Data catalog, Configuration configuration) {
+        super(featureTypeCache, bwFactory, schemaIndex, configuration);
         this.geometryFactory = geometryFactory;
         this.catalog = catalog;
     }
