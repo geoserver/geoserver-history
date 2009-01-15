@@ -943,6 +943,7 @@
       <descriptor>release/ext-wfsv.xml</descriptor>
       <descriptor>release/ext-gdal.xml</descriptor>
       <descriptor>release/ext-h2.xml</descriptor>
+      <descriptor>release/ext-imagemap.xml</descriptor>
      </descriptors>
      <finalName>geoserver-2.0-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
