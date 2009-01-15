@@ -17,6 +17,7 @@ import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -83,6 +84,16 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             }
 
             metas.add(meta);
+        }
+        
+        //set feature bounding parameter
+        //JD: this is quite bad as its not at all thread-safe, once we remove the configuration
+        // as being a singleton on trunk/2.0.x this should not be an issue
+        if ( wfs.isFeatureBounding() ) {
+            configuration.getProperties().remove( GMLConfiguration.NO_FEATURE_BOUNDS );
+        }
+        else {
+            configuration.getProperties().add( GMLConfiguration.NO_FEATURE_BOUNDS);
         }
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
