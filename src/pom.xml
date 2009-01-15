@@ -930,6 +930,7 @@
       <descriptor>release/ext-gdal.xml</descriptor>
       <descriptor>release/ext-h2.xml</descriptor>
       <descriptor>release/ext-sqlserver.xml</descriptor>
+      <descriptor>release/ext-imagemap.xml</descriptor>
      </descriptors>
      <finalName>geoserver-1.7.2-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
