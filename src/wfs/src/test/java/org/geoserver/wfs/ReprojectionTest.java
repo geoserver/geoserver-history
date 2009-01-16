@@ -38,6 +38,7 @@ public class ReprojectionTest extends WFSTestSupport {
         CoordinateReferenceSystem epsg32615 = CRS.decode("EPSG:32615");
         
         tx = CRS.findMathTransform(epsg32615, epsg4326);
+        getWFS().setFeatureBounding(true);
     }
     
     @Override

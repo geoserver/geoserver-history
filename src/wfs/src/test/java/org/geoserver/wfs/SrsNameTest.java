@@ -2,7 +2,6 @@ package org.geoserver.wfs;
 
 import junit.framework.Test;
 
-import org.geoserver.test.GeoServerTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -14,6 +13,12 @@ public class SrsNameTest extends WFSTestSupport {
      */
     public static Test suite() {
         return new OneTimeTestSetup(new SrsNameTest());
+    }
+    
+    @Override
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
+        getWFS().setFeatureBounding(true);
     }
 
     public void testWfs10() throws Exception {
