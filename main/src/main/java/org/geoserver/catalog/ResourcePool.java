@@ -688,6 +688,7 @@ public class ResourcePool {
         featureTypeCache.clear();
         coverageReaderCache.clear();
         hintCoverageReaderCache.clear();
+        styleCache.clear();
     }
     
     static class FeatureTypeCache extends LRUMap {
