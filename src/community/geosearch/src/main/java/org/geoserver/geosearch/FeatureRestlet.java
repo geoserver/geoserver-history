@@ -22,6 +22,7 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.OutputRepresentation;
+import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.NameSpaceInfo;
@@ -74,17 +75,18 @@ public class FeatureRestlet extends Restlet {
         String layer = (String)request.getAttributes().get("layer");
         String namespace = (String)request.getAttributes().get("namespace");
         String feature = (String)request.getAttributes().get("feature");
+        System.out.println("layer: " + layer + "; namespace: " + namespace + "; feature: " + feature);
         Form form = request.getResourceRef().getQueryAsForm();
         int startIndex = 0; 
         int maxFeatures = 100;
         String regionateBy = null;
         String regionateAttr = null;
 
-        try{ 
+        try { 
             startIndex = Integer.valueOf(form.getFirstValue("startindex", true));
         } catch (Exception e) {}
 
-        try{
+        try {
             maxFeatures = Integer.valueOf(form.getFirstValue("maxfeatures", true));
         } catch (Exception e) {}
 
@@ -119,14 +121,14 @@ public class FeatureRestlet extends Restlet {
         KvpMap raw = new KvpMap();
         raw.put("layers", namespace + ":" + layer);
         raw.put("format", "kml");
-        raw.put("startIndex", Integer.toString(startIndex));
-        raw.put("maxfeatures", Integer.toString(maxFeatures));
         raw.put("format_options", "selfLinks:true;relLinks:true;");
         //regionateby:" + regionateBy + (regionateAttr != null ? ";regionateAttr:" + regionateAttr : ""));
 
-
         if ( feature != null ) {
-            raw.put("featureid", layer + "." + feature);    
+            raw.put("featureid", feature);    
+        } else {
+            raw.put("startIndex", Integer.toString(startIndex));
+            raw.put("maxfeatures", Integer.toString(maxFeatures));
         }
 
         GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getWms());

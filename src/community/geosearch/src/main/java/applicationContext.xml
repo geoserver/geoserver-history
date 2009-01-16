@@ -5,7 +5,34 @@
 <bean id="geosearchMapping" class="org.geoserver.rest.RESTMapping">
 <property name="routes">
   <map>
-        <entry>
+     <entry>
+         <key><value>/layers/{namespace}:{layer}/{feature}.kml</value></key>
+         <value>feature</value>
+     </entry>
+     <entry>
+         <key><value>/layers/{layer}/sitemap.xml</value></key>
+         <value>layersitemap</value>
+     </entry>
+     <entry>
+         <key><value>/layers/{layer}/sitemap-{page}.xml</value></key>
+         <value>layersitemap</value>
+     </entry>
+     <entry>
+         <key><value>/layers/{layer}/{fid}.html</value></key>
+         <value>describefeaturehtml</value>
+     </entry>
+     <entry>
+         <key><value>/layers/{layer}/{fid}_goto.kml</value></key>
+         <value>describefeaturekml</value>
+     </entry>
+     <entry>
+       <key><value>/layers/{namespace}:{layer}.html</value></key>
+       <value>aboutpage</value>
+     </entry>
+  </map>
+
+<!--
+    <entry>
           <key><value>/sitemap.xml</value></key>
           <value>sitemapindex</value>
         </entry>
@@ -21,11 +48,9 @@
           <key><value>/{namespace}/{layer}/{feature}.kml</value></key>
           <value>feature</value>
         </entry>
-        <entry>
-          <key><value>/{namespace}/{layer}.html</value></key>
-          <value>aboutpage</value>
-        </entry>
-  </map>
+  </map> 
+-->
+
 </property>
 </bean>
 
@@ -47,5 +72,10 @@
 <bean id="aboutpage" class="org.geoserver.geosearch.LayerAboutPage">
     <property name="catalog"><ref bean="catalog"/></property>
 </bean>
-
+<bean id="describefeaturehtml" class="org.geoserver.geosearch.HTMLFeatureDescription">
+    <property name="catalog"><ref bean="catalog"/></property>
+</bean>
+<bean id="describefeaturekml" class="org.geoserver.geosearch.KMLFeatureDescription">
+    <property name="catalog"><ref bean="catalog"/></property>
+</bean>
 </beans>

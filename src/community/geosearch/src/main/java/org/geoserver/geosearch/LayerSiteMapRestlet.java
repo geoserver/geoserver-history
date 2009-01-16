@@ -11,18 +11,23 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geotools.data.DefaultQuery;
 import org.geotools.data.jdbc.JDBCUtils;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.StringRepresentation;
 import org.springframework.jdbc.support.incrementer.H2SequenceMaxValueIncrementer;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.Data;
@@ -116,6 +121,9 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
      */
     public void doGet(Request request, Response response){
         String layerName = (String)request.getAttributes().get("layer");
+        String page = request.getAttributes().containsKey("page") 
+            ? (String) request.getAttributes().get("page")
+            : null;
         
         MapLayerInfo mli = getLayer(layerName);
         
@@ -134,17 +142,28 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
             return;
         }
 
-        // Do we have a regionating strategy ?
-        if(fti.getRegionateAttribute() == null 
-                || fti.getRegionateAttribute().length() == 0) {
-            response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            //TODO nice error message
-            return;
+//        // Do we have a regionating strategy ?
+//        if(fti.getRegionateAttribute() == null 
+//                || fti.getRegionateAttribute().length() == 0) {
+//            response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+//            //TODO nice error message
+//            return;
+//        }
+
+        if (page != null) { 
+            try {
+                Integer i = Integer.valueOf(page);
+                Document d = buildPagedSitemap(layerName, fti, i);
+                response.setEntity(new JDOMRepresentation(d));
+            } catch (NumberFormatException e) {
+                response.setEntity(new StringRepresentation(e.toString(), MediaType.TEXT_PLAIN));
+                response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+            }
+        } else { 
+            // All good, we're finally here:
+            Document d = buildSitemap(layerName, fti);
+            response.setEntity(new JDOMRepresentation(d));
         }
-        
-        // All good, we're finally here:
-        Document d = buildSitemap(layerName, fti);
-        response.setEntity(new JDOMRepresentation(d));
     }
     
     /**
@@ -163,13 +182,71 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
         d.setRootElement(urlSet);
         
         try {
-            // Look for the actual tiles
-            getTilesFromDatababase(urlSet, fti);
+            int featurecount = fti.getFeatureSource().getFeatures().size();
+            int pagecount = featurecount / 50000;  // 50000 features per page
+            pagecount += featurecount % 50000 == 0 ? 0 : 1;
+            
+            for (int i = 1; i <= pagecount; i++) {
+                addTile(
+                        urlSet, 
+                        GEOSERVER_URL + "rest/layers/" + layerName + "/sitemap-" + i + ".xml"
+                       );
+            }
         } catch (IOException ioe) {
             //TODO log
         }
         
         return d;
+    }
+
+    private Document buildPagedSitemap(String layername, FeatureTypeInfo fti, int page){
+        final Document d = new Document();
+        Element urlSet = new Element("urlset", SITEMAP);
+        urlSet.addNamespaceDeclaration(GEOSITEMAP);
+        d.setRootElement(urlSet);
+
+        try { 
+            DefaultQuery q = new DefaultQuery();
+            if (fti.getFeatureSource().getQueryCapabilities().isOffsetSupported()){
+                // surely no one would use a shapefile for more than 50000 features, right?
+                q.setStartIndex(1 + 50000 * (page - 1));
+                q.setMaxFeatures(50000);
+            }
+
+            FeatureCollection col = fti.getFeatureSource().getFeatures(q);
+            
+            Iterator fi = col.iterator();
+
+            while (fi.hasNext()){
+                try {
+                    SimpleFeature f = (SimpleFeature)fi.next();
+                    encodeFeatureLink(urlSet, layername, f);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // TODO: Log
+                }
+            } 
+
+            col.close(fi);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            // TODO log
+        }
+
+        return d;
+    }
+
+    private void encodeFeatureLink(Element urlSet, String layername, SimpleFeature f){
+        Element urlElement = new Element("url", SITEMAP);
+        Element loc = new Element("loc", SITEMAP);
+        loc.setText(GEOSERVER_URL + "rest/layers/" + layername + "/" + f.getID() + ".kml");
+        urlElement.addContent(loc);
+        Element geo = new Element("geo", GEOSITEMAP);
+        Element geoformat = new Element("format", GEOSITEMAP);
+        geoformat.setText("kml");
+        geo.addContent(geoformat);
+        urlElement.addContent(geo);
+        urlSet.addContent(urlElement);
     }
     
     /**
