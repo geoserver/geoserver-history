@@ -179,6 +179,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         transformer.setIndentation(wfs.isVerbose() ? INDENT_SIZE : (NO_FORMATTING));
         transformer.setNumDecimals(geoServer.getNumDecimals());
         transformer.setFeatureBounding(wfs.isFeatureBounding());
+        transformer.setCollectionBounding(wfs.isFeatureBounding());
         transformer.setEncoding(wfs.getCharSet());
 
         String wfsSchemaloc = wfsSchemaLocation(wfs,request.getBaseUrl());
