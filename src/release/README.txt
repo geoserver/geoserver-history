@@ -1,3 +1,22 @@
+GeoServer 1.7.2 (January 19, 2008)
+---------------------------------
+
+The third relese of 1.7.x brings some notable new WMS rendering features as well
+as some exciting new extensions. The new and note worthy for this release:
+
+  * Curved Labelling
+  * Support for hatched fills
+  * OGR WFS output extension 
+  * An improved DB2 extension
+  * A HTML imagemap extension
+
+And many other bug fixes and improvements. The entire change log can be found
+at:
+
+  http://jira.codehaus.org/browse/GEOS/fixforversion/14681
+
+This release is based on GeoTools 2.5.3
+
 GeoServer 1.7.1 (December 08, 2008)
 ----------------------------------
 
