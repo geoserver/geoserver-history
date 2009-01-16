@@ -79,19 +79,19 @@
     <constructor-arg type="java.util.Map">
       <map>
         <entry>
-          <key><value>/seed/{layer}.{extension}</value></key>
+          <key><value>/rest/seed/{layer}.{extension}</value></key>
           <ref bean="gwcSeedRestlet" />
         </entry>
         <entry>
-          <key><value>/seed/{layer}</value></key>
+          <key><value>/rest/seed/{layer}</value></key>
           <ref bean="gwcSeedFormRestlet" />
         </entry>
         <entry>
-          <key><value>/reload</value></key>
+          <key><value>/rest/reload</value></key>
           <ref bean="gwcReloadRestlet" />
         </entry>
         <entry>
-          <key><value>/layers/{layer}.{extension}</value></key>
+          <key><value>/rest/layers/{layer}.{extension}</value></key>
           <ref bean="gwcTileLayerRestlet" />
         </entry>
       </map>
@@ -104,8 +104,8 @@
       <props>
         <prop key="/gwc/**">gwcDispatcher</prop>
         <prop key="/gwc">gwcDispatcher</prop>
-	<prop key="/gwc/rest/**">gwcRestDispatcher</prop>
-	<!-- prop key="/proxy/**">gwcProxyDispatcher</prop -->
+	    <prop key="/gwc/rest/**">gwcRestDispatcher</prop>
+	    <!-- prop key="/proxy/**">gwcProxyDispatcher</prop -->
       </props>
     </property>
   </bean>
