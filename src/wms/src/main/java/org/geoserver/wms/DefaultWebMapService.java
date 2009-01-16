@@ -95,6 +95,11 @@ public class DefaultWebMapService implements WebMapService,
      * Application context
      */
     ApplicationContext context;
+    
+    /**
+     * Temporary field that handles the use of the NG labeller
+     */
+    private static Boolean USE_NG_LABELLER = null;
 
     public DefaultWebMapService( WMS wms ) {
         this.wms = wms;
@@ -107,6 +112,25 @@ public class DefaultWebMapService implements WebMapService,
     public void setApplicationContext(ApplicationContext context)
             throws BeansException {
         this.context = context;
+        
+        // first time initialization of the NG labeller flag
+        if (USE_NG_LABELLER == null) {
+            String enabled = GeoServerExtensions.getProperty("USE_NG_LABELLER", context);
+            // default to true, but allow switching off
+            if(enabled == null)
+                USE_NG_LABELLER = true;
+            else
+                USE_NG_LABELLER = Boolean.valueOf(enabled);
+        }
+    }
+    
+    /**
+     * Checks wheter the NG labeller is enabled, or not (defaults to true unless the user
+     * sets the USE_NG_LABELLER property to false).
+     * @return
+     */
+    public static boolean isNgLabellerEnabled() {
+        return USE_NG_LABELLER;
     }
 
     public WMSCapabilitiesResponse getCapabilities(

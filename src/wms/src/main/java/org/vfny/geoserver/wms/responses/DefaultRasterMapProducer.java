@@ -30,6 +30,7 @@ import javax.media.jai.operator.LookupDescriptor;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DefaultWebMapService;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
@@ -120,8 +121,6 @@ public abstract class DefaultRasterMapProducer extends
 	/** The Watermark Painter instance **/
 	private WatermarkPainter wmPainter;
 	
-	private static Boolean USE_NG_LABELLER = null;
-	 
 	private ApplicationContext applicationContext;
 
 	/**
@@ -300,7 +299,7 @@ public abstract class DefaultRasterMapProducer extends
 		    rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
 		}
-		if(isNgLabellerEnabled()) {
+		if(DefaultWebMapService.isNgLabellerEnabled()) {
 		    LabelCacheImpl labelCache = new LabelCacheImpl();
 		    labelCache.setOutlineRenderingEnabled(true);
 		    rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
@@ -423,16 +422,6 @@ public abstract class DefaultRasterMapProducer extends
         this.applicationContext = applicationContext;
     }
 
-    private boolean isNgLabellerEnabled() {
-        if (USE_NG_LABELLER == null) {
-            String enabled = GeoServerExtensions.getProperty("USE_NG_LABELLER", applicationContext);
-            // default to true, but allow switching off
-            if(enabled == null)
-                USE_NG_LABELLER = true;
-            else
-                USE_NG_LABELLER = Boolean.valueOf(enabled);
-        }
-        return USE_NG_LABELLER;
-    }
+    
         
 }

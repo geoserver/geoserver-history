@@ -20,11 +20,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DefaultWebMapService;
+import org.geotools.renderer.label.LabelCacheImpl;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.geotools.renderer.shape.ShapefileRenderer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractRasterMapProducer;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.WatermarkPainter;
 
 import com.lowagie.text.Document;
@@ -157,6 +161,11 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 					.put("optimizedDataLoadingEnabled", new Boolean(true));
 			rendererParams.put("renderingBuffer", new Integer(mapContext
 					.getBuffer()));
+			if(DefaultWebMapService.isNgLabellerEnabled()) {
+	            LabelCacheImpl labelCache = new LabelCacheImpl();
+	            labelCache.setOutlineRenderingEnabled(true);
+	            rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
+	        }
 			renderer.setRendererHints(rendererParams);
 
 			Envelope dataArea = mapContext.getAreaOfInterest();

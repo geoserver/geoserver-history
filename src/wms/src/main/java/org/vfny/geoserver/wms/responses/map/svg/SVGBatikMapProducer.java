@@ -23,8 +23,11 @@ import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DefaultWebMapService;
 import org.geotools.map.MapContext;
+import org.geotools.renderer.label.LabelCacheImpl;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.geotools.renderer.shape.ShapefileRenderer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -74,6 +77,11 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 		rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
 		rendererParams.put("renderingBuffer", new Integer(mapContext
 				.getBuffer()));
+		if(DefaultWebMapService.isNgLabellerEnabled()) {
+            LabelCacheImpl labelCache = new LabelCacheImpl();
+            labelCache.setOutlineRenderingEnabled(true);
+            rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
+        }
 		renderer.setRendererHints(rendererParams);
 		renderer.setContext(mapContext);
 	}
