@@ -92,7 +92,7 @@ public class DescribeFeatureType {
                 if (org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE.equals(nsUri)) {
                     // for this one we need to assign the default geoserver
                     // namespace
-                    name = new QName(defaultNsUri, name.getLocalPart());
+                    name = new QName(defaultNsUri, name.getLocalPart(), name.getPrefix());
                 }
                 hackedNames.add(name);
             }
@@ -114,10 +114,12 @@ O:
                         continue;
                     
                     String namespace = meta.getNameSpace().getURI();
+                    String prefix = meta.getNameSpace().getPrefix();
                     String local = meta.getTypeName();
 
-                    if (namespace.equals(name.getNamespaceURI())
-                            && local.equals(name.getLocalPart())) {
+                    if (local.equals( name.getLocalPart() ) && 
+                            //match on uri or prefix (GEOS-2401)
+                            (namespace.equals(name.getNamespaceURI()) || prefix.equals( name.getPrefix()) ) ){
                         //found, continue on and keep this handle in list
                         requested.add(meta);
 

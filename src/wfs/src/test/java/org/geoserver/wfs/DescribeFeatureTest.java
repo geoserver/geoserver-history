@@ -47,4 +47,18 @@ public class DescribeFeatureTest extends WFSTestSupport {
                 .getNodeName());
 
     }
+    
+    public void testWithoutExplicitMapping() throws Exception {
+        String xml = "<DescribeFeatureType xmlns='http://www.opengis.net/wfs'"+
+           " xmlns:gml='http://www.opengis.net/gml'"+
+           " xmlns:ogc='http://www.opengis.net/ogc' version='1.0.0' service='WFS'>"+
+           " <TypeName>cdf:Locks</TypeName>"+ 
+           " </DescribeFeatureType>";
+
+        Document doc = postAsDOM("wfs", xml);
+        assertEquals("xs:schema", doc.getDocumentElement().getNodeName());
+        
+        assertEquals( 1, doc.getElementsByTagName("xs:complexType").getLength());
+    }
+    
 }
