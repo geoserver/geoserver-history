@@ -133,11 +133,11 @@ CITE test
 
 #. Re-run GeoServer CITE tests.
 
-Execute sample requests
------------------------
+Hand test
+---------
 
-Start GeoServer with the release data directory and test all the sample 
-requests available at http://localhost:8080/geoserver/demoRequest.do.
+Start GeoServer with the release data directory and hand test. A checklist of 
+things to test can be found in the :ref:`release_testing_checklist`.
 
 Build Windows installer
 -----------------------
