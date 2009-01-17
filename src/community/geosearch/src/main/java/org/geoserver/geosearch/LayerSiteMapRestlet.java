@@ -99,8 +99,10 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
     }
 
     public void handle(Request request, Response response){ 
-        GEOSERVER_URL = RequestUtils.proxifiedBaseURL(request.getRootRef().getParentRef().toString()
-                , getGeoServer().getProxyBaseUrl());
+        GEOSERVER_URL = RequestUtils.proxifiedBaseURL(
+                request.getRootRef().getParentRef().toString(),
+                getGeoServer().getProxyBaseUrl()
+                );
         
         if (request.getMethod().equals(Method.GET)){
             doGet(request, response);

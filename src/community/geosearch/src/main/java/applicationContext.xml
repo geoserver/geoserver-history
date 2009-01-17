@@ -18,7 +18,7 @@
          <value>layersitemap</value>
      </entry>
      <entry>
-         <key><value>/layers/{layer}/{fid}.html</value></key>
+         <key><value>/layers/{namespace}:{layer}/{feature}.html</value></key>
          <value>describefeaturehtml</value>
      </entry>
      <entry>
@@ -74,6 +74,7 @@
 </bean>
 <bean id="describefeaturehtml" class="org.geoserver.geosearch.HTMLFeatureDescription">
     <property name="catalog"><ref bean="catalog"/></property>
+    <property name="geoServer"><ref bean="geoServer"/></property>
 </bean>
 <bean id="describefeaturekml" class="org.geoserver.geosearch.KMLFeatureDescription">
     <property name="catalog"><ref bean="catalog"/></property>

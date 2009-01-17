@@ -75,7 +75,6 @@ public class FeatureRestlet extends Restlet {
         String layer = (String)request.getAttributes().get("layer");
         String namespace = (String)request.getAttributes().get("namespace");
         String feature = (String)request.getAttributes().get("feature");
-        System.out.println("layer: " + layer + "; namespace: " + namespace + "; feature: " + feature);
         Form form = request.getResourceRef().getQueryAsForm();
         int startIndex = 0; 
         int maxFeatures = 100;
