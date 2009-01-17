@@ -25,21 +25,11 @@ import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 
-public class HTMLFeatureDescription extends GeoServerProxyAwareRestlet {
-    private Data myCatalog;
-
+public class HTMLFeatureDescription extends AbstractFeatureDescription {
     private final DataFormat format =
         new FreemarkerFormat("featurepage.ftl", HTMLFeatureDescription.class, MediaType.TEXT_HTML);
 
     private String GEOSERVER_BASE_URL;
-
-    public void setCatalog(Data c){
-        myCatalog = c;
-    }
-
-    public Data getCatalog(){
-        return myCatalog;
-    }
 
     public void handle(Request req, Response resp){
         GEOSERVER_BASE_URL = getBaseURL(req);
@@ -52,45 +42,8 @@ public class HTMLFeatureDescription extends GeoServerProxyAwareRestlet {
     }
 
     public void doGet(Request req, Response resp){
-        String layer = (String)req.getAttributes().get("layer");
         String namespace = (String)req.getAttributes().get("namespace");
-        String feature = (String)req.getAttributes().get("feature");
-
-        NameSpaceInfo ns = myCatalog.getNameSpace(namespace);
-        if ( ns == null ) {
-            throw new RestletException( 
-                    "No such namespace:" + namespace,
-                    Status.CLIENT_ERROR_NOT_FOUND 
-                    );
-        }
-
-        FeatureTypeInfo featureType = null;
-        try {
-            featureType = myCatalog.getFeatureTypeInfo(layer, ns.getUri());
-        } catch (NoSuchElementException e) {
-            throw new RestletException(e.getMessage(), Status.CLIENT_ERROR_NOT_FOUND);
-        }
-
-        DefaultQuery q = new DefaultQuery();
-        FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-
-        q.setFilter(ff.id(Collections.singleton(ff.featureId(feature))));
-
-        FeatureCollection col = null;
-        try { 
-            col = featureType.getFeatureSource().getFeatures(q);
-        } catch (IOException e) {
-            throw new RestletException(e.getMessage(), Status.SERVER_ERROR_INTERNAL);
-        }
-
-        if (col.size() != 1) {
-            throw new RestletException(
-                "Unexpected results from data query, should be exactly one feature with given ID",
-                Status.SERVER_ERROR_INTERNAL
-            );
-        }
-
-        SimpleFeature f = (SimpleFeature)col.iterator().next();
+        SimpleFeature f = findFeature(req);
         
         resp.setEntity(format.makeRepresentation(buildContext(namespace, f)));
     }

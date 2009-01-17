@@ -6,6 +6,12 @@
 <property name="routes">
   <map>
      <entry>
+         <key>
+             <value>/layers/{namespace}:{layer}/{feature}_goto.kml</value>
+         </key>
+         <value>describefeaturekml</value>
+     </entry>
+     <entry>
          <key><value>/layers/{namespace}:{layer}/{feature}.kml</value></key>
          <value>feature</value>
      </entry>
@@ -20,10 +26,6 @@
      <entry>
          <key><value>/layers/{namespace}:{layer}/{feature}.html</value></key>
          <value>describefeaturehtml</value>
-     </entry>
-     <entry>
-         <key><value>/layers/{layer}/{fid}_goto.kml</value></key>
-         <value>describefeaturekml</value>
      </entry>
      <entry>
        <key><value>/layers/{namespace}:{layer}.html</value></key>
@@ -72,11 +74,14 @@
 <bean id="aboutpage" class="org.geoserver.geosearch.LayerAboutPage">
     <property name="catalog"><ref bean="catalog"/></property>
 </bean>
-<bean id="describefeaturehtml" class="org.geoserver.geosearch.HTMLFeatureDescription">
+<bean id="describefeaturehtml" 
+    class="org.geoserver.geosearch.HTMLFeatureDescription">
     <property name="catalog"><ref bean="catalog"/></property>
     <property name="geoServer"><ref bean="geoServer"/></property>
 </bean>
-<bean id="describefeaturekml" class="org.geoserver.geosearch.KMLFeatureDescription">
+<bean id="describefeaturekml"
+    class="org.geoserver.geosearch.KMLFeatureDescription">
     <property name="catalog"><ref bean="catalog"/></property>
+    <property name="geoServer"><ref bean="geoServer"/></property>
 </bean>
 </beans>
