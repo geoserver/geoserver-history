@@ -1,4 +1,6 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <#assign wmsUrl="../../wms?request=GetMap&version=1.1.1" 
          wfsUrl="../../wfs?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetFeature"
          layersParam = "&layers="+name
@@ -12,7 +14,7 @@
          bboxParam="&bbox="+bbox
          dimParams="&width="+width+"&height="+height
          srsParam="&srs="+srs
-         imgUrl="../../images/"
+         imgUrl="../../images"
 >
   <head>
     <title>${title} - Powered by GeoServer </title>
@@ -36,7 +38,7 @@
         }            
     </style>
 
-  <style type="text/css">
+  <style type="text/css"> 
 /*-----------------------
 General styles
 -----------------------*/
@@ -116,7 +118,7 @@ display: block;
 }
 
 * html .selfclear {
-height: 1px; /* IE < 7 */
+height: 1px; /* IE under 7 */
 }
 
 .leftwise {
@@ -142,7 +144,7 @@ width: 100px;
 height: 30px;
 overflow: hidden;
 text-indent: -9999em;
-background: url(${imgUrl}powered-by-geoserver-100x30.png) no-repeat; 
+background: url(${imgUrl}/powered-by-geoserver-100x30.png) no-repeat; 
 }
 
 /*-*/
@@ -178,47 +180,47 @@ padding: 0;
 #view-data ul li a,
 #download-data ul li a {
 padding: 10px 0 10px 20px;
-background: url(${imgUrl}page_white_text.png) 0 50% no-repeat;
+background: url(${imgUrl}/page_white_text.png) 0 50% no-repeat;
 }
 
 #view-data ul li a.pdf,
 #download-data ul li a.pdf {
-background: url(${imgUrl}page_white_acrobat.png) 0 50% no-repeat; 
+background: url(${imgUrl}/page_white_acrobat.png) 0 50% no-repeat; 
 }
 
 #view-data ul li a.google-earth,
 #download-data ul li a.google-earth {
-background: url(${imgUrl}kml-16x16.png) 0 50% no-repeat; 
+background: url(${imgUrl}/kml-16x16.png) 0 50% no-repeat; 
 }
 
 #view-data ul li a.kml,
 #download-data ul li a.kml {
-background: url(${imgUrl}kml-16x16.png) 0 50% no-repeat; 
+background: url(${imgUrl}/kml-16x16.png) 0 50% no-repeat; 
 }
 
 #view-data ul li a.shapefile,
 #download-data ul li a.shapefile {
-background: url(${imgUrl}page_white_zip.png) 0 50% no-repeat; 
+background: url(${imgUrl}/page_white_zip.png) 0 50% no-repeat; 
 }
 
 #view-data ul li a.json,
 #download-data ul li a.json {
-background: url(${imgUrl}page_white_text.png) 0 50% no-repeat; 
+background: url(${imgUrl}/page_white_text.png) 0 50% no-repeat; 
 }
 
 #view-data ul li a.gml2,
 #download-data ul li a.gml2 {
-background: url(${imgUrl}page_white_vector.png) 0 50% no-repeat; 
+background: url(${imgUrl}/page_white_vector.png) 0 50% no-repeat; 
 }
 
 #view-data ul li a.gml3,
 #download-data ul li a.gml3 {
-background: url(${imgUrl}page_white_vector.png) 0 50% no-repeat; 
+background: url(${imgUrl}/page_white_vector.png) 0 50% no-repeat; 
 }
 
 #view-data ul li a.georss,
 #download-data ul li a.georss {
-background: url(${imgUrl}feed.png) 0 50% no-repeat; 
+background: url(${imgUrl}/feed.png) 0 50% no-repeat; 
 }
 
 /*-*/
@@ -339,7 +341,9 @@ border: 1px solid #0082b6;
     </script>
   </head>
   <body onload="init()">
+    <p>
     <a id="geoserver-logo" title="Powered by GeoServer" href="http://geoserver.org">Powered by GeoServer</a>
+    </p>
     <h1>${title}</h1>
     <p id="info">${abstract}</p>
 
@@ -348,21 +352,21 @@ border: 1px solid #0082b6;
       <p>View the data as:</p>
       <ul>
         <li>
-          <a class="pdf" href="${wmsUrl + PDFParam + layersParam + bboxParam + '&styles=' + srsParam + dimParams }">PDF</a>
+          <a class="pdf" href="${(wmsUrl + PDFParam + layersParam + bboxParam + '&styles=' + srsParam + dimParams)?html }">PDF</a>
         </li>
         <li>
-          <a class="google-earth" href="${kmlUrl + 'layers=' + name}">Google Earth</a>
+          <a class="google-earth" href="${(kmlUrl + 'layers=' + name)?html}">Google Earth</a>
         </li>
       </ul><!-- /#view-data -->
     </div>
     <div id="download-data" class="selfclear">
       <p>Download the data as:</p>
       <ul>
-        <li><a class="kml" href="${kmlUrl + 'mode=download' + layersParam }">KML</a></li>
-        <li><a class="shapefile" href="${wfsUrl + nameParam + '&outputFormat=' + 'SHAPE-ZIP'}">Shapefile</a></li>   
-        <li><a class="json" href="${wfsUrl + nameParam + '&outputFormat=' + json}">JSON</a></li>
-        <li><a class="gml2" href="${wfsUrl + nameParam + '&outputFormat=' + gml2}">GML2</a></li>
-        <li><a class="gml3" href="${wfsUrl + nameParam + '&outputFormat=' + gml3}">GML3</a></li>
+        <li><a class="kml" href="${(kmlUrl + 'mode=download' + layersParam)?html }">KML</a></li>
+        <li><a class="shapefile" href="${(wfsUrl + nameParam + '&outputFormat=' + 'SHAPE-ZIP')?html}">Shapefile</a></li>   
+        <li><a class="json" href="${(wfsUrl + nameParam + '&outputFormat=' + json)?html}">JSON</a></li>
+        <li><a class="gml2" href="${(wfsUrl + nameParam + '&outputFormat=' + gml2)?html}">GML2</a></li>
+        <li><a class="gml3" href="${(wfsUrl + nameParam + '&outputFormat=' + gml3)?html}">GML3</a></li>
         <!-- 
            Problem: browser tries to up zip file as XML.
         <li><a href="${wfsUrl + nameParam + '&outputFormat=' + gml2gzip}">GML2</a> gZipped</li>
@@ -377,7 +381,7 @@ border: 1px solid #0082b6;
       <h2>Metadata</h2>
       <table border="1">
         <tr>
-          <th scope="row">Keywords</td>
+          <th scope="row">Keywords</th>
           <td><#list keywords as keyword>${keyword}<#if keyword != keywords?last>, </#if></#list></td>
         </tr>
         <tr>
@@ -414,20 +418,20 @@ border: 1px solid #0082b6;
       <dl>
         <dt>OpenLayers (<a href="http://geowebcache.org/trac/wiki/openlayers">Tutorial</a>)</dt>
         <dd>Use tiles in OpenLayers with the following code snippet:
-          <code class="example">var layerstates = new OpenLayers.Layer.WMS(</br />
-                  "${name} EPSG:4326 JPEG",</br />
-                  "${gwcLink}service/wms",</br />
+          <code class="example">var layerstates = new OpenLayers.Layer.WMS(<br />
+                  "${name} EPSG:4326 JPEG",<br />
+                  "${gwcLink?html}service/wms",<br />
                   {layers: '${name}', format: 'image/jpeg'} );</code>
         </dd>
         <dt>Google Maps (<a href="http://geowebcache.org/trac/wiki/google_maps">Tutorial</a>)</dt>
         <dd>
          Use tiles in GoogleMaps with the following code snippet:
-          <code class="example">tileUrlTemplate: '${gwcLink}service/gmaps?layers=${name}&zoom={Z}&x={X}&y={Y}',</code>
+          <code class="example">tileUrlTemplate: '${(gwcLink + "service/gmaps?layers=${name}&zoom={Z}&x={X}&y={Y}")?html}',</code>
         </dd>
         <dt>Virtual Earth (<a href="http://geowebcache.org/trac/wiki/virtual_earth">Tutorial</a>)</dt>
         <dd>
           Use tiles in Virtual Earth with the following code snippet:
-          <code class="example">var tileLayerURL = '${gwcLink}service/ve?quadkey=%4&format=image/png&layers=${name}';</code>
+          <code class="example">var tileLayerURL = '${(gwcLink + "service/ve?quadkey=%4&format=image/png&layers=" + name)?html}';</code>
         </dd>
       </dl>
     </div>

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.ows.util.RequestUtils;
@@ -127,15 +128,12 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
             ? (String) request.getAttributes().get("page")
             : null;
 
-        System.out.println("layername: " + layerName);
-        System.out.println("page: " + page);
-        
         MapLayerInfo mli = getLayer(layerName);
         
         // Check that we know the layer
         if(mli == null) {
             response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            System.out.println("couldn't find layername: " + layerName);
+            LOGGER.log(Level.FINE, "couldn't find layername: " + layerName);
             //TODO nice error message
             return;
         }
@@ -143,8 +141,8 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
         // And that we allow people to index it
         FeatureTypeInfo fti = mli.getFeature();
         if(fti == null || ! fti.isIndexingEnabled()) {
-            response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            System.out.println("not allowed to publish layername: " + layerName);
+            response.setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+            LOGGER.log(Level.FINE, "not allowed to publish layername: " + layerName);
             //TODO nice error message
             return;
         }
@@ -163,7 +161,11 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
                 Document d = buildPagedSitemap(layerName, fti, i);
                 response.setEntity(new JDOMRepresentation(d));
             } catch (NumberFormatException e) {
-                response.setEntity(new StringRepresentation(e.toString(), MediaType.TEXT_PLAIN));
+                response.setEntity(
+                        new StringRepresentation(e.toString(),
+                            MediaType.TEXT_PLAIN
+                            )
+                        );
                 response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
             }
         } else { 
@@ -298,8 +300,6 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
         String dataDir = this.myData.getDataDirectory().getCanonicalPath();
         String tableName = fti.getTypeName() + "_" + fti.getRegionateAttribute();
 
-        //System.out.println("jdbc:h2:file:" + dataDir + "/geosearch/h2cache_" + tableName);
-        
         Connection conn = null;
         Statement st = null;
         ResultSet rs = null;
@@ -317,8 +317,6 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
                 coords[0] = rs.getLong(1);
                 coords[1] = rs.getLong(2);
                 coords[2] = rs.getLong(3);
-                
-                //System.out.println("x:"+coords[0]+" y:"+coords[1]+" z:"+coords[2]);
                 
                 updateMaxCoords(maxCoords, coords);
                 addTile(urlSet, makeUrl(coords, fti));

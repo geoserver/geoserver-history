@@ -68,6 +68,13 @@ public abstract class AbstractFeatureDescription extends GeoServerProxyAwareRest
                     );
         }
 
+        if (!featureType.isIndexingEnabled()){
+            throw new RestletException(
+                "Indexing is disabled for this layer",
+                Status.CLIENT_ERROR_FORBIDDEN
+                );
+        }
+
         DefaultQuery q = new DefaultQuery();
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
 

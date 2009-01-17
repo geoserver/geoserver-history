@@ -4,8 +4,10 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.rest.RestletException;
 import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geoserver.data.test.MockData;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
+import org.restlet.data.Status;
 import org.vfny.geoserver.global.Data;
 
 import freemarker.template.SimpleHash;
@@ -15,12 +17,11 @@ import freemarker.template.SimpleSequence;
 
 public class LayerAboutPageTest extends GeoServerTestSupport  {
 
-	
 	public void testGetContext() throws Exception{
 		LayerAboutPage lap = new LayerAboutPage();
 		lap.setCatalog((Data) GeoServerExtensions.bean("catalog"));
 		
-		Request request = new Request(new Method("GET"), "http://testing.org/geoserver/rest/topp/states.html");
+		Request request = new Request(new Method("GET"), "http://example.org/geoserver/rest/topp/states.html");
 		
 		SimpleHash context;
 		
@@ -33,15 +34,18 @@ public class LayerAboutPageTest extends GeoServerTestSupport  {
 		}
 		assertTrue("getContext did not fail with RestletException when given bogus namespace and type",hadRestletException);
 		
-		boolean hadNullPointerException = false;
+		RestletException re = null;
 		try{
-			context = lap.getContext("sf","badType",request);
-		} catch(NullPointerException e){
-			hadNullPointerException = true;
+			context = lap.getContext("sf", "badType", request);
+		} catch(RestletException e){
+			re = e;
 		}
-		assertTrue("getContext did not fail with NullPointerException when given bogus namespace but good type", hadNullPointerException);
+		assertNotNull("getContext should fail when given bogus namespace but good type", re);
+        assertEquals("the error code should be a 404", Status.CLIENT_ERROR_NOT_FOUND, re.getStatus());
 		
-		context = lap.getContext("sf","GenericEntity",request);		
+
+        getFeatureTypeInfo(MockData.GENERICENTITY).setIndexingEnabled(true);
+		context = lap.getContext("sf", "GenericEntity", request);		
 
 		assertEquals("Unexpected value for 'name' in context", ((SimpleScalar) context.get("name")).getAsString(), "sf:GenericEntity");
 		assertEquals("Unexpected value for 'title' in context", ((SimpleScalar) context.get("title")).getAsString(), "GenericEntity");		

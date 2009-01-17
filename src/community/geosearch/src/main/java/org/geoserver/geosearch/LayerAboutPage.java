@@ -39,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import freemarker.template.SimpleHash;
+import freemarker.template.TemplateModelException;
 
 public class LayerAboutPage extends GeoServerProxyAwareRestlet {
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");	
@@ -70,6 +71,13 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     
     SimpleHash getContext(String namespace, String layer, Request request){
     	FeatureTypeInfo info = lookupType(namespace, layer);
+         
+        if (!info.isIndexingEnabled()) {
+            throw new RestletException(
+                    "Layer indexing disabled",
+                    Status.CLIENT_ERROR_FORBIDDEN
+                    );
+        }
     	
     	SimpleHash map = new SimpleHash();
     	
@@ -81,12 +89,22 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     	map.put("keywords", info.getKeywords());
 		map.put("declaredCRS", info.getDeclaredCRS());	    	
 		map.put("metadataLinks", info.getMetadataLinks());
-		try{
-			map.put("nativeCRS", info.getNativeCRS());
-		}catch(Exception e){
-            LOGGER.log(Level.WARNING, "Error trying to get nativeCRS from " + info.getName() + "FeatureTypeInfo", e);
+		try {
+            Object o = info.getNativeCRS();
+            if (o != null) {
+                map.put("nativeCRS", info.getNativeCRS());
+            } else {
+                map.put("nativeCRS", "No native CRS configured for layer");
+            }
+		} catch (Exception e) {
+            LOGGER.log(Level.WARNING,
+                    "Error trying to get nativeCRS from " 
+                    + info.getName() 
+                    + "FeatureTypeInfo",
+                    e
+                    );
 		}
-    	
+
 		String baseUrl = RESTUtils.getBaseURL(request);
 		map.put("base", baseUrl);    			
 		
@@ -127,23 +145,31 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     }
 
     private FeatureTypeInfo lookupType(String namespace, String layer){
-
         NameSpaceInfo ns = catalog.getNameSpace(namespace);
-        if ( ns == null ) {
+        if (ns == null) {
             throw new RestletException(
-                    "No such namespace: " + namespace, Status.CLIENT_ERROR_NOT_FOUND 
+                    "No such namespace: " + namespace,
+                    Status.CLIENT_ERROR_NOT_FOUND 
                     );
         }
 
         FeatureTypeInfo featureType = null;
         try {
             featureType = catalog.getFeatureTypeInfo(layer,ns.getUri());
-        } catch( Exception e ) {
+        } catch(Exception e) {
             throw new RestletException(
                     "No such featuretype: " + namespace + ":" + layer,
                      Status.CLIENT_ERROR_NOT_FOUND 
                     );
         }
+
+        if (featureType == null) {
+            throw new RestletException(
+                    "No such featuretype: " + namespace + ":" + layer,
+                     Status.CLIENT_ERROR_NOT_FOUND 
+                    );
+        }
+
         return featureType;
     }
     
