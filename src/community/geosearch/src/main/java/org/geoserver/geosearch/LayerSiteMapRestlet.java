@@ -124,12 +124,16 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
         String page = request.getAttributes().containsKey("page") 
             ? (String) request.getAttributes().get("page")
             : null;
+
+        System.out.println("layername: " + layerName);
+        System.out.println("page: " + page);
         
         MapLayerInfo mli = getLayer(layerName);
         
         // Check that we know the layer
         if(mli == null) {
             response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            System.out.println("couldn't find layername: " + layerName);
             //TODO nice error message
             return;
         }
@@ -138,6 +142,7 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
         FeatureTypeInfo fti = mli.getFeature();
         if(fti == null || ! fti.isIndexingEnabled()) {
             response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            System.out.println("not allowed to publish layername: " + layerName);
             //TODO nice error message
             return;
         }
