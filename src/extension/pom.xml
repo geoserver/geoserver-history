@@ -65,6 +65,13 @@
         <module>imagemap</module>
       </modules>
     </profile>
+    
+    <profile>
+      <id>ogr</id>
+      <modules>
+        <module>ogr</module>
+      </modules>
+    </profile>
 
     <!-- allExtensions profile, includes all modules -->
     <profile>
@@ -76,6 +83,7 @@
         <module>wfsv</module>
         <module>db2</module>
         <!--module>imagemap</module-->
+        <module>ogr</module>
       </modules>
     </profile>
 
@@ -89,6 +97,7 @@
         <module>wfsv</module>
         <module>db2</module>
         <!--module>imagemap</module-->
+        <module>ogr</module>
       </modules>
     </profile>
   </profiles>
