@@ -8,7 +8,6 @@
     <constructor-arg value="image/png,image/png8,image/jpeg,image/gif,application/vnd.google-earth.kml+xml"/>
     <constructor-arg value="4x4"/>
     <constructor-arg value="format_options=regionateby:auto"/>
-    <constructor-arg value="true"/>
   </bean>
 
   <!-- Auxilliary XML Configuration, place geowebcache.xml in $GEOSERVER_DATA_DIR/gwc or WEB-INF/classes to activate -->
