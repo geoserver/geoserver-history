@@ -5,12 +5,12 @@
 
   <parent>
     <groupId>org.geoserver</groupId>
-    <artifactId>community</artifactId>
+    <artifactId>extension</artifactId>
     <version>1.7.2-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.geoserver.community</groupId>
-  <artifactId>ogrout</artifactId>
+  <groupId>org.geoserver.extension</groupId>
+  <artifactId>ogr</artifactId>
   <packaging>jar</packaging>
   <name>ogr2ogr based output format</name>
 

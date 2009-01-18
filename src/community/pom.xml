@@ -90,11 +90,5 @@
         <module>wps</module>
       </modules>
     </profile>
-    <profile>
-      <id>ogr</id>
-      <modules>
-        <module>ogrout</module>
-      </modules>
-    </profile>
   </profiles>
 </project>

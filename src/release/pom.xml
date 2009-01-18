@@ -108,7 +108,7 @@
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt-imagepyramid</artifactId>
+   <artifactId>gt-pyramid</artifactId>
    <version>${gt.version}</version>
   </dependency>
   <dependency>
@@ -149,6 +149,11 @@
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>imagemap</artifactId>
+   <version>1.7.2-SNAPSHOT</version>
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>ogr</artifactId>
    <version>1.7.2-SNAPSHOT</version>
   </dependency>
  </dependencies>
