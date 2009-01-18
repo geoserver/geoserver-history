@@ -108,7 +108,7 @@
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt-pyramid</artifactId>
+   <artifactId>gt-imagepyramid</artifactId>
    <version>${gt.version}</version>
   </dependency>
   <dependency>
