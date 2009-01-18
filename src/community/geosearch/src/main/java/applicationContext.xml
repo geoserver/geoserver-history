@@ -31,13 +31,12 @@
        <key><value>/layers/{namespace}:{layer}.html</value></key>
        <value>aboutpage</value>
      </entry>
-  </map>
-
-<!--
-    <entry>
-          <key><value>/sitemap.xml</value></key>
-          <value>sitemapindex</value>
-        </entry>
+     <entry>
+       <key><value>/sitemap.xml</value></key>
+       <value>sitemapindex</value>
+     </entry>
+   </map>
+<!--        
         <entry>
           <key><value>/layers/{layer}/sitemap.xml</value></key>
           <value>layersitemap</value>

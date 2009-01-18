@@ -19,7 +19,7 @@ public class SiteMapIndexRestlet extends GeoServerProxyAwareRestlet {
     private Data myData;
     private DataConfig myDataConfig;
     private String GEOSERVER_ROOT;
-    private Namespace SITEMAP = Namespace.getNamespace("http://www.sitemaps.org/schemas/sitemap/0.9");
+    protected static Namespace SITEMAP = Namespace.getNamespace("http://www.sitemaps.org/schemas/sitemap/0.9");
 
     public Data getData(){
         return myData;
@@ -60,7 +60,12 @@ public class SiteMapIndexRestlet extends GeoServerProxyAwareRestlet {
 	//urlset.addNamespaceDeclaration(GEOSITEMAP);
         d.setRootElement(sitemapindex);
 
-        
+        buildGlobalSiteMap(sitemapindex);
+
+        response.setEntity(new JDOMRepresentation(d));
+    }
+    
+    private void buildGlobalSiteMap(Element sitemapindex)  {
         NameSpaceInfo[] namespaces = getData().getNameSpaces();
         for (int i = 0; i < namespaces.length; i++){
             for ( Iterator t = namespaces[i].getTypeNames().iterator(); t.hasNext(); ) {
@@ -76,11 +81,9 @@ public class SiteMapIndexRestlet extends GeoServerProxyAwareRestlet {
             }
             
         }
-
-        response.setEntity(new JDOMRepresentation(d));
     }
 
-    private void addSitemap(Element sitemapindex, String url){
+    protected static void addSitemap(Element sitemapindex, String url){
         Element sitemapElement = new Element("sitemap", SITEMAP);
         Element loc = new Element("loc", SITEMAP);
         loc.setText(url);

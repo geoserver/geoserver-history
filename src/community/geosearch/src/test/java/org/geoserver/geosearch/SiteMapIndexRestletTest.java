@@ -47,7 +47,7 @@ public class SiteMapIndexRestletTest extends GeoServerTestSupport {
             MockData.BASIC_POLYGONS,
             null, // Layer-wide, no FID needed
             "/rest/layers/%1$s/sitemap.xml",
-            "urlset"
+            "sitemapindex"
             );
     }
 

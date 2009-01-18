@@ -186,9 +186,8 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
     private Document buildSitemap(String layerName, FeatureTypeInfo fti) {
         final Document d = new Document();
         
-        Element urlSet = new Element("urlset", SITEMAP);
-        urlSet.addNamespaceDeclaration(GEOSITEMAP);
-        d.setRootElement(urlSet);
+        Element sitemapindex = new Element("sitemapindex", SiteMapIndexRestlet.SITEMAP);
+        d.setRootElement(sitemapindex);
         
         try {
             int featurecount = fti.getFeatureSource().getFeatures().size();
@@ -196,8 +195,8 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
             pagecount += featurecount % 50000 == 0 ? 0 : 1;
             
             for (int i = 1; i <= pagecount; i++) {
-                addTile(
-                        urlSet, 
+                SiteMapIndexRestlet.addSitemap(
+                        sitemapindex, 
                         GEOSERVER_URL + "rest/layers/" + layerName + "/sitemap-" + i + ".xml"
                        );
             }
