@@ -1,9 +1,16 @@
 <html>
 <head><title> ${name} - ${typeName} - GeoServer </title></head>
 <body>
-<h2> ${name} - ${typeName} </h2>
+<h3> ${name} - ${typeName} </h3>
 <p> ${description}
 </p>
-<a href="${kmllink}"> View in Context </a>
+
+
+<hr />
+<h4>Links to KML documents:</h4>
+<ul>
+<li><a href="${kmllink}"> View this KML placemark in context of dataset </a></li>
+<li><a href="${rawkmllink}"> View only this particular placemark</a></li>
+</ul>
 </body>
 </html>

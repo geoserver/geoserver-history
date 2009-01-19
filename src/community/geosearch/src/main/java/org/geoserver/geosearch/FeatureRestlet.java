@@ -15,6 +15,7 @@ import org.geoserver.wms.WebMapService;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.geotools.util.logging.Logging;
 import org.restlet.Restlet;
+import org.restlet.data.ClientInfo;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Form;
@@ -72,98 +73,124 @@ public class FeatureRestlet extends Restlet {
     }
 
     public void doGet(Request request, Response response) throws Exception{
-        String layer = (String)request.getAttributes().get("layer");
-        String namespace = (String)request.getAttributes().get("namespace");
-        String feature = (String)request.getAttributes().get("feature");
+        String layer = (String) request.getAttributes().get("layer");
+        String namespace = (String) request.getAttributes().get("namespace");
+        String feature = (String) request.getAttributes().get("feature");
+
         Form form = request.getResourceRef().getQueryAsForm();
-        int startIndex = 0; 
-        int maxFeatures = 100;
-        String regionateBy = null;
-        String regionateAttr = null;
-
-        try { 
-            startIndex = Integer.valueOf(form.getFirstValue("startindex", true));
-        } catch (Exception e) {}
-
-        try {
-            maxFeatures = Integer.valueOf(form.getFirstValue("maxfeatures", true));
-        } catch (Exception e) {}
-
-        regionateBy = form.getFirstValue("regionateBy", true);
-        //if (regionateBy == null) regionateBy = "sld";
-        regionateBy = "random";
+        String reqRaw = form.getFirstValue("raw");
         
-        regionateAttr = form.getFirstValue("regionateAttr", true);
-
-        NameSpaceInfo ns = catalog.getNameSpace(namespace);
-        if ( ns == null ) {
-            throw new RestletException( "No such namespace:" + namespace, Status.CLIENT_ERROR_NOT_FOUND );
+        ClientInfo cliInfo = request.getClientInfo();
+        String agent = null;
+        if(cliInfo != null) {
+            agent = cliInfo.getAgent();
         }
-
-        FeatureTypeInfo featureType = null;
-        try {
-            featureType = catalog.getFeatureTypeInfo(layer,ns.getUri());
-        }
-        catch( NoSuchElementException e ) {
-            //ignore, handled later
-        }
-
-        if ( featureType == null ) {
-            throw new RestletException( "No such layer:" + layer, Status.CLIENT_ERROR_NOT_FOUND);    
-        }
-
-        if ( !featureType.isIndexingEnabled() ) {
-            throw new RestletException( "Layer not indexable: " + layer, Status.CLIENT_ERROR_FORBIDDEN);
-        }
-
-        //create some kvp and pass through to GetMapKvpreader
-        KvpMap raw = new KvpMap();
-        raw.put("layers", namespace + ":" + layer);
-        raw.put("format", "kml");
-        raw.put("format_options", "selfLinks:true;relLinks:true;");
-        //regionateby:" + regionateBy + (regionateAttr != null ? ";regionateAttr:" + regionateAttr : ""));
-
-        if ( feature != null ) {
-            raw.put("featureid", feature);    
+        
+        boolean wantsRaw = (
+                agent == null
+                || cliInfo.getAgent().contains("Googlebot")
+                || (reqRaw != null && Boolean.parseBoolean(reqRaw)) );
+        
+        // We only show the actual KML placemark to googlebot or users who append ?raw=true 
+        if ( ! wantsRaw ) {
+            response.redirectSeeOther(feature+".html");
         } else {
-            raw.put("startIndex", Integer.toString(startIndex));
-            raw.put("maxfeatures", Integer.toString(maxFeatures));
-        }
+            int startIndex = 0;
+            int maxFeatures = 100;
+            String regionateBy = null;
+            String regionateAttr = null;
 
-        GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getWms());
-        reader.setHttpRequest( RESTUtils.getServletRequest( request ) );
-
-        //parse into request object
-        raw = KvpUtils.normalize(raw);
-        KvpMap kvp = new KvpMap( raw );
-        KvpUtils.parse( kvp );
-        final GetMapRequest getMapRequest =  
-            (GetMapRequest) reader.read( (GetMapRequest) reader.createRequest(), kvp, raw );
-        getMapRequest.setBaseUrl( RESTUtils.getBaseURL(request));
-
-        //delegate to wms reflector
-        final GetMapResponse getMapResponse = webMapService.reflect(getMapRequest);
-
-        //wrap response in a reslet output rep
-        OutputRepresentation output = new OutputRepresentation( 
-                new MediaType("application/vnd.google-earth.kml+xml")  
-                ) {
-            public void write(OutputStream outputStream) throws IOException {
-                try{
-                    getMapResponse.execute(getMapRequest);
-                    getMapResponse.writeTo(outputStream);
-                } catch (IOException ioe){
-                    throw ioe;
-                } catch (Exception e){
-                    PrintStream printStream = new PrintStream(outputStream);
-                    printStream.println("Unable to index feature due to: " + e.getMessage());
-                    LOGGER.log(Level.WARNING, "Failure to index features.", e);
-                }
+            try {
+                startIndex = Integer.valueOf(form.getFirstValue("startindex",
+                        true));
+            } catch (Exception e) {
             }
-        };
-        response.setEntity( output );
 
+            try {
+                maxFeatures = Integer.valueOf(form.getFirstValue("maxfeatures",
+                        true));
+            } catch (Exception e) {
+            }
 
+            regionateBy = form.getFirstValue("regionateBy", true);
+            // if (regionateBy == null) regionateBy = "sld";
+            regionateBy = "random";
+
+            regionateAttr = form.getFirstValue("regionateAttr", true);
+
+            NameSpaceInfo ns = catalog.getNameSpace(namespace);
+            if (ns == null) {
+                throw new RestletException("No such namespace:" + namespace,
+                        Status.CLIENT_ERROR_NOT_FOUND);
+            }
+
+            FeatureTypeInfo featureType = null;
+            try {
+                featureType = catalog.getFeatureTypeInfo(layer, ns.getUri());
+            } catch (NoSuchElementException e) {
+                // ignore, handled later
+            }
+
+            if (featureType == null) {
+                throw new RestletException("No such layer:" + layer,
+                        Status.CLIENT_ERROR_NOT_FOUND);
+            }
+
+            if (!featureType.isIndexingEnabled()) {
+                throw new RestletException("Layer not indexable: " + layer,
+                        Status.CLIENT_ERROR_FORBIDDEN);
+            }
+
+            // create some kvp and pass through to GetMapKvpreader
+            KvpMap raw = new KvpMap();
+            raw.put("layers", namespace + ":" + layer);
+            raw.put("format", "kml");
+            raw.put("format_options", "selfLinks:true;relLinks:true;");
+            // regionateby:" + regionateBy + (regionateAttr != null ? ";regionateAttr:" + regionateAttr : ""));
+
+            if (feature != null) {
+                raw.put("featureid", feature);
+            } else {
+                raw.put("startIndex", Integer.toString(startIndex));
+                raw.put("maxfeatures", Integer.toString(maxFeatures));
+            }
+
+            GetMapKvpRequestReader reader = new GetMapKvpRequestReader(getWms());
+            reader.setHttpRequest(RESTUtils.getServletRequest(request));
+
+            // parse into request object
+            raw = KvpUtils.normalize(raw);
+            KvpMap kvp = new KvpMap(raw);
+            KvpUtils.parse(kvp);
+            final GetMapRequest getMapRequest = (GetMapRequest) reader.read(
+                    (GetMapRequest) reader.createRequest(), kvp, raw);
+            getMapRequest.setBaseUrl(RESTUtils.getBaseURL(request));
+
+            // delegate to wms reflector
+            final GetMapResponse getMapResponse = webMapService
+                    .reflect(getMapRequest);
+
+            // wrap response in a reslet output rep
+            OutputRepresentation output = new OutputRepresentation(
+                    new MediaType("application/vnd.google-earth.kml+xml")) {
+                public void write(OutputStream outputStream) throws IOException {
+                    try {
+                        getMapResponse.execute(getMapRequest);
+                        getMapResponse.writeTo(outputStream);
+                    } catch (IOException ioe) {
+                        throw ioe;
+                    } catch (Exception e) {
+                        PrintStream printStream = new PrintStream(outputStream);
+                        printStream.println("Unable to index feature due to: "
+                                + e.getMessage());
+                        LOGGER.log(Level.WARNING, "Failure to index features.",
+                                e);
+                    }
+                }
+            };
+            response.setEntity(output);
+
+        }
     }
 }
 

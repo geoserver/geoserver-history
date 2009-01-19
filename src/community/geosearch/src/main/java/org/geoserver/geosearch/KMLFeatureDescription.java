@@ -9,6 +9,7 @@ import org.jdom.Namespace;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -48,7 +49,7 @@ public class KMLFeatureDescription extends AbstractFeatureDescription {
         String prefix = (String)req.getAttributes().get("namespace");
         String type = (String)req.getAttributes().get("layer");
         Document kml = buildKMLDoc(prefix + ":" + type, f);
-        resp.setEntity(new JDOMRepresentation(kml));
+        resp.setEntity(new JDOMRepresentation(kml, new MediaType("application/vnd.google-earth.kml+xml")));
     }
 
     private Document buildKMLDoc(String typeName, SimpleFeature f) {

@@ -59,7 +59,9 @@ public class HTMLFeatureDescription extends AbstractFeatureDescription {
                 + f.getType().getName().getLocalPart()
              );
 
-        m.put("kmllink", GEOSERVER_BASE_URL + "/" + f.getIdentifier().toString() + ".kml");
+        m.put("kmllink", GEOSERVER_BASE_URL + "/" + f.getIdentifier().toString() + "_goto.kml");
+        
+        m.put("rawkmllink", GEOSERVER_BASE_URL + "/" + f.getIdentifier().toString() + ".kml?raw=true");
         
         try {
             m.put("name", t.title(f));
