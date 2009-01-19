@@ -81,6 +81,18 @@ KML
 
 #. Notice the KML reload every time the camera is stopped
 
+#. Edit the description template for the states layer as follows::
+
+     This is the state of ${STATE_NAME.value}.
+
+     <img src="http://www.netstate.com/states/symb/flags/images/${STATE_ABBR.value?lower_case}_fi.gif"/>
+     <br>
+     For more information visit <a href="http://en.wikipedia.org/wiki/${STATE_NAME.value}">Wikipedia</a>
+
+#. Refresh the KML by moving the camera and click on a placemark
+
+   .. image:: states_template.png
+
 #. Append the parameter "kmscore=0" to the above link and open the result in 
    Google Earth
 
@@ -93,3 +105,5 @@ KML
 
 #. Examine the file on disk and notice a raw dump of all placemarks for the 
    layer.
+
+   
