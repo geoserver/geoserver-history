@@ -10,11 +10,13 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.wms.WMSExtensions;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.property.PropertyDataStore;
+import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.factory.CommonFactoryFinder;
 
 import org.geotools.feature.SchemaException;
@@ -35,7 +37,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -53,7 +54,7 @@ public class HTMLImageMapTest extends TestCase {
 	
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(HTMLImageMapTest.class.getPackage().getName());
 	
-	GetMapProducerFactorySpi mapFactory=null;
+	//GetMapProducerFactorySpi mapFactory=null;
 	GetMapProducer mapProducer=null;
 	
 	CoordinateReferenceSystem WGS84=null;
@@ -81,32 +82,31 @@ public class HTMLImageMapTest extends TestCase {
         testDS=getTestDataStore();
         
         // initializes GetMapProducer factory and actual producer
-        this.mapFactory = getProducerFactory();
+        //this.mapFactory = getProducerFactory();
         this.mapProducer=getProducerInstance();
         super.setUp();
     }
 	
 	public void tearDown() throws Exception {
-        this.mapFactory = null;
+        //this.mapFactory = null;
         this.mapProducer=null;
         super.tearDown();
     }
 	
-	protected GetMapProducerFactorySpi getProducerFactory() {
+	/*protected GetMapProducerFactorySpi getProducerFactory() {
 	    return new HTMLImageMapMapProducerFactory();
-	}
+	}*/
 	
 	protected GetMapProducer getProducerInstance() {
-		if(mapFactory!=null)
-			return mapFactory.createMapProducer("text/html", null);
+		/*if(mapFactory!=null)
+			return mapFactory.createMapProducer("text/html", null);*/
+		return new HTMLImageMapMapProducer();
 		
-		
-		return null;
 	}
 	
-	public void testGetMapProducerFactory() throws Exception {		
+	/*public void testGetMapProducerFactory() throws Exception {		
 		assertNotNull(mapFactory);		
-	}
+	}*/
 	
 	public void testGetMapProducer() throws Exception {
 		assertNotNull(mapProducer);				
@@ -167,7 +167,7 @@ public class HTMLImageMapTest extends TestCase {
 
             
         } catch (Exception e) {
-            e.printStackTrace();
+           
             fail(e.getMessage());
         }
         assertNotNull(out);
@@ -196,6 +196,27 @@ public class HTMLImageMapTest extends TestCase {
         System.out.println(s);
     }
 	
+	public void testStates() throws Exception {
+		File shapeFile=TestData.file(this, "featureTypes/states.shp");		
+		ShapefileDataStore ds=new ShapefileDataStore(shapeFile.toURL());
+		
+		final FeatureSource<SimpleFeatureType,SimpleFeature> fs = ds.getFeatureSource("states");
+		final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+		
+		final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        map.setTransparent(false);
+
+        Style basicStyle = getTestStyle("Population.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("States", this.mapProducer);
+	}
 	
 	public void testMapProduceBasicPolygons() throws Exception {
 		
@@ -219,6 +240,50 @@ public class HTMLImageMapTest extends TestCase {
         assertTestResult("BasicPolygons", this.mapProducer);
 
 	}	
+	
+	public void testMapProducePolygonsWithHoles() throws Exception {
+		
+		final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("PolygonWithHoles");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+        
+        LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        map.setTransparent(false);
+
+        Style basicStyle = getTestStyle("default.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("PolygonWithHoles", this.mapProducer);
+	}
+	
+	public void testMapProducePolygonsWithSkippedHoles() throws Exception {
+		
+		final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("PolygonWithSkippedHoles");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+        
+        LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        map.setTransparent(false);
+
+        Style basicStyle = getTestStyle("default.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("PolygonWithSkippedHoles", this.mapProducer);
+	}
 	
 	public void testMapProduceReproject() throws Exception {
 		final DataStore ds = getProjectedTestDataStore();
@@ -277,6 +342,32 @@ public class HTMLImageMapTest extends TestCase {
         assertTestResult("RoadSegments", this.mapProducer);
 
 	}
+	
+	public void testMapRuleWithFilters() throws Exception {
+		/*Filter f=filterFactory.equals(filterFactory.property("NAME"),filterFactory.literal("Route 5"));
+		DefaultQuery q=new DefaultQuery("RoadSegments",f);*/
+        final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("RoadSegments");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
+
+        LOGGER.info("about to create map ctx for RoadSegments with filter on name and bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        
+        map.setTransparent(false);
+                
+        Style basicStyle = getTestStyle("RoadSegmentsFiltered.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("RoadSegmentsFiltered", this.mapProducer);
+
+	}
+	
 	public void testMapProducePoints() throws Exception {
 		
         final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("BuildingCenters");
@@ -347,6 +438,28 @@ public class HTMLImageMapTest extends TestCase {
         this.mapProducer.produceMap();
         assertTestResult("CollectionSample", this.mapProducer);
 
+	}
+	
+	public void testMapProduceNoCoords() throws Exception {
+		final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("NoCoords");
+        final ReferencedEnvelope env = new ReferencedEnvelope(2.0,6.0,2.0,6.0,WGS84);
+     
+        LOGGER.info("about to create map ctx for NamedPlaces with bounds " + env);
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setAreaOfInterest(env);
+        map.setMapWidth(mapWidth);
+        map.setMapHeight(mapHeight);
+        
+        map.setTransparent(false);
+                
+        Style basicStyle = getTestStyle("NamedPlaces.sld");
+        map.addLayer(fs, basicStyle);
+
+        this.mapProducer.setOutputFormat("text/html");
+        this.mapProducer.setMapContext(map);
+        this.mapProducer.produceMap();
+        assertTestResult("NoCoords", this.mapProducer);
 	}
 	
 	
