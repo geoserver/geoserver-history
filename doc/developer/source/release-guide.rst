@@ -93,6 +93,37 @@ Create a release tag
       svn switch may also be used to get to the release tag but caution must be
       taken to switch back to the branch after the release has been performed. 
 
+Upgrade branch pom versions
+---------------------------
+
+#. Upgrade branch pom version numbers::
+
+     find . -name pom.xml -exec sed 's/<VERSION>-SNAPSHOT/<NEWVERSION>-SNAPSHOT/g' {} \;
+
+   Example::
+
+      find . -name pom.xml -exec sed 's/1.7.1-SNAPSHOT/1.7.2-SNAPSHOT/g' {} \; 
+
+#. Commit changes::
+
+      svn commit -m "Upgrading pom version to <NEWVERSION>-SNAPSHOT" .
+
+
+Set tag pom versions
+--------------------
+
+#. Set tag pom version numbers::
+
+     find . -name pom.xml -exec sed 's/<VERSION>-SNAPSHOT/<VERSION>/g' {} \;
+
+   Example::
+
+     find . -name pom.xml -exec sed 's/1.7.1-SNAPSHOT/1.7.1/g' {} \;
+
+#. Commit changes::
+
+     svn commit -m "Setting pom versions to 1.7.1" .
+
 Build release artifcacts
 ------------------------
 
