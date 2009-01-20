@@ -12,7 +12,7 @@
   <groupId>org.geoserver.extension</groupId>
   <artifactId>ogr</artifactId>
   <packaging>jar</packaging>
-  <name>ogr2ogr based output format</name>
+  <name>OGR Based Output Format</name>
 
   <dependencies>
     <dependency>
