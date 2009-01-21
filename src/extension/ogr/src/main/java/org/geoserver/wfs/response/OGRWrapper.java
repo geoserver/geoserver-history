@@ -42,7 +42,7 @@ public class OGRWrapper {
         List<String> cmd = new ArrayList<String>();
         cmd.add(ogrExecutable);
         cmd.add("-f");
-        cmd.add("\"" + format.ogrFormat + "\"");
+        cmd.add(format.ogrFormat);
         if (crsName != null) {
             cmd.add("-a_srs");
             cmd.add(crsName);
