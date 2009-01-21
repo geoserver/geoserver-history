@@ -24,6 +24,7 @@
                    <include>org.geoserver:test</include>
                    <include>org.geoserver:stress</include>
                    <include>org.geoserver:maven</include>
+                   <include>org.geoserver:gwc</include>
   		</includes>
   		<sources>
  	  		<outputDirectory>geoserver/${artifactId}/</outputDirectory>
@@ -37,7 +38,20 @@
                         <includes>
                                 <include>pom.xml</include>
                         </includes>
-
+		</fileSet>
+		<fileSet>
+			<directory>community</directory>
+ 			<outputDirectory>geoserver-1.7.2/community</outputDirectory>
+                        <includes>
+                                <include>pom.xml</include>
+                        </includes>
+		</fileSet>
+		<fileSet>
+			<directory>extension</directory>
+ 			<outputDirectory>geoserver-1.7.2/extension</outputDirectory>
+                        <includes>
+                                <include>pom.xml</include>
+                        </includes>
 		</fileSet>
 		<fileSet>
 			<directory>release</directory>
@@ -50,14 +64,14 @@
 		</fileSet>
                 <fileSet>
                         <directory>web/target/geoserver/data</directory>
-                        <outputDirectory>configuration/release</outputDirectory>
+                        <outputDirectory>data/release</outputDirectory>
                         <includes>
                                 <include>**/*</include>
                         </includes>
                 </fileSet>
                 <fileSet>
                         <directory>web/minimal</directory>
-                        <outputDirectory>configuration/minimal</outputDirectory>
+                        <outputDirectory>data/minimal</outputDirectory>
                         <includes>
                                 <include>**/*</include>
                         </includes>
