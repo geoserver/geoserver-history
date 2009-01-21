@@ -931,6 +931,7 @@
       <descriptor>release/ext-h2.xml</descriptor>
       <descriptor>release/ext-sqlserver.xml</descriptor>
       <descriptor>release/ext-imagemap.xml</descriptor>
+      <descriptor>release/ext-ogr.xml</descriptor>
      </descriptors>
      <finalName>geoserver-1.7.2</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
