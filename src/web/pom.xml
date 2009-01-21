@@ -550,8 +550,8 @@
       <id>ogr</id>
       <dependencies>
        <dependency>
-        <groupId>org.geoserver.community</groupId>
-        <artifactId>ogrout</artifactId>
+        <groupId>org.geoserver.extension</groupId>
+        <artifactId>ogr</artifactId>
         <version>1.7.2</version>
        </dependency>
       </dependencies>
