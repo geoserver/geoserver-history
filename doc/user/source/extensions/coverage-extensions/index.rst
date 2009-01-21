@@ -5,6 +5,7 @@ Coverage Extensions
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    gdal.rst
+   imagepyramid.rst

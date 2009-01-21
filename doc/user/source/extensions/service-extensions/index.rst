@@ -6,8 +6,7 @@ Service Extensions
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   geosearch.rst
    wfsv.rst
    
