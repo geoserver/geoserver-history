@@ -260,6 +260,51 @@ public class ResponseUtils {
     }
     
     /**
+     * Returns the last component of a path. 
+     * <p>
+     * Examples:
+     * <ul>
+     *   <li>/foo/bar -> bar
+     *   <li>foo/bar/ -> bar
+     *   <li>/foo -> foo
+     *   <li>foo -> foo
+     *   <li>
+     * </ul>
+     * </p>
+     * @param path the Path
+     * 
+     * @return the last component of the path
+     */
+    public static String getLastPartOfPath(String path) {
+        int i = path.length();
+        if ( path.endsWith( "/") ) {
+            i--;
+        }
+        
+        int j = path.lastIndexOf( "/" );
+        if ( j == -1 ) {
+            return path;
+        }
+        return path.substring(j+1,i);
+    }
+    
+    /**
+     * Returns the file extension from a uri string.
+     * <p>
+     * If the uri does not specify an extension, null is returned.
+     *  </p>
+     * @param uri the uri.
+     * @return The extension, example "txt", or null if it does not exist.
+     */
+    public static String getExtension(String uri) {
+        int dot = uri.lastIndexOf( '.' );
+        if ( dot != -1 ) {
+            return uri.substring(dot+1);
+        }
+        return null;
+    }
+    
+    /**
      * Ensures a path is absolute (starting with '/').
      * 
      * @param path The path.
