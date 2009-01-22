@@ -25,7 +25,7 @@ public class ClassProperties {
         for (Method method : methods) {
             final String name = method.getName();
             final Class<?>[] params = method.getParameterTypes();
-            if(name.startsWith("get") && params.length == 0) {
+            if((name.startsWith("get") || name.startsWith("is")) && params.length == 0) {
                 getters.add(method);
             } else if(name.startsWith("set") && params.length == 1) {
                 setters.add(method);
@@ -41,7 +41,21 @@ public class ClassProperties {
         if(setters.size() == 0)
             setters = EMPTY;
     }
-    
+
+    /**
+     * Returns a list of all the properties of the class.
+     * 
+     * @return A list of string.
+     */
+    public List<String> properties() {
+        //TODO: factor out check if method is a getter
+        ArrayList<String> properties = new ArrayList<String>();
+        for ( Method g : getters ) {
+            properties.add( gp( g ) );
+        }
+        return properties;
+    }
+
     /**
      * Looks up a setter method by property name.
      * <p>
@@ -89,7 +103,7 @@ public class ClassProperties {
      */
     public Method getter(String property, Class type) {
         for (Method getter : getters) {
-            if(getter.getName().substring(3).equalsIgnoreCase(property)) {
+            if(gp(getter).equalsIgnoreCase(property)) {
                 if(type == null) {
                     return getter;
                 } else {
@@ -166,5 +180,12 @@ public class ClassProperties {
                 return method;
         }
         return null;
+    }
+    
+    /**
+     * Returns the name of the property corresponding to the getter method.
+     */
+    String gp( Method getter ) {
+        return getter.getName().substring( getter.getName().startsWith("get") ? 3 : 2 );
     }
 }
