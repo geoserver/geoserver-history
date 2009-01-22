@@ -66,7 +66,13 @@ public class OwsUtils {
         return properties;
     }
     
-    
+    /**
+     * Returns the properties object describing the properties of a class.
+     */
+    public static ClassProperties getClassProperties( Class clazz ) {
+        return classProperties(clazz);
+    }
+
     /**
      * Returns a setter method for a property of java bean.
      * <p>
