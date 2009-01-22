@@ -124,8 +124,26 @@ Set tag pom versions
 
      svn commit -m "Setting pom versions to 1.7.1" .
 
-Build release artifcacts
-------------------------
+Generate documentation from Confluence
+--------------------------------------
+
+#. Go to http://geoserver.org and log in.
+
+#.`Export <http://geoserver.org/spaces/exportspace.action?key=GEOSDOC>`_  the 
+   user guide.
+
+#. Select ``HTML output``.
+
+#. Scroll to the bottom of the page and click the ``Export`` button. 
+
+#. Download the documentation when the export is completed.
+
+#. Unzip the resulting archive into the ``release`` directory.
+
+#. Rename ``GEOSDOC/Navigation.html`` to ``GEOSDOC/index.html``.
+
+Build release artifacts
+-----------------------
 
 .. warning::
 
@@ -183,12 +201,10 @@ Build Windows installer
    archive.
 
    .. image:: win-installer1.png
-      :align: center
 
 #. Right-click on the installer script ``geoserver.nsi`` and select "Compile Script".  
 
    .. image:: win-installer2.png
-      :align: center
 
 After successfully compiling the script an installer named 
 ``geoserver-<VERSION>.exe`` will be located in the root of the unpacked archive.
@@ -214,24 +230,20 @@ Release on Jira
 #. Click the ``Administer Project`` link on the left hand side of the page.
   
    .. image:: jira1.png
-      :align: center
 
 #. Click the `Mange` link on the right hand side of the page.
 
    .. image:: jira2.png
-      :align: center
 
 #. Find the row for the version being released and click the ``Release`` link
    located on the right.
 
    .. image:: jira3.png
-      :align: center
 
 #. Move back any open issues to the next version, and click the ``Release`` 
    button.
 
    .. image:: jira4.png
-      :align: center
 
 Upload release artifacts to SourceForge
 ---------------------------------------
@@ -256,6 +268,9 @@ Release on SourceForge
 
    This step requires administrative privileges in SourceForge.
 
+Primary artifacts
+^^^^^^^^^^^^^^^^^
+
 #. Log in to `SourceForge <http://sourceforge.net/account/login.php>`_.
 
 #. Go to the `GeoServer SourceForge page 
@@ -264,16 +279,210 @@ Release on SourceForge
 #. Under the ``Admin`` tab select ``File Releases``. 
 
    .. image:: sf1.png
-      :align: center
 
 #. Click ``Add Release`` next to the ``GeoServer`` package.
 
    .. image:: sf2.png
-      :align: center
 
 #. Enter the release version and click the ``Create This Release`` button.
 
    .. image:: sf3.png
-      :align: center
 
+#. Copy the contents of the README (from previous step) into the ``Release 
+   Notes`` text box.
+
+#. Generate the change log from 
+   `jira <http://jira.codehaus.org/secure/ConfigureReleaseNote.jspa?projectId=10311>`_ 
+   (text format) and  copy the contents into the ``Change Log`` text box.
+
+#. Click the ``Preserve my pre-formatted text`` check box.
+
+#. Click the ``Submit/Refresh`` button.
    
+   .. image:: sf4.png
+
+#. Scroll down to the ``Add Files To This Release`` section and check off all
+   the primary artifacts. 
+
+   .. warning:: 
+
+      Be sure not to include the plugin artifacts in this step.
+
+   .. image:: sf5.png
+
+#. Click the ``Add Files and/or Refresh View`` button. 
+
+#. Scroll down to the ``Edit Files In This Release Section``.
+
+#. For the .dmg artifact set the ``Processor`` to ``i386`` and the ``File
+   Type`` to ``.dmg``.
+
+   .. image:: sf6.png
+
+#. For the .exe artifact set the ``Processor`` to ``i386`` and the ``File
+   Type`` to ``.exe.``.
+
+#. For the src artifact set the ``Processor`` to ``Platform-Independent`` and 
+   the ``File Type`` to ``.zip``.
+
+#. For all other artifacts set the ``Processor`` to ``Platform-Independent`` and
+   the ``File Type`` to ``.zip``.
+
+.. note::
+
+   The processor and file type must be set one artifact at a time, clicking the
+   the ``Update/Refresh`` button at each step.
+
+Extension artifacts
+^^^^^^^^^^^^^^^^^^^
+
+Following steps from the previous section create a release of the ``GeoServer 
+Extensions`` package consisting of all the plugin artifacts. A few things to 
+note:
+
+* The release version is the same as the primary artifact release.
+* The ``Release Notes`` and ``Change Log`` may be omitted.
+* Each plugin artifact is ``Platform-Independent`` and of file type ``.zip``.
+
+Create a download page 
+----------------------
+
+#. Go to http://geoserver.org/display/GEOS/Stable and log in.
+
+   .. note::
+
+      If creating an experimental release, replace the above link with 
+      http://geoserver.org/display/GEOS/Latest
+
+#. Click the ``Add Page`` link under the ``Page Operations`` menu.
+
+#. Name the page "GeoServer <VERSION>".
+
+#. Click the ``Select a page template`` link.
+
+   .. image:: wiki1.png
+
+#. Select ``Download`` and click the ``Next>>`` button.
+
+#. Enter in the ``VERSION``, ``DATE``, ``JIRA_VERSION``, and ``SF_RELEASE_ID``.
+
+   .. note::
+
+      The ``SF_RELEASE_ID`` is the release number assigned by SourceForge for
+      the release created in the previous step.
+
+#. Click the ``Insert Variables`` button.
+
+#. Click the ``Save`` button.
+
+Announce the release
+--------------------
+
+Mailing lists
+^^^^^^^^^^^^^
+
+Send an email to both the developers list and users list announcing the
+release. The message should be relatively short, save the marketing for the
+blog post. The following is an example::
+
+   Subject: GeoServer 1.7.1 Released
+
+   The GeoServer team is happy to announce the release of GeoServer 1.7.1.
+   The release is available for download from:
+
+   http://geoserver.org/display/GEOS/GeoServer+1.7.1
+   
+   This release comes with some exciting new features. The new and
+   noteworthy include:
+   
+      * KML Super Overlay and Regionating Support
+      * KML Extrude Support
+      * KML Reflector Improvements
+      * Mac OS X Installer
+      * Dutch Translation
+      * Improved Style for Web Admin Interface
+      * New SQL Server DataStore Extension
+      * Improved Oracle DataStore Extension
+      * Default Templates per Namespace
+   
+   Along with many other improvements and bug fixes. The entire change log
+   for the 1.7.1 series is available in the issue tracker:
+   
+   http://jira.codehaus.org/browse/GEOS/fixforversion/14502
+   
+   A very special thanks to all those who contributed bug fixes, new
+   features, bug reports, and testing to this release.
+   
+   --
+   The GeoServer Team
+
+GeoServer blog
+^^^^^^^^^^^^^^
+
+.. note:: 
+
+   This step requires an account on http://blog.geoserver.org
+
+#. Log into `Wordpress <http://blog.geoserver.org/wp-login.php>`_.
+
+#. Create a new post. The post should be more "colorful" than the average 
+   announcement. It is meant to market and show off any and all new
+   features. Examples of previous posts:
+
+   * http://blog.geoserver.org/2008/12/09/geoserver-171-released/
+   * http://blog.geoserver.org/2008/10/27/geoserver-170-released/
+
+#. Do not publish the post. Instead present it to the GeoServer outreach 
+   team for review, and they will publish it.
+
+SlashGeo
+^^^^^^^^
+
+#. Go to http://slashgeo.org, and log in, creating an account if necessary.
+
+#. Click the ``Submit Story`` link on the left hand side of the page. 
+   Examples of previous stories:
+
+   * http://technology.slashgeo.org/technology/08/12/09/1745249.shtml
+   * http://industry.slashgeo.org/article.pl?sid=08/10/27/137216
+
+FreeGIS
+^^^^^^^
+
+Send an email to ``bjoern dot broscheit at uni-osnabrueck dot de``. 
+Example::
+
+  Subject: GeoServer update for freegis
+
+  GeoServer 1.7.1 has been released with some exciting new features. The big
+  push for this release has been improved KML support. The new and noteworthy 
+  include:
+
+    * KML Super Overlay and Regionating Support
+    * KML Extrude Support
+    * KML Reflector Improvements
+    * Mac OS X Installer
+    * Dutch Translation
+    * Improved Style for Web Admin Interface
+    * New SQL Server DataStore Extension
+    * Improved Oracle DataStore Extension
+    * Default Templates per Namespace
+
+  Along with many other improvements and bug fixes. The entire change log for
+  the 1.7.1 series is available in the issue tracker:
+
+  http://jira.codehaus.org/browse/GEOS/fixforversion/14502
+
+FreshMeat
+^^^^^^^^^
+
+#. Go to http://freshmeat.net/ and log in.
+#. Search for "geoserver" and click the resulting link.
+#. Click the ``add release`` link at the top of the page.
+#. Choose the ``Default`` branch
+#. Enter the version and choose the appropriate ``Release focus``.
+
+   .. note::
+
+      The release focus is usually 4,5,6, or 7. Choose which ever is
+      appropriate.

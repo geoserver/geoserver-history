@@ -122,4 +122,13 @@ KML
 #. Examine the file on disk and notice a raw dump of all placemarks for the 
    layer.
 
-   
+GeoWebCache 
+-----------
+
+#. Go the geowebcache demo page, http://localhost:8080/geoserver/gwc/demo
+
+#. Click the ``EPSG:4326" link for ``topp:states`` 
+
+#. Zoom in and notice the tiles load.
+
+#. Repeat steps 2 to 3 for ``EPSG:900913``
