@@ -5,8 +5,8 @@ Release Guide
 
 Instructions for performing a GeoServer release.
 
-.. toctree::
-   :maxdepth: 1
+.. contents::
+   :depth: 2
 
 Update source code
 ------------------

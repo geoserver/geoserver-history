@@ -5,6 +5,9 @@ Cite Test Guide
 
 A step by step guide to the GeoServer Compliance Interoperability Test Engine (CITE).
 
+.. contents::
+   :depth: 2
+
 Check out CITE tools
 --------------------
 
