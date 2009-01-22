@@ -218,7 +218,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
         file = new File(location);
 
         if (file.isAbsolute()) {
-            file.mkdir();
+            file.mkdirs();
 
             return file;
         }
@@ -230,7 +230,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
         }
 
         file = new File(baseDirectory, location);
-        file.mkdir();
+        file.mkdirs();
 
         return file;
     }
