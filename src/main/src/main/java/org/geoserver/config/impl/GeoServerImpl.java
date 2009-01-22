@@ -69,6 +69,10 @@ public class GeoServerImpl implements GeoServer {
         service = ModificationProxy.unwrap(service);
         services.add( service );
     }
+    
+    public static <T> T unwrap(T obj) {
+        return ModificationProxy.unwrap(obj);
+    }
 
     public <T extends ServiceInfo> T getService(Class<T> clazz) {
         for ( ServiceInfo si : services ) {
