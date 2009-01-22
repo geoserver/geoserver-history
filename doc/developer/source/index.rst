@@ -10,4 +10,3 @@ GeoServer Developer Guide
    maven-quickstart.rst
    eclipse-quickstart.rst
    release-guide.rst
-   cite-test-guide.rst
