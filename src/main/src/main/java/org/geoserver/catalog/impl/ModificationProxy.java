@@ -255,6 +255,9 @@ public class ModificationProxy implements InvocationHandler, Serializable {
                return (T) ((ModificationProxy)h).getProxyObject();
             }
         }
+        if ( object instanceof ProxyList ) {
+            return (T) ((ProxyList)object).proxyList;
+        }
         
         return object;
     }
