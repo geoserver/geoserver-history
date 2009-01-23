@@ -175,7 +175,11 @@ public class LegacyCatalogImporter {
                
                 String defaultStyleName = ftInfoReader.defaultStyle();
                 if ( defaultStyleName != null ) {
-                    layer.setDefaultStyle(catalog.getStyleByName(defaultStyleName));    
+                    StyleInfo style = catalog.getStyleByName(defaultStyleName);
+                    if ( style != null ) {
+                        layer.setDefaultStyle(style);
+                        layer.getStyles().add(style);    
+                    }
                 }
                 
                 Map legendURL = ftInfoReader.legendURL();
@@ -236,7 +240,11 @@ public class LegacyCatalogImporter {
                 
                 String defaultStyleName = cInfoReader.defaultStyle();
                 if ( defaultStyleName != null ) {
-                    layer.setDefaultStyle(catalog.getStyleByName(defaultStyleName));    
+                    StyleInfo style = catalog.getStyleByName(defaultStyleName);
+                    if ( style != null ) {
+                        layer.setDefaultStyle(style);
+                        layer.getStyles().add(style);    
+                    }
                 }
                
                 catalog.add(layer);
