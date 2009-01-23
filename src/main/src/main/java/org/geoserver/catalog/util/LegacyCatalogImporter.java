@@ -483,39 +483,11 @@ public class LegacyCatalogImporter {
             if ( error == null ) {
                 //native bounds
                 Envelope nativeBBOX = ftInfoReader.nativeBoundingBox();
-                if ( nativeBBOX == null ) {
-                    try {
-                        //dynamic, calculate it
-                        FeatureSource source = ds.getFeatureSource(featureType.getNativeName()); 
-                        nativeBBOX = source.getBounds();
-                        if ( nativeBBOX == null ) {
-                            FeatureCollection features = source.getFeatures();
-                            FeatureIterator iterator = features.features();
-                            try {
-                                nativeBBOX = new Envelope();
-                                if ( !iterator.hasNext() ) {
-                                    nativeBBOX.setToNull();
-                                }
-                                else {
-                                    nativeBBOX.init( (Envelope) iterator.next().getBounds() );
-                                    while( iterator.hasNext() ) {
-                                        nativeBBOX.expandToInclude(( (Envelope) iterator.next().getBounds() ));    
-                                    }
-                                }
-                            }
-                            finally {
-                                features.close( iterator );
-                            }
-                        }
-                    } catch (Exception e) {
-                        LOGGER.warning( "Ignoring feature type: '" + featureType.getName() 
-                                + "', error occured calculating bounds: " + e.getMessage() );
-                        LOGGER.log(Level.INFO, "", e );
-                        error = e;
-                    }
+                if ( nativeBBOX != null ) {
+                    featureType.setNativeBoundingBox(new ReferencedEnvelope(nativeBBOX,featureType.getNativeCRS()));
                 }
                 
-                featureType.setNativeBoundingBox(new ReferencedEnvelope(nativeBBOX,featureType.getNativeCRS()));
+                
             }
             
             
