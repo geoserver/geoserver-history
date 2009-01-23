@@ -166,6 +166,9 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 	            labelCache.setOutlineRenderingEnabled(true);
 	            rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
 	        }
+			if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
+	            rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
+	        }
 			renderer.setRendererHints(rendererParams);
 
 			Envelope dataArea = mapContext.getAreaOfInterest();

@@ -35,6 +35,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
 import org.geotools.renderer.label.LabelCacheImpl;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Style;
@@ -303,6 +304,9 @@ public abstract class DefaultRasterMapProducer extends
 		    LabelCacheImpl labelCache = new LabelCacheImpl();
 		    labelCache.setOutlineRenderingEnabled(true);
 		    rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
+		}
+		if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
+		    rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
 		}
 
         boolean kmplacemark = false;
