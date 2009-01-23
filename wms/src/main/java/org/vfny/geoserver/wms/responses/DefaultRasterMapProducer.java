@@ -29,9 +29,11 @@ import javax.media.jai.LookupTableJAI;
 import javax.media.jai.operator.LookupDescriptor;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DefaultWebMapService;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Style;
@@ -291,6 +293,9 @@ public abstract class DefaultRasterMapProducer extends
 		} else {
 		    rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
+		}
+		if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
+		    rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
 		}
 
         boolean kmplacemark = false;
