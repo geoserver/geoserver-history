@@ -101,7 +101,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         final FeatureSource fs = getCatalog().getFeatureSource(MockData.BASIC_POLYGONS.getPrefix(),
                 MockData.BASIC_POLYGONS.getLocalPart());
         final Envelope env = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS)
-                .getBoundingBox();
+                .getFeatureSource().getBounds();
 
         LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
 
@@ -152,7 +152,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      */
     public void testBlueLake() throws IOException, IllegalFilterException, Exception {
         final Data catalog = getCatalog();
-        Envelope env = catalog.getFeatureTypeInfo(MockData.LAKES).getBoundingBox();
+        Envelope env = catalog.getFeatureTypeInfo(MockData.LAKES).getFeatureSource().getBounds();
         double shift = env.getWidth() / 6;
 
         env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift, env
@@ -272,7 +272,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     private void testDefaultStyle(FeatureSource fSource) throws Exception {
         Style style = getCatalog().getStyle("Default");
 
-        Envelope env = getCatalog().getFeatureTypeInfo(MockData.LAKES).getBoundingBox();
+        Envelope env = getCatalog().getFeatureTypeInfo(MockData.LAKES).getFeatureSource().getBounds();
         env.expandToInclude(fSource.getBounds());
 
         int w = 400;

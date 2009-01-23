@@ -722,7 +722,9 @@ public class WMSCapsTransformer extends TransformerBase {
             }
 
             handleLatLonBBox(llbbox);
-            handleBBox(bbox, EPSG + ftype.getSRS());
+            // the native bbox might be null
+            if(bbox != null)
+                handleBBox(bbox, EPSG + ftype.getSRS());
             // handle metadata URLs
             handleMetadataList(ftype.getMetadataLinks());
 
