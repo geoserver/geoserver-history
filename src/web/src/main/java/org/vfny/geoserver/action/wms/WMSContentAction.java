@@ -146,14 +146,16 @@ public final class WMSContentAction extends ConfigAction {
                                     .substring(layerName.indexOf(":") + 1, layerName.length())));
 
                             try {
-                                if (ftype.getBoundingBox() instanceof ReferencedEnvelope
+                                if(ftype.getBoundingBox() == null) {
+                                   layerEnvelope = ftype.getLatLongBoundingBox().transform(ftype.getDeclaredCRS(), true);
+                                } else if (ftype.getBoundingBox() instanceof ReferencedEnvelope
                                         && !ftype.getBoundingBox().isNull()) {
                                     layerEnvelope = (ReferencedEnvelope) ftype.getBoundingBox();
                                 } else {
                                     // TODO Add Action Errors
                                     return mapping.findForward("config.wms.content");
                                 }
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 // TODO Add Action Errors
                                 return mapping.findForward("config.wms.content");
                             }

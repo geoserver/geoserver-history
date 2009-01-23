@@ -169,8 +169,12 @@ public class MapPreviewAction extends GeoServerAction {
                 ReferencedEnvelope bbox = new ReferencedEnvelope(orig_bbox, latLonCrs);
     
                 if (!CRS.equalsIgnoreMetadata(layerCrs, latLonCrs)) {
-                    // first check if we have a native bbox
-                    bbox = layer.getBoundingBox();
+                    if(layer.getBoundingBox() == null) {
+                        // first check if we have a native bbox
+                        bbox = layer.getBoundingBox();
+                    } else {
+                        bbox =  bbox.transform(layer.getDeclaredCRS(), true);
+                    }
                 }
     
                 // we now have a bounding box in the same CRS as the layer

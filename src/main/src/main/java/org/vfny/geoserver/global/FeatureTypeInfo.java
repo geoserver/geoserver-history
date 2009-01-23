@@ -877,12 +877,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
     /**
      * Returns the SimpleFeatureType's envelope in its native CRS (or user
-     * declared CRS, if any).
-     * <p>
-     * Note the Envelope is cached in order to avoid a potential
-     * performance penalty every time this value is requires (for example,
-     * at every GetCapabilities request)
-     * </p>
+     * declared CRS, if any). If the user never forced the computation
+     * of the native bounding box, this might be null. If you really need
+     * the native bbox use an approximation of it by turning the lat-lon
+     * one into the native CRS (which will, generally speaking
+     * result in a bigger bbox than the native one).
      *
      * @return Envelope of the feature source bounds.
      *
@@ -972,7 +971,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @throws IOException when an error occurs
      */
-    public Envelope getLatLongBoundingBox() throws IOException {
+    public ReferencedEnvelope getLatLongBoundingBox() throws IOException {
         return featureType.getLatLonBoundingBox();
         
         //if (latLongBBox == null) {
