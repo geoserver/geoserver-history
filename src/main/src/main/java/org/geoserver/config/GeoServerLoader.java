@@ -103,6 +103,8 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         LegacyCatalogImporter catalogImporter = new LegacyCatalogImporter();
         catalogImporter.setResourceLoader(resourceLoader);
         Catalog catalog = geoserver.getCatalog();
+        catalog.setResourceLoader(resourceLoader);
+
         if(catalog instanceof Wrapper && ((Wrapper) catalog).isWrapperFor(Catalog.class)) {
             catalog = ((Wrapper) catalog).unwrap(Catalog.class);
         }
