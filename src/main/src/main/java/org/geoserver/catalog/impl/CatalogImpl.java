@@ -4,9 +4,7 @@
  */
 package org.geoserver.catalog.impl;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,13 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.MultiHashMap;
-import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
 import org.geoserver.catalog.NamespaceInfo;
@@ -39,6 +37,7 @@ import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.catalog.event.impl.CatalogAddEventImpl;
 import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
+import org.geoserver.platform.GeoServerResourceLoader;
 
 /**
  * A default catalog implementation that is memory based.
@@ -97,6 +96,7 @@ public class CatalogImpl implements Catalog {
      * resources
      */
     protected ResourcePool resourcePool = new ResourcePool();
+    protected GeoServerResourceLoader resourceLoader;
 
     public CatalogFactory getFactory() {
         return new CatalogFactoryImpl( this );
@@ -108,22 +108,39 @@ public class CatalogImpl implements Catalog {
         if ( store.getWorkspace() == null ) {
             store.setWorkspace( getDefaultWorkspace() );
         }
-        
-        if ( store.getWorkspace() == null ) {
-            throw new IllegalArgumentException( "no workspace set and no default available");
-        }
+      
+        validate(store);
         
         ((StoreInfoImpl)store).setId( store.getName() );
+        resolve(store);
         stores.put(store.getClass(), store);
         added(store);
     }
 
+    void validate(StoreInfo store) {
+        if ( store.getName() == null ) {
+            throw new IllegalArgumentException( "Store name must not be null");
+        }
+        if ( store.getWorkspace() == null ) {
+            throw new IllegalArgumentException( "Store must be part of a workspace");
+        }
+    }
+    
     public void remove(StoreInfo store) {
-        stores.remove(store.getClass(), store);
+        store = unwrap(store);
+        stores.remove(store.getClass(),store);
         removed(store);
     }
 
     public void save(StoreInfo store) {
+        validate(store);
+        
+        if ( store.getId() == null ) {
+            //add it instead of saving
+            add( store );
+            return;
+        }
+        
         saved(store);
     }
 
@@ -141,20 +158,75 @@ public class CatalogImpl implements Catalog {
     }
 
     public <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz) {
+       T store = getStoreByName( (WorkspaceInfo) null, name, clazz );
+       if ( store != null ) {
+           return store;
+       }
+       
+       //look for secondary match
+       List l = lookup(clazz, stores);
+       ArrayList matches = new ArrayList();
+       for (Iterator i = l.iterator(); i.hasNext();) {
+           store = (T) i.next();
+           if ( name.equals( store.getName() ) ) {
+               matches.add( store );
+           }
+       }
+       
+       if ( matches.size() == 1 ) {
+           return ModificationProxy.create( (T) matches.get( 0 ), clazz);
+       }
+       
+       return null;
+    }
+    
+    public <T extends StoreInfo> T getStoreByName(WorkspaceInfo workspace,
+            String name, Class<T> clazz) {
+        
+        if ( workspace == null ) {
+            workspace = getDefaultWorkspace();
+        }
+        
         List l = lookup(clazz, stores);
         for (Iterator i = l.iterator(); i.hasNext();) {
             StoreInfo store = (StoreInfo) i.next();
-            if (name.equals(store.getName())) {
+            if (name.equals(store.getName()) && store.getWorkspace().equals( workspace )) {
                 return ModificationProxy.create( (T) store, clazz );
             }
         }
-
+        
         return null;
+    }
+    
+    public <T extends StoreInfo> T getStoreByName(String workspaceName,
+            String name, Class<T> clazz) {
+        return getStoreByName(
+            workspaceName != null ? getWorkspace(workspaceName) : null, name, clazz);
+    }
+    
+    
+    public <T extends StoreInfo> List<T> getStoresByWorkspace(
+            String workspaceName, Class<T> clazz) {
+        
+        WorkspaceInfo workspace = null;
+        if ( workspaceName != null ) {
+            workspace = getWorkspaceByName(workspaceName);
+            if ( workspace == null ) {
+                return Collections.EMPTY_LIST;
+            }
+        }
+        
+        return getStoresByWorkspace(workspace, clazz);
+        
     }
     
     public <T extends StoreInfo> List<T> getStoresByWorkspace(
             WorkspaceInfo workspace, Class<T> clazz) {
 
+        if ( workspace == null ) {
+            workspace = getDefaultWorkspace();
+        }
+        
         List all = lookup(clazz, stores);
         List matches = new ArrayList();
 
@@ -177,9 +249,24 @@ public class CatalogImpl implements Catalog {
     }
 
     public DataStoreInfo getDataStoreByName(String name) {
-        return (DataStoreInfo) getStoreByName(name, DataStoreInfo.class);
+        return (DataStoreInfo) getStoreByName(name,DataStoreInfo.class);
+    }
+    
+    public DataStoreInfo getDataStoreByName(String workspaceName, String name) {
+        return (DataStoreInfo) getStoreByName(workspaceName, name, DataStoreInfo.class);
+    }
+    
+    public DataStoreInfo getDataStoreByName(WorkspaceInfo workspace, String name) {
+        return (DataStoreInfo) getStoreByName(workspace, name, DataStoreInfo.class);
     }
 
+    public List<DataStoreInfo> getDataStoresByWorkspace(String workspaceName) {
+        return getStoresByWorkspace( workspaceName, DataStoreInfo.class );
+    }
+    
+    public List<DataStoreInfo> getDataStoresByWorkspace(WorkspaceInfo workspace) {
+        return getStoresByWorkspace( workspace, DataStoreInfo.class );
+    }
     public List getDataStores() {
         return getStores(DataStoreInfo.class);
     }
@@ -198,32 +285,36 @@ public class CatalogImpl implements Catalog {
 
     // Resource methods
     public void add(ResourceInfo resource) {
-        validate(resource);
-        
         if ( resource.getNamespace() == null ) {
             //default to default namespace
             resource.setNamespace( getDefaultNamespace() );
         }
         
+        validate(resource);
+        
         ((ResourceInfoImpl)resource).setId( resource.getName() );
+        resolve(resource);
         resources.put(resource.getClass(), resource);
         added(resource);
     }
 
     void validate(ResourceInfo resource) {
         if ( resource.getStore() == null ) {
-            throw new IllegalArgumentException( "source must be part of a store");
+            throw new IllegalArgumentException( "Resource must be part of a store");
+        }
+        if ( resource.getNamespace() == null ) {
+            throw new IllegalArgumentException( "Resource must be part of a namespace");
         }
     }
     
     public void remove(ResourceInfo resource) {
+        resource = unwrap(resource);
         resources.remove(resource.getClass(), resource);
         removed(resource);
     }
 
     public void save(ResourceInfo resource) {
         validate(resource);
-        
         saved(resource);
     }
 
@@ -241,32 +332,48 @@ public class CatalogImpl implements Catalog {
 
     public <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
 
+        if ( ns == null ) {
+            if ( getDefaultNamespace() != null ) {
+                ns = getDefaultNamespace().getPrefix();
+            }
+        }
+        
         List l = lookup(clazz, resources);
         for (Iterator i = l.iterator(); i.hasNext();) {
             ResourceInfo resource = (ResourceInfo) i.next();
             if (name.equals(resource.getName())) {
-                if (resource.getNamespace().getPrefix().equals(ns)
-                        || resource.getNamespace().getURI().equals(ns)) {
+                NamespaceInfo namespace = resource.getNamespace();
+                if (namespace != null) {
+                    if (namespace.getPrefix().equals(ns) || namespace.getURI().equals(ns)) {
+                        return ModificationProxy.create( (T) resource, clazz ); 
+                    }
+                }
+                else if ( ns == null ){
                     return ModificationProxy.create( (T) resource, clazz );
                 }
+                
             }
         }
 
         return null;
     }
+    
+    public <T extends ResourceInfo> T getResourceByName(NamespaceInfo ns,
+            String name, Class<T> clazz) {
+        return getResourceByName( ns != null ? ns.getPrefix() : null , name, clazz);
+    }
 
     public <T extends ResourceInfo> T getResourceByName( String name, Class<T> clazz ) {
-        if ( getDefaultNamespace() != null ) {
-            ResourceInfo resource = getResourceByName( getDefaultNamespace().getPrefix(), name, clazz );
-            if ( resource != null ) {
-                return ModificationProxy.create( (T) resource, clazz );
-            }    
-        }
+        ResourceInfo resource = getResourceByName( (String) null, name, clazz );
+        if ( resource != null ) {
+            return (T) resource;        //already proxied
+            //return ModificationProxy.create( (T) resource, clazz );
+        }    
         
         List matches = new ArrayList();
         List l = lookup(clazz, resources);
         for (Iterator i = l.iterator(); i.hasNext();) {
-            ResourceInfo resource = (ResourceInfo) i.next();
+            resource = (ResourceInfo) i.next();
             if (name.equals(resource.getName())) {
                 matches.add( resource );
             }
@@ -287,14 +394,52 @@ public class CatalogImpl implements Catalog {
         List all = lookup(clazz, resources);
         List matches = new ArrayList();
 
+        if ( namespace == null ) {
+            namespace = getDefaultNamespace();
+        }
+        
         for (Iterator r = all.iterator(); r.hasNext();) {
             ResourceInfo resource = (ResourceInfo) r.next();
-            if (namespace.equals(resource.getNamespace())) {
+            if (namespace != null ) {
+                if (namespace.equals(resource.getNamespace())) {
+                    matches.add( resource );
+                }
+            }
+            else if ( resource.getNamespace() == null ) {
                 matches.add(resource);
             }
         }
 
-        return matches;
+        return ModificationProxy.createList(matches,clazz);
+    }
+    
+    public <T extends ResourceInfo> T getResourceByStore(StoreInfo store,
+            String name, Class<T> clazz) {
+        List all = lookup(clazz,resources);
+        for (Iterator r = all.iterator(); r.hasNext(); ) {
+            ResourceInfo resource = (ResourceInfo) r.next();
+            if ( name.equals( resource.getName() ) && store.equals( resource.getStore() ) ) {
+                return ModificationProxy.create((T)resource, clazz);
+            }
+                
+        }
+        
+        return null;
+    }
+    
+    public <T extends ResourceInfo> List<T> getResourcesByStore(
+            StoreInfo store, Class<T> clazz) {
+        List all = lookup(clazz,resources);
+        List matches = new ArrayList();
+        
+        for (Iterator r = all.iterator(); r.hasNext();) {
+            ResourceInfo resource = (ResourceInfo) r.next();
+            if (store.equals(resource.getStore())) {
+                matches.add(resource);
+            }
+        }
+
+        return  ModificationProxy.createList( matches, clazz );
     }
 
     public FeatureTypeInfo getFeatureType(String id) {
@@ -306,6 +451,10 @@ public class CatalogImpl implements Catalog {
                 FeatureTypeInfo.class);
     }
 
+    public FeatureTypeInfo getFeatureTypeByName(NamespaceInfo ns, String name) {
+        return getResourceByName(ns, name, FeatureTypeInfo.class );
+    }
+    
     public FeatureTypeInfo getFeatureTypeByName(String name) {
         return (FeatureTypeInfo) getResourceByName(name, FeatureTypeInfo.class);
     }
@@ -316,6 +465,15 @@ public class CatalogImpl implements Catalog {
 
     public List getFeatureTypesByNamespace(NamespaceInfo namespace) {
         return getResourcesByNamespace(namespace, FeatureTypeInfo.class);
+    }
+    
+    public FeatureTypeInfo getFeatureTypeByDataStore(DataStoreInfo dataStore,
+            String name) {
+        return getResourceByStore( dataStore, name, FeatureTypeInfo.class );
+    }
+    
+    public List getFeatureTypesByDataStore(DataStoreInfo store) {
+        return getResourcesByStore( store, FeatureTypeInfo.class);
     }
 
     public CoverageInfo getCoverage(String id) {
@@ -374,7 +532,7 @@ public class CatalogImpl implements Catalog {
     }
     
     public void remove(LayerInfo layer) {
-        layers.remove(layer);
+        layers.remove(unwrap(layer));
         removed(layer);
     }
 
@@ -395,13 +553,33 @@ public class CatalogImpl implements Catalog {
     }
     
     public LayerInfo getLayerByName(String name) {
-        for (Iterator l = layers.iterator(); l.hasNext();) {
-            LayerInfo layer = (LayerInfo) l.next();
-            if (name.equals(layer.getName())) {
-                return ModificationProxy.create( layer, LayerInfo.class );
+        String prefix = null;
+        String resource = null;
+        
+        int colon = name.indexOf( ':' );
+        if ( colon != -1 ) {
+            //search by resource name
+            prefix = name.substring( 0, colon );
+            resource = name.substring( colon + 1 );
+            
+            for (Iterator l = layers.iterator(); l.hasNext();) {
+                LayerInfo layer = (LayerInfo) l.next();
+                ResourceInfo r = layer.getResource();
+                
+                if ( prefix.equals( r.getNamespace().getPrefix() ) && resource.equals( r.getName() ) ) {
+                    return ModificationProxy.create( layer, LayerInfo.class );
+                }
             }
         }
-
+        else {
+            //search by layer name
+            for (Iterator l = layers.iterator(); l.hasNext();) {
+                LayerInfo layer = (LayerInfo) l.next();
+                if ( name.equals( layer.getName() ) ) {
+                    return ModificationProxy.create( layer, LayerInfo.class );
+                }
+            }
+        }
         return null;
     }
 
@@ -453,7 +631,7 @@ public class CatalogImpl implements Catalog {
     }
     
     public void remove(LayerGroupInfo layerGroup) {
-        layerGroups.remove( layerGroup );
+        layerGroups.remove( unwrap(layerGroup) );
         removed( layerGroup );
     }
     
@@ -492,7 +670,7 @@ public class CatalogImpl implements Catalog {
     }
 
     public void remove(MapInfo map) {
-        maps.remove(map);
+        maps.remove(unwrap(map));
         removed(map);
     }
 
@@ -700,7 +878,7 @@ public class CatalogImpl implements Catalog {
     }
 
     public List getStyles() {
-        return Collections.unmodifiableList(styles);
+        return ModificationProxy.createList(styles,StyleInfo.class);
     }
 
     public void add(StyleInfo style) {
@@ -721,7 +899,7 @@ public class CatalogImpl implements Catalog {
     }
     
     public void remove(StyleInfo style) {
-        styles.remove(style);
+        styles.remove(unwrap(style));
         removed(style);
     }
 
@@ -757,18 +935,26 @@ public class CatalogImpl implements Catalog {
         this.resourcePool = resourcePool;
     }
     
+    public void setResourceLoader(GeoServerResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
+    
+    public GeoServerResourceLoader getResourceLoader() {
+        return resourceLoader;
+    }
+    
     public void dispose() {
-        stores.clear();
-        resources.clear();
-        namespaces.clear();
-        workspaces.clear();
-        layers.clear();
-        layerGroups.clear();
-        maps.clear();
-        styles.clear();
-        listeners.clear();
+        if ( stores != null ) stores.clear();
+        if ( resources != null ) resources.clear();
+        if ( namespaces != null ) namespaces.clear();
+        if ( workspaces != null ) workspaces.clear();
+        if ( layers != null ) layers.clear();
+        if ( layerGroups != null ) layerGroups.clear();
+        if ( maps != null ) maps.clear();
+        if ( styles != null ) styles.clear();
+        if ( listeners != null ) listeners.clear();
         
-        resourcePool.dispose();
+        if ( resourcePool != null ) resourcePool.dispose();
     }
     
     List lookup(Class clazz, MultiHashMap map) {
@@ -846,4 +1032,72 @@ public class CatalogImpl implements Catalog {
         }
     }
     
+    /**
+     * Implementation method for resolving all {@link ResolvingProxy} instances.
+     */
+    public void resolve() {
+        //TODO: handle for other types of objects when need arises
+        
+        //resolve all references from store to workspaces
+        for ( Object o : stores.values() ) {
+            resolve((StoreInfoImpl)o);
+        }
+        for ( Object o : styles ) {
+            StyleInfoImpl s = (StyleInfoImpl) o;
+            //s.setCatalog( this );
+        }
+        
+        resources = new MultiHashMap();
+        layers = new ArrayList<LayerInfo>();
+        layerGroups = new ArrayList<LayerGroupInfo>();
+        resourcePool = new ResourcePool();
+        listeners = new ArrayList<CatalogListener>();
+    }
+    
+    protected void resolve(StoreInfo store) {
+        StoreInfoImpl s = (StoreInfoImpl) store;
+        //resolve the workspace
+        WorkspaceInfo resolved = ResolvingProxy.resolve( this, s.getWorkspace() );
+        if ( resolved != null ) {
+            s.setWorkspace(  resolved );    
+        }
+        else {
+            //this means the workspace has not yet been added to the catalog, keep the proxy around
+        }
+        
+        s.setCatalog( this );
+    }
+    
+    protected void resolve(ResourceInfo resource) {
+        ResourceInfoImpl r = (ResourceInfoImpl) resource;
+        
+        //resolve the store
+        StoreInfo resolved = ResolvingProxy.resolve( this, r.getStore() );
+        if ( resolved != null ) {
+            r.setStore( resolved );
+        }
+        
+        r.setCatalog(this);
+    }
+    
+    public void sync( CatalogImpl other ) {
+        stores = other.stores;
+        resources = other.resources;
+        namespaces = other.namespaces;
+        workspaces = other.workspaces;
+        layers = other.layers;
+        maps = other.maps;
+        layerGroups = other.layerGroups;
+        styles = other.styles;
+        listeners = other.listeners;
+        
+        if ( resourcePool != other.resourcePool ) {
+            resourcePool.dispose();
+            resourcePool = other.resourcePool;
+        }
+    }
+    
+    public static <T> T unwrap(T obj) {
+        return ModificationProxy.unwrap(obj);
+    }
 }

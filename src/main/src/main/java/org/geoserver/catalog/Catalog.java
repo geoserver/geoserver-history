@@ -4,10 +4,11 @@
  */
 package org.geoserver.catalog;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.geoserver.catalog.event.CatalogListener;
+import org.geoserver.platform.GeoServerResourceLoader;
+
 import java.util.Collection;
 
 /**
@@ -169,10 +170,11 @@ public interface Catalog {
      * <p>
      * <tt>clazz</td> is used to determine the implementation of StoreInfo 
      * which should be returned. An example which would return a data store.
+     * </p>
+     * <p>
+     * This method is convenience for:
      * <pre>
-     *   <code>
-     * DataStoreInfo dataStore = catalog.getStore(&quot;name&quot;, DataStoreInfo.class);
-     * </code>
+     *   getStoreByName(null,name,clazz);
      * </pre>
      * </p>
      * @param name The name of the store.
@@ -181,6 +183,50 @@ public interface Catalog {
      * @return The store matching name, or <code>null</code> if no such store exists.
      */
     <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz);
+    
+
+    /**
+     * Returns the store with the specified name in the specified workspace.
+     * <p>
+     * <tt>clazz</td> is used to determine the implementation of StoreInfo 
+     * which should be returned. An example which would return a data store.
+     * </p>
+     * <p>
+     * <pre>
+     *   <code>
+     *   DataStoreInfo dataStore = catalog.getStore(&quot;workspaceName&quot;, &quot;name&quot;, DataStoreInfo.class);
+     * </code>
+     * </pre>
+     * </p>
+     * @param workspaceName The name of the workspace containing the store.
+     * @param name The name of the store.
+     * @param clazz The class of store to return.
+     * 
+     * @return The store matching name, or <code>null</code> if no such store exists.
+     */
+    <T extends StoreInfo> T getStoreByName(String workspaceName, String name, Class<T> clazz );
+    
+    /**
+     * Returns the store with the specified name in the specified workspace.
+     * <p>
+     * <tt>clazz</td> is used to determine the implementation of StoreInfo 
+     * which should be returned. An example which would return a data store.
+     * </p>
+     * <p>
+     * <pre>
+     *   <code>
+     *   WorkspaceInfo workspace = ...;
+     *   DataStoreInfo dataStore = catalog.getStore(workspace, &quot;name&quot;, DataStoreInfo.class);
+     * </code>
+     * </pre>
+     * </p>
+     * @param workspace The workspace containing the store.
+     * @param name The name of the store.
+     * @param clazz The class of store to return.
+     * 
+     * @return The store matching name, or <code>null</code> if no such store exists.
+     */
+    <T extends StoreInfo> T getStoreByName(WorkspaceInfo workspace, String name, Class<T> clazz );
 
     /**
      * All stores in the catalog of the specified type.
@@ -216,11 +262,33 @@ public interface Catalog {
      * 
      * </p>
      * 
-     * @param workspace The workspace containing returned stores.
+     * @param workspace The workspace containing returned stores, may be null to specify the
+     *   default workspace.
      * @param clazz The type of stores to lookup.
      * 
      */
     <T extends StoreInfo> List<T> getStoresByWorkspace(WorkspaceInfo workspace,Class<T> clazz);
+    
+    /**
+     * All stores in the specified workspace of the given type.
+     * <p>
+     * This method is convenience for:
+     * <pre>
+     *   WorkspaceInfo ws = catalog.getWorkspaceByName( workspaceName );
+     *   getStoresByWorkspace( ws , clazz ); 
+     * </pre>
+     * </p>
+     * <p>
+     * The <tt>clazz</tt> parameter is used to filter the types of stores
+     * returned.
+     * </p>
+     * 
+     * @param workspaceName The name of the workspace containing returned stores, may be null
+     *   to specify the default workspace.
+     * @param clazz The type of stores to lookup.
+     * 
+     */
+    <T extends StoreInfo> List<T> getStoresByWorkspace(String workspaceName,Class<T> clazz);
     
     /**
      * Returns a datastore matching a particular id, or <code>null</code> if
@@ -235,17 +303,72 @@ public interface Catalog {
     DataStoreInfo getDataStore(String id);
 
     /**
-     * Returns a datastore matching a particular name, or <code>null</code> if
-     * no such data store could be found.
+     * Returns a datastore matching a particular name in the default workspace, 
+     * or <code>null</code> if no such data store could be found.
      * <p>
      * This method is a convenience for:
      *  <pre>
-     *  getStoreByName(name, DataStoreInfo.class)
+     *  getDataStoreByName(null, name)
      * </pre>
      * </p>
+     * 
      */
     DataStoreInfo getDataStoreByName(String name);
 
+    /**
+     * Returns the datastore matching a particular name in the specified workspace, 
+     * or <code>null</code> if no such datastore could be found.
+     * <p>
+     * This method is convenience for:
+     * <pre>
+     *   WorkspaceInfo ws = catalog.getWorkspace( workspaceName );
+     *   return catalog.getDataStoreByName(ws,name);
+     * </pre>
+     * </p>
+     * @param name The name of the datastore.
+     * @param workspaceName The name of the workspace containing the datastore, may be <code>null</code> 
+     * to specify the default workspace. 
+     *
+     * @return The store matching the name, or null if no such store could be found. 
+     */
+    DataStoreInfo getDataStoreByName(String workspaceName, String name);
+    
+    /**
+     * Returns the datastore matching a particular name in the specified workspace, 
+     * or <code>null</code> if no such datastore could be found.
+     * 
+     * @param name The name of the datastore.
+     * @param workspace The workspace containing the datastore, may be <code>null</code> to
+     * specify the default workspace. 
+     *
+     * @return The store matching the name, or null if no such store could be found. 
+     */
+    DataStoreInfo getDataStoreByName(WorkspaceInfo workspace, String name);
+    
+    /**
+     * All data stores in the specified workspace.
+     * <p>
+     * This method is equivalent to:
+     * <pre>
+     * getStoresByWorkspace( workspaceName, DataStoreInfo.class );
+     * </pre>
+     * </p>
+     * @param workspaceName The name of the workspace.
+     */
+    List<DataStoreInfo> getDataStoresByWorkspace( String workspaceName );
+    
+    /**
+     * All data stores in the specified workspace.
+     * <p>
+     * This method is equivalent to:
+     * <pre>
+     * getStoresByWorkspace( workspace, DataStoreInfo.class );
+     * </pre>
+     * </p>
+     * @param workspace The name of the workspace.
+     */
+    List<DataStoreInfo> getDataStoresByWorkspace( WorkspaceInfo workspace );
+    
     /**
      * All data stores in the catalog.
      * <p>
@@ -330,8 +453,26 @@ public interface Catalog {
      * @return The resource matching the name, or <code>null</code> if no such
      *         resource exists.
      */
-    <T extends ResourceInfo> T getResourceByName(String ns, String name,
-            Class<T> clazz);
+    <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz);
+    
+    /**
+     * Looks up a resource by qualified name.
+     * <p>
+     * <tt>clazz</td> is used to determine the implementation of ResourceInfo 
+     * which should be returned.
+     * </p>
+     * @param ns
+     *                The namespace to which the resource belongs, may be
+     *                <code>null</code> to specify the default namespace.
+     * @param name
+     *                The name of the resource.
+     * @param clazz
+     *                The class of the resource.
+     * 
+     * @return The resource matching the name, or <code>null</code> if no such
+     *         resource exists.
+     */
+    <T extends ResourceInfo> T getResourceByName(NamespaceInfo ns, String name, Class<T> clazz );
 
     /**
      * Looks up a resource by its unqualified name.
@@ -352,7 +493,7 @@ public interface Catalog {
      * 
      */
     <T extends ResourceInfo> T getResourceByName(String name, Class<T> clazz);
-    
+
     /**
      * Adds a new resource.
      */
@@ -404,6 +545,25 @@ public interface Catalog {
             NamespaceInfo namespace, Class<T> clazz);
 
     /**
+     * Returns the resource with the specified name originating from the store.
+     * 
+     * @param store The store.
+     * @param name The name of the resource.
+     * @param clazz The class of resource.
+     */
+    <T extends ResourceInfo> T getResourceByStore(StoreInfo store, String name, Class<T> clazz);
+    
+    /**
+     * All resources which originate from the specified store, of the specified type.
+     *
+     * @param store The store to obtain resources from.
+     * @param clazz The class of resources returned.
+     * 
+     * @return List of resources of the specified type from the specified store.
+     */
+    <T extends ResourceInfo> List<T> getResourcesByStore(StoreInfo store, Class<T> clazz);
+    
+    /**
      * Returns the feature type matching a particular id, or <code>null</code>
      * if no such feature type could be found.
      * <p>
@@ -431,7 +591,7 @@ public interface Catalog {
      * 
      * @param ns
      *                The prefix or uri to which the feature type belongs, may
-     *                be <code>null</code>.
+     *                be <code>null</code> to specify the default namespace.
      * @param name
      *                The name of the feature type.
      * 
@@ -439,6 +599,26 @@ public interface Catalog {
      *         such resource exists.
      */
     FeatureTypeInfo getFeatureTypeByName(String ns, String name);
+    
+    /**
+     * Looks up a feature type by qualified name.
+     * <p>
+     * This method is convenience for:
+     * <pre>
+     * getResourceByName( ns, name, FeatureTypeInfo.class );
+     * </pre>
+     * </p>
+     * 
+     * @param ns
+     *                The namespace to which the feature type belongs, may
+     *                be <code>null</code> to specify the default namespace.
+     * @param name
+     *                The name of the feature type.
+     * 
+     * @return The feature type matching the name, or <code>null</code> if no
+     *         such resource exists.
+     */
+    FeatureTypeInfo getFeatureTypeByName(NamespaceInfo ns, String name);
     
     /**
      * Looks up a feature type by an unqualified name.
@@ -458,6 +638,7 @@ public interface Catalog {
      * 
      * @return The single feature type matching the specified name, or <code>null</code>
      * if either none could be found or multiple were found.
+     * 
      */
     FeatureTypeInfo getFeatureTypeByName( String name );
 
@@ -497,6 +678,31 @@ public interface Catalog {
      * @return All the feature types in the specified namespace.
      */
     List<FeatureTypeInfo> getFeatureTypesByNamespace(NamespaceInfo namespace);
+    
+    /**
+     * Returns the feature type with the specified name which is part of the specified
+     * data store.
+     *  <p>
+     *  This method is convenience for:
+     *  <pre>
+     *  return getResourceByStore(dataStore,name,FeatureTypeInfo.class);
+     *  </pre>
+     *  </p>
+     * @param dataStore The data store.
+     * @param name The feature type name.
+     * 
+     * @return The feature type, or <code>null</code> if no such feature type exists.
+     */
+    FeatureTypeInfo getFeatureTypeByDataStore(DataStoreInfo dataStore, String name );
+    
+    /**
+     * All feature types which originate from the specified datastore. 
+     * 
+     * @param store The datastore.
+     * 
+     * @return A list of feature types which originate from the datastore.
+     */
+    List<FeatureTypeInfo> getFeatureTypesByDataStore(DataStoreInfo store);
 
     /**
      * Returns the coverage matching a particular id, or <code>null</code> if
@@ -578,21 +784,6 @@ public interface Catalog {
     List<CoverageInfo> getCoverages();
 
     /**
-     * Adds a new layer.
-     */
-    void add(LayerInfo layer);
-
-    /**
-     * Removes an existing layer.
-     */
-    void remove(LayerInfo layer);
-
-    /**
-     * Saves a layer which has been modified.
-     */
-    void save(LayerInfo layer);
-    
-    /**
      * All coverages in the specified namespace.
      * <p>
      * This method is a convenience for: <code>
@@ -608,7 +799,22 @@ public interface Catalog {
      * @return All the coverages in the specified namespace.
      */
     List<CoverageInfo> getCoveragesByNamespace(NamespaceInfo namespace);
+    
+    /**
+     * Adds a new layer.
+     */
+    void add(LayerInfo layer);
 
+    /**
+     * Removes an existing layer.
+     */
+    void remove(LayerInfo layer);
+
+    /**
+     * Saves a layer which has been modified.
+     */
+    void save(LayerInfo layer);
+    
     /**
      * Returns the layer matching a particular id, or <code>null</code> if no
      * such layer could be found.
@@ -886,6 +1092,16 @@ public interface Catalog {
      * Sets the resource pool reference.
      */
     void setResourcePool( ResourcePool resourcePool );
+    
+    /**
+     * Returns the loader for resources.
+     */
+    GeoServerResourceLoader getResourceLoader();
+    
+    /**
+     * Sets the resource loader reference.
+     */
+    void setResourceLoader( GeoServerResourceLoader resourceLoader );
     
     /**
      * Disposes the catalog, freeing up any resources.

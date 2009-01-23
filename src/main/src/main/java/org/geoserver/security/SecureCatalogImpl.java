@@ -33,6 +33,7 @@ import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geoserver.security.decorators.SecuredCoverageInfo;
 import org.geoserver.security.decorators.SecuredCoverageStoreInfo;
@@ -154,6 +155,22 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     public DataStoreInfo getDataStoreByName(String name) {
         return checkAccess(user(), delegate.getDataStoreByName(name));
     }
+    
+    public DataStoreInfo getDataStoreByName(String workspaceName, String name) {
+        return checkAccess(user(), delegate.getDataStoreByName(workspaceName,name));
+    }
+    
+    public DataStoreInfo getDataStoreByName(WorkspaceInfo workspace, String name) {
+        return checkAccess(user(), delegate.getDataStoreByName(workspace,name));
+    }
+    
+    public List<DataStoreInfo> getDataStoresByWorkspace(String workspaceName) {
+        return filterStores(user(), delegate.getDataStoresByWorkspace(workspaceName));
+    }
+    
+    public List<DataStoreInfo> getDataStoresByWorkspace(WorkspaceInfo workspace) {
+        return filterStores(user(), delegate.getDataStoresByWorkspace(workspace));
+    }
 
     public List<DataStoreInfo> getDataStores() {
         return filterStores(user(), delegate.getDataStores());
@@ -174,6 +191,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     public FeatureTypeInfo getFeatureTypeByName(String ns, String name) {
         return checkAccess(user(), delegate.getFeatureTypeByName(ns, name));
     }
+    
+    public FeatureTypeInfo getFeatureTypeByName(NamespaceInfo ns, String name) {
+        return checkAccess(user(), delegate.getFeatureTypeByName(ns,name));
+    }
 
     public FeatureTypeInfo getFeatureTypeByName(String name) {
         return checkAccess(user(), delegate.getFeatureTypeByName(name));
@@ -185,6 +206,14 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
 
     public List<FeatureTypeInfo> getFeatureTypesByNamespace(NamespaceInfo namespace) {
         return filterResources(user(), delegate.getFeatureTypesByNamespace(namespace));
+    }
+    
+    public FeatureTypeInfo getFeatureTypeByDataStore(DataStoreInfo dataStore,
+            String name) {
+        return checkAccess(user(), delegate.getFeatureTypeByDataStore(dataStore, name));
+    }
+    public List<FeatureTypeInfo> getFeatureTypesByDataStore(DataStoreInfo store) {
+        return filterResources(user(), delegate.getFeatureTypesByDataStore(store));
     }
 
     public LayerInfo getLayer(String id) {
@@ -238,6 +267,11 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     public <T extends ResourceInfo> T getResourceByName(String name, Class<T> clazz) {
         return checkAccess(user(), delegate.getResourceByName(name, clazz));
     }
+    
+    public <T extends ResourceInfo> T getResourceByName(NamespaceInfo ns,
+            String name, Class<T> clazz) {
+        return checkAccess(user(), delegate.getResourceByName(ns, name, clazz));
+    }
 
     public <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
         return checkAccess(user(), delegate.getResourceByName(ns, name, clazz));
@@ -252,6 +286,16 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return filterResources(user(), delegate.getResourcesByNamespace(namespace, clazz));
     }
 
+    public <T extends ResourceInfo> T getResourceByStore(StoreInfo store,
+            String name, Class<T> clazz) {
+        return checkAccess(user(), delegate.getResourceByStore(store, name, clazz));
+    }
+    
+    public <T extends ResourceInfo> List<T> getResourcesByStore(
+            StoreInfo store, Class<T> clazz) {
+        return filterResources(user(), delegate.getResourcesByStore(store, clazz));
+    }
+    
     public <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
         return checkAccess(user(), delegate.getStore(id, clazz));
     }
@@ -260,8 +304,23 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return checkAccess(user(), delegate.getStoreByName(name, clazz));
     }
 
+    public <T extends StoreInfo> T getStoreByName(String workspaceName,
+            String name, Class<T> clazz) {
+        return checkAccess(user(), delegate.getStoreByName(workspaceName, name, clazz));
+    }
+    
+    public <T extends StoreInfo> T getStoreByName(WorkspaceInfo workspace,
+            String name, Class<T> clazz) {
+        return checkAccess(user(), delegate.getStoreByName(workspace, name, clazz));
+    }
+    
     public <T extends StoreInfo> List<T> getStores(Class<T> clazz) {
         return filterStores(user(), delegate.getStores(clazz));
+    }
+    
+    public <T extends StoreInfo> List<T> getStoresByWorkspace(
+            String workspaceName, Class<T> clazz) {
+        return filterStores(user(), delegate.getStoresByWorkspace(workspaceName, clazz));
     }
 
     public <T extends StoreInfo> List<T> getStoresByWorkspace(WorkspaceInfo workspace,
@@ -821,4 +880,11 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.setResourcePool(resourcePool);
     }
 
+    public void setResourceLoader(GeoServerResourceLoader resourceLoader) {
+        delegate.setResourceLoader(resourceLoader);
+    }
+    
+    public GeoServerResourceLoader getResourceLoader() {
+        return delegate.getResourceLoader();
+    }
 }
