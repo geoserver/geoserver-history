@@ -25,6 +25,8 @@ public class LegacyGeoServerLoader extends GeoServerLoader {
     }
     
     protected void loadCatalog(Catalog catalog) throws Exception {
+        catalog.setResourceLoader( resourceLoader );
+        
         //look for legacy catalog.xml
         File f = resourceLoader.find( "catalog.xml" );
         if ( f != null ) {

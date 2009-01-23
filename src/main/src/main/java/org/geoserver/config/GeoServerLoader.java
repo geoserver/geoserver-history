@@ -109,8 +109,10 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     }
     
     protected void loadCatalog(Catalog catalog) throws Exception {
+        catalog.setResourceLoader(resourceLoader);
+        
         //create an xstream persister
-        XStreamPersister xp = new XStreamPersister();
+        XStreamPersister xp = new XStreamPersister.XML();
         
         //look for catalog2.xml
         File f = resourceLoader.find( "catalog2.xml" );
@@ -186,7 +188,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         File f = resourceLoader.find( "global.xml" );
         if ( f != null ) {
             BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-            GeoServerInfo global = new XStreamPersister().load( in, GeoServerInfo.class );
+            GeoServerInfo global = new XStreamPersister.XML().load( in, GeoServerInfo.class );
             geoServer.setGlobal( global );
             
             //load services
@@ -291,7 +293,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     public void persist() throws Exception {
         //TODO: make the configuration backend pluggable... or loadable
         // from application context, or web.xml, or env variable, etc...
-        XStreamPersister p = new XStreamPersister();
+        XStreamPersister p = new XStreamPersister.XML();
         BufferedOutputStream out = new BufferedOutputStream( 
             new FileOutputStream( resourceLoader.createFile( "catalog2.xml" ) )
         );
