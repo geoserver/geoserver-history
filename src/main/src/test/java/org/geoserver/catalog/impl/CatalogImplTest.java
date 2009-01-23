@@ -438,6 +438,11 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testAddFeatureType() {
+        NamespaceInfo ns = catalog.getFactory().createNamespace();
+        ns.setPrefix( "foo" );
+        ns.setURI( "http://foo");
+        catalog.add( ns );
+        
         assertTrue( catalog.getFeatureTypes().isEmpty() );
         
         catalog.add( ft );
@@ -541,6 +546,11 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testFeatureTypeEvents() {
+        NamespaceInfo ns = catalog.getFactory().createNamespace();
+        ns.setPrefix( "foo" );
+        ns.setURI( "http://foo");
+        catalog.add( ns );
+        
         TestListener l = new TestListener();
         catalog.addListener( l );
         
