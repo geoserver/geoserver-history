@@ -376,8 +376,26 @@ public abstract class CachedHierarchyRegionatingStrategy implements
                 try {
                     nativeTileEnvelope = tile.getEnvelope().transform(nativeCrs, true);
                 } catch (ProjectionException pe) {
-                    // NULL ?
-                    nativeTileEnvelope = typeInfo.getBoundingBox();
+                    // the WGS84 envelope of the tile is too big for this project,
+                    // let's intersect it with the declared lat/lon bounds then
+                    LOGGER.log(Level.INFO, "Could not reproject the current tile bounds " 
+                            + tile.getEnvelope() + " to the native SRS, intersecting with " 
+                            + "the layer declared lat/lon bounds and retrying");
+                    
+                    // let's compare against the declared data bounds then
+                    ReferencedEnvelope llEnv = typeInfo.getLatLongBoundingBox();
+                    Envelope reduced = tile.getEnvelope().intersection(llEnv);
+                    if(reduced.isNull() || reduced.getWidth() == 0 || reduced.getHeight() == 0) {
+                        // no overlap, no party, the tile will be empty
+                        return Collections.emptySet();
+                    }
+                    
+                    // there is some overlap, let's try the reprojection again.
+                    // if even this fails, the user has evidently setup the 
+                    // geographics bounds improperly
+                    ReferencedEnvelope refRed = new ReferencedEnvelope(reduced, 
+                            tile.getEnvelope().getCoordinateReferenceSystem());
+                    nativeTileEnvelope = refRed.transform(nativeCrs, true);
                 }
             } else {
                 nativeTileEnvelope = tile.getEnvelope();
