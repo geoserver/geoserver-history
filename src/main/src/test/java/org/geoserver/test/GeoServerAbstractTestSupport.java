@@ -1,5 +1,6 @@
 package org.geoserver.test;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,6 +41,11 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import junit.framework.TestCase;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+import net.sf.json.util.JSONBuilder;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServerLoader;
@@ -500,13 +506,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @throws Exception
      */
     protected InputStream put(String path, String body, String contentType) throws Exception {
-        MockHttpServletRequest request = createRequest(path);
-        request.setMethod("PUT");
-        request.setContentType(contentType);
-        request.setBodyContent(body);
-
-        MockHttpServletResponse response = dispatch(request);
-        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
+        return put( path, body.getBytes(), contentType );
     }
 
     /**
@@ -520,13 +520,29 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @throws Exception
      */
     protected InputStream put(String path, byte[] body, String contentType) throws Exception {
+        MockHttpServletResponse response = putAsServletResponse(path, body, contentType);
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
+    }
+    
+    protected MockHttpServletResponse putAsServletResponse(String path) throws Exception {
+        return putAsServletResponse(path, new byte[]{}, "text/plain");
+    }
+    
+    protected MockHttpServletResponse putAsServletResponse(String path, String body, String contentType ) 
+    throws Exception {
+        return putAsServletResponse(path, body != null ? body.getBytes() : (byte[]) null, contentType);
+    }
+    
+    protected MockHttpServletResponse putAsServletResponse(String path, byte[] body, String contentType ) 
+        throws Exception {
+        
         MockHttpServletRequest request = createRequest(path);
         request.setMethod("PUT");
         request.setContentType(contentType);
         request.setBodyContent(body);
+        request.setHeader( "Content-type", contentType );
 
-        MockHttpServletResponse response = dispatch(request);
-        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
+        return dispatch(request);
     }
     
     /**
@@ -547,14 +563,13 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     }
 
     /**
-     * Executes an ows request using the POST method.
-     * <p>
+     * Executes an ows request using the POST method, with xml as body content. 
      * 
-     * </p>
      * 
      * @param path
      *            The porition of the request after the context ( no query
      *            string ), example: 'wms'.
+     * @param xml The body content.
      * 
      * @return the servlet response
      * 
@@ -562,13 +577,8 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      */
     protected MockHttpServletResponse postAsServletResponse(String path, String xml)
             throws Exception {
-        MockHttpServletRequest request = createRequest(path);
-        request.setMethod("POST");
-        request.setContentType("application/xml");
-        request.setBodyContent(xml);
-
-        MockHttpServletResponse response = dispatch(request);
-        return response;
+        
+        return postAsServletResponse(path, xml, "application/xml");
     }
 
     /**
@@ -610,13 +620,32 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @throws Exception
      */
     protected InputStream post(String path, String body, String contentType) throws Exception{
+        MockHttpServletResponse response = postAsServletResponse(path, body, contentType);
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
+    }
+    
+    protected MockHttpServletResponse postAsServletResponse(String path, String body, String contentType) throws Exception {
         MockHttpServletRequest request = createRequest(path);
         request.setMethod("POST");
         request.setContentType(contentType);
         request.setBodyContent(body);
+        request.setHeader("Content-type",  contentType );
 
-        MockHttpServletResponse response = dispatch(request);
-        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
+        return dispatch(request);
+    }
+    
+    /**
+     * Execultes a request using the DELETE method.
+     * 
+     * @param path The path of the request.
+     * 
+     * @return The http status code.
+     */
+    protected MockHttpServletResponse deleteAsServletResponse(String path) throws Exception {
+        MockHttpServletRequest request = createRequest(path);
+        request.setMethod("DELETE");
+        
+        return dispatch(request);
     }
     
     /**
@@ -635,6 +664,25 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     protected Document getAsDOM(final String path)
             throws Exception {
         return getAsDOM(path, false);
+    }
+    
+    /**
+     * Executes a request using the GET method and parses the result as a json object.
+     * 
+     * @param path The path to request.
+     *  
+     * @return The result parsed as json.
+     */
+    protected JSON getAsJSON(final String path) throws Exception {
+        BufferedReader in = new BufferedReader( new InputStreamReader ( get( path ) ) );
+        StringBuffer json = new StringBuffer();
+        String line = null;
+        while( ( line = in.readLine() ) != null ) {
+            json.append( line );
+        }
+        in.close();
+        
+        return JSONSerializer.toJSON( json.toString() );
     }
 
     /**
@@ -866,6 +914,13 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     }
     
     /**
+     * Utility method to print out the contents of a json object.
+     */
+    protected void print( JSON json ) {
+        System.out.println(json.toString(2));
+    }
+    
+    /**
      * Convenience method for element.getElementsByTagName() to return the 
      * first element in the resulting node list.
      */
@@ -1067,8 +1122,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
 
             public int read(){
                 byte[] b = new byte[1];
-                read(b, 0, 1);
-                return b[0];
+                return read(b, 0, 1) == -1 ? -1 : b[0];
             }
 
         public int read(byte[] b){
@@ -1079,6 +1133,9 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
             int realOffset = offset + myOffset;
             int i;
 
+            if ( realOffset >= myBody.length ) {
+                return -1;
+            }
             for (i = 0; (i < length) && (i + myOffset < myBody.length); i++){
                 b[offset + i] = myBody[myOffset + i];
             }
