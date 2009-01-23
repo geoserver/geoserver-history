@@ -79,6 +79,10 @@
 	 <groupId>org.acegisecurity</groupId>
 	 <artifactId>acegi-security</artifactId>
        </exclusion>
+       <exclusion>
+	 <groupId>net.sf.json-lib</groupId>
+	 <artifactId>json-lib</artifactId>
+       </exclusion>
 
      </exclusions>
    </dependency> 
