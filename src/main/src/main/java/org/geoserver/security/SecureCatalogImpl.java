@@ -307,10 +307,6 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             StoreInfo store, Class<T> clazz) {
         return filterResources(user(), delegate.getResourcesByStore(store, clazz));
     }
-    
-    public <T extends ResourceInfo> List<T> getResourcesByStore(StoreInfo store) {
-        return (List<T>) filterResources(user(), delegate.getResourcesByStore(store));
-    }
 
     public <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
         return checkAccess(user(), delegate.getStore(id, clazz));
