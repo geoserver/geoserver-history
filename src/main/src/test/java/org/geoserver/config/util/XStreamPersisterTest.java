@@ -43,7 +43,7 @@ public class XStreamPersisterTest extends TestCase {
         super.setUp();
         
         factory = new GeoServerImpl().getFactory();
-        persister = new XStreamPersister();
+        persister = new XStreamPersister.XML();
     }
     
     public void testGlobal() throws Exception {
@@ -184,7 +184,7 @@ public class XStreamPersisterTest extends TestCase {
     }
     
     public void testServiceCustomAlias() throws Exception {
-        XStreamPersister p = new XStreamPersister();
+        XStreamPersister p = new XStreamPersister.XML();
         p.getXStream().alias( "ms", MyServiceInfo.class );
         
         MyServiceInfo s1 = new MyServiceInfo();
