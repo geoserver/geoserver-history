@@ -85,7 +85,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
-    public Envelope getLatLongBoundingBox() throws IOException {
+    public ReferencedEnvelope getLatLongBoundingBox() throws IOException {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 

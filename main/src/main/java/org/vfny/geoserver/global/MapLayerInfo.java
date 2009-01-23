@@ -144,10 +144,9 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * getBoundingBox purpose.
-     *
      * <p>
-     * The feature source bounds.
+     * The feature source bounds. Mind, it might be null, in that case, grab
+     * the lat/lon bounding box and reproject to the native bounds.
      * </p>
      *
      * @return Envelope the feature source bounds.
