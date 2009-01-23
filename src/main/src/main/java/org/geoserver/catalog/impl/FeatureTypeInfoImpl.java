@@ -44,6 +44,10 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
         return attributes;
     }
     
+    public void setAttributes(List<AttributeTypeInfo> attributes) {
+        this.attributes = attributes;
+    }
+    
     public Filter getFilter() {
         return filter;
     }
