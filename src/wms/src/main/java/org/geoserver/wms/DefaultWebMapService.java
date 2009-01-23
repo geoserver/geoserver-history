@@ -95,6 +95,11 @@ public class DefaultWebMapService implements WebMapService,
      * Application context
      */
     ApplicationContext context;
+    
+    /**
+     * Temporary field that handles the usage of the line width optimization code
+     */
+    private static Boolean OPTIMIZE_LINE_WIDTH = null;
 
     public DefaultWebMapService( WMS wms ) {
         this.wms = wms;
@@ -107,6 +112,25 @@ public class DefaultWebMapService implements WebMapService,
     public void setApplicationContext(ApplicationContext context)
             throws BeansException {
         this.context = context;
+        
+        // first time initialization of line width optimization flag
+        if (OPTIMIZE_LINE_WIDTH == null) {
+            String enabled = GeoServerExtensions.getProperty("OPTIMIZE_LINE_WIDTH", context);
+            // default to true, but allow switching off
+            if(enabled == null)
+                OPTIMIZE_LINE_WIDTH = true;
+            else
+                OPTIMIZE_LINE_WIDTH = Boolean.valueOf(enabled);
+        }
+    }
+    
+    /**
+     * Checks wheter the line width optimization is enabled, or not (defaults to true
+     * unless the user sets the OPTIMIZE_LINE_WIDTH property to false)
+     * @return
+     */
+    public static boolean isLineWidthOptimizationEnabled() {
+        return OPTIMIZE_LINE_WIDTH;
     }
 
     public WMSCapabilitiesResponse getCapabilities(
@@ -275,7 +299,15 @@ public class DefaultWebMapService implements WebMapService,
                         if (! useNativeBounds) {
                             curbbox = curFTI.getLatLongBoundingBox();
                         } else {
-                            curbbox = curFTI.getBoundingBox();
+                            if(curFTI.getBoundingBox() == null) {
+                                curbbox = curFTI.getBoundingBox();
+                            } else {
+                                try {
+                                    curbbox = curFTI.getLatLongBoundingBox().transform(curFTI.getDeclaredCRS(), true);
+                                } catch(Exception e) {
+                                    throw new WmsException("Best effort native bbox computation failed", "", e);
+                                }
+                            }
                         }
 
                     } else if (layers[i].getRemoteFeatureSource() != null) {

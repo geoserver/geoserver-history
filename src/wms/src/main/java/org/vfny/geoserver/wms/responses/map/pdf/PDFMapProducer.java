@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DefaultWebMapService;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -157,6 +158,9 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 					.put("optimizedDataLoadingEnabled", new Boolean(true));
 			rendererParams.put("renderingBuffer", new Integer(mapContext
 					.getBuffer()));
+			if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
+	            rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
+	        }
 			renderer.setRendererHints(rendererParams);
 
 			Envelope dataArea = mapContext.getAreaOfInterest();
