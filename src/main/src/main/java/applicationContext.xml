@@ -24,7 +24,9 @@
         <!-- note: we use depends to ensure that all datastore plugins are 
              loaded from the spring container before processing hte catalog -->
     
-    <bean id="rawCatalog" class="org.geoserver.catalog.impl.CatalogImpl"/>
+    <bean id="rawCatalog" class="org.geoserver.catalog.impl.CatalogImpl">
+      <property name="resourceLoader" ref="resourceLoader"/>
+    </bean>
     <bean id="secureCatalog" class="org.geoserver.security.SecureCatalogImpl">
         <constructor-arg ref="rawCatalog" />
     </bean>
