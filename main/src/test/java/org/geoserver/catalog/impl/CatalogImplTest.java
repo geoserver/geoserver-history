@@ -569,7 +569,7 @@ public class CatalogImplTest extends TestCase {
         ft = catalog.getFeatureTypesByStore( ds2 );
         assertEquals( 1, ft.size() );
         
-        List<ResourceInfo> r = catalog.getResourcesByStore(ds1);
+        List<ResourceInfo> r = catalog.getResourcesByStore(ds1,ResourceInfo.class);
         assertEquals( 2, r.size() );
         assertEquals( ft1, r.get(0) );
         assertEquals( ft2, r.get(1) );
