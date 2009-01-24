@@ -16,7 +16,6 @@ import java.util.Set;
 import javax.measure.unit.Unit;
 import javax.servlet.http.HttpServletRequest;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.impl.CoverageDimensionImpl;
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
@@ -30,6 +29,7 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.GridRange2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.data.ServiceInfo;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.resources.XArray;
@@ -344,11 +344,18 @@ public class CoverageConfig {
             }
         }
 
+        final ServiceInfo info = reader.getInfo();
         name = cvName.toString();
         wmsPath = "/";
-        label = new StringBuffer(name).append(" is a ").append(format.getDescription()).toString();
-        description = new StringBuffer("Generated from ").append(formatId).toString();
-        
+        label = info.getTitle();
+        if (null == label || "".equals(label)){
+            label = new StringBuffer(name).append(" is a ").append(format.getDescription()).toString();
+        }
+        description = info.getDescription();
+        if (null == description || "".equals(description)){
+            description = new StringBuffer("Generated from ").append(formatId).toString();
+        }
+
         MetadataLinkInfo ml = new MetadataLinkInfoImpl();
         ml.setAbout(format.getDocURL());
         ml.setMetadataType("other");
@@ -359,6 +366,10 @@ public class CoverageConfig {
         keywords.add("WCS");
         keywords.add(formatId);
         keywords.add(name);
+        Set<String> infoKwds = info.getKeywords();
+        if(infoKwds != null){
+            keywords.addAll(infoKwds);
+        }
         nativeFormat = format.getName();
         dirName = new StringBuffer(formatId).append("_").append(name).toString();
         requestCRSs = new ArrayList();
