@@ -556,5 +556,16 @@
        </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>imagemap</id>
+      <dependencies>
+       <dependency>
+        <groupId>org.geoserver.extension</groupId>
+        <artifactId>imagemap</artifactId>
+        <version>1.7.3-SNAPSHOT</version>
+       </dependency>
+      </dependencies>
+    </profile>
+   
   </profiles>
 </project>
