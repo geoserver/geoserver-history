@@ -380,7 +380,7 @@ function generateColorPicker(colorFieldName, fieldValue)
       </span>
 	  </td>
 	  <td class="datum">
-		<html:text property="description" size="60"/>
+		<html:textarea property="description" cols="60" rows="4"/>
 	  </td>
 	</tr>
 
