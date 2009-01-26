@@ -416,6 +416,17 @@ blog post. The following is an example::
    --
    The GeoServer Team
 
+SourceForge
+^^^^^^^^^^^
+
+#. Log in to `SourceForge <http://sourceforge.net/account/login.php>`_.
+#. Edit the release, and scroll down to the bottom of the page.
+#. Check the ``I'm sure`` check box, and click the ``Send Notice`` button.
+
+   .. image:: sfnotice.png
+  
+#. Repeat for the extension release.
+
 GeoServer blog
 ^^^^^^^^^^^^^^
 
@@ -437,6 +448,10 @@ GeoServer blog
 
 SlashGeo
 ^^^^^^^^
+
+.. note:: 
+
+   This step requires an account on http://slashgeo.org
 
 #. Go to http://slashgeo.org, and log in, creating an account if necessary.
 
@@ -475,6 +490,9 @@ Example::
 
 FreshMeat
 ^^^^^^^^^
+.. note:: 
+
+   This step requires an account on http://freshmeat.net/
 
 #. Go to http://freshmeat.net/ and log in.
 #. Search for "geoserver" and click the resulting link.
@@ -486,3 +504,13 @@ FreshMeat
 
       The release focus is usually 4,5,6, or 7. Choose which ever is
       appropriate.
+
+#. Enter a succinct description (less than 600 characters) of the ``Changes``.
+#. Update the links to:
+
+   * the ``Zip``
+   * the ``OS X package``
+   * the ``Changelog``
+
+#. Click the ``Step 3`` button.
+#. Click the ``Finish`` button.
