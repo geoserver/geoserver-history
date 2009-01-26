@@ -19,11 +19,19 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-jdbc-oracle</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc14</artifactId> 
-      <version>10.2.0.3.0</version>
-    </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>oracleDriver</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle</groupId>
+          <artifactId>ojdbc14</artifactId> 
+          <version>10.2.0.3.0</version>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
 </project>

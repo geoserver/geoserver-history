@@ -19,11 +19,19 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-jdbc-sqlserver</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.microsoft</groupId>
-      <artifactId>sqljdbc</artifactId>
-      <version>1.2</version>
-    </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>sqlServerDriver</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft</groupId>
+          <artifactId>sqljdbc</artifactId>
+          <version>1.2</version>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
 </project>
