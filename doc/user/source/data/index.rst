@@ -8,10 +8,11 @@ Working with Data
 
    shapefile/
    postgis/
-   oracle/
-   oracleng/
-   mysql/
-   sqlserver/
+   wfs/ 
    arcsde/
    gml/
+   mysql/
+   oracle/
+   oracleng/
+   sqlserver/
    vpf/
