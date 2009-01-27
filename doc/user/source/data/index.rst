@@ -9,4 +9,9 @@ Working with Data
    shapefile/
    postgis/
    oracle/
-   connection-pooling/
+   oracleng/
+   mysql/
+   sqlserver/
+   arcsde/
+   gml/
+   vpf/
