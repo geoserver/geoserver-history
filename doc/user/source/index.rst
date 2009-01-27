@@ -20,5 +20,6 @@ GeoServer User Guide
    security/index
    templates/index
    tutorials/index
+   tipstricks/index
    extensions/index
    faq/index
