@@ -1,16 +1,12 @@
-.. _arcsde:
+.. _arcsde_data:
 
 ArcSDE
 ======
 
+.. warning:: ArcSDE support is not enabled by default and requires the :ref:`arcsde_extension` extension to be installed prior to use.
+
 ESRI's `ArcSDE <http://www.esri.com/software/arcgis/arcsde/>`_ is a spatial 
 engine that runs on top of a relational database such as Oracle or SQL Server.
-
-.. note::
-
-   GeoServer does not come built in with support for ArcSDE, it must be 
-   installed through an extension. Proceed to :ref:`arcsde_installation`
-   for installation details.
 
 The ArcSDE extension is based on the GeoTools ArcSDE driver. See the `GeoTools 
 ArcSDE page <http://docs.codehaus.org/display/GEOTDOC/ArcSDE+DataStore>`_ for 
@@ -21,78 +17,136 @@ Supported versions
 
 The extension supports ArcSDE versions 9.2 and 9.3.
 
-.. _arcsde_installation:
-
-Installing the ArcSDE extension
--------------------------------
-
-#. Download the ArcSDE extension from the `GeoServer download page <http://geoserver.org/display/GEOS/Download>`_.
-
-   .. warning::
-
-     Ensure the extension matching the version of the GeoServer installation 
-     is downloaded.
-
-#. Extract the contents of the archive into the ``WEB-INF/lib`` folder of the 
-   GeoServer installation.
-
-ArcSDE client libraries
-^^^^^^^^^^^^^^^^^^^^^^^
-
-#. Navigate to http://support.esri.com/index.cfm?fa=downloads.patchesServicePacks.listPatches&PID=66
-
-#. Click the ``ArcSDE Service Pack`` link for the appropriate version of SDE.
-
-#. Navigate to ``Installing this Service Pack -> ArcSDE SDK -> UNIX`` 
-   (regardless of the OS)
-
-#. Download the 32 or 64 bit (depending on the target platform) ``Linux`` 
-   archive.
-
-#. Unpack the archive and copy the files ``jpe<VERSION>_sdk.jar`` and 
-   ``jsde<VERSION>_sdk.jar`` into the ``WEB-INF/lib`` directory of the 
-   GeoServer installation.
-
-IBM ICU4J
-^^^^^^^^^
-
-#. Navigate to ftp://ftp.software.ibm.com/software/globalization/icu/icu4j/3.2
-
-#. Download the file ``icu4j_3_2.jar`` and copy it into the ``WEB-INF/lib`` 
-   directory of the GeoServer installation.
-
-Adding an ArcSDE database
+Adding a vector datastore
 -------------------------
 
-If the extension is properly installed ``ArcSDE`` will show up as a option when
-creating a new data store.
+In order to serve vector data layers, it is first necessary to register
+the ArcSDE instance as a datastore in GeoServer.
+Navigate to the **Create New Feature Data Set** page 
+(**Config** -> **Data** -> **Datastore** -> **New**) and an option for 
+**ArcSDE** will be in the dropdown menu for **Feature Data Set 
+Description.** Select this option, enter a name in the box for **Feature 
+Data Set ID**, and click **New**. 
 
-.. figure:: sde_create.png
+.. figure:: arcsdecreate.png
+   :align: center
 
-.. figure:: sde_configure.png
+   *Figure 1: Creating a new ArcSDE datastore*
 
-ArcSDE options
---------------
+Vector datastore options
+------------------------   
+   
+The next page contains configuration options for the ArcSDE instance.  Fill out the form then click **Submit**.  To apply the changes, click **Apply** then **Save**.   
+   
+.. figure:: arcsdeconfigure.png
+   :align: center
+
+   *Figure 2: Configuring a new ArcSDE datastore*
 
 .. list-table::
-   :widths: 20 80
+   :widths: 20 10 80
 
-   * - ``host``
-     - The sde server host name or ip address.
+   * - **Option**
+     - **Required?**
+     - **Description**
+   * - ``Feature Data Set ID``
+     - N/A
+     - The name of the datastore as set on the previous page.
+   * - ``Enabled``
+     - N/A
+     - When this box is checked the datastore will be available to GeoServer
+   * - ``Namespace``
+     - Yes
+     - The namespace associated with the datastore.
+   * - ``Description``
+     - No
+     - A description of the datastore.
+   * - ``server``
+     - Yes
+     - The URL of the ArcSDE instance. 	 
    * - ``port``
-     - The port on which the sde server is accepting connections.
+     - Yes
+     - The port that the ArcSDE instance is set to listen to.  Default is 5151.
    * - ``instance``
-     - The sde instance to connect to.
+     - No
+     - The name of the specific ArcSDE instance (if more than one).
    * - ``user``
-     - The name of the user to connect to the sde server as.
-   * - ``password``     
-     - The password to use when connecting to the database. Left blank for no       password.
-   * - ``max connections``
+     - Yes
+     - The username to authenticate with the ArcSDE instance.	 
+   * - ``password``
+     - No
+     - The password associated with the above username for authentication with the ArcSDE instance.
+   * - ``pool.minConnections``
+     - No
+     - Connection pool configuration parameters. See the :ref:`connection_pooling` section for details.
+   * - ``pool.maxConnections``
+     - No
+     - Connection pool configuration parameters. See the :ref:`connection_pooling` section for details. 
+   * - ``pool.timeOut``
+     - No
+     - Connection pool configuration parameters. See the :ref:`connection_pooling` section for details. 
+  
+You may now add featuretypes as you would normally do, by navigating to 
+the **Create New Feature Type** page (**Config** -> **Data** -> 
+**Featuretype** -> **New**).
 
-       ``min connections``
+Adding a raster coveragestore
+-----------------------------
 
-       ``validate connections``
+In order to serve raster layers (or coverages), it is first necessary to register
+the ArcSDE instance as a coveragestore in GeoServer.
+Navigate to the **Create New Coverage Data Set** page 
+(**Config** -> **Data** -> **Coveragestores** -> **New**) and an option for 
+**ArcSDE Raster Format** will be in the dropdown menu for **Coverage Data Set 
+Description.** Select this option, enter a name in the box for **Coverage 
+Data Set ID**, and click **New**.
 
-     - Connection pool configuration parameters. See the 
-       :ref:`connection_pooling` section for details.
+.. figure:: arcsdecoveragecreate.png
+   :align: center
 
+   *Figure 3: Creating a new ArcSDE coveragestore*
+
+Raster coveragestore options
+----------------------------
+
+The next page contains configuration options for the ArcSDE instance.  Fill out the form then click **Submit**.  To apply the changes, click **Apply** then **Save**.
+   
+.. figure:: arcsdecoverageconfigure.png
+   :align: center
+
+   *Figure 4: Configuring a new ArcSDE coveragestore*
+
+.. list-table::
+   :widths: 20 10 80
+
+   * - **Option**
+     - **Required?**
+     - **Description**
+   * - ``Coverage Data Set ID``
+     - N/A
+     - The name of the coveragestore as set on the previous page.
+   * - ``Enabled``
+     - N/A
+     - When this box is checked the coveragestore will be available to GeoServer
+   * - ``Namespace``
+     - Yes
+     - The namespace associated with the coveragestore.
+   * - ``Type``
+     - No
+     - The type of coveragestore.  Leave this to say ``ArcSDE Raster``. 	 
+   * - ``URL``
+     - Yes
+     - The URL of the ArcSDE instance.
+   * - ``Description``
+     - No
+     - A description of the coveragestore.
+
+You may now add coverages as you would normally do, by navigating to 
+the **Create New Coverage Type** page (**Config** -> **Data** -> 
+**Coverages** -> **New**).
+
+Performance considerations
+--------------------------
+
+Common problems
+---------------
