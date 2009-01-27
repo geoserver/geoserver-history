@@ -84,8 +84,9 @@ REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/data_dir/
 
 :usePathJava
   ::A better way to do this is given at http://www.ericphelps.com/batch/samples/JavaRuntime.cmd.txt
-  ::looking up the registry, but I think this should work too... 
-  set JAVA_RUN=java
+  ::looking up the registry, but I think this should work too...
+  echo Assuming "java" is in the path and that is a JDK java executable. GeoServer UI won't run if "java" is not a JDK one 
+  set RUN_JAVA=java
   goto runJava
 
 :runJava
