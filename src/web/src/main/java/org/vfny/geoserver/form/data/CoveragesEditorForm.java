@@ -485,6 +485,14 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         //
         // //
+        if ("".equals(requestCRSs) || "".equals(responseCRSs)) {
+            errors.add("name", new ActionError("error.coverage.requestResponseCRSs.required"));
+        }
+        // //
+        //
+        //
+        //
+        // //
         final DataConfig dataConfig = getDataConfig(request);
         final CoverageStoreConfig cvConfig = dataConfig.getDataFormat(formatId);
 
