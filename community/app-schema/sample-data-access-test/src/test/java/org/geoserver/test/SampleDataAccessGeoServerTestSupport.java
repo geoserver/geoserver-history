@@ -20,8 +20,6 @@ import org.geotools.util.logging.Logging;
  */
 public abstract class SampleDataAccessGeoServerTestSupport extends GeoServerAbstractTestSupport {
 
-    Logger LOGGER = Logging.getLogger(SampleDataAccessGeoServerTestSupport.class);
-
     @Override
     protected TestData buildTestData() throws Exception {
         return new SampleDataAccessMockData();

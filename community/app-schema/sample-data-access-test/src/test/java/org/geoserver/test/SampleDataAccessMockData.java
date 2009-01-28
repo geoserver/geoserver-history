@@ -7,12 +7,15 @@
 package org.geoserver.test;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.geoserver.data.CatalogWriter;
 import org.geoserver.data.test.MockData;
@@ -22,6 +25,8 @@ import org.geotools.data.SampleDataAccess;
 import org.geotools.data.SampleDataAccessData;
 import org.geotools.data.SampleDataAccessFactory;
 
+import com.vividsolutions.jts.geom.Envelope;
+
 /**
  * Mock data for testing integration of {@link SampleDataAccess} with GeoServer.
  * 
@@ -29,11 +34,46 @@ import org.geotools.data.SampleDataAccessFactory;
  */
 public class SampleDataAccessMockData implements TestData {
 
+    
+    /**
+     * Use FeatureTypeInfo constants for srs handling as values
+     */
+    public static final String KEY_SRS_HANDLINGS = "srsHandling";
+    /**
+     * The feature type alias, a string
+     */
+    public static final String KEY_ALIAS = "alias";
+    /**
+     * The style name
+     */
+    public static final String KEY_STYLE = "style";
+    /**
+     * The srs code (a number) for this layer
+     */
+    public static final String KEY_SRS_NUMBER = "srs";
+    /**
+     * The lon/lat envelope as a JTS Envelope
+     */
+    public static final String KEY_LL_ENVELOPE = "ll_envelope";
+    /**
+     * The native envelope as a JTS Envelope
+     */
+    public static final String KEY_NATIVE_ENVELOPE = "native_envelope";
+    static final Envelope DEFAULT_ENVELOPE = new Envelope(-180,180,-90,90);
+
+    
+    
+    
+    
     public static String DEFAULT_PREFIX = "gsml";
 
     public static String DEFAULT_URI = SampleDataAccessData.NAMESPACE;
 
     private File data;
+    
+    /** the 'featureTypes' directory, under 'data' */
+    File featureTypes;
+
 
     /**
      * Constructor. Creates empty mock data directory.
@@ -44,6 +84,12 @@ public class SampleDataAccessMockData implements TestData {
         data = IOUtils.createRandomDirectory("./target", "sample-data-access-mock", "data");
         data.delete();
         data.mkdir();
+        
+        // create a featureTypes directory
+        featureTypes = new File(data, "featureTypes");
+        featureTypes.mkdir();
+        
+        info("dummy", "gsml", "MappedFeature");
     }
 
     /**
@@ -123,4 +169,72 @@ public class SampleDataAccessMockData implements TestData {
         IOUtils.copy(input, new File(getDataDirectoryRoot(), location));
     }
 
+    
+    
+    /**
+     * Stolen from {@link MockData}.
+     * 
+     * @param name
+     * @param extraParams
+     * @throws IOException
+     */
+    public void info(String datastore, String prefix, String type) throws IOException {
+        
+        // prepare extra params default
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(KEY_STYLE, "Default");
+        params.put(KEY_SRS_HANDLINGS, 2);
+        params.put(KEY_ALIAS, null);
+        
+        Integer srs = 4326;
+
+        params.put(KEY_SRS_NUMBER, srs);
+        
+        File featureTypeDir = new File(featureTypes, prefix + "_" + type);
+        featureTypeDir.mkdir();
+
+        File info = new File(featureTypeDir, "info.xml");
+        info.delete();
+        info.createNewFile();
+
+        FileWriter writer = new FileWriter(info);
+        writer.write("<featureType datastore=\"" + datastore + "\">");
+        writer.write("<name>" + type + "</name>");
+        if(params.get(KEY_ALIAS) != null)
+            writer.write("<alias>" + params.get(KEY_ALIAS) + "</alias>");
+        writer.write("<SRS>" + params.get(KEY_SRS_NUMBER) + "</SRS>");
+        // this mock type may have wrong SRS compared to the actual one in the property files...
+        // let's configure SRS handling not to alter the original one, and have 4326 used only
+        // for capabilities
+        writer.write("<SRSHandling>" + params.get(KEY_SRS_HANDLINGS) +  "</SRSHandling>");
+        writer.write("<title>" + type + "</title>");
+        writer.write("<abstract>abstract about " + type + "</abstract>");
+        writer.write("<numDecimals value=\"8\"/>");
+        writer.write("<keywords>" + type + "</keywords>");
+        Envelope llEnvelope = (Envelope) params.get(KEY_LL_ENVELOPE);
+        if(llEnvelope == null)
+            llEnvelope = DEFAULT_ENVELOPE;
+        writer.write("<latLonBoundingBox dynamic=\"false\" minx=\"" + llEnvelope.getMinX()
+                + "\" miny=\"" + llEnvelope.getMinY() + "\" maxx=\"" + llEnvelope.getMaxX()
+                + "\" maxy=\"" + llEnvelope.getMaxY() + "\"/>");
+
+        Envelope nativeEnvelope = (Envelope) params.get(KEY_NATIVE_ENVELOPE);
+        if(nativeEnvelope != null)
+            writer.write("<nativeBBox dynamic=\"false\" minx=\"" + nativeEnvelope.getMinX()
+                    + "\" miny=\"" + nativeEnvelope.getMinY() + "\" maxx=\"" + nativeEnvelope.getMaxX()
+                    + "\" maxy=\"" + nativeEnvelope.getMaxY() + "\"/>");
+
+
+        String style = (String) params.get(KEY_STYLE);
+        if(style == null)
+            style = "Default";
+        writer.write("<styles default=\"" + style + "\"/>");
+
+        writer.write("</featureType>");
+
+        writer.flush();
+        writer.close();
+    }
+
+    
 }
