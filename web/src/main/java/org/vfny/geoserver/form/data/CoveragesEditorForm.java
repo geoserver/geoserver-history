@@ -4,6 +4,17 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -29,15 +40,6 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -480,6 +482,14 @@ public final class CoveragesEditorForm extends ActionForm {
             errors.add("name", new ActionError("error.coverage.name.invalid"));
         }
 
+        // //
+        //
+        //
+        //
+        // //
+        if ("".equals(requestCRSs) || "".equals(responseCRSs)) {
+            errors.add("name", new ActionError("error.coverage.requestResponseCRSs.required"));
+        }
         // //
         //
         //
