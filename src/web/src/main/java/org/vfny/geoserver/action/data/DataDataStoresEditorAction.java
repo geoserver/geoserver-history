@@ -20,6 +20,7 @@ import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.form.data.DataDataStoresEditorForm;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
 import java.io.IOException;
@@ -126,7 +127,8 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         //dump("editor", connectionParams );
         //dump("texts ",paramTexts );        
-        if (!factory.canProcess(connectionParams)) {
+        Map fixedParams = org.vfny.geoserver.global.DataStoreInfo.getParams(connectionParams, GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath());
+        if (!factory.canProcess(fixedParams)) {
             // We could not use these params!
             //
             ActionErrors errors = new ActionErrors();
