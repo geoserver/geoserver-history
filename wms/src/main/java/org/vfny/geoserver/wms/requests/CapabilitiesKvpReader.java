@@ -59,6 +59,10 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
         if (keyExists("UPDATESEQUENCE")) {
         	currentRequest.setUpdateSequence(getValue("UPDATESEQUENCE"));
         }
+        
+        if(keyExists("NAMESPACE")) {
+            currentRequest.setNamespace(getValue("NAMESPACE"));
+        }
 
         return currentRequest;
     }
