@@ -11,6 +11,8 @@ import net.sf.json.JSONObject;
 
 import org.geoserver.wfs.WFSTestSupport;
 
+import com.mockrunner.mock.web.MockHttpServletResponse;
+
 public class GeoJSONTest extends WFSTestSupport {
     
     /**
@@ -21,14 +23,7 @@ public class GeoJSONTest extends WFSTestSupport {
     }
 	
     public void testGet() throws Exception {	
-    	InputStream is = get("wfs?request=GetFeature&version=1.0.0&typename=sf:PrimitiveGeoFeature&maxfeatures=1&outputformat=json");
-    	BufferedReader in = new BufferedReader(new InputStreamReader(is));
-    	StringBuffer buffer = new StringBuffer();
-    	String line;
-    	while (( line = in.readLine()) != null) {
-    		    buffer.append(line);
-    	}
-    	String out = buffer.toString();
+    	String out = getAsString("wfs?request=GetFeature&version=1.0.0&typename=sf:PrimitiveGeoFeature&maxfeatures=1&outputformat=json");
     	
     	JSONObject rootObject = JSONObject.fromObject( out );
     	assertEquals(rootObject.get("type"),"FeatureCollection");
@@ -46,14 +41,7 @@ public class GeoJSONTest extends WFSTestSupport {
                 + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\"> "
                 + "</wfs:Query> " + "</wfs:GetFeature>";
 
-        InputStream is = post( "wfs", xml );
-    	BufferedReader in = new BufferedReader(new InputStreamReader(is));
-    	StringBuffer buffer = new StringBuffer();
-    	String line;
-    	while (( line = in.readLine()) != null) {
-    		    buffer.append(line);
-    	}
-    	String out = buffer.toString();
+        String out = postAsServletResponse( "wfs", xml ).getOutputStreamContent();
     	
     	JSONObject rootObject = JSONObject.fromObject( out );
     	assertEquals(rootObject.get("type"),"FeatureCollection");
@@ -63,15 +51,7 @@ public class GeoJSONTest extends WFSTestSupport {
     }
 
     public void testGeometryCollection() throws Exception {
-    	InputStream is = get("wfs?request=GetFeature&version=1.0.0&typename=sf:AggregateGeoFeature&maxfeatures=3&outputformat=json");
-    	BufferedReader in = new BufferedReader(new InputStreamReader(is));
-    	StringBuffer buffer = new StringBuffer();
-    	String line;
-    	while (( line = in.readLine()) != null) {
-    		    buffer.append(line);
-    	}
-    	
-    	String out = buffer.toString();
+    	String out = getAsString("wfs?request=GetFeature&version=1.0.0&typename=sf:AggregateGeoFeature&maxfeatures=3&outputformat=json");
     	
     	JSONObject rootObject = JSONObject.fromObject( out );
     	assertEquals(rootObject.get("type"),"FeatureCollection");
@@ -96,16 +76,7 @@ public class GeoJSONTest extends WFSTestSupport {
         + "</wfs:GetFeature>";
         //System.out.println("\n" + xml + "\n");
         
-        InputStream is = post( "wfs", xml );
-        BufferedReader in = new BufferedReader(new InputStreamReader(is));
-        StringBuffer buffer = new StringBuffer();
-        String line;
-        while (( line = in.readLine()) != null) {
-                    buffer.append(line);
-        }
-        
-        String out = buffer.toString();
-        //System.out.println("\n" + out + "\n");
+        String out  = postAsServletResponse( "wfs", xml).getOutputStreamContent();
 
         JSONObject rootObject = JSONObject.fromObject( out );
         //System.out.println(rootObject.get("type"));
@@ -125,6 +96,23 @@ public class GeoJSONTest extends WFSTestSupport {
         JSONObject aGeometry = aFeature.getJSONObject("geometry");
         //System.out.println(aGeometry.getString("type"));
         assertEquals(aGeometry.getString("type"),"MultiLineString");
+    }
+    
+    public void testCallbackFunction() throws Exception {    
+        MockHttpServletResponse resp = getAsServletResponse("wfs?request=GetFeature&version=1.0.0&typename=sf:PrimitiveGeoFeature&maxfeatures=1&outputformat=json&format_options=callback:myFunc");
+        String out = resp.getOutputStreamContent();
+
+        assertEquals("text/javascript", resp.getContentType());
+        assertTrue(out.startsWith("myFunc("));
+        assertTrue(out.endsWith(")"));
+
+        // extract the json and check it
+        out = out.substring(7, out.length() - 1);
+        JSONObject rootObject = JSONObject.fromObject( out );
+        assertEquals(rootObject.get("type"),"FeatureCollection");
+        JSONArray featureCol = rootObject.getJSONArray("features");
+        JSONObject aFeature = featureCol.getJSONObject(0);
+        assertEquals(aFeature.getString("geometry_name"),"surfaceProperty");
     }
     
     public static void main(String[] args) {
