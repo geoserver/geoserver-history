@@ -19,6 +19,8 @@ import org.vfny.geoserver.servlets.AbstractService;
 public class CapabilitiesRequest extends Request {
 	
 	private String updateSequence;
+	
+	private String namespace;
 
     /**
      * Creates a new capabilities request object.
@@ -76,4 +78,17 @@ public class CapabilitiesRequest extends Request {
 	public void setUpdateSequence(String updateSequence) {
 		this.updateSequence = updateSequence;
 	}
+
+	/**
+	 * Returns the namespace we should filter layers on (if any)
+	 * (used in WMS only atm, but could be easily expanded to wfs/wcs too)
+	 * @return
+	 */
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 }

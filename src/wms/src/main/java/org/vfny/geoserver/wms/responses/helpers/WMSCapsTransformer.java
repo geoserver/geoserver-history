@@ -497,20 +497,33 @@ public class WMSCapsTransformer extends TransformerBase {
             start("Layer");
 
             Data catalog = wms.getData();
-            Collection ftypes = catalog.getFeatureTypeInfos().values();
-            Collection coverages = catalog.getCoverageInfos().values();
+            List ftypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+            List coverages = new ArrayList(catalog.getCoverageInfos().values());
+            
+            // filter the layers if a namespace filter has been set
+            if(request.getNamespace() != null) {
+                String namespace = request.getNamespace();
+                for (Iterator it = ftypes.iterator(); it.hasNext();) {
+                    FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
+                    if(!namespace.equals(ft.getNameSpace().getPrefix()))
+                        it.remove();
+                }
+                for (Iterator it = coverages.iterator(); it.hasNext();) {
+                    CoverageInfo cv = (CoverageInfo) it.next();
+                    if(!namespace.equals(cv.getNameSpace().getPrefix()))
+                        it.remove();
+                }
+            }
 
             element("Title", wms.getTitle());
             element("Abstract", wms.getAbstract());
             
             handleRootCrsList(wms.getCapabilitiesCrsList());
             
-            {
-                List layers = new ArrayList(ftypes.size() + coverages.size());
-                layers.addAll(ftypes);
-                layers.addAll(coverages);
-                handleRootBbox(layers);
-            }
+            List layers = new ArrayList(ftypes.size() + coverages.size());
+            layers.addAll(ftypes);
+            layers.addAll(coverages);
+            handleRootBbox(layers);
             
             // now encode each layer individually
             LayerTree featuresLayerTree = new LayerTree(ftypes);
