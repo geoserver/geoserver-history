@@ -12,6 +12,7 @@ GeoServer User Guide
    installation/index
    getting-started/index
    data-directory/index
+   webadmin/index
    data/index
    services/index
    styling/index
@@ -20,6 +21,6 @@ GeoServer User Guide
    security/index
    templates/index
    tutorials/index
-   tipstricks/index
+   tips-tricks/index
    extensions/index
    faq/index
