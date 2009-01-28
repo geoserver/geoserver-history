@@ -1,4 +1,4 @@
-<featureType datastore = "DS_poi" >
+<featureType datastore = "nyc" >
   <name>poi</name>
   <!--
     native wich EPGS code for the FeatureTypeInfoDTO

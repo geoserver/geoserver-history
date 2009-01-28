@@ -1,4 +1,4 @@
-<featureType datastore = "sfBugsites" >
+<featureType datastore = "sf" >
   <name>bugsites</name>
   <!--
     native wich EPGS code for the FeatureTypeInfoDTO

@@ -1,4 +1,4 @@
-<featureType datastore = "tasmania_roads" >
+<featureType datastore = "taz_shapes" >
   <name>tasmania_roads</name>
   <!--
     native wich EPGS code for the FeatureTypeInfoDTO

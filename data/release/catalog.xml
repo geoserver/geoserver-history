@@ -5,92 +5,27 @@
       a datastore configuration element serves as a common data source connection
       parameters repository for all featuretypes it holds.
     -->
-    <datastore id = "tasmania_cities" enabled = "true" namespace = "topp" >
+    <datastore id = "taz_shapes" enabled = "true" namespace = "topp" >
       <connectionParams >
-        <parameter name = "url" value = "file:data/taz_shapes/tasmania_cities.shp" />
+        <parameter name = "url" value = "file:data/taz_shapes" />
         <parameter name = "namespace" value = "http://www.openplans.org/topp" />
       </connectionParams>
     </datastore>
-    <datastore id = "sfRoads" enabled = "true" namespace = "sf" >
+    <datastore id = "sf" enabled = "true" namespace = "sf" >
       <connectionParams >
-        <parameter name = "charset" value = "ISO-8859-1" />
-        <parameter name = "url" value = "file:data/sf/roads.shp" />
+        <parameter name = "url" value = "file:data/sf" />
         <parameter name = "namespace" value = "http://www.openplans.org/spearfish" />
       </connectionParams>
     </datastore>
-    <datastore id = "DS_tiger_roads" enabled = "true" namespace = "tiger" >
+    <datastore id = "nyc" enabled = "true" namespace = "tiger" >
       <connectionParams >
-        <parameter name = "url" value = "file:data/nyc/tiger_roads.shp" />
-        <parameter name = "namespace" value = "http://www.census.gov" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "tasmania_roads" enabled = "true" namespace = "topp" >
-      <connectionParams >
-        <parameter name = "url" value = "file:data/taz_shapes/tasmania_roads.shp" />
-        <parameter name = "namespace" value = "http://www.openplans.org/topp" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "tasmania_water_bodies" enabled = "true" namespace = "topp" >
-      <connectionParams >
-        <parameter name = "url" value = "file:data/taz_shapes/tasmania_water_bodies.shp" />
-        <parameter name = "namespace" value = "http://www.openplans.org/topp" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "sfBugsites" enabled = "true" namespace = "sf" >
-      <connectionParams >
-        <parameter name = "charset" value = "ISO-8859-1" />
-        <parameter name = "url" value = "file:data/sf/bugsites.shp" />
-        <parameter name = "namespace" value = "http://www.openplans.org/spearfish" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "sfArchsites" enabled = "true" namespace = "sf" >
-      <connectionParams >
-        <parameter name = "charset" value = "ISO-8859-1" />
-        <parameter name = "url" value = "file:data/sf/archsites.shp" />
-        <parameter name = "namespace" value = "http://www.openplans.org/spearfish" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "DS_poi" enabled = "true" namespace = "tiger" >
-      <connectionParams >
-        <parameter name = "url" value = "file:data/nyc/poi.shp" />
-        <parameter name = "namespace" value = "http://www.census.gov" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "DS_giant_polygon" enabled = "true" namespace = "tiger" >
-      <connectionParams >
-        <parameter name = "url" value = "file:data/nyc/giant_polygon.shp" />
+        <parameter name = "url" value = "file:data/nyc" />
         <parameter name = "namespace" value = "http://www.census.gov" />
       </connectionParams>
     </datastore>
     <datastore id = "states_shapefile" enabled = "true" namespace = "topp" >
       <connectionParams >
         <parameter name = "url" value = "file:data/shapefiles/states.shp" />
-        <parameter name = "namespace" value = "http://www.openplans.org/topp" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "DS_poly_landmarks" enabled = "true" namespace = "tiger" >
-      <connectionParams >
-        <parameter name = "url" value = "file:data/nyc/poly_landmarks.shp" />
-        <parameter name = "namespace" value = "http://www.census.gov" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "sfStreams" enabled = "true" namespace = "sf" >
-      <connectionParams >
-        <parameter name = "charset" value = "ISO-8859-1" />
-        <parameter name = "url" value = "file:data/sf/streams.shp" />
-        <parameter name = "namespace" value = "http://www.openplans.org/spearfish" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "sfRestricted" enabled = "true" namespace = "sf" >
-      <connectionParams >
-        <parameter name = "charset" value = "ISO-8859-1" />
-        <parameter name = "url" value = "file:data/sf/restricted.shp" />
-        <parameter name = "namespace" value = "http://www.openplans.org/spearfish" />
-      </connectionParams>
-    </datastore>
-    <datastore id = "tasmania_state_boundaries" enabled = "true" namespace = "topp" >
-      <connectionParams >
-        <parameter name = "url" value = "file:data/taz_shapes/tasmania_state_boundaries.shp" />
         <parameter name = "namespace" value = "http://www.openplans.org/topp" />
       </connectionParams>
     </datastore>
