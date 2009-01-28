@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
 import net.sf.json.JSONException;
 
 import org.geoserver.platform.Operation;
@@ -21,11 +21,9 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.NamedIdentifier;
-import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -49,7 +47,14 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
 
     public String getMimeType(Object value, Operation operation)
     throws ServiceException {
-        return "application/json";
+        // let's check if a callback has been set, in that case, we need to return a different mime type
+        GetFeatureType gft = (GetFeatureType) operation.getParameters()[0];
+        String callback = (String) gft.getFormatOptions().get("CALLBACK");
+        if(callback != null && !"".equals(callback)) {
+            return "text/javascript";
+        } else {
+            return "application/json";
+        }
     }
 
     public String getCapabilitiesElementName() {
@@ -77,6 +82,13 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         // TODO: investigate setting proper charsets in this
         // it's part of the constructor, just need to hook it up.
         Writer outWriter = new BufferedWriter(new OutputStreamWriter(output,wfs.getCharSet()));
+        
+        // let's check if a callback has been set
+        GetFeatureType gft = (GetFeatureType) getFeature.getParameters()[0];
+        String callback = (String) gft.getFormatOptions().get("CALLBACK");
+        if(callback != null && !"".equals(callback)) {
+            outWriter.write(callback + "(");
+        }
 
         GeoJSONBuilder jsonWriter = new GeoJSONBuilder(outWriter);
 
@@ -238,6 +250,10 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
 
             jsonWriter.endObject(); // end featurecollection
             outWriter.flush();
+            if(callback != null && !"".equals(callback)) {
+                outWriter.write(")");
+                outWriter.flush();
+            }
 
         } catch (JSONException jsonException) {
             ServiceException serviceException = new ServiceException("Error: "
