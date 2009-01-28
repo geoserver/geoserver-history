@@ -8,6 +8,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
 import org.vfny.geoserver.config.DataConfig;
@@ -154,6 +155,9 @@ public class DataDataStoresEditorForm extends ActionForm {
             } else {
                 text = param.text(value);
             }
+            
+            if(URL.class.equals(param.type) && (text == null || "".equals(text)))
+                text = "file:data/example.extension";
 
             paramKeys.add(key);
             paramValues.add((text != null) ? text : "");
@@ -263,7 +267,8 @@ public class DataDataStoresEditorForm extends ActionForm {
 
         // Factory will provide even more stringent checking
         //
-        if (!factory.canProcess(connectionParams)) {
+        Map fixedParams = org.vfny.geoserver.global.DataStoreInfo.getParams(connectionParams, GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath());
+        if (!factory.canProcess(fixedParams)) {
             errors.add("paramValue", new ActionError("error.datastoreEditor.validation"));
         }
 

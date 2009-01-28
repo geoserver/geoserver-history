@@ -203,7 +203,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
                         entry.setValue(fixedPath.toURL().toExternalForm());
                     }
                 } else if (value instanceof URL && ((URL) value).getProtocol().equals("file")) {
-                    File fixedPath = GeoserverDataDirectory.findDataFile((URL) value);
+                    File fixedPath = GeoserverDataDirectory.findDataFile(((URL) value).toString());
                     entry.setValue(fixedPath.toURL());
                 }
             } catch (MalformedURLException ignore) {

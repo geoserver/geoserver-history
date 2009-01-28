@@ -23,6 +23,9 @@ public class FormUtils {
 
             return errors;
         }
+        
+        if(file.isDirectory())
+            return errors;
 
         //check if we can read it.  For some reason file.canRead() doesn't work
         try {
