@@ -42,7 +42,8 @@ import freemarker.template.SimpleHash;
 import freemarker.template.TemplateModelException;
 
 public class LayerAboutPage extends GeoServerProxyAwareRestlet {
-	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");	
+	private static final Logger 
+        LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");	
 	
     private final DataFormat format =
         new FreemarkerFormat("layerpage.ftl", getClass(), MediaType.TEXT_HTML);
@@ -121,8 +122,8 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     	map.put("tilesOrigin", bbox.getMinX()+","+bbox.getMinY());    	
     	
     	int[] imageBox = getMapWidthHeight(bbox);
-        map.put("width", String.valueOf(imageBox[0]));
-        map.put("height", String.valueOf(imageBox[1]));
+        map.put("width", imageBox[0]);
+        map.put("height", imageBox[1]);
     	
         map.put("maxResolution", getMaxResolution(bbox));
         

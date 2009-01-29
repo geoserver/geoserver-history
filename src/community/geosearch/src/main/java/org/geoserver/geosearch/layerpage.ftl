@@ -291,7 +291,7 @@ border: 1px solid #0082b6;
         var options = {
             controls: [],
             maxExtent: bounds,
-            maxResolution: ${maxResolution},
+            maxResolution: ${maxResolution?c},
             projection: '${srs}',
             units: 'degrees'
         };
@@ -302,8 +302,8 @@ border: 1px solid #0082b6;
         tiled = new OpenLayers.Layer.WMS(
             "${name} - Tiled", "../../wms",
             {
-                height: '${height}',
-                width: '${width}',
+                height: '${height?c}',
+                width: '${width?c}',
                 layers: '${name}',
                 styles: '',
                 srs: '${srs}',
@@ -318,8 +318,8 @@ border: 1px solid #0082b6;
         untiled = new OpenLayers.Layer.WMS(
             "${name} - Untiled", "../../wms",
             {
-                height: '${height}',
-                width: '${width}',
+                height: '${height?c}',
+                width: '${width?c}',
                 layers: '${name}',
                 styles: '',
                 srs: '${srs}',
