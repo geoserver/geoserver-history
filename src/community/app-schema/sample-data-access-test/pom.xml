@@ -43,6 +43,26 @@
 			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>org.geoserver.test</groupId>
+			<artifactId>text-feature-list</artifactId>
+			<version>2.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<!-- text-feature-list runtime dependency -->
+			<groupId>com.mockrunner</groupId>
+			<artifactId>mockrunner</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<!-- text-feature-list runtime dependency -->
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-sample-data-access</artifactId>
 			<version>${gt.version}</version>
@@ -56,8 +76,13 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<excludes>
-						<!-- Will not work until ResourcePool is fixed -->
+						<!--
+							Will not work until an encoder configuration that supports
+							complex features is written and integrated into WFS.
+						-->
 						<exclude>**/SampleDataAccessGetFeatureTest.java</exclude>
+						<!-- Will not work until GSIP 31 patches applied -->
+						<exclude>**/SampleDataAccessGetFeatureTextListTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

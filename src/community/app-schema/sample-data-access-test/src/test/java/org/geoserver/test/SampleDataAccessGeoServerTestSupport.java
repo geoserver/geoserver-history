@@ -6,11 +6,8 @@
 
 package org.geoserver.test;
 
-import java.util.logging.Logger;
-
 import org.geoserver.data.test.TestData;
 import org.geotools.data.SampleDataAccess;
-import org.geotools.util.logging.Logging;
 
 /**
  * Abstract base class for test cases that test integration of {@link SampleDataAccess} with
