@@ -5,32 +5,35 @@ Admin menu
 
 The Admin Menu contains information about the currently running GeoServer.  The information displayed is:
 
-.. note:: Image of Admin menu here
+.. figure:: adminmenu.png
+   :align: center
 
+   *Figure 1: The Admin menu*
+   
 .. list-table::
    :widths: 20 80
 
    * - **Option**
-     - **Value**
-   * - Locks
+     - **Description**
+   * - ``Locks``
      - 
-   * - Connections
+   * - ``Connections``
      -
-   * - Memory
+   * - ``Memory``
      -
-   * - Version of JVM
+   * - ``Version of JVM``
      -
-   * - JAI is available
+   * - ``JAI is available``
      - 
-   * - JAI mem capacity
+   * - ``JAI mem capacity``
      - 
-   * - JAI mem used
+   * - ``JAI mem used``
      - 
-   * - JAI mem threshold
+   * - ``JAI mem threshold``
      - 
-   * - JAI tile threads
+   * - ``JAI tile threads``
      - 
-   * - JAI tile priority
+   * - ``JAI tile priority``
      - 
 
 Also available are diagnostic links.
@@ -40,9 +43,9 @@ Also available are diagnostic links.
 
    * - **Option**
      - **Description**
-   * - Free Locks
+   * - ``Free Locks``
      -   
-   * - Free Memory
+   * - ``Free Memory``
      -     
-   * - Free JAI Memory
+   * - ``Free JAI Memory``
      -    
