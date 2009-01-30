@@ -6,6 +6,7 @@
 
 package org.geoserver.test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 import junit.framework.Test;
@@ -37,12 +38,31 @@ public class SampleDataAccessGetFeatureTest extends SampleDataAccessGeoServerTes
      * @throws Exception
      */
     public void testGetFeature() throws Exception {
-        Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature" /* "&version=1.1.0&service=wfs" */ );
-        prettyPrint(doc, System.out);
-        assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
-                .getNodeName());
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature" /* "&version=1.1.0&service=wfs" */);
+        LOGGER.info("WFS response:\n" + prettyString(doc));
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
     }
-    
+
+    /**
+     * Return {@link Document} as a pretty-printed string.
+     * 
+     * @param doc
+     * @return
+     * @throws Exception
+     */
+    public String prettyString(Document doc) throws Exception {
+        OutputStream out = new ByteArrayOutputStream();
+        prettyPrint(doc, out);
+        return out.toString();
+    }
+
+    /**
+     * Pretty-print a {@link Document} to an {@link OutputStream}.
+     * 
+     * @param doc 
+     * @param out
+     * @throws Exception
+     */
     public void prettyPrint(Document doc, OutputStream out) throws Exception {
         OutputFormat format = new OutputFormat(doc);
         format.setLineWidth(80);
@@ -50,6 +70,6 @@ public class SampleDataAccessGetFeatureTest extends SampleDataAccessGeoServerTes
         format.setIndent(4);
         XMLSerializer serializer = new XMLSerializer(out, format);
         serializer.serialize(doc);
-    }   
-    
+    }
+
 }
