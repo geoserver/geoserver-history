@@ -8,5 +8,5 @@ Web Administration Interface
 
    intro/
    admin/
-   config/
+   config/index.rst
    demo/
