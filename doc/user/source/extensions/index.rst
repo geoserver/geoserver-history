@@ -1,9 +1,10 @@
 .. _service_extensions:
 
-Service Extensions
-==================
+Extensions
+==========
 
-Service extensions add functionality to GeoServer.  For information on extensions that add support for data formats (such as :ref:`arcsde_data` or :ref:`sqlserver`), please see the relevant section in :ref:`data`.
+Extensions add various bits of functionality to GeoServer, but do not come with 
+the vanilla GeoServer distribution.  
 
 .. toctree::
    :maxdepth: 2
@@ -14,3 +15,6 @@ Service extensions add functionality to GeoServer.  For information on extension
    rest/
    styler/
    wfsv/
+
+For information about extensions that add support for additional data formats,
+such as :ref:`arcsde_data` or :ref:`sqlserver`, see the :ref:`data` section.
