@@ -7,10 +7,12 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
 import org.geotools.styling.FeatureTypeStyle;
@@ -20,6 +22,8 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.util.NumberRange;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.feature.type.PropertyType;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
@@ -69,9 +73,24 @@ public class RasterLayerLegendHelper {
 
 	private void parseRequest() {
 		// get the requested layer
-		// TODO check that it is actually a grid
+		// and check that it is actually a grid
 		final SimpleFeatureType layer = request.getLayer();
-
+		boolean found =false;
+		final Collection<PropertyDescriptor> descriptors = layer.getDescriptors();
+		for(PropertyDescriptor descriptor: descriptors){
+			
+			//get the type
+			final PropertyType type=descriptor.getType();
+			if(type.getBinding().isAssignableFrom(GridCoverage2D.class))
+			{
+				found=true;
+				break;
+			}
+			
+		}
+		if(!found)
+			throw new IllegalArgumentException("Unable to create legend for non raster style");
+		
 		// get the style and its rules
 		final Style gt2Style = request.getStyle();
 		final FeatureTypeStyle[] ftStyles = gt2Style.getFeatureTypeStyles();
@@ -115,7 +134,7 @@ public class RasterLayerLegendHelper {
 		return createResponse();
 	}
 
-	private BufferedImage createResponse() {
+	private synchronized BufferedImage createResponse() {
 
 		if (image == null) {
 			// is background transparent?
@@ -136,36 +155,36 @@ public class RasterLayerLegendHelper {
 
 				// is this colormap using extended colors
 				cmapLegendBuilder.setExtended(cmapLegendBuilder.isExtended());
-
-				// adding the colormap entries
-				final ColorMapEntry[] colorMapEntries = cmap
-						.getColorMapEntries();
-				for (ColorMapEntry ce : colorMapEntries)
-					if (ce != null)
-						cmapLegendBuilder.addColorMapEntry(ce);
+				
 
 				// setting the requested colormap entries
-				cmapLegendBuilder.setRequestedDimension(new Dimension(width,
-						height));
+				cmapLegendBuilder.setRequestedDimension(new Dimension(width,height));
 
 				// setting transparency and background color
 				cmapLegendBuilder.setTransparent(transparent);
 				cmapLegendBuilder.setBackgroundColor(bgColor);
 
 				// Setting label font and font color
-				cmapLegendBuilder.setLabelFont(LegendUtils
-						.getLabelFont(request));
-				cmapLegendBuilder.setLabelFontColor(LegendUtils
-						.getLabelFontColor(request));
+				cmapLegendBuilder.setLabelFont(LegendUtils.getLabelFont(request));
+				cmapLegendBuilder.setLabelFontColor(LegendUtils.getLabelFontColor(request));
 
 				// passing additional options
-				cmapLegendBuilder.setAdditionalOptions(request
-						.getLegendOptions());
+				cmapLegendBuilder.setAdditionalOptions(request.getLegendOptions());				
+
+				// adding the colormap entries
+				final ColorMapEntry[] colorMapEntries = cmap.getColorMapEntries();
+				for (ColorMapEntry ce : colorMapEntries)
+					if (ce != null)
+						cmapLegendBuilder.addColorMapEntry(ce);
+
 
 				// creating a legend
 				image = cmapLegendBuilder.getLegend();
 
 			} else {
+				if(defaultLegend==null)
+					throw new IllegalStateException("Unable to get default legend");
+				
 				image = ImageUtils.createImage(width, height,
 						(IndexColorModel) null, transparent);
 				final Graphics2D graphics = ImageUtils.prepareTransparency(

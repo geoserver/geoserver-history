@@ -585,11 +585,21 @@ class ColorMapLegendBuilder {
 
 	private Color backgroundColor;
 
-	private ArrayList<ColorMapEntry> colorMapEntries=new ArrayList<ColorMapEntry>();
-
 	private Font labelFont;
 
 	private Color labelFontColor;
+	
+	private boolean needsRules=false;
+	
+	private Dimension maxRuleDim=new Dimension(0,0);
+	
+	private Dimension maxLabelDim=new Dimension(0,0);
+
+	private ColorMapEntry previousCMapEntry;
+
+	private final Queue<ColorMapEntryLegendBuilder> colorMapEntryLegendBuilders= new LinkedList<ColorMapEntryLegendBuilder>();
+	
+	
 
 	/**
 	 * @return
@@ -622,8 +632,32 @@ class ColorMapLegendBuilder {
 
 
 
-	public void addColorMapEntry(ColorMapEntry ce) {
-		this.colorMapEntries.add(ce);
+	public void addColorMapEntry(final ColorMapEntry cEntry) {
+		//build a ColorMapEntryLegendBuilder
+
+		final ColorMapEntryLegendBuilder element;
+		switch(colorMapType){
+			case UNIQUE_VALUES:
+				element=new SingleColorMapEntryLegendBuilder(Arrays.asList(cEntry));
+				break;
+			case RAMP:
+				element=new RampColorMapEntryLegendBuilder(Arrays.asList(previousCMapEntry,cEntry));	
+				break;
+			case CLASSES:
+				element=new ClassesEntryLegendBuilder(Arrays.asList(previousCMapEntry,cEntry));
+				break;
+				default:
+					throw new IllegalArgumentException("Unrecognized colormap type");
+
+		}
+    	colorMapEntryLegendBuilders.add(element);				
+		//set last element
+		previousCMapEntry=cEntry;			
+
+		
+		//
+		// parse the relevant elements for the single elements in order to evaluate dimensions 
+		//
 			
 		
 	}
@@ -649,12 +683,10 @@ class ColorMapLegendBuilder {
 
 
 	public BufferedImage getLegend() {
-		// group color map entries accordingly and build a queue of ColorMapEntryLegendBuilder
-		final Queue<ColorMapEntryLegendBuilder> cmeBuilders=parseColorMapEntries();
 		
 		//now build the individuals legends
 		final Dimension finalDimension= new Dimension();
-		final Queue<BufferedImage> legendsQueue=createLegends(cmeBuilders,finalDimension);
+		final Queue<BufferedImage> legendsQueue=createLegends(this.colorMapEntryLegendBuilders,finalDimension);
 		
 		//now merge them
 		return mergeLegends(legendsQueue,finalDimension);
@@ -707,65 +739,45 @@ class ColorMapLegendBuilder {
          return finalLegend;
 	}
 
-	
-	private Queue<ColorMapEntryLegendBuilder> parseColorMapEntries() {
-
-		
-		// parsing the various color map entries in order to build a queue of
-		// color map entry legend builders which are responsible for building
-		// the individual legends for each color map entry.
-
-		final int size=colorMapEntries.size();
-		//create a queue of ColorMapEntryLegendBuilder which will build single piece of the overall legend
-		final Queue<ColorMapEntryLegendBuilder> queue= new LinkedList<ColorMapEntryLegendBuilder>();
-		ColorMapEntry previousCMapEntry=null;
-		for(int i=0;i<size;i++)
-		{
-			final ColorMapEntry cEntry=colorMapEntries.get(i);
-			final ColorMapEntryLegendBuilder element;
-			switch(colorMapType){
-				case UNIQUE_VALUES:
-					element=new SingleColorMapEntryLegendBuilder(Arrays.asList(cEntry));
-					break;
-				case RAMP:
-					element=new RampColorMapEntryLegendBuilder(Arrays.asList(previousCMapEntry,cEntry));	
-					break;
-				case CLASSES:
-					element=new ClassesEntryLegendBuilder(Arrays.asList(previousCMapEntry,cEntry));
-					break;
-					default:
-						throw new IllegalArgumentException("Unrecognized colormap type");
-
-			}
-			
-
-			queue.add(element);				
-			//set last element
-			previousCMapEntry=cEntry;
-		}
-		
-//		// now the right edge
-//		final ColorMapEntry lastCMapEntry = colorMapEntries.get(size-1);
-//		switch (colorMapType) {
-//		case UNIQUE_VALUES:
-//			{
-//				final SingleColorMapEntryLegendBuilder element = new SingleColorMapEntryLegendBuilder(
-//						Arrays.asList(lastCMapEntry));
-//				queue.add(element);
-//				element.leftEdge = false;
-//			}
-//			break;
+//	
+//	private Queue<ColorMapEntryLegendBuilder> parseColorMapEntries() {
 //
-//		case RAMP:case CLASSES:
-//			{
-//				final RangeColorMapEntryLegendBuilder element=new RangeColorMapEntryLegendBuilder(Arrays.asList(previousCMapEntry,lastCMapEntry));
-//				queue.add(element);					
+//		
+//		// parsing the various color map entries in order to build a queue of
+//		// color map entry legend builders which are responsible for building
+//		// the individual legends for each color map entry.
+//
+//		final int size=colorMapEntries.size();
+//		//create a queue of ColorMapEntryLegendBuilder which will build single piece of the overall legend
+//		final Queue<ColorMapEntryLegendBuilder> queue= new LinkedList<ColorMapEntryLegendBuilder>();
+//		ColorMapEntry previousCMapEntry=null;
+//		for(int i=0;i<size;i++)
+//		{
+//			final ColorMapEntry cEntry=colorMapEntries.get(i);
+//			final ColorMapEntryLegendBuilder element;
+//			switch(colorMapType){
+//				case UNIQUE_VALUES:
+//					element=new SingleColorMapEntryLegendBuilder(Arrays.asList(cEntry));
+//					break;
+//				case RAMP:
+//					element=new RampColorMapEntryLegendBuilder(Arrays.asList(previousCMapEntry,cEntry));	
+//					break;
+//				case CLASSES:
+//					element=new ClassesEntryLegendBuilder(Arrays.asList(previousCMapEntry,cEntry));
+//					break;
+//					default:
+//						throw new IllegalArgumentException("Unrecognized colormap type");
+//
 //			}
-//			break;
 //			
+//
+//			queue.add(element);				
+//			//set last element
+//			previousCMapEntry=cEntry;
 //		}
-		return queue;
-	}
+//		
+//		return queue;
+//	}
 
 	/**
 	 * @param legendOptions
