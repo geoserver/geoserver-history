@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.RenderingHints.Key;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
@@ -67,6 +68,46 @@ class ColorMapLegendBuilder {
 		}		
 	}
 	
+	/**
+	 * 
+	 * @author Simone Giannecchini, GeoSolutions SAS
+	 *
+	 */
+	class TextManager{
+
+		private final String text;
+		private final Font font;
+		private Dimension dimension;
+		
+
+		public TextManager(String text, final Font font) {
+			this.text = text;
+			this.font=font;
+		}
+		
+		public Dimension computeDimension(final Graphics2D graphics){
+			if(dimension==null)
+			{
+				final Font oldFont=graphics.getFont();
+	            graphics.setFont(font);
+	            //computing label dimension and creating  buffered image on which we can draw the label on it
+		        final int labelHeight = (int) Math.ceil(graphics.getFontMetrics().getStringBounds(text, graphics).getHeight());
+		        final int labelWidth = (int) Math.ceil(graphics.getFontMetrics().getStringBounds(text, graphics).getWidth());
+		        graphics.dispose();
+		        //restore the old font
+		        graphics.setFont(oldFont);	
+		        dimension=new Dimension(labelWidth,labelHeight);
+	        }
+	        return dimension;
+		}
+		
+		public void draw(final Graphics2D graphics,final Point2D ULC){
+			
+			
+		}
+		
+		
+	}
 	 abstract class ColorMapEntryLegendBuilder {		
 		
 		protected final ArrayList<ColorMapEntry> colorMapEntriesSubset = new ArrayList<ColorMapEntry>();
@@ -399,30 +440,10 @@ class ColorMapLegendBuilder {
             Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalLegend, hintsMap);
             int offsetY=0;
             finalGraphics.drawImage(image, 0,offsetY,null);
-            
-            try {
-				ImageIO.write(image, "png", new FileImageOutputStream(new File("c:/a.png")));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+           
 
             offsetY=totalHeight-renderedLabel.getHeight();
             finalGraphics.drawImage(renderedLabel, image.getWidth(),offsetY,null);
-            
-            try {
-				ImageIO.write(renderedLabel, "png", new FileImageOutputStream(new File("c:/b.png")));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            
             graphics.dispose();
 			return (BufferedImage) finalLegend;	
 		}
