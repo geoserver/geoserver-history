@@ -56,8 +56,8 @@ public class LayerAboutPageTest extends GeoServerTestSupport  {
 		assertEquals("Unexpected value of first template model in 'keywords' of context", ((SimpleScalar) ((SimpleSequence) context.get("keywords")).get(0)).getAsString(), "GenericEntity");
 		
 		//width and height
-		assertEquals("Unexpected value for 'width' in context", ((SimpleScalar) context.get("width")).getAsString(), "800");
-		assertEquals("Unexpected value for 'height' in context", ((SimpleScalar) context.get("height")).getAsString(), "375");
+		assertEquals("Unexpected value for 'width' in context", ((SimpleNumber) context.get("width")).getAsNumber(), 800);
+		assertEquals("Unexpected value for 'height' in context", ((SimpleNumber) context.get("height")).getAsNumber(), 375);
 		
 		assertEquals("Unexpected value for 'srs' in context", ((SimpleScalar) context.get("srs")).getAsString(), "EPSG:4326");	
 		assertEquals("Unexpected value for 'bbox' in context", ((SimpleScalar) context.get("bbox")).getAsString(), "-198.0,-99.0,198.0,99.0");			
