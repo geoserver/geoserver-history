@@ -4,31 +4,20 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-
-import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.LiteShape2;
 import org.geotools.renderer.lite.StyledShapePainter;
@@ -44,13 +33,13 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.feature.IllegalAttributeException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
+import org.vfny.geoserver.wms.responses.legend.raster.RasterLayerLegendHelper;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -60,8 +49,7 @@ import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
- * Template {@linkPlain
- * org.vfny.geoserver.responses.wms.GetLegendGraphicProducer} based on
+ * Template  {@linkPlain  org.vfny.geoserver.responses.wms.GetLegendGraphicProducer}  based on GeoTools'  {@link  
  * GeoTools' {@link
  * http://svn.geotools.org/geotools/trunk/gt/module/main/src/org/geotools/renderer/lite/StyledShapePainter.java
  * StyledShapePainter} that produces a BufferedImage with the appropiate
@@ -86,8 +74,9 @@ import com.vividsolutions.jts.geom.Polygon;
  * representative enough legend.
  * </p>
  *
- * @author Gabriel Roldan, Axios Engineering
- * @version $Id$
+ * @author  Gabriel Roldan, Axios Engineering
+ * @author  Simone Giannecchini, GeoSolutions SAS
+ * @version  $Id$
  */
 public abstract class DefaultRasterLegendProducer implements GetLegendGraphicProducer {
     /** shared package's logger */
@@ -98,7 +87,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     private static final SLDStyleFactory styleFactory = new SLDStyleFactory();
 
     /** Tolerance used to compare doubles for equality */
-    private static final double TOLERANCE = 1e-6;
+    static final double TOLERANCE = 1e-6;
 
     /**
      * Singleton shape painter to serve all legend requests. We can use a
@@ -113,24 +102,17 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     private static final GeometryFactory geomFac = new GeometryFactory();
 
     /**
-     * Default Legend graphics background color
-     */
-    public static final Color BG_COLOR = Color.WHITE;
+	 * Default Legend graphics background color
+	 * @deprecated Use {@link LegendUtils#BG_COLOR} instead
+	 */
+	public static final Color BG_COLOR = LegendUtils.BG_COLOR;
     /**
-     * Default label color
-     */
-    public static final Color FONT_COLOR = Color.BLACK;
-    /**
-     * Image observer to help in creating the stack like legend graphic from
-     * the images created for each rule
-     */
-    private static final ImageObserver imgObs = new Canvas();
+	 * Default label color
+	 * @deprecated Use {@link LegendUtils#FONT_COLOR} instead
+	 */
+	public static final Color FONT_COLOR = LegendUtils.FONT_COLOR;
 
-    /** padding percentaje factor at both sides of the legend. */
-    private static final float hpaddingFactor = 0.15f;
 
-    /** top & bottom padding percentaje factor for the legend */
-    private static final float vpaddingFactor = 0.15f;
 
     /** The image produced at <code>produceLegendGraphic</code> */
     private BufferedImage legendGraphic;
@@ -183,23 +165,28 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      */
     public void produceLegendGraphic(GetLegendGraphicRequest request)
         throws WmsException {
-        final SimpleFeature sampleFeature = createSampleFeature(request.getLayer());
-
+    	
+        final SimpleFeatureType layer=request.getLayer();
+        if(layer.getName().getLocalPart().equalsIgnoreCase("GridCoverage"))
+        {
+        	final RasterLayerLegendHelper rasterLegendHelper= new RasterLayerLegendHelper(request);
+        	this.legendGraphic= rasterLegendHelper.getLegend();
+        	return;
+        	
+        }
+		final SimpleFeature sampleFeature = createSampleFeature(layer);
         final Style gt2Style = request.getStyle();
         final FeatureTypeStyle[] ftStyles = gt2Style.getFeatureTypeStyles();
-
         final double scaleDenominator = request.getScale();
 
         final Rule[] applicableRules;
-
         if (request.getRule() != null) {
             applicableRules = new Rule[] { request.getRule() };
         } else {
-            applicableRules = getApplicableRules(ftStyles, scaleDenominator);
+            applicableRules = LegendUtils.getApplicableRules(ftStyles, scaleDenominator);
         }
 
-        final NumberRange scaleRange = new NumberRange(scaleDenominator, scaleDenominator);
-
+        final NumberRange<Double> scaleRange = NumberRange.create( scaleDenominator, scaleDenominator);
         final int ruleCount = applicableRules.length;
 
         /**
@@ -207,41 +194,38 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
          * held here until the process is done and then painted on a "stack"
          * like legend.
          */
-        final List /*<BufferedImage>*/ legendsStack = new ArrayList(ruleCount);
-
+        final List<RenderedImage> legendsStack = new ArrayList<RenderedImage>(ruleCount);
         final int w = request.getWidth();
         final int h = request.getHeight();
 
-        final Color bgColor = getBackgroundColor(request);
+        final Color bgColor = LegendUtils.getBackgroundColor(request);
         for (int i = 0; i < ruleCount; i++) {
-            Symbolizer[] symbolizers = applicableRules[i].getSymbolizers();
+        	final Symbolizer[] symbolizers = applicableRules[i].getSymbolizers();
 
             //BufferedImage image = prepareImage(w, h, request.isTransparent());
             final boolean transparent = request.isTransparent();
             final RenderedImage image = ImageUtils.createImage(w, h, (IndexColorModel)null, transparent);
             final Map hintsMap = new HashMap();
-            Graphics2D graphics = ImageUtils.prepareTransparency(transparent, bgColor, image, hintsMap);
+            final Graphics2D graphics = ImageUtils.prepareTransparency(transparent, bgColor, image, hintsMap);
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
-                Symbolizer symbolizer = symbolizers[sIdx];
+                final Symbolizer symbolizer = symbolizers[sIdx];
 
                 if (symbolizer instanceof RasterSymbolizer) {
-                    BufferedImage imgShape;
-
-                    try {
-                        File styles = GeoserverDataDirectory.findCreateConfigDir("styles");
-                        File rasterLegend = new File(styles, "rasterLegend.png");
-                        if(rasterLegend.exists())
-                            imgShape = ImageIO.read(rasterLegend);
-                        else
-                            imgShape = ImageIO.read(DefaultRasterLegendProducer.class.getResource("rasterLegend.png"));
-                    } catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-                        throw new WmsException(e);
-                    } 
-
-                    graphics.drawImage(imgShape, 0, 0, w, h, null);
+//                    BufferedImage imgShape=null;
+//                    try {
+//                        File styles = GeoserverDataDirectory.findCreateConfigDir("styles");
+//                        File rasterLegend = new File(styles, "rasterLegend.png");
+//                        if(rasterLegend.exists())
+//                            imgShape = ImageIO.read(rasterLegend);
+//                        else
+//                            imgShape = ImageIO.read(DefaultRasterLegendProducer.class.getResource("rasterLegend.png"));
+//                    } catch (Throwable e) {
+//                        throw new WmsException(e);
+//                    } 
+//
+//                    graphics.drawImage(imgShape, 0, 0, w, h, null);
                 } else {
                     Style2D style2d = styleFactory.createStyle(sampleFeature, symbolizer, scaleRange);
                     LiteShape2 shape = getSampleShape(symbolizer, w, h);
@@ -253,9 +237,10 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             }
 
             legendsStack.add(image);
+            graphics.dispose();
         }
 
-        //JD: changd legend behaviour, see GEOS-812
+        //JD: changed legend behavior, see GEOS-812
         //this.legendGraphic = scaleImage(mergeLegends(legendsStack), request);
         this.legendGraphic = mergeLegends(legendsStack, applicableRules, request);
     }
@@ -274,10 +259,10 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     *
     * @throws IllegalArgumentException if the list is empty
     */
-    private static BufferedImage mergeLegends(List imageStack, Rule[] rules,
+    private static BufferedImage mergeLegends(List<RenderedImage> imageStack, Rule[] rules,
         GetLegendGraphicRequest req) {
         
-        Font labelFont = getLabelFont(req);
+        Font labelFont = LegendUtils.getLabelFont(req);
         boolean useAA = false;
         if (req.getLegendOptions().get("fontAntiAliasing") instanceof String) {
             String aaVal = (String)req.getLegendOptions().get("fontAntiAliasing");
@@ -315,7 +300,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             int totalHeight = 0;
             int totalWidth = 0;
             int[] rowHeights = new int[imgCount];
-
+            BufferedImage labelsGraphics[]=new BufferedImage[imgCount];
             for (int i = 0; i < imgCount; i++) {
                 img = (BufferedImage) imageStack.get(i);
                 
@@ -345,7 +330,8 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                     }
     
                     if(labels[i] != null && labels[i].length() > 0) {
-                        final BufferedImage renderedLabel = renderLabel(labels[i], g, req);
+                        final BufferedImage renderedLabel = LegendUtils.renderLabel(labels[i], g, req);
+                        labelsGraphics[i]=renderedLabel;
                         final Rectangle2D bounds = new Rectangle2D.Double(0, 0, renderedLabel.getWidth(),
                                 renderedLabel.getHeight());
         
@@ -354,8 +340,11 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                     } else {
                         totalWidth = (int) Math.ceil(Math.max(img.getWidth(), totalWidth));
                         rowHeights[i] = (int) Math.ceil(img.getHeight());
+                        labelsGraphics[i]=null;
                     }
+                    
                     totalHeight += rowHeights[i];
+                    
                 }
             }
 
@@ -363,7 +352,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             totalWidth += 2;
 
             final boolean transparent = req.isTransparent();
-            final Color backgroundColor = getBackgroundColor(req);
+            final Color backgroundColor = LegendUtils.getBackgroundColor(req);
             final Map hintsMap = new HashMap();
             //create the final image
             finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
@@ -382,7 +371,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                     y += (int) ((rowHeights[i] - img.getHeight()) / 2d);
                 }
 
-                finalGraphics.drawImage(img, 0, y, imgObs);
+                finalGraphics.drawImage(img, 0, y, null);
                 if (forceLabelsOff) {
                     topOfRow += rowHeights[i];
                     continue;
@@ -401,7 +390,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                 //draw the label
                 if (labels[i] != null && labels[i].length() > 0) {
                     //first create the actual overall label image.
-                    final BufferedImage renderedLabel = renderLabel(labels[i], finalGraphics, req);
+                    final BufferedImage renderedLabel = labelsGraphics[i];
 
                     y = topOfRow;
 
@@ -409,175 +398,72 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                         y += (int) ((rowHeights[i] - renderedLabel.getHeight()) / 2d);
                     }
 
-                    finalGraphics.drawImage(renderedLabel, img.getWidth(), y, imgObs);
+                    finalGraphics.drawImage(renderedLabel, img.getWidth(), y, null);
+                    //cleanup
+                    renderedLabel.flush();
+                    labelsGraphics[i]=null;
                 }
 
                 topOfRow += rowHeights[i];
             }
+            
+            finalGraphics.dispose();
         }
-
         return finalLegend;
     }
     
-    private static Font getLabelFont(GetLegendGraphicRequest req) {
-        
-        String legendFontName = "Sans-Serif";
-        String legendFontFamily = "plain";
-        int legendFontSize = 12;
-        
-        Map legendOptions = req.getLegendOptions();
-        if (legendOptions.get("fontName") != null) {
-            legendFontName = (String) legendOptions.get("fontName");
-        }
-        if (legendOptions.get("fontStyle") != null) {
-            legendFontFamily = (String)legendOptions.get("fontStyle");
-        }
-        if (legendOptions.get("fontSize") != null) {
-            try {
-                legendFontSize = Integer.parseInt((String)legendOptions.get("fontSize"));
-            } catch (Exception e) {
-                LOGGER.warning("Error trying to interpret legendOption 'fontSize': " + legendOptions.get("fontSize"));
-            }
-        }
-        
-        Font legendFont;
-        if (legendFontFamily.equalsIgnoreCase("italic")) {
-            legendFont = new Font(legendFontName, Font.ITALIC, legendFontSize);
-        } else if (legendFontFamily.equalsIgnoreCase("bold")) {
-            legendFont = new Font(legendFontName, Font.BOLD, legendFontSize);
-        } else {
-            legendFont = new Font(legendFontName, Font.PLAIN, legendFontSize);
-        }
-        
-        return legendFont;
-    }
-    
-    private static Color getLabelFontColor(GetLegendGraphicRequest req) {
-        Map legendOptions = req.getLegendOptions();
-        String color = (String) legendOptions.get("fontColor");
-        if ( color == null ) {
-            //return the default
-            return FONT_COLOR;
-        }
-            
-        try {
-            return color(color);
-        }
-        catch(NumberFormatException e) {
-            LOGGER.warning("Could not decode label color: " + color + ", default to " + FONT_COLOR.toString() );
-            return FONT_COLOR;
-        }
-    }
+    /**
+	 * @deprecated Use {@link LegendUtils#getLabelFont(GetLegendGraphicRequest)} instead
+	 */
+	private static Font getLabelFont(GetLegendGraphicRequest req) {
+		return LegendUtils.getLabelFont(req);
+	}
     
     /**
-     * Returns the image background color for the given
-     * {@link GetLegendGraphicRequest}.
-     * 
-     * @param req
-     * @return the Color for the hexadecimal value passed as the
-     *         <code>BGCOLOR</code>
-     *         {@link GetLegendGraphicRequest#getLegendOptions() legend option},
-     *         or the default background color if no bgcolor were passed.
-     */
-    private static Color getBackgroundColor( GetLegendGraphicRequest req ) {
-        Map legendOptions = req.getLegendOptions();
-        String color = (String) legendOptions.get("bgColor");
-        if ( color == null ) {
-            //return the default
-            return BG_COLOR;
-        }
-        
-        try {
-            return color(color);
-        }
-        catch( NumberFormatException e ) {
-            LOGGER.warning("Could not decode background color: " + color + ", default to " + BG_COLOR.toString() );
-            return BG_COLOR;
-        }
-        
-    }
-    
-    private static Color color(String hex) throws NumberFormatException {
-        if (!hex.startsWith("#")) {
-            hex = "#" + hex;
-        }
-        return Color.decode(hex);
-    }
+	 * @deprecated Use {@link LegendUtils#getLabelFontColor(GetLegendGraphicRequest)} instead
+	 */
+	private static Color getLabelFontColor(GetLegendGraphicRequest req) {
+		return LegendUtils.getLabelFontColor(req);
+	}
     
     /**
-     * Return a {@link BufferedImage} representing this label.
-     * The characters '\n' '\r' and '\f' are interpreted as linebreaks,
-     * as is the characater combination "\n" (as opposed to the actual '\n' character).
-     * This allows people to force line breaks in their labels by
-     * including the character "\" followed by "n" in their
-     * label.
-     *
-     * @param label - the label to render
-     * @param g - the Graphics2D that will be used to render this label
-     * @return a {@link BufferedImage} of the properly rendered label.
-     */
-    public static BufferedImage renderLabel(String label, Graphics2D g, GetLegendGraphicRequest req) {
-        // We'll accept '/n' as a text string
-        //to indicate a line break, as well as a traditional 'real' line-break in the XML.
-        BufferedImage renderedLabel;
-        Color labelColor = getLabelFontColor(req);
-        if ((label.indexOf("\n") != -1) || (label.indexOf("\\n") != -1)) {
-            //this is a label WITH line-breaks...we need to figure out it's height *and*
-            //width, and then adjust the legend size accordingly
-            Rectangle2D bounds = new Rectangle2D.Double(0, 0, 0, 0);
-            ArrayList lineHeight = new ArrayList();
-            // four backslashes... "\\" -> '\', so "\\\\n" -> '\' + '\' + 'n'
-            final String realLabel = label.replaceAll("\\\\n", "\n");
-            StringTokenizer st = new StringTokenizer(realLabel, "\n\r\f");
-
-            while (st.hasMoreElements()) {
-                final String token = st.nextToken();
-                Rectangle2D thisLineBounds = g.getFontMetrics().getStringBounds(token, g);
-
-                //if this is directly added as thisLineBounds.getHeight(), then there are rounding errors
-                //because we can only DRAW fonts at discrete integer coords.
-                final int thisLineHeight = (int) Math.ceil(thisLineBounds.getHeight());
-                bounds.add(0, thisLineHeight + bounds.getHeight());
-                bounds.add(thisLineBounds.getWidth(), 0);
-                lineHeight.add(new Integer((int) Math.ceil(thisLineBounds.getHeight())));
-            }
-
-            //make the actual label image
-            renderedLabel = new BufferedImage((int) Math.ceil(bounds.getWidth()),
-                    (int) Math.ceil(bounds.getHeight()), BufferedImage.TYPE_INT_ARGB);
-
-            st = new StringTokenizer(realLabel, "\n\r\f");
-
-            Graphics2D rlg = renderedLabel.createGraphics();
-            rlg.setColor(labelColor);
-            rlg.setFont(g.getFont());
-            rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                g.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
-
-            int y = 0 - g.getFontMetrics().getDescent();
-            int c = 0;
-
-            while (st.hasMoreElements()) {
-                y += ((Integer) lineHeight.get(c++)).intValue();
-                rlg.drawString(st.nextToken(), 0, y);
-            }
-        } else {
-            //this is a traditional 'regular-old' label.  Just figure the
-            //size and act accordingly.
-            int height = (int) Math.ceil(g.getFontMetrics().getStringBounds(label, g).getHeight());
-            int width = (int) Math.ceil(g.getFontMetrics().getStringBounds(label, g).getWidth());
-            renderedLabel = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-            Graphics2D rlg = renderedLabel.createGraphics();
-            rlg.setColor(labelColor);
-            rlg.setFont(g.getFont());
-            rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                g.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
-            rlg.drawString(label, 0, height - rlg.getFontMetrics().getDescent());
-        }
-
-        return renderedLabel;
-    }
+	 * Returns the image background color for the given
+	 * {@link GetLegendGraphicRequest}.
+	 * 
+	 * @param req
+	 * @return the Color for the hexadecimal value passed as the
+	 *         <code>BGCOLOR</code>
+	 *         {@link GetLegendGraphicRequest#getLegendOptions() legend option},
+	 *         or the default background color if no bgcolor were passed.
+	 * @deprecated Use {@link LegendUtils#getBackgroundColor(GetLegendGraphicRequest)} instead
+	 */
+	private static Color getBackgroundColor( GetLegendGraphicRequest req ) {
+		return LegendUtils.getBackgroundColor(req);
+	}
+    
+    /**
+	 * @deprecated Use {@link LegendUtils#color(String)} instead
+	 */
+	private static Color color(String hex) throws NumberFormatException {
+		return LegendUtils.color(hex);
+	}
+    
+    /**
+	 * Return a {@link BufferedImage} representing this label.
+	 * The characters '\n' '\r' and '\f' are interpreted as linebreaks,
+	 * as is the character combination "\n" (as opposed to the actual '\n' character).
+	 * This allows people to force line breaks in their labels by
+	 * including the character "\" followed by "n" in their
+	 * label.
+	 *
+	 * @param label - the label to render
+	 * @param g - the Graphics2D that will be used to render this label
+	 * @return a {@link BufferedImage} of the properly rendered label.
+	 * @deprecated Use {@link LegendUtils#renderLabel(String,Graphics2D,GetLegendGraphicRequest)} instead
+	 */
+	public static BufferedImage renderLabel(String label, Graphics2D g, GetLegendGraphicRequest req) {
+		return LegendUtils.renderLabel(label, g, req);
+	}
 
     /**
      * Returns a <code>java.awt.Shape</code> appropiate to render a legend
@@ -599,8 +485,8 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      */
     private LiteShape2 getSampleShape(Symbolizer symbolizer, int legendWidth, int legendHeight) {
         LiteShape2 sampleShape;
-        final float hpad = (legendWidth * hpaddingFactor);
-        final float vpad = (legendHeight * vpaddingFactor);
+        final float hpad = (legendWidth * LegendUtils.hpaddingFactor);
+        final float vpad = (legendHeight * LegendUtils.vpaddingFactor);
 
         if (symbolizer instanceof LineSymbolizer) {
             if (this.sampleLine == null) {
@@ -669,14 +555,13 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      *
      * @throws WmsException
      */
-    private SimpleFeature createSampleFeature(SimpleFeatureType schema)
+    private static SimpleFeature createSampleFeature(SimpleFeatureType schema)
         throws WmsException {
         SimpleFeature sampleFeature;
 
         try {
             sampleFeature = SimpleFeatureBuilder.template(schema, null); 
         } catch (IllegalAttributeException e) {
-            e.printStackTrace();
             throw new WmsException(e);
         }
 
@@ -684,69 +569,38 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     }
 
     /**
-     * Finds the applicable Rules for the given scale denominator.
-     *
-     * @param ftStyles
-     * @param scaleDenominator
-     *
-     * @return
-     */
-    private Rule[] getApplicableRules(FeatureTypeStyle[] ftStyles, double scaleDenominator) {
-        /**
-         * Holds both the rules that apply and the ElseRule's if any, in the
-         * order they appear
-         */
-        final List ruleList = new ArrayList();
-
-        // get applicable rules at the current scale
-        for (int i = 0; i < ftStyles.length; i++) {
-            FeatureTypeStyle fts = ftStyles[i];
-            Rule[] rules = fts.getRules();
-
-            for (int j = 0; j < rules.length; j++) {
-                Rule r = rules[j];
-
-                if (isWithInScale(r, scaleDenominator)) {
-                    ruleList.add(r);
-
-                    /*
-                     * I'm commented this out since I guess it has no sense
-                     * for producing the legend, since wether or not the rule
-                     * has an else filter, the legend is drawn only if the
-                     * scale denominator lies inside the rule's scale range.
-                              if (r.hasElseFilter()) {
-                                  ruleList.add(r);
-                              }
-                     */
-                }
-            }
-        }
-
-        return (Rule[]) ruleList.toArray(new Rule[ruleList.size()]);
-    }
+	 * Finds the applicable Rules for the given scale denominator.
+	 *
+	 * @param ftStyles
+	 * @param scaleDenominator
+	 *
+	 * @return
+	 * @deprecated Use {@link LegendUtils#getApplicableRules(FeatureTypeStyle[],double)} instead
+	 */
+	private static Rule[] getApplicableRules(FeatureTypeStyle[] ftStyles, double scaleDenominator) {
+		return LegendUtils.getApplicableRules(ftStyles, scaleDenominator);
+	}
 
     /**
-     * Checks if a rule can be triggered at the current scale level
-     *
-     * @param r The rule
-     * @param scaleDenominator the scale denominator to check if it is between
-     *        the rule's scale range. -1 means that it allways is.
-     *
-     * @return true if the scale is compatible with the rule settings
-     */
-    private boolean isWithInScale(Rule r, double scaleDenominator) {
-        return (scaleDenominator == -1)
-        || (((r.getMinScaleDenominator() - TOLERANCE) <= scaleDenominator)
-        && ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator));
-    }
+	 * Checks if a rule can be triggered at the current scale level
+	 *
+	 * @param r The rule
+	 * @param scaleDenominator the scale denominator to check if it is between
+	 *        the rule's scale range. -1 means that it allways is.
+	 *
+	 * @return true if the scale is compatible with the rule settings
+	 * @deprecated Use {@link LegendUtils#isWithInScale(Rule,double)} instead
+	 */
+	private static boolean isWithInScale(Rule r, double scaleDenominator) {
+		return LegendUtils.isWithInScale(r, scaleDenominator);
+	}
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return
-     *
-     * @throws IllegalStateException DOCUMENT ME!
-     */
+	 * DOCUMENT ME!
+	 * @return
+	 * @throws IllegalStateException  DOCUMENT ME!
+	 * @uml.property  name="legendGraphic"
+	 */
     public BufferedImage getLegendGraphic() {
         if (this.legendGraphic == null) {
             throw new IllegalStateException();
