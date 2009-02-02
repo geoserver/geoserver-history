@@ -36,6 +36,5 @@ Web.
    security/index
    templates/index
    tutorials/index
-   tips-tricks/index
    extensions/index
    faq/index
