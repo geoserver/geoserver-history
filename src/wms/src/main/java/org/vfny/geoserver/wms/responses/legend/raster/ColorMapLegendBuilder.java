@@ -247,14 +247,17 @@ class ColorMapLegendBuilder {
             int totalWidth = (int) Math.ceil(image.getWidth() + renderedLabel.getWidth());            
             BufferedImage finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
             Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalLegend, hintsMap);
-            int offsetY=0;
+            
+            //center the color element
+            int offsetY=(int)(((totalHeight-image.getHeight())/2.0)+0.5);
             finalGraphics.drawImage(image, 0,offsetY,null);
-           
 
-            offsetY=totalHeight-renderedLabel.getHeight();
+            //center the label
+            offsetY=(int)(((totalHeight-renderedLabel.getHeight())/2.0)+0.5);
             finalGraphics.drawImage(renderedLabel, image.getWidth(),offsetY,null);
+            
             graphics.dispose();
-			return (BufferedImage) finalLegend;	
+			return (BufferedImage) finalLegend;
 		}
 
 
@@ -470,26 +473,48 @@ class ColorMapLegendBuilder {
 	 class ClassesEntryLegendBuilder extends ColorMapEntryLegendBuilder{
 
 			private Color color;
-			private String label;
-//			private boolean leftEdge = false;
 			private double opacity;
 			private double quantity1;
 			private boolean leftEdge;
 			private double quantity2;
+			private boolean hasLabel;
+			private TextManager labelManager;
 			public ClassesEntryLegendBuilder(List<ColorMapEntry> mapEntries) {
 				super(mapEntries);
-				ColorMapEntry ce1 = mapEntries.get(0);
-				ColorMapEntry ce2 = mapEntries.get(1);
-				if(ce1==null)
+				final ColorMapEntry previousCME = mapEntries.get(0);
+				final ColorMapEntry currentCME = mapEntries.get(1);
+				if(previousCME==null)
 					this.leftEdge=true;
 				else
 					this.leftEdge=false;
 			
-				this.color=LegendUtils.color(ce2);
-				this.label=ce2.getLabel();
-				this.quantity1=leftEdge?LegendUtils.getQuantity(ce2):LegendUtils.getQuantity(ce1);
-				this.quantity2=LegendUtils.getQuantity(ce2);
-				this.opacity=LegendUtils.getOpacity(ce2);
+				this.color=LegendUtils.color(currentCME);
+				String label =currentCME.getLabel();
+				this.quantity1=leftEdge?LegendUtils.getQuantity(currentCME):LegendUtils.getQuantity(previousCME);
+				this.quantity2=LegendUtils.getQuantity(currentCME);
+				this.opacity=LegendUtils.getOpacity(currentCME);
+				
+				
+	            String symbol1=null,symbol2=null;
+        		if(leftEdge)
+        			symbol1=" < ";
+        		else
+        		{
+        			symbol1=" <= "; 
+        			symbol2=" < "; 
+        		}
+	            String rule=leftEdge?
+	            		Double.toString(quantity1)+" "+symbol1+" x":
+	            			Double.toString(quantity1)+" "+symbol1+" x "+symbol2+" "+ Double.toString(quantity2)	;
+
+	            		
+	            // add the label the label to the rule so that we draw all text just once 
+	            if(label!=null)
+	            {
+	            	rule+=" "+label;
+	            	hasLabel=true;
+	            }
+	            this.labelManager= new TextManager(rule);
 			}
 
 			@Override
@@ -558,37 +583,21 @@ class ColorMapLegendBuilder {
 		            graphics.setColor(oldColor);
 	            }
 	            
-	            //draw the rule 
+		        ////
+		        //
+	            // DRAW the text 
+		        //
+		        //
+		        ////
 	            //this is a traditional 'regular-old' label.  Just figure the
 		        //size and act accordingly.
-	            final Font oldFont=graphics.getFont();
-	             String symbol1=null,symbol2=null;
-        		if(leftEdge)
-        			symbol1=" < ";
-        		else
-        		{
-        			symbol1=" <= "; 
-        			symbol2=" < "; 
-        		}
-	            String rule=leftEdge?
-	            		Double.toString(quantity1)+" "+symbol1+" x":
-	            			Double.toString(quantity1)+" "+symbol1+" x "+symbol2+" "+ Double.toString(quantity2)	;
-	            // draw the label 
-	            if(label!=null)
-	            	rule+=" "+label;
-	            graphics.setFont(labelFont);
-		        final int labelHeight = (int) Math.ceil(graphics.getFontMetrics().getStringBounds(rule, graphics).getHeight());
-		        final int labelWidth = (int) Math.ceil(graphics.getFontMetrics().getStringBounds(rule, graphics).getWidth());
-		        final BufferedImage renderedLabel = new BufferedImage(labelWidth, labelHeight, BufferedImage.TYPE_INT_ARGB);
-		
+	            final Dimension dimensions = labelManager.computeDimension(graphics);
+		        graphics.dispose();
+		        //now draw
+		        final BufferedImage renderedLabel = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
 		        final Graphics2D rlg = renderedLabel.createGraphics();
-		        rlg.setColor(labelFontColor);
-		        rlg.setFont(graphics.getFont());
-		        rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		        rlg.drawString(rule, 0, labelHeight - rlg.getFontMetrics().getDescent());
-		        rlg.dispose();     
-		        //restore the old font
-		        graphics.setFont(oldFont);
+		        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()));
+		        rlg.dispose();    
 	            
 	            
 	            //merge
@@ -611,7 +620,7 @@ class ColorMapLegendBuilder {
 
 			@Override
 			public boolean isHasLabel() {
-				return label!=null;
+				return hasLabel;
 			}
 			
 		}	 
