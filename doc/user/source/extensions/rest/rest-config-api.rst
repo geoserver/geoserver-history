@@ -3,6 +3,24 @@
 REST Configuration API Reference
 ================================
 
+General notes
+-------------
+
+A ``format`` specifies how a resource should be represented. In a GET
+operation the format specifies what representation of the resource
+should be returned to the client. In a POST or PUT request the format
+specifies which representation of a resource is being sent to the server.
+
+In a GET operation the format is specified via file extension. For example
+consider the resource "foo". To request a representation of foo as XML the 
+request uri would end with "foo.xml". To request as JSON the request uri
+would end with "foo.json". 
+
+In a POST or PUT operation, the format is specified with the ``Content-type``
+header. To send a representation in XML, the content type "text/xml" or
+"application/xml" would be used. To send a representation as JSON the 
+content type "text/json" would be used.
+
 Workspaces
 ----------
 
