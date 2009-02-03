@@ -1,6 +1,8 @@
 package org.geoserver.wcs;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.geoserver.data.test.MockData.*;
+
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
