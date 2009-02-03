@@ -2,6 +2,7 @@ package org.geoserver.wcs;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+import static org.geoserver.data.test.MockData.*;
 
 import java.io.File;
 import java.io.StringReader;
@@ -69,7 +70,7 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testKvpBasic() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-90,-180,90,180,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -86,7 +87,7 @@ public class GetCoverageTest extends WCSTestSupport {
     public void testAntimeridianWorld() throws Exception {
         // for the moment, just make sure we don't die and return something, see 
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.WORLD);
+        final String layerId = layerId(WORLD);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "175,10,-175,20,urn:ogc:def:crs:OGC:1.3:CRS84");
@@ -103,7 +104,7 @@ public class GetCoverageTest extends WCSTestSupport {
     public void testAntimeridianTaz() throws Exception {
         // for the moment, just make sure we don't die and return something, see 
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("store", "false");
@@ -131,7 +132,7 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testWrongFormatParams() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "SuperCoolFormat");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -146,7 +147,7 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testDefaultGridOrigin() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -159,7 +160,7 @@ public class GetCoverageTest extends WCSTestSupport {
     
     public void testWrongGridOrigin() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -175,7 +176,7 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testWrongGridOffsets() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -192,7 +193,7 @@ public class GetCoverageTest extends WCSTestSupport {
     
     public void testNoGridOffsets() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -215,7 +216,7 @@ public class GetCoverageTest extends WCSTestSupport {
     
     public void testGridOffsetsSubsample() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -241,7 +242,7 @@ public class GetCoverageTest extends WCSTestSupport {
      */
     public void testInvalidRangeSubset() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -280,7 +281,7 @@ public class GetCoverageTest extends WCSTestSupport {
 //     disabling tests up until the gt2 code is working again
     public void testRangeSubsetSingle() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -299,7 +300,7 @@ public class GetCoverageTest extends WCSTestSupport {
     
     public void testRangeSubsetMulti() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -313,7 +314,7 @@ public class GetCoverageTest extends WCSTestSupport {
     
     public void testRangeSubsetSwap() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
@@ -327,7 +328,7 @@ public class GetCoverageTest extends WCSTestSupport {
     
     public void testRangeSubsetOnlyInterpolation() throws Exception {
           Map<String, Object> raw = new HashMap<String, Object>();
-          final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+          final String layerId = layerId(TASMANIA_BM);
           raw.put("identifier", layerId);
           raw.put("format", "image/geotiff");
           raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG::4326");
@@ -338,7 +339,7 @@ public class GetCoverageTest extends WCSTestSupport {
     
     public void testRangeSubsetOnlyField() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/geotiff");
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG::4326");
@@ -377,13 +378,13 @@ public class GetCoverageTest extends WCSTestSupport {
     
     public void testStoreSupported() throws Exception {
         String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
-                + layerId(WCSTestSupport.TASMANIA_BM)
+                + layerId(TASMANIA_BM)
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=geotiff&store=true";
         Document dom = getAsDOM(request);
 //        print(dom);
         checkValidationErrors(dom, WCS11_SCHEMA);
-        assertXpathEvaluatesTo(WCSTestSupport.TASMANIA_BM.getLocalPart(),
+        assertXpathEvaluatesTo(TASMANIA_BM.getLocalPart(),
                 "wcs:Coverages/wcs:Coverage/ows:Title", dom);
         
         // grab the file path

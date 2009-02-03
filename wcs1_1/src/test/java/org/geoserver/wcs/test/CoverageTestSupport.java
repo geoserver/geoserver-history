@@ -32,21 +32,7 @@ import org.w3c.dom.Node;
  */
 public abstract class CoverageTestSupport extends KvpRequestReaderTestSupport {
     protected static final String BASEPATH = "wcs";
-
-    public static String WCS_PREFIX = "wcs";
-
-    public static String WCS_URI = "http://www.opengis.net/wcs/1.1.1";
-
-    public static String TIFF = "tiff";
-
-    public static QName TASMANIA_DEM = new QName(WCS_URI, "DEM", WCS_PREFIX);
-
-    public static QName TASMANIA_BM = new QName(WCS_URI, "BlueMarble", WCS_PREFIX);
-    
-    public static QName ROTATED_CAD = new QName(WCS_URI, "RotatedCad", WCS_PREFIX);
-    
-    public static QName WORLD = new QName(WCS_URI, "World", WCS_PREFIX);
-    
+ 
     /**
      * @return The global wfs instance from the application context.
      */
@@ -56,13 +42,6 @@ public abstract class CoverageTestSupport extends KvpRequestReaderTestSupport {
 
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
-        dataDirectory.addCoverage(TASMANIA_DEM, WCSTestSupport.class.getResource("tazdem.tiff"),
-                TIFF, null);
-        dataDirectory.addCoverage(TASMANIA_BM, WCSTestSupport.class.getResource("tazbm.tiff"),
-                TIFF, null);
-        dataDirectory.addCoverage(ROTATED_CAD, WCSTestSupport.class.getResource("rotated.tiff"),
-                TIFF, null);
-        dataDirectory.addCoverage(WORLD, WCSTestSupport.class.getResource("world.tiff"),
-                TIFF, null);
+        dataDirectory.addWellKnownCoverageTypes();
     }
 }

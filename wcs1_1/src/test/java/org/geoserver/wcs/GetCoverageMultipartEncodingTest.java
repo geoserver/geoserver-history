@@ -1,6 +1,7 @@
 package org.geoserver.wcs;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.geoserver.data.test.MockData.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +39,7 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
 
     public void testKvpBasic() throws Exception {
         String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
-                + layerId(WCSTestSupport.TASMANIA_BM)
+                + layerId(TASMANIA_BM)
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=geotiff";
         MockHttpServletResponse response = getAsServletResponse(request);
@@ -58,7 +59,7 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
         // read the xml document into a dom
         Document dom = dom(coveragesPart.getDataHandler().getInputStream());
         checkValidationErrors(dom, WCS11_SCHEMA);
-        assertXpathEvaluatesTo(WCSTestSupport.TASMANIA_BM.getLocalPart(),
+        assertXpathEvaluatesTo(TASMANIA_BM.getLocalPart(),
                 "wcs:Coverages/wcs:Coverage/ows:Title", dom);
 
         // the second part is the actual coverage
@@ -76,7 +77,7 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
      */
     public void testArcgridException() throws Exception {
         String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage&identifier="
-                + layerId(WCSTestSupport.TASMANIA_BM) + "&format=application/arcgrid"
+                + layerId(TASMANIA_BM) + "&format=application/arcgrid"
                 + "&boundingbox=-90,-180,90,180,urn:ogc:def:crs:EPSG:6.6:4326";
         Document dom = getAsDOM(request);
         checkOws11Exception(dom);
@@ -98,7 +99,7 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
 
     public void testTiffOutput() throws Exception {
         String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
-                + layerId(WCSTestSupport.TASMANIA_BM)
+                + layerId(TASMANIA_BM)
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/tiff";
         MockHttpServletResponse response = getAsServletResponse(request);
@@ -118,7 +119,7 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
 
     public void testPngOutput() throws Exception {
         String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
-                + layerId(WCSTestSupport.TASMANIA_BM)
+                + layerId(TASMANIA_BM)
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/png";
         MockHttpServletResponse response = getAsServletResponse(request);
@@ -138,7 +139,7 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
 
     public void testGeotiffNamesGalore() throws Exception {
         String requestBase = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
-                + layerId(WCSTestSupport.TASMANIA_BM)
+                + layerId(TASMANIA_BM)
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326";
         ensureTiffFormat(getAsServletResponse(requestBase + "&format=geotiff"));
