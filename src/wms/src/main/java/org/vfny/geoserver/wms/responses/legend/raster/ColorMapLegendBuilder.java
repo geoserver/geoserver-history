@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GradientPaint;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
@@ -144,66 +143,41 @@ class ColorMapLegendBuilder {
 		
 	}
 	
-	class GradientColorManager extends ColorManager{
+	class GradientColorManager extends SimpleColorManager{
 
-		public GradientColorManager(Color color, double opacity) {
+		private Color previousColor;
+		private boolean leftEdge;
+
+		public GradientColorManager(Color color, double opacity, final Color previousColor) {
 			super(color, opacity);
+			this.previousColor=previousColor;
+			if(this.previousColor!=null)
+				leftEdge=true;
 		}
 
 		@Override
 		public void draw(final Graphics2D graphics, final Rectangle2D clipBox, final boolean completeBorder) {
-			//color fill
-            if(opacity>0){
-            	// OPAQUE
-	            final Color oldColor=graphics.getColor();
-	            final Color newColor= new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity+0.5));
-	            graphics.setColor(newColor);
-	            graphics.fill(clipBox);
-	            //make color customizable
-	            graphics.setColor(Color.BLACK);
-	            if(!completeBorder)
-	            {
-		            
-		            final int minx=(int) (clipBox.getMinX()+0.5);
-		            final int miny=(int) (clipBox.getMinY()+0.5);
-		            final int maxx=(int) (minx+clipBox.getWidth()+0.5);
-		            final int maxy=(int)(miny+clipBox.getHeight()+0.5);	            	
-	            	graphics.drawLine(minx,maxy,maxx,maxy);
-	            }
-	            else
-	            	graphics.draw(clipBox);
-	            //restore color            
-	            graphics.setColor(oldColor);
-            }
-            else
-            {
-            	// TRANSPARENT
-	            final Color oldColor=graphics.getColor();
+            // GRADIENT
+            if(!leftEdge&&previousColor!=null){
+	            //rectangle for the gradient
+	            final Rectangle2D.Double rectLegend= new Rectangle2D.Double(clipBox.getMinX(),clipBox.getMinY(),clipBox.getWidth(),clipBox.getHeight()/2.0);
 	            
-	            //white background
-	            graphics.setColor(Color.white);
-	            graphics.fill(clipBox);
+	            //gradient paint
+	            final Paint oldPaint=graphics.getPaint();
+	            final GradientPaint paint= new GradientPaint(0,0,previousColor,0,(int)(clipBox.getHeight()/2.0),color);
+	            graphics.setPaint(paint);
+	            graphics.fill(rectLegend);
 	            
-	            //now the red cross
-	            graphics.setColor(Color.RED);
-	            final int minx=(int) (clipBox.getMinX()+0.5);
-	            final int miny=(int) (clipBox.getMinY()+0.5);
-	            final int maxx=(int) (minx+clipBox.getWidth()+0.5);
-	            final int maxy=(int)(miny+clipBox.getHeight()+0.5);
-	            graphics.drawLine(minx,miny,maxx,maxy);
-	            graphics.drawLine(minx,maxy,maxx,miny);
+	            //restore paint            
+	            graphics.setPaint(oldPaint);
 	            
-	            graphics.setColor(Color.BLACK);
-	            if(!completeBorder)
-	            {
-	            	graphics.drawLine(minx,maxy,maxx,maxy);
-	            }
-	            else
-	            	graphics.draw(clipBox);
-
-	            //restore color            
-	            graphics.setColor(oldColor);
-            }
+            }		
+            
+            final Rectangle2D rectLegend  = new Rectangle2D.Double(
+            		clipBox.getMinX(),!leftEdge?(int)(clipBox.getHeight()/2.0):0,clipBox.getWidth(),!leftEdge?(int)(clipBox.getHeight()/2.0):clipBox.getHeight());
+            super.draw(graphics, rectLegend, completeBorder);
+            
+            
 			
 		}
 		
@@ -365,13 +339,11 @@ class ColorMapLegendBuilder {
 	}
 	 class RampColorMapEntryLegendBuilder extends ColorMapEntryLegendBuilder{
 
-		private Color previousColor;
 		private boolean leftEdge;
-		private double opacity;
 		private double quantity;
-		private Color color;
 		private TextManager labelManager;
 		private boolean hasLabel;
+		private GradientColorManager colorManager;
 
 		public RampColorMapEntryLegendBuilder(List<ColorMapEntry> mapEntries) {
 			super(mapEntries);
@@ -383,18 +355,19 @@ class ColorMapLegendBuilder {
 			else
 				this.leftEdge=false;
 		
+			Color previousColor;
 			if(!leftEdge){
-				this.previousColor=LegendUtils.color(previousCME);
+				previousColor=LegendUtils.color(previousCME);
 				final double opacity=LegendUtils.getOpacity(previousCME);
-				this.previousColor=new Color(previousColor.getRed(),previousColor.getGreen(),previousColor.getBlue(),(int) (255*opacity+0.5));
+				previousColor=new Color(previousColor.getRed(),previousColor.getGreen(),previousColor.getBlue(),(int) (255*opacity+0.5));
 			}
 			else
 				previousColor=null;
 			
-			this.color=LegendUtils.color(currentCME);
-			this.opacity=LegendUtils.getOpacity(currentCME);	
-			this.color=new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
-			
+			Color color = LegendUtils.color(currentCME);
+			double opacity = LegendUtils.getOpacity(currentCME);	
+			color=new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
+			this.colorManager= new GradientColorManager(color,opacity,previousColor);
 			
 			
 			String label = currentCME.getLabel();
@@ -473,72 +446,7 @@ class ColorMapLegendBuilder {
             graphics = ImageUtils.prepareTransparency(transparent, backgroundColor, image, hintsMap);
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);            
             
-            // GRADIENT
-            if(!leftEdge){
-	            //rectangle for the gradient
-	            final Rectangle2D.Double rectLegend= new Rectangle2D.Double(hpad,0,wLegend,hLegend/2.0);
-	            
-	            //gradient paint
-	            final Paint oldPaint=graphics.getPaint();
-	            final GradientPaint paint= new GradientPaint(0,0,previousColor,0,(int)(hLegend/2.0),color);
-	            graphics.setPaint(paint);
-	            graphics.fill(rectLegend);
-	            
-	            //restore paint            
-	            graphics.setPaint(oldPaint);
-	            
-            }
-           
-            ////
-            //
-            // prepare the padding and set up the dimensions
-            //
-            ////
-            //rectangle for the legend
-            final Rectangle2D rectLegend  = new Rectangle2D.Double(hpad,!leftEdge?(int)(hLegend/2.0):0,wLegend,!leftEdge?(int)(hLegend/2.0):hLegend);
-            
-            //color fill
-            if(opacity>0){
-            	// OPAQUE
-	            final Color oldColor=graphics.getColor();
-	            final Color newColor= new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity+0.5));
-	            graphics.setColor(newColor);
-	            graphics.fill(rectLegend);
-	            //make color customizable
-	            graphics.setColor(Color.BLACK);
-	            final int minx=(int) (rectLegend.getMinX()+0.5);
-	            final int miny=(int) (rectLegend.getMinY()+0.5);
-	            final int maxx=(int) (minx+rectLegend.getWidth()+0.5)-1;
-	            final int maxy=(int)(miny+rectLegend.getHeight()+0.5)-1;
-	            graphics.drawLine(minx,maxy,maxx,maxy);
-	            //restore color            
-	            graphics.setColor(oldColor);
-            }
-            else
-            {
-            	// TRANSPARENT
-	            final Color oldColor=graphics.getColor();
-	            
-	            //white background
-	            graphics.setColor(Color.white);
-	            graphics.fill(rectLegend);
-	            
-	            //now the red cross
-	            graphics.setColor(Color.RED);
-	            final int minx=(int) (rectLegend.getMinX()+0.5);
-	            final int miny=(int) (rectLegend.getMinY()+0.5);
-	            final int maxx=(int) (minx+rectLegend.getWidth()+0.5)-1;
-	            final int maxy=(int)(miny+rectLegend.getHeight()+0.5)-1;
-	            graphics.drawLine(minx,miny,maxx,maxy);
-	            graphics.drawLine(minx,maxy,maxx,miny);
-	            
-	            graphics.setColor(Color.BLACK);
-	            graphics.drawLine(minx,maxy,maxx,maxy);
-
-	            //restore color            
-	            graphics.setColor(oldColor);
-            }
-            
+            colorManager.draw(graphics, new Rectangle2D.Double(0,0,wLegend,hLegend), false);
             
 	        ////
 	        //
