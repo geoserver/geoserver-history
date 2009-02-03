@@ -185,6 +185,15 @@ public class MockData implements TestData {
     public static QName AGGREGATEGEOFEATURE = new QName(SF_URI, "AggregateGeoFeature", SF_PREFIX);
     public static QName GENERICENTITY = new QName(SF_URI, "GenericEntity", SF_PREFIX);
 
+    // WCS 1.1
+    public static String WCS_PREFIX = "wcs";
+    public static String WCS_URI = "http://www.opengis.net/wcs/1.1.1";
+    public static QName TASMANIA_DEM = new QName(WCS_URI, "DEM", WCS_PREFIX);
+    public static QName TASMANIA_BM = new QName(WCS_URI, "BlueMarble", WCS_PREFIX);
+    public static QName ROTATED_CAD = new QName(WCS_URI, "RotatedCad", WCS_PREFIX);
+    public static QName WORLD = new QName(WCS_URI, "World", WCS_PREFIX);
+    public static String TIFF = "tiff";
+    
     // DEFAULT
     public static String DEFAULT_PREFIX = "gs";
     public static String DEFAULT_URI = "http://geoserver.org";
@@ -417,6 +426,20 @@ public class MockData implements TestData {
             }
             addPropertiesType(name, properties, Collections.singletonMap(KEY_STYLE, styleName));
         }
+    }
+    
+    /**
+     * Adds the "well known" coverage types to the data directory.
+     */
+    public void addWellKnownCoverageTypes() throws Exception {
+        addCoverage(TASMANIA_DEM, TestData.class.getResource("tazdem.tiff"),
+                TIFF, null);
+        addCoverage(TASMANIA_BM, TestData.class.getResource("tazbm.tiff"),
+                TIFF, null);
+        addCoverage(ROTATED_CAD, TestData.class.getResource("rotated.tiff"),
+                TIFF, null);
+        addCoverage(WORLD, TestData.class.getResource("world.tiff"),
+                TIFF, null);
     }
     
     /**
