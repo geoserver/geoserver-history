@@ -330,29 +330,29 @@ public class LegendUtils {
 	    return renderedLabel;
 	}
 	/**
-	 * @param image
+	 * @param left
 	 * @param hintsMap
 	 * @param graphics
-	 * @param renderedLabel
+	 * @param right
 	 * @return
 	 */
-	public static BufferedImage mergeBufferedImages(final BufferedImage image,
+	public static BufferedImage mergeBufferedImages(final BufferedImage left,
 			final Map<Key, Object> hintsMap, final Graphics2D graphics,
-			final BufferedImage renderedLabel, final boolean transparent,final Color backgroundColor,final boolean vCenter) {
-		int totalHeight =  (int) Math.ceil(Math.max(renderedLabel.getHeight(), image.getHeight()));
-        int totalWidth = (int) Math.ceil(image.getWidth() + renderedLabel.getWidth());            
-        BufferedImage finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
-        Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalLegend, hintsMap);
+			final BufferedImage right, final boolean transparent,final Color backgroundColor,final boolean vCenter) {
+		final int totalHeight =  (int) Math.ceil(Math.max(right.getHeight(), left.getHeight()));
+		final int totalWidth = (int) Math.ceil(left.getWidth() + right.getWidth());            
+        final BufferedImage finalImage = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
+        final Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalImage, hintsMap);
         
-        //center the color element
-        int offsetY=vCenter?(int)(((totalHeight-image.getHeight())/2.0)+0.5):0;;
-        finalGraphics.drawImage(image, 0,offsetY,null);
+        //place the first element
+        int offsetY=vCenter?(int)(((totalHeight-left.getHeight())/2.0)+0.5):0;;
+        finalGraphics.drawImage(left, 0,offsetY,null);
 
-        //center the label
-        offsetY=vCenter?(int)(((totalHeight-renderedLabel.getHeight())/2.0)+0.5):totalHeight-renderedLabel.getHeight();
-        finalGraphics.drawImage(renderedLabel, image.getWidth(),offsetY,null);
+        ///place the second element
+        offsetY=vCenter?(int)(((totalHeight-right.getHeight())/2.0)+0.5):totalHeight-right.getHeight();
+        finalGraphics.drawImage(right, left.getWidth(),offsetY,null);
         
         graphics.dispose();
-		return (BufferedImage) finalLegend;
+		return (BufferedImage) finalImage;
 	}
 }

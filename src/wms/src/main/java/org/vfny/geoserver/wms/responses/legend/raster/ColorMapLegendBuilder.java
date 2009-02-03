@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GradientPaint;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
@@ -62,6 +63,151 @@ class ColorMapLegendBuilder {
 			}
 		}		
 	}
+	
+	abstract class ColorManager{
+		
+		protected final Color color;
+		protected final double opacity;
+
+		public ColorManager(final Color color, final double opacity) {
+			this.opacity=opacity;
+			this.color = color;
+		}
+		
+		
+		public abstract void draw(final Graphics2D graphics,final Rectangle2D clipBox, final boolean completeBorder);
+
+	}
+	
+	class SimpleColorManager extends ColorManager{
+
+		public SimpleColorManager(Color color, double opacity) {
+			super(color, opacity);
+		}
+
+		@Override
+		public void draw(final Graphics2D graphics, final Rectangle2D clipBox, final boolean completeBorder) {
+			//color fill
+            if(opacity>0){
+            	// OPAQUE
+	            final Color oldColor=graphics.getColor();
+	            final Color newColor= new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity+0.5));
+	            graphics.setColor(newColor);
+	            graphics.fill(clipBox);
+	            //make color customizable
+	            graphics.setColor(Color.BLACK);
+	            if(!completeBorder)
+	            {
+		            
+		            final int minx=(int) (clipBox.getMinX()+0.5);
+		            final int miny=(int) (clipBox.getMinY()+0.5);
+		            final int maxx=(int) (minx+clipBox.getWidth()+0.5);
+		            final int maxy=(int)(miny+clipBox.getHeight()+0.5);	            	
+	            	graphics.drawLine(minx,maxy,maxx,maxy);
+	            }
+	            else
+	            	graphics.draw(clipBox);
+	            //restore color            
+	            graphics.setColor(oldColor);
+            }
+            else
+            {
+            	// TRANSPARENT
+	            final Color oldColor=graphics.getColor();
+	            
+	            //white background
+	            graphics.setColor(Color.white);
+	            graphics.fill(clipBox);
+	            
+	            //now the red cross
+	            graphics.setColor(Color.RED);
+	            final int minx=(int) (clipBox.getMinX()+0.5);
+	            final int miny=(int) (clipBox.getMinY()+0.5);
+	            final int maxx=(int) (minx+clipBox.getWidth()+0.5);
+	            final int maxy=(int)(miny+clipBox.getHeight()+0.5);
+	            graphics.drawLine(minx,miny,maxx,maxy);
+	            graphics.drawLine(minx,maxy,maxx,miny);
+	            
+	            graphics.setColor(Color.BLACK);
+	            if(!completeBorder)
+	            {
+	            	graphics.drawLine(minx,maxy,maxx,maxy);
+	            }
+	            else
+	            	graphics.draw(clipBox);
+
+	            //restore color            
+	            graphics.setColor(oldColor);
+            }
+			
+		}
+		
+	}
+	
+	class GradientColorManager extends ColorManager{
+
+		public GradientColorManager(Color color, double opacity) {
+			super(color, opacity);
+		}
+
+		@Override
+		public void draw(final Graphics2D graphics, final Rectangle2D clipBox, final boolean completeBorder) {
+			//color fill
+            if(opacity>0){
+            	// OPAQUE
+	            final Color oldColor=graphics.getColor();
+	            final Color newColor= new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity+0.5));
+	            graphics.setColor(newColor);
+	            graphics.fill(clipBox);
+	            //make color customizable
+	            graphics.setColor(Color.BLACK);
+	            if(!completeBorder)
+	            {
+		            
+		            final int minx=(int) (clipBox.getMinX()+0.5);
+		            final int miny=(int) (clipBox.getMinY()+0.5);
+		            final int maxx=(int) (minx+clipBox.getWidth()+0.5);
+		            final int maxy=(int)(miny+clipBox.getHeight()+0.5);	            	
+	            	graphics.drawLine(minx,maxy,maxx,maxy);
+	            }
+	            else
+	            	graphics.draw(clipBox);
+	            //restore color            
+	            graphics.setColor(oldColor);
+            }
+            else
+            {
+            	// TRANSPARENT
+	            final Color oldColor=graphics.getColor();
+	            
+	            //white background
+	            graphics.setColor(Color.white);
+	            graphics.fill(clipBox);
+	            
+	            //now the red cross
+	            graphics.setColor(Color.RED);
+	            final int minx=(int) (clipBox.getMinX()+0.5);
+	            final int miny=(int) (clipBox.getMinY()+0.5);
+	            final int maxx=(int) (minx+clipBox.getWidth()+0.5);
+	            final int maxy=(int)(miny+clipBox.getHeight()+0.5);
+	            graphics.drawLine(minx,miny,maxx,maxy);
+	            graphics.drawLine(minx,maxy,maxx,miny);
+	            
+	            graphics.setColor(Color.BLACK);
+	            if(!completeBorder)
+	            {
+	            	graphics.drawLine(minx,maxy,maxx,maxy);
+	            }
+	            else
+	            	graphics.draw(clipBox);
+
+	            //restore color            
+	            graphics.setColor(oldColor);
+            }
+			
+		}
+		
+	}	
 	
 	/**
 	 * 
@@ -127,23 +273,23 @@ class ColorMapLegendBuilder {
 	}
 	 class SingleColorMapEntryLegendBuilder extends ColorMapEntryLegendBuilder{
 		
-		private Color color;
-		private double quantity;
-		private double opacity;
 		private boolean hasLabel;
 		private TextManager labelManager;
+		private SimpleColorManager colorManager;
 
 		public SingleColorMapEntryLegendBuilder(List<ColorMapEntry> cMapEntries) {
 			super(cMapEntries);
-			ColorMapEntry currentCME = cMapEntries.get(0);
-			this.color=LegendUtils.color(currentCME);
-			String label = currentCME.getLabel();
-			this.quantity=LegendUtils.getQuantity(currentCME);
-			this.opacity=LegendUtils.getOpacity(currentCME);
+			final ColorMapEntry currentCME = cMapEntries.get(0);
+			Color color = LegendUtils.color(currentCME);
+			final double opacity = LegendUtils.getOpacity(currentCME);
+			color=new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
+			this.colorManager= new SimpleColorManager(color,opacity);
 			
-			String symbol = " = "; 
+
+			final String label = currentCME.getLabel();
+			final double quantity = LegendUtils.getQuantity(currentCME);
+			final String symbol = " = "; 
             String rule = Double.toString(quantity)+" "+symbol+" x";
-            		
             // add the label the label to the rule so that we draw all text just once 
             if(label!=null)
             {
@@ -182,44 +328,7 @@ class ColorMapLegendBuilder {
             final float hLegend = height - (2 * vpad);
             //rectangle for the legend
             final Rectangle2D.Double rectLegend= new Rectangle2D.Double(hpad,vpad,wLegend,hLegend);
-            
-            //color fill
-            if(opacity>0){
-            	// OPAQUE
-	            final Color oldColor=graphics.getColor();
-	            final Color newColor= new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
-	            graphics.setColor(newColor);
-	            graphics.fill(rectLegend);
-	            //make color customizable
-	            graphics.setColor(Color.BLACK);
-	            graphics.draw(rectLegend);
-	            //restore color            
-	            graphics.setColor(oldColor);
-            }
-            else
-            {
-            	// TRANSPARENT
-	            final Color oldColor=graphics.getColor();
-	            
-	            //white background
-	            graphics.setColor(Color.white);
-	            graphics.fill(rectLegend);
-	            
-	            //now the red corss
-	            graphics.setColor(Color.RED);
-	            final int minx=(int) (rectLegend.x+0.5);
-	            final int miny=(int) (rectLegend.y+0.5);
-	            final int maxx=(int) (minx+rectLegend.width+0.5)-1;
-	            final int maxy=(int)(miny+rectLegend.height+0.5)-1;
-	            graphics.drawLine(minx,miny,maxx,maxy);
-	            graphics.drawLine(minx,maxy,maxx,miny);
-	            
-	            //make color customizable
-	            graphics.setColor(Color.BLACK);
-	            graphics.draw(rectLegend);
-	            //restore color            
-	            graphics.setColor(oldColor);
-            }
+            colorManager.draw(graphics, rectLegend,true);
             
 	        ////
 	        //
@@ -283,12 +392,13 @@ class ColorMapLegendBuilder {
 				previousColor=null;
 			
 			this.color=LegendUtils.color(currentCME);
+			this.opacity=LegendUtils.getOpacity(currentCME);	
+			this.color=new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
 			
 			
 			
 			String label = currentCME.getLabel();
 			this.quantity=LegendUtils.getQuantity(currentCME);
-			this.opacity=LegendUtils.getOpacity(currentCME);	
 			
 			String symbol = leftEdge?" > ":" = "; 
             String rule = leftEdge?
@@ -370,8 +480,7 @@ class ColorMapLegendBuilder {
 	            
 	            //gradient paint
 	            final Paint oldPaint=graphics.getPaint();
-	            final Color newColor= new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity+0.5));
-	            final GradientPaint paint= new GradientPaint(0,0,previousColor,0,(int)(hLegend/2.0),newColor);
+	            final GradientPaint paint= new GradientPaint(0,0,previousColor,0,(int)(hLegend/2.0),color);
 	            graphics.setPaint(paint);
 	            graphics.fill(rectLegend);
 	            
@@ -386,7 +495,7 @@ class ColorMapLegendBuilder {
             //
             ////
             //rectangle for the legend
-            final Rectangle2D.Double rectLegend  = new Rectangle2D.Double(hpad,!leftEdge?(int)(hLegend/2.0):0,wLegend,!leftEdge?(int)(hLegend/2.0):hLegend);
+            final Rectangle2D rectLegend  = new Rectangle2D.Double(hpad,!leftEdge?(int)(hLegend/2.0):0,wLegend,!leftEdge?(int)(hLegend/2.0):hLegend);
             
             //color fill
             if(opacity>0){
@@ -397,10 +506,10 @@ class ColorMapLegendBuilder {
 	            graphics.fill(rectLegend);
 	            //make color customizable
 	            graphics.setColor(Color.BLACK);
-	            final int minx=(int) (rectLegend.x+0.5);
-	            final int miny=(int) (rectLegend.y+0.5);
-	            final int maxx=(int) (minx+rectLegend.width+0.5)-1;
-	            final int maxy=(int)(miny+rectLegend.height+0.5)-1;
+	            final int minx=(int) (rectLegend.getMinX()+0.5);
+	            final int miny=(int) (rectLegend.getMinY()+0.5);
+	            final int maxx=(int) (minx+rectLegend.getWidth()+0.5)-1;
+	            final int maxy=(int)(miny+rectLegend.getHeight()+0.5)-1;
 	            graphics.drawLine(minx,maxy,maxx,maxy);
 	            //restore color            
 	            graphics.setColor(oldColor);
@@ -416,10 +525,10 @@ class ColorMapLegendBuilder {
 	            
 	            //now the red cross
 	            graphics.setColor(Color.RED);
-	            final int minx=(int) (rectLegend.x+0.5);
-	            final int miny=(int) (rectLegend.y+0.5);
-	            final int maxx=(int) (minx+rectLegend.width+0.5)-1;
-	            final int maxy=(int)(miny+rectLegend.height+0.5)-1;
+	            final int minx=(int) (rectLegend.getMinX()+0.5);
+	            final int miny=(int) (rectLegend.getMinY()+0.5);
+	            final int maxx=(int) (minx+rectLegend.getWidth()+0.5)-1;
+	            final int maxy=(int)(miny+rectLegend.getHeight()+0.5)-1;
 	            graphics.drawLine(minx,miny,maxx,maxy);
 	            graphics.drawLine(minx,maxy,maxx,miny);
 	            
@@ -449,13 +558,12 @@ class ColorMapLegendBuilder {
 	 
 	 class ClassesEntryLegendBuilder extends ColorMapEntryLegendBuilder{
 
-			private Color color;
-			private double opacity;
 			private double quantity1;
 			private boolean leftEdge;
 			private double quantity2;
 			private boolean hasLabel;
 			private TextManager labelManager;
+			private SimpleColorManager colorManager;
 			public ClassesEntryLegendBuilder(List<ColorMapEntry> mapEntries) {
 				super(mapEntries);
 				final ColorMapEntry previousCME = mapEntries.get(0);
@@ -465,13 +573,16 @@ class ColorMapLegendBuilder {
 				else
 					this.leftEdge=false;
 			
-				this.color=LegendUtils.color(currentCME);
+				Color color = LegendUtils.color(currentCME);
+				final double opacity = LegendUtils.getOpacity(currentCME);
+				color=new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
+				this.colorManager= new SimpleColorManager(color,opacity);
+
+
+				
 				String label =currentCME.getLabel();
 				this.quantity1=leftEdge?LegendUtils.getQuantity(currentCME):LegendUtils.getQuantity(previousCME);
 				this.quantity2=LegendUtils.getQuantity(currentCME);
-				this.opacity=LegendUtils.getOpacity(currentCME);
-				
-				
 	            String symbol1=null,symbol2=null;
         		if(leftEdge)
         			symbol1=" < ";
@@ -522,43 +633,8 @@ class ColorMapLegendBuilder {
 	            //rectangle for the legend
 	            final Rectangle2D.Double rectLegend= new Rectangle2D.Double(hpad,vpad,wLegend,hLegend);
 	            
-	            //color fill
-	            if(opacity>0){
-	            	// OPAQUE
-		            final Color oldColor=graphics.getColor();
-		            final Color newColor= new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
-		            graphics.setColor(newColor);
-		            graphics.fill(rectLegend);
-		            //make color customizable
-		            graphics.setColor(Color.BLACK);
-		            graphics.draw(rectLegend);
-		            //restore color            
-		            graphics.setColor(oldColor);
-	            }
-	            else
-	            {
-	            	// TRANSPARENT
-		            final Color oldColor=graphics.getColor();
-		            
-		            //white background
-		            graphics.setColor(Color.white);
-		            graphics.fill(rectLegend);
-		            
-		            //now the red corss
-		            graphics.setColor(Color.RED);
-		            final int minx=(int) (rectLegend.x+0.5);
-		            final int miny=(int) (rectLegend.y+0.5);
-		            final int maxx=(int) (minx+rectLegend.width+0.5)-1;
-		            final int maxy=(int)(miny+rectLegend.height+0.5)-1;
-		            graphics.drawLine(minx,miny,maxx,maxy);
-		            graphics.drawLine(minx,maxy,maxx,miny);
-		            
-		            //make color customizable
-		            graphics.setColor(Color.BLACK);
-		            graphics.draw(rectLegend);
-		            //restore color            
-		            graphics.setColor(oldColor);
-	            }
+
+	            colorManager.draw(graphics, rectLegend,true);
 	            
 		        ////
 		        //
