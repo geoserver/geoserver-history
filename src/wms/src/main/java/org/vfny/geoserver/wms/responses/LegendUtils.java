@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.RenderingHints.Key;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -327,5 +329,30 @@ public class LegendUtils {
 	
 	    return renderedLabel;
 	}
+	/**
+	 * @param image
+	 * @param hintsMap
+	 * @param graphics
+	 * @param renderedLabel
+	 * @return
+	 */
+	public static BufferedImage mergeBufferedImages(final BufferedImage image,
+			final Map<Key, Object> hintsMap, final Graphics2D graphics,
+			final BufferedImage renderedLabel, final boolean transparent,final Color backgroundColor,final boolean vCenter) {
+		int totalHeight =  (int) Math.ceil(Math.max(renderedLabel.getHeight(), image.getHeight()));
+        int totalWidth = (int) Math.ceil(image.getWidth() + renderedLabel.getWidth());            
+        BufferedImage finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
+        Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalLegend, hintsMap);
+        
+        //center the color element
+        int offsetY=vCenter?(int)(((totalHeight-image.getHeight())/2.0)+0.5):0;;
+        finalGraphics.drawImage(image, 0,offsetY,null);
 
+        //center the label
+        offsetY=vCenter?(int)(((totalHeight-renderedLabel.getHeight())/2.0)+0.5):totalHeight-renderedLabel.getHeight();
+        finalGraphics.drawImage(renderedLabel, image.getWidth(),offsetY,null);
+        
+        graphics.dispose();
+		return (BufferedImage) finalLegend;
+	}
 }
