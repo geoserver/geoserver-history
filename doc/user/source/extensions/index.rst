@@ -12,7 +12,7 @@ the vanilla GeoServer distribution.
    geosearch/
    imagemap/
    ogr/
-   rest/
+   rest/index
    styler/
    wfsv/
 
