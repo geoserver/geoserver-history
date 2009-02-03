@@ -243,21 +243,8 @@ class ColorMapLegendBuilder {
             // merge
 	        //
 	        ////
-            int totalHeight =  (int) Math.ceil(Math.max(renderedLabel.getHeight(), image.getHeight()));
-            int totalWidth = (int) Math.ceil(image.getWidth() + renderedLabel.getWidth());            
-            BufferedImage finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
-            Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalLegend, hintsMap);
-            
-            //center the color element
-            int offsetY=(int)(((totalHeight-image.getHeight())/2.0)+0.5);
-            finalGraphics.drawImage(image, 0,offsetY,null);
-
-            //center the label
-            offsetY=(int)(((totalHeight-renderedLabel.getHeight())/2.0)+0.5);
-            finalGraphics.drawImage(renderedLabel, image.getWidth(),offsetY,null);
-            
-            graphics.dispose();
-			return (BufferedImage) finalLegend;
+            return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,
+					renderedLabel,transparent,backgroundColor,true);
 		}
 
 
@@ -449,18 +436,8 @@ class ColorMapLegendBuilder {
             // merge
 	        //
 	        ////
-            int totalHeight =  (int) Math.ceil(Math.max(renderedLabel.getHeight(), image.getHeight()));
-            int totalWidth = (int) Math.ceil(image.getWidth() + renderedLabel.getWidth());            
-            BufferedImage finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
-            Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalLegend, hintsMap);
-            int offsetY=0;
-            finalGraphics.drawImage(image, 0,offsetY,null);
-           
-
-            offsetY=totalHeight-renderedLabel.getHeight();
-            finalGraphics.drawImage(renderedLabel, image.getWidth(),offsetY,null);
-            graphics.dispose();
-			return (BufferedImage) finalLegend;	
+            return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,
+					renderedLabel,transparent,backgroundColor,false);
 		}
 
 		@Override
@@ -600,24 +577,18 @@ class ColorMapLegendBuilder {
 		        rlg.dispose();    
 	            
 	            
-	            //merge
-	            int totalHeight =  (int) Math.ceil(Math.max(renderedLabel.getHeight(), image.getHeight()));
-	            int totalWidth = (int) Math.ceil(image.getWidth() + renderedLabel.getWidth());            
-	            BufferedImage finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
-	            Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalLegend, hintsMap);
-	            
-	            //center the color element
-	            int offsetY=(int)(((totalHeight-image.getHeight())/2.0)+0.5);
-	            finalGraphics.drawImage(image, 0,offsetY,null);
-
-	            //center the label
-	            offsetY=(int)(((totalHeight-renderedLabel.getHeight())/2.0)+0.5);
-	            finalGraphics.drawImage(renderedLabel, image.getWidth(),offsetY,null);
-	            
-	            graphics.dispose();
-				return (BufferedImage) finalLegend;
+		        ////
+		        //
+	            // merge
+		        //
+		        ////
+	            return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,
+						renderedLabel,transparent,backgroundColor,true);
 			}
 
+
+
+			
 			@Override
 			public boolean isHasLabel() {
 				return hasLabel;
