@@ -27,7 +27,7 @@ public class NamespaceInfoImpl implements NamespaceInfo {
 
     Catalog catalog;
     
-    HashMap<String,Serializable> metadata;
+    HashMap<String,Serializable> metadata = new HashMap();
     
     public NamespaceInfoImpl(Catalog catalog) {
         this.catalog = catalog;
