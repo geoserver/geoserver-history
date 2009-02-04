@@ -6,11 +6,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.config.CoverageConfig;
@@ -25,7 +29,8 @@ public class VirtualLayerResource extends MapResource {
 
     DataConfig myDataConfig;
 
-    public VirtualLayerResource(Data d, DataConfig dc) {
+    public VirtualLayerResource(Data d, DataConfig dc, Context context, Request request, Response response) {
+        super(context,request,response);
         myData = d;
         myDataConfig = dc;
     }
@@ -46,13 +51,15 @@ public class VirtualLayerResource extends MapResource {
         return myDataConfig;
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         HashMap m = new HashMap();
 
         m.put("html", new FreemarkerFormat("HTMLTemplates/vlayer.ftl",
                 getClass(), MediaType.TEXT_HTML));
-        m.put("xml", new AutoXMLFormat());
-        m.put("json", new JSONFormat());
+        m.put("xml", new MapXMLFormat());
+        m.put("json", new MapJSONFormat());
         m.put(null, m.get("xml"));
 
         return m;

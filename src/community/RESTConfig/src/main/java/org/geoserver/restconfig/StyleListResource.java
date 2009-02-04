@@ -17,9 +17,10 @@ import org.restlet.data.Response;
 import org.vfny.geoserver.config.DataConfig;
 
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 
 
 /**
@@ -31,7 +32,6 @@ class StyleListResource extends MapResource {
     private DataConfig myDC;
 
     public StyleListResource(){
-        super();
     }
 
     public StyleListResource(Context context, Request request, Response response,
@@ -61,16 +61,18 @@ class StyleListResource extends MapResource {
         }
 
         templateContext.put("styles", styleList);
-        templateContext.put("page", getPageDetails());
+        templateContext.put("page", getPageInfo());
 
         return templateContext;
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
         m.put("html", new FreemarkerFormat("HTMLTemplates/styles.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat());
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat());
         m.put(null, m.get("html"));
 
         return m;

@@ -18,7 +18,8 @@ import org.restlet.data.Response;
 import org.restlet.data.MediaType;
 
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
 
 
 /**
@@ -29,7 +30,14 @@ import org.geoserver.rest.FreemarkerFormat;
  * @author David Winslow <dwinslow@openplans.org>
  */
 class DataStoreIndexResource extends MapResource {
-    public Map getSupportedFormats() {
+    public DataStoreIndexResource(Context context, Request request,
+            Response response) {
+        super(context, request, response);
+    }
+
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
 
         m.put("html", new FreemarkerFormat("HTMLTemplates/datastoreindex.ftl", getClass(), MediaType.TEXT_HTML));

@@ -3,7 +3,7 @@
 All known datastores:
 <ul>
 <#list datastores as datastore>
-  <li><a href="${page.currentURL}/${datastore}">${datastore}</a>
+  <li><a href="${page.pageURI}/${datastore}">${datastore}</a>
   </li>
 </#list>
 </ul>

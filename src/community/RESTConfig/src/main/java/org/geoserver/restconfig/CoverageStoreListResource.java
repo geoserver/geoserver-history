@@ -14,15 +14,16 @@ import org.restlet.data.MediaType;
 import org.vfny.geoserver.config.DataConfig;
 
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 
 public class CoverageStoreListResource extends MapResource {
     private DataConfig myDataConfig;
 
-    public CoverageStoreListResource(){
-        super();
+    public CoverageStoreListResource(Context context,Request request, Response response){
+        super(context,request,response);
     }
 
     public CoverageStoreListResource(Context context, Request request, Response response,
@@ -48,11 +49,12 @@ public class CoverageStoreListResource extends MapResource {
     }
 
     @Override
-    public Map getSupportedFormats() {
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
         m.put("html", new FreemarkerFormat("HTMLTemplates/coveragestores.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("coveragestores"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat("coveragestores"));
         m.put(null, m.get("html"));
 
         return m;

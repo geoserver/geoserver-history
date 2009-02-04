@@ -6,7 +6,7 @@
 <h2> Coverage Stores </h2>
 <ul>
 <#list coveragestores as store>
-<li> <a href="${page.currentURL}/${store}">${store}</a> </li>
+<li> <a href="${page.pageURI}/${store}">${store}</a> </li>
 </#list>
 </ul>
 </body>

@@ -3,14 +3,14 @@
 <li> Configured FeatureTypes 
 <ul>
 <#list Configured as ft>
-<li> <a href="${page.currentURL}/${ft}">${ft}</a> </li>
+<li> <a href="${page.pageURI}/${ft}">${ft}</a> </li>
 </#list>
 </ul>
 </li>
 <li> Unconfigured FeatureTypes 
 <ul>
 <#list Available as ft>
-<li> <a href="${page.currentURL}/${ft}">${ft}</a> </li>
+<li> <a href="${page.pageURI}/${ft}">${ft}</a> </li>
 </#list>
 </ul>
 </li>

@@ -10,11 +10,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 import org.vfny.geoserver.config.DataConfig;
 
 /**
@@ -25,16 +29,19 @@ import org.vfny.geoserver.config.DataConfig;
 public class CoverageListResource extends MapResource {
     private DataConfig myDC;
 
-    public CoverageListResource(DataConfig dc){
+    public CoverageListResource(DataConfig dc,Context context, Request request, Response response){
+        super( context, request, response );
         setDataConfig(dc);
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
 
         m.put("html", new FreemarkerFormat("HTMLTemplates/coverages.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("coveragestore"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat("coveragestore"));
         m.put(null, m.get("html"));
 
         return m;

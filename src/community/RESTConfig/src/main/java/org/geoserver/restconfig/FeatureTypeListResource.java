@@ -18,12 +18,16 @@ import org.geotools.data.DataStore;
 
 import javax.servlet.ServletContext;
 
+import org.restlet.Context;
 import org.restlet.data.MediaType;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 
 /**
  * Restlet for DataStore resources
@@ -33,7 +37,8 @@ import org.geoserver.rest.JSONFormat;
 public class FeatureTypeListResource extends MapResource {
     private DataConfig myDC;
 
-    public FeatureTypeListResource(DataConfig dc){
+    public FeatureTypeListResource(DataConfig dc, Context context, Request request, Response response){
+        super( context, request, response );
         setDataConfig(dc);
     }
 
@@ -45,12 +50,14 @@ public class FeatureTypeListResource extends MapResource {
         return myDC;
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
 
         m.put("html", new FreemarkerFormat("HTMLTemplates/featuretypes.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("FeatureTypes"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat("FeatureTypes"));
         m.put(null, m.get("html"));
 
         return m;

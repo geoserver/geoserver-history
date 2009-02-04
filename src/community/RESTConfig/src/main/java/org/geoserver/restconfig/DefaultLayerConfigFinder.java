@@ -61,14 +61,14 @@ public DataConfig getDataConfig(){
         if (getDataConfig().getDataFormatIds().contains(layer)) {
             r = new CoverageResource(
                     getData(), 
-                    getDataConfig() 
+                    getDataConfig(), getContext(), request, response
             );
         } else 
         
         if (getDataConfig().getDataStores().containsKey(layer)) {
                 r = new DefaultFeatureTypeConfigResource(
                     getData(),
-                    getDataConfig()
+                    getDataConfig(), getContext(), request, response
                 );
         } else {
             response.setEntity(

@@ -33,10 +33,11 @@ import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.RestletException;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -53,7 +54,7 @@ class LayerGroupResource extends MapResource {
     private GeoServer myGeoserver;
 
     public LayerGroupResource(){
-        super();
+        super(null,null,null);
     }
 
     public LayerGroupResource(Context context, Request request, Response response,
@@ -102,11 +103,13 @@ class LayerGroupResource extends MapResource {
         return myGeoserver;
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
         m.put("html", new FreemarkerFormat("HTMLTemplates/layergroup.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new JSONFormat());
-        m.put("xml",  new AutoXMLFormat("layergroups"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml",  new MapXMLFormat("layergroups"));
         m.put(null, m.get("html"));
 
         return m;
@@ -189,11 +192,10 @@ class LayerGroupResource extends MapResource {
     }
 
      @Override
-    protected void putMap(Object details) throws RestletException {
+    protected void putMap(Map m) throws RestletException {
         try{
     	String group = (String)getRequest().getAttributes().get("group");
-        Map m = (Map)details;
-    	
+        
     	List layers = (List)m.get("Members");
     	List styles = (List)m.get("Styles");
         String srsName = (String)m.get("SRS");
@@ -211,7 +213,7 @@ class LayerGroupResource extends MapResource {
             return;
         }
 
-        LOG.fine("Parsed layergroup details: " + details);
+        LOG.fine("Parsed layergroup details: " + m);
         LOG.fine("Interpreted as: layers=[" + listAsDelimitedString(layers, ", ") + "]; styles=[" + listAsDelimitedString(styles, ", ") + "]; Envelope=" + env);
         
         Map layerGroups = myWMSConfig.getBaseMapLayers();

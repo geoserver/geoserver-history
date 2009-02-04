@@ -12,10 +12,11 @@ import java.util.Map;
 
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
 import org.geoserver.config.GeoServer;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.jdom.Document;
@@ -51,17 +52,19 @@ public class CoverageResource extends MapResource {
     private DataConfig myDC;
     private Data myData;
 
-    public CoverageResource(){
-        super();
+    public CoverageResource(Context context, Request request, Response response){
+        super(context,request,response);
     }
 
-    public CoverageResource(Data d, DataConfig dc){
-        super();
+    public CoverageResource(Data d, DataConfig dc, Context context, Request request, Response response){
+        super(context,request,response);
         setData(d);
         setDataConfig(dc);
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
         m.put("html",
             new FreemarkerFormat("HTMLTemplates/coverage.ftl", getClass(), MediaType.TEXT_HTML) {
@@ -135,8 +138,8 @@ public class CoverageResource extends MapResource {
                     return results;
                 }
             });
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("coverage"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat("coverage"));
         m.put(null, m.get("html"));
 
         return m;

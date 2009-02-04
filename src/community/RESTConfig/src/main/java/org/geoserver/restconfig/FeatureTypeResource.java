@@ -17,18 +17,22 @@ import javax.servlet.ServletContext;
 import net.sf.json.JSONNull;
 
 import org.geoserver.config.GeoServer;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.RestletException;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 import org.geotools.data.DataStore;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -53,8 +57,8 @@ public class FeatureTypeResource extends MapResource {
     private FeatureTypeConfig myFTC = null;
     private Data myData;
 
-    public FeatureTypeResource(Data d, DataConfig dc){
-        super();
+    public FeatureTypeResource(Data d, DataConfig dc, Context context, Request request, Response response){
+        super(context,request, response);
         setData(d);
         setDataConfig(dc);
     }
@@ -75,12 +79,14 @@ public class FeatureTypeResource extends MapResource {
         return myData;
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
 
         m.put("html", new FreemarkerFormat("HTMLTemplates/featuretype.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("FeatureType"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat("FeatureType"));
         m.put(null, m.get("html"));
 
         return m;
@@ -90,9 +96,8 @@ public class FeatureTypeResource extends MapResource {
         return RESTUtils.getMap(findMyFeatureTypeConfig());
     }
 
-    protected void putMap(Object details) throws RestletException {
-        Map m = (Map) details;
-    	// TODO: Don't blindly assume map contains valid config info
+    protected void putMap(Map m) throws RestletException {
+        // TODO: Don't blindly assume map contains valid config info
         myFTC = findMyFeatureTypeConfig();
 
         String featureTypeName = (String) getRequest().getAttributes().get("layer");

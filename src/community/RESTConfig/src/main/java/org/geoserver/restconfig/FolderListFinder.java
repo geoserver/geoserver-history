@@ -4,6 +4,7 @@
  */
 package org.geoserver.restconfig;
 
+import org.restlet.Context;
 import org.restlet.Finder;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -14,10 +15,10 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.config.DataConfig;
 
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.DataFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
-import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 
 import java.util.Set;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class FolderListFinder extends Finder {
     }
 
     public Resource findTarget(Request request, Response response){
-        Resource r = new FolderList();
+        Resource r = new FolderList(getContext(),request,response);
         r.init(getContext(), request, response);
         return r;
     }
@@ -48,15 +49,17 @@ public class FolderListFinder extends Finder {
         private Map myPostFormats;
         private Set myFileStoreTypes; // Display names of datastores that correspond to single files on the filesystem
 
-        public FolderList(){
-            super();
+        public FolderList(Context context, Request request, Response response){
+            super(context,request,response);
             myPostFormats = new HashMap();
-            myPostFormats.put(MediaType.TEXT_XML, new AutoXMLFormat());
-            myPostFormats.put(MediaType.APPLICATION_JSON, new JSONFormat());
+            myPostFormats.put(MediaType.TEXT_XML, new MapXMLFormat());
+            myPostFormats.put(MediaType.APPLICATION_JSON, new MapJSONFormat());
             myPostFormats.put(null, myPostFormats.get(MediaType.TEXT_XML));
         }
 
-        public Map getSupportedFormats() {
+        @Override
+        protected Map<String, DataFormat> createSupportedFormats(
+                Request request, Response response) {
             Map m = new HashMap();
             m.put("html",
                     new FreemarkerFormat(
@@ -64,8 +67,8 @@ public class FolderListFinder extends Finder {
                         getClass(),
                         MediaType.TEXT_HTML)
                  );
-            m.put("json", new JSONFormat());
-            m.put("xml", new AutoXMLFormat("Folders"));
+            m.put("json", new MapJSONFormat());
+            m.put("xml", new MapXMLFormat("Folders"));
             m.put(null, m.get("html"));
             return m;
         }
@@ -105,7 +108,7 @@ public class FolderListFinder extends Finder {
             l.addAll(folders.keySet());
             Collections.sort(l);
             m.put("Layers", l);
-            
+            m.put("page", getPageInfo());
             return m;
         }
 
@@ -119,7 +122,7 @@ public class FolderListFinder extends Finder {
             LOG.info("Folder posted, mediatype is:" + type);
             DataFormat format = (DataFormat)myPostFormats.get(type);
             LOG.info("Using post format: " + format);
-            Map m = (Map)format.readRepresentation(getRequest().getEntity());
+            Map m = (Map)format.toObject(getRequest().getEntity());
             LOG.info("Read data as: " + m);
         }
     }

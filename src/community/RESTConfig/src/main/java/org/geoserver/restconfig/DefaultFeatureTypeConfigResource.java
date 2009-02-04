@@ -13,13 +13,17 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.RestletException;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 import org.geotools.data.DataStore;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -41,8 +45,8 @@ public class DefaultFeatureTypeConfigResource extends MapResource {
     private static Logger LOGGER = 
         org.geotools.util.logging.Logging.getLogger("org.geoserver.community.RESTConfig");
 
-    public DefaultFeatureTypeConfigResource(Data d, DataConfig dc){
-        super();
+    public DefaultFeatureTypeConfigResource(Data d, DataConfig dc, Context context, Request request, Response response){
+        super(context,request,response);
         setData(d);
         setDataConfig(dc);
     }
@@ -63,7 +67,9 @@ public class DefaultFeatureTypeConfigResource extends MapResource {
         return myData;
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
 
         m.put(
@@ -73,8 +79,8 @@ public class DefaultFeatureTypeConfigResource extends MapResource {
                     MediaType.TEXT_HTML
                     )
              );
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("FeatureTypes"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat("FeatureTypes"));
         m.put(null, m.get("html"));
 
         return m;

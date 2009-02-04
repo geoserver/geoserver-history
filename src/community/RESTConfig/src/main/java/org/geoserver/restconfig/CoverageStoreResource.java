@@ -9,10 +9,12 @@ import java.util.Map;
 
 import org.geoserver.config.GeoServer;
 import org.geoserver.data.util.CoverageStoreUtils;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -30,12 +32,12 @@ public class CoverageStoreResource extends MapResource {
     private DataConfig myDataConfig;
     private Data myData;
 
-    public CoverageStoreResource(){
-        super();
+    public CoverageStoreResource(Context context,Request request, Response response){
+        super(context,request,response);
     }
 
-    public CoverageStoreResource(Data d, DataConfig dc){
-        super();
+    public CoverageStoreResource(Data d, DataConfig dc, Context context,Request request, Response response){
+        super(context,request,response);
         setData(d);
         setDataConfig(dc);
     }
@@ -64,8 +66,10 @@ public class CoverageStoreResource extends MapResource {
 
     public Map getMap(){
     	String storeName = (String) getRequest().getAttributes().get("folder");
-        return getMap(myDataConfig.getDataFormat(storeName));
-    
+        Map m = getMap(myDataConfig.getDataFormat(storeName));
+        
+        m.put( "page", getPageInfo());
+        return m;
     }
 
     public static Map getMap(CoverageStoreConfig csc){
@@ -163,12 +167,13 @@ public class CoverageStoreResource extends MapResource {
     */
 
     @Override
-    public Map getSupportedFormats() {
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
 
         m.put("html", new FreemarkerFormat("HTMLTemplates/coveragestore.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("coveragestore"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat("coveragestore"));
         m.put(null, m.get("html"));
 
         return m;

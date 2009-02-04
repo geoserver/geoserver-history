@@ -46,9 +46,9 @@ public class LayerListFinder extends Finder {
         }
         
         if (getDataConfig().getDataFormatIds().contains(folder)){
-            r = new CoverageListResource(getDataConfig());
+            r = new CoverageListResource(getDataConfig(), getContext(), request, response);
         } else {
-            r = new FeatureTypeListResource(getDataConfig());
+            r = new FeatureTypeListResource(getDataConfig(), getContext(), request, response);
         }
 
         r.init(getContext(), request, response);

@@ -13,7 +13,10 @@ import java.util.Map;
 
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.config.DataConfig;
@@ -28,9 +31,10 @@ import org.vfny.geoserver.util.DataStoreUtils;
 
 import org.geoserver.config.GeoServer;
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 
 /**
  * Restlet for DataStore resources
@@ -41,12 +45,12 @@ public class DataStoreResource extends MapResource {
     private DataConfig myDC;
     private Data myData;
 
-    public DataStoreResource(){
-        super();
+    public DataStoreResource(Context context,Request request, Response response){
+        super(context,request,response);
     }
 
-    public DataStoreResource(Data d, DataConfig dc){
-        super();
+    public DataStoreResource(Data d, DataConfig dc,Context context,Request request, Response response){
+        super(context,request,response);
         setData(d);
         setDataConfig(dc);
     }
@@ -80,22 +84,22 @@ public class DataStoreResource extends MapResource {
         return null;
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map m = new HashMap();
         m.put("html", new FreemarkerFormat("HTMLTemplates/datastore.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("datastore"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat("datastore"));
         m.put(null, m.get("html"));
 
         return m;
     }
 
     public Map getMap() {
-        try{
-            return getMap(findMyDataStore());
-        } catch (Exception e){
-            return null;
-        }
+        Map m = getMap(findMyDataStore());
+        m.put( "page", getPageInfo());
+        return m;
     }
 
     public static Map getMap(DataStoreConfig myDSC){
@@ -137,12 +141,12 @@ public class DataStoreResource extends MapResource {
         return true;
     }
     
-    protected void putMap(Object details) /*throws Exception*/ {
+    @Override
+    protected void putMap(Map m) throws Exception {
         try{
     	String dataStoreName = (String)getRequest().getAttributes().get("datastore");
     	DataStoreConfig myDSC = findMyDataStore();
-        Map m = (Map)details;
-    	
+        
     	if (myDSC == null){
 //            DataStoreFactorySpi factory = 
 //                findDataStoreFactory((String)details.get("DataStoreType"));

@@ -18,9 +18,10 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 
 /**
  * Restlet for DataStore resources
@@ -30,8 +31,8 @@ import org.geoserver.rest.JSONFormat;
 public class DataStoreListResource extends MapResource {
     private DataConfig myDC;
 
-    public DataStoreListResource(){
-        super();
+    public DataStoreListResource(Context context,Request request, Response response){
+        super(context,request,response);
     }
 
     public DataStoreListResource(Context context, Request request, Response response, DataConfig dc) {
@@ -47,11 +48,14 @@ public class DataStoreListResource extends MapResource {
         return myDC;
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
+    
         Map m = new HashMap();
         m.put("html", new FreemarkerFormat("HTMLTemplates/datastores.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new JSONFormat());
-        m.put("xml", new AutoXMLFormat("datastores"));
+        m.put("json", new MapJSONFormat());
+        m.put("xml", new MapXMLFormat("datastores"));
         m.put(null, m.get("html"));
 
         return m;

@@ -43,11 +43,11 @@ public class FolderConfigFinder extends Finder {
         Map folders = RESTUtils.getVirtualFolderMap(getDataConfig());
         Object resource = folders.get(folder);
         if (resource instanceof Map){
-            r = new VirtualFolderResource(resource);
+            r = new VirtualFolderResource(resource, getContext(), request, response);
         } else if (resource instanceof CoverageStoreConfig){
-            r = new CoverageStoreResource(getData(), getDataConfig()); // (CoverageStoreConfig) resource);
+            r = new CoverageStoreResource(getData(), getDataConfig(), getContext(), request, response); // (CoverageStoreConfig) resource);
         } else if (resource instanceof DataStoreConfig) {
-            r = new DataStoreResource(getData(), getDataConfig()); // (DataStoreConfig)resource);
+            r = new DataStoreResource(getData(), getDataConfig(), getContext(), request, response); // (DataStoreConfig)resource);
         }
 /** 
         if (getDataConfig().getDataFormatIds().contains(folder)){

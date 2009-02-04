@@ -44,11 +44,11 @@ public class LayerFinder extends Finder {
         Object o = folders.get(folder);
 
         if (o instanceof Map){
-            r = new VirtualLayerResource(getData(), getDataConfig());
+            r = new VirtualLayerResource(getData(), getDataConfig(), getContext(), request, response);
         } else if (o instanceof DataStoreConfig) {
-            r = new FeatureTypeResource(getData(), getDataConfig());
+            r = new FeatureTypeResource(getData(), getDataConfig(), getContext(), request, response);
         } else if (o instanceof CoverageStoreConfig) {
-            r = new CoverageResource(getData(), getDataConfig());
+            r = new CoverageResource(getData(), getDataConfig(), getContext(), request, response);
         }
 
         if (r != null) r.init(getContext(), request, response);
