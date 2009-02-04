@@ -124,6 +124,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return (CoverageInfo) checkAccess(user(), delegate.getCoverageByName(ns, name));
     }
 
+    public CoverageInfo getCoverageByName(NamespaceInfo ns, String name) {
+        return (CoverageInfo) checkAccess(user(), delegate.getCoverageByName(ns, name));
+    }
+    
     public CoverageInfo getCoverageByName(String name) {
         return (CoverageInfo) checkAccess(user(), delegate.getCoverageByName(name));
     }
@@ -136,12 +140,42 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return filterResources(user(), delegate.getCoveragesByNamespace(namespace));
     }
 
+    public List<CoverageInfo> getCoveragesByCoverageStore(
+            CoverageStoreInfo store) {
+        return filterResources(user(), delegate.getCoveragesByCoverageStore(store));
+    }
+    
+    public CoverageInfo getCoverageByCoverageStore(
+            CoverageStoreInfo coverageStore, String name) {
+        return checkAccess(user(), delegate.getCoverageByCoverageStore(coverageStore, name));
+    }
+    
     public CoverageStoreInfo getCoverageStore(String id) {
         return checkAccess(user(), delegate.getCoverageStore(id));
     }
 
     public CoverageStoreInfo getCoverageStoreByName(String name) {
         return checkAccess(user(), delegate.getCoverageStoreByName(name));
+    }
+    
+    public CoverageStoreInfo getCoverageStoreByName(String workspaceName,
+            String name) {
+        return checkAccess(user(), delegate.getCoverageStoreByName(workspaceName,name));
+    }
+    
+    public CoverageStoreInfo getCoverageStoreByName(WorkspaceInfo workspace,
+            String name) {
+        return checkAccess(user(), delegate.getCoverageStoreByName(workspace,name));
+    }
+    
+    public List<CoverageStoreInfo> getCoverageStoresByWorkspace(
+            String workspaceName) {
+        return filterStores(user(),delegate.getCoverageStoresByWorkspace(workspaceName));
+    }
+    
+    public List<CoverageStoreInfo> getCoverageStoresByWorkspace(
+            WorkspaceInfo workspace) {
+        return filterStores(user(),delegate.getCoverageStoresByWorkspace(workspace));
     }
 
     public List<CoverageStoreInfo> getCoverageStores() {
@@ -243,6 +277,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     public List<LayerInfo> getLayers(ResourceInfo resource) {
         return filterLayers(user(), delegate.getLayers(unwrap(resource)));
     }
+    
+    public List<LayerInfo> getLayers(StyleInfo style) {
+        return filterLayers(user(), delegate.getLayers(style));
+    }
 
     public NamespaceInfo getNamespace(String id) {
         return checkAccess(user(), delegate.getNamespace(id));
@@ -286,6 +324,11 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return filterResources(user(), delegate.getResourcesByNamespace(namespace, clazz));
     }
 
+    public <T extends ResourceInfo> List<T> getResourcesByNamespace(
+            String namespace, Class<T> clazz) {
+        return filterResources(user(), delegate.getResourcesByNamespace(namespace, clazz));
+    }
+    
     public <T extends ResourceInfo> T getResourceByStore(StoreInfo store,
             String name, Class<T> clazz) {
         return checkAccess(user(), delegate.getResourceByStore(store, name, clazz));
@@ -458,7 +501,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             LayerInfo checked = checkAccess(user, layer);
             if(checked == null)
                 return null;
-            else if(checked != null) 
+            else if(checked != null && checked != layer) 
                 needsWrapping = true;
             wrapped.add(checked);
         }
