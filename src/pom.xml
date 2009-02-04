@@ -817,6 +817,7 @@
      <include>META-INF/services/**</include>
      <include>applicationContext.xml</include>
      <include>**/*.ftl</include>
+     <include>**/*.sld</include>
     </includes>
     <excludes>
      <exclude>**/doc-files/**</exclude>
