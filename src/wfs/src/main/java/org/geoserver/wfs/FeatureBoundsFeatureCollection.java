@@ -81,6 +81,11 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
     public int size() {
         return wrapped.size();
     }
+    
+    @Override
+    public ReferencedEnvelope getBounds() {
+        return wrapped.getBounds();
+    }
 
     /**
      * Wraps a SimpleFeature shaving off all attributes not included in the original type, but 
@@ -100,6 +105,11 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
 
         public Object getAttribute(int index) {
             return delegate.getAttribute(type.getDescriptor(index).getName());
+        }
+        
+        @Override
+        public int getAttributeCount() {
+            return type.getAttributeCount();
         }
 
         public Object getAttribute(String path) {
