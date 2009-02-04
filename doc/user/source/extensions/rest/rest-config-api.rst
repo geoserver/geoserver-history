@@ -143,6 +143,129 @@ Operations
      -
      -
 
+Namespaces
+----------
+
+A ``namespace`` is a uniquely identifiable grouping of feature types. A
+namespaces is identified by a prefix and a uri.
+
+.. note::
+
+   In GeoServer 1.7.x a namespace is used to group data stores, serving the 
+   same purpose as a workspace. In 1.7.x the two are kept in sync. Therefore
+   when adding a new namespace a workspace whose name matches the prefix of
+   the namespace is implicitly created.
+
+Formats
+^^^^^^^
+
+- :ref:`HTML <namespace_html>`
+- :ref:`XML <namespace_xml>`
+- :ref:`JSON <namespace_json>`
+
+Operations
+^^^^^^^^^^
+
+``/namespaces[.<format>]``
+
+.. list-table::
+   :header-rows: 1
+
+   * - Method
+     - Action
+     - Return Code
+     - Formats
+     - Default Format
+   * - GET
+     - List all namespaces
+     - 200
+     - HTML, XML, JSON
+     - HTML
+   * - POST
+     - Create a new namespace
+     - 201 with ``Location`` header 
+     - XML, JSON
+     - 
+   * - PUT
+     -
+     - 405
+     -
+     -
+   * - DELETE
+     -
+     - 405
+     -
+     -
+
+``/namespaces/<ns>[.<format>]``
+
+.. list-table::
+   :header-rows: 1
+
+   * - Method
+     - Action
+     - Return Code
+     - Formats
+     - Default Format
+   * - GET
+     - Returns namespace ``ns``
+     - 200
+     - HTML, XML, JSON
+     - HTML
+   * - POST
+     -
+     - 405
+     -
+     -
+   * - PUT
+     - 200
+     - Modify namespace ``ns``
+     - XML, JSON
+     -
+   * - DELETE
+     - 200
+     - Delete namespace ``ns``
+     - XML, JSON
+     -
+
+*Exceptions*:
+
+- GET for a namespace that does not exist -> 404
+- PUT that changes prefix of namespace -> 403
+- DELETE against a namespace whose corresponding workspace is non-empty -> 403
+
+``/namespaces/default[.<format>]``
+
+.. list-table::
+   :header-rows: 1
+
+   * - Method
+     - Action
+     - Return Code
+     - Formats
+     - Default Format
+   * - GET
+     - Returns default namespace
+     - 200
+     - HTML, XML, JSON
+     - HTML
+   * - POST
+     -
+     - 405
+     -
+     -
+   * - PUT
+     - 200
+     - Set default namespace
+     - XML, JSON
+     -
+   * - DELETE
+     -
+     - 405
+     -
+     -
+
+
 Data stores
 -----------
 

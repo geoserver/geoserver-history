@@ -1,0 +1,22 @@
+.. _namespace_html:
+
+.. code-block:: html
+
+   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+   <head>
+       <title>GeoServer Configuration</title>
+   </head>
+   <body>
+   
+   Namespace "topp" (http://www.openplans.org/topp)
+   <ul>
+     <li>states</li>
+     <li>tasmania_cities</li>
+     <li>tasmania_roads</li>
+     <li>tasmania_state_boundaries</li>
+     <li>tasmania_water_bodies</li>
+   </ul>
+   </body>
+   </html>
