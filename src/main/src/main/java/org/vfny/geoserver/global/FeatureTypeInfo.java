@@ -1686,7 +1686,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     public int getRegionateFeatureLimit() {
-        return (Integer)featureType.getMetadata().get("kml.regionateFeatureLimit");
+        Integer regionateFeatureLimit = (Integer) featureType.getMetadata().get("kml.regionateFeatureLimit"); 
+        return regionateFeatureLimit != null ? regionateFeatureLimit : -1;
     }
 
     public String getNameTemplate(){
