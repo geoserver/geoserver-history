@@ -16,6 +16,23 @@ import org.geotools.styling.Style;
 public interface StyleInfo {
 
     /**
+     * Name of the default point style.
+     */
+    public static String DEFAULT_POINT = "point";
+    /**
+     * Name of the default line style.
+     */
+    public static String DEFAULT_LINE = "line";
+    /**
+     * Name of the default polygon style.
+     */
+    public static String DEFAULT_POLYGON = "polygon";
+    /**
+     * Name of the default raster style. 
+     */
+    public static String DEFAULT_RASTER = "raster";
+
+    /**
      * Identifier for the style.
      */
     String getId();

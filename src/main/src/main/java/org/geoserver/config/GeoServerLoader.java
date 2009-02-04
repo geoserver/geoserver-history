@@ -4,13 +4,18 @@
  */
 package org.geoserver.config;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.Wrapper;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
@@ -112,6 +117,7 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         
         try {
             catalogImporter.imprt( resourceLoader.getBaseDirectory() );
+            initializeStyles(catalog);
         }
         catch(Exception e) {
             throw new RuntimeException( e );
@@ -149,6 +155,43 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         for ( ConfigurationListener l : configListeners ) {
             geoserver.addListener( l );
         }
+    }
+    
+    /**
+     * Does some post processing on the catalog to ensure that the "well-known" styles
+     * are always around.
+     */
+    void initializeStyles( Catalog catalog ) throws IOException {
+        if ( catalog.getStyleByName( StyleInfo.DEFAULT_POINT ) == null ) {
+            initializeStyle( catalog, StyleInfo.DEFAULT_POINT, "default_point.sld" );
+        }
+        if ( catalog.getStyleByName( StyleInfo.DEFAULT_LINE ) == null ) {
+            initializeStyle( catalog, StyleInfo.DEFAULT_LINE, "default_line.sld" );
+        }
+        if ( catalog.getStyleByName( StyleInfo.DEFAULT_POLYGON ) == null ) {
+            initializeStyle( catalog, StyleInfo.DEFAULT_POLYGON, "default_line.sld" );
+        }
+        if ( catalog.getStyleByName( StyleInfo.DEFAULT_RASTER ) == null ) {
+            initializeStyle( catalog, StyleInfo.DEFAULT_RASTER, "default_raster.sld" );
+        }
+    }
+    
+    /**
+     * Copies a well known style out to the data directory and adds a catalog entry for it.
+     */
+    void initializeStyle( Catalog catalog, String styleName, String sld ) throws IOException {
+        
+        //copy the file out to the data directory if necessary
+        if ( resourceLoader.find( "styles", sld ) == null ) {
+            FileUtils.copyURLToFile(getClass().getResource(sld), 
+                new File( resourceLoader.find( "styles" ), sld) );
+        }
+        
+        //create a style for it
+        StyleInfo s = catalog.getFactory().createStyle();
+        s.setName( styleName );
+        s.setFilename( sld );
+        catalog.add( s );
     }
     
     public void reload() throws Exception {
