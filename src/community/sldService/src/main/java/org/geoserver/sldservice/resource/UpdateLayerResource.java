@@ -7,10 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.RestletException;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
+import org.restlet.Context;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
@@ -142,7 +145,7 @@ public class UpdateLayerResource extends MapResource {
 	}
 
 	@Override
-	public Object getMap() throws RestletException {
+	public Map getMap() throws RestletException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -150,8 +153,8 @@ public class UpdateLayerResource extends MapResource {
 	public Map getSupportedFormats() {
 		Map m = new HashMap();
 
-		m.put("json", new JSONFormat());
-		m.put("xml", new AutoXMLFormat("LayerConfig"));
+		m.put("json", new MapJSONFormat());
+		m.put("xml", new MapXMLFormat("LayerConfig"));
 		m.put(null, m.get("xml"));
 
 		return m;
