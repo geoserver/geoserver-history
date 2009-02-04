@@ -23,7 +23,7 @@ public class NamespaceInfoImpl implements NamespaceInfo {
 
     String uri;
 
-    HashMap<String,Serializable> metadata;
+    HashMap<String,Serializable> metadata = new HashMap();
     
     public String getId() {
         return id;

@@ -5,6 +5,7 @@
 package org.geoserver.catalog.impl;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.geoserver.catalog.WorkspaceInfo;
@@ -14,7 +15,7 @@ public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
     String id;
     String name;
     
-    Map<String,Serializable> metadata;
+    Map<String,Serializable> metadata = new HashMap();
     
     public String getId() {
         return id;
