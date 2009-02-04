@@ -13,8 +13,9 @@ import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.acegisecurity.userdetails.memory.UserAttribute;
 import org.acegisecurity.userdetails.memory.UserAttributeEditor;
-import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.MapJSONFormat;
 import org.geoserver.security.EditableUserDAO;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
@@ -45,6 +46,7 @@ import java.util.Map;
  * @author David Winslow <dwinslow@openplans.org>
  */
 public class UserResource extends MapResource {
+
     private EditableUserDAO myUserService;
 
     public void setUserDAO(EditableUserDAO dao){
@@ -55,9 +57,11 @@ public class UserResource extends MapResource {
         return myUserService;
     }
 
-    public Map getSupportedFormats() {
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
         Map theMap = new HashMap();
-        theMap.put("json", new JSONFormat());
+        theMap.put("json", new MapJSONFormat());
         theMap.put("html", new UserHTMLFormat("HTMLTemplates/user.ftl"));
         theMap.put("xml", new UserXMLFormat("XMLTemplates/user.ftl"));
         theMap.put(null, theMap.get("html"));

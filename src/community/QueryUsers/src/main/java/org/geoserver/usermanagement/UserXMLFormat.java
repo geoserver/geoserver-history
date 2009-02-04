@@ -4,7 +4,7 @@
  */
 package org.geoserver.usermanagement;
 
-import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -26,7 +26,8 @@ public class UserXMLFormat extends FreemarkerFormat {
         super(templ, UserXMLFormat.class, MediaType.TEXT_XML);
     }
 
-    public Map readRepresentation(Representation rep) {
+    @Override
+    public Object toObject(Representation rep) {
         try {
             SAXBuilder builder = new SAXBuilder();
             Document doc = builder.build(rep.getStream());

@@ -40,7 +40,7 @@
     <dependency>
         <groupId>org.geoserver</groupId>
         <artifactId>RESTConfig</artifactId>
-        <version>1.0</version>
+        <version>1.7.3-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -51,7 +51,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>rest</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.7.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
