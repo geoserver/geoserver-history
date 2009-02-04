@@ -393,7 +393,7 @@ public interface Catalog {
      * <p>
      * This method is a convenience for: <code>
      *   <pre>
-     * getStoreByName(name, CoverageStoreInfo.class)
+     * getCoverageStoreByName(name, CoverageStoreInfo.class)
      * </pre>
      * </code>
      * </p>
@@ -401,6 +401,60 @@ public interface Catalog {
      */
     CoverageStoreInfo getCoverageStoreByName(String name);
 
+    /**
+     * Returns the coveragestore matching a particular name in the specified workspace, 
+     * or <code>null</code> if no such coveragestore could be found.
+     * <p>
+     * This method is convenience for:
+     * <pre>
+     *   WorkspaceInfo ws = catalog.getWorkspace( workspaceName );
+     *   return catalog.getCoverageStoreByName(ws,name);
+     * </pre>
+     * </p>
+     * @param name The name of the coveragestore.
+     * @param workspaceName The name of the workspace containing the coveragestore, may be <code>null</code> 
+     * to specify the default workspace. 
+     *
+     * @return The store matching the name, or null if no such store could be found. 
+     */
+    CoverageStoreInfo getCoverageStoreByName(String workspaceName, String name);
+    
+    /**
+     * Returns the coverageStore matching a particular name in the specified workspace, 
+     * or <code>null</code> if no such coverageStore could be found.
+     * 
+     * @param name The name of the coverageStore.
+     * @param workspace The workspace containing the coverageStore, may be <code>null</code> to
+     * specify the default workspace. 
+     *
+     * @return The store matching the name, or null if no such store could be found. 
+     */
+    CoverageStoreInfo getCoverageStoreByName(WorkspaceInfo workspace, String name);
+    
+    /**
+     * All coverage stores in the specified workspace.
+     * <p>
+     * This method is equivalent to:
+     * <pre>
+     * getStoresByWorkspace( workspaceName, CoverageStoreInfo.class );
+     * </pre>
+     * </p>
+     * @param workspaceName The name of the workspace.
+     */
+    List<CoverageStoreInfo> getCoverageStoresByWorkspace(String workspaceName);
+    
+    /**
+     * All coverage stores in the specified workspace.
+     * <p>
+     * This method is equivalent to:
+     * <pre>
+     * getStoresByWorkspace( workspace, CoverageStoreInfo.class );
+     * </pre>
+     * </p>
+     * @param workspace The name of the workspace.
+     */
+    List<CoverageStoreInfo> getCoverageStoresByWorkspace(WorkspaceInfo workspace);
+    
     /**
      * All coverage stores in the catalog.
      *<p>
@@ -539,6 +593,37 @@ public interface Catalog {
      */
     <T extends ResourceInfo> List<T> getResourcesByNamespace(
             NamespaceInfo namespace, Class<T> clazz);
+    
+    /**
+     * All resources in the specified namespace of the specified type.
+     * <p>
+     * The <tt>namespace</tt> may specify the prefix, or the uri of the namespace.
+     * </p>
+     * <p>
+     * The <tt>clazz</tt> parameter is used to filter the types of resources
+     * returned. An example which would return all feature types:
+     * </p>
+     * <p>
+     * This method is convenience for:
+     * 
+     * <pre>
+     * NamespaceInfo ns = getNamespace( namespace );
+     * return getResourcesByNamespace(ns,clazz);
+     * </pre>
+     * </p>
+     * 
+     * @param namespace
+     *                The namespace.
+     * @param clazz
+     *                The class of resources returned.
+     * 
+     * @return List of resources of the specified type in the specified
+     *         namespace.
+     */
+    <T extends ResourceInfo> List<T> getResourcesByNamespace(
+            String namespace, Class<T> clazz
+    );
+    
 
     /**
      * Returns the resource with the specified name originating from the store.
@@ -744,6 +829,25 @@ public interface Catalog {
      */
     CoverageInfo getCoverageByName(String ns, String name);
 
+    /**
+     * Looks up a coverage by qualified name.
+     * <p>
+     * This method is convenience for:
+     * <pre>
+     * getResourceByName(ns,name,CoverageInfo.class);
+     * </pre>
+     * </p>
+     * 
+     * @param ns
+     *                The namespace to which the coverage belongs, may be
+     *                <code>null</code>.
+     * @param name
+     *                The name of the coverage.
+     * 
+     * @return The coverage matching the name, or <code>null</code> if no such
+     *         resource exists.
+     */
+    CoverageInfo getCoverageByName(NamespaceInfo ns, String name);
     
     /**
      * Looks up a coverage by an unqualified name.
@@ -806,6 +910,31 @@ public interface Catalog {
     List<CoverageInfo> getCoveragesByNamespace(NamespaceInfo namespace);
     
     /**
+     * Returns the coverage with the specified name which is part of the specified
+     * coverage store.
+     *  <p>
+     *  This method is convenience for:
+     *  <pre>
+     *  return getResourceByStore(coverageStore,name,CoverageInfo.class);
+     *  </pre>
+     *  </p>
+     * @param coverageStore The coverage store.
+     * @param name The coverage name.
+     * 
+     * @return The coverage, or <code>null</code> if no such coverage exists.
+     */
+    CoverageInfo getCoverageByCoverageStore( CoverageStoreInfo coverageStore, String name);
+    
+    /**
+     * All coverages which originate from the specified coveragestore. 
+     * 
+     * @param store The coveragestore.
+     * 
+     * @return A list of coverages which originate from the coveragestore.
+     */
+    List<CoverageInfo> getCoveragesByCoverageStore(CoverageStoreInfo store);
+    
+    /**
      * Adds a new layer.
      */
     void add(LayerInfo layer);
@@ -856,6 +985,15 @@ public interface Catalog {
      * @return A list of layers for the resource, or an empty list.
      */
     List<LayerInfo> getLayers( ResourceInfo resource );
+    
+    /**
+     * All layers which reference the specified style.
+     * 
+     * @param style The style.
+     * 
+     * @return A list of layers which reference the style, or an empty list.
+     */
+    List<LayerInfo> getLayers( StyleInfo style );
     
     /**
      * Adds a new map.
