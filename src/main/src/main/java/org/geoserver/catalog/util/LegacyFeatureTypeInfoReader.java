@@ -95,6 +95,9 @@ public class LegacyFeatureTypeInfoReader {
     
     public List<String> keywords() {
     	String raw = ReaderUtils.getChildText( featureType, "keywords" );
+    	if ( raw == null || "".equals( raw ) ) {
+    	    return new ArrayList<String>();
+    	}
     	StringTokenizer st = new StringTokenizer( raw, ", " );
     	ArrayList keywords = new ArrayList();
     	while( st.hasMoreTokens() ) {
