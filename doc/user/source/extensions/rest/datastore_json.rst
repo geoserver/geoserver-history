@@ -1,6 +1,6 @@
 .. _datastore_json:
 
-.. code-block:: none
+.. code-block:: javascript
 
    {
      dataStore: {

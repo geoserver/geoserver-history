@@ -1,6 +1,6 @@
 .. _workspace_json:
 
-.. code-block:: none
+.. code-block:: javascript
 
    {
      workspace: {

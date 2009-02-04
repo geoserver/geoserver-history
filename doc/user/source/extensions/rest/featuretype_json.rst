@@ -1,6 +1,6 @@
 .. _featuretype_json:
 
-.. code-block:: none 
+.. code-block:: javascript 
 
    {
      featureType: {

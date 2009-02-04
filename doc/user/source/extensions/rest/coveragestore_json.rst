@@ -1,6 +1,6 @@
 .. _coveragestore_json:
 
-.. code-block:: none
+.. code-block:: javascript
 
    {
      coverageStore: {

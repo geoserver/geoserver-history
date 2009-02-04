@@ -1,6 +1,6 @@
 .. _style_json:
 
-.. code-block:: none
+.. code-block:: javascript
 
    {
      style: {
