@@ -117,22 +117,18 @@ public class RESTDispatcher extends AbstractController {
             Map.Entry entry = (Map.Entry) it.next();
 
             // LOG.info("Found mapping: " + entry.getKey().toString());
+            Restlet restlet = 
+               (getApplicationContext().getBean(entry.getValue().toString()) instanceof Resource)
+               ? new BeanResourceFinder(getApplicationContext(), entry.getValue().toString())
+               : new BeanDelegatingRestlet(getApplicationContext(), entry.getValue().toString());
 
-            if (getApplicationContext().getBean(entry.getValue().toString()) instanceof Resource){
-                r.attach(entry.getKey().toString(), 
-                        new BeanResourceFinder(
-                            getApplicationContext(),
-                            entry.getValue().toString()
-                            )
-                        ).getTemplate().setMatchingMode(Template.MODE_EQUALS);
-            } else {
-                r.attach(entry.getKey().toString(), 
-                        new BeanDelegatingRestlet(
-                            getApplicationContext(),
-                            entry.getValue().toString()
-                            )
-                        ).getTemplate().setMatchingMode(Template.MODE_EQUALS);
-            }
+            String path = entry.getKey().toString();
+
+            r.attach(path, restlet);
+
+            if (!(path.indexOf("?") == -1)){
+                r.attach(path + "?{q}", restlet);
+            } else LOG.fine("Query string already listed in restlet mapping: " + path);
         }
     }
 
