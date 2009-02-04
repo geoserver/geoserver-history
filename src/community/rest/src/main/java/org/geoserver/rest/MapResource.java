@@ -8,136 +8,136 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 import org.restlet.Context;
-import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.Resource;
-import org.restlet.resource.StringRepresentation;
-import org.vfny.geoserver.global.GeoServer;
-
 
 /**
- * Base class that converts back and forth between varied data formats and a Java Map to
- * simplify the implementation of a RESTful web API.
+ * Base class for resources which transform an underlying target object into a java map.
  *
  * @author David Winslow <dwinslow@openplans.org>
  */
-public abstract class MapResource extends Resource {
-    private Map myFormatMap;
-    private DataFormat myRequestFormat;
-	private GeoServer myGeoserver;
-    protected static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
-
-    public MapResource() {
-        super();
-        myFormatMap = getSupportedFormats();
-		myGeoserver = (GeoServer)GeoServerExtensions.bean("geoServer");
-    }
-
+public abstract class MapResource extends AbstractResource {
+    /**
+     * logger
+     */
+    protected static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.rest");
+    
     public MapResource(Context context, Request request, Response response) {
         super(context, request, response);
-        myFormatMap = getSupportedFormats();
-        myRequestFormat = (DataFormat) myFormatMap.get(request.getAttributes().get("type"));
+    }
+    
+    public MapResource() {
     }
 
     /**
-     * This method should return a map of format name == DataFormat for the MapResource to use 
-     * in translating to and from different output Formats
+     * Creates the map of formats for serialization and de-serialization.
+     * <p>
+     * This implementation adds support for XML and JSON via the {@link MapXMLFormat} and 
+     * {@link MapJSONFormat} classes respectively. Subclasses should override/extend as needed.
+     * </p>
      */
-    public abstract Map getSupportedFormats();
-
-    public void handleGet() {
-        try {
-			Object details = getMap();
-            if (details instanceof Map){
-                ((Map)details).put("page", getPageDetails());
-            }
-
-			String formatName = (String)getRequest().getAttributes().get("type");
-			myRequestFormat = (DataFormat) myFormatMap.get(formatName);
-			getResponse().setEntity(myRequestFormat.makeRepresentation(details));
-				
-	        if ((myRequestFormat == null) | (details == null)) {
-	        	LOG.info("Failed MapResource request; format: " + myRequestFormat + "; details: " + details);
-	        	
-	        	throw new RestletException(new StringRepresentation(
-	        			"Could not find requested resource; format=" + formatName 
-	        			+ "; resource type is: " + MediaType.TEXT_PLAIN
-	        			),
-	        			Status.CLIENT_ERROR_NOT_FOUND
-	        	);
-	        }
-		} catch (RestletException re) {
-			getResponse().setEntity(re.getRepresentation());
-			getResponse().setStatus(re.getStatus());
-		}
-    }
-
-    /**
-     * This method must be overridden by subclasses; it will be called to handle the HTTP GET method.
-     * @param details the Map equivalent of the uploaded Representation
-     */
-    public abstract Object getMap() throws RestletException;
-
-    /**
-     * Put some metadata about the HTTP location of the resource into a
-     * map so that it can be made available to the DataFormat.
-     *
-     * @return a Map containing page metadata
-     */
-    public Map getPageDetails() {
-        Map map = new HashMap();
-        String currentURL = getRequest().getResourceRef().getBaseRef().toString();
-        currentURL = RequestUtils.proxifiedBaseURL(currentURL, 
-                myGeoserver.getProxyBaseUrl());
-
-        // LOG.info("Proxy Base URL: " + myGeoserver.getProxyBaseUrl());
-
-        String formatName = (String) getRequest().getAttributes().get("type");
-
-        if (formatName != null) {
-            currentURL = currentURL.substring(0, currentURL.length() - (formatName.length() + 2));
-        }
-
-		if (currentURL.endsWith("/")){
-			currentURL = currentURL.substring(0, currentURL.length() - 1);
-		}
-
-        map.put("currentURL", currentURL);
-
+    @Override
+    protected Map<String, DataFormat> createSupportedFormats(Request request,
+            Response response) {
+        HashMap map = new HashMap();
+        map.put( "xml", new MapXMLFormat() );
+        map.put( "json", new MapJSONFormat() );
+        map.put( "text/xml", map.get( "xml" ) );
+        map.put( "text/json", map.get( "json" ) );
         return map;
     }
-
-    public void handlePut() {
+    
+    /**
+     * Handles a request using the GET method.
+     * <p>
+     * This method operates by obtaining the map representation of the target object via {@link #getMap()}
+     * and then serializing the map in the request format.
+     * </p>
+     */
+    public void handleGet() {
+        Map map;
         try {
-            myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
+            map = getMap();
+        } 
+        catch (Exception e) {
+            throw new RestletException( "", Status.SERVER_ERROR_INTERNAL, e );
+        }
+        DataFormat format = getFormatGet();
+        getResponse().setEntity(format.toRepresentation(map));
+    }
 
-            Object details = myRequestFormat.readRepresentation(getRequest().getEntity());
+    /**
+     * Returns the map representation of the underlying target object in a GET request.
+     * <p>
+     * This method is called by {@link #handleGet()}. 
+     * </p>
+     * 
+     * @return A map representing the properties of the underlying target object.
+     */
+    public abstract Map getMap() throws Exception;
 
-            if ((myRequestFormat == null) || (details == null)) {
-                throw new RestletException(new StringRepresentation("Could not find  requested resource",
-                        MediaType.TEXT_PLAIN),
-                        Status.CLIENT_ERROR_NOT_FOUND
-                );
-            }
-
-            putMap(details);
-        } catch (RestletException re) {
-            getResponse().setEntity(re.getRepresentation());
-            getResponse().setStatus(re.getStatus());
+    /**
+     * Handles a request using the POST method.
+     * <p>
+     * This method operates by de-serializing the map representation of the target object and 
+     * then calling {@link #postMap(Map)}. 
+     * </p>
+     */
+    @Override
+    public void handlePost() {
+        DataFormat format = getFormatPostOrPut();
+        Map map = (Map) format.toObject(getRequest().getEntity());
+        try {
+            postMap(map);
+        } 
+        catch (Exception e) {
+            throw new RestletException( "", Status.SERVER_ERROR_INTERNAL, e );
+        }
+    }
+    
+    /**
+     * Handles the map result of a POST request.
+     * <p>
+     * If subclasses choose to support the POST method they must override this method as well as
+     * {@link #allowPost()}.
+     * </p>
+     * @param map The de-serialized map representation of the content being POST'd.
+     */
+    protected void postMap(Map map) throws Exception {
+    }
+    
+    /**
+     * Handles a request using the PUT method.
+     * <p>
+     * This method operates by de-serializing the map representation of the target object and 
+     * then calling {@link #putMap(Map)}. 
+     * </p>
+     */
+    @Override
+    public void handlePut() {
+        DataFormat format = getFormatPostOrPut();
+        Map map = (Map) format.toObject(getRequest().getEntity());
+        try {
+            putMap(map);
+        } 
+        catch (Exception e) {
+            throw new RestletException( "", Status.SERVER_ERROR_INTERNAL, e );
         }
     }
 
     /**
-     * This method should be overridden by subclasses that wish to implement the HTTP PUT method.
-     * @param details the Map equivalent of the uploaded Representation
-     * @throws RestletException if anything goes wrong.  The Status and Representation in the RestletException will be sent to the client.
+     * Handles the map result of a PUT request.
+     * <p>
+     * If subclasses choose to support the PUT method they must override this method as well as
+     * {@link #allowPut()}.
+     * </p>
+     * @param map The de-serialized map representation of the content being PUT'd..
      */
-    protected void putMap(Object details) throws RestletException {
-    	throw new RestletException("PUT not supported for this resource", Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+    protected void putMap(Map map) throws Exception {
     }
 }

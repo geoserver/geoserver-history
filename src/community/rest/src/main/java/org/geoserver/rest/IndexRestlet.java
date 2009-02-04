@@ -10,13 +10,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
 import org.restlet.Context;
+import org.restlet.Finder;
 import org.restlet.Route;
 import org.restlet.Router;
-import org.restlet.Finder;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
-import org.restlet.data.MediaType;
 import org.restlet.resource.Resource;
 
 
@@ -40,26 +42,32 @@ class IndexRestlet extends Finder{
     }
 
     public Resource findTarget(Request req, Response resp){
-        Resource r = new IndexResource();
+        Resource r = new IndexResource(getContext(),req,resp);
         r.init(getContext(), req, resp);
         return r;
     }
 
     private class IndexResource extends MapResource{
 
-        public Map getSupportedFormats() {
+        public IndexResource(Context context, Request request, Response response) {
+            super(context, request, response);
+        }
+
+        @Override
+        protected Map<String, DataFormat> createSupportedFormats(
+                Request request, Response response) {
             Map m = new HashMap();
 
-            m.put("html", new FreemarkerFormat("HTMLTemplates/index.ftl", getClass(), MediaType.TEXT_HTML));
+            m.put("html", new FreemarkerFormat("templates/index.ftl", getClass(), MediaType.TEXT_HTML));
             m.put(null, m.get("html"));
 
             return m;
         }
 
-        public Object getMap() {
+        public Map getMap() {
             Map m = new HashMap();
             m.put("links", getLinkList());
-            m.put("page", getPageDetails());
+            m.put("page", getPageInfo());
 
             return m;
         }

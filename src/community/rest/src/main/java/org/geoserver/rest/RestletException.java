@@ -1,9 +1,13 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.rest;
 
+import org.restlet.data.MediaType;
+import org.restlet.data.Status;
 import org.restlet.resource.Representation;
 import org.restlet.resource.StringRepresentation;
-import org.restlet.data.Status;
-import org.restlet.data.MediaType;
 
 /**
  * An exception that specifies the Restlet representation and status code that
@@ -20,8 +24,8 @@ public class RestletException extends RuntimeException {
      * @param stat The Status to report to the client
      * @param e The actual Exception that occurred
      */
-    public RestletException(Representation r, Status stat, Exception e){
-    	super(e);
+    public RestletException(Representation r, Status stat, Throwable t){
+    	super(t);
     	init(r, stat);
     }
     /**
@@ -37,9 +41,9 @@ public class RestletException extends RuntimeException {
      * @param stat The Status to report to the client
      * @param e The actual Exception that occurred
      */
-    public RestletException(String s, Status stat, Exception e){
-    	super(e);
-        init(new StringRepresentation(s + ":" + e.getMessage(), MediaType.TEXT_PLAIN), stat);
+    public RestletException(String s, Status stat, Throwable t){
+    	super(t);
+        init(new StringRepresentation(s + ":" + t.getMessage(), MediaType.TEXT_PLAIN), stat);
     }
     
     /**

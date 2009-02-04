@@ -6,16 +6,21 @@ package org.geoserver.rest;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.restlet.Restlet;
 import org.restlet.Router;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 import org.restlet.resource.Resource;
-import org.restlet.resource.StringRepresentation;
 import org.springframework.beans.BeansException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -27,17 +32,36 @@ import com.noelios.restlet.ext.servlet.ServletConverter;
  * Spring requests and Restlet requests.
  */
 public class RESTDispatcher extends AbstractController {
+    /** HTTP method "PUT" */
     public static String METHOD_PUT = "PUT";
+    /** HTTP method "DELETE" */
     public static String METHOD_DELETE = "DELETE";
+    
+    /**
+     * logger
+     */
+    static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.rest");
+    
+    /**
+     * converter for turning servlet requests into resetlet requests.
+     */
     ServletConverter myConverter;
-    private Router myRouter;
-    private Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.rest");
-
-    public RESTDispatcher() {
-        super();
+    
+    /**
+     * the root restlet router
+     */
+    Router myRouter;
+    
+    /**
+     * geoserver configuration
+     */
+    GeoServer gs;
+    
+    public RESTDispatcher(GeoServer gs) {
+        this.gs = gs;
         setSupportedMethods(new String[] {
-                METHOD_GET, METHOD_POST, METHOD_PUT, METHOD_DELETE, METHOD_HEAD
-            });
+            METHOD_GET, METHOD_POST, METHOD_PUT, METHOD_DELETE, METHOD_HEAD
+        });
     }
 
     protected void initApplicationContext() throws BeansException {
@@ -64,19 +88,22 @@ public class RESTDispatcher extends AbstractController {
             
             if ( re != null ) {
                 resp.setStatus( re.getStatus().getCode() );
-                // This does not actually write anything?
-                //re.getRepresentation().write(resp.getOutputStream());
                 
                 String reStr = re.getRepresentation().getText();
-                resp.getOutputStream().write(reStr.getBytes());
-                
-                resp.getOutputStream().flush();
+                if ( reStr != null ) {
+                    LOG.severe( reStr );
+                    resp.getOutputStream().write(reStr.getBytes());    
+                }
             }
             else {
+                LOG.log( Level.SEVERE, "", e );
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                new StringRepresentation( e.getMessage() ).write( resp.getOutputStream() );
-                resp.getOutputStream().flush();
+                
+                if ( e.getMessage() != null ) {
+                    resp.getOutputStream().write( e.getMessage().getBytes() );    
+                }
             }
+            resp.getOutputStream().flush();
         }
             
         return null;
@@ -100,8 +127,48 @@ public class RESTDispatcher extends AbstractController {
 
     public Restlet createRoot() {
         if (myRouter == null){
-            myRouter = new Router();
+            myRouter = new Router() {
+                @Override
+                protected synchronized void init(Request request,
+                        Response response) {
+                    super.init(request, response);
 
+                    //set the base url, and proxy it if a proxy set
+                    String baseURI = null;
+                    if ( request.getResourceRef().getBaseRef() != null ) {
+                        baseURI = request.getResourceRef().getBaseRef().toString();
+                    }
+                    else {
+                        baseURI = request.getResourceRef().toString();
+                    }
+                    
+                    String pageURI = request.getResourceRef().toString();
+                    if ( gs.getGlobal().getProxyBaseUrl() != null ) {
+                        baseURI= RequestUtils.proxifiedBaseURL(baseURI, gs.getGlobal().getProxyBaseUrl());
+                        pageURI = ResponseUtils.appendPath( baseURI, request.getResourceRef().getPath() );
+                    }
+                    
+                    //strip off the extension
+                    String extension = ResponseUtils.getExtension(pageURI);
+                    if ( extension != null ) {
+                        pageURI = pageURI.substring(0,pageURI.length() - extension.length() - 1);
+                    }
+                    
+                    //trim leading slash
+                    if ( pageURI.endsWith( "/" ) ) {
+                        pageURI = pageURI.substring(0,pageURI.length()-1);
+                    }
+                    //create a page info object and put it into a request attribute
+                    PageInfo pageInfo = new PageInfo();
+                    pageInfo.setBaseURI( baseURI );
+                    pageInfo.setPageURI( pageURI );
+                    pageInfo.setExtension( extension );
+                    request.getAttributes().put( PageInfo.KEY, pageInfo );
+                    
+                }
+            };
+
+            //load all the rest mappings and register them with the router
             Iterator i = 
                 GeoServerExtensions.extensions(RESTMapping.class).iterator();
 
@@ -110,6 +177,7 @@ public class RESTDispatcher extends AbstractController {
                 addRoutes(rm.getRoutes(), myRouter);
             }
 
+            //create a root mapping
             myRouter.attach("", new IndexRestlet(myRouter));
         }
 

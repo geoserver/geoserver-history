@@ -57,6 +57,14 @@
       <groupId>com.noelios.restlet</groupId>
       <artifactId>com.noelios.restlet.ext.servlet</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+    </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.geoserver</groupId>
@@ -77,6 +85,11 @@
       <artifactId>mockrunner</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
+     </dependency>
   </dependencies>
   <build>
     <plugins>

@@ -1,68 +1,64 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.rest;
 
-import java.util.HashMap;
-import java.util.Map;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
-import org.geoserver.test.GeoServerTestSupport;
-import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
-import org.restlet.data.Status;
-import org.restlet.resource.Representation;
-import org.restlet.resource.StringRepresentation;
+import org.w3c.dom.Document;
 
-public class MapResourceTest extends GeoServerTestSupport {
-	
-	private static class ExceptionThrowingMapResource extends MapResource{
-		private Status myStatus;
-		private Representation myRepresentation;
-		
-		public ExceptionThrowingMapResource(Representation rep, Status stat){
-			myStatus = stat;
-			myRepresentation = rep;
-		}
-		
-		@Override
-		public Object getMap() throws RestletException {
-			throw new RestletException(myRepresentation, myStatus);
-		}
-		
-		@Override
-		public Map getSupportedFormats() {
-			Map m = new HashMap();
-			m.put("xml", new AutoXMLFormat());
-			m.put(null, m.get("xml"));
-			return m;
-		}
-		
-		public Status getStatus(){
-			return myStatus;
-		}
-		
-		public Representation getRepresentation(){
-			return myRepresentation;
-		}
-	}
-	
-	private ExceptionThrowingMapResource myResource;
-	
-	public void setUpInternal() throws Exception{
-		super.setUpInternal();
-		myResource = new ExceptionThrowingMapResource(
-				new StringRepresentation("Error"),
-				Status.CLIENT_ERROR_BAD_REQUEST);
-	}
-	
-	public void testExceptionHandling(){
-		Context con = new Context();
-		Request req = new Request();
-		Response resp = new Response(req);
-		
-		myResource.init(con, req, resp);
-		myResource.handleGet();
-		
-		assertEquals(resp.getStatus(), myResource.getStatus());
-		assertEquals(resp.getEntity(), myResource.getRepresentation());
-	}
+public class MapResourceTest extends RestletTestSupport {
 
+    public void testMapGET() throws Exception {
+        Request request = newRequestGET( "foo.xml" );
+        Response response = new Response(request);
+        
+        FooMapResource resource = new FooMapResource( null, request, response );
+        resource.handleGet();
+        
+        Document dom = getDOM( response );
+        assertEquals( "root", dom.getDocumentElement().getNodeName() );
+        assertXpathEvaluatesTo("one", "//prop1", dom);
+        assertXpathEvaluatesTo("2", "//prop2", dom);
+        assertXpathEvaluatesTo("3.0", "//prop3", dom);
+    }
+    
+    public void testObjectPOST() throws Exception {
+        String xml = 
+            "<org.geoserver.rest.Foo>" + 
+                "<prop1>one</prop1>" + 
+                "<prop2>2</prop2>" + 
+                "<prop3>3.0</prop3>" + 
+            "</org.geoserver.rest.Foo>";
+        Request request = newRequestPOST("foo",xml,"text/xml");
+        Response response = new Response(request);
+        
+        FooMapResource resource = new FooMapResource( null, request, response );
+        resource.handlePost();
+        
+        assertEquals( "one", resource.posted.get("prop1") );
+        assertEquals( "2", resource.posted.get("prop2") );
+        assertEquals( "3.0", resource.posted.get("prop3") );
+    }
+    
+    public void testObjectPUT() throws Exception {
+        String xml = 
+            "<root>" + 
+                "<prop1>one</prop1>" + 
+                "<prop2>2</prop2>" + 
+                "<prop3>3.0</prop3>" + 
+            "</root>";
+        Request request = newRequestPOST("foo",xml,"text/xml");
+        Response response = new Response(request);
+        
+        FooMapResource resource = new FooMapResource( null, request, response );
+        resource.handlePut();
+        
+        assertEquals( "one", resource.puted.get("prop1") );
+        assertEquals( "2", resource.puted.get("prop2") );
+        assertEquals( "3.0", resource.puted.get("prop3") );
+    }
 }

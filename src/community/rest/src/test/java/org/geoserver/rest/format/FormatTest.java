@@ -1,4 +1,8 @@
-package org.geoserver.rest;
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
+package org.geoserver.rest.format;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +12,8 @@ import java.util.Map;
 
 import junit.framework.Test;
 
+import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.format.MapXMLFormat;
 import org.geoserver.test.GeoServerTestSupport;
 
 /**
@@ -28,8 +34,8 @@ public class FormatTest extends GeoServerTestSupport {
     	super.oneTimeSetUp();
     	// Add to this list if you would like to test another general format
         formats = new ArrayList();
-        formats.add(new AutoXMLFormat());
-        formats.add(new JSONFormat());
+        formats.add(new MapXMLFormat());
+        formats.add(new MapJSONFormat());
     }
 
     public void testFormatMap(){
@@ -40,7 +46,7 @@ public class FormatTest extends GeoServerTestSupport {
                 Map input = new HashMap();
                 input.put("Hello", "Goodbye");
 
-                Map result = (Map)format.readRepresentation(format.makeRepresentation(input));
+                Map result = (Map)format.toObject(format.toRepresentation(input));
                 assertEquals(result.size(), input.size());
                 Iterator mapIt = input.entrySet().iterator();
                 while (mapIt.hasNext()){
@@ -61,7 +67,7 @@ public class FormatTest extends GeoServerTestSupport {
                 List input = new ArrayList();
                 input.add("Hello");
 
-                List result = (List)format.readRepresentation(format.makeRepresentation(input));
+                List result = (List)format.toObject(format.toRepresentation(input));
                 assertEquals(result.size(), input.size());
                 for (int i = 0; i < result.size(); i++){
                     assertEquals(input.get(i), result.get(i)); }
@@ -79,7 +85,7 @@ public class FormatTest extends GeoServerTestSupport {
             DataFormat format = (DataFormat)it.next();
             String input = "Hello";
 
-            String result = (String) format.readRepresentation(format.makeRepresentation(input));
+            String result = (String) format.toObject(format.toRepresentation(input));
             assertEquals(input, result);
         }
     }
