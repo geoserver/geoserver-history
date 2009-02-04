@@ -1096,6 +1096,9 @@ public class CatalogImpl implements Catalog {
         
         //commit to the original object
         h.commit();    
+        
+        //resolve to do a sync on the object
+        syncIdWithName(real);
     }
     
     protected void fireModified(Object object, List propertyNames, List oldValues,
@@ -1289,8 +1292,12 @@ public class CatalogImpl implements Catalog {
     }
     
     protected void syncIdWithName( Object o ) {
-        Object name = OwsUtils.get( o, "name");
-        OwsUtils.set( o, "id", name);
+        if ( OwsUtils.getter(o.getClass(), "name", String.class) != null  && 
+             OwsUtils.getter(o.getClass(), "id", String.class ) != null ) {
+            
+            Object name = OwsUtils.get( o, "name");
+            OwsUtils.set( o, "id", name);    
+        }
     }
     
     public void sync( CatalogImpl other ) {
