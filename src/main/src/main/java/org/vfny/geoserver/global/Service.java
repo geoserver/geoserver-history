@@ -171,7 +171,7 @@ public class Service  implements OWS /* extends GlobalLayerSupertype*/ {
         //this.partialBufferSize = partialBufferSize;
     }
 
-    protected Object toDTO() {
+    public Object toDTO() {
         ServiceDTO dto = new ServiceDTO();
         
         dto.setAccessConstraints(service.getAccessConstraints());
