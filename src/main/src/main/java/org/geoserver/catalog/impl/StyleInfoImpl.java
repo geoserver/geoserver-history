@@ -48,6 +48,10 @@ public class StyleInfoImpl implements StyleInfo {
         this.filename = filename;
     }
     
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
+    
     public Style getStyle() throws IOException {
         return catalog.getResourcePool().getStyle( this );
     }
