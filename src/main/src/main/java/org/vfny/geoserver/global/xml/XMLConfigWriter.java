@@ -28,7 +28,9 @@ import javax.xml.transform.TransformerException;
 import org.apache.commons.io.FileUtils;
 import org.geotools.filter.FilterTransformer;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -543,9 +545,12 @@ public class XMLConfigWriter {
                 GeneralEnvelope e = (GeneralEnvelope) baseMapEnvelopes.get(titles[i]);
                 Map m = new HashMap();
 
-                m.put("srsName", e.getCoordinateReferenceSystem().getIdentifiers().toArray()[0]
-                        .toString());
-
+                try {
+                    m.put( "srsName", "EPSG:" + CRS.lookupEpsgCode(e.getCoordinateReferenceSystem(),true));
+                } 
+                catch (Exception ex) {
+                    m.put("srsName", e.getCoordinateReferenceSystem().getIdentifiers().toArray()[0].toString());
+                }
                 if (!e.isNull()) {
                     cw.openTag("baseMapEnvelope", m);
                     cw.textTag("pos", e.getLowerCorner().getOrdinate(0) + " "
@@ -929,8 +934,8 @@ public class XMLConfigWriter {
             FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) data.getFeaturesTypes().get(s);
 
             if (ft != null) {
-                String ftDirName = ft.getDirName();
-
+                String ftDirName = featureTypeDirectoryName(ft);
+                
                 try { // encode the file name (this is to catch colons in FT
                     // names)
                     ftDirName = URLEncoder.encode(ftDirName, getDefaultEncoding());
@@ -992,7 +997,7 @@ public class XMLConfigWriter {
 
             while ((fti == null) && i.hasNext()) {
                 FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) i.next();
-                String ftDirName = ft.getDirName();
+                String ftDirName = featureTypeDirectoryName(ft);
 
                 try { // encode the file name (this is to catch colons in FT
                     // names)
@@ -1049,6 +1054,15 @@ public class XMLConfigWriter {
         }
     }
 
+    static String featureTypeDirectoryName( FeatureTypeInfoDTO ft ) {
+        String ftDirName = ft.getDirName();
+        if ( ftDirName == null ) {
+            ftDirName = ft.getDataStoreId() + "_" + 
+                (ft.getAlias() != null ? ft.getAlias() : ft.getName());
+        }
+        return ftDirName;
+    }
+    
     /**
      * storeStyle purpose.
      * 
