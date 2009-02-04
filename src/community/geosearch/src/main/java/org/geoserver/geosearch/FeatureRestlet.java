@@ -9,7 +9,7 @@ import java.util.logging.Level;
 
 import org.geoserver.ows.util.KvpMap;
 import org.geoserver.ows.util.KvpUtils;
-import org.geoserver.rest.RESTUtils;
+import org.geoserver.rest.util.RESTUtils;
 import org.geoserver.rest.RestletException;
 import org.geoserver.wms.WebMapService;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;

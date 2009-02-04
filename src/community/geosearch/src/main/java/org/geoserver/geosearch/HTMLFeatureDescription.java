@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.geoserver.rest.DataFormat;
-import org.geoserver.rest.FreemarkerFormat;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
 import org.geoserver.rest.RestletException;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
@@ -45,7 +45,7 @@ public class HTMLFeatureDescription extends AbstractFeatureDescription {
         String namespace = (String)req.getAttributes().get("namespace");
         SimpleFeature f = findFeature(req);
         
-        resp.setEntity(format.makeRepresentation(buildContext(namespace, f)));
+        resp.setEntity(format.toRepresentation(buildContext(namespace, f)));
     }
 
     private Map buildContext(String namespace, SimpleFeature f) {

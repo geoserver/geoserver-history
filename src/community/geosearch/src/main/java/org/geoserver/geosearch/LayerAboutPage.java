@@ -16,9 +16,9 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.geoserver.geosearch.GeoServerProxyAwareRestlet;
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.rest.DataFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.RESTUtils;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.util.RESTUtils;
 import org.geoserver.rest.RestletException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -67,7 +67,7 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
         String namespace = (String)request.getAttributes().get("namespace");
         String layer = (String)request.getAttributes().get("layer");
 
-        response.setEntity(format.makeRepresentation(getContext(namespace, layer, request)));
+        response.setEntity(format.toRepresentation(getContext(namespace, layer, request)));
     }
     
     SimpleHash getContext(String namespace, String layer, Request request){
