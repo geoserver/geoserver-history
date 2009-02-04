@@ -145,8 +145,8 @@ public class RasterLayerLegendHelper {
 
 			// colormap element
 			final ColorMap cmap = rasterSymbolizer.getColorMap();
-			if (cmap != null || cmap.getColorMapEntries() != null
-					|| cmap.getColorMapEntries().length > 0) {
+			if (cmap != null && cmap.getColorMapEntries() != null
+					&& cmap.getColorMapEntries().length > 0) {
 				// colormap legend builder
 				final ColorMapLegendBuilder cmapLegendBuilder = new ColorMapLegendBuilder();
 

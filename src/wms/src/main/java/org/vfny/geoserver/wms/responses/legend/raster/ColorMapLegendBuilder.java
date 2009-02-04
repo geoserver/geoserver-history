@@ -100,12 +100,19 @@ class ColorMapLegendBuilder {
 		            
 		            final int minx=(int) (clipBox.getMinX()+0.5);
 		            final int miny=(int) (clipBox.getMinY()+0.5);
-		            final int maxx=(int) (minx+clipBox.getWidth()+0.5);
-		            final int maxy=(int)(miny+clipBox.getHeight()+0.5);	            	
+		            final int maxx=(int) (minx+clipBox.getWidth()+0.5)-1;
+		            final int maxy=(int)(miny+clipBox.getHeight()+0.5)-1;	            	
 	            	graphics.drawLine(minx,maxy,maxx,maxy);
 	            }
 	            else
-	            	graphics.draw(clipBox);
+	            {
+		            
+		            final int minx=(int) (clipBox.getMinX()+0.5);
+		            final int miny=(int) (clipBox.getMinY()+0.5);
+		            final int w=(int) (clipBox.getWidth()+0.5)-1;
+		            final int h=(int)(clipBox.getHeight()+0.5)-1;	   
+	            	graphics.draw(new Rectangle2D.Double(minx,miny,w,h));
+	            }
 	            //restore color            
 	            graphics.setColor(oldColor);
             }
@@ -145,36 +152,60 @@ class ColorMapLegendBuilder {
 	
 	class GradientColorManager extends SimpleColorManager{
 
-		private Color previousColor;
+		private Color previousColor=null;
 		private boolean leftEdge;
 
 		public GradientColorManager(Color color, double opacity, final Color previousColor) {
 			super(color, opacity);
 			this.previousColor=previousColor;
-			if(this.previousColor!=null)
+			if(previousColor==null)
 				leftEdge=true;
 		}
 
 		@Override
 		public void draw(final Graphics2D graphics, final Rectangle2D clipBox, final boolean completeBorder) {
+			
+			// getting clipbox dimensions
+//			final double minx=clipBox.getMinX();
+//			final double miny=clipBox.getMinY();
+//			final double w=clipBox.getWidth();
+//			final double h=clipBox.getHeight();
+			
+            final double minx=clipBox.getMinX();
+            final double miny=clipBox.getMinY();
+            final double w=clipBox.getWidth();
+            final double h=clipBox.getHeight();	 
+			
             // GRADIENT
-            if(!leftEdge&&previousColor!=null){
+            if(!leftEdge){
 	            //rectangle for the gradient
-	            final Rectangle2D.Double rectLegend= new Rectangle2D.Double(clipBox.getMinX(),clipBox.getMinY(),clipBox.getWidth(),clipBox.getHeight()/2.0);
+	            final Rectangle2D.Double rectLegend= new Rectangle2D.Double(
+	            		minx,
+	            		miny,
+	            		w,
+	            		h/2.0);
 	            
 	            //gradient paint
 	            final Paint oldPaint=graphics.getPaint();
-	            final GradientPaint paint= new GradientPaint(0,0,previousColor,0,(int)(clipBox.getHeight()/2.0),color);
+	            final GradientPaint paint=new GradientPaint(
+	            		(float)minx,(float)miny,previousColor,
+	            		(float)minx,(float)(miny+h/2.0),color);
 	            graphics.setPaint(paint);
 	            graphics.fill(rectLegend);
 	            
 	            //restore paint            
 	            graphics.setPaint(oldPaint);
 	            
+	            
+	            
             }		
             
+            //COLOR BOX
             final Rectangle2D rectLegend  = new Rectangle2D.Double(
-            		clipBox.getMinX(),!leftEdge?(int)(clipBox.getHeight()/2.0):0,clipBox.getWidth(),!leftEdge?(int)(clipBox.getHeight()/2.0):clipBox.getHeight());
+            		minx,
+            		miny+(leftEdge?0:h/2.0),
+            		w,
+            		!leftEdge?h/2.0:h);
             super.draw(graphics, rectLegend, completeBorder);
             
             
@@ -454,7 +485,7 @@ class ColorMapLegendBuilder {
 	        //
 	        ////
             return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,
-					renderedLabel,transparent,backgroundColor,false);
+					renderedLabel,transparent,backgroundColor,true);
 		}
 
 		@Override
@@ -542,7 +573,7 @@ class ColorMapLegendBuilder {
 	            final Rectangle2D.Double rectLegend= new Rectangle2D.Double(hpad,vpad,wLegend,hLegend);
 	            
 
-	            colorManager.draw(graphics, rectLegend,true);
+	            colorManager.draw(graphics, rectLegend,false);
 	            
 		        ////
 		        //
