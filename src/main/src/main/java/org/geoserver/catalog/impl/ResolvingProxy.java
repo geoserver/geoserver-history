@@ -9,7 +9,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 
 
@@ -55,6 +57,12 @@ public class ResolvingProxy extends ProxyBase {
                 }
                 if ( object instanceof NamespaceInfo ) {
                     return (T) catalog.getNamespace( ref );
+                }
+                if ( object instanceof LayerInfo ) {
+                    return (T) catalog.getLayerByName( ref );
+                }
+                if ( object instanceof StyleInfo ) {
+                    return (T) catalog.getStyleByName( ref );
                 }
             }
         }
