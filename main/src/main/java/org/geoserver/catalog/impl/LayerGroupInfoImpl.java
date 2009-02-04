@@ -59,6 +59,10 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
         return styles;
     }
     
+    public void setStyles(List<StyleInfo> styles) {
+        this.styles = styles;
+    }
+    
     public ReferencedEnvelope getBounds() {
         return bounds;
     }
@@ -69,5 +73,9 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
     
     public Map<String, Serializable> getMetadata() {
         return metadata;
+    }
+    
+    public void setMetadata(Map<String, Serializable> metadata) {
+        this.metadata = metadata;
     }
 }
