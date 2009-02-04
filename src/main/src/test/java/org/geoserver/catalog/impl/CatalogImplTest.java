@@ -271,21 +271,15 @@ public class CatalogImplTest extends TestCase {
         catch( Exception e) {
         }
         
-        final String ws2Id = ws2.getId();
-        
         ws2.setName( "ws2");
         
         WorkspaceInfo ws3 = catalog.getWorkspaceByName(ws.getName());
         assertEquals( "wsName", ws3.getName() );
         
         catalog.save( ws2 );
-        ws3 = catalog.getWorkspaceByName(ws2.getName());
+        ws3 = catalog.getWorkspace(ws2.getName());
         assertEquals(ws2, ws3);
         assertEquals( "ws2", ws3.getName() );
-        
-        WorkspaceInfo ws2ById = catalog.getWorkspace(ws2Id);
-        assertNotNull(ws2ById);
-        assertEquals(ws2, ws2ById);
     }
     
     public void testWorkspaceEvents() {
