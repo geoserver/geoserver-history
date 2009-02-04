@@ -3,18 +3,14 @@
 
 <beans>
 
-    <bean id="exceptionThrowingResource" class="org.geoserver.rest.ExceptionThrowingResource">
-    </bean>
-    <bean id="exceptionFinder" class="org.geoserver.rest.BeanResourceFinder">
-      <constructor-arg value="exceptionThrowingResource"/>
-    </bean>
+    <bean id="exceptionThrowingResource" class="org.geoserver.rest.ExceptionThrowingResource"/>
     
     <bean id="testMapping" class="org.geoserver.rest.RESTMapping">
       <property name="routes">
         <map>
           <entry>
             <key><value>/exception</value></key>
-            <value>exceptionFinder</value>
+            <value>exceptionThrowingResource</value>
           </entry>
         </map>
       </property>
