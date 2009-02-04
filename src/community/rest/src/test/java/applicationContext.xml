@@ -13,7 +13,7 @@
       <property name="routes">
         <map>
           <entry>
-            <key><value>/exception</value></key>
+            <key><value>/exception?{query}</value></key>
             <value>exceptionFinder</value>
           </entry>
         </map>

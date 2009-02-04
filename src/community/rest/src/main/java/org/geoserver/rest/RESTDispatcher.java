@@ -21,6 +21,7 @@ import org.restlet.Router;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.Resource;
+import org.restlet.util.Template;
 import org.springframework.beans.BeansException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -118,9 +119,19 @@ public class RESTDispatcher extends AbstractController {
             // LOG.info("Found mapping: " + entry.getKey().toString());
 
             if (getApplicationContext().getBean(entry.getValue().toString()) instanceof Resource){
-                r.attach(entry.getKey().toString(), new BeanResourceFinder(getApplicationContext(), entry.getValue().toString()));
+                r.attach(entry.getKey().toString(), 
+                        new BeanResourceFinder(
+                            getApplicationContext(),
+                            entry.getValue().toString()
+                            )
+                        ).getTemplate().setMatchingMode(Template.MODE_EQUALS);
             } else {
-                r.attach(entry.getKey().toString(), new BeanDelegatingRestlet(getApplicationContext(), entry.getValue().toString()));
+                r.attach(entry.getKey().toString(), 
+                        new BeanDelegatingRestlet(
+                            getApplicationContext(),
+                            entry.getValue().toString()
+                            )
+                        ).getTemplate().setMatchingMode(Template.MODE_EQUALS);
             }
         }
     }
@@ -144,7 +155,7 @@ public class RESTDispatcher extends AbstractController {
                     
                     String pageURI = request.getResourceRef().toString();
                     if ( gs.getGlobal().getProxyBaseUrl() != null ) {
-                        baseURI= RequestUtils.proxifiedBaseURL(baseURI, gs.getGlobal().getProxyBaseUrl());
+                        baseURI = RequestUtils.proxifiedBaseURL(baseURI, gs.getGlobal().getProxyBaseUrl());
                         pageURI = ResponseUtils.appendPath( baseURI, request.getResourceRef().getPath() );
                     }
                     
