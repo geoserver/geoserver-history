@@ -166,11 +166,6 @@ class ColorMapLegendBuilder {
 		public void draw(final Graphics2D graphics, final Rectangle2D clipBox, final boolean completeBorder) {
 			
 			// getting clipbox dimensions
-//			final double minx=clipBox.getMinX();
-//			final double miny=clipBox.getMinY();
-//			final double w=clipBox.getWidth();
-//			final double h=clipBox.getHeight();
-			
             final double minx=clipBox.getMinX();
             final double miny=clipBox.getMinY();
             final double w=clipBox.getWidth();
@@ -190,6 +185,8 @@ class ColorMapLegendBuilder {
 	            final GradientPaint paint=new GradientPaint(
 	            		(float)minx,(float)miny,previousColor,
 	            		(float)minx,(float)(miny+h/2.0),color);
+	            
+	            // do the magic
 	            graphics.setPaint(paint);
 	            graphics.fill(rectLegend);
 	            
@@ -201,6 +198,7 @@ class ColorMapLegendBuilder {
             }		
             
             //COLOR BOX
+            //careful with handling the leftEdge case
             final Rectangle2D rectLegend  = new Rectangle2D.Double(
             		minx,
             		miny+(leftEdge?0:h/2.0),
@@ -222,7 +220,6 @@ class ColorMapLegendBuilder {
 	class TextManager{
 
 		private final String text;
-		private Dimension dimension;
 		
 
 		public TextManager(String text) {
@@ -230,32 +227,40 @@ class ColorMapLegendBuilder {
 		}
 		
 		public Dimension computeDimension(final Graphics2D graphics){
-			if(dimension==null)
-			{
-				final Font oldFont=graphics.getFont();
-	            graphics.setFont(labelFont);
-	            //computing label dimension and creating  buffered image on which we can draw the label on it
-		        final int labelHeight = (int) Math.ceil(graphics.getFontMetrics().getStringBounds(text, graphics).getHeight());
-		        final int labelWidth = (int) Math.ceil(graphics.getFontMetrics().getStringBounds(text, graphics).getWidth());
-		        graphics.dispose();
-		        //restore the old font
-		        graphics.setFont(oldFont);	
-		        dimension=new Dimension(labelWidth,labelHeight);
-	        }
-	        return dimension;
+			//get old font
+			final Font oldFont=graphics.getFont();
+			
+			//set new font
+            graphics.setFont(labelFont);
+            //computing label dimension and creating  buffered image on which we can draw the label on it
+	        final int labelHeight = (int) Math.ceil(graphics.getFontMetrics().getStringBounds(text, graphics).getHeight());
+	        final int labelWidth = (int) Math.ceil(graphics.getFontMetrics().getStringBounds(text, graphics).getWidth());
+	        //restore the old font
+	        graphics.setFont(oldFont);	
+	        return new Dimension(labelWidth,labelHeight);
 		}
 		
 		public void draw(final Graphics2D graphics,final Rectangle2D textBox){
+			
 			//get old font
 			final Font oldFont=graphics.getFont();
-			//set font and font color
+			
+			//set font and font color and the antialising
 			graphics.setColor(labelFontColor);
 			graphics.setFont(labelFont);
 			graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			
 			//Halign==center vAlign==bottom
-			final int xText=(int)(textBox.getMinX()+(textBox.getWidth()-dimension.getWidth())/2.0+0.5);
-			final int yText=(int)(textBox.getMinY()+graphics.getFontMetrics().getAscent()+0.5) ;
+            final double minx=textBox.getMinX();
+            final double miny=textBox.getMinY();
+            final double w=textBox.getWidth(); 
+            final Dimension dimension=computeDimension(graphics);
+            //where do we draw?
+			final int xText=(int)(minx+(w-dimension.getWidth())/2.0+0.5);
+			final int yText=(int)(miny+graphics.getFontMetrics().getAscent()+0.5) ;
+			//draw
 			graphics.drawString(text, xText,yText); 
+			
 	        //restore the old font
 	        graphics.setFont(oldFont);
 			
@@ -546,7 +551,6 @@ class ColorMapLegendBuilder {
 
 			@Override
 			public BufferedImage getLegend() {
-				// TODO OPACITY IS MISSING, I would add something an hatch to show that an element is transparent
 				
 				////
 				//
@@ -571,8 +575,6 @@ class ColorMapLegendBuilder {
 	            final float hLegend = height - (2 * vpad);
 	            //rectangle for the legend
 	            final Rectangle2D.Double rectLegend= new Rectangle2D.Double(hpad,vpad,wLegend,hLegend);
-	            
-
 	            colorManager.draw(graphics, rectLegend,false);
 	            
 		        ////
@@ -626,12 +628,6 @@ class ColorMapLegendBuilder {
 	private Font labelFont;
 
 	private Color labelFontColor;
-	
-	private boolean needsRules=false;
-	
-	private Dimension maxRuleDim=new Dimension(0,0);
-	
-	private Dimension maxLabelDim=new Dimension(0,0);
 
 	private ColorMapEntry previousCMapEntry;
 
