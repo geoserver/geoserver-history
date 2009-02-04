@@ -831,6 +831,7 @@
      <include>**/*.js</include>
      <include>**/*.png</include>
      <include>**/*.gif</include>
+     <include>**/*.sld</include>
     </includes>
     <excludes>
      <exclude>**/doc-files/**</exclude>
