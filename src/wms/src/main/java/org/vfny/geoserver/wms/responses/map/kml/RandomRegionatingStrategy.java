@@ -31,15 +31,16 @@ public class RandomRegionatingStrategy extends
         CachedHierarchyRegionatingStrategy {
 
     @Override
-    public FeatureIterator getSortedFeatures(GeometryDescriptor geom, ReferencedEnvelope env,
+    public FeatureIterator getSortedFeatures(GeometryDescriptor geom, 
+            ReferencedEnvelope latLongEnv, ReferencedEnvelope nativeEnv,
             Connection cacheConn) throws Exception {
         FeatureSource fs = typeInfo.getFeatureSource();
         
         // build the bbox filter
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
         
-        BBOX filter = ff.bbox(geom.getLocalName(), env.getMinX(),
-                env.getMinY(), env.getMaxX(), env.getMaxY(), null);
+        BBOX filter = ff.bbox(geom.getLocalName(), nativeEnv.getMinX(),
+                nativeEnv.getMinY(), nativeEnv.getMaxX(), nativeEnv.getMaxY(), null);
 
         // build an optimized query (only the necessary attributes
         DefaultQuery q = new DefaultQuery();

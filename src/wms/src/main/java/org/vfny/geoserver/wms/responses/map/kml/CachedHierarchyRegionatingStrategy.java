@@ -401,7 +401,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
                 nativeTileEnvelope = tile.getEnvelope();
             }
 
-            fi = getSortedFeatures(geom, nativeTileEnvelope, conn);
+            fi = getSortedFeatures(geom, tile.getEnvelope(), nativeTileEnvelope, conn);
 
             // if the crs is not wgs84, we'll need to transform the point
             MathTransform tx = null;
@@ -456,8 +456,8 @@ public abstract class CachedHierarchyRegionatingStrategy implements
      * @throws Exception
      */
     protected abstract FeatureIterator getSortedFeatures(
-    		GeometryDescriptor geom, ReferencedEnvelope envelope, 
-    		Connection indexConnection)
+    		GeometryDescriptor geom, ReferencedEnvelope latLongEnvelope, 
+    		ReferencedEnvelope nativeEnvelope, Connection indexConnection)
             throws Exception;
 
     /**

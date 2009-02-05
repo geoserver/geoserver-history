@@ -439,7 +439,7 @@ public class WMS extends Service {
         for ( LayerGroupInfo map : gs.getCatalog().getLayerGroups() ) {
             StringBuffer layers = new StringBuffer();
             for ( LayerInfo l : map.getLayers() ) {
-                layers.append( l.getName() ).append( "," );
+                layers.append( l.getResource().getPrefixedName() ).append( "," );
             }
             layers.setLength( layers.length() - 1 );
             baseLayers.put( map.getName(), layers.toString() );
