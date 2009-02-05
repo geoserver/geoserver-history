@@ -9,4 +9,5 @@ GeoServer Developer Guide
    source.rst
    maven-quickstart.rst
    eclipse-quickstart.rst
+   programming-guide/index.rst
    release-guide.rst
