@@ -126,7 +126,8 @@ public class ExternalSortRegionatingStrategy extends
     }
 
     public FeatureIterator getSortedFeatures(GeometryDescriptor geom, 
-    		ReferencedEnvelope envelope, Connection cacheConn) throws Exception {
+            ReferencedEnvelope latLongEnvelope, ReferencedEnvelope nativeEnvelope, 
+            Connection cacheConn) throws Exception {
         // first of all, let's check if the geometry index table is there
         Statement st = null;
         try {
@@ -140,7 +141,7 @@ public class ExternalSortRegionatingStrategy extends
             JDBCUtils.close(st);
         }
 
-        return new IndexFeatureIterator(cacheConn, envelope);
+        return new IndexFeatureIterator(cacheConn, latLongEnvelope);
     }
     
     protected String getH2DataType(AttributeDescriptor ad) {
