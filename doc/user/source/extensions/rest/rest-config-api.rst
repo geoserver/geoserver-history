@@ -265,7 +265,6 @@ Operations
      -
      -
 
-
 Data stores
 -----------
 
@@ -352,6 +351,84 @@ Operations
 - PUT that changes workspace of data store -> 403
 - DELETE against a data store that contains configured feature types -> 403
 
+``/workspaces/<ws>/datastores/<ds>/file[.<extension>]``
+
+The ``extension`` parameter specifies the type of data store. The following 
+extensions are supported:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Extension
+     - Datastore
+   * - shp
+     - Shapefile
+   * - gml
+     - GML (Geographic Markup Language)
+   * - properties
+     - Property file
+
+.. list-table::
+   :header-rows: 1
+
+   * - Method
+     - Action
+     - Return Code
+     - Formats
+     - Default Format
+     - Parameters
+   * - GET
+     - Get the underlying files for the data store as a zip file with 
+       mime type ``application/zip``.
+     - 200
+     - 
+     - 
+     - 
+   * - POST
+     - 
+     - 405
+     - 
+     - 
+     -
+   * - PUT
+     - Creates or overwrites the files for data store ``ds``.
+     - 200
+     - See :ref:`notes <datastore_file_put_notes>` below.
+     - 
+     - :ref:`configure <configure_parameter>`
+   * - DELETE
+     -
+     - 405
+     -
+     -
+     -
+
+*Exceptions*:
+
+- GET for a data store that does not exist -> 404
+- GET for a data store that is not file based -> 404
+
+.. _datastore_file_put_notes:
+
+When the file for a datastore are PUT, it can be as a standalone file, or as
+a zipped archive. The standalone file method is only applicable to data stores 
+that work from a single file, GML for example. Data stores like Shapefile 
+must be sent as a zip archive.
+
+When uploading a zip archive the ``Content-type`` should be set to
+``application/zip``. When uploading a standalone file the content type should
+be appropriately set based on the file type.
+
+.. _configure_parameter:
+
+The ``configure`` parameter is used to control how the data store is
+configured upon file upload. It can take one of the three values "first",
+"none", or "all".
+
+- ``first`` - Only setup the first feature type available in the data store.
+              This is the default value.
+- ``none`` - Do not configure any feature types.
+- ``all`` - Configure all feature types.
 
 Feature types
 -------------
@@ -407,7 +484,13 @@ Operations
      -
      -
      -
-   
+
+*Exceptions*:
+
+- GET for a feature type that does not exist -> 404
+- PUT that changes name of feature type -> 403
+- PUT that changes data store of feature type -> 403
+
 .. _list_parameter:
 
 The ``list`` parameter is used to control the category of feature types that 
@@ -541,6 +624,73 @@ Operations
 - PUT that changes workspace of coverage store -> 403
 - DELETE against a coverage store that contains configured coverage -> 403
 
+``/workspaces/<ws>/coveragestores/<cs>/file[.<extension>]``
+
+The ``extension`` parameter specifies the type of coverage store. The
+following extensions are supported:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Extension
+     - Coveragestore
+   * - geotiff
+     - GeoTIFF
+   * - worldimage
+     - Geo referenced image (JPEG,PNG,TIF)
+   * - mosaic
+     - Image mosaic
+
+.. list-table::
+   :header-rows: 1
+
+   * - Method
+     - Action
+     - Return Code
+     - Formats
+     - Default Format
+     - Parameters
+   * - GET
+     - Get the underlying files for the coverage store as a zip file with 
+       mime type ``application/zip``.
+     - 200
+     - 
+     - 
+     - 
+   * - POST
+     - 
+     - 405
+     - 
+     - 
+     -
+   * - PUT
+     - Creates or overwrites the files for coverage store ``cs``.
+     - 200
+     - See :ref:`notes <coveragestore_file_put_notes>` below.
+     - 
+     - :ref:`configure <configure_parameter>`
+   * - DELETE
+     -
+     - 405
+     -
+     -
+     -
+
+*Exceptions*:
+
+- GET for a data store that does not exist -> 404
+- GET for a data store that is not file based -> 404
+
+.. _coveragestore_file_put_notes:
+
+When the file for a coveragestore is PUT, it can be as a standalone file, or
+as a zipped archive. The standalone file method is only applicable to coverage
+stores that work from a single file, GeoTIFF for example. Coverage stores like
+Image moscaic must be sent as a zip archive.
+
+When uploading a zip archive the ``Content-type`` should be set to
+``application/zip``. When uploading a standalone file the content type should
+be appropriately set based on the file type.
 
 Coverages
 ---------
