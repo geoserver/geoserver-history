@@ -1,8 +1,3 @@
-/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
-
 package org.vfny.geoserver.wms.responses.palette;
 
 import java.awt.Point;
@@ -10,6 +5,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
 import java.awt.image.RasterOp;
