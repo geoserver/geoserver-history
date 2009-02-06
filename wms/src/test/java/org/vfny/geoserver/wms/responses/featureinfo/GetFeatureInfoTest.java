@@ -47,6 +47,24 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         assertNotNull(result);
         assertTrue(result.indexOf("Green Forest") > 0);
     }
+    
+    /**
+     * Tests a GetFeatureInfo againworks, and that the result contains the
+     * expected polygon
+     * 
+     * @throws Exception
+     */
+    public void testTwoLayers() throws Exception {
+        String layer = getLayerId(MockData.FORESTS) + "," + getLayerId(MockData.LAKES);
+        String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+                + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10&info";
+        String result = getAsString(request);
+        assertNotNull(result);
+        assertTrue(result.indexOf("Green Forest") > 0);
+        // GEOS-2603 GetFeatureInfo returns html tables without css style if more than one layer is selected
+        assertTrue(result.indexOf("<style type=\"text/css\">") > 0);
+
+    }
 
     /**
      * Check GetFeatureInfo returns an error if the format is not known, instead
