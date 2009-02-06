@@ -71,7 +71,7 @@
 			<td style="vertical-align: bottom; white-space: nowrap;">
 	          <div class="site-head">
 		         <div class="selfclear">
-	<span class="site"><a href="/geoserver/welcome.do"><logic:notEmpty name="GeoServer" property="title">
+	<span class="site"><a href="<%=request.getContextPath()%>/welcome.do"><logic:notEmpty name="GeoServer" property="title">
 	              <bean:write name="GeoServer" property="title"/>
 	</logic:notEmpty>
 	<logic:empty name="GeoServer" property="title">
