@@ -6,11 +6,13 @@ package org.vfny.geoserver.wms.responses;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,6 +48,7 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
+import org.vfny.geoserver.wms.responses.palette.NeuQuant;
 
 /**
  * Abstract base class for GetMapProducers that relies in LiteRenderer for
@@ -387,7 +390,19 @@ public abstract class DefaultRasterMapProducer extends
 	 * @return
 	 */
 	protected RenderedImage forceIndexed8Bitmask(RenderedImage originalImage) {
-        return ImageUtils.forceIndexed8Bitmask(originalImage, mapContext.getPaletteInverter());
+	    if(originalImage.getColorModel().hasAlpha() && mapContext.getPaletteInverter() == null) {
+	        try {
+	            NeuQuant nq = new NeuQuant(8, (Image) originalImage, originalImage.getWidth(), originalImage.getHeight());
+	            nq.init();
+	            IndexColorModel palette = nq.getPalette();
+	            
+	            return ImageUtils.forceIndexed8Bitmask(originalImage, new InverseColorMapOp(palette));
+	        } catch(IOException e ) {
+	            throw new WmsException("Could not reduce the color palette with NeuQuant algorithm", "", e);
+	        }
+	    } else {
+	        return ImageUtils.forceIndexed8Bitmask(originalImage, mapContext.getPaletteInverter());
+	    }
 	}
     
 	/**
