@@ -1,0 +1,126 @@
+package org.geoserver.catalog.rest;
+
+import java.util.List;
+import java.util.Map;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.rest.RestletException;
+import org.geoserver.rest.format.DataFormat;
+import org.restlet.Context;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
+
+import freemarker.ext.beans.CollectionModel;
+import freemarker.template.Configuration;
+import freemarker.template.SimpleHash;
+
+public class DataStoreResource extends AbstractCatalogResource {
+
+    public DataStoreResource(Context context, Request request, Response response, Catalog catalog) {
+        super(context, request, response, DataStoreInfo.class, catalog);
+    }
+
+    @Override
+    protected DataFormat createHTMLFormat(Request request, Response response) {
+        return new CatalogFreemarkerHTMLFormat( DataStoreInfo.class, request, response, this ) {
+            
+            @Override
+            protected Configuration createConfiguration(Object data, Class clazz) {
+                Configuration cfg = 
+                    super.createConfiguration(data, clazz);
+                cfg.setObjectWrapper(new ObjectToMapWrapper<DataStoreInfo>(DataStoreInfo.class) {
+                    @Override
+                    protected void wrapInternal(Map properties, SimpleHash model, DataStoreInfo object) {
+                        List<FeatureTypeInfo> featureTypes = catalog.getFeatureTypesByDataStore(object);
+                        
+                        properties.put( "featureTypes", new CollectionModel( featureTypes, new ObjectToMapWrapper(FeatureTypeInfo.class) ) );
+                    }
+                });
+                
+                return cfg;
+            }
+        };
+    }
+    
+    @Override
+    protected Object handleObjectGet() {
+        String ws = getAttribute( "workspace" );
+        String ds = getAttribute( "datastore" );
+        
+        LOGGER.fine( "GET data store " + ws + "," + ds );
+        if ( ds == null ) {
+            return catalog.getDataStoresByWorkspace( ws );
+        }
+        
+        return catalog.getDataStoreByName( ws, ds );
+    }
+
+    @Override
+    public boolean allowPost() {
+        return getAttribute("datastore") == null;
+    }
+    
+    @Override
+    protected String handleObjectPost(Object object) throws Exception {
+        DataStoreInfo ds = (DataStoreInfo) object;
+        catalog.add( (DataStoreInfo) object );
+        saveCatalog();
+        
+        LOGGER.info( "POST data store " + ds.getName() );
+        return ds.getName();
+    }
+
+    @Override
+    public boolean allowPut() {
+        return getAttribute( "datastore" ) != null;
+    }
+    
+    @Override
+    protected void handleObjectPut(Object object) throws Exception {
+        String workspace = getAttribute("workspace");
+        String datastore = getAttribute("datastore");
+        
+        DataStoreInfo ds = (DataStoreInfo) object;
+        DataStoreInfo original = catalog.getDataStoreByName(workspace, datastore);
+        
+        //ensure this is not a name or workspace change
+        if ( ds.getName() != null && !ds.getName().equals( original.getName() ) ) {
+            throw new RestletException( "Can't change name of data store.", Status.CLIENT_ERROR_FORBIDDEN );
+        }
+        if ( ds.getWorkspace() != null && !ds.getWorkspace().equals( original.getWorkspace() ) ) {
+            throw new RestletException( "Can't change workspace of data store.", Status.CLIENT_ERROR_FORBIDDEN );
+        }
+        
+        new CatalogBuilder( catalog ).updateDataStore( original, ds );
+        
+        catalog.save( original );
+        saveCatalog();
+        
+        LOGGER.info( "PUT data store " + workspace + "," + datastore );
+    }
+    
+    @Override
+    public boolean allowDelete() {
+        return getAttribute( "datastore" ) != null;
+    }
+    
+    @Override
+    protected void handleObjectDelete() throws Exception {
+        String workspace = getAttribute("workspace");
+        String datastore = getAttribute("datastore");
+        
+        DataStoreInfo ds = catalog.getDataStoreByName(workspace, datastore);
+        if ( !catalog.getFeatureTypesByDataStore(ds).isEmpty() ) {
+            throw new RestletException( "datastore not empty", Status.CLIENT_ERROR_FORBIDDEN);
+        }
+        catalog.remove( ds );
+        saveCatalog();
+        
+        LOGGER.info( "DELETE data store " + workspace + "," + datastore );
+    }
+
+}

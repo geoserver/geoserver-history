@@ -1,0 +1,137 @@
+package org.geoserver.catalog.rest;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.rest.RestletException;
+import org.restlet.Context;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
+
+public class CoverageResource extends AbstractCatalogResource {
+
+    public CoverageResource(Context context, Request request,
+            Response response, Catalog catalog) {
+        super(context, request, response, CoverageInfo.class, catalog);
+        
+    }
+
+    @Override
+    protected Object handleObjectGet() throws Exception {
+        String workspace = getAttribute( "workspace");
+        String coveragestore = getAttribute( "coveragestore");
+        String coverage = getAttribute( "coverage" );
+
+        if ( coveragestore == null ) {
+            LOGGER.fine( "GET coverage " + workspace + "," + coverage );
+            //grab the corresponding namespace for this workspace
+            NamespaceInfo ns = catalog.getNamespaceByPrefix( workspace );
+            if ( ns != null ) {
+
+                if ( coverage != null ) {
+                    return catalog.getCoverageByName(ns,coverage);
+                }
+
+                return catalog.getCoveragesByNamespace(ns);    
+            }
+
+            throw new RestletException( "", Status.CLIENT_ERROR_NOT_FOUND );
+        }
+
+        LOGGER.fine( "GET coverage " + coveragestore + "," + coverage );
+        CoverageStoreInfo cs = catalog.getCoverageStoreByName(workspace, coveragestore);
+        if ( coverage != null ) {
+            return catalog.getCoverageByCoverageStore( cs, coverage );
+        }
+
+        return catalog.getCoveragesByCoverageStore(cs);
+    }
+
+    @Override
+    public boolean allowPost() {
+        return getAttribute("coverage") == null;
+    }
+    
+    @Override
+    protected String handleObjectPost(Object object) throws Exception {
+        String workspace = getAttribute( "workspace");
+        String coveragestore = getAttribute( "coveragestore");
+
+        CoverageInfo coverage = (CoverageInfo) object;
+        if ( coverage.getStore() == null ) {
+            //get from requests
+            CoverageStoreInfo ds = catalog.getCoverageStoreByName( workspace, coveragestore );
+            coverage.setStore( ds );
+        }
+        
+        NamespaceInfo ns = coverage.getNamespace();
+        if ( ns != null && !ns.getPrefix().equals( workspace ) ) {
+            //TODO: change this once the two can be different and we untie namespace
+            // from workspace
+            LOGGER.warning( "Namespace: " + ns.getPrefix() + " does not match workspace: " + workspace + ", overriding." );
+            ns = null;
+        }
+        
+        if ( ns == null){
+            //infer from workspace
+            ns = catalog.getNamespaceByPrefix( workspace );
+            coverage.setNamespace( ns );
+        }
+        
+        coverage.setEnabled(true);
+        catalog.add( coverage );
+        
+        //create a layer for the coverage
+        catalog.add(new CatalogBuilder(catalog).buildLayer(coverage));
+        saveCatalog();
+        
+        LOGGER.info( "POST coverage " + coveragestore + "," + coverage.getName() );
+        return coverage.getName();
+    }
+
+    @Override
+    public boolean allowPut() {
+        return getAttribute("coverage") != null;
+    }
+    
+    @Override
+    protected void handleObjectPut(Object object) throws Exception {
+        CoverageInfo c = (CoverageInfo) object;
+        
+        String workspace = getAttribute("workspace");
+        String coveragestore = getAttribute("coveragestore");
+        String coverage = getAttribute("coverage");
+        
+        CoverageStoreInfo cs = catalog.getCoverageStoreByName(workspace, coveragestore);
+        CoverageInfo original = catalog.getCoverageByCoverageStore( cs,  coverage );
+        new CatalogBuilder(catalog).updateCoverage(original,c);
+        catalog.save( original );
+        
+        saveCatalog();
+        
+        LOGGER.info( "PUT coverage " + coveragestore + "," + coverage );
+    }
+    
+    @Override
+    public boolean allowDelete() {
+        return getAttribute("coverage") != null;
+    }
+    
+    @Override
+    protected void handleObjectDelete() throws Exception {
+        String workspace = getAttribute("workspace");
+        String coveragestore = getAttribute("coveragestore");
+        String coverage = getAttribute("coverage");
+        
+        CoverageStoreInfo ds = catalog.getCoverageStoreByName(workspace, coveragestore);
+        CoverageInfo c = catalog.getCoverageByCoverageStore( ds,  coverage );
+        catalog.remove( c );
+        
+        saveCatalog();
+        LOGGER.info( "DELETE coverage " + coveragestore + "," + coverage );
+    }
+
+}
