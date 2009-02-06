@@ -244,6 +244,7 @@ public class XStreamPersister {
         //NamespaceInfo
         xs.omitField( NamespaceInfoImpl.class, "id");
         xs.omitField( NamespaceInfoImpl.class, "catalog");
+        xs.omitField( NamespaceInfoImpl.class, "metadata");
         
         //WorkspaceInfo
         xs.omitField( WorkspaceInfoImpl.class, "id");
@@ -255,7 +256,7 @@ public class XStreamPersister {
         xs.registerConverter(new FeatureTypeInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
         xs.registerConverter(new LayerInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
         xs.registerConverter(new LayerGroupInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
-        xs.registerConverter(new WorkspaceInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
+        xs.registerConverter(new SpaceInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
         
         //local converters
         xs.registerLocalConverter(CatalogImpl.class, "stores",
@@ -1176,16 +1177,17 @@ public class XStreamPersister {
         }
     }
     
-    class WorkspaceInfoConverter extends ReflectionConverter {
+    class SpaceInfoConverter extends ReflectionConverter {
 
-        public WorkspaceInfoConverter(Mapper mapper,
+        public SpaceInfoConverter(Mapper mapper,
                 ReflectionProvider reflectionProvider) {
             super(mapper, reflectionProvider);
         }
         
         @Override
         public boolean canConvert(Class type) {
-            return WorkspaceInfo.class.isAssignableFrom(type);
+            return WorkspaceInfo.class.isAssignableFrom(type) || 
+                NamespaceInfo.class.isAssignableFrom(type);
         }
         
         @Override
