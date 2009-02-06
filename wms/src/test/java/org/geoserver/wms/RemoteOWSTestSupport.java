@@ -13,7 +13,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataStore;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.FeatureCollection;
+import org.opengis.filter.FilterFactory;
 
 /** 
  * Utility class used to check wheter REMOTE_OWS_XXX related tests can be run against Sigma
@@ -40,10 +45,20 @@ public class RemoteOWSTestSupport {
                 //give it five seconds to respond...
                 params.put(WFSDataStoreFactory.TIMEOUT.key, Integer.valueOf(5000));
                 DataStore remoteStore = factory.createDataStore(params);
-                remoteStore.getFeatureSource(TOPP_STATES);
+                FeatureSource fs = remoteStore.getFeatureSource(TOPP_STATES);
                 remoteStatesAvailable = Boolean.TRUE;
+                // check a basic response can be answered correctly
+                DefaultQuery dq = new DefaultQuery(TOPP_STATES);
+                FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+                dq.setFilter(ff.greater(ff.property("PERSONS"), ff.literal(20000000)));
+                FeatureCollection fc = fs.getFeatures(dq);
+                if(fc.size() != 1) {
+                    LOGGER.log(Level.WARNING, "Remote database status invalid, there should be one and only one " +
+                            "feature with more than 20M persons in topp:states");
+                    remoteStatesAvailable = Boolean.FALSE;
+                }
             } catch(IOException e) {
-                LOGGER.log(Level.WARNING, "Skipping remote OWS test, either sigma " +
+                LOGGER.log(Level.WARNING, "Skipping remote OWS test, either demo  " +
                         "is down or the topp:states layer is not there", e);
                 remoteStatesAvailable = Boolean.FALSE;
             }
