@@ -39,9 +39,48 @@ Create a new module
            <artifactId>rest</artifactId>
            <version>1.7.3-SNAPSHOT</version>
          </dependency>
+         <dependency>
+           <groupId>org.geoserver</groupId>
+           <artifactId>data</artifactId>
+           <version>1.7.3-SNAPSHOT</version>
+           <classifier>tests</classifier>
+           <scope>test</scope>
+         </dependency>
+         <dependency>
+           <groupId>org.geoserver</groupId>
+           <artifactId>main</artifactId>
+           <version>1.7.3-SNAPSHOT</version>
+           <classifier>tests</classifier>
+           <scope>test</scope>
+         </dependency>
+         <dependency>
+           <groupId>junit</groupId>
+           <artifactId>junit</artifactId>
+           <version>3.8.1</version>
+           <scope>test</scope>
+         </dependency>
+         <dependency>
+           <groupId>com.mockrunner</groupId>
+           <artifactId>mockrunner</artifactId>
+           <version>0.3.1</version>
+          <scope>test</scope>
+         </dependency>
+
        </dependencies>
 
-	</project>
+       <build>
+         <plugins>
+           <plugin>
+             <artifactId>maven-compiler-plugin</artifactId>
+             <configuration>
+               <source>1.5</source>
+               <target>1.5</target>
+             </configuration>
+          </plugin>
+        </plugins>
+       </build>
+
+     </project>
 
 #. Create the directory ``src/main/java`` under the root of the new module::
 
@@ -113,9 +152,15 @@ Create the application context
 ------------------------------
 
 #. The next step is to create an application context that tells GeoServer 
-   about the resource created in the previous section. Add the following
-   ``applicationContext.xml`` file to the ``src/main/java`` directory under
-   the root of the ``hello_rest`` module.
+   about the resource created in the previous section. Create the directory
+   ``src/main/resources`` under the root of the ``hello_rest`` module::
+
+     [hello_rest]% mkdir src/main/resources
+
+
+#.  Add the following ``applicationContext.xml`` file to the
+   ``src/main/resources`` directory under the root of the ``hello_rest``
+    module.
 
    .. code-block:: xml
 

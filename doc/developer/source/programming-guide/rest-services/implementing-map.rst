@@ -75,7 +75,7 @@ Update the application context
                  <entry>
                    <key><value>/hello.{format}</value></key>
                    <!--value>hello</value-->
-                   <value>hello</value>
+                   <value>helloMap</value>
                  </entry>
               </map>
            </property>
@@ -156,4 +156,4 @@ Test
 
 #. Build and test the ``hello_test`` module::
 
-     [hello_rest]% mvn clean install
+     [hello_rest]% mvn clean install -Dtest=HelloMapResourceTest
