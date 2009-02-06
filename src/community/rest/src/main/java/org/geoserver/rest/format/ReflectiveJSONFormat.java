@@ -24,10 +24,23 @@ import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
  */
 public class ReflectiveJSONFormat extends StreamDataFormat {
 
+    /**
+     * xstream instance for encoding and persisting
+     */
+    XStream xstream;
+    
     public ReflectiveJSONFormat() {
         super(new MediaType( "text/json" ));
+        this.xstream = new XStream(new JettisonMappedXmlDriver());
     }
 
+    /**
+     * Returns the xstream instance used for encoding and decoding.
+     */
+    public XStream getXStream() {
+        return xstream;
+    }
+    
     /**
      * Reads an JSON input stream into an object.
      *  
@@ -36,7 +49,6 @@ public class ReflectiveJSONFormat extends StreamDataFormat {
      * @return The object de-serialized from JSON.
      */
     protected Object read( InputStream input ) throws IOException {
-        XStream xstream = new XStream(new JettisonMappedXmlDriver());
         return xstream.fromXML( input );
     }
 
@@ -47,7 +59,6 @@ public class ReflectiveJSONFormat extends StreamDataFormat {
      * @param output The output stream.
      */
     protected void write( Object data, OutputStream output ) throws IOException {
-        XStream xstream = new XStream(new JettisonMappedXmlDriver());
         xstream.toXML( data, output );
     }
 }

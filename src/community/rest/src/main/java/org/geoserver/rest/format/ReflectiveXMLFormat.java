@@ -23,10 +23,20 @@ import com.thoughtworks.xstream.XStream;
  */
 public class ReflectiveXMLFormat extends StreamDataFormat {
 
+    XStream xstream;
+    
     public ReflectiveXMLFormat() {
         super(MediaType.TEXT_XML);
+        this.xstream = new XStream();
     }
-
+    
+    /**
+     * Returns the xstream instance used for encoding and decoding.
+     */
+    public XStream getXStream() {
+        return xstream;
+    }
+    
     /**
      * Reads an XML input stream into an object.
      *  
@@ -35,7 +45,6 @@ public class ReflectiveXMLFormat extends StreamDataFormat {
      * @return The object de-serialized from XML.
      */
     protected Object read( InputStream in ) throws IOException {
-        XStream xstream = new XStream();
         return xstream.fromXML( in );
     }
 
@@ -46,7 +55,6 @@ public class ReflectiveXMLFormat extends StreamDataFormat {
      * @param output The output stream.
      */
     protected void write( Object data, OutputStream output ) throws IOException {
-        XStream xstream = new XStream();
         xstream.toXML( data, output );
     }
 
