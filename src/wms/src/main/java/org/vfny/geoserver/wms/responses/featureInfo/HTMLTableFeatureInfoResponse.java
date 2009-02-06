@@ -92,17 +92,23 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         
         // if there is only one feature type loaded, we allow for header/footer customization,
         // otherwise we stick with the generic ones
+        Template header = null;
         Template footer = null;
         if(results.size() == 1) {
             SimpleFeatureType templateFeatureType = ((FeatureCollection<SimpleFeatureType, SimpleFeature>) results.get(0)).getSchema();
-            Template header = getTemplate(templateFeatureType, "header.ftl", charSet);
+            header = getTemplate(templateFeatureType, "header.ftl", charSet);
             footer = getTemplate(templateFeatureType, "footer.ftl", charSet);
-            try {
-                header.process(null, osw);
-            } catch (TemplateException e) {
-                String msg = "Error occured processing header template.";
-                throw (IOException) new IOException(msg).initCause(e);
-            }
+        } else {
+            // load the default ones
+            header = getTemplate(null, "header.ftl", charSet);
+            footer = getTemplate(null, "footer.ftl", charSet);
+        }
+        
+        try {
+            header.process(null, osw);
+        } catch (TemplateException e) {
+            String msg = "Error occured processing header template.";
+            throw (IOException) new IOException(msg).initCause(e);
         }
         
         //process content template for all feature collections found
@@ -144,7 +150,8 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * 
      * @param featureType the featureType to look the template for, may well correspond to an 
      * actually registered feature type or to a wrapper feature type used to adapt the result of
-     * the feature info request over a raster coverage.
+     * the feature info request over a raster coverage. In case you want to load the default template
+     * you can leave this argument null
      * @param templateFileName the name of the template to look for
      * @param charset the encoding to apply to the resulting {@link Template}
      * @return the template named <code>templateFileName</code>
@@ -156,22 +163,24 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
             templateLoader = new GeoServerTemplateLoader(getClass());
         }
         
-        final Data catalog =  (Data) GeoServerExtensions.bean("data");
-        final String localName = featureType.getName().getLocalPart();
-        final String namespaceURI = featureType.getName().getNamespaceURI();
-        final FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(localName, namespaceURI);
-        
-        if(featureTypeInfo == null){
-            //It may be a wrapped coverage
-            CoverageInfo cInfo = catalog.getCoverageInfo(localName);
-            if(cInfo != null){
-                templateLoader.setCoverageName(localName);
-            }else{
-                throw new IllegalArgumentException("Can't find neither a FeatureType nor " +
-                        "a CoverageInfo named " + localName);
+        if(featureType != null) {
+            final Data catalog =  (Data) GeoServerExtensions.bean("data");
+            final String localName = featureType.getName().getLocalPart();
+            final String namespaceURI = featureType.getName().getNamespaceURI();
+            final FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(localName, namespaceURI);
+            
+            if(featureTypeInfo == null){
+                //It may be a wrapped coverage
+                CoverageInfo cInfo = catalog.getCoverageInfo(localName);
+                if(cInfo != null){
+                    templateLoader.setCoverageName(localName);
+                }else{
+                    throw new IllegalArgumentException("Can't find neither a FeatureType nor " +
+                            "a CoverageInfo named " + localName);
+                }
+            } else {
+                templateLoader.setFeatureType(featureType);
             }
-        }else{
-            templateLoader.setFeatureType(featureType);
         }
 
         synchronized (templateConfig) {
