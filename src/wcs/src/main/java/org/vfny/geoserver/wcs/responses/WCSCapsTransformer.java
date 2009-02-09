@@ -13,6 +13,7 @@ import org.geotools.xml.transform.Translator;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.Service;
@@ -556,6 +557,24 @@ public class WCSCapsTransformer extends TransformerBase {
             start("ContentMetadata", attributes);
 
             List coverages = new ArrayList(config.getData().getCoverageInfos().values());
+            
+            // filter out disabled coverages
+            for (Iterator it = coverages.iterator(); it.hasNext();) {
+                CoverageInfo cv = (CoverageInfo) it.next();
+                if(!cv.isEnabled())
+                    it.remove();
+            }
+            
+            // filter out coverages that are not in the requested namespace
+            if(request.getNamespace() != null) {
+                String namespace = request.getNamespace();
+                for (Iterator it = coverages.iterator(); it.hasNext();) {
+                    CoverageInfo cv = (CoverageInfo) it.next();
+                    if(!namespace.equals(cv.getNameSpace().getPrefix()))
+                        it.remove();
+                }
+            }
+            
             Collections.sort(coverages, new CoverageInfoLabelComparator());
             for (Iterator i = coverages.iterator(); i.hasNext();) {
                 handleCoverageOfferingBrief(config,
