@@ -391,6 +391,24 @@ public class WCSCapsTransformer extends TransformerBase {
             start("wcs:Contents");
 
             List coverages = new ArrayList(wcs.getData().getCoverageInfos().values());
+            
+            // filter out disabled coverages
+            for (Iterator it = coverages.iterator(); it.hasNext();) {
+                CoverageInfo cv = (CoverageInfo) it.next();
+                if(!cv.isEnabled())
+                    it.remove();
+            }
+            
+            // filter out coverages that are not in the requested namespace
+            if(request.getNamespace() != null) {
+                String namespace = request.getNamespace();
+                for (Iterator it = coverages.iterator(); it.hasNext();) {
+                    CoverageInfo cv = (CoverageInfo) it.next();
+                    if(!namespace.equals(cv.getNameSpace().getPrefix()))
+                        it.remove();
+                }
+            }
+            
             Collections.sort(coverages, new CoverageInfoLabelComparator());
             for (Iterator i = coverages.iterator(); i.hasNext();) {
                 CoverageInfo cv = (CoverageInfo) i.next();

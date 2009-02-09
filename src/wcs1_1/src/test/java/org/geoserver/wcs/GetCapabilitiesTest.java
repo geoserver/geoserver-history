@@ -5,6 +5,8 @@ import static org.geoserver.data.test.MockData.*;
 
 import junit.framework.Test;
 
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.GeoServer;
@@ -12,6 +14,7 @@ import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class GetCapabilitiesTest extends WCSTestSupport {
@@ -53,6 +56,22 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         
         // make sure the disabled coverage store is really disabled
         assertXpathEvaluatesTo("0", "count(//ows:Title[text()='World'])", dom);
+    }
+    
+    public void testNamespaceFilter() throws Exception {
+        // try to filter on an existing namespace
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&acceptversions=1.1.1&namespace=wcs");
+        Element e = dom.getDocumentElement();
+        assertEquals("Capabilities", e.getLocalName());
+        XpathEngine xpath =  XMLUnit.newXpathEngine();
+        assertTrue(xpath.getMatchingNodes("//wcs:CoverageSummary/ows:Title[starts-with(., wcs)]", dom).getLength() > 0);
+        assertEquals(0, xpath.getMatchingNodes("//wcs:CoverageSummary/ows:Title[not(starts-with(., wcs))]", dom).getLength());
+        
+        // now filter on a missing one
+        dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&acceptversions=1.1.1&namespace=NoThere");
+        e = dom.getDocumentElement();
+        assertEquals("Capabilities", e.getLocalName());
+        assertEquals(0, xpath.getMatchingNodes("//wcs:CoverageSummary", dom).getLength());
     }
     
     
