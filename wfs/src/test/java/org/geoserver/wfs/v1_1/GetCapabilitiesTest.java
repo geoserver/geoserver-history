@@ -15,6 +15,7 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class GetCapabilitiesTest extends WFSTestSupport {
@@ -38,7 +39,24 @@ public class GetCapabilitiesTest extends WFSTestSupport {
         assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement()
                 .getNodeName());
         assertEquals("1.1.0", doc.getDocumentElement().getAttribute("version"));
-        print(doc);
+        XpathEngine xpath =  XMLUnit.newXpathEngine();
+        assertTrue(xpath.getMatchingNodes("//wfs:FeatureType", doc).getLength() > 0);
+    }
+    
+    public void testNamespaceFilter() throws Exception {
+        // filter on an existing namespace
+        Document doc = getAsDOM("wfs?service=WFS&version=1.1.0&request=getCapabilities&namespace=sf");
+        Element e = doc.getDocumentElement();
+        assertEquals("WFS_Capabilities", e.getLocalName());
+        XpathEngine xpath =  XMLUnit.newXpathEngine();
+        assertTrue(xpath.getMatchingNodes("//wfs:FeatureType/wfs:Name[starts-with(., sf)]", doc).getLength() > 0);
+        assertEquals(0, xpath.getMatchingNodes("//wfs:FeatureType/wfs:Name[not(starts-with(., sf))]", doc).getLength());
+        
+        // try again with a missing one
+        doc = getAsDOM("wfs?service=WFS&request=getCapabilities&namespace=NotThere");
+        e = doc.getDocumentElement();
+        assertEquals("WFS_Capabilities", e.getLocalName());
+        assertEquals(0, xpath.getMatchingNodes("//wfs:FeatureType", doc).getLength());
     }
 
     public void testPost() throws Exception {
