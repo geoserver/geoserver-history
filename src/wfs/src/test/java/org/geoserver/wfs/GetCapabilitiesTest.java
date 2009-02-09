@@ -32,11 +32,13 @@ public class GetCapabilitiesTest extends WFSTestSupport {
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities");
         assertEquals("WFS_Capabilities", doc.getDocumentElement().getNodeName());
+        XpathEngine xpath =  XMLUnit.newXpathEngine();
+        assertTrue(xpath.getMatchingNodes("//wfs:FeatureType", doc).getLength() > 0);
     }
     
     public void testNamespaceFilter() throws Exception {
         // filter on an existing namespace
-        Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities&namespace=sf");
+        Document doc = getAsDOM("wfs?service=WFS&version=1.0.0&request=getCapabilities&namespace=sf");
         Element e = doc.getDocumentElement();
         assertEquals("WFS_Capabilities", e.getLocalName());
         XpathEngine xpath =  XMLUnit.newXpathEngine();

@@ -1207,8 +1207,26 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 }
 
                 end("Operations");
-
+                
                 List featureTypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+                
+                // filter out disabled feature types
+                for (Iterator it = featureTypes.iterator(); it.hasNext();) {
+                    FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
+                    if(!ft.isEnabled())
+                        it.remove();
+                }
+                
+                // filter the layers if a namespace filter has been set
+                if(request.getNamespace() != null) {
+                    String namespace = request.getNamespace();
+                    for (Iterator it = featureTypes.iterator(); it.hasNext();) {
+                        FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
+                        if(!namespace.equals(ft.getNameSpace().getPrefix()))
+                            it.remove();
+                    }
+                }
+                
                 Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
                 for (Iterator i = featureTypes.iterator(); i.hasNext();) {
                     FeatureTypeInfo featureType = (FeatureTypeInfo) i.next();
