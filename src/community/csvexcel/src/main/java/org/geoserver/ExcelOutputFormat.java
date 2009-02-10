@@ -10,13 +10,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
@@ -49,6 +54,17 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
     public String getMimeType(Object value, Operation operation)
                throws ServiceException {
          return "application/msexcel";
+    }
+    
+    @Override
+    public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
+        GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
+                GetFeatureType.class);
+        String outputFileName = ((QName) ((QueryType) request.getQuery().get(0)).getTypeName().get(0))
+            .getLocalPart();
+        return (String[][]) new String[][] {
+                { "Content-Disposition", "attachment; filename=" + outputFileName + ".xls" }
+            };
     }
     
     /**

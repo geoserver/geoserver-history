@@ -22,6 +22,12 @@ public class ExcelOutputFormatTest extends WFSTestSupport {
         MockHttpServletResponse resp = getAsServletResponse( "wfs?request=GetFeature&typeName=sf:PrimitiveGeoFeature&outputFormat=excel");
         InputStream in = getBinaryInputStream(resp);
         
+        // check the mime type
+        assertEquals("application/msexcel", resp.getContentType());
+        
+        // check the content disposition
+        assertEquals("attachment; filename=PrimitiveGeoFeature.xls", resp.getHeader("Content-Disposition"));
+        
         // check we have the expected sheet
         HSSFWorkbook wb = new HSSFWorkbook(in);
         HSSFSheet sheet = wb.getSheet("PrimitiveGeoFeature");
