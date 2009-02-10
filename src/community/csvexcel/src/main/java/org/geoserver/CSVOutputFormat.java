@@ -48,6 +48,8 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         // ie ;.../geoserver/wfs?request=getfeature&outputFormat=myOutputFormat
         super("csv");
         this.wfs = wfs;
+        if(wfs == null)
+            throw new IllegalArgumentException("A valid WFS object must be provided in order for this class to work");
     }
     
     /**
@@ -103,10 +105,7 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         
         // prepare the formatter for numbers
         NumberFormat coordFormatter = NumberFormat.getInstance(Locale.US);
-        if(wfs != null)
-            coordFormatter.setMaximumFractionDigits(wfs.getGeoServer().getNumDecimals());
-        else
-            coordFormatter.setMaximumFractionDigits(6);
+        coordFormatter.setMaximumFractionDigits(wfs.getGeoServer().getNumDecimals());
         coordFormatter.setGroupingUsed(false);
            
         //write out the features
