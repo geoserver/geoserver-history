@@ -1,14 +1,21 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -18,18 +25,24 @@ import org.opengis.feature.type.AttributeDescriptor;
 
 /**
  * WFS output format for a GetFeature operation in which the outputFormat is "csv".
+ * The refence specification for this format can be found in this RFC:
+ * http://www.rfc-editor.org/rfc/rfc4180.txt
  *
  * @author Justin Deoliveira, OpenGeo, jdeolive@opengeo.org
  * @author Sebastian Benthall, OpenGeo, seb@opengeo.org
+ * @author Andrea Aime, OpenGeo
  */
 public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
 
-    public CSVOutputFormat() {
+    private WFS wfs;
+
+    public CSVOutputFormat(WFS wfs) {
         //this is the name of your output format, it is the string
         // that will be used when requesting the format in a 
         // GEtFeature request: 
         // ie ;.../geoserver/wfs?request=getfeature&outputFormat=myOutputFormat
         super("csv");
+        this.wfs = wfs;
     }
     
     /**
@@ -38,17 +51,9 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
     @Override
     public String getMimeType(Object value, Operation operation)
                throws ServiceException {
-         // return the mime type of the format here, the parent 
-         // class returns 'text/xml'
-         return "text/csv";
-    }
-    
-    @Override
-    protected boolean canHandleInternal(Operation operation) {
-        //any additional checks that need to be performed to 
-        // determine when the output format should be "engaged" 
-        // should go here
-        return super.canHandleInternal(operation);
+        // won't allow browsers to open it directly, but that's the mime
+        // state in the RFC
+        return "text/csv";
     }
     
     /**
@@ -64,10 +69,11 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         BufferedWriter w = new BufferedWriter( new OutputStreamWriter( output ) );
                    
         //get the feature collection
-        FeatureCollection fc = (FeatureCollection) featureCollection.getFeature().get(0);
+        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = 
+            (FeatureCollection<SimpleFeatureType, SimpleFeature>) featureCollection.getFeature().get(0);
            
         //write out the header
-        SimpleFeatureType ft = (SimpleFeatureType) fc.getSchema();
+        SimpleFeatureType ft = fc.getSchema();
         for ( int i = 0; i < ft.getAttributeCount(); i++ ) {
             AttributeDescriptor ad = ft.getDescriptor( i );
             w.write( prepCSVField(ad.getLocalName()) );
@@ -76,26 +82,43 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
                w.write( "," );
             }
         }
-        w.write( "\n" );
+        // by RFC each line is terminated by CRLF
+        w.write( "\r\n" );
+        
+        // prepare the formatter for numbers
+        NumberFormat coordFormatter = NumberFormat.getInstance(Locale.US);
+        if(wfs != null)
+            coordFormatter.setMaximumFractionDigits(wfs.getGeoServer().getNumDecimals());
+        else
+            coordFormatter.setMaximumFractionDigits(6);
+        coordFormatter.setGroupingUsed(false);
            
         //write out the features
-        FeatureIterator i = fc.features();
+        FeatureIterator<SimpleFeature> i = fc.features();
         try {
             while( i.hasNext() ) {
-                SimpleFeature f = (SimpleFeature) i.next();
+                SimpleFeature f = i.next();
                 for ( int j = 0; j < f.getAttributeCount(); j++ ) {
                     Object att = f.getAttribute( j );
                     if ( att != null ) {
-                        w.write( prepCSVField(att.toString()) );
+                        String value = null;
+                        if(att instanceof Number) {
+                            // don't allow scientific notation in the output, as OpenOffice won't 
+                            // recognize that as a number 
+                            value = coordFormatter.format(att);
+                        } else {
+                            value = att.toString();
+                        }
+                        w.write( prepCSVField(value) );
                     }
                     if ( j < f.getAttributeCount()-1 ) {
                         w.write(",");    
                     }
-                }    
-                w.write( "\n" );
+                }
+                // by RFC each line is terminated by CRLF
+                w.write( "\r\n" );
             }
-        }
-        finally {
+        } finally {
             fc.close( i );
         }
            
