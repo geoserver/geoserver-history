@@ -1,5 +1,6 @@
 package org.geoserver;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -74,6 +75,27 @@ public class ExcelOutputFormatTest extends WFSTestSupport {
         // ... an empty cell (original value is null -> no cell)
         cell = sheet.getRow(1).getCell(2);
         assertNull(cell);
+    }
+    
+    public void testMultipleFeatureTypes() throws Exception {
+        // grab the real binary stream, avoiding mangling to due char conversion
+        MockHttpServletResponse resp = getAsServletResponse( "wfs?request=GetFeature&typeName=sf:PrimitiveGeoFeature,sf:GenericEntity&outputFormat=excel");
+        InputStream in = getBinaryInputStream(resp);
         
+        // check we have the expected sheets
+        HSSFWorkbook wb = new HSSFWorkbook(in);
+        HSSFSheet sheet = wb.getSheet("PrimitiveGeoFeature");
+        assertNotNull(sheet);
+        
+        // check the number of rows in the output
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs = getCatalog().getFeatureTypeInfo("sf:PrimitiveGeoFeature").getFeatureSource();
+        assertEquals(fs.getCount(Query.ALL) + 1, sheet.getPhysicalNumberOfRows());
+        
+        sheet = wb.getSheet("GenericEntity");
+        assertNotNull(sheet);
+        
+        // check the number of rows in the output
+        fs = getCatalog().getFeatureTypeInfo("sf:GenericEntity").getFeatureSource();
+        assertEquals(fs.getCount(Query.ALL) + 1, sheet.getPhysicalNumberOfRows());
     }
 }
