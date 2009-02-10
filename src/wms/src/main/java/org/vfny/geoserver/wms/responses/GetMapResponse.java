@@ -6,12 +6,16 @@ package org.vfny.geoserver.wms.responses;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -420,6 +424,12 @@ public class GetMapResponse implements Response {
                     responseHeaders = new HashMap();
                 }
                 responseHeaders.put("Cache-Control", "max-age=" + maxAge + ", must-revalidate");
+                
+                Date expires = new Date();
+                expires.setTime(expires.getTime() + maxAge * 1000);
+                DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+                format.setTimeZone(TimeZone.getTimeZone("GMT"));
+                responseHeaders.put("Expires", format.format(expires));
             }
 
             final String contentDisposition = this.delegate.getContentDisposition();
