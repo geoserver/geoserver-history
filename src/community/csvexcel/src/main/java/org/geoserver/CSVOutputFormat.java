@@ -92,6 +92,7 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
            
         //write out the header
         SimpleFeatureType ft = fc.getSchema();
+        w.write("FID,");
         for ( int i = 0; i < ft.getAttributeCount(); i++ ) {
             AttributeDescriptor ad = ft.getDescriptor( i );
             w.write( prepCSVField(ad.getLocalName()) );
@@ -113,6 +114,10 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         try {
             while( i.hasNext() ) {
                 SimpleFeature f = i.next();
+                // dump fid
+                w.write(prepCSVField(f.getID()));
+                w.write(",");
+                // dump attributes
                 for ( int j = 0; j < f.getAttributeCount(); j++ ) {
                     Object att = f.getAttribute( j );
                     if ( att != null ) {

@@ -89,10 +89,12 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
             SimpleFeatureType ft = (SimpleFeatureType) fc.getSchema();
             HSSFCell cell;
             
+            cell = header.createCell(0);
+            cell.setCellValue(new HSSFRichTextString("FID"));
             for ( int i = 0; i < ft.getAttributeCount(); i++ ) {
-                AttributeDescriptor ad = ft.getDescriptor( i );
+                AttributeDescriptor ad = ft.getDescriptor(i);
                 
-                cell = header.createCell(i);
+                cell = header.createCell(i+1);
                 cell.setCellValue(new HSSFRichTextString(ad.getLocalName()));
             }
             
@@ -105,10 +107,12 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
                 	r++; //start at 1, since header is at 0
                     SimpleFeature f = i.next();
                     row = sheet.createRow((short) r);
+                    cell = row.createCell(0);
+                    cell.setCellValue(new HSSFRichTextString(f.getID()));
                     for ( int j = 0; j < f.getAttributeCount(); j++ ) {
                         Object att = f.getAttribute( j );
                         if ( att != null ) {
-                        	cell = row.createCell(j);
+                        	cell = row.createCell(j+1);
                         	if(att instanceof Number) {
                       	        cell.setCellValue(((Number) att).doubleValue());
                         	} else if(att instanceof Date) {

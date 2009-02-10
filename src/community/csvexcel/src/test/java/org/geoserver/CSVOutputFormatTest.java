@@ -52,8 +52,8 @@ public class CSVOutputFormatTest extends WFSTestSupport {
         assertEquals(fs.getCount(Query.ALL) + 1, lines.size());
         
         for (String[] line : lines) {
-            // check each line has the expected number of elements
-            assertEquals(fs.getSchema().getAttributeCount(), line.length);
+            // check each line has the expected number of elements (num of att + 1 for the id)
+            assertEquals(fs.getSchema().getAttributeCount() + 1, line.length);
         }
     }
     
@@ -93,12 +93,12 @@ public class CSVOutputFormatTest extends WFSTestSupport {
         
         for (String[] line : lines) {
             // check each line has the expected number of elements
-            assertEquals(fs.getSchema().getAttributeCount(), line.length);
+            assertEquals(fs.getSchema().getAttributeCount() + 1, line.length);
         }
         
         // check we have the expected values in the string attributes
-        assertEquals(f1.getAttribute("label"), lines.get(1)[1]);
-        assertEquals(f2.getAttribute("label"), lines.get(2)[1]);
+        assertEquals(f1.getAttribute("label"), lines.get(1)[2]);
+        assertEquals(f2.getAttribute("label"), lines.get(2)[2]);
     }
     
     /**
