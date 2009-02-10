@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.xml.namespace.QName;
@@ -24,6 +25,7 @@ import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.type.DateUtil;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -126,7 +128,16 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
                             // don't allow scientific notation in the output, as OpenOffice won't 
                             // recognize that as a number 
                             value = coordFormatter.format(att);
+                        } else if(att instanceof Date) {
+                            // serialize dates in ISO format
+                            if(att instanceof java.sql.Date)
+                                value = DateUtil.serializeSqlDate((java.sql.Date) att);
+                            else if(att instanceof java.sql.Time)
+                                value = DateUtil.serializeSqlTime((java.sql.Time) att);
+                            else
+                                value = DateUtil.serializeDateTime((Date) att);
                         } else {
+                            // everything else we just "toString"
                             value = att.toString();
                         }
                         w.write( prepCSVField(value) );
