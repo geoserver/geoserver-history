@@ -1,8 +1,5 @@
 package org.geoserver.wfs.response;
 
-import java.io.ByteArrayInputStream;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -40,7 +37,12 @@ public class Ogr2OgrWfsTest extends GeoServerTestSupport {
     public void testSimpleRequest() throws Exception {
         String request = "wfs?request=GetFeature&typename=" + getLayerId(MockData.BUILDINGS) + "&version=1.0.0&service=wfs&outputFormat=OGR-KML";
         MockHttpServletResponse resp = getAsServletResponse(request);
+        
+        // check content type
         assertEquals("application/zip", resp.getContentType());
+        
+        // check content disposition
+        assertEquals("attachment; filename=Buildings.zip", resp.getHeader("Content-Disposition"));
         
         // read back
         ZipInputStream zis = new ZipInputStream(getBinaryInputStream(resp));

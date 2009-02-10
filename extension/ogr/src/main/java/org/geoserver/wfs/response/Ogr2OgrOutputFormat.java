@@ -8,16 +8,19 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipOutputStream;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
 
 import org.geoserver.data.util.IOUtils;
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
@@ -98,6 +101,17 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
      */
     public String getMimeType(Object value, Operation operation) throws ServiceException {
         return "application/zip";
+    }
+    
+    @Override
+    public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
+        GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
+                GetFeatureType.class);
+        String outputFileName = ((QName) ((QueryType) request.getQuery().get(0)).getTypeName().get(0))
+            .getLocalPart();
+        return (String[][]) new String[][] {
+                { "Content-Disposition", "attachment; filename=" + outputFileName + ".zip" }
+            };
     }
 
     /**
