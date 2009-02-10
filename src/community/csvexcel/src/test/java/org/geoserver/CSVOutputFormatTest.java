@@ -42,6 +42,9 @@ public class CSVOutputFormatTest extends WFSTestSupport {
         // check the mime type
         assertEquals("text/csv", resp.getContentType());
         
+        // check the content disposition
+        assertEquals("attachment; filename=PrimitiveGeoFeature.csv", resp.getHeader("Content-Disposition"));
+        
         // read the response back with a parser that can handle escaping, newlines and what not
         List<String[]> lines = readLines(resp.getOutputStreamContent());
         

@@ -11,8 +11,13 @@ import java.io.OutputStreamWriter;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import net.opengis.wfs.FeatureCollectionType;
+import javax.xml.namespace.QName;
 
+import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
+
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
@@ -54,6 +59,17 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         // won't allow browsers to open it directly, but that's the mime
         // state in the RFC
         return "text/csv";
+    }
+    
+    @Override
+    public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
+        GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
+                GetFeatureType.class);
+        String outputFileName = ((QName) ((QueryType) request.getQuery().get(0)).getTypeName().get(0))
+            .getLocalPart();
+        return (String[][]) new String[][] {
+                { "Content-Disposition", "attachment; filename=" + outputFileName + ".csv" }
+            };
     }
     
     /**
