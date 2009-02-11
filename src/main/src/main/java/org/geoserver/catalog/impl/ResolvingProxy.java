@@ -9,8 +9,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 
@@ -58,11 +64,31 @@ public class ResolvingProxy extends ProxyBase {
                 if ( object instanceof NamespaceInfo ) {
                     return (T) catalog.getNamespace( ref );
                 }
+                if ( object instanceof StoreInfo ) {
+                    if ( object instanceof DataStoreInfo ) {
+                        return (T) catalog.getDataStore( ref );
+                    }
+                    if ( object instanceof CoverageStoreInfo ) {
+                        return (T) catalog.getCoverageStore( ref );
+                    }
+                    
+                    return (T) catalog.getStore( ref, StoreInfo.class );
+                }
+                if ( object instanceof ResourceInfo ) {
+                    if ( object instanceof FeatureTypeInfo ) {
+                        return (T) catalog.getFeatureType( ref );
+                    }
+                    if ( object instanceof CoverageInfo ) {
+                        return (T) catalog.getCoverage( ref );
+                    }
+                    
+                    return (T) catalog.getResource( ref, ResourceInfo.class );
+                }
                 if ( object instanceof LayerInfo ) {
-                    return (T) catalog.getLayerByName( ref );
+                    return (T) catalog.getLayer( ref );
                 }
                 if ( object instanceof StyleInfo ) {
-                    return (T) catalog.getStyleByName( ref );
+                    return (T) catalog.getStyle( ref );
                 }
             }
         }
