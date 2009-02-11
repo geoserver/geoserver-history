@@ -167,8 +167,22 @@ public class XStreamPersisterTest extends TestCase {
         persister.save( s1, out );
         
         MyServiceInfo s2 = persister.load( in( out ), MyServiceInfo.class );
-        assertEquals( s1, s2 );
-    }
+        assertEquals( s1.getAbstract(), s2.getAbstract() );
+        assertEquals( s1.getAccessConstraints(), s2.getAccessConstraints() );
+        assertEquals( s1.isCiteCompliant(), s2.isCiteCompliant() );
+        assertEquals( s1.isEnabled(), s2.isEnabled() );
+        assertEquals( s1.getFees(), s2.getFees() );
+        assertEquals( s1.getFoo(), s2.getFoo() );
+        assertEquals( s1.getId(), s2.getId() );
+        assertEquals( s1.getMaintainer(), s2.getMaintainer() );
+        assertEquals( s1.getMetadataLink(), s2.getMetadataLink() );
+        assertEquals( s1.getName(), s2.getName() );
+        assertEquals( s1.getOnlineResource( ), s2.getOnlineResource() );
+        assertEquals( s1.getOutputStrategy(), s2.getOutputStrategy() );
+        assertEquals( s1.getSchemaBaseURL(), s2.getSchemaBaseURL() );
+        assertEquals( s1.getTitle(), s2.getTitle() );
+        assertEquals( s1.isVerbose(), s2.isVerbose() );
+    } 
     
     public void testServiceOmitGlobal() throws Exception {
         MyServiceInfo s1 = new MyServiceInfo();
@@ -180,7 +194,6 @@ public class XStreamPersisterTest extends TestCase {
         MyServiceInfo s2 = persister.load( in( out ), MyServiceInfo.class );
         
         assertNull( s2.getGeoServer() );
-        assertEquals( s1, s2 );
     }
     
     public void testServiceCustomAlias() throws Exception {
