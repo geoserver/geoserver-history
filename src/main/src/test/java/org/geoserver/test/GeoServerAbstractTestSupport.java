@@ -589,7 +589,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @param response
      * @return
      */
-    protected InputStream getBinaryInputStream(MockHttpServletResponse response) {
+    protected ByteArrayInputStream getBinaryInputStream(MockHttpServletResponse response) {
         try {
             MockServletOutputStream os = (MockServletOutputStream) response.getOutputStream();
             final Field field = os.getClass().getDeclaredField("buffer");
@@ -1079,13 +1079,18 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     }
 
     public static class GeoServerMockHttpServletRequest extends MockHttpServletRequest {
-        private String myBody;
-
-        public void setBodyContent(String body){
-            super.setBodyContent(body);
+        private byte[] myBody;
+        
+        @Override
+        public void setBodyContent(byte[] body) {
             myBody = body;
         }
-
+        
+        @Override
+        public void setBodyContent(String body) {
+            myBody = body.getBytes();
+        }
+        
         public ServletInputStream getInputStream(){
             return new GeoServerMockServletInputStream(myBody);
         }
@@ -1096,10 +1101,10 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         private int myOffset = 0;
         private int myMark = -1;
 
-        public GeoServerMockServletInputStream(String body){
-            myBody = body.getBytes();
+        public GeoServerMockServletInputStream(byte[] body){
+            myBody = body;
         }
-
+        
         public int available() {
             return myBody.length - myOffset;
         }
