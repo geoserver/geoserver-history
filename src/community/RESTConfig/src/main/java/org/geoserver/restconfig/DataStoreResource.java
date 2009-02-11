@@ -85,15 +85,14 @@ public class DataStoreResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map m = new HashMap();
-        m.put("html", new FreemarkerFormat("HTMLTemplates/datastore.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new MapJSONFormat());
-        m.put("xml", new MapXMLFormat("datastore"));
-        m.put(null, m.get("html"));
+        List l = new ArrayList();
+        l.add(new FreemarkerFormat("HTMLTemplates/datastore.ftl", getClass(), MediaType.TEXT_HTML));
+        l.add(new MapJSONFormat());
+        l.add(new MapXMLFormat("datastore"));
 
-        return m;
+        return l;
     }
 
     public Map getMap() {

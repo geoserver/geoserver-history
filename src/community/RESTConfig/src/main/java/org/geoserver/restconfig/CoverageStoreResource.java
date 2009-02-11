@@ -4,7 +4,9 @@
  */
 package org.geoserver.restconfig;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.geoserver.config.GeoServer;
@@ -167,16 +169,15 @@ public class CoverageStoreResource extends MapResource {
     */
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map m = new HashMap();
+        List l = new ArrayList();
 
-        m.put("html", new FreemarkerFormat("HTMLTemplates/coveragestore.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new MapJSONFormat());
-        m.put("xml", new MapXMLFormat("coveragestore"));
-        m.put(null, m.get("html"));
+        l.add(new FreemarkerFormat("HTMLTemplates/coveragestore.ftl", getClass(), MediaType.TEXT_HTML));
+        l.add(new MapJSONFormat());
+        l.add(new MapXMLFormat("coveragestore"));
 
-        return m;
+        return l;
     }
 
     private void saveConfiguration() throws ConfigurationException{

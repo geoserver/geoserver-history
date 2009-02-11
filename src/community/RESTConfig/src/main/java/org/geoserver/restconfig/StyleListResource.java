@@ -67,14 +67,13 @@ class StyleListResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map m = new HashMap();
-        m.put("html", new FreemarkerFormat("HTMLTemplates/styles.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new MapJSONFormat());
-        m.put("xml", new MapXMLFormat());
-        m.put(null, m.get("html"));
+        List l = new ArrayList();
+        l.add(new FreemarkerFormat("HTMLTemplates/styles.ftl", getClass(), MediaType.TEXT_HTML));
+        l.add(new MapJSONFormat());
+        l.add(new MapXMLFormat());
 
-        return m;
+        return l;
     }
 }

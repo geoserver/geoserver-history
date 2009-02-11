@@ -80,16 +80,15 @@ public class FeatureTypeResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map m = new HashMap();
+        List l = new ArrayList();
 
-        m.put("html", new FreemarkerFormat("HTMLTemplates/featuretype.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new MapJSONFormat());
-        m.put("xml", new MapXMLFormat("FeatureType"));
-        m.put(null, m.get("html"));
+        l.add(new FreemarkerFormat("HTMLTemplates/featuretype.ftl", getClass(), MediaType.TEXT_HTML));
+        l.add(new MapJSONFormat());
+        l.add(new MapXMLFormat("FeatureType"));
 
-        return m;
+        return l;
     }
 
     public Map getMap(){

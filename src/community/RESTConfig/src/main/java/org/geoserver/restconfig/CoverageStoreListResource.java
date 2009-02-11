@@ -4,7 +4,9 @@
  */
 package org.geoserver.restconfig;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.restlet.Context;
@@ -49,14 +51,13 @@ public class CoverageStoreListResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map m = new HashMap();
-        m.put("html", new FreemarkerFormat("HTMLTemplates/coveragestores.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new MapJSONFormat());
-        m.put("xml", new MapXMLFormat("coveragestores"));
-        m.put(null, m.get("html"));
-
-        return m;
+        List l = new ArrayList();
+        l.add(new FreemarkerFormat("HTMLTemplates/coveragestores.ftl", getClass(), MediaType.TEXT_HTML));
+        l.add(new MapJSONFormat());
+        l.add(new MapXMLFormat("coveragestores"));
+        
+        return l;
     }
 }

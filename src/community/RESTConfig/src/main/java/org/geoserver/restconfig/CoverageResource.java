@@ -63,10 +63,10 @@ public class CoverageResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map m = new HashMap();
-        m.put("html",
+        List l = new ArrayList();
+        l.add(
             new FreemarkerFormat("HTMLTemplates/coverage.ftl", getClass(), MediaType.TEXT_HTML) {
                 public Map readRepresentation(Representation rep) {
                     try {
@@ -138,11 +138,10 @@ public class CoverageResource extends MapResource {
                     return results;
                 }
             });
-        m.put("json", new MapJSONFormat());
-        m.put("xml", new MapXMLFormat("coverage"));
-        m.put(null, m.get("html"));
-
-        return m;
+        l.add(new MapJSONFormat());
+        l.add(new MapXMLFormat("coverage"));
+        
+        return l;
     }
 
     public CoverageResource(Context context, Request request, Response response,

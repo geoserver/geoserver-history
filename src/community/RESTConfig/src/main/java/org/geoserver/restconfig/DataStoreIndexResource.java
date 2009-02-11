@@ -36,14 +36,13 @@ class DataStoreIndexResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map m = new HashMap();
+        List l = new ArrayList();
 
-        m.put("html", new FreemarkerFormat("HTMLTemplates/datastoreindex.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put(null, m.get("html"));
-
-        return m;
+        l.add(new FreemarkerFormat("HTMLTemplates/datastoreindex.ftl", getClass(), MediaType.TEXT_HTML));
+        
+        return l;
     }
 
     public Map getMap() {

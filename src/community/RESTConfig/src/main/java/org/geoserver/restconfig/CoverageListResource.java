@@ -35,16 +35,16 @@ public class CoverageListResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map m = new HashMap();
+        List l = new ArrayList();
 
-        m.put("html", new FreemarkerFormat("HTMLTemplates/coverages.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("json", new MapJSONFormat());
-        m.put("xml", new MapXMLFormat("coveragestore"));
-        m.put(null, m.get("html"));
+        l.add(new FreemarkerFormat("HTMLTemplates/coverages.ftl", getClass(), MediaType.TEXT_HTML));
+        l.add(new MapJSONFormat());
+        l.add(new MapXMLFormat("coveragestore"));
+        
 
-        return m;
+        return l;
     }
 
     public void setDataConfig(DataConfig dc){

@@ -58,19 +58,18 @@ public class FolderListFinder extends Finder {
         }
 
         @Override
-        protected Map<String, DataFormat> createSupportedFormats(
+        protected List<DataFormat> createSupportedFormats(
                 Request request, Response response) {
-            Map m = new HashMap();
-            m.put("html",
+            List l = new ArrayList();
+            l.add(
                     new FreemarkerFormat(
                         "HTMLTemplates/folders.ftl",
                         getClass(),
                         MediaType.TEXT_HTML)
                  );
-            m.put("json", new MapJSONFormat());
-            m.put("xml", new MapXMLFormat("Folders"));
-            m.put(null, m.get("html"));
-            return m;
+            l.add(new MapJSONFormat());
+            l.add(new MapXMLFormat("Folders"));
+            return l;
         }
 
         public Map getMap() {

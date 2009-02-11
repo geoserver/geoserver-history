@@ -26,16 +26,15 @@ public class VirtualFolderResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        HashMap m = new HashMap();
+        List l = new ArrayList();
 
-        m.put("html", new FreemarkerFormat("HTMLTemplates/vfolder.ftl", getClass(), MediaType.TEXT_HTML));
-        m.put("xml", new MapXMLFormat());
-        m.put("json", new MapJSONFormat());
-        m.put(null, m.get("html"));
+        l.add(new FreemarkerFormat("HTMLTemplates/vfolder.ftl", getClass(), MediaType.TEXT_HTML));
+        l.add(new MapXMLFormat());
+        l.add(new MapJSONFormat());
 
-        return m;
+        return l;
     }
 
     public Map getMap(){
