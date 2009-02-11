@@ -4,7 +4,8 @@
  */
 package org.geoserver.rest;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -35,21 +36,19 @@ public abstract class MapResource extends AbstractResource {
     }
 
     /**
-     * Creates the map of formats for serialization and de-serialization.
+     * Creates the list of formats for serialization and de-serialization.
      * <p>
      * This implementation adds support for XML and JSON via the {@link MapXMLFormat} and 
      * {@link MapJSONFormat} classes respectively. Subclasses should override/extend as needed.
      * </p>
      */
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        HashMap map = new HashMap();
-        map.put( "xml", new MapXMLFormat() );
-        map.put( "json", new MapJSONFormat() );
-        map.put( "text/xml", map.get( "xml" ) );
-        map.put( "text/json", map.get( "json" ) );
-        return map;
+        ArrayList formats = new ArrayList();
+        formats.add( new MapXMLFormat() );
+        formats.add( new MapJSONFormat() );
+        return formats;
     }
     
     /**

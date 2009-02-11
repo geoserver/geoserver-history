@@ -54,14 +54,14 @@ class IndexRestlet extends Finder{
         }
 
         @Override
-        protected Map<String, DataFormat> createSupportedFormats(
+        protected List<DataFormat> createSupportedFormats(
                 Request request, Response response) {
-            Map m = new HashMap();
+            ArrayList l = new ArrayList();
 
-            m.put("html", new FreemarkerFormat("templates/index.ftl", getClass(), MediaType.TEXT_HTML));
-            m.put(null, m.get("html"));
+            l.add(new FreemarkerFormat("templates/index.ftl", getClass(), MediaType.TEXT_HTML));
+            //l.add(null, m.get(MediaType.TEXT_HTML));
 
-            return m;
+            return l;
         }
 
         public Map getMap() {

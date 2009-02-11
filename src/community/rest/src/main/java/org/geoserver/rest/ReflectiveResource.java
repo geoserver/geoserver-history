@@ -4,7 +4,9 @@
  */
 package org.geoserver.rest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.geoserver.ows.util.ResponseUtils;
@@ -13,6 +15,7 @@ import org.geoserver.rest.format.ReflectiveHTMLFormat;
 import org.geoserver.rest.format.ReflectiveJSONFormat;
 import org.geoserver.rest.format.ReflectiveXMLFormat;
 import org.restlet.Context;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -232,11 +235,7 @@ public abstract class ReflectiveResource extends AbstractResource {
     }
     
     /**
-     * Creates the map of formats used to serialize and de-serialize instances of the target object.
-     * <p>
-     * Keys in the map are file extensions (examples: xml,json), and mime types (examples: text/xml,
-     * text/json). Values are instances of {@link DataFormat}. 
-     *  </p>
+     * Creates the list of formats used to serialize and de-serialize instances of the target object.
      *  <p>
      *  Subclasses may override or extend this method to customize the supported formats. By default
      *  this method supports html, xml, and json. 
@@ -246,15 +245,11 @@ public abstract class ReflectiveResource extends AbstractResource {
      *  @see #createXMLFormat()
      *  @see #createJSONFormat()
      */
-    protected Map<String, DataFormat> createSupportedFormats(Request request,Response response) {
-        HashMap<String,DataFormat> formats = new HashMap<String, DataFormat>();
-        formats.put( "xml" , createXMLFormat(request,response) );
-        formats.put( "text/xml", formats.get( "xml") );
-        formats.put( "json", createJSONFormat(request,response) );
-        formats.put( "text/json", formats.get( "json") );
-        formats.put( "html", createHTMLFormat(request,response));
-        formats.put( "text/html", formats.get( "html" ) ); 
-        formats.put(null, formats.get( "html") );
+    protected List<DataFormat> createSupportedFormats(Request request,Response response) {
+        List<DataFormat> formats = new ArrayList<DataFormat>();
+        formats.add(createHTMLFormat(request,response));
+        formats.add(createXMLFormat(request,response) );
+        formats.add(createJSONFormat(request,response) );
         
         return formats;
     }
