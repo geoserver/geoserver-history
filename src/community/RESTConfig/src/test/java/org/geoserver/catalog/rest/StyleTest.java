@@ -86,7 +86,7 @@ public class StyleTest extends CatalogRESTTestSupport {
         String xml = newSLDXML();
 
         MockHttpServletResponse response = 
-            postAsServletResponse( "/rest/styles", xml, "text/sld+xml");
+            postAsServletResponse( "/rest/styles", xml, "application/sld+xml");
         assertEquals( 201, response.getStatusCode() );
         assertNotNull( response.getHeader( "Location") );
         assertTrue( response.getHeader("Location").endsWith( "/styles/foo" ) );
@@ -98,7 +98,7 @@ public class StyleTest extends CatalogRESTTestSupport {
         String xml = newSLDXML();
 
         MockHttpServletResponse response = 
-            postAsServletResponse( "/rest/styles?name=bar", xml, "text/sld+xml");
+            postAsServletResponse( "/rest/styles?name=bar", xml, "application/sld+xml");
         assertEquals( 201, response.getStatusCode() );
         assertNotNull( response.getHeader( "Location") );
         assertTrue( response.getHeader("Location").endsWith( "/styles/bar" ) );
