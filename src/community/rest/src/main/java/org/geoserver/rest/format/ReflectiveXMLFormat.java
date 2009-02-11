@@ -26,7 +26,7 @@ public class ReflectiveXMLFormat extends StreamDataFormat {
     XStream xstream;
     
     public ReflectiveXMLFormat() {
-        super(MediaType.TEXT_XML);
+        super(MediaType.APPLICATION_XML);
         this.xstream = new XStream();
     }
     

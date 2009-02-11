@@ -56,7 +56,7 @@ public class MapXMLFormat extends StreamDataFormat {
      * Creates a new format specifying the name of the root element of the resulting XML document.
      */
     public MapXMLFormat(String s){
-        super( MediaType.TEXT_XML );
+        super( MediaType.APPLICATION_XML );
         myRootName = s;
     }
 

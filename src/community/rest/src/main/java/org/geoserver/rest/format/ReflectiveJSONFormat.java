@@ -30,7 +30,7 @@ public class ReflectiveJSONFormat extends StreamDataFormat {
     XStream xstream;
     
     public ReflectiveJSONFormat() {
-        super(new MediaType( "text/json" ));
+        super(MediaType.APPLICATION_JSON);
         this.xstream = new XStream(new JettisonMappedXmlDriver());
     }
 

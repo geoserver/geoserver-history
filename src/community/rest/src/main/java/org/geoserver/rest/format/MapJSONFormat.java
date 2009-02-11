@@ -40,7 +40,7 @@ import org.restlet.resource.Resource;
 public class MapJSONFormat extends StreamDataFormat {
 
     public MapJSONFormat(){
-        super(new MediaType("text/json"));
+        super(MediaType.APPLICATION_JSON);
     }
 
     @Override
