@@ -7,6 +7,7 @@ package org.geoserver.rest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -21,8 +22,6 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.Resource;
-
-import com.sun.tools.jdi.LinkedHashMap;
 
 /**
  * Abstract base class for resources.
