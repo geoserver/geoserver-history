@@ -58,15 +58,14 @@ public class UserResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map theMap = new HashMap();
-        theMap.put("json", new MapJSONFormat());
-        theMap.put("html", new UserHTMLFormat("HTMLTemplates/user.ftl"));
-        theMap.put("xml", new UserXMLFormat("XMLTemplates/user.ftl"));
-        theMap.put(null, theMap.get("html"));
-
-        return theMap;
+        List l = new ArrayList();
+        l.add(new UserHTMLFormat("HTMLTemplates/user.ftl"));
+        l.add(new MapJSONFormat());
+        l.add(new UserXMLFormat("XMLTemplates/user.ftl"));
+        
+        return l;
     }
 
     public boolean allowGet() {

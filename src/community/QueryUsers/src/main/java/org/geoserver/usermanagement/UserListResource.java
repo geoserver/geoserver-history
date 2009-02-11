@@ -63,15 +63,14 @@ public class UserListResource extends MapResource {
     }
 
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,
+    protected List<DataFormat> createSupportedFormats(Request request,
             Response response) {
-        Map theMap = new HashMap();
-        theMap.put("json", new MapJSONFormat());
-        theMap.put("html", new FreemarkerFormat("HTMLTemplates/users.ftl", getClass(), MediaType.TEXT_HTML));
-        theMap.put("xml", new MapXMLFormat());
-        theMap.put(null, theMap.get("html"));
-
-        return theMap;
+        List l = new ArrayList();
+        l.add(new FreemarkerFormat("HTMLTemplates/users.ftl", getClass(), MediaType.TEXT_HTML));
+        l.add(new MapJSONFormat());
+        l.add(new MapXMLFormat());
+        
+        return l;
     }
 
     public boolean allowGet() {
