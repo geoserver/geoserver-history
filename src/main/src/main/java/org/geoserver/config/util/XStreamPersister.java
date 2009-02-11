@@ -9,14 +9,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.MultiHashMap;
@@ -33,6 +32,7 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.catalog.Wrapper;
 import org.geoserver.catalog.impl.AttributeTypeInfoImpl;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.impl.CoverageDimensionImpl;
@@ -57,6 +57,7 @@ import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.ows.util.OwsUtils;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.data.jdbc.datasource.UnWrapper;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -74,7 +75,9 @@ import org.opengis.referencing.operation.Matrix;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.SingleValueConverterWrapper;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
@@ -86,6 +89,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
+import com.thoughtworks.xstream.mapper.ClassAliasingMapper;
 import com.thoughtworks.xstream.mapper.Mapper;
 
 /**
@@ -97,23 +101,56 @@ import com.thoughtworks.xstream.mapper.Mapper;
  */
 public class XStreamPersister {
 
+    /**
+     * Persister for XML.
+     */
     public static class XML extends XStreamPersister {
 
         public XML() {
             super(null);
         }
-        
     }
 
+    /**
+     * Persister for JSON.
+     */
     public static class JSON extends XStreamPersister {
 
         public JSON() {
             //super( new JsonHierarchicalStreamDriver() );
             super( new JettisonMappedXmlDriver() );
         }
-        
     }
-
+    
+    /**
+     * Callback interface or xstream persister.
+     */
+    public static class Callback {
+        protected void postEncodeWorkspace( WorkspaceInfo ws, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
+        
+        protected void postEncodeNamespace( NamespaceInfo ns, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
+        
+        protected void postEncodeDataStore( DataStoreInfo ds, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
+        
+        protected void postEncodeCoverageStore( CoverageStoreInfo ds, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
+        
+        protected void postEncodeFeatureType( FeatureTypeInfo ds, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
+        
+        protected void postEncodeCoverage( CoverageInfo ds, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
+        
+        protected void postEncodeLayer( LayerInfo ls, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
+        
+        protected void postEncodeLayerGroup( LayerGroupInfo ls, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
+    }
+    
     /**
      * logging instance
      */
@@ -131,6 +168,11 @@ public class XStreamPersister {
     Catalog catalog;
     
     /**
+     * Callback instance. 
+     */
+    Callback callback;
+    
+    /**
      * Constructs the persister and underlyign xstream.
      */
     protected XStreamPersister(HierarchicalStreamDriver streamDriver) {
@@ -140,7 +182,8 @@ public class XStreamPersister {
             /* these we actually omit, but the sorter needs them specified */
             "layerGroups", "resources", "maps", "listeners", "layers",  "resourcePool", "resourceLoader" } ); 
         
-        ReflectionProvider reflectionProvider = new Sun14ReflectionProvider( new FieldDictionary( sorter  ) ); 
+        ReflectionProvider reflectionProvider = new CustomReflectionProvider( new FieldDictionary( sorter ) ); 
+            //new Sun14ReflectionProvider( new FieldDictionary( sorter  ) ); 
         if ( streamDriver != null ) {
             xs = new XStream( reflectionProvider, streamDriver );
         }
@@ -152,28 +195,35 @@ public class XStreamPersister {
         // Aliases
         xs.alias("global", GeoServerInfoImpl.class);
         xs.alias("catalog", CatalogImpl.class);
-        xs.alias("namespace", NamespaceInfo.class);
-        xs.alias("workspace", WorkspaceInfo.class);
-        xs.alias("dataStore", DataStoreInfoImpl.class);
-        xs.alias("coverageStore", CoverageStoreInfoImpl.class);
-        xs.alias("style",StyleInfo.class);
-        xs.alias( "featureType", FeatureTypeInfoImpl.class );
-        xs.alias( "coverage", CoverageInfoImpl.class);
+        xs.alias("namespace", NamespaceInfo.class, NamespaceInfoImpl.class);
+        xs.alias("workspace", WorkspaceInfo.class, WorkspaceInfoImpl.class);
+        xs.alias("dataStore", DataStoreInfo.class, DataStoreInfoImpl.class);
+        xs.alias("coverageStore", CoverageStoreInfo.class, CoverageStoreInfoImpl.class);
+        xs.alias("style",StyleInfo.class, StyleInfoImpl.class);
+        xs.alias( "featureType", FeatureTypeInfo.class, FeatureTypeInfoImpl.class );
+        xs.alias( "coverage", CoverageInfo.class, CoverageInfoImpl.class);
         xs.alias( "coverageDimension", CoverageDimensionImpl.class);
         xs.alias( "metadataLink", MetadataLinkInfo.class);
         xs.alias( "attribute", AttributeTypeInfoImpl.class );
-        xs.alias( "layer", LayerInfoImpl.class ); 
-        xs.alias( "layerGroup", LayerGroupInfoImpl.class );
-        xs.alias( "geographic", DefaultGeographicCRS.class);
+        xs.alias( "layer", LayerInfo.class, LayerInfoImpl.class);
+        xs.alias( "layerGroup", LayerGroupInfo.class, LayerGroupInfoImpl.class );
         xs.alias( "gridGeometry", GridGeometry2D.class);
         xs.aliasField("abstract", ResourceInfoImpl.class, "_abstract" );
         
+        //default implementations
+        xs.addDefaultImplementation(ArrayList.class, List.class);
+        xs.addDefaultImplementation(GridGeometry2D.class, GridGeometry.class );
+        xs.addDefaultImplementation(DefaultGeographicCRS.class, CoordinateReferenceSystem.class);
+        
+        xs.addDefaultImplementation(MetadataLinkInfoImpl.class, MetadataLinkInfo.class);
+        xs.addDefaultImplementation(ContactInfoImpl.class, ContactInfo.class);
+        xs.addDefaultImplementation(WorkspaceInfoImpl.class, WorkspaceInfo.class);
+        xs.addDefaultImplementation(NamespaceInfoImpl.class, NamespaceInfo.class);
+        xs.addDefaultImplementation(StyleInfoImpl.class, StyleInfo.class);
+        xs.addDefaultImplementation(LayerInfoImpl.class, LayerInfo.class);
+        //xs.addDefaultImplementation(DataStoreInfoImpl.class, StoreInfo.class);
         
         // GeoServerInfo
-        xs.addDefaultImplementation(MetadataLinkInfoImpl.class,
-                MetadataLinkInfo.class);
-        xs.addDefaultImplementation(ContactInfoImpl.class, ContactInfo.class);
-        xs.addDefaultImplementation(ArrayList.class, List.class);
         xs.omitField(GeoServerInfoImpl.class, "clientProperties");
 
         // ServiceInfo
@@ -181,12 +231,6 @@ public class XStreamPersister {
         xs.omitField(ServiceInfoImpl.class, "geoServer");
 
         // Catalog
-        xs.addDefaultImplementation(WorkspaceInfoImpl.class,
-                WorkspaceInfo.class);
-        xs.addDefaultImplementation(NamespaceInfoImpl.class,
-                NamespaceInfo.class);
-        xs.addDefaultImplementation(StyleInfoImpl.class,
-                StyleInfo.class);
         xs.omitField(CatalogImpl.class, "resourcePool");
         xs.omitField(CatalogImpl.class, "resourceLoader");
         xs.omitField(CatalogImpl.class, "resources");
@@ -194,95 +238,98 @@ public class XStreamPersister {
         xs.omitField(CatalogImpl.class, "layers");
         xs.omitField(CatalogImpl.class, "maps");
         xs.omitField(CatalogImpl.class, "layerGroups");
+        xs.registerLocalConverter(CatalogImpl.class, "stores",
+                new StoreMultiHashMapConverter());
+        xs.registerLocalConverter(CatalogImpl.class, "namespaces",
+                new SpaceMapConverter("namespace"));
+        xs.registerLocalConverter(CatalogImpl.class, "workspaces",
+                new SpaceMapConverter("workspace"));
+        
+        
+        //WorkspaceInfo
+        xs.omitField( WorkspaceInfoImpl.class, "id");
+        xs.registerLocalConverter( WorkspaceInfoImpl.class, "metadata", new BreifMapConverter() );
+        
+        //NamespaceInfo
+        xs.omitField( NamespaceInfoImpl.class, "id");
+        xs.omitField( NamespaceInfoImpl.class, "catalog");
+        xs.registerLocalConverter( NamespaceInfoImpl.class, "metadata", new BreifMapConverter() );
         
         // StoreInfo
         xs.omitField(StoreInfoImpl.class, "id");
         xs.omitField(StoreInfoImpl.class, "catalog");
-        xs.omitField(StoreInfoImpl.class, "workspace");
-        xs.omitField(StoreInfoImpl.class, "metadata");
-        xs.omitField(StoreInfoImpl.class, "connectionParameters");
+        //xs.omitField(StoreInfoImpl.class, "workspace"); //handled by StoreInfoConverter
+        xs.registerLocalConverter(StoreInfoImpl.class, "workspace", new ReferenceConverter(WorkspaceInfo.class));
+        xs.registerLocalConverter(StoreInfoImpl.class, "connectionParameters", new BreifMapConverter() );
+        xs.registerLocalConverter(StoreInfoImpl.class, "metadata", new BreifMapConverter());
         
         // StyleInfo
         xs.omitField(StyleInfoImpl.class, "id");
         xs.omitField(StyleInfoImpl.class, "catalog");
+        xs.registerLocalConverter(StyleInfoImpl.class, "metadata", new BreifMapConverter() );
         
         // ResourceInfo
         xs.omitField( ResourceInfoImpl.class, "id");
         xs.omitField( ResourceInfoImpl.class, "catalog");
         xs.omitField( ResourceInfoImpl.class, "crs" );
-        xs.omitField( ResourceInfoImpl.class, "nativeCRS");
-        xs.omitField( ResourceInfoImpl.class, "namespace");
-        xs.omitField( ResourceInfoImpl.class, "store");
-        xs.omitField( ResourceInfoImpl.class, "metadata");
+        xs.registerLocalConverter( ResourceInfoImpl.class, "nativeCRS", new CRSConverter());
+        xs.registerLocalConverter( ResourceInfoImpl.class, "store", new ReferenceConverter(StoreInfo.class));
+        xs.registerLocalConverter( ResourceInfoImpl.class, "namespace", new ReferenceConverter(NamespaceInfo.class));
+        xs.registerLocalConverter( ResourceInfoImpl.class, "metadata", new BreifMapConverter() );
         
         // FeatureTypeInfo
         
         // CoverageInfo
-        xs.addDefaultImplementation( GridGeometry2D.class, GridGeometry.class );
-        
+
         // AttributeTypeInfo
         xs.omitField( AttributeTypeInfoImpl.class, "featureType");
         xs.omitField( AttributeTypeInfoImpl.class, "attribute");
         
         // LayerInfo
         xs.omitField( LayerInfoImpl.class, "id");
-        xs.omitField( LayerInfoImpl.class, "resource");
-        xs.omitField( LayerInfoImpl.class, "defaultStyle");
-        xs.omitField( LayerInfoImpl.class, "styles");
-        xs.omitField( LayerInfoImpl.class, "metadata");
+        xs.registerLocalConverter( LayerInfoImpl.class, "resource", new ReferenceConverter( ResourceInfo.class ) );
+        xs.registerLocalConverter( LayerInfoImpl.class, "defaultStyle", new ReferenceConverter( StyleInfo.class ) );
+        xs.registerLocalConverter( LayerInfoImpl.class, "styles", new ReferenceCollectionConverter( StyleInfo.class ) );
+        xs.registerLocalConverter( LayerInfoImpl.class, "metadata", new BreifMapConverter() );
         
         // LayerGroupInfo
         xs.omitField(LayerGroupInfoImpl.class, "id" );
-        xs.omitField(LayerGroupInfoImpl.class, "layers" );
-        xs.omitField(LayerGroupInfoImpl.class, "styles" );
-        xs.omitField(LayerGroupInfoImpl.class, "metadata");
+        xs.registerLocalConverter(LayerGroupInfoImpl.class, "layers", new ReferenceCollectionConverter( LayerInfo.class ));
+        xs.registerLocalConverter(LayerGroupInfoImpl.class, "styles", new ReferenceCollectionConverter( StyleInfo.class ));
+        xs.registerLocalConverter(LayerGroupInfoImpl.class, "metadata", new BreifMapConverter() );
         
-        //ReferencedEnvelop
-        xs.omitField( ReferencedEnvelope.class, "crs" );
-        xs.omitField( GeneralEnvelope.class, "crs" );
-        
-        //NamespaceInfo
-        xs.omitField( NamespaceInfoImpl.class, "id");
-        xs.omitField( NamespaceInfoImpl.class, "catalog");
-        xs.omitField( NamespaceInfoImpl.class, "metadata");
-        
-        //WorkspaceInfo
-        xs.omitField( WorkspaceInfoImpl.class, "id");
-        xs.omitField( WorkspaceInfoImpl.class, "metadata");
+        //ReferencedEnvelope
+        xs.registerLocalConverter( ReferencedEnvelope.class, "crs", new SRSConverter() );
+        xs.registerLocalConverter( GeneralEnvelope.class, "crs", new SRSConverter() );
         
         // Converters
-        xs.registerConverter(new StoreInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
-        xs.registerConverter(new ResourceInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
-        xs.registerConverter(new FeatureTypeInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
-        xs.registerConverter(new LayerInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
-        xs.registerConverter(new LayerGroupInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
-        xs.registerConverter(new SpaceInfoConverter(xs.getMapper(),xs.getReflectionProvider()));
-        
-        //local converters
-        xs.registerLocalConverter(CatalogImpl.class, "stores",
-                new MultiHashMapConverter());
-        xs.registerLocalConverter(CatalogImpl.class, "namespaces",
-                new SpaceMapConverter("namespace"));
-        xs.registerLocalConverter(CatalogImpl.class, "workspaces",
-                new SpaceMapConverter("workspace"));
-        
-//        MetadataConverter metadataConverter = new MetadataConverter(xs.getMapper());
-//        xs.registerLocalConverter(ResourceInfoImpl.class, "metadata", metadataConverter );
-//        xs.registerLocalConverter(StoreInfoImpl.class, "connectionParameters", new MetadataConverter( xs.getMapper() ));
-        
-        //xs.registerConverter(new CRSConverter());
+        xs.registerConverter(new SpaceInfoConverter());
+        xs.registerConverter(new StoreInfoConverter());
+        xs.registerConverter(new ResourceInfoConverter());
+        xs.registerConverter(new FeatureTypeInfoConverter());
+        xs.registerConverter(new CoverageInfoConverter());
+        xs.registerConverter(new LayerInfoConverter());
+        xs.registerConverter(new LayerGroupInfoConverter());
+        xs.registerConverter(new GridGeometry2DConverter());
         xs.registerConverter(new ProxyCollectionConverter( xs.getMapper() ) );
-        xs.registerConverter(new ReferencedEnvelopeConverter(xs.getMapper(), xs.getReflectionProvider()));
-        xs.registerConverter(new GeneralEnvelopeConverter(xs.getMapper(), xs.getReflectionProvider() ));
-        xs.registerConverter(new GridGeometry2DConverter(xs.getMapper(), xs.getReflectionProvider()));
+        
+        callback = new Callback();
     }
 
     public XStream getXStream() {
         return xs;
     }
 
+    public ClassAliasingMapper getClassAliasingMapper() {
+        return (ClassAliasingMapper) xs.getMapper().lookupMapperOfType( ClassAliasingMapper.class );
+    }
+    
     public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
+    }
+    
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
     
     /**
@@ -305,9 +352,16 @@ public class XStreamPersister {
      * If the object is not being proxied it is passed back.
      * </p>
      */
-    protected Object unwrapProxies( Object obj ) {
+    public Object unwrapProxies( Object obj ) {
         obj = GeoServerImpl.unwrap( obj );
         obj = CatalogImpl.unwrap( obj );
+        if ( obj instanceof Wrapper ) {
+            Wrapper w = (Wrapper) obj;
+            if ( w.isWrapperFor( Catalog.class ) ) {
+                obj = w.unwrap( Catalog.class );    
+            }
+            
+        }
         return obj;
     }
     
@@ -332,434 +386,269 @@ public class XStreamPersister {
         return obj;
     }
 
-    
     /**
-     * Converter which marshals / unmarshals the class to list multi hash map
-     * maintained by the catalog.
-     * 
+     * Custom reflection provider which unwraps proxies, and skips empty collections
+     * and maps.
      */
-    static class MultiHashMapConverter implements Converter {
-        public boolean canConvert(Class type) {
-            return MultiHashMap.class.equals(type);
+    class CustomReflectionProvider extends Sun14ReflectionProvider {
+        
+        public CustomReflectionProvider( FieldDictionary fd ) {
+            super( fd );
         }
-
-        public void marshal(Object source, HierarchicalStreamWriter writer,
-                MarshallingContext context) {
-            MultiHashMap map = (MultiHashMap) source;
-            for (Object v : map.values()) {
-                if (v instanceof DataStoreInfo) {
-                    writer.startNode("dataStore");
-                    context.convertAnother(v);
-                    writer.endNode();
-                }
-                if (v instanceof CoverageStoreInfo ) {
-                    writer.startNode( "coverageStore" );
-                    context.convertAnother(v);
-                    writer.endNode();
-                }
-            }
+        
+        @Override
+        public void visitSerializableFields(Object object, Visitor visitor) {
+            super.visitSerializableFields(object, new VisitorWrapper(visitor));
         }
+        
+        class VisitorWrapper implements ReflectionProvider.Visitor {
 
-        public Object unmarshal(HierarchicalStreamReader reader,
-                UnmarshallingContext context) {
-            MultiHashMap map = new MultiHashMap();
+            Visitor wrapped;
             
-            while( reader.hasMoreChildren() ) {
-                reader.moveDown();
-                
-                Object o = 0;
-                if ( "dataStore".equals( reader.getNodeName() ) ) {
-                    o = context.convertAnother( map, DataStoreInfoImpl.class );
-                }
-                else {
-                    o = context.convertAnother( map, CoverageStoreInfoImpl.class );
-                }
-                map.put( o.getClass(), o );
-                
-                reader.moveUp();
+            public VisitorWrapper( Visitor wrapped ) {
+                this.wrapped = wrapped;
             }
             
-            return map;
+            public void visit(String name, Class type, Class definedIn,
+                    Object value) {
+                
+                //skip empty collections + maps
+                if ( value instanceof Collection && ((Collection)value).isEmpty() ) {
+                    return;
+                }
+                if ( value instanceof Map && ((Map)value).isEmpty() ) {
+                    return;
+                }
+                
+                //unwrap any proxies
+                value = unwrapProxies(value);
+                wrapped.visit( name, type, definedIn, value);
+            }
+            
         }
     }
 
+    //
+    // custom converters
+    //
+    
+    //simple object converters
     /**
-     * Converter for handling the workspace and namespace maps.
-     *
+     * Map converter which encodes a map more breifly than the standard map converter.
      */
-    static class SpaceMapConverter implements Converter {
-
-        String name;
+    class BreifMapConverter extends MapConverter {
         
-        SpaceMapConverter( String name ) {
-            this.name = name;
+        public BreifMapConverter() {
+            super(getXStream().getMapper());
         }
         
-        public boolean canConvert(Class type) {
-            return Map.class.isAssignableFrom(type);
-        }
-
+        @Override
         public void marshal(Object source, HierarchicalStreamWriter writer,
                 MarshallingContext context) {
-            
-            LOGGER.info( "Persisting " + name + " '" + source + "'" );
-            
-            
             Map map = (Map) source;
-            
-            for (Object o : map.entrySet()) {
-                Map.Entry e = (Map.Entry) o;
-                if ( e.getKey() == null ) {
+            for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                
+                if ( entry.getValue() == null ) {
                     continue;
                 }
                 
-                writer.startNode(name);
-                if ( map.get( null ) == e.getValue() ) {
-                    writer.addAttribute("default", "true");
-                }
-                context.convertAnother(e.getValue());
+                writer.startNode(entry.getKey().toString());
+                writeItem( entry.getValue(), context, writer );
                 writer.endNode();
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader,
-                UnmarshallingContext context) {
-            Map map = new HashMap();
-            
-            while( reader.hasMoreChildren() ) {
-               reader.moveDown();
+        @Override
+        protected void populateMap(HierarchicalStreamReader reader,
+                UnmarshallingContext context, Map map) {
+            while (reader.hasMoreChildren()) {
+                reader.moveDown();
 
-               boolean def = "true".equals( reader.getAttribute( "default") );
-               
-               if ( "namespace".equals( name ) ) {
-                   NamespaceInfoImpl ns = (NamespaceInfoImpl) context.convertAnother( map, NamespaceInfoImpl.class );
-                   map.put( ns.getPrefix() , ns );
-                   if ( def ) {
-                       map.put( null, ns );
-                   }
-                   LOGGER.info( "Loading namespace '" + ns.getPrefix() + "'" );
-               }
-               else {
-                   WorkspaceInfoImpl ws = (WorkspaceInfoImpl) context.convertAnother( map, WorkspaceInfoImpl.class );
-                   map.put( ws.getName() , ws );
-                   if ( def ) {
-                       map.put( null, ws );
-                   }
-                   LOGGER.info( "Loading workspace '" + ws.getName() + "'" );
-               }
-               
-               reader.moveUp();
+                Object key = reader.getNodeName();
+                reader.moveDown();
+                
+                Object value = readItem(reader, context, map);
+                reader.moveUp();
+
+                map.put(key, value);
+
+                reader.moveUp();
             }
-            
-            return map;
         }
     }
+    
+    /**
+     * Converters which encodes an object by a reference, or its id.
+     */
+    class ReferenceConverter extends AbstractSingleValueConverter {
+        Class clazz;
+        
+        public ReferenceConverter( Class clazz ) {
+            this.clazz = clazz;
+        }
+        
+        @Override
+        public boolean canConvert(Class type) {
+            return clazz.isAssignableFrom( type );
+        }
 
-    static class CRSConverter implements Converter {
+        @Override
+        public String toString(Object obj) {
+            //could be a proxy, unwrap it
+            obj = CatalogImpl.unwrap( obj );
+            
+            //gets its id
+            String id = (String) OwsUtils.get( obj, "id" );
+            
+            //use name if no id set
+            if ( id == null ) {
+                id = (String) OwsUtils.get( obj, "name" );
+            }
+            
+            return id;
+        }
+        
+        @Override
+        public Object fromString(String str) {
+            Object proxy = ResolvingProxy.create( str, clazz );
+            Object resolved = proxy;
+            if ( catalog != null ) {
+                resolved = ResolvingProxy.resolve( catalog, proxy );    
+            }
+            return CatalogImpl.unwrap( resolved );
+        }
+    }
+    class ReferenceCollectionConverter extends CollectionConverter {
+        Class clazz;
+        public ReferenceCollectionConverter(Class clazz) {
+            super( getXStream().getMapper() );
+            this.clazz = clazz;
+        }
+        
+        @Override
+        protected void writeItem(Object item, MarshallingContext context,
+                HierarchicalStreamWriter writer) {
+            ClassAliasingMapper cam = 
+                (ClassAliasingMapper) mapper().lookupMapperOfType( ClassAliasingMapper.class );
+            
+            String elementName = cam.serializedClass( clazz );
+            if ( elementName == null ) {
+                elementName = cam.serializedClass( item.getClass() );
+            }
+            writer.startNode(elementName);
+            context.convertAnother( item, 
+                new SingleValueConverterWrapper( new ReferenceConverter( clazz )) );
+            writer.endNode();
+        }
+        
+        @Override
+        protected Object readItem(HierarchicalStreamReader reader,
+                UnmarshallingContext context, Object current) {
+            return context.convertAnother( current, clazz, 
+                new SingleValueConverterWrapper( new ReferenceConverter( clazz )  ));
+        }
+    }
+    /**
+     * Converter which unwraps proxies in a collection.
+     */
+    class ProxyCollectionConverter extends CollectionConverter {
 
+        public ProxyCollectionConverter(Mapper mapper) {
+            super(mapper);
+        }
+        
+        @Override
+        protected void writeItem(Object item, MarshallingContext context,
+                HierarchicalStreamWriter writer) {
+                        
+            super.writeItem(unwrapProxies(item), context, writer);
+        }
+    }
+    
+    /**
+     * Converter for coordinate reference system objects that converts by SRS code.
+     */
+    static class SRSConverter extends AbstractSingleValueConverter {
+        
         public boolean canConvert(Class type) {
             return CoordinateReferenceSystem.class.isAssignableFrom(type);
         }
         
-        public void marshal(Object source, HierarchicalStreamWriter writer,
-                MarshallingContext context) {
-            
-            CoordinateReferenceSystem crs = (CoordinateReferenceSystem)  source;
+        @Override
+        public String toString(Object obj) {
+            CoordinateReferenceSystem crs = (CoordinateReferenceSystem) obj;
             try {
-                writer.setValue("EPSG:" + CRS.lookupEpsgCode(crs, true) );
+                return "EPSG:" + CRS.lookupEpsgCode(crs, true);
             } 
             catch (FactoryException e) {
-                //TODO:log this
-                e.printStackTrace();
+                XStreamPersister.LOGGER.warning( "Could not determine epsg code of crs, encoding as WKT");
+                return crs.toWKT();
             }
-            
         }
-
-        public Object unmarshal(HierarchicalStreamReader reader,
-                UnmarshallingContext context) {
-            
-            String epsg = reader.getValue();
-            try {
-                return CRS.decode( epsg );
-            } 
-            catch (Exception e) {
-                //TODO: log this
-                e.printStackTrace();
+        
+        @Override
+        public Object fromString(String str) {
+            if ( str.toUpperCase().startsWith( "EPSG:") ) {
+                try {
+                    return CRS.decode( str );
+                } 
+                catch (Exception e) {
+                    XStreamPersister.LOGGER.log( Level.WARNING, "Error decode epsg code: "+str, e );
+                }    
             }
-            
+            else {
+                try {
+                    return CRS.parseWKT( str );
+                } 
+                catch (FactoryException e) {
+                    XStreamPersister.LOGGER.log( Level.WARNING, "Error decode wkt: "+str, e );
+                }
+            }
             return null;
         }
     }
     
-    static void marshalCollectionReference( Object source, HierarchicalStreamWriter w, String name, String itemName ) {
-        Collection c = (Collection) OwsUtils.get( source, name );
-        if ( c == null || c.isEmpty() ) {
-            return;
+    /**
+     * Converter for coordinate reference system objects that converts by WKT. 
+     *
+     */
+    static class CRSConverter extends AbstractSingleValueConverter {
+
+        @Override
+        public boolean canConvert(Class type) {
+            return CoordinateReferenceSystem.class.isAssignableFrom(type);
+        }
+
+        @Override
+        public String toString(Object obj) {
+            return ((CoordinateReferenceSystem)obj).toWKT();
         }
         
-        w.startNode(name);
-        for ( Object o : c ) {
-            encodeReference(o, w, itemName);
-        }
-        w.endNode();
-    }
-    
-    static void marshalReference( Object source, HierarchicalStreamWriter w, String name ) {
-        
-        Object obj = OwsUtils.get( source, name );
-        if ( obj == null ) {
-            return;
-        }
-        
-        encodeReference( obj, w, name );
-        
-    }
-    
-    static void encodeReference( Object obj, HierarchicalStreamWriter w, String elementName ) {
-        //could be a proxy, unwrap it
-        obj = CatalogImpl.unwrap( obj );
-        
-        //gets its id
-        String id = (String) OwsUtils.get( obj, "id" );
-        
-        //use name if no id set
-        if ( id == null ) {
-            id = (String) OwsUtils.get( obj, "name" );
+        @Override
+        public Object fromString(String str) {
+            try {
+                return CRS.parseWKT( str );
+            } 
+            catch (Exception e) {
+                try {
+                    return new SRSConverter().fromString( str );
+                }
+                catch( Exception e1 ) {}
+                
+                throw new RuntimeException( e );
+            }
         }
         
-        w.startNode(elementName);
-        w.setValue(id);
-        w.endNode();
     }
     
     /**
-     * Converter for handling stores.
+     * Converter for coverage grid geometry.
      *
      */
-    class StoreInfoConverter extends ReflectionConverter {
-
-        public StoreInfoConverter(Mapper mapper,
-                ReflectionProvider reflectionProvider) {
-            super(mapper, reflectionProvider);
-        }
-
-        public boolean canConvert(Class type) {
-            return StoreInfoImpl.class.isAssignableFrom(type);
-        }
-
-        protected void doMarshal(Object source,
-                HierarchicalStreamWriter writer, MarshallingContext context) {
-            super.doMarshal(source, writer, context);
-            
-            StoreInfo store = (StoreInfo) source;
-            LOGGER.info( "Persisting store '" +  store.getName() +  "'");
-            
-            encodeMap( "connectionParameters", source, writer, context, getXStream() );
-            marshalReference( source, writer, "workspace" );
-            encodeMetadata(source, writer, context, getXStream());
-        }
-        
-        public Object doUnmarshal(Object result,
-                HierarchicalStreamReader reader, UnmarshallingContext context) {
-            StoreInfo store = (StoreInfo) super.doUnmarshal(result, reader, context);
-            
-            LOGGER.info( "Loaded store '" +  store.getName() +  "', " + (store.isEnabled() ? "enabled" : "disabled") );
-            return store;
-        }
-        
-        protected Object unmarshallField(UnmarshallingContext context,
-                Object result, Class type, Field field) {
-            
-            if (WorkspaceInfo.class.isAssignableFrom(type)) {
-                // next should be  id
-                String ref = (String) context.convertAnother(result, String.class);
-
-                // this object could be a reference to something referenced
-                // later, create a proxy to it
-                if ( catalog != null ) {
-                    //try to resolve directly
-                    WorkspaceInfo ws = catalog.getWorkspace( ref );
-                    if ( ws != null ) {
-                        return CatalogImpl.unwrap(ws);
-                    }
-                }
-                
-                //fall back on creating a resolving proxy
-                return ResolvingProxy.create(ref, WorkspaceInfo.class);
-            } else if ( "metadata".equals( field.getName() ) ) {
-                return decodeMetadata( result, context, getXStream() );
-            } else if ( "connectionParameters".equals( field.getName() ) ) {
-                return decodeMetadata( result, context, getXStream() );
-            }
-            else {
-                return super.unmarshallField(context, result, type, field); 
-            }
-        }
-    }
-
-    /**
-     * Converter for handling resources.
-     *
-     */
-    class ResourceInfoConverter extends ReflectionConverter {
-        
-        public ResourceInfoConverter( Mapper mapper, ReflectionProvider reflectionProvider) {
-            super(mapper, reflectionProvider);
-        }
-        
-        public boolean canConvert(Class type) {
-            return ResourceInfoImpl.class.isAssignableFrom(type);
-        }
-        
-        protected void doMarshal(Object source,
-                HierarchicalStreamWriter writer, MarshallingContext context) {
-            
-            LOGGER.info( "Persisting resource '" + source + "'");
-            super.doMarshal(source, writer, context);
-
-            //encode crs manually
-            ResourceInfo resource = (ResourceInfo) source;
-            encodeCRS(resource.getNativeCRS(), writer, "nativeCRS");
-            
-            marshalReference( source, writer, "store" );
-            marshalReference( source, writer, "namespace" );
-            encodeMetadata( source, writer, context, getXStream() );
-        }
-        
-        protected Object unmarshallField(UnmarshallingContext context,
-                Object result, Class type, Field field) {
-            
-            if ( StoreInfo.class.isAssignableFrom(type)) {
-                String ref = (String) context.convertAnother(result, String.class);
-                
-                if ( catalog != null ) {
-                    //try to resolve directly
-                    StoreInfo s = catalog.getStoreByName( ref, type );
-                    if ( s != null ) {
-                        return CatalogImpl.unwrap(s);
-                    }
-                }
-                //fall back on proxy
-                return ResolvingProxy.create(ref, StoreInfo.class);
-                
-            }
-            if ( NamespaceInfo.class.isAssignableFrom(type)) {
-                String ref = (String) context.convertAnother(result, String.class);
-                
-                if ( catalog != null ) {
-                    //try to resolve directly
-                    NamespaceInfo ns = catalog.getNamespace( ref );
-                    if ( ns != null ) {
-                        return CatalogImpl.unwrap(ns);
-                    }
-                    
-                    //fall back on proxy
-                    return ResolvingProxy.create(ref, NamespaceInfo.class);
-                }
-            }
-            
-            if ( CoordinateReferenceSystem.class.isAssignableFrom( type ) ) {
-                return decodeCRS(context,result);
-            }
-            
-            if ( "metadata".equals( field.getName() ) ) {
-                return decodeMetadata( result, context, getXStream() );
-            }
-
-            return super.unmarshallField(context, result, type, field);
-        }
-        
-        public Object doUnmarshal(Object result,
-                HierarchicalStreamReader reader, UnmarshallingContext context) {
-            ResourceInfo obj = (ResourceInfo) super.doUnmarshal(result, reader, context);
-            
-            String enabled = obj.isEnabled() ? "enabled" : "disabled";
-            String type = obj instanceof CoverageInfo ? "coverage" : 
-                obj instanceof FeatureTypeInfo ? "feature type" : "resource";
-            
-            LOGGER.info( "Loaded " + type + " '" + obj.getName() + "', " + enabled );
-            
-            return obj;
-        }
-    }
-    
-    class ReferencedEnvelopeConverter extends ReflectionConverter {
-
-        public ReferencedEnvelopeConverter(Mapper mapper,
-                ReflectionProvider reflectionProvider) {
-            super(mapper, reflectionProvider);
-        }
-
-        @Override
-        public boolean canConvert(Class type) {
-            return ReferencedEnvelope.class.isAssignableFrom( type );
-        }
-
-        @Override
-        protected void doMarshal(Object source,
-                HierarchicalStreamWriter writer, MarshallingContext context) {
-            super.doMarshal(source, writer, context);
-            
-            ReferencedEnvelope re = (ReferencedEnvelope) source;
-            //encodeCRS( re.getCoordinateReferenceSystem(), writer, "crs" );
-            encodeSRS( re.getCoordinateReferenceSystem(), writer, "crs" );
-        }
-
-        @Override
-        protected Object unmarshallField(UnmarshallingContext context,
-                Object result, Class type, Field field) {
-
-            if ( CoordinateReferenceSystem.class.isAssignableFrom( type) ) {
-                return decodeCRS(context, result);
-            }
-
-            return super.unmarshallField(context, result, type, field);
-        }
-    }
-    
-    class GeneralEnvelopeConverter extends ReflectionConverter {
-        
-        public GeneralEnvelopeConverter(Mapper mapper,
-                ReflectionProvider reflectionProvider) {
-            super(mapper, reflectionProvider);
-        }
-
-        @Override
-        public boolean canConvert(Class type) {
-            return GeneralEnvelope.class.isAssignableFrom( type );
-        }
-
-        @Override
-        protected void doMarshal(Object source,
-                HierarchicalStreamWriter writer, MarshallingContext context) {
-            super.doMarshal(source, writer, context);
-            
-            GeneralEnvelope ge = (GeneralEnvelope) source;
-            //encodeCRS( re.getCoordinateReferenceSystem(), writer, "crs" );
-            encodeSRS( ge.getCoordinateReferenceSystem(), writer, "crs" );
-        }
-
-        @Override
-        protected Object unmarshallField(UnmarshallingContext context,
-                Object result, Class type, Field field) {
-
-            if ( CoordinateReferenceSystem.class.isAssignableFrom( type) ) {
-                return decodeCRS(context, result);
-            }
-
-            return super.unmarshallField(context, result, type, field);
-        }
-    }
-    
-    class GridGeometry2DConverter extends ReflectionConverter {
-        public GridGeometry2DConverter(Mapper mapper,
-                ReflectionProvider reflectionProvider) {
-            super(mapper, reflectionProvider);
-        }
-
-        @Override
-        public boolean canConvert(Class type) {
-            return GridGeometry2D.class.isAssignableFrom( type );
+    class GridGeometry2DConverter extends AbstractReflectionConverter {
+        public GridGeometry2DConverter() {
+            super( GridGeometry2D.class );
         }
 
         @Override
@@ -801,7 +690,11 @@ public class XStreamPersister {
             }
             
             //crs
-            encodeSRS(g.getCoordinateReferenceSystem(), writer, "crs");
+            writer.startNode("crs");
+            context.convertAnother( g.getCoordinateReferenceSystem(), 
+                new SingleValueConverterWrapper( new SRSConverter() ) );
+            writer.endNode();
+           
         }
         
         @Override
@@ -866,7 +759,8 @@ public class XStreamPersister {
             
             CoordinateReferenceSystem crs = null;
             if ( "crs".equals( reader.getNodeName() ) ) {
-                crs = decodeCRS(reader);
+                context.convertAnother( null, CoordinateReferenceSystem.class, 
+                    new SingleValueConverterWrapper( new SRSConverter() ));
                 reader.moveUp();
             }
             
@@ -900,290 +794,44 @@ public class XStreamPersister {
             return ints;
         }
     }
-
-    void encodeCRS( CoordinateReferenceSystem crs, HierarchicalStreamWriter writer, String nodeName ) {
-        if ( crs != null ) {
-            writer.startNode(nodeName);
-            writer.setValue( crs.toWKT() );
-            writer.endNode();
-        }
-    }
-
-    void encodeSRS( CoordinateReferenceSystem crs, HierarchicalStreamWriter writer, String nodeName ) {
-        if ( crs != null ) {
-            Integer epsg;
-            try {
-                epsg = CRS.lookupEpsgCode(crs,true);
-            } 
-            catch (FactoryException e) {
-                throw new RuntimeException( e );
-            }
-
-            if ( epsg != null ) {
-                writer.startNode(nodeName);
-                writer.setValue( "EPSG:" + epsg );
-                writer.endNode();
-            }
-        }
-    }
-
-    CoordinateReferenceSystem decodeCRS( HierarchicalStreamReader reader ) {
-        return decodeCRS( reader.getValue() );
-    }
     
-    CoordinateReferenceSystem decodeCRS( UnmarshallingContext context, Object result) {
-        //get the string value
-        String val = (String) context.convertAnother(result, String.class);
-        return decodeCRS( val );
-       
-    }
     
-    CoordinateReferenceSystem decodeCRS( String val ) {
-        if ( val == null ) {
-            return null;
-        }
-        
-        //first try parsing as epsg code, then as wkt
-        try {
-            return CRS.decode( val );
-        } 
-        catch (FactoryException e) {
-            //try as wkt
-            try {
-                return CRS.parseWKT( val );
-            } 
-            catch (FactoryException e1) {
-                throw new RuntimeException( "Unable to parse: " + val );
-            }
-        }
-    }
+    //catalog object converters
+    /**
+     * Base class for all custom reflection based converters.
+     */
+    class AbstractReflectionConverter extends ReflectionConverter {
+        Class clazz;
 
-    void encodeMetadata( Object o, HierarchicalStreamWriter writer, MarshallingContext context, XStream xs ) {
-       encodeMap( "metadata", o, writer, context, xs );
-    }
-    
-    void encodeMap( String name, Object o, HierarchicalStreamWriter writer, MarshallingContext context, XStream xs ) {
-        Map map = (Map) OwsUtils.get( o, name);
-        if ( map != null && !map.isEmpty() ) {
-            writer.startNode(name);
-            context.convertAnother( map, new MetadataConverter( xs.getMapper() ));
-            writer.endNode();
+        public AbstractReflectionConverter() {
+            this(Object.class);
         }
-    }
-    
-    Map decodeMetadata( Object obj, UnmarshallingContext context, XStream xs ) {
-        return (Map) context.convertAnother( obj, Map.class, new MetadataConverter( xs.getMapper() ) );
-    }
-    
-    class FeatureTypeInfoConverter extends ResourceInfoConverter {
 
-        public FeatureTypeInfoConverter(Mapper mapper,
-                ReflectionProvider reflectionProvider) {
-            super(mapper, reflectionProvider);
+        public AbstractReflectionConverter(Class clazz) {
+            super(getXStream().getMapper(),getXStream().getReflectionProvider());
+            this.clazz = clazz;
         }
-        
+
+        @Override
         public boolean canConvert(Class type) {
-            return FeatureTypeInfo.class.isAssignableFrom(type);
-        }
-
-        public Object doUnmarshal(Object result,
-                HierarchicalStreamReader reader, UnmarshallingContext context) {
-            
-            FeatureTypeInfoImpl featureType = (FeatureTypeInfoImpl) super.doUnmarshal(result, reader, context);
-            
-            //ensure null list does not result
-            if ( featureType.getAttributes() == null ){
-                featureType.setAttributes(new ArrayList());
-            }
-            
-            /*
-            for ( AttributeTypeInfo at : featureType.getAttributes() ) {
-                //at.setFeatureType( featureType );
-            }
-            */
-            return featureType;
-        }
-    }
-    
-    class LayerInfoConverter extends ReflectionConverter {
-
-        public LayerInfoConverter(Mapper mapper,
-                ReflectionProvider reflectionProvider) {
-            super(mapper, reflectionProvider);
+            return clazz.isAssignableFrom( type );
         }
         
-        public boolean canConvert(Class type) {
-            return LayerInfoImpl.class.isAssignableFrom( type );
-        }
-        
+        @Override
         protected void doMarshal(Object source,
                 HierarchicalStreamWriter writer, MarshallingContext context) {
             super.doMarshal(source, writer, context);
-            
-            marshalReference( source, writer, "resource" );
-            marshalReference( source, writer, "defaultStyle" );
-            marshalCollectionReference( source, writer, "styles", "style");
-            
-            encodeMetadata(source, writer, context, getXStream());
+            postDoMarshal(source,writer,context);
         }
         
-        protected Object unmarshallField(UnmarshallingContext context,
-                Object result, Class type, Field field) {
-            
-            if ( ResourceInfo.class.isAssignableFrom( type ) ) {
-
-                String ref = (String) context.convertAnother( result, String.class );
-                
-                if ( catalog != null ) {
-                    ResourceInfo r = catalog.getResource( ref, ResourceInfo.class );
-                    if ( r != null ) {
-                        return CatalogImpl.unwrap(r);
-                    }
-                }
-                
-                return ResolvingProxy.create( ref, ResourceInfo.class );
-            }
-            
-            if ( StyleInfo.class.isAssignableFrom( type ) ) {
-                String ref = (String) context.convertAnother( result, String.class );
-                return handleStyleRef( ref );
-            }
-            
-            if ( "styles".equals( field.getName() ) ) {
-                Collection refs = (Collection) context.convertAnother( result, field.getType(), new StringCollectionConverter( getXStream().getMapper() ) );
-                Collection styles;
-                try {
-                    styles = refs.getClass().newInstance();
-                } 
-                catch( Exception e ) {
-                    styles = new HashSet();
-                }
-                
-                for ( Iterator i = refs.iterator(); i.hasNext(); ) {
-                    String ref = (String) i.next();
-                    styles.add( handleStyleRef(ref) );
-                }
-                
-                return styles;
-            }
-            if ( "metadata".equals( field.getName() ) ) {
-                return decodeMetadata( result, context, getXStream() );
-            }
-            return super.unmarshallField(context, result, type, field);
-        }
-        
-        StyleInfo handleStyleRef( String ref ) {
-            if ( catalog != null ) {
-                StyleInfo s = catalog.getStyle( ref );
-                if ( s != null ) {
-                    return CatalogImpl.unwrap(s);
-                }
-            }
-            return ResolvingProxy.create( ref, StyleInfo.class );
+        protected void postDoMarshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
         }
     }
-    
-    class StringCollectionConverter extends CollectionConverter {
 
-        public StringCollectionConverter(Mapper mapper) {
-            super(mapper);
-        }
-        
-        @Override
-        protected Object readItem(HierarchicalStreamReader reader,
-                UnmarshallingContext context, Object current) {
-            return reader.getValue();
-        }
-    }
-    
-    class LayerGroupInfoConverter extends ReflectionConverter {
-
-        public LayerGroupInfoConverter(Mapper mapper,
-                ReflectionProvider reflectionProvider) {
-            super(mapper, reflectionProvider);
-        }
-        
-        @Override
-        public boolean canConvert(Class type) {
-            return LayerGroupInfoImpl.class.isAssignableFrom( type );
-        }
-        
-        protected void doMarshal(Object source,
-                HierarchicalStreamWriter writer, MarshallingContext context) {
-            super.doMarshal(source, writer, context);
-            
-            LayerGroupInfo lg = (LayerGroupInfo) source;
-            
-            writer.startNode("layers");
-            for ( LayerInfo l : lg.getLayers() ){
-                writer.startNode("layer");
-                writer.setValue( l.getName() );
-                writer.endNode();
-            }
-            writer.endNode();
-            
-            writer.startNode("styles");
-            for ( StyleInfo s : lg.getStyles() ){
-                writer.startNode("style");
-                writer.setValue( s.getName() );
-                writer.endNode();
-            }
-            writer.endNode();
-            
-            encodeMetadata(source, writer, context, getXStream());
-        }
-        
-        @Override
-        protected Object unmarshallField(UnmarshallingContext context,
-                Object result, Class type, Field field) {
-            
-            if ( "layers".equals( field.getName()  ) ) {
-                return context.convertAnother( result, List.class, new RefCollectionConverter( getXStream().getMapper() ) {
-                    @Override
-                    protected Object handleRef(String ref) {
-                        if ( catalog != null ) {
-                            LayerInfo l = catalog.getLayerByName( ref );
-                            if ( l != null ) {
-                                return l;
-                            }
-                        }
-                        
-                        return ResolvingProxy.create( ref, LayerInfo.class );
-                    }
-                });
-            }
-            else if ( "styles".equals( field.getName()  ) ) {
-                return context.convertAnother( result, List.class, 
-                    new RefCollectionConverter( getXStream().getMapper()) {
-                        @Override
-                        protected Object handleRef(String ref) {
-                            if ( catalog != null ) {
-                                StyleInfo s = catalog.getStyleByName( ref );
-                                if ( s != null ) {
-                                    return s;
-                                }
-                            }
-                            
-                            return ResolvingProxy.create( ref, StyleInfo.class );
-                        }
-                });
-            }
-            else if ( "metadata".equals( field.getName() ) ) {
-                return decodeMetadata(result, context, getXStream() );
-            }
-            else {
-                return super.unmarshallField(context, result, type, field);
-            }
-        }
-    }
-    
-    class SpaceInfoConverter extends ReflectionConverter {
-
-        public SpaceInfoConverter(Mapper mapper,
-                ReflectionProvider reflectionProvider) {
-            super(mapper, reflectionProvider);
-        }
-        
+    /**
+     * Converter for workspaces and namespaces.
+     */
+    class SpaceInfoConverter extends AbstractReflectionConverter {
         @Override
         public boolean canConvert(Class type) {
             return WorkspaceInfo.class.isAssignableFrom(type) || 
@@ -1191,99 +839,269 @@ public class XStreamPersister {
         }
         
         @Override
-        protected void doMarshal(Object source,
+        protected void postDoMarshal(Object source,
                 HierarchicalStreamWriter writer, MarshallingContext context) {
-            super.doMarshal(source, writer, context);
-            encodeMetadata( source, writer, context, getXStream() );
-        }
-        
-        @Override
-        protected Object unmarshallField(UnmarshallingContext context,
-                Object result, Class type, Field field) {
-            
-            if ( "metadata".equals( field.getName() ) ) {
-                return decodeMetadata( result, context, getXStream() );
+            if ( source instanceof WorkspaceInfo ) {
+                callback.postEncodeWorkspace( (WorkspaceInfo)source,writer,context );
             }
-            
-            return super.unmarshallField(context, result, type, field);
-        }
-    }
-    abstract class RefCollectionConverter extends CollectionConverter {
-
-        public RefCollectionConverter(Mapper mapper) {
-            super(mapper);
-        }
-        
-        @Override
-        protected void populateCollection(HierarchicalStreamReader reader,
-                UnmarshallingContext context, Collection collection) {
-            while( reader.hasMoreChildren() ) {
-                reader.moveDown();
-                collection.add( handleRef( reader.getValue() ) );
-                reader.moveUp();
+            else {
+                callback.postEncodeNamespace( (NamespaceInfo) source,writer,context );
             }
         }
-        
-        protected abstract Object handleRef( String ref );    
     }
-    
-    class ProxyCollectionConverter extends CollectionConverter {
-
-        public ProxyCollectionConverter(Mapper mapper) {
-            super(mapper);
-        }
-        
-        @Override
-        protected void writeItem(Object item, MarshallingContext context,
-                HierarchicalStreamWriter writer) {
-                        
-            super.writeItem(unwrapProxies(item), context, writer);
-        }
-        
-    }
-    
     /**
-     * Extension of MapConverter which will omit entries with null values.
+     * Converter for data stores and coverage stores.
      */
-    class MetadataConverter extends MapConverter {
+    class StoreInfoConverter extends AbstractReflectionConverter {
 
-        public MetadataConverter(Mapper mapper) {
-            super(mapper);
+        public StoreInfoConverter() {
+            super(StoreInfo.class);
         }
-        
+
         @Override
+        protected void postDoMarshal(Object result,
+                HierarchicalStreamWriter writer, MarshallingContext context) {
+            
+            StoreInfo store = (StoreInfo) result;
+            if ( store instanceof DataStoreInfo ) {
+                callback.postEncodeDataStore( (DataStoreInfo) store, writer, context );
+                LOGGER.info( "Persisted data store '" +  store.getName() +  "'");
+            }
+            else {
+                callback.postEncodeCoverageStore( (CoverageStoreInfo) store, writer, context );
+                LOGGER.info( "Persisted coverage store '" +  store.getName() +  "'");
+            }
+            
+        }
+        public Object doUnmarshal(Object result,
+                HierarchicalStreamReader reader, UnmarshallingContext context) {
+            StoreInfo store = (StoreInfo) super.doUnmarshal(result, reader, context);
+            
+            LOGGER.info( "Loaded store '" +  store.getName() +  "', " + (store.isEnabled() ? "enabled" : "disabled") );
+            return store;
+        }
+    }
+
+    /**
+     * Converter for multi hash maps containing coverage stores and data stores.
+     */
+    static class StoreMultiHashMapConverter implements Converter {
+        public boolean canConvert(Class type) {
+            return MultiHashMap.class.equals(type);
+        }
+
         public void marshal(Object source, HierarchicalStreamWriter writer,
                 MarshallingContext context) {
-            Map map = (Map) source;
-            for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+            MultiHashMap map = (MultiHashMap) source;
+            for (Object v : map.values()) {
+                if (v instanceof DataStoreInfo) {
+                    writer.startNode("dataStore");
+                    context.convertAnother(v);
+                    writer.endNode();
+                }
+                if (v instanceof CoverageStoreInfo ) {
+                    writer.startNode( "coverageStore" );
+                    context.convertAnother(v);
+                    writer.endNode();
+                }
+            }
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                UnmarshallingContext context) {
+            MultiHashMap map = new MultiHashMap();
+            
+            while( reader.hasMoreChildren() ) {
+                reader.moveDown();
                 
-                if ( entry.getValue() == null ) {
+                Object o = 0;
+                if ( "dataStore".equals( reader.getNodeName() ) ) {
+                    o = context.convertAnother( map, DataStoreInfoImpl.class );
+                }
+                else {
+                    o = context.convertAnother( map, CoverageStoreInfoImpl.class );
+                }
+                map.put( o.getClass(), o );
+                
+                reader.moveUp();
+            }
+            
+            return map;
+        }
+    }
+
+    /**
+     * Converter for handling maps containing workspaces and namespaces.
+     *
+     */
+    static class SpaceMapConverter implements Converter {
+
+        String name;
+        
+        public SpaceMapConverter( String name ) {
+            this.name = name;
+        }
+        
+        public boolean canConvert(Class type) {
+            return Map.class.isAssignableFrom(type);
+        }
+
+        public void marshal(Object source, HierarchicalStreamWriter writer,
+                MarshallingContext context) {
+            
+            LOGGER.info( "Persisting " + name + " '" + source + "'" );
+            
+            Map map = (Map) source;
+            
+            for (Object o : map.entrySet()) {
+                Map.Entry e = (Map.Entry) o;
+                if ( e.getKey() == null ) {
                     continue;
                 }
                 
-                writer.startNode(entry.getKey().toString());
-                writeItem( entry.getValue(), context, writer );
+                writer.startNode(name);
+                if ( map.get( null ) == e.getValue() ) {
+                    writer.addAttribute("default", "true");
+                }
+                context.convertAnother(e.getValue());
                 writer.endNode();
             }
         }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                UnmarshallingContext context) {
+            Map map = new HashMap();
+            
+            while( reader.hasMoreChildren() ) {
+               reader.moveDown();
+
+               boolean def = "true".equals( reader.getAttribute( "default") );
+               
+               if ( "namespace".equals( name ) ) {
+                   NamespaceInfoImpl ns = (NamespaceInfoImpl) context.convertAnother( map, NamespaceInfoImpl.class );
+                   map.put( ns.getPrefix() , ns );
+                   if ( def ) {
+                       map.put( null, ns );
+                   }
+                   LOGGER.info( "Loading namespace '" + ns.getPrefix() + "'" );
+               }
+               else {
+                   WorkspaceInfoImpl ws = (WorkspaceInfoImpl) context.convertAnother( map, WorkspaceInfoImpl.class );
+                   map.put( ws.getName() , ws );
+                   if ( def ) {
+                       map.put( null, ws );
+                   }
+                   LOGGER.info( "Loading workspace '" + ws.getName() + "'" );
+               }
+               
+               reader.moveUp();
+            }
+            
+            return map;
+        }
+    }
+
+    /**
+     * Base converter for handling resources.
+     */
+    class ResourceInfoConverter extends AbstractReflectionConverter {
+        
+        public ResourceInfoConverter() {
+            this(ResourceInfo.class);
+        }
+        
+        public ResourceInfoConverter(Class clazz ) {
+            super(clazz);
+        }
+        
+        protected void doMarshal(Object source,
+                HierarchicalStreamWriter writer, MarshallingContext context) {
+            
+            LOGGER.info( "Persisting resource '" + source + "'");
+            super.doMarshal(source, writer, context);
+        }
+        
+        public Object doUnmarshal(Object result,
+                HierarchicalStreamReader reader, UnmarshallingContext context) {
+            ResourceInfo obj = (ResourceInfo) super.doUnmarshal(result, reader, context);
+            
+            String enabled = obj.isEnabled() ? "enabled" : "disabled";
+            String type = obj instanceof CoverageInfo ? "coverage" : 
+                obj instanceof FeatureTypeInfo ? "feature type" : "resource";
+            
+            LOGGER.info( "Loaded " + type + " '" + obj.getName() + "', " + enabled );
+            
+            return obj;
+        }
+    }
+    
+    /**
+     * Converter for feature types.
+     */
+    class FeatureTypeInfoConverter extends ResourceInfoConverter {
+
+        public FeatureTypeInfoConverter() {
+            super(FeatureTypeInfo.class);
+        }
         
         @Override
-        protected void populateMap(HierarchicalStreamReader reader,
-                UnmarshallingContext context, Map map) {
-            while (reader.hasMoreChildren()) {
-                reader.moveDown();
-
-                Object key = reader.getNodeName();
-                reader.moveDown();
-                
-                Object value = readItem(reader, context, map);
-                reader.moveUp();
-
-                map.put(key, value);
-
-                reader.moveUp();
+        protected void postDoMarshal(Object result,
+                HierarchicalStreamWriter writer, MarshallingContext context) {
+            FeatureTypeInfoImpl featureType = (FeatureTypeInfoImpl) result;
+            
+            //ensure null list does not result
+            if ( featureType.getAttributes() == null ){
+                featureType.setAttributes(new ArrayList());
             }
+            
+            callback.postEncodeFeatureType(featureType, writer, context);
+        }
+    }
+    
+    /**
+     * Converter for feature types.
+     */
+    class CoverageInfoConverter extends ResourceInfoConverter {
+        public CoverageInfoConverter() {
+            super( CoverageInfo.class );
+        }
+        
+        @Override
+        protected void postDoMarshal(Object result,
+                HierarchicalStreamWriter writer, MarshallingContext context) {
+            callback.postEncodeCoverage((CoverageInfo)result, writer, context);
+        }
+    }
+    
+    /**
+     * Converter for layers.
+     */
+    class LayerInfoConverter extends AbstractReflectionConverter {
+
+        public LayerInfoConverter() {
+            super( LayerInfo.class );
+        }
+        
+        @Override
+        protected void postDoMarshal(Object result,
+                HierarchicalStreamWriter writer, MarshallingContext context) {
+            callback.postEncodeLayer( (LayerInfo) result, writer, context );
+        }
+    }
+  
+    /**
+     * Converter for layer groups.
+     */
+    class LayerGroupInfoConverter extends AbstractReflectionConverter {
+
+        public LayerGroupInfoConverter() {
+            super( LayerGroupInfo.class );
+        }
+
+        @Override
+        protected void postDoMarshal(Object result,
+                HierarchicalStreamWriter writer, MarshallingContext context) {
+            callback.postEncodeLayerGroup((LayerGroupInfo)result, writer, context);
         }
     }
 }
