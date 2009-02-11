@@ -1253,6 +1253,18 @@ public class CatalogImpl implements Catalog {
             r.setMetadata(new HashMap());
         }
         r.setCatalog(this);
+        
+        if ( resource instanceof FeatureTypeInfo ) {
+            resolve( (FeatureTypeInfo) resource );
+        }
+    }
+    
+    protected void resolve(FeatureTypeInfo featureType) {
+        FeatureTypeInfoImpl ft = (FeatureTypeInfoImpl) featureType;
+        
+        if ( ft.getAttributes() == null ) {
+            ft.setAttributes( new ArrayList() );
+        }
     }
 
     protected void resolve(LayerInfo layer) {
