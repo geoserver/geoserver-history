@@ -9,6 +9,8 @@ import static org.custommonkey.xmlunit.XMLAssert.*;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
+import org.restlet.data.MediaType;
+import org.restlet.data.Preference;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.w3c.dom.Document;
@@ -99,5 +101,20 @@ public class ReflectiveResourceTest extends RestletTestSupport {
         assertEquals( "one", resource.puted.prop1 );
         assertEquals( new Integer(2), resource.puted.prop2 );
         assertEquals( new Double(3), resource.puted.prop3 );
+    }
+    
+    public void testGetWithAcceptsHeader() throws Exception {
+        Request request = newRequestGET( "foo" );
+        request.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>(MediaType.TEXT_XML) );
+        Response response = new Response(request);
+        
+        FooReflectiveResource resource = new FooReflectiveResource( null, request, response );
+        resource.handleGet();
+        
+        Document dom = getDOM( response );
+        assertEquals( Foo.class.getName(), dom.getDocumentElement().getNodeName() );
+        assertXpathEvaluatesTo("one", "//prop1", dom);
+        assertXpathEvaluatesTo("2", "//prop2", dom);
+        assertXpathEvaluatesTo("3.0", "//prop3", dom);
     }
 }
