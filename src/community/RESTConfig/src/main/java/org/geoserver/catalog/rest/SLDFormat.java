@@ -20,7 +20,7 @@ import org.restlet.data.MediaType;
 public class SLDFormat extends StreamDataFormat {
 
     public SLDFormat() {
-        super(new MediaType( "text/sld+xml"));
+        super(StyleResource.MEDIATYPE_SLD);
     }
     
     @Override

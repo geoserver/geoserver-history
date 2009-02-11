@@ -14,23 +14,33 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.MediaTypes;
 import org.geotools.styling.Style;
 import org.restlet.Context;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 
 public class StyleResource extends AbstractCatalogResource {
 
+    /**
+     * media type for SLD
+     */
+    public static final MediaType MEDIATYPE_SLD = new MediaType( "application/sld+xml" );
+    static {
+        MediaTypes.registerExtension( "sld", MEDIATYPE_SLD );
+    }
+    
     public StyleResource(Context context, Request request, Response response, Catalog catalog) {
         super(context, request, response, StyleInfo.class, catalog);
         
     }
     
     @Override
-    protected Map<String, DataFormat> createSupportedFormats(Request request,Response response) {
-        Map<String,DataFormat> formats =  super.createSupportedFormats(request,response);
-        formats.put( "sld", new SLDFormat() );
+    protected List<DataFormat> createSupportedFormats(Request request,Response response) {
+        List<DataFormat> formats =  super.createSupportedFormats(request,response);
+        formats.add( new SLDFormat() );
         return formats;
     }
     
