@@ -4,6 +4,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.rest.RestletException;
 import org.restlet.data.Form;
+import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -28,6 +29,7 @@ public class FeatureTypeFinder extends AbstractCatalogFinder {
         if ( ds != null && catalog.getDataStoreByName(ws, ds) == null ) {
             throw new RestletException( "No such datastore: " + ws + "," + ds, Status.CLIENT_ERROR_NOT_FOUND );
         }
+        
         if ( ft != null ) {
             if ( ds != null &&
                     catalog.getFeatureTypeByDataStore(catalog.getDataStoreByName(ws, ds), ft) == null) {
@@ -39,14 +41,21 @@ public class FeatureTypeFinder extends AbstractCatalogFinder {
                 if ( ns == null || catalog.getFeatureTypeByName( ns, ft ) == null ) {
                     throw new RestletException( "No such feature type: "+ws+","+ft, Status.CLIENT_ERROR_NOT_FOUND );
                 }
-            
             }
         }
+        else {
+            //check the list flag, if == 'available', just return the list 
+            // of feature types available
+            Form form = request.getResourceRef().getQueryAsForm();
+            if ( "available".equalsIgnoreCase( form.getFirstValue( "list" ) ) ) {
+                return new AvailableFeatureTypeResource(null,request,response,catalog);
+            }
             
-        Form form = request.getResourceRef().getQueryAsForm();
-        if ( "available".equalsIgnoreCase( form.getFirstValue( "list" ) ) ) {
-            return new AvailableFeatureTypeResource(null,request,response,catalog);
+            if (request.getMethod() == Method.GET ) {
+                return new FeatureTypeListResource(getContext(),request,response,catalog);
+            }
         }
+        
         return new FeatureTypeResource(null,request,response,catalog);
     }
 

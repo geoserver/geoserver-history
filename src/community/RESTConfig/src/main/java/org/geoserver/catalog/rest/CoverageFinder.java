@@ -3,6 +3,7 @@ package org.geoserver.catalog.rest;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.rest.RestletException;
+import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -27,6 +28,11 @@ public class CoverageFinder extends AbstractCatalogFinder {
         if ( cs != null && catalog.getCoverageStoreByName(ws, cs) == null ) {
             throw new RestletException( "No such coveragestore: " + ws + "," + cs, Status.CLIENT_ERROR_NOT_FOUND );
         }
+        
+        if ( c == null && request.getMethod() == Method.GET ) {
+            return new CoverageListResource( getContext(), request, response, catalog );
+        }
+        
         if ( c != null ) {
             if ( cs != null &&
                     catalog.getCoverageByCoverageStore(catalog.getCoverageStoreByName(ws, cs), c) == null) {

@@ -2,6 +2,7 @@ package org.geoserver.catalog.rest;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestletException;
+import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -18,6 +19,10 @@ public class LayerGroupFinder extends AbstractCatalogFinder {
         String lg = (String) request.getAttributes().get( "layergroup" );
         if ( lg != null && catalog.getLayerGroupByName( lg ) == null ) {
             throw new RestletException( "No such layer group " + lg, Status.CLIENT_ERROR_NOT_FOUND );
+        }
+        
+        if ( lg == null && request.getMethod() == Method.GET ) {
+            return new LayerGroupListResource( getContext(), request, response, catalog );
         }
         
         return new LayerGroupResource( getContext(), request, response, catalog );

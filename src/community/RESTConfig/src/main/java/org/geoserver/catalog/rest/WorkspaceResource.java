@@ -7,12 +7,18 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.config.util.XStreamPersister;
+import org.geoserver.rest.PageInfo;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.Resource;
+
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 import freemarker.ext.beans.CollectionModel;
 import freemarker.template.Configuration;
@@ -26,42 +32,52 @@ public class WorkspaceResource extends AbstractCatalogResource {
     
     @Override
     protected DataFormat createHTMLFormat(Request request, Response response) {
-        return new CatalogFreemarkerHTMLFormat( WorkspaceInfo.class,request,response,this ) {
-          
+        return new WorkspaceHTMLFormat(request,response,this,catalog);
+    }
+    
+    @Override
+    protected void configurePersister(XStreamPersister persister) {
+        persister.setCallback( new XStreamPersister.Callback() {
             @Override
-            protected Configuration createConfiguration(Object data, Class clazz) {
-                Configuration cfg = 
-                    super.createConfiguration(data, clazz);
-                cfg.setObjectWrapper(new ObjectToMapWrapper<WorkspaceInfo>(WorkspaceInfo.class) {
-                    @Override
-                    protected void wrapInternal(Map properties, SimpleHash model, WorkspaceInfo object) {
-                        List<StoreInfo> stores = catalog.getStoresByWorkspace(object, StoreInfo.class);
-                        properties.put( "stores", new CollectionModel( stores, new ObjectToMapWrapper(StoreInfo.class) ) );
-                        properties.put( "isDefault",  object.equals( catalog.getDefaultWorkspace() ) );
-                    }
-                });
+            protected void postEncodeWorkspace(WorkspaceInfo ws,
+                    HierarchicalStreamWriter writer, MarshallingContext context) {
+                PageInfo pg = getPageInfo();
                 
-                return cfg;
+                //add a link to the stores
+                writer.startNode( "dataStores");
+                encodeAlternateAtomLink("datastores", writer);
+                writer.endNode();
+                
+                writer.startNode( "coverageStores");
+                encodeAlternateAtomLink("coveragestores", writer);
+                writer.endNode();
             }
-        };
+        });
+    }
+    
+    @Override
+    public boolean allowGet() {
+        return getAttribute( "workspace" ) != null;
     }
     
     @Override
     protected Object handleObjectGet() {
         String ws = getAttribute( "workspace" );
        
-        LOGGER.fine( "GET workspace" + ws == null ? "s" : " " + ws);
+        LOGGER.fine( "GET workspace " + ws);
         
         //if no workspace specified, return all
-        if ( ws == null ) {
-            return catalog.getWorkspaces();
-        }
-        else if ( "default".equals( ws ) ) {
+        if ( "default".equals( ws ) ) {
             return catalog.getDefaultWorkspace();
         }
         else {
             return catalog.getWorkspaceByName( ws );
         }
+    }
+    
+    @Override
+    public boolean allowPost() {
+        return getAttribute( "workspace") == null;
     }
     
     @Override
@@ -77,11 +93,6 @@ public class WorkspaceResource extends AbstractCatalogResource {
     @Override
     public boolean allowPut() {
         return getAttribute( "workspace") != null;
-    }
-    
-    @Override
-    public boolean allowPost() {
-        return getAttribute( "workspace") == null;
     }
     
     @Override
@@ -126,4 +137,30 @@ public class WorkspaceResource extends AbstractCatalogResource {
         saveCatalog();
         LOGGER.info( "DELETE workspace " + ws );
     }
+    
+    static class WorkspaceHTMLFormat extends CatalogFreemarkerHTMLFormat {
+    
+        Catalog catalog;
+        
+        public WorkspaceHTMLFormat(Request request, Response response, Resource resource, Catalog catalog ) {
+            super(WorkspaceInfo.class, request, response, resource);
+            this.catalog = catalog;
+        }
+        
+        @Override
+        protected Configuration createConfiguration(Object data, Class clazz) {
+            Configuration cfg = 
+                super.createConfiguration(data, clazz);
+            cfg.setObjectWrapper(new ObjectToMapWrapper<WorkspaceInfo>(WorkspaceInfo.class) {
+                @Override
+                protected void wrapInternal(Map properties, SimpleHash model, WorkspaceInfo object) {
+                    List<StoreInfo> stores = catalog.getStoresByWorkspace(object, StoreInfo.class);
+                    properties.put( "stores", new CollectionModel( stores, new ObjectToMapWrapper(StoreInfo.class) ) );
+                    properties.put( "isDefault",  object.equals( catalog.getDefaultWorkspace() ) );
+                }
+            });
+            
+            return cfg;
+        }
+    };
 }

@@ -29,7 +29,7 @@ public class NamespaceTest extends CatalogRESTTestSupport {
         JSON json = getAsJSON( "/rest/namespaces.json");
         assertTrue( json instanceof JSONObject );
         
-        JSONArray namespaces = ((JSONObject)json).getJSONObject("list").getJSONArray("namespace");
+        JSONArray namespaces = ((JSONObject)json).getJSONObject("namespaces").getJSONArray("namespace");
         assertNotNull( namespaces );
         
         assertEquals( catalog.getNamespaces().size() , namespaces.size() ); 
@@ -169,7 +169,7 @@ public class NamespaceTest extends CatalogRESTTestSupport {
             putAsServletResponse("/rest/namespaces/gs", xml, "text/xml" );
         assertEquals( 200, response.getStatusCode() );
         
-        Document dom = getAsDOM( "/rest/namespaces.xml" );
+        Document dom = getAsDOM( "/rest/namespaces/gs.xml" );
         assertXpathEvaluatesTo("1", "count(//namespace/uri[text()='http://changed'])", dom );
     }
     

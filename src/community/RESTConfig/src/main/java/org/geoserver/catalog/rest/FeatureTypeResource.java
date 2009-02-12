@@ -29,12 +29,7 @@ public class FeatureTypeResource extends AbstractCatalogResource {
             //grab the corresponding namespace for this workspace
             NamespaceInfo ns = catalog.getNamespaceByPrefix( workspace );
             if ( ns != null ) {
-
-                if ( featureType != null ) {
-                    return catalog.getFeatureTypeByName(ns,featureType);
-                }
-
-                return catalog.getFeatureTypesByNamespace(ns);    
+                return catalog.getFeatureTypeByName(ns,featureType);
             }
 
             throw new RestletException( "", Status.CLIENT_ERROR_NOT_FOUND );
@@ -42,11 +37,7 @@ public class FeatureTypeResource extends AbstractCatalogResource {
 
         LOGGER.fine( "GET feature type" + datastore + "," + featureType );
         DataStoreInfo ds = catalog.getDataStoreByName(workspace, datastore);
-        if ( featureType != null ) {
-            return catalog.getFeatureTypeByDataStore( ds, featureType );
-        }
-
-        return catalog.getFeatureTypesByDataStore(ds);
+        return catalog.getFeatureTypeByDataStore( ds, featureType );
     }
 
     @Override

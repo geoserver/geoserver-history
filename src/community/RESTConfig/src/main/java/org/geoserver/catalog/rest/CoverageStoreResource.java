@@ -13,6 +13,7 @@ import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.Resource;
 
 import freemarker.ext.beans.CollectionModel;
 import freemarker.template.Configuration;
@@ -27,24 +28,7 @@ public class CoverageStoreResource extends AbstractCatalogResource {
     
     @Override
     protected DataFormat createHTMLFormat(Request request, Response response) {
-        return new CatalogFreemarkerHTMLFormat( CoverageStoreInfo.class, request, response, this ) {
-            
-            @Override
-            protected Configuration createConfiguration(Object data, Class clazz) {
-                Configuration cfg = 
-                    super.createConfiguration(data, clazz);
-                cfg.setObjectWrapper(new ObjectToMapWrapper<CoverageStoreInfo>(CoverageStoreInfo.class) {
-                    @Override
-                    protected void wrapInternal(Map properties, SimpleHash model, CoverageStoreInfo object) {
-                        List<CoverageInfo> coverages = catalog.getCoveragesByCoverageStore(object);
-                        
-                        properties.put( "coverages", new CollectionModel( coverages, new ObjectToMapWrapper(CoverageInfo.class) ) );
-                    }
-                });
-                
-                return cfg;
-            }
-        };
+        return new CoverageStoreHTMLFormat( request, response, this, catalog ); 
     }
 
     @Override
@@ -115,5 +99,31 @@ public class CoverageStoreResource extends AbstractCatalogResource {
         
         LOGGER.info( "DELETE coverage store " + workspace + "," + coveragestore );
     }
+    
+    static class CoverageStoreHTMLFormat extends CatalogFreemarkerHTMLFormat {
+        Catalog catalog;
+        
+        public CoverageStoreHTMLFormat(Request request,
+                Response response, Resource resource, Catalog catalog) {
+            super(CoverageStoreInfo.class, request, response, resource);
+            this.catalog = catalog;
+        }
+
+        @Override
+        protected Configuration createConfiguration(Object data, Class clazz) {
+            Configuration cfg = 
+                super.createConfiguration(data, clazz);
+            cfg.setObjectWrapper(new ObjectToMapWrapper<CoverageStoreInfo>(CoverageStoreInfo.class) {
+                @Override
+                protected void wrapInternal(Map properties, SimpleHash model, CoverageStoreInfo object) {
+                    List<CoverageInfo> coverages = catalog.getCoveragesByCoverageStore(object);
+                    
+                    properties.put( "coverages", new CollectionModel( coverages, new ObjectToMapWrapper(CoverageInfo.class) ) );
+                }
+            });
+            
+            return cfg;
+        }
+    };
 
 }

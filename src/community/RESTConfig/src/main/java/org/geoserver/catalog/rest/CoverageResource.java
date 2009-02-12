@@ -30,12 +30,7 @@ public class CoverageResource extends AbstractCatalogResource {
             //grab the corresponding namespace for this workspace
             NamespaceInfo ns = catalog.getNamespaceByPrefix( workspace );
             if ( ns != null ) {
-
-                if ( coverage != null ) {
-                    return catalog.getCoverageByName(ns,coverage);
-                }
-
-                return catalog.getCoveragesByNamespace(ns);    
+                return catalog.getCoverageByName(ns,coverage);
             }
 
             throw new RestletException( "", Status.CLIENT_ERROR_NOT_FOUND );
@@ -43,11 +38,7 @@ public class CoverageResource extends AbstractCatalogResource {
 
         LOGGER.fine( "GET coverage " + coveragestore + "," + coverage );
         CoverageStoreInfo cs = catalog.getCoverageStoreByName(workspace, coveragestore);
-        if ( coverage != null ) {
-            return catalog.getCoverageByCoverageStore( cs, coverage );
-        }
-
-        return catalog.getCoveragesByCoverageStore(cs);
+        return catalog.getCoverageByCoverageStore( cs, coverage );
     }
 
     @Override

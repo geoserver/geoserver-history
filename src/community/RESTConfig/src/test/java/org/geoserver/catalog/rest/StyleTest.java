@@ -26,10 +26,9 @@ public class StyleTest extends CatalogRESTTestSupport {
     
     public void testGetAllASJSON() throws Exception {
         JSON json = getAsJSON("/rest/styles.json");
-        
         List<StyleInfo> styles = catalog.getStyles();
         assertEquals( styles.size(), 
-            ((JSONObject) json).getJSONObject("list").getJSONArray("style").size());
+            ((JSONObject) json).getJSONObject("styles").getJSONArray("style").size());
     }
     
     public void testGetAllAsHTML() throws Exception {

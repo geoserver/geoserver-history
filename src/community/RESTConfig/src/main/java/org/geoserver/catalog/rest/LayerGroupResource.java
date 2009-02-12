@@ -3,11 +3,17 @@ package org.geoserver.catalog.rest;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.LayerGroupInfo;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.StyleInfo;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class LayerGroupResource extends AbstractCatalogResource {
 
@@ -19,12 +25,6 @@ public class LayerGroupResource extends AbstractCatalogResource {
     @Override
     protected Object handleObjectGet() throws Exception {
         String lg = getAttribute( "layergroup" );
-        
-        if ( lg == null ) {
-            LOGGER.fine( "GET all layer groups");
-            //return all layers
-            return catalog.getLayerGroups();
-        }
         
         LOGGER.fine( "GET layer group " + lg );
         return catalog.getLayerGroupByName( lg ); 
@@ -94,5 +94,22 @@ public class LayerGroupResource extends AbstractCatalogResource {
         catalog.remove( lg );
         saveConfiguration();
         //saveCatalog();
+    }
+    
+    @Override
+    protected void configurePersister(XStreamPersister persister) {
+        persister.setCallback( new XStreamPersister.Callback() {
+           @Override
+           protected void postEncodeReference(Object obj, String ref,
+                HierarchicalStreamWriter writer, MarshallingContext context) {
+            
+               if ( obj instanceof StyleInfo ) {
+                   encodeAlternateAtomLink("/styles/" + ref, writer);
+               }
+               if ( obj instanceof LayerInfo ) {
+                   encodeAlternateAtomLink("/layers/" + ref, writer);
+               }
+           } 
+        });
     }
 }

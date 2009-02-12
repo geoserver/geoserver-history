@@ -28,7 +28,7 @@ public class WorkspaceTest extends CatalogRESTTestSupport {
         JSON json = getAsJSON( "/rest/workspaces.json");
         assertTrue( json instanceof JSONObject );
         
-        JSONArray workspaces = ((JSONObject)json).getJSONObject("list").getJSONArray("workspace");
+        JSONArray workspaces = ((JSONObject)json).getJSONObject("workspaces").getJSONArray("workspace");
         assertNotNull( workspaces );
         
         assertEquals( catalog.getNamespaces().size() , workspaces.size() ); 

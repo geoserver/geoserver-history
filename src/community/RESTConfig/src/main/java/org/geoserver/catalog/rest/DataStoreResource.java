@@ -7,12 +7,18 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.util.XStreamPersister;
+import org.geoserver.rest.PageInfo;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.Resource;
+
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 import freemarker.ext.beans.CollectionModel;
 import freemarker.template.Configuration;
@@ -26,24 +32,7 @@ public class DataStoreResource extends AbstractCatalogResource {
 
     @Override
     protected DataFormat createHTMLFormat(Request request, Response response) {
-        return new CatalogFreemarkerHTMLFormat( DataStoreInfo.class, request, response, this ) {
-            
-            @Override
-            protected Configuration createConfiguration(Object data, Class clazz) {
-                Configuration cfg = 
-                    super.createConfiguration(data, clazz);
-                cfg.setObjectWrapper(new ObjectToMapWrapper<DataStoreInfo>(DataStoreInfo.class) {
-                    @Override
-                    protected void wrapInternal(Map properties, SimpleHash model, DataStoreInfo object) {
-                        List<FeatureTypeInfo> featureTypes = catalog.getFeatureTypesByDataStore(object);
-                        
-                        properties.put( "featureTypes", new CollectionModel( featureTypes, new ObjectToMapWrapper(FeatureTypeInfo.class) ) );
-                    }
-                });
-                
-                return cfg;
-            }
-        };
+        return new DataStoreHTMLFormat( request, response, this, catalog );
     }
     
     @Override
@@ -52,10 +41,6 @@ public class DataStoreResource extends AbstractCatalogResource {
         String ds = getAttribute( "datastore" );
         
         LOGGER.fine( "GET data store " + ws + "," + ds );
-        if ( ds == null ) {
-            return catalog.getDataStoresByWorkspace( ws );
-        }
-        
         return catalog.getDataStoreByName( ws, ds );
     }
 
@@ -122,5 +107,53 @@ public class DataStoreResource extends AbstractCatalogResource {
         
         LOGGER.info( "DELETE data store " + workspace + "," + datastore );
     }
+    
+    @Override
+    protected void configurePersister(XStreamPersister persister) {
+        persister.setCallback( 
+            new XStreamPersister.Callback() {
+                @Override
+                protected void postEncodeDataStore(DataStoreInfo ds,
+                        HierarchicalStreamWriter writer,
+                        MarshallingContext context) {
+                    
+                    PageInfo pg = getPageInfo();
+                    
+                    //add a link to the datastores
+                    writer.startNode( "featureTypes");
+                    encodeAlternateAtomLink("featuretypes", writer);
+                    writer.endNode();
+                }
+            }
+        );
+        
+    }
+    
+    static class DataStoreHTMLFormat extends CatalogFreemarkerHTMLFormat {
+        Catalog catalog;
+        
+        public DataStoreHTMLFormat(Request request,
+                Response response, Resource resource, Catalog catalog) {
+            super(DataStoreInfo.class, request, response, resource);
+            this.catalog = catalog;
+        }
+
+        @Override
+        protected Configuration createConfiguration(Object data, Class clazz) {
+            Configuration cfg = 
+                super.createConfiguration(data, clazz);
+            cfg.setObjectWrapper(new ObjectToMapWrapper<DataStoreInfo>(DataStoreInfo.class) {
+                @Override
+                protected void wrapInternal(Map properties, SimpleHash model, DataStoreInfo object) {
+                    List<FeatureTypeInfo> featureTypes = catalog.getFeatureTypesByDataStore(object);
+                    
+                    properties.put( "featureTypes", new CollectionModel( featureTypes, new ObjectToMapWrapper(FeatureTypeInfo.class) ) );
+                }
+            });
+            
+            return cfg;
+        }
+    }
+
 
 }

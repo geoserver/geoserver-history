@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
@@ -47,34 +46,22 @@ public class StyleResource extends AbstractCatalogResource {
     @Override
     protected Object handleObjectGet() {
         String style = getAttribute("style");
-        if ( style != null ) {
-            LOGGER.fine( "GET style " + style );
-            StyleInfo sinfo = catalog.getStyleByName( style );
-            
-            //check the format, if specified as sld, return the sld itself
-            DataFormat format = getFormatGet();
-            if ( format instanceof SLDFormat ) {
-                try {
-                    return sinfo.getStyle();
-                } 
-                catch (IOException e) {
-                    throw new RestletException( "", Status.SERVER_ERROR_INTERNAL, e );
-                }
+        
+        LOGGER.fine( "GET style " + style );
+        StyleInfo sinfo = catalog.getStyleByName( style );
+        
+        //check the format, if specified as sld, return the sld itself
+        DataFormat format = getFormatGet();
+        if ( format instanceof SLDFormat ) {
+            try {
+                return sinfo.getStyle();
+            } 
+            catch (IOException e) {
+                throw new RestletException( "", Status.SERVER_ERROR_INTERNAL, e );
             }
-            
-            return sinfo;
         }
         
-        
-        String layer = getAttribute( "layer" );
-        if ( layer != null ) {
-            LOGGER.fine( "GET styles for layer " + layer );
-            LayerInfo l = catalog.getLayerByName( layer );
-            return l.getStyles();
-        }
-        
-        LOGGER.fine( "GET styles" );
-        return catalog.getStyles();
+        return sinfo;
     }
 
     @Override

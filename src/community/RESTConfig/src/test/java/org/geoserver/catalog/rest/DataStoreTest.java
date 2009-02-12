@@ -34,7 +34,7 @@ public class DataStoreTest extends CatalogRESTTestSupport {
         JSON json = getAsJSON( "/rest/workspaces/sf/datastores.json");
         assertTrue( json instanceof JSONObject );
         
-        Object datastores = ((JSONObject)json).getJSONObject("list").get("dataStore");
+        Object datastores = ((JSONObject)json).getJSONObject("dataStores").get("dataStore");
         assertNotNull( datastores );
         
         if( datastores instanceof JSONArray ) {
@@ -70,10 +70,9 @@ public class DataStoreTest extends CatalogRESTTestSupport {
     
     public void testGetAsXML() throws Exception {
         Document dom = getAsDOM( "/rest/workspaces/sf/datastores/sf.xml");
-        
         assertEquals( "dataStore", dom.getDocumentElement().getNodeName() );
         assertEquals( "sf", xp.evaluate( "/dataStore/name", dom) );
-        assertEquals( "sf", xp.evaluate( "/dataStore/workspace", dom) );
+        assertEquals( "sf", xp.evaluate( "/dataStore/workspace/name", dom) );
         assertXpathExists( "/dataStore/connectionParameters", dom );
     }
     
@@ -145,7 +144,7 @@ public class DataStoreTest extends CatalogRESTTestSupport {
         assertNotNull(dataStore);
         
         assertEquals( "sf", dataStore.get( "name") );
-        assertEquals( "sf", dataStore.get( "workspace") );
+        assertEquals( "sf", dataStore.getJSONObject( "workspace").get( "name" ) );
         assertNotNull( dataStore.get( "connectionParameters") );
     }
     

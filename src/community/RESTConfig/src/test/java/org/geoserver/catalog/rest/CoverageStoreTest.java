@@ -30,7 +30,6 @@ public class CoverageStoreTest extends CatalogRESTTestSupport {
     
     public void testGetAllAsXML() throws Exception {
         Document dom = getAsDOM( "/rest/workspaces/wcs/coveragestores.xml");
-        
         assertEquals( catalog.getStoresByWorkspace( "wcs", CoverageStoreInfo.class ).size(), 
             dom.getElementsByTagName( "coverageStore").getLength() );
     }
@@ -39,7 +38,7 @@ public class CoverageStoreTest extends CatalogRESTTestSupport {
         JSON json = getAsJSON( "/rest/workspaces/wcs/coveragestores.json");
         assertTrue( json instanceof JSONObject );
         
-        Object coveragestores = ((JSONObject)json).getJSONObject("list").get("coverageStore");
+        Object coveragestores = ((JSONObject)json).getJSONObject("coverageStores").get("coverageStore");
         assertNotNull( coveragestores );
         
         if( coveragestores instanceof JSONArray ) {
@@ -77,7 +76,7 @@ public class CoverageStoreTest extends CatalogRESTTestSupport {
         Document dom = getAsDOM( "/rest/workspaces/wcs/coveragestores/BlueMarble.xml");
         assertEquals( "coverageStore", dom.getDocumentElement().getNodeName() );
         assertEquals( "BlueMarble", xp.evaluate( "/coverageStore/name", dom) );
-        assertEquals( "wcs", xp.evaluate( "/coverageStore/workspace", dom) );
+        assertEquals( "wcs", xp.evaluate( "/coverageStore/workspace/name", dom) );
     }
     
     public void testGetAsHTML() throws Exception {
@@ -157,7 +156,7 @@ public class CoverageStoreTest extends CatalogRESTTestSupport {
         assertNotNull(coverageStore);
         
         assertEquals( "BlueMarble", coverageStore.get( "name") );
-        assertEquals( "wcs", coverageStore.get( "workspace") );
+        assertEquals( "wcs", coverageStore.getJSONObject( "workspace").get( "name" ));
         assertNotNull( coverageStore.get( "type") );
         assertNotNull( coverageStore.get( "url") );
     }

@@ -2,12 +2,20 @@ package org.geoserver.catalog.rest;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StyleInfo;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class LayerResource extends AbstractCatalogResource {
 
@@ -56,6 +64,39 @@ public class LayerResource extends AbstractCatalogResource {
         saveCatalog();
         
         LOGGER.info( "PUTed layer " + l);
+    }
+    
+    @Override
+    protected void configurePersister(XStreamPersister persister) {
+        persister.setCallback(new XStreamPersister.Callback() {
+            @Override
+            protected void postEncodeReference(Object obj, String ref,
+                    HierarchicalStreamWriter writer, MarshallingContext context) {
+                if ( obj instanceof StyleInfo ) {
+                    encodeAlternateAtomLink( "/styles/" + ref, writer);    
+                }
+                if ( obj instanceof ResourceInfo ) {
+                    ResourceInfo r = (ResourceInfo) obj;
+                    StringBuffer link = new StringBuffer( "/workspaces/" ).
+                        append( r.getStore().getWorkspace().getName() ).append( "/" );
+                    if ( r instanceof FeatureTypeInfo ) {
+                        link.append( "datastores/").append( r.getStore().getName() )
+                            .append( "/featuretypes/");
+                    }
+                    else if ( r instanceof CoverageInfo ) {
+                        link.append( "coveragestores/").append( r.getStore().getName() )
+                        .append( "/coverages/");
+                    }
+                    else {
+                        return;
+                    }
+                    
+                    link.append( r.getName() );
+                    encodeAlternateAtomLink(link.toString(), writer);
+                }
+            }
+        });
+        
     }
 
 }

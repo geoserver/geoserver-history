@@ -14,6 +14,7 @@ import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.Resource;
 
 import freemarker.ext.beans.CollectionModel;
 import freemarker.template.Configuration;
@@ -28,24 +29,7 @@ public class NamespaceResource extends AbstractCatalogResource {
 
     @Override
     protected DataFormat createHTMLFormat(Request request, Response response) {
-        return new CatalogFreemarkerHTMLFormat( NamespaceInfo.class,request,response,this ) {
-          
-            @Override
-            protected Configuration createConfiguration(Object data, Class clazz) {
-                Configuration cfg = 
-                    super.createConfiguration(data, clazz);
-                cfg.setObjectWrapper(new ObjectToMapWrapper<NamespaceInfo>(NamespaceInfo.class) {
-                    @Override
-                    protected void wrapInternal(Map properties, SimpleHash model, NamespaceInfo object) {
-                        List<ResourceInfo> stores = catalog.getResourcesByNamespace(object, ResourceInfo.class);
-                        properties.put( "resources", new CollectionModel( stores, new ObjectToMapWrapper(ResourceInfo.class) ) );
-                        properties.put( "isDefault",  object.equals( catalog.getDefaultNamespace() ) );
-                    }
-                });
-                
-                return cfg;
-            }
-        };
+        return new NamespaceHTMLFormat( request, response, this, catalog );
     }
     
     
@@ -53,13 +37,9 @@ public class NamespaceResource extends AbstractCatalogResource {
     protected Object handleObjectGet() throws Exception {
         String ns = getAttribute( "namespace" );
         
-        LOGGER.fine( "GET namespace" + ns == null ? "s" : " " + ns);
+        LOGGER.fine( "GET namespace" + ns);
         
-        //if no namespace specified, return all
-        if ( ns == null ) {
-            return catalog.getNamespaces();
-        }
-        else if ( "default".equals( ns ) ) {
+        if ( "default".equals( ns ) ) {
             return catalog.getDefaultNamespace();
         }
         else {
@@ -137,5 +117,31 @@ public class NamespaceResource extends AbstractCatalogResource {
         LOGGER.info( "DELETE namespace " + namespace);
         saveCatalog();
     }
+    
+    static class NamespaceHTMLFormat extends CatalogFreemarkerHTMLFormat{
+        
+        Catalog catalog;
+        public NamespaceHTMLFormat(Request request,
+                Response response, Resource resource, Catalog catalog) {
+            super(NamespaceInfo.class, request, response, resource);
+            this.catalog = catalog;
+        }
+
+        @Override
+        protected Configuration createConfiguration(Object data, Class clazz) {
+            Configuration cfg = 
+                super.createConfiguration(data, clazz);
+            cfg.setObjectWrapper(new ObjectToMapWrapper<NamespaceInfo>(NamespaceInfo.class) {
+                @Override
+                protected void wrapInternal(Map properties, SimpleHash model, NamespaceInfo object) {
+                    List<ResourceInfo> stores = catalog.getResourcesByNamespace(object, ResourceInfo.class);
+                    properties.put( "resources", new CollectionModel( stores, new ObjectToMapWrapper(ResourceInfo.class) ) );
+                    properties.put( "isDefault",  object.equals( catalog.getDefaultNamespace() ) );
+                }
+            });
+            
+            return cfg;
+        }
+    };
 
 }
