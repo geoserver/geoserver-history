@@ -294,8 +294,10 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      */
     @SuppressWarnings("unchecked")
     protected FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(QName typeName)
-        throws IOException {
-        return getCatalog().getFeatureSource(typeName.getPrefix(), typeName.getLocalPart());
+            throws IOException {
+        // TODO: expand test support to DataAccess FeatureSource
+        return (FeatureSource<SimpleFeatureType, SimpleFeature>) getCatalog().getFeatureSource(
+                typeName.getPrefix(), typeName.getLocalPart());
     }
 
     /**

@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,9 +28,10 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -388,7 +391,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         featureType.setNumDecimals( dto.getNumDecimals() );
         
         featureType.getAttributes().clear();
-        SimpleFeatureType ft = ds.getDataStore(null).getSchema(featureType.getNativeName());
+        FeatureType ft = ds.getDataStore(null).getSchema(featureType.getQualifiedNativeName());
         if ( dto.getSchemaAttributes() != null ) {
             for ( Iterator i = dto.getSchemaAttributes().iterator(); i.hasNext(); ) {
                 AttributeTypeInfoDTO adto = (AttributeTypeInfoDTO) i.next();
@@ -397,18 +400,21 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 featureType.getAttributes().add( ati );
             }    
         } else {
+            // Old comment: this code has changed for GSIP 31 (migrate to DataAccess API)
             // workaround for GEOS-2277, the upper layers (config/dto) assume that
             // no attribute should be set if the user did not explicitly specify
             // the attributes (by changing the schema base and fiddling with types and
             // names, which is something we don't support fine anyways).
-            for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
-                AttributeDescriptor ad = ft.getDescriptor( x );
-                org.geoserver.catalog.AttributeTypeInfo att = catalog.getFactory().createAttribute();
-                att.setName( ad.getLocalName() );
-                att.setMinOccurs( ad.getMinOccurs() );
-                att.setMaxOccurs( ad.getMaxOccurs() );
-                att.setAttribute( ad );
-                featureType.getAttributes().add( att );
+            for (PropertyDescriptor pd : ft.getDescriptors()) {
+                if (pd instanceof AttributeDescriptor) {
+                    AttributeDescriptor ad = (AttributeDescriptor) pd;
+                    org.geoserver.catalog.AttributeTypeInfo att = catalog.getFactory().createAttribute();
+                    att.setName( ad.getLocalName() );
+                    att.setMinOccurs( ad.getMinOccurs() );
+                    att.setMaxOccurs( ad.getMaxOccurs() );
+                    att.setAttribute( ad );
+                    featureType.getAttributes().add( att );
+                }
             }
         }
         
@@ -724,7 +730,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @throws IOException when an error occurs.
      */
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource() throws IOException {
+    public FeatureSource<? extends FeatureType, ? extends Feature> getFeatureSource() throws IOException {
         return getFeatureSource(false);
     }
     
@@ -734,7 +740,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * that should be able to perform a full reprojection on its own, and do generalization
      * before reprojection (thus avoid to reproject all of the original coordinates)
      */
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(boolean skipReproject) throws IOException {
+    public FeatureSource<? extends FeatureType, ? extends Feature> getFeatureSource(boolean skipReproject) throws IOException {
         if (!isEnabled() || (getDataStoreInfo().getDataStore() == null)) {
             throw new IOException("featureType: " + getName()
                 + " does not have a properly configured " + "datastore");
@@ -1251,7 +1257,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Access real geotools2 SimpleFeatureType.
+     * Access GeoAPI FeatureType.
      *
      * @return Schema information.
      *
@@ -1259,7 +1265,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @see org.geotools.data.FeatureTypeMetaData#getFeatureType()
      */
-    public SimpleFeatureType getFeatureType() throws IOException {
+    public FeatureType getFeatureType() throws IOException {
         try {
             return featureType.getFeatureType();
         } 
@@ -1386,7 +1392,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @see org.geotools.data.FeatureTypeMetaData#getAttributeNames()
      */
-    public List getAttributeNames() {
+    public List<String> getAttributeNames() {
         
         List attribs = getAttributes();
         if (attribs.size() != 0) {
@@ -1400,19 +1406,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             return list;
         }
         
-        List list = new ArrayList();
-
+        FeatureType ftype;
         try {
-            SimpleFeatureType ftype = getFeatureType();
-            List types = ftype.getAttributeDescriptors();
-            list = new ArrayList(types.size());
-
-            for (int i = 0; i < types.size(); i++) {
-                list.add(((AttributeDescriptor)types.get(i)).getLocalName());
-            }
+            ftype = getFeatureType();
         } catch (IOException e) {
+            return Collections.emptyList();
         }
-
+        Collection<PropertyDescriptor> types = ftype.getDescriptors();
+        List<String> list = new ArrayList<String>(types.size());
+        for (PropertyDescriptor pd : types) {
+            if (pd instanceof AttributeDescriptor) {
+                list.add(((AttributeDescriptor)pd).getLocalName());
+            }
+        }
         return list;
         //
         //List attribs = schema;

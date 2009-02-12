@@ -5,12 +5,12 @@
 package org.geoserver.catalog.impl;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.opengis.util.ProgressListener;
@@ -19,6 +19,7 @@ import org.opengis.util.ProgressListener;
  * Default implementation of {@link StoreInfo}.
  * 
  */
+@SuppressWarnings("serial")
 public abstract class StoreInfoImpl implements StoreInfo {
 
     String id;
@@ -33,9 +34,9 @@ public abstract class StoreInfoImpl implements StoreInfo {
     
     transient Catalog catalog;
 
-    Map connectionParameters = new HashMap();
+    Map<String, Serializable> connectionParameters = new HashMap<String, Serializable>();
 
-    Map metadata = new HashMap();
+    Map<String, Serializable> metadata = new HashMap<String, Serializable>();
     
     Throwable error;
 
@@ -96,28 +97,28 @@ public abstract class StoreInfoImpl implements StoreInfo {
         this.workspace = workspace;
     }
     
-    public Map getConnectionParameters() {
+    public Map<String, Serializable> getConnectionParameters() {
         return connectionParameters;
     }
 
-    public void setConnectionParameters(Map connectionParameters) {
+    public void setConnectionParameters(Map<String, Serializable> connectionParameters) {
         this.connectionParameters = connectionParameters;
     }
 
-    public Map getMetadata() {
+    public Map<String, Serializable> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map metadata) {
+    public void setMetadata(Map<String, Serializable> metadata) {
         this.metadata = metadata;
     }
 
-    public Object getAdapter(Class adapterClass, Map hints) {
+    public <T extends Object> T getAdapter(Class<T> adapterClass, Map<?, ?> hints) {
         // subclasses should override
         return null;
     }
 
-    public Iterator getResources(ProgressListener monitor) throws IOException {
+    public Iterator<?> getResources(ProgressListener monitor) throws IOException {
         // subclasses should override
         return null;
     }

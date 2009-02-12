@@ -7,6 +7,7 @@ package org.geoserver.catalog;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +22,8 @@ import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.data.DataAccess;
+import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
@@ -36,13 +39,15 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.util.logging.Logging;
-import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -151,25 +156,36 @@ public class ResourcePool {
      * 
      * @throws IOException Any errors that occur connecting to the resource.
      */
-    public DataStore getDataStore( DataStoreInfo info ) throws IOException {
+    public DataAccess<? extends FeatureType, ? extends Feature> getDataStore( DataStoreInfo info ) throws IOException {
         try {
             String name = info.getName();
-            DataStore dataStore = (DataStore) dataStoreCache.get(name);
+            DataAccess<? extends FeatureType, ? extends Feature> dataStore = (DataAccess<? extends FeatureType, ? extends Feature>) dataStoreCache.get(name);
             if ( dataStore == null ) {
                 synchronized (dataStoreCache) {
-                    dataStore = (DataStore) dataStoreCache.get( name );
+                    dataStore = (DataAccess<? extends FeatureType, ? extends Feature>) dataStoreCache.get( name );
                     if ( dataStore == null ) {
                         //create data store
-                        Map connectionParameters = info.getConnectionParameters();
+                        Map<String, Serializable> connectionParameters = info.getConnectionParameters();
                         
                         //call this methdo to execute the hack which recognizes 
                         // urls which are relative to the data directory
                         // TODO: find a better way to do this
                         connectionParameters = DataStoreUtils.getParams(connectionParameters,null);
                         dataStore = DataStoreUtils.getDataStore(connectionParameters);
+                        if (dataStore == null) {
+                            /*
+                             * Preserve DataStore retyping behaviour by calling
+                             * DataAccessFinder.getDataStore after the call to
+                             * DataStoreUtils.getDataStore above.
+                             * 
+                             * TODO: DataAccessFinder can also find DataStores, and when retyping is
+                             * supported for DataAccess, we can use a single mechanism.
+                             */
+                            dataStore = DataAccessFinder.getDataStore(connectionParameters);
+                        }
                         
                         if ( dataStore == null ) {
-                            throw new NullPointerException("Could not aquire datastore '" + info.getName() + "'");
+                            throw new NullPointerException("Could not acquire data access '" + info.getName() + "'");
                         }
                         
                         dataStoreCache.put( name, dataStore );
@@ -186,7 +202,7 @@ public class ResourcePool {
             throw (IOException) new IOException().initCause(e);
         }
     }
-    
+        
     /**
      * Clears the cached resource for a data store.
      * 
@@ -204,10 +220,10 @@ public class ResourcePool {
      * </p>
      */
     public void dispose( DataStoreInfo info ) {
-        DataStore dataStore = (DataStore) dataStoreCache.get(info);
+        DataAccess dataStore = (DataAccess) dataStoreCache.get(info);
         if ( dataStore != null ) {
             synchronized (dataStoreCache) {
-                dataStore = (DataStore) dataStoreCache.get(info);
+                dataStore = (DataAccess) dataStoreCache.get(info);
                 if ( dataStore != null ) {
                     try {
                         dataStore.dispose();
@@ -235,75 +251,70 @@ public class ResourcePool {
      * 
      * @throws IOException Any errors that occure while loading the resource.
      */
-    public SimpleFeatureType getFeatureType( FeatureTypeInfo info ) throws IOException {
+    public FeatureType getFeatureType( FeatureTypeInfo info ) throws IOException {
         
-        SimpleFeatureType ft = (SimpleFeatureType) featureTypeCache.get( info );
+        FeatureType ft = (FeatureType) featureTypeCache.get( info );
         if ( ft == null ) {
             synchronized ( featureTypeCache ) {
-                ft = (SimpleFeatureType) featureTypeCache.get( info );
+                ft = (FeatureType) featureTypeCache.get( info );
                 if ( ft == null ) {
                     
                     //grab the underlying feature type
-                    DataStore dataStore = getDataStore(info.getStore());
-                    ft = (SimpleFeatureType) dataStore.getSchema( info.getNativeName() );
+                    DataAccess<? extends FeatureType, ? extends Feature> dataAccess = getDataStore(info.getStore());
+                    ft = dataAccess.getSchema(info.getQualifiedNativeName());
                     
-                    //create the feature type so it lines up with the "declared" schema
-                    SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
-                    tb.setName( info.getName() );
-                    tb.setNamespaceURI( info.getNamespace().getURI() );
+                    // TODO: support reprojection for non-simple FeatureType
+                    if (ft instanceof SimpleFeatureType) {
+                        SimpleFeatureType sft = (SimpleFeatureType) ft;
+                        //create the feature type so it lines up with the "declared" schema
+                        SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
+                        tb.setName( info.getName() );
+                        tb.setNamespaceURI( info.getNamespace().getURI() );
 
-                    for ( AttributeDescriptor ad : ft.getAttributeDescriptors() ) {
-                    //for ( AttributeTypeInfo att : info.getAttributes() ) {
-                    //    String attName = att.getName();
-                    //    
-                    //    //load the actual underlying attribute type
-                    //    AttributeDescriptor ad = ft.getAttribute( attName );
-                    //    if ( ad == null ) {
-                    //        throw new IOException("the SimpleFeatureType " + info.getPrefixedName()
-                    //                + " does not contains the configured attribute " + attName
-                    //                + ". Check your schema configuration");
-                    //    }
+                        for ( AttributeDescriptor ad : sft.getAttributeDescriptors() ) {
 
-                        // force the user specified CRS if the data has no CRS, or reproject it 
-                        // if necessary
-                        if ( ad instanceof GeometryDescriptor ) {
-                            GeometryDescriptor old = (GeometryDescriptor) ad;
-                            try {
-                                //if old has no crs, change the projection handlign policy
-                                // to be the declared
-                                boolean rebuild = false;
-                                
-                                if ( old.getCoordinateReferenceSystem() == null ) {
-                                    //(JD) TODO: this is kind of wierd... we should at least
-                                    // log something here, and this is not thread safe!!
-                                    info.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-                                    rebuild = true;
-                                }
-                                else {
-                                    ProjectionPolicy projPolicy = info.getProjectionPolicy();
-                                    if ( projPolicy == ProjectionPolicy.REPROJECT_TO_DECLARED || 
-                                        projPolicy == ProjectionPolicy.FORCE_DECLARED ) {
+                            // force the user specified CRS if the data has no CRS, or reproject it 
+                            // if necessary
+                            if ( ad instanceof GeometryDescriptor ) {
+                                GeometryDescriptor old = (GeometryDescriptor) ad;
+                                try {
+                                    //if old has no crs, change the projection handlign policy
+                                    // to be the declared
+                                    boolean rebuild = false;
+
+                                    if ( old.getCoordinateReferenceSystem() == null ) {
+                                        //(JD) TODO: this is kind of wierd... we should at least
+                                        // log something here, and this is not thread safe!!
+                                        info.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
                                         rebuild = true;
                                     }
-                                }
-                                
-                                if ( rebuild ) {
-                                    //rebuild with proper crs
-                                    AttributeTypeBuilder b = new AttributeTypeBuilder();
-                                    b.init(old);
-                                    b.setCRS( getCRS(info.getSRS()) );
-                                    ad = b.buildDescriptor(old.getLocalName());
-                                }
-                            }
-                            catch( Exception e ) {
-                                //log exception
-                            }
-                        
-                        }
-                        tb.add( ad );
-                    }
+                                    else {
+                                        ProjectionPolicy projPolicy = info.getProjectionPolicy();
+                                        if ( projPolicy == ProjectionPolicy.REPROJECT_TO_DECLARED || 
+                                                projPolicy == ProjectionPolicy.FORCE_DECLARED ) {
+                                            rebuild = true;
+                                        }
+                                    }
 
-                    ft = tb.buildFeatureType();
+                                    if ( rebuild ) {
+                                        //rebuild with proper crs
+                                        AttributeTypeBuilder b = new AttributeTypeBuilder();
+                                        b.init(old);
+                                        b.setCRS( getCRS(info.getSRS()) );
+                                        ad = b.buildDescriptor(old.getLocalName());
+                                    }
+                                }
+                                catch( Exception e ) {
+                                    //log exception
+                                }
+
+                            }
+                            tb.add( ad );
+                        }
+
+                        ft = tb.buildFeatureType();
+                    } // end special case for SimpleFeatureType
+                    
                     featureTypeCache.put( info, ft ); 
                 }
             }
@@ -321,11 +332,14 @@ public class ResourcePool {
     public AttributeDescriptor getAttributeDescriptor( FeatureTypeInfo ftInfo, AttributeTypeInfo atInfo ) 
         throws Exception {
     
-        SimpleFeatureType featureType = getFeatureType( ftInfo );
+        FeatureType featureType = getFeatureType( ftInfo );
         if ( featureType != null ) {
-            for ( AttributeDescriptor ad : featureType.getAttributeDescriptors() ) {
-                if ( atInfo.getName().equals( ad.getLocalName() ) ) {
-                    return ad;
+            for ( PropertyDescriptor pd : featureType.getDescriptors() ) {
+                if (pd instanceof AttributeDescriptor) {
+                    AttributeDescriptor ad = (AttributeDescriptor) pd;
+                    if (atInfo.getName().equals(ad.getLocalName())) {
+                        return ad;
+                    }
                 }
             }
         }
@@ -355,17 +369,23 @@ public class ResourcePool {
      * 
      * @throws IOException Any errors that occur while loading the feature source.
      */
-    public FeatureSource getFeatureSource( FeatureTypeInfo info, Hints hints ) throws IOException {
-        DataStore dataStore = getDataStore(info.getStore());
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+    public FeatureSource<? extends FeatureType, ? extends Feature> getFeatureSource( FeatureTypeInfo info, Hints hints ) throws IOException {
+        DataAccess<? extends FeatureType, ? extends Feature> dataAccess = getDataStore(info.getStore());
         
+        // TODO: support aliasing (renaming), reprojection, versioning, and locking for DataAccess
+        if (!(dataAccess instanceof DataStore)) {
+            return dataAccess.getFeatureSource(info.getQualifiedName());
+        }
+        
+        DataStore dataStore = (DataStore) dataAccess;
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+                
         //
         // aliasing
         //
         if ( !info.getName().equals( info.getNativeName() ) ) {
             final String typeName = info.getNativeName();
             final String alias = info.getName();
-            
             RetypingDataStore retyper = new RetypingDataStore(dataStore) {
             
                 @Override
@@ -380,7 +400,7 @@ public class ResourcePool {
         }
         else {
             //normal case
-            fs = dataStore.getFeatureSource(info.getName());   
+            fs = dataStore.getFeatureSource(info.getQualifiedName());   
         }
 
         //
@@ -419,7 +439,8 @@ public class ResourcePool {
             }
 
             // make sure we create the appropriate schema, with the right crs
-            SimpleFeatureType schema = getFeatureType(info);
+            // we checked above we are using DataStore/SimpleFeature/SimpleFeatureType (DSSFSFT)
+            SimpleFeatureType schema = (SimpleFeatureType) getFeatureType(info);
             try {
                 if (!CRS.equalsIgnoreMetadata(resultCRS, schema.getCoordinateReferenceSystem()))
                     schema = FeatureTypes.transform(schema, resultCRS);
@@ -704,12 +725,12 @@ public class ResourcePool {
     static class DataStoreCache extends LRUMap {
         protected boolean removeLRU(LinkEntry entry) {
             String name = (String) entry.getKey();
-            dispose(name,(DataStore) entry.getValue());
+            dispose(name,(DataAccess) entry.getValue());
             
             return super.removeLRU(entry);
         }
         
-        void dispose(String name, DataStore dataStore) {
+        void dispose(String name, DataAccess dataStore) {
             LOGGER.info( "Disposing datastore '" + name + "'" );
             
             try {
@@ -723,14 +744,14 @@ public class ResourcePool {
         }
         
         protected void destroyEntry(HashEntry entry) {
-            dispose( (String) entry.getKey(), (DataStore) entry.getValue() );
+            dispose( (String) entry.getKey(), (DataAccess) entry.getValue() );
             super.destroyEntry(entry);
         }
         
         public void clear() {
             for ( Iterator e = entrySet().iterator(); e.hasNext(); ) {
-                Map.Entry<String,DataStore> entry = 
-                    (Entry<String, DataStore>) e.next();
+                Map.Entry<String,DataAccess<? extends FeatureType, ? extends Feature>> entry = 
+                    (Entry<String, DataAccess<? extends FeatureType, ? extends Feature>>) e.next();
                 dispose( entry.getKey(), entry.getValue() );
             }
             super.clear();

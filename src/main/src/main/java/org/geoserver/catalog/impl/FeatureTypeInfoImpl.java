@@ -14,10 +14,12 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.util.ProgressListener;
 
+@SuppressWarnings("serial")
 public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
         FeatureTypeInfo {
 
@@ -71,11 +73,11 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
     public void setNumDecimals(int numDecimals) {
     }
 
-    public SimpleFeatureType getFeatureType() throws IOException {
+    public FeatureType getFeatureType() throws IOException {
         return catalog.getResourcePool().getFeatureType( this );
     }
     
-    public FeatureSource getFeatureSource(ProgressListener listener, Hints hints)
+    public FeatureSource<? extends FeatureType, ? extends Feature> getFeatureSource(ProgressListener listener, Hints hints)
             throws IOException {
         return catalog.getResourcePool().getFeatureSource( this, hints );
     }

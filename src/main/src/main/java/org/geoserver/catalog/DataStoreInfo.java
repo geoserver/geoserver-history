@@ -5,11 +5,10 @@
 package org.geoserver.catalog;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Map;
 
-import org.geotools.data.DataStore;
+import org.geotools.data.DataAccess;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.util.ProgressListener;
 
 /**
@@ -35,7 +34,7 @@ public interface DataStoreInfo extends StoreInfo {
      * @throws IOException
      *                 Any I/O problems.
      */
-    DataStore getDataStore(ProgressListener listener) throws IOException;
+    DataAccess<? extends FeatureType, ? extends Feature> getDataStore(ProgressListener listener) throws IOException;
 
     /**
      * DataStoreInfo equality is based on the following properties:

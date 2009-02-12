@@ -4,17 +4,19 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.List;
+
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.util.DataStoreUtils;
-import java.io.IOException;
-import java.util.List;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -159,7 +161,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
             try {
                 return feature.getBoundingBox();
             } catch (IllegalArgumentException e) {
-                FeatureSource<SimpleFeatureType, SimpleFeature> realSource = feature.getFeatureSource();
+                FeatureSource<? extends FeatureType, ? extends Feature> realSource = feature.getFeatureSource();
 
                 return DataStoreUtils.getBoundingBoxEnvelope(realSource);
             }
@@ -185,7 +187,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
             try {
                 return feature.getLatLongBoundingBox();
             } catch (IllegalArgumentException e) {
-                FeatureSource<SimpleFeatureType, SimpleFeature> realSource = feature.getFeatureSource();
+                FeatureSource<? extends FeatureType, ? extends Feature> realSource = feature.getFeatureSource();
 
                 return DataStoreUtils.getBoundingBoxEnvelope(realSource);
             }

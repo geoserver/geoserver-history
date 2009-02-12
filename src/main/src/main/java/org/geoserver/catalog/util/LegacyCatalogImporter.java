@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +32,12 @@ import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.NameImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -46,8 +46,11 @@ import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
 import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.Name;
+import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
@@ -393,6 +396,13 @@ public class LegacyCatalogImporter {
         }
     }
     
+    /**
+     * TODO: code smell: no method should be this long
+     * 
+     * @param ftInfoReader
+     * @return
+     * @throws Exception
+     */
     FeatureTypeInfo readFeatureType(LegacyFeatureTypeInfoReader ftInfoReader) throws Exception {
         CatalogFactory factory = catalog.getFactory();
         FeatureTypeInfo featureType = factory.createFeatureType();
@@ -435,6 +445,10 @@ public class LegacyCatalogImporter {
         }
         featureType.setStore(dataStore);
         
+        // link to namespace
+        String prefix = dataStore.getWorkspace().getId();
+        featureType.setNamespace(catalog.getNamespaceByPrefix(prefix));    
+        
         if ( featureType.isEnabled() && !dataStore.isEnabled() ) {
             LOGGER.info( "Ignoring feature type: '" + ftInfoReader.parentDirectoryName()
                     + "', data store is disabled");
@@ -445,7 +459,7 @@ public class LegacyCatalogImporter {
             Exception error = null;
             
             //native crs
-            DataStore ds = null;
+            DataAccess<? extends FeatureType, ? extends Feature> ds = null;
             try {
                 ds = dataStore.getDataStore(null);
             }
@@ -458,18 +472,21 @@ public class LegacyCatalogImporter {
              
             if ( error == null ) {
                 try {
-                    SimpleFeatureType ft = ds.getSchema( featureType.getNativeName() );
+                    
+                    FeatureType ft = ds.getSchema(featureType.getQualifiedNativeName());
                     featureType.setNativeCRS(ft.getCoordinateReferenceSystem());
                     
                     //attributes
-                    for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
-                        AttributeDescriptor ad = ft.getDescriptor( x );
-                        AttributeTypeInfo att = catalog.getFactory().createAttribute();
-                        att.setName( ad.getLocalName() );
-                        att.setMinOccurs( ad.getMinOccurs() );
-                        att.setMaxOccurs( ad.getMaxOccurs() );
-                        //att.setAttribute( ad );
-                        featureType.getAttributes().add( att );
+                    for (PropertyDescriptor pd : ft.getDescriptors()) {
+                        if (pd instanceof AttributeDescriptor) {
+                            AttributeDescriptor ad = (AttributeDescriptor) pd;
+                            AttributeTypeInfo att = catalog.getFactory().createAttribute();
+                            att.setName( ad.getLocalName() );
+                            att.setMinOccurs( ad.getMinOccurs() );
+                            att.setMaxOccurs( ad.getMaxOccurs() );
+                            //att.setAttribute( ad );
+                            featureType.getAttributes().add( att );
+                        }
                     }
                 }
                 catch( Exception e ) {
@@ -486,19 +503,12 @@ public class LegacyCatalogImporter {
                 if ( nativeBBOX != null ) {
                     featureType.setNativeBoundingBox(new ReferencedEnvelope(nativeBBOX,featureType.getNativeCRS()));
                 }
-                
-                
             }
-            
             
             if ( error != null ) {
                 featureType.setEnabled(false);
             }
         }
-        
-        // link to namespace
-        String prefix = dataStore.getWorkspace().getId();
-        featureType.setNamespace(catalog.getNamespaceByPrefix(prefix));    
         
         return featureType;
     }
@@ -616,6 +626,5 @@ public class LegacyCatalogImporter {
         
         return coverage;
     }
-
     
 }

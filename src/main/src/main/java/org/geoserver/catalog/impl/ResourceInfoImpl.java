@@ -4,6 +4,7 @@
  */
 package org.geoserver.catalog.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,14 +16,17 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geotools.feature.NameImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.type.Name;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Default implementation of {@link ResourceInfo}.
  * 
  */
+@SuppressWarnings("serial")
 public abstract class ResourceInfoImpl implements ResourceInfo {
 
     String id;
@@ -58,7 +62,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
 
     boolean enabled;
 
-    Map metadata = new HashMap();
+    Map<String, Serializable> metadata = new HashMap<String, Serializable>();
 
     StoreInfo store;
     
@@ -92,9 +96,16 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @see org.geoserver.catalog.ResourceInfo#getQualifiedName()
+     */
+    public Name getQualifiedName() {
+        return new NameImpl(getNamespace().getURI(), getName());
     }
 
     public String getNativeName() {
@@ -105,6 +116,13 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         this.nativeName = nativeName;
     }
     
+    /**
+     * @see org.geoserver.catalog.ResourceInfo#getQualifiedNativeName()
+     */
+    public Name getQualifiedNativeName() {
+        return new NameImpl(getNamespace().getURI(), getNativeName());
+    }
+
     public NamespaceInfo getNamespace() {
         return namespace;
     }
@@ -186,11 +204,11 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         this.enabled = enabled;
     }
 
-    public Map getMetadata() {
+    public Map<String, Serializable> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map metaData) {
+    public void setMetadata(Map<String, Serializable> metaData) {
         this.metadata = metaData;
     }
 
@@ -202,7 +220,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         this.store = store;
     }
 
-    public Object getAdapter(Class adapterClass, Map hints) {
+    public <T extends Object> T getAdapter(Class<T> adapterClass, Map<?, ?> hints) {
         // subclasses should override
         return null;
     }

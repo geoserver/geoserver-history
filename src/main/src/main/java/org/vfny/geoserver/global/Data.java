@@ -34,11 +34,13 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.NameImpl;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
@@ -2167,7 +2169,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     public synchronized int getConnectionCount() {
         int count = 0;
         DataStoreInfo meta;
-        DataStore dataStore;
 
         for (Iterator i = getDataStores().iterator(); i.hasNext();) {
         //for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
@@ -2178,7 +2179,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             }
 
             try {
-                dataStore = meta.getDataStore();
+                meta.getDataStore();
             } catch (Throwable notAvailable) {
                 continue; // not available
             }
@@ -2199,11 +2200,11 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
      * </p>
      *
      * @return number of locks currently held
+     * 
+     * @deprecated this method does nothing. TODO: get rid of it
      */
     public synchronized int getLockCount() {
         int count = 0;
-        DataStore dataStore;
-        ;
 
         LockingManager lockingManager;
 
@@ -2211,23 +2212,28 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
-            if (!meta.isEnabled()) {
-                continue; // disabled
+            // TODO: support locking for DataAccess
+            if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                continue; // disabled or not a DataStore
             }
 
             try {
-                dataStore = meta.getDataStore();
+                meta.getDataStore();
             } catch (IllegalStateException notAvailable) {
                 continue; // not available
             } catch (Throwable huh) {
                 continue; // not even working
             }
 
-            lockingManager = dataStore.getLockingManager();
-
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
+            // Commented out for GSIP 31 (DataAccess API).
+            // Count is never incremented
+            // so this method has no effect (always returns 0).
+            // 
+            // lockingManager = dataStore.getLockingManager();
+            //
+            // if (lockingManager == null) {
+            //     continue; // locks not supported
+            // }
 
             // TODO: implement LockingManger.getLockSet()
             // count += lockingManager.getLockSet();
@@ -2245,6 +2251,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
      * </p>
      *
      * @return Number of locks released
+     * @deprecated this method does nothing. TODO: get rid of it
      */
     public synchronized int lockReleaseAll() {
         int count = 0;
@@ -2253,25 +2260,27 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
-            if (!meta.isEnabled()) {
-                continue; // disabled
+            // TODO: support locking for DataAccess
+            if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                continue; // disabled or not a DataStore
             }
 
-            DataStore dataStore;
-
             try {
-                dataStore = meta.getDataStore();
+                meta.getDataStore();
             } catch (IllegalStateException notAvailable) {
                 continue; // not available
             } catch (Throwable huh) {
                 continue; // not even working
             }
 
-            LockingManager lockingManager = dataStore.getLockingManager();
-
-            if (lockingManager == null) {
-                continue; // locks not supported
-            }
+            // Commented out for GSIP 31 (DataAccess API)
+            // This method has no effect because count is never incremented.
+            //
+            // LockingManager lockingManager = dataStore.getLockingManager();
+            // 
+            // if (lockingManager == null) {
+            //     continue; // locks not supported
+            /// }
 
             // TODO: implement LockingManger.releaseAll()
             // count += lockingManager.releaseAll();
@@ -2292,14 +2301,15 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             //for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
-            if (!meta.isEnabled()) {
-                continue; // disabled
+            // TODO: support locking for DataAccess
+            if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                continue; // disabled or not a DataStore
             }
 
             DataStore dataStore;
 
             try {
-                dataStore = meta.getDataStore();
+                dataStore = (DataStore) meta.getDataStore();
             } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
@@ -2354,15 +2364,16 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
-            if (!meta.isEnabled()) {
-                continue; // disabled
+            // TODO: support locking for DataAccess
+            if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                continue; // disabled or not a DataStore
             }
 
             DataStore dataStore;
 
             try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
+                dataStore = (DataStore) meta.getDataStore();
+           } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
 
@@ -2421,15 +2432,16 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
-            if (!meta.isEnabled()) {
-                continue; // disabled
+            // TODO: support locking for DataAccess
+           if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                continue; // disabled or not a DataStore
             }
 
             DataStore dataStore;
 
             try {
-                dataStore = meta.getDataStore();
-            } catch (IllegalStateException notAvailable) {
+                dataStore = (DataStore) meta.getDataStore();
+          } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
 
@@ -2468,14 +2480,15 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
-            if (!meta.isEnabled()) {
-                continue; // disabled
+            // TODO: support locking for DataAccess
+            if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                continue; // disabled or not a DataStore
             }
 
             DataStore dataStore;
 
             try {
-                dataStore = meta.getDataStore();
+                dataStore = (DataStore) meta.getDataStore();
             } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
@@ -2509,14 +2522,15 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         //for (Iterator i = dataStores.values().iterator(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
-            if (!meta.isEnabled()) {
-                continue; // disabled
+           // TODO: support locking for DataAccess
+           if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                continue; // disabled or not a DataStore
             }
 
             DataStore dataStore;
 
             try {
-                dataStore = meta.getDataStore();
+                dataStore = (DataStore) meta.getDataStore();
             } catch (IllegalStateException notAvailable) {
                 continue; // not available
             }
@@ -2641,7 +2655,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
      * @see org.geotools.data.Catalog#getFeatureSource(java.lang.String,
      *      java.lang.String)
      */
-    public synchronized FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(
+    public synchronized FeatureSource<? extends FeatureType, ? extends Feature> getFeatureSource(
             String prefix, String typeName) throws IOException {
         if ((prefix == null) || (prefix == "")) {
             prefix = getDefaultPrefix();
@@ -2652,7 +2666,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         FeatureTypeInfo featureType = namespace.getFeatureTypeInfo(typeName);
         DataStoreInfo dataStore = featureType.getDataStoreMetaData();
 
-        return dataStore.getDataStore().getFeatureSource(typeName);
+        // FIXME: there must be a better way to do this 
+        return dataStore.getDataStore().getFeatureSource(new NameImpl(namespace.getUri(), typeName));
     }
 
     ///**

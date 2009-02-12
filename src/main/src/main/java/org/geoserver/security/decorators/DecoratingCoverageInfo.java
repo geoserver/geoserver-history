@@ -23,6 +23,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.feature.type.Name;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.ProgressListener;
 
@@ -129,6 +130,13 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         return delegate.getName();
     }
 
+    /**
+     * @see org.geoserver.catalog.ResourceInfo#getQualifiedName()
+     */
+    public Name getQualifiedName() {
+        return delegate.getQualifiedName();
+    }
+
     public NamespaceInfo getNamespace() {
         return delegate.getNamespace();
     }
@@ -147,6 +155,13 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
 
     public String getNativeName() {
         return delegate.getNativeName();
+    }
+
+    /**
+     * @see org.geoserver.catalog.ResourceInfo#getQualifiedNativeName()
+     */
+    public Name getQualifiedNativeName() {
+        return delegate.getQualifiedNativeName();
     }
 
     public Map<String, Serializable> getParameters() {

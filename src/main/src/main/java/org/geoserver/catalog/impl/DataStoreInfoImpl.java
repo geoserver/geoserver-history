@@ -8,13 +8,17 @@ import java.io.IOException;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.util.ProgressListener;
 
 /**
  * Default implementation of {@link DataStoreInfo}.
  * 
  */
+@SuppressWarnings("serial")
 public class DataStoreInfoImpl extends StoreInfoImpl implements DataStoreInfo {
 
     public DataStoreInfoImpl(Catalog catalog) {
@@ -25,7 +29,8 @@ public class DataStoreInfoImpl extends StoreInfoImpl implements DataStoreInfo {
         super(catalog,id);
     }
 
-    public DataStore getDataStore(ProgressListener listener) throws IOException {
+    public DataAccess<? extends FeatureType, ? extends Feature> getDataStore(
+            ProgressListener listener) throws IOException {
         return catalog.getResourcePool().getDataStore(this);
     }
 

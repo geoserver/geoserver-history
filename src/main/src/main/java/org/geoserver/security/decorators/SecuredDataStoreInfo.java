@@ -7,11 +7,12 @@ package org.geoserver.security.decorators;
 import java.io.IOException;
 
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.security.SecureCatalogImpl;
-import org.geoserver.security.SecureCatalogImpl.Response;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
+import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.util.ProgressListener;
 
 /**
@@ -23,6 +24,7 @@ import org.opengis.util.ProgressListener;
  * @param <T>
  * @param <F>
  */
+@SuppressWarnings("serial")
 public class SecuredDataStoreInfo extends DecoratingDataStoreInfo {
 
     WrapperPolicy policy;
@@ -34,7 +36,8 @@ public class SecuredDataStoreInfo extends DecoratingDataStoreInfo {
 
     @Override
     public DataStore getDataStore(ProgressListener listener) throws IOException {
-        final DataStore ds = super.getDataStore(listener);
+        final DataAccess<? extends FeatureType, ? extends Feature> ds = super
+                .getDataStore(listener);
         if (ds == null)
             return null;
         else if(policy == WrapperPolicy.METADATA)

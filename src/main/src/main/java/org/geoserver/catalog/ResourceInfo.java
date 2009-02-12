@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.type.Name;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
@@ -42,6 +43,11 @@ public interface ResourceInfo extends Serializable {
      * @uml.property name="name"
      */
     String getName();
+    
+    /**
+     * @return the published name of the resource qualified with its namespace.
+     */
+    Name getQualifiedName();
 
     /**
      * Sets the name of the resource.
@@ -59,6 +65,11 @@ public interface ResourceInfo extends Serializable {
      */
     String getNativeName();
     
+    /**
+     * @return the native name of the resource qualified with its namespace.
+     */
+    Name getQualifiedNativeName();
+
     /**
      * Sets the native name of the resource.
      */
