@@ -4,13 +4,23 @@
  */
 package org.geoserver.wfs;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.WfsFactory;
 
-import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.DefaultTransaction;
@@ -21,29 +31,19 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.Id;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.DataStoreInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -146,8 +146,8 @@ public class LockFeature {
                 } 
 
                 FeatureTypeInfo meta;
-                FeatureSource<SimpleFeatureType, SimpleFeature> source;
-                FeatureCollection<SimpleFeatureType, SimpleFeature> features;
+                FeatureSource<? extends FeatureType, ? extends Feature> source;
+                FeatureCollection<? extends FeatureType, ? extends Feature> features;
 
                 try {
                     meta = catalog.getFeatureTypeInfo(typeName.getLocalPart(),
@@ -314,14 +314,15 @@ public class LockFeature {
             for (Iterator i = dataStores.iterator(); i.hasNext();) {
                 DataStoreInfo meta = (DataStoreInfo) i.next();
 
-                if (!meta.isEnabled()) {
-                    continue; // disabled
+                // TODO: support locking for DataAccess
+                if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                    continue; // disabled or not a DataStore
                 }
 
                 DataStore dataStore;
 
                 try {
-                    dataStore = meta.getDataStore();
+                    dataStore = (DataStore) meta.getDataStore();
                 } catch (IllegalStateException notAvailable) {
                     continue; // not available
                 }
@@ -377,14 +378,15 @@ public class LockFeature {
             for (Iterator i = dataStores.iterator(); i.hasNext();) {
                 DataStoreInfo meta = (DataStoreInfo) i.next();
 
-                if (!meta.isEnabled()) {
-                    continue; // disabled
+                // TODO: support locking for DataAccess
+                if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                    continue; // disabled or not a DataStore
                 }
 
                 DataStore dataStore;
 
                 try {
-                    dataStore = meta.getDataStore();
+                    dataStore = (DataStore) meta.getDataStore();
                 } catch (IllegalStateException notAvailable) {
                     continue; // not available
                 } catch (Throwable huh) {
@@ -412,14 +414,15 @@ public class LockFeature {
             for (Iterator i = dataStores.iterator(); i.hasNext();) {
                 DataStoreInfo meta = (DataStoreInfo) i.next();
 
-                if (!meta.isEnabled()) {
-                    continue; // disabled
+                // TODO: support locking for DataAccess
+                if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                    continue; // disabled or not a DataStore
                 }
 
                 DataStore dataStore;
 
                 try {
-                    dataStore = meta.getDataStore();
+                    dataStore = (DataStore) meta.getDataStore();
                 } catch (IllegalStateException notAvailable) {
                     continue; // not available
                 }
@@ -450,14 +453,15 @@ public class LockFeature {
             for (Iterator i = dataStores.iterator(); i.hasNext();) {
                 DataStoreInfo meta = (DataStoreInfo) i.next();
 
-                if (!meta.isEnabled()) {
-                    continue; // disabled
+                // TODO: support locking for DataAccess
+               if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                    continue; // disabled or not a DataStore
                 }
 
                 DataStore dataStore;
 
                 try {
-                    dataStore = meta.getDataStore();
+                    dataStore = (DataStore) meta.getDataStore();
                 } catch (IllegalStateException notAvailable) {
                     continue; // not available
                 }

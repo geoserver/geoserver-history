@@ -4,13 +4,24 @@
  */
 package org.geoserver.wfs;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
+
 import org.eclipse.emf.ecore.EObject;
-import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
@@ -23,7 +34,9 @@ import org.geotools.referencing.operation.projection.PointOutsideEnvelopeExcepti
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.FilterFactory2;
@@ -34,16 +47,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 
 import com.vividsolutions.jts.geom.Geometry;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.logging.Logger;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -77,7 +80,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
         try {
             FeatureTypeInfo meta = (FeatureTypeInfo) typeInfos.values().iterator().next();
-            SimpleFeatureType featureType = meta.getFeatureType();
+            FeatureType featureType = meta.getFeatureType();
 
             for (Iterator prop = update.getProperty().iterator(); prop.hasNext();) {
                 PropertyType property = (PropertyType) prop.next();
@@ -85,8 +88,11 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 //check that valus that are non-nillable exist
                 if (property.getValue() == null) {
                     String propertyName = property.getName().getLocalPart();
-                    AttributeDescriptor attributeType = featureType.getDescriptor(propertyName);
-
+                    AttributeDescriptor attributeType = null;
+                    PropertyDescriptor pd = featureType.getDescriptor(propertyName);
+                    if(pd instanceof AttributeDescriptor) {
+                        attributeType = (AttributeDescriptor) pd;
+                    }
                     if ((attributeType != null) && (attributeType.getMinOccurs() > 0)) {
                         String msg = "Property '" + attributeType.getLocalName()
                             + "' is mandatory but no value specified.";

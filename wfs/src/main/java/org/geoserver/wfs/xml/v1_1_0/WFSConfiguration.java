@@ -4,9 +4,13 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import net.opengis.wfs.WfsFactory;
-import org.eclipse.xsd.util.XSDSchemaLocationResolver;
-import org.eclipse.xsd.util.XSDSchemaLocator;
+
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
@@ -17,17 +21,16 @@ import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
 import org.geoserver.wfs.xml.xs.DateBinding;
-
 import org.geotools.filter.v1_0.OGCBBOXTypeBinding;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;
 import org.geotools.gml2.FeatureTypeCache;
-import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.GML;
+import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.OptionalComponentParameter;
 import org.geotools.xs.XS;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
@@ -35,11 +38,6 @@ import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 
 
 public class WFSConfiguration extends Configuration {
@@ -176,7 +174,7 @@ public class WFSConfiguration extends Configuration {
                 FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
                 if ( !meta.isEnabled() ) continue;
                 
-                SimpleFeatureType featureType = meta.getFeatureType();
+                FeatureType featureType = meta.getFeatureType();
 
                 featureTypeCache.put(featureType);
             }
