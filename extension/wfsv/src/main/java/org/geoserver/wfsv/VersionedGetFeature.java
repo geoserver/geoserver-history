@@ -21,8 +21,8 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.global.Data;
 
 /**
@@ -36,10 +36,10 @@ public class VersionedGetFeature extends GetFeature {
         super(wfs, catalog);
     }
     
-    protected FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(
-            GetFeatureType request, FeatureSource<SimpleFeatureType, SimpleFeature> source, Query gtQuery) throws IOException {
+    protected FeatureCollection<? extends FeatureType, ? extends Feature> getFeatures(
+            GetFeatureType request, FeatureSource<? extends FeatureType, ? extends Feature> source, Query gtQuery) throws IOException {
         if(!(source instanceof VersioningFeatureSource))
-            throw new WFSException(source.getSchema().getTypeName() + " is not versioned, cannot " +
+            throw new WFSException(source.getSchema().getName().getLocalPart() + " is not versioned, cannot " +
             		"execute a GetVersionedFeature on it");
         return ((VersioningFeatureSource) source).getVersionedFeatures(gtQuery);
     }
