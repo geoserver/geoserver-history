@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geoserver.test.GeoServerTestSupport;
-import org.geotools.map.DefaultMapLayer;
+import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
@@ -30,11 +29,8 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.servlets.GetMap;
 import org.w3c.dom.Document;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -89,7 +85,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         if(styleName != null)
             style = getWMS().getData().getStyle(styleName);
 
-        DefaultMapLayer layer = new DefaultMapLayer(info.getFeatureSource(), style);
+        MapLayer layer = new FeatureSourceMapLayer(info.getFeatureSource(), style);
         layer.setTitle( info.getTypeName() );
         
         return layer;

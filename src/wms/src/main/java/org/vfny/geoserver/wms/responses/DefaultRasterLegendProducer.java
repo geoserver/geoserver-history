@@ -15,9 +15,6 @@ import java.awt.image.ImageObserver;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,9 +41,10 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
@@ -183,7 +181,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      */
     public void produceLegendGraphic(GetLegendGraphicRequest request)
         throws WmsException {
-        final SimpleFeature sampleFeature = createSampleFeature(request.getLayer());
+        final Feature sampleFeature = createSampleFeature(request.getLayer());
 
         final Style gt2Style = request.getStyle();
         final FeatureTypeStyle[] ftStyles = gt2Style.getFeatureTypeStyles();
@@ -669,17 +667,20 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      *
      * @throws WmsException
      */
-    private SimpleFeature createSampleFeature(SimpleFeatureType schema)
+    private Feature createSampleFeature(FeatureType schema)
         throws WmsException {
         SimpleFeature sampleFeature;
-
         try {
-            sampleFeature = SimpleFeatureBuilder.template(schema, null); 
+            if (schema instanceof SimpleFeatureType) {
+                sampleFeature = SimpleFeatureBuilder.template((SimpleFeatureType) schema, null); 
+            } else {
+                // TODO: implement support for GSIP 31 (DataAccess API)
+                throw new UnsupportedOperationException("Sample non-simple feature not yet supported.");
+            }
         } catch (IllegalAttributeException e) {
             e.printStackTrace();
             throw new WmsException(e);
         }
-
         return sampleFeature;
     }
 

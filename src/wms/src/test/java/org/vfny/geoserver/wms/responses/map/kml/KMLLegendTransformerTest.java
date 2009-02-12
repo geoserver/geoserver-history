@@ -99,8 +99,8 @@ public class KMLLegendTransformerTest extends GeoServerAbstractTestSupport {
         GetMapRequest request = mockData.createRequest();
         request.setLayers(new MapLayerInfo[] { layer });
 
-        FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = layer.getFeature()
-                .getFeatureSource();
+        FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer
+                .getFeature().getFeatureSource();
         mapLayer = new DefaultMapLayer(featureSource, mockData.getDefaultStyle().getStyle());
 
         MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpServletRequest();

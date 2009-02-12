@@ -29,11 +29,15 @@ import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.map.DefaultMapLayer;
+import org.geotools.map.FeatureSourceMapLayer;
+import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.parameter.ParameterNotFoundException;
@@ -223,7 +227,7 @@ public class GetMapResponse implements Response {
                 final Style layerStyle = styles[i];
                 final Filter layerFilter = filters[i];
 
-                final DefaultMapLayer layer;
+                final MapLayer layer;
                 if (layers[i].getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
                     cachingPossible = false;
 
@@ -261,7 +265,7 @@ public class GetMapResponse implements Response {
                         }
                     }
 
-                    FeatureSource<SimpleFeatureType, SimpleFeature> source;
+                    FeatureSource<? extends FeatureType, ? extends Feature> source;
                     // /////////////////////////////////////////////////////////
                     //
                     // Adding a feature layer
@@ -293,11 +297,11 @@ public class GetMapResponse implements Response {
                         throw new WmsException("Internal error", "", exp);
                     }
 
-                    layer = new DefaultMapLayer(source, layerStyle);
+                    layer = new FeatureSourceMapLayer(source, layerStyle);
                     layer.setTitle(layers[i].getName());
 
                     final DefaultQuery definitionQuery = new DefaultQuery(source.getSchema()
-                            .getTypeName());
+                            .getName().getLocalPart());
                     definitionQuery.setVersion(featureVersion);
                     definitionQuery.setFilter(layerFilter);
 
