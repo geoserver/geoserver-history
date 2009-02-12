@@ -10,8 +10,8 @@ import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.BinaryComparisonOperator;
 import org.opengis.filter.FilterFactory2;
@@ -49,9 +49,9 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  */
 public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
-    SimpleFeatureType featureType;
+    FeatureType featureType;
 
-    public ReprojectingFilterVisitor(FilterFactory2 factory, SimpleFeatureType featureType) {
+    public ReprojectingFilterVisitor(FilterFactory2 factory, FeatureType featureType) {
         super(factory);
         this.featureType = featureType;
     }
