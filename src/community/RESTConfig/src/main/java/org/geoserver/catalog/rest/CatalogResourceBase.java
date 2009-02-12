@@ -1,6 +1,5 @@
 package org.geoserver.catalog.rest;
 
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
@@ -88,7 +87,16 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
         writer.addAttribute( "rel", "alternate" );
         
         PageInfo pg = getPageInfo(); 
-        String href = ResponseUtils.appendPath( pg.getPageURI(), link );
+        String href = null;
+        if ( link.startsWith( "/") ) {
+            //absolute, encode from "root"
+            href = ResponseUtils.appendPath( pg.getRootURI(), link );
+        }
+        else {
+            //encode as relative
+            href = ResponseUtils.appendPath( pg.getPageURI(), link );
+        }
+
         if ( pg.getExtension() != null ) {
             href += "."+pg.getExtension();
             
