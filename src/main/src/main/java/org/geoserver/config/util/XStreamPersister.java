@@ -149,6 +149,9 @@ public class XStreamPersister {
         
         protected void postEncodeLayerGroup( LayerGroupInfo ls, HierarchicalStreamWriter writer, MarshallingContext context ) {
         }
+        
+        protected void postEncodeReference( Object obj, String ref, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
     }
     
     /**
@@ -352,7 +355,7 @@ public class XStreamPersister {
      * If the object is not being proxied it is passed back.
      * </p>
      */
-    public Object unwrapProxies( Object obj ) {
+    public static Object unwrapProxies( Object obj ) {
         obj = GeoServerImpl.unwrap( obj );
         obj = CatalogImpl.unwrap( obj );
         if ( obj instanceof Wrapper ) {
@@ -481,37 +484,51 @@ public class XStreamPersister {
     /**
      * Converters which encodes an object by a reference, or its id.
      */
-    class ReferenceConverter extends AbstractSingleValueConverter {
+    //class ReferenceConverter extends AbstractSingleValueConverter {
+    class ReferenceConverter implements Converter {
         Class clazz;
         
         public ReferenceConverter( Class clazz ) {
             this.clazz = clazz;
         }
-        
-        @Override
+
         public boolean canConvert(Class type) {
             return clazz.isAssignableFrom( type );
         }
 
-        @Override
-        public String toString(Object obj) {
+        public void marshal(Object source, HierarchicalStreamWriter writer,
+                MarshallingContext context) {
             //could be a proxy, unwrap it
-            obj = CatalogImpl.unwrap( obj );
+            source = CatalogImpl.unwrap( source );
             
             //gets its id
-            String id = (String) OwsUtils.get( obj, "id" );
+            String id = (String) OwsUtils.get( source, "id" );
             
             //use name if no id set
             if ( id == null ) {
-                id = (String) OwsUtils.get( obj, "name" );
+                id = (String) OwsUtils.get( source, "name" );
             }
+        
+            writer.startNode("name");
+            writer.setValue( id );
+            writer.endNode();
             
-            return id;
+            callback.postEncodeReference( source, id, writer, context );
         }
         
-        @Override
-        public Object fromString(String str) {
-            Object proxy = ResolvingProxy.create( str, clazz );
+        public Object unmarshal(HierarchicalStreamReader reader,
+                UnmarshallingContext context) {
+            
+            String ref = null;
+            if ( reader.hasMoreChildren() ) {
+                reader.moveDown();
+                ref = reader.getValue();
+                reader.moveUp();
+            }
+            else {
+                ref = reader.getValue();
+            }
+            Object proxy = ResolvingProxy.create( ref, clazz );
             Object resolved = proxy;
             if ( catalog != null ) {
                 resolved = ResolvingProxy.resolve( catalog, proxy );    
@@ -537,16 +554,14 @@ public class XStreamPersister {
                 elementName = cam.serializedClass( item.getClass() );
             }
             writer.startNode(elementName);
-            context.convertAnother( item, 
-                new SingleValueConverterWrapper( new ReferenceConverter( clazz )) );
+            context.convertAnother( item, new ReferenceConverter( clazz ) );
             writer.endNode();
         }
         
         @Override
         protected Object readItem(HierarchicalStreamReader reader,
                 UnmarshallingContext context, Object current) {
-            return context.convertAnother( current, clazz, 
-                new SingleValueConverterWrapper( new ReferenceConverter( clazz )  ));
+            return context.convertAnother( current, clazz, new ReferenceConverter( clazz ) );
         }
     }
     /**
