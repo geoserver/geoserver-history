@@ -25,7 +25,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import org.apache.struts.util.MessageResources;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -33,14 +32,12 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
-import org.vfny.geoserver.wms.servlets.Capabilities;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -185,9 +182,9 @@ public class MapPreviewAction extends GeoServerAction {
                 if (layer.isEnabled()) {
                     // prepare strings for web output
                     ftList.add(layer.getNameSpace().getPrefix() + "_"
-                        + layer.getFeatureType().getTypeName()); // FeatureType name
+                        + layer.getFeatureType().getName().getLocalPart()); // FeatureType name
                     ftnsList.add(layer.getNameSpace().getPrefix() + ":"
-                        + layer.getFeatureType().getTypeName());
+                        + layer.getFeatureType().getName().getLocalPart());
                     dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
                                                                   // bounding box of the FeatureType
     
