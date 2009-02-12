@@ -6,14 +6,11 @@ import java.io.OutputStream;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.util.XStreamPersister;
-import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.ReflectiveJSONFormat;
 import org.geoserver.rest.format.ReflectiveXMLFormat;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
-
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public abstract class AbstractCatalogResource extends CatalogResourceBase {
 

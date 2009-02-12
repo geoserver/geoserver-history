@@ -15,7 +15,6 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
-import org.restlet.data.MediaType;
 
 public class SLDFormat extends StreamDataFormat {
 
