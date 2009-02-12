@@ -22,8 +22,9 @@ import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.xml.EMFUtils;
-import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.ExpressionVisitor;
@@ -114,7 +115,7 @@ public class GetDiff {
             for (int i = 0; (i < queries.size()); i++) {
                 DifferenceQueryType query = (DifferenceQueryType) queries.get(i);
                 FeatureTypeInfo meta = featureTypeInfo((QName) query.getTypeName());
-                FeatureSource<SimpleFeatureType, SimpleFeature> source = meta.getFeatureSource();
+                FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource();
 
                 if (!(source instanceof VersioningFeatureSource)) {
                     throw new WFSException("Feature type" + query.getTypeName()
@@ -125,7 +126,7 @@ public class GetDiff {
 
                 // make sure filters are sane
                 if (filter != null) {
-                    final SimpleFeatureType featureType = source.getSchema();
+                    final FeatureType featureType = source.getSchema();
                     ExpressionVisitor visitor = new AbstractExpressionVisitor() {
                             public Object visit(PropertyName name, Object data) {
                                 // case of multiple geometries being returned
