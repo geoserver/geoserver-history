@@ -4,6 +4,17 @@
  */
 package org.geoserver.wfs.xml;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.xsd.XSDComplexTypeDefinition;
 import org.eclipse.xsd.XSDCompositor;
 import org.eclipse.xsd.XSDDerivationMethod;
@@ -17,28 +28,18 @@ import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDSchemaContent;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.util.XSDConstants;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.wfs.WFS;
 import org.geotools.gml2.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Schemas;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
+import org.opengis.feature.type.PropertyDescriptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -263,9 +264,9 @@ public abstract class FeatureTypeSchemaBuilder {
         }
 
         //build the type manually
-        SimpleFeatureType featureType = featureTypeMeta.getFeatureType();
+        FeatureType featureType = featureTypeMeta.getFeatureType();
         XSDComplexTypeDefinition complexType = factory.createXSDComplexTypeDefinition();
-        complexType.setName(featureType.getTypeName() + "Type");
+        complexType.setName(featureType.getName().getLocalPart() + "Type");
 
         complexType.setDerivationMethod(XSDDerivationMethod.EXTENSION_LITERAL);
         complexType.setBaseTypeDefinition(schema.resolveComplexTypeDefinition(gmlNamespace,
@@ -274,36 +275,36 @@ public abstract class FeatureTypeSchemaBuilder {
         XSDModelGroup group = factory.createXSDModelGroup();
         group.setCompositor(XSDCompositor.SEQUENCE_LITERAL);
 
-        List attributes = featureType.getAttributeDescriptors();
+        for (PropertyDescriptor pd : featureType.getDescriptors()) {
+            if (pd instanceof AttributeDescriptor) {
+                AttributeDescriptor attribute = (AttributeDescriptor) pd;
 
-        for (int i = 0; i < attributes.size(); i++) {
-            AttributeDescriptor attribute = (AttributeDescriptor) attributes.get(i);
+                if ( filterAttributeType( attribute ) ) {
+                    continue;
+                }
 
-            if ( filterAttributeType( attribute ) ) {
-                continue;
+                XSDElementDeclaration element = factory.createXSDElementDeclaration();
+                element.setName(attribute.getLocalName());
+                element.setNillable(attribute.isNillable());
+
+                Class binding = attribute.getType().getBinding();
+                Name typeName = findTypeName(binding);
+
+                if (typeName == null) {
+                    throw new NullPointerException("Could not find a type for property: "
+                            + attribute.getName() + " of type: " + binding.getName());
+                }
+
+                XSDTypeDefinition type = schema.resolveTypeDefinition(typeName.getNamespaceURI(),
+                        typeName.getLocalPart());
+                element.setTypeDefinition(type);
+
+                XSDParticle particle = factory.createXSDParticle();
+                particle.setMinOccurs(attribute.getMinOccurs());
+                particle.setMaxOccurs(attribute.getMaxOccurs());
+                particle.setContent(element);
+                group.getContents().add(particle);
             }
-           
-            XSDElementDeclaration element = factory.createXSDElementDeclaration();
-            element.setName(attribute.getLocalName());
-            element.setNillable(attribute.isNillable());
-
-            Class binding = attribute.getType().getBinding();
-            Name typeName = findTypeName(binding);
-
-            if (typeName == null) {
-                throw new NullPointerException("Could not find a type for property: "
-                    + attribute.getName() + " of type: " + binding.getName());
-            }
-
-            XSDTypeDefinition type = schema.resolveTypeDefinition(typeName.getNamespaceURI(),
-                    typeName.getLocalPart());
-            element.setTypeDefinition(type);
-
-            XSDParticle particle = factory.createXSDParticle();
-            particle.setMinOccurs(attribute.getMinOccurs());
-            particle.setMaxOccurs(attribute.getMaxOccurs());
-            particle.setContent(element);
-            group.getContents().add(particle);
         }
 
         XSDParticle particle = factory.createXSDParticle();

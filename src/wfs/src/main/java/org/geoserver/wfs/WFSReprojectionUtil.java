@@ -11,6 +11,7 @@ import org.geotools.factory.GeoTools;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -58,7 +59,7 @@ class WFSReprojectionUtil {
      * @param wfsVersion
      * @return
      */
-    public static CoordinateReferenceSystem getDeclaredCrs(SimpleFeatureType schema, String wfsVersion) {
+    public static CoordinateReferenceSystem getDeclaredCrs(FeatureType schema, String wfsVersion) {
         CoordinateReferenceSystem crs = (schema.getGeometryDescriptor() != null) ? schema
                 .getGeometryDescriptor().getCoordinateReferenceSystem() : null;
 
@@ -88,7 +89,7 @@ class WFSReprojectionUtil {
      * @param schema
      * @return
      */
-    public static Filter reprojectFilter(Filter filter, SimpleFeatureType schema) {
+    public static Filter reprojectFilter(Filter filter, FeatureType schema) {
         ReprojectingFilterVisitor visitor = new ReprojectingFilterVisitor(ff, schema);
         return (Filter) filter.accept(visitor, null);
     }
@@ -102,7 +103,7 @@ class WFSReprojectionUtil {
      * @param defaultCRS
      * @return
      */
-    public static Filter normalizeFilterCRS(Filter filter, SimpleFeatureType schema,
+    public static Filter normalizeFilterCRS(Filter filter, FeatureType schema,
             CoordinateReferenceSystem defaultCRS) {
         Filter defaulted = applyDefaultCRS(filter, defaultCRS);
         return reprojectFilter(defaulted, schema);

@@ -5,10 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -26,8 +24,10 @@ import org.geoserver.platform.Service;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.util.Version;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 
 public class ShapeZipTest extends WFSTestSupport {
 
@@ -51,7 +51,7 @@ public class ShapeZipTest extends WFSTestSupport {
     }
     
     public void testNoNativeProjection() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+        FeatureSource<? extends FeatureType, ? extends Feature> fs;
         fs = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS).getFeatureSource(true);
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -63,7 +63,7 @@ public class ShapeZipTest extends WFSTestSupport {
     }
     
     public void testCharset() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+        FeatureSource<? extends FeatureType, ? extends Feature> fs;
         fs = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS).getFeatureSource(true);
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -81,7 +81,7 @@ public class ShapeZipTest extends WFSTestSupport {
     }
     
     public void testMultiType() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+        FeatureSource<? extends FeatureType, ? extends Feature> fs;
         fs = getCatalog().getFeatureTypeInfo(ALL_TYPES).getFeatureSource(true);
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

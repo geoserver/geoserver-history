@@ -4,10 +4,19 @@
  */
 package org.geoserver.wfs.xml;
 
-import net.opengis.wfs.FeatureCollectionType;
-import net.opengis.wfs.GetFeatureType;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.opengis.wfs.BaseRequestType;
+import net.opengis.wfs.FeatureCollectionType;
+
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
@@ -19,20 +28,11 @@ import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Encoder;
-import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.xml.sax.SAXException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
@@ -64,16 +64,15 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         HashMap /*<String,Set>*/ ns2metas = new HashMap();
 
         for (Iterator fc = featureCollections.iterator(); fc.hasNext();) {
-            FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) fc.next();
-            SimpleFeatureType featureType = features.getSchema();
+            FeatureCollection<? extends FeatureType, ? extends Feature> features = (FeatureCollection) fc.next();
+            FeatureType featureType = features.getSchema();
 
             //load the metadata for the feature type
             String namespaceURI = featureType.getName().getNamespaceURI();
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
-                    namespaceURI);
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getName());
             
             if(meta == null)
-                throw new WFSException("Could not find feature type " + namespaceURI + ":" + featureType.getTypeName() + " in the GeoServer catalog");
+                throw new WFSException("Could not find feature type " + featureType.getName() + " in the GeoServer catalog");
 
             //add it to the map
             Set metas = (Set) ns2metas.get(namespaceURI);

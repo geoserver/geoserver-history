@@ -11,12 +11,11 @@ import java.util.Map;
 
 import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.WfsFactory;
-import org.eclipse.xsd.util.XSDSchemaLocationResolver;
+
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
-
 import org.geotools.filter.v1_0.OGCBBOXTypeBinding;
 import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.filter.v1_1.OGC;
@@ -25,7 +24,7 @@ import org.geotools.gml2.GML;
 import org.geotools.gml2.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.OptionalComponentParameter;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
@@ -127,7 +126,7 @@ public class WFSConfiguration extends Configuration {
 
             for (Iterator f = featureTypes.iterator(); f.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
-                SimpleFeatureType featureType = meta.getFeatureType();
+                FeatureType featureType = meta.getFeatureType();
 
                 featureTypeCache.put(featureType);
             }

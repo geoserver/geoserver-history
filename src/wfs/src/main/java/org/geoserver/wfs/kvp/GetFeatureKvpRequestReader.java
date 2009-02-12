@@ -4,25 +4,6 @@
  */
 package org.geoserver.wfs.kvp;
 
-import com.vividsolutions.jts.geom.Envelope;
-
-import net.opengis.wfs.GetFeatureType;
-import net.opengis.wfs.QueryType;
-import org.eclipse.emf.ecore.EObject;
-import org.geoserver.ows.Dispatcher;
-import org.geoserver.wfs.WFSException;
-
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.gml2.bindings.GML2EncodingUtils;
-import org.geotools.xml.EMFUtils;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.filter.identity.FeatureId;
-import org.opengis.filter.spatial.BBOX;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,6 +13,25 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
+
+import org.eclipse.emf.ecore.EObject;
+import org.geoserver.wfs.WFSException;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.gml2.bindings.GML2EncodingUtils;
+import org.geotools.xml.EMFUtils;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.identity.FeatureId;
+import org.opengis.filter.spatial.BBOX;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
@@ -227,7 +227,6 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
     BBOX bboxFilter(QName typeName, Envelope bbox) throws Exception {
         FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(typeName);
-        SimpleFeatureType featureType = featureTypeInfo.getFeatureType();
 
         //JD: should this be applied to all geometries?
         //String name = featureType.getDefaultGeometry().getLocalName();

@@ -5,9 +5,11 @@ import java.util.Iterator;
 
 import net.opengis.wfs.GetGmlObjectType;
 
-import org.geotools.data.DataStore;
+import org.geotools.data.DataAccess;
 import org.geotools.data.GmlObjectStore;
 import org.geotools.factory.Hints;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.GmlObjectId;
 import org.vfny.geoserver.global.Data;
@@ -61,7 +63,7 @@ public class GetGmlObject {
         //walk through datastores finding one that is gmlobject aware
         for ( Iterator d = catalog.getDataStores().iterator(); d.hasNext(); ) {
             DataStoreInfo dsInfo = (DataStoreInfo) d.next();
-            DataStore ds = dsInfo.getDataStore();
+            DataAccess<? extends FeatureType, ? extends Feature> ds = dsInfo.getDataStore();
             
             if ( ds instanceof GmlObjectStore ) {
                 try {

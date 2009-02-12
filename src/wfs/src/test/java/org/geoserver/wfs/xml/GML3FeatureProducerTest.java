@@ -19,8 +19,11 @@ import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.NameImpl;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.global.DataStoreInfo;
 import org.w3c.dom.Document;
 
@@ -52,9 +55,9 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
 
     public void testSingle() throws Exception {
         DataStoreInfo dataStore = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
-        FeatureSource<SimpleFeatureType, SimpleFeature> source;
-        source = dataStore.getDataStore().getFeatureSource(MockData.SEVEN.getLocalPart());
-        FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures();
+        FeatureSource<? extends FeatureType, ? extends Feature> source;
+        source = dataStore.getDataStore().getFeatureSource(new NameImpl(MockData.SEVEN.getLocalPart()));
+        FeatureCollection<? extends FeatureType, ? extends Feature> features = source.getFeatures();
 
         FeatureCollectionType fcType = WfsFactory.eINSTANCE
                 .createFeatureCollectionType();
@@ -80,11 +83,11 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
                 .createFeatureCollectionType();
         fcType.getFeature().add(
                 dataStore.getDataStore().getFeatureSource(
-                        MockData.SEVEN.getLocalPart())
+                        new NameImpl(MockData.SEVEN.getLocalPart()))
                         .getFeatures());
         fcType.getFeature().add(
                 dataStore.getDataStore().getFeatureSource(
-                        MockData.FIFTEEN.getLocalPart())
+                        new NameImpl(MockData.FIFTEEN.getLocalPart()))
                         .getFeatures());
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -109,14 +112,14 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
                 .createFeatureCollectionType();
         fcType.getFeature().add(
                 seven.getDataStore().getFeatureSource(
-                        MockData.SEVEN.getLocalPart())
+                        new NameImpl(MockData.SEVEN.getLocalPart()))
                         .getFeatures());
         fcType.getFeature().add(
                 polys.getDataStore().getFeatureSource(
-                        MockData.POLYGONS.getLocalPart())
+                        new NameImpl(MockData.POLYGONS.getLocalPart()))
                         .getFeatures());
         int npolys = polys.getDataStore().getFeatureSource(
-                MockData.POLYGONS.getLocalPart())
+                new NameImpl(MockData.POLYGONS.getLocalPart()))
                 .getFeatures().size();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();

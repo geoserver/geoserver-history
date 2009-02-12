@@ -4,21 +4,23 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.xml.BindingWalkerFactory;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.geotools.xml.SchemaIndex;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindings.GMLAbstractFeatureTypeBinding {
@@ -39,33 +41,36 @@ public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindi
                 instance.getNamespace());
 
         if (meta != null) {
-            SimpleFeatureType featureType = meta.getFeatureType();
+            FeatureType featureType = meta.getFeatureType();
 
             //go through each attribute, performing various hacks to make make sure things 
             // cocher
-            for (int i = 0; i < featureType.getAttributeCount(); i++) {
-                AttributeDescriptor attributeType = featureType.getDescriptor(i);
-                String name = attributeType.getLocalName();
-                Class type = attributeType.getType().getBinding();
+            for (PropertyDescriptor pd : featureType.getDescriptors()) {
+                if (pd instanceof AttributeDescriptor) {
+                    AttributeDescriptor attributeType = (AttributeDescriptor) pd;
+                    String name = attributeType.getLocalName();
+                    Class type = attributeType.getType().getBinding();
 
-                if ("boundedBy".equals(name)) {
-                    Node boundedByNode = node.getChild("boundedBy");
+                    if ("boundedBy".equals(name)) {
+                        Node boundedByNode = node.getChild("boundedBy");
 
-                    //hack 1: if boundedBy is in the parse tree has a bounding box and the attribute 
-                    // needs a polygon, convert
-                    if (boundedByNode.getValue() instanceof Envelope) {
-                        Envelope bounds = (Envelope) boundedByNode.getValue();
+                        //hack 1: if boundedBy is in the parse tree has a bounding box and the attribute 
+                        // needs a polygon, convert
+                        if (boundedByNode.getValue() instanceof Envelope) {
+                            Envelope bounds = (Envelope) boundedByNode.getValue();
 
-                        if (type.isAssignableFrom(Polygon.class)) {
-                            Polygon polygon = polygon(bounds);
-                            boundedByNode.setValue(polygon);
-                        } else if (type.isAssignableFrom(MultiPolygon.class)) {
-                            MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(new Polygon[] {
+                            if (type.isAssignableFrom(Polygon.class)) {
+                                Polygon polygon = polygon(bounds);
+                                boundedByNode.setValue(polygon);
+                            } else if (type.isAssignableFrom(MultiPolygon.class)) {
+                                MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(new Polygon[] {
                                         polygon(bounds)
-                                    });
-                            boundedByNode.setValue(multiPolygon);
+                                });
+                                boundedByNode.setValue(multiPolygon);
+                            }
                         }
                     }
+
                 }
             }
         }

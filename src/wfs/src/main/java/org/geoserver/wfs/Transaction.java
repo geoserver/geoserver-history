@@ -37,8 +37,8 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.xml.EMFUtils;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.FilterFactory;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.Data;
@@ -252,11 +252,11 @@ public class Transaction {
                 }
 
                 try {
-                    FeatureSource<SimpleFeatureType, SimpleFeature> source = meta.getFeatureSource();
+                    FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource();
 
                     if (source instanceof FeatureStore) {
-                        FeatureStore<SimpleFeatureType, SimpleFeature> store;
-                        store = (FeatureStore<SimpleFeatureType, SimpleFeature>) source;
+                        FeatureStore<? extends FeatureType, ? extends Feature> store;
+                        store = (FeatureStore<? extends FeatureType, ? extends Feature>) source;
                         store.setTransaction(transaction);
                         stores.put(elementName, source);
 

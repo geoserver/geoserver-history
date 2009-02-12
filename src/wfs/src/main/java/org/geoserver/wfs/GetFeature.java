@@ -38,9 +38,11 @@ import org.geotools.geometry.jts.LiteCoordinateSequenceFactory;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -165,7 +167,7 @@ public class GetFeature {
                     //TODO: a join is taking place
                 }
 
-                FeatureSource<SimpleFeatureType, SimpleFeature> source = meta.getFeatureSource();
+                FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource();
 
                 List atts = meta.getAttributes();
                 List attNames = meta.getAttributeNames();
@@ -238,7 +240,7 @@ public class GetFeature {
                     
                     //1. ensure any property name refers to a property that 
                     // actually exists
-                    final SimpleFeatureType featureType = source.getSchema();
+                    final FeatureType featureType = source.getSchema();
                     ExpressionVisitor visitor = new AbstractExpressionVisitor() {
                             public Object visit(PropertyName name, Object data) {
                                 // case of multiple geometries being returned
@@ -350,7 +352,7 @@ public class GetFeature {
                 
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
-                FeatureCollection<SimpleFeatureType, SimpleFeature> features = getFeatures(request, source, gtQuery);
+                FeatureCollection<? extends FeatureType, ? extends Feature> features = getFeatures(request, source, gtQuery);
                 
                 // optimization: WFS 1.0 does not require count, so if we don't need it to limit 
                 // the features, don't compute it, avoid the count query
@@ -359,12 +361,13 @@ public class GetFeature {
                 
                 // we may need to shave off geometries we did load only to make bounds
                 // computation happy
-                if(extraGeometries.size() > 0) {
+                // TODO: support non-SimpleFeature geometry shaving
+                if(features.getSchema() instanceof SimpleFeatureType && extraGeometries.size() > 0) {
                     List residualProperties = new ArrayList(properties);
                     residualProperties.removeAll(extraGeometries);
                     String[] residualNames = (String[]) residualProperties.toArray(new String[residualProperties.size()]);
-                    SimpleFeatureType targetType = DataUtilities.createSubType(features.getSchema(), residualNames);
-                    features = new FeatureBoundsFeatureCollection(features, targetType);
+                    SimpleFeatureType targetType = DataUtilities.createSubType((SimpleFeatureType) features.getSchema(), residualNames);
+                    features = new FeatureBoundsFeatureCollection((FeatureCollection<SimpleFeatureType, SimpleFeature>) features, targetType);
                 }
 
                 //JD: TODO reoptimize
@@ -440,8 +443,8 @@ public class GetFeature {
      * @return
      * @throws IOException
      */
-    protected FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(
-            GetFeatureType request, FeatureSource<SimpleFeatureType, SimpleFeature> source,
+    protected FeatureCollection<? extends FeatureType, ? extends Feature> getFeatures(
+            GetFeatureType request, FeatureSource<? extends FeatureType, ? extends Feature> source,
             org.geotools.data.Query gtQuery)
             throws IOException {
         return source.getFeatures(gtQuery);
@@ -466,7 +469,7 @@ public class GetFeature {
      *
      */
     public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures,
-        FeatureSource<SimpleFeatureType, SimpleFeature> source, GetFeatureType request) throws WFSException {
+        FeatureSource<? extends FeatureType, ? extends Feature> source, GetFeatureType request) throws WFSException {
         
         String wfsVersion = request.getVersion();
         

@@ -4,19 +4,6 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
-import net.opengis.wfs.DescribeFeatureTypeType;
-
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.platform.Operation;
-import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
-import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
-import org.geoserver.wfs.WFSException;
-import org.geotools.gml.producer.FeatureTypeTransformer;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,7 +16,23 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.transform.TransformerException;
+
+import net.opengis.wfs.DescribeFeatureTypeType;
+
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
+import org.geoserver.wfs.WFSException;
+import org.geotools.gml.producer.FeatureTypeTransformer;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 
 
 public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
@@ -261,11 +264,10 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
                     if ((schemaFile != null) && schemaFile.exists() && schemaFile.canRead()) {
                         generatedType = writeFile(schemaFile);
                     } else {
-                        SimpleFeatureType ft2 = ftInfo.getFeatureType();
-                        String gType2 = generateFromSchema(ft2);
-
-                        if ((gType2 != null) && (gType2 != "")) {
-                            generatedType = gType2;
+                        FeatureType ft = ftInfo.getFeatureType();
+                        String gType = generateFromSchema(ft);
+                        if ((gType != null) && (gType != "")) {
+                            generatedType = gType;
                         }
                     }
                 } catch (IOException e) {
@@ -302,7 +304,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      *  @task REVISIT: when this class changes to writing directly to out this
      *       can just take a writer and write directly to it.
      */
-    private String generateFromSchema(SimpleFeatureType schema)
+    private String generateFromSchema(FeatureType schema)
         throws IOException {
         try {
             StringWriter writer = new StringWriter();
