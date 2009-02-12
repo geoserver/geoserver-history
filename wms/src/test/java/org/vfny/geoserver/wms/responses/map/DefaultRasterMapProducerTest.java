@@ -24,6 +24,7 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.filter.IllegalFilterException;
+import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -190,7 +191,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
     private void addToMap(final WMSMapContext map, final QName typeName) throws IOException {
         final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeInfo(typeName);
-        map.addLayer(ftInfo.getFeatureSource(), ftInfo.getDefaultStyle());
+        map.addLayer(new FeatureSourceMapLayer(ftInfo.getFeatureSource(), ftInfo.getDefaultStyle()));
     }
 
     /**

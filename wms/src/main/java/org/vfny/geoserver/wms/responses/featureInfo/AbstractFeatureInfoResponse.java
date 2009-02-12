@@ -34,8 +34,10 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.CannotEvaluateException;
 import org.opengis.coverage.PointOutsideCoverageException;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.geometry.DirectPosition;
@@ -44,7 +46,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -252,7 +253,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     }
 
                     Query q = new DefaultQuery(finfo.getTypeName(), null, getFInfoFilter, request.getFeatureCount(), Query.ALL_NAMES, null);
-                    FeatureCollection<SimpleFeatureType, SimpleFeature> match = finfo.getFeatureSource().getFeatures(q);
+                    FeatureCollection<? extends FeatureType, ? extends Feature> match = finfo.getFeatureSource().getFeatures(q);
 
                     //this was crashing Gml2FeatureResponseDelegate due to not setting
                     //the featureresults, thus not being able of querying the SRS

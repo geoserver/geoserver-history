@@ -50,6 +50,7 @@ import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
@@ -63,7 +64,6 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
-import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -562,7 +562,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 		// fill byFeatureTypes with the split of its raw attributes requested
 		// separated by commas, and check for the validity of each att name
-		SimpleFeatureType schema;
+		FeatureType schema;
 		List atts;
 		String attName;
 
@@ -601,7 +601,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 						if (schema.getDescriptor(attName) == null) {
 							throw new WmsException("Attribute '" + attName
 									+ "' requested for layer "
-									+ schema.getTypeName() + " does not exists");
+									+ schema.getName().getLocalPart() + " does not exists");
 						}
 					} else {
 						if (LOGGER.isLoggable(Level.FINEST)) {
@@ -615,7 +615,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 				if (LOGGER.isLoggable(Level.FINEST)) {
 					LOGGER.finest(new StringBuffer("attributes requested for ")
-							.append(schema.getTypeName()).append(" checked: ")
+							.append(schema.getName().getLocalPart()).append(" checked: ")
 							.append(rawAtts).toString());
 				}
 			} catch (java.io.IOException e) {
@@ -816,7 +816,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @throws WmsException
 	 *             DOCUMENT ME!
 	 */
-	private void checkStyle(Style style, SimpleFeatureType fType) throws WmsException {
+	private void checkStyle(Style style, FeatureType fType) throws WmsException {
 		StyleAttributeExtractor sae = new StyleAttributeExtractor();
 		sae.visit(style);
 
@@ -1382,8 +1382,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 					boolean matches;
 
 					try {
-						final SimpleFeatureType currSchema = currLayer.getFeature().getFeatureType();
-                        matches = currSchema.getTypeName().equalsIgnoreCase(ftc_name) ||
+						final FeatureType currSchema = currLayer.getFeature().getFeatureType();
+						matches = currSchema.getName().getLocalPart().equalsIgnoreCase(ftc_name) ||
 								  FeatureTypes.isDecendedFrom(currSchema, null, ftc_name);
 					} catch (Exception e) {
 						matches = false; // bad news
@@ -1497,7 +1497,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 			style = layer.getDefaultStyle();
 		}
 
-		SimpleFeatureType type;
+		FeatureType type;
 
 		try {
 			type = layer.getFeatureType();

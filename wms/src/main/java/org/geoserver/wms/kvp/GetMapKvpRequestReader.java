@@ -51,6 +51,9 @@ import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -65,7 +68,6 @@ import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.servlets.GetMap;
 
 public class GetMapKvpRequestReader extends KvpRequestReader implements
 		HttpServletRequestAware {
@@ -724,9 +726,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 					boolean matches;
 
 					try {
-						final SimpleFeatureType featureType = currLayer.getFeature().getFeatureType();
+						final FeatureType featureType = currLayer.getFeature().getFeatureType();
                         matches = FeatureTypes.isDecendedFrom(featureType, null, ftc_name)  
-								|| featureType.getTypeName().equalsIgnoreCase(ftc_name);
+								|| featureType.getName().getLocalPart().equalsIgnoreCase(ftc_name);
 					} catch (Exception e) {
 						matches = false; // bad news
 					}
@@ -943,13 +945,15 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 		Set attributes = new HashSet();
 		if(layer.getType() == MapLayerInfo.TYPE_VECTOR || layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
             try {
-                final SimpleFeatureType type;
+                final FeatureType type;
                 if(layer.getType() == MapLayerInfo.TYPE_VECTOR)
                     type = layer.getFeature().getFeatureType();
                 else
                     type = layer.getRemoteFeatureSource().getSchema();
-                for(int i = 0; i < type.getAttributeCount(); i++) {
-                    attributes.add(type.getDescriptor(i).getLocalName());
+                for(PropertyDescriptor pd : type.getDescriptors()) {
+                    if (pd instanceof AttributeDescriptor) {
+                        attributes.add(pd.getName().getLocalPart());
+                    }
                 }
             } catch (IOException ioe) {
                 throw new RuntimeException(

@@ -136,13 +136,13 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
      */
     public void testEncodeWithPaging() throws Exception {
         MapLayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
-        SimpleFeatureType featureType = layer.getFeature().getFeatureType();
+        SimpleFeatureType featureType = (SimpleFeatureType) layer.getFeature().getFeatureType();
         mockData.addFeature(featureType, new Object[] { "name1", "POINT(1 1)" });
         mockData.addFeature(featureType, new Object[] { "name2", "POINT(2 2)" });
         mockData.addFeature(featureType, new Object[] { "name3", "POINT(3 3)" });
         mockData.addFeature(featureType, new Object[] { "name4", "POINT(4 4)" });
 
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs = layer.getFeature().getFeatureSource();
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeature().getFeatureSource();
         FeatureCollection<SimpleFeatureType, SimpleFeature> features = fs.getFeatures();
 
         Style style = mockData.getDefaultStyle().getStyle();
