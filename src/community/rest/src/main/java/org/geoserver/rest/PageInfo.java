@@ -24,6 +24,10 @@ public class PageInfo {
     public static final String KEY = "org.geoserver.pageDetails";
 
     /**
+     * the root uri
+     */
+    String rootURI;
+    /**
      * the base uri for the page.
      */
     String baseURI;
@@ -39,6 +43,13 @@ public class PageInfo {
     PageInfo() {
     }
 
+    public String getRootURI() {
+        return rootURI;
+    }
+    public void setRootURI(String rootURI) {
+        this.rootURI = rootURI;
+    }
+    
     public String getBaseURI() {
         return baseURI;
     }

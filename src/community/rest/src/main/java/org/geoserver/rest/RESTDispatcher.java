@@ -140,19 +140,21 @@ public class RESTDispatcher extends AbstractController {
                         Response response) {
                     super.init(request, response);
 
-                    //set the base url, and proxy it if a proxy set
+                    //set the page uri's, proxying if necessary
+                    String rootURI = request.getRootRef().toString();
                     String baseURI = null;
                     if ( request.getResourceRef().getBaseRef() != null ) {
                         baseURI = request.getResourceRef().getBaseRef().toString();
                     }
-                    else {
-                        baseURI = request.getResourceRef().toString();
-                    }
-                    
                     String pageURI = request.getResourceRef().toString();
+                    
                     if ( gs.getGlobal().getProxyBaseUrl() != null ) {
-                        baseURI = RequestUtils.proxifiedBaseURL(baseURI, gs.getGlobal().getProxyBaseUrl());
-                        pageURI = ResponseUtils.appendPath( baseURI, request.getResourceRef().getPath() );
+                        String host = 
+                            RequestUtils.proxifiedBaseURL(request.getHostRef().toString(), gs.getGlobal().getProxyBaseUrl());
+                        rootURI = ResponseUtils.appendPath( host, request.getRootRef().getPath() );
+                        baseURI = baseURI != null ?
+                                ResponseUtils.appendPath( host, request.getResourceRef().getBaseRef().getPath() ) : baseURI;
+                        pageURI = ResponseUtils.appendPath( host, request.getResourceRef().getPath() );
                     }
                     
                     //strip off the extension
@@ -167,6 +169,7 @@ public class RESTDispatcher extends AbstractController {
                     }
                     //create a page info object and put it into a request attribute
                     PageInfo pageInfo = new PageInfo();
+                    pageInfo.setRootURI( rootURI );
                     pageInfo.setBaseURI( baseURI );
                     pageInfo.setPageURI( pageURI );
                     pageInfo.setExtension( extension );
