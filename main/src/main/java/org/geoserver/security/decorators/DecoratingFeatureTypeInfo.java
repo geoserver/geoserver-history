@@ -21,7 +21,8 @@ import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.ProgressListener;
@@ -83,7 +84,7 @@ public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<Featur
         return delegate.getDescription();
     }
 
-    public SimpleFeatureType getFeatureType() throws IOException {
+    public FeatureType getFeatureType() throws IOException {
         return delegate.getFeatureType();
     }
 
@@ -118,6 +119,13 @@ public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<Featur
     public String getName() {
         return delegate.getName();
     }
+    
+    /**
+     * @see org.geoserver.catalog.ResourceInfo#getQualifiedName()
+     */
+    public Name getQualifiedName() {
+        return delegate.getQualifiedName();
+    }
 
     public NamespaceInfo getNamespace() {
         return delegate.getNamespace();
@@ -133,6 +141,13 @@ public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<Featur
 
     public String getNativeName() {
         return delegate.getNativeName();
+    }
+
+    /**
+     * @see org.geoserver.catalog.ResourceInfo#getQualifiedNativeName()
+     */
+    public Name getQualifiedNativeName() {
+        return delegate.getQualifiedNativeName();
     }
 
     public int getNumDecimals() {

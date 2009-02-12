@@ -12,7 +12,9 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
-import org.geotools.data.DataStore;
+import org.geotools.data.DataAccess;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.util.ProgressListener;
 
 /**
@@ -21,6 +23,7 @@ import org.opengis.util.ProgressListener;
  * 
  * @author Andrea Aime
  */
+@SuppressWarnings("serial")
 public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> implements
         DataStoreInfo {
 
@@ -36,7 +39,8 @@ public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> im
         return delegate.getConnectionParameters();
     }
 
-    public DataStore getDataStore(ProgressListener listener) throws IOException {
+    public DataAccess<? extends FeatureType, ? extends Feature> getDataStore(
+            ProgressListener listener) throws IOException {
         return delegate.getDataStore(listener);
     }
 

@@ -125,7 +125,7 @@ public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
             store = createNiceMock(CoverageStoreInfo.class);
         } else {
             store = createNiceMock(DataStoreInfo.class);
-            expect(((DataStoreInfo) store).getDataStore(null)).andReturn(dstore);
+            expect((DataStore)((DataStoreInfo) store).getDataStore(null)).andReturn(dstore);
         }
         expect(store.getWorkspace()).andReturn(ws).anyTimes();
         replay(store);

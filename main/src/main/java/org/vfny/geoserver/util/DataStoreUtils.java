@@ -24,8 +24,8 @@ import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.global.DataStoreInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
@@ -313,7 +313,7 @@ public abstract class DataStoreUtils {
     /**
      * @deprecated use {@link org.geoserver.feature.FeatureSourceUtils#
      */
-    public static Envelope getBoundingBoxEnvelope(FeatureSource<SimpleFeatureType, SimpleFeature> fs)
+    public static Envelope getBoundingBoxEnvelope(FeatureSource<? extends FeatureType, ? extends Feature> fs)
         throws IOException {
         return FeatureSourceUtils.getBoundingBoxEnvelope(fs);
     }

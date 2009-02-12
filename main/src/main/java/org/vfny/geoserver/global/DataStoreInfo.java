@@ -17,7 +17,9 @@ import java.util.NoSuchElementException;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geotools.data.DataStore;
+import org.geotools.data.DataAccess;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 
 
@@ -233,7 +235,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
      *         configuration
      * @throws NoSuchElementException if no DataStoreInfo is found
      */
-    public synchronized DataStore getDataStore()
+    public synchronized DataAccess<? extends FeatureType, ? extends Feature> getDataStore()
         throws IllegalStateException, NoSuchElementException {
         if (!isEnabled()) {
             throw new IllegalStateException(

@@ -10,7 +10,7 @@ import java.util.List;
 import org.geoserver.config.GeoServerInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.util.ProgressListener;
@@ -92,7 +92,7 @@ public interface FeatureTypeInfo extends ResourceInfo {
      * such as reprojection and name aliasing. 
      * </p>
      */
-    SimpleFeatureType getFeatureType() throws IOException;
+    FeatureType getFeatureType() throws IOException;
     
     /**
      * Returns the underlying feature source instance.
@@ -111,7 +111,7 @@ public interface FeatureTypeInfo extends ResourceInfo {
      * @throws IOException
      *                 Any I/O problems.
      */
-    FeatureSource getFeatureSource( ProgressListener listener, Hints hints )
+    FeatureSource<? extends FeatureType, ? extends Feature> getFeatureSource( ProgressListener listener, Hints hints )
             throws IOException;
 
     /**
