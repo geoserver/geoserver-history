@@ -189,6 +189,15 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-directory</artifactId>
     </dependency>
+    <!-- 
+      Mark as provided so that it won't get into the
+      .war, users get confused by this strange datastore 
+    -->
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-property</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
