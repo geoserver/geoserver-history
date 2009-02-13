@@ -214,6 +214,15 @@ public class LegacyFeatureTypeInfoReader {
         }
     }
     
+    public int maxFeatures() {
+        Element maxFeatures = ReaderUtils.getChildElement(featureType, "maxFeatures");
+        try{
+            return Integer.valueOf(maxFeatures.getTextContent());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+    
     public String wmsPath() {
         return ReaderUtils.getChildText(featureType, "wmspath");
     }
