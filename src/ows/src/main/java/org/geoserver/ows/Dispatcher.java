@@ -857,7 +857,7 @@ public class Dispatcher extends AbstractController {
         return xmlReaders;
     }
 
-    XmlRequestReader findXmlReader(String namespace, String element, /*String serviceId,*/ String ver) {
+    XmlRequestReader findXmlReader(String namespace, String element, String serviceId, String ver) {
         Collection xmlReaders = loadXmlReaders();
 
         //first just match on namespace, element
@@ -917,16 +917,34 @@ public class Dispatcher extends AbstractController {
         //if multiple, use version to filter match
         if (matches.size() > 1) {
             List vmatches = new ArrayList(matches);
-
-            //match up the version and the service
-            if (ver != null) {
-                Version version = new Version(ver);
-
-                //version specified, look for a match
+            
+            // match up the service
+            if(serviceId != null) {
                 for (Iterator itr = vmatches.iterator(); itr.hasNext();) {
                     XmlRequestReader r = (XmlRequestReader) itr.next();
 
-                    if (version.equals(r.getVersion())) {
+                    if (r.getServiceId() == null || serviceId.equalsIgnoreCase(r.getServiceId())) {
+                        continue;
+                    }
+
+                    itr.remove();
+                }
+                
+                // if no reader matching the service is found, we should
+                // not return a reader, as service is key to identify the reader
+                // we cannot just assume a meaningful default
+            }
+
+            // match up the version
+            if (ver != null) {
+                Version version = new Version(ver);
+
+                // version specified, look for a match (and allow version
+                // generic ones to live by)
+                for (Iterator itr = vmatches.iterator(); itr.hasNext();) {
+                    XmlRequestReader r = (XmlRequestReader) itr.next();
+
+                    if (r.getVersion() == null || version.equals(r.getVersion())) {
                         continue;
                     }
 
@@ -934,7 +952,7 @@ public class Dispatcher extends AbstractController {
                 }
 
                 if (vmatches.isEmpty()) {
-                    //no matching version found, drop out and next step 
+                    // no matching version found, drop out and next step 
                     // will sort to return highest version
                     vmatches = new ArrayList(matches);
                 }
@@ -991,7 +1009,8 @@ public class Dispatcher extends AbstractController {
                 Collections.sort(vmatches, comparator);
             }
 
-            xmlReader = (XmlRequestReader) vmatches.get(vmatches.size() - 1);
+            if(vmatches.size() > 0 )
+                xmlReader = (XmlRequestReader) vmatches.get(vmatches.size() - 1);
         } else {
             //only a single match, that was easy
             xmlReader = (XmlRequestReader) matches.get(0);
@@ -1087,21 +1106,25 @@ public class Dispatcher extends AbstractController {
         String namespace = (parser.getNamespace() != null) ? parser.getNamespace() : "";
         String element = parser.getName();
         String version = null;
+        String service = null;
 
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if ("version".equals(parser.getAttributeName(i))) {
                 version = parser.getAttributeValue(i);
-
-                break;
+            }
+            if ("service".equals(parser.getAttributeName(i))) {
+                service = parser.getAttributeValue(i);
             }
         }
+        
+        
 
         parser.setInput(null);
 
         //reset input stream
         input.reset();
 
-        XmlRequestReader xmlReader = findXmlReader(namespace, element, version);
+        XmlRequestReader xmlReader = findXmlReader(namespace, element, service, version);
         if (xmlReader == null ) {
             //no xml reader, just return object passed in
             return requestBean;
