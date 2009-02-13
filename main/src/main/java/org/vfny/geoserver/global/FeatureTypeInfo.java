@@ -521,6 +521,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         dto.setSRS(Integer.parseInt( getSRS() ));
         dto.setTitle(getTitle());
+        dto.setMaxFeatures(getMaxFeatures());
         
         dto.setCacheMaxAge(getCacheMaxAge());
         dto.setCachingEnabled(isCachingEnabled());
