@@ -49,12 +49,6 @@
       </modules>
     </profile>
     <profile>
-      <id>csvexcel</id>
-      <modules> 
-        <module>csvexcel</module>
-      </modules>
-    </profile>
-    <profile>
       <id>rest</id>
       <modules> 
         <module>rest</module>
