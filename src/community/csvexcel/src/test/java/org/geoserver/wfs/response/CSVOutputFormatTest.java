@@ -1,4 +1,4 @@
-package org.geoserver;
+package org.geoserver.wfs.response;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import net.opengis.wfs.WfsFactory;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.wfs.WFSTestSupport;
+import org.geoserver.wfs.response.CSVOutputFormat;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.memory.MemoryDataStore;

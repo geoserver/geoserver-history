@@ -1,4 +1,4 @@
-package org.geoserver;
+package org.geoserver.wfs.response;
 
 import java.io.IOException;
 import java.io.InputStream;
