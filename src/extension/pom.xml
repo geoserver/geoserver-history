@@ -72,6 +72,13 @@
         <module>ogr</module>
       </modules>
     </profile>
+    
+    <profile>
+      <id>excel</id>
+      <modules>
+        <module>excel</module>
+      </modules>
+    </profile>
 
     <!-- allExtensions profile, includes all modules -->
     <profile>
@@ -84,6 +91,7 @@
         <module>db2</module>
         <module>imagemap</module>
         <module>ogr</module>
+        <module>excel</module>
       </modules>
     </profile>
 
@@ -98,6 +106,7 @@
         <module>db2</module>
         <module>imagemap</module>
         <module>ogr</module>
+        <module>excel</module>
       </modules>
     </profile>
   </profiles>
