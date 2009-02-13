@@ -8,9 +8,9 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.geoserver.community</groupId>
-  <artifactId>csvexcel</artifactId>
+  <artifactId>excel</artifactId>
   <packaging>jar</packaging>
-  <name>CSV and Excel Output Formats</name>
+  <name>Excel Output Format</name>
 
   <repositories>
     <repository>
@@ -32,7 +32,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs</artifactId>
-      <version>1.7.3-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -43,21 +43,21 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs</artifactId>
-      <version>1.7.3-SNAPSHOT</version>
+      <version>${project.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.3-SNAPSHOT</version>
+      <version>${project.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.7.3-SNAPSHOT</version>
+      <version>${project.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -70,12 +70,6 @@
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>1.8</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

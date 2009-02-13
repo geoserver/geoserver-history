@@ -2,8 +2,5 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"> 
 
 <beans>
-  <bean id="CSVOutputFormat" class="org.geoserver.wfs.response.CSVOutputFormat">
-    <constructor-arg index="0" ref="wfs"/>
-  </bean>
   <bean id="ExcelOutputFormat" class="org.geoserver.wfs.response.ExcelOutputFormat"/>
 </beans>
