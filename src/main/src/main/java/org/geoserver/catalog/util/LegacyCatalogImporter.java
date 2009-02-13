@@ -427,6 +427,7 @@ public class LegacyCatalogImporter {
                 ftInfoReader.latLonBoundingBox(),
                 DefaultGeographicCRS.WGS84));
         featureType.setEnabled(true);
+        featureType.setMaxFeatures(ftInfoReader.maxFeatures());
         featureType.getMetadata().put( "dirName", ftInfoReader.parentDirectoryName() );
         featureType.getMetadata().put( "indexingEnabled", ftInfoReader.searchable() );
         featureType.getMetadata().put( "cachingEnabled", ftInfoReader.cachingEnabled() );
