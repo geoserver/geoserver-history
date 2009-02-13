@@ -421,11 +421,11 @@
       </dependencies>
     </profile>
     <profile>
-      <id>csvexcel</id>
+      <id>excel</id>
       <dependencies>
         <dependency>
-          <groupId>org.geoserver.community</groupId>
-          <artifactId>csvexcel</artifactId>
+          <groupId>org.geoserver.extension</groupId>
+          <artifactId>excel</artifactId>
           <version>1.7.3-SNAPSHOT</version>
         </dependency>
       </dependencies>
