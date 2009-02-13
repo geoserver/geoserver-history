@@ -169,7 +169,7 @@ public class MapPreviewAction extends GeoServerAction {
                 ReferencedEnvelope bbox = new ReferencedEnvelope(orig_bbox, latLonCrs);
     
                 if (!CRS.equalsIgnoreMetadata(layerCrs, latLonCrs)) {
-                    if(layer.getBoundingBox() == null) {
+                    if(layer.getBoundingBox() != null) {
                         // first check if we have a native bbox
                         bbox = layer.getBoundingBox();
                     } else {
