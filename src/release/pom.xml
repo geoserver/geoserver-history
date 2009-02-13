@@ -151,6 +151,11 @@
    <artifactId>ogr</artifactId>
    <version>1.7.3-SNAPSHOT</version>
   </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>excel</artifactId>
+   <version>1.7.3-SNAPSHOT</version>
+  </dependency>
  </dependencies>
  <build>
   <plugins>
