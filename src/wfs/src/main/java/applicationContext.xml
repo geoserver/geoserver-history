@@ -361,4 +361,7 @@
     <bean id="geojsonOutputFormat" class="org.geoserver.wfs.response.GeoJSONOutputFormat">
 		<constructor-arg ref="wfs"/>
 	</bean>
+    <bean id="CSVOutputFormat" class="org.geoserver.wfs.response.CSVOutputFormat">
+        <constructor-arg index="0" ref="wfs"/>
+    </bean>
 </beans>
