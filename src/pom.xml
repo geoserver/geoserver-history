@@ -63,6 +63,14 @@
    <name>refractions</name>
    <url>http://lists.refractions.net/m2/</url>
    <snapshots>
+    <enabled>false</enabled>
+   </snapshots>
+  </repository> 
+  <repository>
+   <id>osgeo</id>
+   <name>osgeo</name>
+   <url>http://download.osgeo.org/webdav/geotools</url>
+   <snapshots>
     <enabled>true</enabled>
    </snapshots>
   </repository> 
