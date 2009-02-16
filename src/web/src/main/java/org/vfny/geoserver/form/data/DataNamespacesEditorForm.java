@@ -12,6 +12,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.util.Requests;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
@@ -73,8 +74,8 @@ public class DataNamespacesEditorForm extends ActionForm {
             errors.add("URI", new ActionError("error.uri.required", prefix));
         } else {
             try {
-                URL url = new URL(URI);
-            } catch (MalformedURLException badURI) {
+                new java.net.URI(URI);
+            } catch (URISyntaxException badURI) {
                 errors.add("dataStoreID", new ActionError("error.uri.malformed", badURI));
             }
         }
