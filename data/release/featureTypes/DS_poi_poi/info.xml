@@ -16,7 +16,10 @@
     the default style this FeatureTypeInfoDTO can be represented by.
     at least must contain the "default" attribute
   -->
-  <styles default = "poi" />
+  <styles default = "poi" >
+    <style>burg</style>
+    <style>point</style>
+  </styles>
   <cacheinfo enabled = "true" maxage = "3600" />
   <maxFeatures>0</maxFeatures>
 </featureType>
