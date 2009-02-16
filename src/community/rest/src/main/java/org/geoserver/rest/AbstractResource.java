@@ -128,7 +128,7 @@ public abstract class AbstractResource extends Resource {
             }
         }
         
-        if ( df == null && ext == null && accepts.isEmpty()  ) {
+        if ( df == null && accepts.isEmpty()  ) {
             //could not find suitable format, if client specifically did not specify 
             // any accepted formats, just return the first
             df = getFormats().values().iterator().next();
