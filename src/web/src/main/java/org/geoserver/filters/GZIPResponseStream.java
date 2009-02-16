@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 
 
 public class GZIPResponseStream extends ServletOutputStream {
-    protected ByteArrayOutputStream baos = null;
     protected GZIPOutputStream gzipstream = null;
     protected boolean closed = false;
     protected HttpServletResponse response = null;
@@ -28,9 +27,10 @@ public class GZIPResponseStream extends ServletOutputStream {
         super();
         closed = false;
         this.response = response;
+        response.addHeader("Content-Encoding", "gzip");
         this.output = response.getOutputStream();
-        baos = new ByteArrayOutputStream();
-        gzipstream = new GZIPOutputStream(baos);
+        // create a 4kb buffered gzip output stream
+        gzipstream = new GZIPOutputStream(output, 4 * 1024);
     }
 
     public void close() throws IOException {
@@ -39,13 +39,6 @@ public class GZIPResponseStream extends ServletOutputStream {
         }
         gzipstream.finish();
 
-        byte[] bytes = baos.toByteArray();
-
-
-        response.addHeader("Content-Length", 
-                Integer.toString(bytes.length)); 
-        response.addHeader("Content-Encoding", "gzip");
-        output.write(bytes);
         output.flush();
         output.close();
         closed = true;
@@ -66,6 +59,10 @@ public class GZIPResponseStream extends ServletOutputStream {
     }
 
     public void write(byte b[]) throws IOException {
+        if (closed) {
+            throw new IOException("Cannot write to a closed output stream");
+        }
+        
         write(b, 0, b.length);
     }
 
