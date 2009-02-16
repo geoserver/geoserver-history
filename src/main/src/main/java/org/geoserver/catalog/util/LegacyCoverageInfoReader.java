@@ -101,6 +101,20 @@ public class LegacyCoverageInfoReader {
         return ReaderUtils.getAttribute( styles, "default", true );
     }
     
+    public List<String> styles() throws Exception {
+        Element styleRoot = ReaderUtils.getChildElement(coverage, "styles" );
+        if(styleRoot != null) {
+            List<String> styleNames = new ArrayList<String>();
+            Element[] styles = ReaderUtils.getChildElements(styleRoot, "style");
+            for (Element style : styles) {
+                styleNames.add(style.getTextContent().trim());
+            }
+            return styleNames;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
     public Map<String,Object> envelope() throws Exception {
         Element envelopeElement = ReaderUtils.getChildElement(coverage, "envelope");
         HashMap<String,Object> e = new HashMap<String, Object>();

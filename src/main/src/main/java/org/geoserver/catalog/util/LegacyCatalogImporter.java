@@ -178,7 +178,15 @@ public class LegacyCatalogImporter {
                     StyleInfo style = catalog.getStyleByName(defaultStyleName);
                     if ( style != null ) {
                         layer.setDefaultStyle(style);
-                        layer.getStyles().add(style);    
+                    }
+                }
+                List<String> styles = ftInfoReader.styles();
+                if(styles != null) {
+                    for (String styleName : styles) {
+                        StyleInfo style = catalog.getStyleByName(styleName);
+                        if ( style != null ) {
+                            layer.getStyles().add(style);
+                        }
                     }
                 }
                 
@@ -243,7 +251,15 @@ public class LegacyCatalogImporter {
                     StyleInfo style = catalog.getStyleByName(defaultStyleName);
                     if ( style != null ) {
                         layer.setDefaultStyle(style);
-                        layer.getStyles().add(style);    
+                    }
+                }
+                List<String> styles = cInfoReader.styles();
+                if(styles != null) {
+                    for (String styleName : styles) {
+                        StyleInfo style = catalog.getStyleByName(styleName);
+                        if ( style != null ) {
+                            layer.getStyles().add(style);
+                        }
                     }
                 }
                

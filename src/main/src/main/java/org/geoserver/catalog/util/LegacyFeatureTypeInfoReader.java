@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import java.util.StringTokenizer;
 
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -135,6 +138,20 @@ public class LegacyFeatureTypeInfoReader {
     public String defaultStyle() throws Exception {
     	Element styles = ReaderUtils.getChildElement(featureType, "styles" );
     	return ReaderUtils.getAttribute( styles, "default", false );
+    }
+    
+    public List<String> styles() throws Exception {
+        Element styleRoot = ReaderUtils.getChildElement(featureType, "styles" );
+        if(styleRoot != null) {
+            List<String> styleNames = new ArrayList<String>();
+            Element[] styles = ReaderUtils.getChildElements(styleRoot, "style");
+            for (Element style : styles) {
+                styleNames.add(style.getTextContent().trim());
+            }
+            return styleNames;
+        } else {
+            return Collections.emptyList();
+        }
     }
     
     public Map<String,Object> legendURL() throws Exception {
