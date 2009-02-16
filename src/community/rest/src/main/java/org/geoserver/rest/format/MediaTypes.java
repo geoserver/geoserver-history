@@ -7,6 +7,7 @@ package org.geoserver.rest.format;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.restlet.data.MediaType;
@@ -58,6 +59,23 @@ public class MediaTypes {
      */
     public static MediaType getMediaTypeForExtension( String ext ) {
         return instance.extensions.get( ext );
+    }
+    
+    /**
+     * Returns the media type mapped to an extension, or null if no such mapping exists.
+     * 
+     * @param mediaType the media type.
+     * 
+     * @return THe extension, or null.
+     * @see {@link #registerExtension(String, MediaType)}
+     */
+    public static String getExtensionForMediaType( MediaType mediaType ) {
+        for ( Map.Entry<String, MediaType> e : instance.extensions.entrySet() ) {
+            if ( e.getValue().equals( mediaType ) ) {
+                return e.getKey();
+            }
+        }
+        return null;
     }
     
     /**
