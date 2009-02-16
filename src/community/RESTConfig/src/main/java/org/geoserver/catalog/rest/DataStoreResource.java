@@ -7,6 +7,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.PageInfo;
 import org.geoserver.rest.RestletException;
@@ -116,17 +117,20 @@ public class DataStoreResource extends AbstractCatalogResource {
                 protected void postEncodeDataStore(DataStoreInfo ds,
                         HierarchicalStreamWriter writer,
                         MarshallingContext context) {
-                    
-                    PageInfo pg = getPageInfo();
-                    
-                    //add a link to the datastores
+                    //add a link to the feature types
                     writer.startNode( "featureTypes");
-                    encodeAlternateAtomLink("featuretypes", writer);
+                    encodeCollectionLink("featuretypes", writer);
                     writer.endNode();
+                }
+                @Override
+                protected void postEncodeReference(Object obj, String ref,
+                        HierarchicalStreamWriter writer, MarshallingContext context) {
+                    if ( obj instanceof WorkspaceInfo ) {
+                        encodeLink("/workspaces/" + ref, writer );
+                    }
                 }
             }
         );
-        
     }
     
     static class DataStoreHTMLFormat extends CatalogFreemarkerHTMLFormat {

@@ -45,11 +45,11 @@ public class WorkspaceResource extends AbstractCatalogResource {
                 
                 //add a link to the stores
                 writer.startNode( "dataStores");
-                encodeAlternateAtomLink("datastores", writer);
+                encodeCollectionLink("datastores", writer);
                 writer.endNode();
                 
                 writer.startNode( "coverageStores");
-                encodeAlternateAtomLink("coveragestores", writer);
+                encodeCollectionLink("coveragestores", writer);
                 writer.endNode();
             }
         });

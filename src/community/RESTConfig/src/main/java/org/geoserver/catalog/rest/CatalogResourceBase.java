@@ -10,6 +10,7 @@ import org.geoserver.rest.PageInfo;
 import org.geoserver.rest.ReflectiveResource;
 import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.MediaTypes;
+import org.geoserver.rest.format.ReflectiveXMLFormat;
 import org.geotools.util.logging.Logging;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
@@ -23,6 +24,7 @@ import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.AbstractXmlWriter;
 
 public abstract class CatalogResourceBase extends ReflectiveResource {
 
@@ -85,8 +87,43 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
         writer.startNode( "atom:link");
         writer.addAttribute("xmlns:atom", "http://www.w3.org/2005/Atom");
         writer.addAttribute( "rel", "alternate" );
+        writer.addAttribute( "href", href(link) );
         
-        PageInfo pg = getPageInfo(); 
+        DataFormat format = getFormatGet();
+        if ( format != null ) {
+            writer.addAttribute( "type", format.getMediaType().toString() );
+        }
+        
+        writer.endNode();
+    }
+    
+    protected void encodeLink( String link, HierarchicalStreamWriter writer ) {
+        if ( getFormatGet() instanceof ReflectiveXMLFormat  ) {
+            //encode as an atom link
+            encodeAlternateAtomLink(link, writer);
+        }
+        else {
+            //encode as a child element
+            writer.startNode( "href" );
+            writer.setValue( href( link ) );
+            writer.endNode();
+        }
+    }
+    
+    protected void encodeCollectionLink( String link, HierarchicalStreamWriter writer ) {
+        if ( getFormatGet() instanceof ReflectiveXMLFormat ) {
+            //encode as atom link
+            encodeAlternateAtomLink(link, writer);
+        }
+        else {
+            //encode as a value
+            writer.setValue( href( link ) );
+        }
+    }
+    
+    String href( String link ) {
+        PageInfo pg = getPageInfo();
+        
         String href = null;
         if ( link.startsWith( "/") ) {
             //absolute, encode from "root"
@@ -97,18 +134,18 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
             href = ResponseUtils.appendPath( pg.getPageURI(), link );
         }
 
-        if ( pg.getExtension() != null ) {
-            href += "."+pg.getExtension();
-            
-            MediaType type = MediaTypes.getMediaTypeForExtension( pg.getExtension() );
-            if ( type != null ) {
-                writer.addAttribute( "type", type.toString() );
-            }
+        //try to figure out extension
+        String ext = null;
+        DataFormat format = getFormatGet();
+        if ( format != null ) {
+            ext = MediaTypes.getExtensionForMediaType( format.getMediaType() );
         }
         
-        writer.addAttribute( "href", href );
-        writer.endNode();
+        if ( ext == null ) {
+            ext = pg.getExtension();
+        }
+        
+        href += ext != null ? "."+ext : "";
+        return href;
     }
-    
-    
 }

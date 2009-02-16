@@ -79,7 +79,7 @@ public abstract class AbstractCatalogListResource extends CatalogResourceBase {
                     writer.setValue(ref);
                     writer.endNode();
                     
-                    encodeAlternateAtomLink(ref, writer);
+                    encodeLink(ref, writer);
                 }
 
                 public Object unmarshal(HierarchicalStreamReader reader,

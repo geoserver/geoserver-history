@@ -73,7 +73,7 @@ public class LayerResource extends AbstractCatalogResource {
             protected void postEncodeReference(Object obj, String ref,
                     HierarchicalStreamWriter writer, MarshallingContext context) {
                 if ( obj instanceof StyleInfo ) {
-                    encodeAlternateAtomLink( "/styles/" + ref, writer);    
+                    encodeLink( "/styles/" + ref, writer);    
                 }
                 if ( obj instanceof ResourceInfo ) {
                     ResourceInfo r = (ResourceInfo) obj;
@@ -92,7 +92,7 @@ public class LayerResource extends AbstractCatalogResource {
                     }
                     
                     link.append( r.getName() );
-                    encodeAlternateAtomLink(link.toString(), writer);
+                    encodeLink(link.toString(), writer);
                 }
             }
         });

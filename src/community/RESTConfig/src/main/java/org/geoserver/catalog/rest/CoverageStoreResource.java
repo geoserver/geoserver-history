@@ -7,6 +7,9 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.restlet.Context;
@@ -14,6 +17,9 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.Resource;
+
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 import freemarker.ext.beans.CollectionModel;
 import freemarker.template.Configuration;
@@ -98,6 +104,31 @@ public class CoverageStoreResource extends AbstractCatalogResource {
         saveCatalog();
         
         LOGGER.info( "DELETE coverage store " + workspace + "," + coveragestore );
+    }
+
+    @Override
+    protected void configurePersister(XStreamPersister persister) {
+        persister.setCallback( 
+            new XStreamPersister.Callback() {
+                @Override
+                protected void postEncodeDataStore(DataStoreInfo ds,
+                        HierarchicalStreamWriter writer,
+                        MarshallingContext context) {
+                    //add a link to the coverages
+                    writer.startNode( "coverages");
+                    encodeCollectionLink("coverages", writer);
+                    writer.endNode();
+                }
+                
+                @Override
+                protected void postEncodeReference(Object obj, String ref,
+                        HierarchicalStreamWriter writer, MarshallingContext context) {
+                    if ( obj instanceof WorkspaceInfo ) {
+                        encodeLink( "/worksapces/" + ref, writer );
+                    }
+                }
+            }
+        );
     }
     
     static class CoverageStoreHTMLFormat extends CatalogFreemarkerHTMLFormat {
