@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import org.geotools.map.MapLayer;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.ProjectedCRS;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -108,6 +110,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 			HashMap map = new HashMap();
 			map.put("context", mapContext);
 			map.put("pureCoverage", hasOnlyCoverages(mapContext));
+			map.put("styles", styleNames(mapContext));
 			map.put("request", mapContext.getRequest());
 			map.put("maxResolution", new Double(getMaxResolution(mapContext
 					.getAreaOfInterest())));
@@ -151,6 +154,20 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
         }
         return true;
     }
+	
+	private List<String> styleNames(WMSMapContext mapContext) {
+	    if(mapContext.getLayerCount() != 1 || mapContext.getRequest() == null)
+	        return Collections.emptyList();
+	    
+	    MapLayerInfo info = mapContext.getRequest().getLayers()[0];
+	    if(info.getType() == MapLayerInfo.TYPE_VECTOR) {
+	        return info.getFeature().getStyleNames();
+	    } else if(info.getType() == MapLayerInfo.TYPE_RASTER) {
+	        return info.getCoverage().getStyleNames();
+	    } else {
+	        return Collections.emptyList();
+	    }
+	}
 
 
 
