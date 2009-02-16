@@ -216,7 +216,7 @@ public class GetMapResponse implements Response {
             // finally block)
 
             // track the external caching strategy for any map layers
-            boolean cachingPossible = request.getHttpServletRequest().getMethod().equals("GET");
+            boolean cachingPossible = "GET".equals(request.getHttpServletRequest().getMethod());
             final String featureVersion = request.getFeatureVersion();
             int maxAge = Integer.MAX_VALUE;
             for (int i = 0; i < layers.length; i++) {
