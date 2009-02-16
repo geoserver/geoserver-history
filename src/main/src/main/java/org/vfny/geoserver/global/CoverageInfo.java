@@ -612,6 +612,19 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         //
         //return realStyles;
     }
+    
+    /**
+     * Returns a full list of the alternate style names
+     * @return
+     */
+    public List<String> getStyleNames() {
+        final List<String> result = new ArrayList<String>();
+        
+        for ( StyleInfo si : layer.getStyles() ) {
+           result.add( si.getName() );
+        }
+        return result;
+    }
 
     /**
      * @return the user defined CRS

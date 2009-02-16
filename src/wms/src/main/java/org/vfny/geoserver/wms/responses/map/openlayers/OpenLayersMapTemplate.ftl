@@ -269,6 +269,20 @@
                 */
             }
             
+            // sets the chosen style
+            function setStyle(style){
+                // we may be switching style on setup
+                if(tiled == null)
+                  return;
+                  
+                tiled.mergeNewParams({
+                    styles: style
+                });
+                untiled.mergeNewParams({
+                    styles: style
+                });
+            }
+            
             function setAntialiasMode(mode){
                 tiled.mergeNewParams({
                     format_options: 'antialias:' + mode
@@ -407,6 +421,15 @@
                         <option value="image/png8">PNG 8bit</option>
                         <option value="image/gif">GIF</option>
                         <option id="jpeg" value="image/jpeg">JPEG</option>
+                    </select>
+                </li>
+                <li>
+                    <a>Styles:</a>
+                    <select id="imageFormatSelector" onchange="setStyle(value)">
+                        <option value="">Default</option>
+                        <#list styles as style>          
+                          <option value="${style}">${style}</option>  
+                        </#list>     
                     </select>
                 </li>
                 <!-- Commented out for the moment, some code needs to be extended in 

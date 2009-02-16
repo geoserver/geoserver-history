@@ -650,6 +650,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         return realStyles;
     }
+    
+    /**
+     * Returns a full list of the alternate style names
+     * @return
+     */
+    public List<String> getStyleNames() {
+        final List<String> result = new ArrayList<String>();
+        
+        for ( StyleInfo si : layer.getStyles() ) {
+           result.add( si.getName() );
+        }
+        return result;
+    }
 
     /**
      * Indicates if this FeatureTypeInfo is enabled.  For now just gets whether
