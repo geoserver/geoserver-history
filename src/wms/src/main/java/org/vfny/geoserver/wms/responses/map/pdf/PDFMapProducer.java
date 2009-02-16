@@ -158,7 +158,9 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 					.put("optimizedDataLoadingEnabled", new Boolean(true));
 			rendererParams.put("renderingBuffer", new Integer(mapContext
 					.getBuffer()));
-			if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
+			// we need the renderer to draw everything on the batik provided graphics object
+	        rendererParams.put(StreamingRenderer.OPTIMIZE_FTS_RENDERING_KEY, Boolean.FALSE);
+	        if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
 	            rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
 	        }
 			renderer.setRendererHints(rendererParams);

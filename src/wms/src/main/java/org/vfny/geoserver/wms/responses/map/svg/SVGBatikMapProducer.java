@@ -71,7 +71,9 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 		// optimized data loading was not here, but yet it seems sensible to
 		// have it...
 		Map rendererParams = new HashMap();
-		rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
+		rendererParams.put("optimizedDataLoadingEnabled", Boolean.TRUE);
+		// we need the renderer to draw everything on the batik provided graphics object
+		rendererParams.put(StreamingRenderer.OPTIMIZE_FTS_RENDERING_KEY, Boolean.FALSE);
 		rendererParams.put("renderingBuffer", new Integer(mapContext
 				.getBuffer()));
 		renderer.setRendererHints(rendererParams);
