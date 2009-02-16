@@ -161,6 +161,8 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 					.put("optimizedDataLoadingEnabled", new Boolean(true));
 			rendererParams.put("renderingBuffer", new Integer(mapContext
 					.getBuffer()));
+			// we need the renderer to draw everything on the batik provided graphics object
+	        rendererParams.put(StreamingRenderer.OPTIMIZE_FTS_RENDERING_KEY, Boolean.FALSE);
 			if(DefaultWebMapService.isNgLabellerEnabled()) {
 	            LabelCacheImpl labelCache = new LabelCacheImpl();
 	            labelCache.setOutlineRenderingEnabled(true);

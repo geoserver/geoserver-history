@@ -23,6 +23,12 @@ public class SVGTest extends WMSTestSupport {
         return new OneTimeTestSetup(new SVGTest());
     }
     
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.addStyle("multifts", getClass().getResource("./polyMultiFts.sld"));
+    }
+    
     public void testBasicSvgGenerator() throws Exception {
         getWMS().setSvgRenderer(WMSConfig.SVG_SIMPLE);
             Document doc = getAsDOM(
@@ -38,11 +44,24 @@ public class SVGTest extends WMSTestSupport {
             assertEquals( 1, doc.getElementsByTagName("g").getLength());
     }
     
+    public void testBasicSvgGeneratorMultipleFts() throws Exception {
+        getWMS().setSvgRenderer(WMSConfig.SVG_SIMPLE);
+            Document doc = getAsDOM(
+                "wms?request=getmap&service=wms&version=1.1.1" + 
+                "&format=" + SvgMapProducerProxy.MIME_TYPE + 
+                "&layers=" + getLayerId(MockData.BASIC_POLYGONS) + 
+                "&styles=multifts" + 
+                "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
+                "&featureid=BasicPolygons.1107531493643"
+            );
+            
+            assertEquals( 1, doc.getElementsByTagName("svg").getLength());
+            assertEquals( 1, doc.getElementsByTagName("g").getLength());
+    }
+    
     public void testBatikSvgGenerator() throws Exception {
-        
         //batik includes DTD reference which forces us to be online, skip test
         // in offline case
-        
         try {
             new URL( "http://www.w3.org").openConnection().connect();
         } catch (Exception e) {
@@ -53,8 +72,31 @@ public class SVGTest extends WMSTestSupport {
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
             "&format=" + SvgMapProducerProxy.MIME_TYPE + 
-            "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() + 
+            "&layers=" + getLayerId(MockData.BASIC_POLYGONS) + 
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
+            "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
+            "&featureid=BasicPolygons.1107531493643"
+        );
+        
+        assertEquals( 1, doc.getElementsByTagName("svg").getLength());
+        assertTrue(doc.getElementsByTagName("g").getLength() > 1);
+    }
+    
+    public void testBatikMultipleFts() throws Exception {
+        //batik includes DTD reference which forces us to be online, skip test
+        // in offline case
+        try {
+            new URL( "http://www.w3.org").openConnection().connect();
+        } catch (Exception e) {
+            return;
+        }
+        
+        getWMS().setSvgRenderer(WMSConfig.SVG_BATIK);
+        Document doc = getAsDOM(
+            "wms?request=getmap&service=wms&version=1.1.1" + 
+            "&format=" + SvgMapProducerProxy.MIME_TYPE + 
+            "&layers=" + getLayerId(MockData.BASIC_POLYGONS) + 
+            "&styles=multifts" + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
             "&featureid=BasicPolygons.1107531493643"
         );
