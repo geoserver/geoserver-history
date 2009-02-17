@@ -519,7 +519,7 @@ text.Welcome.mapbuilder=Демо Mapbuilder
 text.Welcome.mapbuilder.detail= <a href='http://mapbuilder.sourceforge.net/'>Mapbuilder</a> - клиент WFS-T на java-script.  Вы можете использовать Mapbuilder для редактирования данных в этой установке Geoserver.
 
 # NEW features
-text.visitDemoPage=Посетите <b><a href="demo.do">демонстрационную</a></b> страницу, где расположены примеры применения GeoServer. Она включает интегрированный <b><a href="../../../mapPreview.do"/>клиент OpenLayers</a></b>.
+text.visitDemoPage=Посетите <b><a href="demo.do">демонстрационную</a></b> страницу, где расположены примеры применения GeoServer. Она включает интегрированный <b><a href="mapPreview.do"/>клиент OpenLayers</a></b>.
 text.newFeatureLogo=<b><font color='red'>Новое!</font></b>
 text.newFeature1=Слои WMS в новом интерфейсе MapBuilder.
 text.newFeature2=Демо WMS и WFS можно увидеть на странице демонстраций.

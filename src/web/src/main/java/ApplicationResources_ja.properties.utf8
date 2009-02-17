@@ -431,7 +431,7 @@ text.welcome.mapbuilder=Mapbuilderデモ
 text.welcome.mapbuilder.detail= <a href='http://mapbuilder.sourceforge.net/'>Mapbuilder</a> �?�java-script�?�よるWFS-Tクライアント�?��?�。�?��?�Geoserver�?�インストール�?��?��?�るデータを編集�?�る�?��?��?Mapbuilder�?�利用�?��??�?��?�。
 
 # NEW features
-text.visitDemoPage=Visit the <b><a href="../../../demo.do">demo</a></b> page for examples of GeoServer in action. This includes an integrated <b><a href="../../../mapPreview.do"/>Mapbuilder client</a></b>.
+text.visitDemoPage=Visit the <b><a href="demo.do">demo</a></b> page for examples of GeoServer in action. This includes an integrated <b><a href="mapPreview.do"/>OpenLayers client</a></b>.
 text.newFeatureLogo=<b><font color='red'>NEW!</font></b>
 text.newFeature1=新�?��?�MapBuilder GUI�?�WMSレイヤーを�?�らん�??�?��?��?�。
 text.newFeature2=デモページ�?��?��?�ら�?��?�WMS�?�WFS�?�デモを確�?�?��?��??�?��?��?�。
