@@ -81,8 +81,6 @@
 							complex features is written and integrated into WFS.
 						-->
 						<exclude>**/SampleDataAccessGetFeatureTest.java</exclude>
-						<!-- Will not work until GSIP 31 patches applied -->
-						<exclude>**/SampleDataAccessGetFeatureTextListTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
