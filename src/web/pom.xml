@@ -47,6 +47,11 @@
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
+      <artifactId>rest</artifactId>
+      <version>1.7.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
       <version>1.7.3-SNAPSHOT</version>
     </dependency>
@@ -435,16 +440,6 @@
         <dependency>
           <groupId>org.geoserver.extension</groupId>
           <artifactId>excel</artifactId>
-          <version>1.7.3-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>rest</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.geoserver</groupId>
-          <artifactId>rest</artifactId>
           <version>1.7.3-SNAPSHOT</version>
         </dependency>
       </dependencies>

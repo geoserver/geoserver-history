@@ -1160,6 +1160,7 @@
   <module>web</module>
   <module>ows</module>
   <module>gwc</module>
+  <module>rest</module>
   <module>community</module>
   <module>extension</module>
  </modules>
