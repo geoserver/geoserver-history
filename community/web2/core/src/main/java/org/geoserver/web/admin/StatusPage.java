@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.web.util.MapModel;
+import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.LockingManager;
 
@@ -158,11 +159,13 @@ public class StatusPage extends ServerAdminPage {
             }
 
             try {
-                DataStore store = meta.getDataStore(null);
-                LockingManager lockingManager = store.getLockingManager();
-                if (lockingManager != null) {
-                    // we can't actually *count* locks right now?
-                    // count += lockingManager.getLockSet().size();
+                DataAccess store = meta.getDataStore(null);
+                if(store instanceof DataStore) {
+                    LockingManager lockingManager = ((DataStore) store).getLockingManager();
+                    if (lockingManager != null){
+                        // we can't actually *count* locks right now?
+                        // count += lockingManager.getLockSet().size();
+                    }
                 }
             } catch (IllegalStateException notAvailable) {
                 continue;
@@ -186,7 +189,7 @@ public class StatusPage extends ServerAdminPage {
             }
 
             try {
-                DataStore dataStore = meta.getDataStore(null);
+                meta.getDataStore(null);
             } catch (Throwable notAvailable) {
                 // TODO: Logging.
                 continue;

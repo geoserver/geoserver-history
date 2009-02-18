@@ -38,7 +38,7 @@ public class UnconfiguredResourcesNode extends PlaceholderNode {
         int unconfiguredLayers = -1;
         if(DataStoreInfo.class.isAssignableFrom(storeType)) {
             try {
-                final DataStore ds = ((DataStoreInfo) getModel()).getDataStore(null);
+                final DataStore ds = (DataStore) ((DataStoreInfo) getModel()).getDataStore(null);
                 Set<String> typeNames = new HashSet<String>(Arrays.asList(ds.getTypeNames()));
                 for (FeatureTypeInfo ft : getCatalog().getFeatureTypesByStore(
                         (DataStoreInfo) getModel())) {

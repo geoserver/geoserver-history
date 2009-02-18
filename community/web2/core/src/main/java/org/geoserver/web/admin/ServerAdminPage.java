@@ -4,39 +4,17 @@
  */
 package org.geoserver.web.admin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.media.jai.JAI;
-
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
-import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.ListChoice;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.config.ContactInfo;
-import org.geoserver.config.GeoServer;
-import org.geoserver.config.GeoServerInfo;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.LockingManager;
-
-import com.sun.media.jai.util.SunTileCache;
 /** 
  * 
  * @author Arne Kepp, The Open Planning Project
@@ -104,11 +82,13 @@ public abstract class ServerAdminPage extends GeoServerSecuredPage {
             }
 
             try {
-                DataStore store = meta.getDataStore(null);
-                LockingManager lockingManager = store.getLockingManager();
-                if (lockingManager != null){
-                    // we can't actually *count* locks right now?
-                    // count += lockingManager.getLockSet().size();
+                DataAccess store = meta.getDataStore(null);
+                if(store instanceof DataStore) {
+                    LockingManager lockingManager = ((DataStore) store).getLockingManager();
+                    if (lockingManager != null){
+                        // we can't actually *count* locks right now?
+                        // count += lockingManager.getLockSet().size();
+                    }
                 }
             } catch (IllegalStateException notAvailable) {
                 continue; 
@@ -132,7 +112,7 @@ public abstract class ServerAdminPage extends GeoServerSecuredPage {
             }
 
             try {
-                DataStore dataStore = meta.getDataStore(null);
+                meta.getDataStore(null);
             } catch (Throwable notAvailable) {
                 //TODO: Logging.
                 continue; 

@@ -16,6 +16,7 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geotools.data.DataStore;
 
 @SuppressWarnings("serial")
 class WorkspaceNode extends CatalogNode {
@@ -36,7 +37,7 @@ class WorkspaceNode extends CatalogNode {
                 DataStoreNode dsn = new DataStoreNode(store.getName(), this);
                 DataStoreInfo ds = ((DataStoreInfo) store);
                 try {
-                    if (ds.getDataStore(null).getTypeNames().length == 1
+                    if (((DataStore) ds.getDataStore(null)).getTypeNames().length == 1
                             && getCatalog().getFeatureTypesByStore(ds).size() == 1)
                         childNodes.add(new ResourceNode(dsn.name, getCatalog()
                                 .getFeatureTypesByStore(ds).get(0).getName(),
