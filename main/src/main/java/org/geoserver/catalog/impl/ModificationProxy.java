@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -216,8 +217,23 @@ public class ModificationProxy implements InvocationHandler, Serializable {
     public static <T> T create( T proxyObject, Class<T> clazz ) {
         InvocationHandler h = new ModificationProxy( proxyObject );
         
-        Class proxyClass = 
-            Proxy.getProxyClass( clazz.getClassLoader(), proxyObject.getClass().getInterfaces() );
+        //proxy all interfaces implemented by the source object
+        List<Class> proxyInterfaces = Arrays.asList( proxyObject.getClass().getInterfaces() );
+        
+        //ensure that the specified class is included
+        boolean add = true;
+        for ( Class interfce : proxyObject.getClass().getInterfaces() ) {
+            if ( clazz.isAssignableFrom( interfce) ) {
+                add = false;
+                break;
+            }
+        }
+        if( add ) {
+            proxyInterfaces.add( clazz );
+        }
+        
+        Class proxyClass = Proxy.getProxyClass( clazz.getClassLoader(), 
+            (Class[]) proxyInterfaces.toArray(new Class[proxyInterfaces.size()]) );
         
         T proxy;
         try {
