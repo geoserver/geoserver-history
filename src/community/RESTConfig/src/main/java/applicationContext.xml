@@ -176,7 +176,10 @@
           <key><value>/workspaces/{workspace}/featuretypes.{format}</value></key>
           <value>featureTypeFinder</value>
         </entry>
-        
+        <entry>
+          <key><value>/workspaces/{workspace}/featuretypes</value></key>
+          <value>featureTypeFinder</value>
+        </entry>
          <entry>
           <key><value>/workspaces/{workspace}/coverages/{coverage}.{format}</value></key>
           <value>coverageFinder</value>
@@ -189,7 +192,10 @@
           <key><value>/workspaces/{workspace}/coverages.{format}</value></key>
           <value>coverageFinder</value>
         </entry>
-        
+        <entry>
+          <key><value>/workspaces/{workspace}/coverages</value></key>
+          <value>coverageFinder</value>
+        </entry>
         <entry>
           <key><value>/namespaces/{namespace}.{format}</value></key>
           <value>namespaceFinder</value>
