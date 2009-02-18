@@ -18,6 +18,7 @@ import java.util.logging.Level;
 
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.opengis.feature.type.Name;
 
 /**
  * Node matching {@link DataStoreInfo}. 
@@ -49,8 +50,11 @@ class DataStoreNode extends StoreNode {
         List<CatalogNode> result = new ArrayList<CatalogNode>();
         List<FeatureTypeInfo> types = getCatalog().getFeatureTypesByStore(getModel());
         try {
-            Set<String> typeNames = new HashSet<String>(Arrays.asList(getModel().getDataStore(null)
-                    .getTypeNames()));
+            List<Name> names = getModel().getDataStore(null).getNames();
+            Set<String> typeNames = new HashSet<String>();
+            for (Name name : names) {
+                typeNames.add(name.getLocalPart());
+            }
             for (FeatureTypeInfo type : types) {
                 typeNames.remove(type.getName());
             }
