@@ -133,7 +133,7 @@ public class RasterLayerLegendHelper {
 		// is background transparent?
 		transparent = request.isTransparent();
 
-		// background color
+		// background bkgColor
 		bgColor = LegendUtils.getBackgroundColor(request);
 
 		// colormap element
@@ -153,11 +153,11 @@ public class RasterLayerLegendHelper {
 			// setting the requested colormap entries
 			cmapLegendBuilder.setRequestedDimension(new Dimension(width,height));
 
-			// setting transparency and background color
+			// setting transparency and background bkgColor
 			cmapLegendBuilder.setTransparent(transparent);
 			cmapLegendBuilder.setBackgroundColor(bgColor);
 
-			// Setting label font and font color
+			// Setting label font and font bkgColor
 			cmapLegendBuilder.setLabelFont(LegendUtils.getLabelFont(request));
 			cmapLegendBuilder.setLabelFontColor(LegendUtils.getLabelFontColor(request));
 

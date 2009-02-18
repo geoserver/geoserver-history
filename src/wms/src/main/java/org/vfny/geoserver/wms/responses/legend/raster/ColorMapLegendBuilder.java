@@ -63,18 +63,43 @@ class ColorMapLegendBuilder {
 		}		
 	}
 	
-	abstract class ColorManager{
-		
-		protected final Color color;
-		protected final double opacity;
+	abstract class Cell{
+	
+		protected final Color bkgColor;
+		protected final double bkgOpacity;
+		protected final String text;
 
-		public ColorManager(final Color color, final double opacity) {
-			this.opacity=opacity;
-			this.color = color;
+		public Cell(final Color bkgColor, final double bkgOpacity, final String text) {
+			this.bkgOpacity=bkgOpacity;
+			this.bkgColor = bkgColor;
+			this.text=text;
 		}
 		
 		
 		public abstract void draw(final Graphics2D graphics,final Rectangle2D clipBox, final boolean completeBorder);
+		
+		/**
+		 * Retrieves the preferred dimension for this {@link Cell} element within the provided graphics element.
+		 * 
+		 * @param graphics {@link Graphics2D} object to use for computing the preferred dimension
+		 * @return the preferred dimension for this {@link Cell} element within the provided graphics element.
+		 */
+		public abstract Dimension getPreferredDimension(final Graphics2D graphics);
+	}
+		
+	abstract class ColorManager extends Cell{
+		
+
+		public ColorManager(final Color color, final double opacity) {
+			super(color, opacity, null);
+		}
+		
+		
+		public abstract void draw(final Graphics2D graphics,final Rectangle2D clipBox, final boolean completeBorder);
+		
+		public Dimension getPreferredDimension(final Graphics2D graphics){
+			return new Dimension(requestedDimension);
+		}
 
 	}
 	
@@ -86,14 +111,14 @@ class ColorMapLegendBuilder {
 
 		@Override
 		public void draw(final Graphics2D graphics, final Rectangle2D clipBox, final boolean completeBorder) {
-			//color fill
-            if(opacity>0){
+			//bkgColor fill
+            if(bkgOpacity>0){
             	// OPAQUE
 	            final Color oldColor=graphics.getColor();
-	            final Color newColor= new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity+0.5));
+	            final Color newColor= new Color(bkgColor.getRed(),bkgColor.getGreen(),bkgColor.getBlue(),(int) (255*bkgOpacity+0.5));
 	            graphics.setColor(newColor);
 	            graphics.fill(clipBox);
-	            //make color customizable
+	            //make bkgColor customizable
 	            graphics.setColor(Color.BLACK);
 	            if(!completeBorder)
 	            {
@@ -113,7 +138,7 @@ class ColorMapLegendBuilder {
 		            final int h=(int)(clipBox.getHeight()+0.5)-1;	   
 	            	graphics.draw(new Rectangle2D.Double(minx,miny,w,h));
 	            }
-	            //restore color            
+	            //restore bkgColor            
 	            graphics.setColor(oldColor);
             }
             else
@@ -142,7 +167,7 @@ class ColorMapLegendBuilder {
 	            else
 	            	graphics.draw(clipBox);
 
-	            //restore color            
+	            //restore bkgColor            
 	            graphics.setColor(oldColor);
             }
 			
@@ -184,7 +209,7 @@ class ColorMapLegendBuilder {
 	            final Paint oldPaint=graphics.getPaint();
 	            final GradientPaint paint=new GradientPaint(
 	            		(float)minx,(float)miny,previousColor,
-	            		(float)minx,(float)(miny+h/2.0),color);
+	            		(float)minx,(float)(miny+h/2.0),bkgColor);
 	            
 	            // do the magic
 	            graphics.setPaint(paint);
@@ -217,16 +242,14 @@ class ColorMapLegendBuilder {
 	 * @author Simone Giannecchini, GeoSolutions SAS
 	 *
 	 */
-	class TextManager{
-
-		private final String text;
-		
+	class TextManager extends Cell{
+	
 
 		public TextManager(String text) {
-			this.text = text;
+			super(backgroundColor, 1.0, text);
 		}
 		
-		public Dimension computeDimension(final Graphics2D graphics){
+		public Dimension getPreferredDimension(final Graphics2D graphics){
 			//get old font
 			final Font oldFont=graphics.getFont();
 			
@@ -240,9 +263,9 @@ class ColorMapLegendBuilder {
 	        return new Dimension(labelWidth,labelHeight);
 		}
 		
-		public void draw(final Graphics2D graphics,final Rectangle2D textBox){
+		public void draw(final Graphics2D graphics,final Rectangle2D clipBox ,final boolean completeBorder){
 			
-			//get old font
+			//save old font
 			final Font oldFont=graphics.getFont();
 			
 			//set font and font color and the antialising
@@ -251,10 +274,10 @@ class ColorMapLegendBuilder {
 			graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			
 			//Halign==center vAlign==bottom
-            final double minx=textBox.getMinX();
-            final double miny=textBox.getMinY();
-            final double w=textBox.getWidth(); 
-            final Dimension dimension=computeDimension(graphics);
+            final double minx=clipBox.getMinX();
+            final double miny=clipBox.getMinY();
+            final double w=clipBox.getWidth(); 
+            final Dimension dimension=getPreferredDimension(graphics);
             //where do we draw?
 			final int xText=(int)(minx+(w-dimension.getWidth())/2.0+0.5);
 			final int yText=(int)(miny+graphics.getFontMetrics().getAscent()+0.5) ;
@@ -270,24 +293,49 @@ class ColorMapLegendBuilder {
 	}
 	 abstract class ColorMapEntryLegendBuilder {		
 		
+		protected ColorMapEntryLegendBuilder(final List<ColorMapEntry> mapEntries,ColorManager colorManager,
+				TextManager labelManager, TextManager ruleManager) {
+			this.colorManager = colorManager;
+			this.labelManager = labelManager;
+			this.ruleManager = ruleManager;
+			colorMapEntriesSubset.addAll(mapEntries);
+			
+		}
+		
+		protected ColorMapEntryLegendBuilder(final List<ColorMapEntry> mapEntries) {
+			colorMapEntriesSubset.addAll(mapEntries);
+			
+		}
+
 		public abstract boolean hasLabel();
 
 		protected final ArrayList<ColorMapEntry> colorMapEntriesSubset = new ArrayList<ColorMapEntry>();
+		
+		protected ColorManager colorManager;
+		
+		protected TextManager labelManager;
+		
+		protected TextManager ruleManager;
 
-		public ColorMapEntryLegendBuilder(final List<ColorMapEntry> mapEntries) {
-			colorMapEntriesSubset.addAll(mapEntries);
-		}
+		protected boolean hasLabel;
+
+
 
 		public abstract BufferedImage getLegend() ;
 		
+		public TextManager getRuleManager() {
+			return ruleManager;
+		}
+		
+		public TextManager getLabelManager()  {
+			return labelManager;
+		}
+		public ColorManager getColorManager()  {
+			return colorManager;
+		}
 	}
 	 class SingleColorMapEntryLegendBuilder extends ColorMapEntryLegendBuilder{
 		
-		private boolean hasLabel;
-		private TextManager labelManager;
-		private SimpleColorManager colorManager;
-		private TextManager ruleManager;
-
 		public SingleColorMapEntryLegendBuilder(List<ColorMapEntry> cMapEntries) {
 			super(cMapEntries);
 			final ColorMapEntry currentCME = cMapEntries.get(0);
@@ -321,7 +369,7 @@ class ColorMapLegendBuilder {
 			
 			////
 			//
-			// creating a backbuffer image on which we should draw the color for this colormap element
+			// creating a backbuffer image on which we should draw the bkgColor for this colormap element
 			//
 			////
 			final int width=(int) requestedDimension.getWidth();
@@ -353,12 +401,12 @@ class ColorMapLegendBuilder {
 	        ////
             //this is a traditional 'regular-old' label.  Just figure the
 	        //size and act accordingly.
-            Dimension dimensions = ruleManager.computeDimension(graphics);
+            Dimension dimensions = ruleManager.getPreferredDimension(graphics);
 	        graphics.dispose();
 	        //now draw
 	        final BufferedImage renderedRule = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
 	        Graphics2D rlg = renderedRule.createGraphics();
-	        ruleManager.draw(rlg, new Rectangle(0,0,renderedRule.getWidth(),renderedRule.getHeight()));
+	        ruleManager.draw(rlg, new Rectangle(0,0,renderedRule.getWidth(),renderedRule.getHeight()),false);
 	        rlg.dispose(); 
 	        
 	        ////
@@ -369,12 +417,12 @@ class ColorMapLegendBuilder {
 	        ////
             //this is a traditional 'regular-old' label.  Just figure the
 	        //size and act accordingly.
-            dimensions = labelManager.computeDimension(graphics);
+            dimensions = labelManager.getPreferredDimension(graphics);
 	        graphics.dispose();
 	        //now draw
 	        final BufferedImage renderedLabel = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
 	        rlg = renderedLabel.createGraphics();
-	        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()));
+	        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()),false);
 	        rlg.dispose();   
             
             
@@ -383,8 +431,7 @@ class ColorMapLegendBuilder {
             // merge
 	        //
 	        ////
-            return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,
-					renderedRule,renderedLabel, transparent,backgroundColor,true);
+            return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,renderedRule,renderedLabel, transparent,backgroundColor,true);
 		}
 
 
@@ -398,11 +445,6 @@ class ColorMapLegendBuilder {
 
 		private boolean leftEdge;
 		private double quantity;
-		private TextManager labelManager;
-		private boolean hasLabel;
-		private GradientColorManager colorManager;
-		private TextManager ruleManager;
-
 		public RampColorMapEntryLegendBuilder(List<ColorMapEntry> mapEntries) {
 			super(mapEntries);
 			
@@ -479,12 +521,12 @@ class ColorMapLegendBuilder {
 	        ////
             //this is a traditional 'regular-old' label.  Just figure the
 	        //size and act accordingly.
-            Dimension dimensions = ruleManager.computeDimension(graphics);
+            Dimension dimensions = ruleManager.getPreferredDimension(graphics);
 	        graphics.dispose();
 	        //now draw
 	        final BufferedImage renderedRule = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
 	        Graphics2D rlg = renderedRule.createGraphics();
-	        ruleManager.draw(rlg, new Rectangle(0,0,renderedRule.getWidth(),renderedRule.getHeight()));
+	        ruleManager.draw(rlg, new Rectangle(0,0,renderedRule.getWidth(),renderedRule.getHeight()),false);
 	        rlg.dispose(); 
 	        
 	        ////
@@ -495,18 +537,18 @@ class ColorMapLegendBuilder {
 	        ////
             //this is a traditional 'regular-old' label.  Just figure the
 	        //size and act accordingly.
-            dimensions = labelManager.computeDimension(graphics);
+            dimensions = labelManager.getPreferredDimension(graphics);
 	        graphics.dispose();
 	        //now draw
 	        final BufferedImage renderedLabel = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
 	        rlg = renderedLabel.createGraphics();
-	        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()));
+	        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()),false);
 	        rlg.dispose();   
             
             
 	        ////
 	        //
-	        // DRAW the color label
+	        // DRAW the bkgColor label
 	        //
 	        //
 	        ////
@@ -529,8 +571,7 @@ class ColorMapLegendBuilder {
             // merge
 	        //
 	        ////
-            return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,
-					renderedRule,renderedLabel, transparent,backgroundColor,false);
+            return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,renderedRule,renderedLabel, transparent,backgroundColor,false);
 		}
 
 		@Override
@@ -545,10 +586,6 @@ class ColorMapLegendBuilder {
 			private double quantity1;
 			private boolean leftEdge;
 			private double quantity2;
-			private boolean hasLabel;
-			private TextManager labelManager;
-			private SimpleColorManager colorManager;
-			private TextManager ruleManager;
 			public ClassesEntryLegendBuilder(List<ColorMapEntry> mapEntries) {
 				super(mapEntries);
 				final ColorMapEntry previousCME = mapEntries.get(0);
@@ -597,7 +634,7 @@ class ColorMapLegendBuilder {
 				
 				////
 				//
-				// creating a backbuffer image on which we should draw the color for this colormap element
+				// creating a backbuffer image on which we should draw the bkgColor for this colormap element
 				//
 				////
 				final int width=(int) requestedDimension.getWidth();
@@ -628,12 +665,12 @@ class ColorMapLegendBuilder {
 		        ////
 	            //this is a traditional 'regular-old' label.  Just figure the
 		        //size and act accordingly.
-	            Dimension dimensions = ruleManager.computeDimension(graphics);
+	            Dimension dimensions = ruleManager.getPreferredDimension(graphics);
 		        graphics.dispose();
 		        //now draw
 		        final BufferedImage renderedRule = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
 		        Graphics2D rlg = renderedRule.createGraphics();
-		        ruleManager.draw(rlg, new Rectangle(0,0,renderedRule.getWidth(),renderedRule.getHeight()));
+		        ruleManager.draw(rlg, new Rectangle(0,0,renderedRule.getWidth(),renderedRule.getHeight()),false);
 		        rlg.dispose(); 
 		        
 		        ////
@@ -644,12 +681,12 @@ class ColorMapLegendBuilder {
 		        ////
 	            //this is a traditional 'regular-old' label.  Just figure the
 		        //size and act accordingly.
-	            dimensions = labelManager.computeDimension(graphics);
+	            dimensions = labelManager.getPreferredDimension(graphics);
 		        graphics.dispose();
 		        //now draw
 		        final BufferedImage renderedLabel = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
 		        rlg = renderedLabel.createGraphics();
-		        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()));
+		        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()),false);
 		        rlg.dispose();    
 	            
 	            
@@ -691,6 +728,8 @@ class ColorMapLegendBuilder {
 	private ColorMapEntry previousCMapEntry;
 
 	private final Queue<ColorMapEntryLegendBuilder> colorMapEntryLegendBuilders= new LinkedList<ColorMapEntryLegendBuilder>();
+
+	private final List<Cell> cells  = new ArrayList<Cell>();
 	
 	
 
@@ -726,6 +765,8 @@ class ColorMapLegendBuilder {
 
 
 	public void addColorMapEntry(final ColorMapEntry cEntry) {
+		
+		
 		//build a ColorMapEntryLegendBuilder for the specified colorMapEntry
 		final ColorMapEntryLegendBuilder element;
 		switch(colorMapType){
@@ -742,8 +783,14 @@ class ColorMapLegendBuilder {
 					throw new IllegalArgumentException("Unrecognized colormap type");
 
 		}
-    	colorMapEntryLegendBuilders.add(element);	
+		
+		//add to the table, we can use matrix algebra knowning that W==3 for this matrix
+    	colorMapEntryLegendBuilders.add(element);	//SHOULD BE REMOVED
+    	cells.add(element.getColorManager());
+    	cells.add(element.getRuleManager());
+    	cells.add(element.getLabelManager());
     	
+   	
 		//set last used element
 		previousCMapEntry=cEntry;			
 			
@@ -774,17 +821,64 @@ class ColorMapLegendBuilder {
 		
 		//now build the individuals legends
 		final Dimension finalDimension= new Dimension();
-		final Queue<BufferedImage> legendsQueue=createLegends(this.colorMapEntryLegendBuilders,finalDimension);
+		final Queue<BufferedImage> legendsQueue=createLegends(finalDimension);
 		
 		//now merge them
 		return mergeLegends(legendsQueue,finalDimension);
 	}
 
 	private Queue<BufferedImage> createLegends(
-			Queue<ColorMapEntryLegendBuilder> cmeBuilders, final Dimension finalDimension) {
-		final Queue<BufferedImage> queue= new LinkedList<BufferedImage>();
+			final Dimension finalDimension) {
 		
-		for(ColorMapEntryLegendBuilder legendBuilder:cmeBuilders)
+		//
+		// create a sample image for computing dimensions
+		//
+        BufferedImage image = ImageUtils.createImage(1, 1, (IndexColorModel)null, transparent);
+        final Map<Key, Object> hintsMap = new HashMap<Key, Object>();
+        Graphics2D graphics = ImageUtils.prepareTransparency(transparent, backgroundColor, image, hintsMap);
+        
+        double rowH=Double.NEGATIVE_INFINITY;
+        double colorW=Double.NEGATIVE_INFINITY;
+        double ruleW=Double.NEGATIVE_INFINITY;
+        double labelW=Double.NEGATIVE_INFINITY;
+        //
+        // compute dimensions
+        //
+		final Queue<BufferedImage> queue= new LinkedList<BufferedImage>();
+		final int numRows=this.cells.size()/3;
+		for(int i=0;i<numRows;i++){
+			
+			//
+			//row number i
+			//
+			
+			// color element
+			final Cell cm= this.cells.get(i);
+			final Dimension colorDim=cm.getPreferredDimension(graphics);
+			rowH=Math.max(rowH, colorDim.getHeight());
+			colorW=Math.max(colorW, colorDim.getWidth());
+			
+			// rule
+			final Cell ruleM= this.cells.get(i);
+			final Dimension ruleDim=ruleM.getPreferredDimension(graphics);
+			rowH=Math.max(rowH, ruleDim.getHeight());
+			ruleW=Math.max(ruleW, ruleDim.getWidth());
+			
+			
+			// label
+			final Cell labelM= this.cells.get(i);
+			if(labelM==null)
+				continue;
+			final Dimension labelDim=labelM.getPreferredDimension(graphics);
+			rowH=Math.max(rowH, labelDim.getHeight());
+			labelW=Math.max(labelW, labelDim.getWidth());
+		}
+		
+		
+		
+		
+		
+		for(ColorMapEntryLegendBuilder legendBuilder:this.colorMapEntryLegendBuilders)
 		{
 			//get the legend
 			final BufferedImage legend= legendBuilder.getLegend();
@@ -805,7 +899,7 @@ class ColorMapLegendBuilder {
          
          // I am doing a straight cast since I know that I built this
 			// dimension object by using the widths and heights of the various
-			// bufferedimages for the various color map entries.
+			// bufferedimages for the various bkgColor map entries.
          final int totalWidth=(int) finalDimension.getWidth();
 		 final int totalHeight=(int) finalDimension.getHeight();
 		 final BufferedImage finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
@@ -826,46 +920,6 @@ class ColorMapLegendBuilder {
          finalGraphics.dispose();
          return finalLegend;
 	}
-
-//	
-//	private Queue<ColorMapEntryLegendBuilder> parseColorMapEntries() {
-//
-//		
-//		// parsing the various color map entries in order to build a queue of
-//		// color map entry legend builders which are responsible for building
-//		// the individual legends for each color map entry.
-//
-//		final int size=colorMapEntries.size();
-//		//create a queue of ColorMapEntryLegendBuilder which will build single piece of the overall legend
-//		final Queue<ColorMapEntryLegendBuilder> queue= new LinkedList<ColorMapEntryLegendBuilder>();
-//		ColorMapEntry previousCMapEntry=null;
-//		for(int i=0;i<size;i++)
-//		{
-//			final ColorMapEntry cEntry=colorMapEntries.get(i);
-//			final ColorMapEntryLegendBuilder element;
-//			switch(colorMapType){
-//				case UNIQUE_VALUES:
-//					element=new SingleColorMapEntryLegendBuilder(Arrays.asList(cEntry));
-//					break;
-//				case RAMP:
-//					element=new RampColorMapEntryLegendBuilder(Arrays.asList(previousCMapEntry,cEntry));	
-//					break;
-//				case CLASSES:
-//					element=new ClassesEntryLegendBuilder(Arrays.asList(previousCMapEntry,cEntry));
-//					break;
-//					default:
-//						throw new IllegalArgumentException("Unrecognized colormap type");
-//
-//			}
-//			
-//
-//			queue.add(element);				
-//			//set last element
-//			previousCMapEntry=cEntry;
-//		}
-//		
-//		return queue;
-//	}
 
 	/**
 	 * @param legendOptions
