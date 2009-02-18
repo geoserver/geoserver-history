@@ -1159,7 +1159,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @return List the FeatureTypeInfo metadata links
      */
     public List getMetadataLinks() {
-        return featureType.getMetadataLinks();
+        ArrayList links = new ArrayList( featureType.getMetadataLinks().size() );
+        for ( MetadataLinkInfo link : featureType.getMetadataLinks() ) {
+            links.add( new MetaDataLink( link ) );
+        }
+        return links;
         //return metadataLinks;
     }
 

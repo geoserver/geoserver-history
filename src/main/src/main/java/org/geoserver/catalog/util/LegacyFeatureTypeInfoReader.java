@@ -110,6 +110,25 @@ public class LegacyFeatureTypeInfoReader {
     	return keywords;
     }
     
+    public List<Map<String,String>> metadataLinks() {
+        ArrayList links = new ArrayList();
+        Element metadataLinks = ReaderUtils.getChildElement(featureType, "metadataLinks" );
+        if ( metadataLinks != null ) {
+            Element[] metadataLink = ReaderUtils.getChildElements(metadataLinks,"metadataLink" );
+            for ( Element e : metadataLink ) {
+                HashMap m = new HashMap();
+                m.put( "metadataType", e.getAttribute( "metadataType") );
+                m.put( "type", e.getAttribute( "type") );
+                if ( e.getFirstChild() != null ) {
+                    m.put( null, e.getFirstChild().getNodeValue() );
+                }
+                links.add( m );
+            }
+        }
+        
+        return links;
+    }
+    
     public Envelope latLonBoundingBox() throws Exception {
     	Element box = ReaderUtils.getChildElement(featureType, "latLonBoundingBox" );
     	double minx = ReaderUtils.getDoubleAttribute(box, "minx", true );

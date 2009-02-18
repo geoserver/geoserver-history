@@ -24,6 +24,7 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
+import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StyleInfo;
@@ -439,6 +440,15 @@ public class LegacyCatalogImporter {
         featureType.setTitle(ftInfoReader.title());
         featureType.setAbstract(ftInfoReader.abstrct());
         featureType.getKeywords().addAll(ftInfoReader.keywords());
+        
+        for ( Map m : ftInfoReader.metadataLinks() ) {
+            MetadataLinkInfo link = factory.createMetadataLink();
+            link.setContent( (String) m.get( null ) );
+            link.setMetadataType( (String) m.get( "metadataType" ) );
+            link.setType( (String) m.get( "type" ) );
+            featureType.getMetadataLinks().add( link );
+        }
+        
         featureType.setLatLonBoundingBox(new ReferencedEnvelope(
                 ftInfoReader.latLonBoundingBox(),
                 DefaultGeographicCRS.WGS84));
