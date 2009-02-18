@@ -26,6 +26,12 @@ import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
 public class LegendUtils {
 
+	public enum VAlign{
+		TOP,MIDDLE,BOTTOM;		
+	}
+	public enum HAlign{
+		LEFT,CENTERED,RIGHT,JUSTIFIED;		
+	}
 	/**
 	 * Default Legend graphics background color
 	 */
@@ -34,10 +40,17 @@ public class LegendUtils {
 	 * Default label color
 	 */
 	public static final Color FONT_COLOR = Color.BLACK;
-	/** padding percentaje factor at both sides of the legend. */
+	/** padding percentage factor at both sides of the legend. */
 	public static final float hpaddingFactor = 0.15f;
-	/** top & bottom padding percentaje factor for the legend */
+	/** top & bottom padding percentage factor for the legend */
 	public static final float vpaddingFactor = 0.15f;
+	
+	/** padding percentage factor at both sides of the legend. */
+	public static final float rowPaddingFactor = 0.10f;
+	/** top & bottom padding percentage factor for the legend */
+	public static final float columnPaddingFactor = 0.10f;
+	
+	
 	/**
 	 * shared package's logger
 	 */
@@ -344,8 +357,7 @@ public class LegendUtils {
 			final BufferedImage central,
 			final BufferedImage right, 
 			final boolean transparent,
-			final Color backgroundColor,
-			final boolean vCenter) {
+			final Color backgroundColor) {
 		
 		final int totalHeight =  (int) Math.ceil(Math.max(right.getHeight(),Math.max(central.getHeight(), left.getHeight())));
 		final int totalWidth = (int) Math.ceil(left.getWidth() + central.getWidth()+right.getWidth());            
@@ -353,18 +365,18 @@ public class LegendUtils {
         final Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalImage, hintsMap);
         
         //place the left element
-        int offsetY=vCenter?(int)(((totalHeight-left.getHeight())/2.0)+0.5):0;;
-        finalGraphics.drawImage(left, 0,offsetY,null);
+        finalGraphics.drawImage(left, 0,0,null);
 
         ///place the central element
-        offsetY=vCenter?(int)(((totalHeight-central.getHeight())/2.0)+0.5):totalHeight-central.getHeight();
-        finalGraphics.drawImage(central, left.getWidth(),offsetY,null);
+        finalGraphics.drawImage(central, left.getWidth(),0,null);
         
         ///place the right element
-        offsetY=vCenter?(int)(((totalHeight-right.getHeight())/2.0)+0.5):totalHeight-right.getHeight();
-        finalGraphics.drawImage(right,left.getWidth()+ central.getWidth(),offsetY,null);        
+//        offsetY=vCenter?(int)(((totalHeight-right.getHeight())/2.0)+0.5):totalHeight-right.getHeight();
+        finalGraphics.drawImage(right,left.getWidth()+ central.getWidth(),0,null);        
         
         graphics.dispose();
 		return (BufferedImage) finalImage;
 	}
 }
+
+
