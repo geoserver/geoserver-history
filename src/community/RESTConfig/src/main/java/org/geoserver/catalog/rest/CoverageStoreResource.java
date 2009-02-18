@@ -111,7 +111,7 @@ public class CoverageStoreResource extends AbstractCatalogResource {
         persister.setCallback( 
             new XStreamPersister.Callback() {
                 @Override
-                protected void postEncodeDataStore(DataStoreInfo ds,
+                protected void postEncodeCoverageStore(CoverageStoreInfo cs,
                         HierarchicalStreamWriter writer,
                         MarshallingContext context) {
                     //add a link to the coverages
