@@ -5,11 +5,15 @@ import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class FeatureTypeResource extends AbstractCatalogResource {
 
@@ -124,4 +128,22 @@ public class FeatureTypeResource extends AbstractCatalogResource {
         LOGGER.info( "DELETE feature type" + datastore + "," + featuretype );
     }
 
+    @Override
+    protected void configurePersister(XStreamPersister persister) {
+        persister.setCallback( new XStreamPersister.Callback() {
+            @Override
+            protected void postEncodeReference(Object obj, String ref,
+                    HierarchicalStreamWriter writer, MarshallingContext context) {
+                if ( obj instanceof NamespaceInfo ) {
+                    NamespaceInfo ns = (NamespaceInfo) obj;
+                    encodeLink( "/namespaces/" + ns.getPrefix(), writer);
+                }
+                if ( obj instanceof DataStoreInfo ) {
+                    DataStoreInfo ds = (DataStoreInfo) obj;
+                    encodeLink( "/workspaces/" + ds.getWorkspace().getName() + "/datastores" + 
+                        ds.getName(), writer );
+                }
+            }
+        });
+    }
 }

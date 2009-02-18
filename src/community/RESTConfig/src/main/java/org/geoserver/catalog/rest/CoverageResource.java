@@ -5,11 +5,15 @@ import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class CoverageResource extends AbstractCatalogResource {
 
@@ -123,6 +127,26 @@ public class CoverageResource extends AbstractCatalogResource {
         
         saveCatalog();
         LOGGER.info( "DELETE coverage " + coveragestore + "," + coverage );
+    }
+    
+    @Override
+    protected void configurePersister(XStreamPersister persister) {
+        persister.setCallback( new XStreamPersister.Callback() {
+            @Override
+            protected void postEncodeReference(Object obj, String ref,
+                    HierarchicalStreamWriter writer, MarshallingContext context) {
+                if ( obj instanceof NamespaceInfo ) {
+                    NamespaceInfo ns = (NamespaceInfo) obj;
+                    encodeLink( "/namespaces/" + ns.getPrefix(), writer);
+                }
+                if ( obj instanceof CoverageStoreInfo ) {
+                    CoverageStoreInfo cs = (CoverageStoreInfo) obj;
+                    encodeLink( "/workspaces/" + cs.getWorkspace().getName() + "/coveragestores/" + 
+                            cs.getName(), writer );
+                    
+                }
+            }
+        });
     }
 
 }
