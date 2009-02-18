@@ -24,6 +24,7 @@ import org.geotools.styling.Rule;
 import org.opengis.filter.expression.Expression;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
+@SuppressWarnings("deprecation")
 public class LegendUtils {
 
 	public enum VAlign{
@@ -46,9 +47,12 @@ public class LegendUtils {
 	public static final float vpaddingFactor = 0.15f;
 	
 	/** padding percentage factor at both sides of the legend. */
-	public static final float rowPaddingFactor = 0.10f;
+	public static final float rowPaddingFactor = 0.15f;
 	/** top & bottom padding percentage factor for the legend */
-	public static final float columnPaddingFactor = 0.10f;
+	public static final float columnPaddingFactor = 0.025f;
+	
+	/** padding percentage factor at both sides of the legend. */
+	public static final float marginFactor = 0.015f;
 	
 	
 	/**
@@ -344,23 +348,25 @@ public class LegendUtils {
 	}
 	/**
 	 * @param left
+	 * @param center
+	 * @param right
 	 * @param hintsMap
-	 * @param graphics
-	 * @param central
-	 * @param right 
+	 * @param dx 
+	 * @param mx 
+	 * @param graphics 
 	 * @return
 	 */
 	public static BufferedImage mergeBufferedImages(
 			final BufferedImage left,
-			final Map<Key, Object> hintsMap, 
-			final Graphics2D graphics,
-			final BufferedImage central,
-			final BufferedImage right, 
+			final BufferedImage center, 
+			final BufferedImage right,
+			final Map<Key, Object> hintsMap,
 			final boolean transparent,
-			final Color backgroundColor) {
+			final Color backgroundColor, 
+			final double dx) {
 		
-		final int totalHeight =  (int) Math.ceil(Math.max(right.getHeight(),Math.max(central.getHeight(), left.getHeight())));
-		final int totalWidth = (int) Math.ceil(left.getWidth() + central.getWidth()+right.getWidth());            
+		final int totalHeight =  (int) (Math.max(left.getHeight(),Math.max(center.getHeight(), right.getHeight()))+0.5);
+		final int totalWidth = (int) (left.getWidth() + center.getWidth()+right.getWidth()+2*dx+0.5);            
         final BufferedImage finalImage = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
         final Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalImage, hintsMap);
         
@@ -368,13 +374,13 @@ public class LegendUtils {
         finalGraphics.drawImage(left, 0,0,null);
 
         ///place the central element
-        finalGraphics.drawImage(central, left.getWidth(),0,null);
+        finalGraphics.drawImage(center, (int) (left.getWidth()+dx+0.5),0,null);
         
         ///place the right element
 //        offsetY=vCenter?(int)(((totalHeight-right.getHeight())/2.0)+0.5):totalHeight-right.getHeight();
-        finalGraphics.drawImage(right,left.getWidth()+ central.getWidth(),0,null);        
+        finalGraphics.drawImage(right,(int) (left.getWidth()+ center.getWidth()+dx+0.5+dx),0,null);        
         
-        graphics.dispose();
+        finalGraphics.dispose();
 		return (BufferedImage) finalImage;
 	}
 }
