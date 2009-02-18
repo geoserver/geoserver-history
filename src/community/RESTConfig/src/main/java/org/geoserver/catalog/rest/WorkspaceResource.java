@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.config.util.XStreamPersister;
@@ -154,8 +156,12 @@ public class WorkspaceResource extends AbstractCatalogResource {
             cfg.setObjectWrapper(new ObjectToMapWrapper<WorkspaceInfo>(WorkspaceInfo.class) {
                 @Override
                 protected void wrapInternal(Map properties, SimpleHash model, WorkspaceInfo object) {
-                    List<StoreInfo> stores = catalog.getStoresByWorkspace(object, StoreInfo.class);
-                    properties.put( "stores", new CollectionModel( stores, new ObjectToMapWrapper(StoreInfo.class) ) );
+                    List<DataStoreInfo> dataStores = catalog.getStoresByWorkspace(object, DataStoreInfo.class);
+                    properties.put( "dataStores", new CollectionModel( dataStores, new ObjectToMapWrapper(DataStoreInfo.class) ) );
+                    
+                    List<CoverageStoreInfo> coverageStores = catalog.getStoresByWorkspace(object, CoverageStoreInfo.class);
+                    properties.put( "coverageStores", new CollectionModel( coverageStores, new ObjectToMapWrapper(CoverageStoreInfo.class) ) );
+                    
                     properties.put( "isDefault",  object.equals( catalog.getDefaultWorkspace() ) );
                 }
             });
