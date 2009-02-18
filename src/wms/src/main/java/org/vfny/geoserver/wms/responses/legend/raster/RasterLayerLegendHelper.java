@@ -60,18 +60,20 @@ public class RasterLayerLegendHelper {
 		defaultLegend = imgShape;
 	}
 
-	private GetLegendGraphicRequest request;
 	private BufferedImage image;
 	private RasterSymbolizer rasterSymbolizer;
 	private int width;
 	private int height;
+	private ColorMapLegendBuilder cmapLegendBuilder;
+	private boolean transparent;
+	private Color bgColor;
 
 	public RasterLayerLegendHelper(GetLegendGraphicRequest request) {
-		this.request = request;
-		parseRequest();
+		// TODO XXX check for null
+		parseRequest(request);
 	}
 
-	private void parseRequest() {
+	private void parseRequest(final GetLegendGraphicRequest request) {
 		// get the requested layer
 		// and check that it is actually a grid
 		final SimpleFeatureType layer = request.getLayer();
@@ -127,61 +129,64 @@ public class RasterLayerLegendHelper {
 			throw new IllegalArgumentException(
 					"Unable to create a legend for this style, we need a RasterSymbolizer");
 		rasterSymbolizer = (RasterSymbolizer) symbolizer;
+		
+		// is background transparent?
+		transparent = request.isTransparent();
 
+		// background color
+		bgColor = LegendUtils.getBackgroundColor(request);
+
+		// colormap element
+		final ColorMap cmap = rasterSymbolizer.getColorMap();
+		if (cmap != null && cmap.getColorMapEntries() != null
+				&& cmap.getColorMapEntries().length > 0) {
+			// colormap legend builder
+			cmapLegendBuilder = new ColorMapLegendBuilder();
+
+			// setting type of colormap
+			cmapLegendBuilder.setColorMapType(cmap.getType());
+
+			// is this colormap using extended colors
+			cmapLegendBuilder.setExtended(cmapLegendBuilder.isExtended());
+			
+
+			// setting the requested colormap entries
+			cmapLegendBuilder.setRequestedDimension(new Dimension(width,height));
+
+			// setting transparency and background color
+			cmapLegendBuilder.setTransparent(transparent);
+			cmapLegendBuilder.setBackgroundColor(bgColor);
+
+			// Setting label font and font color
+			cmapLegendBuilder.setLabelFont(LegendUtils.getLabelFont(request));
+			cmapLegendBuilder.setLabelFontColor(LegendUtils.getLabelFontColor(request));
+
+			// passing additional options
+			cmapLegendBuilder.setAdditionalOptions(request.getLegendOptions());				
+
+			// adding the colormap entries
+			final ColorMapEntry[] colorMapEntries = cmap.getColorMapEntries();
+			for (ColorMapEntry ce : colorMapEntries)
+				if (ce != null)
+					cmapLegendBuilder.addColorMapEntry(ce);		
+		}
 	}
 
 	public BufferedImage getLegend() {
 		return createResponse();
 	}
 
-	private synchronized BufferedImage createResponse() {
+	@SuppressWarnings("unchecked")
+	private BufferedImage createResponse() {
 
 		if (image == null) {
-			// is background transparent?
-			final boolean transparent = request.isTransparent();
-
-			// background color
-			final Color bgColor = LegendUtils.getBackgroundColor(request);
-
-			// colormap element
-			final ColorMap cmap = rasterSymbolizer.getColorMap();
-			if (cmap != null && cmap.getColorMapEntries() != null
-					&& cmap.getColorMapEntries().length > 0) {
-				// colormap legend builder
-				final ColorMapLegendBuilder cmapLegendBuilder = new ColorMapLegendBuilder();
-
-				// setting type of colormap
-				cmapLegendBuilder.setColorMapType(cmap.getType());
-
-				// is this colormap using extended colors
-				cmapLegendBuilder.setExtended(cmapLegendBuilder.isExtended());
-				
-
-				// setting the requested colormap entries
-				cmapLegendBuilder.setRequestedDimension(new Dimension(width,height));
-
-				// setting transparency and background color
-				cmapLegendBuilder.setTransparent(transparent);
-				cmapLegendBuilder.setBackgroundColor(bgColor);
-
-				// Setting label font and font color
-				cmapLegendBuilder.setLabelFont(LegendUtils.getLabelFont(request));
-				cmapLegendBuilder.setLabelFontColor(LegendUtils.getLabelFontColor(request));
-
-				// passing additional options
-				cmapLegendBuilder.setAdditionalOptions(request.getLegendOptions());				
-
-				// adding the colormap entries
-				final ColorMapEntry[] colorMapEntries = cmap.getColorMapEntries();
-				for (ColorMapEntry ce : colorMapEntries)
-					if (ce != null)
-						cmapLegendBuilder.addColorMapEntry(ce);
-
+			
+			if(cmapLegendBuilder!=null)
 
 				// creating a legend
 				image = cmapLegendBuilder.getLegend();
 
-			} else {
+			 else {
 				if(defaultLegend==null)
 					throw new IllegalStateException("Unable to get default legend");
 				

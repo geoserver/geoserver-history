@@ -270,7 +270,7 @@ class ColorMapLegendBuilder {
 	}
 	 abstract class ColorMapEntryLegendBuilder {		
 		
-		public abstract boolean isHasLabel();
+		public abstract boolean hasLabel();
 
 		protected final ArrayList<ColorMapEntry> colorMapEntriesSubset = new ArrayList<ColorMapEntry>();
 
@@ -368,7 +368,7 @@ class ColorMapLegendBuilder {
 
 
 		@Override
-		public boolean isHasLabel() {
+		public boolean hasLabel() {
 			return hasLabel;
 		}
 		
@@ -494,7 +494,7 @@ class ColorMapLegendBuilder {
 		}
 
 		@Override
-		public boolean isHasLabel() {
+		public boolean hasLabel() {
 			return hasLabel;
 		}
 		
@@ -575,7 +575,7 @@ class ColorMapLegendBuilder {
 	            final float hLegend = height - (2 * vpad);
 	            //rectangle for the legend
 	            final Rectangle2D.Double rectLegend= new Rectangle2D.Double(hpad,vpad,wLegend,hLegend);
-	            colorManager.draw(graphics, rectLegend,false);
+	            colorManager.draw(graphics, rectLegend,true);
 	            
 		        ////
 		        //
@@ -607,7 +607,7 @@ class ColorMapLegendBuilder {
 
 			
 			@Override
-			public boolean isHasLabel() {
+			public boolean hasLabel() {
 				return hasLabel;
 			}
 			
@@ -621,7 +621,7 @@ class ColorMapLegendBuilder {
 
 	private Dimension requestedDimension;
 
-	private Map additionalOptions;
+	private Map<String,List<String>> additionalOptions;
 
 	private Color backgroundColor;
 
@@ -667,8 +667,7 @@ class ColorMapLegendBuilder {
 
 
 	public void addColorMapEntry(final ColorMapEntry cEntry) {
-		//build a ColorMapEntryLegendBuilder
-
+		//build a ColorMapEntryLegendBuilder for the specified colorMapEntry
 		final ColorMapEntryLegendBuilder element;
 		switch(colorMapType){
 			case UNIQUE_VALUES:
@@ -684,14 +683,10 @@ class ColorMapLegendBuilder {
 					throw new IllegalArgumentException("Unrecognized colormap type");
 
 		}
-    	colorMapEntryLegendBuilders.add(element);				
-		//set last element
+    	colorMapEntryLegendBuilders.add(element);	
+    	
+		//set last used element
 		previousCMapEntry=cEntry;			
-
-		
-		//
-		// parse the relevant elements for the single elements in order to evaluate dimensions 
-		//
 			
 		
 	}
@@ -817,8 +812,8 @@ class ColorMapLegendBuilder {
 	 * @param legendOptions
 	 * @uml.property  name="additionalOptions"
 	 */
-	public void setAdditionalOptions(Map legendOptions) {
-		this.additionalOptions= new HashMap(legendOptions);
+	public void setAdditionalOptions(Map<String,List<String>> legendOptions) {
+		this.additionalOptions= new HashMap<String,List<String>>(legendOptions);
 		
 	}
 
@@ -842,7 +837,7 @@ class ColorMapLegendBuilder {
 	 * @return
 	 * @uml.property  name="additionalOptions"
 	 */
-	public Map getAdditionalOptions() {
+	public Map<String, List<String>> getAdditionalOptions() {
 		return Collections.unmodifiableMap(additionalOptions);
 	}
 
