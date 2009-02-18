@@ -11,6 +11,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.xml.BindingWalkerFactory;
+import org.geotools.xml.Configuration;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -24,8 +25,8 @@ public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindi
     Data catalog;
 
     public GMLAbstractFeatureTypeBinding(FeatureTypeCache featureTypeCache,
-        BindingWalkerFactory bwFactory, GeometryFactory geometryFactory, Data catalog) {
-        super(featureTypeCache, bwFactory);
+        BindingWalkerFactory bwFactory, GeometryFactory geometryFactory, Data catalog, Configuration config) {
+        super(featureTypeCache, bwFactory, config);
         this.geometryFactory = geometryFactory;
         this.catalog = catalog;
     }
