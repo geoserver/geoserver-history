@@ -212,14 +212,27 @@ public class LegacyCoverageInfoReader {
     
     public List<String> requestCRSs() throws Exception {
         Element supportedCRS = ReaderUtils.getChildElement(coverage, "supportedCRSs" );
-        String[] requestCRS = ReaderUtils.getChildText( supportedCRS, "requestCRSs" ).trim().split(",");
-        return Arrays.asList(requestCRS);
+        final String request = ReaderUtils.getChildText( supportedCRS, "requestCRSs" );
+        final String[] requestCRS = request == null ? null : request.trim().split(",");
+        final List<String> requestCRSs;
+        if (requestCRS == null)
+            requestCRSs = Collections.emptyList();
+        else
+            requestCRSs = Arrays.asList(requestCRS);
+        return requestCRSs;
     }
     
     public List<String> responseCRSs() throws Exception {
         Element supportedCRS = ReaderUtils.getChildElement(coverage, "supportedCRSs" );
-        String[] responseCRS = ReaderUtils.getChildText( supportedCRS, "responseCRSs" ).trim().split(",");
-        return Arrays.asList(responseCRS);
+        final String response = ReaderUtils.getChildText( supportedCRS, "responseCRSs" );
+        final String[] responseCRS = response == null ? null : response.trim().split(",");
+        final List<String> responseCRSs;
+        if (responseCRS == null)
+            responseCRSs = Collections.emptyList();
+        else
+            responseCRSs = Arrays.asList(responseCRS);
+        return responseCRSs;
+
     }
     
     public String nativeFormat() throws Exception {
