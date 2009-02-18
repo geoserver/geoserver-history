@@ -5,7 +5,10 @@
    <coverage>
      <name>Arc_Sample</name>
      <nativeName>Arc_Sample</nativeName>
-     <alias/>
+     <namespace>
+       <name>nurc</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/namespaces/nurc.xml" type="application/xml"/>
+     </namespace>
      <title>Global annual rainfall</title>
      <description>Global annual rainfall in ArcGrid format</description>
      <keywords>
@@ -13,7 +16,15 @@
        <string>arcGridSample</string>
        <string>arcGridSample_Coverage</string>
      </keywords>
-     <metadataLinks/>
+     <nativeCRS>GEOGCS[&quot;WGS 84&quot;, 
+     DATUM[&quot;World Geodetic System 1984&quot;, 
+       SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]], 
+       AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]], 
+     PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], 
+     UNIT[&quot;degree&quot;, 0.017453292519943295], 
+     AXIS[&quot;Geodetic longitude&quot;, EAST], 
+     AXIS[&quot;Geodetic latitude&quot;, NORTH], 
+     AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]</nativeCRS>
      <srs>EPSG:4326</srs>
      <nativeBoundingBox>
        <minx>-180.0</minx>
@@ -30,6 +41,15 @@
        <crs>EPSG:4326</crs>
      </latLonBoundingBox>
      <enabled>true</enabled>
+     <metadata>
+       <dirName>
+         <string>arcGridSample_Arc_Sample</string>
+       </dirName>
+     </metadata>
+     <store class="coverageStore">
+       <name>arcGridSample</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/nurc/coveragestores/arcGridSample.xml" type="application/xml"/>
+     </store>
      <nativeFormat>ArcGrid</nativeFormat>
      <grid dimension="2">
        <range>
@@ -63,13 +83,9 @@
          <name>precip30min</name>
          <description>GridSampleDimension[-9999.0,8849.000000000002]</description>
          <range>
-           <elementClass>java.lang.Double</elementClass>
-           <minValue class="double">-9999.0</minValue>
-           <maxValue class="double">8849.0</maxValue>
-           <isMinIncluded>true</isMinIncluded>
-           <isMaxIncluded>true</isMaxIncluded>
+           <min>-9999.0</min>
+           <max>8849.0</max>
          </range>
-         <nullValues/>
        </coverageDimension>
      </dimensions>
      <requestSRS>
@@ -78,21 +94,4 @@
      <responseSRS>
        <string>EPSG:4326</string>
      </responseSRS>
-     <parameters/>
-     <nativeCRS>GEOGCS[&quot;WGS 84&quot;, 
-     DATUM[&quot;World Geodetic System 1984&quot;, 
-       SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]], 
-       AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]], 
-     PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], 
-     UNIT[&quot;degree&quot;, 0.017453292519943295], 
-     AXIS[&quot;Geodetic longitude&quot;, EAST], 
-     AXIS[&quot;Geodetic latitude&quot;, NORTH], 
-     AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]</nativeCRS>
-     <store>arcGridSample</store>
-     <namespace>nurc</namespace>
-     <metadata>
-       <dirName>
-         <string>arcGridSample_Arc_Sample</string>
-       </dirName>
-     </metadata>
    </coverage>

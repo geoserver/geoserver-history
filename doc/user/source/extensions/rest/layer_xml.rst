@@ -6,10 +6,19 @@
      <name>states</name>
      <path>/</path>
      <type>VECTOR</type>
-     <enabled>true</enabled>
-     <resource>states</resource>
-     <defaultStyle>population</defaultStyle>
+     <defaultStyle>
+       <name>population</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/styles/population.xml" type="application/xml"/>
+     </defaultStyle>
      <styles>
-       <style>population</style>
+       <style>
+         <name>population</name>
+         <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/styles/population.xml" type="application/xml"/>
+       </style>
      </styles>
+     <enabled>true</enabled>
+     <resource>
+       <name>states</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/topp/datastores/states_shapefile/featuretypes/states.xml" type="application/xml"/>
+     </resource>
    </layer>

@@ -3,36 +3,59 @@
 .. code-block:: javascript
 
    {
-     layerGroup: {
-       name: "tasmania", 
-       bounds: {
-         minx: 143.83482400000003, 
-         maxx: 148.47914100000003, 
-         miny: -43.648056, 
-         maxy: -39.573891, 
-         crs: "EPSG:4326"
-       }, 
-       layers: {
-         layer: [
-           "tasmania_state_boundaries", 
-           "tasmania_water_bodies", 
-           "tasmania_roads", 
-           "tasmania_cities"
-         ]
-       }, 
-       styles: {
-         style: [
-           "green", 
-           "cite_lakes", 
-           "simple_roads", 
-           "capitals"
-         ]
-       }, 
-       metadata: {
-         rawStyleList: {
-           string: ""
+      "layerGroup":{
+         "name":"tasmania",
+         "layers":{
+            "layer":[
+               {
+                  "name":"tasmania_state_boundaries",
+                  "href":"http:\/\/localhost:8080\/geoserver\/rest\/layers\/tasmania_state_boundaries.json"
+               },
+               {
+                  "name":"tasmania_water_bodies",
+                  "href":"http:\/\/localhost:8080\/geoserver\/rest\/layers\/tasmania_water_bodies.json"
+               },
+               {
+                  "name":"tasmania_roads",
+                  "href":"http:\/\/localhost:8080\/geoserver\/rest\/layers\/tasmania_roads.json"
+               },
+               {
+                  "name":"tasmania_cities",
+                  "href":"http:\/\/localhost:8080\/geoserver\/rest\/layers\/tasmania_cities.json"
+               }
+            ]
+         },
+         "styles":{
+            "style":[
+               {
+                  "name":"green",
+                  "href":"http:\/\/localhost:8080\/geoserver\/rest\/styles\/green.json"
+               },
+               {
+                  "name":"cite_lakes",
+                  "href":"http:\/\/localhost:8080\/geoserver\/rest\/styles\/cite_lakes.json"
+               },
+               {
+                  "name":"simple_roads",
+                  "href":"http:\/\/localhost:8080\/geoserver\/rest\/styles\/simple_roads.json"
+               },
+               {
+                  "name":"capitals",
+                  "href":"http:\/\/localhost:8080\/geoserver\/rest\/styles\/capitals.json"
+               }
+            ]
+         },
+         "bounds":{
+            "minx":-180,
+            "maxx":180,
+            "miny":-90,
+            "maxy":90,
+            "crs":"EPSG:4326"
+         },
+         "metadata":{
+            "rawStyleList":{
+               "string":""
+            }
          }
-       }
-     }
+      }
    }
-   

@@ -5,17 +5,26 @@
    <featureType>
      <name>states</name>
      <nativeName>states</nativeName>
-     <alias/>
+     <namespace>
+       <name>topp</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/namespaces/topp.xml" type="application/xml"/>
+     </namespace>
      <title>USA Population</title>
      <abstract>This is some census data on the states.</abstract>
      <keywords>
        <string>census</string>
+       <string>states</string>
        <string>united</string>
        <string>boundaries</string>
        <string>state</string>
-       <string>states</string>
      </keywords>
-     <metadataLinks/>
+     <nativeCRS>GEOGCS[&quot;GCS_WGS_1984&quot;, 
+     DATUM[&quot;WGS_1984&quot;, 
+       SPHEROID[&quot;WGS_1984&quot;, 6378137.0, 298.257223563]], 
+     PRIMEM[&quot;Greenwich&quot;, 0.0], 
+     UNIT[&quot;degree&quot;, 0.017453292519943295], 
+     AXIS[&quot;Longitude&quot;, EAST], 
+     AXIS[&quot;Latitude&quot;, NORTH]]</nativeCRS>
      <srs>EPSG:4326</srs>
      <nativeBoundingBox>
        <minx>-124.73142200000001</minx>
@@ -33,201 +42,173 @@
      </latLonBoundingBox>
      <projectionPolicy>FORCE_DECLARED</projectionPolicy>
      <enabled>true</enabled>
-     <attributes>
-       <attribute>
-         <name>the_geom</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>STATE_NAME</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>STATE_FIPS</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>SUB_REGION</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>STATE_ABBR</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>LAND_KM</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>WATER_KM</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>PERSONS</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>FAMILIES</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>HOUSHOLD</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>MALE</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>FEMALE</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>WORKERS</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>DRVALONE</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>CARPOOL</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>PUBTRANS</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>EMPLOYED</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>UNEMPLOY</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>SERVICE</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>MANUAL</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>P_MALE</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>P_FEMALE</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-       <attribute>
-         <name>SAMP_POP</name>
-         <minOccurs>0</minOccurs>
-         <maxOccurs>1</maxOccurs>
-         <nillable>false</nillable>
-         <metadata/>
-       </attribute>
-     </attributes>
-     <maxFeatures>0</maxFeatures>
-     <numDecimals>0</numDecimals>
-     <nativeCRS>GEOGCS[&quot;GCS_WGS_1984&quot;, 
-     DATUM[&quot;WGS_1984&quot;, 
-       SPHEROID[&quot;WGS_1984&quot;, 6378137.0, 298.257223563]], 
-     PRIMEM[&quot;Greenwich&quot;, 0.0], 
-     UNIT[&quot;degree&quot;, 0.017453292519943295], 
-     AXIS[&quot;Longitude&quot;, EAST], 
-     AXIS[&quot;Latitude&quot;, NORTH]]</nativeCRS>
-     <store>states_shapefile</store>
-     <namespace>topp</namespace>
      <metadata>
        <kml.regionateAttribute>
          <string></string>
        </kml.regionateAttribute>
+       <kml.regionateStrategy>
+         <string></string>
+       </kml.regionateStrategy>
        <cacheAgeMax>
          <string>3600</string>
        </cacheAgeMax>
+       <kml.regionateFeatureLimit>
+         <int>10</int>
+       </kml.regionateFeatureLimit>
        <indexingEnabled>
          <boolean>false</boolean>
        </indexingEnabled>
        <cachingEnabled>
          <boolean>true</boolean>
        </cachingEnabled>
-       <kml.regionateStrategy>
-         <string></string>
-       </kml.regionateStrategy>
        <dirName>
          <string>states</string>
        </dirName>
-       <kml.regionateFeatureLimit>
-         <int>10</int>
-       </kml.regionateFeatureLimit>
      </metadata>
+     <store>
+       <name>states_shapefile</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/topp/datastoresstates_shapefile.xml" type="application/xml"/>
+     </store>
+     <attributes>
+       <attribute>
+         <name>the_geom</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>STATE_NAME</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>STATE_FIPS</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>SUB_REGION</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>STATE_ABBR</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>LAND_KM</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>WATER_KM</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>PERSONS</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>FAMILIES</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>HOUSHOLD</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>MALE</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>FEMALE</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>WORKERS</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>DRVALONE</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>CARPOOL</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>PUBTRANS</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>EMPLOYED</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>UNEMPLOY</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>SERVICE</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>MANUAL</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>P_MALE</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>P_FEMALE</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+       <attribute>
+         <name>SAMP_POP</name>
+         <minOccurs>0</minOccurs>
+         <maxOccurs>1</maxOccurs>
+         <nillable>false</nillable>
+       </attribute>
+     </attributes>
+     <maxFeatures>0</maxFeatures>
+     <numDecimals>0</numDecimals>
    </featureType>

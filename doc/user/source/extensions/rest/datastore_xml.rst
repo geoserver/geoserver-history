@@ -5,13 +5,19 @@
    <dataStore>
      <name>states_shapefile</name>
      <enabled>true</enabled>
+     <workspace>
+       <name>topp</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/topp.xml" type="application/xml"/>
+     </workspace>
      <connectionParameters>
-       <url>
-         <string>file:data/shapefiles/states.shp</string>
-       </url>
        <namespace>
          <string>http://www.openplans.org/topp</string>
        </namespace>
+       <url>
+         <string>file:data/shapefiles/states.shp</string>
+       </url>
      </connectionParameters>
-     <workspace>topp</workspace>
+     <featureTypes>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/topp/datastores/states_shapefile/featuretypes.xml" type="application/xml"/>
+     </featureTypes>
    </dataStore>

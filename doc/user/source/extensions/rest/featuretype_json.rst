@@ -3,237 +3,212 @@
 .. code-block:: javascript 
 
    {
-     featureType: {
-       name: "states", 
-       nativeName: "states", 
-       alias: "", 
-       title: "USA Population", 
-       abstract: "This is some census data on the states.", 
-       keywords: {
-         string: [
-           "census", 
-           "united", 
-           "boundaries", 
-           "state", 
-           "states"
-         ]
-       }, 
-       metadataLinks: "", 
-       srs: "EPSG:4326", 
-       nativeBoundingBox: {
-         minx: -124.73142200000001, 
-         maxx: -66.969849, 
-         miny: 24.955967, 
-         maxy: 49.371735, 
-         crs: "EPSG:4326"
-       }, 
-       latLonBoundingBox: {
-         minx: -124.731422, 
-         maxx: -66.969849, 
-         miny: 24.955967, 
-         maxy: 49.371735, 
-         crs: "EPSG:4326"
-       }, 
-       projectionPolicy: "FORCE_DECLARED", 
-       enabled: true, 
-       attributes: {
-         attribute: [
-           {
-             name: "the_geom", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "STATE_NAME", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "STATE_FIPS", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "SUB_REGION", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "STATE_ABBR", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "LAND_KM", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "WATER_KM", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "PERSONS", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "FAMILIES", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "HOUSHOLD", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "MALE", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "FEMALE", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "WORKERS", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "DRVALONE", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "CARPOOL", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "PUBTRANS", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "EMPLOYED", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "UNEMPLOY", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "SERVICE", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "MANUAL", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "P_MALE", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "P_FEMALE", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }, 
-           {
-             name: "SAMP_POP", 
-             minOccurs: 0, 
-             maxOccurs: 1, 
-             nillable: false, 
-             metadata: ""
-           }
-         ]
-       }, 
-       maxFeatures: 0, 
-       numDecimals: 0, 
-       nativeCRS: "GEOGCS["GCS_WGS_1984", 
-     DATUM["WGS_1984", 
-       SPHEROID["WGS_1984", 6378137.0, 298.257223563]], 
-     PRIMEM["Greenwich", 0.0], 
-     UNIT["degree", 0.017453292519943295], 
-     AXIS["Longitude", EAST], 
-     AXIS["Latitude", NORTH]]", 
-       store: "states_shapefile", 
-       namespace: "topp", 
-       metadata: {
-         kml.regionateAttribute: {
-           string: ""
-         }, 
-         cacheAgeMax: {
-           string: 3600
-         }, 
-         indexingEnabled: {
-           boolean: false
-         }, 
-         cachingEnabled: {
-           boolean: true
-         }, 
-         kml.regionateStrategy: {
-           string: ""
-         }, 
-         dirName: {
-           string: "states"
-         }, 
-         kml.regionateFeatureLimit: {
-           int: 10
-         }
-       }
-     }
+      "featureType":{
+         "name":"states",
+         "nativeName":"states",
+         "namespace":{
+            "name":"topp",
+            "href":"http:\/\/localhost:8080\/geoserver\/rest\/namespaces\/topp.json"
+         },
+         "title":"USA Population",
+         "abstract":"This is some census data on the states.",
+         "keywords":{
+            "string":[
+               "census",
+               "states",
+               "united",
+               "boundaries",
+               "state"
+            ]
+         },
+         "nativeCRS":"GEOGCS[\"GCS_WGS_1984\", \n  DATUM[\"WGS_1984\", \n    SPHEROID[\"WGS_1984\", 6378137.0, 298.257223563]], \n  PRIMEM[\"Greenwich\", 0.0], \n  UNIT[\"degree\", 0.017453292519943295], \n  AXIS[\"Longitude\", EAST], \n  AXIS[\"Latitude\", NORTH]]",
+         "srs":"EPSG:4326",
+         "nativeBoundingBox":{
+            "minx":-124.73142200000001,
+            "maxx":-66.969849,
+            "miny":24.955967,
+            "maxy":49.371735,
+            "crs":"EPSG:4326"
+         },
+         "latLonBoundingBox":{
+            "minx":-124.731422,
+            "maxx":-66.969849,
+            "miny":24.955967,
+            "maxy":49.371735,
+            "crs":"EPSG:4326"
+         },
+         "projectionPolicy":"FORCE_DECLARED",
+         "enabled":true,
+         "metadata":{
+            "kml.regionateAttribute":{
+               "string":""
+            },
+            "kml.regionateStrategy":{
+               "string":""
+            },
+            "cacheAgeMax":{
+               "string":3600
+            },
+            "kml.regionateFeatureLimit":{
+               "int":10
+            },
+            "indexingEnabled":{
+               "boolean":false
+            },
+            "cachingEnabled":{
+               "boolean":true
+            },
+            "dirName":{
+               "string":"states"
+            }
+         },
+         "store":{
+            "name":"states_shapefile",
+            "href":"http:\/\/localhost:8080\/geoserver\/rest\/workspaces\/topp\/datastoresstates_shapefile.json"
+         },
+         "attributes":{
+            "attribute":[
+               {
+                  "name":"the_geom",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"STATE_NAME",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"STATE_FIPS",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"SUB_REGION",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"STATE_ABBR",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"LAND_KM",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"WATER_KM",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"PERSONS",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"FAMILIES",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"HOUSHOLD",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"MALE",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"FEMALE",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"WORKERS",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"DRVALONE",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"CARPOOL",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"PUBTRANS",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"EMPLOYED",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"UNEMPLOY",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"SERVICE",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"MANUAL",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"P_MALE",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"P_FEMALE",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               },
+               {
+                  "name":"SAMP_POP",
+                  "minOccurs":0,
+                  "maxOccurs":1,
+                  "nillable":false
+               }
+            ]
+         },
+         "maxFeatures":0,
+         "numDecimals":0
+      }
    }

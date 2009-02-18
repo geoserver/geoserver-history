@@ -3,13 +3,15 @@
 .. code-block:: javascript
 
    {
-     coverageStore: {
-       name: "arcGridSample", 
-       enabled: true, 
-       connectionParameters: "", 
-       type: "ArcGrid", 
-       url: "file:coverages/arc_sample/precip30min.asc", 
-       workspace: "nurc"
-     }
+      "coverageStore":{
+         "name":"arcGridSample",
+         "enabled":true,
+         "workspace":{
+            "name":"nurc",
+            "href":"http:\/\/localhost:8080\/geoserver\/rest\/worksapces\/nurc.json"
+         },
+         "type":"ArcGrid",
+         "url":"file:coverages\/arc_sample\/precip30min.asc",
+         "coverages":"http:\/\/localhost:8080\/geoserver\/rest\/workspaces\/nurc\/coveragestores\/arcGridSample\/coverages.json"
+      }
    }
-   

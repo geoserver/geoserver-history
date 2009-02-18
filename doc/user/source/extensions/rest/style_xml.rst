@@ -1,6 +1,6 @@
 .. _style_xml:
 
-.. code-block: xml
+.. code-block:: xml
 
    <style>
      <name>population</name>

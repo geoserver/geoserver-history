@@ -3,7 +3,9 @@
 .. code-block:: javascript
 
    {
-     workspace: {
-       name: "topp"
-     }
+      "workspace":{
+         "name":"topp",
+         "dataStores":"http:\/\/localhost:8080\/geoserver\/rest\/workspaces\/topp\/datastores.json",
+         "coverageStores":"http:\/\/localhost:8080\/geoserver\/rest\/workspaces\/topp\/coveragestores.json"
+      }
    }

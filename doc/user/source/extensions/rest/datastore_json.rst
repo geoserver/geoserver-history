@@ -3,18 +3,21 @@
 .. code-block:: javascript
 
    {
-     dataStore: {
-       name: "states_shapefile", 
-       enabled: true, 
-       connectionParameters: {
-         url: {
-           string: "file:data/shapefiles/states.shp"
-         }, 
-         namespace: {
-           string: "http://www.openplans.org/topp"
-         }
-       }, 
-       workspace: "topp"
-     }
+      "dataStore":{
+         "name":"states_shapefile",
+         "enabled":true,
+         "workspace":{
+            "name":"topp",
+            "href":"http:\/\/localhost:8080\/geoserver\/rest\/workspaces\/topp.json"
+         },
+         "connectionParameters":{
+            "namespace":{
+               "string":"http:\/\/www.openplans.org\/topp"
+            },
+            "url":{
+               "string":"file:data\/shapefiles\/states.shp"
+            }
+         },
+         "featureTypes":"http:\/\/localhost:8080\/geoserver\/rest\/workspaces\/topp\/datastores\/states_shapefile\/featuretypes.json"
+      }
    }
-   

@@ -5,8 +5,13 @@
    <coverageStore>
      <name>arcGridSample</name>
      <enabled>true</enabled>
-     <connectionParameters/>
+     <workspace>
+       <name>nurc</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/worksapces/nurc.xml" type="application/xml"/>
+     </workspace>
      <type>ArcGrid</type>
      <url>file:coverages/arc_sample/precip30min.asc</url>
-     <workspace>nurc</workspace>
+     <coverages>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/nurc/coveragestores/arcGridSample/coverages.xml" type="application/xml"/>
+     </coverages>
    </coverageStore>
