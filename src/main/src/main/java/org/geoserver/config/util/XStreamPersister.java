@@ -32,7 +32,6 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.catalog.Wrapper;
 import org.geoserver.catalog.impl.AttributeTypeInfoImpl;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.impl.CoverageDimensionImpl;
@@ -55,15 +54,16 @@ import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.security.SecureCatalogImpl;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.data.jdbc.datasource.UnWrapper;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
+import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
@@ -284,12 +284,16 @@ public class XStreamPersister {
         
         // CoverageInfo
 
+        // CoverageDimensionInfo
+        xs.registerLocalConverter( CoverageDimensionImpl.class, "range", new NumberRangeConverter());
+        
         // AttributeTypeInfo
         xs.omitField( AttributeTypeInfoImpl.class, "featureType");
         xs.omitField( AttributeTypeInfoImpl.class, "attribute");
         
         // LayerInfo
         xs.omitField( LayerInfoImpl.class, "id");
+        //xs.omitField( LayerInfoImpl.class, "resource");
         xs.registerLocalConverter( LayerInfoImpl.class, "resource", new ReferenceConverter( ResourceInfo.class ) );
         xs.registerLocalConverter( LayerInfoImpl.class, "defaultStyle", new ReferenceConverter( StyleInfo.class ) );
         xs.registerLocalConverter( LayerInfoImpl.class, "styles", new ReferenceCollectionConverter( StyleInfo.class ) );
@@ -356,15 +360,9 @@ public class XStreamPersister {
      * </p>
      */
     public static Object unwrapProxies( Object obj ) {
+        obj = SecureCatalogImpl.unwrap( obj );
         obj = GeoServerImpl.unwrap( obj );
         obj = CatalogImpl.unwrap( obj );
-        if ( obj instanceof Wrapper ) {
-            Wrapper w = (Wrapper) obj;
-            if ( w.isWrapperFor( Catalog.class ) ) {
-                obj = w.unwrap( Catalog.class );    
-            }
-            
-        }
         return obj;
     }
     
@@ -809,7 +807,58 @@ public class XStreamPersister {
             return ints;
         }
     }
-    
+    class NumberRangeConverter extends AbstractReflectionConverter {
+     
+        @Override
+        public boolean canConvert(Class clazz) {
+            return NumberRange.class.isAssignableFrom( clazz );
+        }
+        
+        @Override
+        public void marshal(Object original, HierarchicalStreamWriter writer,
+                MarshallingContext context) {
+            NumberRange range = (NumberRange) original;
+            
+            writer.startNode("min");
+            if ( Double.isInfinite( ((Double)range.getMinValue()).doubleValue() ) ) {
+                context.convertAnother( "-inf" );
+            }
+            //context.convertAnother( range.getMinValue() != null ? range.getMinValue().toString() : "-Infinity" );
+            writer.endNode();
+            
+            writer.startNode("max");
+            if ( Double.isInfinite( ((Double)range.getMaxValue()).doubleValue() )) {
+                context.convertAnother( "inf");
+            }
+            //context.convertAnother( range.getMaxValue() != null ? range.getMaxValue().toString() : "Infinity" );
+            writer.endNode();
+        }
+        
+        @Override
+        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+            //JD: we handle infinite manually b/c the json serializer chokes on inifinte values 
+            // b/c JSON does not support it
+            Double min = null, max = null;
+            while( reader.hasMoreChildren() ) {
+                reader.moveDown();
+                if ( "min".equals( reader.getNodeName() ) ) {
+                    if ( !"-inf".equals( reader.getValue() ) ) {
+                        min = Double.parseDouble( reader.getValue() ); 
+                    }
+                }
+                if ( "max".equals( reader.getNodeName() ) ) {
+                    if ( !"inf".equals( reader.getValue() ) ) {
+                        max = Double.parseDouble( reader.getValue() ); 
+                    }
+                }
+            }
+            
+            min = min != null ? min : Double.NEGATIVE_INFINITY;
+            max = max != null ? max : Double.POSITIVE_INFINITY;
+            
+            return NumberRange.create( min.doubleValue(), true, max.doubleValue(), true );
+        }
+    }
     
     //catalog object converters
     /**
@@ -1096,10 +1145,16 @@ public class XStreamPersister {
         public LayerInfoConverter() {
             super( LayerInfo.class );
         }
-        
+                
         @Override
         protected void postDoMarshal(Object result,
                 HierarchicalStreamWriter writer, MarshallingContext context) {
+            /*
+            LayerInfo l = (LayerInfo) result;
+            writer.startNode("resource");
+            context.convertAnother( l.getResource(), new ReferenceConverter( ResourceInfo.class ) );
+            writer.endNode();
+            */
             callback.postEncodeLayer( (LayerInfo) result, writer, context );
         }
     }
