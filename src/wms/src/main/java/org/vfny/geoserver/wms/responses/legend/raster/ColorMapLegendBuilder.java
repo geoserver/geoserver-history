@@ -12,6 +12,9 @@ import java.awt.RenderingHints.Key;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +23,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
 
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
@@ -97,6 +103,7 @@ class ColorMapLegendBuilder {
 		
 		public abstract void draw(final Graphics2D graphics,final Rectangle2D clipBox, final boolean completeBorder);
 		
+		@Override
 		public Dimension getPreferredDimension(final Graphics2D graphics){
 			return new Dimension(requestedDimension);
 		}
@@ -249,6 +256,7 @@ class ColorMapLegendBuilder {
 			super(backgroundColor, 1.0, text);
 		}
 		
+		@Override
 		public Dimension getPreferredDimension(final Graphics2D graphics){
 			//get old font
 			final Font oldFont=graphics.getFont();
@@ -845,28 +853,28 @@ class ColorMapLegendBuilder {
         // compute dimensions
         //
 		final Queue<BufferedImage> queue= new LinkedList<BufferedImage>();
-		final int numRows=this.cells.size()/3;
-		for(int i=0;i<numRows;i++){
+		int numRows=this.cells.size()/3,i=0;
+		for(i=0;i<numRows;i++){
 			
 			//
 			//row number i
 			//
 			
 			// color element
-			final Cell cm= this.cells.get(i);
+			final Cell cm= this.cells.get(i*3);
 			final Dimension colorDim=cm.getPreferredDimension(graphics);
 			rowH=Math.max(rowH, colorDim.getHeight());
 			colorW=Math.max(colorW, colorDim.getWidth());
 			
 			// rule
-			final Cell ruleM= this.cells.get(i);
+			final Cell ruleM= this.cells.get(i*3+1);
 			final Dimension ruleDim=ruleM.getPreferredDimension(graphics);
 			rowH=Math.max(rowH, ruleDim.getHeight());
 			ruleW=Math.max(ruleW, ruleDim.getWidth());
 			
 			
 			// label
-			final Cell labelM= this.cells.get(i);
+			final Cell labelM= this.cells.get(i*3+2);
 			if(labelM==null)
 				continue;
 			final Dimension labelDim=labelM.getPreferredDimension(graphics);
@@ -875,19 +883,69 @@ class ColorMapLegendBuilder {
 		}
 		
 		
-		
-		
-		
-		for(ColorMapEntryLegendBuilder legendBuilder:this.colorMapEntryLegendBuilders)
-		{
-			//get the legend
-			final BufferedImage legend= legendBuilder.getLegend();
-			queue.add(legend);
+		final int rowHeight=(int)Math.round(rowH);
+		final int colorWidth=(int)Math.round(colorW);
+		final int ruleWidth=(int)Math.round(ruleW);
+		final int labelWidth=(int)Math.round(labelW);
+		finalDimension.setSize(colorW+ruleW+labelW, rowH*numRows);
+		final Rectangle clipboxA=new Rectangle(0,0,colorWidth,rowHeight);
+		final Rectangle clipboxB=new Rectangle(0,0,ruleWidth,ruleWidth);
+		final Rectangle clipboxC=new Rectangle(0,0,labelWidth,labelWidth);
+		//
+		//
+		//
+		for(i=0;i<numRows;i++){
 			
-			//set width and height of the final legend by using the larger width and by summing the new height
-			final int currentWidth=(int) finalDimension.getWidth();
-			finalDimension.setSize(currentWidth>legend.getWidth()?currentWidth:legend.getWidth(), finalDimension.getHeight()+legend.getHeight());
-		}
+			//
+			//row number i
+			//
+			//get element for color
+			final Cell colorCell= cells.get(i*3);
+			//draw it
+	        final BufferedImage colorCellLegend = new BufferedImage(colorWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);	
+	        Graphics2D rlg = colorCellLegend.createGraphics();
+	        colorCell.draw(rlg, clipboxA,false);
+	        rlg.dispose(); 
+	        
+			//get element for rule
+			final Cell ruleCell= cells.get(i*3+1);
+			//draw it
+	        final BufferedImage ruleCellLegend = new BufferedImage(ruleWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);	
+	        rlg = ruleCellLegend.createGraphics();
+	        ruleCell.draw(rlg, clipboxB,false);
+	        rlg.dispose(); 
+
+	        
+			//get element for label
+			final Cell labelCell= cells.get(i*3+2);
+			//draw it
+	        final BufferedImage labelCellLegend = new BufferedImage(labelWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);	
+	        rlg = labelCellLegend.createGraphics();
+	        labelCell.draw(rlg, clipboxC,false);
+	        rlg.dispose(); 
+	        
+	        
+	        ////
+	        //
+            // merge
+	        //
+	        ////
+	        queue.add(LegendUtils.mergeBufferedImages(colorCellLegend, hintsMap, graphics,ruleCellLegend,labelCellLegend,transparent,backgroundColor,true));    
+			
+	        
+	       
+			
+		}		
+//		for(Cell cell:this.cells)
+//		{
+//			//get the legend
+//			final BufferedImage legend= legendBuilder.getLegend();
+//			queue.add(legend);
+//			
+//			//set width and height of the final legend by using the larger width and by summing the new height
+//			final int currentWidth=(int) finalDimension.getWidth();
+//			finalDimension.setSize(currentWidth>legend.getWidth()?currentWidth:legend.getWidth(), finalDimension.getHeight()+legend.getHeight());
+//		}
 		
 		//return the list of legends
 		return queue;
