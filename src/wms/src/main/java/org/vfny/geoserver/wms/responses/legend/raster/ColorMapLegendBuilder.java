@@ -286,6 +286,7 @@ class ColorMapLegendBuilder {
 		private boolean hasLabel;
 		private TextManager labelManager;
 		private SimpleColorManager colorManager;
+		private TextManager ruleManager;
 
 		public SingleColorMapEntryLegendBuilder(List<ColorMapEntry> cMapEntries) {
 			super(cMapEntries);
@@ -300,13 +301,16 @@ class ColorMapLegendBuilder {
 			final double quantity = LegendUtils.getQuantity(currentCME);
 			final String symbol = " = "; 
             String rule = Double.toString(quantity)+" "+symbol+" x";
+
+            this.ruleManager= new TextManager(rule);
+            		
             // add the label the label to the rule so that we draw all text just once 
             if(label!=null)
             {
-            	rule+=" "+label;
+            	
             	hasLabel=true;
+            	this.labelManager= new TextManager(label);
             }
-            this.labelManager= new TextManager(rule);
 		}
 
 
@@ -340,21 +344,38 @@ class ColorMapLegendBuilder {
             final Rectangle2D.Double rectLegend= new Rectangle2D.Double(hpad,vpad,wLegend,hLegend);
             colorManager.draw(graphics, rectLegend,true);
             
+ 	       
 	        ////
 	        //
-            // DRAW the text 
+            // DRAW the rule 
 	        //
 	        //
 	        ////
             //this is a traditional 'regular-old' label.  Just figure the
 	        //size and act accordingly.
-            final Dimension dimensions = labelManager.computeDimension(graphics);
+            Dimension dimensions = ruleManager.computeDimension(graphics);
+	        graphics.dispose();
+	        //now draw
+	        final BufferedImage renderedRule = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
+	        Graphics2D rlg = renderedRule.createGraphics();
+	        ruleManager.draw(rlg, new Rectangle(0,0,renderedRule.getWidth(),renderedRule.getHeight()));
+	        rlg.dispose(); 
+	        
+	        ////
+	        //
+            // DRAW the label 
+	        //
+	        //
+	        ////
+            //this is a traditional 'regular-old' label.  Just figure the
+	        //size and act accordingly.
+            dimensions = labelManager.computeDimension(graphics);
 	        graphics.dispose();
 	        //now draw
 	        final BufferedImage renderedLabel = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
-	        final Graphics2D rlg = renderedLabel.createGraphics();
+	        rlg = renderedLabel.createGraphics();
 	        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()));
-	        rlg.dispose(); 
+	        rlg.dispose();   
             
             
 	        ////
@@ -363,7 +384,7 @@ class ColorMapLegendBuilder {
 	        //
 	        ////
             return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,
-					renderedLabel,transparent,backgroundColor,true);
+					renderedRule,renderedLabel, transparent,backgroundColor,true);
 		}
 
 
@@ -380,6 +401,7 @@ class ColorMapLegendBuilder {
 		private TextManager labelManager;
 		private boolean hasLabel;
 		private GradientColorManager colorManager;
+		private TextManager ruleManager;
 
 		public RampColorMapEntryLegendBuilder(List<ColorMapEntry> mapEntries) {
 			super(mapEntries);
@@ -414,13 +436,16 @@ class ColorMapLegendBuilder {
             		Double.toString(quantity)+" "+symbol+" x":
             			Double.toString(quantity)+" "+symbol+" x";
             		
+
+            this.ruleManager= new TextManager(rule);
+            		
             // add the label the label to the rule so that we draw all text just once 
             if(label!=null)
             {
-            	rule+=" "+label;
+            	
             	hasLabel=true;
+            	this.labelManager= new TextManager(label);
             }
-            this.labelManager= new TextManager(rule);
     		
 		}
 
@@ -445,23 +470,38 @@ class ColorMapLegendBuilder {
             final Map<Key, Object> hintsMap = new HashMap<Key, Object>();
             Graphics2D graphics = ImageUtils.prepareTransparency(transparent, backgroundColor, image, hintsMap);
            
+ 	       
 	        ////
 	        //
-            // DRAW the text 
+            // DRAW the rule 
 	        //
 	        //
 	        ////
             //this is a traditional 'regular-old' label.  Just figure the
 	        //size and act accordingly.
-            final Dimension dimensions = labelManager.computeDimension(graphics);
+            Dimension dimensions = ruleManager.computeDimension(graphics);
+	        graphics.dispose();
+	        //now draw
+	        final BufferedImage renderedRule = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
+	        Graphics2D rlg = renderedRule.createGraphics();
+	        ruleManager.draw(rlg, new Rectangle(0,0,renderedRule.getWidth(),renderedRule.getHeight()));
+	        rlg.dispose(); 
+	        
+	        ////
+	        //
+            // DRAW the label 
+	        //
+	        //
+	        ////
+            //this is a traditional 'regular-old' label.  Just figure the
+	        //size and act accordingly.
+            dimensions = labelManager.computeDimension(graphics);
 	        graphics.dispose();
 	        //now draw
 	        final BufferedImage renderedLabel = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
-	        final Graphics2D rlg = renderedLabel.createGraphics();
+	        rlg = renderedLabel.createGraphics();
 	        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()));
-	        rlg.dispose();     
-	        
-	       
+	        rlg.dispose();   
             
             
 	        ////
@@ -490,7 +530,7 @@ class ColorMapLegendBuilder {
 	        //
 	        ////
             return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,
-					renderedLabel,transparent,backgroundColor,true);
+					renderedRule,renderedLabel, transparent,backgroundColor,false);
 		}
 
 		@Override
@@ -508,6 +548,7 @@ class ColorMapLegendBuilder {
 			private boolean hasLabel;
 			private TextManager labelManager;
 			private SimpleColorManager colorManager;
+			private TextManager ruleManager;
 			public ClassesEntryLegendBuilder(List<ColorMapEntry> mapEntries) {
 				super(mapEntries);
 				final ColorMapEntry previousCME = mapEntries.get(0);
@@ -539,14 +580,16 @@ class ColorMapLegendBuilder {
 	            		Double.toString(quantity1)+" "+symbol1+" x":
 	            			Double.toString(quantity1)+" "+symbol1+" x "+symbol2+" "+ Double.toString(quantity2)	;
 
+	            this.ruleManager= new TextManager(rule);
 	            		
 	            // add the label the label to the rule so that we draw all text just once 
 	            if(label!=null)
 	            {
-	            	rule+=" "+label;
+	            	
 	            	hasLabel=true;
+	            	this.labelManager= new TextManager(label);
 	            }
-	            this.labelManager= new TextManager(rule);
+	            
 			}
 
 			@Override
@@ -576,20 +619,36 @@ class ColorMapLegendBuilder {
 	            //rectangle for the legend
 	            final Rectangle2D.Double rectLegend= new Rectangle2D.Double(hpad,vpad,wLegend,hLegend);
 	            colorManager.draw(graphics, rectLegend,true);
-	            
+	       
 		        ////
 		        //
-	            // DRAW the text 
+	            // DRAW the rule 
 		        //
 		        //
 		        ////
 	            //this is a traditional 'regular-old' label.  Just figure the
 		        //size and act accordingly.
-	            final Dimension dimensions = labelManager.computeDimension(graphics);
+	            Dimension dimensions = ruleManager.computeDimension(graphics);
+		        graphics.dispose();
+		        //now draw
+		        final BufferedImage renderedRule = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
+		        Graphics2D rlg = renderedRule.createGraphics();
+		        ruleManager.draw(rlg, new Rectangle(0,0,renderedRule.getWidth(),renderedRule.getHeight()));
+		        rlg.dispose(); 
+		        
+		        ////
+		        //
+	            // DRAW the label 
+		        //
+		        //
+		        ////
+	            //this is a traditional 'regular-old' label.  Just figure the
+		        //size and act accordingly.
+	            dimensions = labelManager.computeDimension(graphics);
 		        graphics.dispose();
 		        //now draw
 		        final BufferedImage renderedLabel = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);	
-		        final Graphics2D rlg = renderedLabel.createGraphics();
+		        rlg = renderedLabel.createGraphics();
 		        labelManager.draw(rlg, new Rectangle(0,0,renderedLabel.getWidth(),renderedLabel.getHeight()));
 		        rlg.dispose();    
 	            
@@ -600,7 +659,7 @@ class ColorMapLegendBuilder {
 		        //
 		        ////
 	            return LegendUtils.mergeBufferedImages(image, hintsMap, graphics,
-						renderedLabel,transparent,backgroundColor,true);
+	            		renderedRule,renderedLabel,transparent,backgroundColor,true);
 			}
 
 

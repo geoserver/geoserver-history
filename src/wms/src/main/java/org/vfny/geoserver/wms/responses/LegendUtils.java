@@ -333,24 +333,36 @@ public class LegendUtils {
 	 * @param left
 	 * @param hintsMap
 	 * @param graphics
-	 * @param right
+	 * @param central
+	 * @param right 
 	 * @return
 	 */
-	public static BufferedImage mergeBufferedImages(final BufferedImage left,
-			final Map<Key, Object> hintsMap, final Graphics2D graphics,
-			final BufferedImage right, final boolean transparent,final Color backgroundColor,final boolean vCenter) {
-		final int totalHeight =  (int) Math.ceil(Math.max(right.getHeight(), left.getHeight()));
-		final int totalWidth = (int) Math.ceil(left.getWidth() + right.getWidth());            
+	public static BufferedImage mergeBufferedImages(
+			final BufferedImage left,
+			final Map<Key, Object> hintsMap, 
+			final Graphics2D graphics,
+			final BufferedImage central,
+			final BufferedImage right, 
+			final boolean transparent,
+			final Color backgroundColor,
+			final boolean vCenter) {
+		
+		final int totalHeight =  (int) Math.ceil(Math.max(right.getHeight(),Math.max(central.getHeight(), left.getHeight())));
+		final int totalWidth = (int) Math.ceil(left.getWidth() + central.getWidth()+right.getWidth());            
         final BufferedImage finalImage = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
         final Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalImage, hintsMap);
         
-        //place the first element
+        //place the left element
         int offsetY=vCenter?(int)(((totalHeight-left.getHeight())/2.0)+0.5):0;;
         finalGraphics.drawImage(left, 0,offsetY,null);
 
-        ///place the second element
+        ///place the central element
+        offsetY=vCenter?(int)(((totalHeight-central.getHeight())/2.0)+0.5):totalHeight-central.getHeight();
+        finalGraphics.drawImage(central, left.getWidth(),offsetY,null);
+        
+        ///place the right element
         offsetY=vCenter?(int)(((totalHeight-right.getHeight())/2.0)+0.5):totalHeight-right.getHeight();
-        finalGraphics.drawImage(right, left.getWidth(),offsetY,null);
+        finalGraphics.drawImage(right,left.getWidth()+ central.getWidth(),offsetY,null);        
         
         graphics.dispose();
 		return (BufferedImage) finalImage;
