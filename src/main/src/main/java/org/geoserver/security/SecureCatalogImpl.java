@@ -733,31 +733,49 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     // Unwrappers, used to make sure the lower level does not get hit by
     // read only wrappers
     // -------------------------------------------------------------------
-    
-    LayerGroupInfo unwrap(LayerGroupInfo layerGroup) {
+    static LayerGroupInfo unwrap(LayerGroupInfo layerGroup) {
         if(layerGroup instanceof SecuredLayerGroupInfo)
             return ((SecuredLayerGroupInfo) layerGroup).unwrap(LayerGroupInfo.class);
         return layerGroup;
     }
     
-    LayerInfo unwrap(LayerInfo layer) {
+    static LayerInfo unwrap(LayerInfo layer) {
         if(layer instanceof SecuredLayerInfo)
             return ((SecuredLayerInfo) layer).unwrap(LayerInfo.class);
         return layer;
     }
     
-    ResourceInfo unwrap(ResourceInfo info) {
+    static ResourceInfo unwrap(ResourceInfo info) {
         if(info instanceof SecuredFeatureTypeInfo)
             return ((SecuredFeatureTypeInfo) info).unwrap(ResourceInfo.class);
         return info;
     }
     
-    StoreInfo unwrap(StoreInfo info) {
+    static StoreInfo unwrap(StoreInfo info) {
         if(info instanceof SecuredDataStoreInfo)
             return ((SecuredDataStoreInfo) info).unwrap(StoreInfo.class);
         return info;
     }
 
+    public static Object unwrap( Object obj ) {
+        if ( obj instanceof LayerGroupInfo ) {
+            return unwrap((LayerGroupInfo)obj);
+        }
+        if ( obj instanceof LayerInfo ) {
+            return unwrap((LayerInfo)obj);
+        }
+        if ( obj instanceof ResourceInfo ) {
+            return unwrap((ResourceInfo)obj);
+        }
+        if ( obj instanceof StoreInfo ) {
+            return unwrap((StoreInfo)obj);
+        }
+        if ( obj instanceof SecureCatalogImpl ) {
+            return ((SecureCatalogImpl)obj).delegate;
+        }
+        
+        return obj;
+    }
     // -------------------------------------------------------------------
     // PURE DELEGATING METHODS
     // (MapInfo being here since its role in the grand scheme of things
