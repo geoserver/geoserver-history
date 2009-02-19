@@ -7,12 +7,10 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
-import java.util.Collection;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
-import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
 import org.geotools.styling.FeatureTypeStyle;
@@ -22,8 +20,6 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.util.NumberRange;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.PropertyDescriptor;
-import org.opengis.feature.type.PropertyType;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
@@ -78,18 +74,7 @@ public class RasterLayerLegendHelper {
 		// and check that it is actually a grid
 		final SimpleFeatureType layer = request.getLayer();
 		boolean found =false;
-		final Collection<PropertyDescriptor> descriptors = layer.getDescriptors();
-		for(PropertyDescriptor descriptor: descriptors){
-			
-			//get the type
-			final PropertyType type=descriptor.getType();
-			if(type.getBinding().isAssignableFrom(GridCoverage2D.class))
-			{
-				found=true;
-				break;
-			}
-			
-		}
+		found = LegendUtils.checkGridLayer(layer);
 		if(!found)
 			throw new IllegalArgumentException("Unable to create legend for non raster style");
 		
@@ -156,13 +141,18 @@ public class RasterLayerLegendHelper {
 			// setting transparency and background bkgColor
 			cmapLegendBuilder.setTransparent(transparent);
 			cmapLegendBuilder.setBackgroundColor(bgColor);
+			
+			//setting band
 
 			// Setting label font and font bkgColor
 			cmapLegendBuilder.setLabelFont(LegendUtils.getLabelFont(request));
 			cmapLegendBuilder.setLabelFontColor(LegendUtils.getLabelFontColor(request));
 
 			// passing additional options
-			cmapLegendBuilder.setAdditionalOptions(request.getLegendOptions());				
+			cmapLegendBuilder.setAdditionalOptions(request.getLegendOptions());	
+			
+			//set band
+			cmapLegendBuilder.setBand(rasterSymbolizer.getChannelSelection().getGrayChannel());
 
 			// adding the colormap entries
 			final ColorMapEntry[] colorMapEntries = cmap.getColorMapEntries();

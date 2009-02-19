@@ -12,6 +12,9 @@ import java.awt.RenderingHints.Key;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,8 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
+import org.geotools.styling.SelectedChannelType;
 import org.vfny.geoserver.wms.responses.ImageUtils;
 import org.vfny.geoserver.wms.responses.LegendUtils;
 import org.vfny.geoserver.wms.responses.LegendUtils.HAlign;
@@ -69,7 +76,21 @@ class ColorMapLegendBuilder {
 	}
 	
 	abstract class Row{
+		private final List<Cell> columns= new ArrayList<Cell>();
 		
+		Row(){
+		}
+		Row(final List<Cell> columns){
+			columns.addAll(columns);
+		}
+		
+		protected Cell get(final int index){
+			return columns.get(index);
+		}
+		
+		protected void add(final Cell cell){
+			columns.add(cell);
+		}
 	}
 	abstract class Cell{
 	
@@ -136,11 +157,11 @@ class ColorMapLegendBuilder {
 	            if(!completeBorder)
 	            {
 		            
-		            final int minx=(int) (clipBox.getMinX()+0.5);
-		            final int miny=(int) (clipBox.getMinY()+0.5);
-		            final int maxx=(int) (minx+clipBox.getWidth()+0.5)-1;
-		            final int maxy=(int)(miny+clipBox.getHeight()+0.5)-1;	            	
-	            	graphics.drawLine(minx,maxy,maxx,maxy);
+//		            final int minx=(int) (clipBox.getMinX()+0.5);
+//		            final int miny=(int) (clipBox.getMinY()+0.5);
+//		            final int maxx=(int) (minx+clipBox.getWidth()+0.5)-1;
+//		            final int maxy=(int)(miny+clipBox.getHeight()+0.5)-1;	            	
+//	            	graphics.drawLine(minx,maxy,maxx,maxy);
 	            }
 	            else
 	            {
@@ -176,8 +197,8 @@ class ColorMapLegendBuilder {
 	            if(!completeBorder)
 	            {
 		            
-        	
-	            	graphics.drawLine(minx,maxy,maxx,maxy);
+//        	
+//	            	graphics.drawLine(minx,maxy,maxx,maxy);
 	            }
 	            else
 	            {
@@ -200,7 +221,7 @@ class ColorMapLegendBuilder {
 		@Override
 		public Dimension getPreferredDimension(Graphics2D graphics) {
 			//twice as much space for the Height to account for the gradient
-			return new Dimension(requestedDimension.width,2*requestedDimension.height);
+			return new Dimension(requestedDimension.width,(int) (1.5*requestedDimension.height+0.5));
 		}
 
 		private Color previousColor=null;
@@ -229,13 +250,13 @@ class ColorMapLegendBuilder {
 	            		minx,
 	            		miny,
 	            		w,
-	            		h/2.0);
+	            		h/2);
 	            
 	            //gradient paint
 	            final Paint oldPaint=graphics.getPaint();
 	            final GradientPaint paint=new GradientPaint(
 	            		(float)minx,(float)miny,previousColor,
-	            		(float)minx,(float)(miny+h/2.0),bkgColor);
+	            		(float)minx,(float)(miny+h/2),bkgColor);
 	            
 	            // do the magic
 	            graphics.setPaint(paint);
@@ -252,9 +273,9 @@ class ColorMapLegendBuilder {
             //careful with handling the leftEdge case
             final Rectangle2D rectLegend  = new Rectangle2D.Double(
             		minx,
-            		miny+(leftEdge?0:h/2.0),
+            		miny+(leftEdge?0:h/2),
             		w,
-            		!leftEdge?h/2.0:h);
+            		!leftEdge?h/2:h);
             super.draw(graphics, rectLegend, completeBorder);
             
             
@@ -298,7 +319,8 @@ class ColorMapLegendBuilder {
 			//set font and font color and the antialising
 			graphics.setColor(labelFontColor);
 			graphics.setFont(labelFont);
-			graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			if(fontAntiAliasing)
+				graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			
 			//Halign==center vAlign==bottom
             final double minx=clipBox.getMinX();
@@ -348,19 +370,22 @@ class ColorMapLegendBuilder {
 		
 		
 	}
-	 abstract class ColorMapEntryLegendBuilder {		
+	 abstract class ColorMapEntryLegendBuilder extends Row{		
 		
-		protected ColorMapEntryLegendBuilder(final List<ColorMapEntry> mapEntries,ColorManager colorManager,
-				TextManager labelManager, TextManager ruleManager) {
-			this.colorManager = colorManager;
-			this.labelManager = labelManager;
-			this.ruleManager = ruleManager;
-			colorMapEntriesSubset.addAll(mapEntries);
+		protected ColorMapEntryLegendBuilder() {
+			super();
+		}
+
+
+		protected ColorMapEntryLegendBuilder(List<Cell> columns) {
+			super(columns);
 			
 		}
-		
-		protected ColorMapEntryLegendBuilder(final List<ColorMapEntry> mapEntries) {
-			colorMapEntriesSubset.addAll(mapEntries);
+
+
+		protected ColorMapEntryLegendBuilder(ColorManager colorManager,
+				TextManager labelManager, TextManager ruleManager) {
+			super(Arrays.asList(colorManager,ruleManager,labelManager));
 			
 		}
 
@@ -368,39 +393,30 @@ class ColorMapLegendBuilder {
 		public boolean hasLabel() {
 			return hasLabel;
 		}
-
-		protected final ArrayList<ColorMapEntry> colorMapEntriesSubset = new ArrayList<ColorMapEntry>();
-		
-		protected ColorManager colorManager;
-		
-		protected TextManager labelManager;
-		
-		protected TextManager ruleManager;
-
 		protected boolean hasLabel;
 
 
 
-		public TextManager getRuleManager() {
-			return ruleManager;
+		public Cell getRuleManager() {
+			return get(1);
 		}
 		
-		public TextManager getLabelManager()  {
-			return labelManager;
+		public Cell getLabelManager()  {
+			return get(2);
 		}
-		public ColorManager getColorManager()  {
-			return colorManager;
+		public Cell getColorManager()  {
+			return get(0);
 		}
 	}
 	 class SingleColorMapEntryLegendBuilder extends ColorMapEntryLegendBuilder{
 		
 		public SingleColorMapEntryLegendBuilder(List<ColorMapEntry> cMapEntries, HAlign hAlign, VAlign vAling) {
-			super(cMapEntries);
+			
 			final ColorMapEntry currentCME = cMapEntries.get(0);
 			Color color = LegendUtils.color(currentCME);
 			final double opacity = LegendUtils.getOpacity(currentCME);
 			color=new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
-			this.colorManager= new SimpleColorManager(color,opacity);
+			super.add( new SimpleColorManager(color,opacity));
 			
 
 			final String label = currentCME.getLabel();
@@ -408,15 +424,17 @@ class ColorMapLegendBuilder {
 			final String symbol = " = "; 
             String rule = Double.toString(quantity)+" "+symbol+" x";
 
-            this.ruleManager= new TextManager(rule, vAling, hAlign);
+            super.add( new TextManager(rule, vAling, hAlign));
             		
             // add the label the label to the rule so that we draw all text just once 
             if(label!=null)
             {
             	
             	hasLabel=true;
-            	this.labelManager= new TextManager(label, vAling, hAlign);
+            	super.add( new TextManager(label, vAling, hAlign));
             }
+            else
+            	super.add( null);
 		}
 
 
@@ -426,7 +444,6 @@ class ColorMapLegendBuilder {
 	 class RampColorMapEntryLegendBuilder extends ColorMapEntryLegendBuilder{
 
 		public RampColorMapEntryLegendBuilder(List<ColorMapEntry> mapEntries, HAlign hAlign, VAlign vAling) {
-			super(mapEntries);
 			
 			final ColorMapEntry previousCME = mapEntries.get(0);
 			final ColorMapEntry currentCME = mapEntries.get(1);
@@ -448,7 +465,7 @@ class ColorMapLegendBuilder {
 			Color color = LegendUtils.color(currentCME);
 			double opacity = LegendUtils.getOpacity(currentCME);	
 			color=new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
-			this.colorManager= new GradientColorManager(color,opacity,previousColor);
+			super.add( new GradientColorManager(color,opacity,previousColor));
 			
 			
 			String label = currentCME.getLabel();
@@ -460,15 +477,17 @@ class ColorMapLegendBuilder {
             			Double.toString(quantity)+" "+symbol+" x";
             		
 
-            this.ruleManager= new TextManager(rule, vAling, hAlign);
+    		super.add(  new TextManager(rule, vAling, hAlign));
             		
             // add the label the label to the rule so that we draw all text just once 
             if(label!=null)
             {
             	
             	hasLabel=true;
-            	this.labelManager= new TextManager(label, vAling, hAlign);
+            	super.add( new TextManager(label, vAling, hAlign));
             }
+            else
+            	super.add( null);
     		
 		}
 		
@@ -477,7 +496,7 @@ class ColorMapLegendBuilder {
 	 class ClassesEntryLegendBuilder extends ColorMapEntryLegendBuilder{
 
 			public ClassesEntryLegendBuilder(List<ColorMapEntry> mapEntries, HAlign hAlign,VAlign vAling) {
-				super(mapEntries);
+
 				final ColorMapEntry previousCME = mapEntries.get(0);
 				final ColorMapEntry currentCME = mapEntries.get(1);
 				boolean leftEdge;
@@ -489,7 +508,7 @@ class ColorMapLegendBuilder {
 				Color color = LegendUtils.color(currentCME);
 				final double opacity = LegendUtils.getOpacity(currentCME);
 				color=new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*opacity));
-				this.colorManager= new SimpleColorManager(color,opacity);
+				super.add( new SimpleColorManager(color,opacity));
 
 
 				
@@ -508,15 +527,17 @@ class ColorMapLegendBuilder {
 	            		Double.toString(quantity1)+" "+symbol1+" x":
 	            			Double.toString(quantity1)+" "+symbol1+" x "+symbol2+" "+ Double.toString(quantity2)	;
 
-	            this.ruleManager= new TextManager(rule, vAling, hAlign);
+        		super.add( new TextManager(rule, vAling, hAlign));
 	            		
 	            // add the label the label to the rule so that we draw all text just once 
 	            if(label!=null)
 	            {
 	            	
 	            	hasLabel=true;
-	            	this.labelManager= new TextManager(label, vAling, hAlign);
+	            	super.add( new TextManager(label, vAling, hAlign));
 	            }
+	            else
+	            	super.add( null);
 	            
 			}
 
@@ -536,7 +557,7 @@ class ColorMapLegendBuilder {
 
 	private Dimension requestedDimension;
 
-	private Map<String,List<String>> additionalOptions;
+	private Map<String,?> additionalOptions;
 
 	private Color backgroundColor;
 
@@ -554,19 +575,19 @@ class ColorMapLegendBuilder {
 	
 	private VAlign vAlign=VAlign.BOTTOM;
 	
-	private float vMarginPercentage=LegendUtils.marginFactor;
+	private double vMarginPercentage=LegendUtils.marginFactor;
 	
-	private float hMarginPercentage=LegendUtils.marginFactor;
+	private double hMarginPercentage=LegendUtils.marginFactor;
 	
-	private float rowMarginPercentage=LegendUtils.rowPaddingFactor;
+	private double rowMarginPercentage=LegendUtils.rowPaddingFactor;
 	
-	private float columnMarginPercentage=LegendUtils.columnPaddingFactor;
+	private double columnMarginPercentage=LegendUtils.columnPaddingFactor;
 	
-	private boolean completeColorBorder=false;
+	private boolean borderColor=false;
 	
-	private boolean completeLabelBorder=false;
+	private boolean borderLabel=false;
 	
-	private boolean completeRuleBorder=false;
+	private boolean borderRule=false;
 
 	private double dx;
 
@@ -581,6 +602,12 @@ class ColorMapLegendBuilder {
 	private double ruleW;
 
 	private double labelW;
+
+	private double footerW;
+
+	private String grayChannelName="1";
+
+	private boolean fontAntiAliasing=true;
 
 	
 	
@@ -697,6 +724,11 @@ class ColorMapLegendBuilder {
 	private void init() {
 
 		//
+		// check options
+		//
+		checkAdditionalOptions();
+		
+		//
 		// create a sample image for computing dimensions of text strings
 		//
         BufferedImage image = ImageUtils.createImage(1, 1, (IndexColorModel)null, transparent);
@@ -715,11 +747,14 @@ class ColorMapLegendBuilder {
         //BODY
         //
         //cycle over all the body elements
-		cycleBodyCells(graphics);
+		cycleBodyRows(graphics);
 		
 		//
 		//FOOTER
 		//
+        //set footer strings
+		final String bandNameString = "Band selection is "+this.grayChannelName;
+		footerRows.add(new TextManager(bandNameString,VAlign.BOTTOM,HAlign.LEFT));
         //set footer strings
 		final String colorMapTypeString = "ColorMap type is "+this.colorMapType.toString();
 		footerRows.add(new TextManager(colorMapTypeString,VAlign.BOTTOM,HAlign.LEFT));
@@ -732,19 +767,74 @@ class ColorMapLegendBuilder {
         //
         // compute dimensions
         //
-		//final dimension are differen between ramp and others since ramp does not have margin for rows
-		dx=(colorW+ruleW+labelW)*columnMarginPercentage;
-		dy=rowH*rowMarginPercentage;
-		final double mx=(colorW+ruleW+labelW)*hMarginPercentage;
+		//final dimension are different between ramp and others since ramp does not have margin for rows
+		final double maxW=Math.max(Math.max(Math.max(colorW,ruleW),labelW),footerW);
+		dx=maxW*columnMarginPercentage;
+		dy=colorMapType==ColorMapType.RAMP?0:rowH*rowMarginPercentage;
+		
+		final double mx=maxW*hMarginPercentage;
 		final double my=rowH*vMarginPercentage;
 		margin=Math.max(mx, my);
-		//border for color, by default it is not present for ramp
-		completeColorBorder=colorMapType!=ColorMapType.RAMP;
 		
+	}
+
+	private void checkAdditionalOptions() {
+		
+        fontAntiAliasing = false;
+        if (additionalOptions.get("fontAntiAliasing") instanceof String) {
+            String aaVal = (String)additionalOptions.get("fontAntiAliasing");
+            if (aaVal.equalsIgnoreCase("on") || aaVal.equalsIgnoreCase("true") ||
+                    aaVal.equalsIgnoreCase("yes") || aaVal.equalsIgnoreCase("1")) {
+                fontAntiAliasing = true;
+            }
+        }
+        
+        
+        if (additionalOptions.get("dx") instanceof String) {
+        	columnMarginPercentage=Double.parseDouble((String) additionalOptions.get("dx"));
+            
+        }
+        
+        if (additionalOptions.get("dy") instanceof String) {
+        	rowMarginPercentage=Double.parseDouble((String) additionalOptions.get("dy"));
+            
+        }
+        
+
+        if (additionalOptions.get("mx") instanceof String) {
+        	hMarginPercentage=Double.parseDouble((String) additionalOptions.get("mx"));
+            
+        }
+        
+        if (additionalOptions.get("my") instanceof String) {
+        	vMarginPercentage=Double.parseDouble((String) additionalOptions.get("my"));
+            
+        }
+        
+        
+        if (additionalOptions.get("borderColor") instanceof String) {
+        	borderColor=Boolean.parseBoolean((String) additionalOptions.get("borderColor"));
+            
+        }
+        
+        if (additionalOptions.get("borderRule") instanceof String) {
+        	borderRule=Boolean.parseBoolean((String) additionalOptions.get("borderRule"));
+            
+        }
+        
+        if (additionalOptions.get("borderLabel") instanceof String) {
+        	borderLabel=Boolean.parseBoolean((String) additionalOptions.get("borderLabel"));
+            
+        }
+        
+        
+        
+        
 	}
 
 	private void cycleFooterRows(Graphics2D graphics) {
 		int numRows=this.footerRows.size(),i=0;
+		footerW=Double.NEGATIVE_INFINITY;
 		for(i=0;i<numRows;i++){
 			
 			//
@@ -755,7 +845,7 @@ class ColorMapLegendBuilder {
 			final Cell cell= this.footerRows.get(i);
 			final Dimension cellDim=cell.getPreferredDimension(graphics);
 			rowH=Math.max(rowH, cellDim.getHeight());
-			colorW=Math.max(colorW, cellDim.getWidth());
+			footerW=Math.max(footerW, cellDim.getWidth());
 			
 			
 		}
@@ -765,7 +855,7 @@ class ColorMapLegendBuilder {
 	/**
 	 * @param graphics
 	 */
-	private void cycleBodyCells(Graphics2D graphics) {
+	private void cycleBodyRows(Graphics2D graphics) {
 		for(ColorMapEntryLegendBuilder row:bodyRows){
 			
 			//
@@ -806,30 +896,30 @@ class ColorMapLegendBuilder {
         final Queue<BufferedImage> queue= new LinkedList<BufferedImage>();
 		//the height is already fixed
 		final int rowHeight=(int)Math.round(rowH);
-		
+		final int rowWidth=(int)Math.round(footerW);
+		final Rectangle clipboxA=new Rectangle(0,0,rowWidth,rowHeight);
         //
         // footer
         //
         //
-
 		//draw the various bodyCells
 		for(Cell cell:footerRows){
 			
-			final Dimension dim= cell.getPreferredDimension(graphics);
-			final int rowWidth=(int)Math.round(dim.getWidth());
-			final Rectangle clipboxA=new Rectangle(0,0,rowWidth,rowHeight);
+//			//get dim
+//			final Dimension dim= cell.getPreferredDimension(graphics);
+//			final int rowWidth=(int)Math.round(dim.getWidth());
+//			final Rectangle clipboxA=new Rectangle(0,0,rowWidth,rowHeight);
 			
-			//
-			//row number i
-			//
+
 			//draw it
 	        final BufferedImage colorCellLegend = new BufferedImage(rowWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);	
 	        Graphics2D rlg = colorCellLegend.createGraphics();
 	        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	        cell.draw(rlg, clipboxA,completeColorBorder);
+	        cell.draw(rlg, clipboxA,borderColor);
 	        rlg.dispose(); 
 	        
 	        queue.add(colorCellLegend);
+
 		}
 
         graphics.dispose();
@@ -861,7 +951,6 @@ class ColorMapLegendBuilder {
         // Body
         //
         //
-
 		//draw the various bodyCells
 		for(ColorMapEntryLegendBuilder row:bodyRows){
 			
@@ -875,7 +964,7 @@ class ColorMapLegendBuilder {
 	        Graphics2D rlg = colorCellLegend.createGraphics();
 	        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	        rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-	        colorCell.draw(rlg, clipboxA,completeColorBorder);
+	        colorCell.draw(rlg, clipboxA,borderColor);
 	        rlg.dispose(); 
 	        
 			//get element for rule
@@ -885,7 +974,7 @@ class ColorMapLegendBuilder {
 	        rlg = ruleCellLegend.createGraphics();
 	        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	        rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-	        ruleCell.draw(rlg, clipboxB,completeRuleBorder);
+	        ruleCell.draw(rlg, clipboxB,borderRule);
 	        rlg.dispose(); 
 
 	        
@@ -896,7 +985,7 @@ class ColorMapLegendBuilder {
 	        rlg = labelCellLegend.createGraphics();
 	        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	        rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);	        
-	        labelCell.draw(rlg, clipboxC,completeLabelBorder);
+	        labelCell.draw(rlg, clipboxC,borderLabel);
 	        rlg.dispose(); 
 	       
 	        //
@@ -907,7 +996,7 @@ class ColorMapLegendBuilder {
 	        final Map<Key, Object> hintsMap = new HashMap<Key, Object>();
 	        queue.add(LegendUtils.mergeBufferedImages(colorCellLegend,ruleCellLegend,labelCellLegend, hintsMap,transparent,backgroundColor,dx));    
 			
-	        
+
 	       
 			
 		}		
@@ -926,13 +1015,8 @@ class ColorMapLegendBuilder {
 			// bufferedimages for the various bkgColor map entries.
 		final Dimension finalDimension = new Dimension();
 		final int numRows = legendsQueue.size();
-		if (colorMapType != ColorMapType.RAMP)
-			finalDimension.setSize(colorW + ruleW + labelW + 2 * dx + 2
-					* margin, rowH * numRows + 2 * margin + (numRows - 1) * dy);
-		else
-			finalDimension.setSize((colorW + ruleW + labelW)
-					* (1 + columnMarginPercentage + hMarginPercentage), rowH
-					* numRows + 2 * rowH * vMarginPercentage);
+		finalDimension.setSize(Math.max(footerW,colorW + ruleW + labelW) + 2 * dx + 2* margin, rowH * numRows + 2 * margin + (numRows - 1) * dy);
+		
 		
          final int totalWidth=(int) finalDimension.getWidth();
 		 final int totalHeight=(int) finalDimension.getHeight();
@@ -949,6 +1033,7 @@ class ColorMapLegendBuilder {
 			// draw the image
 			finalGraphics.drawImage(img, (int) (margin+0.5), topOfRow, null);
 			topOfRow += img.getHeight()+dy;
+			
 		}
          
          finalGraphics.dispose();
@@ -984,7 +1069,7 @@ class ColorMapLegendBuilder {
 	 * @return
 	 * @uml.property  name="additionalOptions"
 	 */
-	public Map<String, List<String>> getAdditionalOptions() {
+	public Map<String, ?> getAdditionalOptions() {
 		return Collections.unmodifiableMap(additionalOptions);
 	}
 
@@ -1027,6 +1112,15 @@ class ColorMapLegendBuilder {
 	 */
 	public void setLabelFontColor(Color labelFontColor) {
 		this.labelFontColor=labelFontColor;
+		
+	}
+
+	public void setBand(SelectedChannelType grayChannel) {
+		if(grayChannel!=null)
+			this.grayChannelName=grayChannel.getChannelName();
+		
+		if(grayChannelName==null)
+			this.grayChannelName="1";
 		
 	}
 
