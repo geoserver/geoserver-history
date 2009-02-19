@@ -609,6 +609,8 @@ class ColorMapLegendBuilder {
 
 	private boolean fontAntiAliasing=true;
 
+	private boolean forceRule=false;
+
 	
 	
 
@@ -828,6 +830,11 @@ class ColorMapLegendBuilder {
         }
         
         
+        if (additionalOptions.get("forceRule") instanceof String) {
+        	forceRule=Boolean.parseBoolean((String) additionalOptions.get("forceRule"));
+            
+        }
+        
         
         
 	}
@@ -869,11 +876,12 @@ class ColorMapLegendBuilder {
 			colorW=Math.max(colorW, colorDim.getWidth());
 			
 			// rule
-			final Cell ruleM= row.getRuleManager();
-			final Dimension ruleDim=ruleM.getPreferredDimension(graphics);
-			rowH=Math.max(rowH, ruleDim.getHeight());
-			ruleW=Math.max(ruleW, ruleDim.getWidth());
-			
+			if(forceRule){
+				final Cell ruleM= row.getRuleManager();
+				final Dimension ruleDim=ruleM.getPreferredDimension(graphics);
+				rowH=Math.max(rowH, ruleDim.getHeight());
+				ruleW=Math.max(ruleW, ruleDim.getWidth());
+			}
 			
 			// label
 			final Cell labelM= row.getLabelManager();
@@ -967,15 +975,18 @@ class ColorMapLegendBuilder {
 	        colorCell.draw(rlg, clipboxA,borderColor);
 	        rlg.dispose(); 
 	        
-			//get element for rule
-			final Cell ruleCell= row.getRuleManager();
-			//draw it
-	        final BufferedImage ruleCellLegend = new BufferedImage(ruleWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);	
-	        rlg = ruleCellLegend.createGraphics();
-	        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	        rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-	        ruleCell.draw(rlg, clipboxB,borderRule);
-	        rlg.dispose(); 
+	        BufferedImage ruleCellLegend=null;
+	        if(forceRule){
+				//get element for rule
+				final Cell ruleCell= row.getRuleManager();
+				//draw it
+		        ruleCellLegend = new BufferedImage(ruleWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);	
+		        rlg = ruleCellLegend.createGraphics();
+		        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		        rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		        ruleCell.draw(rlg, clipboxB,borderRule);
+		        rlg.dispose(); 
+	        }
 
 	        
 			//get element for label

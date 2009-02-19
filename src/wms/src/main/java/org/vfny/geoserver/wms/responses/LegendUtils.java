@@ -370,20 +370,25 @@ public class LegendUtils {
 			final Color backgroundColor, 
 			final double dx) {
 		
-		final int totalHeight =  (int) (Math.max(left.getHeight(),Math.max(center.getHeight(), right.getHeight()))+0.5);
-		final int totalWidth = (int) (left.getWidth() + center.getWidth()+right.getWidth()+2*dx+0.5);            
+		int totalHeight =  (int) (Math.max(left.getHeight(),Math.max((center!=null?center.getHeight():Double.NEGATIVE_INFINITY), right.getHeight()))+0.5);
+		final int totalWidth = (int) (left.getWidth() +(center!=null? center.getWidth():0)+right.getWidth()+2*dx+0.5);            
         final BufferedImage finalImage = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
         final Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalImage, hintsMap);
         
         //place the left element
-        finalGraphics.drawImage(left, 0,0,null);
+        int offsetX=0;
+        finalGraphics.drawImage(left, offsetX,0,null);
 
         ///place the central element
-        finalGraphics.drawImage(center, (int) (left.getWidth()+dx+0.5),0,null);
+
+        offsetX=(int) (left.getWidth()+dx+0.5);
+        if(center!=null){
+	        finalGraphics.drawImage(center, offsetX,0,null);
+	        offsetX+=(int) (center.getWidth()+dx+0.5);
+        }
         
         ///place the right element
-//        offsetY=vCenter?(int)(((totalHeight-right.getHeight())/2.0)+0.5):totalHeight-right.getHeight();
-        finalGraphics.drawImage(right,(int) (left.getWidth()+ center.getWidth()+dx+0.5+dx),0,null);        
+        finalGraphics.drawImage(right, offsetX,0,null);        
         
         finalGraphics.dispose();
 		return (BufferedImage) finalImage;
