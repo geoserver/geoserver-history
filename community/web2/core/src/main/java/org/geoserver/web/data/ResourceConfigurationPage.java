@@ -36,6 +36,13 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
     private IModel myLayerModel;
 
     private boolean isNew;
+    
+    public ResourceConfigurationPage(String layerName){
+        LayerInfo layer = getCatalog().getLayer(layerName);
+        setup(layer.getResource(), layer);
+        this.isNew = isNew;
+        initComponents();
+    }
 
     public ResourceConfigurationPage(ResourceInfo info, boolean isNew){
         setup(info, getCatalog().getLayers(info).get(0));
