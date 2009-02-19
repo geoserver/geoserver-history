@@ -33,14 +33,6 @@ namespace, it is commonly used to group data that is related in some way.
    namespace, and the two are kept in sync. For example, the namespace
    "topp, http://openplans.org/topp" corresponds to the workspace "topp".
 
-
-Formats
-^^^^^^^
-
-- :ref:`HTML <workspace_html>`
-- :ref:`XML <workspace_xml>`
-- :ref:`JSON <workspace_json>`
-
 Operations
 ^^^^^^^^^^
 
@@ -75,6 +67,12 @@ Operations
      -
      -
 
+*Representations*:
+
+- :ref:`HTML <workspaces_html>`
+- :ref:`XML <workspaces_xml>`
+- :ref:`JSON <workspaces_json>`
+
 ``/workspaces/<ws>[.<format>]``
 
 .. list-table::
@@ -105,6 +103,13 @@ Operations
      - Delete workspace ``ws``
      - XML, JSON
      -
+
+*Representations*:
+
+- :ref:`HTML <workspace_html>`
+- :ref:`XML <workspace_xml>`
+- :ref:`JSON <workspace_json>`
+
 
 *Exceptions*:
 
@@ -156,13 +161,6 @@ namespaces is identified by a prefix and a uri.
    when adding a new namespace a workspace whose name matches the prefix of
    the namespace is implicitly created.
 
-Formats
-^^^^^^^
-
-- :ref:`HTML <namespace_html>`
-- :ref:`XML <namespace_xml>`
-- :ref:`JSON <namespace_json>`
-
 Operations
 ^^^^^^^^^^
 
@@ -197,6 +195,13 @@ Operations
      -
      -
 
+*Representations*:
+
+- :ref:`HTML <namespaces_html>`
+- :ref:`XML <namespaces_xml>`
+- :ref:`JSON <namespaces_json>`
+
+
 ``/namespaces/<ns>[.<format>]``
 
 .. list-table::
@@ -227,6 +232,12 @@ Operations
      - Delete namespace ``ns``
      - XML, JSON
      -
+
+*Representations*:
+
+- :ref:`HTML <namespace_html>`
+- :ref:`XML <namespace_xml>`
+- :ref:`JSON <namespace_json>`
 
 *Exceptions*:
 
@@ -272,13 +283,6 @@ A ``data store`` is a source of spatial data that is vector based. It can be a
 file in the case of a Shapefile, a database in the case of PostGIS, or a 
 server in the case of a remote Web Feature Service.
 
-Formats
-^^^^^^^
-
-- :ref:`HTML <datastore_html>`
-- :ref:`XML <datastore_xml>`
-- :ref:`JSON <datastore_json>`
-
 Operations
 ^^^^^^^^^^
 
@@ -313,6 +317,12 @@ Operations
      -
      -
 
+*Representations*:
+
+- :ref:`HTML <datastores_html>`
+- :ref:`XML <datastores_xml>`
+- :ref:`JSON <datastores_json>`
+
 ``/workspaces/<ws>/datastores/<ds>[.<format>]``
 
 .. list-table::
@@ -343,6 +353,12 @@ Operations
      -
      -
      -
+
+*Representations*:
+
+- :ref:`HTML <datastore_html>`
+- :ref:`XML <datastore_xml>`
+- :ref:`JSON <datastore_json>`
 
 *Exceptions*:
 
@@ -439,13 +455,6 @@ has a one-to-one relationship with its data store. In other cases, like
 PostGIS, the relationship of feature type to data store is many-to-one, with
 each feature type corresponding to a table in the database.
 
-Formats
-^^^^^^^
-
-- :ref:`HTML <featuretype_html>`
-- :ref:`XML <featuretype_xml>`
-- :ref:`JSON <featuretype_json>`
-
 Operations
 ^^^^^^^^^^
 
@@ -484,6 +493,12 @@ Operations
      -
      -
      -
+
+*Representations*:
+
+- :ref:`HTML <featuretypes_html>`
+- :ref:`XML <featuretypes_xml>`
+- :ref:`JSON <featuretypes_json>`
 
 *Exceptions*:
 
@@ -533,6 +548,12 @@ are returned. It can take one of the three values "configured", "available", or 
      -
      -
 
+*Representations*:
+
+- :ref:`HTML <featuretype_html>`
+- :ref:`XML <featuretype_xml>`
+- :ref:`JSON <featuretype_json>`
+
 *Exceptions*:
 
 - GET for a feature type that does not exist -> 404
@@ -544,13 +565,6 @@ Coverage stores
 ---------------
 
 A ``coverage store`` is a source of spatial data that is raster based.
-
-Formats
-^^^^^^^
-
-- :ref:`HTML <coveragestore_html>`
-- :ref:`XML <coveragestore_xml>`
-- :ref:`JSON <coveragestore_json>`
 
 Operations
 ^^^^^^^^^^
@@ -586,6 +600,12 @@ Operations
      -
      -
 
+*Representations*:
+
+- :ref:`HTML <coveragestores_html>`
+- :ref:`XML <coveragestores_xml>`
+- :ref:`JSON <coveragestores_json>`
+
 ``/workspaces/<ws>/coveragestores/<cs>[.<format>]``
 
 .. list-table::
@@ -616,6 +636,12 @@ Operations
      -
      -
      -
+
+*Representations*:
+
+- :ref:`HTML <coveragestore_html>`
+- :ref:`XML <coveragestore_xml>`
+- :ref:`JSON <coveragestore_json>`
 
 *Exceptions*:
 
@@ -698,13 +724,6 @@ Coverages
 A ``coverage`` is a raster based data set which originates from a coverage 
 store.
 
-Formats
-^^^^^^^
-
-- :ref:`HTML <coverage_html>`
-- :ref:`XML <coverage_xml>`
-- :ref:`JSON <coverage_json>`
-
 Operations
 ^^^^^^^^^^
 
@@ -739,6 +758,12 @@ Operations
      -
      -
    
+*Representations*:
+
+- :ref:`HTML <coverages_html>`
+- :ref:`XML <coverages_xml>`
+- :ref:`JSON <coverages_json>`
+
 ``/workspaces/<ws>/coveragestores/<cs>/coverages/<c>[.<format>]``
 
 .. list-table::
@@ -770,6 +795,12 @@ Operations
      -
      -
 
+*Representations*:
+
+- :ref:`HTML <coverage_html>`
+- :ref:`XML <coverage_xml>`
+- :ref:`JSON <coverage_json>`
+
 *Exceptions*:
 
 - GET for a coverage that does not exist -> 404
@@ -782,14 +813,6 @@ Styles
 A ``style`` describes how a resource (feature type or coverage) should be 
 symbolized or rendered by a Web Map Service. In GeoServer styles are 
 specified with :ref:`SLD <styling>`.
-
-Formats
-^^^^^^^
-
-- :ref:`SLD <style_sld>`
-- :ref:`HTML <style_html>`
-- :ref:`XML <style_xml>`
-- :ref:`JSON <style_json>`
 
 Operations
 ^^^^^^^^^^
@@ -830,6 +853,12 @@ Operations
      -
      -
 
+*Representations*:
+
+- :ref:`HTML <styles_html>`
+- :ref:`XML <styles_xml>`
+- :ref:`JSON <styles_json>`
+
 .. _name_parameter:
 
 The ``name`` parameter specifies the name to be given to the style. This 
@@ -867,6 +896,13 @@ name can be not be inferred from the SLD itself.
      -
      -
 
+*Representations*:
+
+- :ref:`SLD <style_sld>`
+- :ref:`HTML <style_html>`
+- :ref:`XML <style_xml>`
+- :ref:`JSON <style_json>`
+
 *Exceptions*:
 
 - GET for a style that does not exist -> 404
@@ -884,13 +920,6 @@ A ``layer`` is a *published* resource (feature type or coverage).
    In GeoServer 1.x a layer can considered the equivalent of a feature type or
    a coverage. In GeoServer 2.x, the two will be separate entities, with the 
    relationship from a feature type to a layer being one-to-many.
-
-Formats
-^^^^^^^
-
-- :ref:`HTML <layer_html>`
-- :ref:`XML <layer_xml>`
-- :ref:`JSON <layer_json>`
 
 Operations
 ^^^^^^^^^^
@@ -926,6 +955,12 @@ Operations
      -
      -
 
+*Representations*:
+
+- :ref:`HTML <layer_html>`
+- :ref:`XML <layer_xml>`
+- :ref:`JSON <layer_json>`
+
 ``/layers/<l>[.<format>]``
 
 .. list-table::
@@ -956,6 +991,12 @@ Operations
      - 405
      -
      -
+
+*Representations*:
+
+- :ref:`HTML <layers_html>`
+- :ref:`XML <layers_xml>`
+- :ref:`JSON <layers_json>`
 
 *Exceptions*:
 
@@ -1001,13 +1042,6 @@ A ``layer group`` is a grouping of layers and styles that can be accessed as a
 single layer in a WMS GetMap request. A Layer group is often referred to as a 
 "base map".
 
-Formats
-^^^^^^^
-
-- :ref:`HTML <layergroup_html>`
-- :ref:`XML <layergroup_xml>`
-- :ref:`JSON <layergroup_json>`
-
 Operations
 ^^^^^^^^^^
 
@@ -1042,6 +1076,12 @@ Operations
      -
      -
 
+*Representations*:
+
+- :ref:`HTML <layergroups_html>`
+- :ref:`XML <layergroups_xml>`
+- :ref:`JSON <layergroups_json>`
+
 ``/layergroups/<lg>[.<format>]``
 
 .. list-table::
@@ -1072,6 +1112,12 @@ Operations
      - 200
      -
      -
+
+*Representations*:
+
+- :ref:`HTML <layergroup_html>`
+- :ref:`XML <layergroup_xml>`
+- :ref:`JSON <layergroup_json>`
 
 *Exceptions*:
 

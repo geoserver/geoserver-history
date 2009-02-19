@@ -1,0 +1,10 @@
+.. _coverages_xml:
+
+.. code-block:: xml
+
+   <coverages>
+     <coverage>
+       <name>Arc_Sample</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/nurc/coveragestores/arcGridSample/coverages/Arc_Sample.xml" type="application/xml"/>
+     </coverage>
+   </coverages>

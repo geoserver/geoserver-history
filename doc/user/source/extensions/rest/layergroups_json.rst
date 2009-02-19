@@ -1,0 +1,22 @@
+.. _layergroups_json:
+
+.. code-block:: javascript
+
+   {
+      "layerGroups":{
+         "layerGroup":[
+            {
+               "name":"tiger-ny",
+               "href":"http:\/\/localhost:8080\/geoserver\/rest\/layergroups\/tiger-ny.json"
+            },
+            {
+               "name":"spearfish",
+               "href":"http:\/\/localhost:8080\/geoserver\/rest\/layergroups\/spearfish.json"
+            },
+            {
+               "name":"tasmania",
+               "href":"http:\/\/localhost:8080\/geoserver\/rest\/layergroups\/tasmania.json"
+            }
+         ]
+      }
+   }
