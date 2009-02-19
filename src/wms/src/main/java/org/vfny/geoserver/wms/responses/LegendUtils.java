@@ -9,6 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -16,11 +17,15 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.renderer.i18n.ErrorKeys;
 import org.geotools.renderer.i18n.Errors;
 import org.geotools.styling.ColorMapEntry;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.feature.type.PropertyType;
 import org.opengis.filter.expression.Expression;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
@@ -49,7 +54,7 @@ public class LegendUtils {
 	/** padding percentage factor at both sides of the legend. */
 	public static final float rowPaddingFactor = 0.15f;
 	/** top & bottom padding percentage factor for the legend */
-	public static final float columnPaddingFactor = 0.025f;
+	public static final float columnPaddingFactor = 0.15f;
 	
 	/** padding percentage factor at both sides of the legend. */
 	public static final float marginFactor = 0.015f;
@@ -382,6 +387,28 @@ public class LegendUtils {
         
         finalGraphics.dispose();
 		return (BufferedImage) finalImage;
+	}
+
+	/**
+	 * @param layer
+	 * @param found
+	 * @return
+	 */
+	public static boolean checkGridLayer(final SimpleFeatureType layer) {
+		 boolean found=false;
+		final Collection<PropertyDescriptor> descriptors = layer.getDescriptors();
+		for(PropertyDescriptor descriptor: descriptors){
+			
+			//get the type
+			final PropertyType type=descriptor.getType();
+			if(type.getBinding().isAssignableFrom(GridCoverage2D.class))
+			{
+				found=true;
+				break;
+			}
+			
+		}
+		return found;
 	}
 }
 
