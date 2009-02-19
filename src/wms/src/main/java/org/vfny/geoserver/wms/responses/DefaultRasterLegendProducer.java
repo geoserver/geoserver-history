@@ -167,7 +167,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         throws WmsException {
     	
         final SimpleFeatureType layer=request.getLayer();
-        if(layer.getName().getLocalPart().equalsIgnoreCase("GridCoverage"))
+        if(LegendUtils.checkGridLayer(layer))
         {
         	final RasterLayerLegendHelper rasterLegendHelper= new RasterLayerLegendHelper(request);
         	this.legendGraphic= rasterLegendHelper.getLegend();
@@ -213,19 +213,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                 final Symbolizer symbolizer = symbolizers[sIdx];
 
                 if (symbolizer instanceof RasterSymbolizer) {
-//                    BufferedImage imgShape=null;
-//                    try {
-//                        File styles = GeoserverDataDirectory.findCreateConfigDir("styles");
-//                        File rasterLegend = new File(styles, "rasterLegend.png");
-//                        if(rasterLegend.exists())
-//                            imgShape = ImageIO.read(rasterLegend);
-//                        else
-//                            imgShape = ImageIO.read(DefaultRasterLegendProducer.class.getResource("rasterLegend.png"));
-//                    } catch (Throwable e) {
-//                        throw new WmsException(e);
-//                    } 
-//
-//                    graphics.drawImage(imgShape, 0, 0, w, h, null);
+                   throw new IllegalStateException("It is not legal to have a RasterSymbolizer here");
                 } else {
                     Style2D style2d = styleFactory.createStyle(sampleFeature, symbolizer, scaleRange);
                     LiteShape2 shape = getSampleShape(symbolizer, w, h);
