@@ -167,6 +167,13 @@
     <!-- <property name="icon" value="server.png"/> -->
     <property name="order" value="30"/>
   </bean>
+  <bean id="layerPageMenu" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="layers"/>
+    <property name="titleKey" value="LayerPage.page.title"/>
+    <property name="descriptionKey" value="LayerPage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.data.table.LayerPage"/>
+    <property name="category" ref="dataCategory"/>
+  </bean>
   <!-- 
   <bean id="mySqlConfig" class="org.geoserver.web.data.DataStorePanelInfo">
     <property name="id" value="MySql"/>
