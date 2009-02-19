@@ -1,4 +1,4 @@
-.. _layers_html:
+.. _layergroups_html:
 
 .. code-block:: html
 
