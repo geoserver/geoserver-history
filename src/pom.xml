@@ -275,7 +275,6 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
-   <dependency>
     <groupId>org.geotools</groupId>
     <artifactId>gt-imagemosaic-jdbc</artifactId>
     <version>${gt.version}</version>
