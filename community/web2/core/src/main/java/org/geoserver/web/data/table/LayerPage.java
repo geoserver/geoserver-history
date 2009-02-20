@@ -11,6 +11,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -30,6 +31,8 @@ import org.geoserver.web.data.NamespaceEditPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
+
+import static org.geoserver.web.data.table.LayerProvider.*;
 
 public class LayerPage extends GeoServerBasePage {
     TextField filter;
@@ -90,27 +93,35 @@ public class LayerPage extends GeoServerBasePage {
                     }
                 };
                 item.add(wsLink);
-                wsLink.add(new Label("ws", new PropertyModel(model, "resource.store.workspace.name")));
+                wsLink.add(new Label("ws", new PropertyModel(model, WORKSPACE_PROPERTY)));
                 Link storeLink = new Link("storeLink", new PropertyModel(model, "resource.store.id")) {
                     public void onClick() {
                         setResponsePage(new DataStoreConfiguration(getModelObjectAsString()));
                     }
                 };
                 item.add(storeLink);
-                storeLink.add(new Label("store", new PropertyModel(model, "resource.store.name")));
+                storeLink.add(new Label("store", new PropertyModel(model, STORE_PROPERTY)));
                 Link nameLink = new Link("nameLink", new PropertyModel(model, "resource.name")) {
                     public void onClick() {
                         setResponsePage(new ResourceConfigurationPage(getModelObjectAsString()));
                     }
                 };
                 item.add(nameLink);
-                nameLink.add(new Label("name", new PropertyModel(model, "name")));
-                item.add(new Label("enabled", new PropertyModel(model, "enabled")));
-                item.add(new Label("SRS", new PropertyModel(model, "resource.SRS")));
+                nameLink.add(new Label("name", new PropertyModel(model, NAME_PROPERTY)));
+                item.add(new Label("enabled", new PropertyModel(model, ENABLED_PROPERTY)));
+                item.add(new Label("SRS", new PropertyModel(model, SRS_PROPERTY)));
             }
             
         };
         layerContainer.add(dataView);
+        
+        // add the sorting links
+        add(new OrderByBorder("orderType", "type", layers));
+        add(new OrderByBorder("orderWs", "workspace", layers));
+        add(new OrderByBorder("orderStore", "store", layers));
+        add(new OrderByBorder("orderName", "name", layers));
+        add(new OrderByBorder("orderEnabled", "enabled", layers));
+        add(new OrderByBorder("orderSRS", "SRS", layers));
         
         // build the filter form
         Form form = new Form("filterForm");
