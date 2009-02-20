@@ -92,10 +92,6 @@ public class DataStoreFileResource extends StoreFileResource {
         String datastore = (String)getRequest().getAttributes().get("datastore");
         String format = (String)getRequest().getAttributes().get("format");
 
-        MediaType mediaType = getRequest().getEntity().getMediaType();
-        if(LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("PUT file, mimetype: " + mediaType );
-
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
         Form form = getRequest().getResourceRef().getQueryAsForm();
 
