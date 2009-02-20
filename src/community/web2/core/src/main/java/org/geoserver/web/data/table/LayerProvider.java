@@ -9,7 +9,6 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.util.lang.PropertyResolver;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
@@ -110,9 +109,19 @@ public class LayerProvider extends SortableDataProvider {
         }
 
         public int compare(LayerInfo o1, LayerInfo o2) {
-            String srs1 = o1.getResource().getSRS();
-            String srs2 = o1.getResource().getSRS();
-            return srs1.compareTo(srs2) * (ascending ? 1 : -1);
+            // split out authority and code
+            String[] srs1 = o1.getResource().getSRS().split(":");
+            String[] srs2 = o2.getResource().getSRS().split(":");
+            
+            // use sign to control sort order
+            int sign = ascending ? 1 : -1;
+            if(srs1[0].equalsIgnoreCase(srs2[0]) && srs1.length > 1 && srs2.length > 1) {
+                // in case of same authority, compare numbers
+                return new Integer(srs1[1]).compareTo(new Integer(srs2[1])) * sign;
+            } else {
+                // compare authorities
+                return srs1[0].compareToIgnoreCase(srs2[0]) * sign;
+            }
         }
         
     }
