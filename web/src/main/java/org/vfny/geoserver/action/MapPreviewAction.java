@@ -257,7 +257,7 @@ public class MapPreviewAction extends GeoServerAction {
                 bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
                         + bbox.getMaxY());
                 try {
-                    Integer epsgCode = CRS.lookupEpsgCode(bmBbox.getCoordinateReferenceSystem(), false) ; 
+                    Integer epsgCode = CRS.lookupEpsgCode(bmBbox.getCoordinateReferenceSystem(), true) ; 
                     if ( epsgCode != null ) {
                         srsList.add( "EPSG:" + epsgCode );
                     }
