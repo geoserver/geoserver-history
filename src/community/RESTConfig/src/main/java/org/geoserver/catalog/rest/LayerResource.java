@@ -63,7 +63,7 @@ public class LayerResource extends AbstractCatalogResource {
         catalog.save( original );
         saveCatalog();
         
-        LOGGER.info( "PUTed layer " + l);
+        LOGGER.info( "PUT layer " + l);
     }
     
     @Override
