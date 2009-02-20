@@ -275,6 +275,12 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
+   <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-imagemosaic-jdbc</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>   
     <groupId>org.geotools</groupId>
     <artifactId>gt-arcsde</artifactId>
     <version>${gt.version}</version>
@@ -938,6 +944,7 @@
       <descriptor>release/doc.xml</descriptor>
       <descriptor>release/ext-db2.xml</descriptor>
       <descriptor>release/ext-db2ng.xml</descriptor>
+      <descriptor>release/ext-imagemosaic-jdbc.xml</descriptor>
       <descriptor>release/ext-gml.xml</descriptor>
       <descriptor>release/ext-mysql.xml</descriptor>
       <descriptor>release/ext-oracle.xml</descriptor>
