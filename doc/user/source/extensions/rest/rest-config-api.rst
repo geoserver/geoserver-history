@@ -701,7 +701,7 @@ following extensions are supported:
      - 200
      - See :ref:`notes <coveragestore_file_put_notes>` below.
      - 
-     - :ref:`configure <configure_parameter>`
+     - :ref:`configure <configure_parameter>`, :ref:`coverageName <coverageName_parameter>`
    * - DELETE
      -
      - 405
@@ -724,6 +724,19 @@ Image moscaic must be sent as a zip archive.
 When uploading a zip archive the ``Content-type`` should be set to
 ``application/zip``. When uploading a standalone file the content type should
 be appropriately set based on the file type.
+
+.. _coverageName_parameter:
+
+The ``coverageName`` parameter is used to specify the name of the coverage
+within the coverage store. This parameter is only relevant if the ``configure``
+parameter is not equal to "none". If not specified the resulting coverage will
+receive the same name as its containing coverage store.
+
+.. note::
+
+   Currently the relationship between a coverage store and a coverage is one to
+   one. However there is currently work underway to support multi-dimensional
+   coverages, so in the future this parameter is likely to change.
 
 Coverages
 ---------
