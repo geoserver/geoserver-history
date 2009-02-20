@@ -1,16 +1,23 @@
 package org.geoserver.web.data.table;
 
+import static org.geoserver.web.data.table.LayerProvider.ENABLED_PROPERTY;
+import static org.geoserver.web.data.table.LayerProvider.NAME_PROPERTY;
+import static org.geoserver.web.data.table.LayerProvider.SRS_PROPERTY;
+import static org.geoserver.web.data.table.LayerProvider.STORE_PROPERTY;
+import static org.geoserver.web.data.table.LayerProvider.WORKSPACE_PROPERTY;
+
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -32,8 +39,6 @@ import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
 
-import static org.geoserver.web.data.table.LayerProvider.*;
-
 public class LayerPage extends GeoServerBasePage {
     TextField filter;
     Label matched;
@@ -41,6 +46,10 @@ public class LayerPage extends GeoServerBasePage {
     Set<String> selection = new HashSet<String>();
 
     public LayerPage() {
+        // setup the dialog
+        final ModalWindow popupWindow = new ModalWindow("popupWindow");
+        add(popupWindow);
+        
         // setup the table
         final WebMarkupContainer layerContainer = new WebMarkupContainer("listContainer");
         layerContainer.setOutputMarkupId(true);
@@ -94,9 +103,15 @@ public class LayerPage extends GeoServerBasePage {
                 };
                 item.add(wsLink);
                 wsLink.add(new Label("ws", new PropertyModel(model, WORKSPACE_PROPERTY)));
-                Link storeLink = new Link("storeLink", new PropertyModel(model, "resource.store.id")) {
-                    public void onClick() {
-                        setResponsePage(new DataStoreConfiguration(getModelObjectAsString()));
+                AjaxLink storeLink = new AjaxLink("storeLink", new PropertyModel(model, "resource.store.id")) {
+                    public void onClick(AjaxRequestTarget target) {
+                        String storeId = getModelObjectAsString();
+                        if(getCatalog().getDataStore(storeId) != null)
+                            setResponsePage(new DataStoreConfiguration(storeId));
+                        else {
+                            popupWindow.setContent(new Label(popupWindow.getContentId(), "Sorry bud, no coverage store editor so far"));
+                            popupWindow.show(target);
+                        }
                     }
                 };
                 item.add(storeLink);
@@ -159,12 +174,20 @@ public class LayerPage extends GeoServerBasePage {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                // do something
+                String content = popupWindow.getContentId();
+                if(selection.isEmpty()) {
+                    popupWindow.setContent(new Label(content, "Selection is empty, dude!"));
+                    popupWindow.show(target);
+                } else {
+                    String msg = "Ok, so you wanted to remove " + selection + " uh? Well, you have some code to implement before that!!";
+                    popupWindow.setContent(new Label(content, msg));
+                    popupWindow.show(target);
+                }
             }
             
         };
         add(removeLink);
-        add(new DropDownChoice("storesDropDown", new LoadableDetachableModel() {
+        final DropDownChoice stores = new DropDownChoice("storesDropDown", new Model(), new LoadableDetachableModel() {
         
             @Override
             protected Object load() {
@@ -175,6 +198,15 @@ public class LayerPage extends GeoServerBasePage {
                 }
                 return storeNames;
             }
-        }) );
+        }); 
+        add(stores);
+        stores.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                popupWindow.setContent(new Label(popupWindow.getContentId(), "Ah, so you wanted to add a layer from " + stores.getModelObjectAsString() + " huh? Well, now go into the code and actually implement the 'add layer' workflow then!"));
+                popupWindow.show(target);
+            }
+        });
     }
 }
