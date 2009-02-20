@@ -120,6 +120,12 @@ public class CoverageStoreFileResource extends StoreFileResource {
             
             CoverageInfo cinfo = builder.buildCoverage( reader );
             
+            //check if the name of the coverage was specified
+            String coverageName = form.getFirstValue("coverageName");
+            if ( coverageName != null ) {
+                cinfo.setName( coverageName );
+            }
+            
             if ( !add ) {
                 //update the existing
                 CoverageInfo existing = catalog.getCoverageByCoverageStore(info, coverage);
@@ -148,6 +154,8 @@ public class CoverageStoreFileResource extends StoreFileResource {
             }
             else {
                 catalog.save( cinfo );
+                
+                //TODO: update the layers pointing at this coverage
             }
             
             AbstractCatalogResource.saveCatalog( catalog );
