@@ -50,6 +50,76 @@ public class LayerPage extends GeoServerBasePage {
         final ModalWindow popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
         
+     // build the filter form
+        Form form = new Form("filterForm");
+        add(form);
+        form.add(filter = new TextField("filter"));
+        AjaxButton filterSubmit = new AjaxButton("applyFilter") {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget arg0, Form arg1) {
+                // do the actual filtering
+            }
+            
+        };
+        form.add(filterSubmit);
+        AjaxButton filterReset = new AjaxButton("resetFilter") {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget arg0, Form arg1) {
+                // do the actual filtering
+            }
+            
+        };
+        form.add(filterReset);
+
+        // add the filter match label
+        add(matched = new Label("filterMatch"));
+        matched.setVisible(false);
+        
+        // add the remove link
+        final AjaxLink removeLink = new AjaxLink("remove") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                String content = popupWindow.getContentId();
+                if(selection.isEmpty()) {
+                    popupWindow.setContent(new Label(content, "Selection is empty, dude!"));
+                    popupWindow.show(target);
+                } else {
+                    String msg = "Ok, so you wanted to remove " + selection + " uh? Well, you have some code to implement before that!!";
+                    popupWindow.setContent(new Label(content, msg));
+                    popupWindow.show(target);
+                }
+            }
+            
+        };
+        add(removeLink);
+        removeLink.setEnabled(false);
+        
+        // the stores drop down
+        final DropDownChoice stores = new DropDownChoice("storesDropDown", new Model(), new LoadableDetachableModel() {
+        
+            @Override
+            protected Object load() {
+                List<DataStoreInfo> stores = getCatalog().getDataStores();
+                List<String> storeNames = new ArrayList<String>();
+                for (DataStoreInfo store : stores) {
+                    storeNames.add(store.getName());
+                }
+                return storeNames;
+            }
+        }); 
+        add(stores);
+        stores.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                popupWindow.setContent(new Label(popupWindow.getContentId(), "Ah, so you wanted to add a layer from " + stores.getModelObjectAsString() + " huh? Well, now go into the code and actually implement the 'add layer' workflow then!"));
+                popupWindow.show(target);
+            }
+        });
+        
         // setup the table
         final WebMarkupContainer layerContainer = new WebMarkupContainer("listContainer");
         layerContainer.setOutputMarkupId(true);
@@ -81,6 +151,11 @@ public class LayerPage extends GeoServerBasePage {
                         else
                             selection.add(li.getName());
                         target.addComponent(layerContainer);
+                        
+                        // update the remove link, enabled, only if there 
+                        // is some selection
+                        removeLink.setEnabled(selection.size() > 0);
+                        target.addComponent(removeLink);
                     }
                 };
                 item.add(selected);
@@ -138,75 +213,8 @@ public class LayerPage extends GeoServerBasePage {
         add(new OrderByBorder("orderEnabled", "enabled", layers));
         add(new OrderByBorder("orderSRS", "SRS", layers));
         
-        // build the filter form
-        Form form = new Form("filterForm");
-        add(form);
-        form.add(filter = new TextField("filter"));
-        AjaxButton filterSubmit = new AjaxButton("applyFilter") {
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget arg0, Form arg1) {
-                // do the actual filtering
-            }
-            
-        };
-        form.add(filterSubmit);
-        AjaxButton filterReset = new AjaxButton("resetFilter") {
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget arg0, Form arg1) {
-                // do the actual filtering
-            }
-            
-        };
-        form.add(filterReset);
-
-        // add the filter match label
-        add(matched = new Label("filterMatch"));
-        matched.setVisible(false);
-        
         // add the paging navigator
         dataView.setItemsPerPage(10);
         add(new GeoServerPagingNavigator("navigator", dataView));
-     
-        // add the remove link
-        AjaxLink removeLink = new AjaxLink("remove") {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                String content = popupWindow.getContentId();
-                if(selection.isEmpty()) {
-                    popupWindow.setContent(new Label(content, "Selection is empty, dude!"));
-                    popupWindow.show(target);
-                } else {
-                    String msg = "Ok, so you wanted to remove " + selection + " uh? Well, you have some code to implement before that!!";
-                    popupWindow.setContent(new Label(content, msg));
-                    popupWindow.show(target);
-                }
-            }
-            
-        };
-        add(removeLink);
-        final DropDownChoice stores = new DropDownChoice("storesDropDown", new Model(), new LoadableDetachableModel() {
-        
-            @Override
-            protected Object load() {
-                List<DataStoreInfo> stores = getCatalog().getDataStores();
-                List<String> storeNames = new ArrayList<String>();
-                for (DataStoreInfo store : stores) {
-                    storeNames.add(store.getName());
-                }
-                return storeNames;
-            }
-        }); 
-        add(stores);
-        stores.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-        
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                popupWindow.setContent(new Label(popupWindow.getContentId(), "Ah, so you wanted to add a layer from " + stores.getModelObjectAsString() + " huh? Well, now go into the code and actually implement the 'add layer' workflow then!"));
-                popupWindow.show(target);
-            }
-        });
     }
 }
