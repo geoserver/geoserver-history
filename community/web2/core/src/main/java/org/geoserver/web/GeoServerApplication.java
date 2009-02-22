@@ -156,9 +156,12 @@ public class GeoServerApplication extends SpringWebApplication {
      * Initialization override which sets up a locator for i18n resources.
      */
     protected void init() {
+    	// enable GeoServer custom resource locators
         getResourceSettings().setResourceStreamLocator(
                 new GeoServerResourceStreamLocator());
         getResourceSettings().setLocalizer(new GeoServerLocalizer());
+        
+        // we have our own application wide gzip compression filter 
         getResourceSettings().setDisableGZipCompression(true);
     }
     
