@@ -266,6 +266,7 @@ public class LegacyCatalogImporter {
                         }
                     }
                 }
+                layer.setEnabled(coverage.isEnabled());
                
                 catalog.add(layer);
             } catch(Exception e) {
