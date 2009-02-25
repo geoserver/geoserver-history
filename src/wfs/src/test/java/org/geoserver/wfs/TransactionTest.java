@@ -1,5 +1,6 @@
 package org.geoserver.wfs;
 
+import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 
 /**
@@ -50,6 +51,49 @@ public class TransactionTest extends WFSTestSupport {
         assertEquals(0, dom.getElementsByTagName("gml:featureMember")
                 .getLength());
 
+    }
+    
+    public void testDoubleDelete() throws Exception {
+    	// see 
+
+        // 1. do a getFeature
+        String getFeature = "<wfs:GetFeature " + "service=\"WFS\" "
+                + "version=\"1.0.0\" "
+                + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
+                + "<wfs:Query typeName=\"cdf:Fifteen\"/> "
+                + "</wfs:GetFeature>";
+
+        Document dom = postAsDOM("wfs", getFeature);
+        print(dom);
+        XMLAssert.assertXpathEvaluatesTo("15", "count(//gml:featureMember)", dom);
+
+        // perform a delete
+        String delete = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\" "
+                + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\"> "
+                + "<wfs:Delete typeName=\"cdf:Fifteen\"> " 
+                + "<ogc:Filter> "
+                + "<ogc:FeatureId fid=\"Fifteen.1\"/> "
+                + "</ogc:Filter> "
+                + "</wfs:Delete> "
+                + "<wfs:Delete typeName=\"cdf:Fifteen\"> " 
+                + "<ogc:Filter> "
+                + "<ogc:FeatureId fid=\"Fifteen.2\"/> "
+                + "</ogc:Filter> "
+                + "</wfs:Delete> "
+                + "</wfs:Transaction>";
+
+        dom = postAsDOM("wfs", delete);
+        assertEquals("WFS_TransactionResponse", dom.getDocumentElement()
+                .getLocalName());
+        assertEquals(1, dom.getElementsByTagName("wfs:SUCCESS").getLength());
+
+        // do another get feature
+        dom = postAsDOM("wfs", getFeature);
+        XMLAssert.assertXpathEvaluatesTo("13", "count(//gml:featureMember)", dom);
     }
 
     public void testInsert() throws Exception {

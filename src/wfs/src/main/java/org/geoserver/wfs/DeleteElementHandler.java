@@ -172,8 +172,10 @@ public class DeleteElementHandler implements TransactionElementHandler {
                 }
             } else {
                 // We don't have to worry about locking right now
-                deleted += store.getFeatures(filter).size();
-                    store.removeFeatures(filter);
+            	int deletedCount = store.getFeatures(filter).size();
+            	if(deletedCount > 0)
+            		deleted += deletedCount;
+                store.removeFeatures(filter);
             }
         } catch (IOException e) {
             String msg = e.getMessage();
