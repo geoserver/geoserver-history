@@ -80,11 +80,15 @@ public class KMLFeatureDescription extends AbstractFeatureDescription {
 
     private Element buildNetworkLink(String typeName) {
         Element networklink = new Element("NetworkLink");
-        networklink.addContent(
-            new Element("href").addContent(
-            GEOSERVER_URL + "wms/kml?layers=" + typeName
-            )
-        );
+        networklink.addContent(new Element("name").addContent(
+                "Complete " + typeName + " hierarchy"));
+        networklink.addContent(new Element("visibility").addContent("1"));
+
+        Element link = new Element("Link");
+        link.addContent(new Element("href").addContent(
+                GEOSERVER_URL + "wms/kml?layers=" + typeName));
+
+        networklink.addContent(link);
         return networklink;
     }
 

@@ -12,5 +12,8 @@
 <li><a href="${kmllink}"> View this KML placemark in context of dataset </a></li>
 <li><a href="${rawkmllink}"> View only this particular placemark</a></li>
 </ul>
+
+<h4>About this layer:</h4>
+<ul><li><a href="../${typeName}.html">More layer information</a></li></ul>
 </body>
 </html>

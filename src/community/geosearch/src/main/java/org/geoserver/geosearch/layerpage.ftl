@@ -2,7 +2,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <#assign wmsUrl="../../wms?request=GetMap&version=1.1.1" 
-         wfsUrl="../../wfs?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetFeature"
+         wfsUrl="../../gwc/service/wfs?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetFeature"
          layersParam = "&layers="+name
          nameParam = "&typeName="+name
          kmlUrl="../../wms/kml?"
