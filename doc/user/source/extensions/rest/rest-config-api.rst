@@ -28,6 +28,15 @@ a representation in XML, the content type "text/xml" or "application/xml" would
 be used. The latter is specified with the ``Accepts`` header as specified in the
 above paragraph describing a GET operation.
 
+Authentication
+--------------
+
+POST, PUT, and DELETE requests (requests that modify resources) require the 
+client to be authenticated. Currently the only supported method of 
+authentication is Basic authentication. See the 
+:ref:`examples <rest_config_examples>` section for examples of how to perform 
+authentication with various clients and environments.
+
 Workspaces
 ----------
 
