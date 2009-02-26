@@ -138,7 +138,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
         File file = new File(location);
 
         if (file.isAbsolute()) {
-            return file;
+            return file.exists() ? file : null;
         } else {
             //try a relative url
             for (Iterator f = searchLocations.iterator(); f.hasNext();) {
