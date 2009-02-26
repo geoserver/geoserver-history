@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.geotools.data.DataUtilities;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
+import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -31,7 +32,11 @@ public class ReprojectingFilterVisitorTest extends TestCase {
     ReprojectingFilterVisitor reprojector;
 
     protected void setUp() throws Exception {
-        System.setProperty("org.geotools.referencing.forceXY", "true");
+    	// this is the only thing that actually forces CRS object to give up
+    	// its configuration, necessary when tests are run by Maven, one JVM for all
+    	// the tests in this module
+    	Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
+        GeoTools.fireConfigurationChanged();
         ft = DataUtilities.createType("testType", "geom:Point:srid=4326,line:LineString,name:String,id:int");
         ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
         reprojector = new ReprojectingFilterVisitor(ff, ft);

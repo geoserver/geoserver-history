@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -32,6 +33,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -40,11 +42,18 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
 import org.opengis.filter.identity.FeatureId;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.WKTReader;
 
-public class RetypingDataStoreTest extends TestCase {
+public class FullyRetypingDataStoreTest extends TestCase {
 
-    static final String RENAMED = "houses";
+    SimpleFeatureType primitive;
+    
+    final static String RENAMED = "primitive";
 
     RetypingDataStore rts;
 
@@ -56,28 +65,49 @@ public class RetypingDataStoreTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
+    	// setup property file
         data = File.createTempFile("retype", "data", new File("./target"));
         data.delete();
         data.mkdir();
-
-        final String fileName = MockData.BUILDINGS.getLocalPart() + ".properties";
+        final String fileName = MockData.PRIMITIVEGEOFEATURE.getLocalPart() + ".properties";
         URL properties = MockData.class.getResource(fileName);
         IOUtils.copy(properties.openStream(), new File(data, fileName));
 
+        // build a feature type with less attributes, extra attributes, type changes
+        SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
+        ftb.add("description", String.class);
+        ftb.add("pointProperty", MultiPoint.class); // poly -> multi-poly
+        ftb.add("intProperty", Long.class); // int -> long
+        ftb.add("dateTimeProperty", Date.class); // timestamp -> date
+        ftb.add("newProperty", String.class); // new property
+        ftb.setName(RENAMED); // rename type
+        primitive = ftb.buildFeatureType();
+        
         PropertyDataStore pds = new PropertyDataStore(data);
         rts = new RetypingDataStore(pds) {
-            @Override
-            protected String transformFeatureTypeName(String originalName) {
-                if (originalName.equals(MockData.BUILDINGS.getLocalPart()))
-                    return RENAMED;
+        	
+        	@Override
+        	protected SimpleFeatureType transformFeatureType(
+        			SimpleFeatureType original) throws IOException {
+        		if (original.getTypeName().equals(MockData.PRIMITIVEGEOFEATURE.getLocalPart()))
+                    return primitive;
+                else
+                    return super.transformFeatureType(original);
+        	}
+        	
+        	@Override
+        	protected String transformFeatureTypeName(String originalName) {
+        		if (originalName.equals(MockData.PRIMITIVEGEOFEATURE.getLocalPart()))
+                    return primitive.getTypeName();
                 else
                     return super.transformFeatureTypeName(originalName);
-            }
+        	}
+        	
         };
 
         // build a filter that will retrieve one feature only
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-        fid = RENAMED + ".1107531701011";
+        fid = RENAMED + ".f001";
         fidFilter = ff.id(Collections.singleton(ff.featureId(fid)));
     }
 
@@ -88,7 +118,7 @@ public class RetypingDataStoreTest extends TestCase {
 
     public void testLookupFeatureType() throws Exception {
         try {
-            rts.getSchema(MockData.BUILDINGS.getLocalPart());
+            rts.getSchema(MockData.GENERICENTITY.getLocalPart());
             fail("The original type name should not be visible");
         } catch (IOException e) {
             // cool, as expected
@@ -96,15 +126,15 @@ public class RetypingDataStoreTest extends TestCase {
 
         final SimpleFeatureType schema = rts.getSchema(RENAMED);
         assertNotNull(schema);
-        assertEquals(RENAMED, schema.getName().getLocalPart());
+        assertEquals(primitive, schema);
     }
 
     public void testGetFeaturesFeatureSource() throws Exception {
         // check the schemas in feature source and feature collection
         FeatureSource<SimpleFeatureType, SimpleFeature> fs = rts.getFeatureSource(RENAMED);
-        assertEquals(RENAMED, fs.getSchema().getName().getLocalPart());
+        assertEquals(primitive, fs.getSchema());
         FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fs.getFeatures();
-        assertEquals(RENAMED, fc.getSchema().getName().getLocalPart());
+        assertEquals(primitive, fc.getSchema());
         assertTrue(fc.size() > 0);
 
         // make sure the feature schema is good as well
@@ -112,11 +142,18 @@ public class RetypingDataStoreTest extends TestCase {
         SimpleFeature sf = it.next();
         it.close();
 
-        assertEquals(RENAMED, sf.getFeatureType().getName().getLocalPart());
+        assertEquals(primitive, sf.getFeatureType());
 
         // check the feature ids have been renamed as well
         assertTrue("Feature id has not been renamed, it's still " + sf.getID(), sf.getID()
                 .startsWith(RENAMED));
+        
+        // check mappings occurred
+        assertEquals("description-f001", sf.getAttribute("description"));
+        assertTrue(new WKTReader().read("MULTIPOINT(39.73245 2.00342)").equalsExact(
+        		(Geometry) sf.getAttribute("pointProperty")));
+        assertEquals(new Long(155), sf.getAttribute("intProperty"));
+        assertNull(sf.getAttribute("newProperty"));
     }
 
     public void testGetFeaturesReader() throws Exception {
@@ -125,7 +162,7 @@ public class RetypingDataStoreTest extends TestCase {
         SimpleFeature sf = fr.next();
         fr.close();
 
-        assertEquals(RENAMED, sf.getFeatureType().getName().getLocalPart());
+        assertEquals(primitive, sf.getFeatureType());
 
         // check the feature ids have been renamed as well
         assertTrue("Feature id has not been renamed, it's still " + sf.getID(), sf.getID()
@@ -138,7 +175,7 @@ public class RetypingDataStoreTest extends TestCase {
 
         // build a filter that will retrieve that feature only
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-        final String fid = RENAMED + ".1107531701011";
+        final String fid = RENAMED + ".f001";
         Filter fidFilter = ff.id(Collections.singleton(ff.featureId(fid)));
 
         FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fs.getFeatures(new DefaultQuery(RENAMED, fidFilter));
@@ -152,10 +189,10 @@ public class RetypingDataStoreTest extends TestCase {
         assertEquals(fid, sf.getID());
     }
 
-    public void testFeautureReaderFidFilter() throws Exception {
+    public void testFeatureReaderFidFilter() throws Exception {
         FeatureReader<SimpleFeatureType, SimpleFeature> fr;
         fr = rts.getFeatureReader(new DefaultQuery(RENAMED, fidFilter), Transaction.AUTO_COMMIT);
-        assertEquals(RENAMED, fr.getFeatureType().getName().getLocalPart());
+        assertEquals(primitive, fr.getFeatureType());
         assertTrue(fr.hasNext());
         SimpleFeature sf = fr.next();
         assertFalse(fr.hasNext());
@@ -180,12 +217,21 @@ public class RetypingDataStoreTest extends TestCase {
         FeatureStore<SimpleFeatureType, SimpleFeature> store;
         store = (FeatureStore<SimpleFeatureType, SimpleFeature>) rts.getFeatureSource(RENAMED);
         SimpleFeature original = store.getFeatures(fidFilter).features().next();
-        String newAddress = ((String) original.getAttribute("ADDRESS")) + " xxx";
 
-        store.modifyFeatures(original.getFeatureType().getDescriptor("ADDRESS"), newAddress,
+        // test a non mapped attribute
+        String newDescription = ((String) original.getAttribute("description")) + " xxx";
+        store.modifyFeatures(original.getFeatureType().getDescriptor("description"), newDescription,
                 fidFilter);
         SimpleFeature modified = store.getFeatures(fidFilter).features().next();
-        assertEquals(newAddress, modified.getAttribute("ADDRESS"));
+        assertEquals(newDescription, modified.getAttribute("description"));
+        
+        // test a mapped attribute
+        MultiPoint mpo = (MultiPoint) original.getAttribute("pointProperty");
+        MultiPoint mpm = mpo.getFactory().createMultiPoint(new Coordinate[] {new Coordinate(10, 12)});
+        store.modifyFeatures(original.getFeatureType().getDescriptor("pointProperty"), mpm,
+                fidFilter);
+        modified = store.getFeatures(fidFilter).features().next();
+        assertTrue(mpm.equalsExact((Geometry) modified.getAttribute("pointProperty")));
     }
 
     /**
