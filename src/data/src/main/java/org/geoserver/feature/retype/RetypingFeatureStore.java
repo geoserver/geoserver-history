@@ -16,6 +16,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.util.Converters;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -46,16 +47,33 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements
     }
 
     public void modifyFeatures(AttributeDescriptor type, Object value, Filter filter) throws IOException {
-        featureStore().modifyFeatures(type, value, store.retypeFilter(filter, typeMap));
+    	modifyFeatures(new AttributeDescriptor[] {type}, new Object[] {value}, filter);
     }
 
     public void removeFeatures(Filter filter) throws IOException {
         featureStore().removeFeatures(store.retypeFilter(filter, typeMap));
     }
 
-    public void modifyFeatures(AttributeDescriptor[] type, Object[] value, Filter filter)
+    public void modifyFeatures(AttributeDescriptor[] type, Object[] values, Filter filter)
             throws IOException {
-        featureStore().modifyFeatures(type, value, store.retypeFilter(filter, typeMap));
+    	
+    	SimpleFeatureType schema = getSchema();
+    	SimpleFeatureType original = store.getTypeMapBackwards(schema.getTypeName(), true).originalFeatureType;
+    	
+    	// map back attribute types and values to the original values
+    	AttributeDescriptor[] originalTypes = new AttributeDescriptor[type.length];
+    	Object[] originalValues = new Object[values.length];
+    	for (int i = 0; i < values.length; i++) {
+			originalTypes[i] = original.getDescriptor(type[i].getName());
+			if(values[i] != null) {
+				Class<?> target = originalTypes[i].getType().getBinding();
+				originalValues[i] = Converters.convert(values[i], target);
+				if(originalValues[i] == null)
+					throw new IOException("Could not map back " + values[i] + " to type " + target);
+			}
+		}
+    	
+        featureStore().modifyFeatures(originalTypes, originalValues, store.retypeFilter(filter, typeMap));
     }
 
     public void setFeatures(FeatureReader<SimpleFeatureType, SimpleFeature> reader)

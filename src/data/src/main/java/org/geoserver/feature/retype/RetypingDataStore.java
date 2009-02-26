@@ -62,7 +62,7 @@ public class RetypingDataStore implements DataStore {
 
     public FeatureWriter<SimpleFeatureType, SimpleFeature> getFeatureWriter(String typeName,
             Filter filter, Transaction transaction) throws IOException {
-        FeatureTypeMap map = getTypeMapBackwards(typeName);
+        FeatureTypeMap map = getTypeMapBackwards(typeName, true);
         updateMap(map, false);
         FeatureWriter<SimpleFeatureType, SimpleFeature> writer = wrapped.getFeatureWriter(map.getOriginalName(), filter, transaction);
         if (map.isUnchanged())
@@ -72,7 +72,7 @@ public class RetypingDataStore implements DataStore {
 
     public FeatureWriter<SimpleFeatureType, SimpleFeature> getFeatureWriter(String typeName, Transaction transaction)
             throws IOException {
-        FeatureTypeMap map = getTypeMapBackwards(typeName);
+        FeatureTypeMap map = getTypeMapBackwards(typeName, true);
         updateMap(map, false);
         FeatureWriter<SimpleFeatureType, SimpleFeature> writer;
         writer = wrapped.getFeatureWriter(map.getOriginalName(), transaction);
@@ -83,7 +83,7 @@ public class RetypingDataStore implements DataStore {
 
     public FeatureWriter<SimpleFeatureType, SimpleFeature> getFeatureWriterAppend(String typeName, Transaction transaction)
             throws IOException {
-        FeatureTypeMap map = getTypeMapBackwards(typeName);
+        FeatureTypeMap map = getTypeMapBackwards(typeName, true);
         updateMap(map, false);
         FeatureWriter<SimpleFeatureType, SimpleFeature> writer;
         writer = wrapped.getFeatureWriterAppend(map.getOriginalName(), transaction);
@@ -93,7 +93,9 @@ public class RetypingDataStore implements DataStore {
     }
 
     public SimpleFeatureType getSchema(String typeName) throws IOException {
-        FeatureTypeMap map = getTypeMapBackwards(typeName);
+        FeatureTypeMap map = getTypeMapBackwards(typeName, false);
+        if(map == null)
+        	throw new IOException("Unknown type " + typeName);
         updateMap(map, true);
         return map.getFeatureType();
     }
@@ -123,7 +125,7 @@ public class RetypingDataStore implements DataStore {
 
     public FeatureReader<SimpleFeatureType, SimpleFeature> getFeatureReader(Query query,
             Transaction transaction) throws IOException {
-        FeatureTypeMap map = getTypeMapBackwards(query.getTypeName());
+        FeatureTypeMap map = getTypeMapBackwards(query.getTypeName(), true);
         updateMap(map, false);
         FeatureReader<SimpleFeatureType, SimpleFeature> reader;
         reader = wrapped.getFeatureReader(retypeQuery(query, map), transaction);
@@ -133,7 +135,7 @@ public class RetypingDataStore implements DataStore {
     }
 
     public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(String typeName) throws IOException {
-        FeatureTypeMap map = getTypeMapBackwards(typeName);
+        FeatureTypeMap map = getTypeMapBackwards(typeName, true);
         updateMap(map, false);
         FeatureSource<SimpleFeatureType, SimpleFeature> source = wrapped.getFeatureSource(map.getOriginalName());
         if (map.isUnchanged())
@@ -156,7 +158,7 @@ public class RetypingDataStore implements DataStore {
 
     public FeatureSource<SimpleFeatureType, SimpleFeature> getView(Query query) throws IOException,
             SchemaException {
-        FeatureTypeMap map = getTypeMapBackwards(query.getTypeName());
+        FeatureTypeMap map = getTypeMapBackwards(query.getTypeName(), true);
         updateMap(map, false);
         FeatureSource<SimpleFeatureType, SimpleFeature> view = wrapped.getView(query);
         return new RetypingFeatureSource(this, view, map);
@@ -169,9 +171,9 @@ public class RetypingDataStore implements DataStore {
      * @return
      * @throws IOException
      */
-    FeatureTypeMap getTypeMapBackwards(String externalTypeName) throws IOException {
+    FeatureTypeMap getTypeMapBackwards(String externalTypeName, boolean checkMap) throws IOException {
         FeatureTypeMap map = (FeatureTypeMap) backwardsMap.get(externalTypeName);
-        if (map == null)
+        if (map == null && checkMap)
             throw new IOException("Type mapping has not been established for type  "
                     + externalTypeName + ". "
                     + "Make sure you access types using getTypeNames() or getSchema() "
