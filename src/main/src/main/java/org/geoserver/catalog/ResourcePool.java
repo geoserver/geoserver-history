@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.geotools.data.DataAccess;
 import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
@@ -36,6 +38,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
+import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.util.logging.Logging;
@@ -271,8 +274,17 @@ public class ResourcePool {
                         tb.setName( info.getName() );
                         tb.setNamespaceURI( info.getNamespace().getURI() );
 
-                        for ( AttributeDescriptor ad : sft.getAttributeDescriptors() ) {
-
+                        for ( AttributeTypeInfo att : info.getAttributes() ) {
+                            String attName = att.getName();
+                            
+                            //load the actual underlying attribute type
+                            PropertyDescriptor ad = ft.getDescriptor( attName );
+                            if ( ad == null || !( ad instanceof AttributeDescriptor) ) {
+                                throw new IOException("the SimpleFeatureType " + info.getPrefixedName()
+                                        + " does not contains the configured attribute " + attName
+                                        + ". Check your schema configuration");
+                            }
+                        
                             // force the user specified CRS if the data has no CRS, or reproject it 
                             // if necessary
                             if ( ad instanceof GeometryDescriptor ) {
@@ -309,7 +321,7 @@ public class ResourcePool {
                                 }
 
                             }
-                            tb.add( ad );
+                            tb.add( (AttributeDescriptor) ad );
                         }
 
                         ft = tb.buildFeatureType();
@@ -381,11 +393,14 @@ public class ResourcePool {
         FeatureSource<SimpleFeatureType, SimpleFeature> fs;
                 
         //
-        // aliasing
+        // aliasing and type mapping
         //
-        if ( !info.getName().equals( info.getNativeName() ) ) {
-            final String typeName = info.getNativeName();
-            final String alias = info.getName();
+        final String typeName = info.getNativeName();
+        final String alias = info.getName();
+        final SimpleFeatureType nativeFeatureType = dataStore.getSchema( typeName );
+        final SimpleFeatureType featureType = (SimpleFeatureType) getFeatureType( info );
+        if ( !typeName.equals( alias ) || DataUtilities.compare(nativeFeatureType,featureType) != 0 ) {
+            
             RetypingDataStore retyper = new RetypingDataStore(dataStore) {
             
                 @Override
@@ -393,6 +408,15 @@ public class ResourcePool {
                     if(!typeName.equals(originalName))
                         return originalName;
                     return alias;
+                }
+                
+                @Override
+                protected SimpleFeatureType transformFeatureType(SimpleFeatureType original)
+                        throws IOException {
+                    if ( original.getTypeName().equals( typeName ) ) {
+                        return featureType;
+                    }
+                    return super.transformFeatureType(original);
                 }
             
             };
