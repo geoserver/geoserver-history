@@ -4,18 +4,29 @@
  */
 package org.geoserver.catalog.util;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+import org.eclipse.xsd.XSDElementDeclaration;
+import org.eclipse.xsd.XSDParticle;
+import org.eclipse.xsd.XSDSchema;
+import org.eclipse.xsd.XSDTypeDefinition;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
@@ -47,6 +58,7 @@ import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
 import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
+import org.geotools.xml.Schemas;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -156,7 +168,7 @@ public class LegacyCatalogImporter {
             LegacyFeatureTypeInfoReader ftInfoReader = new LegacyFeatureTypeInfoReader();
             try {
                 ftInfoReader.read(ftInfoFile);
-                FeatureTypeInfo featureType = readFeatureType(ftInfoReader);
+                FeatureTypeInfo featureType = readFeatureType(ftInfoReader, featureTypeDirectory);
                 if ( featureType == null ) {
                     continue;
                 }
@@ -410,7 +422,7 @@ public class LegacyCatalogImporter {
         }
     }
     
-    FeatureTypeInfo readFeatureType(LegacyFeatureTypeInfoReader ftInfoReader) throws Exception {
+    FeatureTypeInfo readFeatureType(LegacyFeatureTypeInfoReader ftInfoReader, File ftDirectory) throws Exception {
         CatalogFactory factory = catalog.getFactory();
         FeatureTypeInfo featureType = factory.createFeatureType();
         
@@ -485,18 +497,98 @@ public class LegacyCatalogImporter {
              
             if ( error == null ) {
                 try {
+                    //load the native feature type, and generate attributes from that
                     SimpleFeatureType ft = ds.getSchema( featureType.getNativeName() );
                     featureType.setNativeCRS(ft.getCoordinateReferenceSystem());
                     
-                    //attributes
-                    for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
-                        AttributeDescriptor ad = ft.getDescriptor( x );
-                        AttributeTypeInfo att = catalog.getFactory().createAttribute();
-                        att.setName( ad.getLocalName() );
-                        att.setMinOccurs( ad.getMinOccurs() );
-                        att.setMaxOccurs( ad.getMaxOccurs() );
-                        att.setAttribute( ad );
-                        featureType.getAttributes().add( att );
+                    //look schema.xsd file to create the set of attributes
+                    File schemaFile = resourceLoader.find(ftDirectory.getAbsolutePath(), "schema.xsd");
+                    if ( schemaFile == null ) {
+                        //check for the old style schema.xml
+                        File oldSchemaFile = resourceLoader.find(ftDirectory.getAbsolutePath(), "schema.xml");
+                        if ( oldSchemaFile != null ) {
+                            schemaFile = new File( oldSchemaFile.getParentFile(), "schema.xsd");
+                            BufferedWriter out = 
+                                new BufferedWriter(new OutputStreamWriter( new FileOutputStream( schemaFile ) ) );
+                            out.write( "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>");
+                            IOUtils.copy( new FileInputStream( oldSchemaFile ), out );
+                            out.write( "</xs:schema>" );
+                            out.flush();
+                            out.close();
+                        }
+                    }
+                    
+                    boolean buildFromNative = true;
+                    if ( schemaFile != null ) {
+                        //parse the schema + generate attributes from that
+                        XSDSchema schema = null;
+                        try {
+                            schema = Schemas.parse( schemaFile.getAbsolutePath() );
+                        }
+                        catch( Exception e ) {
+                            LOGGER.warning( "Unable to parse " + schemaFile.getAbsolutePath() + "." +
+                                " Falling back on native feature type");
+                        }
+                        if ( schema != null ) {
+                            XSDTypeDefinition type = null;
+                            for ( Iterator e = schema.getElementDeclarations().iterator(); e.hasNext(); ) {
+                                XSDElementDeclaration element = (XSDElementDeclaration) e.next();
+                                if ( featureType.getName().equals( element.getName() ) ) {
+                                    type = element.getTypeDefinition();
+                                    break;
+                                }
+                            }
+                            if ( type == null ) {
+                                for ( Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext(); ) {
+                                    XSDTypeDefinition typedef = (XSDTypeDefinition) t.next();
+                                    if ( (featureType.getName() + "_Type").equals( typedef.getName() ) ) {
+                                        type = typedef;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if ( type != null ) {
+                                buildFromNative = false;
+                                
+                                List children = Schemas.getChildElementParticles( type, true );
+                                for ( Iterator c = children.iterator(); c.hasNext(); ) {
+                                    XSDParticle cp = (XSDParticle) c.next();
+                                    XSDElementDeclaration ce = (XSDElementDeclaration) cp.getContent();
+                                    if ( ce.isElementDeclarationReference() ) {
+                                        ce = ce.getResolvedElementDeclaration();
+                                    }
+                                    
+                                    //look up a descriptor that this element maps to
+                                    AttributeDescriptor ad = ft.getDescriptor( ce.getName() );
+                                    if ( ad == null ) {
+                                        LOGGER.warning( "Attribute " + ce.getName() + " specified in schema, but not" +
+                                            " in underlying feature type. Ignoring.");
+                                        continue;
+                                    }
+                                    
+                                    AttributeTypeInfo att = catalog.getFactory().createAttribute();
+                                    att.setName( ce.getName() );
+                                    att.setMaxOccurs( cp.getMaxOccurs() );
+                                    att.setMinOccurs( cp.getMinOccurs() );
+                                    att.setAttribute( ad );
+                                    featureType.getAttributes().add( att );
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (buildFromNative) {
+                        //build up the attributes from the native feature type
+                        for ( int x = 0; x < ft.getAttributeCount(); x++ ) {
+                            AttributeDescriptor ad = ft.getDescriptor( x );
+                            AttributeTypeInfo att = catalog.getFactory().createAttribute();
+                            att.setName( ad.getLocalName() );
+                            att.setMinOccurs( ad.getMinOccurs() );
+                            att.setMaxOccurs( ad.getMaxOccurs() );
+                            att.setAttribute( ad );
+                            featureType.getAttributes().add( att );
+                        }
                     }
                 }
                 catch( Exception e ) {
@@ -513,8 +605,6 @@ public class LegacyCatalogImporter {
                 if ( nativeBBOX != null ) {
                     featureType.setNativeBoundingBox(new ReferencedEnvelope(nativeBBOX,featureType.getNativeCRS()));
                 }
-                
-                
             }
             
             

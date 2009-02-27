@@ -294,6 +294,8 @@ public class TypesEditorForm extends ActionForm {
             return; // Action should redirect to Select screen?
         }
 
+        boolean newFeatureType = config.getFeatureTypeConfig( type.getDataStoreId() + ":" + type.getName() ) == null;
+        
         this.dataStoreId = type.getDataStoreId();
         this.styleId = type.getDefaultStyle();
 
@@ -407,8 +409,9 @@ public class TypesEditorForm extends ActionForm {
 
         System.out.println("rest based on schemaBase: " + type.getSchemaBase());
 
-        // Generate ReadOnly list of Attributes
-        //
+        this.schemaName = typeName + "_Type";
+        
+        // load natively
         DataStoreConfig dataStoreConfig = config.getDataStore(dataStoreId);
         SimpleFeatureType featureType = null;
 
@@ -421,49 +424,49 @@ public class TypesEditorForm extends ActionForm {
             if(dataStore != null) dataStore.dispose();
         }
 
-        if ( featureType == null ) {
-            //We are using the generated attributes
-            this.schemaBase = "--";
-            this.schemaName = typeName + "_Type";
-            this.attributes = new LinkedList();
-            addList = Collections.EMPTY_LIST;
-        }
-        else {
-            if (((type.getSchemaBase() == null) || "--".equals(type.getSchemaBase()))
-                    || (type.getSchemaAttributes() == null)) {
-                //We are using the generated attributes
+        // Generate ReadOnly list of Attributes
+        //
+        if ( newFeatureType ) {
+            if ( featureType == null ) {
+                //could not get feature type, use an empty list of attributes
                 this.schemaBase = "--";
-                this.schemaName = typeName + "_Type";
                 this.attributes = new LinkedList();
-    
-                // Generate ReadOnly list of Attributes
-                //
+                addList = Collections.EMPTY_LIST;
+            }
+            else {
+                //generate lists of attributes
+                this.schemaBase = "--";
                 List generated = DataTransferObjectFactory.generateAttributes(featureType);
                 this.attributes = attributesDisplayList(generated);
                 addList = Collections.EMPTY_LIST;
-            } else {
-                this.schemaBase = type.getSchemaBase();
-                this.schemaName = type.getSchemaName();
-                this.attributes = new LinkedList();
-    
+            }
+        }
+        else {
+            // load the attributes from the type
+            this.schemaBase = type.getSchemaBase();
+            this.schemaName = type.getSchemaName();
+            this.attributes = new LinkedList();
+
+            
                 //
                 // Need to add read only AttributeDisplay for each required attribute
                 // defined by schemaBase
                 //
                 List schemaAttributes = DataTransferObjectFactory.generateRequiredAttributes(schemaBase);
                 attributes.addAll(attributesDisplayList(schemaAttributes));
-                attributes.addAll(attributesFormList(type.getSchemaAttributes(), featureType));
-                addList = new ArrayList(featureType.getAttributeCount());
-    
-                for (int i = 0; i < featureType.getAttributeCount(); i++) {
-                    String attributeName = featureType.getDescriptor(i).getLocalName();
-    
-                    if (lookUpAttribute(attributeName) == null) {
-                        addList.add(attributeName);
-                    }
-                }
+                attributes.addAll(attributesDisplayList(type.getSchemaAttributes()/*, featureType*/));
+                addList = new ArrayList(); 
+//                addList = new ArrayList(featureType.getAttributeCount());
+//    
+//                for (int i = 0; i < featureType.getAttributeCount(); i++) {
+//                    String attributeName = featureType.getDescriptor(i).getLocalName();
+//    
+//                    if (lookUpAttribute(attributeName) == null) {
+//                        addList.add(attributeName);
+//                    }
+//                }
+                
             }
-        }
         
         StringBuffer buf = new StringBuffer();
 
@@ -579,8 +582,11 @@ public class TypesEditorForm extends ActionForm {
 
         for (Iterator i = dtoList.iterator(); i.hasNext(); index++) {
             Object next = i.next();
+            if ( next instanceof AttributeTypeInfoDTO ) {
+                next = new AttributeTypeInfoConfig((AttributeTypeInfoDTO) next);
+            }
             //System.out.println(index + " attribute: " + next);
-            list.add(new AttributeDisplay(new AttributeTypeInfoConfig((AttributeTypeInfoDTO) next)));
+            list.add(new AttributeDisplay((AttributeTypeInfoConfig) next));
         }
 
         return list;
