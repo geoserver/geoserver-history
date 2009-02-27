@@ -28,6 +28,7 @@ import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDSchemaContent;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.util.XSDConstants;
+import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.wfs.WFS;
@@ -224,23 +225,37 @@ public abstract class FeatureTypeSchemaBuilder {
     void buildSchemaContent(FeatureTypeInfo featureTypeMeta, XSDSchema schema, XSDFactory factory)
         throws IOException {
         //look if the schema for the type is already defined
-        String prefix = featureTypeMeta.getNameSpace().getPrefix();
+        String ds = featureTypeMeta.getDataStoreInfo().getId();
         String name = featureTypeMeta.getTypeName();
 
         File schemaFile = null;
 
         try {
-            schemaFile = resourceLoader.find("featureTypes/" + prefix + "_" + name + "/schema.xsd");
+            schemaFile = resourceLoader.find("featureTypes/" + ds + "_" + name + "/schema.xsd");
+            if ( schemaFile == null ) {
+                schemaFile = resourceLoader.find("featureTypes/" + name + "/schema.xsd");
+            }
         } catch (IOException e1) {
         }
 
         if (schemaFile != null) {
             //schema file found, parse it and lookup the complex type
             List resolvers = Schemas.findSchemaLocationResolvers(xmlConfiguration);
+            List locators = new ArrayList(); 
+            locators.add( new XSDSchemaLocator() {
+                public XSDSchema locateSchema(XSDSchema schema, String namespaceURI,
+                        String rawSchemaLocationURI, String resolvedSchemaLocationURI) {
+                    
+                    if ( gmlNamespace.equals( namespaceURI ) ) {
+                        return gmlSchema();
+                    }
+                    return null;
+                }
+            });
+            
             XSDSchema ftSchema = null;
-
             try {
-                ftSchema = Schemas.parse(schemaFile.getAbsolutePath(), null, resolvers);
+                ftSchema = Schemas.parse(schemaFile.getAbsolutePath(), locators, resolvers);
             } catch (IOException e) {
                 logger.log(Level.WARNING,
                     "Unable to parse schema: " + schemaFile.getAbsolutePath(), e);
