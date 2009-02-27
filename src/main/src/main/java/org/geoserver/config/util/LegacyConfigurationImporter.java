@@ -123,11 +123,11 @@ public class LegacyConfigurationImporter {
         }
 
         //info.setMaxFeatures( get( global, "maxFeatures", Integer.class ) );
-        info.setVerbose( get( global, "verbose", Boolean.class ) );
-        info.setVerboseExceptions( get( global, "verboseExceptions", Boolean.class ) );
-        info.setNumDecimals( get( global, "numDecimals", Integer.class ) );
+        info.setVerbose( get( global, "verbose", boolean.class ) );
+        info.setVerboseExceptions( get( global, "verboseExceptions", boolean.class ) );
+        info.setNumDecimals( get( global, "numDecimals", int.class, 4 ) );
         info.setCharset( (String) global.get( "charSet" ) );
-        info.setUpdateSequence( get( global, "updateSequence", Integer.class ) );
+        info.setUpdateSequence( get( global, "updateSequence", int.class ) );
         info.setOnlineResource( get( global, "onlineResource", String.class ) );
         info.setProxyBaseUrl( get( global, "ProxyBaseUrl", String.class ) );
         
@@ -192,12 +192,35 @@ public class LegacyConfigurationImporter {
         return value != null ? value : def;
     }
     
-    <T extends Object> T get( Map map, String key, Class<T> clazz ) {
+    protected <T extends Object> T get(Map map, String key, Class<T> clazz, T def ) {
         Object o = map.get( key );
         if ( o == null ) {
+            if ( def != null ) {
+                return def;
+            }
+            
+            //check for primitive type
+            if ( clazz.isPrimitive() ) {
+                if ( clazz == int.class ) {
+                    return (T) Integer.valueOf( 0 );
+                }
+                if ( clazz == double.class ) {
+                    return (T) Double.valueOf( 0d ); 
+                }
+                if ( clazz == boolean.class ) {
+                    return (T) Boolean.FALSE;
+                }
+            }
             return null;
         }
         
         return (T) o;
     }
+    
+    protected <T extends Object> T get(Map map, String key,
+        Class<T> clazz) {
+        return get( map, key, clazz, null );
+    }
+    
+    
 }
