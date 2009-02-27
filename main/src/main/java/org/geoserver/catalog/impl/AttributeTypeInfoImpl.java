@@ -74,4 +74,9 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
     public Map<String, Serializable> getMetadata() {
         return metadata;
     }
+    
+    @Override
+    public String toString() {
+        return name;
+    }
 }
