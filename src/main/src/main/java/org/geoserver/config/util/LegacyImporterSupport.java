@@ -32,14 +32,34 @@ public class LegacyImporterSupport {
         return value != null ? value : def;
     }
 
-    protected <T extends Object> T get(Map map, String key,
-            Class<T> clazz) {
+    protected <T extends Object> T get(Map map, String key, Class<T> clazz, T def ) {
         Object o = map.get( key );
         if ( o == null ) {
+            if ( def != null ) {
+                return def;
+            }
+            
+            //check for primitive type
+            if ( clazz.isPrimitive() ) {
+                if ( clazz == int.class ) {
+                    return (T) Integer.valueOf( 0 );
+                }
+                if ( clazz == double.class ) {
+                    return (T) Double.valueOf( 0d ); 
+                }
+                if ( clazz == boolean.class ) {
+                    return (T) Boolean.FALSE;
+                }
+            }
             return null;
         }
         
         return (T) o;
+    }
+    
+    protected <T extends Object> T get(Map map, String key,
+        Class<T> clazz) {
+        return get( map, key, clazz, null );
     }
 
 }

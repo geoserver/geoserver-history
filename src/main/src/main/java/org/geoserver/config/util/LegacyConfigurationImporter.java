@@ -105,12 +105,12 @@ public class LegacyConfigurationImporter extends LegacyImporterSupport {
             
         Map<String,Object> global = reader.global(); 
 
-        info.setMaxFeatures( get( global, "maxFeatures", Integer.class ) );
-        info.setVerbose( get( global, "verbose", Boolean.class ) );
-        info.setVerboseExceptions( get( global, "verboseExceptions", Boolean.class ) );
-        info.setNumDecimals( get( global, "numDecimals", Integer.class ) );
+        info.setMaxFeatures( get( global, "maxFeatures", int.class, Integer.MAX_VALUE ) );
+        info.setVerbose( get( global, "verbose", boolean.class ) );
+        info.setVerboseExceptions( get( global, "verboseExceptions", boolean.class ) );
+        info.setNumDecimals( get( global, "numDecimals", int.class, 4 ) );
         info.setCharset( (String) global.get( "charSet" ) );
-        info.setUpdateSequence( get( global, "updateSequence", Integer.class ) );
+        info.setUpdateSequence( get( global, "updateSequence", int.class ) );
         info.setOnlineResource( get( global, "onlineResource", String.class ) );
         info.setProxyBaseUrl( get( global, "ProxyBaseUrl", String.class ) );
         
