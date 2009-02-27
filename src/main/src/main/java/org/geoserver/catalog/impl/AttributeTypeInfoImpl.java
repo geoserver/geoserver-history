@@ -65,4 +65,8 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
         return metadata;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
