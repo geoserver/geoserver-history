@@ -43,12 +43,14 @@
   </ciManagement>
 
  <repositories>
-  <!--repository>
+  <repository>
    <id>opengeo</id>
    <name>OpenGeo Maven Repository</name>
    <url>http://repo.opengeo.org/</url>
-   <layout>default</layout>
-  </repository-->
+   <snapshots>
+     <enabled>true</enabled>
+   </snapshots>
+  </repository>
   <repository>
    <id>geotools</id>
    <name>geotools</name>
@@ -66,14 +68,6 @@
     <enabled>false</enabled>
    </snapshots>
   </repository> 
-  <repository>
-   <id>osgeo</id>
-   <name>osgeo</name>
-   <url>http://download.osgeo.org/webdav/geotools</url>
-   <snapshots>
-    <enabled>true</enabled>
-   </snapshots>
-  </repository>
   <repository>
    <id>mortbay</id>
    <name>mortbay</name>
