@@ -385,12 +385,26 @@ public class CatalogImpl implements Catalog {
     }
     
     public <T extends ResourceInfo> T getResourceByName( String name, Class<T> clazz ) {
-        ResourceInfo resource = getResourceByName( (String) null, name, clazz );
+    	ResourceInfo resource;
+    	
+    	// check is the name is a fully qualified one
+    	int colIdx = name.indexOf(':');
+		if(colIdx != -1) {
+    		String ns = name.substring(0, colIdx);
+    		String localName = name.substring(colIdx + 1);
+    		resource = getResourceByName(ns, localName, clazz);
+    		if(resource != null)
+    			return (T) resource;
+    	}
+    	
+		// try to prefix the default namespace name
+        resource = getResourceByName( (String) null, name, clazz );
         if ( resource != null ) {
             return (T) resource;        //already proxied
             //return ModificationProxy.create( (T) resource, clazz );
         }
 
+        // finally try a full match with just the name on its own
         List matches = new ArrayList();
         List l = lookup(clazz, resources);
         for (Iterator i = l.iterator(); i.hasNext();) {
