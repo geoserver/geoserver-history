@@ -17,9 +17,15 @@ import java.util.logging.Logger;
 
 import net.opengis.wcs11.DescribeCoverageType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageDimensionInfo;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.wcs.WCSInfo;
 import org.geoserver.wcs.kvp.GridType;
-import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.LinearTransform;
 import org.geotools.util.NumberRange;
@@ -29,11 +35,6 @@ import org.geotools.xml.transform.Translator;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.Matrix;
-import org.vfny.geoserver.global.CoverageDimension;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.MetaDataLink;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
@@ -65,14 +66,14 @@ public class DescribeCoverageTransformer extends TransformerBase {
         METHOD_NAME_MAP.put("bicubic", "cubic");
     }
 
-    private WCS wcs;
+    private WCSInfo wcs;
 
-    private Data catalog;
+    private Catalog catalog;
 
     /**
      * Creates a new WFSCapsTransformer object.
      */
-    public DescribeCoverageTransformer(WCS wcs, Data catalog) {
+    public DescribeCoverageTransformer(WCSInfo wcs, Catalog catalog) {
         super();
         this.wcs = wcs;
         this.catalog = catalog;
@@ -133,7 +134,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
                     .toString();
 
             proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
-                    .getGeoServer().getProxyBaseUrl());
+                    .getGeoServer().getGlobal().getProxyBaseUrl());
             final String locationDef = WCS_URI + " " + proxifiedBaseUrl
                     + "schemas/wcs/1.1.1/wcsDescribeCoverage.xsd";
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
@@ -143,12 +144,12 @@ public class DescribeCoverageTransformer extends TransformerBase {
                 String coverageId = (String) it.next();
 
                 // check the coverage is known
-                if (!Data.TYPE_RASTER.equals(catalog.getLayerType(coverageId))) {
+                if (catalog.getLayer(coverageId).getType() != LayerInfo.Type.RASTER) {
                     throw new WcsException("Could not find the specified coverage: "
                             + coverageId, WcsExceptionCode.InvalidParameterValue, "identifiers");
                 }
 
-                CoverageInfo ci = catalog.getCoverageInfo(coverageId);
+                CoverageInfo ci = catalog.getCoverage(coverageId);
                 try {
                     handleCoverageDescription(ci);
                 } catch (Exception e) {
@@ -162,11 +163,11 @@ public class DescribeCoverageTransformer extends TransformerBase {
 
         void handleCoverageDescription(CoverageInfo ci) throws Exception {
             start("wcs:CoverageDescription");
-            element("ows:Title", ci.getLabel());
+            element("ows:Title", ci.getTitle());
             element("ows:Abstract", ci.getDescription());
             handleKeywords(ci.getKeywords());
             element("wcs:Identifier", ci.getName());
-            handleMetadataLink(ci.getMetadataLink(), "simple");
+            handleMetadataLinks(ci.getMetadataLinks(), "simple");
             handleDomain(ci);
             handleRange(ci);
             handleSupportedCRSs(ci);
@@ -175,22 +176,24 @@ public class DescribeCoverageTransformer extends TransformerBase {
         }
 
         // TODO: find a way to share this with the capabilities transfomer
-        private void handleMetadataLink(MetaDataLink mdl, String linkType) {
-            if (mdl != null) {
-                AttributesImpl attributes = new AttributesImpl();
+        private void handleMetadataLinks(List<MetadataLinkInfo> links, String linkType) {
+        	for (MetadataLinkInfo mdl : links) {
+        		if (mdl != null) {
+                    AttributesImpl attributes = new AttributesImpl();
 
-                if ((mdl.getAbout() != null) && (mdl.getAbout() != "")) {
-                    attributes.addAttribute("", "about", "about", "", mdl.getAbout());
-                }
+                    if ((mdl.getAbout() != null) && (mdl.getAbout() != "")) {
+                        attributes.addAttribute("", "about", "about", "", mdl.getAbout());
+                    }
 
-                if ((mdl.getMetadataType() != null) && (mdl.getMetadataType() != "")) {
-                    attributes.addAttribute("", "xlink:type", "xlink:type", "", linkType);
-                }
+                    if ((mdl.getMetadataType() != null) && (mdl.getMetadataType() != "")) {
+                        attributes.addAttribute("", "xlink:type", "xlink:type", "", linkType);
+                    }
 
-                if (attributes.getLength() > 0) {
-                    element("ows:Metadata", null, attributes);
+                    if (attributes.getLength() > 0) {
+                        element("ows:Metadata", null, attributes);
+                    }
                 }
-            }
+			}
         }
 
         // TODO: find a way to share this with the capabilities transfomer
@@ -209,8 +212,8 @@ public class DescribeCoverageTransformer extends TransformerBase {
         private void handleDomain(CoverageInfo ci) throws Exception {
             start("wcs:Domain");
             start("wcs:SpatialDomain");
-            handleBoundingBox(ci.getWGS84LonLatEnvelope(), true);
-            handleBoundingBox(ci.getEnvelope(), false);
+            handleBoundingBox(ci.getLatLonBoundingBox(), true);
+            handleBoundingBox(ci.getBoundingBox(), false);
             handleGridCRS(ci);
             end("wcs:SpatialDomain");
             end("wcs:Domain");
@@ -218,7 +221,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
 
         private void handleGridCRS(CoverageInfo ci) throws Exception {
             start("wcs:GridCRS");
-            element("wcs:GridBaseCRS", urnIdentifier(ci.getCrs()));
+            element("wcs:GridBaseCRS", urnIdentifier(ci.getCRS()));
             element("wcs:GridType", GridType.GT2dGridIn2dCrs.getXmlConstant());
             // TODO: go back to using the metadata once they can be trusted
             final LinearTransform tx = (LinearTransform) ci.getGrid().getGridToCRS();
@@ -248,18 +251,17 @@ public class DescribeCoverageTransformer extends TransformerBase {
             end("wcs:GridCRS");
         }
 
-        private void handleBoundingBox(GeneralEnvelope envelope, boolean wgsLonLat)
+        private void handleBoundingBox(ReferencedEnvelope encodedEnvelope, boolean wgsLonLat)
                 throws Exception {
             final AttributesImpl attributes = new AttributesImpl();
-            final CoordinateReferenceSystem crs = envelope.getCoordinateReferenceSystem();
-            GeneralEnvelope encodedEnvelope = envelope;
+            final CoordinateReferenceSystem crs = encodedEnvelope.getCoordinateReferenceSystem();
             if (wgsLonLat) {
                 attributes.addAttribute("", "crs", "crs", "", "urn:ogc:def:crs:OGC:1.3:CRS84");
             } else {
                 String urnIdentifier = urnIdentifier(crs);
                 CoordinateReferenceSystem latlonCrs = CRS.decode(urnIdentifier);
-                encodedEnvelope = CRS.transform(CRS.findMathTransform(crs, latlonCrs, true),
-                        envelope);
+                encodedEnvelope = new ReferencedEnvelope(CRS.transform(CRS.findMathTransform(crs, latlonCrs, true),
+                        encodedEnvelope));
                 attributes.addAttribute("", "crs", "crs", "", urnIdentifier);
             }
             attributes.addAttribute("", "dimensions", "dimensions", "", Integer.toString(crs
@@ -278,7 +280,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
             start("wcs:Range");
             // at the moment we only handle single field coverages
             start("wcs:Field");
-            CoverageDimension[] dimensions = ci.getDimensions();
+            List<CoverageDimensionInfo> dimensions = ci.getDimensions();
             element("wcs:Identifier", "contents");
             // the output domain of the field
             start("wcs:Definition");
@@ -306,9 +308,9 @@ public class DescribeCoverageTransformer extends TransformerBase {
             attributes.addAttribute("", "identifier", "identifier", "", "Bands");
             start("wcs:Axis", attributes);
             start("wcs:AvailableKeys");
-            CoverageDimension[] dimensions = ci.getDimensions();
-            for (int i = 0; i < dimensions.length; i++) {
-                element("wcs:Key", dimensions[i].getName().replace(' ', '_'));
+            List<CoverageDimensionInfo> dimensions = ci.getDimensions();
+            for (CoverageDimensionInfo cd : dimensions) {
+                element("wcs:Key", cd.getName().replace(' ', '_'));
             }
             end("wcs:AvailableKeys");
             end("wcs:Axis");
@@ -321,28 +323,27 @@ public class DescribeCoverageTransformer extends TransformerBase {
          * @param dimensions
          * @return
          */
-        private NumberRange getCoverageRange(CoverageDimension[] dimensions) {
+        private NumberRange getCoverageRange(List<CoverageDimensionInfo> dimensions) {
             NumberRange range = null;
-            for (int i = 0; i < dimensions.length; i++) {
-                if (dimensions[i].getRange() == null)
+            for (CoverageDimensionInfo dimension : dimensions) {
+            	if (dimension.getRange() == null)
                     return null;
                 else if (range == null)
-                    range = dimensions[i].getRange();
+                    range = dimension.getRange();
                 else
-                    range.union(dimensions[i].getRange());
-            }
+                    range.union(dimension.getRange());
+			}
             return range;
         }
 
-        private void handleNullValues(CoverageDimension[] dimensions) {
-            for (int i = 0; i < dimensions.length; i++) {
-                CoverageDimension cd = dimensions[i];
-                Double[] nulls = cd.getNullValues();
+        private void handleNullValues(List<CoverageDimensionInfo> dimensions) {
+        	for (CoverageDimensionInfo cd : dimensions) {
+                List<Double> nulls = cd.getNullValues();
                 if(nulls == null)
                     return;
-                if (nulls.length == 1) {
-                    element("wcs:NullValue", nulls[0].toString());
-                } else if (nulls.length >= 1) {
+                if (nulls.size() == 1) {
+                    element("wcs:NullValue", nulls.get(0).toString());
+                } else if (nulls.size() >= 1) {
                     // the new specification allows only for a list of values,
                     // Can we assume min and max are two integer numbers and
                     // make up a list out of them? For the moment, just fail
@@ -394,10 +395,10 @@ public class DescribeCoverageTransformer extends TransformerBase {
 
         private void handleSupportedCRSs(CoverageInfo ci) throws Exception {
             Set supportedCRSs = new LinkedHashSet();
-            if (ci.getRequestCRSs() != null)
-                supportedCRSs.addAll(ci.getRequestCRSs());
-            if (ci.getResponseCRSs() != null)
-                supportedCRSs.addAll(ci.getResponseCRSs());
+            if (ci.getRequestSRS() != null)
+                supportedCRSs.addAll(ci.getRequestSRS());
+            if (ci.getResponseSRS() != null)
+                supportedCRSs.addAll(ci.getResponseSRS());
             for (Iterator it = supportedCRSs.iterator(); it.hasNext();) {
                 String crsName = (String) it.next();
                 CoordinateReferenceSystem crs = CRS.decode(crsName);

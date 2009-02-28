@@ -20,7 +20,6 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
-import org.vfny.geoserver.global.WCS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

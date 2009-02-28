@@ -1,6 +1,6 @@
 package org.geoserver.wcs;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
@@ -29,6 +29,10 @@ import net.opengis.wcs11.GridCrsType;
 import net.opengis.wcs11.OutputType;
 import net.opengis.wcs11.RangeSubsetType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageDimensionInfo;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.kvp.GridCS;
@@ -42,7 +46,6 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.OverviewPolicy;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
@@ -60,10 +63,6 @@ import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.opengis.referencing.operation.MathTransform;
-import org.vfny.geoserver.global.CoverageDimension;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
@@ -79,17 +78,20 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         HINTS.add(new Hints(Hints.OVERVIEW_POLICY, OverviewPolicy.IGNORE));
     }
 
-    private WCS wcs;
+    private WCSInfo wcs;
 
-    private Data catalog;
+    private Catalog catalog;
 
-    public DefaultWebCoverageService111(WCS wcs, Data catalog) {
-        this.wcs = wcs;
-        this.catalog = catalog;
+	private GeoServer geoServer;
+
+    public DefaultWebCoverageService111(GeoServer geoServer) {
+        this.wcs = geoServer.getService(WCSInfo.class);
+        this.geoServer = geoServer;
+        this.catalog = geoServer.getCatalog();
     }
     
     public WCSInfo getServiceInfo() {
-        return wcs.getInfo();
+        return wcs;
     }
 
     public WCSCapsTransformer getCapabilities(GetCapabilitiesType request) {
@@ -106,8 +108,8 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         // TODO: add support for 1.0.0 in here
 
         if ("1.1.0".equals(version) || "1.1.1".equals(version)) {
-            WCSCapsTransformer capsTransformer = new WCSCapsTransformer(wcs, catalog);
-            capsTransformer.setEncoding(wcs.getCharSet());
+            WCSCapsTransformer capsTransformer = new WCSCapsTransformer(geoServer);
+            capsTransformer.setEncoding(Charset.forName((wcs.getGeoServer().getGlobal().getCharset())));
             return capsTransformer;
         }
 
@@ -118,7 +120,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         final String version = request.getVersion();
         if ("1.1.0".equals(version) || "1.1.1".equals(version)) {
             DescribeCoverageTransformer describeTransformer = new DescribeCoverageTransformer(wcs, catalog);
-            describeTransformer.setEncoding(wcs.getCharSet());
+            describeTransformer.setEncoding(Charset.forName(wcs.getGeoServer().getGlobal().getCharset()));
             return describeTransformer;
         }
 
@@ -134,7 +136,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         CoverageInfo meta = null;
         GridCoverage2D coverage = null;
         try {
-            meta = catalog.getCoverageInfo(request.getIdentifier().getValue());
+            meta = catalog.getCoverageByName(request.getIdentifier().getValue());
 
             // first let's run some sanity checks on the inputs
             checkDomainSubset(meta, request.getDomainSubset());
@@ -142,9 +144,9 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             checkOutput(meta, request.getOutput());
 
             // grab the format, the reader using the default params,
-            final Format format = meta.getFormatInfo().getFormat();
+            final Format format = meta.getStore().getFormat();
             final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta
-                    .createReader(HINTS);
+                    .getGridCoverageReader(null, HINTS);
             final ParameterValueGroup params = reader.getFormat().getReadParameters();
 
             // handle spatial domain subset, if needed
@@ -277,10 +279,10 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     // prepare a support structure to quickly get the band index
                     // of a
                     // key
-                    CoverageDimension[] dimensions = meta.getDimensions();
+                    List<CoverageDimensionInfo> dimensions = meta.getDimensions();
                     Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
-                    for (int i = 0; i < dimensions.length; i++) {
-                        String keyName = dimensions[i].getName().replace(' ', '_');
+                    for (int i = 0; i < dimensions.size(); i++) {
+                        String keyName = dimensions.get(i).getName().replace(' ', '_');
                         dimensionMap.put(keyName, i);
                     }
 
@@ -360,7 +362,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             bbox.setCrs("EPSG:4326");
         
         CoordinateReferenceSystem bboxCRs = CRS.decode(bbox.getCrs());
-        Envelope gridEnvelope = meta.getCoverage().getEnvelope();
+        Envelope gridEnvelope = meta.getGridCoverage(null, HINTS).getEnvelope();
         GeneralEnvelope gridEnvelopeBboxCRS = null;
         if (bboxCRs instanceof GeographicCRS) {
             try {
@@ -446,7 +448,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                 // geographic crs
                 String actualCRS = null;
                 final String gridBaseCrsCode = extractCode(gridBaseCrs);
-                for (Iterator it = meta.getResponseCRSs().iterator(); it.hasNext();) {
+                for (Iterator it = meta.getResponseSRS().iterator(); it.hasNext();) {
                     final String responseCRS = (String) it.next();
                     final String code = extractCode(responseCRS);
                     if (code.equalsIgnoreCase(gridBaseCrsCode)) {
@@ -459,7 +461,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                             WcsExceptionCode.InvalidParameterValue, "GridBaseCrs");
                 gridCRS.setGridBaseCRS(gridBaseCrs);
             } else {
-                String code = GML2EncodingUtils.epsgCode(meta.getCrs());
+                String code = GML2EncodingUtils.epsgCode(meta.getCRS());
                 gridCRS.setGridBaseCRS("urn:x-ogc:def:crs:EPSG:" + code);
             }
 
@@ -638,10 +640,10 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         // (and remember we replaced spaces with underscores in the keys to
         // avoid issues
         // with the kvp parsing of indentifiers that include spaces)
-        CoverageDimension[] dimensions = info.getDimensions();
+        List<CoverageDimensionInfo> dimensions = info.getDimensions();
         Set<String> dimensionMap = new HashSet<String>();
-        for (int i = 0; i < dimensions.length; i++) {
-            String keyName = dimensions[i].getName().replace(' ', '_');
+        for (int i = 0; i < dimensions.size(); i++) {
+            String keyName = dimensions.get(i).getName().replace(' ', '_');
             dimensionMap.add(keyName);
         }
 

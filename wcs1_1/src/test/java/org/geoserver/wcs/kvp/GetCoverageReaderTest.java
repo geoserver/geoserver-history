@@ -1,7 +1,7 @@
 package org.geoserver.wcs.kvp;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
-import static org.geoserver.data.test.MockData.*;
+import static org.geoserver.data.test.MockData.TASMANIA_BM;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +13,8 @@ import net.opengis.wcs11.FieldSubsetType;
 import net.opengis.wcs11.GetCoverageType;
 import net.opengis.wcs11.RangeSubsetType;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.wcs.test.WCSTestSupport;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
 
 public class GetCoverageReaderTest extends WCSTestSupport {
@@ -31,7 +31,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     @Override
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
-        Data catalog = (Data) applicationContext.getBean("catalog");
+        Catalog catalog = (Catalog) applicationContext.getBean("catalog");
         reader = new GetCoverageRequestReader(catalog);
     }
     

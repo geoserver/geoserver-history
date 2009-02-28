@@ -14,17 +14,17 @@ import javax.xml.transform.TransformerException;
 
 import net.opengis.wcs11.GetCoverageType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wcs.WebCoverageService111;
+import org.geoserver.wcs.WCSInfo;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.opengis.coverage.grid.GridCoverage;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
@@ -36,13 +36,13 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
  */
 public class WCSGetCoverageStoreResponse extends Response {
     
-    Data catalog;
-    WCS wcs;
+    Catalog catalog;
+    WCSInfo wcs;
 
-    public WCSGetCoverageStoreResponse(WCS wcs, Data catalog) {
+    public WCSGetCoverageStoreResponse(GeoServer gs) {
         super(GridCoverage[].class);
-        this.wcs = wcs;
-        this.catalog = catalog;
+        this.wcs = gs.getService(WCSInfo.class);
+        this.catalog = gs.getCatalog();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class WCSGetCoverageStoreResponse extends Response {
 
         // grab the coverage info for Coverages document encoding
         final GridCoverage2D coverage = (GridCoverage2D) coverages[0];
-        CoverageInfo coverageInfo = catalog.getCoverageInfo(request.getIdentifier().getValue());
+        CoverageInfo coverageInfo = catalog.getCoverage(request.getIdentifier().getValue());
         
         // write the coverage to temporary storage in the data dir
         File wcsStore = null;
@@ -111,7 +111,8 @@ public class WCSGetCoverageStoreResponse extends Response {
         System.out.println(coverageFile);
         
         // build the path where the clients will be able to retrieve the coverage files
-        final String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs.getGeoServer().getProxyBaseUrl());
+        final String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), 
+        		wcs.getGeoServer().getGlobal().getProxyBaseUrl());
         final String coverageLocation = proxifiedBaseUrl + "temp/wcs/" + coverageFile.getName(); 
         
         // build the response

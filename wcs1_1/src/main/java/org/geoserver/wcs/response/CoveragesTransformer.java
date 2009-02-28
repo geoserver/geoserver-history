@@ -8,12 +8,12 @@ import java.util.logging.Logger;
 
 import net.opengis.wcs11.GetCoverageType;
 
+import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.wcs.WCSInfo;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.WCS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -34,7 +34,7 @@ public class CoveragesTransformer extends TransformerBase {
 
     private static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    private WCS wcs;
+    private WCSInfo wcs;
 
     private GetCoverageType request;
 
@@ -43,11 +43,11 @@ public class CoveragesTransformer extends TransformerBase {
     /**
      * Creates a new WFSCapsTransformer object to be used when encoding the multipart output
      */
-    public CoveragesTransformer(WCS wcs, GetCoverageType request) {
+    public CoveragesTransformer(WCSInfo wcs, GetCoverageType request) {
         this(wcs, request, "cid:theCoverage");
     }
 
-    public CoveragesTransformer(WCS wcs, GetCoverageType request, String coverageLocation) {
+    public CoveragesTransformer(WCSInfo wcs, GetCoverageType request, String coverageLocation) {
         this.wcs = wcs;
         this.request = request;
         this.coverageLocation = coverageLocation;
@@ -108,7 +108,7 @@ public class CoveragesTransformer extends TransformerBase {
                         .toString();
 
                 proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
-                        .getGeoServer().getProxyBaseUrl());
+                        .getGeoServer().getGlobal().getProxyBaseUrl());
                 final String locationDef = WCS_URI + " " + proxifiedBaseUrl
                         + "schemas/wcs/1.1.1/wcsCoverages.xsd";
                 attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
@@ -124,7 +124,7 @@ public class CoveragesTransformer extends TransformerBase {
 
         void handleCoverage(CoverageInfo ci) throws Exception {
             start("wcs:Coverage");
-            element("ows:Title", ci.getLabel());
+            element("ows:Title", ci.getTitle());
             element("ows:Abstract", ci.getDescription());
             element("ows:Identifier", ci.getName());
             final AttributesImpl attributes = new AttributesImpl();

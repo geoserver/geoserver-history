@@ -9,7 +9,6 @@ import java.util.List;
 import net.opengis.ows11.AcceptVersionsType;
 import net.opengis.ows11.Ows11Factory;
 
-import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.RequestUtils;
 
