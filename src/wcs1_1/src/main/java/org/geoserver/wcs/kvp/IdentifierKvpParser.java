@@ -4,25 +4,26 @@
  */
 package org.geoserver.wcs.kvp;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.ows.kvp.CodeTypeKvpParser;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
 
 public class IdentifierKvpParser extends CodeTypeKvpParser {
 
-    private Data catalog;
+    private Catalog catalog;
 
-    public IdentifierKvpParser(Data catalog) {
+    public IdentifierKvpParser(Catalog catalog) {
         super("identifier", "wcs");
         this.catalog = catalog;
     }
 
     @Override
     public Object parse(String value) throws Exception {
-        Integer type = catalog.getLayerType(value);
-        if (!Data.TYPE_RASTER.equals(type))
+        LayerInfo.Type type = catalog.getLayer(value).getType();
+        if (type != LayerInfo.Type.RASTER)
             throw new WcsException("Could not find coverage '" + value + "'",
                     InvalidParameterValue, "identifier");
         return super.parse(value);

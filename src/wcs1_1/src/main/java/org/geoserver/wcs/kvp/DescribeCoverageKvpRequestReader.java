@@ -12,9 +12,9 @@ import java.util.Map;
 import net.opengis.wcs11.DescribeCoverageType;
 import net.opengis.wcs11.Wcs111Factory;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
 import org.geoserver.ows.util.KvpUtils;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 
@@ -26,9 +26,9 @@ import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
  * 
  */
 public class DescribeCoverageKvpRequestReader extends EMFKvpRequestReader {
-    private Data catalog;
+    private Catalog catalog;
 
-    public DescribeCoverageKvpRequestReader(Data catalog) {
+    public DescribeCoverageKvpRequestReader(Catalog catalog) {
         super(DescribeCoverageType.class, Wcs111Factory.eINSTANCE);
         this.catalog = catalog;
         

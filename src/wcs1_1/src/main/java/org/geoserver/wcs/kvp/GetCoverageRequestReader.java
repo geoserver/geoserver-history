@@ -4,7 +4,6 @@
  */
 package org.geoserver.wcs.kvp;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.MissingParameterValue;
 
 import java.util.Map;
@@ -17,16 +16,16 @@ import net.opengis.wcs11.OutputType;
 import net.opengis.wcs11.TimeSequenceType;
 import net.opengis.wcs11.Wcs111Factory;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 
 public class GetCoverageRequestReader extends EMFKvpRequestReader {
 
-    Data catalog;
+    Catalog catalog;
 
-    public GetCoverageRequestReader(Data catalog) {
+    public GetCoverageRequestReader(Catalog catalog) {
         super(GetCoverageType.class, Wcs111Factory.eINSTANCE);
         this.catalog = catalog;
     }

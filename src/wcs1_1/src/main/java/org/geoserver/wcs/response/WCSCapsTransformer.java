@@ -4,7 +4,6 @@
  */
 package org.geoserver.wcs.response;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,17 +16,19 @@ import java.util.logging.Logger;
 
 import net.opengis.wcs11.GetCapabilitiesType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.config.ContactInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.RequestUtils;
-import org.geotools.geometry.GeneralEnvelope;
+import org.geoserver.wcs.WCSInfo;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.MetaDataLink;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.xml.sax.ContentHandler;
@@ -54,17 +55,17 @@ public class WCSCapsTransformer extends TransformerBase {
 
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    private WCS wcs;
+    private WCSInfo wcs;
 
-    private Data catalog;
+    private Catalog catalog;
 
     /**
      * Creates a new WFSCapsTransformer object.
      */
-    public WCSCapsTransformer(WCS wcs, Data catalog) {
+    public WCSCapsTransformer(GeoServer gs) {
         super();
-        this.wcs = wcs;
-        this.catalog = catalog;
+        this.wcs = gs.getService(WCSInfo.class);
+        this.catalog = gs.getCatalog();
         setNamespaceDeclarationEnabled(false);
     }
 
@@ -111,7 +112,7 @@ public class WCSCapsTransformer extends TransformerBase {
             this.request = (GetCapabilitiesType) o;
 
             // check the update sequence
-            final int updateSequence = wcs.getGeoServer().getUpdateSequence();
+            final int updateSequence = wcs.getGeoServer().getGlobal().getUpdateSequence();
             int requestedUpdateSequence = -1;
             if (request.getUpdateSequence() != null) {
                 try {
@@ -146,7 +147,7 @@ public class WCSCapsTransformer extends TransformerBase {
                     .toString();
 
             proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
-                    .getGeoServer().getProxyBaseUrl());
+                    .getGeoServer().getGlobal().getProxyBaseUrl());
             final String locationDef = WCS_URI + " " + proxifiedBaseUrl
                     + "schemas/wcs/1.1.1/wcsGetCapabilities.xsd";
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
@@ -232,10 +233,10 @@ public class WCSCapsTransformer extends TransformerBase {
          */
         private void handleServiceProvider() {
             start("ows:ServiceProvider");
-            element("ows:ProviderName", wcs.getGeoServer().getContactOrganization());
+            GeoServerInfo gs = wcs.getGeoServer().getGlobal();
+			element("ows:ProviderName", gs.getContact().getContactOrganization());
             AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", wcs.getGeoServer()
-                    .getOnlineResource());
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", gs.getOnlineResource());
             element("ows:ProviderSite", null, attributes);
 
             handleContact();
@@ -347,24 +348,25 @@ public class WCSCapsTransformer extends TransformerBase {
             final GeoServer gs = wcs.getGeoServer();
             start("ows:ServiceContact");
 
-            elementIfNotEmpty("ows:IndividualName", gs.getContactPerson());
-            elementIfNotEmpty("ows:PositionName", gs.getContactPosition());
+            ContactInfo contact = gs.getGlobal().getContact();
+            elementIfNotEmpty("ows:IndividualName", contact.getContactPerson());
+            elementIfNotEmpty("ows:PositionName", contact.getContactPosition());
 
             start("ows:ContactInfo");
             start("ows:Phone");
-            elementIfNotEmpty("ows:Voice", gs.getContactVoice());
-            elementIfNotEmpty("ows:Facsimile", gs.getContactFacsimile());
+            elementIfNotEmpty("ows:Voice", contact.getContactVoice());
+            elementIfNotEmpty("ows:Facsimile", contact.getContactFacsimile());
             end("ows:Phone");
             start("ows:Address");
-            elementIfNotEmpty("ows:DeliveryPoint", gs.getAddress());
-            elementIfNotEmpty("ows:City", gs.getAddressCity());
-            elementIfNotEmpty("ows:AdministrativeArea", gs.getAddressState());
-            elementIfNotEmpty("ows:PostalCode", gs.getAddressPostalCode());
-            elementIfNotEmpty("ows:Country", gs.getAddressCountry());
-            elementIfNotEmpty("ows:ElectronicMailAddress", gs.getContactEmail());
+            elementIfNotEmpty("ows:DeliveryPoint", contact.getAddress());
+            elementIfNotEmpty("ows:City", contact.getAddressCity());
+            elementIfNotEmpty("ows:AdministrativeArea", contact.getAddressState());
+            elementIfNotEmpty("ows:PostalCode", contact.getAddressPostalCode());
+            elementIfNotEmpty("ows:Country", contact.getAddressCountry());
+            elementIfNotEmpty("ows:ElectronicMailAddress", contact.getContactEmail());
             end("ows:Address");
 
-            String or = gs.getOnlineResource();
+            String or = gs.getGlobal().getOnlineResource();
             if ((or != null) && !"".equals(or.trim())) {
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "xlink:href", "xlink:href", "", or);
@@ -376,7 +378,7 @@ public class WCSCapsTransformer extends TransformerBase {
             end("ows:ServiceContact");
         }
 
-        private void handleEnvelope(GeneralEnvelope envelope) {
+        private void handleEnvelope(ReferencedEnvelope envelope) {
             start("ows:WGS84BoundingBox");
             element("ows:LowerCorner", new StringBuffer(Double.toString(envelope.getLowerCorner()
                     .getOrdinate(0))).append(" ").append(envelope.getLowerCorner().getOrdinate(1))
@@ -390,7 +392,7 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleContents() {
             start("wcs:Contents");
 
-            List coverages = new ArrayList(wcs.getData().getCoverageInfos().values());
+            List<CoverageInfo> coverages = wcs.getGeoServer().getCatalog().getCoverages();
             
             // filter out disabled coverages
             for (Iterator it = coverages.iterator(); it.hasNext();) {
@@ -404,7 +406,7 @@ public class WCSCapsTransformer extends TransformerBase {
                 String namespace = request.getNamespace();
                 for (Iterator it = coverages.iterator(); it.hasNext();) {
                     CoverageInfo cv = (CoverageInfo) it.next();
-                    if(!namespace.equals(cv.getNameSpace().getPrefix()))
+                    if(!namespace.equals(cv.getStore().getWorkspace().getName()))
                         it.remove();
                 }
             }
@@ -421,32 +423,34 @@ public class WCSCapsTransformer extends TransformerBase {
 
         private void handleCoverageSummary(CoverageInfo cv) {
             start("wcs:CoverageSummary");
-            elementIfNotEmpty("ows:Title", cv.getLabel());
+            elementIfNotEmpty("ows:Title", cv.getTitle());
             elementIfNotEmpty("ows:Abstract", cv.getDescription());
             handleKeywords(cv.getKeywords());
-            handleMetadataLink(cv.getMetadataLink(), "simple");
-            handleEnvelope(cv.getWGS84LonLatEnvelope());
+            handleMetadataLinks(cv.getMetadataLinks(), "simple");
+            handleEnvelope(cv.getLatLonBoundingBox());
             element("wcs:Identifier", cv.getName());
 
             end("wcs:CoverageSummary");
         }
 
-        private void handleMetadataLink(MetaDataLink mdl, String linkType) {
-            if (mdl != null) {
-                AttributesImpl attributes = new AttributesImpl();
+        private void handleMetadataLinks(List<MetadataLinkInfo> links, String linkType) {
+        	for (MetadataLinkInfo  mdl : links) {
+        		if (mdl != null) {
+                    AttributesImpl attributes = new AttributesImpl();
 
-                if ((mdl.getAbout() != null) && (mdl.getAbout() != "")) {
-                    attributes.addAttribute("", "about", "about", "", mdl.getAbout());
-                }
+                    if ((mdl.getAbout() != null) && (mdl.getAbout() != "")) {
+                        attributes.addAttribute("", "about", "about", "", mdl.getAbout());
+                    }
 
-                if ((mdl.getMetadataType() != null) && (mdl.getMetadataType() != "")) {
-                    attributes.addAttribute("", "xlink:type", "xlink:type", "", linkType);
-                }
+                    if ((mdl.getMetadataType() != null) && (mdl.getMetadataType() != "")) {
+                        attributes.addAttribute("", "xlink:type", "xlink:type", "", linkType);
+                    }
 
-                if (attributes.getLength() > 0) {
-                    element("ows:Metadata", null, attributes);
+                    if (attributes.getLength() > 0) {
+                        element("ows:Metadata", null, attributes);
+                    }
                 }
-            }
+			}
         }
 
         /**

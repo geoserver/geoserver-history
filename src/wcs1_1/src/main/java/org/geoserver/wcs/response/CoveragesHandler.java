@@ -15,9 +15,10 @@ import javax.xml.transform.TransformerException;
 
 import net.opengis.wcs11.GetCoverageType;
 
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.WCS;
+import org.geoserver.wcs.WCSInfo;
 
 /**
  * A data handler for the fake "geoserver/coverage" mime type. In fact, it
@@ -44,7 +45,7 @@ public class CoveragesHandler implements DataContentHandler {
 
     public void writeTo(Object value, String mimeType, OutputStream os) throws IOException {
         CoveragesData data = (CoveragesData) value;
-        final WCS wcs = (WCS) GeoServerExtensions.bean("wcs");
+        final WCSInfo wcs = ((GeoServer) GeoServerExtensions.bean("geoServer")).getService(WCSInfo.class);
         CoveragesTransformer ct = new CoveragesTransformer(wcs, data.request);
         try {
             ct.transform(data.info, os);
