@@ -4,14 +4,15 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
-import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.wcs.servlets.WCService;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.wcs.WCSInfo;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -32,7 +33,7 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     /** Local variable to track current tag */
     private String currentTag = new String();
 
-    public DescribeHandler(WCS wcs) {
+    public DescribeHandler(WCSInfo wcs) {
         super();
         request = new DescribeRequest(wcs);
     }

@@ -4,10 +4,9 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.wcs.WCSInfo;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.wcs.servlets.WCService;
 
 
 /**
@@ -22,23 +21,21 @@ public class WCSRequest extends Request {
     /**
      * A WCSRequest configured with WCS_SERVICE_TYPE
      */
-    public WCSRequest(String requestType, WCS service) {
+    public WCSRequest(String requestType, WCSInfo service) {
         super(WCS_SERVICE_TYPE, requestType, service);
     }
 
     /**
      * Convenience method for obtaining the global wcs service instance.
      */
-    public WCS getWCS() {
-        return (WCS) serviceConfig;
+    public WCSInfo getWCS() {
+        return (WCSInfo) serviceConfig;
     }
 
     /**
      * Convenience method for obtaining the global geoserver instance.
      */
     public GeoServer getGeoServer() {
-        GeoServer gs = getWCS().getGeoServer();
-
-        return gs;
+        return getWCS().getGeoServer();
     }
 }

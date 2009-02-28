@@ -7,21 +7,19 @@ package org.vfny.geoserver.wcs.responses;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
@@ -87,7 +85,8 @@ public class WCSCapabilitiesResponse implements Response {
 	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
 	        }
         }
-        int geoUS = request.getServiceConfig().getGeoServer().getUpdateSequence();
+        GeoServerInfo gsInfo = request.getServiceConfig().getGeoServer().getGlobal();
+		int geoUS = gsInfo.getUpdateSequence();
     	if (reqUS > geoUS) {
     		throw new WcsException("Client supplied an updateSequence that is greater than the current sever updateSequence", WcsExceptionCode.InvalidUpdateSequence, "");
     	}
@@ -100,9 +99,7 @@ public class WCSCapabilitiesResponse implements Response {
 				.getBaseUrl(), applicationContext);
 
         transformer.setIndentation(2);
-        final WCS wcsConfig = (WCS) applicationContext.getBean("wcs");
-        final Charset encoding = wcsConfig.getCharSet();
-        transformer.setEncoding(encoding);
+        transformer.setEncoding(Charset.forName(gsInfo.getCharset()));
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
@@ -131,7 +128,7 @@ public class WCSCapabilitiesResponse implements Response {
             throw new IllegalStateException("execute() not called or not succeed.");
         }
 
-        return gs.getMimeType();
+        return "text/xml; charset=" + gs.getGlobal().getCharset();
     }
 
     /**
@@ -185,6 +182,6 @@ public class WCSCapabilitiesResponse implements Response {
      * @param gs
      *            the service instance
      */
-    public void abort(Service gs) {
+    public void abort(ServiceInfo gs) {
     }
 }

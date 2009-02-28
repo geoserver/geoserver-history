@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
 /**
@@ -44,7 +43,7 @@ public class DebugCoverageResponseDelegate implements CoverageResponseDelegate {
         return null;
     }
 
-    public String getContentType(GeoServer gs) {
+    public String getContentType() {
         return "text/plain";
     }
     

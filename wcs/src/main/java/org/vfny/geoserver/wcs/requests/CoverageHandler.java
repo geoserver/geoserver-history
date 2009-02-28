@@ -4,19 +4,20 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
-import com.vividsolutions.jts.geom.Envelope;
-
-import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.wcs.servlets.WCService;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.XMLFilterImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.wcs.WCSInfo;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLFilterImpl;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -48,7 +49,7 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     /**
      * Empty constructor.
      */
-    public CoverageHandler(WCS wcs) {
+    public CoverageHandler(WCSInfo wcs) {
         super();
         request = new CoverageRequest(wcs);
     }

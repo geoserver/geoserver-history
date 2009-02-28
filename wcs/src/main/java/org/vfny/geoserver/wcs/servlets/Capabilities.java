@@ -4,14 +4,16 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
+import java.util.Map;
+
+import org.geoserver.config.GeoServer;
+import org.geoserver.wcs.WCSInfo;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.requests.readers.CapabilitiesKvpReader;
 import org.vfny.geoserver.wcs.requests.readers.CapabilitiesXmlReader;
 import org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse;
-import java.util.Map;
 
 
 /**
@@ -23,8 +25,8 @@ import java.util.Map;
  * @version $Id$
  */
 public class Capabilities extends WCService {
-    public Capabilities(WCS wcs) {
-        super("GetCapabilities", wcs);
+    public Capabilities(GeoServer gs) {
+        super("GetCapabilities", gs);
     }
 
     /**

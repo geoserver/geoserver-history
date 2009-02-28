@@ -4,16 +4,16 @@
  */
 package org.vfny.geoserver.wcs.requests.readers;
 
-import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.Request;
+import java.util.Map;
 
-import org.vfny.geoserver.global.WCS;
+import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.platform.ServiceException;
+import org.geoserver.wcs.WCSInfo;
+import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wcs.requests.WCSCapabilitiesRequest;
-import org.vfny.geoserver.wcs.servlets.WCService;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -30,7 +30,7 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      *
      * @param kvPairs The raw string of a capabilities kvp request.
      */
-    public CapabilitiesKvpReader(Map kvPairs, WCS wcs) {
+    public CapabilitiesKvpReader(Map kvPairs, WCSInfo wcs) {
         super(kvPairs, wcs);
     }
 
@@ -45,7 +45,7 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        CapabilitiesRequest currentRequest = new WCSCapabilitiesRequest((WCS) serviceConfig);
+        CapabilitiesRequest currentRequest = new WCSCapabilitiesRequest((WCSInfo) serviceConfig);
         currentRequest.setHttpServletRequest(request);
         currentRequest.setVersion(getValue("VERSION"));
         currentRequest.setUpdateSequence(getValue("UPDATESEQUENCE"));

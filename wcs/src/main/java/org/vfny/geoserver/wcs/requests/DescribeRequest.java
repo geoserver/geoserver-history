@@ -4,13 +4,13 @@
  */
 package org.vfny.geoserver.wcs.requests;
 
-import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.wcs.servlets.WCService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geoserver.wcs.WCSInfo;
 
 
 /**
@@ -45,7 +45,7 @@ public class DescribeRequest extends WCSRequest {
     /**
      * Empty constructor.
      */
-    public DescribeRequest(WCS wcs) {
+    public DescribeRequest(WCSInfo wcs) {
         super("DescribeCoverage", wcs);
     }
 

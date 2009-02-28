@@ -4,13 +4,11 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
-import org.geoserver.platform.ServiceException;
-import org.geotools.coverage.grid.GridCoverage2D;
-import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Set;
+
+import org.geoserver.platform.ServiceException;
+import org.geotools.coverage.grid.GridCoverage2D;
 
 
 /**
@@ -25,7 +23,7 @@ public interface CoverageResponseDelegate {
     void prepare(String outputFormat, GridCoverage2D coverage)
         throws IOException;
 
-    String getContentType(GeoServer gs);
+    String getContentType();
 
     /**
      *
