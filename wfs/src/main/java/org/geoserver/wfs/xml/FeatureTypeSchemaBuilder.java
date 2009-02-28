@@ -269,6 +269,14 @@ public abstract class FeatureTypeSchemaBuilder {
                 for (Iterator i = contents.iterator(); i.hasNext();) {
                     XSDSchemaContent content = (XSDSchemaContent) i.next();
                     content.setElement(null);
+                    
+                    //check for import of gml, skip over since we already imported it
+                    if ( content instanceof XSDImport ) {
+                        XSDImport imprt = (XSDImport) content;
+                        if ( gmlNamespace.equals( imprt.getNamespace() ) ) {
+                            i.remove();
+                        }
+                    }
                 }
 
                 schema.getContents().addAll(contents);
