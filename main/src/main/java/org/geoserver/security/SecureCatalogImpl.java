@@ -41,6 +41,7 @@ import org.geoserver.security.decorators.SecuredDataStoreInfo;
 import org.geoserver.security.decorators.SecuredFeatureTypeInfo;
 import org.geoserver.security.decorators.SecuredLayerGroupInfo;
 import org.geoserver.security.decorators.SecuredLayerInfo;
+import org.opengis.feature.type.Name;
 
 /**
  * 
@@ -126,6 +127,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
 
     public CoverageInfo getCoverageByName(NamespaceInfo ns, String name) {
         return (CoverageInfo) checkAccess(user(), delegate.getCoverageByName(ns, name));
+    }
+    
+    public CoverageInfo getCoverageByName(Name name) {
+        return (CoverageInfo) checkAccess(user(), delegate.getCoverageByName(name));
     }
     
     public CoverageInfo getCoverageByName(String name) {
@@ -234,6 +239,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return checkAccess(user(), delegate.getFeatureTypeByName(ns,name));
     }
 
+    public FeatureTypeInfo getFeatureTypeByName(Name name) {
+        return checkAccess(user(), delegate.getFeatureTypeByName(name));
+    }
+    
     public FeatureTypeInfo getFeatureTypeByName(String name) {
         return checkAccess(user(), delegate.getFeatureTypeByName(name));
     }
@@ -314,6 +323,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         return checkAccess(user(), delegate.getResource(id, clazz));
     }
 
+    public <T extends ResourceInfo> T getResourceByName(Name name, Class<T> clazz) {
+        return checkAccess(user(), delegate.getResourceByName(name, clazz));
+    }
+    
     public <T extends ResourceInfo> T getResourceByName(String name, Class<T> clazz) {
         return checkAccess(user(), delegate.getResourceByName(name, clazz));
     }

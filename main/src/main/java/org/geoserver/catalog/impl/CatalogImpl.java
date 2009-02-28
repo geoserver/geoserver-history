@@ -39,6 +39,7 @@ import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.opengis.feature.type.Name;
 
 /**
  * A default catalog implementation that is memory based.
@@ -379,6 +380,10 @@ public class CatalogImpl implements Catalog {
         return getResourceByName( ns != null ? ns.getPrefix() : null , name, clazz);
     }
 
+    public <T extends ResourceInfo> T getResourceByName(Name name, Class<T> clazz) {
+        return getResourceByName( name.getNamespaceURI(), name.getLocalPart(), clazz );
+    }
+    
     public <T extends ResourceInfo> T getResourceByName( String name, Class<T> clazz ) {
         ResourceInfo resource = getResourceByName( (String) null, name, clazz );
         if ( resource != null ) {
@@ -485,6 +490,10 @@ public class CatalogImpl implements Catalog {
         return getResourceByName(ns, name, FeatureTypeInfo.class );
     }
 
+    public FeatureTypeInfo getFeatureTypeByName(Name name) {
+        return getResourceByName(name, FeatureTypeInfo.class);
+    }
+    
     public FeatureTypeInfo getFeatureTypeByName(String name) {
         return (FeatureTypeInfo) getResourceByName(name, FeatureTypeInfo.class);
     }
@@ -525,6 +534,10 @@ public class CatalogImpl implements Catalog {
     
     public CoverageInfo getCoverageByName(NamespaceInfo ns, String name) {
         return (CoverageInfo) getResourceByName(ns, name, CoverageInfo.class);
+    }
+    
+    public CoverageInfo getCoverageByName(Name name) {
+        return getResourceByName(name, CoverageInfo.class);
     }
     
     public CoverageInfo getCoverageByName(String name) {

@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.opengis.feature.type.Name;
 
 import java.util.Collection;
 
@@ -525,6 +526,18 @@ public interface Catalog {
     <T extends ResourceInfo> T getResourceByName(NamespaceInfo ns, String name, Class<T> clazz );
 
     /**
+     * Looks up a resource by qualified name.
+     * <p>
+     * <tt>clazz</td> is used to determine the implementation of ResourceInfo 
+     * which should be returned.
+     * </p>
+     * 
+     * @param <T>
+     * @param name The qualified name.
+     */
+    <T extends ResourceInfo> T getResourceByName(Name name, Class<T> clazz);
+    
+    /**
      * Looks up a resource by its unqualified name.
      * <p>
      * The lookup rules used by this method are as follows:
@@ -702,6 +715,18 @@ public interface Catalog {
     FeatureTypeInfo getFeatureTypeByName(NamespaceInfo ns, String name);
     
     /**
+     * Looks up a feature type by qualified name.
+     * <p>
+     * This method is convenience for:
+     * <pre>
+     * getResourceByName( name, FeatureTypeInfo.class );
+     * </pre>
+     * </p>
+     * @param name The qualified name.
+     */
+    FeatureTypeInfo getFeatureTypeByName(Name name);
+    
+    /**
      * Looks up a feature type by an unqualified name.
      * <p>
      * The lookup rules used by this method are as follows:
@@ -848,6 +873,18 @@ public interface Catalog {
      *         resource exists.
      */
     CoverageInfo getCoverageByName(NamespaceInfo ns, String name);
+    
+    /**
+     * Looks up a coverage by qualified name.
+     * <p>
+     * This method is convenience for:
+     * <pre>
+     * getResourceByName(name,CoverageInfo.class);
+     * </pre>
+     * </p>
+     * @param name The qualified name.
+     */
+    CoverageInfo getCoverageByName(Name name);
     
     /**
      * Looks up a coverage by an unqualified name.
