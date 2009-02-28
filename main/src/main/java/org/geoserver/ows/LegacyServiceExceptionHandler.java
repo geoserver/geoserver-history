@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
@@ -118,7 +119,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         sb.append("?>");
 
         //dtd location
-        String schemaBaseURL = geoServer.getGlobal().getSchemaBaseUrl();
+        String schemaBaseURL = RequestUtils.proxifiedBaseURL(RequestUtils.baseURL(request.httpRequest), geoServer.getGlobal().getProxyBaseUrl());
         if (dtdLocation != null) {
             String fullDtdLocation = ResponseUtils.appendPath(schemaBaseURL, dtdLocation);
             sb.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + fullDtdLocation + "\"> ");
