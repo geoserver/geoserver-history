@@ -8,6 +8,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -38,8 +39,8 @@ public class ExcelOutputFormatTest extends WFSTestSupport {
         HSSFSheet sheet = wb.getSheet("PrimitiveGeoFeature");
         assertNotNull(sheet);
         
-        FeatureSource fs = getCatalog().getFeatureTypeInfo("sf:PrimitiveGeoFeature").getFeatureSource();
-        
+        FeatureSource fs = getFeatureSource( MockData.PRIMITIVEGEOFEATURE ); 
+            
         // check the number of rows in the output
         final int feautureRows = fs.getCount(Query.ALL);
         assertEquals(feautureRows + 1, sheet.getPhysicalNumberOfRows());
@@ -94,14 +95,14 @@ public class ExcelOutputFormatTest extends WFSTestSupport {
         assertNotNull(sheet);
         
         // check the number of rows in the output
-        FeatureSource fs = getCatalog().getFeatureTypeInfo("sf:PrimitiveGeoFeature").getFeatureSource();
+        FeatureSource fs = getFeatureSource(MockData.PRIMITIVEGEOFEATURE);
         assertEquals(fs.getCount(Query.ALL) + 1, sheet.getPhysicalNumberOfRows());
         
         sheet = wb.getSheet("GenericEntity");
         assertNotNull(sheet);
         
         // check the number of rows in the output
-        fs = getCatalog().getFeatureTypeInfo("sf:GenericEntity").getFeatureSource();
+        fs = getFeatureSource(MockData.GENERICENTITY);
         assertEquals(fs.getCount(Query.ALL) + 1, sheet.getPhysicalNumberOfRows());
     }
 }
