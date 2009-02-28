@@ -48,14 +48,14 @@ public interface ServiceInfo {
      * @uml.property name="geoServer"
      * @uml.associationEnd inverse="service:org.geoserver.config.GeoServerInfo"
      */
-    GeoServerInfo getGeoServer();
+    GeoServer getGeoServer();
 
     /**
      * Sets the global geoserver configuration.
      * 
      * @uml.property name="geoServer"
      */
-    void setGeoServer(GeoServerInfo geoServer);
+    void setGeoServer(GeoServer geoServer);
 
     /**
      * @uml.property name="citeCompliant"
