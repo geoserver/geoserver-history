@@ -11,7 +11,7 @@ import org.w3c.dom.Document;
 public class WCS10SmokeTest extends GeoServerTestSupport {
 	
 	public void testCapabilities() throws Exception {
-		Document dom = getAsDOM("ows?service=WCS&version=1.0.0&request=getCapabilities");
-		assertEquals("WCSCapabilities", dom.getDocumentElement().getNodeName());
+		Document dom = getAsDOM("wcs?service=WCS&version=1.0.0&request=getCapabilities");
+		assertEquals("WCS_Capabilities", dom.getDocumentElement().getNodeName());
 	}
 }

@@ -20,7 +20,7 @@ public class WCSKvpRequestReaderAdapter extends KvpRequestReaderAdapter {
 
 	public WCSKvpRequestReaderAdapter(Class requestBean, Class delegateClass,
 			GeoServer geoServer) {
-		super(requestBean, delegateClass, geoServer.getService(WCSInfo.class));
+		super(requestBean, delegateClass, geoServer.getService("wcs", WCSInfo.class));
 	}
 
 }
