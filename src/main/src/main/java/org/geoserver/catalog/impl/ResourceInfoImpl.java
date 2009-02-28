@@ -233,13 +233,17 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         return alias;
     }
 
-    public CoordinateReferenceSystem getCRS() throws Exception {
+    public CoordinateReferenceSystem getCRS() {
         if ( getSRS() == null ) {
             return null;    
         }
         
         //TODO: cache this
-        return CRS.decode( getSRS() );
+        try {
+        	return CRS.decode( getSRS() );
+        } catch(Exception e) {
+        	throw new RuntimeException("This is unexpected, the layer seems to be mis-configured", e);
+        }
     }
 
     public ReferencedEnvelope getNativeBoundingBox() {

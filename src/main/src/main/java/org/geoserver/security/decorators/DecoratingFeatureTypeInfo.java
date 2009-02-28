@@ -76,7 +76,7 @@ public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<Featur
         delegate.setCatalog( catalog );
     }
 
-    public CoordinateReferenceSystem getCRS() throws Exception {
+    public CoordinateReferenceSystem getCRS() {
         return delegate.getCRS();
     }
 
