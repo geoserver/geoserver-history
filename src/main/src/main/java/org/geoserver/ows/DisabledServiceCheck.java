@@ -33,11 +33,11 @@ public class DisabledServiceCheck implements DispatcherCallback {
         if ( s instanceof Proxy ) {
             Class[] interfaces = s.getClass().getInterfaces();
             for ( int i = 0; m == null && i < interfaces.length; i++ ) {
-                m = OwsUtils.getter( interfaces[i], "serviceInfo", ServiceInfo.class );
+                m = OwsUtils.getter( interfaces[i], "service", ServiceInfo.class );
             }
         }
         else {
-            m = OwsUtils.getter( s.getClass(), "serviceInfo", ServiceInfo.class );
+            m = OwsUtils.getter( s.getClass(), "service", ServiceInfo.class );
         }
         
         if ( m != null ) {
