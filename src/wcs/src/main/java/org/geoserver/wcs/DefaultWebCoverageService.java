@@ -4,10 +4,10 @@
  */
 package org.geoserver.wcs;
 
+import org.geoserver.config.GeoServer;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
 import org.vfny.geoserver.wcs.requests.WCSCapabilitiesRequest;
@@ -23,18 +23,18 @@ public class DefaultWebCoverageService implements WebCoverageService, Applicatio
     /**
      * service configuration
      */
-    WCS wcs;
+    WCSInfo wcs;
     /**
      * Application context
      */
     ApplicationContext context;
 
-    public DefaultWebCoverageService( WCS wcs ) {
-        this.wcs = wcs;
+    public DefaultWebCoverageService(GeoServer gs) {
+        this.wcs = gs.getService(WCSInfo.class);
     }
     
     public WCSInfo getServiceInfo() {
-        return wcs.getInfo();
+        return wcs;
     }
     
     public void setApplicationContext(ApplicationContext context)

@@ -4,14 +4,15 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
+import java.util.Map;
+
+import org.geoserver.config.GeoServer;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.requests.readers.DescribeKvpReader;
 import org.vfny.geoserver.wcs.requests.readers.DescribeXmlReader;
 import org.vfny.geoserver.wcs.responses.DescribeResponse;
-import java.util.Map;
 
 
 /**
@@ -27,8 +28,8 @@ import java.util.Map;
  * @version $Id$
  */
 public class Describe extends WCService {
-    public Describe(WCS wcs) {
-        super("DescribeCoverage", wcs);
+    public Describe(GeoServer gs) {
+        super("DescribeCoverage", gs);
     }
 
     /**

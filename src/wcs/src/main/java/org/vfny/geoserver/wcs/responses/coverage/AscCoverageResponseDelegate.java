@@ -16,7 +16,6 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.arcgrid.ArcGridWriter;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.ParameterValueGroup;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
@@ -68,7 +67,7 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
         this.sourceCoverage = coverage;
     }
 
-    public String getContentType(GeoServer gs) {
+    public String getContentType() {
         // return gs.getMimeType();
         return compressOutput ? "application/x-gzip" : "text/plain";
     }

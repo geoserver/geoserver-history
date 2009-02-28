@@ -4,36 +4,34 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.config.ContactInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
-import org.geotools.geometry.GeneralEnvelope;
+import org.geoserver.wcs.WCSInfo;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.springframework.context.ApplicationContext;
-import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.MetaDataLink;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wcs.requests.WCSRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 
 
 /**
@@ -116,7 +114,7 @@ public class WCSCapsTransformer extends TransformerBase {
 		GeoServer gs = (GeoServer) GeoServerExtensions.extensions(
 				GeoServer.class, applicationContext).get(0);
 		String dtdUrl = RequestUtils.proxifiedBaseURL(this.baseUrl, gs
-				.getProxyBaseUrl())
+				.getGlobal().getProxyBaseUrl())
 				+ "schemas/wcs/1.0.0/wcsCapabilities.xsd"; // DJB: fixed
 		// this to
 		// point to correct
@@ -176,7 +174,7 @@ public class WCSCapsTransformer extends TransformerBase {
             }
 
             this.request = (CapabilitiesRequest) o;
-			final WCS wcs = (WCS) request.getServiceConfig();
+			final WCSInfo wcs = (WCSInfo) request.getServiceConfig();
 
             final AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
@@ -193,13 +191,13 @@ public class WCSCapsTransformer extends TransformerBase {
             final String locationAtt = new StringBuffer(XSI_PREFIX).append(":schemaLocation")
                                                                    .toString();
 
-            final String locationDef = WCS_URI + " "
-                + RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
-						.getGeoServer().getProxyBaseUrl())
+            GeoServerInfo gsInfo = wcs.getGeoServer().getGlobal();
+			final String locationDef = WCS_URI + " "
+                + RequestUtils.proxifiedBaseURL(request.getBaseUrl(), gsInfo.getProxyBaseUrl())
                 + "schemas/wcs/1.0.0/wcsCapabilities.xsd";
 
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
-            attributes.addAttribute("", "updateSequence", "updateSequence", "", wcs.getGeoServer().getUpdateSequence() + "");
+            attributes.addAttribute("", "updateSequence", "updateSequence", "", gsInfo.getUpdateSequence() + "");
             start("WCS_Capabilities", attributes);
 
             handleService();
@@ -218,11 +216,11 @@ public class WCSCapsTransformer extends TransformerBase {
          *             For any errors.
          */
         private void handleService() {
-            final WCS wcs = (WCS) request.getServiceConfig();
+            final WCSInfo wcs = (WCSInfo) request.getServiceConfig();
             AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
             start("Service", attributes);
-            handleMetadataLink(wcs.getMetadataLink());
+            handleMetadataLink(Collections.singletonList(wcs.getMetadataLink()));
             element("description", wcs.getAbstract());
             element("name", wcs.getName());
             element("label", wcs.getTitle());
@@ -257,7 +255,7 @@ public class WCSCapsTransformer extends TransformerBase {
          *             DOCUMENT ME!
          */
         private void handleCapabilities() {
-            final WCS wcs = (WCS) request.getServiceConfig();
+            final WCSInfo wcs = (WCSInfo) request.getServiceConfig();
             start("Capability");
             handleRequest(wcs);
             handleExceptions(wcs);
@@ -277,7 +275,7 @@ public class WCSCapsTransformer extends TransformerBase {
          * @throws SAXException
          *             For any problems.
          */
-        private void handleRequest(WCS config) {
+        private void handleRequest(WCSInfo config) {
             start("Request");
             handleCapability(config, "GetCapabilities");
             handleCapability(config, "DescribeCoverage");
@@ -285,7 +283,7 @@ public class WCSCapsTransformer extends TransformerBase {
             end("Request");
         }
 
-        private void handleCapability(WCS config, String capabilityName) {
+        private void handleCapability(WCSInfo config, String capabilityName) {
             AttributesImpl attributes = new AttributesImpl();
             start(capabilityName);
 
@@ -294,7 +292,7 @@ public class WCSCapsTransformer extends TransformerBase {
 
             String baseUrl = RequestUtils.proxifiedBaseURL(
 					request.getBaseUrl(), request.getServiceConfig()
-							.getGeoServer().getProxyBaseUrl());
+							.getGeoServer().getGlobal().getProxyBaseUrl());
             baseUrl = ResponseUtils.appendPath(baseUrl, "wcs");
             
             //ensure ends in "?" or "&"
@@ -350,34 +348,36 @@ public class WCSCapsTransformer extends TransformerBase {
          * @param config
          *            the service.
          */
-        private void handleContact(Service config) {
+        private void handleContact(WCSInfo config) {
             String tmp = "";
 
-            if (((config.getGeoServer().getContactPerson() != null)
-                    && (config.getGeoServer().getContactPerson() != ""))
-                    || ((config.getGeoServer().getContactOrganization() != null)
-                    && (config.getGeoServer().getContactOrganization() != ""))) {
+            GeoServerInfo geoServer = config.getGeoServer().getGlobal();
+			ContactInfo contact = geoServer.getContact();
+			String cp = contact.getContactPerson();
+			String org = contact.getContactOrganization();
+			if (((cp != null) && (cp != ""))
+                    || ((org != null) && (org != ""))) {
                 start("responsibleParty");
 
-                tmp = config.getGeoServer().getContactPerson();
+                tmp = cp;
 
                 if ((tmp != null) && (tmp != "")) {
                     element("individualName", tmp);
 
-                    tmp = config.getGeoServer().getContactOrganization();
+                    tmp = org;
 
                     if ((tmp != null) && (tmp != "")) {
                         element("organisationName", tmp);
                     }
                 } else {
-                    tmp = config.getGeoServer().getContactOrganization();
+                    tmp = org;
 
                     if ((tmp != null) && (tmp != "")) {
                         element("organisationName", tmp);
                     }
                 }
 
-                tmp = config.getGeoServer().getContactPosition();
+                tmp = contact.getContactPosition();
 
                 if ((tmp != null) && (tmp != "")) {
                     element("positionName", tmp);
@@ -386,13 +386,13 @@ public class WCSCapsTransformer extends TransformerBase {
                 start("contactInfo");
 
                 start("phone");
-                tmp = config.getGeoServer().getContactVoice();
+                tmp = contact.getContactVoice();
 
                 if ((tmp != null) && (tmp != "")) {
                     element("voice", tmp);
                 }
 
-                tmp = config.getGeoServer().getContactFacsimile();
+                tmp = contact.getContactFacsimile();
 
                 if ((tmp != null) && (tmp != "")) {
                     element("facsimile", tmp);
@@ -401,48 +401,48 @@ public class WCSCapsTransformer extends TransformerBase {
                 end("phone");
 
                 start("address");
-                tmp = config.getGeoServer().getAddressType();
+                tmp = contact.getAddressType();
 
                 if ((tmp != null) && (tmp != "")) {
                     String addr = "";
-                    addr = config.getGeoServer().getAddress();
+                    addr = contact.getAddress();
 
                     if ((addr != null) && (addr != "")) {
                         element("deliveryPoint", tmp + " " + addr);
                     }
                 } else {
-                    tmp = config.getGeoServer().getAddress();
+                    tmp = contact.getAddress();
 
                     if ((tmp != null) && (tmp != "")) {
                         element("deliveryPoint", tmp);
                     }
                 }
 
-                tmp = config.getGeoServer().getAddressCity();
+                tmp = contact.getAddressCity();
 
                 if ((tmp != null) && (tmp != "")) {
                     element("city", tmp);
                 }
 
-                tmp = config.getGeoServer().getAddressState();
+                tmp = contact.getAddressState();
 
                 if ((tmp != null) && (tmp != "")) {
                     element("administrativeArea", tmp);
                 }
 
-                tmp = config.getGeoServer().getAddressPostalCode();
+                tmp = contact.getAddressPostalCode();
 
                 if ((tmp != null) && (tmp != "")) {
                     element("postalCode", tmp);
                 }
 
-                tmp = config.getGeoServer().getAddressCountry();
+                tmp = contact.getAddressCountry();
 
                 if ((tmp != null) && (tmp != "")) {
                     element("country", tmp);
                 }
 
-                tmp = config.getGeoServer().getContactEmail();
+                tmp = contact.getContactEmail();
 
                 if ((tmp != null) && (tmp != "")) {
                     element("electronicMailAddress", tmp);
@@ -450,7 +450,7 @@ public class WCSCapsTransformer extends TransformerBase {
 
                 end("address");
 
-                tmp = config.getGeoServer().getOnlineResource();
+                tmp = geoServer.getOnlineResource();
 
                 if ((tmp != null) && (tmp != "")) {
                     AttributesImpl attributes = new AttributesImpl();
@@ -475,14 +475,11 @@ public class WCSCapsTransformer extends TransformerBase {
          * @throws SAXException
          *             For any problems.
          */
-        private void handleExceptions(WCS config) {
+        private void handleExceptions(WCSInfo config) {
             start("Exception");
 
-            final String[] formats = config.getExceptionFormats();
-            final int length = formats.length;
-
-            for (int i = 0; i < length; i++) {
-                element("Format", formats[i]);
+            for(String format : config.getExceptionFormats()) {
+            	element("Format", format);
             }
 
             end("Exception");
@@ -498,10 +495,10 @@ public class WCSCapsTransformer extends TransformerBase {
          * @throws SAXException
          *             For any problems.
          */
-        private void handleVendorSpecifics(WCS config) {
+        private void handleVendorSpecifics(WCSInfo config) {
         }
 
-        private void handleEnvelope(GeneralEnvelope envelope) {
+        private void handleEnvelope(ReferencedEnvelope envelope) {
             AttributesImpl attributes = new AttributesImpl();
 
             attributes.addAttribute("", "srsName", "srsName", "", /*"urn:ogc:def:crs:OGC:1.3:CRS84"*/
@@ -525,8 +522,8 @@ public class WCSCapsTransformer extends TransformerBase {
          * @throws SAXException
          *             DOCUMENT ME!
          */
-        private void handleMetadataLink(MetaDataLink mdl) {
-            if (mdl != null) {
+        private void handleMetadataLink(List<MetadataLinkInfo> links) {
+            for (MetadataLinkInfo mdl : links) {
                 AttributesImpl attributes = new AttributesImpl();
 
                 if ((mdl.getAbout() != null) && (mdl.getAbout() != "")) {
@@ -550,13 +547,14 @@ public class WCSCapsTransformer extends TransformerBase {
             }
         }
 
-        private void handleContentMetadata(WCS config) {
+        private void handleContentMetadata(WCSInfo config) {
             AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
 
             start("ContentMetadata", attributes);
 
-            List coverages = new ArrayList(config.getData().getCoverageInfos().values());
+            Catalog catalog = config.getGeoServer().getCatalog();
+            List<CoverageInfo> coverages = catalog.getCoverages();
             
             // filter out disabled coverages
             for (Iterator it = coverages.iterator(); it.hasNext();) {
@@ -570,7 +568,7 @@ public class WCSCapsTransformer extends TransformerBase {
                 String namespace = request.getNamespace();
                 for (Iterator it = coverages.iterator(); it.hasNext();) {
                     CoverageInfo cv = (CoverageInfo) it.next();
-                    if(!namespace.equals(cv.getNameSpace().getPrefix()))
+                    if(!namespace.equals(cv.getStore().getWorkspace().getName()))
                         it.remove();
                 }
             }
@@ -584,13 +582,13 @@ public class WCSCapsTransformer extends TransformerBase {
             end("ContentMetadata");
         }
 
-        private void handleCoverageOfferingBrief(WCS config, CoverageInfo cv) {
+        private void handleCoverageOfferingBrief(WCSInfo config, CoverageInfo cv) {
             if (cv.isEnabled()) {
                 start("CoverageOfferingBrief");
 
                 String tmp;
 
-                handleMetadataLink(cv.getMetadataLink());
+                handleMetadataLink(cv.getMetadataLinks());
                 tmp = cv.getDescription();
 
                 if ((tmp != null) && (tmp != "")) {
@@ -603,13 +601,13 @@ public class WCSCapsTransformer extends TransformerBase {
                     element("name", tmp);
                 }
 
-                tmp = cv.getLabel();
+                tmp = cv.getTitle();
 
                 if ((tmp != null) && (tmp != "")) {
                     element("label", tmp);
                 }
 
-                handleEnvelope(cv.getWGS84LonLatEnvelope());
+                handleEnvelope(cv.getLatLonBoundingBox());
                 handleKeywords(cv.getKeywords());
 
                 end("CoverageOfferingBrief");

@@ -4,22 +4,23 @@
  */
 package org.vfny.geoserver.wcs.requests.readers;
 
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.wcs.WcsException;
-import org.vfny.geoserver.wcs.requests.CoverageHandler;
-import org.vfny.geoserver.wcs.servlets.WCService;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.ParserAdapter;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.logging.Level;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.geoserver.wcs.WCSInfo;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.wcs.WcsException;
+import org.vfny.geoserver.wcs.requests.CoverageHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.ParserAdapter;
 
 
 /**
@@ -29,7 +30,7 @@ import javax.xml.parsers.SAXParserFactory;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class GetCoverageXmlReader extends XmlRequestReader {
-    public GetCoverageXmlReader(WCS wcs) {
+    public GetCoverageXmlReader(WCSInfo wcs) {
         super(wcs);
     }
 
@@ -39,7 +40,7 @@ public class GetCoverageXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        CoverageHandler contentHandler = new CoverageHandler((WCS)getService());
+        CoverageHandler contentHandler = new CoverageHandler((WCSInfo)getService());
 
         // read in XML file and parse to content handler
         try {

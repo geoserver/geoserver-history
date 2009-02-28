@@ -16,6 +16,10 @@ import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GeneralGridRange;
@@ -37,11 +41,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
@@ -119,8 +118,8 @@ public class CoverageResponse implements Response {
      *
      * @return DOCUMENT ME!
      */
-    public String getContentType(GeoServer gs) {
-        return delegate.getContentType(gs);
+    public String getContentType(GeoServer geoServer) {
+        return delegate.getContentType();
     }
 
     public String getContentEncoding() {
@@ -194,12 +193,12 @@ public class CoverageResponse implements Response {
             throw new WcsException("Output format: " + outputFormat + " not supported by geoserver " +
             		"for this Coverage", WcsExceptionCode.InvalidParameterValue, "format");
 
-        final Data catalog = request.getWCS().getData();
+        final Catalog catalog = request.getWCS().getGeoServer().getCatalog();
         CoverageInfo meta = null;
         GridCoverage coverage = null;
 
         try {
-            meta = catalog.getCoverageInfo(request.getCoverage());
+            meta = catalog.getCoverageByName(request.getCoverage());
 
             if (!meta.getSupportedFormats().contains(outputFormat.toUpperCase())) {
                 WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
@@ -209,9 +208,9 @@ public class CoverageResponse implements Response {
                 throw newEx;
             }
 
-            final Format format = meta.getFormatInfo().getFormat();
-            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta
-                .createReader(hints);
+            final Format format = meta.getStore().getFormat();
+            final AbstractGridCoverage2DReader reader = 
+            	(AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(meta.getStore(),hints);
 
             // /////////////////////////////////////////////////////////
             //
@@ -264,12 +263,10 @@ public class CoverageResponse implements Response {
      *
      * @see org.vfny.geoserver.responses.Response#abort()
      */
-    public void abort(Service gs) {
+    public void abort(ServiceInfo gs) {
         if (request == null) {
             return; // request was not attempted
         }
-
-        Data catalog = gs.getData();
     }
 
     /**
@@ -295,7 +292,7 @@ public class CoverageResponse implements Response {
 
         // - first check if the responseCRS is present on the Coverage
         // ResponseCRSs list
-        if (!meta.getResponseCRSs().contains(responseCRS)) {
+        if (!meta.getResponseSRS().contains(responseCRS)) {
             throw new WcsException("This Coverage does not support the requested Response-CRS.");
         }
 
@@ -307,7 +304,7 @@ public class CoverageResponse implements Response {
 
         // - first check if the requestCRS is present on the Coverage
         // RequestCRSs list
-        if (!meta.getResponseCRSs().contains(requestCRS)) {
+        if (!meta.getResponseSRS().contains(requestCRS)) {
             throw new WcsException("This Coverage does not support the requested CRS.");
         }
 

@@ -16,8 +16,15 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageDimensionInfo;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
+import org.geoserver.wcs.WCSInfo;
 import org.geotools.factory.Hints;
-import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.ReferencingFactoryFinder;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
@@ -26,15 +33,8 @@ import org.opengis.referencing.datum.DatumFactory;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.MathTransformFactory;
-import org.opengis.util.InternationalString;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.CoverageDimension;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.util.ResponseUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
 import org.vfny.geoserver.wcs.requests.WCSRequest;
@@ -92,9 +92,9 @@ public class DescribeResponse implements Response {
     /**
      * The service configuration bean this response works upon
      */
-    private WCS wcs;
+    private WCSInfo wcs;
 
-    public DescribeResponse(final WCS wcs) {
+    public DescribeResponse(final WCSInfo wcs) {
         this.wcs = wcs;
     }
 
@@ -156,14 +156,14 @@ public class DescribeResponse implements Response {
         // generates response, using general function
         xmlResponse = generateCoverages(wcsRequest);
 
-        if (!request.getWCS().getGeoServer().isVerbose()) {
+        if (!request.getWCS().getGeoServer().getGlobal().isVerbose()) {
             xmlResponse = xmlResponse.replaceAll(">\n[ \\t\\n]*", ">");
             xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
         }
     }
 
     public String getContentType(GeoServer gs) {
-        return gs.getMimeType();
+        return "text/xml; charset=" + gs.getGlobal().getCharset();
     }
 
     public String getContentEncoding() {
@@ -176,7 +176,7 @@ public class DescribeResponse implements Response {
 
     public void writeTo(OutputStream out) throws WcsException {
         try {
-            final Charset encoding = wcs.getCharSet();
+            final Charset encoding = Charset.forName(wcs.getGeoServer().getGlobal().getCharset());
             Writer writer = new OutputStreamWriter(out, encoding);
             writer.write(xmlResponse);
             writer.flush();
@@ -195,11 +195,15 @@ public class DescribeResponse implements Response {
         // ComplexType table = new ComplexType();
         if (requestedTypes.size() == 0) {
             // if there are no specific requested types then get all.
-            requestedTypes = new ArrayList(wcsRequest.getWCS().getData().getCoverageInfos().keySet());
+        	Catalog catalog = wcsRequest.getWCS().getGeoServer().getCatalog();
+        	requestedTypes = new ArrayList();
+        	for (CoverageInfo ci : catalog.getCoverages()) {
+				requestedTypes.add(ci.getName());
+			}
         }
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\"")
-                    .append(wcs.getCharSet().name()).append("\"?>")
+                    .append(wcs.getGeoServer().getGlobal().getCharset()).append("\"?>")
                     .append("\n<CoverageDescription version=").append(CURR_VER).append(" ")
                     .toString();
 
@@ -222,7 +226,7 @@ public class DescribeResponse implements Response {
         return tempResponse.toString();
     }
 
-    private String generateSpecifiedCoverages(List requestedTypes, WCS gs)
+    private String generateSpecifiedCoverages(List requestedTypes, WCSInfo gs)
         throws WcsException {
         String tempResponse = new String();
         String curCoverageName = new String();
@@ -230,10 +234,11 @@ public class DescribeResponse implements Response {
         final int length = requestedTypes.size();
         CoverageInfo meta;
 
+        Catalog catalog = gs.getGeoServer().getCatalog();
         for (int i = 0; i < length; i++) {
             curCoverageName = requestedTypes.get(i).toString();
 
-            meta = gs.getData().getCoverageInfo(curCoverageName);
+			meta = catalog.getCoverage(curCoverageName);
 
             if (meta == null) {
                 throw new WcsException(new StringBuffer("Coverage ").append(curCoverageName)
@@ -242,7 +247,11 @@ public class DescribeResponse implements Response {
                                                                     .toString());
             }
 
-            tempResponse = tempResponse + printElement(meta);
+            try {
+            	tempResponse = tempResponse + printElement(meta);
+            } catch(Exception e) {
+            	throw new WcsException(e);
+            }
         }
 
         tempResponse = tempResponse + "\n\n";
@@ -250,15 +259,17 @@ public class DescribeResponse implements Response {
         return tempResponse;
     }
 
-    private static String printElement(CoverageInfo cv) {
+    private static String printElement(CoverageInfo cv) throws Exception {
         StringBuffer tempResponse = new StringBuffer();
 
         tempResponse.append("\n <CoverageOffering>");
 
-        if (cv.getMetadataLink() != null) {
-            tempResponse.append("\n  <metadataLink about=\"").append(cv.getMetadataLink().getAbout())
-                        .append("\" metadataType=\"").append(cv.getMetadataLink().getMetadataType())
-                        .append("\"/>");
+        if(cv.getMetadataLinks() != null) {
+        	for (MetadataLinkInfo link : cv.getMetadataLinks()) {
+        		tempResponse.append("\n  <metadataLink about=\"").append(link.getAbout())
+                .append("\" metadataType=\"").append(link.getMetadataType())
+                .append("\"/>");
+			}
         }
 
         String tmp = cv.getDescription();
@@ -273,13 +284,13 @@ public class DescribeResponse implements Response {
             tempResponse.append("\n  <name>").append(tmp).append("</name>");
         }
 
-        tmp = cv.getLabel();
+        tmp = cv.getTitle();
 
         if ((tmp != null) && (tmp != "")) {
             tempResponse.append("\n  <label>").append(tmp).append("</label>");
         }
 
-        final GeneralEnvelope envelope = cv.getWGS84LonLatEnvelope();
+        final ReferencedEnvelope envelope = cv.getLatLonBoundingBox();
 
         tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"WGS84(DD)\"") /*urn:ogc:def:crs:OGC:1.3:CRS84*/
                     .append(">");
@@ -303,29 +314,11 @@ public class DescribeResponse implements Response {
         }
 
         // TODO we need to signal somehow that something went wrong
-        GeneralEnvelope cvEnvelope = cv.getEnvelope();
-        // try {
-        // cvEnvelope =
-        // CoverageStoreUtils.adjustEnvelopeLongitudeFirst(cv.getEnvelope()
-        // .getCoordinateReferenceSystem(), cv.getEnvelope());
-        // } catch (MismatchedDimensionException e) {
-        // LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
-        // "private static String printElement(CoverageInfo cv)", e
-        // .getLocalizedMessage(), e);
-        //
-        // } catch (IndexOutOfBoundsException e) {
-        // LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
-        // "private static String printElement(CoverageInfo cv)", e
-        // .getLocalizedMessage(), e);
-        // } catch (NoSuchAuthorityCodeException e) {
-        // LOGGER.logp(Level.SEVERE, DescribeResponse.class.toString(),
-        // "private static String printElement(CoverageInfo cv)", e
-        // .getLocalizedMessage(), e);
-        //		}
+        ReferencedEnvelope cvEnvelope = cv.getBoundingBox();
         tempResponse.append("\n  <domainSet>");
         tempResponse.append("\n   <spatialDomain>");
         // Envelope
-        String userDefinedCrsIdentifier = cv.getSrsName();
+        String userDefinedCrsIdentifier = cv.getSRS();
         tempResponse.append("\n    <gml:Envelope")
                     .append((((userDefinedCrsIdentifier != null) && (userDefinedCrsIdentifier != ""))
             ? new StringBuffer(" srsName=\"").append(userDefinedCrsIdentifier).append("\"").toString() : ""))
@@ -345,7 +338,6 @@ public class DescribeResponse implements Response {
         // Grid
 		GridGeometry  grid      = cv.getGrid();
 		MathTransform gridToCRS = grid.getGridToCRS();
-		InternationalString[] dimNames = cv.getDimensionNames();
 		final int gridDimension = gridToCRS != null ? gridToCRS.getSourceDimensions() : 0;
 
 		// RectifiedGrid
@@ -371,9 +363,8 @@ public class DescribeResponse implements Response {
 		tempResponse.append("\n         </gml:GridEnvelope>");
 		tempResponse.append("\n       </gml:limits>");
 
-		if (dimNames != null) {
-			for (int dn = 0; dn < dimNames.length; dn++)
-				tempResponse.append("\n       <gml:axisName>" + dimNames[dn]
+		for (CoverageDimensionInfo dimension : cv.getDimensions()) {
+				tempResponse.append("\n       <gml:axisName>" + dimension.getName()
 						+ "</gml:axisName>");
 		}
 
@@ -398,17 +389,16 @@ public class DescribeResponse implements Response {
         tempResponse.append("\n  </domainSet>");
 
         // rangeSet
-        CoverageDimension[] dims = cv.getDimensions();
         TreeSet nodataValues = new TreeSet();
 
         try {
-            if (dims != null) {
-                int numSampleDimensions = dims.length;
+            if (cv.getDimensions().size() > 0) {
+                int numSampleDimensions = cv.getDimensions().size();
                 tempResponse.append("\n  <rangeSet>");
                 tempResponse.append("\n   <RangeSet>");
                 //tempResponse.append("\n    <!--  WARNING: Mandatory metadata '..._rangeset_name' was missing in this context.  --> ");
                 tempResponse.append("\n    <name>" + cv.getName() + "</name>");
-                tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");
+                tempResponse.append("\n    <label>" + cv.getTitle() + "</label>");
                 tempResponse.append("\n      <axisDescription>");
                 tempResponse.append("\n        <AxisDescription>");
                 tempResponse.append("\n          <name>Band</name>");
@@ -429,17 +419,11 @@ public class DescribeResponse implements Response {
                 tempResponse.append("\n        </AxisDescription>");
                 tempResponse.append("\n      </axisDescription>");
 
-                for (int sample = 0; sample < numSampleDimensions; sample++) {
-                    Double[] nodata = dims[sample].getNullValues();
-
-                    if (nodata != null) {
-                        for (int nd = 0; nd < nodata.length; nd++) {
-                            if (!nodataValues.contains(nodata[nd])) {
-                                nodataValues.add(nodata[nd]);
-                            }
+                for(CoverageDimensionInfo dim : cv.getDimensions())
+                	for(Double nullValue : dim.getNullValues())
+                        if (!nodataValues.contains(nullValue)) {
+                            nodataValues.add(nullValue);
                         }
-                    }
-                }
 
                 tempResponse.append("\n      <nullValues>");
 
@@ -469,24 +453,24 @@ public class DescribeResponse implements Response {
             e.printStackTrace();
         }
 
-        if (((cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() > 0))
-                || ((cv.getResponseCRSs() != null) && (cv.getResponseCRSs().size() > 0))) {
+        if (((cv.getRequestSRS() != null) && (cv.getRequestSRS().size() > 0))
+                || ((cv.getResponseSRS() != null) && (cv.getResponseSRS().size() > 0))) {
             tempResponse.append("\n  <supportedCRSs>");
 
-            if ((cv.getResponseCRSs() != null) && (cv.getResponseCRSs().size() > 0)
-                    && (cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() > 0)) {
+            if ((cv.getResponseSRS() != null) && (cv.getResponseSRS().size() > 0)
+                    && (cv.getRequestSRS() != null) && (cv.getRequestSRS().size() > 0)) {
                 tempResponse.append("\n    <requestResponseCRSs>");
 
                 ArrayList CRSs = new ArrayList();
 
-                for (int i = 0; i < cv.getRequestCRSs().size(); i++)
-                    if (!CRSs.contains(cv.getRequestCRSs().get(i))) {
-                        CRSs.add(cv.getRequestCRSs().get(i));
+                for (int i = 0; i < cv.getRequestSRS().size(); i++)
+                    if (!CRSs.contains(cv.getRequestSRS().get(i))) {
+                        CRSs.add(cv.getRequestSRS().get(i));
                     }
 
-                for (int i = 0; i < cv.getResponseCRSs().size(); i++)
-                    if (!CRSs.contains(cv.getResponseCRSs().get(i))) {
-                        CRSs.add(cv.getResponseCRSs().get(i));
+                for (int i = 0; i < cv.getResponseSRS().size(); i++)
+                    if (!CRSs.contains(cv.getResponseSRS().get(i))) {
+                        CRSs.add(cv.getResponseSRS().get(i));
                     }
 
                 for (int i = 0; i < CRSs.size(); i++)
@@ -494,15 +478,15 @@ public class DescribeResponse implements Response {
 
                 tempResponse.append("\n    </requestResponseCRSs>");
             } else {
-                if ((cv.getRequestCRSs() != null) && (cv.getRequestCRSs().size() > 0)) {
-                    for (int i = 0; i < cv.getRequestCRSs().size(); i++)
-                        tempResponse.append("\n    <requestCRSs>" + cv.getRequestCRSs().get(i)
+                if ((cv.getRequestSRS() != null) && (cv.getRequestSRS().size() > 0)) {
+                    for (int i = 0; i < cv.getRequestSRS().size(); i++)
+                        tempResponse.append("\n    <requestCRSs>" + cv.getRequestSRS().get(i)
                             + "</requestCRSs>");
                 }
 
-                if ((cv.getResponseCRSs() != null) && (cv.getResponseCRSs().size() > 0)) {
-                    for (int i = 0; i < cv.getResponseCRSs().size(); i++)
-                        tempResponse.append("\n    <responseCRSs>" + cv.getResponseCRSs().get(i)
+                if ((cv.getResponseSRS() != null) && (cv.getResponseSRS().size() > 0)) {
+                    for (int i = 0; i < cv.getResponseSRS().size(); i++)
+                        tempResponse.append("\n    <responseCRSs>" + cv.getResponseSRS().get(i)
                             + "</responseCRSs>");
                 }
             }
@@ -545,12 +529,14 @@ public class DescribeResponse implements Response {
         tempResponse.append("\n </CoverageOffering>");
 
         return tempResponse.toString();
-    } /*
+    } 
+    
+    /*
     * (non-Javadoc)
     *
     * @see org.vfny.geoserver.responses.Response#abort()
     */
-    public void abort(Service gs) {
+    public void abort(ServiceInfo gs) {
         // nothing to undo
     }
 }

@@ -18,7 +18,6 @@ import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
 
@@ -72,7 +71,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
         this.sourceCoverage = coverage;
     }
 
-    public String getContentType(GeoServer gs) {
+    public String getContentType() {
         return new StringBuffer("image/").append(outputFormat.toLowerCase()).toString();
     }
 

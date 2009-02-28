@@ -15,7 +15,6 @@ import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.gtopo30.GTopo30Writer;
 import org.opengis.coverage.grid.GridCoverageWriter;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
 
@@ -72,7 +71,7 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
      *
      * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#getContentType(org.vfny.geoserver.global.GeoServer)
      */
-    public String getContentType(GeoServer gs) {
+    public String getContentType() {
         return "application/x-zip";
     }
 

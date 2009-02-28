@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.wcs.WCSInfo;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.requests.readers.GetCoverageKvpReader;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class Coverage extends WCService {
-    public Coverage(WCS wcs) {
+    public Coverage(GeoServer wcs) {
         super("GetCoverage", wcs);
     }
 

@@ -19,7 +19,6 @@ import org.geotools.gce.geotiff.GeoTiffWriteParams;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
 
@@ -64,7 +63,7 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
             return null;
     }
 
-    public String getContentType(GeoServer gs) {
+    public String getContentType() {
         return "image/tiff";
     }
 

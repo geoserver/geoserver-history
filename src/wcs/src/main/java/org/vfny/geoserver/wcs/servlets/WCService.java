@@ -4,10 +4,11 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
-import org.vfny.geoserver.global.WCS;
-import org.vfny.geoserver.servlets.AbstractService;
-
 import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.config.GeoServer;
+import org.geoserver.wcs.WCSInfo;
+import org.vfny.geoserver.servlets.AbstractService;
 
 
 /**
@@ -29,22 +30,22 @@ abstract public class WCService extends AbstractService {
          * @param request The service request being made (GetCaps,GetCoverage,...)
          * @param wcs The WCS service reference.
          */
-    public WCService(String request, WCS wcs) {
-        super("WCS", request, wcs);
+    public WCService(String request, GeoServer gs) {
+        super("WCS", request, gs.getService("wcs", WCSInfo.class));
     }
 
     /**
      * @return The wcs service ref.
      */
-    public WCS getWCS() {
-        return (WCS) getServiceRef();
+    public WCSInfo getWCS() {
+        return (WCSInfo) getServiceRef();
     }
 
     /**
      * Sets the wcs service ref.
      * @param wcs
      */
-    public void setWCS(WCS wcs) {
+    public void setWCS(WCSInfo wcs) {
         setServiceRef(wcs);
     }
 

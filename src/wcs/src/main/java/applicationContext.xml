@@ -3,45 +3,6 @@
 
 <beans>
 
-	<!-- the wcs configuration bean. -->
-	<!--bean id="wcs"
-		class="org.vfny.geoserver.global.WCS" depends-on="config">
-       <constructor-arg ref="config"/>
-		<constructor-arg ref="data"/>
-		<constructor-arg ref="geoServer"/>
-	</bean-->
-	<!--bean id="wcsLoader" class="org.geoserver.wcs.WCSLoader"/-->
-	<bean id="wcsLoader" class="org.geoserver.wcs.WCSXStreamLoader">
-	  <constructor-arg ref="resourceLoader"/>
-	</bean>
-	<bean id="wcs" class="org.vfny.geoserver.global.WCS">
-	  <constructor-arg ref="geoServer2"/>
-	</bean>
-	
-	<!-- the wcs service config -->
-	<bean id="wcsConfig"
-		class="org.vfny.geoserver.config.WCSConfig">
-		<constructor-arg ref="wcs"/>
-	</bean>
-	
-	<!-- this registers the above beans with the servlet context
-	 it is around to keep the struts app happy as we move away from 
-	 servlets  -->
-	<bean id="wcsRegisterar"
-		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
-		
-		<constructor-arg type="java.lang.String" value="WCS"/>
- 		<constructor-arg ref="wcs"/>
- 	</bean>
- 	
- 	<bean id="wcsConfigRegisterar"
-		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
-		
-		<constructor-arg type="java.lang.String" value="Config.WCS"/>
- 		<constructor-arg ref="wcsConfig"/>
- 	</bean>
- 	
-		
 	<!-- 
 		servlets for handling incoming requests 
 	-->
@@ -50,8 +11,8 @@
 	<bean id="wcsAbstractService" abstract="true"
 		class="org.vfny.geoserver.servlets.AbstractService">
 		<!--  reference to geoserver bean defined in the 'main' context -->
-		<property name="geoServer" ref="geoServer"/>
-		<property name="catalog" ref="data"/>
+		<property name="geoServer" ref="geoServer2"/>
+		<property name="catalog" ref="catalog2"/>
 	</bean>
 
 	<!-- the abstract wcs specific bean  -->
@@ -59,7 +20,7 @@
 		class="org.vfny.geoserver.wcs.servlets.WCService"
 		parent="wcsAbstractService">	
 		<!-- reference to wcs bean in this context -->
-		<constructor-arg ref="wcs"/>
+		<constructor-arg ref="geoServer2"/>
 	</bean>
 		
 	<bean id="wcsGetCapabilities" 
@@ -89,39 +50,38 @@
  	<!-- service exception handler -->
 	<bean id="wcsExceptionHandler" class="org.geoserver.ows.LegacyServiceExceptionHandler">
 		<constructor-arg ref="wcsServiceDescriptor"/>
-		<constructor-arg ref="wcs"/>
-        <constructor-arg ref="geoServer"/>
+        <constructor-arg ref="geoServer2"/>
 		<property name="contentType" value="application/vnd.ogc.se_xml"/>
 		<property name="schemaLocation" value="wcs/1.0.0/OGC-exception.xsd"/>
 	</bean>
  	
  	<!-- kvp request readers -->
  	<bean id="wcsGetCapabilitiesKvpReader" 
- 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+ 		class="org.geoserver.wcs.kvp.WCSKvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.WCSCapabilitiesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.CapabilitiesKvpReader" />
-      	<constructor-arg index="2" ref="wcs" />
+      	<constructor-arg index="2" ref="geoServer2" />
 	</bean>
 
 	<bean id="describeCoverageKvpReader"
-		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		class="org.geoserver.wcs.kvp.WCSKvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.DescribeRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.DescribeKvpReader" />
-      	<constructor-arg index="2" ref="wcs" />
+      	<constructor-arg index="2" ref="geoServer2" />
 	</bean>
 	
 	<bean id="getCoverageKvpReader"
-		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		class="org.geoserver.wcs.kvp.WCSKvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wcs.requests.CoverageRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wcs.requests.readers.GetCoverageKvpReader" />
-      	<constructor-arg index="2" ref="wcs" />
+      	<constructor-arg index="2" ref="geoServer2" />
 	</bean>
 	
 	<!--  xml request readers -->
-	<bean id="wcsXmlReader" class="org.geoserver.ows.adapters.XmlRequestReaderAdapter"
+	<bean id="wcsXmlReader" class="org.geoserver.wcs.xml.WCSXmlRequestReaderAdapter"
 		abstract="true">
 		<constructor-arg index="0" value="http://www.opengis.net/wcs"/>
-		<constructor-arg index="2" ref="wcs"/>
+		<constructor-arg index="2" ref="geoServer2" />
 	</bean>
 	
 	<bean id="wcsGetCapabilitiesXmlReader" parent="wcsXmlReader">
@@ -146,17 +106,17 @@
 	<bean id="wcsGetCapabilitiesResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">
 		<constructor-arg value="org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse"/>
-		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="geoServer2"/>
 	</bean>
 	<bean id="describeCoverageResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">
 		<constructor-arg value="org.vfny.geoserver.wcs.responses.DescribeResponse"/>
-		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="geoServer2"/>
 	</bean>
 	<bean id="getCoverageResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">
 		<constructor-arg value="org.vfny.geoserver.wcs.responses.CoverageResponse"/>
-		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="geoServer2"/>
 	</bean>
 	
 	
