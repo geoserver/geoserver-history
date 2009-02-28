@@ -15,7 +15,7 @@ import javax.xml.validation.SchemaFactory;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
-import org.vfny.geoserver.global.WCS;
+import org.geoserver.wcs.WCSInfo;
 
 /**
  * Base support class for wcs tests.
@@ -49,8 +49,8 @@ public abstract class WCSTestSupport extends CoverageTestSupport {
     /**
      * @return The global wfs instance from the application context.
      */
-    protected WCS getWCS() {
-        return (WCS) applicationContext.getBean("wcs");
+    protected WCSInfo getWCS() {
+        return getGeoServer().getService(WCSInfo.class);
     }
 
     @Override

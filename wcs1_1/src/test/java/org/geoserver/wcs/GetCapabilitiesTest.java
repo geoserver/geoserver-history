@@ -1,25 +1,20 @@
 package org.geoserver.wcs;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
-import static org.geoserver.data.test.MockData.*;
-
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.geoserver.data.test.MockData.WORLD;
 import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
+import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wcs.test.WCSTestSupport;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class GetCapabilitiesTest extends WCSTestSupport {
-    
-    private static GeoServer geoServer;
     
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -31,7 +26,6 @@ public class GetCapabilitiesTest extends WCSTestSupport {
     @Override
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
-        geoServer = (GeoServer) applicationContext.getBean("geoServer");
     }
     
     @Override
@@ -78,9 +72,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
     
     public void testNoServiceContactInfo() throws Exception {
         // alter geoserver state so that there is no contact information
-        GeoServerDTO dto = (GeoServerDTO) geoServer.toDTO();
-        dto.setContact(new ContactDTO());
-        geoServer.load(dto);
+    	getGeoServer().getGlobal().setContact(new ContactInfoImpl());
         
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS");
 //         print(dom);
