@@ -1163,7 +1163,6 @@
   <module>wfs</module>
   <module>wms</module>
   <module>validation</module>
-  <module>web</module>
   <module>ows</module>
   <module>gwc</module>
   <module>community</module>
