@@ -1268,6 +1268,12 @@
       <module>release</module>
     </modules>
   </profile>
+  <profile>
+     <id>legacy</id>
+     <modules>
+       <module>legacy</module>
+     </modules>
+   </profile>
  </profiles>
 
 </project>
