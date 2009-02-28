@@ -67,7 +67,7 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         delegate.setCatalog( catalog );
     }
 
-    public CoordinateReferenceSystem getCRS() throws Exception {
+    public CoordinateReferenceSystem getCRS() {
         return delegate.getCRS();
     }
 

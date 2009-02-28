@@ -270,7 +270,7 @@ public interface ResourceInfo extends Serializable {
      * This object is derived from {@link #getSRS()}.
      * </p>
      */
-    CoordinateReferenceSystem getCRS() throws Exception;
+    CoordinateReferenceSystem getCRS();
     
     /**
      * The policy that should be used with the native projection of the resource
