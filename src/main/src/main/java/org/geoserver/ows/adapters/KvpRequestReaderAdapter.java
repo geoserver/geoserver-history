@@ -5,6 +5,7 @@
 package org.geoserver.ows.adapters;
 
 import org.geoserver.config.ServiceInfo;
+import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.ows.HttpServletRequestAware;
 
 import org.vfny.geoserver.servlets.AbstractService;
@@ -69,18 +70,25 @@ public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
         }
 
         //look for a constructor, may have to walk up teh class hierachy
-        Class clazz = service.getClass();
+        Class clazz = GeoServerImpl.unwrap(service).getClass();
         Constructor constructor = null;
 
-        while (clazz != null) {
+        while (clazz != null && constructor == null) {
             try {
                 constructor = delegateClass.getConstructor(new Class[] { Map.class, clazz });
-
-                break;
             } catch (NoSuchMethodException e) {
+                Class[] classes = clazz.getInterfaces();
+                for (Class c : classes) {
+                	try {
+                		constructor = delegateClass.getConstructor(new Class[] { Map.class, c });
+                	} catch(NoSuchMethodException e2) {
+                		// no harm done
+                	}
+				}
                 clazz = clazz.getSuperclass();
             }
         }
+        
 
         if (constructor == null) {
             throw new IllegalStateException("No appropriate constructor");
