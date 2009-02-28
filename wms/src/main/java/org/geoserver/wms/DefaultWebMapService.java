@@ -7,11 +7,11 @@ package org.geoserver.wms;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -27,7 +27,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
@@ -89,7 +88,7 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * wms configuration 
      */
-    WMS wms;
+    WMSInfo wms;
     
     /**
      * Application context
@@ -101,12 +100,12 @@ public class DefaultWebMapService implements WebMapService,
      */
     private static Boolean OPTIMIZE_LINE_WIDTH = null;
 
-    public DefaultWebMapService( WMS wms ) {
+    public DefaultWebMapService( WMSInfo wms ) {
         this.wms = wms;
     }
     
     public WMSInfo getServiceInfo() {
-        return wms.getInfo();
+        return wms;
     }
     
     public void setApplicationContext(ApplicationContext context)
@@ -247,7 +246,7 @@ public class DefaultWebMapService implements WebMapService,
      */
     public static void autoSetBoundsAndSize(GetMapRequest getMap) {
         // Get the layers
-        MapLayerInfo[] layers = getMap.getLayers();        
+        LayerInfo[] layers = getMap.getLayers();        
         
         /** 1) Check what SRS has been requested */
         String reqSRS = getMap.getSRS();

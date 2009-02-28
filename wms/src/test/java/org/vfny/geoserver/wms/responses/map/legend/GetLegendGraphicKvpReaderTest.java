@@ -13,8 +13,8 @@ import junit.framework.Test;
 
 import org.geoserver.ows.adapters.KvpRequestReaderAdapter;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
+import org.geoserver.wms.WMSInfo;
 import org.geotools.styling.Style;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
@@ -37,7 +37,7 @@ public class GetLegendGraphicKvpReaderTest extends KvpRequestReaderTestSupport {
         super.setUpInternal();
 
         GetLegendGraphic getLegend = (GetLegendGraphic) applicationContext.getBean("wmsGetLegendGraphic");
-        WMS wms = (WMS) applicationContext.getBean("wms");
+        WMSInfo wms = getGeoServer().getService(WMSInfo.class);
         reader = new KvpRequestReaderAdapter(GetLegendGraphicRequest.class, GetLegendGraphicKvpReader.class, wms);
     }
     

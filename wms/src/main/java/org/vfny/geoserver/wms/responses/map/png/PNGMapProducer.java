@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.WMSInfo;
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
@@ -40,7 +41,7 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
 	 * @param format the format name as to be reported in the capabilities document
 	 * @param wms
 	 */
-    public PNGMapProducer(WMS wms) {
+    public PNGMapProducer(WMSInfo wms) {
         super(MIME_TYPE, OUTPUT_FORMATS, wms);
         this.PNGNativeAcc = wms.getGeoServer().getPNGNativeAcceleration();
     }

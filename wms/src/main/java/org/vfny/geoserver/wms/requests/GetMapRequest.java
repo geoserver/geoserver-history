@@ -4,19 +4,8 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geoserver.ows.util.CaseInsensitiveMap;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyledLayerDescriptor;
-import org.opengis.filter.Filter;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.servlets.WMService;
 import java.awt.Color;
 import java.awt.geom.Point2D;
-import java.awt.image.IndexColorModel;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +14,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.ows.util.CaseInsensitiveMap;
+import org.geoserver.wms.WMSInfo;
+import org.geotools.styling.Style;
+import org.opengis.filter.Filter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -59,7 +58,7 @@ public class GetMapRequest extends WMSRequest {
      * 
      * @param wms The WMS service config.
      */
-    public GetMapRequest(WMS wms) {
+    public GetMapRequest(WMSInfo wms) {
         super(TRANSACTION_REQUEST_TYPE, wms );
     }
 
@@ -135,9 +134,9 @@ public class GetMapRequest extends WMSRequest {
     /**
      * @return the non null list of layers, may be empty
      */
-    public MapLayerInfo[] getLayers() {
-        List<MapLayerInfo> layers = mandatoryParams.layers;
-        return layers.toArray(new MapLayerInfo[layers.size()]);
+    public LayerInfo[] getLayers() {
+        List<LayerInfo> layers = mandatoryParams.layers;
+        return layers.toArray(new LayerInfo[layers.size()]);
     }
 
     /**
@@ -435,14 +434,14 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param layers DOCUMENT ME!
      */
-    public void setLayers(MapLayerInfo[] layers) {
+    public void setLayers(LayerInfo[] layers) {
         this.mandatoryParams.layers = layers == null ? Collections.EMPTY_LIST : Arrays
                 .asList(layers);
     }
 
-    public void setLayers(List<MapLayerInfo> layers) {
+    public void setLayers(List<LayerInfo> layers) {
         this.mandatoryParams.layers = layers == null ? Collections.EMPTY_LIST
-                : new ArrayList<MapLayerInfo>(layers);
+                : new ArrayList<LayerInfo>(layers);
     }
 
     /**
@@ -691,7 +690,7 @@ public class GetMapRequest extends WMSRequest {
      */
     private class MandatoryParameters {
         /** ordered list of requested layers */
-        List<MapLayerInfo> layers = Collections.EMPTY_LIST;
+        List<LayerInfo> layers = Collections.EMPTY_LIST;
 
         /**
          * ordered list of requested layers' styles, in a one to one
@@ -813,7 +812,7 @@ public class GetMapRequest extends WMSRequest {
         returnString.append("\n bbox: " + mandatoryParams.bbox);
         returnString.append("\n layers: ");
 
-        for (Iterator<MapLayerInfo> i = mandatoryParams.layers.iterator();i.hasNext();) {
+        for (Iterator<LayerInfo> i = mandatoryParams.layers.iterator();i.hasNext();) {
             returnString.append(i.next().getName());
             if (i.hasNext()) {
                 returnString.append(",");

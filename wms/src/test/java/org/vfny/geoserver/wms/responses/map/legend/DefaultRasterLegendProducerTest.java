@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSTestSupport;
@@ -77,13 +78,16 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
      */
     public void testUserSpecifiedRule() throws Exception {
         //load a style with 3 rules
-        Style multipleRulesStyle = getCatalog().getStyle(MockData.ROAD_SEGMENTS.getLocalPart());
+        Style multipleRulesStyle = getCatalog().getStyle(MockData.ROAD_SEGMENTS.getLocalPart()).getStyle();
+        assertNotNull(multipleRulesStyle);
+        
         Rule rule = multipleRulesStyle.getFeatureTypeStyles()[0].getRules()[0];
         LOGGER.info("testing single rule " + rule.getName() + " from style "
             + multipleRulesStyle.getName());
 
         GetLegendGraphicRequest req = new GetLegendGraphicRequest(getWMS());
-        req.setLayer(getCatalog().getFeatureTypeInfo(MockData.ROAD_SEGMENTS).getFeatureType());
+        FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(MockData.ROAD_SEGMENTS.getNamespaceURI(), MockData.ROAD_SEGMENTS.getLocalPart());
+        req.setLayer(ftInfo.getFeatureType());
         req.setStyle(multipleRulesStyle);
         req.setRule(rule);
         req.setLegendOptions(new HashMap());

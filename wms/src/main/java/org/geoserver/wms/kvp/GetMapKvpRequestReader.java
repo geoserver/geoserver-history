@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.geoserver.ows.HttpServletRequestAware;
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.wms.WMSInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
@@ -99,7 +100,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	/**
 	 * The WMS service, that we use to pick up base layer definitions
 	 */
-	WMS wms;
+	WMSInfo wms;
 	
 	/**
 	 * The data catalog
@@ -113,7 +114,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	 */
 	boolean laxStyleMatchAllowed = true;
 
-	public GetMapKvpRequestReader( WMS wms ) {
+	public GetMapKvpRequestReader( WMSInfo wms ) {
             super( GetMapRequest.class );
             this.wms = wms;
             this.catalog = wms.getData();

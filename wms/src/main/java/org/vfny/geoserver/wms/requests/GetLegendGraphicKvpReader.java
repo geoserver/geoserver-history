@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.requests;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMSInfo;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.IllegalAttributeException;
@@ -82,7 +83,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * @param wms
      *            WMS config object.
      */
-    public GetLegendGraphicKvpReader(Map params, WMS wms) {
+    public GetLegendGraphicKvpReader(Map params, WMSInfo wms) {
         super(params, wms);
     }
     

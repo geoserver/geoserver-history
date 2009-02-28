@@ -13,20 +13,21 @@ import java.util.List;
 
 import junit.framework.Test;
 
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geoserver.wms.RemoteOWSTestSupport;
+import org.geoserver.wms.WMSInfo;
 import org.geotools.styling.Style;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
 import org.vfny.geoserver.config.PaletteManager;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 
+@SuppressWarnings("unchecked")
 public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     GetMapKvpRequestReader reader;
     Dispatcher dispatcher;
@@ -42,7 +43,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         super.setUpInternal();
 
         dispatcher = (Dispatcher) applicationContext.getBean("dispatcher");
-        WMS wms = (WMS) applicationContext.getBean("wms");
+        WMSInfo wms = getGeoServer().getService(WMSInfo.class);
         reader = new GetMapKvpRequestReader(wms);
     }
 
@@ -278,8 +279,8 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals("WFS", request.getRemoteOwsType()); // TODO: handle case?
         assertEquals(new URL(RemoteOWSTestSupport.WFS_SERVER_URL), request.getRemoteOwsURL());
         assertEquals(1, request.getLayers().length);
-        assertEquals(MapLayerInfo.TYPE_REMOTE_VECTOR, request.getLayers()[0].getType());
-        assertEquals("topp:states", request.getLayers()[0].getRemoteFeatureSource().getSchema().getTypeName());
+        assertEquals(LayerInfo.Type.REMOTE, request.getLayers()[0].getType());
+        assertEquals("topp:states", request.getLayers()[0].getName());
     }
     
     public void testRemoteWFSNoStyle() throws Exception {

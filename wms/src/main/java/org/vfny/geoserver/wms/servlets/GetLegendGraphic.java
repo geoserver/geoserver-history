@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import org.geoserver.wms.WMSInfo;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -26,7 +27,7 @@ public class GetLegendGraphic extends WMService {
      */
     private static final long serialVersionUID = 4957246942172056598L;
 
-    public GetLegendGraphic(WMS wms) {
+    public GetLegendGraphic(WMSInfo wms) {
         super("GetLegendGraphic", wms);
     }
 

@@ -17,6 +17,8 @@ import junit.framework.Test;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.TestData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerAbstractTestSupport;
@@ -135,14 +137,16 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
      * @see GetMapRequest#getStartIndex()
      */
     public void testEncodeWithPaging() throws Exception {
-        MapLayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
-        SimpleFeatureType featureType = (SimpleFeatureType) layer.getFeature().getFeatureType();
+        LayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
+        FeatureTypeInfo typeInfo = (FeatureTypeInfo)layer.getResource();
+        SimpleFeatureType featureType = (SimpleFeatureType) typeInfo.getFeatureType();
         mockData.addFeature(featureType, new Object[] { "name1", "POINT(1 1)" });
         mockData.addFeature(featureType, new Object[] { "name2", "POINT(2 2)" });
         mockData.addFeature(featureType, new Object[] { "name3", "POINT(3 3)" });
         mockData.addFeature(featureType, new Object[] { "name4", "POINT(4 4)" });
 
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeature().getFeatureSource();
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs = 
+            (FeatureSource<SimpleFeatureType, SimpleFeature>) typeInfo.getFeatureSource(null, null);
         FeatureCollection<SimpleFeatureType, SimpleFeature> features = fs.getFeatures();
 
         Style style = mockData.getDefaultStyle().getStyle();
@@ -151,7 +155,7 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
 
         WMSMapContext mapContext = new WMSMapContext();
         GetMapRequest request = mockData.createRequest();
-        request.setLayers(new MapLayerInfo[] { layer });
+        request.setLayers(new LayerInfo[] { layer });
 
         request.setMaxFeatures(2);
         request.setStartIndex(2);

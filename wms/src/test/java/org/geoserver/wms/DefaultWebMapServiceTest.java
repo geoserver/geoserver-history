@@ -6,10 +6,10 @@ package org.geoserver.wms;
 
 import junit.framework.Test;
 
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -112,7 +112,7 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
         GetMapRequest mockStreams = createGetMapRequest(MockData.BRIDGES);
         GetMapRequest mockBridges = createGetMapRequest(MockData.STREAMS);
         
-        MapLayerInfo[] mls = new MapLayerInfo[2];
+        LayerInfo[] mls = new LayerInfo[2];
         mls[0] = mockBridges.getLayers()[0];
         mls[1] = mockStreams.getLayers()[0];
         

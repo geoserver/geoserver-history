@@ -11,7 +11,6 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
-import org.vfny.geoserver.config.WMSConfig;
 import org.w3c.dom.Document;
 
 public class SVGTest extends WMSTestSupport {

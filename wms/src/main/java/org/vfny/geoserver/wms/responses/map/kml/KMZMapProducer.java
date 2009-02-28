@@ -16,6 +16,7 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMSInfo;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -66,7 +67,7 @@ public class KMZMapProducer extends AbstractGetMapProducer implements GetMapProd
 	 */
 	KMLTransformer transformer;
 
-	public KMZMapProducer(WMS wms) {
+	public KMZMapProducer(WMSInfo wms) {
 		super(MIME_TYPE, OUTPUT_FORMATS);
 		mapProducer = new PNGMapProducer(wms);
 	}

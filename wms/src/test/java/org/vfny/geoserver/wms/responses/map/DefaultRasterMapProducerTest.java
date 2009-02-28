@@ -10,24 +10,23 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import junit.framework.Test;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.styling.Style;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -99,10 +98,11 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     public void testSimpleGetMapQuery() throws Exception {
         final String mapFormat = "image/gif";
 
-        final FeatureSource fs = getCatalog().getFeatureSource(MockData.BASIC_POLYGONS.getPrefix(),
-                MockData.BASIC_POLYGONS.getLocalPart());
-        final Envelope env = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS)
-                .getFeatureSource().getBounds();
+        
+        final FeatureSource fs = getCatalog().getFeatureTypeByName(MockData.BASIC_POLYGONS.getPrefix(),
+                MockData.BASIC_POLYGONS.getLocalPart()).getFeatureSource(null, null);
+        
+        final Envelope env = fs.getBounds();
 
         LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
 
@@ -114,7 +114,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.setTransparent(false);
         map.setRequest(new GetMapRequest(null));
 
-        Style basicStyle = getCatalog().getStyle("default");
+        Style basicStyle = getCatalog().getStyleByName("default").getStyle();
         map.addLayer(fs, basicStyle);
 
         this.rasterMapProducer.setOutputFormat(mapFormat);
@@ -131,13 +131,12 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      *             DOCUMENT ME!
      */
     public void testDefaultStyle() throws Exception {
-        Map typeInfos = getCatalog().getFeatureTypeInfos();
+        List<org.geoserver.catalog.FeatureTypeInfo> typeInfos = getCatalog().getFeatureTypes();
 
-        for (Iterator it = typeInfos.values().iterator(); it.hasNext();) {
-            FeatureTypeInfo info = (FeatureTypeInfo) it.next();
-            if (info.getPrefix().equals(MockData.CITE_PREFIX)
+        for (org.geoserver.catalog.FeatureTypeInfo info : typeInfos) {
+            if (info.getQualifiedName().getNamespaceURI().equals(MockData.CITE_URI)
                     && info.getFeatureType().getGeometryDescriptor() != null)
-                testDefaultStyle(info.getFeatureSource());
+                testDefaultStyle(info.getFeatureSource(null, null));
         }
     }
 
@@ -152,8 +151,9 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      *             DOCUMENT ME!
      */
     public void testBlueLake() throws IOException, IllegalFilterException, Exception {
-        final Data catalog = getCatalog();
-        Envelope env = catalog.getFeatureTypeInfo(MockData.LAKES).getFeatureSource().getBounds();
+        final Catalog catalog = getCatalog();
+        org.geoserver.catalog.FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
+        Envelope env = typeInfo.getBoundingBox();
         double shift = env.getWidth() / 6;
 
         env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift, env
@@ -190,8 +190,13 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     }
 
     private void addToMap(final WMSMapContext map, final QName typeName) throws IOException {
-        final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeInfo(typeName);
-        map.addLayer(new FeatureSourceMapLayer(ftInfo.getFeatureSource(), ftInfo.getDefaultStyle()));
+        final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(typeName.getNamespaceURI(), typeName.getLocalPart());
+        
+        List<LayerInfo> layers = getCatalog().getLayers(ftInfo);
+        StyleInfo defaultStyle = layers.get(0).getDefaultStyle();
+        Style style = defaultStyle.getStyle();
+        
+        map.addLayer(new FeatureSourceMapLayer(ftInfo.getFeatureSource(null, null), style));
     }
 
     /**
@@ -271,9 +276,11 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      *             DOCUMENT ME!
      */
     private void testDefaultStyle(FeatureSource fSource) throws Exception {
-        Style style = getCatalog().getStyle("Default");
+        Catalog catalog = getCatalog();
+        Style style = catalog.getStyleByName("Default").getStyle();
 
-        Envelope env = getCatalog().getFeatureTypeInfo(MockData.LAKES).getFeatureSource().getBounds();
+        FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
+        Envelope env = typeInfo.getBoundingBox();
         env.expandToInclude(fSource.getBounds());
 
         int w = 400;

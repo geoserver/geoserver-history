@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import org.geoserver.wms.WMSInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wms.servlets.WMService;
@@ -28,12 +29,12 @@ public abstract class WmsKvpRequestReader extends KvpRequestReader {
      * @param kvpPairs The raw key value pairs.
      * @param wms The WMS config object.
      */
-    public WmsKvpRequestReader(Map kvpPairs, WMS wms) {
+    public WmsKvpRequestReader(Map kvpPairs, WMSInfo wms) {
         super(kvpPairs, wms);
     }
     
-    public WMS getWMS() {
-        return (WMS) serviceConfig;
+    public WMSInfo getWMS() {
+        return (WMSInfo) serviceConfig;
     }
     
     /**
