@@ -53,11 +53,6 @@ import org.geoserver.platform.ServiceException;
  */
 public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
     /**
-     * The configuration of hte service.
-     */
-    protected OWS ows;
-
-    /**
      * the version of the service exceptoin report.
      */
     protected String version = "1.2.0";
@@ -82,15 +77,13 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
      */
     protected GeoServer geoServer;
 
-    public LegacyServiceExceptionHandler(List services, OWS ows, GeoServer geoServer) {
+    public LegacyServiceExceptionHandler(List services, GeoServer geoServer) {
         super(services);
-        this.ows = ows;
         this.geoServer = geoServer;
     }
 
-    public LegacyServiceExceptionHandler(Service service, OWS ows, GeoServer geoServer) {
+    public LegacyServiceExceptionHandler(Service service, GeoServer geoServer) {
         super(service);
-        this.ows = ows;
         this.geoServer = geoServer;
     }
 
@@ -125,8 +118,9 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         sb.append("?>");
 
         //dtd location
+        String schemaBaseURL = geoServer.getGlobal().getSchemaBaseUrl();
         if (dtdLocation != null) {
-            String fullDtdLocation = ResponseUtils.appendPath(ows.getSchemaBaseURL(), dtdLocation);
+            String fullDtdLocation = ResponseUtils.appendPath(schemaBaseURL, dtdLocation);
             sb.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + fullDtdLocation + "\"> ");
         }
 
@@ -135,7 +129,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
 
         //xml schema location
         if ((schemaLocation != null) && (dtdLocation == null)) {
-            String fullSchemaLocation = ResponseUtils.appendPath(ows.getSchemaBaseURL(),
+            String fullSchemaLocation = ResponseUtils.appendPath(schemaBaseURL,
                     schemaLocation);
 
             sb.append("xmlns=\"http://www.opengis.net/ogc\" ");
