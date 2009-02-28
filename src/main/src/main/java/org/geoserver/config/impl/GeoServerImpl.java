@@ -67,6 +67,7 @@ public class GeoServerImpl implements GeoServer {
         
         //may be adding a proxy, need to unwrap
         service = unwrap(service);
+        service.setGeoServer(this);
         services.add( service );
     }
 

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.ServiceInfo;
 
@@ -18,7 +19,7 @@ public class ServiceInfoImpl implements ServiceInfo {
 
     String id;
 
-    GeoServerInfo geoServer;
+    GeoServer geoServer;
 
     boolean enabled = true;
 
@@ -64,11 +65,11 @@ public class ServiceInfoImpl implements ServiceInfo {
         this.id = id;
     }
 
-    public GeoServerInfo getGeoServer() {
+    public GeoServer getGeoServer() {
         return geoServer;
     }
 
-    public void setGeoServer(GeoServerInfo geoServer) {
+    public void setGeoServer(GeoServer geoServer) {
         this.geoServer = geoServer;
     }
 
