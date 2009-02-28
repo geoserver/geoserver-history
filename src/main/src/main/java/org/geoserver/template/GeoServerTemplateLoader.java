@@ -98,7 +98,7 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         fileTemplateLoader = new FileTemplateLoader(GeoserverDataDirectory.getGeoserverDataDirectory());
 
         //grab the catalog and store a reference
-        catalog = (Catalog)GeoServerExtensions.bean("catalog2");
+        catalog = (Catalog)GeoServerExtensions.bean("catalog");
 
         //create a class template loader to delegate to
         if (caller != null) {
@@ -153,7 +153,10 @@ public class GeoServerTemplateLoader implements TemplateLoader {
             }
 
             if (featureType != null) {
-                final NamespaceInfo nsInfo = catalog.getNamespaceByURI(featureType.getName().getNamespaceURI());
+                NamespaceInfo nsInfo = null;
+                if ( featureType.getName().getNamespaceURI() != null ) {
+                    nsInfo = catalog.getNamespaceByURI(featureType.getName().getNamespaceURI());
+                }
                 // the feature type might not be registered, it may come from WMS feature portrayal, be a 
                 // remote one
                 if(nsInfo != null) {

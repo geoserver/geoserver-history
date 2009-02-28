@@ -388,7 +388,7 @@ public class GeoserverDataDirectory {
     
     private static Catalog getCatalog() {
         if(catalog == null) {
-            catalog = (Catalog) GeoServerExtensions.bean( "catlog2");
+            catalog = (Catalog) GeoServerExtensions.bean( "catalog");
         }
         return catalog;
     }
