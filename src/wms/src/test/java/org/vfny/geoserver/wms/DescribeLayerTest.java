@@ -2,6 +2,7 @@ package org.vfny.geoserver.wms;
 
 import junit.framework.Test;
 
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
@@ -16,11 +17,11 @@ public class DescribeLayerTest extends WMSTestSupport {
         return new OneTimeTestSetup(new DescribeLayerTest());
     }
     
+    @Override
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
-        GeoServerDTO dto =  (GeoServerDTO) getGeoServer().toDTO();
-        dto.setProxyBaseUrl("src/test/resources/geoserver");
-        getGeoServer().load(dto);
+        GeoServerInfo global = getGeoServer().getGlobal();
+        global.setProxyBaseUrl("src/test/resources/geoserver");
     }
 
     public void testDescribeLayerVersion111() throws Exception {

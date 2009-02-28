@@ -8,6 +8,7 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.geoserver.wms.WMSInfo;
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
@@ -26,7 +27,7 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/gif";
 
-    public GIFMapProducer(WMS wms) {
+    public GIFMapProducer(WMSInfo wms) {
         super(MIME_TYPE, wms);
     }
 

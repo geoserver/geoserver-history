@@ -15,6 +15,7 @@ import java.util.Map;
 
 import junit.framework.Test;
 
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.TestData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerAbstractTestSupport;
@@ -84,10 +85,10 @@ public class KMLNetworkLinkTransformerTest extends GeoServerAbstractTestSupport 
         // namespaces.put("atom", "http://purl.org/atom/ns#");
         // XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
 
-        MapLayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
+        LayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
         WMSMapContext mapContext = new WMSMapContext();
         request = mockData.createRequest();
-        request.setLayers(new MapLayerInfo[] { layer });
+        request.setLayers(new LayerInfo[] { layer });
 
         request.setFormatOptions(Collections.singletonMap("relLinks", "true"));
         MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpServletRequest();

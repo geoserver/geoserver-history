@@ -13,6 +13,8 @@ import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.TestData;
 import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.WMSMockData;
@@ -94,13 +96,14 @@ public class KMLLegendTransformerTest extends GeoServerAbstractTestSupport {
         // namespaces.put("atom", "http://purl.org/atom/ns#");
         // XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
 
-        MapLayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
+        LayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
         mapContext = new WMSMapContext();
         GetMapRequest request = mockData.createRequest();
-        request.setLayers(new MapLayerInfo[] { layer });
+        request.setLayers(new LayerInfo[] { layer });
 
-        FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer
-                .getFeature().getFeatureSource();
+        FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
+        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) ((FeatureTypeInfo)layer.getResource()).getFeatureSource(null, null);
+        
         mapLayer = new DefaultMapLayer(featureSource, mockData.getDefaultStyle().getStyle());
 
         MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpServletRequest();

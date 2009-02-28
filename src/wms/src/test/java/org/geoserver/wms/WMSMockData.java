@@ -37,9 +37,6 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -85,7 +82,7 @@ public class WMSMockData {
 
     private GeoServer mockGeoServer;
 
-    private WMS mockWMS;
+    private WMSInfo mockWMS;
 
     @SuppressWarnings("deprecation")
     public void setUp() throws Exception {
@@ -151,10 +148,9 @@ public class WMSMockData {
         wmsInfo.setId("wms");
         wmsInfo.setName("WMS");
         wmsInfo.setEnabled(true);
-
+        mockWMS = wmsInfo;
         mockGeoServer.add(wmsInfo);
 
-        mockWMS = new WMS(mockGeoServer);
     }
 
     /**
@@ -276,7 +272,7 @@ public class WMSMockData {
      * Creates a vector layer with associated FeatureType in the internal MemoryDataStore with the
      * given type and two attributes: name:String and geom:geometryType
      */
-    public MapLayerInfo addFeatureTypeLayer(final String name,
+    public LayerInfo addFeatureTypeLayer(final String name,
             Class<? extends Geometry> geometryType) throws IOException {
         org.geoserver.catalog.FeatureTypeInfo featureTypeInfo = new FeatureTypeInfoImpl(catalog);
         featureTypeInfo.setName(name);
@@ -309,9 +305,8 @@ public class WMSMockData {
         ftb.add("geom", geometryType, wgs84);
         SimpleFeatureType featureType = ftb.buildFeatureType();
         dataStore.createSchema(featureType);
-        FeatureTypeInfo ftinfo = new FeatureTypeInfo(layerInfo, catalog);
-        MapLayerInfo layer = new MapLayerInfo(ftinfo);
-        return layer;
+
+        return layerInfo;
     }
 
     public SimpleFeature addFeature(final SimpleFeatureType featureType, final Object[] values)

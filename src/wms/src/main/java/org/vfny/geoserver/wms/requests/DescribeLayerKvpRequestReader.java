@@ -4,21 +4,19 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMSInfo;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Parses a DescribeLayer request, wich consists only of a list of layer names,
@@ -42,7 +40,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
 	 * @param service
 	 *            The wms service config.
 	 */
-	public DescribeLayerKvpRequestReader(Map params, WMS wms) {
+	public DescribeLayerKvpRequestReader(Map params, WMSInfo wms) {
 		super(params, wms);
 	}
 
@@ -69,7 +67,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
 			throw new NullPointerException("request");
 		}
 
-		DescribeLayerRequest req = new DescribeLayerRequest((WMS) serviceConfig);
+		DescribeLayerRequest req = new DescribeLayerRequest((WMSInfo) serviceConfig);
 		req.setHttpServletRequest(request);
 
 		final String version = getValue("VERSION");

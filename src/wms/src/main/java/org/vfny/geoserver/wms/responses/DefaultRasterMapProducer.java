@@ -30,6 +30,7 @@ import javax.media.jai.operator.LookupDescriptor;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.WMSInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
@@ -39,8 +40,6 @@ import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Style;
 import org.geotools.styling.visitor.DuplicatingStyleVisitor;
 import org.opengis.feature.simple.SimpleFeature;
-import org.vfny.geoserver.config.WMSConfig;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -106,7 +105,7 @@ public abstract class DefaultRasterMapProducer extends
     }
 
 	/** WMS Service configuration * */
-	private WMS wms;
+	private WMSInfo wms;
 
 	/** A logger for this class. */
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
@@ -128,19 +127,19 @@ public abstract class DefaultRasterMapProducer extends
 	/**
 	 * 
 	 */
-	public DefaultRasterMapProducer(WMS wms) {
+	public DefaultRasterMapProducer(WMSInfo wms) {
 		this(DEFAULT_MAP_FORMAT, wms);
 	}
 
 	/**
 	 * @param the mime type to be written down as an HTTP header when a map of this format is generated
 	 */
-	public DefaultRasterMapProducer(String mime, WMS wms) {
+	public DefaultRasterMapProducer(String mime, WMSInfo wms) {
 		super(mime);
 		this.wms = wms;
 	}
 
-    public DefaultRasterMapProducer(String mime, String[] outputFormats, WMS wms) {
+    public DefaultRasterMapProducer(String mime, String[] outputFormats, WMSInfo wms) {
         super(mime, outputFormats);
         this.wms = wms;
     }

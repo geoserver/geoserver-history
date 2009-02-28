@@ -13,13 +13,13 @@ import java.util.logging.Level;
 
 import junit.framework.TestCase;
 
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.ows.adapters.ResponseAdapter;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSMockData.DummyRasterMapProducer;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
@@ -59,8 +59,8 @@ public class GetMapResponseTest extends TestCase {
 
         request = mockData.createRequest();
         //add a layer so its a valid request
-        MapLayerInfo layer = mockData.addFeatureTypeLayer("testType", Point.class);
-        request.setLayers(new MapLayerInfo[] { layer });
+        LayerInfo layer = mockData.addFeatureTypeLayer("testType", Point.class);
+        request.setLayers(new LayerInfo[] { layer });
 
         response = mockData.createResponse();
     }
@@ -137,8 +137,8 @@ public class GetMapResponseTest extends TestCase {
         response = new GetMapResponse(Collections.singleton((GetMapProducer) producer));
         request.setFormat(DummyRasterMapProducer.MIME_TYPE);
 
-        MapLayerInfo layer = mockData.addFeatureTypeLayer("testSingleVectorLayer", Point.class);
-        request.setLayers(new MapLayerInfo[] { layer });
+        LayerInfo layer = mockData.addFeatureTypeLayer("testSingleVectorLayer", Point.class);
+        request.setLayers(new LayerInfo[] { layer });
 
         response.execute(request);
         
@@ -154,7 +154,7 @@ public class GetMapResponseTest extends TestCase {
     }
 
     public void testExecuteNoLayers() throws Exception {
-        request.setLayers((List<MapLayerInfo>) null);
+        request.setLayers((List<LayerInfo>) null);
         assertInvalidMandatoryParam("LayerNotDefined");
     }
 

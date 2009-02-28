@@ -6,18 +6,11 @@ package org.vfny.geoserver.wms.responses.helpers;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.TestCase;
 
@@ -36,12 +29,10 @@ import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.referencing.CRS;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  * 
@@ -86,11 +77,6 @@ public class WMSCapsTransformerTest extends TestCase {
      */
     private CatalogImpl catalog;
 
-    /**
-     * An old style {@link WMS} to
-     */
-    private WMS wms;
-
     private WMSCapabilitiesRequest req;
 
     /** the default base url for {@link WMSCapabilitiesRequest#getBaseUrl()                      */
@@ -113,9 +99,7 @@ public class WMSCapsTransformerTest extends TestCase {
         catalog = new CatalogImpl();
         geosConfig.setCatalog(catalog);
 
-        wms = new WMS(geosConfig);
-
-        req = new WMSCapabilitiesRequest(wms);
+        req = new WMSCapabilitiesRequest(wmsInfo);
         req.setBaseUrl(baseUrl);
 
         Map<String, String> namespaces = new HashMap<String, String>();

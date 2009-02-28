@@ -68,7 +68,7 @@ public class SVGMapProducerTest extends WMSTestSupport {
         map.setBgColor(Color.red);
         map.setTransparent(false);
 
-        Style basicStyle = getCatalog().getStyle("Default");
+        Style basicStyle = getCatalog().getStyleByName("Default").getStyle();
         map.addLayer(fs, basicStyle);
 
         SVGMapProducer producer = new SVGMapProducer(SvgMapProducerProxy.MIME_TYPE, 

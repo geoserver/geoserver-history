@@ -6,11 +6,11 @@ package org.vfny.geoserver.wms.requests;
 
 import java.util.Map;
 
+import org.geoserver.wms.WMSInfo;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.global.WMS;
 
 
 /**
@@ -141,7 +141,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
      * @param wms The WMS configuration object.
      */
    
-    public GetLegendGraphicRequest(WMS wms) {
+    public GetLegendGraphicRequest(WMSInfo wms) {
         super("GetLegendGraphic", wms);
     }
     

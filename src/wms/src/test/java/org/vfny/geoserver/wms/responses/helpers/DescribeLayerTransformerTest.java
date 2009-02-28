@@ -24,11 +24,12 @@ import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
+import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WMSTestSupport;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -126,7 +127,8 @@ public class DescribeLayerTransformerTest extends TestCase {
         catalog.add(coverageInfo);
         catalog.add(coverageLayerInfo);
 
-        WMS wms = new WMS(geoServerImpl);
+        WMSInfo wms = new WMSInfoImpl();
+        geoServerImpl.add(wms);
         request = new DescribeLayerRequest(wms);
         request.setBaseUrl("http://localhost:8080/geoserver");
         request.setVersion("1.1.1");

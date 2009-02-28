@@ -18,16 +18,18 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geotools.data.FeatureSource;
 import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -49,8 +51,8 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
     /**
      * @return The global wms singleton from the application context.
      */
-    protected WMS getWMS() {
-        return (WMS) applicationContext.getBean("wms");
+    protected WMSInfo getWMS() {
+        return getGeoServer().getService(WMSInfo.class);
     }
 
     /**
@@ -80,13 +82,19 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
     protected MapLayer createMapLayer(QName layerName, String styleName)
         throws IOException {
         //TODO: support coverages
-        FeatureTypeInfo info = getCatalog().getFeatureTypeInfo(layerName);
-        Style style = info.getDefaultStyle();
-        if(styleName != null)
-            style = getWMS().getData().getStyle(styleName);
-
-        MapLayer layer = new FeatureSourceMapLayer(info.getFeatureSource(), style);
-        layer.setTitle( info.getTypeName() );
+        Catalog catalog = getCatalog();
+        org.geoserver.catalog.FeatureTypeInfo info = catalog.getFeatureTypeByName(layerName.getNamespaceURI(), layerName.getLocalPart());
+        LayerInfo layerInfo = catalog.getLayerByName(layerName.getLocalPart());
+        Style style = layerInfo.getDefaultStyle().getStyle();
+        if(styleName != null){
+            style = catalog.getStyleByName(styleName).getStyle();
+        }
+        
+        FeatureSource<? extends FeatureType, ? extends Feature> featureSource;
+        featureSource = info.getFeatureSource(null, null);
+        
+        MapLayer layer = new FeatureSourceMapLayer(featureSource, style);
+        layer.setTitle( layer.getTitle() );
         
         return layer;
     }
@@ -119,14 +127,17 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         GetMapRequest request = new GetMapRequest(getWMS());
         request.setHttpServletRequest(createRequest("wms"));
 
-        MapLayerInfo[] layers = new MapLayerInfo[layerNames.length];
+        LayerInfo[] layers = new LayerInfo[layerNames.length];
         List styles = new ArrayList();
 
         for (int i = 0; i < layerNames.length; i++) {
-            FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeInfo(layerNames[i]);
-            styles.add(ftInfo.getDefaultStyle());
-
-            layers[i] = new MapLayerInfo(ftInfo);
+            LayerInfo layerInfo = getCatalog().getLayerByName(layerNames[i].getLocalPart());
+            try {
+                styles.add(layerInfo.getDefaultStyle().getStyle());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            layers[i] = layerInfo;
         }
 
         request.setLayers(layers);
