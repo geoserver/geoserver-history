@@ -171,50 +171,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
         //return getParams(params, data.getBaseDir().toString());
     }
 
-    /**
-     * Get Connect params.
-     *
-     * <p>
-     * This is used to smooth any relative path kind of issues for any file
-     * URLS. This code should be expanded to deal with any other context
-     * sensitve isses dataStores tend to have.
-     * </p>
-     *
-     * @return DOCUMENT ME!
-     *
-     * @task REVISIT: cache these?
-     */
-    public static Map getParams(Map m, String baseDir) {
-        Map params = Collections.synchronizedMap(new HashMap(m));
-
-        for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            String key = (String) entry.getKey();
-            Object value = entry.getValue();
-
-            try {
-                //TODO: this code is a pretty big hack, using the name to 
-                // determine if the key is a url, could be named something else
-                // and still be a url
-                if ((key != null) && key.matches(".* *url") && value instanceof String) {
-                    String path = (String) value;
-                    LOGGER.finer("in string url");
-
-                    if (path.startsWith("file:")) {
-                        File fixedPath = GeoserverDataDirectory.findDataFile(path);
-                        entry.setValue(fixedPath.toURL().toExternalForm());
-                    }
-                } else if (value instanceof URL && ((URL) value).getProtocol().equals("file")) {
-                    File fixedPath = GeoserverDataDirectory.findDataFile(((URL) value).toString());
-                    entry.setValue(fixedPath.toURL());
-                }
-            } catch (MalformedURLException ignore) {
-                // ignore attempt to fix relative paths
-            }
-        }
-
-        return params;
-    }
+    
 
     /**
      * By now just uses DataStoreFinder to find a new instance of a

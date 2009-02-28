@@ -4,20 +4,19 @@
  */
 package org.geoserver.ows;
 
-import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.platform.Service;
-import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.global.GeoServer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.geoserver.config.GeoServer;
+import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.Service;
+import org.geoserver.platform.ServiceException;
 
 
 /**
@@ -167,7 +166,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
             sb.append("\n" + tab + tab);
             OwsUtils.dumpExceptionMessages(exception, sb, true);
 
-            if(geoServer.isVerboseExceptions()) {
+            if(geoServer.getGlobal().isVerboseExceptions()) {
                 ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
                 exception.printStackTrace(new PrintStream(stackTrace));
 

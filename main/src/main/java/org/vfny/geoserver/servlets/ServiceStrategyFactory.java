@@ -4,13 +4,13 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.OutputStrategyFactory;
 import org.geoserver.ows.ServiceStrategy;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.PartialBufferedOutputStream2;
 import java.util.Iterator;
 import java.util.Map;
@@ -70,7 +70,7 @@ public class ServiceStrategyFactory implements OutputStrategyFactory, Applicatio
         // exception by using the file strategy.
         ServiceStrategy theStrategy = null;
 
-        if (geoServer.isVerboseExceptions()) {
+        if (geoServer.getGlobal().isVerboseExceptions()) {
             theStrategy = (ServiceStrategy) context.getBean("fileServiceStrategy");
         } else {
             if (serviceStrategy == null) {

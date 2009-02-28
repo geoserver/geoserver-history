@@ -7,6 +7,7 @@ package org.vfny.geoserver.global;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.geoserver.catalog.FeatureTypeInfo;
 
 /**
  * A comparator used to sort {@link FeatureTypeInfo} objects by title 

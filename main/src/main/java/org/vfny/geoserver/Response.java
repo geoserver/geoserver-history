@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -242,5 +242,5 @@ public interface Response {
      * AbstractionAction is error handling.
      * </p>
      */
-    public void abort(Service gs);
+    public void abort(ServiceInfo gs);
 }

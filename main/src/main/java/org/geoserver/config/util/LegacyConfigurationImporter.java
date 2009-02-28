@@ -10,11 +10,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-import javax.media.jai.JAI;
-import javax.media.jai.RecyclingTileFactory;
-
-import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerFactory;
@@ -24,9 +19,6 @@ import org.geoserver.config.ServiceLoader;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
-
-import com.sun.media.jai.util.SunTileCache;
 
 /**
  * Imports configuration from a legacy "services.xml" file into a geoserver
@@ -152,15 +144,15 @@ public class LegacyConfigurationImporter {
         
         //jai
         JAIInfo jai = new JAIInfo();
-        jai.setMemoryCapacity( (Double) value( global.get( "JaiMemoryCapacity"),GeoServerDTO.Defaults.JaiMemoryCapacity ) );
-        jai.setMemoryThreshold( (Double) value( global.get( "JaiMemoryThreshold"), GeoServerDTO.Defaults.JaiMemoryThreshold) );
-        jai.setTileThreads( (Integer) value( global.get( "JaiTileThreads"), GeoServerDTO.Defaults.JaiTileThreads ) );
-        jai.setTilePriority( (Integer) value( global.get( "JaiTilePriority"), GeoServerDTO.Defaults.JaiTilePriority ) );
-        jai.setImageIOCache( (Boolean) value( global.get( "ImageIOCache" ), GeoServerDTO.Defaults.ImageIOCache) );
-        jai.setJpegAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ),GeoServerDTO.Defaults.JaiJPEGNative ) );
-        jai.setPngAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), GeoServerDTO.Defaults.JaiPNGNative)  );
-        jai.setRecycling( (Boolean) value( global.get( "JaiRecycling" ), GeoServerDTO.Defaults.JaiRecycling)  );
-        jai.setAllowNativeMosaic((Boolean) value( global.get( "JaiMosaicNative" ), GeoServerDTO.Defaults.JaiMosaicNative) );
+        jai.setMemoryCapacity( (Double) value( global.get( "JaiMemoryCapacity"),JAIInfo.DEFAULT_MemoryCapacity ) );
+        jai.setMemoryThreshold( (Double) value( global.get( "JaiMemoryThreshold"), JAIInfo.DEFAULT_MemoryThreshold) );
+        jai.setTileThreads( (Integer) value( global.get( "JaiTileThreads"), JAIInfo.DEFAULT_TileThreads ) );
+        jai.setTilePriority( (Integer) value( global.get( "JaiTilePriority"), JAIInfo.DEFAULT_TilePriority ) );
+        jai.setImageIOCache( (Boolean) value( global.get( "ImageIOCache" ), JAIInfo.DEFAULT_ImageIOCache) );
+        jai.setJpegAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ),JAIInfo.DEFAULT_JPEGNative ) );
+        jai.setPngAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), JAIInfo.DEFAULT_PNGNative)  );
+        jai.setRecycling( (Boolean) value( global.get( "JaiRecycling" ), JAIInfo.DEFAULT_Recycling)  );
+        jai.setAllowNativeMosaic((Boolean) value( global.get( "JaiMosaicNative" ), JAIInfo.DEFAULT_MosaicNative) );
         
         info.getMetadata().put( JAIInfo.KEY, jai );
         

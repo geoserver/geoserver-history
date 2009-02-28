@@ -49,6 +49,9 @@ import net.sf.json.JSONSerializer;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.data.test.TestData;
 import org.geoserver.logging.LoggingUtils;
@@ -64,12 +67,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.NameSpaceInfo;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -269,8 +267,8 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     /**
      * Accessor for global catalog instance from the test application context.
      */
-    protected Data getCatalog() {
-        return (Data) applicationContext.getBean("data");
+    protected Catalog getCatalog() {
+        return (Catalog) applicationContext.getBean("catalog");
     }
 
     /**
@@ -296,8 +294,8 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
     protected FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(QName typeName)
             throws IOException {
         // TODO: expand test support to DataAccess FeatureSource
-        return (FeatureSource<SimpleFeatureType, SimpleFeature>) getCatalog().getFeatureSource(
-                typeName.getPrefix(), typeName.getLocalPart());
+        FeatureTypeInfo ft = getFeatureTypeInfo(typeName);
+        return (FeatureSource<SimpleFeatureType, SimpleFeature>) ft.getFeatureSource(null, null);
     }
 
     /**
@@ -306,7 +304,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @param typename the QName for the type
      */
     protected FeatureTypeInfo getFeatureTypeInfo(QName typename){
-        return getCatalog().getFeatureTypeInfo(typename);
+        return getCatalog().getFeatureTypeByName( typename.getNamespaceURI(), typename.getLocalPart() ); 
     }
 
     /**
@@ -326,8 +324,8 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         int i = typename.indexOf(":");
         String prefix = typename.substring(0, i);
         String name = typename.substring(i + 1);
-        NameSpaceInfo ns = getCatalog().getNamespaceMetaData(prefix);
-        QName qname = new QName(ns.getUri(), name, ns.getPrefix());
+        NamespaceInfo ns = getCatalog().getNamespaceByPrefix(prefix);
+        QName qname = new QName(ns.getURI(), name, ns.getPrefix());
         return qname;
     }
 

@@ -7,7 +7,7 @@ public class SchemaMappingTest extends GeoServerTestSupport {
 
     public void testNoMapping() throws Exception {
         FeatureTypeInfo ft = 
-            getCatalog().getCatalog().getFeatureTypeByName( "DividedRoutes");
+            getCatalog().getFeatureTypeByName( "DividedRoutes");
         assertEquals( 4, ft.getAttributes().size() );
     }
     
@@ -16,7 +16,7 @@ public class SchemaMappingTest extends GeoServerTestSupport {
                 MockData.DIVIDED_ROUTES, "schema.xsd");
         reloadCatalogAndConfiguration();
         FeatureTypeInfo ft = 
-            getCatalog().getCatalog().getFeatureTypeByName( "DividedRoutes");
+            getCatalog().getFeatureTypeByName( "DividedRoutes");
         assertEquals( 3, ft.getAttributes().size() );
     }
     
@@ -25,7 +25,7 @@ public class SchemaMappingTest extends GeoServerTestSupport {
                 MockData.DIVIDED_ROUTES, "schema.xml");
         reloadCatalogAndConfiguration();
         FeatureTypeInfo ft = 
-            getCatalog().getCatalog().getFeatureTypeByName( "DividedRoutes");
+            getCatalog().getFeatureTypeByName( "DividedRoutes");
         assertEquals( 2, ft.getAttributes().size() );
     }
     

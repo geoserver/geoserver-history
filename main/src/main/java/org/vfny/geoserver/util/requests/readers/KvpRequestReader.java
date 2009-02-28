@@ -6,6 +6,7 @@ package org.vfny.geoserver.util.requests.readers;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.factory.CommonFactoryFinder;
@@ -22,7 +23,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
 import org.vfny.geoserver.Request;
 
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.FilterHandlerImpl;
 import org.xml.sax.InputSource;
@@ -93,7 +93,7 @@ abstract public class KvpRequestReader {
 
     /** Reference to the service using the reader */
     //protected AbstractService service;
-    protected Service serviceConfig;
+    protected ServiceInfo serviceConfig;
     
     /**
      * Creates a reader from paramters and a service configuration.
@@ -101,7 +101,7 @@ abstract public class KvpRequestReader {
      * @param kvpPairs The key-value pairs.
      * @param service The service configuration.
      */
-    public KvpRequestReader(Map kvpPairs, Service service) {
+    public KvpRequestReader(Map kvpPairs, ServiceInfo service) {
         this.kvpPairs = kvpPairs;
         this.serviceConfig = service;
     }

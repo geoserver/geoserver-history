@@ -22,9 +22,10 @@ import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UserDetailsService;
 import org.acegisecurity.userdetails.memory.UserAttribute;
 import org.acegisecurity.userdetails.memory.UserAttributeEditor;
+import org.geoserver.config.GeoServer;
 import org.geoserver.security.PropertyFileWatcher;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.GeoServer;
+
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
@@ -102,8 +103,8 @@ public class EditableUserDAO implements UserDetailsService {
    * be added directly to the in-memory storage of the user details, rather than returned by this method.
    */
   private void createDefaultUser() {
-    String name = (geoServer == null ? "admin" : geoServer.getAdminUserName());
-    String passwd = (geoServer == null ? "geoserver" : geoServer.getAdminPassword());
+    String name = (geoServer == null ? "admin" : geoServer.getGlobal().getAdminUsername());
+    String passwd = (geoServer == null ? "geoserver" : geoServer.getGlobal().getAdminPassword());
 
     myDetailStorage.put(name, new User(name,
 	  passwd,

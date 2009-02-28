@@ -186,7 +186,7 @@ public class XStreamPersisterTest extends TestCase {
     
     public void testServiceOmitGlobal() throws Exception {
         MyServiceInfo s1 = new MyServiceInfo();
-        s1.setGeoServer( factory.createGlobal() );
+        s1.setGeoServer( new GeoServerImpl() );
         
         ByteArrayOutputStream out = out();
         persister.save( s1, out );

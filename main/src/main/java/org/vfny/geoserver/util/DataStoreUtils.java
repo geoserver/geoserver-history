@@ -6,7 +6,10 @@ package org.vfny.geoserver.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
 
+import org.geoserver.catalog.ResourcePool;
 import org.geoserver.data.DataStoreFactoryInitializer;
 import org.geoserver.feature.FeatureSourceUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
@@ -26,7 +30,6 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.global.DataStoreInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -56,7 +59,7 @@ public abstract class DataStoreUtils {
         //String baseDir = sc.getRealPath("/");
         File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
-        return getDataStore(getParams(params, baseDir.getAbsolutePath()));
+        return getDataStore(ResourcePool.getParams(params, baseDir.getAbsolutePath()));
     }
     
     /**
@@ -89,19 +92,7 @@ public abstract class DataStoreUtils {
         File data_dir = GeoserverDataDirectory.getGeoserverDataDirectory();
         String baseDir = data_dir.getPath();
 
-        return getParams(m, baseDir);
-    }
-
-    /**
-     * Get Connect params.
-     * <p>
-     * This is used to smooth any relative path kind of issues for any
-     * file URLS. This code should be expanded to deal with any other context
-     * sensitve isses dataStores tend to have.
-     * </p>
-     */
-    protected static Map getParams(Map m, String baseDir) {
-        return DataStoreInfo.getParams(m, baseDir);
+        return ResourcePool.getParams(m, baseDir);
     }
 
     /**
