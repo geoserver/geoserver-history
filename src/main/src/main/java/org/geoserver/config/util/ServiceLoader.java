@@ -12,7 +12,6 @@ import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.util.ReaderUtils;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
-import org.vfny.geoserver.global.MetaDataLink;
 import org.w3c.dom.Element;
 
 /**

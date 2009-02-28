@@ -4,10 +4,10 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
 
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 import java.io.Reader;
 import java.util.logging.Logger;
@@ -28,7 +28,7 @@ public abstract class XmlRequestReader {
     protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers");
 
     /** The service handling the request **/
-    private Service serviceConfig;
+    private ServiceInfo serviceConfig;
     
 
     /**
@@ -48,12 +48,12 @@ public abstract class XmlRequestReader {
      * This will create a new XmlRequestReader
      * @param service The config of the service handling the request
      */
-    public XmlRequestReader(Service service) {
+    public XmlRequestReader(ServiceInfo service) {
         this.serviceConfig = service;;
     }
     
     
-    public Service getService() {
+    public ServiceInfo getService() {
         return serviceConfig;
     }
 }

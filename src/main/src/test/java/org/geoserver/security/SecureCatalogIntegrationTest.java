@@ -31,7 +31,7 @@ public class SecureCatalogIntegrationTest extends GeoServerTestSupport {
     }
 
     public void testFullAccess() throws Exception {
-        FeatureSource source = getCatalog().getFeatureTypeInfo(MockData.LINES).getFeatureSource();
+        FeatureSource source = getFeatureSource(MockData.LINES);
         FeatureCollection fc = source.getFeatures();
         FeatureStore store = (FeatureStore) source;
         store.removeFeatures(Filter.INCLUDE);
@@ -39,7 +39,7 @@ public class SecureCatalogIntegrationTest extends GeoServerTestSupport {
 
     public void testCannotRead() throws Exception {
         try {
-            getCatalog().getFeatureTypeInfo(MockData.BUILDINGS).getFeatureSource();
+            getFeatureSource(MockData.BUILDINGS);
             fail("This should have failed with a security exception!");
         } catch (AcegiSecurityException e) {
             // fine, we should not be able to get to the feature source
@@ -47,8 +47,8 @@ public class SecureCatalogIntegrationTest extends GeoServerTestSupport {
     }
 
     public void testCannotWrite() throws Exception {
-        FeatureStore fs = (FeatureStore) getCatalog().getFeatureTypeInfo(MockData.DELETES)
-                .getFeatureSource();
+        FeatureStore fs = (FeatureStore) getFeatureSource(MockData.DELETES);
+                
         try {
             fs.removeFeatures(Filter.INCLUDE);
             fail("This should have failed with a security exception!");

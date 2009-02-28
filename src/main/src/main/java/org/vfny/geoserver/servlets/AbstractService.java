@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.ows.ServiceStrategy;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.springframework.beans.BeansException;
@@ -14,9 +17,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.PartialBufferedOutputStream2;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -126,7 +126,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     /**
      * Reference to the catalog.
      */
-    Data catalog;
+    Catalog catalog;
 
     /**
      * Id of the service strategy to use.
@@ -147,7 +147,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     /**
      * Reference to the service
      */
-    Service serviceRef;
+    ServiceInfo serviceRef;
     private String kvpString;
 
     //    /** DOCUMENT ME!  */
@@ -160,7 +160,7 @@ public abstract class AbstractService extends HttpServlet implements Application
      * @param request The service being requested (GetCapabilities, GetMap, ...)
      * @param serviceRef The global service this "servlet" falls into
      */
-    public AbstractService(String service, String request, Service serviceRef) {
+    public AbstractService(String service, String request, ServiceInfo serviceRef) {
         this.service = service;
         this.request = request;
         this.serviceRef = serviceRef;
@@ -183,14 +183,14 @@ public abstract class AbstractService extends HttpServlet implements Application
     /**
      * Sets a refeference to the global service instance.
      */
-    public void setServiceRef(Service serviceRef) {
+    public void setServiceRef(ServiceInfo serviceRef) {
         this.serviceRef = serviceRef;
     }
 
     /**
      * @return The reference to the global service instance.
      */
-    public Service getServiceRef() {
+    public ServiceInfo getServiceRef() {
         return serviceRef;
     }
 
@@ -229,7 +229,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     /**
      * @return The reference to the global catalog instance.
      */
-    public Data getCatalog() {
+    public Catalog getCatalog() {
         return catalog;
     }
 
@@ -237,7 +237,7 @@ public abstract class AbstractService extends HttpServlet implements Application
      * Sets the reference to the global catalog instance.
      *
      */
-    public void setCatalog(Data catalog) {
+    public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
     }
 

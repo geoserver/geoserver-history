@@ -13,7 +13,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.platform.GeoServerExtensions;
-import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;

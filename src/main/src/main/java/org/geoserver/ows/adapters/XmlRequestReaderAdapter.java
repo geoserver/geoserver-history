@@ -4,8 +4,8 @@
  */
 package org.geoserver.ows.adapters;
 
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.ows.HttpServletRequestAware;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import java.io.Reader;
@@ -18,16 +18,16 @@ import javax.xml.namespace.QName;
 public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
     implements HttpServletRequestAware {
     Class delegateClass;
-    Service service;
+    ServiceInfo service;
     HttpServletRequest httpRequest;
 
-    public XmlRequestReaderAdapter(QName element, Service service, Class delegate) {
+    public XmlRequestReaderAdapter(QName element, ServiceInfo service, Class delegate) {
         super(element);
         this.service = service;
         this.delegateClass = delegate;
     }
 
-    public XmlRequestReaderAdapter(String namespace, String local, Service service,
+    public XmlRequestReaderAdapter(String namespace, String local, ServiceInfo service,
         Class delegate) {
         this(new QName(namespace, local), service, delegate);
     }

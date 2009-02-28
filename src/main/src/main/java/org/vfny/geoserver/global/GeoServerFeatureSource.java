@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.feature.DefaultCRSFilterVisitor;
 import org.geoserver.feature.ReprojectingFilterVisitor;
 import org.geotools.data.DataSourceException;
@@ -87,7 +88,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
     protected CoordinateReferenceSystem declaredCRS;
 
     /** How to handle SRS   */
-    protected int srsHandling;
+    protected ProjectionPolicy srsHandling;
 
     /**
      * Creates a new GeoServerFeatureSource object.
@@ -103,7 +104,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
         this.schema = schema;
         this.definitionQuery = definitionQuery;
         this.declaredCRS = declaredCRS;
-        this.srsHandling = srsHandling;
+        this.srsHandling = ProjectionPolicy.get( srsHandling );
 
         if (this.definitionQuery == null) {
             this.definitionQuery = Filter.INCLUDE;
@@ -359,11 +360,11 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
             // that case we completely ignore the native one)
             CoordinateReferenceSystem targetCRS = null;
             CoordinateReferenceSystem nativeCRS = geom.getCoordinateReferenceSystem();
-            if(srsHandling == FeatureTypeInfo.FORCE) {
+            if(srsHandling == ProjectionPolicy.FORCE_DECLARED) {
                 defaultCRS = declaredCRS;
                 targetCRS = declaredCRS;
                 nativeFeatureType = FeatureTypes.transform(nativeFeatureType, declaredCRS);
-            } else if(srsHandling == FeatureTypeInfo.REPROJECT) {
+            } else if(srsHandling == ProjectionPolicy.REPROJECT_TO_DECLARED) {
                 defaultCRS = declaredCRS;
                 targetCRS = nativeCRS;
             } else { // FeatureTypeInfo.LEAVE
@@ -413,10 +414,10 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
         if(nativeCRS == null) {
             fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
             nativeCRS = declaredCRS;
-        } else if(srsHandling == FeatureTypeInfo.FORCE && !nativeCRS.equals(declaredCRS)) {
+        } else if(srsHandling == ProjectionPolicy.FORCE_DECLARED && !nativeCRS.equals(declaredCRS)) {
             fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
             nativeCRS = declaredCRS;
-        } else if(srsHandling == FeatureTypeInfo.REPROJECT && targetCRS == null
+        } else if(srsHandling == ProjectionPolicy.REPROJECT_TO_DECLARED && targetCRS == null
                 && !nativeCRS.equals(declaredCRS)) {
             fc = new ReprojectFeatureResults(fc,declaredCRS);
         }

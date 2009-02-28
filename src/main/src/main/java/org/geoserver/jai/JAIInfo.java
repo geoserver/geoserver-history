@@ -1,6 +1,7 @@
 package org.geoserver.jai;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
 
 import javax.media.jai.JAI;
 
@@ -16,15 +17,33 @@ public class JAIInfo implements Serializable {
     transient SunTileCache tileCache;
     
     boolean allowInterpolation;
-    boolean recycling;
-    int tilePriority;
-    int tileThreads;
-    double memoryCapacity;
-    double memoryThreshold;
-    boolean imageIOCache;
-    boolean pngAcceleration;
-    boolean jpegAcceleration;
-    boolean allowNativeMosaic;
+    
+    public static final boolean DEFAULT_Recycling = false;
+    boolean recycling = DEFAULT_Recycling;
+    
+    public static final int DEFAULT_TilePriority = Thread.NORM_PRIORITY;
+    int tilePriority = DEFAULT_TilePriority;
+    
+    public static final int DEFAULT_TileThreads = 7;
+    int tileThreads = DEFAULT_TileThreads;
+    
+    public static final double DEFAULT_MemoryCapacity = 0.5;
+    double memoryCapacity = DEFAULT_MemoryCapacity;
+    
+    public static final double DEFAULT_MemoryThreshold = 0.75;
+    double memoryThreshold = DEFAULT_MemoryThreshold;
+    
+    public static final boolean DEFAULT_ImageIOCache = false;
+    boolean imageIOCache = DEFAULT_ImageIOCache;
+    
+    public static final boolean DEFAULT_PNGNative = false;
+    boolean pngAcceleration = DEFAULT_PNGNative;
+    
+    public static final boolean DEFAULT_JPEGNative = false;
+    boolean jpegAcceleration = DEFAULT_JPEGNative;
+    
+    public static final boolean DEFAULT_MosaicNative = false;
+    boolean allowNativeMosaic = DEFAULT_MosaicNative;
 
     /**
      * @uml.property name="allowInterpolation"

@@ -24,7 +24,7 @@ public class ResourcePoolTest extends GeoServerTestSupport {
      */
     public void testFeatureTypeCacheInstance() throws Exception {
         ResourcePool pool = new ResourcePool();
-        FeatureTypeInfo info = getCatalog().getCatalog().getFeatureTypeByName(
+        FeatureTypeInfo info = getCatalog().getFeatureTypeByName(
                 MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
         FeatureType ft1 = pool.getFeatureType(info);
         FeatureType ft2 = pool.getFeatureType(info);

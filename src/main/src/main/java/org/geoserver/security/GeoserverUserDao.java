@@ -18,9 +18,10 @@ import org.acegisecurity.userdetails.UserDetailsService;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.acegisecurity.userdetails.memory.UserMap;
 import org.acegisecurity.userdetails.memory.UserMapEditor;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
@@ -64,11 +65,11 @@ public class GeoserverUserDao implements UserDetailsService {
                         // the file without
                         // chaning the username and password if possible
                         Properties p = new Properties();
-
-                        if ((geoServer != null) && (geoServer.getAdminUserName() != null)
-                                && !geoServer.getAdminUserName().trim().equals("")) {
-                            p.put(geoServer.getAdminUserName(),
-                                geoServer.getAdminPassword() + ",ROLE_ADMINISTRATOR");
+                        GeoServerInfo global = geoServer.getGlobal();
+                        if ((geoServer != null) && (global.getAdminUsername() != null)
+                                && !global.getAdminUsername().trim().equals("")) {
+                            p.put(global.getAdminUsername(),
+                                    global.getAdminPassword() + ",ROLE_ADMINISTRATOR");
                         } else {
                             p.put("admin", "geoserver,ROLE_ADMINISTRATOR");
                         }

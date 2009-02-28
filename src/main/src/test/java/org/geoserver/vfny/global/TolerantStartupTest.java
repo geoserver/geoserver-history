@@ -8,11 +8,10 @@ import javax.xml.namespace.QName;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ProjectionPolicy;
+import org.geoserver.config.GeoServer;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.springframework.core.io.ResourceLoader;
-import org.vfny.geoserver.global.Config;
-import org.vfny.geoserver.global.Data;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -42,9 +41,9 @@ public class TolerantStartupTest extends GeoServerTestSupport {
     }
     
     public void testContextStartup() {
-        Config config = (Config) applicationContext.getBean("config");
-        assertNotNull(config.getData().getFeaturesTypes().get(getLayerId(MockData.BUILDINGS)));        
-        assertNull(config.getData().getFeaturesTypes().get(getLayerId(MockData.BASIC_POLYGONS)));
+        GeoServer config = (GeoServer) applicationContext.getBean("geoServer"); 
+        assertNotNull(config.getCatalog().getFeatureTypeByName(MockData.BUILDINGS.getNamespaceURI(), MockData.BUILDINGS.getPrefix()));        
+        assertNotNull(config.getCatalog().getFeatureTypeByName(MockData.BASIC_POLYGONS.getNamespaceURI(), MockData.BASIC_POLYGONS.getPrefix()));
     }
 
 }

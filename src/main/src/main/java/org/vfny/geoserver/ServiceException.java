@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver;
 
-import org.vfny.geoserver.global.GeoServer;
+import org.geoserver.config.GeoServer;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.util.ResponseUtils;
 import java.io.ByteArrayOutputStream;
@@ -306,6 +306,6 @@ public class ServiceException extends org.geoserver.platform.ServiceException {
      * @return
      */
     public String getMimeType(GeoServer geoserver) {
-        return geoserver.getMimeType();
+        return "text/xml; charset=" + geoserver.getGlobal().getCharset();
     }
 }

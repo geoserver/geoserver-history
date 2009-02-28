@@ -4,7 +4,12 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServerLoader;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.springframework.context.ApplicationContext;
@@ -49,7 +54,7 @@ import javax.servlet.ServletContext;
 public class GeoserverDataDirectory {
     // caches the dataDir
     public static GeoServerResourceLoader loader;
-    private static Data catalog;
+    private static Catalog catalog;
     private static ApplicationContext appContext;
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
 
@@ -82,19 +87,19 @@ public class GeoserverDataDirectory {
         String name = featureType.getTypeName();
         String namespace = featureType.getName().getNamespaceURI();
         FeatureTypeInfo ftInfo = null;
-        Data data = getCatalog();
+        Catalog data = getCatalog();
         if(namespace != null) {
-            NameSpaceInfo nsInfo = data.getNameSpaceFromURI(namespace);
+            NamespaceInfo nsInfo = data.getNamespaceByURI(namespace);
             if(nsInfo != null)
-                ftInfo = data.getFeatureTypeInfo(nsInfo.getPrefix() + ":" + name);
+                ftInfo = data.getFeatureTypeByName( nsInfo.getPrefix(), name);
         }
         if(ftInfo == null) 
-            ftInfo = data.getFeatureTypeInfo(name);
+            ftInfo = data.getFeatureTypeByName(name);
         if(ftInfo == null)
             return null;
-        String dirName = ftInfo.getDirName();
+        String dirName = (String) ftInfo.getMetadata().get("dirName");
         if ( dirName == null ) {
-            dirName = ftInfo.getPrefix() + "_" + ftInfo.getTypeName();
+            dirName = ftInfo.getNamespace().getPrefix() + "_" + ftInfo.getName();
         }
         
         return dirName;
@@ -111,10 +116,9 @@ public class GeoserverDataDirectory {
      * @throws NoSuchElementException
      */
     public static String findCoverageDirName(String coverageName) {
-        Data data = getCatalog();
-        CoverageInfo coverageInfo = data.getCoverageInfo(coverageName);
-        String dirName = coverageInfo.getDirName();
-        return dirName;
+        Catalog data = getCatalog();
+        CoverageInfo coverageInfo = data.getCoverage(coverageName);
+        return (String) coverageInfo.getMetadata().get( "dirName" );
     }
 
     /**
@@ -382,9 +386,9 @@ public class GeoserverDataDirectory {
         catalog = null;
     }
     
-    private static Data getCatalog() {
+    private static Catalog getCatalog() {
         if(catalog == null) {
-            catalog = (Data) appContext.getBean("data");
+            catalog = (Catalog) GeoServerExtensions.bean( "catlog2");
         }
         return catalog;
     }

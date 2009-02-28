@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.util.requests;
 
+import org.geoserver.config.ServiceInfo;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.servlets.AbstractService;
 
 
@@ -28,7 +28,7 @@ public class CapabilitiesRequest extends Request {
      * @param serviceType The id of the service being handled.
      * @param service The service handing the request.
      */
-    public CapabilitiesRequest(String serviceType, Service service) {
+    public CapabilitiesRequest(String serviceType, ServiceInfo service) {
         this(serviceType, service, null);
     }
         
@@ -39,7 +39,7 @@ public class CapabilitiesRequest extends Request {
      * @param service The service handing the request.
      * @param updateSequence The updateSequence number from the GetCapabilities request
      */
-    public CapabilitiesRequest(String serviceType, Service service, String updateSequence) {
+    public CapabilitiesRequest(String serviceType, ServiceInfo service, String updateSequence) {
         super(serviceType, "GetCapabilities", service);
         this.updateSequence = updateSequence;
     }

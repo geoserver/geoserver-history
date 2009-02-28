@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver;
 
-import org.vfny.geoserver.global.Service;
+import org.geoserver.config.ServiceInfo;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.Requests;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ abstract public class Request {
 
     /** service reference */
     //protected AbstractService serviceRef;
-    protected Service serviceConfig;
+    protected ServiceInfo serviceConfig;
     
     /** reference to the base Url that this request was called with.
      * Note that this is a complete duplicate of info in the above HttpServletRequest
@@ -65,7 +65,7 @@ abstract public class Request {
       * @param serviceRef The servlet for the request.
       * 
       */
-    protected Request(String service, String request,Service serviceConfig) {
+    protected Request(String service, String request,ServiceInfo serviceConfig) {
         this.service = service;
         this.request = request;
         this.serviceConfig = serviceConfig;
@@ -152,7 +152,7 @@ abstract public class Request {
     /**
      * @return The service configuration.
      */
-    public Service getServiceConfig() {
+    public ServiceInfo getServiceConfig() {
         return serviceConfig;
     }
     
