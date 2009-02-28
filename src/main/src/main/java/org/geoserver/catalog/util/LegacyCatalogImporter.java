@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.gml2.GML;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
@@ -521,9 +523,10 @@ public class LegacyCatalogImporter {
                     boolean buildFromNative = true;
                     if ( schemaFile != null ) {
                         //parse the schema + generate attributes from that
+                        List locators = Arrays.asList( GML.getInstance().createSchemaLocator() );
                         XSDSchema schema = null;
                         try {
-                            schema = Schemas.parse( schemaFile.getAbsolutePath() );
+                            schema = Schemas.parse( schemaFile.getAbsolutePath(), locators, null );
                         }
                         catch( Exception e ) {
                             LOGGER.warning( "Unable to parse " + schemaFile.getAbsolutePath() + "." +
