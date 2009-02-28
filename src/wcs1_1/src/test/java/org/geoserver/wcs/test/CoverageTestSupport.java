@@ -4,24 +4,9 @@
  */
 package org.geoserver.wcs.test;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
-import org.custommonkey.xmlunit.SimpleNamespaceContext;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.geoserver.wcs.WCSInfo;
 
 /**
  * Base support class for wcs tests.
@@ -35,8 +20,8 @@ public abstract class CoverageTestSupport extends KvpRequestReaderTestSupport {
     /**
      * @return The global wfs instance from the application context.
      */
-    protected WCS getWCS() {
-        return (WCS) applicationContext.getBean("wcs");
+    protected WCSInfo getWCS() {
+        return getGeoServer().getService(WCSInfo.class);
     }
 
     @Override

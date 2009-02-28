@@ -144,12 +144,13 @@ public class DescribeCoverageTransformer extends TransformerBase {
                 String coverageId = (String) it.next();
 
                 // check the coverage is known
-                if (catalog.getLayer(coverageId).getType() != LayerInfo.Type.RASTER) {
+                LayerInfo layer = catalog.getLayerByName(coverageId);
+				if (layer == null || layer.getType() != LayerInfo.Type.RASTER) {
                     throw new WcsException("Could not find the specified coverage: "
                             + coverageId, WcsExceptionCode.InvalidParameterValue, "identifiers");
                 }
 
-                CoverageInfo ci = catalog.getCoverage(coverageId);
+                CoverageInfo ci = catalog.getCoverageByName(coverageId);
                 try {
                     handleCoverageDescription(ci);
                 } catch (Exception e) {
@@ -166,7 +167,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
             element("ows:Title", ci.getTitle());
             element("ows:Abstract", ci.getDescription());
             handleKeywords(ci.getKeywords());
-            element("wcs:Identifier", ci.getName());
+            element("wcs:Identifier", ci.getStore().getWorkspace().getName() + ":" + ci.getName());
             handleMetadataLinks(ci.getMetadataLinks(), "simple");
             handleDomain(ci);
             handleRange(ci);

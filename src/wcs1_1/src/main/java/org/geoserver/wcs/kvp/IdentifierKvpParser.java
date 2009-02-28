@@ -22,8 +22,8 @@ public class IdentifierKvpParser extends CodeTypeKvpParser {
 
     @Override
     public Object parse(String value) throws Exception {
-        LayerInfo.Type type = catalog.getLayer(value).getType();
-        if (type != LayerInfo.Type.RASTER)
+        LayerInfo layer = catalog.getLayerByName(value);
+        if (layer == null || layer.getType() != LayerInfo.Type.RASTER)
             throw new WcsException("Could not find coverage '" + value + "'",
                     InvalidParameterValue, "identifier");
         return super.parse(value);

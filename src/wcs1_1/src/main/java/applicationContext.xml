@@ -5,8 +5,7 @@
 
   <!-- wcs service setup, with loggin as an interceptor -->
   <bean id="wcs111ServiceTarget" class="org.geoserver.wcs.DefaultWebCoverageService111">
-    <constructor-arg ref="wcs" />
-    <constructor-arg ref="catalog" />
+    <constructor-arg ref="geoServer" />
   </bean>
   <bean id="wcsLogger" class="org.geoserver.ows.util.EMFLogger">
     <constructor-arg type="java.lang.String" value="org.geoserver.wcs" />
@@ -137,8 +136,7 @@
   </bean>
   <bean id="wcs111GetCoverageStoreResponse"
     class="org.geoserver.wcs.response.WCSGetCoverageStoreResponse" singleton="false">
-    <constructor-arg ref="wcs" />
-    <constructor-arg ref="catalog" />
+    <constructor-arg ref="geoServer" />
   </bean>
 
   <!-- Map dispatcher in order to publish the wcsTempStorage directory -->

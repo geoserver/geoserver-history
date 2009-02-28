@@ -75,7 +75,7 @@ public class WCSGetCoverageStoreResponse extends Response {
 
         // grab the coverage info for Coverages document encoding
         final GridCoverage2D coverage = (GridCoverage2D) coverages[0];
-        CoverageInfo coverageInfo = catalog.getCoverage(request.getIdentifier().getValue());
+        CoverageInfo coverageInfo = catalog.getCoverageByName(request.getIdentifier().getValue());
         
         // write the coverage to temporary storage in the data dir
         File wcsStore = null;
