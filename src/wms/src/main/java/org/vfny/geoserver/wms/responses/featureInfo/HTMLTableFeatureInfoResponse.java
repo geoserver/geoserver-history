@@ -12,19 +12,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-
-import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.platform.GeoServerExtensions;
-
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
+import org.geoserver.wms.WMS;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.opengis.feature.type.Name;
+import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -84,10 +82,13 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * @throws org.vfny.geoserver.ServiceException For problems with geoserver
      * @throws java.io.IOException For problems writing the output.
      */
+    @Override
     public void writeTo(OutputStream out)
         throws ServiceException, java.io.IOException {
         // setup the writer
-        final Charset charSet = getRequest().getGeoServer().getCharSet();
+        final GetFeatureInfoRequest request = getRequest();
+        final WMS wmsConfig = request.getWMS();
+        final Charset charSet = wmsConfig.getCharSet();
         final OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
         
         // if there is only one feature type loaded, we allow for header/footer customization,
@@ -140,10 +141,6 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         osw.flush();
     }
 
-    public String getContentDisposition() {
-        return null;
-    }
-    
     /**
      * Uses a {@link GeoServerTemplateLoader TemplateLoader} too look up for the template file
      * named <code>templateFilename</code> for the given <code>featureType</code>.
@@ -164,19 +161,19 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         }
         
         if(featureType != null) {
-            final Data catalog =  (Data) GeoServerExtensions.bean("data");
-            final String localName = featureType.getName().getLocalPart();
-            final String namespaceURI = featureType.getName().getNamespaceURI();
-            final FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(localName, namespaceURI);
-            
+            final Name name = featureType.getName();
+            final WMS wms = getRequest().getWMS();
+
+            FeatureTypeInfo featureTypeInfo = wms.getFeatureTypeInfo(name);
+
             if(featureTypeInfo == null){
                 //It may be a wrapped coverage
-                CoverageInfo cInfo = catalog.getCoverageInfo(localName);
+                CoverageInfo cInfo = wms.getCoverageInfo(name);
                 if(cInfo != null){
-                    templateLoader.setCoverageName(localName);
+                    templateLoader.setCoverageName(name.getLocalPart());
                 }else{
                     throw new IllegalArgumentException("Can't find neither a FeatureType nor " +
-                            "a CoverageInfo named " + localName);
+                            "a CoverageInfo named " + name);
                 }
             } else {
                 templateLoader.setFeatureType(featureType);
