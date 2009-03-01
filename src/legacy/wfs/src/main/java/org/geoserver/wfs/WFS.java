@@ -303,7 +303,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
      *         automatically generated.
      */
     public boolean isFeatureBounding() {
-        return wfs.getGML().get( WFSInfo.Version.V_10 ).isFeatureBounding();
+        return wfs.isFeatureBounding();
         //return featureBounding;
     }
 
@@ -315,7 +315,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
      *        boundedBy automatically generated.
      */
     public void setFeatureBounding(boolean featureBounding) {
-        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding(featureBounding);
+        wfs.setFeatureBounding(featureBounding);
         //this.featureBounding = featureBounding;
     }
 }
