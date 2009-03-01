@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSExtensions;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DefaultQuery;
@@ -47,7 +48,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;

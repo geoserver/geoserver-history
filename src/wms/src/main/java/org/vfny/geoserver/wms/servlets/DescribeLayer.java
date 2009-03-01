@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import org.geoserver.wms.WMS;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.DescribeLayerKvpRequestReader;

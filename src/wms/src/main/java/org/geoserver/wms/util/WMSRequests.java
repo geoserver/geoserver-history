@@ -17,11 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.requests.WMSRequest;
@@ -44,8 +46,8 @@ public class WMSRequests {
      *
      * @return The base for wms requests.
      */
-    public static String getBaseUrl( HttpServletRequest request, GeoServer geoServer ) {
-        String baseUrl = Requests.getBaseUrl( request, geoServer );
+    public static String getBaseUrl( HttpServletRequest request, WMS config ) {
+        String baseUrl = Requests.getBaseUrl( request, config.getGeoServer() );
         baseUrl = Requests.appendContextPath(baseUrl, "wms" );
         
         return baseUrl;
@@ -60,7 +62,7 @@ public class WMSRequests {
      * @return The base for wms requests.
      */
     public static String getBaseUrl( WMSRequest request ) {
-        return getBaseUrl( request.getHttpServletRequest(), request.getGeoServer() );  
+        return getBaseUrl( request.getHttpServletRequest(), request.getWMS() );  
     }
     
     /**
@@ -101,8 +103,8 @@ public class WMSRequests {
      * @return The full url for a getMap request.
      */
     public static String getTiledGetMapUrl(GetMapRequest req, MapLayer layer, int layerIndex, Envelope bbox, String[] kvp) {
-        String baseUrl = Requests.getTileCacheBaseUrl(req.getHttpServletRequest(),
-                    req.getGeoServer());
+        String baseUrl = RequestsLegacy.getTileCacheBaseUrl(req.getHttpServletRequest(),
+                    req.getWMS().getGeoServer());
         
         if ( baseUrl == null ) {
             return getGetMapUrl( req, layer, layerIndex, bbox, kvp );

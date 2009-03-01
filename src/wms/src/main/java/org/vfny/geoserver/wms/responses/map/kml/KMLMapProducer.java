@@ -15,9 +15,9 @@ import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMS;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;

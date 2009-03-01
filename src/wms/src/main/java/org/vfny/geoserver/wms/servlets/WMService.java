@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import org.vfny.geoserver.global.WMS;
+import org.geoserver.wms.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.Requests;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
  * @version $Id$
  */
 abstract public class WMService extends AbstractService {
+    private WMS wms;
+
     /**
      * Constructor for WMS service.
      *
@@ -29,14 +31,15 @@ abstract public class WMService extends AbstractService {
      * @param wms The WMS service reference.
      */
     public WMService(String request, WMS wms) {
-        super("WMS", request, wms);
+        super("WMS", request, wms.getServiceInfo());
+        this.wms = wms;
     }
 
     /**
      * @return The wms service ref.
      */
     public WMS getWMS() {
-        return (WMS) getServiceRef();
+        return wms;
     }
 
     /**
@@ -44,7 +47,8 @@ abstract public class WMService extends AbstractService {
      * @param wms
      */
     public void setWMS(WMS wms) {
-        setServiceRef(wms);
+        this.wms = wms;
+        setServiceRef(wms.getServiceInfo());
     }
 
     protected boolean isServiceEnabled(HttpServletRequest req) {

@@ -7,10 +7,10 @@ package org.vfny.geoserver.wms.responses.featureInfo;
 import java.util.List;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.MapLayerInfo;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;

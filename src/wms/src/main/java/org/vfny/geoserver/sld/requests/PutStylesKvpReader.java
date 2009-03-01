@@ -5,8 +5,8 @@
 package org.vfny.geoserver.sld.requests;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMS;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.sld.SldException;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;

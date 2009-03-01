@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import org.vfny.geoserver.global.WMS;
+import org.geoserver.wms.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.WatermarkPainter;
 import org.vfny.geoserver.wms.responses.map.metatile.QuickTileCache.MetaTileKey;

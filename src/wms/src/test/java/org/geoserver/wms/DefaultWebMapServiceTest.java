@@ -112,7 +112,7 @@ public class DefaultWebMapServiceTest extends WMSTestSupport {
         GetMapRequest mockStreams = createGetMapRequest(MockData.BRIDGES);
         GetMapRequest mockBridges = createGetMapRequest(MockData.STREAMS);
         
-        LayerInfo[] mls = new LayerInfo[2];
+        MapLayerInfo[] mls = new MapLayerInfo[2];
         mls[0] = mockBridges.getLayers()[0];
         mls[1] = mockStreams.getLayers()[0];
         

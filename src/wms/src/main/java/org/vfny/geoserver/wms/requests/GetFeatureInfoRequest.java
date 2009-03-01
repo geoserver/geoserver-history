@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
+import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.vfny.geoserver.wms.servlets.WMService;
 
 

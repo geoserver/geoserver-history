@@ -11,6 +11,7 @@ import java.util.Map;
 import junit.framework.Test;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.styling.Style;
@@ -40,7 +41,7 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
     MockHttpServletRequest httpRequest;
 
     /** mock config object */
-    WMSInfo wms;
+    WMS wms;
     
     /**
      * This is a READ ONLY TEST so we can use one time setup

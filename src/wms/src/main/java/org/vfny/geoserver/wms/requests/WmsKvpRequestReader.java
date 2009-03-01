@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.Map;
@@ -23,18 +23,21 @@ import java.util.Map;
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader {
 
+    private WMS wms;
+
     /**
      * Creates a new kvp reader for a WMS request.
      *
      * @param kvpPairs The raw key value pairs.
      * @param wms The WMS config object.
      */
-    public WmsKvpRequestReader(Map kvpPairs, WMSInfo wms) {
-        super(kvpPairs, wms);
+    public WmsKvpRequestReader(Map kvpPairs, WMS wms) {
+        super(kvpPairs, wms.getServiceInfo());
+        this.wms = wms;
     }
     
-    public WMSInfo getWMS() {
-        return (WMSInfo) serviceConfig;
+    public WMS getWMS() {
+        return wms;
     }
     
     /**
@@ -50,7 +53,7 @@ public abstract class WmsKvpRequestReader extends KvpRequestReader {
         }
 
         if (version == null) {
-            version = WMS.getVersion();
+            version = getWMS().getVersion();
         }
 
         return version;

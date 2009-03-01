@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.global.GeoServer;
@@ -17,6 +18,7 @@ import org.vfny.geoserver.global.GeoServer;
  */
 public class WMSRequest extends Request {
     public static final String WMS_SERVICE_TYPE = "WMS";
+    private WMS wms;
 
     /**
      * Creates the new request, supplying the request name and the sevlet
@@ -26,23 +28,24 @@ public class WMSRequest extends Request {
      * @param wms The wms configuration object.
      * 
      */
-    public WMSRequest(String request, WMSInfo wms) {
-        super(WMS_SERVICE_TYPE,request,wms);
+    public WMSRequest(String request, WMS wms) {
+        super(WMS_SERVICE_TYPE,request,wms.getServiceInfo());
+        this.wms = wms;
     }
 
     /**
      * Convenience method for obtaining the global wms service instance.
      */
-    public WMSInfo getWMS() {
-        return (WMSInfo) getServiceConfig();
+    public WMS getWMS() {
+        return wms;
     }
 
     /**
      * Convenience method for obtaining the global geoserver instance.
      */
-    public org.geoserver.config.GeoServer getGeoServer() {
-        return getWMS().getGeoServer();
-    }
+//    public org.geoserver.config.GeoServer getGeoServer() {
+//        return getWMS().getGeoServer();
+//    }
     
     /**
      * Setter for the 'WMTVER' parameter, which is an alias for 'VERSION'.� 

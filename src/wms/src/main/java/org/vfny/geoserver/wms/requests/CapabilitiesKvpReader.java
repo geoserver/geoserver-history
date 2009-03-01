@@ -5,8 +5,9 @@
 package org.vfny.geoserver.wms.requests;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSInfo;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wms.servlets.WMService;
@@ -24,14 +25,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     
+    private WMS wms;
+
     /**
      * Creates a Capabilities Kvp Reader.
      * 
      * @param kvPairs the kvp set.
-     * @param service The wms service config.
+     * @param wms The wms service config facade.
      */
-    public CapabilitiesKvpReader(Map kvPairs, WMS service) {
-        super(kvPairs, service);
+    public CapabilitiesKvpReader(Map kvPairs, WMS wms) {
+        super(kvPairs, wms.getServiceInfo());
+        this.wms = wms;
     }
 
     /**
@@ -43,10 +47,10 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        CapabilitiesRequest currentRequest = new WMSCapabilitiesRequest((WMS) serviceConfig);
+        CapabilitiesRequest currentRequest = new WMSCapabilitiesRequest((WMSInfo) serviceConfig);
         currentRequest.setHttpServletRequest(request);
 
-        String reqVersion = WMS.getVersion();
+        String reqVersion = wms.getVersion();
 
         if (keyExists("VERSION")) {
             reqVersion = getValue("VERSION");

@@ -51,8 +51,8 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
     /**
      * @return The global wms singleton from the application context.
      */
-    protected WMSInfo getWMS() {
-        return getGeoServer().getService(WMSInfo.class);
+    protected WMS getWMS() {
+        return new WMS(getGeoServer());
     }
 
     /**
@@ -127,7 +127,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         GetMapRequest request = new GetMapRequest(getWMS());
         request.setHttpServletRequest(createRequest("wms"));
 
-        LayerInfo[] layers = new LayerInfo[layerNames.length];
+        MapLayerInfo[] layers = new MapLayerInfo[layerNames.length];
         List styles = new ArrayList();
 
         for (int i = 0; i < layerNames.length; i++) {
@@ -137,7 +137,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            layers[i] = layerInfo;
+            layers[i] = new MapLayerInfo(layerInfo);
         }
 
         request.setLayers(layers);

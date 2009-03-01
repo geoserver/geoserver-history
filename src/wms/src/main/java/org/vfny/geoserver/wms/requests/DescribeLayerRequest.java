@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.geoserver.wms.WMSInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 
 
 /**
@@ -30,7 +29,7 @@ public class DescribeLayerRequest extends WMSRequest {
      * Creates a new DescribeLayerRequest
      * @param wms The WMS config object.
      */
-    public DescribeLayerRequest(WMSInfo wms) {
+    public DescribeLayerRequest(WMS wms) {
         super("DescribeLayer", wms );
     }
     
