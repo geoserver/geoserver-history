@@ -108,4 +108,16 @@ public class WMS {
         return Charset.forName(charset);
     }
 
+    public String getProxyBaseUrl() {
+        GeoServer geoServer = getGeoServer();
+        GeoServerInfo global = geoServer.getGlobal();
+        String proxyBaseUrl = global.getProxyBaseUrl();
+        return proxyBaseUrl;
+    }
+
+    public int getUpdateSequence() {
+        GeoServerInfo global = getGeoServer().getGlobal();
+        return global.getUpdateSequence();
+    }
+
 }

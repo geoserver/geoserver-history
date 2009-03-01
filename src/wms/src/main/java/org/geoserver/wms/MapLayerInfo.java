@@ -13,12 +13,17 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
 import org.geotools.data.FeatureSource;
+import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
+import org.opengis.coverage.grid.GridCoverageReader;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.util.DataStoreUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -221,4 +226,72 @@ public final class MapLayerInfo {
         return styleNames;
     }
 
+    /**
+     * Should we add the cache-control: max-age header to maps containing this layer?
+     * 
+     * @return true if we should, false if we should omit the header
+     */
+    public boolean isCachingEnabled() {
+        if (layerInfo == null) {
+            return false;
+        }
+        ResourceInfo resource = layerInfo.getResource();
+        Boolean cachingEnabled = (Boolean) resource.getMetadata().get("cachingEnabled");
+        return cachingEnabled == null ? false : cachingEnabled.booleanValue();
+    }
+
+    /**
+     * This value is added the headers of generated maps, marking them as being both "cache-able"
+     * and designating the time for which they are to remain valid. The specific header added is
+     * "Cache-Control: max-age="
+     * 
+     * @return a string representing the number of seconds to be added to the
+     *         "Cache-Control: max-age=" header
+     */
+    public String getCacheMaxAge() {
+        if (layerInfo == null) {
+            return null;
+        }
+        ResourceInfo resource = layerInfo.getResource();
+        return (String) resource.getMetadata().get("cacheAgeMax");
+    }
+
+    /**
+     * If this layers has been setup to reproject data, skipReproject = true will disable
+     * reprojection. This method is build especially for the rendering subsystem that should be able
+     * to perform a full reprojection on its own, and do generalization before reprojection (thus
+     * avoid to reproject all of the original coordinates)
+     */
+    public FeatureSource<? extends FeatureType, ? extends Feature> getFeatureSource(
+            boolean skipReproject) throws IOException {
+        if (type != TYPE_VECTOR) {
+            throw new IllegalArgumentException("Layer type is not vector");
+        }
+
+        if (!layerInfo.isEnabled()) {
+            throw new IOException("featureType: " + getName()
+                    + " does not have a properly configured " + "datastore");
+        }
+
+        FeatureTypeInfo resource = (FeatureTypeInfo) layerInfo.getResource();
+
+        if (resource.getStore() == null || resource.getStore().getDataStore(null) == null) {
+            throw new IOException("featureType: " + getName()
+                    + " does not have a properly configured " + "datastore");
+        }
+
+        Hints hints = new Hints(ResourcePool.REPROJECT, Boolean.valueOf(!skipReproject));
+
+        return resource.getFeatureSource(null, hints);
+    }
+
+    public GridCoverageReader getCoverageReader() throws IOException {
+        if (type != TYPE_RASTER) {
+            throw new IllegalArgumentException("Layer type is not raster");
+        }
+
+        CoverageInfo resource = (CoverageInfo) layerInfo.getResource();
+        GridCoverageReader coverageReader = resource.getGridCoverageReader(null, null);
+        return coverageReader;
+    }
 }
