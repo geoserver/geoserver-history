@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
@@ -376,7 +378,7 @@ public class PutStyles extends AbstractService {
         LOGGER.info("PutStyles SLD:\nLayer: " + layerName + ", style: " + styleName);
 
         // store the SLD
-        StyleConfig style = new StyleConfig();
+        StyleInfoImpl style = new StyleInfoImpl(getCatalog());
         style.setId(styleName);
 
         // make the SLD file in the data_dir/styles directory
@@ -420,25 +422,25 @@ public class PutStyles extends AbstractService {
         style_fos.flush();
         style_fos.close();
 
-        style.setFilename(styleFile);
+        style.setFilename(styleFile.getAbsolutePath());
 
         // update the data config to tell it about our new style
-        DataConfig dataConfig = ConfigRequests.getDataConfig(request);
-        dataConfig.addStyle(styleName, style);
+        getCatalog().add(style);
 
         // SLD is set up now, so tell the feature type to use it
 
         // get our featureType by the layerName
-        List keys = dataConfig.getFeatureTypeConfigKeys();
-        Iterator it = keys.iterator();
+        List<LayerInfo> keys = getCatalog().getLayers();
+        Iterator<LayerInfo> it = keys.iterator();
         layerName = null;
 
         while (it.hasNext()) // get the full featureType name that has the datastore prefix
          {
-            String o = it.next().toString();
+            String o = it.next().getName();
             String[] os = o.split(":");
 
-            if (os[1].equalsIgnoreCase(layerName)) {
+            String name = os.length == 1 ? os[0] : os[1];
+            if (name.equalsIgnoreCase(layerName)) {
                 layerName = o;
 
                 break;
@@ -448,8 +450,8 @@ public class PutStyles extends AbstractService {
         // get the feature type and save the style for it, if the feature type exists yet
         // If there is no FT there that may mean that the user is just creating it.
         if (layerName != null) {
-            FeatureTypeConfig featureTypeConfig = dataConfig.getFeatureTypeConfig(layerName);
-            featureTypeConfig.setDefaultStyle(styleName);
+            LayerInfo featureTypeConfig = getCatalog().getLayerByName(layerName);
+            featureTypeConfig.setDefaultStyle(style);
         }
 
         // if successful, return "success"
