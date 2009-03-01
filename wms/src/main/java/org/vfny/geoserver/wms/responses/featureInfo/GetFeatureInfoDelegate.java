@@ -11,7 +11,6 @@ import org.geoserver.wms.MapLayerInfo;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
@@ -119,14 +118,6 @@ public abstract class GetFeatureInfoDelegate implements Response {
         int x = request.getXPixel();
         int y = request.getYPixel();
         execute(layers, filters, x, y);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param gs DOCUMENT ME!
-     */
-    public void abort(Service gs) {
     }
 
     /**
