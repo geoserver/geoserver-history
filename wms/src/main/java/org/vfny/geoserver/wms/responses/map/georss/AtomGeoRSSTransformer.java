@@ -10,10 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.vfny.geoserver.global.NameSpaceInfo;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -101,7 +99,7 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
             element("title", feature.getID());
 
             start("author");
-            element("name", map.getRequest().getGeoServer().getContactPerson());
+            element("name", map.getRequest().getWMS().getGeoServer().getGlobal().getContact().getContactPerson());
             end("author");
 
             //id

@@ -239,4 +239,10 @@ public class WMS {
         GeoServerInfo global = getGeoServer().getGlobal();
         return global.getNumDecimals();
     }
+
+    public String getNameSpacePrefix(final String nsUri) {
+        Catalog catalog = getCatalog();
+        NamespaceInfo ns = catalog.getNamespaceByURI(nsUri);
+        return ns == null? null : ns.getPrefix();
+    }
 }

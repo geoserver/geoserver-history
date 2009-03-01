@@ -6,7 +6,6 @@ package org.geoserver.wms;
 
 import junit.framework.Test;
 
-import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;

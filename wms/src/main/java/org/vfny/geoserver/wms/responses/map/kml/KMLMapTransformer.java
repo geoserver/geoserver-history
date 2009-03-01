@@ -920,7 +920,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             String nsUri = mapLayer.getFeatureSource().getSchema().getName()
                     .getNamespaceURI();
             NameSpaceInfo ns = mapContext.getRequest().getWMS().getData()
-                    .getNameSpaceFromURI(nsUri);
+                    .getNameSpaceByURI(nsUri);
             String featureTypeName = mapLayer.getFeatureSource().getSchema()
                     .getName().getLocalPart();
             GetMapRequest request = mapContext.getRequest();

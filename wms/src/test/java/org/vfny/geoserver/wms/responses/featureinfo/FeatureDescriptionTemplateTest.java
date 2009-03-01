@@ -4,27 +4,23 @@
  */
 package org.vfny.geoserver.wms.responses.featureinfo;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+
 import junit.framework.TestCase;
+
 import org.geoserver.template.FeatureWrapper;
 import org.geotools.data.DataUtilities;
-import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.DefaultFeatureCollections;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
-import org.w3c.dom.Document;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 
 public class FeatureDescriptionTemplateTest extends TestCase {

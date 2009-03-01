@@ -1,12 +1,12 @@
 package org.geoserver.wms;
 
-import org.geoserver.test.GeoServerTestSupport;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+
+import javax.imageio.ImageIO;
+
+import org.geoserver.test.GeoServerTestSupport;
 
 public class SLDWithInlineFeatureTest extends GeoServerTestSupport {
     public void testSLDWithInlineFeatureWMS() throws Exception {
