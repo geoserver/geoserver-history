@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import org.h2.tools.DeleteDbFiles;
 import org.geoserver.ows.HttpErrorCodeException;
+import org.geoserver.wms.MapLayerInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.jdbc.JDBCUtils;
 import org.geotools.factory.CommonFactoryFinder;
@@ -41,7 +42,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 

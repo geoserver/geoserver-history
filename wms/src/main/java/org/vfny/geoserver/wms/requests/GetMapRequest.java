@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.ows.util.CaseInsensitiveMap;
+import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
@@ -58,8 +60,8 @@ public class GetMapRequest extends WMSRequest {
      * 
      * @param wms The WMS service config.
      */
-    public GetMapRequest(WMSInfo wms) {
-        super(TRANSACTION_REQUEST_TYPE, wms );
+    public GetMapRequest(WMS wms) {
+        super(TRANSACTION_REQUEST_TYPE, wms);
     }
 
     /**
@@ -134,9 +136,9 @@ public class GetMapRequest extends WMSRequest {
     /**
      * @return the non null list of layers, may be empty
      */
-    public LayerInfo[] getLayers() {
-        List<LayerInfo> layers = mandatoryParams.layers;
-        return layers.toArray(new LayerInfo[layers.size()]);
+    public MapLayerInfo[] getLayers() {
+        List<MapLayerInfo> layers = mandatoryParams.layers;
+        return layers.toArray(new MapLayerInfo[layers.size()]);
     }
 
     /**
@@ -144,7 +146,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @return A list of Strings of the names of the styles.
      */
-    public List getStyles() {
+    public List<Style> getStyles() {
         return this.mandatoryParams.styles;
     }
 
@@ -434,7 +436,7 @@ public class GetMapRequest extends WMSRequest {
      *
      * @param layers DOCUMENT ME!
      */
-    public void setLayers(LayerInfo[] layers) {
+    public void setLayers(MapLayerInfo[] layers) {
         this.mandatoryParams.layers = layers == null ? Collections.EMPTY_LIST : Arrays
                 .asList(layers);
     }
@@ -690,7 +692,7 @@ public class GetMapRequest extends WMSRequest {
      */
     private class MandatoryParameters {
         /** ordered list of requested layers */
-        List<LayerInfo> layers = Collections.EMPTY_LIST;
+        List<MapLayerInfo> layers = Collections.EMPTY_LIST;
 
         /**
          * ordered list of requested layers' styles, in a one to one
@@ -812,7 +814,7 @@ public class GetMapRequest extends WMSRequest {
         returnString.append("\n bbox: " + mandatoryParams.bbox);
         returnString.append("\n layers: ");
 
-        for (Iterator<LayerInfo> i = mandatoryParams.layers.iterator();i.hasNext();) {
+        for (Iterator<MapLayerInfo> i = mandatoryParams.layers.iterator();i.hasNext();) {
             returnString.append(i.next().getName());
             if (i.hasNext()) {
                 returnString.append(",");

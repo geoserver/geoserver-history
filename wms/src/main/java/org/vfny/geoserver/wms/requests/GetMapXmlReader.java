@@ -23,6 +23,8 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geotools.filter.ExpressionDOMParser;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
@@ -33,8 +35,6 @@ import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.GETMAPValidator;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -64,7 +64,7 @@ public class GetMapXmlReader extends XmlRequestReader {
      * @param wms The WMS config object.
      */
     public GetMapXmlReader(WMS wms) {
-        super(wms);
+        super(wms.getServiceInfo());
     }
     
     public WMS getWMS() {

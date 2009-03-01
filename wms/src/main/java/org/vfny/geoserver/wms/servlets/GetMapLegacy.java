@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import org.vfny.geoserver.global.WMS;
+import org.geoserver.wms.WMS;
 
 
 /**

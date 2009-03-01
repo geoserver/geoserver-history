@@ -82,7 +82,7 @@ public class WMSMockData {
 
     private GeoServer mockGeoServer;
 
-    private WMSInfo mockWMS;
+    private WMS mockWMS;
 
     @SuppressWarnings("deprecation")
     public void setUp() throws Exception {
@@ -148,9 +148,9 @@ public class WMSMockData {
         wmsInfo.setId("wms");
         wmsInfo.setName("WMS");
         wmsInfo.setEnabled(true);
-        mockWMS = wmsInfo;
         mockGeoServer.add(wmsInfo);
 
+        mockWMS = new WMS(mockGeoServer);
     }
 
     /**

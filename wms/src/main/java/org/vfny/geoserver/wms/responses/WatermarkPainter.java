@@ -20,9 +20,9 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import org.geoserver.wms.WMS;
 import org.geotools.util.SoftValueHashMap;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 /**
@@ -89,31 +89,31 @@ public class WatermarkPainter {
             double tx = tile.getMinX(); 
             double ty = tile.getMinY();
             
-            if ( watermarkPosition == WMS.WATERMARK_UC) { 
+            if ( watermarkPosition == org.geoserver.wms.WATERMARK_UC) { 
                 tx += (tile.getWidth() - logo.getWidth()) / 2; 
             }
-            else if ( watermarkPosition == WMS.WATERMARK_UR ) {
+            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_UR ) {
                 tx += tile.getWidth() - logo.getWidth();
             }
-            else if ( watermarkPosition == WMS.WATERMARK_CL ) {
+            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_CL ) {
                 ty += (tile.getHeight() - logo.getHeight()) / 2;
             }
-            else if ( watermarkPosition == WMS.WATERMARK_CC ) {
+            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_CC ) {
                 ty += (tile.getHeight() - logo.getHeight()) / 2;
                 tx += (tile.getWidth() - logo.getWidth()) / 2;
             }
-            else if ( watermarkPosition == WMS.WATERMARK_CR ) {
+            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_CR ) {
                 ty += (tile.getHeight() - logo.getHeight()) / 2;
                 tx += tile.getWidth() - logo.getWidth();
             }
-            else if ( watermarkPosition == WMS.WATERMARK_LL ) {
+            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_LL ) {
                 ty += tile.getHeight() - logo.getHeight();
             }
-            else if ( watermarkPosition == WMS.WATERMARK_LC ) {
+            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_LC ) {
                 ty += tile.getHeight() - logo.getHeight();
                 tx += (tile.getWidth() - logo.getWidth()) / 2;
             }
-            else if ( watermarkPosition == WMS.WATERMARK_LR ) {
+            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_LR ) {
                 ty += tile.getHeight() - logo.getHeight();
                 tx += tile.getWidth() - logo.getWidth();
             }

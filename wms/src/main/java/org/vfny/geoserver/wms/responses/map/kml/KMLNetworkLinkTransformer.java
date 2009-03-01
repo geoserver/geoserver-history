@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 

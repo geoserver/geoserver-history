@@ -28,6 +28,8 @@ import java.util.zip.InflaterInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
@@ -58,9 +60,7 @@ import org.vfny.geoserver.config.PaletteManager;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;

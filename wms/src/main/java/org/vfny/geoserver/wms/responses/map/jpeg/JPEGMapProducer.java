@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.wms.responses.map.jpeg;
 
+import org.geoserver.wms.WMS;
 import org.geotools.image.ImageWorker;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;

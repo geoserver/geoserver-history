@@ -5,9 +5,10 @@
 package org.vfny.geoserver.wms.requests;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.List;

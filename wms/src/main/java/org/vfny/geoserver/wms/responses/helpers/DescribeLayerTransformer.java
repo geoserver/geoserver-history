@@ -12,9 +12,9 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.wms.MapLayerInfo;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;

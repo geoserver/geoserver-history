@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.geoserver.catalog.LayerInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -23,7 +22,6 @@ import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
@@ -275,7 +273,7 @@ public class DefaultWebMapService implements WebMapService,
      */
     public static void autoSetBoundsAndSize(GetMapRequest getMap) {
         // Get the layers
-        LayerInfo[] layers = getMap.getLayers();        
+        MapLayerInfo[] layers = getMap.getLayers();        
         
         /** 1) Check what SRS has been requested */
         String reqSRS = getMap.getSRS();
@@ -291,7 +289,7 @@ public class DefaultWebMapService implements WebMapService,
         /** 2) Compare requested SRS */
         for (int i = 0; useNativeBounds && i < layers.length; i++) {
             if (layers[i] != null) {
-                useNativeBounds = layers[i].getResource().getSRS().equalsIgnoreCase(reqSRS);
+                useNativeBounds = reqSRS.equalsIgnoreCase(layers[i].getSRS());
             } else {
                 useNativeBounds = false;
             }
@@ -314,10 +312,10 @@ public class DefaultWebMapService implements WebMapService,
 
             // Get the bounding box from the layers
             for (int i = 0; i < layers.length; i++) {
-                LayerInfo layerInfo = layers[i];
+                MapLayerInfo layerInfo = layers[i];
                 ReferencedEnvelope curbbox;
                 try{
-                    curbbox = layerInfo.getResource().getBoundingBox();
+                    curbbox = layerInfo.getBoundingBox();
                     if(!useNativeBounds){
                         curbbox = curbbox.transform(reqCRS, true);
                     }
@@ -427,10 +425,10 @@ public class DefaultWebMapService implements WebMapService,
         }
     }
     
-    private static String guessCommonSRS(LayerInfo[] layers) {
+    private static String guessCommonSRS(MapLayerInfo[] layers) {
         String SRS = null;
-        for (LayerInfo layer : layers) {
-            String layerSRS = layer.getResource().getSRS();
+        for (MapLayerInfo layer : layers) {
+            String layerSRS = layer.getSRS();
             if(SRS == null) {
                 SRS = layerSRS.toUpperCase();
             } else if(!SRS.equals(layerSRS)) {

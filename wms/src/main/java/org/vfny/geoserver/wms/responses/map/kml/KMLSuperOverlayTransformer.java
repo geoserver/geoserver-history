@@ -12,6 +12,7 @@ import javax.xml.namespace.QName;
 
 import org.geoserver.ows.HttpErrorCodeException;
 import org.geoserver.ows.util.CaseInsensitiveMap;
+import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -20,7 +21,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;

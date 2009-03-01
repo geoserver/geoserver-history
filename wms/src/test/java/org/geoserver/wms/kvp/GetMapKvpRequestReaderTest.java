@@ -18,7 +18,7 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geoserver.wms.RemoteOWSTestSupport;
-import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMS;
 import org.geotools.styling.Style;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
@@ -43,7 +43,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         super.setUpInternal();
 
         dispatcher = (Dispatcher) applicationContext.getBean("dispatcher");
-        WMSInfo wms = getGeoServer().getService(WMSInfo.class);
+        WMS wms = new WMS(getGeoServer());
         reader = new GetMapKvpRequestReader(wms);
     }
 

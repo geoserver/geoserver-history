@@ -9,11 +9,11 @@ import java.io.Reader;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.geoserver.wms.WMS;
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
 import org.opengis.filter.Filter;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.FilterHandlerImpl;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.xml.sax.InputSource;
