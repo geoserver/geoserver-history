@@ -54,12 +54,12 @@ public class RollbackElementHandler implements TransactionElementHandler {
                     + "(required for rollback)");
         }
 
-        if (wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_UPDATE)) {
+        if (!wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_UPDATE)) {
             throw new WFSException("Transaction UPDATE support is not enabled "
                     + "(required for rollback)");
         }
 
-        if (wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_DELETE)) {
+        if (!wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_DELETE)) {
             throw new WFSException("Transaction DELETE support is not enabled "
                     + "(required for rollback)");
         }

@@ -9,10 +9,10 @@ import org.w3c.dom.Document;
 
 public class DescribeVersionedFeatureTypeTest extends WFSVTestSupport {
 
-//    @Override
-//    protected String getLogConfiguration() {
-//        return "/DEFAULT_LOGGING.properties";
-//    }
+    @Override
+    protected String getLogConfiguration() {
+        return "/DEFAULT_LOGGING.properties";
+    }
     
     /**
      * This is a READ ONLY TEST so we can use one time setup
