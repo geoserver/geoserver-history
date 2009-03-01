@@ -17,7 +17,6 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wms.WmsException;
 
 /**
