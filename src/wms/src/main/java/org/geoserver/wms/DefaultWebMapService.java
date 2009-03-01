@@ -4,7 +4,6 @@
  */
 package org.geoserver.wms;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.platform.GeoServerExtensions;
-import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -25,8 +23,7 @@ import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
@@ -88,7 +85,7 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * wms configuration 
      */
-    WMSInfo wms;
+    WMS wms;
     
     /**
      * Application context
@@ -100,14 +97,20 @@ public class DefaultWebMapService implements WebMapService,
      */
     private static Boolean OPTIMIZE_LINE_WIDTH = null;
 
-    public DefaultWebMapService( WMSInfo wms ) {
+    public DefaultWebMapService( WMS wms ) {
         this.wms = wms;
     }
     
+    /**
+     * @see WebMapService#getServiceInfo()
+     */
     public WMSInfo getServiceInfo() {
-        return wms;
+        return wms.getServiceInfo();
     }
     
+    /**
+     * @see ApplicationContextAware#setApplicationContext(ApplicationContext)
+     */
     public void setApplicationContext(ApplicationContext context)
             throws BeansException {
         this.context = context;
@@ -132,6 +135,9 @@ public class DefaultWebMapService implements WebMapService,
         return OPTIMIZE_LINE_WIDTH;
     }
 
+    /**
+     * @see WebMapService#getCapabilities(WMSCapabilitiesRequest)
+     */
     public WMSCapabilitiesResponse getCapabilities(
             WMSCapabilitiesRequest request) {
         Capabilities capabilities = (Capabilities) context
@@ -140,10 +146,16 @@ public class DefaultWebMapService implements WebMapService,
         return (WMSCapabilitiesResponse) capabilities.getResponse();
     }
 
+    /**
+     * @see WebMapService#capabilities(WMSCapabilitiesRequest)
+     */
     public WMSCapabilitiesResponse capabilities(WMSCapabilitiesRequest request) {
         return getCapabilities(request);
     }
 
+    /**
+     * @see WebMapService#describeLayer(DescribeLayerRequest)
+     */
     public DescribeLayerResponse describeLayer(DescribeLayerRequest request) {
         DescribeLayer describeLayer = (DescribeLayer) context
                 .getBean("wmsDescribeLayer");
@@ -151,16 +163,25 @@ public class DefaultWebMapService implements WebMapService,
         return (DescribeLayerResponse) describeLayer.getResponse();
     }
 
+    /**
+     * @see WebMapService#getMap(GetMapRequest)
+     */
     public GetMapResponse getMap(GetMapRequest request) {
         GetMap getMap = (GetMap) context.getBean("wmsGetMap");
 
         return (GetMapResponse) getMap.getResponse();
     }
 
+    /**
+     * @see WebMapService#map(GetMapRequest)
+     */
     public GetMapResponse map(GetMapRequest request) {
         return getMap(request);
     }
 
+    /**
+     * @see WebMapService#getFeatureInfo(GetFeatureInfoRequest)
+     */
     public GetFeatureInfoResponse getFeatureInfo(GetFeatureInfoRequest request) {
         GetFeatureInfo getFeatureInfo = 
             (GetFeatureInfo) context.getBean("wmsGetFeatureInfo");
@@ -168,6 +189,9 @@ public class DefaultWebMapService implements WebMapService,
         return (GetFeatureInfoResponse) getFeatureInfo.getResponse();
     }
 
+    /**
+     * @see WebMapService#getLegendGraphic(GetLegendGraphicRequest)
+     */
     public GetLegendGraphicResponse getLegendGraphic(
             GetLegendGraphicRequest request) {
         GetLegendGraphic getLegendGraphic = 
@@ -185,11 +209,16 @@ public class DefaultWebMapService implements WebMapService,
         }
     }
 
-    // reflector operations
+    /**
+     * @see WebMapService#reflect(GetMapRequest)
+     */
     public GetMapResponse reflect(GetMapRequest request) {
         return getMapReflect(request);
     }
 
+    /**
+     * @see WebMapService#getMapReflect(GetMapRequest)
+     */
     public GetMapResponse getMapReflect(GetMapRequest request) {
         GetMapRequest getMap = (GetMapRequest) request;
 
@@ -262,11 +291,7 @@ public class DefaultWebMapService implements WebMapService,
         /** 2) Compare requested SRS */
         for (int i = 0; useNativeBounds && i < layers.length; i++) {
             if (layers[i] != null) {
-                if(layers[i].getFeature() != null) {
-                    useNativeBounds = layers[i].getFeature().getSRS().equalsIgnoreCase(reqSRS);
-                } else if(layers[i].getCoverage() != null) {
-                    useNativeBounds = layers[i].getCoverage().getSrsName().equalsIgnoreCase(reqSRS);
-                }
+                useNativeBounds = layers[i].getResource().getSRS().equalsIgnoreCase(reqSRS);
             } else {
                 useNativeBounds = false;
             }
@@ -289,51 +314,16 @@ public class DefaultWebMapService implements WebMapService,
 
             // Get the bounding box from the layers
             for (int i = 0; i < layers.length; i++) {
-                Envelope curbbox = null;
-
-                FeatureTypeInfo curFTI = layers[i].getFeature();
-                try {
-                    if (curFTI != null) {
-                        // Local feature type
-                        if (! useNativeBounds) {
-                            curbbox = curFTI.getLatLongBoundingBox();
-                        } else {
-                            if(curFTI.getBoundingBox() == null) {
-                                curbbox = curFTI.getBoundingBox();
-                            } else {
-                                try {
-                                    curbbox = curFTI.getLatLongBoundingBox().transform(curFTI.getDeclaredCRS(), true);
-                                } catch(Exception e) {
-                                    throw new WmsException("Best effort native bbox computation failed", "", e);
-                                }
-                            }
-                        }
-
-                    } else if (layers[i].getRemoteFeatureSource() != null) {
-                        // This layer was requested through a remote WFS
-                        curbbox = layers[i].getRemoteFeatureSource().getBounds();
-                        if(!useNativeBounds)
-                            try {
-                                curbbox = ((ReferencedEnvelope) curbbox).transform(reqCRS, true);
-                            } catch(Exception e) {
-                                throw new WmsException(e);
-                            }
-                    } else if (layers[i].getCoverage() != null) {
-                        if(useNativeBounds) {
-                            GeneralEnvelope ge = layers[i].getCoverage().getEnvelope();
-                            curbbox = new Envelope(ge.getMinimum(0), ge.getMaximum(0), ge.getMinimum(1), ge.getMaximum(1));
-                        } else {
-                            GeneralEnvelope ge = layers[i].getCoverage().getWGS84LonLatEnvelope();
-                            curbbox = new Envelope(ge.getMinimum(0), ge.getMaximum(0), ge.getMinimum(1), ge.getMaximum(1));
-                        }
-                    } else {
-                        // ?
-                        throw new RuntimeException("Unknown feature type in DefaultWebMapServer");
+                LayerInfo layerInfo = layers[i];
+                ReferencedEnvelope curbbox;
+                try{
+                    curbbox = layerInfo.getResource().getBoundingBox();
+                    if(!useNativeBounds){
+                        curbbox = curbbox.transform(reqCRS, true);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                }catch(Exception e){
+                    throw new RuntimeException(e);
                 }
-
                 if (aggregateBbox != null) {
                     aggregateBbox.expandToInclude(curbbox);
                 } else {
@@ -437,36 +427,20 @@ public class DefaultWebMapService implements WebMapService,
         }
     }
     
-    private static String guessCommonSRS(MapLayerInfo[] layers) {
+    private static String guessCommonSRS(LayerInfo[] layers) {
         String SRS = null;
-        for (MapLayerInfo layer : layers) {
-            String layerSRS = null;
-            if(layer.getType() == MapLayerInfo.TYPE_VECTOR) {
-                layerSRS = "EPSG:" + layer.getFeature().getSRS();
-            } else if(layer.getType() == MapLayerInfo.TYPE_RASTER) {
-                layerSRS = layer.getCoverage().getSrsName();
-//            } else if(layer.getType() == MapLayerInfo.TYPE_RASTER) {
-//                WMS wms = (WMS) GeoServerExtensions.bean("WMS");
-//                ReferencedEnvelope env =  (ReferencedEnvelope) wms.getBaseMapEnvelopes().get(layer.getName());
-//                try {
-//                    Integer epsgCode = CRS.lookupEpsgCode(env.getCoordinateReferenceSystem(), false) ; 
-//                    layerSRS = "EPSG:" + epsgCode;
-//                } catch (FactoryException e) {
-//                    throw new WmsException(e);
-//                }
-//            }
-            } else {
-                throw new WmsException("Could not recognize type for layer " + layer.getName());
-            }
-            if(SRS == null)
+        for (LayerInfo layer : layers) {
+            String layerSRS = layer.getResource().getSRS();
+            if(SRS == null) {
                 SRS = layerSRS.toUpperCase();
-            else if(!SRS.equals(layerSRS)) {
+            } else if(!SRS.equals(layerSRS)) {
                 // layers with mixed native SRS, let's just use the default
                 return DefaultWebMapService.SRS;
             }
         }
-        if(SRS == null)
+        if(SRS == null) {
             return DefaultWebMapService.SRS;
+        }
         return SRS;
     }
 
