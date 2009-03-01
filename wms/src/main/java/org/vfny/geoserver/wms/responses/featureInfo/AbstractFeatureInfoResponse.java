@@ -13,12 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.ViewType;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
@@ -39,6 +43,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.geometry.DirectPosition;
@@ -47,9 +52,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -88,8 +90,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
     /** The formats supported by this map delegate. */
     protected List supportedFormats = null;
-    protected List results;
-    protected List metas;
+    protected List<FeatureCollection<? extends FeatureType, ? extends Feature>> results;
+    protected List<MapLayerInfo> metas;
 
     /**
      * setted in execute() from the requested output format, it's holded just
@@ -173,7 +175,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
         // chain geoserver charset so that multibyte feature info responses
         // gets properly encoded, same as getCapabilities responses 
-        return format + ";charset=" + gs.getCharSet().name();
+        return format + ";charset=" + gs.getGlobal().getCharset();
     }
 
     /**
@@ -186,7 +188,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @throws WmsException For any problems.
      */
-    @SuppressWarnings("unchecked")
+    @Override
+    //@SuppressWarnings("unchecked")
     protected void execute(MapLayerInfo[] requestedLayers, Filter[] filters, int x, int y)
         throws WmsException {
         GetFeatureInfoRequest request = getRequest();
@@ -215,14 +218,14 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         FilterFactory2 filterFac = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
         final int layerCount = requestedLayers.length;
-        results = new ArrayList(layerCount);
-        metas = new ArrayList(layerCount);
+        results = new ArrayList<FeatureCollection<? extends FeatureType,? extends Feature>>(layerCount);
+        metas = new ArrayList<MapLayerInfo>(layerCount);
         
         try {
             for (int i = 0; i < layerCount; i++) {
-                if (requestedLayers[i].getType() == org.vfny.geoserver.global.Data.TYPE_VECTOR.intValue()) {
-                    FeatureTypeInfo finfo = requestedLayers[i].getFeature();
-                    CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getCoordinateReferenceSystem();
+                MapLayerInfo layerInfo = requestedLayers[i];
+                if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR) {
+                    CoordinateReferenceSystem dataCRS = layerInfo.getCoordinateReferenceSystem();
 
                     // reproject the bounding box
                     Polygon pixelRect = geomFac.createPolygon(boundary, null);
@@ -239,9 +242,15 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                         }
                     }
 
+                    final FeatureSource<? extends FeatureType, ? extends Feature> featureSource;
+                    featureSource = layerInfo.getFeatureSource(false);
+                    FeatureType schema = featureSource.getSchema();
+                    
                     Filter getFInfoFilter = null;
                     try {
-                        getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getGeometryDescriptor().getLocalName()), filterFac.literal(pixelRect));
+                        GeometryDescriptor geometryDescriptor = schema.getGeometryDescriptor();
+                        String localName = geometryDescriptor.getLocalName();
+                        getFInfoFilter = filterFac.intersects(filterFac.property(localName), filterFac.literal(pixelRect));
                     } catch (IllegalFilterException e) {
                         e.printStackTrace();
                         throw new WmsException(null, "Internal error : " + e.getMessage());
@@ -252,26 +261,29 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                         getFInfoFilter = filterFac.and(getFInfoFilter, filters[i]);
                     }
 
-                    Query q = new DefaultQuery(finfo.getTypeName(), null, getFInfoFilter, request.getFeatureCount(), Query.ALL_NAMES, null);
-                    FeatureCollection<? extends FeatureType, ? extends Feature> match = finfo.getFeatureSource().getFeatures(q);
+                    String typeName = schema.getName().getLocalPart();
+                    Query q = new DefaultQuery(typeName, null, getFInfoFilter, request.getFeatureCount(), Query.ALL_NAMES, null);
+                    
+                    FeatureCollection<? extends FeatureType, ? extends Feature> match;
+                    match = featureSource.getFeatures(q);
 
                     //this was crashing Gml2FeatureResponseDelegate due to not setting
                     //the featureresults, thus not being able of querying the SRS
                     //if (match.getCount() > 0) {
                     results.add(match);
-                    metas.add(requestedLayers[i]);
+                    metas.add(layerInfo);
 
                     //}
                 } else {
-                    CoverageInfo cinfo = requestedLayers[i].getCoverage();
-                    GridCoverage2D coverage = ((GridCoverage2D) cinfo.getCoverage()).geophysics(true);
+                    CoverageInfo coverageInfo = layerInfo.getCoverage();
+                    GridCoverage2D coverage = ((GridCoverage2D) coverageInfo.getGridCoverage(null, null)).view(ViewType.GEOPHYSICS);
                     DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
                     try {
                         double[] pixelValues = null;
                         if (requestedCRS != null) {
                             
-                            final CoordinateReferenceSystem targetCRS = coverage
-                                    .getCoordinateReferenceSystem2D();
+                            final CoordinateReferenceSystem targetCRS;
+                            targetCRS = coverage.getCoordinateReferenceSystem2D();
                             TransformedDirectPosition arbitraryToInternal = new TransformedDirectPosition(
                                     requestedCRS, targetCRS, new Hints(
                                             Hints.LENIENT_DATUM_SHIFT,
@@ -289,8 +301,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                             pixelValues = coverage.evaluate(position,
                                     (double[]) null);
                         FeatureCollection<SimpleFeatureType, SimpleFeature> pixel;
-                        pixel = wrapPixelInFeatureCollection(coverage, pixelValues, cinfo.getName());
-                        metas.add(requestedLayers[i]);
+                        pixel = wrapPixelInFeatureCollection(coverage, pixelValues, coverageInfo.getName());
+                        metas.add(layerInfo);
                         results.add(pixel);
                     } catch(PointOutsideCoverageException e) {
                         // it's fine, users might legitimately query point outside, we just don't return anything

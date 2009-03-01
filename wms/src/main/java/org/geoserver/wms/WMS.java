@@ -11,6 +11,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.jai.JAIInfo;
+import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.styling.Style;
 
 /**
@@ -118,6 +119,27 @@ public class WMS {
     public int getUpdateSequence() {
         GeoServerInfo global = getGeoServer().getGlobal();
         return global.getUpdateSequence();
+    }
+
+    public int getWatermarkTransparency() {
+        WatermarkInfo watermark = getServiceInfo().getWatermark();
+        return watermark.getTransparency();
+    }
+
+    public int getWatermarkPosition() {
+        WatermarkInfo watermark = getServiceInfo().getWatermark();
+        Position position = watermark.getPosition();
+        return position.getCode();
+    }
+
+    public boolean isGlobalWatermarking() {
+        WatermarkInfo watermark = getServiceInfo().getWatermark();
+        return watermark.isEnabled();
+    }
+
+    public String getGlobalWatermarkingURL() {
+        WatermarkInfo watermark = getServiceInfo().getWatermark();
+        return watermark.getURL();
     }
 
 }
