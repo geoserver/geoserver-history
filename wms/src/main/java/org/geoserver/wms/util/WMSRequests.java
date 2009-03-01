@@ -6,6 +6,8 @@ package org.geoserver.wms.util;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
@@ -102,7 +104,7 @@ public class WMSRequests {
      * @return The full url for a getMap request.
      */
     public static String getTiledGetMapUrl(GetMapRequest req, MapLayer layer, int layerIndex, Envelope bbox, String[] kvp) {
-        String baseUrl = RequestsLegacy.getTileCacheBaseUrl(req.getHttpServletRequest(),
+        String baseUrl = getTileCacheBaseUrl(req.getHttpServletRequest(),
                     req.getWMS().getGeoServer());
         
         if ( baseUrl == null ) {
@@ -111,6 +113,48 @@ public class WMSRequests {
         }
         
         return getGetMapUrl( baseUrl, req, layer.getTitle(), layerIndex, layer.getStyle().getName(), bbox, kvp );
+    }
+    
+    /**
+     * Returns the full url to the tile cache used by GeoServer ( if any ).
+     * <p>
+     * If the tile cache set in the configuration ({@link GeoServer#getTileCache()})
+     * is set to an asbsolute url, it is simply returned. Otherwise the value
+     * is appended to the scheme and host of the supplied <tt>request</tt>.
+     * </p>
+     * @param request The request.
+     * @param geoServer The geoserver configuration.
+     *
+     * @return The url to the tile cache, or <code>null</code> if no tile
+     * cache set.
+     */
+    private static String getTileCacheBaseUrl(HttpServletRequest request, GeoServer geoServer) {
+        //first check if tile cache set
+        String tileCacheBaseUrl = (String) geoServer.getGlobal().getMetadata().get( "tileCache");
+
+        if (tileCacheBaseUrl != null) {
+            //two possibilities, local path, or full remote path
+            try {
+                new URL(tileCacheBaseUrl);
+
+                //full url, return it
+                return tileCacheBaseUrl;
+            } catch (MalformedURLException e1) {
+                //try relative to the same host as request
+                try {
+                    String url = Requests.appendContextPath(request.getScheme() + "://" + request.getServerName(),
+                            tileCacheBaseUrl);
+                    new URL(url);
+
+                    //cool return it
+                    return url;
+                } catch (MalformedURLException e2) {
+                    //out of guesses
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
