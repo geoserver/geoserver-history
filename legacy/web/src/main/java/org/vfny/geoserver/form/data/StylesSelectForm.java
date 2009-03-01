@@ -20,6 +20,8 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
+
 import java.util.Iterator;
 import java.util.TreeSet;
 import javax.servlet.ServletContext;
@@ -67,7 +69,7 @@ public class StylesSelectForm extends ActionForm {
 
         StyleConfig sConfig;
 
-        UserContainer user = Requests.getUserContainer(request);
+        UserContainer user = RequestsLegacy.getUserContainer(request);
         selectedStyle = "";
     }
 

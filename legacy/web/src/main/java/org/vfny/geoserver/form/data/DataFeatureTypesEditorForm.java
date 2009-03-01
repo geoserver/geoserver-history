@@ -14,6 +14,8 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
+
 import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +57,7 @@ public class DataFeatureTypesEditorForm extends ActionForm {
         ServletContext context = getServlet().getServletContext();
         DataConfig config = ConfigRequests.getDataConfig(request);
 
-        UserContainer user = Requests.getUserContainer(request);
+        UserContainer user = RequestsLegacy.getUserContainer(request);
 
         // Richard can we please use this to store stuff?
         FeatureTypeConfig ftConfig; //= user.getFeatureTypeConfig();

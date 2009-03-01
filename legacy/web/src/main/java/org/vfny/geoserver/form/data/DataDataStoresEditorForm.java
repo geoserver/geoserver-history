@@ -17,6 +17,8 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -105,7 +107,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
         namespaces = new TreeSet(config.getNameSpaces().keySet());
 
-        DataStoreConfig dsConfig = Requests.getUserContainer(request).getDataStoreConfig();
+        DataStoreConfig dsConfig = RequestsLegacy.getUserContainer(request).getDataStoreConfig();
 
         if (dsConfig == null) {
             // something is horribly wrong no DataStoreID selected!
@@ -172,7 +174,7 @@ public class DataDataStoresEditorForm extends ActionForm {
 
         // Selected DataStoreConfig is in session
         //
-        UserContainer user = Requests.getUserContainer(request);
+        UserContainer user = RequestsLegacy.getUserContainer(request);
         DataStoreConfig dsConfig = user.getDataStoreConfig();
 
         //

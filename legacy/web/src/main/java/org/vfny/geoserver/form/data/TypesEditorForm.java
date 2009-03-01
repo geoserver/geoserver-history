@@ -37,6 +37,8 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.wms.responses.map.kml.RegionatingStrategyFactory;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -283,7 +285,7 @@ public class TypesEditorForm extends ActionForm {
         ServletContext context = servletContext;
 
         DataConfig config = ConfigRequests.getDataConfig(request);
-        UserContainer user = Requests.getUserContainer(request);
+        UserContainer user = RequestsLegacy.getUserContainer(request);
 
         FeatureTypeConfig type = user.getFeatureTypeConfig();
 

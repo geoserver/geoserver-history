@@ -24,6 +24,8 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,7 +151,7 @@ public final class CoverageStoresEditorForm extends ActionForm {
         //
         //
         // //
-        CoverageStoreConfig dfConfig = Requests.getUserContainer(request).getDataFormatConfig();
+        CoverageStoreConfig dfConfig = RequestsLegacy.getUserContainer(request).getDataFormatConfig();
 
         if (dfConfig == null) {
             // something is horribly wrong no FormatID selected!
@@ -190,7 +192,7 @@ public final class CoverageStoresEditorForm extends ActionForm {
 
         // Selected CoverageStoreConfig is in session
         //
-        UserContainer user = Requests.getUserContainer(request);
+        UserContainer user = RequestsLegacy.getUserContainer(request);
         CoverageStoreConfig dfConfig = user.getDataFormatConfig();
 
         //

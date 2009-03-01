@@ -17,6 +17,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -197,7 +198,7 @@ public class WMSRenderingForm extends ActionForm {
 
         // Selected DataStoreConfig is in session
         //
-        UserContainer user = Requests.getUserContainer(request);
+        UserContainer user = RequestsLegacy.getUserContainer(request);
         if ((globalWatermarkingURL != null) && !"".equals(globalWatermarkingURL)) {
             URL url = null;
 
