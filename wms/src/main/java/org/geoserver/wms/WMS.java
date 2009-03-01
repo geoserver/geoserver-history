@@ -3,6 +3,7 @@ package org.geoserver.wms;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
@@ -10,6 +11,7 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.jai.JAIInfo;
@@ -155,5 +157,64 @@ public class WMS {
         Catalog catalog = getCatalog();
         CoverageInfo resource = catalog.getResourceByName(name, CoverageInfo.class);
         return resource;
+    }
+
+    public List<LayerInfo> getLayers() {
+        Catalog catalog = getCatalog();
+        return catalog.getLayers();
+    }
+
+    public String getNamespaceByPrefix(final String prefix) {
+        Catalog catalog = getCatalog();
+        NamespaceInfo namespaceInfo = catalog.getNamespaceByPrefix(prefix);
+        return namespaceInfo == null ? null : namespaceInfo.getURI();
+    }
+
+    public List<LayerGroupInfo> getLayerGroups() {
+        Catalog catalog = getCatalog();
+        List<LayerGroupInfo> layerGroups = catalog.getLayerGroups();
+        return layerGroups;
+    }
+
+    /**
+     * Informs the user that this WMS supports SLD. We don't currently handle sld, still needs to be
+     * rolled in from geotools, so this now must be false.
+     * 
+     * //djb: we support it now
+     * 
+     * @return false
+     */
+    public boolean supportsSLD() {
+        return true; // djb: we support it now
+    }
+
+    /**
+     * Informs the user that this WMS supports User Layers
+     * <p>
+     * We support this both remote wfs and inlineFeature
+     * </p>
+     * 
+     * @return true
+     */
+    public boolean supportsUserLayer() {
+        return true;
+    }
+
+    /**
+     * Informs the user that this WMS supports User Styles
+     * 
+     * @return true
+     */
+    public boolean supportsUserStyle() {
+        return true;
+    }
+
+    /**
+     * Informs the user that this WMS supports Remote WFS.
+     * 
+     * @return true
+     */
+    public boolean supportsRemoteWFS() {
+        return true;
     }
 }
