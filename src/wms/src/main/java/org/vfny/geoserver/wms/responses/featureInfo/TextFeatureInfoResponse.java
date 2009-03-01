@@ -66,7 +66,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
      */
     public void writeTo(OutputStream out)
         throws ServiceException, java.io.IOException {
-        Charset charSet = getRequest().getGeoServer().getCharSet();
+        Charset charSet = getRequest().getWMS().getCharSet();
         OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
 
         // getRequest().getGeoServer().getCharSet());
