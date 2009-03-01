@@ -147,7 +147,7 @@ public class GetMapResponse implements Response {
      */
     @SuppressWarnings("unchecked")
     public void execute(Request req) throws ServiceException {
-        GetMapRequest request = (GetMapRequest) req;
+        final GetMapRequest request = (GetMapRequest) req;
         assertMandatory(request);
 
         final String outputFormat = request.getFormat();
@@ -171,7 +171,7 @@ public class GetMapResponse implements Response {
         }
 
         final MapLayerInfo[] layers = request.getLayers();
-        final Style[] styles = (Style[]) request.getStyles().toArray(new Style[] {});
+        final Style[] styles = request.getStyles().toArray(new Style[] {});
         final Filter[] filters = buildLayersFilters(request.getFilter(), layers);
 
         // DJB DONE: replace by setAreaOfInterest(Envelope,
@@ -413,9 +413,10 @@ public class GetMapResponse implements Response {
             }
 
             // enable simple watermarking
-            if (this.delegate instanceof DefaultRasterMapProducer)
-                ((DefaultRasterMapProducer) this.delegate).setWmPainter(new WatermarkPainter(
-                        request));
+            if (this.delegate instanceof DefaultRasterMapProducer){
+                WatermarkPainter wmPainter = new WatermarkPainter(request);
+                ((DefaultRasterMapProducer) this.delegate).setWmPainter(wmPainter);
+            }
 
             // /////////////////////////////////////////////////////////
             //
