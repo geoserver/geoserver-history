@@ -32,9 +32,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
-import org.vfny.geoserver.global.GeoServer;
 
 /**
  * Servlet Filter that performs URL translation on content based on configured mime types.
@@ -100,7 +102,7 @@ public class ReverseProxyFilter implements Filter {
      */
     private final Set<Pattern> mimeTypePatterns = new HashSet<Pattern>();
 
-    private GeoServer geoServer;
+    private GeoServerInfo geoServer;
 
     /**
      * Parses the <code>mime-types</code> init parameter, which is a comma separated list of
@@ -108,10 +110,19 @@ public class ReverseProxyFilter implements Filter {
      * translation on content or not.
      */
     public void init(final FilterConfig filterConfig) throws ServletException {
-        final String enabledInitParam = filterConfig.getInitParameter(ENABLED_INIT_PARAM);
-        
-        geoServer = (GeoServer) filterConfig.getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
-
+    	GeoServerInfo geoServer = ((GeoServer) GeoServerExtensions.bean("geoServer")).getGlobal();
+    	init(filterConfig, geoServer);
+    }
+    
+    /**
+     * Parses the <code>mime-types</code> init parameter, which is a comma separated list of
+     * regular expressions used to match the response mime types to decide whether to apply the URL
+     * translation on content or not.
+     */
+    public void init(final FilterConfig filterConfig, GeoServerInfo gs) throws ServletException {
+    	this.geoServer = gs;
+    	
+    	final String enabledInitParam = filterConfig.getInitParameter(ENABLED_INIT_PARAM);
         filterIsEnabled = Boolean.valueOf(enabledInitParam).booleanValue();
         if (filterIsEnabled) {
 

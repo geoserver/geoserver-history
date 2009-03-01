@@ -18,7 +18,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 
-import org.vfny.geoserver.global.GeoServer;
+import junit.framework.TestCase;
+
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.impl.GeoServerInfoImpl;
 
 import com.mockrunner.mock.web.MockFilterChain;
 import com.mockrunner.mock.web.MockFilterConfig;
@@ -26,8 +30,6 @@ import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletContext;
-
-import junit.framework.TestCase;
 
 /**
  * @author Gabriel Roldan (TOPP)
@@ -54,15 +56,12 @@ public class ReverseProxyFilterTest extends TestCase {
         filter = null;
     }
     
-    protected ServletContext getMockServletContext(final String proxyBaseUrl) {
-        MockServletContext context = new MockServletContext();
-        GeoServer geoserver = new GeoServer() {
+    protected GeoServerInfo getGeoServerInfo(final String proxyBaseUrl) {
+        return new GeoServerInfoImpl() {
             public String getProxyBaseUrl() {
                 return proxyBaseUrl;
             }
         };
-        context.setAttribute(GeoServer.WEB_CONTAINER_KEY, geoserver);
-        return context;
     }
 
     public void testInit() throws ServletException {
@@ -77,16 +76,10 @@ public class ReverseProxyFilterTest extends TestCase {
                 return null;
             }
             
-            @Override
-            public ServletContext getServletContext() {
-                return getMockServletContext(proxyBaseUrl);
-            }
-
-            
         };
 
         try {
-            filter.init(config);
+            filter.init(config, getGeoServerInfo(proxyBaseUrl));
             fail("expected ServletException with an illegal regular expression to match mime types");
         } catch (ServletException e) {
             assertTrue(true);
@@ -99,14 +92,9 @@ public class ReverseProxyFilterTest extends TestCase {
                 }
                 return null;
             }
-            
-            @Override
-            public ServletContext getServletContext() {
-                return getMockServletContext(proxyBaseUrl);
-            }
         };
 
-        filter.init(config);
+        filter.init(config, getGeoServerInfo(proxyBaseUrl));
     }
 
     public void testDoFilterDisabled() throws ServletException, IOException {
@@ -226,11 +214,6 @@ public class ReverseProxyFilterTest extends TestCase {
                 }
                 return null;
             }
-            
-            @Override
-            public ServletContext getServletContext() {
-                return getMockServletContext(proxyBaseUrl);
-            }
         };
         MockHttpServletRequest req = new MockHttpServletRequest();
         req.setRequestURL(requestBaseUrl + requestResource);
@@ -247,7 +230,7 @@ public class ReverseProxyFilterTest extends TestCase {
         MockServletContext context = new MockServletContext();
         session.setupServletContext(context);
 
-        filter.init(config);
+        filter.init(config, getGeoServerInfo(proxyBaseUrl));
         // the servlet to call at the end of the chain, just writes the provided content out
         // to the response
         Servlet servlet = new HttpServlet() {
