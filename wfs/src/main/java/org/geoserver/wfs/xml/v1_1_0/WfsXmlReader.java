@@ -4,12 +4,14 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSInfo;
 import org.geotools.util.Version;
+import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 import org.xml.sax.InputSource;
 import java.io.Reader;
@@ -35,12 +37,22 @@ public class WfsXmlReader extends XmlRequestReader {
     /**
      * Xml Configuration
      */
-    WFSConfiguration configuration;
+    Configuration configuration;
+    
+    /**
+     * The catalog, used to access namespaces
+     */
+    Catalog catalog;
 
-    public WfsXmlReader(String element, GeoServer gs, WFSConfiguration configuration) {
+    public WfsXmlReader(String element, GeoServer gs, Configuration configuration) {
+        this(element, gs, configuration, "wfs");
+    }
+    
+    protected WfsXmlReader(String element, GeoServer gs, Configuration configuration, String serviceId) {
         super(new QName(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, element), new Version("1.1.0"),
-            "wfs");
+            serviceId);
         this.wfs = gs.getService( WFSInfo.class );
+        this.catalog = gs.getCatalog();
         this.configuration = configuration;
     }
 
@@ -63,9 +75,9 @@ public class WfsXmlReader extends XmlRequestReader {
         parser.setValidating(strict.booleanValue());
         
         //"inject" namespace mappings
-        List<NamespaceInfo> namespaces = configuration.getCatalog().getNamespaces();
+        List<NamespaceInfo> namespaces = catalog.getNamespaces();
         for ( NamespaceInfo ns : namespaces ) {
-            if ( ns.equals( configuration.getCatalog().getDefaultNamespace() ) )  
+            if ( ns.equals( catalog.getDefaultNamespace() ) )  
                 continue;
             
             parser.getNamespaces().declarePrefix( 

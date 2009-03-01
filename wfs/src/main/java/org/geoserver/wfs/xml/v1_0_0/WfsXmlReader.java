@@ -4,10 +4,12 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wfs.WFSException;
 import org.geotools.util.Version;
+import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 
 import java.io.Reader;
@@ -28,11 +30,20 @@ public class WfsXmlReader extends XmlRequestReader {
     /**
      * Xml Configuration
      */
-    WFSConfiguration configuration;
+    Configuration configuration;
+    /**
+     * Catalog, to access namespaces
+     */
+    Catalog catalog;
 
-    public WfsXmlReader(String element, WFSConfiguration configuration) {
-        super(new QName(WFS.NAMESPACE, element), new Version("1.0.0"), "wfs");
+    public WfsXmlReader(String element, Configuration configuration, Catalog catalog) {
+        this(element, configuration, catalog, "wfs");
+    }
+    
+    protected WfsXmlReader(String element, Configuration configuration, Catalog catalog, String serviceId) {
+        super(new QName(WFS.NAMESPACE, element), new Version("1.0.0"), serviceId);
         this.configuration = configuration;
+        this.catalog = catalog;
     }
 
     public Object read(Object request, Reader reader, Map kvp) throws Exception {
@@ -46,7 +57,7 @@ public class WfsXmlReader extends XmlRequestReader {
         Parser parser = new Parser(configuration);
         
         //"inject" namespace mappings
-        List<NamespaceInfo> namespaces = configuration.getCatalog().getNamespaces();
+        List<NamespaceInfo> namespaces = catalog.getNamespaces();
         for ( NamespaceInfo ns : namespaces ) {
             //if ( namespaces[i].isDefault() ) 
             //    continue;
