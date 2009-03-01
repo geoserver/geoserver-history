@@ -182,12 +182,10 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             "org.apache.xalan.processor.TransformerFactoryImpl");
 
         GeoServerInfo global = geoServer.getGlobal();
-        GMLInfo gml = wfs.getGML().get( WFSInfo.Version.V_10);
-        
         transformer.setIndentation(wfs.isVerbose() ? INDENT_SIZE : (NO_FORMATTING));
         transformer.setNumDecimals(global.getNumDecimals());
-        transformer.setFeatureBounding(gml.isFeatureBounding());
-        transformer.setCollectionBounding(gml.isFeatureBounding());
+        transformer.setFeatureBounding(wfs.isFeatureBounding());
+        transformer.setCollectionBounding(wfs.isFeatureBounding());
         transformer.setEncoding(Charset.forName(global.getCharset()));
 
         String wfsSchemaloc = wfsSchemaLocation(global,request.getBaseUrl());
@@ -205,6 +203,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         }
 
         if (srs != -1) {
+            GMLInfo gml = wfs.getGML().get( WFSInfo.Version.V_10);
             transformer.setSrsName(gml.getSrsNameStyle().getPrefix() + srs);
         }
     }

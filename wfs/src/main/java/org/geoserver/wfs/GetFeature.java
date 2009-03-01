@@ -226,8 +226,7 @@ public class GetFeature {
                         // if we need to force feature bounds computation, we have to load 
                         // all of the geometries, but we'll have to remove them in the 
                         // returned feature type
-                        GMLInfo gml = wfs.getGML().get( WFSInfo.Version.get( request.getVersion() ) );
-                        if(gml.isFeatureBounding() && meta.getFeatureType().getDescriptor(ati.getName()) instanceof GeometryDescriptor
+                        if(wfs.isFeatureBounding() && meta.getFeatureType().getDescriptor(ati.getName()) instanceof GeometryDescriptor
                                 && !properties.contains(ati.getName())) {
                             properties.add(ati.getName());
                             extraGeometries.add(ati.getName());

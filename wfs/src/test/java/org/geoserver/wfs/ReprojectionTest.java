@@ -40,7 +40,7 @@ public class ReprojectionTest extends WFSTestSupport {
         
         tx = CRS.findMathTransform(epsg32615, epsg4326);
         WFSInfo wfs = getWFS();
-        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding( true );
+        wfs.setFeatureBounding( true );
         getGeoServer().save( wfs );
     }
     

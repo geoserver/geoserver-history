@@ -10,6 +10,7 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
     Map<Version,GMLInfo> gml = new HashMap<Version, GMLInfo>();
     ServiceLevel serviceLevel = ServiceLevel.COMPLETE;
     int maxFeatures = Integer.MAX_VALUE;
+    boolean featureBounding = true;
     
     public WFSInfoImpl() {
         setId( "wfs" );
@@ -35,12 +36,21 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
         return maxFeatures;
     }
 
+    public void setFeatureBounding(boolean featureBounding) {
+        this.featureBounding = featureBounding;
+    }
+    
+    public boolean isFeatureBounding() {
+        return featureBounding;
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + ((gml == null) ? 0 : gml.hashCode());
         result = prime * result + maxFeatures;
+        result = prime * result + (featureBounding ? 1231 : 1237);
         result = prime * result
                 + ((serviceLevel == null) ? 0 : serviceLevel.hashCode());
         return result;
@@ -61,6 +71,8 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
         } else if (!gml.equals(other.getGML()))
             return false;
         if (maxFeatures != other.getMaxFeatures())
+            return false;
+        if (featureBounding != other.isFeatureBounding())
             return false;
         if (serviceLevel == null) {
             if (other.getServiceLevel() != null)

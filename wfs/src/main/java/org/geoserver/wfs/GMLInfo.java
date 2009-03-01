@@ -48,18 +48,4 @@ public interface GMLInfo {
      * Sets the srs name style to be used when encoding the gml 'srsName' attribute.
      */
     void setSrsNameStyle( SrsNameStyle srsNameStyle );
-    
-    /**
-     * The flag which determines if gml:bounds elements should be encoded
-     * at the feature level in gml output.
-     */
-    boolean isFeatureBounding();
-    
-    /**
-     * Sets the flag which determines if gml:bounds elements should be encoded
-     * at the feature level in gml output.
-     * 
-     */
-    void setFeatureBounding( boolean featureBounding);
-
 }
