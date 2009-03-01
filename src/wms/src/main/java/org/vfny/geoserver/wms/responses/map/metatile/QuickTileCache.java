@@ -9,18 +9,22 @@ import java.awt.geom.Point2D;
 import java.awt.image.RenderedImage;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.geoserver.config.ConfigurationListener;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.TransactionListener;
 import org.geoserver.wfs.WFSException;
 import org.geotools.util.CanonicalSet;
 import org.geotools.util.SoftValueHashMap;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -53,12 +57,20 @@ public class QuickTileCache implements TransactionListener {
 	private SoftValueHashMap tileCache = new SoftValueHashMap(0);
 	
 	public QuickTileCache(GeoServer geoServer) {
-	    geoServer.addListener(new GeoServer.Listener() {
-        
-            public void changed() {
+	    geoServer.addListener(new ConfigurationListener() {
+            public void handleGlobalChange(GeoServerInfo global, List<String> propertyNames,
+                    List<Object> oldValues, List<Object> newValues) {
                 tileCache.clear();
             }
-        
+
+            public void handleServiceChange(ServiceInfo service, List<String> propertyNames,
+                    List<Object> oldValues, List<Object> newValues) {
+                tileCache.clear();
+            }
+
+            public void reloaded() {
+                tileCache.clear();
+            }        
         });
 	}
 	

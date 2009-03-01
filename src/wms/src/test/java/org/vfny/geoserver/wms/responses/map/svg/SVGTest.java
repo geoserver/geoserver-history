@@ -1,15 +1,11 @@
 package org.vfny.geoserver.wms.responses.map.svg;
 
-import java.io.InputStream;
 import java.net.URL;
-
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 
@@ -29,7 +25,7 @@ public class SVGTest extends WMSTestSupport {
     }
     
     public void testBasicSvgGenerator() throws Exception {
-        getWMS().setSvgRenderer(WMSConfig.SVG_SIMPLE);
+        getWMS().setSvgRenderer(WMS.SVG_SIMPLE);
             Document doc = getAsDOM(
                 "wms?request=getmap&service=wms&version=1.1.1" + 
                 "&format=" + SvgMapProducerProxy.MIME_TYPE + 
@@ -44,7 +40,7 @@ public class SVGTest extends WMSTestSupport {
     }
     
     public void testBasicSvgGeneratorMultipleFts() throws Exception {
-        getWMS().setSvgRenderer(WMSConfig.SVG_SIMPLE);
+        getWMS().setSvgRenderer(WMS.SVG_SIMPLE);
             Document doc = getAsDOM(
                 "wms?request=getmap&service=wms&version=1.1.1" + 
                 "&format=" + SvgMapProducerProxy.MIME_TYPE + 
@@ -67,7 +63,7 @@ public class SVGTest extends WMSTestSupport {
             return;
         }
         
-        getWMS().setSvgRenderer(WMSConfig.SVG_BATIK);
+        getWMS().setSvgRenderer(WMS.SVG_BATIK);
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
             "&format=" + SvgMapProducerProxy.MIME_TYPE + 
@@ -90,7 +86,7 @@ public class SVGTest extends WMSTestSupport {
             return;
         }
         
-        getWMS().setSvgRenderer(WMSConfig.SVG_BATIK);
+        getWMS().setSvgRenderer(WMS.SVG_BATIK);
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
             "&format=" + SvgMapProducerProxy.MIME_TYPE + 

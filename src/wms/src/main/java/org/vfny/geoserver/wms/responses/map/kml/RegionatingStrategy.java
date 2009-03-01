@@ -2,8 +2,8 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import org.geotools.map.MapLayer;
 import org.opengis.filter.Filter;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.wms.WMSMapContext;
 
 /**
  * Common interface for classes defining a mechanism for regionating KML placemarks.  

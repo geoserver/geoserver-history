@@ -66,7 +66,6 @@ import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServletRequestAware {
