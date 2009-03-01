@@ -25,8 +25,10 @@ public class MaxFeaturesTest extends WFSTestSupport {
         super.oneTimeSetUp();
         // set global max to 5
         GeoServer gs = getGeoServer();
+        
         WFSInfo wfs = getWFS();
         wfs.setMaxFeatures( 5 );
+        gs.save( wfs );
         
         catalog = getCatalog();
     }
