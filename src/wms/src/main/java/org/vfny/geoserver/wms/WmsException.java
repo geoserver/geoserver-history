@@ -5,9 +5,6 @@
 package org.vfny.geoserver.wms;
 
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.util.Requests;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -19,11 +16,6 @@ import javax.servlet.http.HttpServletRequest;
  * @version $Id$
  */
 public class WmsException extends ServiceException {
-    /**
-     * The fixed MIME type of a WMS exception.
-     */
-    private static final String SE_XML = "application/vnd.ogc.se_xml";
-
     /**
      * Enum of exception codes defined in Anex A.3 of WMS 1.1.1 spec
     public static class ExceptionCodeEnum{
@@ -116,14 +108,5 @@ public class WmsException extends ServiceException {
     public WmsException(Throwable e, String preMessage, String locator, String code) {
         this(e, preMessage, locator);
         setCode(code);
-    }
-
-    /**
-     * Returns the MIME type of a WMS exception.
-     *
-     * @return <code>"application/vnd.ogc.se_xml"</code>
-     */
-    public String getMimeType(GeoServer geoserver) {
-        return SE_XML;
     }
 }
