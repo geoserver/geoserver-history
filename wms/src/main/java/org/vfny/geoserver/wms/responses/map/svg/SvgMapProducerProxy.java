@@ -13,7 +13,6 @@ import java.util.TreeSet;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
-import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;

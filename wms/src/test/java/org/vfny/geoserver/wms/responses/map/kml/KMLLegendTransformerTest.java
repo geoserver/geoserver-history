@@ -96,13 +96,13 @@ public class KMLLegendTransformerTest extends GeoServerAbstractTestSupport {
         // namespaces.put("atom", "http://purl.org/atom/ns#");
         // XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
 
-        LayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
+        MapLayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
         mapContext = new WMSMapContext();
         GetMapRequest request = mockData.createRequest();
-        request.setLayers(new LayerInfo[] { layer });
+        request.setLayers(new MapLayerInfo[] { layer });
 
         FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
-        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) ((FeatureTypeInfo)layer.getResource()).getFeatureSource(null, null);
+        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) ((FeatureTypeInfo)layer.getFeature()).getFeatureSource(null, null);
         
         mapLayer = new DefaultMapLayer(featureSource, mockData.getDefaultStyle().getStyle());
 

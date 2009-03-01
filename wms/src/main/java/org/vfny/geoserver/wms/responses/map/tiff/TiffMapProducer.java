@@ -7,7 +7,6 @@ package org.vfny.geoserver.wms.responses.map.tiff;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

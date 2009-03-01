@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
@@ -24,10 +25,10 @@ import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
 import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WebMapService;
 import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
@@ -126,7 +127,8 @@ public class MapPreviewPage extends GeoServerBasePage {
         final WMS wms = getGeoServerApplication().getBeanOfType(WMS.class);
         GetMapRequest gm = new GetMapRequest(wms);
         Data catalog = (Data) getGeoServerApplication().getBean("data");
-        gm.setLayers(expandLayers(prefixedName, catalog));
+        List<MapLayerInfo> layers = expandLayers(prefixedName, catalog);
+        gm.setLayers(layers.toArray(new MapLayerInfo[layers.size()]));
         gm.setFormat("application/openlayers");
         return gm;
     }
@@ -141,10 +143,8 @@ public class MapPreviewPage extends GeoServerBasePage {
     private List<MapLayerInfo> expandLayers(String prefixedName, Data catalog) {
         Integer type = catalog.getLayerType(prefixedName);
         List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>();
-        if (type == Data.TYPE_VECTOR) {
-            layers.add(new MapLayerInfo(catalog.getFeatureTypeInfo(prefixedName)));
-        } else if (type == Data.TYPE_RASTER) {
-            layers.add(new MapLayerInfo(catalog.getCoverageInfo(prefixedName)));
+        if (type == Data.TYPE_VECTOR || type == Data.TYPE_RASTER) {
+            layers.add(getMapLayerInfo(prefixedName, catalog.getCatalog()));
         } else {
             for (LayerInfo info : getCatalog().getLayerGroupByName(prefixedName).getLayers()) {
                 layers.addAll(expandLayers(info.getResource().getPrefixedName(), catalog));
@@ -153,6 +153,24 @@ public class MapPreviewPage extends GeoServerBasePage {
         return layers;
     }
 
+    
+    /**
+     * Returns the map layer info for the specified layer, or null if the layer
+     * is not known
+     * @param layerName
+     * @return
+     */
+    public MapLayerInfo getMapLayerInfo(String layerName, Catalog catalog) {
+        
+        LayerInfo layerInfo = catalog.getLayerByName(layerName);
+        
+        if(layerInfo != null){
+            return new MapLayerInfo(layerInfo);
+        }
+        return null;
+    }
+
+    
     /**
      * Given a request and a target format, builds the WMS request
      * 

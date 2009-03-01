@@ -25,11 +25,9 @@ import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.wms.MapLayerInfo;
-import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WMSTestSupport;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -127,8 +125,8 @@ public class DescribeLayerTransformerTest extends TestCase {
         catalog.add(coverageInfo);
         catalog.add(coverageLayerInfo);
 
-        WMSInfo wms = new WMSInfoImpl();
-        geoServerImpl.add(wms);
+        geoServerImpl.add(new WMSInfoImpl());
+        WMS wms = new WMS(geoServerImpl);
         request = new DescribeLayerRequest(wms);
         request.setBaseUrl("http://localhost:8080/geoserver");
         request.setVersion("1.1.1");
@@ -188,7 +186,7 @@ public class DescribeLayerTransformerTest extends TestCase {
     }
 
     public void testSingleVectorLayer() throws Exception {
-        MapLayerInfo mapLayerInfo = new MapLayerInfo(new FeatureTypeInfo(vectorLayerInfo, catalog));
+        MapLayerInfo mapLayerInfo = new MapLayerInfo(vectorLayerInfo);
 
         request.addLayer(mapLayerInfo);
 
@@ -216,7 +214,7 @@ public class DescribeLayerTransformerTest extends TestCase {
     }
 
     public void testSingleRasterLayer() throws Exception {
-        MapLayerInfo mapLayerInfo = new MapLayerInfo(new CoverageInfo(coverageLayerInfo, catalog));
+        MapLayerInfo mapLayerInfo = new MapLayerInfo(coverageLayerInfo);
 
         request.addLayer(mapLayerInfo);
 
@@ -244,8 +242,8 @@ public class DescribeLayerTransformerTest extends TestCase {
     }
 
     public void testMultipleLayers() throws Exception {
-        request.addLayer(new MapLayerInfo(new FeatureTypeInfo(vectorLayerInfo, catalog)));
-        request.addLayer(new MapLayerInfo(new CoverageInfo(coverageLayerInfo, catalog)));
+        request.addLayer(new MapLayerInfo(vectorLayerInfo));
+        request.addLayer(new MapLayerInfo(coverageLayerInfo));
 
         final String serverBaseUrl = "http://geoserver.org";
 

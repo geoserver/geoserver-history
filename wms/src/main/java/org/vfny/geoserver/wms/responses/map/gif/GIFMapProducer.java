@@ -27,7 +27,7 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/gif";
 
-    public GIFMapProducer(WMSInfo wms) {
+    public GIFMapProducer(WMS wms) {
         super(MIME_TYPE, wms);
     }
 

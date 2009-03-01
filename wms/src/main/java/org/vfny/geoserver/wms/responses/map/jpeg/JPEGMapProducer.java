@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses.map.jpeg;
 
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSInfo;
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import java.awt.image.BufferedImage;
@@ -45,7 +46,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         /**
          * TODO To check Native Acceleration mode use the following variable
          */
-        this.JPEGNativeAcc = wms.getGeoServer().getJPEGNativeAcceleration();
+        this.JPEGNativeAcc = wms.getJPEGNativeAcceleration();
         try{
         	Class.forName("com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter") ;
         	hasJAIWriter=true;

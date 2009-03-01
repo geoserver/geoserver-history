@@ -7,8 +7,6 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -17,7 +15,6 @@ import javax.xml.transform.TransformerException;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -67,7 +64,7 @@ public class KMZMapProducer extends AbstractGetMapProducer implements GetMapProd
 	 */
 	KMLTransformer transformer;
 
-	public KMZMapProducer(WMSInfo wms) {
+	public KMZMapProducer(WMS wms) {
 		super(MIME_TYPE, OUTPUT_FORMATS);
 		mapProducer = new PNGMapProducer(wms);
 	}

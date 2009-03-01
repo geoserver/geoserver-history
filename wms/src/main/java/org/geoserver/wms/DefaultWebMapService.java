@@ -165,9 +165,7 @@ public class DefaultWebMapService implements WebMapService,
      * @see WebMapService#getMap(GetMapRequest)
      */
     public GetMapResponse getMap(GetMapRequest request) {
-        GetMap getMap = (GetMap) context.getBean("wmsGetMap");
-
-        return (GetMapResponse) getMap.getResponse();
+        return new GetMapResponse(WMSExtensions.findMapProducers(context));
     }
 
     /**

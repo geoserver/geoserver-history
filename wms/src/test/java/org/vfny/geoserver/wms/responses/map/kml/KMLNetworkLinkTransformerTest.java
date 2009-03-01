@@ -6,8 +6,6 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.XpathEngine;
 
 import java.io.File;
 import java.util.Collections;
@@ -15,7 +13,8 @@ import java.util.Map;
 
 import junit.framework.Test;
 
-import org.geoserver.catalog.LayerInfo;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.data.test.TestData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerAbstractTestSupport;
@@ -85,10 +84,10 @@ public class KMLNetworkLinkTransformerTest extends GeoServerAbstractTestSupport 
         // namespaces.put("atom", "http://purl.org/atom/ns#");
         // XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
 
-        LayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
+        MapLayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
         WMSMapContext mapContext = new WMSMapContext();
         request = mockData.createRequest();
-        request.setLayers(new LayerInfo[] { layer });
+        request.setLayers(new MapLayerInfo[] { layer });
 
         request.setFormatOptions(Collections.singletonMap("relLinks", "true"));
         MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpServletRequest();

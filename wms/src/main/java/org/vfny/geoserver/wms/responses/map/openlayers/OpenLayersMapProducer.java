@@ -160,13 +160,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 	        return Collections.emptyList();
 	    
 	    MapLayerInfo info = mapContext.getRequest().getLayers()[0];
-	    if(info.getType() == MapLayerInfo.TYPE_VECTOR) {
-	        return info.getFeature().getStyleNames();
-	    } else if(info.getType() == MapLayerInfo.TYPE_RASTER) {
-	        return info.getCoverage().getStyleNames();
-	    } else {
-	        return Collections.emptyList();
-	    }
+	    return info.getStyleNames();
 	}
 
 
