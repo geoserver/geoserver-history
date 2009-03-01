@@ -63,9 +63,9 @@ public class GetMap extends WMService {
      *
      * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
-    protected XmlRequestReader getXmlRequestReader() {
-        return new GetMapXmlReader(getWMS());
-    }
+//    protected XmlRequestReader getXmlRequestReader() {
+//        return new GetMapXmlReader(getWMS());
+//    }
 
     /**
      * DOCUMENT ME!
@@ -74,20 +74,20 @@ public class GetMap extends WMService {
      *
      * @return DOCUMENT ME!
      */
-    protected KvpRequestReader getKvpReader(Map params) {
-        Map layers = this.getWMS().getBaseMapLayers();
-        Map styles = this.getWMS().getBaseMapStyles();
-
-        GetMapKvpReader kvp = new GetMapKvpReader(params, getWMS());
-
-        // filter layers and styles if the user specified "layers=basemap"
-        // This must happen after the kvp reader has been initially called
-        if ((layers != null) && !layers.equals("")) {
-            kvp.filterBaseMap(layers, styles);
-        }
-
-        return kvp;
-    }
+//    protected KvpRequestReader getKvpReader(Map params) {
+//        Map layers = this.getWMS().getBaseMapLayers();
+//        Map styles = this.getWMS().getBaseMapStyles();
+//
+//        GetMapKvpReader kvp = new GetMapKvpReader(params, getWMS());
+//
+//        // filter layers and styles if the user specified "layers=basemap"
+//        // This must happen after the kvp reader has been initially called
+//        if ((layers != null) && !layers.equals("")) {
+//            kvp.filterBaseMap(layers, styles);
+//        }
+//
+//        return kvp;
+//    }
 
     /**
      * A method that decides if a request is a multipart request.
@@ -98,16 +98,16 @@ public class GetMap extends WMService {
      * @param req the servlet request
      * @return if this is multipart or not
      */
-    public boolean isURLEncoded(HttpServletRequest req) {
-        //Get the content type from the request
-        String contentType = req.getContentType();
-
-        //If there is no content type, then it is not multipart
-        if (contentType == null) {
-            return false;
-        }
-
-        //If it starts with multipart/ then it is multipart
-        return contentType.toLowerCase().startsWith(URLENCODED);
-    }
+//    public boolean isURLEncoded(HttpServletRequest req) {
+//        //Get the content type from the request
+//        String contentType = req.getContentType();
+//
+//        //If there is no content type, then it is not multipart
+//        if (contentType == null) {
+//            return false;
+//        }
+//
+//        //If it starts with multipart/ then it is multipart
+//        return contentType.toLowerCase().startsWith(URLENCODED);
+//    }
 }

@@ -5,12 +5,15 @@
 package org.geoserver.wms;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
@@ -35,96 +38,56 @@ public final class MapLayerInfo {
     public static int TYPE_REMOTE_VECTOR = LayerInfo.Type.REMOTE.getCode();
 
     /**
-     * not a layer type at all, but indicates its a base map composed of a list of other resources
-     */
-    public static int TYPE_BASEMAP = -1;
-
-    /**
-     * 
-     * @uml.property name="feature"
-     * @uml.associationEnd multiplicity="(0 1)"
-     */
-    private FeatureTypeInfo feature;
-
-    /**
      * The feature source for the remote WFS layer (see REMOVE_OWS_TYPE/URL in the SLD spec)
      */
-    private FeatureSource<SimpleFeatureType, SimpleFeature> remoteFeatureSource;
-
-    /**
-     * 
-     * @uml.property name="coverage"
-     * @uml.associationEnd multiplicity="(0 1)"
-     */
-    private CoverageInfo coverage;
+    private final FeatureSource<SimpleFeatureType, SimpleFeature> remoteFeatureSource;
 
     /**
      * 
      * @uml.property name="type" multiplicity="(0 1)"
      */
-    private int type;
+    private final int type;
 
     /**
      * 
      * @uml.property name="name" multiplicity="(0 1)"
      */
-    private String name;
+    private final String name;
 
     /**
      * 
      * @uml.property name="label" multiplicity="(0 1)"
      */
-    private String label;
+    private final String label;
 
     /**
      * 
      * @uml.property name="description" multiplicity="(0 1)"
      */
-    private String description;
+    private final String description;
 
-    /**
-     * 
-     * @uml.property name="dirName" multiplicity="(0 1)"
-     */
-    private String dirName;
-
-    /**
-     * List of sublayer for a grouped layer
-     */
-    private List subLayerInfo;
-
-    /**
-     * List of styles for a grouped layer
-     */
-    private List styles;
-
-    private LayerInfo layerInfo;
-
-    public MapLayerInfo() {
-        name = "";
-        label = "";
-        description = "";
-        dirName = "";
-
-        coverage = null;
-        feature = null;
-        type = -1;
-    }
+    private final LayerInfo layerInfo;
 
     public MapLayerInfo(FeatureSource<SimpleFeatureType, SimpleFeature> remoteSource) {
-        setRemoteFeatureSource(remoteSource);
+        this.remoteFeatureSource = remoteSource;
+        this.layerInfo = null;
+        name = remoteFeatureSource.getSchema().getTypeName();
+        label = name;
+        description = "Remote WFS";
+        type = TYPE_REMOTE_VECTOR;
     }
 
     public MapLayerInfo(LayerInfo layerInfo) {
         this.layerInfo = layerInfo;
+        this.remoteFeatureSource = null;
         ResourceInfo resource = layerInfo.getResource();
-        if (resource instanceof FeatureTypeInfo) {
-            setFeature((FeatureTypeInfo) resource);
-        } else if (resource instanceof CoverageInfo) {
-            setCoverage((CoverageInfo) resource);
-        } else {
-            throw new IllegalArgumentException(String.valueOf(layerInfo));
-        }
+
+        // handle InlineFeatureStuff
+        this.name = resource.getName();
+        this.label = resource.getTitle();
+        this.description = resource.getAbstract();
+
+        this.type = layerInfo.getType().getCode();
     }
 
     /**
@@ -166,53 +129,7 @@ public final class MapLayerInfo {
      * @uml.property name="coverage"
      */
     public CoverageInfo getCoverage() {
-        return coverage;
-    }
-
-    /**
-     * 
-     * @uml.property name="coverage"
-     */
-    public void setCoverage(CoverageInfo coverage) {
-        this.name = coverage.getName();
-        this.label = coverage.getTitle();
-        this.description = coverage.getDescription();
-        // this.dirName = coverage.getDirName();
-        this.coverage = coverage;
-        this.feature = null;
-        this.type = TYPE_RASTER;
-    }
-
-    /**
-     * Sets this up as a base layer
-     * 
-     * @param baseLayerName
-     * @param subLayerInfo
-     * @param styles
-     */
-    public void setBase(String baseLayerName, List subLayerInfo, List styles) {
-        this.name = baseLayerName;
-        this.type = TYPE_BASEMAP;
-        this.subLayerInfo = subLayerInfo;
-        this.styles = styles;
-    }
-
-    /**
-     * Returns the sub layers of a base layer, as a list of MapLayerInfo objects
-     * 
-     * @return
-     */
-    public List getSubLayers() {
-        return subLayerInfo;
-    }
-
-    /**
-     * Returns the styles of a base layer
-     * 
-     * @return
-     */
-    public List getStyles() {
-        return styles;
+        return (CoverageInfo) layerInfo.getResource();
     }
 
     /**
@@ -225,49 +142,10 @@ public final class MapLayerInfo {
 
     /**
      * 
-     * @uml.property name="description"
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * 
-     * @uml.property name="dirName"
-     */
-    public String getDirName() {
-        return dirName;
-    }
-
-    /**
-     * 
-     * @uml.property name="dirName"
-     */
-    public void setDirName(String dirName) {
-        this.dirName = dirName;
-    }
-
-    /**
-     * 
      * @uml.property name="feature"
      */
     public FeatureTypeInfo getFeature() {
-        return feature;
-    }
-
-    /**
-     * 
-     * @uml.property name="feature"
-     */
-    public void setFeature(FeatureTypeInfo feature) {
-        // handle InlineFeatureStuff
-        this.name = feature.getName();
-        this.label = feature.getTitle();
-        this.description = feature.getAbstract();
-        // this.dirName = feature.getDirName();
-        this.feature = feature;
-        this.coverage = null;
-        this.type = TYPE_VECTOR;
+        return (FeatureTypeInfo) layerInfo.getResource();
     }
 
     /**
@@ -280,14 +158,6 @@ public final class MapLayerInfo {
 
     /**
      * 
-     * @uml.property name="label"
-     */
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    /**
-     * 
      * @uml.property name="name"
      */
     public String getName() {
@@ -296,26 +166,10 @@ public final class MapLayerInfo {
 
     /**
      * 
-     * @uml.property name="name"
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * 
      * @uml.property name="type"
      */
     public int getType() {
         return type;
-    }
-
-    /**
-     * 
-     * @uml.property name="type"
-     */
-    public void setType(int type) {
-        this.type = type;
     }
 
     public Style getDefaultStyle() {
@@ -339,17 +193,6 @@ public final class MapLayerInfo {
         return remoteFeatureSource;
     }
 
-    public void setRemoteFeatureSource(
-            FeatureSource<SimpleFeatureType, SimpleFeature> remoteFeatureSource) {
-        name = remoteFeatureSource.getSchema().getTypeName();
-        label = name;
-        description = "Remote WFS";
-        dirName = null;
-        this.remoteFeatureSource = remoteFeatureSource;
-
-        type = TYPE_REMOTE_VECTOR;
-    }
-
     /**
      * @return the resource SRS name or {@code null} if the underlying resource is not a registered
      *         one
@@ -359,6 +202,23 @@ public final class MapLayerInfo {
             return layerInfo.getResource().getSRS();
         }
         return null;
+    }
+
+    /**
+     * Returns a full list of the alternate style names
+     * 
+     * @return
+     */
+    public List<String> getStyleNames() {
+        if (layerInfo == null) {
+            return Collections.emptyList();
+        }
+        final List<String> styleNames = new ArrayList<String>();
+
+        for (StyleInfo si : layerInfo.getStyles()) {
+            styleNames.add(si.getName());
+        }
+        return styleNames;
     }
 
 }

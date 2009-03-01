@@ -17,6 +17,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.ows.adapters.ResponseAdapter;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSMockData.DummyRasterMapProducer;
 import org.vfny.geoserver.Response;
@@ -59,8 +60,8 @@ public class GetMapResponseTest extends TestCase {
 
         request = mockData.createRequest();
         //add a layer so its a valid request
-        LayerInfo layer = mockData.addFeatureTypeLayer("testType", Point.class);
-        request.setLayers(new LayerInfo[] { layer });
+        MapLayerInfo layer = mockData.addFeatureTypeLayer("testType", Point.class);
+        request.setLayers(new MapLayerInfo[] { layer });
 
         response = mockData.createResponse();
     }
@@ -137,8 +138,8 @@ public class GetMapResponseTest extends TestCase {
         response = new GetMapResponse(Collections.singleton((GetMapProducer) producer));
         request.setFormat(DummyRasterMapProducer.MIME_TYPE);
 
-        LayerInfo layer = mockData.addFeatureTypeLayer("testSingleVectorLayer", Point.class);
-        request.setLayers(new LayerInfo[] { layer });
+        MapLayerInfo layer = mockData.addFeatureTypeLayer("testSingleVectorLayer", Point.class);
+        request.setLayers(new MapLayerInfo[] { layer });
 
         response.execute(request);
         

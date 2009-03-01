@@ -272,7 +272,7 @@ public class WMSMockData {
      * Creates a vector layer with associated FeatureType in the internal MemoryDataStore with the
      * given type and two attributes: name:String and geom:geometryType
      */
-    public LayerInfo addFeatureTypeLayer(final String name,
+    public MapLayerInfo addFeatureTypeLayer(final String name,
             Class<? extends Geometry> geometryType) throws IOException {
         org.geoserver.catalog.FeatureTypeInfo featureTypeInfo = new FeatureTypeInfoImpl(catalog);
         featureTypeInfo.setName(name);
@@ -306,7 +306,7 @@ public class WMSMockData {
         SimpleFeatureType featureType = ftb.buildFeatureType();
         dataStore.createSchema(featureType);
 
-        return layerInfo;
+        return new MapLayerInfo(layerInfo);
     }
 
     public SimpleFeature addFeature(final SimpleFeatureType featureType, final Object[] values)

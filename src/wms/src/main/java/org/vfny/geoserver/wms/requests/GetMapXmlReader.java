@@ -305,7 +305,6 @@ public class GetMapXmlReader extends XmlRequestReader {
         StyledLayer sl = null;
 
         for (int i = 0; i < slCount; i++) {
-            currLayer = new MapLayerInfo();
             sl = styledLayers[i];
 
             String layerName = sl.getName();

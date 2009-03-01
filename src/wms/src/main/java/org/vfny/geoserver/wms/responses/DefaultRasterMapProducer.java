@@ -30,7 +30,7 @@ import javax.media.jai.operator.LookupDescriptor;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
-import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
@@ -105,7 +105,7 @@ public abstract class DefaultRasterMapProducer extends
     }
 
 	/** WMS Service configuration * */
-	private WMSInfo wms;
+	private WMS wms;
 
 	/** A logger for this class. */
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
@@ -127,19 +127,19 @@ public abstract class DefaultRasterMapProducer extends
 	/**
 	 * 
 	 */
-	public DefaultRasterMapProducer(WMSInfo wms) {
+	public DefaultRasterMapProducer(WMS wms) {
 		this(DEFAULT_MAP_FORMAT, wms);
 	}
 
 	/**
 	 * @param the mime type to be written down as an HTTP header when a map of this format is generated
 	 */
-	public DefaultRasterMapProducer(String mime, WMSInfo wms) {
+	public DefaultRasterMapProducer(String mime, WMS wms) {
 		super(mime);
 		this.wms = wms;
 	}
 
-    public DefaultRasterMapProducer(String mime, String[] outputFormats, WMSInfo wms) {
+    public DefaultRasterMapProducer(String mime, String[] outputFormats, WMS wms) {
         super(mime, outputFormats);
         this.wms = wms;
     }
@@ -239,17 +239,18 @@ public abstract class DefaultRasterMapProducer extends
 					RenderingHints.VALUE_ANTIALIAS_ON);
 		}
 
+
 		// turn off/on interpolation rendering hint
 		if ((wms != null)
-				&& WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
+				&& WMS.INT_NEAREST.equals(wms.getInterpolation())) {
 			hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
 			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 		} else if ((wms != null)
-				&& WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
+				&& WMS.INT_BIlINEAR.equals(wms.getInterpolation())) {
 			hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
 			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		} else if ((wms != null)
-				&& WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
+				&& WMS.INT_BICUBIC.equals(wms.getInterpolation())) {
 			hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
 			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		}

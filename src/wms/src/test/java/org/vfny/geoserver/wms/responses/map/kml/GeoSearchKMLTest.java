@@ -1,7 +1,7 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

@@ -18,7 +18,6 @@ import junit.framework.Test;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.TestData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerAbstractTestSupport;
@@ -137,8 +136,8 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
      * @see GetMapRequest#getStartIndex()
      */
     public void testEncodeWithPaging() throws Exception {
-        LayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
-        FeatureTypeInfo typeInfo = (FeatureTypeInfo)layer.getResource();
+        MapLayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
+        FeatureTypeInfo typeInfo = layer.getFeature();
         SimpleFeatureType featureType = (SimpleFeatureType) typeInfo.getFeatureType();
         mockData.addFeature(featureType, new Object[] { "name1", "POINT(1 1)" });
         mockData.addFeature(featureType, new Object[] { "name2", "POINT(2 2)" });
@@ -155,7 +154,7 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
 
         WMSMapContext mapContext = new WMSMapContext();
         GetMapRequest request = mockData.createRequest();
-        request.setLayers(new LayerInfo[] { layer });
+        request.setLayers(new MapLayerInfo[] { layer });
 
         request.setMaxFeatures(2);
         request.setStartIndex(2);

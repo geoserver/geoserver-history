@@ -4,10 +4,10 @@
  */
 package org.vfny.geoserver;
 
-import org.geoserver.config.ServiceInfo;
-import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.util.Requests;
 import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.config.ServiceInfo;
+import org.vfny.geoserver.util.Requests;
 
 
 /**

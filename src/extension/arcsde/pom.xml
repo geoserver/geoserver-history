@@ -19,12 +19,6 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-arcsde</artifactId>
     </dependency>
-  </dependencies>
-  
-  <profiles>
-    <profile>
-      <id>sdeLibs</id>
-      <dependencies>
         <dependency>
           <groupId>com.esri</groupId>
           <artifactId>jsde_sdk</artifactId>
@@ -41,8 +35,6 @@
           <version>3.4.4</version>
         </dependency>
       </dependencies>
-    </profile>
-  </profiles>
 
   <properties>
     <sde.version>9.2</sde.version>

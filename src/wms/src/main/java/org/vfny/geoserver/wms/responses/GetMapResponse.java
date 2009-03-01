@@ -526,7 +526,7 @@ public class GetMapResponse implements Response {
             if (layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
                 combinedList[i] = userRequestedFilter;
             } else if (layer.getType() != MapLayerInfo.TYPE_RASTER) {
-                layerDefinitionFilter = layer.getFeature().getDefinitionQuery();
+                layerDefinitionFilter = layer.getFeature().getFilter();
 
                 // heck, how I wish we use the null objects more
                 if (layerDefinitionFilter == null) {
