@@ -27,13 +27,12 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.LegacyServiceExceptionHandler;
-import org.geoserver.ows.OWS;
 import org.geoserver.ows.Request;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.global.GeoServer;
 
 public class WmsExceptionHandler extends LegacyServiceExceptionHandler {
 
@@ -49,8 +48,8 @@ public class WmsExceptionHandler extends LegacyServiceExceptionHandler {
         }
     };
 
-    public WmsExceptionHandler(Service service, OWS ows, GeoServer geoServer) {
-        super(service, ows, geoServer);
+    public WmsExceptionHandler(Service service,  GeoServer geoServer) {
+        super(service, geoServer);
     }
 
     @Override
@@ -118,7 +117,7 @@ public class WmsExceptionHandler extends LegacyServiceExceptionHandler {
         if ((exception.getMessage() != null)) {
             OwsUtils.dumpExceptionMessages(exception, sb, false);
 
-            if (geoServer.isVerboseExceptions()) {
+            if (geoServer.getGlobal().isVerboseExceptions()) {
                 ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
                 exception.printStackTrace(new PrintStream(stackTrace));
 
