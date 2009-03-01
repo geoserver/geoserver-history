@@ -19,32 +19,15 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geoserver</groupId>
-      <artifactId>ows</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>tests</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs</artifactId>
-      <version>2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
-      <version>2.0-SNAPSHOT</version>
     </dependency>
-
-    <dependency>
-      <groupId>org.geoserver</groupId>
-      <artifactId>main-legacy</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-render</artifactId>
@@ -73,10 +56,10 @@
       <groupId>batik</groupId>
       <artifactId>batik-util</artifactId>
     </dependency>
-    		<!-- SVG rendering markers support
-			These dependencies need to be declared here as they're marked
-			as optional in the geotools renderer module and thus are not
-			transitive
+    <!-- SVG rendering markers support
+	     These dependencies need to be declared here as they're marked
+		 as optional in the geotools renderer module and thus are not
+		 transitive 
 		 -->
     <dependency>
       <groupId>batik</groupId>
@@ -126,14 +109,18 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>2.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
+    </dependency>
+	<dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>ows</artifactId>
+      <classifier>tests</classifier>
+      <scope>tests</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>2.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -151,6 +138,7 @@
      <groupId>org.easymock</groupId>
      <artifactId>easymockclassextension</artifactId>
      <version>2.3</version>
+	 <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>xmlunit</groupId>
@@ -159,43 +147,8 @@
     </dependency>
   </dependencies>
 
-  <!-- =========================================================== -->
-  <!--     Build Configuration                                     -->
-  <!-- =========================================================== -->
   <build>
     <plugins>
-      <!-- ====    Code Formatting  ============================== -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jalopy-maven-plugin</artifactId>
-        <configuration>
-          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
-          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>format</goal>
-            </goals>
-            <phase>${jalopy.phase}</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <!-- this test seems to make other unrelated tests to fail and I have no idea why -->
-            <!--exclude>**/KMLNetworkLinkTransformerTest.java</exclude>
-            <exclude>**/KMLLegendTransformerTest.java</exclude>
-            <exclude>**/KMLVectorTransformerTest.java</exclude-->
-          </excludes>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
