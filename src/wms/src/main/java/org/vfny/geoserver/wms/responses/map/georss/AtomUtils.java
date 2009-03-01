@@ -13,7 +13,6 @@ import java.util.TimeZone;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeature;
-import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
@@ -79,14 +78,14 @@ public final class AtomUtils {
     //TODO: use an html based output format
     public static String getEntryURL(SimpleFeature feature, WMSMapContext context){
         String nsUri = feature.getType().getName().getNamespaceURI();
-        NameSpaceInfo ns = context.getRequest().getWMS().getData().getNameSpaceFromURI(nsUri);
+        String nsPrefix = context.getRequest().getWMS().getNameSpacePrefix(nsUri);
 
         return Requests.getBaseUrl(
                 context.getRequest().getHttpServletRequest(),
-                context.getRequest().getGeoServer()
+                context.getRequest().getWMS().getGeoServer()
                 )
             + "wms/reflect?format=application/atom+xml&layers=" 
-            + ns.getPrefix() + ":" + feature.getType().getTypeName() 
+            + nsPrefix + ":" + feature.getType().getTypeName() 
             + "&featureid=" + feature.getID();
     }
 

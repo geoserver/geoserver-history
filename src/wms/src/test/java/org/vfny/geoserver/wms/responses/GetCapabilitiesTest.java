@@ -1,6 +1,6 @@
 package org.vfny.geoserver.wms.responses;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;

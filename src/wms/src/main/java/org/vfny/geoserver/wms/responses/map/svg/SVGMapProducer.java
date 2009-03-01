@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
@@ -32,20 +31,12 @@ class SVGMapProducer extends AbstractGetMapProducer implements
 	    super(mimeType, outputFormats);
 	}
 	
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param gs
-	 *            DOCUMENT ME!
-	 */
-	public void abort(Service gs) {
-		this.svgEncoder.abort();
-	}
 
 	/**
 	 * aborts the encoding.
 	 */
-	public void abort() {
+	@Override
+    public void abort() {
 		LOGGER.fine("aborting SVG map response");
 
 		if (this.svgEncoder != null) {

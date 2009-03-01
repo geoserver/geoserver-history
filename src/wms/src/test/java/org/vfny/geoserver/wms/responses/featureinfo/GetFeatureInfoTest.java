@@ -1,6 +1,6 @@
 package org.vfny.geoserver.wms.responses.featureinfo;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
 import javax.xml.namespace.QName;
 
@@ -10,7 +10,6 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 
-import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
 public class GetFeatureInfoTest extends WMSTestSupport {

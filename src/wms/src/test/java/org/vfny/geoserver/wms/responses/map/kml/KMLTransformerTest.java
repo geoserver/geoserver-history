@@ -5,8 +5,6 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

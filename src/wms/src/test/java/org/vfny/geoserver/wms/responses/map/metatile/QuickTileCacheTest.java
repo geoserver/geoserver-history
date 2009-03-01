@@ -4,10 +4,12 @@
  */
 package org.vfny.geoserver.wms.responses.map.metatile;
 
-import com.vividsolutions.jts.geom.Envelope;
-import junit.framework.TestCase;
 import java.awt.Point;
 import java.awt.geom.Point2D;
+
+import junit.framework.TestCase;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 public class QuickTileCacheTest extends TestCase {
