@@ -6,6 +6,8 @@ import java.nio.charset.Charset;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.config.GeoServer;
@@ -13,6 +15,7 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.styling.Style;
+import org.opengis.feature.type.Name;
 
 /**
  * 
@@ -142,4 +145,15 @@ public class WMS {
         return watermark.getURL();
     }
 
+    public FeatureTypeInfo getFeatureTypeInfo(final Name name) {
+        Catalog catalog = getCatalog();
+        FeatureTypeInfo resource = catalog.getResourceByName(name, FeatureTypeInfo.class);
+        return resource;
+    }
+
+    public CoverageInfo getCoverageInfo(final Name name) {
+        Catalog catalog = getCatalog();
+        CoverageInfo resource = catalog.getResourceByName(name, CoverageInfo.class);
+        return resource;
+    }
 }
