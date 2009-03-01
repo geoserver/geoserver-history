@@ -11,13 +11,12 @@ import net.opengis.wfs.TransactionType;
 import org.acegisecurity.Authentication;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.userdetails.UserDetails;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.wfs.Transaction;
-import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.postgis.VersionedPostgisDataStore;
 import org.springframework.context.ApplicationContext;
-import org.vfny.geoserver.global.Data;
-
 
 /**
  * Extends the base transaction to handle extended versioning elements
@@ -25,7 +24,7 @@ import org.vfny.geoserver.global.Data;
  * @author Andrea Aime, TOPP
  */
 public class VersioningTransaction extends Transaction {
-    public VersioningTransaction(WFS wfs, Data catalog, ApplicationContext context) {
+    public VersioningTransaction(WFSInfo wfs, Catalog catalog, ApplicationContext context) {
         super(wfs, catalog, context);
     }
 

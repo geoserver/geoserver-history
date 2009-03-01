@@ -8,36 +8,37 @@ import net.opengis.wfs.DescribeFeatureTypeType;
 
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceImpl;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfsv.VersionedDescribeResults;
 import org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration;
-import org.vfny.geoserver.global.Data;
 
 public class VersionedXmlSchemaEncoder extends Response {
     /** wfs configuration */
-    WFS wfs;
+    WFSInfo wfs;
 
     /** the catalog */
-    Data catalog;
+    Catalog catalog;
 
     /** the geoserver resource loader */
     GeoServerResourceLoader resourceLoader;
 
     WFSVConfiguration configuration;
 
-    public VersionedXmlSchemaEncoder(WFS wfs, Data catalog,
+    public VersionedXmlSchemaEncoder(GeoServer gs,
             GeoServerResourceLoader resourceLoader,
             WFSVConfiguration configuration) {
         super(VersionedDescribeResults.class, Collections
                 .singleton("text/xml; subtype=gml/3.1.1"));
-        this.wfs = wfs;
-        this.catalog = catalog;
+        this.wfs = gs.getService( WFSInfo.class );
+        this.catalog = gs.getCatalog();
         this.resourceLoader = resourceLoader;
         this.configuration = configuration;
     }
@@ -55,13 +56,13 @@ public class VersionedXmlSchemaEncoder extends Response {
         DescribeFeatureTypeType req = (DescribeFeatureTypeType) describeFeatureType
                 .getParameters()[0];
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req
-                .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                .getBaseUrl(), wfs.getGeoServer().getGlobal().getProxyBaseUrl());
         FeatureTypeSchemaBuilder builder = null;
         if (results.isVersioned()) {
-            builder = new VersionedSchemaBuilder(wfs, catalog, resourceLoader,
+            builder = new VersionedSchemaBuilder(wfs.getGeoServer(), resourceLoader,
                     configuration);
         } else {
-            builder = new FeatureTypeSchemaBuilder.GML3(wfs, catalog,
+            builder = new FeatureTypeSchemaBuilder.GML3(wfs.getGeoServer(),
                     resourceLoader);
         }
 

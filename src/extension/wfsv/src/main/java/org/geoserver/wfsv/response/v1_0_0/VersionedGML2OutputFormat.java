@@ -7,16 +7,14 @@ package org.geoserver.wfsv.response.v1_0_0;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.xml.GML2OutputFormat;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-
 
 /**
  * Encodes features in Geographic Markup Language (GML) version 2 adding the
@@ -37,17 +35,17 @@ public class VersionedGML2OutputFormat extends GML2OutputFormat {
      * Creates the producer with a reference to the GetFeature operation
      * using it.
      */
-    public VersionedGML2OutputFormat(WFS wfs, GeoServer geoServer, Data catalog) {
-        super(wfs, geoServer, catalog);
+    public VersionedGML2OutputFormat(GeoServer geoServer) {
+        super(geoServer);
     }
     
-    protected String wfsSchemaLocation(WFS wfs, String baseUrl) {
-        return ResponseUtils.appendPath(RequestUtils.proxifiedBaseURL(baseUrl, wfs.getGeoServer().getProxyBaseUrl()),
+    protected String wfsSchemaLocation(GeoServerInfo global, String baseUrl) {
+        return ResponseUtils.appendPath(RequestUtils.proxifiedBaseURL(baseUrl,global.getProxyBaseUrl()),
                 "schemas/wfs/1.0.0/WFS-versioning.xsd");
     }
 
-    protected String typeSchemaLocation(WFS wfs, FeatureTypeInfo meta, String baseUrl) {
-        final String proxifiedBase = RequestUtils.proxifiedBaseURL(baseUrl, wfs.getGeoServer().getProxyBaseUrl());
+    protected String typeSchemaLocation(GeoServerInfo global, FeatureTypeInfo meta, String baseUrl) {
+        final String proxifiedBase = RequestUtils.proxifiedBaseURL(baseUrl, global.getProxyBaseUrl());
         return ResponseUtils.appendQueryString(proxifiedBase + "wfs",
             "service=WFSV&version=1.0.0&request=DescribeVersionedFeatureType&typeName=" + meta.getName());
     }

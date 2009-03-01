@@ -14,16 +14,16 @@ import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfsv.VersionedFeatureCollectionType;
 import net.opengis.wfsv.WfsvFactory;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.wfs.GetFeature;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.global.Data;
 
 /**
  * An extension of {@link GetFeature} returning collection of versioned features
@@ -32,7 +32,7 @@ import org.vfny.geoserver.global.Data;
  */
 public class VersionedGetFeature extends GetFeature {
 
-    public VersionedGetFeature(WFS wfs, Data catalog) {
+    public VersionedGetFeature(WFSInfo wfs, Catalog catalog) {
         super(wfs, catalog);
     }
     

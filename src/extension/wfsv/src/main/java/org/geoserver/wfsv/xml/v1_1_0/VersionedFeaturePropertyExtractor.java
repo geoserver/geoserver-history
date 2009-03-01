@@ -14,14 +14,14 @@ import org.eclipse.xsd.XSDFactory;
 import org.eclipse.xsd.XSDParticle;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDTypeDefinition;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.PropertyExtractor;
 import org.geotools.xs.XSConfiguration;
 import org.opengis.feature.simple.SimpleFeature;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 /**
  * Extracts the extra four properties out of a versioned data type. To be used
@@ -81,9 +81,9 @@ public class VersionedFeaturePropertyExtractor implements PropertyExtractor {
         return particle;
     }
 
-    Data catalog;
+    Catalog catalog;
 
-    public VersionedFeaturePropertyExtractor(Data catalog) {
+    public VersionedFeaturePropertyExtractor(Catalog catalog) {
         this.catalog = catalog;
     }
 
@@ -94,11 +94,12 @@ public class VersionedFeaturePropertyExtractor implements PropertyExtractor {
                 return false;
 
             SimpleFeature f = (SimpleFeature) object;
-            FeatureTypeInfo info = catalog.getFeatureTypeInfo(f
-                    .getFeatureType().getTypeName(), f.getFeatureType()
-                    .getName().getNamespaceURI());
+            FeatureTypeInfo info = catalog.getFeatureTypeByName(
+                f.getFeatureType().getName().getNamespaceURI(), 
+                f.getFeatureType().getTypeName() 
+            );
             return info != null
-                    && info.getFeatureSource() instanceof VersioningFeatureSource;
+                    && info.getFeatureSource(null,null) instanceof VersioningFeatureSource;
         } catch (Exception e) {
             LOGGER
                     .log(

@@ -6,6 +6,7 @@ package org.geoserver.wfsv.xml.v1_0_0;
 
 import net.opengis.wfsv.WfsvFactory;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.wfs.xml.v1_0_0.WFSConfiguration;
 import org.geoserver.wfsv.xml.v1_1_0.DescribeVersionedFeatureTypeTypeBinding;
 import org.geoserver.wfsv.xml.v1_1_0.DifferenceQueryTypeBinding;
@@ -20,8 +21,6 @@ import org.geoserver.wfsv.xml.v1_1_0.VersionedUpdateElementTypeBinding;
 import org.geoserver.wfsv.xml.v1_1_0.WFSV;
 import org.geotools.xml.Configuration;
 import org.picocontainer.MutablePicoContainer;
-import org.vfny.geoserver.global.Data;
-
 
 /**
  * Parser configuration for the http://www.opengis.net/wfsv schema.
@@ -29,20 +28,20 @@ import org.vfny.geoserver.global.Data;
  * @generated
  */
 public class WFSVConfiguration extends Configuration {
-    Data catalog;
+    Catalog catalog;
 
     /**
      * Creates a new configuration.
      *
      * @generated
      */
-    public WFSVConfiguration(WFSConfiguration wfsConfiguration, org.geoserver.wfsv.xml.v1_0_0.WFSV wfsv, Data catalog) {
+    public WFSVConfiguration(WFSConfiguration wfsConfiguration, org.geoserver.wfsv.xml.v1_0_0.WFSV wfsv, Catalog catalog) {
         super(wfsv);
         this.catalog = catalog;
         addDependency(wfsConfiguration);
     }
     
-    public Data getCatalog() {
+    public Catalog getCatalog() {
         return catalog;
     }
 

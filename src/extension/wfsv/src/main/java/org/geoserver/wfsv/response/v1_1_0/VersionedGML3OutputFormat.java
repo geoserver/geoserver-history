@@ -6,6 +6,7 @@ package org.geoserver.wfsv.response.v1_1_0;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,22 +20,24 @@ import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfsv.VersionedFeatureCollectionType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.GML3OutputFormat;
 import org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 /**
  * Works just like {@link GML3OutputFormat}, but refers to DescribeVersionedFeatureType and encodes
@@ -45,20 +48,20 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  */
 public class VersionedGML3OutputFormat extends Response {
 
-    private WFS wfs;
+    private WFSInfo wfs;
 
-    private Data catalog;
+    private Catalog catalog;
 
     private WFSVConfiguration configuration;
 
-    public VersionedGML3OutputFormat(WFS wfs, Data catalog,
+    public VersionedGML3OutputFormat(GeoServer gs,
             WFSVConfiguration configuration) {
         super(VersionedFeatureCollectionType.class,
                 new HashSet(Arrays.asList(new Object[] { "gml3",
                         "text/xml; subtype=gml/3.1.1" })));
 
-        this.wfs = wfs;
-        this.catalog = catalog;
+        this.wfs = gs.getService( WFSInfo.class );
+        this.catalog = gs.getCatalog();
         this.configuration = configuration;
     }
 
@@ -80,8 +83,7 @@ public class VersionedGML3OutputFormat extends Response {
 
             // load the metadata for the feature type
             String namespaceURI = featureType.getName().getNamespaceURI();
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType
-                    .getTypeName(), namespaceURI);
+            FeatureTypeInfo meta = catalog.getFeatureTypeByName(namespaceURI, featureType.getTypeName() );
 
             if (meta == null)
                 throw new WFSException("Could not find feature type "
@@ -99,14 +101,15 @@ public class VersionedGML3OutputFormat extends Response {
             metas.add(meta);
         }
 
+        GeoServerInfo global = wfs.getGeoServer().getGlobal();
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setEncoding(wfs.getCharSet());
+        encoder.setEncoding(Charset.forName( global.getCharset() ));
 
         // declare wfs schema location
         BaseRequestType gft = (BaseRequestType) getFeature.getParameters()[0];
 
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft
-                .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                .getBaseUrl(), global.getProxyBaseUrl());
         encoder.setSchemaLocation(org.geoserver.wfsv.xml.v1_1_0.WFSV.NAMESPACE,
                 ResponseUtils.appendPath(proxifiedBaseUrl,
                         "schemas/wfs/1.1.0/wfs.xsd"));

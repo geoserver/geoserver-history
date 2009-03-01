@@ -22,11 +22,14 @@ import net.opengis.wfsv.GetLogType;
 import net.opengis.wfsv.GetVersionedFeatureType;
 import net.opengis.wfsv.VersionedFeatureCollectionType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.wfs.DescribeFeatureType;
 import org.geoserver.wfs.GetCapabilities;
 import org.geoserver.wfs.GetFeature;
 import org.geoserver.wfs.LockFeature;
-import org.geoserver.wfs.WFS;
+
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.postgis.FeatureDiffReader;
@@ -35,8 +38,7 @@ import org.geotools.xml.transform.TransformerBase;
 import org.opengis.filter.FilterFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+
 
 
 /**
@@ -50,12 +52,12 @@ public class DefaultVersioningWebFeatureService
     /**
      * WFS service configuration.
      */
-    protected WFS wfs;
+    protected WFSInfo wfs;
 
     /**
      * The catalog
      */
-    protected Data catalog;
+    protected Catalog catalog;
 
     /**
      * Filter factory
@@ -73,9 +75,9 @@ public class DefaultVersioningWebFeatureService
      */
     protected List<Version> versions; 
 
-    public DefaultVersioningWebFeatureService(WFS wfs, Data catalog) {
-        this.wfs = wfs;
-        this.catalog = catalog;
+    public DefaultVersioningWebFeatureService(GeoServer gs) {
+        this.wfs = gs.getService( WFSInfo.class );
+        this.catalog = gs.getCatalog();
         
         versions = new ArrayList();
         versions.add( new Version("1.0.0" ) );
@@ -83,7 +85,7 @@ public class DefaultVersioningWebFeatureService
     }
     
     public WFSInfo getServiceInfo() {
-        return wfs.getInfo();
+        return wfs;
     }
 
     public List<Version> getVersions() {

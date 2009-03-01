@@ -16,16 +16,14 @@ import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfs.WfsFactory;
 import net.opengis.wfsv.GetLogType;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.xml.GML2OutputFormat;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
 
 /**
  * Extends GML2OutputFormat to allow GetLog output to be encoded in GML2
@@ -35,8 +33,8 @@ import org.vfny.geoserver.global.GeoServer;
  */
 public class GetLogGML2OutputFormat extends GML2OutputFormat {
 
-    public GetLogGML2OutputFormat(WFS wfs, GeoServer geoserver, Data catalog) {
-        super(wfs, geoserver, catalog);
+    public GetLogGML2OutputFormat( GeoServer geoserver) {
+        super(geoserver);
     }
 
     protected void write(FeatureCollectionType featureCollection, OutputStream output,

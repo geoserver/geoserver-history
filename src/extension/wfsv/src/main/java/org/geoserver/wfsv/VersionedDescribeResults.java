@@ -1,6 +1,6 @@
 package org.geoserver.wfsv;
 
-import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 
 public class VersionedDescribeResults {
     private FeatureTypeInfo[] featureTypeInfo;

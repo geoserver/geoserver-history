@@ -14,8 +14,10 @@ import javax.xml.namespace.QName;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetDiffType;
 
-import org.geoserver.wfs.WFS;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.postgis.FeatureDiffReader;
@@ -29,9 +31,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
 
 /**
  * Versioning Web Feature Service GetDiff operation
@@ -48,12 +47,12 @@ public class GetDiff {
     /**
      * WFS configuration
      */
-    WFS wfs;
+    WFSInfo wfs;
 
     /**
      * The catalog
      */
-    Data catalog;
+    Catalog catalog;
 
     /**
      * Filter factory
@@ -66,7 +65,7 @@ public class GetDiff {
      * @param wfs
      * @param catalog
      */
-    public GetDiff(WFS wfs, Data catalog) {
+    public GetDiff(WFSInfo wfs, Catalog catalog) {
         this.wfs = wfs;
         this.catalog = catalog;
     }
@@ -74,14 +73,14 @@ public class GetDiff {
     /**
      * @return The reference to the GeoServer catalog.
      */
-    public Data getCatalog() {
+    public Catalog getCatalog() {
         return catalog;
     }
 
     /**
      * @return The reference to the WFS configuration.
      */
-    public WFS getWFS() {
+    public WFSInfo getWFS() {
         return wfs;
     }
 
@@ -115,7 +114,7 @@ public class GetDiff {
             for (int i = 0; (i < queries.size()); i++) {
                 DifferenceQueryType query = (DifferenceQueryType) queries.get(i);
                 FeatureTypeInfo meta = featureTypeInfo((QName) query.getTypeName());
-                FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource();
+                FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource(null,null);
 
                 if (!(source instanceof VersioningFeatureSource)) {
                     throw new WFSException("Feature type" + query.getTypeName()
@@ -160,8 +159,7 @@ public class GetDiff {
     }
 
     FeatureTypeInfo featureTypeInfo(QName name) throws WFSException, IOException {
-        FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(),
-                name.getNamespaceURI());
+        FeatureTypeInfo meta = catalog.getFeatureTypeByName(name.getNamespaceURI(), name.getLocalPart());
 
         if (meta == null) {
             String msg = "Could not locate " + name + " in catalog.";
