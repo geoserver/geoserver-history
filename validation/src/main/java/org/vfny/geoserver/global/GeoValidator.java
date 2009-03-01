@@ -6,6 +6,7 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.IntegrityValidation;
 import org.geotools.validation.PlugIn;
@@ -56,8 +57,8 @@ public class GeoValidator extends ValidationProcessor {
      *
      * @param config The configuration module.
      */
-    public GeoValidator(Config config) {
-        loadPlugins(config.dataDirectory());
+    public GeoValidator(GeoServerResourceLoader resourceLoader) {
+        loadPlugins(resourceLoader.getBaseDirectory());
     }
 
     /**
