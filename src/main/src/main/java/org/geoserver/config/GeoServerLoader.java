@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -18,9 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.helpers.Loader;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
@@ -29,9 +26,7 @@ import org.geoserver.catalog.Wrapper;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
-import org.geoserver.catalog.util.LegacyFeatureTypeInfoReader;
 import org.geoserver.config.util.LegacyConfigurationImporter;
-import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerExtensions;
@@ -39,10 +34,7 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.util.logging.Logging;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
@@ -128,7 +120,9 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             File oldCatalog = resourceLoader.find( "catalog.xml" );
             if(oldCatalog != null) {
                 CatalogImpl catalog2 = new CatalogImpl();
-                new LegacyCatalogImporter(catalog2).imprt(resourceLoader.getBaseDirectory());
+                LegacyCatalogImporter importer = new LegacyCatalogImporter(catalog2);
+                importer.setResourceLoader(resourceLoader);
+                importer.imprt(resourceLoader.getBaseDirectory());
                 ((CatalogImpl)catalog).sync( catalog2 );
             } 
         }
