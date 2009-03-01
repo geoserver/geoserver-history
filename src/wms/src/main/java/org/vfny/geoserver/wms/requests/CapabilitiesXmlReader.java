@@ -32,6 +32,8 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
 
+    private WMS wmsConfig;
+
     /**
      * Creates the new reader.
      *
@@ -39,6 +41,7 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
      */
     public CapabilitiesXmlReader(WMS wms) {
         super(wms.getServiceInfo());
+        this.wmsConfig = wms;
     }
 
     /**
@@ -55,8 +58,8 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        CapabilitiesHandler currentRequest = new CapabilitiesHandler(new WMSCapabilitiesRequest(
-                    (WMSInfo) getService()));
+        WMSCapabilitiesRequest request = new WMSCapabilitiesRequest(wmsConfig);
+        CapabilitiesHandler currentRequest = new CapabilitiesHandler(request);
 
         // read in XML file and parse to content handler
         try {
