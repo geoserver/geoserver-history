@@ -311,11 +311,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 handleGetFeature();
 
                 
-                if (WFSInfo.ServiceLevel.TRANSACTIONAL.contains( wfs.getServiceLevel() )) {
+                if (wfs.getServiceLevel().contains( WFSInfo.ServiceLevel.TRANSACTIONAL ) ) {
                     handleTransaction();
                 }
 
-                if (WFSInfo.ServiceLevel.COMPLETE.contains( wfs.getServiceLevel() ) ) {
+                if (wfs.getServiceLevel().contains( WFSInfo.ServiceLevel.COMPLETE ) ) {
                     handleLock();
                     handleFeatureWithLock();
                 }
