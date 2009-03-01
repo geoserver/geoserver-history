@@ -441,11 +441,6 @@ public class GetMapRequest extends WMSRequest {
                 .asList(layers);
     }
 
-    public void setLayers(List<LayerInfo> layers) {
-        this.mandatoryParams.layers = layers == null ? Collections.EMPTY_LIST
-                : new ArrayList<LayerInfo>(layers);
-    }
-
     /**
      * DOCUMENT ME!
      *

@@ -73,6 +73,8 @@ public final class MapLayerInfo {
     private final String description;
 
     private final LayerInfo layerInfo;
+    
+    private Style style;
 
     public MapLayerInfo(FeatureSource<SimpleFeatureType, SimpleFeature> remoteSource) {
         this.remoteFeatureSource = remoteSource;
@@ -89,11 +91,19 @@ public final class MapLayerInfo {
         ResourceInfo resource = layerInfo.getResource();
 
         // handle InlineFeatureStuff
-        this.name = resource.getName();
+        this.name = resource.getPrefixedName();
         this.label = resource.getTitle();
         this.description = resource.getAbstract();
 
         this.type = layerInfo.getType().getCode();
+    }
+
+    public Style getStyle() {
+        return style;
+    }
+
+    public void setStyle(Style style) {
+        this.style = style;
     }
 
     /**
@@ -211,11 +221,9 @@ public final class MapLayerInfo {
     }
 
     /**
-     * Returns a full list of the alternate style names
-     * 
-     * @return
+     * @return the list of the alternate style names registered for this layer
      */
-    public List<String> getStyleNames() {
+    public List<String> getOtherStyleNames() {
         if (layerInfo == null) {
             return Collections.emptyList();
         }

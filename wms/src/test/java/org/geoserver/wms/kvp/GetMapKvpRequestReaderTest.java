@@ -14,6 +14,7 @@ import java.util.List;
 import junit.framework.Test;
 
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
@@ -71,7 +72,9 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertTrue(request.getLayers()[0].getName().endsWith(layer));
 
         assertEquals(1, request.getStyles().size());
-        assertEquals(getCatalog().getStyle(layer), request.getStyles().get(0));
+        Style expected = getCatalog().getStyle(layer).getStyle();
+        Style style = request.getStyles().get(0);
+        assertEquals(expected, style);
 
         assertEquals("image/jpeg", request.getFormat());
         assertEquals(600, request.getHeight());
@@ -279,7 +282,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals("WFS", request.getRemoteOwsType()); // TODO: handle case?
         assertEquals(new URL(RemoteOWSTestSupport.WFS_SERVER_URL), request.getRemoteOwsURL());
         assertEquals(1, request.getLayers().length);
-        assertEquals(LayerInfo.Type.REMOTE, request.getLayers()[0].getType());
+        assertEquals(LayerInfo.Type.REMOTE.getCode().intValue(), request.getLayers()[0].getType());
         assertEquals("topp:states", request.getLayers()[0].getName());
     }
     
