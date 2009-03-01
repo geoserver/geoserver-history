@@ -51,7 +51,6 @@
   </pluginRepositories>
 
 	<modules>
-		<module>build-configs</module>
 		<module>config</module>
 		<module>archetype</module>
 	</modules>
