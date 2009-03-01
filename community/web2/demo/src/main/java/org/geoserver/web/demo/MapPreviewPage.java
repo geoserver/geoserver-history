@@ -27,12 +27,8 @@ import org.geoserver.web.wicket.GeoServerPagingNavigator;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WebMapService;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
-import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -124,9 +120,8 @@ public class MapPreviewPage extends GeoServerBasePage {
      * @return
      */
     protected GetMapRequest buildFakeGetMap(String prefixedName) {
-        final WMS wms = getGeoServerApplication().getBeanOfType(WMS.class);
-        GetMapRequest gm = new GetMapRequest(wms);
-        Data catalog = (Data) getGeoServerApplication().getBean("data");
+        GetMapRequest gm = new GetMapRequest(new WMS(getGeoServer()));
+        Catalog catalog = getCatalog();
         List<MapLayerInfo> layers = expandLayers(prefixedName, catalog);
         gm.setLayers(layers.toArray(new MapLayerInfo[layers.size()]));
         gm.setFormat("application/openlayers");
@@ -140,14 +135,20 @@ public class MapPreviewPage extends GeoServerBasePage {
      * @param catalog
      * @return
      */
-    private List<MapLayerInfo> expandLayers(String prefixedName, Data catalog) {
-        Integer type = catalog.getLayerType(prefixedName);
+    private List<MapLayerInfo> expandLayers(String prefixedName, Catalog catalog) {
         List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>();
-        if (type == Data.TYPE_VECTOR || type == Data.TYPE_RASTER) {
-            layers.add(getMapLayerInfo(prefixedName, catalog.getCatalog()));
-        } else {
-            for (LayerInfo info : getCatalog().getLayerGroupByName(prefixedName).getLayers()) {
-                layers.addAll(expandLayers(info.getResource().getPrefixedName(), catalog));
+        
+        LayerInfo layer = catalog.getLayerByName( prefixedName );
+        if ( layer != null ) {
+            layers.add( new MapLayerInfo( layer ) );
+        }
+        else {
+            //check for a layer grouping
+            LayerGroupInfo lg = catalog.getLayerGroupByName( prefixedName );
+            if ( lg != null ) {
+                for ( LayerInfo l : lg.getLayers() ) {
+                    layers.add( new MapLayerInfo( l ) );
+                }
             }
         }
         return layers;
