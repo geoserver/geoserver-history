@@ -3,6 +3,13 @@
  * application directory.
  */
 package org.vfny.geoserver.wms.responses;
+import static org.geoserver.wms.WatermarkInfo.Position.BOT_CENTER;
+import static org.geoserver.wms.WatermarkInfo.Position.BOT_RIGHT;
+import static org.geoserver.wms.WatermarkInfo.Position.MID_CENTER;
+import static org.geoserver.wms.WatermarkInfo.Position.MID_LEFT;
+import static org.geoserver.wms.WatermarkInfo.Position.MID_RIGHT;
+import static org.geoserver.wms.WatermarkInfo.Position.TOP_CENTER;
+import static org.geoserver.wms.WatermarkInfo.Position.TOP_RIGHT;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -21,6 +28,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.util.SoftValueHashMap;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -55,6 +63,7 @@ public class WatermarkPainter {
      */
     public WatermarkPainter(GetMapRequest request) {
         this.request = request;
+        assert request.getWMS() != null;
     }
 
     /**
@@ -72,48 +81,50 @@ public class WatermarkPainter {
 
         if (logo != null) {
             final WMS wms = this.request.getWMS();
-            paintLogo(g2D, logo, paintArea, wms.getWatermarkTransparency(), wms
-                    .getWatermarkPosition());
+            int watermarkTransparency = wms.getWatermarkTransparency();
+            int watermarkPosition = wms.getWatermarkPosition();
+            paintLogo(g2D, logo, paintArea, watermarkTransparency, watermarkPosition);
         }
     }
 
     protected void paintLogo(Graphics2D graphics, BufferedImage logo, Rectangle tile,
-            int watermarkTransparency, int watermarkPosition) {
+            int watermarkTransparency, int watermarkPositionCode) {
         final int logoWidth = logo.getWidth();
         final int logoHeight = logo.getHeight();
 
         Composite oldComposite = graphics.getComposite();
+        final Position watermarkPosition = Position.get(watermarkPositionCode);
         try {
             final float alpha = (float) ((100.0 - watermarkTransparency) / 100.0);
             graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
             double tx = tile.getMinX(); 
             double ty = tile.getMinY();
             
-            if ( watermarkPosition == org.geoserver.wms.WATERMARK_UC) { 
+            if ( watermarkPosition ==  TOP_CENTER) { 
                 tx += (tile.getWidth() - logo.getWidth()) / 2; 
             }
-            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_UR ) {
+            else if ( watermarkPosition ==  TOP_RIGHT) {
                 tx += tile.getWidth() - logo.getWidth();
             }
-            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_CL ) {
+            else if ( watermarkPosition == MID_LEFT ) {
                 ty += (tile.getHeight() - logo.getHeight()) / 2;
             }
-            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_CC ) {
+            else if ( watermarkPosition == MID_CENTER ) {
                 ty += (tile.getHeight() - logo.getHeight()) / 2;
                 tx += (tile.getWidth() - logo.getWidth()) / 2;
             }
-            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_CR ) {
+            else if ( watermarkPosition == MID_RIGHT ) {
                 ty += (tile.getHeight() - logo.getHeight()) / 2;
                 tx += tile.getWidth() - logo.getWidth();
             }
-            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_LL ) {
+            else if ( watermarkPosition == Position.BOT_LEFT ) {
                 ty += tile.getHeight() - logo.getHeight();
             }
-            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_LC ) {
+            else if ( watermarkPosition == BOT_CENTER ) {
                 ty += tile.getHeight() - logo.getHeight();
                 tx += (tile.getWidth() - logo.getWidth()) / 2;
             }
-            else if ( watermarkPosition == org.geoserver.wms.WATERMARK_LR ) {
+            else if ( watermarkPosition == BOT_RIGHT ) {
                 ty += tile.getHeight() - logo.getHeight();
                 tx += tile.getWidth() - logo.getWidth();
             }
@@ -128,12 +139,12 @@ public class WatermarkPainter {
     protected BufferedImage getLogo() throws IOException {
         BufferedImage logo = null;
 
-        if (this.request.getWMS().isGlobalWatermarking()) {
+        final WMS wmsConfig = this.request.getWMS();
+        if (wmsConfig.isGlobalWatermarking()) {
             // fully resolve the url (consider data dir)
             URL url = null;
             try {
-                final String globalWatermarkingURL = this.request.getWMS()
-                        .getGlobalWatermarkingURL();
+                final String globalWatermarkingURL = wmsConfig.getGlobalWatermarkingURL();
                 url = new URL(globalWatermarkingURL);
 
                 // make sure we can read images directly from the data dir
