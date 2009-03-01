@@ -22,12 +22,12 @@ import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.map.MapContext;
 import org.geotools.renderer.lite.StreamingRenderer;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
@@ -47,20 +47,14 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 		GetMapProducer {
 	StreamingRenderer renderer;
 
-	WMS wms;
+	private WMS wmsConfig;
 
 	public SVGBatikMapProducer(String mimeType, String[] outputFormats, WMS wms) {
 	    super(mimeType, outputFormats);
-		this.wms = wms;
+		this.wmsConfig = wms;
 	}
-
-	public void abort() {
-		if (renderer != null) {
-			renderer.stopRendering();
-		}
-	}
-
-	public void abort(Service gs) {
+	
+	public void abort(GeoServer gs) {
 		if (renderer != null) {
 			renderer.stopRendering();
 		}
@@ -116,7 +110,7 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 			g.setSVGCanvasSize(new Dimension((int) width, (int) height));
 
 			// turn off/on anti aliasing
-			if (wms.isSvgAntiAlias()) {
+			if (wmsConfig.isSvgAntiAlias()) {
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 						RenderingHints.VALUE_ANTIALIAS_ON);
 			} else {

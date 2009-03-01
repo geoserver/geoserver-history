@@ -217,4 +217,21 @@ public class WMS {
     public boolean supportsRemoteWFS() {
         return true;
     }
+
+    public void setSvgRenderer(String svgRendererHint) {
+        WMSInfo serviceInfo = getServiceInfo();
+        serviceInfo.getMetadata().put("svgRenderer", svgRendererHint);
+    }
+
+    public String getSvgRenderer() {
+        WMSInfo serviceInfo = getServiceInfo();
+        String svgRendererHint = (String) serviceInfo.getMetadata().get("svgRenderer");
+        return svgRendererHint;
+    }
+
+    public boolean isSvgAntiAlias() {
+        WMSInfo serviceInfo = getServiceInfo();
+        Boolean svgAntiAlias = (Boolean) serviceInfo.getMetadata().get( "svgAntiAlias");
+        return svgAntiAlias == null ? true : svgAntiAlias.booleanValue(); 
+    }
 }

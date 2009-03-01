@@ -6,10 +6,7 @@ package org.vfny.geoserver.wms.responses.map.svg;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
@@ -50,9 +47,9 @@ public class SvgMapProducerProxy implements GetMapProducer {
      */
     public SvgMapProducerProxy( WMS wms ) {
         final String svgRendererTypeSetting = wms.getSvgRenderer();
-        if (WMSConfig.SVG_SIMPLE.equals(svgRendererTypeSetting)) {
+        if (WMS.SVG_SIMPLE.equals(svgRendererTypeSetting)) {
             svgProducer = new SVGMapProducer(MIME_TYPE, OUTPUT_FORMATS);
-        } else if (WMSConfig.SVG_BATIK.equals(svgRendererTypeSetting)) {
+        } else if (WMS.SVG_BATIK.equals(svgRendererTypeSetting)) {
             svgProducer = new SVGBatikMapProducer(MIME_TYPE, OUTPUT_FORMATS, wms);
         } else {
             //no setting, do the default
