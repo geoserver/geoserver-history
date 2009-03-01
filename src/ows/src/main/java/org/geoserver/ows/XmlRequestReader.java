@@ -129,6 +129,11 @@ public abstract class XmlRequestReader {
         return new EqualsBuilder().append(element, other.element).append(version, other.version)
                                   .append(serviceId, other.serviceId).isEquals();
     }
+    
+    @Override
+    public String toString() {
+        return getClass().getName() + "(" + element + ", " + serviceId + ", " + version + ")";
+    }
 
     /**
      * Implementation of hashcode.
