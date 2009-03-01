@@ -847,10 +847,23 @@ public class Dispatcher extends AbstractController {
     }
 
     Collection loadXmlReaders() {
-        Collection xmlReaders = GeoServerExtensions.extensions(XmlRequestReader.class);
+        List<XmlRequestReader> xmlReaders = GeoServerExtensions.extensions(XmlRequestReader.class);
 
-        if (!(new HashSet(xmlReaders).size() == xmlReaders.size())) {
+        if (!(new HashSet<XmlRequestReader>(xmlReaders).size() == xmlReaders.size())) {
+        
             String msg = "Two identical xml readers found";
+            for (int i = 0; i < xmlReaders.size(); i++) {
+                XmlRequestReader r1 = xmlReaders.get(i);
+                for (int j = i + 1; j < xmlReaders.size(); j++) {
+                    XmlRequestReader r2 = xmlReaders.get(j);
+                    if(r1.equals(r2)) {
+                        msg += ": " + r1 + " and " + r2;
+                        break;
+                    }
+                }
+                
+            }
+            
             throw new IllegalStateException(msg);
         }
 
