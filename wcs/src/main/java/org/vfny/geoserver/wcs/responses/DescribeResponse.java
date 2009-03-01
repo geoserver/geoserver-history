@@ -238,7 +238,7 @@ public class DescribeResponse implements Response {
         for (int i = 0; i < length; i++) {
             curCoverageName = requestedTypes.get(i).toString();
 
-			meta = catalog.getCoverage(curCoverageName);
+			meta = catalog.getCoverageByName(curCoverageName);
 
             if (meta == null) {
                 throw new WcsException(new StringBuffer("Coverage ").append(curCoverageName)

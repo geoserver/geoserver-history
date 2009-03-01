@@ -3,6 +3,8 @@
 
 <beans>
 
+    <!-- The xstream and the legacy service loaders -->
+	<bean id="legacyWcsLoader" class="org.geoserver.wcs.WCSLoader"/>
 	<bean id="wcsLoader" class="org.geoserver.wcs.WCSXStreamLoader">
 	  <constructor-arg ref="resourceLoader"/>
 	</bean>
