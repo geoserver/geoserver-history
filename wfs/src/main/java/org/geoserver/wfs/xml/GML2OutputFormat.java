@@ -8,13 +8,18 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.feature.FeatureCollection;
 
 import org.geotools.gml.producer.FeatureTransformer;
@@ -24,11 +29,9 @@ import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,7 +85,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     /**
      * WFS configuration
      */
-    private WFS wfs;
+    private WFSInfo wfs;
 
     /**
      * GeoServer configuration
@@ -92,18 +95,18 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     /**
      * The catalog
      */
-    protected Data catalog;
+    protected Catalog catalog;
 
     /**
      * Creates the producer with a reference to the GetFeature operation
      * using it.
      */
-    public GML2OutputFormat(WFS wfs, GeoServer geoServer, Data catalog) {
+    public GML2OutputFormat(GeoServer geoServer) {
         super(new HashSet(Arrays.asList(new String[] { "GML2", "text/xml; subtype=gml/2.1.2", "GML2-GZIP" })));
 
-        this.wfs = wfs;
+        this.wfs = geoServer.getService(WFSInfo.class);
         this.geoServer = geoServer;
-        this.catalog = catalog;
+        this.catalog = geoServer.getCatalog();
     }
     
     public String getCapabilitiesElementName() {
@@ -138,10 +141,10 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             features = (FeatureCollection) results.getFeature().get(i);
             SimpleFeatureType featureType = features.getSchema();
 
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getName());
+            FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureType.getName());
 
-            String prefix = meta.getNameSpace().getPrefix();
-            String uri = meta.getNameSpace().getURI();
+            String prefix = meta.getNamespace().getPrefix();
+            String uri = meta.getNamespace().getURI();
 
             ftNames.declareNamespace(features.getSchema(), prefix, uri);
 
@@ -149,7 +152,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
                 String location = (String) ftNamespaces.get(uri);
                 ftNamespaces.put(uri, location + "," + meta.getName());
             } else {
-                String location = typeSchemaLocation(wfs, meta, request.getBaseUrl());
+                String location = typeSchemaLocation(geoServer.getGlobal(), meta, request.getBaseUrl());
                 ftNamespaces.put(uri, location);
             }
 
@@ -158,13 +161,15 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             //srs = Integer.parseInt(meta.getSRS());
             QueryType query = (QueryType) request.getQuery().get(i);
             try {
-                if (query.getSrsName() != null ) {
-                    CoordinateReferenceSystem crs = CRS.decode(query.getSrsName().toString());
+                String srsName = query.getSrsName() != null ? query.getSrsName().toString() : null;
+                if ( srsName == null ) {
+                    //no SRS in query...asking for the default?
+                    srsName = meta.getSRS();
+                }
+                if ( srsName != null ) {
+                    CoordinateReferenceSystem crs = CRS.decode(srsName);
                     String epsgCode = GML2EncodingUtils.epsgCode(crs);
                     srs = Integer.parseInt(epsgCode);
-                } else {
-                    //no SRS in query...asking for the default?
-                    srs = Integer.parseInt(meta.getSRS());
                 }
             }
             catch( Exception e ) {
@@ -176,13 +181,16 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         System.setProperty("javax.xml.transform.TransformerFactory",
             "org.apache.xalan.processor.TransformerFactoryImpl");
 
+        GeoServerInfo global = geoServer.getGlobal();
+        GMLInfo gml = wfs.getGML().get( WFSInfo.Version.V_10);
+        
         transformer.setIndentation(wfs.isVerbose() ? INDENT_SIZE : (NO_FORMATTING));
-        transformer.setNumDecimals(geoServer.getNumDecimals());
-        transformer.setFeatureBounding(wfs.isFeatureBounding());
-        transformer.setCollectionBounding(wfs.isFeatureBounding());
-        transformer.setEncoding(wfs.getCharSet());
+        transformer.setNumDecimals(global.getNumDecimals());
+        transformer.setFeatureBounding(gml.isFeatureBounding());
+        transformer.setCollectionBounding(gml.isFeatureBounding());
+        transformer.setEncoding(Charset.forName(global.getCharset()));
 
-        String wfsSchemaloc = wfsSchemaLocation(wfs,request.getBaseUrl());
+        String wfsSchemaloc = wfsSchemaLocation(global,request.getBaseUrl());
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaloc);
 
         for (Iterator it = ftNamespaces.keySet().iterator(); it.hasNext();) {
@@ -190,14 +198,14 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             transformer.addSchemaLocation(uri, (String) ftNamespaces.get(uri));
         }
 
-        transformer.setGmlPrefixing(wfs.getCiteConformanceHacks());
+        transformer.setGmlPrefixing(wfs.isCiteCompliant());
 
         if (results.getLockId() != null) {
             transformer.setLockId(results.getLockId());
         }
 
         if (srs != -1) {
-            transformer.setSrsName(wfs.getSrsPrefix() + srs);
+            transformer.setSrsName(gml.getSrsNameStyle().getPrefix() + srs);
         }
     }
 
@@ -268,13 +276,13 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         return new FeatureTransformer();
     }
 
-    protected String wfsSchemaLocation(WFS wfs, String baseUrl) {
-        return ResponseUtils.appendPath(RequestUtils.proxifiedBaseURL(baseUrl, wfs.getGeoServer().getProxyBaseUrl()),
+    protected String wfsSchemaLocation(GeoServerInfo global, String baseUrl) {
+        return ResponseUtils.appendPath(RequestUtils.proxifiedBaseURL(baseUrl, global.getProxyBaseUrl()),
                 "schemas/wfs/1.0.0/WFS-basic.xsd");
     }
 
-    protected String typeSchemaLocation(WFS wfs, FeatureTypeInfo meta, String baseUrl) {
-        final String proxifiedBase = RequestUtils.proxifiedBaseURL(baseUrl, wfs.getGeoServer().getProxyBaseUrl());
+    protected String typeSchemaLocation(GeoServerInfo global, FeatureTypeInfo meta, String baseUrl) {
+        final String proxifiedBase = RequestUtils.proxifiedBaseURL(baseUrl, global.getProxyBaseUrl());
         return ResponseUtils.appendQueryString(proxifiedBase + "wfs",
             "service=WFS&version=1.0.0&request=DescribeFeatureType&typeName=" + meta.getName());
     }

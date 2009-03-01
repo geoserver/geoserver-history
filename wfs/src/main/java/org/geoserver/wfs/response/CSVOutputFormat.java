@@ -18,11 +18,12 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.type.DateUtil;
@@ -41,15 +42,15 @@ import org.opengis.feature.type.AttributeDescriptor;
  */
 public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
 
-    private WFS wfs;
+    private WFSInfo wfs;
 
-    public CSVOutputFormat(WFS wfs) {
+    public CSVOutputFormat(GeoServer gs) {
         //this is the name of your output format, it is the string
         // that will be used when requesting the format in a 
         // GEtFeature request: 
         // ie ;.../geoserver/wfs?request=getfeature&outputFormat=myOutputFormat
         super("csv");
-        this.wfs = wfs;
+        this.wfs = gs.getService( WFSInfo.class );
         if(wfs == null)
             throw new IllegalArgumentException("A valid WFS object must be provided in order for this class to work");
     }
@@ -108,7 +109,7 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
         
         // prepare the formatter for numbers
         NumberFormat coordFormatter = NumberFormat.getInstance(Locale.US);
-        coordFormatter.setMaximumFractionDigits(wfs.getGeoServer().getNumDecimals());
+        coordFormatter.setMaximumFractionDigits(wfs.getGeoServer().getGlobal().getNumDecimals());
         coordFormatter.setGroupingUsed(false);
            
         //write out the features

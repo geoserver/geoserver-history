@@ -9,15 +9,15 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.data.test.MockData;
-import org.vfny.geoserver.global.Data;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class AliasTest extends WFSTestSupport {
 
-    private Data catalog;
+    private Catalog catalog;
     
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -30,7 +30,7 @@ public class AliasTest extends WFSTestSupport {
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
 
-        catalog = (Data) applicationContext.getBean("catalog");
+        catalog = (Catalog) applicationContext.getBean("catalog");
     }
     
     @Override

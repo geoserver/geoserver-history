@@ -5,10 +5,11 @@
 package org.geoserver.wfs.xml;
 
 import org.eclipse.xsd.XSDSchema;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.wfs.WFS;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.geoserver.wfs.WFSInfo;
+
 import java.io.IOException;
 
 
@@ -32,19 +33,19 @@ public abstract class FeatureTypeSchema {
     /**
      * The catalog
      */
-    protected Data catalog;
+    protected Catalog catalog;
 
     /**
      * WFS configuration
      */
-    protected WFS wfs;
+    protected WFSInfo wfs;
 
     /**
      * resource loader
      */
     protected GeoServerResourceLoader loader;
 
-    protected FeatureTypeSchema(FeatureTypeInfo featureType, WFS wfs, Data catalog,
+    protected FeatureTypeSchema(FeatureTypeInfo featureType, WFSInfo wfs, Catalog catalog,
         GeoServerResourceLoader loader) {
         this.featureType = featureType;
         this.catalog = catalog;
@@ -95,10 +96,10 @@ public abstract class FeatureTypeSchema {
      * @author Justin Deoliveira, The Open Planning Project
      */
     public static final class GML2 extends FeatureTypeSchema {
-        public GML2(FeatureTypeInfo featureType, WFS wfs, Data catalog,
+        public GML2(FeatureTypeInfo featureType, WFSInfo wfs, Catalog catalog,
             GeoServerResourceLoader loader) {
             super(featureType, wfs, catalog, loader);
-            builder = new FeatureTypeSchemaBuilder.GML2(wfs, catalog, loader);
+            builder = new FeatureTypeSchemaBuilder.GML2(wfs.getGeoServer(), loader);
         }
     }
 
@@ -108,10 +109,10 @@ public abstract class FeatureTypeSchema {
      * @author Justin Deoliveira, The Open Planning Project
      */
     public static final class GML3 extends FeatureTypeSchema {
-        protected GML3(FeatureTypeInfo featureType, WFS wfs, Data catalog,
+        protected GML3(FeatureTypeInfo featureType, WFSInfo wfs, Catalog catalog,
             GeoServerResourceLoader loader) {
             super(featureType, wfs, catalog, loader);
-            builder = new FeatureTypeSchemaBuilder.GML3(wfs, catalog, loader);
+            builder = new FeatureTypeSchemaBuilder.GML3(wfs.getGeoServer(), loader);
         }
     }
 }

@@ -6,6 +6,7 @@ package org.geoserver.wfs.xml;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,13 +18,19 @@ import java.util.Set;
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.FeatureCollectionType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
+
+import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.GMLConfiguration;
@@ -31,20 +38,21 @@ import org.geotools.xml.Encoder;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 
 public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
-    WFS wfs;
-    Data catalog;
+    WFSInfo wfs;
+    Catalog catalog;
+    GeoServerInfo global;
     WFSConfiguration configuration;
 
-    public GML3OutputFormat(WFS wfs, Data catalog, WFSConfiguration configuration) {
+    public GML3OutputFormat(GeoServer geoServer, WFSConfiguration configuration) {
         super(new HashSet(Arrays.asList(new Object[] {"gml3", "text/xml; subtype=gml/3.1.1"})));
 
-        this.wfs = wfs;
-        this.catalog = catalog;
+        this.wfs = geoServer.getService( WFSInfo.class );
+        this.catalog = geoServer.getCatalog();
+        this.global = geoServer.getGlobal();
+      
         this.configuration = configuration;
     }
 
@@ -69,7 +77,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
             //load the metadata for the feature type
             String namespaceURI = featureType.getName().getNamespaceURI();
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getName());
+            FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureType.getName());
             
             if(meta == null)
                 throw new WFSException("Could not find feature type " + featureType.getName() + " in the GeoServer catalog");
@@ -85,10 +93,12 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             metas.add(meta);
         }
 
+        GMLInfo gml = wfs.getGML().get( WFSInfo.Version.V_11 );
+        
         //set feature bounding parameter
         //JD: this is quite bad as its not at all thread-safe, once we remove the configuration
         // as being a singleton on trunk/2.0.x this should not be an issue
-        if ( wfs.isFeatureBounding() ) {
+        if ( gml.isFeatureBounding() ) {
             configuration.getProperties().remove( GMLConfiguration.NO_FEATURE_BOUNDS );
         }
         else {
@@ -96,12 +106,12 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         }
         
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setEncoding(wfs.getCharSet());
+        encoder.setEncoding(Charset.forName( global.getCharset() ));
 
         //declare wfs schema location
         BaseRequestType gft = (BaseRequestType)getFeature.getParameters()[0];
         
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(),global.getProxyBaseUrl());
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
             ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
 

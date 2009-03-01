@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 
+import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -35,7 +36,7 @@ public class ReprojectionWriteTest extends WFSTestSupport {
         dataDirectory.addPropertiesType(NULL_GEOMETRIES, 
                 ReprojectionTest.class.getResource("NullGeometries.properties"), Collections.EMPTY_MAP);
         Map<String, Object> extra = new HashMap<String, Object>();
-        extra.put(MockData.KEY_SRS_HANDLINGS, org.vfny.geoserver.global.FeatureTypeInfo.REPROJECT);
+        extra.put(MockData.KEY_SRS_HANDLINGS, ProjectionPolicy.REPROJECT_TO_DECLARED);
         extra.put(MockData.KEY_SRS_NUMBER, 900913);
         dataDirectory.addPropertiesType(GOOGLE, 
                 ReprojectionTest.class.getResource("GoogleFeatures.properties"), extra);

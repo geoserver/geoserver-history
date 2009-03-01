@@ -10,6 +10,7 @@ import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.config.GeoServer;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureLockException;
@@ -46,12 +47,12 @@ public class DeleteElementHandler implements TransactionElementHandler {
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
-    private WFS wfs;
+    private WFSInfo wfs;
     
     FilterFactory factory = CommonFactoryFinder.getFilterFactory(null);
 
-    public DeleteElementHandler(WFS wfs) {
-        this.wfs = wfs;
+    public DeleteElementHandler(GeoServer gs) {
+        this.wfs = gs.getService( WFSInfo.class );
     }
 
     public Class getElementClass() {
@@ -64,7 +65,7 @@ public class DeleteElementHandler implements TransactionElementHandler {
 
     public void checkValidity(EObject element, Map featureTypeInfos)
         throws WFSTransactionException {
-        if ((wfs.getServiceLevel() & WFS.SERVICE_DELETE) == 0) {
+        if (!wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_DELETE)) {
             throw new WFSException("Transaction Delete support is not enabled");
         }
 

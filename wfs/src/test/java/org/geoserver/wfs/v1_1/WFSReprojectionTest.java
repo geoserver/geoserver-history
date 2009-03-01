@@ -5,6 +5,7 @@ import java.util.StringTokenizer;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -30,15 +31,20 @@ public class WFSReprojectionTest extends WFSTestSupport {
         CoordinateReferenceSystem epsg32615 = CRS.decode("urn:x-ogc:def:crs:EPSG:6.11.2:32615");
         
         tx = CRS.findMathTransform(epsg32615, epsgTarget);
-        getWFS().setFeatureBounding(true);
+        WFSInfo wfs = getWFS();
+        wfs.getGML().get( WFSInfo.Version.V_10).setFeatureBounding(true);
+        wfs.getGML().get( WFSInfo.Version.V_11).setFeatureBounding(true);
+        getGeoServer().save( wfs );
     }
     
     public void testGetFeatureGet() throws Exception {
         
         Document dom1 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename=" + 
             MockData.POLYGONS.getLocalPart());
+        print(dom1);
         Document dom2 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename=" + 
             MockData.POLYGONS.getLocalPart() + "&srsName=" + TARGET_CRS_CODE);
+        print(dom2);
         
         runTest(dom1,dom2);
     }
@@ -73,8 +79,11 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
     
     public void testGetFeatureWithProjectedBoxGet() throws Exception {
-        boolean oldFeatureBounding = getWFS().isFeatureBounding();
-        getWFS().setFeatureBounding(true);
+        WFSInfo wfs = getWFS();
+        boolean oldFeatureBounding = wfs.getGML().get( WFSInfo.Version.V_11 ).isFeatureBounding();
+        wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(true);
+        getGeoServer().save(wfs);
+            
         try {
             String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName=" + 
                 MockData.POLYGONS.getLocalPart();
@@ -98,13 +107,17 @@ public class WFSReprojectionTest extends WFSTestSupport {
             assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
         }
         finally {
-            getWFS().setFeatureBounding(oldFeatureBounding);
+            wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(oldFeatureBounding);
+            getGeoServer().save( wfs );
         }
     }
     
     public void testGetFeatureWithProjectedBoxPost() throws Exception {
-        boolean oldFeatureBounding = getWFS().isFeatureBounding();
-        getWFS().setFeatureBounding(true);
+        WFSInfo wfs = getWFS();
+        boolean oldFeatureBounding = wfs.getGML().get( WFSInfo.Version.V_11 ).isFeatureBounding();
+        wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(true);
+        getGeoServer().save(wfs);
+        
         try {
             String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName=" + 
                 MockData.POLYGONS.getLocalPart();
@@ -144,7 +157,8 @@ public class WFSReprojectionTest extends WFSTestSupport {
             assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
         }
         finally {
-            getWFS().setFeatureBounding(oldFeatureBounding);
+            wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(oldFeatureBounding);
+            getGeoServer().save( wfs );
         }
     }
     

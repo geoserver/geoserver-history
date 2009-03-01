@@ -31,6 +31,9 @@ import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.userdetails.UserDetails;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geotools.data.DefaultTransaction;
@@ -41,9 +44,6 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.FilterFactory;
 import org.springframework.context.ApplicationContext;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
 
 /**
  * Web Feature Service Transaction operation.
@@ -60,12 +60,12 @@ public class Transaction {
     /**
      * WFS configuration
      */
-    protected WFS wfs;
+    protected WFSInfo wfs;
 
     /**
      * The catalog
      */
-    protected Data catalog;
+    protected Catalog catalog;
 
     /**
      * Filter factory
@@ -78,9 +78,10 @@ public class Transaction {
     protected List transactionListeners = new ArrayList();
     protected List transactionPlugins = new ArrayList();
 
-    public Transaction(WFS wfs, Data catalog, ApplicationContext context) {
+    public Transaction(WFSInfo wfs, Catalog catalog, ApplicationContext context) {
         this.wfs = wfs;
         this.catalog = catalog;
+        ;
         // register element handlers, listeners and plugins
         transactionElementHandlers.addAll(GeoServerExtensions.extensions(TransactionElementHandler.class));
         transactionListeners.addAll(GeoServerExtensions.extensions(TransactionListener.class));
@@ -100,7 +101,7 @@ public class Transaction {
     public TransactionResponseType transaction(TransactionType request)
         throws WFSException {
         // make sure server is supporting transactions
-        if ((wfs.getServiceLevel() & WFS.TRANSACTIONAL) == 0) {
+        if (!wfs.getServiceLevel().contains(WFSInfo.ServiceLevel.TRANSACTIONAL) ) {
             throw new WFSException("Transaction support is not enabled");
         }
 
@@ -209,12 +210,12 @@ public class Transaction {
                 if (typeName.getNamespaceURI() != null) {
                     namespaceURI = typeName.getNamespaceURI();
                 } else {
-                    namespaceURI = catalog.getDefaultNameSpace().getURI();
+                    namespaceURI = catalog.getDefaultNamespace().getURI();
                 }
 
                 LOGGER.fine("Locating FeatureSource uri:'" + namespaceURI + "' name:'" + name + "'");
 
-                final FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name, namespaceURI);
+                final FeatureTypeInfo meta = catalog.getFeatureTypeByName(namespaceURI, name);
 
                 if (meta == null) {
                     String msg = "Feature type '" + name + "' is not available: ";
@@ -232,15 +233,15 @@ public class Transaction {
             // stores
             for (Iterator m = featureTypeInfos.values().iterator(); m.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
-                String typeRef = meta.getDataStoreInfo().getId() + ":" + meta.getTypeName();
+                String typeRef = meta.getStore().getName() + ":" + meta.getName();
 
-                String URI = meta.getNameSpace().getURI();
-                QName elementName = new QName(URI, meta.getTypeName(),
-                        meta.getNameSpace().getPrefix());
+                String URI = meta.getNamespace().getURI();
+                QName elementName = new QName(URI, meta.getName(),
+                        meta.getNamespace().getPrefix());
                 QName elementNameDefault = null;
 
-                if (catalog.getDefaultNameSpace().getURI().equals(URI)) {
-                    elementNameDefault = new QName(meta.getTypeName());
+                if (catalog.getDefaultNamespace().getURI().equals(URI)) {
+                    elementNameDefault = new QName(meta.getName());
                 }
 
                 LOGGER.fine("located FeatureType w/ typeRef '" + typeRef + "' and elementName '"
@@ -252,7 +253,7 @@ public class Transaction {
                 }
 
                 try {
-                    FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource();
+                    FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource(null,null);
 
                     if (source instanceof FeatureStore) {
                         FeatureStore<? extends FeatureType, ? extends Feature> store;
@@ -285,7 +286,7 @@ public class Transaction {
         String authorizationID = request.getLockId();
 
         if (authorizationID != null) {
-            if ((wfs.getServiceLevel() & WFS.SERVICE_LOCKING) == 0) {
+            if (!wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.LOCKFEATURE)) {
                 throw new WFSException("Lock support is not enabled");
             }
 

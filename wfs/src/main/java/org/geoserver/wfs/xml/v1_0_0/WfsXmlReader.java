@@ -4,14 +4,15 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wfs.WFSException;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
-import org.vfny.geoserver.global.NameSpaceInfo;
 
 import java.io.Reader;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -45,13 +46,13 @@ public class WfsXmlReader extends XmlRequestReader {
         Parser parser = new Parser(configuration);
         
         //"inject" namespace mappings
-        NameSpaceInfo[] namespaces = configuration.getCatalog().getNameSpaces();
-        for ( int i = 0; i < namespaces.length; i++) {
+        List<NamespaceInfo> namespaces = configuration.getCatalog().getNamespaces();
+        for ( NamespaceInfo ns : namespaces ) {
             //if ( namespaces[i].isDefault() ) 
             //    continue;
             
             parser.getNamespaces().declarePrefix( 
-                namespaces[i].getPrefix(), namespaces[i].getURI());
+                ns.getPrefix(), ns.getURI());
         }
         //set validation based on strict or not
         parser.setValidating(strict.booleanValue());

@@ -2,17 +2,16 @@ package org.geoserver.wfs;
 
 import junit.framework.Test;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.data.test.MockData;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 public class MaxFeaturesTest extends WFSTestSupport {
 
-    private static Data catalog;
+    private static Catalog catalog;
     
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -25,12 +24,11 @@ public class MaxFeaturesTest extends WFSTestSupport {
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
         // set global max to 5
-        GeoServer gs = (GeoServer) applicationContext.getBean("geoServer");
-        GeoServerDTO dto = (GeoServerDTO) gs.toDTO();
-        dto.setMaxFeatures(5);
-        gs.load(dto);
+        GeoServer gs = getGeoServer();
+        WFSInfo wfs = getWFS();
+        wfs.setMaxFeatures( 5 );
         
-        catalog = (Data) applicationContext.getBean("catalog");
+        catalog = getCatalog();
     }
 
     public void testGlobalMax() throws Exception {
@@ -45,8 +43,9 @@ public class MaxFeaturesTest extends WFSTestSupport {
     
     public void testLocalMax() throws Exception {
         // setup different max on local
-        FeatureTypeInfo info = catalog.getFeatureTypeInfo(MockData.FIFTEEN);
+        FeatureTypeInfo info = getFeatureTypeInfo(MockData.FIFTEEN );
         info.setMaxFeatures(3);
+        catalog.save( info );
         
         // fifteen has 15 elements, but global max is 5 and local is 3
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:Fifteen" +
@@ -59,8 +58,9 @@ public class MaxFeaturesTest extends WFSTestSupport {
     
     public void testLocalMaxBigger() throws Exception {
         // setup different max on local
-        FeatureTypeInfo info = catalog.getFeatureTypeInfo(MockData.FIFTEEN);
+        FeatureTypeInfo info = getFeatureTypeInfo(MockData.FIFTEEN);
         info.setMaxFeatures(10);
+        catalog.save( info );
         
         // fifteen has 15 elements, but global max is 5 and local is 10
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:Fifteen" +
@@ -73,10 +73,13 @@ public class MaxFeaturesTest extends WFSTestSupport {
     
     public void testCombinedLocalMaxes() throws Exception {
         // fifteen has 15 features, basic polygons 3
-        FeatureTypeInfo info = catalog.getFeatureTypeInfo(MockData.FIFTEEN);
+        FeatureTypeInfo info = getFeatureTypeInfo(MockData.FIFTEEN);
         info.setMaxFeatures(2);
-        info = catalog.getFeatureTypeInfo(MockData.BASIC_POLYGONS);
+        catalog.save( info );
+        
+        info = getFeatureTypeInfo(MockData.BASIC_POLYGONS);
         info.setMaxFeatures(2);
+        catalog.save( info );
         
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:Fifteen,cite:BasicPolygons" +
         		"&version=1.0.0&service=wfs");
@@ -89,10 +92,13 @@ public class MaxFeaturesTest extends WFSTestSupport {
     
     public void testCombinedLocalMaxesBigger() throws Exception {
         // fifteen has 15 features, basic polygons 3
-        FeatureTypeInfo info = catalog.getFeatureTypeInfo(MockData.FIFTEEN);
+        FeatureTypeInfo info = getFeatureTypeInfo(MockData.FIFTEEN);
         info.setMaxFeatures(4);
-        info = catalog.getFeatureTypeInfo(MockData.BASIC_POLYGONS);
+        catalog.save( info );
+        
+        info = getFeatureTypeInfo(MockData.BASIC_POLYGONS);
         info.setMaxFeatures(2);
+        catalog.save( info );
         
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:Fifteen,cite:BasicPolygons" +
         		"&version=1.0.0&service=wfs");
@@ -105,9 +111,13 @@ public class MaxFeaturesTest extends WFSTestSupport {
     
     public void testCombinedLocalMaxesBiggerRequestOverride() throws Exception {
         // fifteen has 15 features, basic polygons 3
-        FeatureTypeInfo info = catalog.getFeatureTypeInfo(MockData.FIFTEEN);
+        FeatureTypeInfo info = getFeatureTypeInfo(MockData.FIFTEEN);
         info.setMaxFeatures(3);
-        info = catalog.getFeatureTypeInfo(MockData.BASIC_POLYGONS);
+        catalog.save(info);
+        
+        info = getFeatureTypeInfo(MockData.BASIC_POLYGONS);
+        catalog.save(info);
+        
         info.setMaxFeatures(2);
         
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:Fifteen,cite:BasicPolygon" +
@@ -121,10 +131,13 @@ public class MaxFeaturesTest extends WFSTestSupport {
     
     public void testMaxFeaturesBreak() throws Exception {
         // see http://jira.codehaus.org/browse/GEOS-1489
-        FeatureTypeInfo info = catalog.getFeatureTypeInfo(MockData.FIFTEEN);
+        FeatureTypeInfo info = getFeatureTypeInfo(MockData.FIFTEEN);
         info.setMaxFeatures(3);
-        info = catalog.getFeatureTypeInfo(MockData.BASIC_POLYGONS);
+        catalog.save( info );
+        
+        info = getFeatureTypeInfo(MockData.BASIC_POLYGONS);
         info.setMaxFeatures(2);
+        catalog.save(info);
         
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:Fifteen,cite:BasicPolygon" +
                 "s&version=1.0.0&service=wfs&maxFeatures=3");

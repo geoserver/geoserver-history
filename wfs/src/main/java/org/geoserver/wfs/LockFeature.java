@@ -21,6 +21,11 @@ import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
+import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.DefaultTransaction;
@@ -41,10 +46,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.DataStoreInfo;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
 
 /**
  * Web Feature Service 1.0 LockFeature Operation.
@@ -61,12 +62,12 @@ public class LockFeature {
     /**
      * Web Feature Service configuration
      */
-    WFS wfs;
+    WFSInfo wfs;
 
     /**
      * The catalog
      */
-    Data catalog;
+    Catalog catalog;
 
     /**
      * Filter factory
@@ -78,11 +79,11 @@ public class LockFeature {
      * @param wfs
      * @param catalog
      */
-    public LockFeature(WFS wfs, Data catalog) {
-        this(wfs, catalog, null);
+    public LockFeature(WFSInfo wfs, Catalog catalog) {
+        this(wfs, catalog, null );
     }
 
-    public LockFeature(WFS wfs, Data catalog, FilterFactory filterFactory) {
+    public LockFeature(WFSInfo wfs, Catalog catalog, FilterFactory filterFactory) {
         this.wfs = wfs;
         this.catalog = catalog;
         this.filterFactory = filterFactory;
@@ -150,15 +151,14 @@ public class LockFeature {
                 FeatureCollection<? extends FeatureType, ? extends Feature> features;
 
                 try {
-                    meta = catalog.getFeatureTypeInfo(typeName.getLocalPart(),
-                            typeName.getNamespaceURI());
+                    meta = catalog.getFeatureTypeByName(typeName.getNamespaceURI(), typeName.getLocalPart());
 
                     if (meta == null) {
                         throw new WFSException("Unknown feature type " + typeName.getPrefix() + ":"
                             + typeName.getLocalPart());
                     }
 
-                    source = meta.getFeatureSource();
+                    source = meta.getFeatureSource(null,null);
                     
                     // make sure all geometric elements in the filter have a crs, and that the filter
                     // is reprojected to store's native crs as well
@@ -201,7 +201,7 @@ public class LockFeature {
                             // HACK: Query.NO_NAMES isn't working in postgis
                             // right now,
                             // so we'll just use all.
-                            Query query = new DefaultQuery(meta.getTypeName(), (Filter) fidFilter,
+                            Query query = new DefaultQuery(meta.getName(), (Filter) fidFilter,
                                     Query.DEFAULT_MAX, Query.ALL_NAMES, lock.getHandle());
 
                             numberLocked = ((FeatureLocking<SimpleFeatureType, SimpleFeature>) source)
@@ -309,22 +309,22 @@ public class LockFeature {
         try {
             boolean refresh = false;
 
-            Set dataStores = catalog.getDataStores();
+            List dataStores = catalog.getDataStores();
 
             for (Iterator i = dataStores.iterator(); i.hasNext();) {
                 DataStoreInfo meta = (DataStoreInfo) i.next();
-
+                DataStore dataStore = null;
+                
                 // TODO: support locking for DataAccess
-                if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
-                    continue; // disabled or not a DataStore
+                if (meta.isEnabled()) {
+                    DataAccess da = meta.getDataStore(null);
+                    if ( da instanceof DataStore ) {
+                        dataStore = (DataStore) da;
+                    }
                 }
-
-                DataStore dataStore;
-
-                try {
-                    dataStore = (DataStore) meta.getDataStore();
-                } catch (IllegalStateException notAvailable) {
-                    continue; // not available
+                
+                if ( dataStore == null ) {
+                    continue; // disabled or not a DataStore
                 }
 
                 LockingManager lockingManager = dataStore.getLockingManager();
@@ -334,7 +334,7 @@ public class LockFeature {
                 }
 
                 org.geotools.data.Transaction t = new DefaultTransaction("Refresh "
-                        + meta.getNamesSpacePrefix());
+                        + meta.getWorkspace().getName());
 
                 try {
                     t.addAuthorization(lockId);
@@ -373,24 +373,22 @@ public class LockFeature {
      */
     public void releaseAll() throws WFSException {
         try {
-            Set dataStores = catalog.getDataStores();
+            List dataStores = catalog.getDataStores();
 
             for (Iterator i = dataStores.iterator(); i.hasNext();) {
                 DataStoreInfo meta = (DataStoreInfo) i.next();
-
+                DataStore dataStore = null;
+                
                 // TODO: support locking for DataAccess
-                if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
-                    continue; // disabled or not a DataStore
+                if (meta.isEnabled()) {
+                    DataAccess da = meta.getDataStore(null);
+                    if ( da instanceof DataStore ) {
+                        dataStore = (DataStore) da;
+                    }
                 }
-
-                DataStore dataStore;
-
-                try {
-                    dataStore = (DataStore) meta.getDataStore();
-                } catch (IllegalStateException notAvailable) {
-                    continue; // not available
-                } catch (Throwable huh) {
-                    continue; // not even working
+                
+                if ( dataStore == null ) {
+                    continue; // disabled or not a DataStore
                 }
 
                 LockingManager lockingManager = dataStore.getLockingManager();
@@ -409,22 +407,22 @@ public class LockFeature {
 
     public boolean exists(String lockId) throws WFSException {
         try {
-            Set dataStores = catalog.getDataStores();
+            List dataStores = catalog.getDataStores();
 
             for (Iterator i = dataStores.iterator(); i.hasNext();) {
                 DataStoreInfo meta = (DataStoreInfo) i.next();
-
+                DataStore dataStore = null;
+                
                 // TODO: support locking for DataAccess
-                if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
-                    continue; // disabled or not a DataStore
+                if (meta.isEnabled()) {
+                    DataAccess da = meta.getDataStore(null);
+                    if ( da instanceof DataStore ) {
+                        dataStore = (DataStore) da;
+                    }
                 }
-
-                DataStore dataStore;
-
-                try {
-                    dataStore = (DataStore) meta.getDataStore();
-                } catch (IllegalStateException notAvailable) {
-                    continue; // not available
+                
+                if ( dataStore == null ) {
+                    continue; // disabled or not a DataStore
                 }
 
                 LockingManager lockingManager = dataStore.getLockingManager();
@@ -448,24 +446,24 @@ public class LockFeature {
         try {
             boolean refresh = false;
 
-            Set dataStores = catalog.getDataStores();
+            List dataStores = catalog.getDataStores();
 
             for (Iterator i = dataStores.iterator(); i.hasNext();) {
                 DataStoreInfo meta = (DataStoreInfo) i.next();
-
+                DataStore dataStore = null;
+                
                 // TODO: support locking for DataAccess
-               if (!meta.isEnabled() || !(meta.getDataStore() instanceof DataStore)) {
+                if (meta.isEnabled()) {
+                    DataAccess da = meta.getDataStore(null);
+                    if ( da instanceof DataStore ) {
+                        dataStore = (DataStore) da;
+                    }
+                }
+                
+                if ( dataStore == null ) {
                     continue; // disabled or not a DataStore
                 }
-
-                DataStore dataStore;
-
-                try {
-                    dataStore = (DataStore) meta.getDataStore();
-                } catch (IllegalStateException notAvailable) {
-                    continue; // not available
-                }
-
+                
                 LockingManager lockingManager = dataStore.getLockingManager();
 
                 if (lockingManager == null) {
@@ -473,7 +471,7 @@ public class LockFeature {
                 }
 
                 org.geotools.data.Transaction t = new DefaultTransaction("Refresh "
-                        + meta.getNamesSpacePrefix());
+                        + meta.getWorkspace().getName());
 
                 try {
                     t.addAuthorization(lockId);

@@ -2,19 +2,21 @@ package org.geoserver.wfs.response;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import javax.xml.namespace.QName;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 /**
  * Resonse which handles an individual {@link SimpleFeature} and encodes it as 
@@ -25,16 +27,16 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  */
 public class FeatureResponse extends Response {
 
-    Data catalog;
+    Catalog catalog;
     WFSConfiguration configuration;
-    private WFS wfs;
+    private WFSInfo wfs;
     
-    public FeatureResponse(Data catalog, WFSConfiguration configuration, WFS wfs) {
+    public FeatureResponse(GeoServer gs, WFSConfiguration configuration) {
         super( SimpleFeature.class );
         
-        this.catalog = catalog;
+        this.catalog = gs.getCatalog();
         this.configuration = configuration;
-        this.wfs = wfs;
+        this.wfs = gs.getService( WFSInfo.class );
     }
     
     public String getMimeType(Object value, Operation operation)
@@ -51,13 +53,13 @@ public class FeatureResponse extends Response {
         SimpleFeatureType featureType = feature.getType();
         
         //grab the metadata
-        FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getName());
+        FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureType.getName());
         
         //create teh encoder
         Encoder encoder = new Encoder( configuration );
-        encoder.setEncoding(wfs.getCharSet());
+        encoder.setEncoding(Charset.forName( wfs.getGeoServer().getGlobal().getCharset() ) );
         encoder.encode( feature, 
-            new QName( meta.getNameSpace().getURI(), meta.getTypeName()), output );
+            new QName( meta.getNamespace().getURI(), meta.getName()), output );
     }
 
 }

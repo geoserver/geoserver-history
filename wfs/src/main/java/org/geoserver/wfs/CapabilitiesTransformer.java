@@ -22,6 +22,12 @@ import java.util.logging.Logger;
 
 import net.opengis.wfs.GetCapabilitiesType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.ContactInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
@@ -35,15 +41,9 @@ import org.geotools.xlink.XLINK;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.filter.expression.Function;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-
 import com.vividsolutions.jts.geom.Envelope;
 
 
@@ -78,15 +78,15 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     protected static final String OGC_URI = OGC.NAMESPACE;
 
     /** wfs service */
-    protected WFS wfs;
+    protected WFSInfo wfs;
 
     /** catalog */
-    protected Data catalog;
+    protected Catalog catalog;
 
     /**
      * Creates a new CapabilitiesTransformer object.
      */
-    public CapabilitiesTransformer(WFS wfs, Data catalog) {
+    public CapabilitiesTransformer(WFSInfo wfs, Catalog catalog) {
         super();
         setNamespaceDeclarationEnabled(false);
 
@@ -114,7 +114,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
 	        }
         }
-        int geoUS = wfs.getGeoServer().getUpdateSequence();
+        int geoUS = wfs.getGeoServer().getGlobal().getUpdateSequence();
     	if (reqUS > geoUS) {
     		throw new ServiceException("Client supplied an updateSequence that is greater than the current sever updateSequence","InvalidUpdateSequence");
     	}
@@ -130,7 +130,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
      *
      */
     public static class WFS1_0 extends CapabilitiesTransformer {
-        public WFS1_0(WFS wfs, Data catalog) {
+        public WFS1_0(WFSInfo wfs, Catalog catalog) {
             super(wfs, catalog);
         }
 
@@ -147,7 +147,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
             public void encode(Object object) throws IllegalArgumentException {
                 request = (GetCapabilitiesType)object;
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(
+                    request.getBaseUrl(), wfs.getGeoServer().getGlobal().getProxyBaseUrl());
                 
                 // Not used.  WFS 1.1 and 1.0 don't actually support updatesequence
                 //verifyUpdateSequence(request);
@@ -156,10 +157,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 attributes.addAttribute("", "version", "version", "", "1.0.0");
                 attributes.addAttribute("", "xmlns", "xmlns", "", WFS_URI);
 
-                NameSpaceInfo[] namespaces = catalog.getNameSpaces();
+                List<NamespaceInfo> namespaces = catalog.getNamespaces();
 
-                for (int i = 0; i < namespaces.length; i++) {
-                    NameSpaceInfo namespace = namespaces[i];
+                for (NamespaceInfo namespace : namespaces ) {
                     String prefix = namespace.getPrefix();
                     String uri = namespace.getURI();
 
@@ -222,7 +222,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 handleKeywords(wfs.getKeywords());
 
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = 
+                    RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getGlobal().getProxyBaseUrl());
                 
                 element("OnlineResource", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs"));
                 element("Fees", wfs.getFees());
@@ -309,11 +310,12 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 handleDescribeFT();
                 handleGetFeature();
 
-                if (wfs.getServiceLevel() >= WFS.TRANSACTIONAL) {
+                
+                if (WFSInfo.ServiceLevel.TRANSACTIONAL.contains( wfs.getServiceLevel() )) {
                     handleTransaction();
                 }
 
-                if (wfs.getServiceLevel() == WFS.COMPLETE) {
+                if (WFSInfo.ServiceLevel.COMPLETE.contains( wfs.getServiceLevel() ) ) {
                     handleLock();
                     handleFeatureWithLock();
                 }
@@ -389,7 +391,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 start(resultFormat);
 
                 //we accept numerous formats, but cite only allows you to have GML2
-                if (wfs.getCiteConformanceHacks()) {
+                if (wfs.isCiteCompliant()) {
                     element("GML2", null);
                 } else {
                     //FULL MONTY
@@ -494,7 +496,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              *        requests
              */
             private void handleDcpType(String capabilityName, String httpMethod) {
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), 
+                    wfs.getGeoServer().getGlobal().getProxyBaseUrl());
 
                 if (proxifiedBaseUrl.endsWith("?")) {
                     proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.length() - 1);
@@ -540,29 +543,29 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 start("FeatureTypeList");
                 start("Operations");
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_BASIC) != 0) {
+                if ((wfs.getServiceLevel().contains( WFSInfo.ServiceLevel.BASIC ) )) {
                     element("Query", null);
                 }
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_INSERT) != 0) {
+                if ((wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.TRANSACTION_INSERT))) {
                     element("Insert", null);
                 }
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_UPDATE) != 0) {
+                if ((wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.TRANSACTION_UPDATE))) {
                     element("Update", null);
                 }
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_DELETE) != 0) {
+                if ((wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.TRANSACTION_DELETE))) {
                     element("Delete", null);
                 }
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_LOCKING) != 0) {
+                if ((wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.LOCKFEATURE))) {
                     element("Lock", null);
                 }
 
                 end("Operations");
 
-                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+                List featureTypes = new ArrayList(catalog.getFeatureTypes());
                 
                 // filter out disabled feature types
                 for (Iterator it = featureTypes.iterator(); it.hasNext();) {
@@ -576,7 +579,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     String namespace = request.getNamespace();
                     for (Iterator it = featureTypes.iterator(); it.hasNext();) {
                         FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
-                        if(!namespace.equals(ft.getNameSpace().getPrefix()))
+                        if(!namespace.equals(ft.getNamespace().getPrefix()))
                             it.remove();
                     }
                 }
@@ -622,15 +625,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              */
             private void handleFeatureType(FeatureTypeInfo info) {
                 Envelope bbox = null;
-
-                try {
-                    bbox = info.getLatLongBoundingBox();
-                } catch (IOException e) {
-                    String msg = "Could not calculate bbox for: " + info.getName();
-                    LOGGER.log(Level.SEVERE, msg, e);
-
-                    return;
-                }
+                bbox = info.getLatLonBoundingBox();
 
                 start("FeatureType");
                 element("Name", info.getName());
@@ -780,7 +775,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
      *
      */
     public static class WFS1_1 extends CapabilitiesTransformer {
-        public WFS1_1(WFS wfs, Data catalog) {
+        public WFS1_1(WFSInfo wfs, Catalog catalog) {
             super(wfs, catalog);
         }
 
@@ -798,7 +793,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
             public void encode(Object object) throws IllegalArgumentException {
                 request = (GetCapabilitiesType)object;
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), 
+                    wfs.getGeoServer().getGlobal().getProxyBaseUrl());
                 
                 verifyUpdateSequence(request);
                 
@@ -812,11 +808,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                             + ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd")
                         });
 
-                NameSpaceInfo[] namespaces = catalog.getNameSpaces();
-
-                for (int i = 0; i < namespaces.length; i++) {
-                    NameSpaceInfo namespace = namespaces[i];
-
+                List<NamespaceInfo> namespaces = catalog.getNamespaces();
+                for (NamespaceInfo namespace : namespaces) {
                     String prefix = namespace.getPrefix();
                     String uri = namespace.getURI();
 
@@ -830,7 +823,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     attributes.addAttribute("", prefixDef, prefixDef, "", uri);
                 }
                 
-                attributes.addAttribute("", "updateSequence", "updateSequence", "", wfs.getGeoServer().getUpdateSequence() + "");
+                attributes.addAttribute("", "updateSequence", "updateSequence", "", 
+                        wfs.getGeoServer().getGlobal().getUpdateSequence() + "");
 
                 start("wfs:WFS_Capabilities", attributes);
 
@@ -937,9 +931,10 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                  *
                  */
             void serviceProvider(GeoServer gs) {
+                ContactInfo contact = gs.getGlobal().getContact();
                 start("ows:ServiceProvider");
 
-                element("ows:ProviderName", gs.getContactOrganization());
+                element("ows:ProviderName", contact.getContactOrganization());
                 start( "ows:ServiceContact");
                 /*
                 <sequence>
@@ -950,8 +945,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 <element ref="ows:Role"/>
                 </sequence>
                 */
-                element( "ows:IndividualName", gs.getContactPerson());
-                element( "ows:PositionName", gs.getContactPosition() );
+                element( "ows:IndividualName", contact.getContactPerson());
+                element( "ows:PositionName", contact.getContactPosition() );
 
                 start( "ows:ContactInfo" );
                 /*
@@ -964,8 +959,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                  </sequence>
                  */
                 start( "ows:Phone");
-                element( "ows:Voice", gs.getContactVoice() );
-                element( "ows:Facsimile", gs.getContactFacsimile() );
+                element( "ows:Voice", contact.getContactVoice() );
+                element( "ows:Facsimile", contact.getContactFacsimile() );
                 end( "ows:Phone");
                 
                 start( "ows:Address");
@@ -977,10 +972,10 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 <element name="Country" type="string" minOccurs="0">
                 <element name="ElectronicMailAddress" type="string" minOccurs="0" maxOccurs="unbounded">
                  */
-                element( "ows:City", gs.getAddressCity() );
-                element( "ows:AdministrativeArea", gs.getAddressState() );
-                element( "ows:PostalCode", gs.getAddressPostalCode() );
-                element( "ows:Country", gs.getAddressCountry() );
+                element( "ows:City", contact.getAddressCity() );
+                element( "ows:AdministrativeArea", contact.getAddressState() );
+                element( "ows:PostalCode", contact.getAddressPostalCode() );
+                element( "ows:Country", contact.getAddressCountry() );
                 end( "ows:Address" );
                 
                 end( "ows:ContactInfo" );
@@ -1035,12 +1030,12 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 getFeature();
                 getGmlObject();
                 
-                if (wfs.getServiceLevel() == WFS.COMPLETE) {
+                if (wfs.getServiceLevel().contains( WFSInfo.ServiceLevel.COMPLETE )) {
                     lockFeature();
                     getFeatureWithLock();
                 }
 
-                if (wfs.getServiceLevel() >= WFS.TRANSACTIONAL) {
+                if (wfs.getServiceLevel().contains( WFSInfo.ServiceLevel.TRANSACTIONAL) ) {
                     transaction();
                 }
 
@@ -1187,29 +1182,29 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 start("Operations");
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_BASIC) != 0) {
+                if ((wfs.getServiceLevel().contains( WFSInfo.ServiceLevel.BASIC )) ) {
                     element("Operation", "Query");
                 }
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_INSERT) != 0) {
+                if ((wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.TRANSACTION_INSERT) ) ) {
                     element("Operation", "Insert");
                 }
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_UPDATE) != 0) {
+                if ((wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.TRANSACTION_UPDATE) ) ) {
                     element("Operation", "Update");
                 }
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_DELETE) != 0) {
+                if ((wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.TRANSACTION_DELETE) ) ) {
                     element("Operation", "Delete");
                 }
 
-                if ((wfs.getServiceLevel() | WFS.SERVICE_LOCKING) != 0) {
+                if ((wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.LOCKFEATURE) ) ) {
                     element("Operation", "Lock");
                 }
 
                 end("Operations");
                 
-                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+                List featureTypes = new ArrayList(catalog.getFeatureTypes());
                 
                 // filter out disabled feature types
                 for (Iterator it = featureTypes.iterator(); it.hasNext();) {
@@ -1223,7 +1218,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     String namespace = request.getNamespace();
                     for (Iterator it = featureTypes.iterator(); it.hasNext();) {
                         FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
-                        if(!namespace.equals(ft.getNameSpace().getPrefix()))
+                        if(!namespace.equals(ft.getNamespace().getPrefix()))
                             it.remove();
                     }
                 }
@@ -1329,8 +1324,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                  * @param featureType
                  */
             void featureType(FeatureTypeInfo featureType) {
-                String prefix = featureType.getNameSpace().getPrefix();
-                String uri = featureType.getNameSpace().getURI();
+                String prefix = featureType.getNamespace().getPrefix();
+                String uri = featureType.getNamespace().getURI();
 
                 start("FeatureType", attributes(new String[] { "xmlns:" + prefix, uri }));
 
@@ -1345,12 +1340,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 //TODO: other srs's
 
                 Envelope bbox = null;
-
-                try {
-                    bbox = featureType.getLatLongBoundingBox();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                bbox = featureType.getLatLonBoundingBox();
 
                 start("ows:WGS84BoundingBox");
 
@@ -1593,7 +1583,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 start("ows:DCP");
                 start("ows:HTTP");
 
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), 
+                    wfs.getGeoServer().getGlobal().getProxyBaseUrl());
 
                 if (proxifiedBaseUrl.endsWith("?")) {
                     proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.length() - 1);

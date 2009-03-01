@@ -12,24 +12,26 @@ import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
 import net.opengis.wfs.TransactionType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.util.Version;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.identity.FeatureId;
-import org.vfny.geoserver.global.Data;
 import org.xml.sax.SAXException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 
 
@@ -37,14 +39,14 @@ public class TransactionResponse extends Response {
     private boolean verbose = false;
     private String indent = " ";
     private String offset = "";
-    WFS wfs;
-    Data catalog;
+    WFSInfo wfs;
+    Catalog catalog;
     WFSConfiguration configuration;
 
-    public TransactionResponse(WFS wfs, Data catalog, WFSConfiguration configuration) {
+    public TransactionResponse(GeoServer gs, WFSConfiguration configuration) {
         super(TransactionResponseType.class);
-        this.wfs = wfs;
-        this.catalog = catalog;
+        this.wfs = gs.getService( WFSInfo.class );
+        this.catalog = gs.getCatalog();
         this.configuration = configuration;
     }
 
@@ -68,12 +70,13 @@ public class TransactionResponse extends Response {
         throws IOException, ServiceException {
         TransactionResultsType result = response.getTransactionResults();
 
-        Writer writer = new OutputStreamWriter(output, wfs.getCharSet());
+        Charset charset = Charset.forName( wfs.getGeoServer().getGlobal().getCharset() );
+        Writer writer = new OutputStreamWriter(output, charset);
         writer = new BufferedWriter(writer);
 
         //boolean verbose = ConfigInfo.getInstance().formatOutput();
         //String indent = ((verbose) ? "\n" + OFFSET : " ");
-        String encoding = wfs.getCharSet().name();
+        String encoding = charset.name();
         String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>";
         writer.write(xmlHeader);
 
@@ -92,7 +95,8 @@ public class TransactionResponse extends Response {
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
 
         TransactionType req = (TransactionType)operation.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), 
+            wfs.getGeoServer().getGlobal().getProxyBaseUrl());
         
         String baseUrl = ResponseUtils.appendPath(proxifiedBaseUrl,
                 "schemas/wfs/1.0.0/WFS-transaction.xsd");
@@ -196,10 +200,11 @@ public class TransactionResponse extends Response {
         }
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setEncoding(wfs.getCharSet());
+        encoder.setEncoding(Charset.forName( wfs.getGeoServer().getGlobal().getCharset()) );
 
         TransactionType req = (TransactionType)operation.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), 
+            wfs.getGeoServer().getGlobal().getProxyBaseUrl());
         
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
             ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));

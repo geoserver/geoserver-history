@@ -12,6 +12,12 @@ import java.util.Map;
 import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.event.CatalogAddEvent;
+import org.geoserver.catalog.event.CatalogListener;
+import org.geoserver.catalog.event.CatalogModifyEvent;
+import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
@@ -29,10 +35,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.SetterInjectionComponentAdapter;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-
 
 /**
  * Parser configuration for wfs 1.0.
@@ -41,29 +43,37 @@ import org.vfny.geoserver.global.GeoServer;
  * TODO: this class duplicates a lot of what is is in the 1.1 configuration, merge them
  */
 public class WFSConfiguration extends Configuration {
-    Data catalog;
+    Catalog catalog;
     FeatureTypeSchemaBuilder schemaBuilder;
 
-    public WFSConfiguration(Data catalog, FeatureTypeSchemaBuilder schemaBuilder, final WFS wfs) {
+    public WFSConfiguration(Catalog catalog, FeatureTypeSchemaBuilder schemaBuilder, final WFS wfs) {
         super( wfs );
 
         this.catalog = catalog;
         this.schemaBuilder = schemaBuilder;
 
-        catalog.getGeoServer().addListener(
-            new GeoServer.Listener() {
-    
-              public void changed() {
-                  wfs.flush();
-              }
+        catalog.addListener(new CatalogListener() {
+
+            public void handleAddEvent(CatalogAddEvent event) {
             }
-          );
+
+            public void handleModifyEvent(CatalogModifyEvent event) {
+            }
+
+            public void handleRemoveEvent(CatalogRemoveEvent event) {
+            }
+
+            public void reloaded() {
+                wfs.flush();
+            }
+                
+        });
         
         addDependency(new OGCConfiguration());
         addDependency(new GMLConfiguration());
     }
 
-    public Data getCatalog() {
+    public Catalog getCatalog() {
       return catalog;
     }
 
@@ -122,7 +132,7 @@ public class WFSConfiguration extends Configuration {
             .getComponentInstanceOfType(FeatureTypeCache.class);
 
         try {
-            Collection featureTypes = catalog.getFeatureTypeInfos().values();
+            Collection featureTypes = catalog.getFeatureTypes();
 
             for (Iterator f = featureTypes.iterator(); f.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) f.next();

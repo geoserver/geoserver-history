@@ -25,6 +25,10 @@ import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
 import net.opengis.wfs.XlinkPropertyNameType;
 
+import org.geoserver.catalog.AttributeTypeInfo;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -53,10 +57,6 @@ import org.opengis.filter.spatial.BBOX;
 import org.opengis.filter.spatial.BinarySpatialOperator;
 import org.opengis.metadata.extent.GeographicBoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.AttributeTypeInfo;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
 
 /**
  * Web Feature Service GetFeature operation.
@@ -75,10 +75,10 @@ public class GetFeature {
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
     /** The catalog */
-    protected Data catalog;
+    protected Catalog catalog;
 
     /** The wfs configuration */
-    protected WFS wfs;
+    protected WFSInfo wfs;
 
     /** filter factory */
     protected FilterFactory filterFactory;
@@ -87,7 +87,7 @@ public class GetFeature {
      * Creates the GetFeature operation.
      *
      */
-    public GetFeature(WFS wfs, Data catalog) {
+    public GetFeature(WFSInfo wfs, Catalog catalog) {
         this.wfs = wfs;
         this.catalog = catalog;
     }
@@ -95,14 +95,14 @@ public class GetFeature {
     /**
      * @return The reference to the GeoServer catalog.
      */
-    public Data getCatalog() {
+    public Catalog getCatalog() {
         return catalog;
     }
 
     /**
      * @return The reference to the WFS configuration.
      */
-    public WFS getWFS() {
+    public WFSInfo getWFS() {
         return wfs;
     }
 
@@ -150,7 +150,7 @@ public class GetFeature {
 
         // take into consideration the wfs max features
         int maxFeatures = Math.min(request.getMaxFeatures().intValue(),
-                wfs.getGeoServer().getMaxFeatures());
+                wfs.getMaxFeatures());
 
         int count = 0; //should probably be long
 
@@ -167,10 +167,13 @@ public class GetFeature {
                     //TODO: a join is taking place
                 }
 
-                FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource();
+                FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource(null,null);
 
-                List atts = meta.getAttributes();
-                List attNames = meta.getAttributeNames();
+                List<AttributeTypeInfo> atts = meta.getAttributes();
+                List attNames = new ArrayList( atts.size() );
+                for ( AttributeTypeInfo att : atts ) {
+                    attNames.add( att.getName() );
+                }
 
                 //make sure property names are cool
                 List propNames = query.getPropertyName();
@@ -223,7 +226,8 @@ public class GetFeature {
                         // if we need to force feature bounds computation, we have to load 
                         // all of the geometries, but we'll have to remove them in the 
                         // returned feature type
-                        if(wfs.isFeatureBounding() && meta.getFeatureType().getDescriptor(ati.getName()) instanceof GeometryDescriptor
+                        GMLInfo gml = wfs.getGML().get( WFSInfo.Version.get( request.getVersion() ) );
+                        if(gml.isFeatureBounding() && meta.getFeatureType().getDescriptor(ati.getName()) instanceof GeometryDescriptor
                                 && !properties.contains(ati.getName())) {
                             properties.add(ati.getName());
                             extraGeometries.add(ati.getName());
@@ -284,7 +288,7 @@ public class GetFeature {
                     
                     //3. ensure that any bounds specified as part of the query
                     // are valid with respect to the srs defined on the query
-                    if ( wfs.getCiteConformanceHacks() ) {
+                    if ( wfs.isCiteCompliant() ) {
                         
                         if ( query.getSrsName() != null ) {
                             final QueryType fquery = query;
@@ -605,8 +609,7 @@ public class GetFeature {
     }
     
     FeatureTypeInfo featureTypeInfo(QName name) throws WFSException, IOException {
-        FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(),
-                name.getNamespaceURI());
+        FeatureTypeInfo meta = catalog.getFeatureTypeByName(name.getNamespaceURI(), name.getLocalPart());
 
         if (meta == null) {
             String msg = "Could not locate " + name + " in catalog.";

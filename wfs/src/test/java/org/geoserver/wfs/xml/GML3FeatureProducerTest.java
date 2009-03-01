@@ -11,6 +11,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
@@ -24,7 +25,6 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.global.DataStoreInfo;
 import org.w3c.dom.Document;
 
 public class GML3FeatureProducerTest extends WFSTestSupport {
@@ -37,11 +37,11 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
     }
 
     GML3OutputFormat producer() {
-        FeatureTypeSchemaBuilder sb = new FeatureTypeSchemaBuilder.GML3(getWFS(), getCatalog(),
+        FeatureTypeSchemaBuilder sb = new FeatureTypeSchemaBuilder.GML3(getGeoServer(),
                 getResourceLoader()); 
         WFSConfiguration configuration = new WFSConfiguration(getCatalog(),
                 sb, new WFS(sb));
-        return new GML3OutputFormat(getWFS(), getCatalog(), configuration);
+        return new GML3OutputFormat(getGeoServer(), configuration);
     }
     
     Operation request() {
@@ -54,9 +54,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
     }
 
     public void testSingle() throws Exception {
-        DataStoreInfo dataStore = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
-        FeatureSource<? extends FeatureType, ? extends Feature> source;
-        source = dataStore.getDataStore().getFeatureSource(new NameImpl(MockData.SEVEN.getLocalPart()));
+        FeatureSource<? extends FeatureType, ? extends Feature> source = getFeatureSource(MockData.SEVEN);
         FeatureCollection<? extends FeatureType, ? extends Feature> features = source.getFeatures();
 
         FeatureCollectionType fcType = WfsFactory.eINSTANCE
@@ -76,19 +74,11 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
     }
 
     public void testMultipleSameNamespace() throws Exception {
-        DataStoreInfo dataStore = getCatalog()
-                .getDataStoreInfo(MockData.CDF_PREFIX);
-
         FeatureCollectionType fcType = WfsFactory.eINSTANCE
                 .createFeatureCollectionType();
         fcType.getFeature().add(
-                dataStore.getDataStore().getFeatureSource(
-                        new NameImpl(MockData.SEVEN.getLocalPart()))
-                        .getFeatures());
-        fcType.getFeature().add(
-                dataStore.getDataStore().getFeatureSource(
-                        new NameImpl(MockData.FIFTEEN.getLocalPart()))
-                        .getFeatures());
+               getFeatureSource(MockData.SEVEN).getFeatures());
+        fcType.getFeature().add(getFeatureSource(MockData.FIFTEEN).getFeatures());
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         producer().write(fcType, output, request());
@@ -103,24 +93,12 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
     }
 
     public void testMultipleDifferentNamespace() throws Exception {
-        DataStoreInfo seven = getCatalog()
-                .getDataStoreInfo(MockData.CDF_PREFIX);
-        DataStoreInfo polys = getCatalog()
-                .getDataStoreInfo(MockData.CGF_PREFIX);
-
         FeatureCollectionType fcType = WfsFactory.eINSTANCE
                 .createFeatureCollectionType();
-        fcType.getFeature().add(
-                seven.getDataStore().getFeatureSource(
-                        new NameImpl(MockData.SEVEN.getLocalPart()))
-                        .getFeatures());
-        fcType.getFeature().add(
-                polys.getDataStore().getFeatureSource(
-                        new NameImpl(MockData.POLYGONS.getLocalPart()))
-                        .getFeatures());
-        int npolys = polys.getDataStore().getFeatureSource(
-                new NameImpl(MockData.POLYGONS.getLocalPart()))
-                .getFeatures().size();
+        fcType.getFeature().add(getFeatureSource(MockData.SEVEN).getFeatures());
+        fcType.getFeature().add(getFeatureSource(MockData.POLYGONS).getFeatures());
+        
+        int npolys = getFeatureSource(MockData.POLYGONS).getFeatures().size();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         producer().write(fcType, output, request());

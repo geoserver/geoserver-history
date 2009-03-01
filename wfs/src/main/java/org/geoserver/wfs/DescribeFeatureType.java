@@ -5,15 +5,17 @@
 package org.geoserver.wfs;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.NameSpaceInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.xml.namespace.QName;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.GeoServer;
 
 
 /**
@@ -33,12 +35,12 @@ public class DescribeFeatureType {
     /**
     * Catalog reference
     */
-    private Data catalog;
+    private Catalog catalog;
 
     /**
      * WFS service
      */
-    private WFS wfs;
+    private WFSInfo wfs;
 
     /**
          * Creates a new wfs DescribeFeatureType operation.
@@ -46,24 +48,24 @@ public class DescribeFeatureType {
          * @param wfs The wfs configuration
          * @param catalog The geoserver catalog.
          */
-    public DescribeFeatureType(WFS wfs, Data catalog) {
+    public DescribeFeatureType(WFSInfo wfs, Catalog catalog) {
         this.catalog = catalog;
         this.wfs = wfs;
     }
 
-    public WFS getWFS() {
+    public WFSInfo getWFS() {
         return wfs;
     }
 
-    public void setWFS(WFS wfs) {
+    public void setWFS(WFSInfo wfs) {
         this.wfs = wfs;
     }
 
-    public Data getCatalog() {
+    public Catalog getCatalog() {
         return catalog;
     }
 
-    public void setCatalog(Data catalog) {
+    public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
     }
 
@@ -71,7 +73,7 @@ public class DescribeFeatureType {
         throws WFSException {
         List names = new ArrayList(request.getTypeName());
 
-        final boolean citeConformance = getWFS().getCiteConformanceHacks();
+        final boolean citeConformance = getWFS().isCiteCompliant();
         if (!citeConformance) {
             // HACK: as per GEOS-1816, if strict cite compliance is not set, and
             // the user specified a typeName with no namespace prefix, we want
@@ -80,8 +82,7 @@ public class DescribeFeatureType {
             // of QName type, not having a ns prefix means it got parsed as a
             // QName in the default namespace. That is, in the wfs namespace.
             List hackedNames = new ArrayList(names.size());
-            final Data catalog = getWFS().getData();
-            final NameSpaceInfo defaultNameSpace = catalog.getDefaultNameSpace();
+            final NamespaceInfo defaultNameSpace = catalog.getDefaultNamespace();
             if (defaultNameSpace == null) {
                 throw new IllegalStateException("No default namespace configured in GeoServer");
             }
@@ -100,7 +101,7 @@ public class DescribeFeatureType {
         }
 
         //list of catalog handles
-        Collection infos = catalog.getFeatureTypeInfos().values();
+        Collection infos = catalog.getFeatureTypes();
         ArrayList requested = new ArrayList();
 
         if (!names.isEmpty()) {
@@ -113,8 +114,8 @@ O:
                     if(!meta.isEnabled())
                         continue;
                     
-                    String namespace = meta.getNameSpace().getURI();
-                    String local = meta.getTypeName();
+                    String namespace = meta.getNamespace().getURI();
+                    String local = meta.getName();
 
                     if (namespace.equals(name.getNamespaceURI())
                             && local.equals(name.getLocalPart())) {

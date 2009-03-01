@@ -18,14 +18,16 @@ public class SrsNameTest extends WFSTestSupport {
     @Override
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
-        getWFS().setFeatureBounding(true);
+        
+        WFSInfo wfs = getWFS();
+        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding(true);
+        getGeoServer().save( wfs );
     }
 
     public void testWfs10() throws Exception {
         String q = "wfs?request=getfeature&service=wfs&version=1.0.0"
                 + "&typename=cgf:Points";
         Document d = getAsDOM(q);
-        
         assertEquals("wfs:FeatureCollection", d.getDocumentElement()
                 .getNodeName());
 
@@ -48,8 +50,12 @@ public class SrsNameTest extends WFSTestSupport {
     }
 
     public void testWfs11() throws Exception {
-        boolean oldFeatureBounding = getWFS().isFeatureBounding();
-        getWFS().setFeatureBounding(true);
+        WFSInfo wfs = getWFS();
+        boolean oldFeatureBounding = wfs.getGML().get( WFSInfo.Version.V_11 ).isFeatureBounding();
+        
+        wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(true);
+        getGeoServer().save( wfs );
+        
         try {
             String q = "wfs?request=getfeature&service=wfs&version=1.1.0"
                     + "&typename=cgf:Points";
@@ -74,7 +80,8 @@ public class SrsNameTest extends WFSTestSupport {
             }
         }
         finally {
-            getWFS().setFeatureBounding(oldFeatureBounding);
+            wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(oldFeatureBounding);
+            getGeoServer().save( wfs );
         }
     }
 }

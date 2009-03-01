@@ -21,19 +21,19 @@ import javax.xml.transform.TransformerException;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.gml.producer.FeatureTypeTransformer;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
 
 public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
     /** Standard logging instance for class */
@@ -52,13 +52,13 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</xs:schema>";
-    WFS wfs;
-    Data catalog;
+    WFSInfo wfs;
+    Catalog catalog;
 
-    public XmlSchemaEncoder(WFS wfs, Data catalog) {
+    public XmlSchemaEncoder(GeoServer gs) {
         super("XMLSCHEMA");
-        this.wfs = wfs;
-        this.catalog = catalog;
+        this.wfs = gs.getService( WFSInfo.class );
+        this.catalog = gs.getCatalog();
     }
 
     public String getMimeType(Object value, Operation operation)
@@ -71,7 +71,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         //generates response, using general function
         String xmlResponse = generateTypes(featureTypeInfos, (DescribeFeatureTypeType) describeFeatureType.getParameters()[0]);
 
-        if (!wfs.isVerbose()) {
+        if (!wfs.getGeoServer().getGlobal().isVerbose()) {
             //strip out the formatting.  This is pretty much the only way we
             //can do this, as the user files are going to have newline
             //characters and whatnot, unless we can get rid of formatting
@@ -81,7 +81,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             xmlResponse = xmlResponse.replaceAll("\n[ \\t\\n]*", " ");
         }
 
-        Writer writer = new OutputStreamWriter(output, wfs.getCharSet());
+        Writer writer = new OutputStreamWriter(output, wfs.getGeoServer().getGlobal().getCharset());
         writer.write(xmlResponse);
         writer.flush();
     }
@@ -101,22 +101,23 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         // Initialize return information and intermediate return objects
         StringBuffer tempResponse = new StringBuffer();
 
-        tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfs.getCharSet().name()
+        tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfs.getGeoServer().getGlobal().getCharset()
             + "\"?>" + "\n<xs:schema ");
 
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), 
+                wfs.getGeoServer().getGlobal().getProxyBaseUrl());
         //allSameType will throw WFSException if there are types that are not found.
         if (allSameType(infos)) {
             //all the requested have the same namespace prefix, so return their
             //schemas.
             FeatureTypeInfo ftInfo = infos[0];
-            String targetNs = ftInfo.getNameSpace().getURI();
+            String targetNs = ftInfo.getNamespace().getURI();
 
             //String targetNs = nsInfoType.getXmlns();
             tempResponse.append(TARGETNS_PREFIX + targetNs + TARGETNS_SUFFIX);
 
             //namespace
-            tempResponse.append("\n  " + "xmlns:" + ftInfo.getNameSpace().getPrefix() + "=\""
+            tempResponse.append("\n  " + "xmlns:" + ftInfo.getNamespace().getPrefix() + "=\""
                 + targetNs + "\"");
 
             //xmlns:" + nsPrefix + "=\"" + targetNs
@@ -148,7 +149,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             //iterate through the types, and make a set of their prefixes.
             for (int i = 0; i < infos.length; i++) {
                 FeatureTypeInfo ftInfo = infos[i];
-                prefixes.add(ftInfo.getNameSpace().getPrefix());
+                prefixes.add(ftInfo.getNamespace().getPrefix());
             }
 
             Iterator prefixIter = prefixes.iterator();
@@ -188,7 +189,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         LOGGER.finer("prefix is " + prefix);
 
         StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
-        String namespace = catalog.getNameSpace(prefix).getURI();
+        String namespace = catalog.getNamespace(prefix).getURI();
         retBuffer.append(namespace + "\"");
         retBuffer.append("\n        schemaLocation=\"" + baseUrl
             + "?request=DescribeFeatureType&amp;service=wfs&amp;version=1.0.0&amp;typeName=");
@@ -253,7 +254,8 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             FeatureTypeInfo ftInfo = (FeatureTypeInfo) infos[i];
 
             if (!validTypes.contains(ftInfo)) {
-                File schemaFile = ftInfo.getSchemaFile();
+                //TODO: ressurect this
+                File schemaFile = null; /*ftInfo.getSchemaFile();*/
 
                 try {
                     //Hack here, schemaFile should not be null, but it is
@@ -328,8 +330,8 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      * @return The element part of the response.
      */
     private static String printElement(FeatureTypeInfo type) {
-        return "\n  <xs:element name=\"" + type.getTypeName() + "\" type=\""
-        + type.getNameSpace().getPrefix() + ":" + type.getSchemaName()
+        return "\n  <xs:element name=\"" + type.getName() + "\" type=\""
+        + type.getNamespace().getPrefix() + ":" + type.getName() + "Type"
         + "\" substitutionGroup=\"gml:_Feature\"/>";
     }
 
@@ -390,7 +392,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         for (int i = 0; i < infos.length; i++) {
             FeatureTypeInfo ftInfo = infos[i];
 
-            if (!first.getNameSpace().equals(ftInfo.getNameSpace())) {
+            if (!first.getNamespace().equals(ftInfo.getNamespace())) {
                 return false;
             }
         }

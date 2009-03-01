@@ -18,6 +18,8 @@ import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.wfs.WFSException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
@@ -28,8 +30,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.spatial.BBOX;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -38,14 +38,14 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
     /**
      * Catalog used in qname parsing
      */
-    Data catalog;
+    Catalog catalog;
 
     /**
      * Factory used in filter parsing
      */
     FilterFactory filterFactory;
 
-    public GetFeatureKvpRequestReader(Class requestBean, Data catalog, FilterFactory filterFactory) {
+    public GetFeatureKvpRequestReader(Class requestBean, Catalog catalog, FilterFactory filterFactory) {
         super(requestBean);
         this.catalog = catalog;
         this.filterFactory = filterFactory;
@@ -86,7 +86,7 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
                 QName qName = (QName) itr.next();
                 
                 // check the type name is known, otherwise complain
-                if(catalog.getFeatureTypeInfo(qName) == null) {
+                if(catalog.getFeatureTypeByName(qName.getNamespaceURI(), qName.getLocalPart()) == null) {
                     String name = qName.getPrefix() + ":" + qName.getLocalPart();
                     throw new WFSException("Feature type " + name + " unknown", "InvalidParameterValue", "typeName");
                 }
@@ -226,7 +226,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
     }
 
     BBOX bboxFilter(QName typeName, Envelope bbox) throws Exception {
-        FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(typeName);
+        FeatureTypeInfo featureTypeInfo = 
+            catalog.getFeatureTypeByName(typeName.getNamespaceURI(), typeName.getLocalPart());
 
         //JD: should this be applied to all geometries?
         //String name = featureType.getDefaultGeometry().getLocalName();

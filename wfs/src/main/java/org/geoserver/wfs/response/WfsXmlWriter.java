@@ -6,7 +6,7 @@ package org.geoserver.wfs.response;
 
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
-import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.filter.v1_0.OGC;
 import org.geotools.gml2.GML;
 import org.geotools.xs.XS;
@@ -53,7 +53,7 @@ public abstract class WfsXmlWriter {
     /**
      * wfs configuration
      */
-    WFS wfs;
+    WFSInfo wfs;
 
     /**
      * The output stream
@@ -85,12 +85,12 @@ public abstract class WfsXmlWriter {
      */
     BufferedWriter writer;
 
-    public WfsXmlWriter(WFS wfs, OutputStream output) {
+    public WfsXmlWriter(WFSInfo wfs, OutputStream output) {
         this.wfs = wfs;
         this.output = output;
 
         //default to wfs configured charset
-        charSetEncoding = wfs.getCharSet().name();
+        charSetEncoding = wfs.getGeoServer().getGlobal().getCharset();
 
         //schema locations
         schemaLocations = new HashMap();
@@ -159,7 +159,8 @@ public abstract class WfsXmlWriter {
         boolean root = writer == null;
 
         if (root) {
-            writer = new BufferedWriter(new OutputStreamWriter(output, wfs.getCharSet()));
+            writer = new BufferedWriter(new OutputStreamWriter(output, 
+                wfs.getGeoServer().getGlobal().getCharset()));
 
             //write the processing instruction
             writer.write("<?xml version=\"1.0\" encoding=\"" + charSetEncoding + "\"?>");
@@ -207,7 +208,7 @@ public abstract class WfsXmlWriter {
     }
 
     public static class WFS1_0 extends WfsXmlWriter {
-        public WFS1_0(WFS wfs, OutputStream output) {
+        public WFS1_0(WFSInfo wfs, OutputStream output) {
             super(wfs, output);
 
             //set the schema location
@@ -219,7 +220,7 @@ public abstract class WfsXmlWriter {
     }
 
     public static class WFS1_1 extends WfsXmlWriter {
-        public WFS1_1(WFS wfs, OutputStream output) {
+        public WFS1_1(WFSInfo wfs, OutputStream output) {
             super(wfs, output);
 
             //add the ows namespace

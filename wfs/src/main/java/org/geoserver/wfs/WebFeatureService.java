@@ -14,9 +14,9 @@ import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
-import org.geotools.xml.transform.TransformerBase;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geotools.xml.transform.TransformerBase;
 
 /**
  * Web Feature Service implementation, versions 1.0, and 1.1.
