@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.sql.Connection;
 
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
@@ -29,11 +30,15 @@ import org.opengis.filter.spatial.BBOX;
 public class RandomRegionatingStrategy extends
         CachedHierarchyRegionatingStrategy {
 
+    public RandomRegionatingStrategy(GeoServer gs) {
+        super(gs);
+    }
+
     @Override
     public FeatureIterator getSortedFeatures(GeometryDescriptor geom, 
             ReferencedEnvelope latLongEnv, ReferencedEnvelope nativeEnv,
             Connection cacheConn) throws Exception {
-        FeatureSource fs = ((FeatureTypeInfo)layerInfo.getResource()).getFeatureSource(null, null);
+        FeatureSource fs = featureType.getFeatureSource(null, null);
         
         // build the bbox filter
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);

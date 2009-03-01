@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vividsolutions.jts.geom.Envelope;
-
+import org.geoserver.catalog.Catalog;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.DataUtilities;
@@ -38,11 +37,12 @@ import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -456,9 +456,9 @@ public class KMLUtils {
         String stratname = (String) mapContext.getRequest().getFormatOptions()
                 .get("regionateBy");
         if (("auto").equals(stratname)) {
-            Data catalog = mapContext.getRequest().getWMS().getData();
+            Catalog catalog = mapContext.getRequest().getWMS().getGeoServer().getCatalog();
             Name name = layer.getFeatureSource().getName();
-            stratname = catalog.getFeatureTypeInfo(name).getRegionateStrategy();
+            stratname = (String) catalog.getFeatureTypeByName(name).getMetadata().get( "kml.regionateStrategy" );
             if (stratname == null || "".equals( stratname ) ){
                 stratname = "best_guess";
                 LOGGER.log(

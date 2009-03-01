@@ -307,7 +307,7 @@ public final class MapLayerInfo {
         throw new IllegalStateException();
     }
 
-    public static String getRegionateAttribute(LayerInfo layerInfo) {
+    public static String getRegionateAttribute(FeatureTypeInfo layerInfo) {
         return (String) layerInfo.getMetadata().get("kml.regionateAttribute");
     }
 }

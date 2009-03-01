@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.batik.dom.util.HashTable;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServer;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.map.MapLayer;
@@ -18,8 +20,6 @@ import org.geotools.styling.Symbolizer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -69,8 +69,8 @@ public class KMLVectorTransformer extends KMLMapTransformer {
             geometryTransformer.setOmitXMLDeclaration(true);
             geometryTransformer.setNamespaceDeclarationEnabled(true);
 
-            GeoServer config = mapContext.getRequest().getGeoServer();
-            geometryTransformer.setNumDecimals(config.getNumDecimals());
+            GeoServer config = mapContext.getRequest().getWMS().getGeoServer();
+            geometryTransformer.setNumDecimals(config.getGlobal().getNumDecimals());
 
             geometryTranslator = 
                 (KMLGeometryTransformer.KMLGeometryTranslator)
@@ -84,7 +84,7 @@ public class KMLVectorTransformer extends KMLMapTransformer {
         public void encode(Object o) throws IllegalArgumentException {
             FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) o;
             SimpleFeatureType featureType = features.getSchema();
-            Data catalog = mapContext.getRequest().getWMS().getData();
+            Catalog catalog = mapContext.getRequest().getWMS().getGeoServer().getCatalog();
 
             if (isStandAlone()) {
                 start( "kml" );

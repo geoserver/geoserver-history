@@ -11,7 +11,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -79,6 +81,10 @@ public class ExternalSortRegionatingStrategy extends
 
     String h2Type;
 
+    public ExternalSortRegionatingStrategy(GeoServer gs) {
+        super( gs );
+    }
+    
     @Override
     protected final String getDatabaseName(WMSMapContext con, MapLayer layer)
             throws Exception {
@@ -92,7 +98,7 @@ public class ExternalSortRegionatingStrategy extends
     }
 
     @Override
-    protected final String getDatabaseName(LayerInfo cfg)
+    protected final String getDatabaseName(FeatureTypeInfo cfg)
             throws Exception { 
         return super.getDatabaseName(cfg) + "_" + checkAttribute(cfg);
     }
@@ -102,7 +108,7 @@ public class ExternalSortRegionatingStrategy extends
         Map options = con.getRequest().getFormatOptions();
         attribute = (String) options.get("regionateAttr");
         if (attribute == null)
-            attribute = MapLayerInfo.getRegionateAttribute(layerInfo);
+            attribute = checkAttribute(featureType);
         if (attribute == null)
             throw new WmsException(
                     "Regionating attribute has not been specified");
@@ -111,7 +117,7 @@ public class ExternalSortRegionatingStrategy extends
         AttributeDescriptor ad = ft.getDescriptor(attribute);
         if (ad == null) {
             throw new WmsException("Could not find regionating attribute "
-                    + attribute + " in layer " + layerInfo.getName());
+                    + attribute + " in layer " + featureType.getName());
         }
 
         // Make sure we know how to turn that attribute into a H2 type
@@ -119,11 +125,11 @@ public class ExternalSortRegionatingStrategy extends
         if (h2Type == null)
             throw new WmsException("Attribute type " + ad.getType()
                     + " is not " + "supported for external sorting on "
-                    + layerInfo.getName() + "#" + attribute);
+                    + featureType.getName() + "#" + attribute);
     }
 
-    protected String checkAttribute(LayerInfo cfg){
-        return  MapLayerInfo.getRegionateAttribute(cfg);
+    protected String checkAttribute(FeatureTypeInfo cfg){
+        return MapLayerInfo.getRegionateAttribute(cfg); 
     }
 
     @Override

@@ -17,12 +17,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.h2.tools.DeleteDbFiles;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.LayerInfo;
-import org.geoserver.config.GeoServerInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.HttpErrorCodeException;
-import org.geoserver.wms.MapLayerInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.jdbc.JDBCUtils;
 import org.geotools.factory.CommonFactoryFinder;
@@ -33,6 +31,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.projection.ProjectionException;
 import org.geotools.util.CanonicalSet;
 import org.geotools.util.logging.Logging;
+import org.h2.tools.DeleteDbFiles;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
@@ -109,38 +108,49 @@ public abstract class CachedHierarchyRegionatingStrategy implements
     /**
      * Reference to the layer being regionated
      */
-    protected LayerInfo layerInfo;
+    protected FeatureTypeInfo featureType;
 
     /**
      * The max number of features per tile
      */
-    protected int featuresPerTile;
+    protected Integer featuresPerTile;
 
     /**
      * The name of the database that will contain the fid to tile cache
      */
     protected String tableName;
 
+    /**
+     * geoserver configuration
+     */
+    protected GeoServer gs;
+    
+    protected CachedHierarchyRegionatingStrategy(GeoServer gs) {
+        this.gs = gs;
+    }
+    
     public Filter getFilter(WMSMapContext context, MapLayer layer) {
+        Catalog catalog = gs.getCatalog();
         Set<String> featuresInTile = Collections.emptySet();
         try {
             // grab information needed to reach the db and get a hold to a db
             // connection
             FeatureSource featureSource = layer.getFeatureSource();
-            layerInfo = catalog.getFeatureTypeInfo(featureSource.getName());
-            String dataDir = catalog.getDataDirectory().getCanonicalPath();
+            featureType = catalog.getFeatureTypeByName(featureSource.getName());
+            
+            String dataDir = catalog.getResourceLoader().getBaseDirectory().getCanonicalPath();
             tableName = getDatabaseName(context, layer);
 
             // grab the features per tile, use a default if user did not
             // provide a decent value. The default should fill up the
             // tile when it shows up.
-            featuresPerTile = layerInfo.getRegionateFeatureLimit();
-            if (featuresPerTile <= 1)
+            featuresPerTile = (Integer) featureType.getMetadata().get( "kml.regionateFeatureLimit" );
+            if (featuresPerTile == null || featuresPerTile.intValue() <= 1)
                 featuresPerTile = 64;
 
             // sanity check, the layer is not geometryless
-            if (layerInfo.isGeometryless())
-                throw new WmsException(layerInfo.getName()
+            if (featureType.getFeatureType().getGeometryDescriptor() == null)
+                throw new WmsException(featureType.getName()
                         + " is geometryless, cannot generate KML!");
 
             // make sure the request is within the data bounds, allowing for a
@@ -148,8 +158,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             ReferencedEnvelope requestedEnvelope = context.getAreaOfInterest()
                     .transform(WGS84, true);
             LOGGER.log(Level.FINE, "Requested tile: {0}", requestedEnvelope);
-            dataEnvelope = new ReferencedEnvelope(layerInfo
-                    .getLatLongBoundingBox(), WGS84);
+            dataEnvelope = featureType.getLatLonBoundingBox(); 
 
             // decide which tile we need to load/compute, and make sure
             // it's a valid tile request, that is, that is does fit with
@@ -186,7 +195,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
         }
     }
 
-    public void clearCache(LayerInfo cfg){
+    public void clearCache(FeatureTypeInfo cfg){
         try{
             DeleteDbFiles.execute(
                 GeoserverDataDirectory.findCreateConfigDir("geosearch").getCanonicalPath(),
@@ -364,7 +373,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
         FeatureIterator fi = null;
         try {
             // grab the features
-            FeatureSource fs = layerInfo.getFeatureSource();
+            FeatureSource fs = featureType.getFeatureSource(null,null);
             GeometryDescriptor geom = fs.getSchema().getGeometryDescriptor();
             CoordinateReferenceSystem nativeCrs = geom
                     .getCoordinateReferenceSystem();
@@ -382,7 +391,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
                             + "the layer declared lat/lon bounds and retrying");
                     
                     // let's compare against the declared data bounds then
-                    ReferencedEnvelope llEnv = layerInfo.getLatLongBoundingBox();
+                    ReferencedEnvelope llEnv = featureType.getLatLonBoundingBox();
                     Envelope reduced = tile.getEnvelope().intersection(llEnv);
                     if(reduced.isNull() || reduced.getWidth() == 0 || reduced.getHeight() == 0) {
                         // no overlap, no party, the tile will be empty
@@ -419,7 +428,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
                     first = false;
                     CoordinateReferenceSystem nativeCRS = f.getType()
                             .getCoordinateReferenceSystem();
-                    layerInfo.getFeatureType().getCoordinateReferenceSystem();
+                    featureType.getFeatureType().getCoordinateReferenceSystem();
                     if (nativeCRS != null
                             && !CRS.equalsIgnoreMetadata(nativeCRS, WGS84)) {
                         tx = CRS.findMathTransform(nativeCRS, WGS84);
@@ -538,13 +547,12 @@ public abstract class CachedHierarchyRegionatingStrategy implements
     protected String getDatabaseName(WMSMapContext con, MapLayer layer)
         throws Exception {
             int index = Arrays.asList(con.getLayers()).indexOf(layer);
-            MapLayerInfo info = con.getRequest().getLayers()[index];
-            return info.getDirName();
+            return getDatabaseName(featureType);
     }
 
-    protected String getDatabaseName(LayerInfo cfg)
+    protected String getDatabaseName(FeatureTypeInfo cfg)
         throws Exception {
-            return cfg.getDirName();
+            return cfg.getNamespace().getPrefix() + "_" + cfg.getName();
     }
 
     /**

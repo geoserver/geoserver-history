@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.ows.HttpErrorCodeException;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.wms.MapLayerInfo;
@@ -21,7 +22,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.ContentHandler;
@@ -151,10 +151,15 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             if ("overview".equals(overlayMode)) {
                 // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
-                return featuresInTile(layer, box, false) <= getFeatureTypeInfo(layer).getRegionateFeatureLimit(); 
+                return featuresInTile(layer, box, false) <= getRegionateFeatureLimit(getFeatureTypeInfo(layer)); 
             }
 
             return featuresInTile(layer, box, true) > 0;
+        }
+        
+        private int getRegionateFeatureLimit( FeatureTypeInfo ft ) {
+            Integer regionateFeatureLimit = (Integer) ft.getMetadata().get("kml.regionateFeatureLimit"); 
+            return regionateFeatureLimit != null ? regionateFeatureLimit : -1;
         }
 
         private boolean shouldDrawWMSOverlay(MapLayer layer, Envelope box){
@@ -167,7 +172,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             String overlayMode = (String)mapContext.getRequest().getFormatOptions().get("overlayMode");
             if ("hybrid".equals(overlayMode) || "raster".equals(overlayMode)) return true;
             if ("overview".equals(overlayMode))
-                return featuresInTile(layer, box, false) > getFeatureTypeInfo(layer).getRegionateFeatureLimit();
+                return featuresInTile(layer, box, false) > getRegionateFeatureLimit(getFeatureTypeInfo(layer));
 
             return false;
         }
