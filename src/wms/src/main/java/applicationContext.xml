@@ -145,21 +145,21 @@
  	
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
- 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+ 		class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.CapabilitiesKvpReader" />
       	<constructor-arg index="2" ref="geoServer" />
 	</bean>
 
 	<bean id="describeLayerKvpReader"
-		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.DescribeLayerRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.DescribeLayerKvpRequestReader" />
-      	<constructor-arg index="2" ref="wms" />
+      	<constructor-arg index="2" ref="geoServer" />
 	</bean>
 	
 	<!-- bean id="getMapKvpReader"
-		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetMapRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetMapKvpReader" />
       	<constructor-arg index="2" ref="wms" />
@@ -169,39 +169,39 @@
         <constructor-arg ref="wms"/>
 	</bean>
 	<bean id="getFeatureInfoKvpReader"
-			class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+			class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetFeatureInfoRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetFeatureInfoKvpReader" />
-      	<constructor-arg index="2" ref="wms" />
+      	<constructor-arg index="2" ref="geoServer" />
 	</bean>
 	<bean id="getLegendGraphicKvpReader"
-			class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+			class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetLegendGraphicRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader" />
-      	<constructor-arg index="2" ref="wms" />
+      	<constructor-arg index="2" ref="geoServer" />
 	</bean>
   <!-- 
 	<bean id="putStylesKvpReader"
-		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.sld.requests.PutStylesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.sld.requests.PutStylesKvpReader" />
-      	<constructor-arg index="2" ref="wms" />
+      	<constructor-arg index="2" ref="geoServer" />
 	</bean>
    -->
 		
 	<!-- xml request readers -->
     <bean id="wmsCapabilitiesXmlReader" 
-    	class="org.geoserver.ows.adapters.XmlRequestReaderAdapter">
+    	class="org.geoserver.wms.xml.WMSXmlRequestReaderAdapter">
     	<constructor-arg index="0" value="http://www.opengis.net/ows"/> 
  	    <constructor-arg index="1" value="GetCapabilities"/> 
-    	<constructor-arg index="2" ref="wms"/>
+    	<constructor-arg index="2" ref="geoServer"/>
     	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.CapabilitiesXmlReader"/>
     </bean>
      <bean id="getMapXmlReader" 
-    	class="org.geoserver.ows.adapters.XmlRequestReaderAdapter">
+    	class="org.geoserver.wms.xml.WMSXmlRequestReaderAdapter">
     	<constructor-arg index="0" value="http://www.opengis.net/ows"/> 
  	    <constructor-arg index="1" value="GetMap"/> 
-    	<constructor-arg index="2" ref="wms"/>
+    	<constructor-arg index="2" ref="geoServer"/>
     	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.GetMapXmlReader"/>
     </bean>
    	<bean id="sldXmlReader"
@@ -235,14 +235,15 @@
 	</bean>
 	
 	<!-- Wrapping the PutStyles servlet in a controller while we wait to rewrite it for good -->
-	<bean id="putStylesWrapper" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <!-- GR: commenting out, putStyles is not being used nor maintained? -->
+	<!-- bean id="putStylesWrapper" class="org.springframework.web.servlet.mvc.ServletWrappingController">
 	   <property name="servletClass">
 	     <value>org.vfny.geoserver.sld.servlets.PutStyles</value>
 	   </property>
 	   <property name="servletName">
 	     <value>putstyles</value>
        </property>
-	</bean>
+	</bean-->
 	
 	<!-- http url mapping -->
 	<bean id="wmsURLMapping" 
@@ -251,7 +252,7 @@
 		<property name="mappings">
 			<props>
 				<prop key="/wms">dispatcher</prop>
-				<prop key="/wms/putstyles">putStylesWrapper</prop>
+				<!-- prop key="/wms/putstyles">putStylesWrapper</prop-->
 				<prop key="/wms/*">dispatcher</prop>
 			</props>
 		</property>
