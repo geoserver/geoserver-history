@@ -25,6 +25,7 @@ import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
 import org.xml.sax.SAXException;
 import java.io.BufferedReader;
 import java.io.File;
@@ -78,7 +79,7 @@ public class StylesEditorForm extends ActionForm {
 
         DataConfig config = ConfigRequests.getDataConfig(request);
 
-        UserContainer user = Requests.getUserContainer(request);
+        UserContainer user = RequestsLegacy.getUserContainer(request);
         StyleConfig style = user.getStyle();
         fullyValidate = true; //default value
         fullyValidateChecked = false; //required by html:checkbox

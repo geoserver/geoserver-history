@@ -7,13 +7,15 @@ package org.vfny.geoserver.action;
 import org.apache.struts.action.Action;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.wfs.WFS;
-import org.geoserver.wms.WMS;
 import org.springframework.web.struts.ActionSupport;
 import org.vfny.geoserver.global.ApplicationState;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.WCS;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
+
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
@@ -96,7 +98,7 @@ public class GeoServerAction extends ActionSupport {
      * @return UserContainer containing typesafe session information.
      */
     public UserContainer getUserContainer(HttpServletRequest request) {
-        return Requests.getUserContainer(request);
+        return RequestsLegacy.getUserContainer(request);
     }
 
     /**

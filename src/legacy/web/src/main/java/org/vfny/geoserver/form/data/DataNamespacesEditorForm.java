@@ -11,6 +11,8 @@ import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
+
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -54,7 +56,7 @@ public class DataNamespacesEditorForm extends ActionForm {
 
         NameSpaceConfig nsConfig;
 
-        nsConfig = Requests.getUserContainer(request).getNamespaceConfig();
+        nsConfig = RequestsLegacy.getUserContainer(request).getNamespaceConfig();
 
         _default = nsConfig.isDefault();
         prefix = nsConfig.getPrefix();

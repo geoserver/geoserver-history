@@ -40,6 +40,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.RequestsLegacy;
 
 
 /**
@@ -191,7 +192,7 @@ public final class CoveragesEditorForm extends ActionForm {
         newCoverage = "";
 
         final DataConfig config = ConfigRequests.getDataConfig(request);
-        final UserContainer user = Requests.getUserContainer(request);
+        final UserContainer user = RequestsLegacy.getUserContainer(request);
         final CoverageConfig type = user.getCoverageConfig();
 
         if (type == null) {

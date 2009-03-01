@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
+import org.geoserver.catalog.LayerInfo;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -36,7 +37,6 @@ import org.vfny.geoserver.form.wms.WMSContentForm;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.UserContainer;
 
 
@@ -129,7 +129,7 @@ public final class WMSContentAction extends ConfigAction {
                     Integer layerType = (Integer) catalog.getLayerType(layerName);
 
                     if (layerType != null) {
-                        if (layerType.intValue() == MapLayerInfo.TYPE_VECTOR) {
+                        if (layerType.intValue() == LayerInfo.Type.VECTOR.getCode().intValue()) {
                             FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
                             ftype = ((ftype != null) ? ftype
                                                      : catalog.getFeatureTypeInfo(layerName
@@ -196,7 +196,7 @@ public final class WMSContentAction extends ConfigAction {
                                         new double[] { newEnvelope.getMaxX(), newEnvelope.getMaxY() });
                                 selectedEnvelope.setCoordinateReferenceSystem(dstCRS);
                             }
-                        } else if (layerType.intValue() == MapLayerInfo.TYPE_RASTER) {
+                        } else if (layerType.intValue() == LayerInfo.Type.RASTER.getCode().intValue()) {
                             CoverageInfo cv = catalog.getCoverageInfo(layerName);
                             cv = ((cv != null) ? cv
                                                : catalog.getCoverageInfo(layerName.substring(layerName
