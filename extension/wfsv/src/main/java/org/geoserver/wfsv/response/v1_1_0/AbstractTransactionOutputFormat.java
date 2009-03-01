@@ -6,6 +6,7 @@ package org.geoserver.wfsv.response.v1_1_0;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,13 +26,18 @@ import net.opengis.wfs.WfsFactory;
 import net.opengis.wfsv.GetDiffType;
 
 import org.eclipse.emf.common.util.EList;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
+
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.postgis.FeatureDiff;
 import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.xml.Configuration;
@@ -41,8 +47,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+
 
 
 /**
@@ -56,8 +61,9 @@ public abstract class AbstractTransactionOutputFormat extends Response {
     /**
      * WFS configuration
      */
-    WFS wfs;
-    Data catalog;
+    WFSInfo wfs;
+    Catalog catalog;
+    GeoServerInfo global;
 
     /**
      * Xml configuration
@@ -79,13 +85,14 @@ public abstract class AbstractTransactionOutputFormat extends Response {
      */
     String mime;
 
-    public AbstractTransactionOutputFormat(WFS wfs, Data catalog, Configuration configuration,
+    public AbstractTransactionOutputFormat(GeoServer gs, Configuration configuration,
         FilterFactory filterFactory, QName element, String mime) {
         super(FeatureDiffReader[].class);
 
-        this.wfs = wfs;
+        this.wfs = gs.getService( WFSInfo.class );
+        this.global = gs.getGlobal();
         this.configuration = configuration;
-        this.catalog = catalog;
+        this.catalog = gs.getCatalog();
         this.filterFactory = filterFactory;
         this.element = element;
         this.mime = mime;
@@ -187,11 +194,11 @@ public abstract class AbstractTransactionOutputFormat extends Response {
         BaseRequestType gft = (BaseRequestType) operation.getParameters()[0];
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(), global.getProxyBaseUrl());
         encodeWfsSchemaLocation(encoder, proxifiedBaseUrl);
 
         encoder.setIndenting(true);
-        encoder.setEncoding(wfs.getCharSet());
+        encoder.setEncoding(Charset.forName( global.getCharset() ));
 
         // set up schema locations
         // round up the info objects for each feature collection
@@ -203,8 +210,7 @@ public abstract class AbstractTransactionOutputFormat extends Response {
 
             // load the metadata for the feature type
             String namespaceURI = featureType.getName().getNamespaceURI();
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getName().getLocalPart(),
-                    namespaceURI);
+            FeatureTypeInfo meta = catalog.getFeatureTypeByName( namespaceURI, featureType.getName().getLocalPart() );
 
             // add it to the map
             Set metas = (Set) ns2metas.get(namespaceURI);

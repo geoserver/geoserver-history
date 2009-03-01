@@ -6,8 +6,7 @@
   <!-- wfs service -->
   <bean id="wfsvServiceTarget"
     class="org.geoserver.wfsv.DefaultVersioningWebFeatureService">
-    <constructor-arg ref="wfs" />
-    <constructor-arg ref="catalog" />
+    <constructor-arg ref="geoServer" />
     <property name="filterFactory" ref="filterFactory" />
   </bean>
 
@@ -46,7 +45,7 @@
         <ref bean="wfsvService-1.1.0" />
       </list>
     </constructor-arg>
-    <constructor-arg ref="wfs" />
+    <constructor-arg ref="geoServer" />
   </bean>
 
   <!-- http url mapping -->
@@ -93,7 +92,7 @@
   
   <!-- Transaction element handlers -->
     <bean id="wfsRollbackElementHandler" class="org.geoserver.wfsv.RollbackElementHandler">
-      <constructor-arg ref="wfs"/>
+      <constructor-arg ref="geoServer"/>
       <constructor-arg ref="filterFactory"/>
     </bean>
     
@@ -114,7 +113,7 @@
   
   <!-- 1.1 wfsv xml readers -->
   <bean id="wfsv-xmlReader-1.1.0" class="org.geoserver.wfsv.xml.v1_1_0.WfsvXmlReader" abstract="true">
-    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="geoServer"/>
     <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
   </bean>
   <bean id="wfsvDescribeFeatureTypeXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
@@ -140,7 +139,7 @@
   </bean>
   <!-- 1.1 wfs readers handling extended elements -->
   <bean id="wfs-x-xmlReader-1.1.0" class="org.geoserver.wfsv.xml.v1_1_0.WfsXmlReader" abstract="true">
-    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="geoServer"/>
     <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
   </bean>
   <bean id="wfs-x-TransactionXmlReader-1.1.0" parent="wfs-x-xmlReader-1.1.0">
@@ -149,7 +148,7 @@
   
   <!-- 1.0 wfsv xml readers -->
   <bean id="wfsv-xmlReader-1.0.0" class="org.geoserver.wfsv.xml.v1_0_0.WfsvXmlReader" abstract="true">
-    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="geoServer"/>
     <constructor-arg ref="wfsvXmlConfiguration-1.0"/>
   </bean>
   <bean id="wfsvDescribeFeatureTypeXmlReader-1.0.0" parent="wfsv-xmlReader-1.0.0">
@@ -176,7 +175,7 @@
   
   <!-- 1.0 wfs readers handling extended elements -->
   <bean id="wfs-x-xmlReader-1.0.0" class="org.geoserver.wfsv.xml.v1_0_0.WfsXmlReader" abstract="true">
-    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="geoServer"/>
     <constructor-arg ref="wfsvXmlConfiguration-1.0"/>
   </bean>
   <bean id="wfs-x-TransactionXmlReader-1.0.0" parent="wfs-x-xmlReader-1.0.0">
@@ -185,8 +184,7 @@
   
   <!-- Encoders / Output formats -->
   <bean id="gml3VersionedFeatureTypeEncoder" class="org.geoserver.wfsv.response.v1_1_0.VersionedXmlSchemaEncoder">
-        <constructor-arg ref="wfs"/>
-        <constructor-arg ref="catalog"/>
+        <constructor-arg ref="geoServer"/>
         <constructor-arg ref="resourceLoader"/>
         <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
   </bean>
@@ -195,13 +193,10 @@
   </bean>
   <bean id="gml2VersionedOutputFormat" 
       class="org.geoserver.wfsv.response.v1_0_0.VersionedGML2OutputFormat" singleton="false">
-      <constructor-arg ref="wfs"/>
       <constructor-arg ref="geoServer"/>
-      <constructor-arg ref="catalog"/>
   </bean>
   <bean id="transaction110OutputFormat" class="org.geoserver.wfsv.response.v1_1_0.TransactionOutputFormat">
-    <constructor-arg ref="wfs"/>
-    <constructor-arg ref="catalog"/>
+    <constructor-arg ref="geoServer"/>
     <constructor-arg ref="xmlConfiguration-1.1"/>
     <constructor-arg ref="filterFactory"/>
   </bean>
@@ -212,22 +207,18 @@
     <constructor-arg ref="filterFactory"/>
   </bean>
   <bean id="versionedGml3OutputFormat" class="org.geoserver.wfsv.response.v1_1_0.VersionedGML3OutputFormat"> 
-        <constructor-arg ref="wfs"/>
-        <constructor-arg ref="catalog"/>
+        <constructor-arg ref="geoServer"/>
         <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
     </bean>
   <bean id="getLogGml3OutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogGML3OutputFormat">
-    <constructor-arg ref="wfs"/>
-    <constructor-arg ref="catalog"/>
+    <constructor-arg ref="geoServer"/>
     <constructor-arg ref="xmlConfiguration-1.1"/>
   </bean>
   <bean id="getLogGml2OutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogGML2OutputFormat">
-    <constructor-arg ref="wfs"/>
     <constructor-arg ref="geoServer"/>
-    <constructor-arg ref="catalog"/>
   </bean>
   <bean id="getLogJSONOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogJSONOutputFormat">
-  	<constructor-arg ref="wfs"/>
+  	<constructor-arg ref="geoServer"/>
   </bean>
   <bean id="getLogHtmlOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogHtmlOutputFormat">
   </bean>

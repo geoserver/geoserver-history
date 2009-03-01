@@ -1,13 +1,14 @@
 package org.geoserver.wfsv.response.v1_1_0;
 
 import org.eclipse.xsd.XSDSchema;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.GML3Profile;
 import org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration;
 import org.opengis.feature.type.AttributeDescriptor;
-import org.vfny.geoserver.global.Data;
 
 public class VersionedSchemaBuilder extends FeatureTypeSchemaBuilder {
     /**
@@ -15,8 +16,8 @@ public class VersionedSchemaBuilder extends FeatureTypeSchemaBuilder {
      */
     private static XSDSchema gml3Schema;
 
-    public VersionedSchemaBuilder(WFS wfs, Data catalog, GeoServerResourceLoader resourceLoader, WFSVConfiguration configuration) {
-        super(wfs, catalog, resourceLoader);
+    public VersionedSchemaBuilder(GeoServer gs, GeoServerResourceLoader resourceLoader, WFSVConfiguration configuration) {
+        super(gs, resourceLoader);
 
         profiles.add(new GML3Profile());
 

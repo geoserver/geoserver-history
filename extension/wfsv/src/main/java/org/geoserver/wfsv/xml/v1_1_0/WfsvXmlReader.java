@@ -6,16 +6,18 @@ package org.geoserver.wfsv.xml.v1_1_0;
 
 import java.io.Reader;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.XmlRequestReader;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
-import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.InputSource;
 
 /**
@@ -24,14 +26,14 @@ import org.xml.sax.InputSource;
  * utility class.
  */
 public class WfsvXmlReader extends XmlRequestReader {
-    private WFS wfs;
+    private WFSInfo wfs;
 
     private WFSVConfiguration configuration;
 
-    public WfsvXmlReader(String element, WFS wfs, WFSVConfiguration configuration) {
+    public WfsvXmlReader(String element, GeoServer gs, WFSVConfiguration configuration) {
         super(new QName(org.geoserver.wfsv.xml.v1_1_0.WFSV.NAMESPACE, element),
                 new Version("1.1.0"), "wfsv");
-        this.wfs = wfs;
+        this.wfs = gs.getService( WFSInfo.class );
         this.configuration = configuration;
     }
 
@@ -40,7 +42,7 @@ public class WfsvXmlReader extends XmlRequestReader {
         Boolean strict = (Boolean) kvp.get("strict");
         if ( strict == null ) {
             strict = Boolean.FALSE;
-        } else if(wfs.getCiteConformanceHacks()) {
+        } else if(wfs.isCiteCompliant()) {
             strict = Boolean.TRUE;
         }
 
@@ -48,17 +50,17 @@ public class WfsvXmlReader extends XmlRequestReader {
         parser.setValidating(strict);
 
         // "inject" namespace mappings
-        NameSpaceInfo[] namespaces = configuration.getCatalog().getNameSpaces();
-        for (int i = 0; i < namespaces.length; i++) {
-            if (namespaces[i].isDefault())
+        List<NamespaceInfo> namespaces = configuration.getCatalog().getNamespaces();
+        for (NamespaceInfo namespace : namespaces ) {
+            if (namespace.equals( configuration.getCatalog().getDefaultNamespace() ))
                 continue;
 
-            parser.getNamespaces().declarePrefix(namespaces[i].getPrefix(), namespaces[i].getURI());
+            parser.getNamespaces().declarePrefix(namespace.getPrefix(), namespace.getURI());
         }
 
         // set the input source with the correct encoding
         InputSource source = new InputSource(reader);
-        source.setEncoding(wfs.getCharSet().name());
+        source.setEncoding(wfs.getGeoServer().getGlobal().getCharset());
 
         Object parsed = parser.parse(source);
 

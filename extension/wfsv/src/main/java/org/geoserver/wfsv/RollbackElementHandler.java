@@ -15,12 +15,14 @@ import net.opengis.wfs.WfsFactory;
 import net.opengis.wfsv.RollbackType;
 
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.wfs.TransactionElementHandler;
 import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.TransactionEventType;
 import org.geoserver.wfs.TransactionListener;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.WFSTransactionException;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
@@ -28,7 +30,6 @@ import org.geotools.data.postgis.FeatureDiff;
 import org.geotools.data.postgis.FeatureDiffReader;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 /**
  * Handles the extended rollback elements
@@ -37,28 +38,28 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  */
 public class RollbackElementHandler implements TransactionElementHandler {
 
-    private WFS wfs;
+    private WFSInfo wfs;
 
     private FilterFactory filterFactory;
 
-    public RollbackElementHandler(WFS wfs, FilterFactory filterFactory) {
-        this.wfs = wfs;
+    public RollbackElementHandler(GeoServer gs, FilterFactory filterFactory) {
+        this.wfs = gs.getService( WFSInfo.class );
         this.filterFactory = filterFactory;
     }
 
     public void checkValidity(EObject element, Map featureTypeInfos) throws WFSTransactionException {
         // let's check we can perfom inserts, updates and deletes
-        if ((wfs.getServiceLevel() & WFS.SERVICE_INSERT) == 0) {
+        if (!wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_INSERT)) {
             throw new WFSException("Transaction INSERT support is not enabled "
                     + "(required for rollback)");
         }
 
-        if ((wfs.getServiceLevel() & WFS.SERVICE_UPDATE) == 0) {
+        if (wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_UPDATE)) {
             throw new WFSException("Transaction UPDATE support is not enabled "
                     + "(required for rollback)");
         }
 
-        if ((wfs.getServiceLevel() & WFS.SERVICE_DELETE) == 0) {
+        if (wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_DELETE)) {
             throw new WFSException("Transaction DELETE support is not enabled "
                     + "(required for rollback)");
         }
@@ -66,16 +67,17 @@ public class RollbackElementHandler implements TransactionElementHandler {
         // then, make sure we're hitting a versioning datastore
         RollbackType rollback = (RollbackType) element;
         FeatureTypeInfo info = (FeatureTypeInfo) featureTypeInfos.get(rollback.getTypeName());
+        
 
         try {
-            if (!(info.getFeatureSource() instanceof VersioningFeatureSource)) {
+            if (!(info.getFeatureSource(null,null) instanceof VersioningFeatureSource)) {
                 throw new WFSTransactionException("Cannot perform a rollback on "
-                        + info.getTypeName() + " since the backing data store is not versioning",
+                        + info.getName() + " since the backing data store is not versioning",
                         "", rollback.getHandle());
             }
         } catch (IOException e) {
             throw new WFSTransactionException("Cannot get the feature source for feature type "
-                    + info.getTypeName(), e, rollback.getHandle());
+                    + info.getName(), e, rollback.getHandle());
         }
 
         // TODO: we should check the user attribute, but for the moment
