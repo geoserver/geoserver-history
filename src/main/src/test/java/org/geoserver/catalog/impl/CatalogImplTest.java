@@ -509,6 +509,7 @@ public class CatalogImplTest extends TestCase {
         NamespaceInfo ns2 = catalog.getFactory().createNamespace();
         ns2.setPrefix( "ns2Prefix" );
         ns2.setURI( "ns2URI" );
+        catalog.add( ns2 );
         
         FeatureTypeInfo ft3 = catalog.getFactory().createFeatureType();
         ft3.setName( "ft3Name" );
