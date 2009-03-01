@@ -55,13 +55,6 @@
       </modules>
     </profile>
     <profile>
-      <id>RESTConfig</id>
-      <modules> 
-        <module>rest</module>
-        <module>RESTConfig</module>
-      </modules>
-    </profile>
-    <profile>
       <id>kml-ows5</id>
       <modules> 
         <module>kml-ows5</module>
