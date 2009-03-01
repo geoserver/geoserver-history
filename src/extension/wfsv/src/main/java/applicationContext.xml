@@ -201,8 +201,7 @@
     <constructor-arg ref="filterFactory"/>
   </bean>
   <bean id="transaction100OutputFormat" class="org.geoserver.wfsv.response.v1_0_0.TransactionOutputFormat">
-    <constructor-arg ref="wfs"/>
-    <constructor-arg ref="catalog"/>
+    <constructor-arg ref="geoServer"/>
     <constructor-arg ref="xmlConfiguration-1.0"/>
     <constructor-arg ref="filterFactory"/>
   </bean>
