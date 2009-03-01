@@ -19,6 +19,8 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
@@ -47,8 +49,6 @@ import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -248,8 +248,8 @@ public class GetMapResponse implements Response {
                     map.addLayer(layer);
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
                     if (cachingPossible) {
-                        if (layers[i].getFeature().isCachingEnabled()) {
-                            int nma = Integer.parseInt(layers[i].getFeature().getCacheMaxAge());
+                        if (layers[i].isCachingEnabled()) {
+                            int nma = Integer.parseInt(layers[i].getCacheMaxAge());
 
                             // suppose the map contains multiple cachable
                             // layers...we can only cache the combined map for
@@ -272,7 +272,7 @@ public class GetMapResponse implements Response {
                     //
                     // /////////////////////////////////////////////////////////
                     try {
-                        source = layers[i].getFeature().getFeatureSource(true);
+                        source = layers[i].getFeatureSource(true);
 
                         // NOTE for the feature. Here there was some code that
                         // sounded like:
@@ -333,8 +333,8 @@ public class GetMapResponse implements Response {
                     // Adding a coverage layer
                     //
                     // /////////////////////////////////////////////////////////
-                    AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) layers[i]
-                            .getCoverage().getReader();
+                    AbstractGridCoverage2DReader reader;
+                    reader = (AbstractGridCoverage2DReader) layers[i].getCoverageReader();
                     if (reader != null) {
                         // /////////////////////////////////////////////////////////
                         //
@@ -377,6 +377,7 @@ public class GetMapResponse implements Response {
                                 elevation.setValue(request.getElevation().intValue());
                             }
                         } catch (ParameterNotFoundException p) {
+                            //ignore?
                         }
 
                         try {
@@ -550,6 +551,7 @@ public class GetMapResponse implements Response {
      * 
      * @throws IllegalStateException
      *             if a GetMapDelegate is not setted yet
+     * @see Response#getContentType(GeoServer)
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (this.delegate == null) {
@@ -575,10 +577,9 @@ public class GetMapResponse implements Response {
     /**
      * if a GetMapDelegate is set, calls it's abort method. Elsewere do nothing.
      * 
-     * @param gs
-     *            DOCUMENT ME!
+     * @see Response#abort(ServiceInfo)
      */
-    public void abort(Service gs) {
+    public void abort(ServiceInfo gs) {
         if (this.delegate != null) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("asking delegate for aborting the process");

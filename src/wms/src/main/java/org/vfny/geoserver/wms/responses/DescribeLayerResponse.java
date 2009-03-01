@@ -14,40 +14,39 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.responses.helpers.DescribeLayerTransformer;
 
-
 /**
  * Executes a <code>DescribeLayer</code> WMS request.
- *
+ * 
  * <p>
- * Recieves a <code>DescribeLayerRequest</code> object holding the references to
- * the requested layers and utilizes a transformer based on the org.geotools.xml.transform
- * framework to encode the response.
+ * Recieves a <code>DescribeLayerRequest</code> object holding the references to the requested
+ * layers and utilizes a transformer based on the org.geotools.xml.transform framework to encode the
+ * response.
  * </p>
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
 public class DescribeLayerResponse implements Response {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DescribeLayerResponse.class.getPackage()
-                                                                                     .getName());
+    private static final Logger LOGGER = org.geotools.util.logging.Logging
+            .getLogger(DescribeLayerResponse.class.getPackage().getName());
+
     public static final String DESCLAYER_MIME_TYPE = "application/vnd.ogc.wms_xml";
 
     /** the request holding the required FeatureTypeInfo's */
     private DescribeLayerRequest request;
 
-    /** the transformer wich takes care of xmlencoding the
-     * DescribeLayer response
+    /**
+     * the transformer wich takes care of xmlencoding the DescribeLayer response
      */
     private DescribeLayerTransformer transformer;
 
@@ -56,6 +55,7 @@ public class DescribeLayerResponse implements Response {
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
+     * 
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -64,11 +64,14 @@ public class DescribeLayerResponse implements Response {
 
     /**
      * DOCUMENT ME!
-     *
-     * @param request DOCUMENT ME!
-     *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws WmsException DOCUMENT ME!
+     * 
+     * @param request
+     *            DOCUMENT ME!
+     * 
+     * @throws ServiceException
+     *             DOCUMENT ME!
+     * @throws WmsException
+     *             DOCUMENT ME!
      */
     public void execute(Request request) throws ServiceException {
         this.request = (DescribeLayerRequest) request;
@@ -78,13 +81,13 @@ public class DescribeLayerResponse implements Response {
         }
 
         String baseUrl = this.request.getBaseUrl();
-        String proxyBaseUrl = request.getServiceConfig().getGeoServer().getProxyBaseUrl();
+        String proxyBaseUrl = this.request.getWMS().getProxyBaseUrl();
         String serverBaseUrl = RequestUtils.proxifiedBaseURL(baseUrl, proxyBaseUrl);
         this.transformer = new DescribeLayerTransformer(serverBaseUrl);
         this.transformer.setNamespaceDeclarationEnabled(false);
         Charset encoding = this.request.getWMS().getCharSet();
         this.transformer.setEncoding(encoding);
-        if(request.getServiceConfig().isVerbose()){
+        if (request.getServiceConfig().isVerbose()) {
             this.transformer.setIndentation(2);
         }
 
@@ -101,14 +104,17 @@ public class DescribeLayerResponse implements Response {
 
     /**
      * Writes this respone to the provided output stream.
-     *
-     * @param out DOCUMENT ME!
-     *
-     * @throws ServiceException never.
-     * @throws IOException if it is thrown while writing the response content
-     *         to <code>out</code>.
-     * @throws IllegalStateException if <code>execute()</code> has not been
-     *         called or  does not succeed (i.e.: <code>this.content ==
+     * 
+     * @param out
+     *            DOCUMENT ME!
+     * 
+     * @throws ServiceException
+     *             never.
+     * @throws IOException
+     *             if it is thrown while writing the response content to <code>out</code>.
+     * @throws IllegalStateException
+     *             if <code>execute()</code> has not been called or does not succeed (i.e.:
+     *             <code>this.content ==
      *         null</code>).
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
@@ -120,45 +126,26 @@ public class DescribeLayerResponse implements Response {
     }
 
     /**
-     * Do nothing, since <code>execute()</code> took care of obtaining the
-     * response, and after that nothing remains to be done but sending the
-     * response content to the client.
-     *
-     * @param gs
-     */
-    public void abort(Service gs) {
-    }
-
-    /**
-     * Returns the fixed <code>"application/vnd.ogc.wms_xml"</code> MIME type
-     * of this response, as specified in SLD 1.0 spec, section 6.7.
-     *
-     * @param gs the geoserver instance config. Not used here.
-     *
-     * @return <code>"application/vnd.ogc.wms_xml"</code> as the response MIME
-     *         type
-     *
-     * @throws IllegalStateException DOCUMENT ME!
-     */
-    public String getContentType(GeoServer gs) throws IllegalStateException {
-        return DESCLAYER_MIME_TYPE;
-    }
-
-    /**
-     * Returns <code>null</code> since no special encoding is applyed to the
-     * response content.
-     *
+     * Returns <code>null</code> since no special encoding is applyed to the response content.
+     * 
      * @return <code>null</code>
      */
     public String getContentEncoding() {
         return null;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.vfny.geoserver.Response#getContentDisposition()
      */
     public String getContentDisposition() {
-        // TODO Auto-generated method stub
         return null;
+    }
+
+    public void abort(ServiceInfo gs) {
+        // nothing to do
+    }
+
+    public String getContentType(org.geoserver.config.GeoServer gs) throws IllegalStateException {
+        return DESCLAYER_MIME_TYPE;
     }
 }
