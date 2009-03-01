@@ -160,7 +160,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 	        return Collections.emptyList();
 	    
 	    MapLayerInfo info = mapContext.getRequest().getLayers()[0];
-	    return info.getStyleNames();
+	    return info.getOtherStyleNames();
 	}
 
 

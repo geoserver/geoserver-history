@@ -12,6 +12,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.jai.JAIInfo;
@@ -59,7 +60,8 @@ public class WMS {
     }
 
     public Style getStyleByName(String styleName) throws IOException {
-        return getCatalog().getStyleByName(styleName).getStyle();
+        StyleInfo styleInfo = getCatalog().getStyleByName(styleName);
+        return styleInfo == null? null : styleInfo.getStyle();
     }
 
     public LayerInfo getLayerByName(String layerName) {
