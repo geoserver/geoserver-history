@@ -350,28 +350,50 @@ public class CatalogImpl implements Catalog {
 
     public <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
 
+        NamespaceInfo namespace = null;
+        if ("".equals( ns ) ) {
+            ns = null;
+        }
         if ( ns == null ) {
+            //if namespace was null, try the default namespace
             if ( getDefaultNamespace() != null ) {
-                ns = getDefaultNamespace().getPrefix();
+                namespace = getDefaultNamespace();
+            }
+        }
+        else {
+            namespace = getNamespaceByPrefix( ns );
+            if ( namespace == null ) {
+                namespace = getNamespaceByURI( ns );
             }
         }
 
         List l = lookup(clazz, resources);
-        for (Iterator i = l.iterator(); i.hasNext();) {
-            ResourceInfo resource = (ResourceInfo) i.next();
-            if (name.equals(resource.getName())) {
-                NamespaceInfo namespace = resource.getNamespace();
-                if (namespace != null) {
-                    if (namespace.getPrefix().equals(ns) || namespace.getURI().equals(ns)) {
-                        return ModificationProxy.create( (T) resource, clazz );
+        if ( namespace != null ) {
+            for (Iterator i = l.iterator(); i.hasNext();) {
+                ResourceInfo resource = (ResourceInfo) i.next();
+                if (name.equals(resource.getName())) {
+                    NamespaceInfo namespace1 = resource.getNamespace();
+                    if (namespace1 != null && namespace1.equals( namespace )) {
+                            return ModificationProxy.create( (T) resource, clazz );
                     }
-                }
-                else if ( ns == null ){
-                    return ModificationProxy.create( (T) resource, clazz );
                 }
             }
         }
 
+        if ( ns == null ) {
+            // no namespace was specified, so do an exhaustive lookup
+            List matches = new ArrayList();
+            for (Iterator i = l.iterator(); i.hasNext();) {
+                ResourceInfo resource = (ResourceInfo) i.next();
+                if (name.equals(resource.getName())) {
+                    matches.add( resource );
+                }
+            }
+            
+            if ( matches.size() == 1 ) {
+                return ModificationProxy.create( (T) matches.get( 0 ), clazz );
+            }
+        }
         return null;
     }
     
@@ -385,40 +407,18 @@ public class CatalogImpl implements Catalog {
     }
     
     public <T extends ResourceInfo> T getResourceByName( String name, Class<T> clazz ) {
-    	ResourceInfo resource;
-    	
-    	// check is the name is a fully qualified one
-    	int colIdx = name.indexOf(':');
-		if(colIdx != -1) {
-    		String ns = name.substring(0, colIdx);
-    		String localName = name.substring(colIdx + 1);
-    		resource = getResourceByName(ns, localName, clazz);
-    		if(resource != null)
-    			return (T) resource;
-    	}
-    	
-		// try to prefix the default namespace name
-        resource = getResourceByName( (String) null, name, clazz );
-        if ( resource != null ) {
-            return (T) resource;        //already proxied
-            //return ModificationProxy.create( (T) resource, clazz );
-        }
-
-        // finally try a full match with just the name on its own
-        List matches = new ArrayList();
-        List l = lookup(clazz, resources);
-        for (Iterator i = l.iterator(); i.hasNext();) {
-            resource = (ResourceInfo) i.next();
-            if (name.equals(resource.getName())) {
-                matches.add( resource );
-            }
-        }
+        ResourceInfo resource;
         
-        if ( matches.size() == 1 ) {
-            return ModificationProxy.create( (T) matches.get( 0 ), clazz );
-        
+        // check is the name is a fully qualified one
+        int colon = name.indexOf( ':' );
+        if ( colon != -1 ) {
+            String ns = name.substring(0, colon);
+            String localName = name.substring(colon + 1);
+            return getResourceByName(ns, localName, clazz);
         }
-        return null;
+        else {
+            return getResourceByName((String)null,name,clazz);
+        }
     }
     
     public List getResources(Class clazz) {
