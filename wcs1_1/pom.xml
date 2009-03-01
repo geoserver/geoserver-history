@@ -13,22 +13,20 @@
   <groupId>org.geoserver</groupId>
   <artifactId>wcs1_1</artifactId>
   <packaging>jar</packaging>
-  <name>Web Coverage Service 1.1.1 Module</name>
+  <name>Web Coverage Service 1.1 Module</name>
 
   <dependencies>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools.ogc</groupId>
-      <artifactId>net.opengis.wcs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
-      <version>2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.ogc</groupId>
+      <artifactId>net.opengis.wcs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geotools.xsd</groupId>
@@ -51,14 +49,12 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>2.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>2.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -74,11 +70,8 @@
     </dependency>
   </dependencies>
 
-  <!-- =========================================================== -->
-  <!--     Build Configuration                                     -->
-  <!-- =========================================================== -->
   <build>
-  <plugins>
+   <plugins>
     <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>javacc-maven-plugin</artifactId>
@@ -106,8 +99,7 @@
           </execution>
         </executions>
       </plugin>
-      </plugins>
+    </plugins>
   </build>
-
 
 </project>
