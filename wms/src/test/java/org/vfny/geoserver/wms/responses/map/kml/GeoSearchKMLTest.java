@@ -127,7 +127,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
             "&height=1024&width=1024&srs=EPSG:4326";
 
         FeatureTypeInfo fti = getFeatureTypeInfo(TILE_TESTS);
-        fti.setRegionateFeatureLimit(2);
+        fti.getMetadata().put("kml.regionateFeatureLimit", 2);
 
         Document geo = getAsDOM(path + "&format_options=regionateBy:geometry;regionateattr:location");
         assertEquals("kml", geo.getDocumentElement().getTagName());
