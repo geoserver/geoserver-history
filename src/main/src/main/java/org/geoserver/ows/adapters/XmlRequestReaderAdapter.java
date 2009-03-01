@@ -41,12 +41,18 @@ public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
         Class clazz = service.getClass();
         Constructor constructor = null;
 
-        while (clazz != null) {
+        while (clazz != null && constructor == null) {
             try {
-                constructor = delegateClass.getConstructor(new Class[] { clazz });
-
-                break;
+                constructor = delegateClass.getConstructor(new Class[] { Map.class, clazz });
             } catch (NoSuchMethodException e) {
+                Class[] classes = clazz.getInterfaces();
+                for (Class c : classes) {
+                        try {
+                                constructor = delegateClass.getConstructor(new Class[] { Map.class, c });
+                        } catch(NoSuchMethodException e2) {
+                                // no harm done
+                        }
+                                }
                 clazz = clazz.getSuperclass();
             }
         }
