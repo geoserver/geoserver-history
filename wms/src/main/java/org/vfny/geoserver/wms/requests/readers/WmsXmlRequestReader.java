@@ -28,7 +28,7 @@ public abstract class WmsXmlRequestReader extends XmlRequestReader {
      * @param service Reference to the service handing a reuqest.
      */
      public WmsXmlRequestReader(WMS wms) {
-         super(wms);
+         super(wms.getServiceInfo());
      }
 
     /**
