@@ -5,7 +5,7 @@
 	<!-- validation module -->
 	<bean id="validation"
 		class="org.vfny.geoserver.global.GeoValidator">
-		<constructor-arg ref="config"/>
+		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	<bean id="validationConfig"
 		class="org.vfny.geoserver.config.validation.ValidationConfig">
