@@ -390,26 +390,31 @@
         class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="native-sorting"/>
       <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.NativeSortRegionatingStrategy"/>
+      <constructor-arg ref="geoServer"/>
     </bean>
     <bean id="externalSortingRegionator"
         class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="external-sorting"/>
       <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.ExternalSortRegionatingStrategy"/>
+      <constructor-arg ref="geoServer"/>
     </bean>
     <bean id="geometryRegionator"
         class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="geometry"/>
       <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.GeometryRegionatingStrategy"/>
+      <constructor-arg ref="geoServer"/>
     </bean>
     <bean id="randomRegionator"
         class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="random"/>
       <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.RandomRegionatingStrategy"/>
+      <constructor-arg ref="geoServer"/>
     </bean>
     <bean id="bestGuessRegionator"
         class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="best_guess"/>
       <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.BestGuessRegionatingStrategy"/>
+      <constructor-arg ref="geoServer"/>
     </bean>
 
 </beans>

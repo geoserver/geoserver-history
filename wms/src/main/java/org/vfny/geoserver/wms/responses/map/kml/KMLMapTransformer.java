@@ -20,6 +20,9 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.feature.type.DateUtil;
 import org.geotools.map.MapLayer;
@@ -44,7 +47,6 @@ import org.geotools.xml.transform.Translator;
 import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.expression.Expression;
-import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
@@ -917,18 +919,17 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         }
 
         protected String getFeatureTypeURL() throws IOException {
-            String nsUri = mapLayer.getFeatureSource().getSchema().getName()
-                    .getNamespaceURI();
-            NameSpaceInfo ns = mapContext.getRequest().getWMS().getData()
-                    .getNameSpaceByURI(nsUri);
+            GeoServer gs = mapContext.getRequest().getWMS().getGeoServer();
+            Catalog catalog = gs.getCatalog();
+            String nsUri = mapLayer.getFeatureSource().getSchema().getName().getNamespaceURI();
+            NamespaceInfo ns = catalog.getNamespaceByURI(nsUri);
             String featureTypeName = mapLayer.getFeatureSource().getSchema()
                     .getName().getLocalPart();
             GetMapRequest request = mapContext.getRequest();
 
             String baseUrl = RequestUtils.baseURL(request.getHttpServletRequest());
             baseUrl = RequestUtils.proxifiedBaseURL(
-                    baseUrl,
-                    request.getGeoServer().getProxyBaseUrl()
+                    baseUrl, gs.getGlobal().getProxyBaseUrl()
                     );
 
             return baseUrl + "rest/" + ns.getPrefix() + "/"

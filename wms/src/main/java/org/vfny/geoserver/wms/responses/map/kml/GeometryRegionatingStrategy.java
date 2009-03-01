@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.wms.MapLayerInfo;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -32,13 +33,17 @@ import com.vividsolutions.jts.geom.Polygon;
 public class GeometryRegionatingStrategy extends
         ExternalSortRegionatingStrategy {
 
+    public GeometryRegionatingStrategy(GeoServer gs) {
+        super(gs);
+    }
+
     @Override
     protected void checkAttribute(WMSMapContext con, SimpleFeatureType ft) {
         // find out which attribute we're going to use
         Map options = con.getRequest().getFormatOptions();
         attribute = (String) options.get("regionateAttr");
         if (attribute == null) {
-            attribute = MapLayerInfo.getRegionateAttribute(layerInfo);
+            attribute = MapLayerInfo.getRegionateAttribute(featureType);
         }
         if (attribute == null || ft.getDescriptor(attribute) == null) {
             LOGGER.log(Level.FINER, "No attribute specified, falling "
@@ -49,7 +54,7 @@ public class GeometryRegionatingStrategy extends
             AttributeType attributeType = ft.getType(attribute);
             if (attributeType == null) {
                 throw new WmsException("Could not find regionating attribute "
-                        + attribute + " in layer " + layerInfo.getName());
+                        + attribute + " in layer " + featureType.getName());
             }
         }
 
@@ -58,10 +63,10 @@ public class GeometryRegionatingStrategy extends
     }
 
     @Override 
-    protected String checkAttribute(LayerInfo cfg){
+    protected String checkAttribute(FeatureTypeInfo cfg){
         String attribute = MapLayerInfo.getRegionateAttribute(cfg);
         try{
-            FeatureType ft = ((FeatureTypeInfo)cfg.getResource()).getFeatureType();
+            FeatureType ft = cfg.getFeatureType();
             if ((attribute != null) && (ft.getDescriptor(attribute) != null))
                 return attribute;
 

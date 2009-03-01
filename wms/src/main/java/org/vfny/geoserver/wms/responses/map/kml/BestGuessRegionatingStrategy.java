@@ -4,7 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.config.GeoServer;
 import org.geotools.data.FeatureSource;
 import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeature;
@@ -31,18 +33,23 @@ import com.vividsolutions.jts.geom.Point;
  */
 public class BestGuessRegionatingStrategy implements RegionatingStrategy {
 
+    GeoServer gs;
+    public BestGuessRegionatingStrategy( GeoServer gs ) {
+        this.gs = gs;
+    }
+    
     public Filter getFilter(WMSMapContext context, MapLayer layer) {
         SimpleFeatureType type = 
             ((FeatureSource<SimpleFeatureType, SimpleFeature>)layer.getFeatureSource()).getSchema();
         Class geomtype = type.getGeometryDescriptor().getType().getBinding();
 
         if (Point.class.isAssignableFrom(geomtype))
-            return new RandomRegionatingStrategy().getFilter(context, layer);
+            return new RandomRegionatingStrategy(gs).getFilter(context, layer);
 
-        return new GeometryRegionatingStrategy().getFilter(context, layer);
+        return new GeometryRegionatingStrategy(gs).getFilter(context, layer);
     }
 
-    public void clearCache(LayerInfo cfg){
-        new GeometryRegionatingStrategy().clearCache(cfg);
+    public void clearCache(FeatureTypeInfo cfg){
+        new GeometryRegionatingStrategy(gs).clearCache(cfg);
     }
 }

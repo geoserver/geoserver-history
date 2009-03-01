@@ -90,14 +90,11 @@ public class KMLReflector {
             MapLayerInfo layer = request.getLayers()[i];
             String name = layer.getName();
  
-            containsRasterData = containsRasterData || 
-                (layer.getType() == MapLayerInfo.TYPE_RASTER) ||
-                (layer.getType() == MapLayerInfo.TYPE_BASEMAP);
+            containsRasterData = containsRasterData || (layer.getType() == MapLayerInfo.TYPE_RASTER);
 
             if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
-                System.out.println(layer.getFeature().getFeatureSource().getClass());
                 isRegionatingFriendly = isRegionatingFriendly && 
-                    layer.getFeature().getFeatureSource().getQueryCapabilities().isReliableFIDSupported(); 
+                    layer.getFeature().getFeatureSource(null,null).getQueryCapabilities().isReliableFIDSupported(); 
             } else if (layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
                 isRegionatingFriendly = isRegionatingFriendly &&
                     layer.getRemoteFeatureSource().getQueryCapabilities().isReliableFIDSupported();

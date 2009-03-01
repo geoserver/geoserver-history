@@ -4,11 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
 
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.FeatureSource;
@@ -22,13 +20,15 @@ import org.geotools.styling.Symbolizer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.ContentHandler;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**

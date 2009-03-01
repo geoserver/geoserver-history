@@ -14,10 +14,10 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geotools.map.MapLayer;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -59,7 +59,7 @@ public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProd
 	 * @param gs
 	 *            The orriginating Service
 	 */
-	public void abort(Service gs) {
+	public void abort(ServiceInfo gs) {
 		if (transformer != null) {
 			// transformer.abort();
 		}

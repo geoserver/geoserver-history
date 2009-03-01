@@ -11,21 +11,15 @@ import java.util.logging.Logger;
 
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.data.FeatureSource;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.FilterFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 
 /**

@@ -1,8 +1,10 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.lang.reflect.Constructor;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import org.geoserver.config.GeoServer;
 import org.vfny.geoserver.wms.WmsException;
 
 public class ReflectiveRegionatingStrategyFactory implements RegionatingStrategyFactory {
@@ -13,15 +15,18 @@ public class ReflectiveRegionatingStrategyFactory implements RegionatingStrategy
     String myName;
     String myClassName;
     Class myStrategyClass;
+    GeoServer gs;
 
-    public ReflectiveRegionatingStrategyFactory(String name, String className){
+    public ReflectiveRegionatingStrategyFactory(String name, String className, GeoServer gs){
         myName = name;
         myClassName = className;
+        this.gs = gs;
     }
 
-    public ReflectiveRegionatingStrategyFactory(String name, Class strategy){
+    public ReflectiveRegionatingStrategyFactory(String name, Class strategy, GeoServer gs){
         myName = name;
         myStrategyClass = strategy;
+        this.gs = gs;
     }
 
     public boolean canHandle(String strategyName){
@@ -34,7 +39,13 @@ public class ReflectiveRegionatingStrategyFactory implements RegionatingStrategy
 
     public RegionatingStrategy createStrategy(){
         try{
-            return (RegionatingStrategy)getStrategyClass().newInstance();
+            Class clazz = getStrategyClass();
+            Constructor c = clazz.getConstructor( GeoServer.class );
+            if ( c != null ) {
+                return (RegionatingStrategy) c.newInstance( gs );
+            }
+            
+            return (RegionatingStrategy)clazz.newInstance();
         } catch (Exception e){
             throw new WmsException(e);
         }
