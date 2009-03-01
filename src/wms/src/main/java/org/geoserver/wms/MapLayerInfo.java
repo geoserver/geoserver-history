@@ -24,6 +24,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.util.DataStoreUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -293,5 +294,16 @@ public final class MapLayerInfo {
         CoverageInfo resource = (CoverageInfo) layerInfo.getResource();
         GridCoverageReader coverageReader = resource.getGridCoverageReader(null, null);
         return coverageReader;
+    }
+
+    public CoordinateReferenceSystem getCoordinateReferenceSystem() {
+        if (layerInfo != null) {
+            return layerInfo.getResource().getCRS();
+        }
+        if (remoteFeatureSource != null) {
+            SimpleFeatureType schema = remoteFeatureSource.getSchema();
+            return schema.getCoordinateReferenceSystem();
+        }
+        throw new IllegalStateException();
     }
 }
