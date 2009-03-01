@@ -103,7 +103,7 @@ public class RollbackTest extends WFSVTestSupport {
     
     public void testRollbackWfs10() throws Exception {
         // perform the rollback
-        String rollback = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\"\r\n" + 
+        String rollback = "<wfs:Transaction service=\"WFSV\" version=\"1.0.0\"\r\n" + 
                 "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n" + 
                 "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n" + 
                 "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
@@ -125,7 +125,7 @@ public class RollbackTest extends WFSVTestSupport {
     
     public void testInvalidRollback() throws Exception {
         // perform the rollback, same as above, but no 
-        String rollback = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\"\r\n" + 
+        String rollback = "<wfs:Transaction service=\"WFSV\" version=\"1.0.0\"\r\n" + 
                 "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n" + 
                 "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n" + 
                 "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
