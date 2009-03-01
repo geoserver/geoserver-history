@@ -149,4 +149,17 @@ public interface WFSInfo extends ServiceInfo {
      * Sets the level of service provided by the WFS. 
      */
     void setServiceLevel( ServiceLevel serviceLevel );
+    
+    /**
+     * The flag which determines if gml:bounds elements should be encoded
+     * at the feature level in gml output.
+     */
+    boolean isFeatureBounding();
+    
+    /**
+     * Sets the flag which determines if gml:bounds elements should be encoded
+     * at the feature level in gml output.
+     * 
+     */
+    void setFeatureBounding( boolean featureBounding);
 }

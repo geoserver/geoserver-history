@@ -32,8 +32,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
         
         tx = CRS.findMathTransform(epsg32615, epsgTarget);
         WFSInfo wfs = getWFS();
-        wfs.getGML().get( WFSInfo.Version.V_10).setFeatureBounding(true);
-        wfs.getGML().get( WFSInfo.Version.V_11).setFeatureBounding(true);
+        wfs.setFeatureBounding(true);
         getGeoServer().save( wfs );
     }
     
@@ -80,8 +79,8 @@ public class WFSReprojectionTest extends WFSTestSupport {
     
     public void testGetFeatureWithProjectedBoxGet() throws Exception {
         WFSInfo wfs = getWFS();
-        boolean oldFeatureBounding = wfs.getGML().get( WFSInfo.Version.V_11 ).isFeatureBounding();
-        wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(true);
+        boolean oldFeatureBounding = wfs.isFeatureBounding();
+        wfs.setFeatureBounding(true);
         getGeoServer().save(wfs);
             
         try {
@@ -107,15 +106,15 @@ public class WFSReprojectionTest extends WFSTestSupport {
             assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
         }
         finally {
-            wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(oldFeatureBounding);
+            wfs.setFeatureBounding(oldFeatureBounding);
             getGeoServer().save( wfs );
         }
     }
     
     public void testGetFeatureWithProjectedBoxPost() throws Exception {
         WFSInfo wfs = getWFS();
-        boolean oldFeatureBounding = wfs.getGML().get( WFSInfo.Version.V_11 ).isFeatureBounding();
-        wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(true);
+        boolean oldFeatureBounding = wfs.isFeatureBounding();
+        wfs.setFeatureBounding(true);
         getGeoServer().save(wfs);
         
         try {
@@ -157,7 +156,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
             assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
         }
         finally {
-            wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(oldFeatureBounding);
+            wfs.setFeatureBounding(oldFeatureBounding);
             getGeoServer().save( wfs );
         }
     }

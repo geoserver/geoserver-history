@@ -20,7 +20,7 @@ public class SrsNameTest extends WFSTestSupport {
         super.oneTimeSetUp();
         
         WFSInfo wfs = getWFS();
-        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding(true);
+        wfs.setFeatureBounding(true);
         getGeoServer().save( wfs );
     }
 
@@ -51,9 +51,8 @@ public class SrsNameTest extends WFSTestSupport {
 
     public void testWfs11() throws Exception {
         WFSInfo wfs = getWFS();
-        boolean oldFeatureBounding = wfs.getGML().get( WFSInfo.Version.V_11 ).isFeatureBounding();
-        
-        wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(true);
+        boolean oldFeatureBounding = wfs.isFeatureBounding();
+        wfs.setFeatureBounding(true);
         getGeoServer().save( wfs );
         
         try {
@@ -80,7 +79,7 @@ public class SrsNameTest extends WFSTestSupport {
             }
         }
         finally {
-            wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(oldFeatureBounding);
+            wfs.setFeatureBounding(oldFeatureBounding);
             getGeoServer().save( wfs );
         }
     }

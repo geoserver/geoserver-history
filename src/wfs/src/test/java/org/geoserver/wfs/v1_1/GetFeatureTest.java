@@ -302,9 +302,10 @@ public class GetFeatureTest extends WFSTestSupport {
     public void testPostWithBoundsEnabled() throws Exception {
         // enable feature bounds computation
         WFSInfo wfs = getWFS();
-        boolean oldFeatureBounding = wfs.getGML().get( WFSInfo.Version.V_11 ).isFeatureBounding();
-        wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(true);
+        boolean oldFeatureBounding = wfs.isFeatureBounding();
+        wfs.setFeatureBounding(true);
         getGeoServer().save( wfs );
+        
         
         try {
             String xml = "<wfs:GetFeature " + "service=\"WFS\" "
@@ -335,7 +336,7 @@ public class GetFeatureTest extends WFSTestSupport {
                 assertTrue(box.hasAttribute("srsName"));
             }
         } finally {
-            wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(oldFeatureBounding);
+            wfs.setFeatureBounding(oldFeatureBounding);
             getGeoServer().save( wfs );
         }
     }

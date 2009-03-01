@@ -20,7 +20,7 @@ public class GetFeatureBboxTest extends WFSTestSupport {
     
     public void testFeatureBoudingOn() throws Exception {
         WFSInfo wfs = getWFS();
-        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding( true );
+        wfs.setFeatureBounding( true );
         getGeoServer().save( wfs );
         
         Document doc = getAsDOM("wfs?request=GetFeature&typeName=" + getLayerId(MockData.BUILDINGS) + "&version=1.0.0&service=wfs&propertyName=ADDRESS");
@@ -38,7 +38,7 @@ public class GetFeatureBboxTest extends WFSTestSupport {
     
     public void testFeatureBoudingOff() throws Exception {
         WFSInfo wfs = getWFS();
-        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding( false );
+        wfs.setFeatureBounding( false );
         getGeoServer().save( wfs );
         
         Document doc = getAsDOM("wfs?request=GetFeature&typeName=" + getLayerId(MockData.BUILDINGS) + "&version=1.0.0&service=wfs&propertyName=ADDRESS");

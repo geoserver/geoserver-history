@@ -33,9 +33,13 @@ public class WFSLoader extends LegacyServiceLoader<WFSInfo> {
         }
         wfs.setMaxFeatures( maxFeatures );
         
+        Boolean featureBounding = (Boolean) properties.get( "featureBounding");
+        if ( featureBounding != null ) {
+            wfs.setFeatureBounding( featureBounding );
+        }
+        
         //gml2
         GMLInfo gml = new GMLInfoImpl();
-        gml.setFeatureBounding( (Boolean) properties.get( "featureBounding") );
         
         Boolean srsXmlStyle = (Boolean) properties.get( "srsXmlStyle" );
         if( srsXmlStyle ) {
@@ -48,7 +52,6 @@ public class WFSLoader extends LegacyServiceLoader<WFSInfo> {
         
         //gml3
         gml = new GMLInfoImpl();
-        gml.setFeatureBounding(true);
         gml.setSrsNameStyle(SrsNameStyle.URN);
         wfs.getGML().put( WFSInfo.Version.V_11 , gml );
         

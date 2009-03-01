@@ -106,7 +106,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         LOGGER.info("about to encode JSON");
 
         // Generate bounds for every feature?
-        boolean featureBounding = wfs.getGML().get( WFSInfo.Version.V_10 ).isFeatureBounding();
+        boolean featureBounding = wfs.isFeatureBounding();
         boolean hasGeom = false;
 
         try {

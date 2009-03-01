@@ -93,12 +93,10 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             metas.add(meta);
         }
 
-        GMLInfo gml = wfs.getGML().get( WFSInfo.Version.V_11 );
-        
         //set feature bounding parameter
         //JD: this is quite bad as its not at all thread-safe, once we remove the configuration
         // as being a singleton on trunk/2.0.x this should not be an issue
-        if ( gml.isFeatureBounding() ) {
+        if ( wfs.isFeatureBounding() ) {
             configuration.getProperties().remove( GMLConfiguration.NO_FEATURE_BOUNDS );
         }
         else {
