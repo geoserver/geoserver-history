@@ -4,21 +4,25 @@
  */
 package org.vfny.geoserver.sld.requests;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.sld.SldException;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 
 public class PutStylesKvpReader extends KvpRequestReader {
 
 
+    private WMS config;
+
     public PutStylesKvpReader(Map kvpPairs, WMS service) {
-        super(kvpPairs, service);
+        super(kvpPairs, service.getServiceInfo());
+        this.config = service;
     }
 
     public Request getRequest(HttpServletRequest httpRequest)
@@ -78,7 +82,7 @@ public class PutStylesKvpReader extends KvpRequestReader {
         }
 
         if (version == null) {
-            version = WMS.getVersion();
+            version = config.getVersion();
         }
 
         return version;

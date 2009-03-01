@@ -6,8 +6,6 @@ package org.vfny.geoserver.sld.requests;
 
 import org.geoserver.wms.WMS;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.wms.servlets.WMService;
 
 
 public class PutStylesRequest extends Request {
@@ -15,7 +13,7 @@ public class PutStylesRequest extends Request {
     private OptionalParameters optionalParameters = new OptionalParameters();
 
     public PutStylesRequest(WMS wms) {
-        super("SLD", "PutStyles", wms);
+        super("SLD", "PutStyles", wms.getServiceInfo());
     }
 
     public void setMode(String mode) {

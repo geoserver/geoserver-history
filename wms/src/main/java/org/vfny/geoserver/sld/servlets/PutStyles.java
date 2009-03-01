@@ -4,38 +4,6 @@
  */
 package org.vfny.geoserver.sld.servlets;
 
-import org.geoserver.ows.util.XmlCharsetDetector;
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.WMS;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
-import org.geotools.styling.StyledLayerDescriptor;
-
-import org.vfny.geoserver.Response;
-
-import org.vfny.geoserver.config.ConfigRequests;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.config.StyleConfig;
-import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.sld.SldException;
-import org.vfny.geoserver.sld.requests.PutStylesKvpReader;
-import org.vfny.geoserver.sld.requests.PutStylesRequest;
-import org.vfny.geoserver.sld.responses.PutStylesResponse;
-import org.vfny.geoserver.util.SLDValidator;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapXmlReader;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -44,21 +12,45 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.geoserver.ows.util.XmlCharsetDetector;
+import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.WMS;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
+import org.vfny.geoserver.Response;
+import org.vfny.geoserver.config.ConfigRequests;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.config.StyleConfig;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.servlets.AbstractService;
+import org.vfny.geoserver.sld.SldException;
+import org.vfny.geoserver.sld.requests.PutStylesKvpReader;
+import org.vfny.geoserver.sld.requests.PutStylesRequest;
+import org.vfny.geoserver.util.SLDValidator;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.wms.WmsException;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 
 public class PutStyles extends AbstractService {
@@ -66,8 +58,8 @@ public class PutStyles extends AbstractService {
     public final String success_mime_type = "application/vnd.ogc.success+xml";
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
-    public PutStyles() {
-        super("WMS", "PutStyles", (Service) GeoServerExtensions.bean("wms"));
+    public PutStyles(WMS config) {
+        super("WMS", "PutStyles", config.getServiceInfo());
     }
 
     protected boolean isServiceEnabled(HttpServletRequest req) {
@@ -75,7 +67,7 @@ public class PutStyles extends AbstractService {
     }
 
     protected Response getResponseHandler() {
-        return new PutStylesResponse();
+        throw new UnsupportedOperationException("not implemented");
     }
 
     protected KvpRequestReader getKvpReader(Map params) {
