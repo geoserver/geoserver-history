@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.coverage.GridSampleDimension;
@@ -52,6 +53,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.vfny.geoserver.Response;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -147,16 +149,6 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param gs app context
-     *
-     * @task TODO: implement
-     */
-    public void abort(GeoServer gs) {
-    }
-
-    /**
      * Gets the content type.  This is set by the request, should only be
      * called after execute.  GetMapResponse should handle this though.
      *
@@ -176,6 +168,22 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         // chain geoserver charset so that multibyte feature info responses
         // gets properly encoded, same as getCapabilities responses 
         return format + ";charset=" + gs.getGlobal().getCharset();
+    }
+
+    /**
+     * Does nothing, override as needed
+     * @see Response#getContentDisposition()
+     */
+    public String getContentDisposition() {
+        return null;
+    }
+
+    /**
+     * Does nothing, override as needed
+     * @see Response#abort(ServiceInfo)
+     */
+    public void abort(ServiceInfo gs) {
+        //nothing to do here
     }
 
     /**

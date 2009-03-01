@@ -4,39 +4,30 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
-import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wfs.xml.GML2OutputFormat;
 import org.geoserver.wms.WMS;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
-import org.vfny.geoserver.wms.servlets.WMService;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -83,21 +74,12 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * <code>GetFeaturesResult</code> wich is passed to a
      * <code>GML2FeatureResponseDelegate</code>.
      *
-     * @param out
-     *            DOCUMENT ME!
-     *
-     * @throws ServiceException
-     *             DOCUMENT ME!
-     * @throws IOException
-     *             DOCUMENT ME!
+     * @see AbstractFeatureInfoResponse#writeTo(OutputStream)
      */
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
-        GetFeatureInfoRequest fInfoReq = (GetFeatureInfoRequest) getRequest();
-        WMS wms = (WMS) fInfoReq.getWMS();
-        WFS wfs = wms.getWFS();
-        GeoServer gs = wms.getGeoServer();
-
-        Data catalog = fInfoReq.getWMS().getData();
+    @Override
+    public void writeTo(final OutputStream out) throws ServiceException, IOException {
+        final GetFeatureInfoRequest fInfoReq = getRequest();
+        final WMS wmsConfig = fInfoReq.getWMS();
 
         //the 'response' object we'll pass to our OutputFormat
         FeatureCollectionType features = WfsFactory.eINSTANCE.createFeatureCollectionType();
@@ -128,12 +110,9 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
         Service serviceDesc = new Service("wms", null, null);
         Operation opDescriptor = new Operation("",serviceDesc,null, new Object[] { gfreq });
         
-        GML2OutputFormat format = new GML2OutputFormat(wfs, gs, catalog);
+        final GeoServer gs = wmsConfig.getGeoServer();
+        GML2OutputFormat format = new GML2OutputFormat(gs);
         format.write(features, out, opDescriptor);
     }
 
-    public String getContentDisposition() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }
