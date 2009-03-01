@@ -7,13 +7,15 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.geotools.map.MapLayer;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.wms.MapLayerInfo;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
@@ -36,7 +38,7 @@ public class GeometryRegionatingStrategy extends
         Map options = con.getRequest().getFormatOptions();
         attribute = (String) options.get("regionateAttr");
         if (attribute == null) {
-            attribute = typeInfo.getRegionateAttribute();
+            attribute = MapLayerInfo.getRegionateAttribute(layerInfo);
         }
         if (attribute == null || ft.getDescriptor(attribute) == null) {
             LOGGER.log(Level.FINER, "No attribute specified, falling "
@@ -47,7 +49,7 @@ public class GeometryRegionatingStrategy extends
             AttributeType attributeType = ft.getType(attribute);
             if (attributeType == null) {
                 throw new WmsException("Could not find regionating attribute "
-                        + attribute + " in layer " + typeInfo.getName());
+                        + attribute + " in layer " + layerInfo.getName());
             }
         }
 
@@ -56,13 +58,14 @@ public class GeometryRegionatingStrategy extends
     }
 
     @Override 
-    protected String checkAttribute(FeatureTypeInfo cfg){
-        String attribute = cfg.getRegionateAttribute();
+    protected String checkAttribute(LayerInfo cfg){
+        String attribute = MapLayerInfo.getRegionateAttribute(cfg);
         try{
-            if ((attribute != null) && (cfg.getFeatureType().getDescriptor(attribute) != null))
+            FeatureType ft = ((FeatureTypeInfo)cfg.getResource()).getFeatureType();
+            if ((attribute != null) && (ft.getDescriptor(attribute) != null))
                 return attribute;
 
-            return cfg.getFeatureType().getGeometryDescriptor().getLocalName();
+            return ft.getGeometryDescriptor().getLocalName();
         } catch (Exception e) {
             LOGGER.severe("Couldn't get attribute name due to " + e);
             return null;

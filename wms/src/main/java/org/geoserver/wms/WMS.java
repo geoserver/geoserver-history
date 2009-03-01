@@ -234,4 +234,9 @@ public class WMS {
         Boolean svgAntiAlias = (Boolean) serviceInfo.getMetadata().get( "svgAntiAlias");
         return svgAntiAlias == null ? true : svgAntiAlias.booleanValue(); 
     }
+
+    public int getNumDecimals() {
+        GeoServerInfo global = getGeoServer().getGlobal();
+        return global.getNumDecimals();
+    }
 }

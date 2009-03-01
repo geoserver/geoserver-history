@@ -15,15 +15,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.Requests;
-import org.vfny.geoserver.util.RequestsLegacy;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.requests.WMSRequest;

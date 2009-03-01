@@ -4,14 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import org.geoserver.catalog.LayerInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -43,7 +42,7 @@ public class BestGuessRegionatingStrategy implements RegionatingStrategy {
         return new GeometryRegionatingStrategy().getFilter(context, layer);
     }
 
-    public void clearCache(FeatureTypeInfo cfg){
+    public void clearCache(LayerInfo cfg){
         new GeometryRegionatingStrategy().clearCache(cfg);
     }
 }
