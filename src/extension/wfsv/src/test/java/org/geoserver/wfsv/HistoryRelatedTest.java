@@ -1,6 +1,6 @@
 package org.geoserver.wfsv;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import junit.framework.Test;
 
 import org.geotools.referencing.CRS;
@@ -23,7 +23,7 @@ public class HistoryRelatedTest extends WFSVTestSupport {
         if (getTestData().isTestDataAvailable()) {
             // build some history the other tests will use
             String transaction = //
-            "<wfs:Transaction service=\"WFSV\" version=\"1.0.0\"\r\n"
+            "<wfs:Transaction service=\"WFS\" version=\"1.0.0\"\r\n"
                     + "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n"
                     + "  xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wfs=\"http://www.opengis.net/wfs\"\r\n"
                     + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"

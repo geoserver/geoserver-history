@@ -57,7 +57,7 @@ public abstract class WFSVTestSupport extends GeoServerAbstractTestSupport {
      * @return
      */
     protected String root() {
-        return root(true);
+        return root(false);
     }
     
     protected String root(boolean validate) {
