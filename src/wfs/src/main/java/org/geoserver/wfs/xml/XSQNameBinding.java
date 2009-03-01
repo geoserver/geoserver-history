@@ -37,17 +37,17 @@ public class XSQNameBinding extends org.geotools.xs.bindings.XSQNameBinding {
     public Object parse(InstanceComponent instance, Object value)
         throws Exception {
         
-        QName qName = null;
-        try {
-            qName = DatatypeConverterImpl.getInstance()
-                .parseQName((String) value, namespaceContext);
-        }
-        catch( Exception e ) {
-        }
-            
-        if (qName != null) {
-            return qName;
-        }
+//        QName qName = null;
+//        try {
+//            qName = DatatypeConverterImpl.getInstance()
+//                .parseQName((String) value, namespaceContext);
+//        }
+//        catch( Exception e ) {
+//        }
+//            
+//        if (qName != null) {
+//            return qName;
+//        }
 
         if (value == null) {
             return new QName(null);
