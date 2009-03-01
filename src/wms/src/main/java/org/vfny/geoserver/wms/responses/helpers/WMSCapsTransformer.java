@@ -6,12 +6,12 @@ package org.vfny.geoserver.wms.responses.helpers;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -22,28 +22,29 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerIdentityImpl;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerGroupInfo;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.LegendInfo;
+import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.LayerInfo.Type;
+import org.geoserver.config.ContactInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wms.WMS;
-import org.geotools.geometry.GeneralEnvelope;
+import org.geoserver.wms.WMSInfo;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.wkt.UnformattableObjectException;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.type.Name;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.global.CoverageInfo;
-import org.vfny.geoserver.global.CoverageInfoLabelComparator;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.LegendURL;
-import org.vfny.geoserver.global.MetaDataLink;
-import org.vfny.geoserver.util.requests.CapabilitiesRequest;
-import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
@@ -64,6 +65,10 @@ import com.vividsolutions.jts.geom.Envelope;
 public class WMSCapsTransformer extends TransformerBase {
     /** fixed MIME type for the returned capabilities document */
     public static final String WMS_CAPS_MIME = "application/vnd.ogc.wms_xml";
+
+    /** the WMS supported exception formats */
+    static final String[] EXCEPTION_FORMATS = { "application/vnd.ogc.se_xml",
+            "application/vnd.ogc.se_inimage", };
 
     /** The geoserver base URL to append it the schemas/wms/1.1.1/WMS_MS_Capabilities.dtd DTD location */
     private String schemaBaseUrl;
@@ -105,14 +110,7 @@ public class WMSCapsTransformer extends TransformerBase {
         this.setNamespaceDeclarationEnabled(false);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param handler
-     *            DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+    @Override
     public Translator createTranslator(ContentHandler handler) {
         return new CapabilitiesTranslator(handler, getMapFormats, getLegendGraphicFormats);
     }
@@ -134,6 +132,7 @@ public class WMSCapsTransformer extends TransformerBase {
      * @throws TransformerException
      *             if it is thrown by <code>super.createTransformer()</code>
      */
+    @Override
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
         String dtdUrl = schemaBaseUrl + (schemaBaseUrl.endsWith("/")? "" : "/") +
@@ -153,17 +152,16 @@ public class WMSCapsTransformer extends TransformerBase {
      * @version $Id
      */
     private static class CapabilitiesTranslator extends TranslatorSupport {
-        /** DOCUMENT ME! */
+
         private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CapabilitiesTranslator.class.getPackage()
                                                                                           .getName());
 
-        /** DOCUMENT ME! */
         private static final String EPSG = "EPSG:";
 
-        /** DOCUMENT ME! */
+
         private static AttributesImpl wmsVersion = new AttributesImpl();
 
-        /** DOCUMENT ME! */
+
         private static final String XLINK_NS = "http://www.w3.org/1999/xlink";
 
         static {
@@ -174,10 +172,12 @@ public class WMSCapsTransformer extends TransformerBase {
          * The request from wich all the information needed to produce the
          * capabilities document can be obtained
          */
-        private CapabilitiesRequest request;
-        private Set getMapFormats;
+        private WMSCapabilitiesRequest request;
+        private Set<String> getMapFormats;
 
         private Set<String> getLegendGraphicFormats;
+
+        private WMS wmsConfig;
 
         /**
          * Creates a new CapabilitiesTranslator object.
@@ -185,7 +185,7 @@ public class WMSCapsTransformer extends TransformerBase {
          * @param handler
          *            content handler to send sax events to.
          */
-        public CapabilitiesTranslator(ContentHandler handler, Set getMapFormats,
+        public CapabilitiesTranslator(ContentHandler handler, Set<String> getMapFormats,
             Set<String> getLegendGraphicFormats) {
             super(handler, null, null);
             this.getMapFormats = getMapFormats;
@@ -199,20 +199,20 @@ public class WMSCapsTransformer extends TransformerBase {
          * @throws IllegalArgumentException if {@code o} is not of the expected type
          */
         public void encode(Object o) throws IllegalArgumentException {
-            if (!(o instanceof CapabilitiesRequest)) {
+            if (!(o instanceof WMSCapabilitiesRequest)) {
                 throw new IllegalArgumentException();
             }
 
-            this.request = (CapabilitiesRequest) o;
+            this.request = (WMSCapabilitiesRequest) o;
+            this.wmsConfig = this.request.getWMS();
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine(new StringBuffer("producing a capabilities document for ").append(
                         request).toString());
             }
 
-            WMS wms = (WMS) request.getServiceConfig();
             AttributesImpl rootAtts = new AttributesImpl(wmsVersion);
-            rootAtts.addAttribute("", "updateSequence", "updateSequence", "", wms.getGeoServer().getUpdateSequence() + "");
+            rootAtts.addAttribute("", "updateSequence", "updateSequence", "", wmsConfig.getUpdateSequence() + "");
             start("WMT_MS_Capabilities", rootAtts);
             handleService();
             handleCapability();
@@ -223,26 +223,28 @@ public class WMSCapsTransformer extends TransformerBase {
          * Encodes the service metadata section of a WMS capabilities document.
          */
         private void handleService() {
-            WMS wms = (WMS) request.getServiceConfig();
             start("Service");
 
+            final WMSInfo serviceInfo = wmsConfig.getServiceInfo();
             element("Name", "OGC:WMS");
-            element("Title", wms.getTitle());
-            element("Abstract", wms.getAbstract());
+            element("Title", serviceInfo.getTitle());
+            element("Abstract", serviceInfo.getAbstract());
 
-            handleKeywordList(wms.getKeywords());
+            handleKeywordList(serviceInfo.getKeywords());
 
             AttributesImpl orAtts = new AttributesImpl();
             orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
             orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "", "simple");
             orAtts.addAttribute("", "xlink:href", "xlink:href", "",
-                RequestUtils.proxifiedBaseURL(request.getBaseUrl(),wms.getGeoServer().getProxyBaseUrl()) + "wms");
+                RequestUtils.proxifiedBaseURL(request.getBaseUrl(),wmsConfig.getProxyBaseUrl()) + "wms");
             element("OnlineResource", null, orAtts);
 
-            handleContactInfo(wms.getGeoServer());
+            GeoServer geoServer = wmsConfig.getGeoServer();
+            ContactInfo contact = geoServer.getGlobal().getContact();
+            handleContactInfo(contact);
 
-            element("Fees", wms.getFees());
-            element("AccessConstraints", wms.getAccessConstraints());
+            element("Fees", serviceInfo.getFees());
+            element("AccessConstraints", serviceInfo.getAccessConstraints());
             end("Service");
         }
 
@@ -250,28 +252,29 @@ public class WMSCapsTransformer extends TransformerBase {
          * Encodes contact information in the WMS capabilities document
          * @param geoServer
          */
-        public void handleContactInfo(GeoServer geoServer) {
-            start("ContactInformation");
-
+        public void handleContactInfo(ContactInfo contact) {
+            start("ContactInformation");            
+            
             start("ContactPersonPrimary");
-            element("ContactPerson", geoServer.getContactPerson());
-            element("ContactOrganization", geoServer.getContactOrganization());
+            element("ContactPerson",  contact.getContactPerson());
+            element("ContactOrganization", contact.getContactOrganization());
             end("ContactPersonPrimary");
 
-            element("ContactPosition", geoServer.getContactPosition());
+            element("ContactPosition", contact.getContactPosition());
 
             start("ContactAddress");
-            element("AddressType", geoServer.getAddressType());
-            element("Address", geoServer.getAddress());
-            element("City", geoServer.getAddressCity());
-            element("StateOrProvince", geoServer.getAddressState());
-            element("PostCode", geoServer.getAddressPostalCode());
-            element("Country", geoServer.getAddressCountry());
+            element("AddressType", contact.getAddressType());
+            element("Address", contact.getAddress());
+            element("City", contact.getAddressCity());
+            element("StateOrProvince", contact.getAddressState());
+            element("PostCode", contact.getAddressPostalCode());
+            element("Country", contact.getAddressCountry());
             end("ContactAddress");
 
-            element("ContactVoiceTelephone", geoServer.getContactVoice());
-            element("ContactFacsimileTelephone", geoServer.getContactFacsimile());
-            element("ContactElectronicMailAddress", geoServer.getContactEmail());
+            element("ContactVoiceTelephone", contact.getContactVoice());
+            element("ContactFacsimileTelephone", contact.getContactFacsimile());
+            element("ContactElectronicMailAddress", contact.getContactEmail());
+            
 
             end("ContactInformation");
         }
@@ -281,12 +284,12 @@ public class WMSCapsTransformer extends TransformerBase {
          *
          * @param keywords
          */
-        private void handleKeywordList(List keywords) {
+        private void handleKeywordList(List<String> keywords) {
             start("KeywordList");
 
             if (keywords != null) {
-                for (Iterator it = keywords.iterator(); it.hasNext();) {
-                    element("Keyword", String.valueOf(it.next()));
+                for (Iterator<String> it = keywords.iterator(); it.hasNext();) {
+                    element("Keyword", it.next());
                 }
             }
 
@@ -298,13 +301,12 @@ public class WMSCapsTransformer extends TransformerBase {
          *
          * @param keywords
          */
-        private void handleMetadataList(List metadataURLs) {
+        private void handleMetadataList(List<MetadataLinkInfo> metadataURLs) {
             if (metadataURLs == null) {
                 return;
             }
 
-            for (Iterator it = metadataURLs.iterator(); it.hasNext();) {
-                MetaDataLink link = (MetaDataLink) it.next();
+            for (MetadataLinkInfo link : metadataURLs) {
 
                 AttributesImpl lnkAtts = new AttributesImpl();
                 lnkAtts.addAttribute("", "type", "type", "", link.getMetadataType());
@@ -344,16 +346,16 @@ public class WMSCapsTransformer extends TransformerBase {
             start("GetCapabilities");
             element("Format", WMS_CAPS_MIME);
             
-            String serviceUrl = 
-                RequestUtils.proxifiedBaseURL(request.getBaseUrl(), request.getServiceConfig().getGeoServer().getProxyBaseUrl()) +
-                "wms?SERVICE=WMS&";
+            String serviceUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wmsConfig
+                    .getProxyBaseUrl())
+                    + "wms?SERVICE=WMS&";
 
             handleDcpType(serviceUrl, serviceUrl);
             end("GetCapabilities");
 
             start("GetMap");
 
-            List sortedFormats = new ArrayList(getMapFormats);
+            List<String> sortedFormats = new ArrayList<String>(getMapFormats);
             Collections.sort(sortedFormats);
             // this is a hack necessary to make cite tests pass: we need an output format
             // that is equal to the mime type as the first one....
@@ -361,7 +363,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 sortedFormats.remove("image/png");
                 sortedFormats.add(0, "image/png");
             }
-            for (Iterator it = sortedFormats.iterator(); it.hasNext();) {
+            for (Iterator<String> it = sortedFormats.iterator(); it.hasNext();) {
                 element("Format", String.valueOf(it.next()));
             }
 
@@ -435,11 +437,8 @@ public class WMSCapsTransformer extends TransformerBase {
         private void handleException() {
             start("Exception");
 
-            WMS wms = (WMS) request.getServiceConfig();
-            Iterator it = Arrays.asList(wms.getExceptionFormats()).iterator();
-
-            while (it.hasNext()) {
-                element("Format", String.valueOf(it.next()));
+            for(String exceptionFormat : WMSCapsTransformer.EXCEPTION_FORMATS) {
+                element("Format", exceptionFormat);
             }
 
             end("Exception");
@@ -450,11 +449,11 @@ public class WMSCapsTransformer extends TransformerBase {
          */
         private void handleSLD() {
             AttributesImpl sldAtts = new AttributesImpl();
-            WMS config = (WMS) request.getServiceConfig();
-            String supportsSLD = config.supportsSLD() ? "1" : "0";
-            String supportsUserLayer = config.supportsUserLayer() ? "1" : "0";
-            String supportsUserStyle = config.supportsUserStyle() ? "1" : "0";
-            String supportsRemoteWFS = config.supportsRemoteWFS() ? "1" : "0";
+            
+            String supportsSLD = wmsConfig.supportsSLD() ? "1" : "0";
+            String supportsUserLayer = wmsConfig.supportsUserLayer() ? "1" : "0";
+            String supportsUserStyle = wmsConfig.supportsUserStyle() ? "1" : "0";
+            String supportsRemoteWFS = wmsConfig.supportsRemoteWFS() ? "1" : "0";
             sldAtts.addAttribute("", "SupportSLD", "SupportSLD", "", supportsSLD);
             sldAtts.addAttribute("", "UserLayer", "UserLayer", "", supportsUserLayer);
             sldAtts.addAttribute("", "UserStyle", "UserStyle", "", supportsUserStyle);
@@ -493,48 +492,43 @@ public class WMSCapsTransformer extends TransformerBase {
          *       gridcoverages, etc)
          */
         private void handleLayers() {
-            WMS wms = (WMS) request.getServiceConfig();
             start("Layer");
 
-            Data catalog = wms.getData();
-            List ftypes = new ArrayList(catalog.getFeatureTypeInfos().values());
-            List coverages = new ArrayList(catalog.getCoverageInfos().values());
+            final List<LayerInfo> layers;
             
             // filter the layers if a namespace filter has been set
-            if(request.getNamespace() != null) {
-                String namespace = request.getNamespace();
-                for (Iterator it = ftypes.iterator(); it.hasNext();) {
-                    FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
-                    if(!namespace.equals(ft.getNameSpace().getPrefix()))
-                        it.remove();
+            if(request.getNamespace() != null){
+                final List<LayerInfo> allLayers = wmsConfig.getLayers();
+                layers = new ArrayList<LayerInfo>();
+                
+                String namespace = wmsConfig.getNamespaceByPrefix(request.getNamespace());
+                for (LayerInfo layer : allLayers) {
+                    Name name = layer.getResource().getQualifiedName();
+                    if(name.getNamespaceURI().equals(namespace)){
+                        layers.add(layer);
+                    }
                 }
-                for (Iterator it = coverages.iterator(); it.hasNext();) {
-                    CoverageInfo cv = (CoverageInfo) it.next();
-                    if(!namespace.equals(cv.getNameSpace().getPrefix()))
-                        it.remove();
-                }
+            }else{
+                layers = wmsConfig.getLayers();
             }
 
-            element("Title", wms.getTitle());
-            element("Abstract", wms.getAbstract());
+            WMSInfo serviceInfo = wmsConfig.getServiceInfo();
+            element("Title", serviceInfo.getTitle());
+            element("Abstract", serviceInfo.getAbstract());
             
-            handleRootCrsList(wms.getCapabilitiesCrsList());
+            List<String> srsList = serviceInfo.getSRS();
+            Set<String> srs = srsList == null? Collections.EMPTY_SET : new HashSet<String>(srsList);
+            handleRootCrsList(srs);
             
-            List layers = new ArrayList(ftypes.size() + coverages.size());
-            layers.addAll(ftypes);
-            layers.addAll(coverages);
             handleRootBbox(layers);
             
             // now encode each layer individually
-            LayerTree featuresLayerTree = new LayerTree(ftypes);
-            handleFeaturesTree(featuresLayerTree);
-
-            LayerTree coveragesLayerTree = new LayerTree(coverages);
-            handleCoveragesTree(coveragesLayerTree);
+            LayerTree featuresLayerTree = new LayerTree(layers);
+            handleLayerTree(featuresLayerTree);
 
             try {
-                handleLayerGroups(wms.getBaseMapLayers(), wms.getBaseMapStyles(),
-                    wms.getBaseMapEnvelopes());
+                List<LayerGroupInfo> layerGroups = wmsConfig.getLayerGroups();
+                handleLayerGroups(new ArrayList<LayerGroupInfo>(layerGroups));
             } catch (FactoryException e) {
                 throw new RuntimeException("Can't obtain Envelope of Layer-Groups: "
                     + e.getMessage(), e);
@@ -561,22 +555,22 @@ public class WMSCapsTransformer extends TransformerBase {
          *            possibly empty set of CRS identifiers to limit the number
          *            of SRS elements to.
          */
-        private void handleRootCrsList(final Set epsgCodes) {
-            final Set capabilitiesCrsIdentifiers;
+        private void handleRootCrsList(final Set<String> epsgCodes) {
+            final Set<String> capabilitiesCrsIdentifiers;
             if(epsgCodes.isEmpty()){
                 comment("All supported EPSG projections:");
                 capabilitiesCrsIdentifiers = CRS.getSupportedCodes("EPSG");
             }else{
                 comment("Limited list of EPSG projections:");
-                capabilitiesCrsIdentifiers = new TreeSet(epsgCodes);
+                capabilitiesCrsIdentifiers = new TreeSet<String>(epsgCodes);
             }
             
             try {
-                Iterator it = capabilitiesCrsIdentifiers.iterator();
+                Iterator<String> it = capabilitiesCrsIdentifiers.iterator();
                 String currentSRS;
 
                 while (it.hasNext()) {
-                    currentSRS = it.next().toString();
+                    currentSRS = it.next();
                     if(currentSRS.indexOf(':') == -1){
                         currentSRS = EPSG + currentSRS;
                     }
@@ -596,41 +590,16 @@ public class WMSCapsTransformer extends TransformerBase {
          *            the collection of FeatureTypeInfo and CoverageInfo objects
          *            to traverse
          */
-        private void handleRootBbox(Collection ftypes) {
+        private void handleRootBbox(Collection<LayerInfo> layers) {
+
             Envelope latlonBbox = new Envelope();
             Envelope layerBbox = null;
 
             LOGGER.finer("Collecting summarized latlonbbox and common SRS...");
 
-                FeatureTypeInfo vectorLayer;
-                CoverageInfo rasterLayer;
-
-            for (Iterator it = ftypes.iterator(); it.hasNext();) {
-                Object layer = it.next();
-                if(layer instanceof FeatureTypeInfo){
-                    vectorLayer = (FeatureTypeInfo) layer;
-                    if(!vectorLayer.isEnabled()){
-                        continue;
-                    }
-                    try {
-                        layerBbox = vectorLayer.getLatLongBoundingBox();
-                    } catch (IOException e) {
-                        throw new RuntimeException("Can't obtain latLonBBox of "
-                            + vectorLayer.getName() + ": " + e.getMessage(), e);
-                    }
-                }else{
-                    rasterLayer = (CoverageInfo) layer;
-                    if(!rasterLayer.isEnabled()){
-                        continue;
-                    }
-                    final GeneralEnvelope bbox = rasterLayer.getWGS84LonLatEnvelope();
-                    if(bbox != null){
-                        layerBbox = new Envelope(bbox.getLowerCorner().getOrdinate(0),
-                                bbox.getUpperCorner().getOrdinate(0),
-                                bbox.getLowerCorner().getOrdinate(1),
-                                bbox.getUpperCorner().getOrdinate(1));
-                    }
-                }
+            for (LayerInfo layer : layers) {
+                ResourceInfo resource = layer.getResource();
+                layerBbox = resource.getLatLonBoundingBox();
                 latlonBbox.expandToInclude(layerBbox);
             }
 
@@ -644,24 +613,32 @@ public class WMSCapsTransformer extends TransformerBase {
         /**
          * @param featuresLayerTree
          */
-        private void handleFeaturesTree(LayerTree featuresLayerTree) {
-            final List data = new ArrayList(featuresLayerTree.getData());
-            final Collection childrens = featuresLayerTree.getChildrens();
-            FeatureTypeInfo fLayer;
+        private void handleLayerTree(LayerTree featuresLayerTree) {
+            final List<LayerInfo> data = new ArrayList<LayerInfo>(featuresLayerTree.getData());
+            final Collection<LayerTree> childrens = featuresLayerTree.getChildrens();
 
-            Collections.sort(data, new FeatureTypeInfoTitleComparator());
-            for (Iterator it = data.iterator(); it.hasNext();) {
-                fLayer = (FeatureTypeInfo) it.next();
-                
-                boolean geometryless = true;
+            Collections.sort(data, new Comparator<LayerInfo>() {
+                public int compare(LayerInfo o1, LayerInfo o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+            
+            for (LayerInfo layer : data) {
+                boolean hasGeometry = false;
                 try {
-                    geometryless = fLayer.isGeometryless();
-                } catch(Exception e) {
-                    LOGGER.log(Level.SEVERE, "An error occurred trying to determine if the layer is geometryless", e);
+                    hasGeometry = layer.getType() == Type.VECTOR
+                            && ((FeatureTypeInfo) layer.getResource()).getFeatureType()
+                                    .getGeometryDescriptor() != null;
+                } catch (Exception e) {
+                    LOGGER
+                            .log(
+                                    Level.SEVERE,
+                                    "An error occurred trying to determine if the layer is geometryless",
+                                    e);
                 }
 
-                if (fLayer.isEnabled() && !geometryless) {
-                    handleFeatureType(fLayer);
+                if (layer.isEnabled() && hasGeometry) {
+                    handleLayer(layer);
                 }
             }
 
@@ -672,7 +649,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 start("Layer");
                 element("Name", layerTree.getName());
                 element("Title", layerTree.getName());
-                handleFeaturesTree(layerTree);
+                handleLayerTree(layerTree);
                 end("Layer");
             }
         }
@@ -681,32 +658,28 @@ public class WMSCapsTransformer extends TransformerBase {
          * Calls super.handleFeatureType to add common FeatureType content such
          * as Name, Title and LatLonBoundingBox, and then writes WMS specific
          * layer properties as Styles, Scale Hint, etc.
-         *
-         * @param ftype
-         *            The featureType to write out.
-         *
-         * @throws RuntimeException
-         *             DOCUMENT ME!
+         * @throws IOException 
          *
          * @task TODO: write wms specific elements.
          */
-        protected void handleFeatureType(FeatureTypeInfo ftype) {
+        protected void handleLayer(final LayerInfo layer){
             // HACK: by now all our layers are queryable, since they reference
             // only featuretypes managed by this server
             AttributesImpl qatts = new AttributesImpl();
             qatts.addAttribute("", "queryable", "queryable", "", "1");
             start("Layer", qatts);
-            element("Name", ftype.getName());
-            element("Title", ftype.getTitle());
-            element("Abstract", ftype.getAbstract());
-
-            handleKeywordList(ftype.getKeywords());
+            element("Name", layer.getName());
+            //REVISIT: this is bad, layer should have title and anbstract by itself
+            element("Title", layer.getResource().getTitle());
+            element("Abstract", layer.getResource().getAbstract());
+            handleKeywordList(layer.getResource().getKeywords());
 
             /**
              * @task REVISIT: should getSRS() return the full URL? no - the spec
              *       says it should be a set of <SRS>EPSG:#</SRS>...
              */
-            element("SRS", EPSG + ftype.getSRS());
+            final String srs = layer.getResource().getSRS();
+            element("SRS", srs);
 
             // DJB: I want to be nice to the people reading the capabilities
             // file - I'm going to get the
@@ -714,7 +687,7 @@ public class WMSCapsTransformer extends TransformerBase {
             // NOTE: this isnt well done because "comment()" isnt in the
             // ContentHandler interface...
             try {
-                CoordinateReferenceSystem crs = CRS.decode(EPSG + ftype.getSRS());
+                CoordinateReferenceSystem crs = layer.getResource().getCRS();
                 String desc = "WKT definition of this CRS:\n" + crs;
                 comment(desc);
             } catch (Exception e) {
@@ -723,209 +696,74 @@ public class WMSCapsTransformer extends TransformerBase {
                 }
             }
 
-            Envelope bbox = null;
-            Envelope llbbox = null;
-
+            Envelope bbox;
             try {
-                bbox = ftype.getBoundingBox();
-                llbbox = ftype.getLatLongBoundingBox();
-            } catch (IOException ex) {
-                throw new RuntimeException("Can't obtain latLongBBox of " + ftype.getName() + ": "
-                    + ex.getMessage(), ex);
+                bbox = layer.getResource().getBoundingBox();
+            } catch (Exception e) {
+                throw new RuntimeException("Unexpected error obtaining bounding box for layer "
+                        + layer.getName());
             }
+            Envelope llbbox = layer.getResource().getLatLonBoundingBox();
 
             handleLatLonBBox(llbbox);
             // the native bbox might be null
-            if(bbox != null)
-                handleBBox(bbox, EPSG + ftype.getSRS());
+            if(bbox != null){
+                handleBBox(bbox, srs);
+            }
             // handle metadata URLs
-            handleMetadataList(ftype.getMetadataLinks());
+            handleMetadataList(layer.getResource().getMetadataLinks());
 
             // add the layer style
             start("Style");
 
-            Style ftStyle = ftype.getDefaultStyle();
-            element("Name", ftStyle.getName());
+            StyleInfo defaultStyle = layer.getDefaultStyle();
+            Style ftStyle;
+            try {
+                ftStyle = defaultStyle.getStyle();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            element("Name", defaultStyle.getName());
             element("Title", ftStyle.getTitle());
             element("Abstract", ftStyle.getAbstract());
-            handleLegendURL(ftype);
+            handleLegendURL(layer.getName(), layer.getLegend());
             end("Style");
 
-            final ArrayList styles = ftype.getStyles();
-            Iterator s_IT = styles.iterator();
+            Set<StyleInfo> styles = layer.getStyles();
 
-            while (s_IT.hasNext()) {
-                ftStyle = (Style) s_IT.next();
+            for(StyleInfo styleInfo : styles) {
+                try {
+                    ftStyle = styleInfo.getStyle();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 start("Style");
-                element("Name", ftStyle.getName());
+                element("Name", styleInfo.getName());
                 element("Title", ftStyle.getTitle());
                 element("Abstract", ftStyle.getAbstract());
-                handleLegendURL(ftype);
-                end("Style");
-            }
-
-            end("Layer");
-        }
-
-        /**
-         * @param coveragesLayerTree
-         */
-        private void handleCoveragesTree(LayerTree coveragesLayerTree) {
-            final List data = new ArrayList(coveragesLayerTree.getData());
-            final Collection childrens = coveragesLayerTree.getChildrens();
-            CoverageInfo cLayer;
-
-            Collections.sort(data, new CoverageInfoLabelComparator());
-            for (Iterator it = data.iterator(); it.hasNext();) {
-                cLayer = (CoverageInfo) it.next();
-
-                if (cLayer.isEnabled()) {
-                    handleCoverage(cLayer);
-                }
-            }
-
-            LayerTree layerTree;
-
-            for (Iterator it = childrens.iterator(); it.hasNext();) {
-                layerTree = (LayerTree) it.next();
-                start("Layer");
-                element("Name", layerTree.getName());
-                element("Title", layerTree.getName());
-                handleCoveragesTree(layerTree);
-                end("Layer");
-            }
-        }
-
-        protected void handleCoverage(CoverageInfo coverage) {
-            // HACK: by now all our layers are queryable, since they reference
-            // only featuretypes managed by this server
-            AttributesImpl qatts = new AttributesImpl();
-            qatts.addAttribute("", "queryable", "queryable", "", "1");
-            // qatts.addAttribute("", "opaque", "opaque", "", "1");
-            // qatts.addAttribute("", "cascaded", "cascaded", "", "1");
-            start("Layer", qatts);
-            element("Name", coverage.getName());
-            element("Title", coverage.getLabel());
-            element("Abstract", coverage.getDescription());
-
-            handleKeywordList(coverage.getKeywords());
-
-            CoordinateReferenceSystem crs = coverage.getCrs();
-            String desc;
-            try{
-                String publishedCoverageCrsWKT = crs.toWKT();
-                desc = "WKT definition of this CRS:\n" + publishedCoverageCrsWKT;
-            }catch(UnformattableObjectException e){
-                desc = "Unable to get the WKT representation for the coverage crs: " + coverage.getSrsName();
-            }
-            comment(desc);
-
-            String authority = coverage.getSrsName();
-
-            /*CoordinateReferenceSystem crs = coverage.getCrs();
-            if (crs != null && !crs.getIdentifiers().isEmpty()) {
-                    Identifier[] idents = (Identifier[]) crs.getIdentifiers()
-                                    .toArray(new Identifier[crs.getIdentifiers().size()]);
-                    authority = idents[0].toString();
-            } else if (crs != null && crs instanceof DerivedCRS) {
-                    final CoordinateReferenceSystem baseCRS = ((DerivedCRS) crs)
-                                    .getBaseCRS();
-                    if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
-                            authority = ((Identifier[]) baseCRS.getIdentifiers()
-                                            .toArray(
-                                                            new Identifier[baseCRS.getIdentifiers()
-                                                                            .size()]))[0].toString();
-                    else
-                            authority = coverage.getNativeCRS();
-            } else if (crs != null && crs instanceof ProjectedCRS) {
-                    final CoordinateReferenceSystem baseCRS = ((ProjectedCRS) crs)
-                                    .getBaseCRS();
-                    if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
-                            authority = ((Identifier[]) baseCRS.getIdentifiers()
-                                            .toArray(
-                                                            new Identifier[baseCRS.getIdentifiers()
-                                                                            .size()]))[0].toString();
-                    else
-                            authority = coverage.getNativeCRS();
-            } else
-                    authority = coverage.getNativeCRS();*/
-            element("SRS", authority);
-
-            GeneralEnvelope bounds = null;
-            GeneralEnvelope llBounds = null;
-
-            // try {
-            // We need LON/LAT Envelopes
-            // TODO check for BBOX, maybe it should be expressed in original
-            // CRS coords!!
-            final GeneralEnvelope latLonEnvelope = coverage.getWGS84LonLatEnvelope();
-            // final CoordinateReferenceSystem llCRS = latLonEnvelope
-            // .getCoordinateReferenceSystem();
-            bounds = coverage.getEnvelope();
-            llBounds = latLonEnvelope;
-
-            // bounds =
-            // CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS,
-            // coverage.getEnvelope());
-            // llBounds =
-            // CoverageStoreUtils.adjustEnvelopeLongitudeFirst(llCRS,
-            // // latLonEnvelope);
-            // } catch (MismatchedDimensionException e) {
-            //	
-            // } catch (IndexOutOfBoundsException e) {
-            //			
-            // }
-            final Envelope bbox = new Envelope(bounds.getLowerCorner().getOrdinate(0),
-                    bounds.getUpperCorner().getOrdinate(0), bounds.getLowerCorner().getOrdinate(1),
-                    bounds.getUpperCorner().getOrdinate(1));
-
-            final Envelope llBbox = new Envelope(llBounds.getLowerCorner().getOrdinate(0),
-                    llBounds.getUpperCorner().getOrdinate(0),
-                    llBounds.getLowerCorner().getOrdinate(1),
-                    llBounds.getUpperCorner().getOrdinate(1));
-
-            handleLatLonBBox(llBbox);
-            handleBBox(bbox, authority);
-
-            // add the layer style
-            start("Style");
-
-            Style cvStyle = coverage.getDefaultStyle();
-            element("Name", cvStyle.getName());
-            element("Title", cvStyle.getTitle());
-            element("Abstract", cvStyle.getAbstract());
-            handleLegendURL(coverage);
-            end("Style");
-
-            final ArrayList styles = coverage.getStyles();
-            Iterator s_IT = styles.iterator();
-
-            while (s_IT.hasNext()) {
-                cvStyle = (Style) s_IT.next();
-                start("Style");
-                element("Name", cvStyle.getName());
-                element("Title", cvStyle.getTitle());
-                element("Abstract", cvStyle.getAbstract());
-                handleLegendURL(coverage);
+                handleLegendURL(layer.getName(), layer.getLegend());
                 end("Style");
             }
 
             end("Layer");
         }
         
-        protected void handleLayerGroups(Map baseMapLayers, Map baseMapStyles, Map baseMapEnvelopes)
+        protected void handleLayerGroups(List<LayerGroupInfo> layerGroups)
             throws FactoryException, TransformException {
-            if (baseMapLayers == null) {
+            if (layerGroups == null || layerGroups.size() == 0) {
                 return;
             }
 
-            List names = new ArrayList(baseMapLayers.keySet());
-            Collections.sort(names);
+            Collections.sort(layerGroups, new Comparator<LayerGroupInfo>() {
+                public int compare(LayerGroupInfo o1, LayerGroupInfo o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
 
             CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326");
 
-            for (Iterator it = names.iterator(); it.hasNext();) {
-                String layerName = (String) it.next();
+            for (LayerGroupInfo layerGroup : layerGroups) {
+                String layerName = layerGroup.getName();
 
                 AttributesImpl qatts = new AttributesImpl();
                 qatts.addAttribute("", "queryable", "queryable", "", "0");
@@ -936,45 +774,17 @@ public class WMSCapsTransformer extends TransformerBase {
                 element("Title", layerName);
                 element("Abstract", "Layer-Group type layer: " + layerName);
 
-                //handleKeywordList(...getKeywords());
+                final ReferencedEnvelope layerGroupBounds = layerGroup.getBounds();
+                final ReferencedEnvelope latLonBounds = layerGroupBounds.transform(
+                        DefaultGeographicCRS.WGS84, true);
 
-                /*String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
-                comment(desc);*/
-                GeneralEnvelope bounds = (GeneralEnvelope) baseMapEnvelopes.get(layerName);
-                GeneralEnvelope llBounds = null;
-
-                String authority = bounds.getCoordinateReferenceSystem().getIdentifiers().toArray()[0]
-                    .toString();
+                String authority = layerGroupBounds.getCoordinateReferenceSystem().getIdentifiers()
+                        .toArray()[0].toString();
 
                 element("SRS", authority);
 
-                if (CRS.equalsIgnoreMetadata(wgs84, bounds.getCoordinateReferenceSystem())) {
-                    llBounds = bounds;
-                } else {
-                    try {
-                        final MathTransform srcCRStoWGS84 = CRS.findMathTransform(bounds
-                                .getCoordinateReferenceSystem(), wgs84, true);
-                        final GeneralEnvelope latLonEnvelope = CRS.transform(srcCRStoWGS84,
-                                bounds);
-                        latLonEnvelope.setCoordinateReferenceSystem(wgs84);
-                        llBounds = latLonEnvelope;
-                    } catch(TransformException e) {
-                        throw new WmsException("Cannot transform envelope to WGS84 for layer group " + layerName, "TransformException", e);
-                    }
-                }
-
-                final Envelope bbox = new Envelope(bounds.getLowerCorner().getOrdinate(0),
-                        bounds.getUpperCorner().getOrdinate(0),
-                        bounds.getLowerCorner().getOrdinate(1),
-                        bounds.getUpperCorner().getOrdinate(1));
-
-                final Envelope llBbox = new Envelope(llBounds.getLowerCorner().getOrdinate(0),
-                        llBounds.getUpperCorner().getOrdinate(0),
-                        llBounds.getLowerCorner().getOrdinate(1),
-                        llBounds.getUpperCorner().getOrdinate(1));
-
-                handleLatLonBBox(llBbox);
-                handleBBox(bbox, authority);
+                handleLatLonBBox(latLonBounds);
+                handleBBox(layerGroupBounds, authority);
 
                 // the layer style is not provided since the group does just have 
                 // one possibility, the lack of styles that will make it use
@@ -1001,17 +811,7 @@ public class WMSCapsTransformer extends TransformerBase {
          * @task TODO: figure out how to unhack legend parameters such as WIDTH,
          *       HEIGHT and FORMAT
          */
-        protected void handleLegendURL(Object layer) {
-            LegendURL legend = null;
-            String layerName = null;
-
-            if (layer instanceof FeatureTypeInfo) {
-                legend = ((FeatureTypeInfo) layer).getLegendURL();
-                layerName = ((FeatureTypeInfo) layer).getName();
-            } else if (layer instanceof CoverageInfo) {
-                layerName = ((CoverageInfo) layer).getName();
-            }
-
+        protected void handleLegendURL(String layerName, LegendInfo legend) {
             if (legend != null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.fine("using user supplied legend URL");
@@ -1081,9 +881,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
                 StringBuffer onlineResource =
                     new StringBuffer(RequestUtils.proxifiedBaseURL(
-                            request.getBaseUrl()
-                            ,request.getServiceConfig().getGeoServer().getProxyBaseUrl()
-                            ));
+                            request.getBaseUrl(), wmsConfig.getProxyBaseUrl()));
                 onlineResource.append("wms/GetLegendGraphic?VERSION=");
                 onlineResource.append(GetLegendGraphicRequest.SLD_VERSION);
                 onlineResource.append("&FORMAT=");
@@ -1182,8 +980,8 @@ public class WMSCapsTransformer extends TransformerBase {
  */
 class LayerTree {
     private String name;
-    private Collection childrens;
-    private Collection data;
+    private Collection<LayerTree> childrens;
+    private Collection<LayerInfo> data;
 
     /**
      * @param name
@@ -1191,50 +989,30 @@ class LayerTree {
      */
     public LayerTree(String name) {
         this.name = name;
-        this.childrens = new ArrayList();
-        this.data = new ArrayList();
+        this.childrens = new ArrayList<LayerTree>();
+        this.data = new ArrayList<LayerInfo>();
     }
 
     /**
      * @param c
      *            Collection
      */
-    public LayerTree(Collection c) {
+    public LayerTree(Collection<LayerInfo> c) {
         this.name = "";
         this.childrens = new ArrayList();
         this.data = new ArrayList();
 
-        for (Iterator it = c.iterator(); it.hasNext();) {
-            Object element = it.next();
+        for (Iterator<LayerInfo> it = c.iterator(); it.hasNext();) {
+            LayerInfo layer = it.next();
+            if (layer.isEnabled()) {
+                String wmsPath = layer.getPath(); 
 
-            if (element instanceof CoverageInfo) {
-                CoverageInfo cLayer = (CoverageInfo) element;
-
-                if (cLayer.isEnabled()) {
-                    String wmsPath = (((cLayer.getWmsPath() != null)
-                        && (cLayer.getWmsPath().length() > 0)) ? cLayer.getWmsPath() : "/");
-
-                    if (wmsPath.startsWith("/")) {
-                        wmsPath = wmsPath.substring(1, wmsPath.length());
-                    }
-
-                    String[] treeStructure = wmsPath.split("/");
-                    addToNode(this, treeStructure, cLayer);
+                if (wmsPath.startsWith("/")) {
+                    wmsPath = wmsPath.substring(1, wmsPath.length());
                 }
-            } else if (element instanceof FeatureTypeInfo) {
-                FeatureTypeInfo fLayer = (FeatureTypeInfo) element;
 
-                if (fLayer.isEnabled()) {
-                    String wmsPath = (((fLayer.getWmsPath() != null)
-                        && (fLayer.getWmsPath().length() > 0)) ? fLayer.getWmsPath() : "/");
-
-                    if (wmsPath.startsWith("/")) {
-                        wmsPath = wmsPath.substring(1, wmsPath.length());
-                    }
-
-                    String[] treeStructure = wmsPath.split("/");
-                    addToNode(this, treeStructure, fLayer);
-                }
+                String[] treeStructure = wmsPath.split("/");
+                addToNode(this, treeStructure, layer);
             }
         }
     }
@@ -1244,26 +1022,7 @@ class LayerTree {
      * @param treeStructure
      * @param layer
      */
-    private void addToNode(LayerTree tree, String[] treeStructure, CoverageInfo layer) {
-        final int length = treeStructure.length;
-
-        if ((length == 0) || (treeStructure[0].length() == 0)) {
-            tree.data.add(layer);
-        } else {
-            LayerTree node = tree.getNode(treeStructure[0]);
-
-            if (node == null) {
-                node = new LayerTree(treeStructure[0]);
-                tree.childrens.add(node);
-            }
-
-            String[] subTreeStructure = new String[length - 1];
-            System.arraycopy(treeStructure, 1, subTreeStructure, 0, length - 1);
-            addToNode(node, subTreeStructure, layer);
-        }
-    }
-
-    private void addToNode(LayerTree tree, String[] treeStructure, FeatureTypeInfo layer) {
+    private void addToNode(LayerTree tree, String[] treeStructure, LayerInfo layer) {
         final int length = treeStructure.length;
 
         if ((length == 0) || (treeStructure[0].length() == 0)) {
@@ -1300,11 +1059,11 @@ class LayerTree {
         return node;
     }
 
-    public Collection getChildrens() {
+    public Collection<LayerTree> getChildrens() {
         return childrens;
     }
 
-    public Collection getData() {
+    public Collection<LayerInfo> getData() {
         return data;
     }
 

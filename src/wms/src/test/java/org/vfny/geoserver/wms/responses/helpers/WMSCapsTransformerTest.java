@@ -25,6 +25,7 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WMSTestSupport;
@@ -99,7 +100,7 @@ public class WMSCapsTransformerTest extends TestCase {
         catalog = new CatalogImpl();
         geosConfig.setCatalog(catalog);
 
-        req = new WMSCapabilitiesRequest(wmsInfo);
+        req = new WMSCapabilitiesRequest(new WMS(geosConfig));
         req.setBaseUrl(baseUrl);
 
         Map<String, String> namespaces = new HashMap<String, String>();
