@@ -6,16 +6,15 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.sql.Connection;
 
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.spatial.BBOX;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * This strategy just return the features as they come from the db 
@@ -34,7 +33,7 @@ public class RandomRegionatingStrategy extends
     public FeatureIterator getSortedFeatures(GeometryDescriptor geom, 
             ReferencedEnvelope latLongEnv, ReferencedEnvelope nativeEnv,
             Connection cacheConn) throws Exception {
-        FeatureSource fs = typeInfo.getFeatureSource();
+        FeatureSource fs = ((FeatureTypeInfo)layerInfo.getResource()).getFeatureSource(null, null);
         
         // build the bbox filter
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);

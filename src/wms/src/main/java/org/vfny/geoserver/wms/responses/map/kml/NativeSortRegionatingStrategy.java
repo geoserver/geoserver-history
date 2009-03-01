@@ -7,14 +7,14 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.sql.Connection;
 import java.util.Map;
 
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.wms.MapLayerInfo;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
-import org.geotools.referencing.operation.projection.ProjectionException;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -22,10 +22,8 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
 import org.opengis.filter.spatial.BBOX;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 /**
  * An attribute based regionating strategy assuming it's possible (and fast) to
@@ -54,7 +52,7 @@ public class NativeSortRegionatingStrategy extends
         Map options = con.getRequest().getFormatOptions();
         attribute = (String) options.get("regionateAttr");
         if (attribute == null)
-            attribute = typeInfo.getRegionateAttribute();
+            attribute = MapLayerInfo.getRegionateAttribute(layerInfo);
         if (attribute == null)
             throw new WmsException("Regionating attribute has not been specified");
 
@@ -62,13 +60,13 @@ public class NativeSortRegionatingStrategy extends
         AttributeType attributeType = type.getType(attribute);
         if (attributeType == null) {
             throw new WmsException("Could not find regionating attribute "
-                    + attribute + " in layer " + typeInfo.getName());
+                    + attribute + " in layer " + layerInfo.getName());
         }
         
         // check we can actually sort on that attribute
         if(!fs.getQueryCapabilities().supportsSorting(new SortBy[] {ff.sort(attribute, SortOrder.DESCENDING)}))
             throw new WmsException("Native sorting on the " + attribute 
-                    + " is not possible for layer " + typeInfo.getName());
+                    + " is not possible for layer " + layerInfo.getName());
             
 
         // make sure a special db for this layer and attribute will be created
@@ -76,8 +74,8 @@ public class NativeSortRegionatingStrategy extends
     }
 
     @Override
-    protected String getDatabaseName(FeatureTypeInfo cfg) throws Exception {
-        return super.getDatabaseName(cfg) + "_" + cfg.getRegionateAttribute();
+    protected String getDatabaseName(LayerInfo cfg) throws Exception {
+        return super.getDatabaseName(cfg) + "_" +  MapLayerInfo.getRegionateAttribute(cfg);
     }
 
     public FeatureIterator getSortedFeatures(GeometryDescriptor geom,

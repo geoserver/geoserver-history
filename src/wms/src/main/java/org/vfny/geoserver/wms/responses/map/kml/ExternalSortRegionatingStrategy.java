@@ -11,6 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.wms.MapLayerInfo;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.jdbc.JDBCUtils;
@@ -28,7 +30,6 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
@@ -91,7 +92,7 @@ public class ExternalSortRegionatingStrategy extends
     }
 
     @Override
-    protected final String getDatabaseName(FeatureTypeInfo cfg)
+    protected final String getDatabaseName(LayerInfo cfg)
             throws Exception { 
         return super.getDatabaseName(cfg) + "_" + checkAttribute(cfg);
     }
@@ -101,7 +102,7 @@ public class ExternalSortRegionatingStrategy extends
         Map options = con.getRequest().getFormatOptions();
         attribute = (String) options.get("regionateAttr");
         if (attribute == null)
-            attribute = typeInfo.getRegionateAttribute();
+            attribute = MapLayerInfo.getRegionateAttribute(layerInfo);
         if (attribute == null)
             throw new WmsException(
                     "Regionating attribute has not been specified");
@@ -110,7 +111,7 @@ public class ExternalSortRegionatingStrategy extends
         AttributeDescriptor ad = ft.getDescriptor(attribute);
         if (ad == null) {
             throw new WmsException("Could not find regionating attribute "
-                    + attribute + " in layer " + typeInfo.getName());
+                    + attribute + " in layer " + layerInfo.getName());
         }
 
         // Make sure we know how to turn that attribute into a H2 type
@@ -118,13 +119,14 @@ public class ExternalSortRegionatingStrategy extends
         if (h2Type == null)
             throw new WmsException("Attribute type " + ad.getType()
                     + " is not " + "supported for external sorting on "
-                    + typeInfo.getName() + "#" + attribute);
+                    + layerInfo.getName() + "#" + attribute);
     }
 
-    protected String checkAttribute(FeatureTypeInfo cfg){
-        return cfg.getRegionateAttribute();
+    protected String checkAttribute(LayerInfo cfg){
+        return  MapLayerInfo.getRegionateAttribute(cfg);
     }
 
+    @Override
     public FeatureIterator getSortedFeatures(GeometryDescriptor geom, 
             ReferencedEnvelope latLongEnvelope, ReferencedEnvelope nativeEnvelope, 
             Connection cacheConn) throws Exception {

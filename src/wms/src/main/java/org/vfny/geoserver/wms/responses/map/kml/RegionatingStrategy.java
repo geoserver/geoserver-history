@@ -1,8 +1,8 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import org.geoserver.catalog.LayerInfo;
 import org.geotools.map.MapLayer;
 import org.opengis.filter.Filter;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 /**
@@ -25,5 +25,5 @@ public interface RegionatingStrategy {
      * Clear any cached work (indexing, etc.) for a particular feature type's default regionating 
      * options.
      */
-    public void clearCache(FeatureTypeInfo cfg);
+    public void clearCache(LayerInfo cfg);
 }

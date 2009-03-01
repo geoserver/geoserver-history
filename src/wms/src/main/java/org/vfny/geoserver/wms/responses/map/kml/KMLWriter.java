@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerException;
 
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
+import org.geoserver.wms.WMS;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DataSourceException;
 import org.geotools.feature.FeatureCollection;
@@ -64,7 +65,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -178,7 +178,7 @@ public class KMLWriter extends OutputStreamWriter {
         transformer.setOmitXMLDeclaration(true);
         transformer.setNamespaceDeclarationEnabled(true);
 
-        GeoServer config = mapContext.getRequest().getGeoServer();
+        WMS config = mapContext.getRequest().getWMS();
         transformer.setNumDecimals(config.getNumDecimals());
     }
 
