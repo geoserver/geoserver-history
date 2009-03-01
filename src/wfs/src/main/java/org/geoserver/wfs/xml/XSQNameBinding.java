@@ -8,10 +8,10 @@ package org.geoserver.wfs.xml;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geotools.xml.InstanceComponent;
 import org.geotools.xml.impl.DatatypeConverterImpl;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.NameSpaceInfo;
 
 /**
  * Overrides the base class parsing code so that prefix can be resolved
@@ -20,9 +20,9 @@ import org.vfny.geoserver.global.NameSpaceInfo;
  */
 public class XSQNameBinding extends org.geotools.xs.bindings.XSQNameBinding {
 
-    Data data;
+    Catalog data;
 
-    public XSQNameBinding(NamespaceContext namespaceContext, Data data) {
+    public XSQNameBinding(NamespaceContext namespaceContext, Catalog data) {
         super(namespaceContext);
         this.data = data;
     }
@@ -60,7 +60,7 @@ public class XSQNameBinding extends org.geotools.xs.bindings.XSQNameBinding {
             String prefix = s.substring(0, i);
             String local = s.substring(i + 1);
             String namespaceURI = null;
-            NameSpaceInfo nsInfo = data.getNameSpace(prefix);
+            NamespaceInfo nsInfo = data.getNamespaceByPrefix(prefix);
             if(nsInfo != null)
                 namespaceURI = nsInfo.getURI();
 

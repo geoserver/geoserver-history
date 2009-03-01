@@ -8,33 +8,37 @@ import net.opengis.wfs.DescribeFeatureTypeType;
 
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceImpl;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
+
 import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
 
 public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
     /** wfs configuration */
-    WFS wfs;
+    WFSInfo wfs;
 
     /** the catalog */
-    Data catalog;
+    Catalog catalog;
 
     /** the geoserver resource loader */
     GeoServerResourceLoader resourceLoader;
 
-    public XmlSchemaEncoder(WFS wfs, Data catalog, GeoServerResourceLoader resourceLoader) {
+    public XmlSchemaEncoder(GeoServer gs, GeoServerResourceLoader resourceLoader) {
         super("text/xml; subtype=gml/3.1.1");
-        this.wfs = wfs;
-        this.catalog = catalog;
+        this.wfs = gs.getService( WFSInfo.class );
+        this.catalog = gs.getCatalog();
         this.resourceLoader = resourceLoader;
     }
 
@@ -45,16 +49,18 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
     protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
         Operation describeFeatureType) throws IOException {
+        
+        GeoServerInfo global = wfs.getGeoServer().getGlobal();
         //create the schema
         DescribeFeatureTypeType req = (DescribeFeatureTypeType)describeFeatureType.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
-        FeatureTypeSchemaBuilder builder = new FeatureTypeSchemaBuilder.GML3(wfs, catalog,
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), global.getProxyBaseUrl());
+        FeatureTypeSchemaBuilder builder = new FeatureTypeSchemaBuilder.GML3(wfs.getGeoServer(),
                 resourceLoader);
         XSDSchema schema = builder.build(featureTypeInfos, proxifiedBaseUrl);
 
         //serialize
         schema.updateElement();
-        final String encoding = wfs.getCharSet().name();
+        final String encoding = global.getCharset();
         XSDResourceImpl.serialize(output, schema.getElement(), encoding);
     }
 }

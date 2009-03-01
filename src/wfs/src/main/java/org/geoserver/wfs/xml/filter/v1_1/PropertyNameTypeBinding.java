@@ -4,6 +4,7 @@
  */
 package org.geoserver.wfs.xml.filter.v1_1;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.wfs.WFSException;
 import org.geotools.filter.v1_0.OGCPropertyNameTypeBinding;
 import org.geotools.gml3.GML;
@@ -11,7 +12,6 @@ import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.PropertyName;
-import org.vfny.geoserver.global.Data;
 import org.xml.sax.helpers.NamespaceSupport;
 
 
@@ -24,13 +24,13 @@ import org.xml.sax.helpers.NamespaceSupport;
  */
 public class PropertyNameTypeBinding extends OGCPropertyNameTypeBinding {
     /** the geoserver catalog */
-    Data catalog;
+    Catalog catalog;
 
     /** parser namespace mappings */
     NamespaceSupport namespaceSupport;
 
     public PropertyNameTypeBinding(FilterFactory filterFactory, NamespaceSupport namespaceSupport,
-        Data catalog) {
+        Catalog catalog) {
         super(filterFactory);
         this.namespaceSupport = namespaceSupport;
         this.catalog = catalog;
@@ -50,7 +50,7 @@ public class PropertyNameTypeBinding extends OGCPropertyNameTypeBinding {
 
             //only accept if its an application schema namespace, or gml
             if (!GML.NAMESPACE.equals(namespaceURI)
-                    && (catalog.getNameSpaceFromURI(namespaceURI) == null)) {
+                    && (catalog.getNamespaceByURI(namespaceURI) == null)) {
                 throw new WFSException("Illegal attribute namespace: " + namespaceURI);
             }
         }

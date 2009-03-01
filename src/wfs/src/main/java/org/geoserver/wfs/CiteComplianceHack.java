@@ -4,6 +4,7 @@
  */
 package org.geoserver.wfs;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Dispatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,17 +24,17 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class CiteComplianceHack implements HandlerInterceptor {
-    WFS wfs;
-
-    public CiteComplianceHack(WFS wfs) {
-        this.wfs = wfs;
+    
+    WFSInfo wfs;
+    public CiteComplianceHack(GeoServer gs ) {
+        this.wfs = gs.getService( WFSInfo.class );
     }
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
         Object handler) throws Exception {
         if (handler instanceof Dispatcher) {
             Dispatcher dispatcher = (Dispatcher) handler;
-            dispatcher.setCiteCompliant(wfs.getCiteConformanceHacks());
+            dispatcher.setCiteCompliant(wfs.isCiteCompliant());
         }
 
         return true;

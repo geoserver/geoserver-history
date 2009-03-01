@@ -381,7 +381,7 @@ public class TransactionTest extends WFSTestSupport {
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
             + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
             + " xmlns:gml=\"http://www.opengis.net/gml\" "
-            + " xmlns:cite=\"http://www.opengeospatial.org/cite\">"
+            + " xmlns:cite=\"http://www.opengis.net/cite\">"
             + "<wfs:Insert>"
             + " <cite:BasicPolygons>"
             + " <gml:boundedBy>"
@@ -409,7 +409,7 @@ public class TransactionTest extends WFSTestSupport {
             + "</wfs:Transaction>";
     
         Document dom = postAsDOM("wfs", xml);
-        
+        print(dom);
         assertEquals("wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
         
         assertEquals( "1", getFirstElementByTagName(dom, "wfs:totalInserted").getFirstChild().getNodeValue());

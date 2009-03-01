@@ -4,10 +4,10 @@
  */
 package org.geoserver.wfs.kvp;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.ows.FlatKvpParser;
 import org.geoserver.wfs.WFSException;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.NameSpaceInfo;
 
 import javax.xml.namespace.QName;
 
@@ -25,9 +25,9 @@ public class QNameKvpParser extends FlatKvpParser {
     /**
      * catalog for namespace lookups.
      */
-    Data catalog;
+    Catalog catalog;
 
-    public QNameKvpParser(String key, Data catalog) {
+    public QNameKvpParser(String key, Catalog catalog) {
         super(key, QName.class);
         this.catalog = catalog;
     }
@@ -49,7 +49,7 @@ public class QNameKvpParser extends FlatKvpParser {
             
             String uri = null;
             if(prefix != null && !"".equals(prefix)) {
-                final NameSpaceInfo namespace = catalog.getNameSpace(prefix);
+                final NamespaceInfo namespace = catalog.getNamespace(prefix);
                 if(namespace == null)
                     throw new WFSException("Unknown namespace [" + prefix + "]");
                 uri = namespace.getURI();
@@ -57,11 +57,14 @@ public class QNameKvpParser extends FlatKvpParser {
 
             return new QName(uri, local, prefix);
         } else {
-            String uri = catalog.getDefaultNameSpace().getURI();
-            String prefix = catalog.getDefaultPrefix();
+            /*
+            String uri = catalog.getDefaultNamespace().getURI();
+            String prefix = catalog.getDefaultNamespace().getPrefix();
             String local = token;
             
             return new QName(uri, local, prefix);
+            */
+            return new QName(token);
         }
     }
     

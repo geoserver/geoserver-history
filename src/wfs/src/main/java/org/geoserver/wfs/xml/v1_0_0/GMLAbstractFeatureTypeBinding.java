@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.xml.BindingWalkerFactory;
 import org.geotools.xml.Configuration;
@@ -13,9 +15,6 @@ import org.geotools.xml.SchemaIndex;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -25,10 +24,10 @@ import com.vividsolutions.jts.geom.Polygon;
 
 public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindings.GMLAbstractFeatureTypeBinding {
     GeometryFactory geometryFactory;
-    Data catalog;
+    Catalog catalog;
     //SchemaIndex schemaIndex;
     public GMLAbstractFeatureTypeBinding(FeatureTypeCache featureTypeCache,
-        BindingWalkerFactory bwFactory, SchemaIndex schemaIndex, GeometryFactory geometryFactory, Data catalog, Configuration configuration) {
+        BindingWalkerFactory bwFactory, SchemaIndex schemaIndex, GeometryFactory geometryFactory, Catalog catalog, Configuration configuration) {
         super(featureTypeCache, bwFactory, schemaIndex, configuration);
         this.geometryFactory = geometryFactory;
         this.catalog = catalog;
@@ -37,9 +36,7 @@ public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindi
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         //pre process parsee tree to make sure types match up
-        FeatureTypeInfo meta = catalog.getFeatureTypeInfo(instance.getName(),
-                instance.getNamespace());
-
+        FeatureTypeInfo meta = catalog.getFeatureTypeByName(instance.getNamespace(), instance.getName());
         if (meta != null) {
             FeatureType featureType = meta.getFeatureType();
 

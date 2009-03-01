@@ -11,6 +11,7 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Test;
 
+import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -38,7 +39,9 @@ public class ReprojectionTest extends WFSTestSupport {
         CoordinateReferenceSystem epsg32615 = CRS.decode("EPSG:32615");
         
         tx = CRS.findMathTransform(epsg32615, epsg4326);
-        getWFS().setFeatureBounding(true);
+        WFSInfo wfs = getWFS();
+        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding( true );
+        getGeoServer().save( wfs );
     }
     
     @Override
@@ -47,7 +50,7 @@ public class ReprojectionTest extends WFSTestSupport {
         dataDirectory.addPropertiesType(NULL_GEOMETRIES, 
                 ReprojectionTest.class.getResource("NullGeometries.properties"), Collections.EMPTY_MAP);
         Map<String, Object> extra = new HashMap<String, Object>();
-        extra.put(MockData.KEY_SRS_HANDLINGS, org.vfny.geoserver.global.FeatureTypeInfo.REPROJECT);
+        extra.put(MockData.KEY_SRS_HANDLINGS, ProjectionPolicy.REPROJECT_TO_DECLARED.getCode());
         extra.put(MockData.KEY_SRS_NUMBER, 900913);
         dataDirectory.addPropertiesType(GOOGLE, 
                 ReprojectionTest.class.getResource("GoogleFeatures.properties"), extra);

@@ -22,6 +22,8 @@ import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
 
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
@@ -44,7 +46,6 @@ import org.opengis.filter.Id;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -60,16 +61,16 @@ public class UpdateElementHandler implements TransactionElementHandler {
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
-    private WFS wfs;
+    private WFSInfo wfs;
 
-    public UpdateElementHandler(WFS wfs) {
-        this.wfs = wfs;
+    public UpdateElementHandler(GeoServer gs) {
+        this.wfs = gs.getService( WFSInfo.class );
     }
 
     public void checkValidity(EObject element, Map typeInfos)
         throws WFSTransactionException {
         // check inserts are enabled
-        if ((wfs.getServiceLevel() & WFS.SERVICE_UPDATE) == 0) {
+        if (!wfs.getServiceLevel().getOps().contains(WFSInfo.Operation.TRANSACTION_UPDATE) ) {
             throw new WFSException("Transaction Update support is not enabled");
         }
 
@@ -179,7 +180,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
                         target = ((GeometryDescriptor)types[j]).getCoordinateReferenceSystem();
                     }
                     
-                    if(wfs.getCiteConformanceHacks())
+                    if(wfs.isCiteCompliant())
                         JTS.checkCoordinatesRange(geometry, source != null ? source : target);
                     
                     //if we have a source and target and they are not equal, do 

@@ -11,13 +11,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.DefaultServiceExceptionHandler;
 import org.geoserver.ows.Request;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
-
+import org.geoserver.wfs.WFSInfo;
 
 /**
  * Handles a wfs service exception by producing an exception report.
@@ -29,21 +29,21 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
     /**
      * WFS configuration
      */
-    WFS wfs;
+    WFSInfo wfs;
 
     /**
      * @param service The wfs service descriptors.
      */
-    public WfsExceptionHandler(List services, WFS wfs) {
+    public WfsExceptionHandler(List services, GeoServer gs) {
         super(services);
-        this.wfs = wfs;
+        this.wfs = gs.getService( WFSInfo.class );
     }
 
     /**
      * Encodes a ogc:ServiceExceptionReport to output.
      */
     public void handleServiceException(ServiceException e, Request request) {
-        verboseExceptions = wfs.getGeoServer().isVerboseExceptions();
+        verboseExceptions = wfs.getGeoServer().getGlobal().isVerboseExceptions();
         if ("1.0.0".equals(request.getVersion())) {
             handle1_0(e, request.getHttpResponse());
         } else {

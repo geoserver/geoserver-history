@@ -7,19 +7,19 @@ import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDTypeDefinition;
 
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.gml2.GML;
 import org.geotools.xml.Schemas;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 public class FeatureTypeInfoSchemaBuilderTest extends WFSTestSupport {
 
     public void testBuildGml2() throws Exception {
         FeatureTypeSchemaBuilder builder = new FeatureTypeSchemaBuilder.GML2(
-                getWFS(), getCatalog(), getResourceLoader());
+                getGeoServer(), getResourceLoader());
 
-        FeatureTypeInfo lines = getCatalog().getFeatureTypeInfo(MockData.LINES);
+        FeatureTypeInfo lines = getFeatureTypeInfo(MockData.LINES);
         XSDSchema schema = builder.build(new FeatureTypeInfo[] { lines }, null);
 
         assertNotNull(schema);

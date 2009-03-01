@@ -52,7 +52,7 @@ public class ShapeZipTest extends WFSTestSupport {
     
     public void testNoNativeProjection() throws Exception {
         FeatureSource<? extends FeatureType, ? extends Feature> fs;
-        fs = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS).getFeatureSource(true);
+        fs = getFeatureSource(MockData.BASIC_POLYGONS);
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
@@ -64,7 +64,7 @@ public class ShapeZipTest extends WFSTestSupport {
     
     public void testCharset() throws Exception {
         FeatureSource<? extends FeatureType, ? extends Feature> fs;
-        fs = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS).getFeatureSource(true);
+        fs = getFeatureSource(MockData.BASIC_POLYGONS);
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
@@ -82,7 +82,7 @@ public class ShapeZipTest extends WFSTestSupport {
     
     public void testMultiType() throws Exception {
         FeatureSource<? extends FeatureType, ? extends Feature> fs;
-        fs = getCatalog().getFeatureTypeInfo(ALL_TYPES).getFeatureSource(true);
+        fs = getFeatureSource(ALL_TYPES);
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();

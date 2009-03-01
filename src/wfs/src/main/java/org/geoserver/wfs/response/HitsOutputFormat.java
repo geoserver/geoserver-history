@@ -8,17 +8,20 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfs.WfsFactory;
+
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 
 /**
@@ -31,17 +34,17 @@ public class HitsOutputFormat extends Response {
     /**
      * WFS configuration
      */
-    WFS wfs;
+    WFSInfo wfs;
 
     /**
      * Xml configuration
      */
     WFSConfiguration configuration;
 
-    public HitsOutputFormat(WFS wfs, WFSConfiguration configuration) {
+    public HitsOutputFormat(GeoServer gs, WFSConfiguration configuration) {
         super(FeatureCollectionType.class);
 
-        this.wfs = wfs;
+        this.wfs = gs.getService( WFSInfo.class );
         this.configuration = configuration;
     }
 
@@ -73,7 +76,7 @@ public class HitsOutputFormat extends Response {
         hits.setTimeStamp(featureCollection.getTimeStamp());
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setEncoding(wfs.getCharSet());
+        encoder.setEncoding(Charset.forName( wfs.getGeoServer().getGlobal().getCharset()) );
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
             ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd"));
 

@@ -25,9 +25,8 @@ public class WFSReprojectionWriteTest extends WFSTestSupport {
     
     public void testInsertSrsName() throws Exception {
         String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName=" + 
-            MockData.POLYGONS.getLocalPart();
+           MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM( q );
-//        print(dom);
         assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
         
         Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");

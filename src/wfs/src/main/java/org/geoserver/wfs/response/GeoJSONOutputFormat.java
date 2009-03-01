@@ -13,10 +13,12 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.sf.json.JSONException;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -36,13 +38,13 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
     /**
      * WFS configuration
      */
-    private WFS wfs;
+    private WFSInfo wfs;
 
     public static final String FORMAT = "json";
 
-    public GeoJSONOutputFormat(WFS wfs) {
+    public GeoJSONOutputFormat(GeoServer gs) {
         super(FORMAT);
-        this.wfs = wfs;
+        this.wfs = gs.getService( WFSInfo.class );
     }
 
     public String getMimeType(Object value, Operation operation)
@@ -81,7 +83,8 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
 
         // TODO: investigate setting proper charsets in this
         // it's part of the constructor, just need to hook it up.
-        Writer outWriter = new BufferedWriter(new OutputStreamWriter(output,wfs.getCharSet()));
+        Writer outWriter = new BufferedWriter(
+            new OutputStreamWriter(output,wfs.getGeoServer().getGlobal().getCharset()));
         
         // let's check if a callback has been set
         GetFeatureType gft = (GetFeatureType) getFeature.getParameters()[0];
@@ -103,7 +106,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         LOGGER.info("about to encode JSON");
 
         // Generate bounds for every feature?
-        boolean featureBounding = wfs.isFeatureBounding();
+        boolean featureBounding = wfs.getGML().get( WFSInfo.Version.V_10 ).isFeatureBounding();
         boolean hasGeom = false;
 
         try {

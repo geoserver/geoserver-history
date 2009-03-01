@@ -29,9 +29,12 @@ import org.eclipse.xsd.XSDSchemaContent;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.util.XSDConstants;
 import org.eclipse.xsd.util.XSDSchemaLocator;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.gml2.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Schemas;
@@ -39,9 +42,6 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyDescriptor;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-
 
 /**
  * Builds a {@link org.eclipse.xsd.XSDSchema} from {@link FeatureTypeInfo}
@@ -58,10 +58,10 @@ public abstract class FeatureTypeSchemaBuilder {
     static Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
 
     /** wfs configuration */
-    WFS wfs;
+    WFSInfo wfs;
 
     /** the catalog */
-    Data catalog;
+    Catalog catalog;
 
     /** resource loader */
     GeoServerResourceLoader resourceLoader;
@@ -82,9 +82,9 @@ public abstract class FeatureTypeSchemaBuilder {
     protected String gmlPrefix;
     protected Configuration xmlConfiguration;
 
-    protected FeatureTypeSchemaBuilder(WFS wfs, Data catalog, GeoServerResourceLoader resourceLoader) {
-        this.wfs = wfs;
-        this.catalog = catalog;
+    protected FeatureTypeSchemaBuilder(GeoServer gs, GeoServerResourceLoader resourceLoader) {
+        this.wfs = gs.getService( WFSInfo.class );
+        this.catalog = gs.getCatalog();
         this.resourceLoader = resourceLoader;
 
         profiles = new ArrayList();
@@ -108,7 +108,7 @@ public abstract class FeatureTypeSchemaBuilder {
         HashMap ns2featureTypeInfos = new HashMap();
 
         for (int i = 0; i < featureTypeInfos.length; i++) {
-            String prefix = featureTypeInfos[i].getNameSpace().getPrefix();
+            String prefix = featureTypeInfos[i].getNamespace().getPrefix();
             List l = (List) ns2featureTypeInfos.get(prefix);
 
             if (l == null) {
@@ -141,7 +141,7 @@ public abstract class FeatureTypeSchemaBuilder {
             schema.getContents().add(imprt);
 
             String targetPrefix = (String) ns2featureTypeInfos.keySet().iterator().next();
-            String targetNamespace = catalog.getNameSpace(targetPrefix).getURI();
+            String targetNamespace = catalog.getNamespaceByPrefix(targetPrefix).getURI();
 
             schema.setTargetNamespace(targetNamespace);
             //schema.getQNamePrefixToNamespaceMap().put( null, targetNamespace );
@@ -174,7 +174,7 @@ public abstract class FeatureTypeSchemaBuilder {
 
                 String schemaLocation = ResponseUtils.appendQueryString(baseUrl,
                         queryString.toString());
-                String namespace = catalog.getNameSpace(prefix).getURI();
+                String namespace = catalog.getNamespaceByPrefix(prefix).getURI();
 
                 XSDImport imprt = factory.createXSDImport();
                 imprt.setNamespace(namespace);
@@ -192,7 +192,7 @@ public abstract class FeatureTypeSchemaBuilder {
      */
     public XSDSchema addApplicationTypes( XSDSchema wfsSchema ) throws IOException {
         //incorporate application schemas into the wfs schema
-        Collection featureTypeInfos = catalog.getFeatureTypeInfos().values();
+        Collection featureTypeInfos = catalog.getFeatureTypes();
 
         for (Iterator i = featureTypeInfos.iterator(); i.hasNext();) {
             FeatureTypeInfo meta = (FeatureTypeInfo) i.next();
@@ -205,8 +205,8 @@ public abstract class FeatureTypeSchemaBuilder {
             XSDSchema schema = build(new FeatureTypeInfo[] { meta }, null);
 
             //declare the namespace
-            String prefix = meta.getNameSpace().getPrefix();
-            String namespaceURI = meta.getNameSpace().getURI();
+            String prefix = meta.getNamespace().getPrefix();
+            String namespaceURI = meta.getNamespace().getURI();
             wfsSchema.getQNamePrefixToNamespaceMap().put(prefix, namespaceURI);
 
             //add the types + elements to the wfs schema
@@ -225,8 +225,8 @@ public abstract class FeatureTypeSchemaBuilder {
     void buildSchemaContent(FeatureTypeInfo featureTypeMeta, XSDSchema schema, XSDFactory factory)
         throws IOException {
         //look if the schema for the type is already defined
-        String ds = featureTypeMeta.getDataStoreInfo().getId();
-        String name = featureTypeMeta.getTypeName();
+        String ds = featureTypeMeta.getStore().getName();
+        String name = featureTypeMeta.getName();
 
         File schemaFile = null;
 
@@ -379,8 +379,8 @@ public abstract class FeatureTypeSchemaBuilder {
          */
         private static XSDSchema gml2Schema;
 
-        public GML2(WFS wfs, Data catalog, GeoServerResourceLoader resourceLoader) {
-            super(wfs, catalog, resourceLoader);
+        public GML2(GeoServer gs, GeoServerResourceLoader resourceLoader) {
+            super(gs, resourceLoader);
 
             profiles.add(new GML2Profile());
             gmlNamespace = org.geotools.gml2.GML.NAMESPACE;
@@ -407,8 +407,8 @@ public abstract class FeatureTypeSchemaBuilder {
          */
         private static XSDSchema gml3Schema;
 
-        public GML3(WFS wfs, Data catalog, GeoServerResourceLoader resourceLoader) {
-            super(wfs, catalog, resourceLoader);
+        public GML3(GeoServer gs, GeoServerResourceLoader resourceLoader) {
+            super(gs, resourceLoader);
 
             profiles.add(new GML3Profile());
 

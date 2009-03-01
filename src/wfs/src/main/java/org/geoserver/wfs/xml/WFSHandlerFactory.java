@@ -7,6 +7,8 @@ package org.geoserver.wfs.xml;
 import org.eclipse.xsd.XSDAttributeDeclaration;
 import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDSchema;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geotools.xml.impl.AttributeHandler;
 import org.geotools.xml.impl.DocumentHandler;
 import org.geotools.xml.impl.ElementHandler;
@@ -14,8 +16,6 @@ import org.geotools.xml.impl.ElementHandlerImpl;
 import org.geotools.xml.impl.Handler;
 import org.geotools.xml.impl.HandlerFactory;
 import org.geotools.xml.impl.ParserHandler;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -36,14 +36,14 @@ public class WFSHandlerFactory implements HandlerFactory {
     /**
      * Catalog reference
      */
-    Data catalog;
+    Catalog catalog;
 
     /**
      * Schema Builder
      */
     FeatureTypeSchemaBuilder schemaBuilder;
 
-    public WFSHandlerFactory(Data catalog, FeatureTypeSchemaBuilder schemaBuilder) {
+    public WFSHandlerFactory(Catalog catalog, FeatureTypeSchemaBuilder schemaBuilder) {
         this.catalog = catalog;
         this.schemaBuilder = schemaBuilder;
     }
@@ -57,12 +57,12 @@ public class WFSHandlerFactory implements HandlerFactory {
 
         if (namespaceURI == null) {
             //assume default
-            namespaceURI = catalog.getDefaultNameSpace().getURI();
+            namespaceURI = catalog.getDefaultNamespace().getURI();
         }
 
         try {
             //look for a FeatureType
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(), namespaceURI);
+            FeatureTypeInfo meta = catalog.getFeatureTypeByName( namespaceURI, name.getLocalPart() );
 
             if (meta != null) {
                 //found it

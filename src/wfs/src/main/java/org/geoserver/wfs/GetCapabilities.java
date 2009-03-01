@@ -4,6 +4,7 @@
  */
 package org.geoserver.wfs;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,13 +12,12 @@ import java.util.TreeSet;
 
 import net.opengis.wfs.GetCapabilitiesType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.CapabilitiesTransformer.WFS1_0;
 import org.geotools.util.Version;
-import org.vfny.geoserver.global.Data;
-
-
 
 /**
  * Web Feature Service GetCapabilities operation.
@@ -34,12 +34,12 @@ public class GetCapabilities {
     /**
      * WFS service configuration
      */
-    WFS wfs;
+    WFSInfo wfs;
 
     /**
      * The catalog
      */
-    Data catalog;
+    Catalog catalog;
 
     /**
      * Creates a new wfs GetCapabilitis operation.
@@ -47,7 +47,7 @@ public class GetCapabilities {
      * @param wfs The wfs configuration
      * @param catalog The geoserver catalog.
      */
-    public GetCapabilities(WFS wfs, Data catalog) {
+    public GetCapabilities(WFSInfo wfs, Catalog catalog) {
         this.wfs = wfs;
         this.catalog = catalog;
     }
@@ -57,7 +57,7 @@ public class GetCapabilities {
         //cite requires that we fail when we see an "invalid" update sequence,
         // since we dont support update sequences, all are invalid, but we take
         // our more lax approach and just ignore it when not doint the cite thing
-        if (wfs.getCiteConformanceHacks()) {
+        if (wfs.isCiteCompliant()) {
             if (request.getUpdateSequence() != null) {
                 throw new WFSException("Invalid update sequence", "InvalidUpdateSequence");
             }
@@ -69,7 +69,7 @@ public class GetCapabilities {
         // tests that every request includes the 'service=WFS' key value pair.
         // However often the the context of the request is good enough to 
         // determine what the service is, like in 'geoserver/wfs?request=GetCapabilities'
-        if (wfs.getCiteConformanceHacks()) {
+        if (wfs.isCiteCompliant()) {
             if (!request.isSetService()) {
                 //give up 
                 throw new WFSException("Service not set", "MissingParameterValue", "service");
@@ -93,7 +93,7 @@ public class GetCapabilities {
         }else{
             throw new WFSException("Could not understand version:" + version);
         }
-        capsTransformer.setEncoding(wfs.getCharSet());
+        capsTransformer.setEncoding(Charset.forName( wfs.getGeoServer().getGlobal().getCharset() ));
         return capsTransformer;
     }
     

@@ -17,8 +17,6 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.CoordinateSystemAxis;
 import org.picocontainer.MutablePicoContainer;
-import org.vfny.geoserver.global.Data;
-
 
 /**
  * Subclass of {@link org.geotools.gml3.bindings.AbstractGeometryTypeBinding} which performs some

@@ -10,6 +10,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.data.test.MockData;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.wfs.WFSTestSupport;
@@ -36,7 +37,7 @@ public class CSVOutputFormatTest extends WFSTestSupport {
     public void testFullRequest() throws Exception {
         MockHttpServletResponse resp = getAsServletResponse("wfs?request=GetFeature&typeName=sf:PrimitiveGeoFeature&outputFormat=csv");
         
-        FeatureSource fs = getCatalog().getFeatureTypeInfo("sf:PrimitiveGeoFeature").getFeatureSource();
+        FeatureSource fs = getFeatureSource(MockData.PRIMITIVEGEOFEATURE);
         
 //        System.out.println(resp.getOutputStreamContent());
         
@@ -83,7 +84,7 @@ public class CSVOutputFormatTest extends WFSTestSupport {
         fct.getFeature().add(fs.getFeatures());
         
         // write out the results
-        CSVOutputFormat format = new CSVOutputFormat(getWFS());
+        CSVOutputFormat format = new CSVOutputFormat(getGeoServer());
         format.write(fct, bos, op);
         
         // read the response back with a parser that can handle escaping, newlines and what not

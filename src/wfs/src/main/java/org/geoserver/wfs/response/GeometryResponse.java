@@ -2,12 +2,14 @@ package org.geoserver.wfs.response;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.gml3.GML;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Encoder;
@@ -31,11 +33,11 @@ public class GeometryResponse extends Response {
     /**
      * Service configuration
      */
-    private WFS wfs;
+    private WFSInfo wfs;
 
-    public GeometryResponse(WFS wfs) {
+    public GeometryResponse(GeoServer gs) {
         super( Geometry.class );
-        this.wfs = wfs;
+        this.wfs = gs.getService( WFSInfo.class );
     }
     
     public String getMimeType(Object value, Operation operation)
@@ -48,7 +50,7 @@ public class GeometryResponse extends Response {
             throws IOException, ServiceException {
     
         Encoder encoder = new Encoder( new GMLConfiguration() );
-        encoder.setEncoding(wfs.getCharSet());
+        encoder.setEncoding(Charset.forName( wfs.getGeoServer().getGlobal().getCharset() ));
         
         if ( value instanceof Point ) {
             encoder.encode( value, GML.Point, output );

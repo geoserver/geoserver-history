@@ -27,8 +27,8 @@ public abstract class WFSTestSupport extends GeoServerTestSupport {
     /**
      * @return The global wfs instance from the application context.
      */
-    protected WFS getWFS() {
-        return (WFS) applicationContext.getBean("wfs");
+    protected WFSInfo getWFS() {
+        return getGeoServer().getService( WFSInfo.class );
     }
     
     /**

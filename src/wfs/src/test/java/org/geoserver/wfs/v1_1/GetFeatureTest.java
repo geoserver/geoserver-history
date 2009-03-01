@@ -8,6 +8,7 @@ import junit.framework.Test;
 import junit.textui.TestRunner;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.gml3.GML;
 import org.w3c.dom.Document;
@@ -129,7 +130,7 @@ public class GetFeatureTest extends WFSTestSupport {
                 + "version=\"1.1.0\" "
                 + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
                 + "xmlns:gml=\"http://www.opengis.net/gml\" " 
-                + "xmlns:sf=\"http://www.opengis.net/cite/data\" "
+                + "xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" "
                 + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
                 + "xmlns:ogc=\"http://www.opengis.net/ogc\" > "
                 + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\">"
@@ -158,7 +159,7 @@ public class GetFeatureTest extends WFSTestSupport {
             + "version=\"1.1.0\" "
             + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
             + "xmlns:gml=\"http://www.opengis.net/gml\" " 
-            + "xmlns:sf=\"http://www.opengis.net/cite/data\" "
+            + "xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" "
             + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
             + "xmlns:ogc=\"http://www.opengis.net/ogc\" > "
             + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\">"
@@ -185,7 +186,7 @@ public class GetFeatureTest extends WFSTestSupport {
             + "version=\"1.1.0\" "
             + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
             + "xmlns:gml=\"http://www.opengis.net/gml\" " 
-            + "xmlns:sf=\"http://www.opengis.net/cite/data\" "
+            + "xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" "
             + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
             + "xmlns:ogc=\"http://www.opengis.net/ogc\" > "
             + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\">"
@@ -300,8 +301,11 @@ public class GetFeatureTest extends WFSTestSupport {
     
     public void testPostWithBoundsEnabled() throws Exception {
         // enable feature bounds computation
-        boolean oldFeatureBounding = getWFS().isFeatureBounding();
-        getWFS().setFeatureBounding(true);
+        WFSInfo wfs = getWFS();
+        boolean oldFeatureBounding = wfs.getGML().get( WFSInfo.Version.V_11 ).isFeatureBounding();
+        wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(true);
+        getGeoServer().save( wfs );
+        
         try {
             String xml = "<wfs:GetFeature " + "service=\"WFS\" "
                     + "version=\"1.1.0\" "
@@ -331,7 +335,8 @@ public class GetFeatureTest extends WFSTestSupport {
                 assertTrue(box.hasAttribute("srsName"));
             }
         } finally {
-            getWFS().setFeatureBounding(oldFeatureBounding);
+            wfs.getGML().get( WFSInfo.Version.V_11 ).setFeatureBounding(oldFeatureBounding);
+            getGeoServer().save( wfs );
         }
     }
 

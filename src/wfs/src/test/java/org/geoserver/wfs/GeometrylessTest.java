@@ -31,7 +31,10 @@ public class GeometrylessTest extends WFSTestSupport {
     }
     
     public void testGetFeatureReproject10() throws Exception {
-        getWFS().setFeatureBounding(true);
+        WFSInfo wfs = getWFS();
+        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding( true );
+        getGeoServer().save( wfs );
+        
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.0.0&service=wfs&srsName=EPSG:900913");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());
@@ -56,7 +59,10 @@ public class GeometrylessTest extends WFSTestSupport {
     }
     
     public void testGetFeatureReproject11() throws Exception {
-        getWFS().setFeatureBounding(true);
+        WFSInfo wfs = getWFS();
+        wfs.getGML().get( WFSInfo.Version.V_10 ).setFeatureBounding( true );
+        getGeoServer().save( wfs );
+        
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.1.0&service=wfs&srsName=EPSG:900913");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());

@@ -2,57 +2,21 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-
-	<!--  ui stuff  -->
-	<bean id="wfsConfig"
-		class="org.vfny.geoserver.config.WFSConfig">
-		<constructor-arg ref="wfs"/>
-	</bean>
-	
-	<!-- this registers the above modules with the servlet context
-		 it is around to keep the struts app happy as we move away from 
-		 servlets  -->
-	<bean id="wfsRegisterar"
-		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
-		
-		<constructor-arg type="java.lang.String" value="WFS"/>
- 		<constructor-arg ref="wfs"/>
- 	</bean>
-	<bean id="wfsConfigRegisterar"
-		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
-		
-		<constructor-arg type="java.lang.String" value="Config.WFS"/>
- 		<constructor-arg ref="wfsConfig"/>
- 	</bean>
- 	
- 	
 	<!-- factories -->
 	<bean id="filterFactory" class="org.geotools.filter.FilterFactoryImpl"/>
 
-	<!-- wfs configuration bean -->
-	<!--bean id="wfs" class="org.geoserver.wfs.WFS" depends-on="config">
-       <constructor-arg ref="config"/>
-		<constructor-arg ref="catalog"/>
-		<constructor-arg ref="geoServer"/>
-		<constructor-arg ref="validation"/>
-	</bean-->
 	<!--bean id="wfsLoader" class="org.geoserver.wfs.WFSLoader"/-->
 	<bean id="wfsLoader" class="org.geoserver.wfs.WFSXStreamLoader">
 	  <constructor-arg ref="resourceLoader"/>
 	</bean>
-    <bean id="wfs" class="org.geoserver.wfs.WFS">
-      <constructor-arg ref="geoServer2"/>
-    </bean>
     
 	<!-- wfs service -->
 	<!--bean id="wfsService" class="org.geoserver.wfs.DefaultWebFeatureService">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 		<property name="filterFactory" ref="filterFactory"/>
 	</bean-->
 	<bean id="wfsServiceTarget" class="org.geoserver.wfs.DefaultWebFeatureService">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 		<property name="filterFactory" ref="filterFactory"/>
 	</bean>
 
@@ -73,16 +37,16 @@
   
     <!-- Transaction element handlers -->
     <bean id="wfsInsertElementHandler" class="org.geoserver.wfs.InsertElementHandler">
-      <constructor-arg ref="wfs"/>
+      <constructor-arg ref="geoServer"/>
       <constructor-arg ref="filterFactory"/>
     </bean>
     
     <bean id="wfsUpdateElementHandler" class="org.geoserver.wfs.UpdateElementHandler">
-      <constructor-arg ref="wfs"/>
+      <constructor-arg ref="geoServer"/>
     </bean>
     
     <bean id="wfsDeleteElementHandler" class="org.geoserver.wfs.DeleteElementHandler">
-      <constructor-arg ref="wfs"/>
+      <constructor-arg ref="geoServer"/>
     </bean>
     
     <bean id="wfsNativeElementHandler" class="org.geoserver.wfs.NativeElementHandler">
@@ -109,18 +73,16 @@
 				<ref bean="wfsService-1.1.0"/>
 			</list>		
 		</constructor-arg>	
-		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="geoServer"/>
 	</bean>
 	
 	<!-- gml schema builders -->
 	<bean id="gml2SchemaBuilder" class="org.geoserver.wfs.xml.FeatureTypeSchemaBuilder$GML2">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	<bean id="gml3SchemaBuilder" class="org.geoserver.wfs.xml.FeatureTypeSchemaBuilder$GML3">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	
@@ -150,30 +112,27 @@
 		class="org.geoserver.wfs.response.GetCapabilitiesResponse" singleton="false"/>
 	<bean id="lockFeatureResponse"
 		class="org.geoserver.wfs.response.LockFeatureTypeResponse" singleton="false">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="transactionResponse-1.0.0"
 		class="org.geoserver.wfs.response.TransactionResponse" singleton="false">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="geometryResponse"
 		class="org.geoserver.wfs.response.GeometryResponse">
-        <constructor-arg ref="wfs"/>
+        <constructor-arg ref="geoServer"/>
     </bean>
 	<bean id="featureResponse"
 		class="org.geoserver.wfs.response.FeatureResponse">
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
-        <constructor-arg ref="wfs"/>
 	</bean>
 	
 	<!-- cite compliance hack -->
 	<bean id="citeComplianceHack" class="org.geoserver.wfs.CiteComplianceHack">
-		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="geoServer"/>
 	</bean>
 	
 	<!-- http url mapping -->
@@ -304,7 +263,7 @@
 	
 	<!-- 1.1 xml readers -->
 	<bean id="xmlReader-1.1.0" class="org.geoserver.wfs.xml.v1_1_0.WfsXmlReader" abstract="true">
-		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="wfsGetCapabilitiesXmlReader-1.1.0" parent="xmlReader-1.1.0">
@@ -332,36 +291,31 @@
 	<!-- default feature type encoders -->
 	<bean id="gml2FeatureTypeEncoder" 
 		class="org.geoserver.wfs.xml.v1_0_0.XmlSchemaEncoder">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 	</bean>
 	<bean id="gml3FeatureTypeEncoder" 
 		class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	<!-- default get feature producers -->
 	<bean id="gml2OutputFormat" 
 		class="org.geoserver.wfs.xml.GML2OutputFormat" singleton="false">
-		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="geoServer"/>
-		<constructor-arg ref="catalog"/>
 	</bean>
 	<bean id="gml3OutputFormat" class="org.geoserver.wfs.xml.GML3OutputFormat"> 
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="hitsOutputFormat" class="org.geoserver.wfs.response.HitsOutputFormat">
-		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="shapezipOutputFormat" class="org.geoserver.wfs.response.ShapeZipOutputFormat" />
     <bean id="geojsonOutputFormat" class="org.geoserver.wfs.response.GeoJSONOutputFormat">
-		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="geoServer"/>
 	</bean>
     <bean id="CSVOutputFormat" class="org.geoserver.wfs.response.CSVOutputFormat">
-        <constructor-arg index="0" ref="wfs"/>
+        <constructor-arg index="0" ref="geoServer"/>
     </bean>
 </beans>

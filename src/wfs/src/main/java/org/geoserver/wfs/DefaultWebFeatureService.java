@@ -14,13 +14,15 @@ import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServer;
 import org.geotools.xml.transform.TransformerBase;
 import org.opengis.filter.FilterFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 
 
 /**
@@ -33,12 +35,12 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     /**
      * WFS service configuration.
      */
-    protected WFS wfs;
+    protected WFSInfo wfs;
 
     /**
      * The catalog
      */
-    protected Data catalog;
+    protected Catalog catalog;
 
     /**
      * Filter factory
@@ -51,9 +53,9 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     protected ApplicationContext context;
 
-    public DefaultWebFeatureService(WFS wfs, Data catalog) {
-        this.wfs = wfs;
-        this.catalog = catalog;
+    public DefaultWebFeatureService(GeoServer gs) {
+        this.wfs = gs.getService( WFSInfo.class );
+        this.catalog = gs.getCatalog();
     }
 
     /**
@@ -64,7 +66,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     }
 
     public WFSInfo getServiceInfo() {
-        return wfs.getInfo();
+        return wfs;
     }
     
     /**

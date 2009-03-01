@@ -11,6 +11,16 @@ public interface WFSInfo extends ServiceInfo {
     static enum Version {
         V_10,
         V_11;
+        
+        static Version get( String v ) {
+            if ( v.startsWith( "1.0") ) {
+                return V_10;
+            }
+            if ( v.startsWith( "1.1") ) {
+                return V_11;
+            }
+            return null;
+        }
     };
     
     static enum Operation {
@@ -94,6 +104,10 @@ public interface WFSInfo extends ServiceInfo {
         abstract public int getCode();
         abstract public List<Operation> getOps();
         
+        boolean contains(ServiceLevel other) {
+            return getOps().containsAll( other.getOps() );
+        }
+    
         static public ServiceLevel get( int code ) {
             for ( ServiceLevel s : values() ) {
                 if ( s.getCode() == code ) {

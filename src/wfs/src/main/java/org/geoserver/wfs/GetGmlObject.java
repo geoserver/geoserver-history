@@ -5,6 +5,9 @@ import java.util.Iterator;
 
 import net.opengis.wfs.GetGmlObjectType;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.GeoServer;
 import org.geotools.data.DataAccess;
 import org.geotools.data.GmlObjectStore;
 import org.geotools.factory.Hints;
@@ -12,8 +15,6 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.GmlObjectId;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.DataStoreInfo;
 
 /**
  * Web Feature Service GetGmlObject operation.
@@ -26,19 +27,19 @@ public class GetGmlObject {
     /**
      * wfs config
      */
-    WFS wfs;
+    WFSInfo wfs;
     
     /**
      * the catalog
      */
-    Data catalog;
+    Catalog catalog;
     
     /**
      * filter factory
      */
     FilterFactory filterFactory;
     
-    public GetGmlObject( WFS wfs, Data catalog ) {
+    public GetGmlObject( WFSInfo wfs, Catalog catalog ) {
         this.wfs = wfs;
         this.catalog = catalog;
     }
@@ -63,7 +64,13 @@ public class GetGmlObject {
         //walk through datastores finding one that is gmlobject aware
         for ( Iterator d = catalog.getDataStores().iterator(); d.hasNext(); ) {
             DataStoreInfo dsInfo = (DataStoreInfo) d.next();
-            DataAccess<? extends FeatureType, ? extends Feature> ds = dsInfo.getDataStore();
+            DataAccess<? extends FeatureType, ? extends Feature> ds;
+            try {
+                ds = dsInfo.getDataStore(null);
+            } 
+            catch (IOException e) {
+                throw new WFSException( e );
+            }
             
             if ( ds instanceof GmlObjectStore ) {
                 try {

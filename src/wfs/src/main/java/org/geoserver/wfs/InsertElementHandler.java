@@ -10,6 +10,7 @@ import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.WfsFactory;
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.config.GeoServer;
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.FeatureStore;
 
@@ -53,17 +54,17 @@ public class InsertElementHandler implements TransactionElementHandler {
      * logger
      */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
-    private WFS wfs;
+    private WFSInfo wfs;
     private FilterFactory filterFactory;
 
-    public InsertElementHandler(WFS wfs, FilterFactory filterFactory) {
-        this.wfs = wfs;
+    public InsertElementHandler(GeoServer gs, FilterFactory filterFactory) {
+        this.wfs = gs.getService( WFSInfo.class );
         this.filterFactory = filterFactory;
     }
 
     public void checkValidity(EObject element, Map featureTypeInfos)
         throws WFSTransactionException {
-        if ((wfs.getServiceLevel() & WFS.SERVICE_INSERT) == 0) {
+        if (!wfs.getServiceLevel().getOps().contains( WFSInfo.Operation.TRANSACTION_INSERT)) {
             throw new WFSException("Transaction INSERT support is not enabled");
         }
     }
@@ -119,7 +120,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                 if (collection != null) {
                     // if we really need to, make sure we are inserting coordinates that do
                     // match the CRS area of validity
-                    if(wfs.getCiteConformanceHacks()) {
+                    if(wfs.isCiteCompliant()) {
                         checkFeatureCoordinatesRange(collection);
                     }
                     

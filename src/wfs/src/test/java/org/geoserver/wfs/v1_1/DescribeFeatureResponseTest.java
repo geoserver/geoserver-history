@@ -7,14 +7,14 @@ import junit.framework.Test;
 import net.opengis.wfs.DescribeFeatureTypeType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -37,12 +37,12 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
     }
     
     public void testSingle() throws Exception {
-        Data catalog = getCatalog();
-        FeatureTypeInfo meta = catalog.getFeatureTypeInfo(MockData.BASIC_POLYGONS);
+        Catalog catalog = getCatalog();
+        FeatureTypeInfo meta = getFeatureTypeInfo(MockData.BASIC_POLYGONS);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        XmlSchemaEncoder response = new XmlSchemaEncoder(getWFS(), catalog, getResourceLoader());
+        XmlSchemaEncoder response = new XmlSchemaEncoder(getGeoServer(), getResourceLoader());
         response.write(new FeatureTypeInfo[] { meta }, output, request());
 
         Element schema = ReaderUtils.parse(new StringReader(new String(output
@@ -55,13 +55,13 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
 
     public void testWithDifferntNamespaces() throws Exception {
 
-        FeatureTypeInfo meta1 = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS);
-        FeatureTypeInfo meta2 = getCatalog().getFeatureTypeInfo(MockData.POLYGONS);
+        FeatureTypeInfo meta1 = getFeatureTypeInfo(MockData.BASIC_POLYGONS);
+        FeatureTypeInfo meta2 = getFeatureTypeInfo(MockData.POLYGONS);
         
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         XmlSchemaEncoder response = 
-            new XmlSchemaEncoder(getWFS(), getCatalog(), getResourceLoader());
+            new XmlSchemaEncoder(getGeoServer(), getResourceLoader());
         response.write(new FeatureTypeInfo[] { meta1, meta2 }, output, request());
 
         Element schema = ReaderUtils.parse(new StringReader(new String(output
