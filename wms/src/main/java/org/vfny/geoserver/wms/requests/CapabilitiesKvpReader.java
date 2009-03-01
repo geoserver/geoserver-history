@@ -4,15 +4,15 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.wms.servlets.WMService;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -47,7 +47,7 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        CapabilitiesRequest currentRequest = new WMSCapabilitiesRequest((WMSInfo) serviceConfig);
+        CapabilitiesRequest currentRequest = new WMSCapabilitiesRequest(wms);
         currentRequest.setHttpServletRequest(request);
 
         String reqVersion = wms.getVersion();
