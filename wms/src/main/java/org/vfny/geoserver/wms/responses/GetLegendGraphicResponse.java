@@ -4,27 +4,27 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.platform.ServiceException;
-import org.springframework.context.ApplicationContext;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.wms.GetLegendGraphicProducer;
-import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.ServiceException;
+import org.springframework.context.ApplicationContext;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.Response;
+import org.vfny.geoserver.wms.GetLegendGraphicProducer;
+import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
 
 /**
@@ -82,13 +82,7 @@ public class GetLegendGraphicResponse implements Response {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param gs DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IllegalStateException DOCUMENT ME!
+     * @see Response#getContentType(GeoServer)
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (this.delegate == null) {
@@ -116,8 +110,9 @@ public class GetLegendGraphicResponse implements Response {
      * process.
      *
      * @param gs not used.
+     * @see Response#abort(ServiceInfo)
      */
-    public void abort(Service gs) {
+    public void abort(ServiceInfo gs) {
         if (this.delegate != null) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("asking delegate for aborting the process");

@@ -16,19 +16,19 @@ import java.util.logging.Logger;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSExtensions;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.helpers.WMSCapsTransformer;
 
 
@@ -107,7 +107,9 @@ public class WMSCapabilitiesResponse implements Response {
         }
         
         //UpdateSequence handling for WMS:  see WMS 1.1.1 page 23
-        CapabilitiesRequest capreq = (CapabilitiesRequest)request;
+        final WMSCapabilitiesRequest capreq = (WMSCapabilitiesRequest)request;
+        final WMS wmsConfig = capreq.getWMS();
+        
         int reqUS = -1;
         if (capreq.getUpdateSequence() != null && !"".equals(capreq.getUpdateSequence().trim())) {
 	        try {
@@ -116,7 +118,7 @@ public class WMSCapabilitiesResponse implements Response {
 	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
 	        }
         }
-        int geoUS = request.getServiceConfig().getGeoServer().getUpdateSequence();
+        int geoUS =  wmsConfig.getUpdateSequence();
     	if (reqUS > geoUS) {
     		throw new org.geoserver.platform.ServiceException("Client supplied an updateSequence that is greater than the current sever updateSequence","InvalidUpdateSequence");
     	}
@@ -129,7 +131,7 @@ public class WMSCapabilitiesResponse implements Response {
         String serverBaseUrl;
         {
             String requestBaseUrl = request.getBaseUrl();
-            String proxyBaseUrl = request.getServiceConfig().getGeoServer().getProxyBaseUrl();
+            String proxyBaseUrl = wmsConfig.getProxyBaseUrl();
             serverBaseUrl = RequestUtils.proxifiedBaseURL(requestBaseUrl, proxyBaseUrl); 
         }
         Set<String> legendFormats = GetLegendGraphicResponse.getFormats();
@@ -207,7 +209,8 @@ public class WMSCapabilitiesResponse implements Response {
      *
      * @param gs the service instance
      */
-    public void abort(Service gs) {
+    public void abort(ServiceInfo gs) {
+        //not really much to do
     }
 
     /*

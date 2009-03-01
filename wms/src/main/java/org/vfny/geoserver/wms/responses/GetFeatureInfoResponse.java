@@ -4,11 +4,11 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.responses.featureInfo.GetFeatureInfoDelegate;
@@ -106,6 +106,7 @@ public class GetFeatureInfoResponse implements Response {
      * @return the MIME type of the map generated or ready to generate
      *
      * @throws IllegalStateException if a GetMapDelegate is not setted yet
+     * @see Response#getContentType(GeoServer)
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (delegate == null) {
@@ -136,9 +137,9 @@ public class GetFeatureInfoResponse implements Response {
      * if a GetFeatureInfoDelegate is set, calls it's abort method. Elsewere do
      * nothing.
      *
-     * @param gs DOCUMENT ME!
+     * @see Response#abort(ServiceInfo)
      */
-    public void abort(Service gs) {
+    public void abort(ServiceInfo gs) {
         if (delegate != null) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("asking delegate for aborting the process");
