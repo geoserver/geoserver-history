@@ -105,4 +105,17 @@
   <bean id="defaultCatalogSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureCatalogFactory"/>
   
   <bean id="disabledServiceChecker" class="org.geoserver.ows.DisabledServiceCheck"/>
+  
+  <bean id="dispatcherMapping" 
+    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	 <property name="alwaysUseFullPath" value="true"/>
+	 <property name="mappings">
+      <props>
+        <prop key="/ows">dispatcher</prop>
+        <prop key="/ows/**">dispatcher</prop>
+        <prop key="/styles/**">filePublisher</prop>
+        <prop key="/www/**">filePublisher</prop>
+      </props>
+    </property>
+  </bean>
 </beans>
