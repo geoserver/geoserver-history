@@ -59,6 +59,11 @@ public class WCSCapsTransformer extends TransformerBase {
 
     /** DOCUMENT ME! */
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
+    
+    private static final String[] EXCEPTION_FORMATS = {
+        "application/vnd.ogc.se_xml", "application/vnd.ogc.se_inimage",
+        "application/vnd.ogc.se_blank"
+    };
 
     /** DOCUMENT ME! */
 	private String baseUrl;
@@ -220,7 +225,8 @@ public class WCSCapsTransformer extends TransformerBase {
             AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
             start("Service", attributes);
-            handleMetadataLink(Collections.singletonList(wcs.getMetadataLink()));
+            if(wcs.getMetadataLink() != null)
+                handleMetadataLink(Collections.singletonList(wcs.getMetadataLink()));
             element("description", wcs.getAbstract());
             element("name", wcs.getName());
             element("label", wcs.getTitle());
@@ -478,7 +484,7 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleExceptions(WCSInfo config) {
             start("Exception");
 
-            for(String format : config.getExceptionFormats()) {
+            for(String format : EXCEPTION_FORMATS) {
             	element("Format", format);
             }
 
