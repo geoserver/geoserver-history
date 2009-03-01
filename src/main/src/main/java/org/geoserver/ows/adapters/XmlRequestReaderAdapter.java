@@ -5,6 +5,7 @@
 package org.geoserver.ows.adapters;
 
 import org.geoserver.config.ServiceInfo;
+import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.ows.HttpServletRequestAware;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -38,17 +39,17 @@ public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
 
     public Object read(Object request, Reader reader, Map kvp) throws Exception {
         //look for a constructor, may have to walk up teh class hierachy
-        Class clazz = service.getClass();
+        Class clazz = GeoServerImpl.unwrap(service).getClass();
         Constructor constructor = null;
 
         while (clazz != null && constructor == null) {
             try {
-                constructor = delegateClass.getConstructor(new Class[] { Map.class, clazz });
+                constructor = delegateClass.getConstructor(new Class[] { clazz });
             } catch (NoSuchMethodException e) {
                 Class[] classes = clazz.getInterfaces();
                 for (Class c : classes) {
                         try {
-                                constructor = delegateClass.getConstructor(new Class[] { Map.class, c });
+                                constructor = delegateClass.getConstructor(new Class[] { c });
                         } catch(NoSuchMethodException e2) {
                                 // no harm done
                         }
