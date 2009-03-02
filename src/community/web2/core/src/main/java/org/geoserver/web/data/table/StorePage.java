@@ -1,10 +1,6 @@
 package org.geoserver.web.data.table;
 
-import static org.geoserver.web.data.table.LayerProvider.ENABLED_PROPERTY;
-import static org.geoserver.web.data.table.LayerProvider.NAME_PROPERTY;
-import static org.geoserver.web.data.table.LayerProvider.SRS_PROPERTY;
-import static org.geoserver.web.data.table.LayerProvider.STORE_PROPERTY;
-import static org.geoserver.web.data.table.LayerProvider.WORKSPACE_PROPERTY;
+import static org.geoserver.web.data.table.StoreProvider.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,28 +29,35 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.data.NamespaceEditPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
 
-public class LayerPage extends GeoServerBasePage {
+public class StorePage extends GeoServerBasePage {
     TextField filter;
-    Label matched;
-    LayerProvider layers = new LayerProvider();
-    Set<String> selection = new HashSet<String>();
-	GeoServerPagingNavigator navigator;
-	DataView dataView;
 
-    public LayerPage() {
+    Label matched;
+
+    StoreProvider stores = new StoreProvider();
+
+    Set<String> selection = new HashSet<String>();
+
+    GeoServerPagingNavigator navigator;
+
+    DataView dataView;
+
+    public StorePage() {
         // setup the dialog
         final ModalWindow popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
-        
+
         // the layer container
-        final WebMarkupContainer layerContainer = new WebMarkupContainer("listContainer");
-        
+        final WebMarkupContainer tableContainer = new WebMarkupContainer("listContainer");
+
         // build the filter form
         Form form = new Form("filterForm");
         add(form);
@@ -64,135 +67,152 @@ public class LayerPage extends GeoServerBasePage {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-            	String[] keywords = filter.getModelObjectAsString().split("\\s+");
-                layers.setKeywords(keywords);
+                String[] keywords = filter.getModelObjectAsString().split("\\s+");
+                stores.setKeywords(keywords);
                 dataView.setCurrentPage(0);
-                target.addComponent(layerContainer);
+                target.addComponent(tableContainer);
                 target.addComponent(navigator);
             }
-            
+
         };
         form.add(filterSubmit);
         AjaxButton filterReset = new AjaxButton("resetFilter") {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-            	layers.setKeywords(null);
-            	filter.setModelObject("");
+                stores.setKeywords(null);
+                filter.setModelObject("");
                 dataView.setCurrentPage(0);
-                target.addComponent(layerContainer);
+                target.addComponent(tableContainer);
                 target.addComponent(navigator);
                 target.addComponent(filter);
             }
-            
+
         };
         form.add(filterReset);
 
         // add the filter match label
         add(matched = new Label("filterMatch"));
         matched.setVisible(false);
-        
+
         // add the remove link
         final AjaxLink removeLink = new AjaxLink("remove") {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
                 String content = popupWindow.getContentId();
-                if(selection.isEmpty()) {
+                if (selection.isEmpty()) {
                     popupWindow.setContent(new Label(content, "Selection is empty, dude!"));
                     popupWindow.show(target);
                 } else {
-                    String msg = "Ok, so you wanted to remove " + selection + " uh? Well, you have some code to implement before that!!";
+                    String msg = "Ok, so you wanted to remove " + selection
+                            + " uh? Well, you have some code to implement before that!!";
                     popupWindow.setContent(new Label(content, msg));
                     popupWindow.show(target);
                 }
             }
-            
+
         };
         add(removeLink);
         removeLink.setEnabled(false);
-        
-        // the stores drop down
-        final DropDownChoice stores = new DropDownChoice("storesDropDown", new Model(), new LoadableDetachableModel() {
-        
-            @Override
-            protected Object load() {
-                List<DataStoreInfo> stores = getCatalog().getDataStores();
-                List<String> storeNames = new ArrayList<String>();
-                for (DataStoreInfo store : stores) {
-                    storeNames.add(store.getName());
-                }
-                return storeNames;
-            }
-        }); 
-        add(stores);
-        stores.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-        
+
+        // the workspaces drop down
+        final DropDownChoice workspaces = new DropDownChoice("wsDropDown", new Model(),
+                new LoadableDetachableModel() {
+
+                    @Override
+                    protected Object load() {
+                        List<WorkspaceInfo> workspaces = getCatalog().getWorkspaces();
+                        List<String> wsNames = new ArrayList<String>();
+                        for (WorkspaceInfo store : workspaces) {
+                            wsNames.add(store.getName());
+                        }
+                        return wsNames;
+                    }
+                });
+        add(workspaces);
+        workspaces.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                popupWindow.setContent(new Label(popupWindow.getContentId(), "Ah, so you wanted to add a layer from " + stores.getModelObjectAsString() + " huh? Well, now go into the code and actually implement the 'add layer' workflow then!"));
+                popupWindow
+                        .setContent(new Label(
+                                popupWindow.getContentId(),
+                                "Ah, so you wanted to add a store into "
+                                        + workspaces.getModelObjectAsString()
+                                        + " huh? Well, now go into the code and actually implement the 'add layer' workflow then!"));
                 popupWindow.show(target);
             }
         });
-        
+
         // setup the table
-        layerContainer.setOutputMarkupId(true);
-        add(layerContainer);
-        dataView = new DataView("layerList", layers) {
+        tableContainer.setOutputMarkupId(true);
+        add(tableContainer);
+        dataView = new DataView("storesList", stores) {
 
             @Override
             protected void populateItem(Item item) {
                 final IModel model = item.getModel();
-                
+
                 // odd/even style
                 item.add(new SimpleAttributeModifier("class", item.getIndex() % 2 == 0 ? "even"
                         : "odd"));
-                
+
                 // build an indirection so that we don't store the actual layer
                 // but just the model the item is using, which is detachable
                 final AjaxCheckBox selected = new AjaxCheckBox("selected", new Model() {
                     @Override
                     public Object getObject() {
-                        LayerInfo li = (LayerInfo) model.getObject();
-                        return selection.contains(li.getName());
+                        StoreInfo si = (StoreInfo) model.getObject();
+                        return selection.contains(si.getName());
                     }
                 }) {
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
-                        LayerInfo li = (LayerInfo) model.getObject();
-                        if(selection.contains(li.getName()))
-                            selection.remove(li.getName());
+                        StoreInfo si = (StoreInfo) model.getObject();
+                        if (selection.contains(si.getName()))
+                            selection.remove(si.getName());
                         else
-                            selection.add(li.getName());
-                        target.addComponent(layerContainer);
-                        
-                        // update the remove link, enabled, only if there 
+                            selection.add(si.getName());
+                        target.addComponent(tableContainer);
+
+                        // update the remove link, enabled, only if there
                         // is some selection
                         removeLink.setEnabled(selection.size() > 0);
                         target.addComponent(removeLink);
                     }
                 };
                 item.add(selected);
-                
+
                 // build an indirection so that we don't store the actual layer
                 // but just the model the item is using, which is detachable
                 Label type = new Label("type", new Model() {
                     @Override
                     public Object getObject() {
-                        LayerInfo li = (LayerInfo) model.getObject();
-                        return li.getType().toString().toLowerCase(); 
+                        StoreInfo li = (StoreInfo) model.getObject();
+                        if (li instanceof DataStoreInfo)
+                            return "vector";
+                        else
+                            return "raster";
                     }
                 });
                 item.add(type);
-                
-                Link wsLink = new Link("wsLink", new PropertyModel(model, WORKSPACE_PROPERTY)) {
+
+                PropertyModel wsProperty = new PropertyModel(model, WORKSPACE_PROPERTY);
+                Link wsLink = new Link("wsLink", wsProperty) {
                     public void onClick() {
-                        setResponsePage(new NamespaceEditPage(getModelObjectAsString()));
+                        WorkspaceInfo info = getCatalog().getWorkspaceByName(
+                                getModelObjectAsString());
+                        if (info != null)
+                            setResponsePage(new NamespaceEditPage(info.getId()));
                     }
                 };
                 item.add(wsLink);
-                wsLink.add(new Label("ws", new PropertyModel(model, WORKSPACE_PROPERTY)));
-                AjaxLink storeLink = new AjaxLink("storeLink", new PropertyModel(model, STORE_PROPERTY)) {
+                wsLink.add(new Label("ws", wsProperty));
+
+                AjaxLink nameLink = new AjaxLink("nameLink",
+                        new PropertyModel(model, NAME_PROPERTY)) {
+                    @Override
                     public void onClick(AjaxRequestTarget target) {
                         String storeName = getModelObjectAsString();
                         DataStoreInfo store = getCatalog().getDataStoreByName(storeName);
@@ -205,34 +225,25 @@ public class LayerPage extends GeoServerBasePage {
                         }
                     }
                 };
-                item.add(storeLink);
-                storeLink.add(new Label("store", new PropertyModel(model, STORE_PROPERTY)));
-                Link nameLink = new Link("nameLink", new PropertyModel(model, "resource.name")) {
-                    public void onClick() {
-                        setResponsePage(new ResourceConfigurationPage(getModelObjectAsString()));
-                    }
-                };
                 item.add(nameLink);
                 nameLink.add(new Label("name", new PropertyModel(model, NAME_PROPERTY)));
+
                 item.add(new Label("enabled", new PropertyModel(model, ENABLED_PROPERTY)));
-                item.add(new Label("SRS", new PropertyModel(model, SRS_PROPERTY)));
             }
-            
+
         };
-        layerContainer.add(dataView);
-        
+        tableContainer.add(dataView);
+
         // add the sorting links
-        add(new OrderByBorder("orderType", "type", layers));
-        add(new OrderByBorder("orderWs", "workspace", layers));
-        add(new OrderByBorder("orderStore", "store", layers));
-        add(new OrderByBorder("orderName", "name", layers));
-        add(new OrderByBorder("orderEnabled", "enabled", layers));
-        add(new OrderByBorder("orderSRS", "SRS", layers));
-        
+        add(new OrderByBorder("orderType", "type", stores));
+        add(new OrderByBorder("orderWs", "workspace", stores));
+        add(new OrderByBorder("orderName", "name", stores));
+        add(new OrderByBorder("orderEnabled", "enabled", stores));
+
         // add the paging navigator
         dataView.setItemsPerPage(10);
         navigator = new GeoServerPagingNavigator("navigator", dataView);
         navigator.setOutputMarkupId(true);
-		add(navigator);
+        add(navigator);
     }
 }

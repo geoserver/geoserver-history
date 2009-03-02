@@ -1,9 +1,12 @@
 package org.geoserver.web.data.table;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import jj2000.j2k.codestream.HeaderInfo.SOT;
 
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
@@ -12,6 +15,8 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.support.PropertyComparator;
 
 public class LayerProvider extends SortableDataProvider {
@@ -27,13 +32,27 @@ public class LayerProvider extends SortableDataProvider {
     public static final String ENABLED = "enabled";
     public static final String ENABLED_PROPERTY = "enabled";
     public static final String SRS = "SRS";
-    public static final String SRS_PROPERTY = "resource.srs";
+    public static final String SRS_PROPERTY = "resource.SRS";
+    
+    String[] keywords;
+    
+    public String[] getKeywords() {
+		return keywords;
+	}
 
+	public void setKeywords(String[] keywords) {
+		this.keywords = keywords;
+	}
 
-    public Iterator iterator(int first, int count) {
+	public Iterator iterator(int first, int count) {
         // grab list
         Catalog catalog = GeoServerApplication.get().getCatalog();
         List<LayerInfo> layers = catalog.getLayers();
+        
+        // if needed, filter
+        if(keywords != null && keywords.length > 0) {
+        	layers = filterByKeywords(layers);
+        }
         
         // global sorting
         Comparator comparator = getComparator();
@@ -47,7 +66,35 @@ public class LayerProvider extends SortableDataProvider {
         return layers.subList(first, last).iterator();
     }
 
-    Comparator getComparator() {
+    private List<LayerInfo> filterByKeywords(List<LayerInfo> layers) {
+		StringBuilder sb = new StringBuilder();
+		List<LayerInfo> result = new ArrayList<LayerInfo>();
+		
+		for (LayerInfo layerInfo : layers) {
+			// build a single string representation of all the properties we filter on
+			BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(layerInfo);
+			sb.setLength(0); // reset the builder
+			sb.append(wrapper.getPropertyValue(TYPE_PROPERTY)).append(" ");
+			sb.append(wrapper.getPropertyValue(NAME_PROPERTY)).append(" ");
+			sb.append(wrapper.getPropertyValue(STORE_PROPERTY)).append(" ");
+			sb.append(wrapper.getPropertyValue(WORKSPACE_PROPERTY)).append(" ");
+			sb.append(wrapper.getPropertyValue(ENABLED_PROPERTY)).append(" ");
+			sb.append(wrapper.getPropertyValue(SRS_PROPERTY)).append(" ");
+			String description = sb.toString();
+			
+			// brute force check for keywords
+			for (String keyword : keywords) {
+				if(description.indexOf(keyword) >= 0) {
+					result.add(layerInfo);
+					break;
+				}
+			}
+		}
+		
+		return result;
+	}
+
+	Comparator getComparator() {
         SortParam sort = getSort();
         if(sort == null || sort.getProperty() == null)
             return null;
@@ -76,7 +123,13 @@ public class LayerProvider extends SortableDataProvider {
     }
 
     public int size() {
-        return getCatalog().getLayers().size();
+    	List<LayerInfo> layers = getCatalog().getLayers();
+        
+        // if needed, filter
+        if(keywords != null && keywords.length > 0) {
+        	layers = filterByKeywords(layers);
+        }
+        return layers.size();
     }
 
     private Catalog getCatalog() {
