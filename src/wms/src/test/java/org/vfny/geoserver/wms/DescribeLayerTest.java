@@ -26,7 +26,7 @@ public class DescribeLayerTest extends WMSTestSupport {
     public void testDescribeLayerVersion111() throws Exception {
         String layer = MockData.FORESTS.getPrefix() + ":" + MockData.FORESTS.getLocalPart();
         String request = "wms?service=wms&version=1.1.1&request=DescribeLayer&layers=" + layer;
-        Document dom = getAsDOM(request);
+        Document dom = getAsDOM(request, true);
         
         assertEquals("1.1.1", dom.getDocumentElement().getAttributes().getNamedItem("version").getNodeValue());
     }
