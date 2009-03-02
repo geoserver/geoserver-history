@@ -39,14 +39,6 @@ public abstract class ServerAdminPage extends GeoServerSecuredPage {
         };
     }
 
-    public IModel getGlobalConfigModel(){
-        return new LoadableDetachableModel(){
-            public Object load() {
-                return getGeoServerApplication().getApplicationContext().getBean("globalConfig");
-            }
-        };
-    }
-
     public IModel getJAIModel(){
         return new LoadableDetachableModel(){
             public Object load() {

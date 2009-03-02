@@ -21,7 +21,6 @@ public class GlobalSettingsPage extends ServerAdminPage {
     public GlobalSettingsPage() {
         final IModel geoServerModel = getGeoServerModel();
         final IModel globalInfoModel = getGlobalInfoModel();
-        final IModel globalConfigModel = getGlobalConfigModel();
 
         Form form = new Form("form", new CompoundPropertyModel(globalInfoModel)) {
             protected void onSubmit() {
@@ -32,13 +31,12 @@ public class GlobalSettingsPage extends ServerAdminPage {
 
         add(form);
 
-        form.add(new TextField("maxFeatures", new PropertyModel(globalConfigModel, "maxFeatures")));
         form.add(new CheckBox("verbose"));
         form.add(new CheckBox("verboseExceptions"));
         form.add(new TextField("numDecimals"));
         form.add(new TextField("charset"));
         form.add(new TextField("proxyBaseUrl"));
-        logLevelsAppend(form, globalConfigModel);
+        logLevelsAppend(form, globalInfoModel);
         form.add(new CheckBox("stdOutLogging"));
         form.add(new TextField("loggingLocation"));
 
@@ -46,12 +44,12 @@ public class GlobalSettingsPage extends ServerAdminPage {
         form.add(submit);
     }
 
-    private void logLevelsAppend(Form form, IModel globalConfigModel) {
+    private void logLevelsAppend(Form form, IModel globalInfoModel) {
         List<String> logProfiles = Arrays.asList("DEFAULT_LOGGING.properties",
                 "VERBOSE_LOGGING.properties", "PRODUCTION_LOGGING.properties",
                 "GEOTOOLS_DEVELOPER_LOGGING.properties", "GEOSERVER_DEVELOPER_LOGGING.properties");
 
-        form.add(new ListChoice("log4jConfigFile", new PropertyModel(globalConfigModel,
-                "log4jConfigFile"), logProfiles));
+        form.add(new ListChoice("log4jConfigFile", new PropertyModel(globalInfoModel,
+                "loggingLevel"), logProfiles));
     }
 };

@@ -130,7 +130,6 @@ public class StorePage extends GeoServerBasePage {
                         return wsNames;
                     }
                 });
-        add(workspaces);
         workspaces.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
             @Override
@@ -145,6 +144,8 @@ public class StorePage extends GeoServerBasePage {
             }
         });
 
+        add(workspaces);
+        
         // setup the table
         tableContainer.setOutputMarkupId(true);
         add(tableContainer);
