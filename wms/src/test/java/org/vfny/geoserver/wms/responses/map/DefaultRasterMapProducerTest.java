@@ -99,7 +99,8 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         final String mapFormat = "image/gif";
 
         
-        final FeatureSource fs = getCatalog().getFeatureTypeByName(MockData.BASIC_POLYGONS.getPrefix(),
+        Catalog catalog = getCatalog();
+        final FeatureSource fs = catalog.getFeatureTypeByName(MockData.BASIC_POLYGONS.getPrefix(),
                 MockData.BASIC_POLYGONS.getLocalPart()).getFeatureSource(null, null);
         
         final Envelope env = fs.getBounds();
@@ -112,9 +113,10 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.setMapHeight(300);
         map.setBgColor(Color.red);
         map.setTransparent(false);
-        map.setRequest(new GetMapRequest(null));
+        map.setRequest(new GetMapRequest(getWMS()));
 
-        Style basicStyle = getCatalog().getStyleByName("default").getStyle();
+        StyleInfo styleByName = catalog.getStyleByName("Default");
+        Style basicStyle = styleByName.getStyle();
         map.addLayer(fs, basicStyle);
 
         this.rasterMapProducer.setOutputFormat(mapFormat);
@@ -153,7 +155,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     public void testBlueLake() throws IOException, IllegalFilterException, Exception {
         final Catalog catalog = getCatalog();
         org.geoserver.catalog.FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
-        Envelope env = typeInfo.getBoundingBox();
+        Envelope env = typeInfo.getFeatureSource(null, null).getBounds();
         double shift = env.getWidth() / 6;
 
         env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift, env
@@ -167,7 +169,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.setMapHeight(h);
         map.setBgColor(BG_COLOR);
         map.setTransparent(true);
-        map.setRequest(new GetMapRequest(null));
+        map.setRequest(new GetMapRequest(getWMS()));
 
         addToMap(map, MockData.FORESTS);
         addToMap(map, MockData.LAKES);
@@ -280,7 +282,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         Style style = catalog.getStyleByName("Default").getStyle();
 
         FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
-        Envelope env = typeInfo.getBoundingBox();
+        Envelope env = typeInfo.getFeatureSource(null, null).getBounds();
         env.expandToInclude(fSource.getBounds());
 
         int w = 400;
@@ -293,7 +295,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
                 + shift);
 
         WMSMapContext map = new WMSMapContext();
-        map.setRequest(new GetMapRequest(null));
+        map.setRequest(new GetMapRequest(getWMS()));
         map.addLayer(fSource, style);
         map.setAreaOfInterest(env);
         map.setMapWidth(w);
