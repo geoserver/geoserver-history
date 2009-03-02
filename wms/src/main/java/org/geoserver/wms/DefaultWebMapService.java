@@ -287,7 +287,8 @@ public class DefaultWebMapService implements WebMapService,
         /** 2) Compare requested SRS */
         for (int i = 0; useNativeBounds && i < layers.length; i++) {
             if (layers[i] != null) {
-                useNativeBounds = reqSRS.equalsIgnoreCase(layers[i].getSRS());
+                String layerSRS = layers[i].getSRS();
+                useNativeBounds = reqSRS.equalsIgnoreCase(layerSRS);
             } else {
                 useNativeBounds = false;
             }
@@ -313,9 +314,18 @@ public class DefaultWebMapService implements WebMapService,
                 MapLayerInfo layerInfo = layers[i];
                 ReferencedEnvelope curbbox;
                 try{
-                    curbbox = layerInfo.getBoundingBox();
-                    if(!useNativeBounds){
-                        curbbox = curbbox.transform(reqCRS, true);
+                    curbbox = layerInfo.getLatLongBoundingBox();
+                    if(useNativeBounds){
+                        ReferencedEnvelope nativeBbox = layerInfo.getBoundingBox();
+                        if(nativeBbox == null){
+                            try {
+                                CoordinateReferenceSystem nativeCrs = layerInfo.getCoordinateReferenceSystem();
+                                nativeBbox = curbbox.transform(nativeCrs, true);
+                                curbbox = nativeBbox;
+                            } catch(Exception e) {
+                                throw new WmsException("Best effort native bbox computation failed", "", e);
+                            }
+                        }
                     }
                 }catch(Exception e){
                     throw new RuntimeException(e);

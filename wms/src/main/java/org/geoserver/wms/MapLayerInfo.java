@@ -15,16 +15,20 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.feature.FeatureSourceUtils;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.util.DataStoreUtils;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -73,7 +77,7 @@ public final class MapLayerInfo {
     private final String description;
 
     private final LayerInfo layerInfo;
-    
+
     private Style style;
 
     public MapLayerInfo(FeatureSource<SimpleFeatureType, SimpleFeature> remoteSource) {
@@ -117,7 +121,12 @@ public final class MapLayerInfo {
      */
     public ReferencedEnvelope getBoundingBox() throws Exception {
         if (layerInfo != null) {
-            return layerInfo.getResource().getBoundingBox();
+            ResourceInfo resource = layerInfo.getResource();
+            ReferencedEnvelope bbox = resource.getBoundingBox();
+            // if(bbox == null){
+            // bbox = resource.getLatLonBoundingBox();
+            // }
+            return bbox;
         } else if (this.type == TYPE_REMOTE_VECTOR) {
             return remoteFeatureSource.getBounds();
         }
@@ -132,12 +141,14 @@ public final class MapLayerInfo {
      * @throws IOException
      *             when an error occurs
      */
-    public Envelope getLatLongBoundingBox() throws IOException {
+    public ReferencedEnvelope getLatLongBoundingBox() throws IOException {
         if (layerInfo != null) {
-            return layerInfo.getResource().getLatLonBoundingBox();
+            ResourceInfo resource = layerInfo.getResource();
+            return resource.getLatLonBoundingBox();
         }
 
-        return DataStoreUtils.getBoundingBoxEnvelope(remoteFeatureSource);
+        throw new UnsupportedOperationException("getLatLongBoundingBox not "
+                + "implemented for remote sources");
     }
 
     /**
