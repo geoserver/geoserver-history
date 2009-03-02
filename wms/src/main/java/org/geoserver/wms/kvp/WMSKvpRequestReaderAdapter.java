@@ -30,7 +30,8 @@ import org.geoserver.wms.WMSInfo;
  */
 public class WMSKvpRequestReaderAdapter extends KvpRequestReader implements HttpServletRequestAware {
 
-    Class delegateClass;
+    private org.vfny.geoserver.util.requests.readers.KvpRequestReader delegate;
+    Class<? extends org.vfny.geoserver.util.requests.readers.KvpRequestReader> delegateClass;
 
     HttpServletRequest request;
 
@@ -61,6 +62,30 @@ public class WMSKvpRequestReaderAdapter extends KvpRequestReader implements Http
         }
 
         // look for a constructor, may have to walk up teh class hierachy
+        Constructor constructor = findConstructor();
+
+        // create an instance of the delegate
+        this.delegate = (org.vfny.geoserver.util.requests.readers.KvpRequestReader) constructor
+                .newInstance(new Object[] { kvp, wms });
+
+        // create the request object
+        return delegate.getRequest(request);
+    }
+
+    @Override
+    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+        Constructor constructor = findConstructor();
+
+        // create an instance of the delegate
+        this.delegate = (org.vfny.geoserver.util.requests.readers.KvpRequestReader) constructor
+                .newInstance(new Object[] { kvp, wms });
+
+        // create the request object
+        return delegate.getRequest(this.request);
+    }
+
+    private Constructor findConstructor() {
+        // look for a constructor, may have to walk up teh class hierachy
         Class clazz = WMS.class;
         Constructor constructor = null;
 
@@ -83,19 +108,6 @@ public class WMSKvpRequestReaderAdapter extends KvpRequestReader implements Http
         if (constructor == null) {
             throw new IllegalStateException("No appropriate constructor");
         }
-
-        // create an instance of the delegate
-        org.vfny.geoserver.util.requests.readers.KvpRequestReader delegate;
-        delegate = (org.vfny.geoserver.util.requests.readers.KvpRequestReader) constructor
-                .newInstance(new Object[] { kvp, wms });
-
-        // create the request object
-        return delegate.getRequest(request);
-    }
-
-    @Override
-    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
-        // request object already initialized, just send it back
-        return request;
+        return constructor;
     }
 }

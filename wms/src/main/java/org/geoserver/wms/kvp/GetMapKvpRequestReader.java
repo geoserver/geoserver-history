@@ -75,22 +75,22 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
     /**
      * current request
      */
-    HttpServletRequest httpRequest;
+    private HttpServletRequest httpRequest;
 
     /**
      * style factory
      */
-    StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
+    private StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
 
     /**
      * filter factory
      */
-    FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
+    private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
 
     /**
-     * Flag to control wether styles are mandatory
+     * Flag to control wether styles shall be parsed.
      */
-    boolean styleRequired;
+    private boolean parseStyles = true;
 
     /**
      * The WMS configuration facade, that we use to pick up base layer definitions
@@ -101,7 +101,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      * This flags allows the kvp reader to go beyond the SLD library mode specification and match
      * the first style that can be applied to a given layer. This is for backwards compatibility
      */
-    boolean laxStyleMatchAllowed = true;
+    private boolean laxStyleMatchAllowed = true;
 
     public GetMapKvpRequestReader(WMS wms) {
         super(GetMapRequest.class);
@@ -120,12 +120,12 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         this.filterFactory = filterFactory;
     }
 
-    public boolean isStyleRequired() {
-        return styleRequired;
+    public boolean isParseStyle() {
+        return parseStyles;
     }
 
-    public void setStyleRequired(boolean styleRequired) {
-        this.styleRequired = styleRequired;
+    public void setParseStyle(boolean styleRequired) {
+        this.parseStyles = styleRequired;
     }
 
     public Object createRequest() throws Exception {
@@ -136,7 +136,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
     }
 
     @Override
-    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+    public GetMapRequest read(Object request, Map kvp, Map rawKvp) throws Exception {
         GetMapRequest getMap = (GetMapRequest) super.read(request, kvp, rawKvp);
 
         // do some additional checks
@@ -270,7 +270,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
             
             // first, expand base layers and default styles
-            if (requestedLayerInfos.size() > 0) {
+            if (isParseStyle() && requestedLayerInfos.size() > 0) {
                 //List oldLayers = new ArrayList(Arrays.asList(getMap.getLayers()));
                 List<Style> oldStyles = getMap.getStyles() != null ? new ArrayList(getMap.getStyles())
                         : new ArrayList();
@@ -310,8 +310,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
             // then proceed with standard processing
             MapLayerInfo[] layers = getMap.getLayers();
-            if ((layers != null) && (layers.length > 0)) {
-                List styles = getMap.getStyles();
+            if (isParseStyle() && (layers != null) && (layers.length > 0)) {
+                final List styles = getMap.getStyles();
 
                 if (layers.length != styles.size()) {
                     String msg = layers.length + " layers requested, but found " + styles.size()
@@ -319,7 +319,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     throw new WmsException(msg, getClass().getName());
                 }
 
-                for (int i = 0; i < getMap.getStyles().size(); i++) {
+                for (int i = 0; i < styles.size(); i++) {
                     Style currStyle = (Style) getMap.getStyles().get(i);
                     if (currStyle == null)
                         throw new WmsException(

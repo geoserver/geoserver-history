@@ -79,11 +79,11 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
         String version = getRequestVersion();
         request.setVersion(version);
 
-        getMapReader.setStyleRequired(false);
+        getMapReader.setParseStyle(false);
         //getMapReader.setFormatRequired(false);
-        GetMapRequest getMapPart;
+        GetMapRequest getMapPart = new GetMapRequest(getWMS());
         try {
-            getMapPart = (GetMapRequest) getMapReader.read(httpRequest, super.kvpPairs, super.kvpPairs);
+            getMapPart = getMapReader.read(getMapPart, super.kvpPairs, super.kvpPairs);
         } catch (Exception e) {
             throw new WmsException(e);
         }
