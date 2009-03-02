@@ -2,6 +2,7 @@ package org.geoserver.catalog.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.geoserver.catalog.Catalog;
@@ -39,7 +40,7 @@ public abstract class AbstractCatalogListResource extends CatalogResourceBase {
         final String name = xp.getClassAliasingMapper().serializedClass( clazz );
         
         xstream.alias( name, clazz );
-        xstream.alias( name + "s", Collection.class, ArrayList.class );
+        aliasCollection( name + "s", xstream );
         
         xstream.registerConverter( 
             new CollectionConverter(xstream.getMapper()) {
@@ -89,5 +90,16 @@ public abstract class AbstractCatalogListResource extends CatalogResourceBase {
 
             }
         );
+    }
+    
+    /**
+     * Template method to alias the type of the collection.
+     * <p>
+     * The default works with list, subclasses may override for instance
+     * to work with a Set.
+     * </p>
+     */
+    protected void aliasCollection( String alias, XStream xstream ) {
+        xstream.alias( alias, Collection.class, ArrayList.class);
     }
 }
