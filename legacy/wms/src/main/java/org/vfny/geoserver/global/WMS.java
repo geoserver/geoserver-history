@@ -11,7 +11,6 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSInfo;
-import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WatermarkInfo;
 import org.geotools.geometry.GeneralEnvelope;
