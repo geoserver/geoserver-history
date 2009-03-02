@@ -80,9 +80,9 @@ public class CapabilitiesRequest extends Request {
 	}
 
 	/**
-	 * Returns the namespace we should filter layers on (if any)
+	 * Returns the namespace prefix we should filter layers on (if any)
 	 * (used in WMS only atm, but could be easily expanded to wfs/wcs too)
-	 * @return
+	 * @return the namespace prefix which to filter the content for
 	 */
     public String getNamespace() {
         return namespace;

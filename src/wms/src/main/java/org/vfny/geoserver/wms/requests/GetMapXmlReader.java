@@ -16,30 +16,49 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.catalog.LayerGroupInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.kvp.GetMapKvpRequestReader;
+import org.geotools.data.DataStore;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.data.Transaction;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
+import org.geotools.data.memory.MemoryDataStore;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.filter.ExpressionDOMParser;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.styling.FeatureTypeConstraint;
+import org.geotools.styling.NamedLayer;
+import org.geotools.styling.NamedStyle;
 import org.geotools.styling.SLDParser;
+import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.GETMAPValidator;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.servlets.WMService;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -267,13 +286,13 @@ public class GetMapXmlReader extends XmlRequestReader {
             requestParams.put(paramName.toUpperCase(), paramValue);
         }
 
-        GetMapKvpReader kvpReader = new GetMapKvpReader(requestParams, getWMS());
+        GetMapKvpRequestReader kvpReader = new GetMapKvpRequestReader(getWMS());
 
-        String version = kvpReader.getRequestVersion();
-        getMapRequest.setVersion(version);
+//        String version = kvpReader.getRequestVersion();
+//        getMapRequest.setVersion(version);
 
-        kvpReader.parseMandatoryParameters(getMapRequest, false); //false means dont do styles/layers (see below)
-        kvpReader.parseOptionalParameters(getMapRequest);
+//        kvpReader.parseMandatoryParameters(getMapRequest, false); //false means dont do styles/layers (see below)
+//        kvpReader.parseOptionalParameters(getMapRequest);
 
         //get styles/layers from the sld.
         StyledLayerDescriptor sld = sldParser.parseDescriptor(rootNode); //root = <StyledLayerDescriptor>
@@ -298,8 +317,8 @@ public class GetMapXmlReader extends XmlRequestReader {
             throw new WmsException("SLD document contains no layers");
         }
 
-        final List layers = new ArrayList();
-        final List styles = new ArrayList();
+        final List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>();
+        final List<Style> styles = new ArrayList<Style>();
         MapLayerInfo currLayer;
 
         StyledLayer sl = null;
@@ -318,46 +337,157 @@ public class GetMapXmlReader extends XmlRequestReader {
             boolean isBaseMap = false;
             if ((sl instanceof UserLayer)
                     && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
-                //SPECIAL CASE - we make the temporary version
+                // SPECIAL CASE - we make the temporary version
                 UserLayer ul = ((UserLayer) sl);
-                GetMapKvpReader.initializeInlineFeatureLayer(getMapRequest, ul, currLayer);
+                CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null) ? DefaultGeographicCRS.WGS84
+                        : getMapRequest.getCrs();
+                currLayer = initializeInlineFeatureLayer(ul, crs);
             } else {
                 
-                //look for a base map layer
-                String layerGroup = (String) getMapRequest.getWMS().getBaseMapLayers().get( layerName );
+                LayerGroupInfo layerGroup = getWMS().getLayerGroupByName(layerName);
+
                 if ( layerGroup != null ) {
-                    isBaseMap = true;
-                    List layerGroupExpanded = GetMapKvpReader.parseLayerGroup(layerGroup);
-                    for (Iterator it = layerGroupExpanded.iterator(); it.hasNext();) {
-                        layerName = (String) it.next();
-                        currLayer = new MapLayerInfo();
-                        try {
-                            currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));    
-                        }
-                        catch( Exception e ) {
-                            currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName));
-                        }
-                        
-                        GetMapKvpReader.addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
+                    for(LayerInfo layer : layerGroup.getLayers()){
+                        currLayer = new MapLayerInfo(layer);
+                        addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
                     }
-                }
-                else {
-                    try {
-                        currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));    
+                } else {
+                    LayerInfo layerInfo = getWMS().getLayerByName(layerName);
+                    if(layerInfo == null){
+                        throw new WmsException("Layer not found: " + layerName);
                     }
-                    catch( Exception e ) {
-                        currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName));
-                    }
+                    currLayer = new MapLayerInfo(layerInfo);
+                    addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);    
                 }
             }
 
-            if (!isBaseMap) {
-                GetMapKvpReader.addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);    
+        }
+
+        getMapRequest.setLayers(layers.toArray(new MapLayerInfo[layers.size()]));
+        getMapRequest.setStyles(styles);
+    }
+    
+    /**
+     * the correct thing to do its grab the style from styledLayers[i] inside
+     * the styledLayers[i] will either be : a) nothing - in which case grab the
+     * layer's default style b) a set of: i) NameStyle -- grab it from the
+     * pre-loaded styles ii)UserStyle -- grab it from the sld the user uploaded
+     * 
+     * NOTE: we're going to get a set of layer->style pairs for (b). these are
+     * added to layers,styles
+     * 
+     * NOTE: we also handle some featuretypeconstraints
+     * 
+     * @param request
+     * @param currLayer
+     * @param layer
+     * @param layers
+     * @param styles
+     * @throws IOException 
+     */
+    public static void addStyles(GetMapRequest request, MapLayerInfo currLayer, StyledLayer layer,
+            List<MapLayerInfo> layers, List<Style> styles) throws WmsException, IOException {
+        if (currLayer == null) {
+            return; // protection
+        }
+
+        Style[] layerStyles = null;
+        FeatureTypeConstraint[] ftcs = null;
+
+        if (layer instanceof NamedLayer) {
+            ftcs = ((NamedLayer) layer).getLayerFeatureConstraints();
+            layerStyles = ((NamedLayer) layer).getStyles();
+        } else if (layer instanceof UserLayer) {
+            ftcs = ((UserLayer) layer).getLayerFeatureConstraints();
+            layerStyles = ((UserLayer) layer).getUserStyles();
+        }
+
+        // DJB: TODO: this needs to do the whole thing, not just names
+        if (ftcs != null) {
+            FeatureTypeConstraint ftc;
+            final int length = ftcs.length;
+
+            for (int t = 0; t < length; t++) {
+                ftc = ftcs[t];
+
+                if (ftc.getFeatureTypeName() != null) {
+                    String ftc_name = ftc.getFeatureTypeName();
+
+                    // taken from lite renderer
+                    boolean matches;
+
+                    try {
+                        final FeatureType currSchema = currLayer.getFeature().getFeatureType();
+                        matches = currSchema.getName().getLocalPart().equalsIgnoreCase(ftc_name)
+                                || FeatureTypes.isDecendedFrom(currSchema, null, ftc_name);
+                    } catch (Exception e) {
+                        matches = false; // bad news
+                    }
+
+                    if (!matches) {
+                        continue; // this layer is fitered out
+                    }
+                }
             }
         }
 
-        getMapRequest.setLayers((MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers.size()]));
-        getMapRequest.setStyles(styles);
+        // handle no styles -- use default
+        if ((layerStyles == null) || (layerStyles.length == 0)) {
+            layers.add(currLayer);
+            styles.add(currLayer.getDefaultStyle());
+
+            return;
+        }
+
+        final int length = layerStyles.length;
+        Style s;
+
+        for (int t = 0; t < length; t++) {
+            if (layerStyles[t] instanceof NamedStyle) {
+                layers.add(currLayer);
+                String styleName = ((NamedStyle) layerStyles[t]).getName();
+                s = request.getWMS().getStyleByName(styleName);
+
+                if (s == null) {
+                    throw new WmsException("couldnt find style named '" + styleName + "'");
+                }
+
+                styles.add(s);
+            } else {
+                layers.add(currLayer);
+                styles.add(layerStyles[t]);
+            }
+        }
+    }
+
+    private static MapLayerInfo initializeInlineFeatureLayer(UserLayer ul, CoordinateReferenceSystem requestCrs) throws Exception {
+        // SPECIAL CASE - we make the temporary version
+        final DataStore inlineDatastore = ul.getInlineFeatureDatastore();
+
+        final FeatureSource<SimpleFeatureType, SimpleFeature> source;
+        // what if they didn't put an "srsName" on their geometry in their
+        // inlinefeature?
+        // I guess we should assume they mean their geometry to exist in the
+        // output SRS of the
+        // request they're making.
+        if (ul.getInlineFeatureType().getCoordinateReferenceSystem() == null) {
+            LOGGER.warning("No CRS set on inline features default geometry.  "
+                    + "Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
+
+            SimpleFeatureType currFt = ul.getInlineFeatureType();
+            Query q = new DefaultQuery(currFt.getTypeName(), Filter.INCLUDE);
+            FeatureReader<SimpleFeatureType, SimpleFeature> ilReader;
+            ilReader = inlineDatastore.getFeatureReader(q, Transaction.AUTO_COMMIT);
+            ForceCoordinateSystemFeatureReader reader = new ForceCoordinateSystemFeatureReader(
+                    ilReader, requestCrs);
+            MemoryDataStore reTypedDS = new MemoryDataStore(reader);
+            source = reTypedDS.getFeatureSource(reTypedDS.getTypeNames()[0]);
+        }else{
+            source = inlineDatastore.getFeatureSource(inlineDatastore.getTypeNames()[0]);
+        }
+
+        MapLayerInfo mapLayer = new MapLayerInfo(source);
+        return mapLayer;
     }
 
     /**

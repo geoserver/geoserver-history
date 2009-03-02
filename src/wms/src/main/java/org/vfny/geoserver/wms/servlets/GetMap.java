@@ -4,22 +4,10 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
-import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSExtensions;
-import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.wms.requests.GetMapKvpReader;
-import org.vfny.geoserver.wms.requests.GetMapXmlReader;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**

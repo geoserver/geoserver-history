@@ -16,6 +16,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.wms.WmsException;
 
@@ -39,7 +40,7 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     private GetFeatureInfoRequest request;
 
     /** GetMap request reader used to parse the map context parameters needed. */
-    private GetMapKvpReader getMapReader;
+    private GetMapKvpRequestReader getMapReader;
 
     /**
      * Creates a new GetMapKvpReader object.
@@ -51,7 +52,7 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
      */
     public GetFeatureInfoKvpReader(Map kvpPairs, WMS wms) {
         super(kvpPairs, wms);
-        getMapReader = new GetMapKvpReader(kvpPairs, wms);
+        getMapReader = new GetMapKvpRequestReader(wms);
     }
 
     /**
@@ -78,9 +79,14 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
         String version = getRequestVersion();
         request.setVersion(version);
 
-        getMapReader.setStylesRequired(false);
-        getMapReader.setFormatRequired(false);
-        GetMapRequest getMapPart = (GetMapRequest) getMapReader.getRequest(httpRequest);
+        getMapReader.setStyleRequired(false);
+        //getMapReader.setFormatRequired(false);
+        GetMapRequest getMapPart;
+        try {
+            getMapPart = (GetMapRequest) getMapReader.read(httpRequest, super.kvpPairs, super.kvpPairs);
+        } catch (Exception e) {
+            throw new WmsException(e);
+        }
 
         request.setGetMapRequest(getMapPart);
 
