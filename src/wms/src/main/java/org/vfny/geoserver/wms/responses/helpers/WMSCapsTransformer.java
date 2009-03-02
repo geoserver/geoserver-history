@@ -698,10 +698,10 @@ public class WMSCapsTransformer extends TransformerBase {
 
             Envelope bbox;
             try {
-                bbox = layer.getResource().getBoundingBox();
+                bbox = layer.getResource().boundingBox();
             } catch (Exception e) {
                 throw new RuntimeException("Unexpected error obtaining bounding box for layer "
-                        + layer.getName());
+                        + layer.getName(), e);
             }
             Envelope llbbox = layer.getResource().getLatLonBoundingBox();
 

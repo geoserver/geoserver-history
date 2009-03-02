@@ -214,7 +214,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
             start("wcs:Domain");
             start("wcs:SpatialDomain");
             handleBoundingBox(ci.getLatLonBoundingBox(), true);
-            handleBoundingBox(ci.getBoundingBox(), false);
+            handleBoundingBox(ci.boundingBox(), false);
             handleGridCRS(ci);
             end("wcs:SpatialDomain");
             end("wcs:Domain");

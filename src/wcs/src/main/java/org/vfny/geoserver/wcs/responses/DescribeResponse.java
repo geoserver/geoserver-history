@@ -314,7 +314,7 @@ public class DescribeResponse implements Response {
         }
 
         // TODO we need to signal somehow that something went wrong
-        ReferencedEnvelope cvEnvelope = cv.getBoundingBox();
+        ReferencedEnvelope cvEnvelope = cv.boundingBox();
         tempResponse.append("\n  <domainSet>");
         tempResponse.append("\n   <spatialDomain>");
         // Envelope
