@@ -9,7 +9,6 @@ import org.vfny.geoserver.global.Config;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.GeoValidator;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 
