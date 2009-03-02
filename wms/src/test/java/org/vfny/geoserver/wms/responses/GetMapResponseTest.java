@@ -155,7 +155,7 @@ public class GetMapResponseTest extends TestCase {
     }
 
     public void testExecuteNoLayers() throws Exception {
-        request.setLayers((List<LayerInfo>) null);
+        request.setLayers(null);
         assertInvalidMandatoryParam("LayerNotDefined");
     }
 
