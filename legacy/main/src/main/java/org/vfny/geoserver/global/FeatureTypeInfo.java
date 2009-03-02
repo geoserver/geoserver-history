@@ -905,7 +905,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public ReferencedEnvelope getBoundingBox() throws IOException {
         try {
-            return featureType.getBoundingBox();
+            return featureType.boundingBox();
         } catch (Exception e) { 
             throw (IOException) new IOException().initCause(e);
         }
