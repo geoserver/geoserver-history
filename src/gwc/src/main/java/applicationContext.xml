@@ -1,75 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-
 <beans>
-  <!-- Configuration -->
+  <bean id="gwcAppCtx" class="org.geowebcache.util.ApplicationContextProvider" />
+  
+  <bean id="gwcXmlConfig" class="org.geowebcache.util.XMLConfiguration">
+    <!--By default GWC will look for geowebcache.xml in the WEB-INF/classes folder.-->
+    <!-- Other samples: -->
+    <!--property name="relativePath"><value>../resources</value></property -->
+    <!--property name="relativePath"><value>/WEB-INF/classes</value></property-->
+    <!--property name="absolutePath"><value>/etc/geowebcache/conf</value></property-->
+  </bean>
+  
+  <!-- Automatic getCapabilities Configuration -->
   <bean id="gwcGSConfig" class="org.geowebcache.util.GeoServerConfiguration">
-    <constructor-arg type="org.geowebcache.cache.CacheFactory" ref="gwcCacheFactory"/>
+    <constructor-arg ref="gwcAppCtx"/>
     <constructor-arg value="image/png,image/png8,image/jpeg,image/gif,application/vnd.google-earth.kml+xml"/>
     <constructor-arg value="4x4"/>
     <constructor-arg value="format_options=regionateby:auto"/>
   </bean>
-
-  <!-- controller for handling all incoming requests -->
-  <bean id="gwcDispatcher" class="org.geowebcache.GeoWebCacheDispatcher">
-    <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
-    <property name="servletPrefix" value="gwc"/>
-  </bean>
-
-  <!-- Tile layer dispatcher -->
+  
+  <!-- For each configuration bean above, add them below to activate -->
   <bean id="gwcTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
     <property name="config">
       <list>
-	<ref bean="gwcGSConfig"/>
+		<ref bean="gwcCatalogListener" />
+		<ref bean="gwcXmlConfig" />
       </list>
     </property>
   </bean>
   
-  <!-- URL mappings -->
+  <bean id="gwcDefaultStorageFinder" class="org.geowebcache.storage.DefaultStorageFinder">
+    <constructor-arg ref="gwcAppCtx" />
+  </bean>
+
+  <bean id="gwcMetaStore" class="org.geowebcache.storage.metastore.jdbc.JDBCMetaBackend">
+    <constructor-arg ref="gwcDefaultStorageFinder" />
+  </bean>
+  
+  <bean id="gwcBlobStore" class="org.geowebcache.storage.blobstore.file.FileBlobStore">
+    <constructor-arg ref="gwcDefaultStorageFinder" />
+  </bean>
+  
+  <bean id="gwcStorageBroker" class="org.geowebcache.storage.StorageBroker">
+    <constructor-arg type="org.geowebcache.storage.MetaStore" ref="gwcMetaStore" />
+    <constructor-arg type="org.geowebcache.storage.BlobStore" ref="gwcBlobStore" />
+  </bean>
+  
+  <!-- controller for handling all incoming requests -->
+  <bean id="geowebcacheDispatcher" class="org.geowebcache.GeoWebCacheDispatcher" destroy-method="destroy">
+    <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
+    <property name="storageBroker" ref="gwcStorageBroker"/>
+    <property name="servletPrefix" value="gwc"/>
+  </bean>
+  
+  <!-- WMS based services -->
+  <bean id="gwcServiceWMS" class="org.geowebcache.service.wms.WMSService">
+    <constructor-arg ref="gwcStorageBroker"/>
+    <constructor-arg ref="gwcTLDispatcher"/>
+    <property name="proxyRequests"><value>TRUE</value></property>
+  </bean>
+  <bean id="gwcServiceGMaps" class="org.geowebcache.service.gmaps.GMapsConverter">
+    <constructor-arg ref="gwcStorageBroker"/>
+    <constructor-arg ref="gwcTLDispatcher"/>
+  </bean>
+  <bean id="gwcServiceMGMaps" class="org.geowebcache.service.mgmaps.MGMapsConverter">
+    <constructor-arg ref="gwcStorageBroker"/>
+    <constructor-arg ref="gwcTLDispatcher"/>
+  </bean>
+  <bean id="gwcServiceVE" class="org.geowebcache.service.ve.VEConverter">
+    <constructor-arg ref="gwcStorageBroker"/>
+    <constructor-arg ref="gwcTLDispatcher"/>
+  </bean>
+  <bean id="gwcServiceKML" class="org.geowebcache.service.kml.KMLService">
+    <constructor-arg ref="gwcStorageBroker"/>
+    <constructor-arg ref="gwcTLDispatcher"/>
+  </bean>
+ 
+  <!-- WFS based services -->
+  <bean id="gwcServiceWFS" class="org.geowebcache.service.wfs.WFSService">
+    <constructor-arg ref="gwcStorageBroker" />
+    <constructor-arg ref="gwcAppCtx" />
+    <constructor-arg value="" />
+    <constructor-arg value="600" />
+  </bean>
+  
+  <!-- Thread pool for seeding -->
+  <bean id="gwcSeederThreadPoolExec" class="org.geowebcache.rest.seed.SeederThreadPoolExecutor">
+    <constructor-arg value="16"/><!-- Size of core pool -->
+    <constructor-arg value="32"/><!-- Maximum size of pool -->
+  </bean>
+
+  <!-- Restlets -->
+  <bean id="gwcSeedRestlet" class="org.geowebcache.rest.seed.SeedRestlet">
+    <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
+    <property name="threadPoolExecutor" ref="gwcSeederThreadPoolExec"/>
+    <property name="storageBroker" ref="gwcStorageBroker"/>
+  </bean>  
+  <bean id="gwcSeedFormRestlet" class="org.geowebcache.rest.seed.SeedFormRestlet">
+    <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
+    <property name="threadPoolExecutor" ref="gwcSeederThreadPoolExec"/>
+    <property name="storageBroker" ref="gwcStorageBroker"/>
+    <property name="seedRestlet" ref="gwcSeedRestlet"/>
+  </bean>
+  <bean id="gwcReloadRestlet" class="org.geowebcache.rest.reload.ReloadRestlet">
+    <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
+  </bean>
+  <bean id="gwcTileLayerRestlet" class="org.geowebcache.rest.layers.TileLayerRestlet">
+    <property name="XMLConfiguration" ref="gwcXmlConfig"/>
+    <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
+  </bean>
+  
+  <!-- REST Dispatcher -->
+  <bean id="gwcRestDispatcher" class="org.geowebcache.rest.RESTDispatcher">
+    <constructor-arg type="java.util.Map">
+      <map>
+        <entry>
+          <key><value>/rest/seed/{layer}.{extension}</value></key>
+          <ref bean="gwcSeedRestlet" />
+        </entry>
+        <entry>
+          <key><value>/rest/seed/{layer}</value></key>
+          <ref bean="gwcSeedFormRestlet" />
+        </entry>
+        <entry>
+          <key><value>/rest/reload</value></key>
+          <ref bean="gwcReloadRestlet" />
+        </entry>
+        <entry>
+          <key><value>/rest/layers/{layer}.{extension}</value></key>
+          <ref bean="gwcTileLayerRestlet" />
+        </entry>
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <bean id="gwcProxyDispatcher" class="org.geowebcache.proxy.ProxyDispatcher"/>
+  
   <bean id="gwcUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
       <props>
-        <prop key="/gwc/rest/**">gwcRESTDispatcher</prop>
-        <prop key="/gwc">gwcDispatcher</prop>
-        <prop key="/gwc/**">gwcDispatcher</prop>
+        <prop key="/gwc/rest/**">gwcRestDispatcher</prop>
+        <prop key="/gwc/**">geowebcacheDispatcher</prop>
+        <prop key="/gwc">geowebcacheDispatcher</prop>
       </props>
     </property>
   </bean>
   
-  <!-- Stuff for the REST dispatcher -->
-  <bean id="gwcXmlConfig" class="org.geowebcache.util.XMLConfiguration" />
-  
-  <bean id="gwcRESTDispatcher" class="org.geowebcache.rest.RESTDispatcher">
+  <bean id="gwcCatalogListener" class="org.geoserver.gwc.GWCCatalogListener">
+    <constructor-arg type="org.geoserver.catalog.Catalog" ref="rawCatalog" />
     <constructor-arg type="org.geowebcache.layer.TileLayerDispatcher" ref="gwcTLDispatcher"/>
-	<constructor-arg type="org.geowebcache.util.XMLConfiguration" ref="gwcXmlConfig"/>
-  </bean>
-
-  <!-- Services -->
-  <bean id="gwcServiceWMS" class="org.geowebcache.service.wms.WMSService">
-    <property name="config"><list><ref bean="gwcGSConfig"/></list></property>
-    <property name="proxyRequests"><value>TRUE</value></property>
-  </bean>
-  <bean id="gwcServiceGMaps"
-	class="org.geowebcache.service.gmaps.GMapsConverter"/>
-  <bean id="gwcServiceMGMaps"
-	class="org.geowebcache.service.mgmaps.MGMapsConverter"/>
-  <bean id="gwcServiceVE"
-	class="org.geowebcache.service.ve.VEConverter"/>
-  <bean id="gwcServiceKML"
-	class="org.geowebcache.service.kml.KMLService"/>
-  
-  <!-- Cache backends -->
-  <bean id="gwcCacheFile" class="org.geowebcache.cache.file.FileCache">
-    <property name="defaultKeyBeanId"><value>gwcCacheKeyFile</value></property>
-  </bean>
-  <bean id="gwcCacheKeyFile" class="org.geowebcache.cache.file.FilePathKey2"/>
-  
-  <!-- Cache and CacheKey factories -->
-  <bean id="gwcCacheKeyFactory" class="org.geowebcache.cache.CacheKeyFactory"/>
-
-  <bean id="gwcCacheFactory" class="org.geowebcache.cache.CacheFactory">
-    <constructor-arg type="org.geowebcache.cache.CacheKeyFactory" ref="gwcCacheKeyFactory"/>
-    <property name="defaultCacheBeanId"><value>gwcCacheFile</value></property>
+    <constructor-arg type="org.geowebcache.util.ApplicationContextProvider" ref="gwcAppCtx" />
   </bean>
 </beans>
