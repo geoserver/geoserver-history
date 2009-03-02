@@ -87,43 +87,42 @@ public abstract class AbstractResource extends Resource {
     protected DataFormat getFormatGet() {
         DataFormat df = null;
         
-        //first check the Accepts header
-        List<Preference<MediaType>> accepts = 
-            new ArrayList( getRequest().getClientInfo().getAcceptedMediaTypes() );
-        for ( Iterator<Preference<MediaType>> i = accepts.iterator(); i.hasNext(); ) {
-            Preference<MediaType> pref = i.next();
-            if ( pref.getMetadata().equals( MediaType.ALL ) ) {
-                i.remove();
-                continue;
-            }
-            
-            df = lookupFormat( pref.getMetadata() ); 
-            if ( df != null ) {
-                break;
+        //check if the client specified an extension
+        String ext = (String) getRequest().getAttributes().get( "format" );
+        if ( ext == null ) {
+            ext = (String) getRequest().getAttributes().get( "type" );
+        }
+        if ( ext == null ) {
+            //try from the resource uri
+            String uri = getRequest().getResourceRef() != null ? 
+                getRequest().getResourceRef().getLastSegment() : null;
+            if ( uri != null ) {
+                ext = ResponseUtils.getExtension(uri);
             }
         }
         
-        String ext = null;
+        if ( ext != null ) {
+            //lookup the media type matching the extension
+            MediaType mt = MediaTypes.getMediaTypeForExtension( ext );
+            if ( mt != null ) {
+                df = lookupFormat(mt);
+            }
+        }
+        
+        List<Preference<MediaType>> accepts = null;
         if ( df == null ) {
-            //check if the client specified an extension
-            ext = (String) getRequest().getAttributes().get( "format" );
-            if ( ext == null ) {
-                ext = (String) getRequest().getAttributes().get( "type" );
-            }
-            if ( ext == null ) {
-                //try from the resource uri
-                String uri = getRequest().getResourceRef() != null ? 
-                    getRequest().getResourceRef().getLastSegment() : null;
-                if ( uri != null ) {
-                    ext = ResponseUtils.getExtension(uri);
+            //next check the Accepts header
+            accepts = new ArrayList( getRequest().getClientInfo().getAcceptedMediaTypes() );
+            for ( Iterator<Preference<MediaType>> i = accepts.iterator(); i.hasNext(); ) {
+                Preference<MediaType> pref = i.next();
+                if ( pref.getMetadata().equals( MediaType.ALL ) ) {
+                    i.remove();
+                    continue;
                 }
-            }
-            
-            if ( ext != null ) {
-                //lookup the media type matching the extension
-                MediaType mt = MediaTypes.getMediaTypeForExtension( ext );
-                if ( mt != null ) {
-                    df = lookupFormat(mt);
+                
+                df = lookupFormat( pref.getMetadata() ); 
+                if ( df != null ) {
+                    break;
                 }
             }
         }
