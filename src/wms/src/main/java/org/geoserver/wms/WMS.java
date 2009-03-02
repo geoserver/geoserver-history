@@ -18,6 +18,7 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.styling.Style;
+import org.geotools.util.Version;
 import org.opengis.feature.type.Name;
 
 /**
@@ -61,7 +62,7 @@ public class WMS {
 
     public Style getStyleByName(String styleName) throws IOException {
         StyleInfo styleInfo = getCatalog().getStyleByName(styleName);
-        return styleInfo == null? null : styleInfo.getStyle();
+        return styleInfo == null ? null : styleInfo.getStyle();
     }
 
     public LayerInfo getLayerByName(String layerName) {
@@ -77,7 +78,15 @@ public class WMS {
     }
 
     public String getVersion() {
-        return getServiceInfo().getVersions().get(0).toString();
+        List<Version> versions = getServiceInfo().getVersions();
+        String version;
+        if (versions.size() > 0) {
+            version = versions.get(0).toString();
+        } else {
+            // shouldn't a version be set?
+            version = "1.1.1";
+        }
+        return version;
     }
 
     public GeoServer getGeoServer() {
@@ -233,8 +242,8 @@ public class WMS {
 
     public boolean isSvgAntiAlias() {
         WMSInfo serviceInfo = getServiceInfo();
-        Boolean svgAntiAlias = (Boolean) serviceInfo.getMetadata().get( "svgAntiAlias");
-        return svgAntiAlias == null ? true : svgAntiAlias.booleanValue(); 
+        Boolean svgAntiAlias = (Boolean) serviceInfo.getMetadata().get("svgAntiAlias");
+        return svgAntiAlias == null ? true : svgAntiAlias.booleanValue();
     }
 
     public int getNumDecimals() {
@@ -245,6 +254,6 @@ public class WMS {
     public String getNameSpacePrefix(final String nsUri) {
         Catalog catalog = getCatalog();
         NamespaceInfo ns = catalog.getNamespaceByURI(nsUri);
-        return ns == null? null : ns.getPrefix();
+        return ns == null ? null : ns.getPrefix();
     }
 }
