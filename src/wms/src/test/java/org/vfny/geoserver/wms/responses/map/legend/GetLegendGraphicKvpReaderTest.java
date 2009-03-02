@@ -11,9 +11,9 @@ import java.util.Map;
 
 import junit.framework.Test;
 
-import org.geoserver.ows.adapters.KvpRequestReaderAdapter;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
-import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMS;
+import org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -24,7 +24,7 @@ import com.mockrunner.mock.web.MockHttpServletRequest;
 
 public class GetLegendGraphicKvpReaderTest extends KvpRequestReaderTestSupport {
     
-    KvpRequestReaderAdapter reader;
+    WMSKvpRequestReaderAdapter reader;
     
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -35,10 +35,9 @@ public class GetLegendGraphicKvpReaderTest extends KvpRequestReaderTestSupport {
     
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
-
         GetLegendGraphic getLegend = (GetLegendGraphic) applicationContext.getBean("wmsGetLegendGraphic");
-        WMSInfo wms = getGeoServer().getService(WMSInfo.class);
-        reader = new KvpRequestReaderAdapter(GetLegendGraphicRequest.class, GetLegendGraphicKvpReader.class, wms);
+        WMS wms = new WMS(getGeoServer());
+        reader = new WMSKvpRequestReaderAdapter(GetLegendGraphicRequest.class, GetLegendGraphicKvpReader.class, wms);
     }
     
     
