@@ -180,15 +180,21 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * @throws IOException Any I/O errors that occur.
      */
     public File find( String... location ) throws IOException {
+        return find( concat( location ) );
+    }
+
+    /**
+     * Helper method to build up a file path from components.
+     */
+    String concat( String... location ) {
         StringBuffer loc = new StringBuffer();
         for ( int i = 0; i < location.length; i++ ) {
             loc.append( location[i] ).append( File.separator );
         }
         loc.setLength(loc.length()-1);
-        return find( loc.toString() );
-        
+        return loc.toString();
     }
-
+    
     /**
      * Performs a directory lookup, creating the file if it does not exist.
      * 
@@ -211,6 +217,16 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
         
         //create it
         return createDirectory( location );
+    }
+    
+    /**
+     * Creates a new directory specifying components of the location.
+     * <p>
+     * Calls through to {@link #createDirectory(String)}
+     * </p>
+     */
+    public File createDirectory(String... location) throws IOException {
+        return createDirectory(concat(location));
     }
     
     /**
