@@ -33,6 +33,7 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
     protected void build(final IModel info, Form form) {
         //max features
         form.add( new TextField( "maxFeatures" ) );
+        form.add( new CheckBox("featureBounding") );
         
         //service level
         RadioGroup sl = new RadioGroup( "serviceLevel" );
@@ -61,10 +62,6 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
 
         public GMLPanel(String id, IModel gmlModel) { 
             super(id, new CompoundPropertyModel(gmlModel));
-            
-            //feature bounding
-            CheckBox bounding = new CheckBox("featureBounding");
-            add(bounding);
             
             //srsNameStyle
             List<GMLInfo.SrsNameStyle> choices = 
