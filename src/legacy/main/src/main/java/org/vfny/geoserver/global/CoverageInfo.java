@@ -434,7 +434,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
      */
     public GeneralEnvelope getEnvelope() {
         try {
-            return new GeneralEnvelope( coverage.getBoundingBox() );
+            return new GeneralEnvelope( coverage.boundingBox() );
         } 
         catch (Exception e) {
             throw new RuntimeException( e );
