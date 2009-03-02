@@ -26,7 +26,7 @@ public class StyleResource extends AbstractCatalogResource {
     /**
      * media type for SLD
      */
-    public static final MediaType MEDIATYPE_SLD = new MediaType( "application/sld+xml" );
+    public static final MediaType MEDIATYPE_SLD = new MediaType( "application/vnd.ogc.sld+xml" );
     static {
         MediaTypes.registerExtension( "sld", MEDIATYPE_SLD );
     }
@@ -182,10 +182,14 @@ public class StyleResource extends AbstractCatalogResource {
      
             new CatalogBuilder( catalog ).updateStyle( original, s );
             catalog.save( original );
-            saveCatalog();
-            
-            LOGGER.info( "PUT style " + style);
         }
+        else if ( object instanceof Style ) {
+            StyleInfo s = catalog.getStyleByName( style );
+            catalog.getResourcePool().setStyle( s, (Style) object );
+        }
+        
+        saveCatalog();
+        LOGGER.info( "PUT style " + style);
     }
 
     @Override
