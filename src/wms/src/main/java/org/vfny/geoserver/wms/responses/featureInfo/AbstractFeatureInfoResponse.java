@@ -45,6 +45,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.geometry.DirectPosition;
@@ -309,7 +310,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                             pixelValues = coverage.evaluate(position,
                                     (double[]) null);
                         FeatureCollection<SimpleFeatureType, SimpleFeature> pixel;
-                        pixel = wrapPixelInFeatureCollection(coverage, pixelValues, coverageInfo.getName());
+                        pixel = wrapPixelInFeatureCollection(coverage, pixelValues, coverageInfo.getQualifiedName());
                         metas.add(layerInfo);
                         results.add(pixel);
                     } catch(PointOutsideCoverageException e) {
@@ -323,7 +324,9 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
     }
 
     private FeatureCollection<SimpleFeatureType, SimpleFeature> wrapPixelInFeatureCollection(
-            GridCoverage2D coverage, double[] pixelValues, String coverageName) throws SchemaException, IllegalAttributeException {
+            GridCoverage2D coverage, double[] pixelValues, Name coverageName)
+            throws SchemaException, IllegalAttributeException {
+        
         GridSampleDimension[] sampleDimensions = coverage.getSampleDimensions();
         SimpleFeatureType gridType;
         try {

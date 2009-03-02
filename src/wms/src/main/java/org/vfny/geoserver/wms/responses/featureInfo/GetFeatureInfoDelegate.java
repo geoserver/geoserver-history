@@ -109,7 +109,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         List filterList = request.getGetMapRequest().getFilter();
         Filter[] filters;
 
-        if (filterList != null) {
+        if (filterList != null && filterList.size() > 0) {
             filters = (Filter[]) filterList.toArray(new Filter[filterList.size()]);
         } else {
             filters = new Filter[layers.length];
