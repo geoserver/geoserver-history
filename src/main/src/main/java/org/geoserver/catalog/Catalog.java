@@ -1004,6 +1004,11 @@ public interface Catalog {
     LayerInfo getLayerByName( String name );
     
     /**
+     * Returns the layer matching a particular qualified name.
+     */
+    LayerInfo getLayerByName( Name name );
+    
+    /**
      * All layers in the catalog.
      * <p>
      * The resulting list should not be used to add or remove layers to or from

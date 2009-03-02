@@ -278,6 +278,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     public LayerInfo getLayerByName(String name) {
         return checkAccess(user(), delegate.getLayerByName(name));
     }
+    
+    public LayerInfo getLayerByName(Name name) {
+        return checkAccess(user(), delegate.getLayerByName(name));
+    }
 
     public LayerGroupInfo getLayerGroup(String id) {
         return checkAccess(user(), delegate.getLayerGroup(id));
