@@ -33,9 +33,11 @@ import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
+import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.catalog.event.impl.CatalogAddEventImpl;
 import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
+import org.geoserver.catalog.event.impl.CatalogPostModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -635,6 +637,18 @@ public class CatalogImpl implements Catalog {
         return null;
     }
     
+    
+    public LayerInfo getLayerByName(Name name) {
+        if ( name.getNamespaceURI() != null ) {
+            NamespaceInfo ns = getNamespaceByURI( name.getNamespaceURI() );
+            if ( ns != null ) {
+                return getLayerByName( ns.getPrefix() + ":" + name.getLocalPart() );
+            }
+        }
+        
+        return getLayerByName( name.getLocalPart() );
+    }
+    
     public LayerInfo getLayerByName(String name) {
         String prefix = null;
         String resource = null;
@@ -1126,6 +1140,9 @@ public class CatalogImpl implements Catalog {
         
         //resolve to do a sync on the object
         syncIdWithName(real);
+        
+        //fire the post modify event
+        firePostModified( real );
     }
     
     protected void fireModified(Object object, List propertyNames, List oldValues,
@@ -1140,6 +1157,12 @@ public class CatalogImpl implements Catalog {
         event(event);
     }
 
+    protected void firePostModified(Object object) {
+        CatalogPostModifyEventImpl event = new CatalogPostModifyEventImpl();
+        event.setSource( object);
+        
+        event(event);
+    }
     protected void removed(Object object) {
         CatalogRemoveEventImpl event = new CatalogRemoveEventImpl();
         event.setSource(object);
@@ -1156,7 +1179,10 @@ public class CatalogImpl implements Catalog {
                 listener.handleRemoveEvent((CatalogRemoveEvent) event);
             } else if (event instanceof CatalogModifyEvent) {
                 listener.handleModifyEvent((CatalogModifyEvent) event);
+            } else if (event instanceof CatalogPostModifyEvent) {
+                listener.handlePostModifyEvent((CatalogPostModifyEvent)event);
             }
+            
         }
     }
     
