@@ -135,6 +135,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         return request;
     }
 
+    @Override
     public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         GetMapRequest getMap = (GetMapRequest) super.read(request, kvp, rawKvp);
 
