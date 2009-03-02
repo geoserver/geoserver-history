@@ -18,6 +18,7 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
+import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
@@ -102,6 +103,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         layerDispatcher.update(wmsLayer);
         
         log.finer(wmsLayer.getName() + " updated on TileLayerDispatcher");
+    }
+    
+    public void handlePostModifyEvent(CatalogPostModifyEvent event) {
     }
     
     public void handleRemoveEvent(CatalogRemoveEvent event) { 
