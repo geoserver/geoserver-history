@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.ResourcePool;
 import org.geotools.data.DataAccess;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
@@ -172,6 +173,10 @@ public class DataStoreInfo extends GlobalLayerSupertype {
     }
 
     
+
+    public static Map getParams(Map connectionParams, String baseDir) {
+        return ResourcePool.getParams(connectionParams, baseDir);
+    }
 
     /**
      * By now just uses DataStoreFinder to find a new instance of a
