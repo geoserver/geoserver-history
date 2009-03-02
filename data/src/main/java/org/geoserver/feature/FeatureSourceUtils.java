@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.data.FeatureSource;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
@@ -39,9 +41,9 @@ public class FeatureSourceUtils {
      *
      * @throws IOException Execption calculating bounds on feature source.
      */
-    public static Envelope getBoundingBoxEnvelope(FeatureSource<? extends FeatureType, ? extends Feature> fs)
+    public static ReferencedEnvelope getBoundingBoxEnvelope(FeatureSource<? extends FeatureType, ? extends Feature> fs)
         throws IOException {
-        Envelope ev = fs.getBounds();
+        ReferencedEnvelope ev = fs.getBounds();
 
         if ((ev == null) || ev.isNull()) {
             try {
@@ -49,7 +51,7 @@ public class FeatureSourceUtils {
             } catch (Throwable t) {
                 LOGGER.log(Level.FINE,
                     "Could not compute the data bounding box. Returning an empty envelope", t);
-                ev = new Envelope();
+                ev = new ReferencedEnvelope(fs.getSchema().getCoordinateReferenceSystem());
             }
         }
 
