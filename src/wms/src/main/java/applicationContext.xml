@@ -194,14 +194,14 @@
     	class="org.geoserver.wms.xml.WMSXmlRequestReaderAdapter">
     	<constructor-arg index="0" value="http://www.opengis.net/ows"/> 
  	    <constructor-arg index="1" value="GetCapabilities"/> 
-    	<constructor-arg index="2" ref="geoServer"/>
+    	<constructor-arg index="2" ref="wms"/>
     	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.CapabilitiesXmlReader"/>
     </bean>
      <bean id="getMapXmlReader" 
     	class="org.geoserver.wms.xml.WMSXmlRequestReaderAdapter">
     	<constructor-arg index="0" value="http://www.opengis.net/ows"/> 
  	    <constructor-arg index="1" value="GetMap"/> 
-    	<constructor-arg index="2" ref="geoServer"/>
+    	<constructor-arg index="2" ref="wms"/>
     	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.GetMapXmlReader"/>
     </bean>
    	<bean id="sldXmlReader"

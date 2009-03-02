@@ -77,17 +77,20 @@ import com.vividsolutions.jts.geom.Coordinate;
  */
 public class GetMapXmlReader extends XmlRequestReader {
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
+    private WMS wms;
 
+    
     /**
      * Creates a new GetMapXmlReader object.
      * @param wms The WMS config object.
      */
     public GetMapXmlReader(WMS wms) {
         super(wms.getServiceInfo());
+        this.wms = wms;
     }
     
     public WMS getWMS() {
-        return (WMS) getService();
+        return wms;
     }
     
     /**
