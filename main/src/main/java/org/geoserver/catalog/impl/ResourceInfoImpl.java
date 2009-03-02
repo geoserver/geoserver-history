@@ -175,17 +175,28 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         this.srs = srs;
     }
 
-    public ReferencedEnvelope getBoundingBox() throws Exception {
+    public ReferencedEnvelope boundingBox() throws Exception {
       CoordinateReferenceSystem declaredCRS = getCRS();
       CoordinateReferenceSystem nativeCRS = getNativeCRS();
       ProjectionPolicy php = getProjectionPolicy();
       
-      if ( !CRS.equalsIgnoreMetadata(declaredCRS, nativeCRS) && 
-          php == ProjectionPolicy.REPROJECT_TO_DECLARED ) {
-          return nativeBoundingBox.transform(declaredCRS,true); 
+      ReferencedEnvelope nativeBox = this.nativeBoundingBox;
+      if (nativeBox == null) {
+          //back project from lat lon
+          try {
+              nativeBox = getLatLonBoundingBox().transform( declaredCRS , true );
+          }
+          catch( Exception e ) {
+              return null;
+          }
       }
       
-      return nativeBoundingBox;
+      if ( !CRS.equalsIgnoreMetadata(declaredCRS, nativeCRS) && 
+          php == ProjectionPolicy.REPROJECT_TO_DECLARED ) {
+          return nativeBox.transform(declaredCRS,true); 
+      }
+      
+      return nativeBox;
     }
 
     public ReferencedEnvelope getLatLonBoundingBox() {

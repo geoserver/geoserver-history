@@ -122,7 +122,7 @@ public final class MapLayerInfo {
     public ReferencedEnvelope getBoundingBox() throws Exception {
         if (layerInfo != null) {
             ResourceInfo resource = layerInfo.getResource();
-            ReferencedEnvelope bbox = resource.getBoundingBox();
+            ReferencedEnvelope bbox = resource.boundingBox();
             // if(bbox == null){
             // bbox = resource.getLatLonBoundingBox();
             // }

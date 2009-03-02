@@ -225,12 +225,15 @@ public interface ResourceInfo extends Serializable {
      * Returns the bounds of the resource in its declared CRS.
      * <p>
      * This value is derived from {@link #getNativeBoundingBox()}, {@link #getCRS()}, 
-     * and {@link #getProjectionPolicy()}.
+     * and {@link #getProjectionPolicy()}. In the case where the native bounding box is 
+     * unset, {@link #getLatLonBoundingBox()} should be reprojected to {@link #getCRS()}.
+     * If the reprojection fails, null should be returned. So clients calling this method
+     * should be prepared to handle null.
      * </p>
      * 
      * @throws Exception If the bounding box can not be calculated.
      */
-    ReferencedEnvelope getBoundingBox() throws Exception;
+    ReferencedEnvelope boundingBox() throws Exception;
     
     /**
      * Returns the identifier of coordinate reference system of the resource.

@@ -64,8 +64,8 @@ public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<Featur
         return delegate.getAttributes();
     }
 
-    public ReferencedEnvelope getBoundingBox() throws Exception {
-        return delegate.getBoundingBox();
+    public ReferencedEnvelope boundingBox() throws Exception {
+        return delegate.boundingBox();
     }
 
     public Catalog getCatalog() {

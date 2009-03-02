@@ -55,8 +55,8 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         return delegate.getAlias();
     }
 
-    public ReferencedEnvelope getBoundingBox() throws Exception {
-        return delegate.getBoundingBox();
+    public ReferencedEnvelope boundingBox() throws Exception {
+        return delegate.boundingBox();
     }
 
     public Catalog getCatalog() {

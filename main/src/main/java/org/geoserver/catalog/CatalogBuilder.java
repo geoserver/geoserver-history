@@ -663,7 +663,7 @@ public class CatalogBuilder {
         }
         
         LayerInfo l = lg.getLayers().get( 0 );
-        ReferencedEnvelope bounds = l.getResource().getBoundingBox();
+        ReferencedEnvelope bounds = l.getResource().boundingBox();
         boolean latlon = false;
         if ( bounds == null ) {
             bounds = l.getResource().getLatLonBoundingBox();
@@ -682,7 +682,7 @@ public class CatalogBuilder {
                 re = l.getResource().getLatLonBoundingBox();
             }
             else {
-                re = l.getResource().getBoundingBox();
+                re = l.getResource().boundingBox();
             }
             
             if ( !CRS.equalsIgnoreMetadata( bounds.getCoordinateReferenceSystem(), re.getCoordinateReferenceSystem() ) ) {

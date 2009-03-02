@@ -637,7 +637,7 @@ public class ResourcePool {
         
         ReferencedEnvelope coverageBounds;
         try {
-            coverageBounds = info.getBoundingBox();
+            coverageBounds = info.boundingBox();
         } 
         catch (Exception e) {
             throw (IOException) new IOException( "unable to calculate coverage bounds")
