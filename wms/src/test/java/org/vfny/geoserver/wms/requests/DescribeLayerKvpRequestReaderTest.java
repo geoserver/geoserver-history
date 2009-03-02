@@ -20,6 +20,7 @@ import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSInfoImpl;
 import org.vfny.geoserver.wms.WmsException;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
@@ -42,6 +43,7 @@ public class DescribeLayerKvpRequestReaderTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		geoServerImpl = new GeoServerImpl();
+		geoServerImpl.add(new WMSInfoImpl());
 		wms = new WMS(geoServerImpl);
 		request = new MockHttpServletRequest();
 		params = new HashMap<String, String>();

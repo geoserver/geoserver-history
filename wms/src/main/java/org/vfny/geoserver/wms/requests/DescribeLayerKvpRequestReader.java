@@ -125,8 +125,8 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
 
             LayerInfo layerInfo = wms.getLayerByName(layerName);
             if (layerInfo == null) {
-                throw new WmsException(layerName + ": no such layer on this server", getClass()
-                        .getSimpleName(), "LayerNotDefined");
+                throw new WmsException(layerName + ": no such layer on this server",
+                        "LayerNotDefined",  getClass().getSimpleName());
             }
             layer = new MapLayerInfo(layerInfo);
             req.addLayer(layer);
