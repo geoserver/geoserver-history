@@ -225,56 +225,31 @@ public class ResourcePool {
                     tb.setName( info.getName() );
                     tb.setNamespaceURI( info.getNamespace().getURI() );
 
-                    //for ( AttributeDescriptor ad : ft.getAttributeDescriptors() ) {
-                    for ( AttributeTypeInfo att : info.getAttributes() ) {
-                        String attName = att.getName();
-                        
-                        //load the actual underlying attribute type
-                        AttributeDescriptor ad = ft.getDescriptor( attName );
-                        if ( ad == null ) {
-                            throw new IOException("the SimpleFeatureType " + info.getPrefixedName()
-                                    + " does not contains the configured attribute " + attName
-                                    + ". Check your schema configuration");
+                    if ( info.getAttributes() == null || info.getAttributes().isEmpty() ) {
+                        //take this to mean just load all native
+                        for ( AttributeDescriptor ad : ft.getAttributeDescriptors() ) {
+                            ad = handleDescriptor(ad, info);
+                            tb.add( ad );
                         }
-
-                        // force the user specified CRS if the data has no CRS, or reproject it 
-                        // if necessary
-                        if ( ad instanceof GeometryDescriptor ) {
-                            GeometryDescriptor old = (GeometryDescriptor) ad;
-                            try {
-                                //if old has no crs, change the projection handlign policy
-                                // to be the declared
-                                boolean rebuild = false;
-                                
-                                if ( old.getCoordinateReferenceSystem() == null ) {
-                                    //(JD) TODO: this is kind of wierd... we should at least
-                                    // log something here, and this is not thread safe!!
-                                    info.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-                                    rebuild = true;
-                                }
-                                else {
-                                    ProjectionPolicy projPolicy = info.getProjectionPolicy();
-                                    if ( projPolicy == ProjectionPolicy.REPROJECT_TO_DECLARED || 
-                                        projPolicy == ProjectionPolicy.FORCE_DECLARED ) {
-                                        rebuild = true;
-                                    }
-                                }
-                                
-                                if ( rebuild ) {
-                                    //rebuild with proper crs
-                                    AttributeTypeBuilder b = new AttributeTypeBuilder();
-                                    b.init(old);
-                                    b.setCRS( getCRS(info.getSRS()) );
-                                    ad = b.buildDescriptor(old.getLocalName());
-                                }
-                            }
-                            catch( Exception e ) {
-                                //log exception
-                            }
-                        }
-                        tb.add( ad );
                     }
+                    else {
+                        //only load native attributes configured
+                        for ( AttributeTypeInfo att : info.getAttributes() ) {
+                            String attName = att.getName();
+                            
+                            //load the actual underlying attribute type
+                            AttributeDescriptor ad = ft.getDescriptor( attName );
+                            if ( ad == null ) {
+                                throw new IOException("the SimpleFeatureType " + info.getPrefixedName()
+                                        + " does not contains the configured attribute " + attName
+                                        + ". Check your schema configuration");
+                            }
 
+                            ad = handleDescriptor( ad, info );
+                            tb.add( ad );
+                        }
+                    }
+                    
                     ft = tb.buildFeatureType();
                     featureTypeCache.put( info, ft ); 
                 }
@@ -284,6 +259,48 @@ public class ResourcePool {
         return ft;
     }
 
+    /*
+     * Helper method which overrides geometric attributes based on the reprojection policy.
+     */
+    AttributeDescriptor handleDescriptor( AttributeDescriptor ad, FeatureTypeInfo info ) {
+        // force the user specified CRS if the data has no CRS, or reproject it 
+        // if necessary
+        if ( ad instanceof GeometryDescriptor ) {
+            GeometryDescriptor old = (GeometryDescriptor) ad;
+            try {
+                //if old has no crs, change the projection handlign policy
+                // to be the declared
+                boolean rebuild = false;
+                
+                if ( old.getCoordinateReferenceSystem() == null ) {
+                    //(JD) TODO: this is kind of wierd... we should at least
+                    // log something here, and this is not thread safe!!
+                    info.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+                    rebuild = true;
+                }
+                else {
+                    ProjectionPolicy projPolicy = info.getProjectionPolicy();
+                    if ( projPolicy == ProjectionPolicy.REPROJECT_TO_DECLARED || 
+                        projPolicy == ProjectionPolicy.FORCE_DECLARED ) {
+                        rebuild = true;
+                    }
+                }
+                
+                if ( rebuild ) {
+                    //rebuild with proper crs
+                    AttributeTypeBuilder b = new AttributeTypeBuilder();
+                    b.init(old);
+                    b.setCRS( getCRS(info.getSRS()) );
+                    ad = b.buildDescriptor(old.getLocalName());
+                }
+            }
+            catch( Exception e ) {
+                //log exception
+            }
+        }
+        
+        return ad;
+    }
     /**
      * Clears a feature type resource from the cache.
      * 
@@ -634,6 +651,12 @@ public class ResourcePool {
         }
         
         return style;
+    }
+    
+    public void setStyle( StyleInfo info, Style style ) throws IOException {
+        synchronized ( styleCache ) {
+            styleCache.put( info, style );
+        }
     }
     
     /**
