@@ -321,56 +321,36 @@ public class ResourcePool {
                         tb.setName( info.getName() );
                         tb.setNamespaceURI( info.getNamespace().getURI() );
 
-                        for ( AttributeTypeInfo att : info.getAttributes() ) {
-                            String attName = att.getName();
-                            
-                            //load the actual underlying attribute type
-                            PropertyDescriptor ad = ft.getDescriptor( attName );
-                            if ( ad == null || !( ad instanceof AttributeDescriptor) ) {
-                                throw new IOException("the SimpleFeatureType " + info.getPrefixedName()
-                                        + " does not contains the configured attribute " + attName
-                                        + ". Check your schema configuration");
-                            }
-                        
-                            // force the user specified CRS if the data has no CRS, or reproject it 
-                            // if necessary
-                            if ( ad instanceof GeometryDescriptor ) {
-                                GeometryDescriptor old = (GeometryDescriptor) ad;
-                                try {
-                                    //if old has no crs, change the projection handlign policy
-                                    // to be the declared
-                                    boolean rebuild = false;
-
-                                    if ( old.getCoordinateReferenceSystem() == null ) {
-                                        //(JD) TODO: this is kind of wierd... we should at least
-                                        // log something here, and this is not thread safe!!
-                                        info.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-                                        rebuild = true;
-                                    }
-                                    else {
-                                        ProjectionPolicy projPolicy = info.getProjectionPolicy();
-                                        if ( projPolicy == ProjectionPolicy.REPROJECT_TO_DECLARED || 
-                                                projPolicy == ProjectionPolicy.FORCE_DECLARED ) {
-                                            rebuild = true;
-                                        }
-                                    }
-
-                                    if ( rebuild ) {
-                                        //rebuild with proper crs
-                                        AttributeTypeBuilder b = new AttributeTypeBuilder();
-                                        b.init(old);
-                                        b.setCRS( getCRS(info.getSRS()) );
-                                        ad = b.buildDescriptor(old.getLocalName());
-                                    }
+                        if ( info.getAttributes() == null && info.getAttributes().isEmpty() ) {
+                            //take this to mean just load all native
+                            for ( PropertyDescriptor pd : ft.getDescriptors() ) {
+                                if ( !( pd instanceof AttributeDescriptor ) ) {
+                                    continue;
                                 }
-                                catch( Exception e ) {
-                                    //log exception
-                                }
-
+                                
+                                AttributeDescriptor ad = (AttributeDescriptor) pd;
+                                ad = handleDescriptor(ad, info);
+                                tb.add( ad );
                             }
-                            tb.add( (AttributeDescriptor) ad );
                         }
-
+                        else {
+                            //only load native attributes configured
+                            for ( AttributeTypeInfo att : info.getAttributes() ) {
+                                String attName = att.getName();
+                                
+                                //load the actual underlying attribute type
+                                PropertyDescriptor pd = ft.getDescriptor( attName );
+                                if ( pd == null || !( pd instanceof AttributeDescriptor) ) {
+                                    throw new IOException("the SimpleFeatureType " + info.getPrefixedName()
+                                            + " does not contains the configured attribute " + attName
+                                            + ". Check your schema configuration");
+                                }
+                            
+                                AttributeDescriptor ad = (AttributeDescriptor) pd;
+                                ad = handleDescriptor(ad, info);
+                                tb.add( (AttributeDescriptor) ad );
+                            }
+                        }
                         ft = tb.buildFeatureType();
                     } // end special case for SimpleFeatureType
                     
@@ -382,6 +362,50 @@ public class ResourcePool {
         return ft;
     }
 
+    /*
+     * Helper method which overrides geometric attributes based on the reprojection policy.
+     */
+    AttributeDescriptor handleDescriptor( AttributeDescriptor ad, FeatureTypeInfo info ) {
+
+        // force the user specified CRS if the data has no CRS, or reproject it 
+        // if necessary
+        if ( ad instanceof GeometryDescriptor ) {
+            GeometryDescriptor old = (GeometryDescriptor) ad;
+            try {
+                //if old has no crs, change the projection handlign policy
+                // to be the declared
+                boolean rebuild = false;
+
+                if ( old.getCoordinateReferenceSystem() == null ) {
+                    //(JD) TODO: this is kind of wierd... we should at least
+                    // log something here, and this is not thread safe!!
+                    info.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+                    rebuild = true;
+                }
+                else {
+                    ProjectionPolicy projPolicy = info.getProjectionPolicy();
+                    if ( projPolicy == ProjectionPolicy.REPROJECT_TO_DECLARED || 
+                            projPolicy == ProjectionPolicy.FORCE_DECLARED ) {
+                        rebuild = true;
+                    }
+                }
+
+                if ( rebuild ) {
+                    //rebuild with proper crs
+                    AttributeTypeBuilder b = new AttributeTypeBuilder();
+                    b.init(old);
+                    b.setCRS( getCRS(info.getSRS()) );
+                    ad = b.buildDescriptor(old.getLocalName());
+                }
+            }
+            catch( Exception e ) {
+                //log exception
+            }
+        }
+        
+        return ad;
+    }
+    
     /**
      * Loads an attribute descriptor from feature type and attribute type metadata.
      * <p>
