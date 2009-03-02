@@ -7,6 +7,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.config.util.XStreamPersister;
@@ -86,6 +87,18 @@ public class WorkspaceResource extends AbstractCatalogResource {
     protected String handleObjectPost(Object object) throws Exception {
         WorkspaceInfo workspace = (WorkspaceInfo) object;
         catalog.add( workspace );
+        
+        //create a namespace corresponding to the workspace if one does not 
+        // already exist
+        NamespaceInfo namespace = catalog.getNamespaceByPrefix( workspace.getName() );
+        if ( namespace == null ) {
+            LOGGER.fine( "Automatically creating namespace for workspace " + workspace.getName() );
+
+            namespace = catalog.getFactory().createNamespace();
+            namespace.setPrefix( workspace.getName() );
+            namespace.setURI( "http://" + workspace.getName() );
+            catalog.add( namespace );
+        }
         saveCatalog();
         
         LOGGER.info( "POST workspace " + workspace.getName() );
@@ -133,6 +146,15 @@ public class WorkspaceResource extends AbstractCatalogResource {
         
         if ( !catalog.getStoresByWorkspace(ws, StoreInfo.class).isEmpty() ) {
             throw new RestletException( "Workspace not empty", Status.CLIENT_ERROR_FORBIDDEN );
+        }
+        
+        //check for "linked" workspace
+        NamespaceInfo ns = catalog.getNamespaceByPrefix( ws.getName() );
+        if ( ns != null ) {
+            if ( !catalog.getFeatureTypesByNamespace( ns ).isEmpty() ) {
+                throw new RestletException( "Namespace for workspace not empty.", Status.CLIENT_ERROR_FORBIDDEN );
+            }
+            catalog.remove( ns );
         }
         
         catalog.remove( ws );
