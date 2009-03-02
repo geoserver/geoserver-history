@@ -74,11 +74,13 @@ public class WMS {
     }
 
     public boolean isEnabled() {
-        return getServiceInfo().isEnabled();
+        WMSInfo serviceInfo = getServiceInfo();
+        return serviceInfo.isEnabled();
     }
 
     public String getVersion() {
-        List<Version> versions = getServiceInfo().getVersions();
+        WMSInfo serviceInfo = getServiceInfo();
+        List<Version> versions = serviceInfo.getVersions();
         String version;
         if (versions.size() > 0) {
             version = versions.get(0).toString();
