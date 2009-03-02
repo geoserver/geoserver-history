@@ -71,7 +71,7 @@ abstract class CatalogNode implements TreeNode, Serializable, IDetachable,
 
     protected Catalog getCatalog() {
         if (catalog == null) {
-            catalog = (Catalog) GeoServerExtensions.bean("catalog2");
+            catalog = (Catalog) GeoServerExtensions.bean("catalog");
         }
         return catalog;
     }
