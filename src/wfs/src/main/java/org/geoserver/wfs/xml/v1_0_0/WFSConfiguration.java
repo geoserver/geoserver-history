@@ -17,6 +17,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
+import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
@@ -58,6 +59,9 @@ public class WFSConfiguration extends Configuration {
             }
 
             public void handleModifyEvent(CatalogModifyEvent event) {
+            }
+
+            public void handlePostModifyEvent(CatalogPostModifyEvent event) {
             }
 
             public void handleRemoveEvent(CatalogRemoveEvent event) {

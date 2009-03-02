@@ -14,6 +14,7 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
+import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
 
 import junit.framework.TestCase;
@@ -880,6 +881,9 @@ public class CatalogImplTest extends TestCase {
             modified.add( event );
         }
 
+        public void handlePostModifyEvent(CatalogPostModifyEvent event) {
+        }
+        
         public void handleRemoveEvent(CatalogRemoveEvent event) {
             removed.add( event );
         }
