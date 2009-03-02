@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import org.geoserver.test.GeoServerTestSupport;
 
 public class SLDWithInlineFeatureTest extends GeoServerTestSupport {
+    
     public void testSLDWithInlineFeatureWMS() throws Exception {
         BufferedReader reader = 
         new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("SLDWithInlineFeature.xml")));

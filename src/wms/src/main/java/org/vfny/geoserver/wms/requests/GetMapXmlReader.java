@@ -103,6 +103,7 @@ public class GetMapXmlReader extends XmlRequestReader {
      *
      * @throws WmsException For any problems reading the request.
      */
+    @Override
     public Request read(Reader reader, HttpServletRequest req)
         throws WmsException {
         GetMapRequest getMapRequest = new GetMapRequest(getWMS());
@@ -345,6 +346,7 @@ public class GetMapXmlReader extends XmlRequestReader {
                 CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null) ? DefaultGeographicCRS.WGS84
                         : getMapRequest.getCrs();
                 currLayer = initializeInlineFeatureLayer(ul, crs);
+                addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
             } else {
                 
                 LayerGroupInfo layerGroup = getWMS().getLayerGroupByName(layerName);
