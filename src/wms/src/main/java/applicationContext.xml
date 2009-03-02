@@ -2,25 +2,13 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-
-	<!-- wms configuration bean -->
-	<!--bean id="wms"
-		class="org.vfny.geoserver.global.WMS" depends-on="config">
-		<constructor-arg ref="config"/>
-		<constructor-arg ref="data"/>
-		<constructor-arg ref="geoServer"/>
-		<constructor-arg ref="wfs"/>
-	</bean-->
 	<bean id="wmsLoader" class="org.geoserver.wms.WMSLoader"/>
+    
+    <!-- wms configuration bean. This is a service level facade to the configuration system -->
     <bean id="wms" class="org.geoserver.wms.WMS">
       <constructor-arg ref="geoServer"/>
     </bean>
     
-	<!-- bean id="wmsConfig"
-		class="org.vfny.geoserver.config.WMSConfig">
-		<constructor-arg ref="wms"/>
-	</bean-->
-	
 	<!-- this registers the above modules with the servlet context
 		 it is around to keep the struts app happy as we move away from 
 		 servlets  -->
@@ -30,30 +18,10 @@
 		<constructor-arg type="java.lang.String" value="WMS"/>
  		<constructor-arg ref="wms"/>
  	</bean>
-	<!-- bean id="wmsConfigRegisterar"
-		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
-		
-		<constructor-arg type="java.lang.String" value="Config.WMS"/>
- 		<constructor-arg ref="wmsConfig"/>
- 	</bean-->
  	
  	<!-- 
-		servlets for handling incoming requests 
+		operation beans for handling incoming requests 
 	-->
-	
-	<!-- the abstract base bean -->
-	<!--  bean id="wmsAbstractService" abstract="true"
-		class="org.vfny.geoserver.servlets.AbstractService">
-		<property name="geoServer" ref="geoServer"/>
-		<property name="catalog" ref="data"/>
-	</bean-->
-
-	<!--  bean id="wmsService" abstract="true"
-		class="org.vfny.geoserver.wms.servlets.WMService"
-		parent="wmsAbstractService">
-		<constructor-arg ref="wms"/>
-	</bean-->
-		
 	<bean id="wmsGetCapabilities" 
 		class="org.vfny.geoserver.wms.servlets.Capabilities" >
       <constructor-arg ref="wms"/>
@@ -98,7 +66,6 @@
  	<!-- service exception handler -->
 	<bean id="wmsExceptionHandler" class="org.geoserver.wms.WmsExceptionHandler">
 		<constructor-arg ref="wmsServiceDescriptor"/>
-		<!-- constructor-arg ref="wms"/-->
         <constructor-arg ref="geoServer"/>
 		<property name="version" value="1.1.1"/>
 		<property name="contentType" value="application/vnd.ogc.se_xml"/>
