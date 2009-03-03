@@ -15,10 +15,10 @@
  <name>GeoWebCache (GWC) Module</name>
  
  <dependencies>
-  <dependency>
-   <groupId>org.geoserver</groupId>
-   <artifactId>main</artifactId>
-  </dependency>
+   <dependency>
+     <groupId>org.geoserver</groupId>
+     <artifactId>main</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
