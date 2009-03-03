@@ -71,6 +71,7 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
         boolean foudcdfFifteen = false;
         while(tlIter.hasNext()) {
             TileLayer tl = tlIter.next();
+            System.out.println(tl.getName());
             if(tl.getName().equals("cdf:Fifteen")) {
                 tl.isInitialized();
                 foudcdfFifteen = true;
