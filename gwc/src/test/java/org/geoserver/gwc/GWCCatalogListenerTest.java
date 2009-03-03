@@ -68,12 +68,12 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
         assertTrue(foundLakes); 
 
         // 2) Check sf:GenerictEntity is present and initialized
-        boolean foundGenericEntity = false;
+        boolean foudcdfFifteen = false;
         while(tlIter.hasNext()) {
             TileLayer tl = tlIter.next();
-            if(tl.getName().equals("sf:GenericEntity")) {
+            if(tl.getName().equals("cdf:Fifteen")) {
                 tl.isInitialized();
-                foundGenericEntity = true;
+                foudcdfFifteen = true;
                 Grid epsg4326 = tl.getGrid(SRS.getEPSG4326());
                 assertTrue(epsg4326.getGridBounds().equals( new BBOX(-180.0,-90.0,180.0,90.0)));
                 String mime = tl.getMimeTypes().get(1).getMimeType();
@@ -81,7 +81,7 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
             }
         }
         
-        assertTrue(foundGenericEntity);
+        assertTrue(foudcdfFifteen);
         
         
         // 3) Basic get
