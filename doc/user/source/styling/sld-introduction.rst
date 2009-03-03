@@ -3,265 +3,85 @@
 Introduction to SLD
 ===================
 
-*Styled Layer Descriptor* (SLD) is an XML based language for
- specifying the portrayal of Web Map Service (WMS) layers. Like WMS,
- SLD is itself an OGC standard. The current version of SLD is 1.1 and
- the specification is `freely available  <http://www.opengeospatial.org/standards/sld>`_.
+Geospatial data has no intrinsic visual component.  In order to see data, it must be styled, and given color, thickness, and other visible attributes.  In GeoServer, this styling is accomplished using a markup language called `Styled Layer Descriptor <http://www.opengeospatial.org/standards/sld>`_, or SLD for short.  SLD is an XML-based markup language and is very powerful, though it can be intimidating.  This page will give a basic introduction to what one can do with SLD and how GeoServer handles it.
 
-The specification provides a good overview of SLD and map styling in
-general. It is a recommended read. In this document some of the key
-concepts will be further introduced.
+.. note::
 
-Symbolizers
------------
+   Since GeoServer uses SLD exclusively for styling, the terms "SLD" and "style" will often be used interchangeably.
 
-The notion of a *symbolizer* is at the heart of SLD. A symbolizer
-specifies exactly how data should be visualized. There are 5 types of
-symbolizer:
-
-  .. list-table::
-     :widths: 20 80
-
-     * - ``PointSymbolizer``
-       - Used to portray *point* data. Supports the ability to specify point shape and size, color, marker glyph, etc... See :ref:`styling_point_data` for more information.
-     * - ``LineSymbolizer``
-       - Used to portray *line* data. Supports the ability to specify line width, stroke, and color, etc... See :ref:`styling_line_data` for more information.
-     * - ``PolygonSymbolizer``
-       - Used to portray *polygon* data. Supports to the ability to specify polygon fill color and pattern, polygon border with and color, etc... See :ref:`styling_polygon_data` for more information.
-     * - ``RasterSymbolizer``
-       - Used to portray *raster* data. Supports the ability to specify band selection, color maps, etc... See :ref:`styling_raster_data` for more information.
-     * - ``TextSymbolizer``
-       - Used to portray *labels*. Supports the ability to specify label font, size, color, offset, etc... See :ref:`labeling` for more information.
-
-Consider the following simple symbolizer
-
-.. code-block:: xml 
-   :linenos: 
-
-   <PointSymbolizer>
-     <Graphic>
-       <Mark>
-         <Fill><CssParameter name="fill">#FF0000</CssParameter>
-       </Mark>
-     </Graphic>
-     <Size>2</Size>
-   </PointSymbolizer>
-
-The above symbolizer specifies the following:
-   
-   * Data should be rendered as points (``PointSymbolizer``)
-   
-   * Points should be filled with the color red (``#FF0000``)
-  
-   * Points should be rendered with a radius of 2 pixels (``Size``)
-
-.. _styling_point_data:
-
-Filters
--------
-
-A *filter* is the mechanism in SLD for specifying predicates. Similar in nature to a "WHERE" clause in SQL, filters are the language for specifying which styles should be applied to which features in a data set.
-
-The filter language used by SLD is itself an OGC standard defined in the Filter Encoding specification freely available `here <http://www.opengeospatial.org/standards/filter>`_.
-
-A filter is used to select a subset of features of a dataset to apply a symbolizer to. See the :ref:`rules` section for more information about applying filters. 
-
-There are three types of filters:
-
-Attribute filters
-^^^^^^^^^^^^^^^^^
-
-Attribute filters are used to constrain the non-spatial attributes of a feature. Example
-
-.. code-block:: xml 
-   :linenos: 
-   
-
-   <PropertyIsEqualTo>
-      <PropertyName>NAME</PropertyName>
-      <Literal>Bob</Literal>
-   </PropertyIsEqualTo>
-
-The above filter selects those features which have a {{NAME}} attribute which has a value of "Bob". A variety of equality operators are available:
-
-   * PropertyIsEqualTo
-   * PropertyIsNotEqualTo
-   * PropertyIsLessThan
-   * PropertyIsLessThanOrEqualTo
-   * PropertyIsGreatherThan
-   * PropertyIsGreatherThanOrEqualTo
-   * PropertyIsBetween
-
-Spatial filters
-^^^^^^^^^^^^^^^
-
-Spatial filters used to constrain the spatial attributes of a feature. Example
-
-.. code-block:: xml 
-   :linenos: 
-
-   <Intersects>
-      <PropertyName>GEOMETRY</PropertyName>
-      <Literal>
-         <gml:Point>
-            <gml:coordinates>1 1</gml:coordinates>
-         </gml:Point>
-      </Literal>
-   </Intersects>
-
-The above filter selects those features with a geometry that intersects the point (1,1). A variety of spatial operators are available:
-
-   * Intersects
-   * Equals
-   * Disjoint
-   * Within
-   * Overlaps
-   * Crosses
-   * DWithin
-   * Beyond
-   * Distance
-
-Logical filters
-^^^^^^^^^^^^^^^
-
-Logical filters are used to create combinations of filters using the logical operators And, Or, and Not. Example
-
-.. code-block:: xml 
-   :linenos: 
-
-  
-   <And>
-      <PropertyIsEqualTo>
-         <PropertyName>NAME</PropertyName>
-         <Literal>Bob</Literal>
-      </PropertyIsEqualTo>
-      <Intersects>
-         <PropertyName>GEOMETRY</PropertyName>
-         <Literal>
-            <gml:Point>
-                <gml:coordinates>1 1</gml:coordinates>
-            </gml:Point>
-         </Literal>
-      </Intersects>
-   </And>
-
-.. _rules:
-
-Rules
------
-
-A *rule* combines a number of symbolizers with a filter to define the portrayal of a feature. Consider the following example:: 
-
-
-
-  <Rule>
-     <ogc:Filter>
-       <ogc:PropertyIsGreaterThan>
-         <ogc:PropertyName>POPULATION</ogc:PropertyName>
-         <ogc:Literal>100000</ogc:Literal>
-       </ogc:PropertyIsGreaterThan>
-     </ogc:Filter>
-     <PointSymbolizer>
-       <Graphic>
-         <Mark>
-           <Fill><CssParameter name="fill">#FF0000</CssParameter>
-         </Mark>
-       </Graphic>
-     </PointSymbolizer>
-  </Rule>
-
-
-
-The above rule applies only to features which have a ``POPULATION`` attribute greater than ``100,000`` and symbolizes then with a red point. 
-
-An SLD document can contain many rules. Multiple rule SLD's are the basis for  :ref:`thematic_styling`. Consider the above example expanded::
-
-
-  <Rule>
-     <ogc:Filter>
-       <ogc:PropertyIsGreaterThan>
-         <ogc:PropertyName>POPULATION</ogc:PropertyName>
-         <ogc:Literal>100000</ogc:Literal>
-       </ogc:PropertyIsGreaterThan>
-     </ogc:Filter>
-     <PointSymbolizer>
-       <Graphic>
-         <Mark>
-           <Fill><CssParameter name="fill">#FF0000</CssParameter>
-         </Mark>
-       </Graphic>
-     </PointSymbolizer>
-  </Rule>
-  <Rule>
-     <ogc:Filter>
-       <ogc:PropertyIsLessThan>
-         <ogc:PropertyName>POPULATION</ogc:PropertyName>
-         <ogc:Literal>100000</ogc:Literal>
-       </ogc:PropertyIsLessThan>
-     </ogc:Filter>
-     <PointSymbolizer>
-       <Graphic>
-         <Mark>
-           <Fill><CssParameter name="fill">#0000FF</CssParameter>
-         </Mark>
-       </Graphic>
-     </PointSymbolizer>
-  </Rule>
-
-The above snippet defines an additional rule which engages when ``POPULATION`` is less than 100,000 and symbolizes the feature as a green point.
-
-Rules support the notion of *scale dependence* which allows one to specify the scale at which a rule should engage. This allows for different portrayals of a feature based on map scale. Consider the following example:: 
-
-
-
-  <Rule>
-     <MaxScaleDenominator>20000</MaxScaleDenominator>
-     <PointSymbolizer>
-       <Graphic>
-         <Mark>
-           <Fill><CssParameter name="fill">#FF0000</CssParameter>
-         </Mark>
-       </Graphic>
-     </PointSymbolizer>
-  </Rule>
-  <Rule>
-     <MinScaleDenominator>20000</MinScaleDenominator>
-     <PointSymbolizer>
-       <Graphic>
-         <Mark>
-           <Fill><CssParameter name="fill">#0000FF</CssParameter>
-         </Mark>
-       </Graphic>
-     </PointSymbolizer>
-  </Rule>
-
-The above rules specify that at a scale below ``1:20000`` features are symbolized with red points, and at a scale above ``1:20000`` features are symbolized with blue points.
-
-Styling point data
-------------------
-
-.. _styling_line_data:
-
-Styling line data
------------------
-
-.. _styling_polygon_data:
-
-Styling polygon data
---------------------
-
-.. _styling_raster_data:
-
-Styling raster data
--------------------
-
-.. _labeling:
-
-Labeling
---------
-
-.. _thematic_styling:
-
-Thematic styling
+Types of styling
 ----------------
 
+Data that GeoServer can serve consists of three classes of shapes:  **Points, lines, and polygons**.  Lines (one dimensional shapes) are the simplest, as they have only the edge to style (also known as "stroke").  Polygons, two dimensional shapes, have an edge and an inside (also known as a "fill"), both of which can be styled differently.  Points, even though they lack dimension, have both an edge and a fill (not to mention a size) that can be styled.  For fills, color can be specified; for strokes, color and thickness can be specified.  
+
+More advanced styling is possible than just color and thickness.  Points can be specified with well-known shapes like circles, squares, stars, and even custom graphics or text.  Lines can be styled with a dash styles and hashes.  Polygons can be filled with a custom tiled graphics.  Styles can be based on attributes in the data, so that certain features are styled differently.  Text labels on features are possible as well.  Features can be styled based on zoom level, with the size of the feature determining how it is displayed.  The possibilities are vast.
+
+Style metadata
+--------------
+
+GeoServer and SLD
+-----------------
+
+Every layer (featuretype) registered with GeoServer needs to have at least one style associated with it.  GeoServer comes bundled with a few basic styles, and any number of new styles can be added.  It is possible to change any layer's associated style at any time in the featuretype edit page.  (From the :ref:`web_admin`: :ref:`web_admin_config` > :ref:`web_admin_config_data`)  When adding a layer and a style to GeoServer at the same time, the style should be added first, so that the new layer can be associated with the style immediately.  You can add a style in the Style menu.  (From the :ref:`web_admin` : :ref:`web_admin_config` > :ref:`web_admin_config_data`)
+
+A basic style
+-------------
+
+This SLD takes a layer that contains points, and styles them as red circles with a size of 6 pixels.
+
+.. code-block:: xml 
+   :linenos: 
+
+   <?xml version="1.0" encoding="UTF-8"?>
+   <StyledLayerDescriptor
+     xmlns="http://www.opengis.net/sld"
+     xmlns:ogc="http://www.opengis.net/ogc"
+     version="1.0.0">
+      <UserLayer>
+         <UserStyle>
+            <FeatureTypeStyle>
+               <Name>Red Dot</Name>
+               <Title>A simple red point</Title>
+               <Abstract>A simple way to get started with styling</Abstract>
+               <FeatureTypeName>namespace:featuretype</FeatureTypeName>
+               <Rule>
+                  <Name>Rule</Name>
+                  <Title>The rule in the style that creates the red point</Title>
+                  <Abstract>Some styles have multiple rules, but not this</Abstract>
+                  <PointSymbolizer>
+                     <Graphic>
+                        <Mark>
+                           <WellKnownName>circle</WellKnownName>
+                           <Fill>
+                              <CssParameter name="fill">
+                                 <ogc:Literal>#FF0000</ogc:Literal>
+                              </CssParameter>
+                           </Fill>
+                        </Mark>
+                        <Size>
+                           <ogc:Literal>6</ogc:Literal>
+                        </Size>
+                     </Graphic>
+                  </PointSymbolizer>
+               </Rule>
+            </FeatureTypeStyle>
+         </UserStyle>
+      </UserLayer>
+   </StyledLayerDescriptor>
+   
+Don't let the lengthy nature of this simple example intimidate; only a few lines are really important to understand.  Line 22 states that we are using a "well known name," a circle.  There are many well known names for shapes such as square, star, triangle, etc.  Line 24-26 states to fill the shape with a color of ``#FF0000`` (red).  This is an RGB color code, written in hexadecimal, in the form of #RRGGBB.  Finally, lines 29-31 specify that the size of the shape is 6 pixels in width.  The rest of the structure contains metadata about the style, such as Name/Title/Abstract.
+
+Many more examples can be found in the :ref:`sld_cook_book`.
+ 
+.. note::
+
+   Why do some tags have ``ogc:`` in front of them?  The short answer is **XML namespaces**.  In the tag on lines 2-5, there are two XML namespaces, one called ``xmlns``, and one called ``xmlns:ogc``.  Tags corresponding to the first namespace do not need a prefix, but tags corresponding to the second require a prefix of ``ogc:``.  It should be pointed out that the name of the namespaces are not important:  The first namespace could be ``xmlns:sld`` (as it often is) and then all of those tags would require an ``sld:`` prefix.  The important part is that the namespaces need to match the tags.
+
+Troubleshooting
+---------------
+
+SLD is a type of programming language, not unlike creating a web page or building a script.  As such, problems may arise that may require troubleshooting.  When adding a style into GeoServer, it is automatically checked for validation with the OGC SLD specification (although that may be bypassed), but it will not be checked for errors.  It is very easy to have syntax errors creep into a valid SLD.  Most of the time this will result in a blank map (nothing displayed), but sometimes errors will prevent the map from displaying at all.
+
+The easiest way to fix errors in an SLD is to try to isolate the error.  If the SLD is long and incorporates many different rules and filters, try temporarily removing some of them to see if the errors go away.
+
+To minimize errors when creating the SLD, it is recommended to use a text editor that is designed to work with XML.  Editors designed for XML can make finding and removing errors much easier by providing syntax highlighting and (sometimes) built-in error checking.

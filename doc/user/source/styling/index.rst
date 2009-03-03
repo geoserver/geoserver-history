@@ -4,8 +4,8 @@ Styling
 =======
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    sld-introduction/
-   sld-cookbook/
+   sld-cookbook/index
    sld-reference/
