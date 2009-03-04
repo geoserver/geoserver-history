@@ -711,8 +711,8 @@ public class MockData implements TestData {
         String lower = "";
         String upper = "";
         for(int i = 0; i < dimensions; i++) {
-            lower = lower + geometry.getGridRange().getLower(i) + " "; 
-            upper = upper + geometry.getGridRange().getUpper(i) + " ";
+            lower = lower + geometry.getGridRange().getLow(i) + " "; 
+            upper = upper + geometry.getGridRange().getHigh(i) + " ";
         }
         writer.write("<grid dimension = \"" + dimensions + "\">\n");
         writer.write("<low>" + lower + "</low>\n");

@@ -350,8 +350,8 @@ public class DescribeResponse implements Response {
 		String upers = "";
 
 		for (int r = 0; r < gridDimension; r++) {
-			lowers += (grid.getGridRange().getLower(r) + " ");
-			upers += (grid.getGridRange().getUpper(r) + " ");
+			lowers += (grid.getGridRange().getLow(r) + " ");
+			upers += (grid.getGridRange().getHigh(r) + " ");
 		}
 
 		tempResponse.append("\n       <gml:limits>");
@@ -376,11 +376,11 @@ public class DescribeResponse implements Response {
 		tempResponse.append("\n       </gml:origin>");
 		tempResponse.append("\n       <gml:offsetVector>"
 				+ (gridToCRS != null ? ((AffineTransform) gridToCRS).getScaleX() + " " + ((AffineTransform) gridToCRS).getShearX()
-						: ((cvEnvelope != null) ? ((cvEnvelope.getUpperCorner().getOrdinate(0) - cvEnvelope.getLowerCorner().getOrdinate(0)) / (grid.getGridRange().getUpper(0) - grid.getGridRange().getLower(0))) : 0.0) + " 0.0")
+						: ((cvEnvelope != null) ? ((cvEnvelope.getUpperCorner().getOrdinate(0) - cvEnvelope.getLowerCorner().getOrdinate(0)) / (grid.getGridRange().getHigh(0) - grid.getGridRange().getLow(0))) : 0.0) + " 0.0")
 				+ "</gml:offsetVector>");
 		tempResponse.append("\n       <gml:offsetVector>"
 				+ (gridToCRS != null ? ((AffineTransform) gridToCRS).getShearY() + " " + ((AffineTransform) gridToCRS).getScaleY()
-						: "0.0 " + ((cvEnvelope != null) ? ((cvEnvelope.getLowerCorner().getOrdinate(1) - cvEnvelope.getUpperCorner().getOrdinate(1)) / (grid.getGridRange().getUpper(1) - grid.getGridRange().getLower(1))) : -0.0))
+						: "0.0 " + ((cvEnvelope != null) ? ((cvEnvelope.getLowerCorner().getOrdinate(1) - cvEnvelope.getUpperCorner().getOrdinate(1)) / (grid.getGridRange().getHigh(1) - grid.getGridRange().getLow(1))) : -0.0))
 				+ "</gml:offsetVector>");
 		tempResponse.append("\n    </gml:RectifiedGrid>");
 		tempResponse.append("\n   </spatialDomain>");
