@@ -115,7 +115,7 @@ public class GeoServerAction extends ActionSupport {
      * @return WMS instance for this Web Application
      */
     public WMS getWMS(HttpServletRequest request) {
-        return (WMS) getWebApplicationContext().getBean("wms");
+        return (WMS) getWebApplicationContext().getBean("wms-legacy");
     }
 
     /**
