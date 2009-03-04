@@ -1617,8 +1617,8 @@ public class XMLConfigWriter {
                 String upers = "";
 
                 for (int r = 0; r < g.getGridRange().getDimension(); r++) {
-                    lowers += (g.getGridRange().getLower(r) + " ");
-                    upers += (g.getGridRange().getUpper(r) + " ");
+                    lowers += (g.getGridRange().getLow(r) + " ");
+                    upers += (g.getGridRange().getHigh(r) + " ");
                 }
 
                 cw.openTag("grid", m);
