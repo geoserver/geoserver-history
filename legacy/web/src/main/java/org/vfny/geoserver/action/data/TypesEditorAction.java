@@ -412,7 +412,7 @@ public class TypesEditorAction extends ConfigAction {
                     try {
                         FeatureTypeInfo fti = getData().getFeatureTypeInfo(qualifiedname);
                         RegionatingStrategy rs = KMLUtils.findStrategyByName(config.getRegionateStrategy());
-                        if (rs != null) rs.clearCache(fti);
+                        if (rs != null) rs.clearCache((org.geoserver.catalog.FeatureTypeInfo)fti.getLayerInfo().getResource());
                     } catch (NoSuchElementException e){
                         LOGGER.log(
                             Level.FINE,
