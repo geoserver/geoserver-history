@@ -295,12 +295,12 @@ text-decoration: none;
 color: #26b2dd;
 }
 
-#content h1,
-#content h2 {
+#content h1 {
 background: #f3f3f3;
 padding: 4px;
 }
 
+#content h2,
 #content h3, 
 #content h4 {
 border-bottom: 2px solid #e4f1d0;

@@ -9,7 +9,7 @@
     {%- endif %}
   {%- endblock %}
   {%- for parent in parents %}
-    <li><a href="{{ parent.link|e }}" accesskey="U">{{ parent.title }}</a>{{ reldelim1 }}</li>
+    <li><a href="{{ parent.link|e }}" accesskey="U">{{ parent.title }}</a>{{ breadcrumbdelim }}</li>
   {%- endfor %}
   <li>{{ title|striptags }}</li>
 </ul>
