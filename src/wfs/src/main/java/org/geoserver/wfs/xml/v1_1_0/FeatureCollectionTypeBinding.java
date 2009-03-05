@@ -148,6 +148,10 @@ public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
 				else
 					env.expandToInclude(fc.getBounds());
 				
+				// workaround bogus collection implementation that won't return the crs
+				if(env != null &&  env.getCoordinateReferenceSystem() == null) {
+					env = new ReferencedEnvelope(env, fc.getSchema().getCoordinateReferenceSystem());
+				}
 			}
         	return env;
         }
