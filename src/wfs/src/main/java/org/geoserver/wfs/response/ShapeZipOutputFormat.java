@@ -189,10 +189,10 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         SimpleFeatureType schema = c.getSchema();
 
         FeatureStore<SimpleFeatureType, SimpleFeature> fstore = null;
-        DataStore dstore = null;
+        ShapefileDataStore dstore = null;
         try {
             dstore = buildStore(tempDir, charset,  schema); 
-            fstore = (FeatureStore<SimpleFeatureType, SimpleFeature>) dstore.getFeatureSource(schema.getTypeName());
+            fstore = (FeatureStore<SimpleFeatureType, SimpleFeature>) dstore.getFeatureSource();
             fstore.addFeatures(c);
         } catch (IOException ioe) {
             LOGGER.log(Level.WARNING,
@@ -372,7 +372,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private DataStore buildStore(File tempDir,
+    private ShapefileDataStore buildStore(File tempDir,
             Charset charset, SimpleFeatureType schema) throws MalformedURLException,
             FileNotFoundException, IOException {
         File file = new File(tempDir, schema.getTypeName() + ".shp");
