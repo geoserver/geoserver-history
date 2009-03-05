@@ -4,15 +4,22 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.util.Iterator;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
+
 import org.geoserver.feature.CompositeFeatureCollection;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml3.GML;
+import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.AbstractComplexEMFBinding;
+import org.geotools.xml.Configuration;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -76,9 +83,11 @@ import javax.xml.namespace.QName;
  */
 public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
+    boolean generateBounds;
 
-    public FeatureCollectionTypeBinding(WfsFactory wfsfactory) {
+    public FeatureCollectionTypeBinding(WfsFactory wfsfactory, Configuration configuration) {
         this.wfsfactory = wfsfactory;
+        this.generateBounds = !configuration.getProperties().contains(GMLConfiguration.NO_FEATURE_BOUNDS);
     }
 
     public int getExecutionMode() {
@@ -128,6 +137,19 @@ public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
                 //just return the single
                 return featureCollection.getFeature().iterator().next();
             }
+        } else if(GML.boundedBy.equals(name) && generateBounds) {
+        	FeatureCollectionType featureCollection = (FeatureCollectionType) object;
+
+        	ReferencedEnvelope env = null;
+        	for (Iterator it = featureCollection.getFeature().iterator(); it.hasNext();) {
+				FeatureCollection fc = (FeatureCollection) it.next();
+				if(env == null)
+					env = fc.getBounds();
+				else
+					env.expandToInclude(fc.getBounds());
+				
+			}
+        	return env;
         }
 
         //delegate to parent lookup
