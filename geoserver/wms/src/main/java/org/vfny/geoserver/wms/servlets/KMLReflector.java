@@ -153,7 +153,9 @@ public class KMLReflector extends WMService {
         if (!requestParams.containsKey("BBOX")) {
             requestParams.put("BBOX", DEFAULT_BBOX);
         }
-
+        
+        
+        
         KvpRequestReader requestReader = getKvpReader(requestParams);
 
         GetMapRequest serviceRequest;
@@ -199,7 +201,20 @@ public class KMLReflector extends WMService {
         if (!requestParams.containsKey("VERSION")) {
             serviceRequest.setVersion(VERSION);
         }
+        //Bad fix for time elevetion coverage to be fixed 
+        String time=null, elevation=null,timeElevation=null;
+        
+        if (requestParams.containsKey("ELEVATION")) {
+        	  elevation =(String) requestParams.get("ELEVATION");
+        }
+        if (requestParams.containsKey("TIME")) {
+       	  time =(String) requestParams.get("TIME");
+       }
 
+        if (time!=null&&elevation!=null)timeElevation="&time="+time+"&elevation="+elevation;
+        else if(time!=null)timeElevation="&time="+time;
+        else if(elevation!=null)timeElevation="&elevation="+elevation;
+        
         List filters = null;
         String filterKey = null;
         if (requestParams.containsKey("FILTER")) {
@@ -331,7 +346,10 @@ public class KMLReflector extends WMService {
                 queryString.append("service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+xml");
                 queryString.append("&width=").append(WIDTH).append("&height=").append(HEIGHT);
                 queryString.append("&srs=").append(SRS).append("&layers=");
-                queryString.append(layers[i].getName());
+                //Modified by kappu to add the field vaule if it's a coverage
+                String coverageName = layers[i].getFieldId()!=null ? layers[i].getName() +"@"+layers[i].getFieldId() :layers[i].getName() ;
+                queryString.append(coverageName);
+                if(timeElevation!=null)queryString.append(timeElevation);
                 queryString.append(style);
                 queryString.append(filter); // optional
                 queryString.append("&KMScore=").append(serviceRequest.getKMScore());
@@ -339,6 +357,7 @@ public class KMLReflector extends WMService {
                 queryString.append("&legend=").append(serviceRequest.getLegend());
                 queryString.append("&bbox=").append(
                         le.getMinX()+","+le.getMinY()+","+le.getMaxX()+","+le.getMaxY());
+                
                 
                 URL url = new URL(geoserverUrl, queryString.toString());
                 
