@@ -15,11 +15,9 @@ import java.util.Map;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -27,7 +25,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
-import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.DataStoreInfo;
@@ -39,7 +36,6 @@ import org.geoserver.web.data.datastore.panel.LabelParamPanel;
 import org.geoserver.web.data.datastore.panel.PasswordParamPanel;
 import org.geoserver.web.data.datastore.panel.TextParamPanel;
 import org.geoserver.web.data.tree.DataPage;
-import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.NullProgressListener;
@@ -92,9 +88,9 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
             throw new IllegalArgumentException("DataStore " + dataStoreInfoId + " not found");
         }
 
-        final Map<String, Serializable> connectionParameters;
-        connectionParameters = dataStoreInfo.getConnectionParameters();
-
+        Map<String, Serializable> connectionParameters;
+        connectionParameters = new HashMap<String, Serializable>(dataStoreInfo.getConnectionParameters());
+        connectionParameters = DataStoreUtils.getParams(connectionParameters);
         final DataStoreFactorySpi dsFactory = DataStoreUtils.aquireFactory(connectionParameters);
         if (null == dsFactory) {
             throw new IllegalArgumentException(
