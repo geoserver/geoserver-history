@@ -36,7 +36,7 @@ public class GetFeatureBboxTest extends WFSTestSupport {
     public void testFeatureBoudingOff() throws Exception {
         getWFS().setFeatureBounding(false);
         Document doc = getAsDOM("wfs?request=GetFeature&typeName=" + getLayerId(MockData.BUILDINGS) + "&version=1.1.0&service=wfs&propertyName=ADDRESS");
-        print(doc);
+//        print(doc);
         
         // check it's a feature collection
         assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection)", doc);
