@@ -448,7 +448,7 @@
       <id>geosearch</id>
       <dependencies>
         <dependency>
-          <groupId>org.geoserver</groupId>
+          <groupId>org.geoserver.extension</groupId>
           <artifactId>geosearch</artifactId>
           <version>1.7.3-SNAPSHOT</version>
         </dependency>
@@ -570,6 +570,16 @@
        <dependency>
         <groupId>org.geoserver.extension</groupId>
         <artifactId>imagemap</artifactId>
+        <version>1.7.3-SNAPSHOT</version>
+       </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>geosearch</id>
+      <dependencies>
+       <dependency>
+        <groupId>org.geoserver.extension</groupId>
+        <artifactId>geosearch</artifactId>
         <version>1.7.3-SNAPSHOT</version>
        </dependency>
       </dependencies>

@@ -101,7 +101,15 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>geosearch</id>
+      <modules>
+        <module>geosearch</module>
+      </modules>
+    </profile>
+
     <!-- allExtensions profile, includes all modules -->
+
     <profile>
       <id>allExtensions</id>
       <modules>
@@ -116,6 +124,7 @@
         <module>ogr</module>
         <module>excel</module>
         <module>restconfig</module>
+        <module>geosearch</module>
       </modules>
     </profile>
 
@@ -136,6 +145,7 @@
         <module>ogr</module>
         <module>excel</module>
         <module>restconfig</module>
+        <module>geosearch</module>
       </modules>
     </profile>
   </profiles>
