@@ -102,7 +102,7 @@ public class DataStoreFileUploadTest extends GeoServerTestSupport {
         assertEquals( 200, resp.getStatusCode() );
         assertEquals( "application/zip", resp.getContentType() );
         
-        ByteArrayInputStream bin = new ByteArrayInputStream( resp.getOutputStreamContent().getBytes() );
+        ByteArrayInputStream bin = getBinaryInputStream(resp);
         ZipInputStream zin = new ZipInputStream( bin );
         
         ZipEntry entry = zin.getNextEntry();
