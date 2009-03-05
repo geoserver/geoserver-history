@@ -5,7 +5,7 @@ Shapefile
 
 .. note:: 
 
-   While GeoServer has good support for the Shapefile format, it is not the 		recommended format of choice in a production environment. Databases such as :ref:`postgis` are more suitable in production and offer better performance and scalability.
+   While GeoServer has good support for the Shapefile format, it is not the recommended format of choice in a production environment. Databases such as PostGIS are more suitable in production and offer better performance and scalability.
 
 Adding a Shapefile
 ------------------

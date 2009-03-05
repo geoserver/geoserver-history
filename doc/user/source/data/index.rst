@@ -8,6 +8,7 @@ Working with Data
 
    shapefile/
    postgis/
+   directory/
    wfs/ 
    arcsde/
    gml/
