@@ -34,6 +34,7 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.data.NamespaceEditPage;
+import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
 
@@ -165,13 +166,8 @@ public class StorePage extends GeoServerBasePage {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                popupWindow
-                        .setContent(new Label(
-                                popupWindow.getContentId(),
-                                "Ah, so you wanted to add a store into "
-                                        + workspaces.getModelObjectAsString()
-                                        + " huh? Well, now go into the code and actually implement the 'add layer' workflow then!"));
-                popupWindow.show(target);
+                String wsName = workspaces.getModelObjectAsString();
+                setResponsePage(new NewDataPage(wsName));
             }
         });
         return workspaces;
