@@ -1581,8 +1581,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 layers[i].setFeature(ftype);
             } catch (WmsException e) {
                 CoverageInfo cv = findCoverageLayer(request, layerName);
-
-                layers[i].setCoverage(cv, null);
+                /*
+                 * Added by kappu do save field value for kml reflect
+                 */
+                String fieldName = layerName.indexOf("@") > 0 ?
+                        layerName.substring(layerName.indexOf("@")+1) : 
+                        null;
+                layers[i].setCoverage(cv, fieldName);
             }
         }
 
