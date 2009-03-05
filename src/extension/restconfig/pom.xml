@@ -9,7 +9,7 @@
   <version>1.7.3-SNAPSHOT</version>
  </parent>
 
- <groupId>org.geoserver</groupId>
+ <groupId>org.geoserver.extension</groupId>
  <artifactId>restconfig</artifactId>
  <packaging>jar</packaging>
  <name>REST Configuration Service Module</name>

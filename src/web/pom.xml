@@ -478,7 +478,7 @@
       <id>rest</id>
       <dependencies>
         <dependency>
-          <groupId>org.geoserver</groupId>
+          <groupId>org.geoserver.extension</groupId>
           <artifactId>restconfig</artifactId>
           <version>1.7.3-SNAPSHOT</version>
         </dependency>
