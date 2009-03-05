@@ -40,100 +40,47 @@ import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
 
 public class LayerPage extends GeoServerBasePage {
+
     TextField filter;
     Label matched;
     LayerProvider layers = new LayerProvider();
     Set<String> selection = new HashSet<String>();
 	GeoServerPagingNavigator navigator;
 	DataView dataView;
+    private ModalWindow popupWindow;
+    private WebMarkupContainer layerContainer;
+    private AjaxLink removeLink;
 
     public LayerPage() {
-        // setup the dialog
-        final ModalWindow popupWindow = new ModalWindow("popupWindow");
+        // the popup window for messages
+        popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
         
-        // the layer container
-        final WebMarkupContainer layerContainer = new WebMarkupContainer("listContainer");
+        // layer container used for ajax-y udpates of the table
+        layerContainer = new WebMarkupContainer("listContainer");
         
         // build the filter form
         Form form = new Form("filterForm");
         add(form);
         form.add(filter = new TextField("filter", new Model()));
         filter.setOutputMarkupId(true);
-        AjaxButton filterSubmit = new AjaxButton("applyFilter") {
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form form) {
-            	String[] keywords = filter.getModelObjectAsString().split("\\s+");
-                layers.setKeywords(keywords);
-                dataView.setCurrentPage(0);
-                target.addComponent(layerContainer);
-                target.addComponent(navigator);
-            }
-            
-        };
+        AjaxButton filterSubmit = filterSubmitButton();
         form.add(filterSubmit);
-        AjaxButton filterReset = new AjaxButton("resetFilter") {
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form form) {
-            	layers.setKeywords(null);
-            	filter.setModelObject("");
-                dataView.setCurrentPage(0);
-                target.addComponent(layerContainer);
-                target.addComponent(navigator);
-                target.addComponent(filter);
-            }
-            
-        };
+        AjaxButton filterResetButton = filterResetButton();
+        AjaxButton filterReset = filterResetButton;
         form.add(filterReset);
 
         // add the filter match label
         add(matched = new Label("filterMatch"));
         matched.setVisible(false);
         
-        // add the remove link
-        final AjaxLink removeLink = new AjaxLink("remove") {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                String content = popupWindow.getContentId();
-                if(selection.isEmpty()) {
-                    popupWindow.setContent(new Label(content, "Selection is empty, dude!"));
-                    popupWindow.show(target);
-                } else {
-                    String msg = "Ok, so you wanted to remove " + selection + " uh? Well, you have some code to implement before that!!";
-                    popupWindow.setContent(new Label(content, msg));
-                    popupWindow.show(target);
-                }
-            }
-            
-        };
+        removeLink = removeLink();
         add(removeLink);
         removeLink.setEnabled(false);
         
         // the stores drop down
-        final DropDownChoice stores = new DropDownChoice("storesDropDown", new Model(), new LoadableDetachableModel() {
-        
-            @Override
-            protected Object load() {
-                List<DataStoreInfo> stores = getCatalog().getDataStores();
-                List<String> storeNames = new ArrayList<String>();
-                for (DataStoreInfo store : stores) {
-                    storeNames.add(store.getName());
-                }
-                return storeNames;
-            }
-        }); 
+        final DropDownChoice stores = storesDropDown();
         add(stores);
-        stores.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-        
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                popupWindow.setContent(new Label(popupWindow.getContentId(), "Ah, so you wanted to add a layer from " + stores.getModelObjectAsString() + " huh? Well, now go into the code and actually implement the 'add layer' workflow then!"));
-                popupWindow.show(target);
-            }
-        });
         
         // setup the table
         layerContainer.setOutputMarkupId(true);
@@ -150,74 +97,35 @@ public class LayerPage extends GeoServerBasePage {
                 
                 // build an indirection so that we don't store the actual layer
                 // but just the model the item is using, which is detachable
-                final AjaxCheckBox selected = new AjaxCheckBox("selected", new Model() {
-                    @Override
-                    public Object getObject() {
-                        LayerInfo li = (LayerInfo) model.getObject();
-                        return selection.contains(li.getName());
-                    }
-                }) {
-                    @Override
-                    protected void onUpdate(AjaxRequestTarget target) {
-                        LayerInfo li = (LayerInfo) model.getObject();
-                        if(selection.contains(li.getName()))
-                            selection.remove(li.getName());
-                        else
-                            selection.add(li.getName());
-                        target.addComponent(layerContainer);
-                        
-                        // update the remove link, enabled, only if there 
-                        // is some selection
-                        removeLink.setEnabled(selection.size() > 0);
-                        target.addComponent(removeLink);
-                    }
-                };
+                final AjaxCheckBox selected = selectionCheckbox(model);
                 item.add(selected);
                 
                 // build an indirection so that we don't store the actual layer
                 // but just the model the item is using, which is detachable
-                Label type = new Label("type", new Model() {
-                    @Override
-                    public Object getObject() {
-                        LayerInfo li = (LayerInfo) model.getObject();
-                        return li.getType().toString().toLowerCase(); 
-                    }
-                });
+                Label type = new Label("type", new LayerIconModel(model));
                 item.add(type);
                 
-                Link wsLink = new Link("wsLink", new PropertyModel(model, WORKSPACE_PROPERTY)) {
-                    public void onClick() {
-                        setResponsePage(new NamespaceEditPage(getModelObjectAsString()));
-                    }
-                };
+                // link to workspace
+                Link wsLink = workspaceLink(model);
                 item.add(wsLink);
                 wsLink.add(new Label("ws", new PropertyModel(model, WORKSPACE_PROPERTY)));
-                AjaxLink storeLink = new AjaxLink("storeLink", new PropertyModel(model, STORE_PROPERTY)) {
-                    public void onClick(AjaxRequestTarget target) {
-                        String storeName = getModelObjectAsString();
-                        DataStoreInfo store = getCatalog().getDataStoreByName(storeName);
-                        if (store != null)
-                            setResponsePage(new DataStoreConfiguration(store.getId()));
-                        else {
-                            popupWindow.setContent(new Label(popupWindow.getContentId(),
-                                    "Sorry bud, no coverage store editor so far"));
-                            popupWindow.show(target);
-                        }
-                    }
-                };
+                
+                // link to container store
+                AjaxLink storeLink = storeLink(model);
                 item.add(storeLink);
                 storeLink.add(new Label("store", new PropertyModel(model, STORE_PROPERTY)));
-                Link nameLink = new Link("nameLink", new PropertyModel(model, "resource.name")) {
-                    public void onClick() {
-                        setResponsePage(new ResourceConfigurationPage(getModelObjectAsString()));
-                    }
-                };
+                
+                // link to the layer
+                Link nameLink = layerLink(model);
                 item.add(nameLink);
                 nameLink.add(new Label("name", new PropertyModel(model, NAME_PROPERTY)));
+                
+                // the srs and enabled properties
                 item.add(new Label("enabled", new PropertyModel(model, ENABLED_PROPERTY)));
                 item.add(new Label("SRS", new PropertyModel(model, SRS_PROPERTY)));
             }
-            
+
+                        
         };
         layerContainer.add(dataView);
         
@@ -235,4 +143,161 @@ public class LayerPage extends GeoServerBasePage {
         navigator.setOutputMarkupId(true);
 		add(navigator);
     }
+
+    private DropDownChoice storesDropDown() {
+        final DropDownChoice stores;
+        stores = new DropDownChoice("storesDropDown", new Model(), new StoreListModel()); 
+        stores.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                popupWindow.setContent(new Label(popupWindow.getContentId(), "Ah, so you wanted to add a layer from " + stores.getModelObjectAsString() + " huh? Well, now go into the code and actually implement the 'add layer' workflow then!"));
+                popupWindow.show(target);
+            }
+        });
+        return stores;
+    }
+
+    private AjaxLink removeLink() {
+        return new AjaxLink("remove") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                String content = popupWindow.getContentId();
+                if(selection.isEmpty()) {
+                    popupWindow.setContent(new Label(content, "Selection is empty, dude!"));
+                    popupWindow.show(target);
+                } else {
+                    String msg = "Ok, so you wanted to remove " + selection + " uh? Well, you have some code to implement before that!!";
+                    popupWindow.setContent(new Label(content, msg));
+                    popupWindow.show(target);
+                }
+            }
+            
+        };
+    }
+
+    private AjaxButton filterResetButton() {
+        return new AjaxButton("resetFilter") {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+            	layers.setKeywords(null);
+            	filter.setModelObject("");
+                dataView.setCurrentPage(0);
+                target.addComponent(layerContainer);
+                target.addComponent(navigator);
+                target.addComponent(filter);
+            }
+            
+        };
+    }
+
+    private AjaxButton filterSubmitButton() {
+        return new AjaxButton("applyFilter") {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+            	String[] keywords = filter.getModelObjectAsString().split("\\s+");
+                layers.setKeywords(keywords);
+                dataView.setCurrentPage(0);
+                target.addComponent(layerContainer);
+                target.addComponent(navigator);
+            }
+            
+        };
+    }
+    
+    private Link layerLink(final IModel model) {
+        return new Link("nameLink", new PropertyModel(model, NAME_PROPERTY)) {
+            public void onClick() {
+                setResponsePage(new ResourceConfigurationPage(getModelObjectAsString()));
+            }
+        };
+    }
+
+    private AjaxLink storeLink(final IModel model) {
+        return new AjaxLink("storeLink", new PropertyModel(model, STORE_PROPERTY)) {
+            public void onClick(AjaxRequestTarget target) {
+                String storeName = getModelObjectAsString();
+                DataStoreInfo store = getCatalog().getDataStoreByName(storeName);
+                if (store != null)
+                    setResponsePage(new DataStoreConfiguration(store.getId()));
+                else {
+                    popupWindow.setContent(new Label(popupWindow.getContentId(),
+                            "Sorry bud, no coverage store editor so far"));
+                    popupWindow.show(target);
+                }
+            }
+        };
+    }
+
+    private Link workspaceLink(final IModel model) {
+        return new Link("wsLink", new PropertyModel(model, WORKSPACE_PROPERTY)) {
+            public void onClick() {
+                setResponsePage(new NamespaceEditPage(getModelObjectAsString()));
+            }
+        };
+    }
+
+    private AjaxCheckBox selectionCheckbox(final IModel model) {
+        return new AjaxCheckBox("selected", new SelectionModel(model)) {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                LayerInfo li = (LayerInfo) model.getObject();
+                if(selection.contains(li.getName()))
+                    selection.remove(li.getName());
+                else
+                    selection.add(li.getName());
+                target.addComponent(layerContainer);
+                
+                // update the remove link, enabled, only if there 
+                // is some selection
+                removeLink.setEnabled(selection.size() > 0);
+                target.addComponent(removeLink);
+            }
+        };
+    }
+    
+    private final class LayerIconModel extends Model {
+        private final IModel model;
+
+        private LayerIconModel(IModel model) {
+            this.model = model;
+        }
+
+        @Override
+        public Object getObject() {
+            LayerInfo li = (LayerInfo) model.getObject();
+            return li.getType().toString().toLowerCase(); 
+        }
+    }
+
+    private final class SelectionModel extends Model {
+        private final IModel model;
+
+        private SelectionModel(IModel model) {
+            this.model = model;
+        }
+
+        @Override
+        public Object getObject() {
+            LayerInfo li = (LayerInfo) model.getObject();
+            return selection.contains(li.getName());
+        }
+    }
+
+    private final class StoreListModel extends LoadableDetachableModel {
+        @Override
+        protected Object load() {
+            List<DataStoreInfo> stores = getCatalog().getDataStores();
+            List<String> storeNames = new ArrayList<String>();
+            for (DataStoreInfo store : stores) {
+                storeNames.add(store.getName());
+            }
+            return storeNames;
+        }
+    }
+
+
 }
