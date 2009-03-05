@@ -475,11 +475,11 @@
       </dependencies>
     </profile>
     <profile>
-      <id>RESTConfig</id>
+      <id>rest</id>
       <dependencies>
         <dependency>
           <groupId>org.geoserver</groupId>
-          <artifactId>RESTConfig</artifactId>
+          <artifactId>restconfig</artifactId>
           <version>1.7.3-SNAPSHOT</version>
         </dependency>
       </dependencies>
