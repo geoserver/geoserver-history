@@ -1,12 +1,13 @@
-package org.geoserver.wfs;
+package org.geoserver.wfs.v1_1;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import junit.framework.Test;
-
-import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.data.test.MockData;
+import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
 
 public class GetFeatureBboxTest extends WFSTestSupport {
@@ -22,17 +23,17 @@ public class GetFeatureBboxTest extends WFSTestSupport {
         WFSInfo wfs = getWFS();
         wfs.setFeatureBounding( true );
         getGeoServer().save( wfs );
-        
-        Document doc = getAsDOM("wfs?request=GetFeature&typeName=" + getLayerId(MockData.BUILDINGS) + "&version=1.0.0&service=wfs&propertyName=ADDRESS");
+
+        Document doc = getAsDOM("wfs?request=GetFeature&typeName=" + getLayerId(MockData.BUILDINGS) + "&version=1.1.0&service=wfs&propertyName=ADDRESS");
         // print(doc);
         
         // check it's a feature collection
         assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection)", doc);
         // check the collection has non null bounds
-        assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection/gml:boundedBy/gml:Box)", doc);
+        assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection/gml:boundedBy/gml:Envelope)", doc);
         // check that each feature has non null bounds
         XpathEngine xpath = XMLUnit.newXpathEngine();
-        assertTrue(xpath.getMatchingNodes("//cite:Buildings/gml:boundedBy/gml:Box", doc).getLength() > 0);
+        assertTrue(xpath.getMatchingNodes("//cite:Buildings/gml:boundedBy/gml:Envelope", doc).getLength() > 0);
         
     }
     
@@ -41,16 +42,13 @@ public class GetFeatureBboxTest extends WFSTestSupport {
         wfs.setFeatureBounding( false );
         getGeoServer().save( wfs );
         
-        Document doc = getAsDOM("wfs?request=GetFeature&typeName=" + getLayerId(MockData.BUILDINGS) + "&version=1.0.0&service=wfs&propertyName=ADDRESS");
+        Document doc = getAsDOM("wfs?request=GetFeature&typeName=" + getLayerId(MockData.BUILDINGS) + "&version=1.1.0&service=wfs&propertyName=ADDRESS");
 //        print(doc);
         
         // check it's a feature collection
         assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection)", doc);
         // check the collection does not have bounds
-        assertXpathEvaluatesTo("0", "count(//wfs:FeatureCollection/gml:boundedBy/gml:Box)", doc);
-        // check that each feature has non null bounds
-        XpathEngine xpath = XMLUnit.newXpathEngine();
-        assertEquals(0, xpath.getMatchingNodes("//cite:Buildings/gml:boundedBy/gml:Box", doc).getLength());
+        assertXpathEvaluatesTo("0", "count(//wfs:FeatureCollection/gml:boundedBy)", doc);
     }
     
 
