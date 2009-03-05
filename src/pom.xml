@@ -958,6 +958,7 @@
       <descriptor>release/ext-ogr.xml</descriptor>
       <descriptor>release/ext-excel.xml</descriptor>
       <descriptor>release/ext-restconfig.xml</descriptor>
+      <descriptor>release/ext-geosearch.xml</descriptor>
      </descriptors>
      <finalName>geoserver-1.7.3-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
