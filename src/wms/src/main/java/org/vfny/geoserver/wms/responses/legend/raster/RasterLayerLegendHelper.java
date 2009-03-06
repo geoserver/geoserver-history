@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import org.geotools.styling.ChannelSelection;
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
 import org.geotools.styling.FeatureTypeStyle;
@@ -27,6 +28,8 @@ import org.vfny.geoserver.wms.responses.ImageUtils;
 import org.vfny.geoserver.wms.responses.LegendUtils;
 
 /**
+ * Helper class to create legends for raster styles by parsing the rastersymbolizer element.
+ * 
  * @author  Simone Giannecchini, GeoSolutions SAS
  */
 @SuppressWarnings("deprecation")
@@ -47,8 +50,7 @@ public class RasterLayerLegendHelper {
 			if (rasterLegend.exists())
 				imgShape = ImageIO.read(rasterLegend);
 			else
-				imgShape = ImageIO.read(DefaultRasterLegendProducer.class
-						.getResource("rasterLegend.png"));
+				imgShape = ImageIO.read(DefaultRasterLegendProducer.class.getResource("rasterLegend.png"));
 		} catch (Throwable e) {
 			imgShape = null;
 		}
@@ -64,11 +66,20 @@ public class RasterLayerLegendHelper {
 	private boolean transparent;
 	private Color bgColor;
 
-	public RasterLayerLegendHelper(GetLegendGraphicRequest request) {
-		// TODO XXX check for null
+	/**
+	 * Constructor for a RasterLayerLegendHelper.
+	 * 
+	 * <p>
+	 * It takes a {@link GetLegendGraphicRequest} object in order to do its magic. 
+	 * 
+	 * @param request the {@link GetLegendGraphicRequest} for which we want to builda legend
+	 */
+	public RasterLayerLegendHelper(final GetLegendGraphicRequest request) {
+		PackagedUtils.ensureNotNull(request, "The provided GetLegendGraphicRequest is null" );
 		parseRequest(request);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void parseRequest(final GetLegendGraphicRequest request) {
 		// get the requested layer
 		// and check that it is actually a grid
@@ -94,18 +105,16 @@ public class RasterLayerLegendHelper {
 			throw new IllegalArgumentException(
 					"Unable to create a legend for this style, we need exactly 1 rule");
 
-		final NumberRange<Double> scaleRange = NumberRange.create(
-				scaleDenominator, scaleDenominator);
+		final NumberRange<Double> scaleRange = NumberRange.create(scaleDenominator, scaleDenominator);
 
 		// get width and height
 		width = request.getWidth();
 		height = request.getHeight();
 		if (width <= 0 || height <= 0)
-			throw new IllegalArgumentException("Invalid widht and or height");
+			throw new IllegalArgumentException("Invalid widht and or height for the GetLegendGraphicRequest");
 
 		final Symbolizer[] symbolizers = applicableRules[0].getSymbolizers();
-		if (symbolizers == null || symbolizers.length != 1
-				| symbolizers[0] == null)
+		if (symbolizers == null || symbolizers.length != 1| symbolizers[0] == null)
 			throw new IllegalArgumentException(
 					"Unable to create a legend for this style, we need exactly 1 Symbolizer");
 
@@ -151,8 +160,10 @@ public class RasterLayerLegendHelper {
 			// passing additional options
 			cmapLegendBuilder.setAdditionalOptions(request.getLegendOptions());	
 			
+			
 			//set band
-			cmapLegendBuilder.setBand(rasterSymbolizer.getChannelSelection().getGrayChannel());
+			final ChannelSelection channelSelection = rasterSymbolizer.getChannelSelection();
+			cmapLegendBuilder.setBand(channelSelection!=null?channelSelection.getGrayChannel():null);
 
 			// adding the colormap entries
 			final ColorMapEntry[] colorMapEntries = cmap.getColorMapEntries();
@@ -162,12 +173,17 @@ public class RasterLayerLegendHelper {
 		}
 	}
 
+	/**
+	 * Retrieves the legend for the provided request.
+	 * 
+	 * @return a {@link BufferedImage} that represents the legend for the provided request.
+	 */
 	public BufferedImage getLegend() {
 		return createResponse();
 	}
 
 	@SuppressWarnings("unchecked")
-	private BufferedImage createResponse() {
+	private synchronized BufferedImage createResponse() {
 
 		if (image == null) {
 			
@@ -180,12 +196,9 @@ public class RasterLayerLegendHelper {
 				if(defaultLegend==null)
 					throw new IllegalStateException("Unable to get default legend");
 				
-				image = ImageUtils.createImage(width, height,
-						(IndexColorModel) null, transparent);
-				final Graphics2D graphics = ImageUtils.prepareTransparency(
-						transparent, bgColor, image, new HashMap());
-				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-						RenderingHints.VALUE_ANTIALIAS_ON);
+				image = ImageUtils.createImage(width, height,(IndexColorModel) null, transparent);
+				final Graphics2D graphics = ImageUtils.prepareTransparency(transparent, bgColor, image, new HashMap());
+				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 				graphics.drawImage(defaultLegend, 0, 0, width, height, null);
 				graphics.dispose();
 			}

@@ -103,14 +103,14 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
     /**
 	 * Default Legend graphics background color
-	 * @deprecated Use {@link LegendUtils#BG_COLOR} instead
+	 * @deprecated Use {@link LegendUtils#DEFAULT_BG_COLOR} instead
 	 */
-	public static final Color BG_COLOR = LegendUtils.BG_COLOR;
+	public static final Color BG_COLOR = LegendUtils.DEFAULT_BG_COLOR;
     /**
 	 * Default label color
-	 * @deprecated Use {@link LegendUtils#FONT_COLOR} instead
+	 * @deprecated Use {@link LegendUtils#DEFAULT_FONT_COLOR} instead
 	 */
-	public static final Color FONT_COLOR = LegendUtils.FONT_COLOR;
+	public static final Color FONT_COLOR = LegendUtils.DEFAULT_FONT_COLOR;
 
 
 

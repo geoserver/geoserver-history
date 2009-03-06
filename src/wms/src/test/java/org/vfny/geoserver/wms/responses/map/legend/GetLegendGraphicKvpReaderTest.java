@@ -52,7 +52,7 @@ public class GetLegendGraphicKvpReaderTest extends KvpRequestReaderTestSupport {
      * </p>
      */
     public void testRemoteSLDMultipleStyles() throws Exception {
-        Map params = new HashMap();
+        Map<String, String> params = new HashMap<String, String>();
         params.put("VERSION", "1.0.0");
         params.put("REQUEST", "GetLegendGraphic");
         params.put("LAYER", "cite:Ponds");
@@ -89,8 +89,51 @@ public class GetLegendGraphicKvpReaderTest extends KvpRequestReaderTestSupport {
     }
 
 
+    /**
+     * This test ensures that when a SLD parameter has been passed that refers
+     * to a SLD document with multiple styles, the required one is choosed based
+     * on the LAYER parameter.
+     * <p>
+     * This is the case where a remote SLD document is used in "library" mode.
+     * </p>
+     */
+    public void testRasteLegend() throws Exception {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("VERSION", "1.0.0");
+        params.put("REQUEST", "GetLegendGraphic");
+        params.put("LAYER", "cite:Ponds");
+        params.put("FORMAT", "image/png");
 
-    protected MockHttpServletRequest buildMockRequest(Map params) {
+        params.put("STYLE", "Ponds");
+        params.put("FEATURETYPE", "fake_not_used");
+        params.put("SCALE", "1000");
+        params.put("WIDTH", "120");
+        params.put("HEIGHT", "90");
+        
+        final URL remoteSldUrl = getClass().getResource("MultipleStyles.sld");
+        params.put("SLD", remoteSldUrl.toExternalForm());
+        params.put("LAYER", "cite:Ponds");
+        params.put("STYLE", "Ponds");
+        
+        reader.setHttpRequest(buildMockRequest(params));
+        GetLegendGraphicRequest request = (GetLegendGraphicRequest) reader.createRequest();
+
+        //the style names Ponds is declared in third position on the sld doc
+        Style selectedStyle = request.getStyle();
+        assertNotNull(selectedStyle);
+        assertEquals("Ponds", selectedStyle.getName());
+
+        params.put("LAYER", "cite:Lakes");
+        params.put("STYLE", "Lakes");
+        reader.setHttpRequest(buildMockRequest(params));
+        request = (GetLegendGraphicRequest) reader.createRequest();
+
+        //the style names Ponds is declared in third position on the sld doc
+        selectedStyle = request.getStyle();
+        assertNotNull(selectedStyle);
+        assertEquals("Lakes", selectedStyle.getName());
+    }
+    protected MockHttpServletRequest buildMockRequest(Map<String, String> params) {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest();
         for (Iterator ot = params.entrySet().iterator(); ot.hasNext();) {
             Map.Entry entry = (Map.Entry) ot.next();

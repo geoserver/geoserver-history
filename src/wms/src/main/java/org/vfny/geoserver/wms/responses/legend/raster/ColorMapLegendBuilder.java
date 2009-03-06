@@ -12,9 +12,6 @@ import java.awt.RenderingHints.Key;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,9 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-
-import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageOutputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
@@ -37,10 +32,23 @@ import org.vfny.geoserver.wms.responses.LegendUtils.VAlign;
 
 
 /**
+ * This is a fake builder since it does not really build a complex object but it rather builds a BufferedImage for a legend.
+ * 
+ * <p>
+ * As a real builder it let's pass in configuration objects one by one to build the result, but then when you call {@link #getLegend()} it freezes 
+ * its state and you can't change it anymore.
+ * 
+ * 
+ * 
  * @author  Simone Giannecchini, GeoSolutions.
  */
 @SuppressWarnings("deprecation")
 class ColorMapLegendBuilder {
+	
+	private void checkFrozen(){
+		if(frozen.get())
+			throw new IllegalStateException("The builder is frozen you can't change it anymore!");
+	}
 	
 	/**
 	 * 
@@ -76,7 +84,7 @@ class ColorMapLegendBuilder {
 	}
 	
 	abstract class Row{
-		private final List<Cell> columns= new ArrayList<Cell>();
+		private final List<Cell> cells= new ArrayList<Cell>();
 		
 		Row(){
 		}
@@ -85,13 +93,15 @@ class ColorMapLegendBuilder {
 		}
 		
 		protected Cell get(final int index){
-			return columns.get(index);
+			return cells.get(index);
 		}
 		
 		protected void add(final Cell cell){
-			columns.add(cell);
+			cells.add(cell);
 		}
 	}
+	
+	
 	abstract class Cell{
 	
 		protected final Color bkgColor;
@@ -154,16 +164,7 @@ class ColorMapLegendBuilder {
 	            graphics.fill(clipBox);
 	            //make bkgColor customizable
 	            graphics.setColor(Color.BLACK);
-	            if(!completeBorder)
-	            {
-		            
-//		            final int minx=(int) (clipBox.getMinX()+0.5);
-//		            final int miny=(int) (clipBox.getMinY()+0.5);
-//		            final int maxx=(int) (minx+clipBox.getWidth()+0.5)-1;
-//		            final int maxy=(int)(miny+clipBox.getHeight()+0.5)-1;	            	
-//	            	graphics.drawLine(minx,maxy,maxx,maxy);
-	            }
-	            else
+	            if(completeBorder)
 	            {
 		            
 		            final int minx=(int) (clipBox.getMinX()+0.5);
@@ -277,6 +278,18 @@ class ColorMapLegendBuilder {
             		w,
             		!leftEdge?h/2:h);
             super.draw(graphics, rectLegend, completeBorder);
+            if(!completeBorder)
+            {
+	            final Color oldColor=graphics.getColor();
+	            //make bkgColor customizable
+	            graphics.setColor(Color.BLACK);
+	            final int minx_=(int) (clipBox.getMinX()+0.5);
+	            final int maxx=(int) (minx+clipBox.getWidth()+0.5)-1;
+	            final int maxy=(int)(miny+clipBox.getHeight()+0.5)-1;	            	
+            	graphics.drawLine(minx_,maxy,maxx,maxy);
+	            //restore bkgColor            
+	            graphics.setColor(oldColor);
+            }
             
             
 			
@@ -443,7 +456,7 @@ class ColorMapLegendBuilder {
 	}
 	 class RampColorMapEntryLegendBuilder extends ColorMapEntryLegendBuilder{
 
-		public RampColorMapEntryLegendBuilder(List<ColorMapEntry> mapEntries, HAlign hAlign, VAlign vAling) {
+		public RampColorMapEntryLegendBuilder(final List<ColorMapEntry> mapEntries,final  HAlign hAlign,final  VAlign vAling) {
 			
 			final ColorMapEntry previousCME = mapEntries.get(0);
 			final ColorMapEntry currentCME = mapEntries.get(1);
@@ -549,6 +562,11 @@ class ColorMapLegendBuilder {
 			
 		}	 
 	
+	/**
+	 * The builder start unfrozen then it freezes and always return the same legend
+	 */
+	private final AtomicBoolean frozen= new AtomicBoolean(false);
+	
 	private ColorMapType colorMapType;
 	
 	private boolean extended=false;
@@ -611,6 +629,8 @@ class ColorMapLegendBuilder {
 
 	private boolean forceRule=false;
 
+	private BufferedImage legend;
+
 	
 	
 
@@ -634,18 +654,27 @@ class ColorMapLegendBuilder {
 	 * @param extended
 	 * @uml.property  name="extended"
 	 */
-	public void setExtended(boolean extended) {
+	public void setExtended(final boolean extended) {
 		this.extended = extended;
 	}
 
-	public void setColorMapType(int type) {
+	public void setColorMapType(final int type) {
 		this.colorMapType=ColorMapType.create(type);
 		
 	}
 
 
 
+	/**
+	 * Adds a {@link ColorMapEntry} element to this builder so that it can take it into account
+	 * for building the legend.
+	 * 
+	 * @param cEntry a {@link ColorMapEntry} element for this builder so that it can take it into account
+	 * for building the legend. It must be not <code>null</code>.
+	 */
 	public void addColorMapEntry(final ColorMapEntry cEntry) {
+		checkFrozen();
+		PackagedUtils.ensureNotNull(cEntry,"cEntry");
 		
 		
 		//build a ColorMapEntryLegendBuilder for the specified colorMapEntry
@@ -681,7 +710,9 @@ class ColorMapLegendBuilder {
 	 * @param dimension
 	 * @uml.property  name="requestedDimension"
 	 */
-	public void setRequestedDimension(Dimension dimension) {
+	public void setRequestedDimension(final Dimension dimension) {
+		//The builder is frozen you can't change it anymore
+		checkFrozen();
 		this.requestedDimension=(Dimension) dimension.clone();
 		
 	}
@@ -690,37 +721,49 @@ class ColorMapLegendBuilder {
 	 * @param transparent
 	 * @uml.property  name="transparent"
 	 */
-	public void setTransparent(boolean transparent) {
+	public void setTransparent(final boolean transparent) {
+		//The builder is frozen you can't change it anymore
+		checkFrozen();
 		this.transparent=transparent;
 		
 	}
 
 
 
-	public BufferedImage getLegend() {
+	public synchronized BufferedImage getLegend() {
 		
-		init();
-		//now build the individuals legends
-		
-		//
-		// header
-		//
-		
-
-		//
-		// body
-		//
-		final Queue<BufferedImage> body=createBody();
-
-
-		//
-		// footer
-		//
-		final Queue<BufferedImage> footer= createFooter();
-		body.addAll(footer);
-		
-		//now merge them
-		return mergeRows(body);
+		//do we laraedy have a legend
+		if(legend==null)
+		{
+			
+			// freeze the builder
+			frozen.set(true);
+	
+			//init all the values
+			init();
+			//now build the individuals legends
+			
+			//
+			// header
+			//
+			
+	
+			//
+			// body
+			//
+			final Queue<BufferedImage> body=createBody();
+	
+	
+			//
+			// footer
+			//
+			final Queue<BufferedImage> footer= createFooter();
+			body.addAll(footer);
+			
+			//now merge them
+			legend= mergeRows(body);
+		}
+		return legend;
 	}
 
 	private void init() {
@@ -737,7 +780,7 @@ class ColorMapLegendBuilder {
         final Map<Key, Object> hintsMap = new HashMap<Key, Object>();
         Graphics2D graphics = ImageUtils.prepareTransparency(transparent, backgroundColor, image, hintsMap);
         
-        //elements used to compute maximum dimensions for rows and columns
+        //elements used to compute maximum dimensions for rows and cells
         rowH=Double.NEGATIVE_INFINITY;
         colorW=Double.NEGATIVE_INFINITY;
         ruleW=Double.NEGATIVE_INFINITY;
@@ -832,10 +875,31 @@ class ColorMapLegendBuilder {
         
         if (additionalOptions.get("forceRule") instanceof String) {
         	forceRule=Boolean.parseBoolean((String) additionalOptions.get("forceRule"));
-            
+        	
+
         }
         
         
+    	// if all the labels are null, we MUST draw the rules
+    	if(!forceRule)
+        	for(ColorMapEntryLegendBuilder row:bodyRows){
+    			
+    			//
+    			//row number i
+    			//
+    			
+    			// label
+    			final Cell labelM= row.getLabelManager();
+    			if(labelM==null)
+    				forceRule=true;
+    			else
+    			{
+    				forceRule=false;
+    				break;
+    			}
+
+            
+        	}
         
 	}
 
@@ -989,25 +1053,39 @@ class ColorMapLegendBuilder {
 	        }
 
 	        
-			//get element for label
-			final Cell labelCell= row.getLabelManager();
-			//draw it
-	        final BufferedImage labelCellLegend = new BufferedImage(labelWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);	
-	        rlg = labelCellLegend.createGraphics();
-	        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	        rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);	        
-	        labelCell.draw(rlg, clipboxC,borderLabel);
-	        rlg.dispose(); 
-	       
-	        //
-            // merge the bodyCells for this row
-	        //
-	        //
+	        //draw it if it is present
+	        if(labelWidth>0){
+				//get element for label
+				final Cell labelCell= row.getLabelManager();		
+		        final BufferedImage labelCellLegend = new BufferedImage(labelWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);	
+		        rlg = labelCellLegend.createGraphics();
+		        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		        rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);	        
+		        labelCell.draw(rlg, clipboxC,borderLabel);
+		        rlg.dispose(); 
+		        
+		        //
+	            // merge the bodyCells for this row
+		        //
+		        //
 
-	        final Map<Key, Object> hintsMap = new HashMap<Key, Object>();
-	        queue.add(LegendUtils.mergeBufferedImages(colorCellLegend,ruleCellLegend,labelCellLegend, hintsMap,transparent,backgroundColor,dx));    
-			
+		        final Map<Key, Object> hintsMap = new HashMap<Key, Object>();
+		        queue.add(LegendUtils.hMergeBufferedImages(colorCellLegend,ruleCellLegend,labelCellLegend, hintsMap,transparent,backgroundColor,dx));    
+				
 
+	        }
+	        else{
+		        //
+	            // merge the bodyCells for this row
+		        //
+		        //
+
+		        final Map<Key, Object> hintsMap = new HashMap<Key, Object>();
+		        queue.add(LegendUtils.hMergeBufferedImages(colorCellLegend,ruleCellLegend,null, hintsMap,transparent,backgroundColor,dx));    
+				
+	        	
+	        }
+	        	
 	       
 			
 		}		
@@ -1055,7 +1133,9 @@ class ColorMapLegendBuilder {
 	 * @param legendOptions
 	 * @uml.property  name="additionalOptions"
 	 */
-	public void setAdditionalOptions(Map<String,List<String>> legendOptions) {
+	public void setAdditionalOptions(final Map<String,List<String>> legendOptions) {
+		//The builder is frozen you can't change it anymore
+		checkFrozen();
 		this.additionalOptions= new HashMap<String,List<String>>(legendOptions);
 		
 	}
@@ -1077,18 +1157,20 @@ class ColorMapLegendBuilder {
 	}
 
 	/**
-	 * @return
-	 * @uml.property  name="additionalOptions"
+	 * Retrieves an unmodifiable copy of the additional options for building this legend.
+	 * 
+	 * @return an unmodifiable copy of the additional options for building this legend.
 	 */
 	public Map<String, ?> getAdditionalOptions() {
 		return Collections.unmodifiableMap(additionalOptions);
 	}
 
 	/**
-	 * @param colorMapType
-	 * @uml.property  name="colorMapType"
+	 * Sets the {@link ColorMapType} for this legend builder in order to instruct it on how to build the legend.
+	 * 
+	 * @param colorMapType the {@link ColorMapType} for this legend builder in order to instruct it on how to build the legend.
 	 */
-	public void setColorMapType(ColorMapType colorMapType) {
+	public void setColorMapType(final ColorMapType colorMapType) {
 		this.colorMapType = colorMapType;
 	}
 
@@ -1104,7 +1186,10 @@ class ColorMapLegendBuilder {
 	 * @param backGroundColor
 	 * @uml.property  name="backgroundColor"
 	 */
-	public void setBackgroundColor(Color backGroundColor) {
+	public void setBackgroundColor(final Color backGroundColor) {
+		//The builder is frozen you can't change it anymore
+		checkFrozen();
+		PackagedUtils.ensureNotNull(backGroundColor,"backGroundColor");
 		this.backgroundColor = backGroundColor;
 	}
 
@@ -1112,7 +1197,10 @@ class ColorMapLegendBuilder {
 	 * @param labelFont
 	 * @uml.property  name="labelFont"
 	 */
-	public void setLabelFont(Font labelFont) {
+	public void setLabelFont(final Font labelFont) {
+		//The builder is frozen you can't change it anymore
+		checkFrozen();
+		PackagedUtils.ensureNotNull(labelFont,"labelFont");
 		this.labelFont=labelFont;
 		
 	}
@@ -1121,12 +1209,17 @@ class ColorMapLegendBuilder {
 	 * @param labelFontColor
 	 * @uml.property  name="labelFontColor"
 	 */
-	public void setLabelFontColor(Color labelFontColor) {
+	public void setLabelFontColor(final Color labelFontColor) {
+		//The builder is frozen you can't change it anymore
+		checkFrozen();
+		PackagedUtils.ensureNotNull(labelFontColor,"labelFontColor");
 		this.labelFontColor=labelFontColor;
 		
 	}
 
-	public void setBand(SelectedChannelType grayChannel) {
+	public void setBand(final SelectedChannelType grayChannel) {
+		//The builder is frozen you can't change it anymore
+		checkFrozen();
 		if(grayChannel!=null)
 			this.grayChannelName=grayChannel.getChannelName();
 		

@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.renderer.i18n.ErrorKeys;
 import org.geotools.renderer.i18n.Errors;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.styling.ColorMapEntry;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
@@ -29,23 +30,61 @@ import org.opengis.feature.type.PropertyType;
 import org.opengis.filter.expression.Expression;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
-@SuppressWarnings("deprecation")
+/**
+ * Utility class for building legends, it exposes many methods that could be reused anywhere.
+ * 
+ * <p>
+ * I am not preventin people from subclassing this method so that they could add their own utility methods.
+ * @author Simone Giannecchini, GeoSolutions SAS
+ *
+ */
+@SuppressWarnings({"deprecation","unchecked"})
 public class LegendUtils {
-
+	/**
+	 * Ensures that the provided argument is not <code>null</code>.
+	 * <p>
+	 * If it <code>null</code> it must throw a {@link NullPointerException}.
+	 * 
+	 * @param argument argument to check for <code>null</code>.
+	 */
+	protected static void ensureNotNull(final Object argument){
+		ensureNotNull(argument,"Argument cannot be null");
+	}
+	
+	/**
+	 * Ensures that the provided argument is not <code>null</code>.
+	 * <p>
+	 * If it <code>null</code> it must throw a {@link NullPointerException}.
+	 * 
+	 * @param argument argument to check for <code>null</code>.
+	 * @param message  leading message to print out in case the test fails.
+	 */
+	protected static void ensureNotNull(final Object argument,final String message){
+		if(message==null)
+			throw new NullPointerException("Message cannot be null");
+		if(argument==null)
+			throw new NullPointerException(message+" cannot be null");
+	}
+	
 	public enum VAlign{
 		TOP,MIDDLE,BOTTOM;		
 	}
 	public enum HAlign{
 		LEFT,CENTERED,RIGHT,JUSTIFIED;		
 	}
+	
+	/**Default {@link Font} for legends.*/
+	public final static Font DEFAULT_FONT= new Font("Sans-Serif",Font.PLAIN,12);
+	
 	/**
 	 * Default Legend graphics background color
 	 */
-	public static final Color BG_COLOR = Color.WHITE;
+	public static final Color DEFAULT_BG_COLOR = Color.WHITE;
 	/**
 	 * Default label color
 	 */
-	public static final Color FONT_COLOR = Color.BLACK;
+	public static final Color DEFAULT_FONT_COLOR = Color.BLACK;
+	
 	/** padding percentage factor at both sides of the legend. */
 	public static final float hpaddingFactor = 0.15f;
 	/** top & bottom padding percentage factor for the legend */
@@ -66,48 +105,68 @@ public class LegendUtils {
 	private static final Logger LOGGER = org.geotools.util.logging.Logging
 			.getLogger(LegendUtils.class.getPackage().getName());
 
-	public static Font getLabelFont(GetLegendGraphicRequest req) {
-
-		String legendFontName = "Sans-Serif";
-		String legendFontFamily = "plain";
-		int legendFontSize = 12;
-
-		Map legendOptions = req.getLegendOptions();
+	/**
+	 * Retrieves the font from the provided {@link GetLegendGraphicRequest}.
+	 * 
+	 * @param req a {@link GetLegendGraphicRequest} from which we should extract the {@link Font} information.
+	 * @return the {@link Font} specified in the provided {@link GetLegendGraphicRequest} or a default {@link Font}.
+	 * 
+	 */
+	public static Font getLabelFont(final GetLegendGraphicRequest req) {
+		ensureNotNull(req, "GetLegendGraphicRequestre");
+		final Map legendOptions = req.getLegendOptions();
+		if(legendOptions==null)
+			return DEFAULT_FONT;
+		String legendFontName=null;
 		if (legendOptions.get("fontName") != null) {
 			legendFontName = (String) legendOptions.get("fontName");
 		}
+		String legendFontFamily=null;
 		if (legendOptions.get("fontStyle") != null) {
 			legendFontFamily = (String) legendOptions.get("fontStyle");
 		}
+		
+		Integer legendFontSize=null	;
 		if (legendOptions.get("fontSize") != null) {
 			try {
-				legendFontSize = Integer.parseInt((String) legendOptions
+				legendFontSize = Integer.valueOf((String) legendOptions
 						.get("fontSize"));
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				LOGGER
-						.warning("Error trying to interpret legendOption 'fontSize': "
-								+ legendOptions.get("fontSize"));
+						.warning("Error trying to interpret legendOption 'fontSize': "+ legendOptions.get("fontSize"));
 			}
 		}
 
-		Font legendFont;
+		if(legendFontFamily==null|| legendFontName==null|| legendFontSize<0)
+			return DEFAULT_FONT;
+		
 		if (legendFontFamily.equalsIgnoreCase("italic")) {
-			legendFont = new Font(legendFontName, Font.ITALIC, legendFontSize);
+			return new Font(legendFontName, Font.ITALIC, legendFontSize);
 		} else if (legendFontFamily.equalsIgnoreCase("bold")) {
-			legendFont = new Font(legendFontName, Font.BOLD, legendFontSize);
-		} else {
-			legendFont = new Font(legendFontName, Font.PLAIN, legendFontSize);
-		}
+			return new Font(legendFontName, Font.BOLD, legendFontSize);
+		} 
+		
+		return DEFAULT_FONT;
 
-		return legendFont;
 	}
 
-	public static Color getLabelFontColor(GetLegendGraphicRequest req) {
-		Map legendOptions = req.getLegendOptions();
-		String color = (String) legendOptions.get("fontColor");
+	/**
+	 * Extracts the Label {@link Font} {@link Color} from the provided {@link GetLegendGraphicRequest}.
+	 * 
+	 * <p>
+	 * If there is no label {@link Font} specified a default {@link Font} {@link Color} will be provided.
+	 * 
+	 * @param req the {@link GetLegendGraphicRequest} from which to extract label color information.
+	 * @return  the Label {@link Font} {@link Color} extracted from the provided {@link GetLegendGraphicRequest} or
+	 *  a default {@link Font} {@link Color}.
+	 */
+	public static Color getLabelFontColor(final GetLegendGraphicRequest req) {
+		ensureNotNull(req, "GetLegendGraphicRequestre");
+		final Map legendOptions = req.getLegendOptions();
+		final String color = legendOptions!=null?(String) legendOptions.get("fontColor"):null;
 		if (color == null) {
 			// return the default
-			return FONT_COLOR;
+			return DEFAULT_FONT_COLOR;
 		}
 
 		try {
@@ -115,8 +174,8 @@ public class LegendUtils {
 		} catch (NumberFormatException e) {
 			if (LOGGER.isLoggable(Level.WARNING))
 				LOGGER.warning("Could not decode label color: " + color
-						+ ", default to " + FONT_COLOR.toString());
-			return FONT_COLOR;
+						+ ", default to " + DEFAULT_FONT_COLOR.toString());
+			return DEFAULT_FONT_COLOR;
 		}
 	}
 
@@ -124,40 +183,49 @@ public class LegendUtils {
 	 * Returns the image background color for the given
 	 * {@link GetLegendGraphicRequest}.
 	 * 
-	 * @param req
+	 * @param req a {@link GetLegendGraphicRequest} from which we should extract the background color.
 	 * @return the Color for the hexadecimal value passed as the
 	 *         <code>BGCOLOR</code>
 	 *         {@link GetLegendGraphicRequest#getLegendOptions() legend option},
 	 *         or the default background color if no bgcolor were passed.
 	 */
-	public static Color getBackgroundColor(GetLegendGraphicRequest req) {
-		Map legendOptions = req.getLegendOptions();
-		String color = (String) legendOptions.get("bgColor");
+	public static Color getBackgroundColor(final GetLegendGraphicRequest req) {
+		ensureNotNull(req, "GetLegendGraphicRequestre");
+		final Map legendOptions = req.getLegendOptions();
+		if(legendOptions==null)
+			return DEFAULT_BG_COLOR;
+		final String color = (String) legendOptions.get("bgColor");
 		if (color == null) {
 			// return the default
-			return BG_COLOR;
+			return DEFAULT_BG_COLOR;
 		}
 
 		try {
 			return color(color);
 		} catch (NumberFormatException e) {
 			LOGGER.warning("Could not decode background color: " + color
-					+ ", default to " + BG_COLOR.toString());
-			return BG_COLOR;
+					+ ", default to " + DEFAULT_BG_COLOR.toString());
+			return DEFAULT_BG_COLOR;
 		}
 
 	}
 
 	/**
+	 * Extracts the opacity from the provided {@link ColorMapEntry}.
+	 * 
+	 * <p>
+	 * 1.0 is returned in case the provided {@link ColorMapEntry} is null or invalid.
+	 * 
 	 * @param entry
-	 * @return
+	 * @return the opacity from the provided {@link ColorMapEntry} or 1.0 if something bad happens.
+	 * 
 	 * @throws IllegalArgumentException
 	 * @throws MissingResourceException
 	 */
-	public static double getOpacity(ColorMapEntry entry)
+	public static double getOpacity(final ColorMapEntry entry)
 			throws IllegalArgumentException, MissingResourceException {
 		
-//	    ColorMapUtilities.ensureNonNull("ColorMapEntry",entry);
+		ensureNotNull(entry, "ColorMapEntry");
 		// //
 		//
 		// As stated in <a
@@ -168,8 +236,7 @@ public class LegendUtils {
 		// opacity is 1.0 (fully opaque)."
 		//
 		// //
-//		ColorMapUtilities.ensureNonNull("entry",entry);
-		Expression opacity = entry.getOpacity();
+		final Expression opacity = entry.getOpacity();
 		Double opacityValue = null;
 		if (opacity != null)
 			opacityValue = opacity.evaluate(null, Double.class);
@@ -183,50 +250,68 @@ public class LegendUtils {
 		return opacityValue.doubleValue();
 	}
 
-	public static Color color(String hex) throws NumberFormatException {
+	/**
+	 * Tries to decode the provided {@link String} into an HEX color definition.
+	 * 
+	 * <p>
+	 * In case the {@link String} is not correct a {@link NumberFormatException} will be thrown.
+	 * 
+	 * @param hex a {@link String} that should contain an Hexadecimal color representation.
+	 * @return a {@link Color} representing the provided {@link String}.
+	 * @throws NumberFormatException in case the string is badly formatted.
+	 */
+	public static Color color(final String hex) {
+		ensureNotNull(hex,"hex value");
 		if (!hex.startsWith("#")) {
-			hex = "#" + hex;
+			final String hex_ = "#" + hex;
+			return Color.decode(hex_);
+
+			
 		}
 		return Color.decode(hex);
 	}
 	
 	/**
-	 * @param entry
-	 * @return
-	 * @throws NumberFormatException
+	 * Get the {@link Color} out of this {@link ColorMapEntry}.
+	 * @param entry the {@link ColorMapEntry} from which to extract the {@link Color} component.
+	 * 
+	 * @return the {@link Color} out of this {@link ColorMapEntry}.
+	 * @throws NumberFormatException in case the color string is badly formatted.
 	 */
-	public static Color color(ColorMapEntry entry)
-			throws NumberFormatException {
-//		ColorMapUtilities.ensureNonNull("ColorMapEntry",entry);
+	public static Color color(final ColorMapEntry entry){
+		ensureNotNull(entry, "entry");
 		final Expression color = entry.getColor();
-//		ColorMapUtilities.ensureNonNull("color",color);
+		ensureNotNull(color, "color");
 		final String  colorString= color.evaluate(null, String.class);
-//		ColorMapUtilities.ensureNonNull("colorString",colorString);
+		ensureNotNull(colorString, "colorString");
 		return color(colorString);
 	}
 	
 	/**
-	 * @param entry
-	 * @return
+	 * Extracts the quantity part from the provided {@link ColorMapEntry}.
+	 * 
+	 * @param entry the provided {@link ColorMapEntry} from which we should extract the quantity part.
+	 * @return   the quantity part for the provided {@link ColorMapEntry}.
 	 */
-	public static double getQuantity(ColorMapEntry entry) {
-//		ColorMapUtilities.ensureNonNull("ColorMapEntry",entry);
+	public static double getQuantity(final ColorMapEntry entry) {
+		ensureNotNull(entry, "entry");
 		Expression quantity = entry.getQuantity();
-//		ColorMapUtilities.ensureNonNull("quantity",quantity);
+		ensureNotNull(quantity, "quantity");
 		Double quantityString = quantity.evaluate(null, Double.class);
-//		ColorMapUtilities.ensureNonNull("quantityString",quantityString);
-		double q = quantityString.doubleValue();
-		return q;
+		ensureNotNull(quantityString, "quantityString");
+		return quantityString.doubleValue();
 	}
+	
 	/**
 	 * Finds the applicable Rules for the given scale denominator.
 	 *
 	 * @param ftStyles
 	 * @param scaleDenominator
 	 *
-	 * @return
+	 * @return an array of {@link Rule}s.
 	 */
-	public static Rule[] getApplicableRules(FeatureTypeStyle[] ftStyles, double scaleDenominator) {
+	public static Rule[] getApplicableRules(final FeatureTypeStyle[] ftStyles, double scaleDenominator) {
+		ensureNotNull(ftStyles, "FeatureTypeStyle array ");
 	    /**
 	     * Holds both the rules that apply and the ElseRule's if any, in the
 	     * order they appear
@@ -269,7 +354,7 @@ public class LegendUtils {
 	 *
 	 * @return true if the scale is compatible with the rule settings
 	 */
-	public static boolean isWithInScale(Rule r, double scaleDenominator) {
+	public static boolean isWithInScale(final Rule r,final  double scaleDenominator) {
 	    return (scaleDenominator == -1)
 	    || (((r.getMinScaleDenominator() - DefaultRasterLegendProducer.TOLERANCE) <= scaleDenominator)
 	    && ((r.getMaxScaleDenominator() + DefaultRasterLegendProducer.TOLERANCE) > scaleDenominator));
@@ -287,7 +372,10 @@ public class LegendUtils {
 	 * @param g - the Graphics2D that will be used to render this label
 	 * @return a {@link BufferedImage} of the properly rendered label.
 	 */
-	public static BufferedImage renderLabel(String label, Graphics2D g, GetLegendGraphicRequest req) {
+	public static BufferedImage renderLabel(final String label,final  Graphics2D g,final  GetLegendGraphicRequest req) {
+		ensureNotNull(label);
+		ensureNotNull(g);
+		ensureNotNull(req);
 	    // We'll accept '/n' as a text string
 	    //to indicate a line break, as well as a traditional 'real' line-break in the XML.
 	    BufferedImage renderedLabel;
@@ -351,17 +439,20 @@ public class LegendUtils {
 	
 	    return renderedLabel;
 	}
+	
 	/**
-	 * @param left
-	 * @param center
-	 * @param right
-	 * @param hintsMap
-	 * @param dx 
-	 * @param mx 
-	 * @param graphics 
-	 * @return
+	 * This method tries to merge horizontally 3 {@link BufferedImage}. The first one must be not null, the others can be null.
+	 * 
+	 * @param left first {@link BufferedImage} to merge.
+	 * @param center second {@link BufferedImage} to merge.
+	 * @param right third {@link BufferedImage} to merge.
+	 * @param hintsMap hints to use for drawing
+	 * @param dx buffer between images
+	 * @param transparent tells me whether or not the bkg should be transparent
+	 * @param backgroundColor the background color
+	 * @return a {@link BufferedImage} for the union of the provided images.
 	 */
-	public static BufferedImage mergeBufferedImages(
+	public static BufferedImage hMergeBufferedImages(
 			final BufferedImage left,
 			final BufferedImage center, 
 			final BufferedImage right,
@@ -369,9 +460,12 @@ public class LegendUtils {
 			final boolean transparent,
 			final Color backgroundColor, 
 			final double dx) {
-		
-		int totalHeight =  (int) (Math.max(left.getHeight(),Math.max((center!=null?center.getHeight():Double.NEGATIVE_INFINITY), right.getHeight()))+0.5);
-		final int totalWidth = (int) (left.getWidth() +(center!=null? center.getWidth():0)+right.getWidth()+2*dx+0.5);            
+		if(right==null&&center==null)
+			return left;
+		if(left==null)
+			throw new NullPointerException("Left image cannot be null");
+		int totalHeight =  (int) (Math.max(left.getHeight(),Math.max((center!=null?center.getHeight():Double.NEGATIVE_INFINITY), right!=null?right.getHeight():0))+0.5);
+		final int totalWidth = (int) (left.getWidth() +(center!=null? center.getWidth():0)+(right!=null?right.getWidth():0)+2*dx+0.5);            
         final BufferedImage finalImage = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
         final Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalImage, hintsMap);
         
@@ -380,24 +474,26 @@ public class LegendUtils {
         finalGraphics.drawImage(left, offsetX,0,null);
 
         ///place the central element
-
         offsetX=(int) (left.getWidth()+dx+0.5);
         if(center!=null){
 	        finalGraphics.drawImage(center, offsetX,0,null);
 	        offsetX+=(int) (center.getWidth()+dx+0.5);
         }
         
-        ///place the right element
-        finalGraphics.drawImage(right, offsetX,0,null);        
+        ///place the right element in case we have it
+        if(right!=null){
+        	finalGraphics.drawImage(right, offsetX,0,null);        
+        }
         
         finalGraphics.dispose();
 		return (BufferedImage) finalImage;
 	}
 
 	/**
-	 * @param layer
-	 * @param found
-	 * @return
+	 * Checks if the provided {@link SimpleFeatureType} contains a coverage as per used by the {@link StreamingRenderer}.
+	 * 
+	 * @param layer a {@link SimpleFeatureType} to check if it contains a  grid.
+	 * @return <code>true</code> if this layer contains a gridcoverage, <code>false</code> otherwise.
 	 */
 	public static boolean checkGridLayer(final SimpleFeatureType layer) {
 		 boolean found=false;
