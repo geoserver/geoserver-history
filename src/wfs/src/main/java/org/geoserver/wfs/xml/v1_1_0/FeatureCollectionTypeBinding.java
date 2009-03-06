@@ -11,6 +11,8 @@ import javax.xml.namespace.QName;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.feature.CompositeFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -20,6 +22,7 @@ import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 
 /**
@@ -83,10 +86,12 @@ import org.geotools.xml.Node;
  */
 public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
+    Catalog catalog;
     boolean generateBounds;
 
-    public FeatureCollectionTypeBinding(WfsFactory wfsfactory, Configuration configuration) {
+    public FeatureCollectionTypeBinding(WfsFactory wfsfactory, Catalog catalog, Configuration configuration) {
         this.wfsfactory = wfsfactory;
+        this.catalog = catalog;
         this.generateBounds = !configuration.getProperties().contains(GMLConfiguration.NO_FEATURE_BOUNDS);
     }
 
@@ -143,17 +148,34 @@ public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
             ReferencedEnvelope env = null;
             for (Iterator it = featureCollection.getFeature().iterator(); it.hasNext();) {
                 FeatureCollection fc = (FeatureCollection) it.next();
-                if (env == null)
+                if(env == null) {
                     env = fc.getBounds();
-                else
+                }
+                else {
                     env.expandToInclude(fc.getBounds());
-
+                }
+                
                 // workaround bogus collection implementation that won't return the crs
                 if(env != null &&  env.getCoordinateReferenceSystem() == null) {
-                        env = new ReferencedEnvelope(env, fc.getSchema().getCoordinateReferenceSystem());
+                    CoordinateReferenceSystem crs = fc.getSchema().getCoordinateReferenceSystem();
+                    if ( crs == null ) {
+                        //fall back on catalog
+                        FeatureTypeInfo info = catalog.getFeatureTypeByName(fc.getSchema().getName());
+                        if ( info != null ) {
+                            crs = info.getCRS();
+                        }
+                    }
+                    env = new ReferencedEnvelope(env, crs);
+                }
+                
+                if ( env != null ) {
+                    //JD: here we don't return the envelope if it is null or empty, this is to work 
+                    // around and issue with validation in the cite engine. I have opened a jira task 
+                    // to track this, and hopefully eventually fix the cite engine
+                    //    http://jira.codehaus.org/browse/GEOS-2700
+                    return !( env.isNull() || env.isEmpty() ) ? env : null; 
                 }
             }
-            return env;
         }
 
         //delegate to parent lookup
