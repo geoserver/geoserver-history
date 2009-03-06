@@ -73,6 +73,16 @@ public class LegendUtils {
 		LEFT,CENTERED,RIGHT,JUSTIFIED;		
 	}
 	
+	/**Default {@link Font} name for legends.*/
+	public final static String DEFAULT_FONT_NAME="Sans-Serif";
+	
+	/**Default {@link Font} for legends.*/
+	public final static int DEFAULT_FONT_TYPE= Font.PLAIN;
+	
+	
+	/**Default {@link Font} for legends.*/
+	public final static int DEFAULT_FONT_SIZE= 12;
+	
 	/**Default {@link Font} for legends.*/
 	public final static Font DEFAULT_FONT= new Font("Sans-Serif",Font.PLAIN,12);
 	
@@ -105,6 +115,8 @@ public class LegendUtils {
 	private static final Logger LOGGER = org.geotools.util.logging.Logging
 			.getLogger(LegendUtils.class.getPackage().getName());
 
+	public static final Color DEFAULT_BORDER_COLOR = Color.black;
+
 	/**
 	 * Retrieves the font from the provided {@link GetLegendGraphicRequest}.
 	 * 
@@ -117,16 +129,22 @@ public class LegendUtils {
 		final Map legendOptions = req.getLegendOptions();
 		if(legendOptions==null)
 			return DEFAULT_FONT;
-		String legendFontName=null;
+		String legendFontName=LegendUtils.DEFAULT_FONT_NAME;
 		if (legendOptions.get("fontName") != null) {
 			legendFontName = (String) legendOptions.get("fontName");
 		}
-		String legendFontFamily=null;
+		
+		int legendFontFamily=LegendUtils.DEFAULT_FONT_TYPE;
 		if (legendOptions.get("fontStyle") != null) {
-			legendFontFamily = (String) legendOptions.get("fontStyle");
+			String legendFontFamily_ = (String) legendOptions.get("fontStyle");
+			if (legendFontFamily_.equalsIgnoreCase("italic")) {
+				legendFontFamily= Font.ITALIC;
+			} else if (legendFontFamily_.equalsIgnoreCase("bold")) {
+				legendFontFamily= Font.BOLD;
+			} 
 		}
 		
-		Integer legendFontSize=null	;
+		int legendFontSize=LegendUtils.DEFAULT_FONT_SIZE	;
 		if (legendOptions.get("fontSize") != null) {
 			try {
 				legendFontSize = Integer.valueOf((String) legendOptions
@@ -134,20 +152,16 @@ public class LegendUtils {
 			} catch (NumberFormatException e) {
 				LOGGER
 						.warning("Error trying to interpret legendOption 'fontSize': "+ legendOptions.get("fontSize"));
+				legendFontSize=LegendUtils.DEFAULT_FONT_SIZE;
 			}
 		}
 
-		if(legendFontFamily==null|| legendFontName==null|| legendFontSize<0)
+		if(legendFontFamily==LegendUtils.DEFAULT_FONT_TYPE&& legendFontName.equalsIgnoreCase(LegendUtils.DEFAULT_FONT_NAME)&& 
+				(legendFontSize==LegendUtils.DEFAULT_FONT_SIZE||legendFontSize<=0))
 			return DEFAULT_FONT;
 		
-		if (legendFontFamily.equalsIgnoreCase("italic")) {
-			return new Font(legendFontName, Font.ITALIC, legendFontSize);
-		} else if (legendFontFamily.equalsIgnoreCase("bold")) {
-			return new Font(legendFontName, Font.BOLD, legendFontSize);
-		} 
+		return new Font(legendFontName, legendFontFamily, legendFontSize);
 		
-		return DEFAULT_FONT;
-
 	}
 
 	/**

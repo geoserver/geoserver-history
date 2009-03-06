@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
@@ -29,6 +31,7 @@ import org.vfny.geoserver.wms.responses.ImageUtils;
 import org.vfny.geoserver.wms.responses.LegendUtils;
 import org.vfny.geoserver.wms.responses.LegendUtils.HAlign;
 import org.vfny.geoserver.wms.responses.LegendUtils.VAlign;
+
 
 
 /**
@@ -44,6 +47,7 @@ import org.vfny.geoserver.wms.responses.LegendUtils.VAlign;
  */
 @SuppressWarnings("deprecation")
 class ColorMapLegendBuilder {
+	private static final Logger LOGGER=org.geotools.util.logging.Logging.getLogger(ColorMapLegendBuilder.class);
 	
 	private void checkFrozen(){
 		if(frozen.get())
@@ -163,7 +167,7 @@ class ColorMapLegendBuilder {
 	            graphics.setColor(newColor);
 	            graphics.fill(clipBox);
 	            //make bkgColor customizable
-	            graphics.setColor(Color.BLACK);
+	            graphics.setColor(borderColor);
 	            if(completeBorder)
 	            {
 		            
@@ -282,7 +286,7 @@ class ColorMapLegendBuilder {
             {
 	            final Color oldColor=graphics.getColor();
 	            //make bkgColor customizable
-	            graphics.setColor(Color.BLACK);
+	            graphics.setColor(borderColor);
 	            final int minx_=(int) (clipBox.getMinX()+0.5);
 	            final int maxx=(int) (minx+clipBox.getWidth()+0.5)-1;
 	            final int maxy=(int)(miny+clipBox.getHeight()+0.5)-1;	            	
@@ -601,7 +605,7 @@ class ColorMapLegendBuilder {
 	
 	private double columnMarginPercentage=LegendUtils.columnPaddingFactor;
 	
-	private boolean borderColor=false;
+	private Color borderColor=LegendUtils.DEFAULT_BORDER_COLOR;
 	
 	private boolean borderLabel=false;
 	
@@ -630,6 +634,8 @@ class ColorMapLegendBuilder {
 	private boolean forceRule=false;
 
 	private BufferedImage legend;
+
+	private boolean border=false;
 
 	
 	
@@ -858,19 +864,25 @@ class ColorMapLegendBuilder {
         
         
         if (additionalOptions.get("borderColor") instanceof String) {
-        	borderColor=Boolean.parseBoolean((String) additionalOptions.get("borderColor"));
+        	borderColor=LegendUtils.color((String) additionalOptions.get("borderColor"));
+
             
         }
         
-        if (additionalOptions.get("borderRule") instanceof String) {
-        	borderRule=Boolean.parseBoolean((String) additionalOptions.get("borderRule"));
+        if (additionalOptions.get("border") instanceof String) {
+        	border=Boolean.valueOf((String) additionalOptions.get("border"));
             
         }
         
-        if (additionalOptions.get("borderLabel") instanceof String) {
-        	borderLabel=Boolean.parseBoolean((String) additionalOptions.get("borderLabel"));
-            
-        }
+//        if (additionalOptions.get("borderRule") instanceof String) {
+//        	borderRule=Boolean.parseBoolean((String) additionalOptions.get("borderRule"));
+//            
+//        }
+//        
+//        if (additionalOptions.get("borderLabel") instanceof String) {
+//        	borderLabel=Boolean.parseBoolean((String) additionalOptions.get("borderLabel"));
+//            
+//        }
         
         
         if (additionalOptions.get("forceRule") instanceof String) {
@@ -987,7 +999,7 @@ class ColorMapLegendBuilder {
 	        final BufferedImage colorCellLegend = new BufferedImage(rowWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);	
 	        Graphics2D rlg = colorCellLegend.createGraphics();
 	        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	        cell.draw(rlg, clipboxA,borderColor);
+	        cell.draw(rlg, clipboxA,border);
 	        rlg.dispose(); 
 	        
 	        queue.add(colorCellLegend);
@@ -1036,7 +1048,7 @@ class ColorMapLegendBuilder {
 	        Graphics2D rlg = colorCellLegend.createGraphics();
 	        rlg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	        rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-	        colorCell.draw(rlg, clipboxA,borderColor);
+	        colorCell.draw(rlg, clipboxA,border);
 	        rlg.dispose(); 
 	        
 	        BufferedImage ruleCellLegend=null;
