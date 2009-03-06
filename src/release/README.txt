@@ -1,3 +1,22 @@
+GeoServer 1.7.3 (March 9, 2009)
+-------------------------------
+
+The fourth release of 1.7.x brings the following new features:
+
+  * Improved support for ArcSDE rasters
+  * CVS and Excel output formats
+  * REST configuration extension
+  * GeoSearch extension
+  * JDBC mosaic extension
+  * Directory data store
+  * Namespace filtering for capabilities requests
+
+And more. The entire change log can be found:
+
+  http://jira.codehaus.org/browse/GEOS/fixforversion/14786
+
+This release is based on Geotools 2.5.4.
+
 GeoServer 1.7.2 (January 19, 2008)
 ---------------------------------
 
