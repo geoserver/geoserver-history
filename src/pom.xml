@@ -7,7 +7,7 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>1.7.3-SNAPSHOT</version>
+ <version>1.7.3</version>
  <name>GeoServer</name>
 
  <scm>
@@ -908,7 +908,7 @@
      <dependency>
       <groupId>org.geoserver.maven</groupId>
       <artifactId>build-configs</artifactId>
-      <version>1.7.3-SNAPSHOT</version>
+      <version>1.7.3</version>
      </dependency>
     </dependencies>
    </plugin>
@@ -960,7 +960,7 @@
       <descriptor>release/ext-restconfig.xml</descriptor>
       <descriptor>release/ext-geosearch.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.7.3-SNAPSHOT</finalName>
+     <finalName>geoserver-1.7.3</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -1173,7 +1173,7 @@
  </modules>
 
  <properties>
-  <gs.version>1.7.3-SNAPSHOT</gs.version>
+  <gs.version>1.7.3</gs.version>
   <gt.version>2.5-SNAPSHOT</gt.version>
   <spring.version>2.5.5</spring.version>
   <java.awt.headless>true</java.awt.headless>
