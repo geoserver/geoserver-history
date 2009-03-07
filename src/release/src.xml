@@ -26,6 +26,7 @@
                    <include>org.geoserver:stress</include>
                    <include>org.geoserver:maven</include>
                    <include>org.geoserver:gwc</include>
+                   <include>org.geoserver:rest</include>
   		</includes>
   		<sources>
  	  		<outputDirectory>geoserver-1.7.3/${artifactId}/</outputDirectory>
