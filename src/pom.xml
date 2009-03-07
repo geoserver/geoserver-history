@@ -1174,7 +1174,7 @@
 
  <properties>
   <gs.version>1.7.3</gs.version>
-  <gt.version>2.5-SNAPSHOT</gt.version>
+  <gt.version>2.5.4</gt.version>
   <spring.version>2.5.5</spring.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
