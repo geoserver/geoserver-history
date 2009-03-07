@@ -6,7 +6,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
  <fileSets>
     <fileSet>
-      <directory>release/target/dependency/geosearch</directory>
+      <directory>release/target/dependency</directory>
       <outputDirectory></outputDirectory>
       <includes>
         <include>geosearch-*.jar</include>
