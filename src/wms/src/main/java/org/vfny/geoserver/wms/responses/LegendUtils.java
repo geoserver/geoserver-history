@@ -28,6 +28,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
 import org.opengis.filter.expression.Expression;
+import org.opengis.style.ChannelSelection;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 
 /**
@@ -75,6 +76,9 @@ public class LegendUtils {
 	
 	/**Default {@link Font} name for legends.*/
 	public final static String DEFAULT_FONT_NAME="Sans-Serif";
+	
+	/**Default channel name for {@link ChannelSelection} elements.*/
+	public final static String DEFAULT_CHANNEL_NAME="1";
 	
 	/**Default {@link Font} for legends.*/
 	public final static int DEFAULT_FONT_TYPE= Font.PLAIN;

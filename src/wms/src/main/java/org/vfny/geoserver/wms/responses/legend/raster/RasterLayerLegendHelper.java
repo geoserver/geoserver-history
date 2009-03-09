@@ -26,6 +26,7 @@ import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.ImageUtils;
 import org.vfny.geoserver.wms.responses.LegendUtils;
+import org.vfny.geoserver.wms.responses.legend.raster.ColorMapLegendCreator.Builder;
 
 /**
  * Helper class to create legends for raster styles by parsing the rastersymbolizer element.
@@ -62,9 +63,9 @@ public class RasterLayerLegendHelper {
 	private RasterSymbolizer rasterSymbolizer;
 	private int width;
 	private int height;
-	private ColorMapLegendBuilder cmapLegendBuilder;
 	private boolean transparent;
 	private Color bgColor;
+	private ColorMapLegendCreator cMapLegendCreator;
 
 	/**
 	 * Constructor for a RasterLayerLegendHelper.
@@ -132,16 +133,19 @@ public class RasterLayerLegendHelper {
 
 		// colormap element
 		final ColorMap cmap = rasterSymbolizer.getColorMap();
+		final Builder cmapLegendBuilder= new ColorMapLegendCreator.Builder();
 		if (cmap != null && cmap.getColorMapEntries() != null
 				&& cmap.getColorMapEntries().length > 0) {
-			// colormap legend builder
-			cmapLegendBuilder = new ColorMapLegendBuilder();
+			
+			// passing additional options
+			cmapLegendBuilder.setAdditionalOptions(request.getLegendOptions());	
 
+			
 			// setting type of colormap
 			cmapLegendBuilder.setColorMapType(cmap.getType());
 
 			// is this colormap using extended colors
-			cmapLegendBuilder.setExtended(cmapLegendBuilder.isExtended());
+			cmapLegendBuilder.setExtended(cmap.getExtendedColors());
 			
 
 			// setting the requested colormap entries
@@ -156,9 +160,6 @@ public class RasterLayerLegendHelper {
 			// Setting label font and font bkgColor
 			cmapLegendBuilder.setLabelFont(LegendUtils.getLabelFont(request));
 			cmapLegendBuilder.setLabelFontColor(LegendUtils.getLabelFontColor(request));
-
-			// passing additional options
-			cmapLegendBuilder.setAdditionalOptions(request.getLegendOptions());	
 			
 			
 			//set band
@@ -169,8 +170,13 @@ public class RasterLayerLegendHelper {
 			final ColorMapEntry[] colorMapEntries = cmap.getColorMapEntries();
 			for (ColorMapEntry ce : colorMapEntries)
 				if (ce != null)
-					cmapLegendBuilder.addColorMapEntry(ce);		
+					cmapLegendBuilder.addColorMapEntry(ce);	
+			
+			cMapLegendCreator=cmapLegendBuilder.create();
 		}
+		else
+			cMapLegendCreator=null;
+		
 	}
 
 	/**
@@ -187,10 +193,10 @@ public class RasterLayerLegendHelper {
 
 		if (image == null) {
 			
-			if(cmapLegendBuilder!=null)
+			if(cMapLegendCreator!=null)
 
 				// creating a legend
-				image = cmapLegendBuilder.getLegend();
+				image = cMapLegendCreator.getLegend();
 
 			 else {
 				if(defaultLegend==null)
