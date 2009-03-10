@@ -93,17 +93,6 @@
    </dependency>
    <dependency>
     <groupId>org.geoserver</groupId>
-    <artifactId>data</artifactId>
-    <version>${gs.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>org.geoserver</groupId>
-    <artifactId>data</artifactId>
-    <version>${gs.version}</version>
-    <classifier>tests</classifier>
-   </dependency>
-   <dependency>
-    <groupId>org.geoserver</groupId>
     <artifactId>ows</artifactId>
     <version>${gs.version}</version>
    </dependency>
@@ -1177,7 +1166,6 @@
  <modules>
   <module>maven</module>
   <module>platform</module>
-  <module>data</module>
   <module>main</module>
   <module>wcs</module>
   <module>wcs1_1</module>
