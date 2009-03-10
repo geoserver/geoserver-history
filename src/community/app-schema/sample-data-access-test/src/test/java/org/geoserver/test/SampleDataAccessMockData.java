@@ -32,6 +32,8 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class SampleDataAccessMockData implements TestData {
 
+    public static final String DATASTORE_NAME = "datastore";
+
     /**
      * Use FeatureTypeInfo constants for srs handling as values
      */
@@ -64,10 +66,6 @@ public class SampleDataAccessMockData implements TestData {
 
     static final Envelope DEFAULT_ENVELOPE = new Envelope(-180, 180, -90, 90);
 
-    public static String DEFAULT_PREFIX = "gsml";
-
-    public static String DEFAULT_URI = SampleDataAccessData.NAMESPACE;
-
     private File data;
 
     /** the 'featureTypes' directory, under 'data' */
@@ -87,7 +85,12 @@ public class SampleDataAccessMockData implements TestData {
         featureTypes = new File(data, "featureTypes");
         featureTypes.mkdir();
 
-        info("dummy", "gsml", "MappedFeature");
+        info(DATASTORE_NAME, SampleDataAccessData.NAMESPACE_PREFIX,
+                SampleDataAccessData.MAPPEDFEATURE_TYPE_NAME.getLocalPart());
+        // need to add nested type at top level so type definition is loaded into global schema and
+        // can be found during encoding
+        info(DATASTORE_NAME, SampleDataAccessData.NAMESPACE_PREFIX,
+                SampleDataAccessData.GEOLOGICUNIT_TYPE_NAME.getLocalPart());
     }
 
     /**
@@ -138,18 +141,18 @@ public class SampleDataAccessMockData implements TestData {
         CatalogWriter writer = new CatalogWriter();
         writer.dataStores(new HashMap<String, Map<String, Serializable>>() {
             {
-                put("dummy", SampleDataAccessFactory.PARAMS);
+                put(DATASTORE_NAME, SampleDataAccessFactory.PARAMS);
             }
         }, new HashMap<String, String>() {
             {
-                put("dummy", "gsml");
+                put(DATASTORE_NAME, SampleDataAccessData.NAMESPACE_PREFIX);
             }
         }, Collections.<String> emptySet());
         writer.coverageStores(new HashMap<String, Map<String, String>>(),
                 new HashMap<String, String>(), Collections.<String> emptySet());
         writer.namespaces(new HashMap<String, String>() {
             {
-                put("gsml", SampleDataAccessData.NAMESPACE);
+                put(SampleDataAccessData.NAMESPACE_PREFIX, SampleDataAccessData.NAMESPACE_URI);
             }
         });
         writer.styles(Collections.<String, String> emptyMap());
