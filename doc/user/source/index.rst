@@ -34,6 +34,7 @@ Web.
    google-earth/index
    geowebcache/index
    security/index
+   production/index
    templates/index
    tutorials/index
    extensions/index
