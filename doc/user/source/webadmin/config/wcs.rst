@@ -10,6 +10,8 @@ This section is for configuring the Web Coverage Service in GeoServer.
    
    *WCS Configuration page*
 
+.. _web_admin_config_wcs_contents:   
+   
 Contents
 --------
 
@@ -20,6 +22,8 @@ The WCS Contents page allows the WCS to be enabled or disabled.  When disabled, 
    
    *WCS Contents page*
 
+.. _web_admin_config_wcs_description:
+   
 Description
 -----------
 
@@ -50,6 +54,8 @@ The WCS Description page is where information about the WCS is populated.  This 
    * - ``Abstract``
      -
 
+.. _web_admin_config_wcs_coverageplugins:
+	 
 CoveragePlugins
 ---------------
 

@@ -10,6 +10,8 @@ This section is for configuring the Web Feature Service in GeoServer.
    
    *WFS Configuration page*
 
+.. _web_admin_config_wfs_contents:   
+   
 Contents
 --------
 
@@ -22,6 +24,8 @@ The WFS Contents page allows for configuration of the WFS.  The WFS can be enabl
    
    *WFS Contents page*
 
+.. _web_admin_config_wfs_description:
+   
 Description
 -----------
 
@@ -52,6 +56,8 @@ The WFS Description page is the area where information about the WFS is populate
    * - ``Abstract``
      -
 
+.. _web_admin_config_wfs_validation:	 
+	 
 Validation
 ----------
 

@@ -5,6 +5,8 @@ Data
 
 This section is for configuring your data.  The majority of configuration of GeoServer is done in this section.
 
+.. _web_admin_config_namespace:
+
 Namespace
 ---------
 
@@ -37,6 +39,8 @@ The Edit page allows new or existing namespaces to be configured.  Enter a **URI
    
    *Edit Namespace page*
 
+.. _web_admin_config_coveragestores:   
+   
 Coveragestores
 --------------
 
@@ -71,7 +75,9 @@ The Edit page is where existing coveragestores can be configured.  The exact con
    
    *Edit Coveragestore page*
 
-DataStores
+.. _web_admin_config_datastores:   
+   
+Datastores
 ----------
 
 A **datastore** is a file, group of files, or database that contains featuretypes (vector data). It is necessary to register a datastore in GeoServer before any featuretypes can be loaded.
@@ -105,6 +111,8 @@ The Edit page is where existing datastores can be configured.  The exact content
    
    *Edit Datastore page*
 
+.. _web_admin_config_style:
+   
 Style
 -----
 
@@ -137,7 +145,8 @@ The Edit page presents two options for entering an SLD.  There is the option of 
    
    *Edit Style page*
 
-
+.. _web_admin_config_featuretypes:
+   
 FeatureTypes
 ------------
 
@@ -170,7 +179,8 @@ Edit
    
    *Edit Featuretype page*
  
-
+.. _web_admin_config_coverage:
+ 
 Coverages
 ---------
 

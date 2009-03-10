@@ -10,6 +10,8 @@ This section is for configuring the Web Map Service in GeoServer.
    
    *WMS Configuration page*
 
+.. _web_admin_config_wms_contents:
+   
 Contents
 --------
 
@@ -44,6 +46,8 @@ The page displays a list of currently configured layer groups.  The configuratio
 
 To create a new layer group, click the **Add New Layer-Group** button.
 
+.. _web_admin_config_wms_description:
+
 Description
 -----------
 
@@ -74,6 +78,8 @@ The WMS Description page is the area where information about the WMS is populate
    * - ``Abstract``
      -
 
+.. _web_admin_config_wms_rendering:	 
+	 
 Rendering
 ---------
 

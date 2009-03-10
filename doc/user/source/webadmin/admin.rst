@@ -3,7 +3,7 @@
 Admin menu
 ==========
 
-The Admin Menu contains information about the currently running GeoServer.  The information displayed is:
+The Admin menu contains information about the currently running GeoServer.  The information displayed is:
 
 .. figure:: adminmenu.png
    :align: center

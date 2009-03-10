@@ -80,6 +80,8 @@ Documentation
 
 This is a link to the online GeoServer documentation.
 
+.. warning:: These demos may change, so this section is unpopulated for now.
+
 Overlay on Google Maps
 ----------------------
 
@@ -94,3 +96,4 @@ GeoRSS
 
 WMS Example
 -----------
+

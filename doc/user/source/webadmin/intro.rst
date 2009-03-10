@@ -1,7 +1,7 @@
 .. _web_admin_intro:
 
-Using the Web Administration Interface
-======================================
+Interface basics
+================
 
 The Web Administration Interface is a easy-to-use, web-based graphical interface for viewing and configuring GeoServer. 
 
@@ -23,9 +23,9 @@ When correctly configured, the welcome page will show up in your browser.
 Welcome page
 ------------
 
-The welcome page contains lots of information at a glance, in the form of the health bars on the left side of the page.  These colored bars will show graphically any misconfigurations of the WFS, WMS, and WCS aspects of GeoServer (if applicable).
+The Welcome page contains lots of information at a glance, in the form of the health bars on the left side of the page.  These colored bars will show graphically any misconfigurations of the WFS, WMS, and WCS aspects of GeoServer (if applicable).
 
-.. note:: Description of what the bar colors mean
+.. warning:: Add description of what the bar colors mean
 
 The welcome page contains many links for through various areas of the GeoServer configuration.  There are also externals links to the GeoServer homepage at http://geoserver.org .
 
