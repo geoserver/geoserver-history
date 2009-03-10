@@ -88,6 +88,10 @@ public abstract class DataStoreUtils {
         return store;
     }
 
+    public static Map getParams(Map m) {
+        return getParams(m,null);
+    }
+    
     public static Map getParams(Map m, ServletContext sc) {
         File data_dir = GeoserverDataDirectory.getGeoserverDataDirectory();
         String baseDir = data_dir.getPath();

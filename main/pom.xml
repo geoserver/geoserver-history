@@ -17,10 +17,6 @@
  <dependencies>
   <dependency>
    <groupId>org.geoserver</groupId>
-   <artifactId>data</artifactId>
-  </dependency>
-  <dependency>
-   <groupId>org.geoserver</groupId>
    <artifactId>ows</artifactId>
   </dependency>
   <dependency>
@@ -115,18 +111,20 @@
    <artifactId>gt-metadata</artifactId>
   </dependency>
   <dependency>
+   <groupId>org.geotools</groupId>
+   <artifactId>gt-property</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.geotools</groupId>
+   <artifactId>gt-epsg-hsql</artifactId>
+  </dependency>
+  <dependency>
    <groupId>org.springframework</groupId>
    <artifactId>spring-aop</artifactId>
   </dependency>
   <dependency>
    <groupId>com.thoughtworks.xstream</groupId>
    <artifactId>xstream</artifactId>
-  </dependency>
-  <dependency>
-   <groupId>org.geoserver</groupId>
-   <artifactId>data</artifactId>
-   <classifier>tests</classifier>
-   <scope>test</scope>
   </dependency>
   <dependency>
    <groupId>httpunit</groupId>

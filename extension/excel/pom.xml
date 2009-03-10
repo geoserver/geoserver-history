@@ -47,13 +47,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.geoserver</groupId>
-      <artifactId>data</artifactId>
-      <version>${project.version}</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.mockrunner</groupId>
       <artifactId>mockrunner</artifactId>
       <version>0.3.1</version>
