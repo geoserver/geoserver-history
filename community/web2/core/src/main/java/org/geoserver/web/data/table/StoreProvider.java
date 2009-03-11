@@ -16,8 +16,9 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.data.table.GSDataProvider.Property;
-import org.geoserver.web.data.table.GSDataProvider.PropertyPlaceholder;
+import org.geoserver.web.wicket.GSDataProvider;
+import org.geoserver.web.wicket.GSDataProvider.Property;
+import org.geoserver.web.wicket.GSDataProvider.PropertyPlaceholder;
 
 public class StoreProvider extends GSDataProvider {
     

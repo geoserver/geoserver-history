@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.data.table;
+package org.geoserver.web.wicket;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -22,8 +22,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.geoserver.web.data.table.GSDataProvider.Property;
-import org.geoserver.web.wicket.GeoServerPagingNavigator;
+import org.geoserver.web.wicket.GSDataProvider.Property;
 
 /**
  * An abstract filterable, sortable, pageable table with associated
