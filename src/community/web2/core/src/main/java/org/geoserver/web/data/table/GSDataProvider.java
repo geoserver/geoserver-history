@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.table;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -103,6 +104,14 @@ public abstract class GSDataProvider<T> extends SortableDataProvider {
     public int size() {
         return getFilteredItems().size();
     }
+    
+    /**
+     * Returns the global size of the collection, without filtering it
+     * @return
+     */
+    public int fullSize() {
+        return getItems().size();
+    }
 
     private List<T> filterByKeywords(List<T> items) {
         StringBuilder sb = new StringBuilder();
@@ -186,7 +195,7 @@ public abstract class GSDataProvider<T> extends SortableDataProvider {
      * 
      * @param <T>
      */
-    protected interface Property<T> {
+    protected interface Property<T> extends Serializable {
         public String getName();
 
         public Object getPropertyValue(T item);
