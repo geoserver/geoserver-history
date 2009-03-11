@@ -11,21 +11,20 @@
 			<input class="btnTxt" wicket:id="resetFilter" type="button"	value="reset"></input>
 	</form>
 	<div wicket:id="filterMatch">Matched xxx out of yyy</div>
-	<table>
+	
+	<table wicket:id="listContainer">
 		<thead>
 			<tr>
-				<th></th>
 				<th wicket:id="orderType">Type</th>
-				<th wicket:id="orderWs">Workspace</th>
+				<th wicket:id="orderWorkspace">Workspace</th>
 				<th wicket:id="orderStore">Store</th>
 				<th wicket:id="orderName">Name</th>
 				<th wicket:id="orderEnabled">Enabled</th>
 				<th wicket:id="orderSRS">SRS</th>
 			</tr>
 		</thead>
-		<tbody wicket:id="listContainer">
+		<tbody>
 			<tr wicket:id="layerList">
-			  <td><input type="checkbox" wicket:id="selected"></input></td>
 			  <td wicket:id="type">raster/vector</td>
 				<td><a href="#" wicket:id="wsLink"><span wicket:id="ws">ws</span></a></td>
 				<td><a href="#" wicket:id="storeLink"><span wicket:id="store">store</span></a></td>
@@ -36,8 +35,9 @@
 		</tbody>
 	</table>
 	<div wicket:id="navigator">1|2|3|...</div>
+	
 	<ul>
-	<li><a href="#" wicket:id="remove">Remove selected</a></li>
+	<li><a href="#" >Batch remove</a></li>
 	<li>Add layer from <select wicket:id="storesDropDown"></select></li>
 	</ul>
 	
