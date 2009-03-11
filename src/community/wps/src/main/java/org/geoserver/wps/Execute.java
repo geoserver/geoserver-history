@@ -174,7 +174,7 @@ public class Execute {
             ProcessFailedType failure = f.createProcessFailedType();
             response.getStatus().setProcessFailed( failure );
             
-            failure.setExceptionReport( Ows11Util.exceptionReport( new ServiceException( error ), wps.getGeoServer().isVerboseExceptions() ) );
+            failure.setExceptionReport( Ows11Util.exceptionReport( new ServiceException( error ), wps.getGeoServer().getGlobal().isVerboseExceptions()) );
         }
         else {
             response.getStatus().setProcessSucceeded( "Process succeeded.");

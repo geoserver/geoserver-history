@@ -25,6 +25,7 @@ import net.opengis.wps10.ProcessOfferingsType;
 import net.opengis.wps10.WPSCapabilitiesType;
 import net.opengis.wps10.Wps10Factory;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.util.OwsUtils;
@@ -91,8 +92,9 @@ public class GetCapabilities {
         caps.setServiceProvider( sp );
         
         //TODO: set provder name from context
-        if ( wps.getGeoServer().getContact().getContactOrganization() != null ) {
-            sp.setProviderName(  wps.getGeoServer().getContact().getContactOrganization()  );    
+        GeoServerInfo geoServer = wps.getGeoServer().getGlobal();
+        if ( geoServer.getContact().getContactOrganization() != null ) {
+            sp.setProviderName(  geoServer.getContact().getContactOrganization()  );    
         }
         else {
             sp.setProviderName( "GeoServer" );
@@ -100,8 +102,8 @@ public class GetCapabilities {
         
         
         sp.setProviderSite(owsf.createOnlineResourceType());
-        sp.getProviderSite().setHref( wps.getGeoServer().getOnlineResource() );
-        sp.setServiceContact( responsibleParty( wps.getGeoServer(), owsf ) );
+        sp.getProviderSite().setHref( geoServer.getOnlineResource() );
+        sp.setServiceContact( responsibleParty( geoServer, owsf ) );
         
         //OperationsMetadata
         OperationsMetadataType om = owsf.createOperationsMetadataType();
