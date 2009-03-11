@@ -195,7 +195,7 @@ public abstract class GSDataProvider<T> extends SortableDataProvider {
      * 
      * @param <T>
      */
-    protected interface Property<T> extends Serializable {
+    public interface Property<T> extends Serializable {
         public String getName();
 
         public Object getPropertyValue(T item);
@@ -245,21 +245,36 @@ public abstract class GSDataProvider<T> extends SortableDataProvider {
         }
 
         public Comparator<T> getComparator() {
-            return new Comparator<T>() {
-                public int compare(T o1, T o2) {
-                    Comparable p1 = (Comparable) getPropertyValue(o1);
-                    Comparable p2 = (Comparable) getPropertyValue(o2);
-
-                    // what if any property is null? We assume null < (not null)
-                    if (p1 == null)
-                        return p2 != null ? -1 : 0;
-                    else if (p2 == null)
-                        return 1;
-
-                    return p1.compareTo(p2);
-                }
-            };
+            return new PropertyComparator(this);
         }
+    }
+    
+    /**
+     * Uses {@link Property} to extract the values, and then compares
+     * them assuming they are {@link Comparable}
+     *
+     * @param <T>
+     */
+    public static class PropertyComparator<T> implements Comparator<T> {
+        Property<T> property;
+        
+        public PropertyComparator(Property<T> property) {
+            this.property = property;
+        }
+
+        public int compare(T o1, T o2) {
+            Comparable p1 = (Comparable) property.getPropertyValue(o1);
+            Comparable p2 = (Comparable) property.getPropertyValue(o2);
+
+            // what if any property is null? We assume null < (not null)
+            if (p1 == null)
+                return p2 != null ? -1 : 0;
+            else if (p2 == null)
+                return 1;
+
+            return p1.compareTo(p2);
+        }
+        
     }
 
     /**
