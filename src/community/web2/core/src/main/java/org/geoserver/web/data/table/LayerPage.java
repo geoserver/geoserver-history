@@ -25,7 +25,10 @@ import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.NamespaceEditPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
-import org.geoserver.web.data.table.GSDataProvider.Property;
+import org.geoserver.web.wicket.ConfirmationAjaxLink;
+import org.geoserver.web.wicket.GSTablePanel;
+import org.geoserver.web.wicket.SimpleAjaxLink;
+import org.geoserver.web.wicket.GSDataProvider.Property;
 
 /**
  * Page listing all the available layers. Follows the usual filter/sort/page approach,

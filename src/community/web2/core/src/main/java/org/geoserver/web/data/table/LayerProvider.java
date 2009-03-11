@@ -13,6 +13,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
+import org.geoserver.web.wicket.GSDataProvider;
 
 /**
  * Provides a filtered, sorted view over the catalog layers.

@@ -2,11 +2,9 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.data.table;
+package org.geoserver.web.wicket;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -30,7 +28,7 @@ public abstract class SimpleAjaxLink extends Panel {
     }
 
     public SimpleAjaxLink(String id, IModel linkModel, IModel labelModel) {
-        super(id);
+        super(id, linkModel);
         
         add(link = buildAjaxLink(linkModel));
         link.add(label = new Label("label", labelModel));

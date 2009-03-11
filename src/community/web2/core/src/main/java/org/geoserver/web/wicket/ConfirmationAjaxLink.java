@@ -1,4 +1,4 @@
-package org.geoserver.web.data.table;
+package org.geoserver.web.wicket;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
