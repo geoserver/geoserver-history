@@ -1,10 +1,15 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.data.table;
 
-import static org.geoserver.web.data.table.LayerProvider.ENABLED_PROPERTY;
-import static org.geoserver.web.data.table.LayerProvider.NAME_PROPERTY;
-import static org.geoserver.web.data.table.LayerProvider.SRS_PROPERTY;
-import static org.geoserver.web.data.table.LayerProvider.STORE_PROPERTY;
-import static org.geoserver.web.data.table.LayerProvider.WORKSPACE_PROPERTY;
+import static org.geoserver.web.data.table.LayerProvider.TYPE;
+import static org.geoserver.web.data.table.LayerProvider.ENABLED;
+import static org.geoserver.web.data.table.LayerProvider.NAME;
+import static org.geoserver.web.data.table.LayerProvider.SRS;
+import static org.geoserver.web.data.table.LayerProvider.STORE;
+import static org.geoserver.web.data.table.LayerProvider.WORKSPACE;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,7 +35,6 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerBasePage;
@@ -44,12 +48,10 @@ public class LayerPage extends GeoServerBasePage {
     TextField filter;
     Label matched;
     LayerProvider layers = new LayerProvider();
-    Set<String> selection = new HashSet<String>();
 	GeoServerPagingNavigator navigator;
 	DataView dataView;
     private ModalWindow popupWindow;
     private WebMarkupContainer layerContainer;
-    private AjaxLink removeLink;
 
     public LayerPage() {
         // the popup window for messages
@@ -74,10 +76,6 @@ public class LayerPage extends GeoServerBasePage {
         add(matched = new Label("filterMatch"));
         matched.setVisible(false);
         
-        removeLink = removeLink();
-        add(removeLink);
-        removeLink.setEnabled(false);
-        
         // the stores drop down
         final DropDownChoice stores = storesDropDown();
         add(stores);
@@ -95,34 +93,28 @@ public class LayerPage extends GeoServerBasePage {
                 item.add(new SimpleAttributeModifier("class", item.getIndex() % 2 == 0 ? "even"
                         : "odd"));
                 
-                // build an indirection so that we don't store the actual layer
-                // but just the model the item is using, which is detachable
-                final AjaxCheckBox selected = selectionCheckbox(model);
-                item.add(selected);
-                
-                // build an indirection so that we don't store the actual layer
-                // but just the model the item is using, which is detachable
-                Label type = new Label("type", new LayerIconModel(model));
+                // the layer type
+                Label type = new Label("type", TYPE.getModel(model));
                 item.add(type);
                 
                 // link to workspace
                 Link wsLink = workspaceLink(model);
                 item.add(wsLink);
-                wsLink.add(new Label("ws", new PropertyModel(model, WORKSPACE_PROPERTY)));
+                wsLink.add(new Label("ws", WORKSPACE.getModel(model)));
                 
                 // link to container store
                 AjaxLink storeLink = storeLink(model);
                 item.add(storeLink);
-                storeLink.add(new Label("store", new PropertyModel(model, STORE_PROPERTY)));
+                storeLink.add(new Label("store", STORE.getModel(model)));
                 
                 // link to the layer
                 Link nameLink = layerLink(model);
                 item.add(nameLink);
-                nameLink.add(new Label("name", new PropertyModel(model, NAME_PROPERTY)));
+                nameLink.add(new Label("name", NAME.getModel(model)));
                 
                 // the srs and enabled properties
-                item.add(new Label("enabled", new PropertyModel(model, ENABLED_PROPERTY)));
-                item.add(new Label("SRS", new PropertyModel(model, SRS_PROPERTY)));
+                item.add(new Label("enabled", ENABLED.getModel(model)));
+                item.add(new Label("SRS", SRS.getModel(model)));
             }
 
                         
@@ -130,12 +122,12 @@ public class LayerPage extends GeoServerBasePage {
         layerContainer.add(dataView);
         
         // add the sorting links
-        add(new OrderByBorder("orderType", "type", layers));
-        add(new OrderByBorder("orderWs", "workspace", layers));
-        add(new OrderByBorder("orderStore", "store", layers));
-        add(new OrderByBorder("orderName", "name", layers));
-        add(new OrderByBorder("orderEnabled", "enabled", layers));
-        add(new OrderByBorder("orderSRS", "SRS", layers));
+        layerContainer.add(new OrderByBorder("orderType", "type", layers));
+        layerContainer.add(new OrderByBorder("orderWorkspace", "workspace", layers));
+        layerContainer.add(new OrderByBorder("orderStore", "store", layers));
+        layerContainer.add(new OrderByBorder("orderName", "name", layers));
+        layerContainer.add(new OrderByBorder("orderEnabled", "enabled", layers));
+        layerContainer.add(new OrderByBorder("orderSRS", "SRS", layers));
         
         // add the paging navigator
         dataView.setItemsPerPage(10);
@@ -156,25 +148,6 @@ public class LayerPage extends GeoServerBasePage {
             }
         });
         return stores;
-    }
-
-    private AjaxLink removeLink() {
-        return new AjaxLink("remove") {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                String content = popupWindow.getContentId();
-                if(selection.isEmpty()) {
-                    popupWindow.setContent(new Label(content, "Selection is empty, dude!"));
-                    popupWindow.show(target);
-                } else {
-                    String msg = "Ok, so you wanted to remove " + selection + " uh? Well, you have some code to implement before that!!";
-                    popupWindow.setContent(new Label(content, msg));
-                    popupWindow.show(target);
-                }
-            }
-            
-        };
     }
 
     private AjaxButton filterResetButton() {
@@ -209,7 +182,7 @@ public class LayerPage extends GeoServerBasePage {
     }
     
     private Link layerLink(final IModel model) {
-        return new Link("nameLink", new PropertyModel(model, NAME_PROPERTY)) {
+        return new Link("nameLink", NAME.getModel(model)) {
             public void onClick() {
                 setResponsePage(new ResourceConfigurationPage(getModelObjectAsString()));
             }
@@ -217,7 +190,7 @@ public class LayerPage extends GeoServerBasePage {
     }
 
     private AjaxLink storeLink(final IModel model) {
-        return new AjaxLink("storeLink", new PropertyModel(model, STORE_PROPERTY)) {
+        return new AjaxLink("storeLink", STORE.getModel(model)) {
             public void onClick(AjaxRequestTarget target) {
                 String storeName = getModelObjectAsString();
                 DataStoreInfo store = getCatalog().getDataStoreByName(storeName);
@@ -233,32 +206,13 @@ public class LayerPage extends GeoServerBasePage {
     }
 
     private Link workspaceLink(final IModel model) {
-        return new Link("wsLink", new PropertyModel(model, WORKSPACE_PROPERTY)) {
+        return new Link("wsLink", WORKSPACE.getModel(model)) {
             public void onClick() {
                 setResponsePage(new NamespaceEditPage(getModelObjectAsString()));
             }
         };
     }
 
-    private AjaxCheckBox selectionCheckbox(final IModel model) {
-        return new AjaxCheckBox("selected", new SelectionModel(model)) {
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                LayerInfo li = (LayerInfo) model.getObject();
-                if(selection.contains(li.getName()))
-                    selection.remove(li.getName());
-                else
-                    selection.add(li.getName());
-                target.addComponent(layerContainer);
-                
-                // update the remove link, enabled, only if there 
-                // is some selection
-                removeLink.setEnabled(selection.size() > 0);
-                target.addComponent(removeLink);
-            }
-        };
-    }
-    
     private final class LayerIconModel extends Model {
         private final IModel model;
 
@@ -270,20 +224,6 @@ public class LayerPage extends GeoServerBasePage {
         public Object getObject() {
             LayerInfo li = (LayerInfo) model.getObject();
             return li.getType().toString().toLowerCase(); 
-        }
-    }
-
-    private final class SelectionModel extends Model {
-        private final IModel model;
-
-        private SelectionModel(IModel model) {
-            this.model = model;
-        }
-
-        @Override
-        public Object getObject() {
-            LayerInfo li = (LayerInfo) model.getObject();
-            return selection.contains(li.getName());
         }
     }
 
