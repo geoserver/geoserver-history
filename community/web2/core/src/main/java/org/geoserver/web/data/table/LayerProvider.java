@@ -71,9 +71,12 @@ public class LayerProvider extends GSDataProvider<LayerInfo> {
 
         }
     };
+    
+    static final Property<LayerInfo> REMOVE = new PropertyPlaceholder<LayerInfo>(
+            "remove");
 
     static final List<Property<LayerInfo>> PROPERTIES = Arrays.asList(TYPE,
-            WORKSPACE, STORE, NAME, ENABLED, SRS);
+            WORKSPACE, STORE, NAME, ENABLED, SRS, REMOVE);
 
     @Override
     protected List<LayerInfo> getItems() {

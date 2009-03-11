@@ -4,10 +4,7 @@
  */
 package org.geoserver.web.data.table;
 
-import static org.geoserver.web.data.table.StoreProvider.ENABLED;
-import static org.geoserver.web.data.table.StoreProvider.NAME;
-import static org.geoserver.web.data.table.StoreProvider.TYPE;
-import static org.geoserver.web.data.table.StoreProvider.WORKSPACE;
+import static org.geoserver.web.data.table.StoreProvider.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +19,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
@@ -38,14 +36,14 @@ import org.geoserver.web.data.table.GSDataProvider.Property;
 public class StorePage extends GeoServerSecuredPage {
     StoreProvider provider = new StoreProvider();
     ModalWindow popupWindow;
-    
+    GSTablePanel<StoreInfo> table;
 
     public StorePage() {
         // the popup window for messages
         popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
         
-        add(new GSTablePanel<StoreInfo>("table", provider) {
+        table = new GSTablePanel<StoreInfo>("table", provider) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
@@ -58,11 +56,15 @@ public class StorePage extends GeoServerSecuredPage {
                     return storeNameLink(id, itemModel);
                 } else if(property == ENABLED) {
                     return new Label(id, ENABLED.getModel(itemModel));
-                } 
+                } else if(property == REMOVE) {
+                    return removeLink(id, itemModel);
+                }
                 throw new IllegalArgumentException("Don't know a property named " + property.getName());
             }
             
-        });
+        };
+        table.setOutputMarkupId(true);
+        add(table);
         
         // the workspaces drop down
         add(workspacesDropDown());
@@ -87,7 +89,7 @@ public class StorePage extends GeoServerSecuredPage {
         return new SimpleAjaxLink(id, NAME.getModel(itemModel)) {
             @Override
             public void onClick(AjaxRequestTarget target) {
-                String storeName = getModelObjectAsString();
+                String storeName = getLink().getModelObjectAsString();
                 DataStoreInfo store = getCatalog().getDataStoreByName(storeName);
                 if (store != null)
                     setResponsePage(new DataStoreConfiguration(store.getId()));
@@ -108,6 +110,19 @@ public class StorePage extends GeoServerSecuredPage {
                     setResponsePage(new NamespaceEditPage(info.getId()));
             }
         };
+    }
+    
+    protected Component removeLink(String id, final IModel itemModel) {
+        StoreInfo info = (StoreInfo) itemModel.getObject();
+        // TODO: i18n this!
+        SimpleAjaxLink linkPanel = new ConfirmationAjaxLink(id, null, new Model("remove"),
+                new Model("About to remove \"" + info.getName() + "\". Are you sure? All contained layers will be removed as well")) {
+            public void onClick(AjaxRequestTarget target) {
+                getCatalog().remove((StoreInfo) itemModel.getObject());
+                target.addComponent(table);
+            }
+        };
+        return linkPanel;
     }
 
     protected class WorkspacesModel extends LoadableDetachableModel {

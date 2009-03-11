@@ -17,6 +17,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.web.GeoServerApplication;
@@ -33,7 +34,7 @@ import org.geotools.util.logging.Logging;
  */
 public abstract class GSDataProvider<T> extends SortableDataProvider {
     static final Logger LOGGER = Logging.getLogger(GSDataProvider.class);
-
+    
     /**
      * Keywords used for filtering data
      */
@@ -212,7 +213,7 @@ public abstract class GSDataProvider<T> extends SortableDataProvider {
      * 
      * @param <T>
      */
-    protected static class BeanProperty<T> implements Property<T> {
+    public static class BeanProperty<T> implements Property<T> {
         String name;
 
         String propertyPath;
@@ -247,6 +248,39 @@ public abstract class GSDataProvider<T> extends SortableDataProvider {
         public Comparator<T> getComparator() {
             return new PropertyComparator(this);
         }
+    }
+    
+    /**
+     * Placeholder for a column that does not contain a real property (for example,
+     * a column containing commands instead of data). Will return the item model
+     * as the model, and as the property value.
+     * @author Andrea Aime
+     *
+     * @param <T>
+     */
+    public static class PropertyPlaceholder<T> implements Property<T> {
+        String name;
+        
+        public PropertyPlaceholder(String name) {
+            this.name = name;
+        }
+
+        public Comparator<T> getComparator() {
+            return null;
+        }
+
+        public IModel getModel(IModel itemModel) {
+            return itemModel;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Object getPropertyValue(T item) {
+            return item;
+        }
+        
     }
     
     /**
