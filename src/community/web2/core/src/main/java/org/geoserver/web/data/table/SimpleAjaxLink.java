@@ -5,6 +5,8 @@
 package org.geoserver.web.data.table;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -19,6 +21,10 @@ public abstract class SimpleAjaxLink extends Panel {
     AjaxLink link;
     Label label;
     
+    public SimpleAjaxLink(String id) {
+        this(id, null);
+    }
+    
     public SimpleAjaxLink(String id, IModel model) {
         this(id, model, model);
     }
@@ -26,15 +32,20 @@ public abstract class SimpleAjaxLink extends Panel {
     public SimpleAjaxLink(String id, IModel linkModel, IModel labelModel) {
         super(id);
         
-        add(link = new AjaxLink("link", linkModel) {
+        add(link = buildAjaxLink(linkModel));
+        link.add(label = new Label("label", labelModel));
+    }
+
+    
+    protected AjaxLink buildAjaxLink(IModel linkModel) {
+        return new AjaxLink("link", linkModel) {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
                 SimpleAjaxLink.this.onClick(target);
             }
             
-        });
-        link.add(label = new Label("label", labelModel));
+        };
     }
     
     public AjaxLink getLink() {

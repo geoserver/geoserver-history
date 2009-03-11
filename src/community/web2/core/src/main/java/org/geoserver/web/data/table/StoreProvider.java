@@ -13,8 +13,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.web.GeoServerApplication;
+import org.geoserver.web.data.table.GSDataProvider.Property;
+import org.geoserver.web.data.table.GSDataProvider.PropertyPlaceholder;
 
 public class StoreProvider extends GSDataProvider {
     
@@ -56,9 +59,11 @@ public class StoreProvider extends GSDataProvider {
 
     static final Property<StoreInfo> ENABLED = new BeanProperty<StoreInfo>(
             "enabled", "enabled");
+    
+    static final Property<StoreInfo> REMOVE = new PropertyPlaceholder<StoreInfo>("remove");
 
     static final List<Property<StoreInfo>> PROPERTIES = Arrays.asList(TYPE,
-            WORKSPACE, NAME, ENABLED);
+            WORKSPACE, NAME, ENABLED, REMOVE);
 
     @Override
     protected List<StoreInfo> getItems() {

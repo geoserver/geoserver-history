@@ -4,12 +4,7 @@
  */
 package org.geoserver.web.data.table;
 
-import static org.geoserver.web.data.table.LayerProvider.ENABLED;
-import static org.geoserver.web.data.table.LayerProvider.NAME;
-import static org.geoserver.web.data.table.LayerProvider.SRS;
-import static org.geoserver.web.data.table.LayerProvider.STORE;
-import static org.geoserver.web.data.table.LayerProvider.TYPE;
-import static org.geoserver.web.data.table.LayerProvider.WORKSPACE;
+import static org.geoserver.web.data.table.LayerProvider.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +12,7 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -40,14 +36,14 @@ public class LayerPage extends GeoServerSecuredPage {
 
     LayerProvider provider = new LayerProvider();
     ModalWindow popupWindow;
-    
+    GSTablePanel<LayerInfo> table;
 
     public LayerPage() {
         // the popup window for messages
         popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
         
-        add(new GSTablePanel<LayerInfo>("table", provider) {
+        table = new GSTablePanel<LayerInfo>("table", provider) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
@@ -64,11 +60,15 @@ public class LayerPage extends GeoServerSecuredPage {
                     return new Label(id, ENABLED.getModel(itemModel));
                 } else if(property == SRS) {
                     return new Label(id, SRS.getModel(itemModel));
-                } 
+                } else if(property == REMOVE) {
+                    return removeLink(id, itemModel);
+                }
                 throw new IllegalArgumentException("Don't know a property named " + property.getName());
             }
             
-        });
+        };
+        table.setOutputMarkupId(true);
+        add(table);
         
         // the stores drop down
         final DropDownChoice stores = storesDropDown();
@@ -120,19 +120,18 @@ public class LayerPage extends GeoServerSecuredPage {
             }
         };
     }
-
-    private final class LayerIconModel extends Model {
-        private final IModel model;
-
-        private LayerIconModel(IModel model) {
-            this.model = model;
-        }
-
-        @Override
-        public Object getObject() {
-            LayerInfo li = (LayerInfo) model.getObject();
-            return li.getType().toString().toLowerCase(); 
-        }
+    
+    protected Component removeLink(String id, final IModel itemModel) {
+        LayerInfo info = (LayerInfo) itemModel.getObject();
+        // TODO: i18n this!
+        SimpleAjaxLink linkPanel = new ConfirmationAjaxLink(id, null, new Model("remove"),
+                new Model("About to remove \"" + info.getName() + "\". Are you sure?")) {
+            public void onClick(AjaxRequestTarget target) {
+                getCatalog().remove((LayerInfo) itemModel.getObject());
+                target.addComponent(table);
+            }
+        };
+        return linkPanel;
     }
 
     private final class StoreListModel extends LoadableDetachableModel {
