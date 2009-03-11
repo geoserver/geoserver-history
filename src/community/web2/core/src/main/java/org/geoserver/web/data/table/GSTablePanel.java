@@ -9,7 +9,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -26,6 +25,17 @@ import org.apache.wicket.model.Model;
 import org.geoserver.web.data.table.GSDataProvider.Property;
 import org.geoserver.web.wicket.GeoServerPagingNavigator;
 
+/**
+ * An abstract filterable, sortable, pageable table with associated
+ * filtering form and paging navigator.<p>
+ * The construction of the page is driven by the properties returned
+ * by a {@link GSDataProvider}, subclasses only need to build a component
+ * for each property by implementing the {@link #getComponentForProperty(String, IModel, Property)}
+ * method
+ * @author Andrea Aime - OpenGeo
+ *
+ * @param <T>
+ */
 public abstract class GSTablePanel<T> extends Panel {
     // filter form components
     TextField filter;
@@ -86,6 +96,10 @@ public abstract class GSTablePanel<T> extends Panel {
                                 .getModelObject();
                         Component component = getComponentForProperty(
                                 "component", itemModel, property);
+                        
+                        // add some checks for the id, the error message
+                        // that wicket returns in case of mismatch is not
+                        // that helpful
                         if (!"component".equals(component.getId()))
                             throw new IllegalArgumentException(
                                     "getComponentForProperty asked "
@@ -113,25 +127,7 @@ public abstract class GSTablePanel<T> extends Panel {
                 Property<T> property = (Property<T>) item.getModelObject();
                 if (property.getComparator() != null) {
                     Fragment f = new Fragment("header", "sortableHeader", item);
-                    AjaxLink link = new AjaxLink("link", item.getModel()) {
-
-                        @Override
-                        public void onClick(AjaxRequestTarget target) {
-                            SortParam currSort = dataProvider.getSort();
-                            Property<T> property = (Property<T>) getModelObject();
-                            if (currSort == null
-                                    || !property.getName().equals(
-                                            currSort.getProperty())) {
-                                dataProvider.setSort(new SortParam(property
-                                        .getName(), true));
-                            } else {
-                                dataProvider.setSort(new SortParam(property
-                                        .getName(), !currSort.isAscending()));
-                            }
-                            target.addComponent(listContainer);
-                        }
-
-                    };
+                    AjaxLink link = sortLink(dataProvider, item);
                     // todo: add internationalization
                     link.add(new Label("label", property.getName()));
                     f.add(link);
@@ -144,12 +140,36 @@ public abstract class GSTablePanel<T> extends Panel {
 
         });
 
-        // add the paging navigator
+        // add the paging navigator and set the items per page
         dataView.setItemsPerPage(10);
         navigator = new GeoServerPagingNavigator("navigator", dataView);
         navigator.setOutputMarkupId(true);
         add(navigator);
     }
+    
+    AjaxLink sortLink(final GSDataProvider<T> dataProvider,
+            ListItem item) {
+        return new AjaxLink("link", item.getModel()) {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                SortParam currSort = dataProvider.getSort();
+                Property<T> property = (Property<T>) getModelObject();
+                if (currSort == null
+                        || !property.getName().equals(
+                                currSort.getProperty())) {
+                    dataProvider.setSort(new SortParam(property
+                            .getName(), true));
+                } else {
+                    dataProvider.setSort(new SortParam(property
+                            .getName(), !currSort.isAscending()));
+                }
+                target.addComponent(listContainer);
+            }
+
+        };
+    }
+
 
     private AjaxButton filterResetButton() {
         return new AjaxButton("resetFilter") {
