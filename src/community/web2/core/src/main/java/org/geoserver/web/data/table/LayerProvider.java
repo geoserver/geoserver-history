@@ -14,6 +14,10 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
 
+/**
+ * Provides a filtered, sorted view over the catalog layers.
+ * @author Andrea Aime - OpenGeo
+ */
 public class LayerProvider extends GSDataProvider<LayerInfo> {
     static final Property<LayerInfo> TYPE = new BeanProperty<LayerInfo>("type",
             "type");

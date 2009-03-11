@@ -13,8 +13,7 @@ import org.apache.wicket.model.IModel;
 /**
  * A simple ajax link with a label inside. This is a utility component,
  * avoid some boilerplate code in case the link is really just 
- * @author Administrator
- *
+ * @author Andrea Aime - OpenGeo
  */
 public abstract class SimpleAjaxLink extends Panel {
     AjaxLink link;
