@@ -25,13 +25,18 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.NamespaceEditPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.data.table.GSDataProvider.Property;
 
-public class LayerPage extends GeoServerBasePage {
+/**
+ * Page listing all the available layers. Follows the usual filter/sort/page approach,
+ * provides ways to bulk delete layers and to add new ones
+ * @author Andrea Aime - OpenGeo
+ */
+public class LayerPage extends GeoServerSecuredPage {
 
     LayerProvider provider = new LayerProvider();
     ModalWindow popupWindow;
