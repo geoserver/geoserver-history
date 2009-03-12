@@ -5,7 +5,5 @@ In order to install the ImageIO-Ext GDAL extensions you have to:
 For the binary components and install instructions referer to:
 http://geoserver.org/display/GEOSDOC/ImageIO-ext+GDAL+extensions
 
-Note: This GeoServer extension is in *possible* violation of the GPL license as
-explained in this thread on the Geotools development mailing list:
-
-http://www.mail-archive.com/geotools-devel@lists.sourceforge.net/msg14879.html
+Updated binaries are available here:
+https://imageio-ext.dev.java.net/servlets/ProjectDocumentList?folderID=10435&expandFolder=10435&folderID=10446
