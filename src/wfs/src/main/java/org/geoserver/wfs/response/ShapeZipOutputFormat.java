@@ -29,6 +29,7 @@ import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
 import org.geoserver.data.util.IOUtils;
+import org.geoserver.feature.RetypingFeatureCollection;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Operation;
@@ -193,7 +194,9 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         try {
             dstore = buildStore(tempDir, charset,  schema); 
             fstore = (FeatureStore<SimpleFeatureType, SimpleFeature>) dstore.getFeatureSource();
-            fstore.addFeatures(c);
+            // the order of the attributes in the shapefile might not be the same as the original feature
+            FeatureCollection<SimpleFeatureType, SimpleFeature> retyped = new RetypingFeatureCollection(c, fstore.getSchema());
+            fstore.addFeatures(retyped);
         } catch (IOException ioe) {
             LOGGER.log(Level.WARNING,
                 "Error while writing featuretype '" + schema.getTypeName() + "' to shapefile.", ioe);
