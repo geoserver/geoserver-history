@@ -5,10 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -33,6 +31,7 @@ public class ShapeZipTest extends WFSTestSupport {
 
     private static final QName ALL_TYPES = new QName(MockData.CITE_URI, "AllTypes", MockData.CITE_PREFIX);
     private static final QName DOTS = new QName(MockData.CITE_URI, "dots.in.name", MockData.CITE_PREFIX);
+    private static final QName GEOMMID = new QName(MockData.CITE_URI, "geommid", MockData.CITE_PREFIX);
     private Operation op;
     private GetFeatureType gft;
     
@@ -43,6 +42,7 @@ public class ShapeZipTest extends WFSTestSupport {
         params.put(MockData.KEY_SRS_NUMBER, "4326");
         dataDirectory.addPropertiesType(ALL_TYPES, ShapeZipTest.class.getResource("AllTypes.properties"), params);
         dataDirectory.addPropertiesType(DOTS, ShapeZipTest.class.getResource("dots.in.name.properties"), params);
+        dataDirectory.addPropertiesType(GEOMMID, ShapeZipTest.class.getResource("geommid.properties"), params);
     }   
 
     @Override
@@ -104,6 +104,17 @@ public class ShapeZipTest extends WFSTestSupport {
         
         final String[] expectedTypes = new String[] {"dots.in.name"};
         checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
+    }
+    
+    public void testGeometryInTheMiddle() throws Exception {
+        // http://jira.codehaus.org/browse/GEOS-2732
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+        fs = getCatalog().getFeatureTypeInfo(GEOMMID).getFeatureSource(true);
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(fs.getFeatures());
+        zip.write(fct, bos, op);
     }
 
     private void checkShapefileIntegrity(String[] typeNames, final InputStream in) throws IOException {
