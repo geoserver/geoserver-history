@@ -19,7 +19,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.coverage.RasterCoverageConfiguration;
+import org.geoserver.web.data.coverage.CoverageStoreConfiguration;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.data.tree.DataPage;
 import org.geotools.coverage.grid.io.GridFormatFinder;
@@ -98,7 +98,7 @@ public class NewDataPage extends GeoServerSecuredPage {
                 link = new Link("resourcelink") {
                     @Override
                     public void onClick() {
-                        setResponsePage(new RasterCoverageConfiguration(
+                        setResponsePage(new CoverageStoreConfiguration(
                                 workspaceId, coverageFactoryName));
                     }
                 };
