@@ -13,7 +13,8 @@ Adding a new workspace
 
 The following creates a new workspace named "acme" with a POST request::
 
-  curl -v -XPOST -H 'Content-type: text/xml' -d '<workspace><name>acme</name></workspace>' \ 
+  curl -u admin:geoserver -v -XPOST -H 'Content-type: text/xml' \ 
+     -d '<workspace><name>acme</name></workspace>' \
      http://localhost:8080/geoserver/rest/workspaces
 
 The response should contain the following::
@@ -28,7 +29,7 @@ Note the ``Location`` response header which specifies the location of the
 newly created workspace. The following retrieves the new workspace as XML with a
 GET request::
 
-  curl -XGET -H 'Accept: text/xml' http://localhost:8080/geoserver/rest/workspaces/acme.xml
+  curl -XGET -H 'Accept: text/xml' http://localhost:8080/geoserver/rest/workspaces/acme
 
 The response should look like:
 
@@ -54,13 +55,14 @@ Uploading a Shapefile
 ---------------------
 
 In this example a new datastore will be created by uploading a Shapefile. The 
-following uploads the zipped shapefile ``buildings.zip`` and creates a new 
-datastore named ``buildings``::
+following uploads the zipped shapefile ``roads.zip`` and creates a new 
+datastore named ``roads``::
 
-  curl -XPUT -H 'Content-type: application/zip' --data-binary @buildings.zip \ 
-     http://localhost:8080/geoserver/rest/workspaces/acme/datastores/buildings/file.shp
+  curl -u admin:geoserver -XPUT -H 'Content-type: application/zip' \
+     --data-binary @roads.zip \ 
+     http://localhost:8080/geoserver/rest/workspaces/acme/datastores/roads/file.shp
 
-The following retrieves the create data store as XML::
+The following retrieves the created data store as XML::
 
   curl -XGET http://localhost:8080/geoserver/rest/workspaces/acme/datastores/roads.xml
 
@@ -68,25 +70,189 @@ The following retrieves the create data store as XML::
 
    <dataStore>
      <name>roads</name>
-     <enabled>true</enabled>
      <workspace>
        <name>acme</name>
        <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/acme.xml" type="application/xml"/>
      </workspace>
      <connectionParameters>
-       <namespace>
-         <string>http://acme</string>
-       </namespace>
-       <url>
-         <url>file:/Users/jdeolive/devel/geoserver/1.7.x/data/minimal/data/roads/roads.shp</url>
-       </url>
+       <namespace>http://acme</namespace>
+       <url>file:/Users/jdeolive/devel/geoserver/1.7.x/data/minimal/data/roads/roads.shp</url>
      </connectionParameters>
      <featureTypes>
        <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/acme/datastores/roads/featuretypes.xml" type="application/xml"/>
      </featureTypes>
    </dataStore>
 
+By default when a Shapefile is uploaded a feature type is automatically created.
+See :ref:` `_ for details on how to control this behaviour. The following 
+retrieves the created feature type as XML:: 
+
+  curl -XGET 
+    http://localhost:8080/geoserver/rest/workspaces/acme/datastores/roads/featuretypes/roads.xml
+
+.. code-block:: xml
+   
+   <featureType>
+     <name>roads</name>
+     <nativeName>roads</nativeName>
+     <namespace>
+       <name>acme</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/namespaces/acme.xml" type="application/xml"/>
+     </namespace>
+     ...
+   </featureType>
+
 Changing a feature type style
 -----------------------------
 
+In the previous example a Shapefile was uploaded, and in the process a feature 
+type was created. Whenever a feature type is created an layer is implicitly 
+created for it. The following retrieves the layer as XML::
+
+  curl -XGET http://localhost:8080/geoserver/rest/layers/acme:roads.xml
+
+.. code-block::
+
+   <layer>
+     <name>roads</name>
+     <path>/</path>
+     <type>VECTOR</type>
+     <defaultStyle>
+       <name>roads_style</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/styles/roads_style.xml" type="application/xml"/>
+     </defaultStyle>
+     <styles>
+       <style>
+         <name>line</name>
+         <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/styles/line.xml" type="application/xml"/>
+       </style>
+     </styles>
+     <resource class="featureType">
+       <name>roads</name>
+       <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/acme/datastores/roads/featuretypes/roads.xml" type="application/xml"/>
+     </resource>
+     <enabled>false</enabled>
+   </layer>
+
+When the layer is created a default style named ``polygon`` is assigned to 
+it. This style can viewed with a WMS `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=acme:roads>`_.
+
+In this example a new style will be created and assigned to the layer 
+created in the previous example. The following creates a new style named
+``roads_style`` by uploading the file ``roads.sld``::
+
+  curl -u admin:geoserver -XPUT -H 'Content-type: application/vnd.ogc.sld+xml' \
+    -d @roads.sld http://localhost:8080/geoserver/rest/styles/roads_style
+
+The following applies the newly created style to the layer created in the 
+previous example::
+
+  curl -u admin:geoserver -XPUT -H 'Content-type: text/xml' \
+    -d '<layer><defaultStyle><name>roads_style</name></defaultStyle></layer>' \
+    http://localhost:8080/geoserver/rest/layers/acme:roads
+
+The new style can be viewed with the same `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=acme:roads>`_ as above.
+
+Adding a PostGIS database
+-------------------------
+
+.. note::
+
+   This section assumes that a PostGIS database named ``nyc`` is present on the
+   local system and is accessible by the user ``bob``.
+
+In this example a PostGIS database named ``nyc`` will be added as a new 
+data store. In preparation create the database and import the nyc.sql file::
+
+  psql nyc < nyc.sql
+
+The following represents the new data store:
+
+.. code-block:: xml
+
+   <dataStore> 
+     <name>nyc</name>
+     <connectionParameters>
+       <host>localhost</host>
+       <port>5432</port>
+       <database>nyc</database> 
+       <user>bob</user>
+       <dbtype>postgis</dbtype>
+     </connectionParameters>
+   </dataStore> 
+
+Save the above xml into a file named ``nycDataStore.xml``. The following adds 
+the new datastore::
+
+  curl -u admin:geoserver -XPOST -T nycDataStore.xml -H 'Content-type: text/xml' \
+    http://localhost:8080/geoserver/rest/workspaces/acme/datastores
+
+Adding a PostGIS table
+----------------------
+
+In this example two tables from the PostGIS database created in the previous 
+example will be added as feature types. The following adds the table 
+``buildings`` as a new feature type::
+
+  curl -u admin:geoserver -XPOST -H 'Content-type: text/xml' \
+    -d '<featureType><name>buildings</name></featureType>' \
+    http://localhost:8080/geoserver/rest/workspaces/acme/datastores/nyc/featuretypes
+
+The following retrieves the created feature type::
+
+  curl -XGET http://localhost:8080/geoserver/rest/workspaces/acme/datastores/nyc/featuretypes/buildings.xml
+
+This `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=acme:buildings>`_ 
+shows the rendered buildings layer.
+
+The following adds the table ``parks`` as a new feature type::
+
+  curl -u admin:geoserver -XPOST -H 'Content-type: text/xml' \
+    -d '<featureType><name>parks</name></featureType>' \
+    http://localhost:8080/geoserver/rest/workspaces/acme/datastores/nyc/featuretypes
+
+This `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=acme:parks>`_ 
+shows the rendered parks layer.
+
+Creating a layer group
+----------------------
+
+In this example the layers added in previous examples will be used to create a
+layer group. First a few styles need to be added. The following adds a style
+for the buildings layer::
+
+  curl -u admin:geoserver -XPUT -H 'Content-type: application/vnd.ogc.sld+xml' -d @buildings.sld \ 
+   http://localhost:8080/geoserver/rest/styles/buildings_style
+
+The following adds a style for the parks layer::
+
+  curl -u admin:geoserver -XPUT -H 'Content-type: application/vnd.ogc.sld+xml' -d @parks.sld \ 
+   http://localhost:8080/geoserver/rest/styles/parks_style
+
+The following represents the new layer group:
+
+.. code-block:: xml
+
+  <layerGroup>
+    <name>nyc</name>
+    <layers>
+      <layer>roads</layer>
+      <layer>parks</layer>
+      <layer>buildings</layer>
+    </layers>
+    <styles>
+      <style>roads_style</style>
+      <style>parks</style>
+      <style>buildings_style</style>
+    </styles>
+  </layerGroup>
+
+Save the following in a file named ``nycLayerGroup.xml``. The following creates
+the new layer group::
+
+  curl -u admin:geoserver -XPOST -d @nycLayerGroup.xml -H 'Content-type: text/xml' \
+     http://localhost:8080/geoserver/rest/layergroups
+
+This `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=nyc>`_
+shows the rendered layer group. 
 
