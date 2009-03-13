@@ -129,7 +129,7 @@ Generate documentation from Confluence
 
 #. Go to http://geoserver.org and log in.
 
-#.`Export <http://geoserver.org/spaces/exportspace.action?key=GEOSDOC>`_  the 
+#. `Export <http://geoserver.org/spaces/exportspace.action?key=GEOSDOC>`_  the 
    user guide.
 
 #. Select ``HTML output``.
