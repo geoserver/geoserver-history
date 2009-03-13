@@ -4,27 +4,23 @@
  */
 package org.geoserver.web.data.datastore.panel;
 
-import java.util.Map;
-
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.geoserver.web.util.MapModel;
+import org.apache.wicket.model.IModel;
 
 /**
- * 
+ * A simple label + checkbox panel
  * @author Gabriel Roldan
  */
 public class CheckBoxParamPanel extends Panel {
 
     private static final long serialVersionUID = -8587266542399491587L;
 
-    public CheckBoxParamPanel(final String id, final Map<String, ?> paramsMap,
-            final String paramName, final String paramLabel) {
-
-        super(id);
+    public CheckBoxParamPanel(final String id, final IModel model, final String paramLabel) {
+        super(id, model);
         Label label = new Label("paramName", paramLabel);
-        CheckBox checkBox = new CheckBox("paramValue", new MapModel(paramsMap, paramName));
+        CheckBox checkBox = new CheckBox("paramValue", model);
         add(label);
         add(checkBox);
     }

@@ -4,23 +4,19 @@
  */
 package org.geoserver.web.data.datastore.panel;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
-import org.geoserver.web.util.MapModel;
 
 /**
- * 
+ * A label with a text field. Can receive custom validators for the text field.
  * @author Gabriel Roldan
  */
+@SuppressWarnings("serial")
 public class TextParamPanel extends Panel {
-
-    private static final long serialVersionUID = -1816280754831848070L;
 
     /**
      * 
@@ -33,24 +29,26 @@ public class TextParamPanel extends Panel {
      *            any extra validator that should be added to the input field,
      *            or {@code null}
      */
-    public TextParamPanel(final String id, final Map<String, ?> paramsMap, final String paramName,
-            final String paramLabel, final boolean required, final List<IValidator> validators) {
-        super(id);
-        Label label = new Label("paramName", paramLabel);
+    public TextParamPanel(final String id, IModel paramVale, String paramLabel, 
+                          final boolean required, IValidator... validators) {
+        // make the value of the text field the model of this panel, for easy value retriaval
+        super(id, paramVale);
 
-        TextField textField = new TextField("paramValue", new MapModel(paramsMap, paramName));
+        // the label
+        Label label = new Label("paramName", paramLabel);
+        add(label);
+
+        // the text field, with a decorator for validations
+        TextField textField = new TextField("paramValue", paramVale);
         textField.setRequired(required);
-        if(validators != null){
+        if(validators != null) {
             for(IValidator validator : validators){
                 textField.add(validator);
             }
         }
-        
-        FormComponentFeedbackBorder requiredFieldFeedback = new FormComponentFeedbackBorder(
+        FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder(
                 "border");
-        requiredFieldFeedback.add(textField);
-
-        add(label);
-        add(requiredFieldFeedback);
+        feedback.add(textField);
+        add(feedback);
     }
 }

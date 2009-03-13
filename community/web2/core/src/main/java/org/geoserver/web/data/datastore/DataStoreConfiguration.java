@@ -7,7 +7,6 @@ package org.geoserver.web.data.datastore;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,20 +21,20 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
-import org.apache.wicket.validation.ValidationError;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.StoreNameValidator;
 import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.datastore.panel.LabelParamPanel;
 import org.geoserver.web.data.datastore.panel.PasswordParamPanel;
 import org.geoserver.web.data.datastore.panel.TextParamPanel;
-import org.geoserver.web.data.tree.DataPage;
+import org.geoserver.web.data.table.StorePage;
+import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.NullProgressListener;
@@ -196,49 +195,21 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
 
         Panel dataStoreIdPanel;
         if (dataStoreInfoId == null) {
-            IValidator dsIdValidator = new IValidator() {
-                private static final long serialVersionUID = 1L;
-
-                public void validate(IValidatable validatable) {
-                    String value = (String) validatable.getValue();
-                    if (value == null || value.trim().length() == 0) {
-                        ValidationError error = new ValidationError();
-                        error.setMessage("The Data Source name is mandatory");
-                        validatable.error(error);
-                        return;
-                    }
-
-                    value = value.trim();
-
-                    List<DataStoreInfo> dataStores = getCatalog().getDataStores();
-                    for (DataStoreInfo dsi : dataStores) {
-                        String name = dsi.getName();
-                        if (name.equals(value)) {
-                            ValidationError error = new ValidationError();
-                            error
-                                    .setMessage("The Data Source name '" + value
-                                            + "' is already used");
-                            validatable.error(error);
-                            break;
-                        }
-                    }
-                }
-            };
-            dataStoreIdPanel = new TextParamPanel("dataStoreIdPanel", parametersMap,
-                    DATASTORE_ID_PROPERTY_NAME, "Data Source Name", true, Collections
-                            .singletonList(dsIdValidator));
+            IValidator dsIdValidator = new StoreNameValidator(DataStoreInfo.class);
+            dataStoreIdPanel = new TextParamPanel("dataStoreIdPanel", new MapModel(parametersMap,
+                    DATASTORE_ID_PROPERTY_NAME), "Data Source Name", true, dsIdValidator);
         } else {
-            dataStoreIdPanel = new LabelParamPanel("dataStoreIdPanel", parametersMap,
-                    DATASTORE_ID_PROPERTY_NAME, "Data Source Name");
+            dataStoreIdPanel = new LabelParamPanel("dataStoreIdPanel", new MapModel(parametersMap,
+                    DATASTORE_ID_PROPERTY_NAME), "Data Source Name");
         }
 
         paramsForm.add(dataStoreIdPanel);
 
-        paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", parametersMap,
-                DATASTORE_DESCRIPTION_PROPERTY_NAME, "Description", false, null));
+        paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", new MapModel(parametersMap,
+                DATASTORE_DESCRIPTION_PROPERTY_NAME), "Description", false, null));
 
-        paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel", parametersMap,
-                DATASTORE_ENABLED_PROPERTY_NAME, "Enabled"));
+        paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel", new MapModel(parametersMap,
+                DATASTORE_ENABLED_PROPERTY_NAME), "Enabled"));
 
         ListView paramsList = new ListView("parameters", paramsInfo) {
             private static final long serialVersionUID = 1L;
@@ -259,7 +230,7 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
 
         paramsForm.add(paramsList);
 
-        paramsForm.add(new BookmarkablePageLink("cancel", DataPage.class));
+        paramsForm.add(new BookmarkablePageLink("cancel", StorePage.class));
 
         paramsForm.add(new SubmitLink("save") {
             private static final long serialVersionUID = 1L;
@@ -358,7 +329,7 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
             // it worked, save it
             catalog.save(dataStoreInfo);
         }
-        setResponsePage(DataPage.class);
+        setResponsePage(StorePage.class);
     }
 
     /**
@@ -378,14 +349,15 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
 
         Panel parameterPanel;
         if (Boolean.class == binding) {
-            parameterPanel = new CheckBoxParamPanel(componentId, paramsMap, paramName, paramLabel);
+            parameterPanel = new CheckBoxParamPanel(componentId, new MapModel(paramsMap, paramName), paramLabel);
         } else if (String.class == binding && param.isPassword()) {
-            parameterPanel = new PasswordParamPanel(componentId, paramsMap, paramName, paramLabel,
+            parameterPanel = new PasswordParamPanel(componentId, new MapModel(paramsMap, paramName), paramLabel,
                     required);
         } else {
-            parameterPanel = new TextParamPanel(componentId, paramsMap, paramName, paramLabel,
+            parameterPanel = new TextParamPanel(componentId, new MapModel(paramsMap, paramName), paramLabel,
                     required, null);
         }
         return parameterPanel;
     }
+    
 }
