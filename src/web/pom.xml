@@ -475,7 +475,7 @@
       </dependencies>
     </profile>
     <profile>
-      <id>rest</id>
+      <id>restconfig</id>
       <dependencies>
         <dependency>
           <groupId>org.geoserver.extension</groupId>
