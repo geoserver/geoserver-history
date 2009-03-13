@@ -4,29 +4,26 @@
  */
 package org.geoserver.web.data.datastore.panel;
 
-import java.util.Map;
-
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.geoserver.web.util.MapModel;
+import org.apache.wicket.model.IModel;
 
 /**
- * 
+ * A label with a password field
  * @author Gabriel Roldan
  */
 public class PasswordParamPanel extends Panel {
 
     private static final long serialVersionUID = -7801141820174575611L;
 
-    public PasswordParamPanel(final String id, final Map<String, ?> paramsMap,
-            final String paramName, final String paramLabel, final boolean required) {
-        super(id);
+    public PasswordParamPanel(final String id, IModel model, final String paramLabel, final boolean required) {
+        super(id, model);
         add(new Label("paramName", paramLabel));
 
         PasswordTextField passwordField;
-        passwordField = new PasswordTextField("paramValue", new MapModel(paramsMap, paramName));
+        passwordField = new PasswordTextField("paramValue", model);
         passwordField.setRequired(required);
         //we want to password to stay there if already is
         passwordField.setResetPassword(false);
