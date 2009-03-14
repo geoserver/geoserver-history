@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.util.ReaderUtils;
@@ -20,6 +21,7 @@ import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -219,8 +221,18 @@ public class LegacyServicesReader {
                 
                 String baseMapStyles = ReaderUtils.getChildText( baseMapGroupElement, "baseMapStyles" );
                 if ( baseMapStyles != null && !"".equals( baseMapStyles ) ) {
-                    baseMap.put( "baseMapStyles", 
-                            Arrays.asList( baseMapStyles.split( ",") ) );
+                    baseMapStyles = baseMapStyles.trim();
+                    int j = -1, k = 0;
+                    List styles = new ArrayList();
+                    while ( ( j = baseMapStyles.indexOf( ',', k) ) != -1 ) {
+                        styles.add( baseMapStyles.substring( k, j ).trim() );
+                        k = j+1;
+                    }
+                    if ( baseMapStyles.endsWith(",") ) {
+                        styles.add("");
+                    }
+                    
+                    baseMap.put( "baseMapStyles", styles );
                     baseMap.put( "rawBaseMapStyles", baseMapStyles );
                 }
                 else {
