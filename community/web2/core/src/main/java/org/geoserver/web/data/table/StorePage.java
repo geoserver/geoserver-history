@@ -23,10 +23,10 @@ import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.coverage.CoverageStoreConfiguration;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
-import org.geoserver.web.wicket.GSTablePanel;
+import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.WorkspaceChoice;
-import org.geoserver.web.wicket.GSDataProvider.Property;
+import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
  * Page listing all the available stores. Follows the usual filter/sort/page
@@ -39,14 +39,14 @@ public class StorePage extends GeoServerSecuredPage {
 
     ModalWindow popupWindow;
 
-    GSTablePanel<StoreInfo> table;
+    GeoServerTablePanel<StoreInfo> table;
 
     public StorePage() {
         // the popup window for messages
         popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
 
-        table = new GSTablePanel<StoreInfo>("table", provider) {
+        table = new GeoServerTablePanel<StoreInfo>("table", provider) {
 
             @Override
             protected Component getComponentForProperty(String id,

@@ -26,9 +26,9 @@ import org.geoserver.web.data.NamespaceEditPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
-import org.geoserver.web.wicket.GSTablePanel;
+import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
-import org.geoserver.web.wicket.GSDataProvider.Property;
+import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
  * Page listing all the available layers. Follows the usual filter/sort/page approach,
@@ -39,14 +39,14 @@ public class LayerPage extends GeoServerSecuredPage {
 
     LayerProvider provider = new LayerProvider();
     ModalWindow popupWindow;
-    GSTablePanel<LayerInfo> table;
+    GeoServerTablePanel<LayerInfo> table;
 
     public LayerPage() {
         // the popup window for messages
         popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
         
-        table = new GSTablePanel<LayerInfo>("table", provider) {
+        table = new GeoServerTablePanel<LayerInfo>("table", provider) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,

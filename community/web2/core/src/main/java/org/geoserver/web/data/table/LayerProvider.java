@@ -13,13 +13,13 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.wicket.GSDataProvider;
+import org.geoserver.web.wicket.GeoServerDataProvider;
 
 /**
  * Provides a filtered, sorted view over the catalog layers.
  * @author Andrea Aime - OpenGeo
  */
-public class LayerProvider extends GSDataProvider<LayerInfo> {
+public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
     static final Property<LayerInfo> TYPE = new BeanProperty<LayerInfo>("type",
             "type");
 

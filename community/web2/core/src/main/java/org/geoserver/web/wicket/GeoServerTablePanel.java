@@ -22,20 +22,20 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.geoserver.web.wicket.GSDataProvider.Property;
+import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
  * An abstract filterable, sortable, pageable table with associated
  * filtering form and paging navigator.<p>
  * The construction of the page is driven by the properties returned
- * by a {@link GSDataProvider}, subclasses only need to build a component
+ * by a {@link GeoServerDataProvider}, subclasses only need to build a component
  * for each property by implementing the {@link #getComponentForProperty(String, IModel, Property)}
  * method
  * @author Andrea Aime - OpenGeo
  *
  * @param <T>
  */
-public abstract class GSTablePanel<T> extends Panel {
+public abstract class GeoServerTablePanel<T> extends Panel {
     // filter form components
     TextField filter;
 
@@ -48,9 +48,9 @@ public abstract class GSTablePanel<T> extends Panel {
 
     GeoServerPagingNavigator navigator;
 
-    GSDataProvider<T> dataProvider;
+    GeoServerDataProvider<T> dataProvider;
 
-    public GSTablePanel(String id, final GSDataProvider<T> dataProvider) {
+    public GeoServerTablePanel(String id, final GeoServerDataProvider<T> dataProvider) {
         super(id);
         this.dataProvider = dataProvider;
 
@@ -150,7 +150,7 @@ public abstract class GSTablePanel<T> extends Panel {
         dataView.setItemsPerPage(items);
     }
     
-    AjaxLink sortLink(final GSDataProvider<T> dataProvider,
+    AjaxLink sortLink(final GeoServerDataProvider<T> dataProvider,
             ListItem item) {
         return new AjaxLink("link", item.getModel()) {
 
