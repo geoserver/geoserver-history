@@ -481,7 +481,7 @@ function prepareFormData(){
     	</td>
     </tr>
 
-    <tr>
+    <!--tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.type.base"/>">
 			<bean:message key="label.base"/>:
@@ -495,7 +495,7 @@ function prepareFormData(){
 			<bean:message key="label.change"/>
 		</html:submit>
       </td>
-    </tr>
+    </tr-->
 
   <% boolean first = true;
      org.vfny.geoserver.form.data.AttributeDisplay attributeDisplay = null;;
@@ -507,7 +507,7 @@ function prepareFormData(){
      int attributesSize = attributes.size(); %>
              
     <% if (!("--".equals(form.getSchemaBase())) ) { %>
-    <tr>
+    <!--tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.type.schemaName"/>">
           <bean:message key="label.schemaName"/>:
@@ -516,8 +516,8 @@ function prepareFormData(){
 	  <td class="datum">
 		<html:text property="schemaName" size="60"/>
 	  </td>
-	</tr>
-    <% } %>    
+	</tr-->
+    <%} %>    
 
 <logic:iterate id="attribute" indexId="index" name="typesEditorForm" property="attributes">
 	<tr>

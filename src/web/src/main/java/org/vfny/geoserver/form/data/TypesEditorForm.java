@@ -577,6 +577,10 @@ public class TypesEditorForm extends ActionForm {
      * @return
      */
     private List attributesDisplayList(List dtoList) {
+        if ( dtoList == null || dtoList.isEmpty() ) {
+            return Collections.EMPTY_LIST;
+        }
+        
         List list = new ArrayList();
         int index = 0;
 
