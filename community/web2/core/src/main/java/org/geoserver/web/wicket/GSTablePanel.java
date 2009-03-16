@@ -146,6 +146,10 @@ public abstract class GSTablePanel<T> extends Panel {
         add(navigator);
     }
     
+    public void setItemsPerPage(int items) {
+        dataView.setItemsPerPage(items);
+    }
+    
     AjaxLink sortLink(final GSDataProvider<T> dataProvider,
             ListItem item) {
         return new AjaxLink("link", item.getModel()) {
