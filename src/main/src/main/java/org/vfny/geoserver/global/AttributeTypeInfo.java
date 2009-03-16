@@ -129,7 +129,12 @@ public class AttributeTypeInfo {
      * @return The element, or <code>TYPE_FRAGMENT</code>
      */
     public String getType() {
-        return "gml:AbstractFeatureType";
+        if( attributeType != null && attributeType.getAttribute() != null && 
+            attributeType.getAttribute().getType() != null && attributeType.getAttribute().getType().getBinding() != null ) {
+            return attributeType.getAttribute().getType().getBinding().getSimpleName();
+        }
+        return "unknown";
+        //return "gml:AbstractFeatureType";
         //if (isComplex) {
         //    return "(xml fragment)";
         //} else {

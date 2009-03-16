@@ -440,56 +440,58 @@ public class TypesEditorAction extends ConfigAction {
             config.setIndexingEnabled(false);
         }
 
-        String schemaBase = form.getSchemaBase();
-
-        if ((schemaBase == null) || schemaBase.equals("") || schemaBase.equals("--")) {
-            config.setSchemaBase(null);
-            config.setSchemaName(null);
-            config.setSchemaAttributes(null);
-        } else {
-            config.setSchemaBase(schemaBase);
-
-            String schemaName = config.getSchemaName();
-            List schemaAttributes = config.getSchemaAttributes();
-            System.out.println("in non null sb, sname: " + schemaName + ", satts: "
-                + schemaAttributes);
-
-            if ((schemaName == null) || (schemaName.trim().length() == 0)) {
-                schemaName = form.getTypeName() + "_Type";
-                //HACK: For some reason only when editing an already exisitng
-                //featureType, on the first time of switching to the editor
-                //it gets a full schemaAttribute list, and I can't find where
-                //so for now we are just relying on schemaName being null or
-                schemaAttributes = null;
-                //System.out.println("testing on schemaAtts: " + schemaAttributes);               
-                config.setSchemaName(schemaName);
-            } else {
-                config.setSchemaName(form.getSchemaName());
-            }
-
-            if ((schemaAttributes == null) || schemaAttributes.isEmpty()) {
-                schemaAttributes = new ArrayList();
-
-                List createList = form.getCreateableAttributes();
-                System.out.println("schemaAtts null, createList: " + createList);
-
-                SimpleFeatureType fType = getFeatureType(form, request);
-
-                for (int i = 0; i < fType.getAttributeCount(); i++) {
-                    AttributeDescriptor attType = fType.getDescriptor(i);
-                    AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attType);
-                    schemaAttributes.add(attributeConfig);
-
-                    //new ArrayList();
-                    //DataStoreConfig dsConfig = config.
-                    //SimpleFeatureType featureType = config.get
-                }
-
-                config.setSchemaAttributes(schemaAttributes);
-            } else {
-                config.setSchemaAttributes(form.toSchemaAttributes());
-            }
-        }
+        //JD: disabling this because none of the schema attributes are editable, that and this 
+        // stuff never worked
+//        String schemaBase = form.getSchemaBase();
+//
+//        if ((schemaBase == null) || schemaBase.equals("") || schemaBase.equals("--")) {
+//            config.setSchemaBase(null);
+//            config.setSchemaName(null);
+//            config.setSchemaAttributes(null);
+//        } else {
+//            config.setSchemaBase(schemaBase);
+//
+//            String schemaName = config.getSchemaName();
+//            List schemaAttributes = config.getSchemaAttributes();
+//            System.out.println("in non null sb, sname: " + schemaName + ", satts: "
+//                + schemaAttributes);
+//
+//            if ((schemaName == null) || (schemaName.trim().length() == 0)) {
+//                schemaName = form.getTypeName() + "_Type";
+//                //HACK: For some reason only when editing an already exisitng
+//                //featureType, on the first time of switching to the editor
+//                //it gets a full schemaAttribute list, and I can't find where
+//                //so for now we are just relying on schemaName being null or
+//                schemaAttributes = null;
+//                //System.out.println("testing on schemaAtts: " + schemaAttributes);               
+//                config.setSchemaName(schemaName);
+//            } else {
+//                config.setSchemaName(form.getSchemaName());
+//            }
+//
+//            if ((schemaAttributes == null) || schemaAttributes.isEmpty()) {
+//                schemaAttributes = new ArrayList();
+//
+//                List createList = form.getCreateableAttributes();
+//                System.out.println("schemaAtts null, createList: " + createList);
+//
+//                SimpleFeatureType fType = getFeatureType(form, request);
+//
+//                for (int i = 0; i < fType.getAttributeCount(); i++) {
+//                    AttributeDescriptor attType = fType.getDescriptor(i);
+//                    AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attType);
+//                    schemaAttributes.add(attributeConfig);
+//
+//                    //new ArrayList();
+//                    //DataStoreConfig dsConfig = config.
+//                    //SimpleFeatureType featureType = config.get
+//                }
+//
+//                config.setSchemaAttributes(schemaAttributes);
+//            } else {
+//                config.setSchemaAttributes(form.toSchemaAttributes());
+//            }
+//        }
 
         //            config.setSchemaAttributes(form.toSchemaAttributes());
         LOGGER.fine("config schema atts is " + config.getSchemaAttributes());
