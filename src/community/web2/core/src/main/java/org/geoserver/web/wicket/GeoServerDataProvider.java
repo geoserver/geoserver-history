@@ -31,8 +31,8 @@ import org.geotools.util.logging.Logging;
  * 
  * @param <T>
  */
-public abstract class GSDataProvider<T> extends SortableDataProvider {
-    static final Logger LOGGER = Logging.getLogger(GSDataProvider.class);
+public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
+    static final Logger LOGGER = Logging.getLogger(GeoServerDataProvider.class);
     
     /**
      * Keywords used for filtering data
@@ -189,7 +189,7 @@ public abstract class GSDataProvider<T> extends SortableDataProvider {
     /**
      * Simply models the concept of a property in this provider. A property has
      * a key, that identifies it and can be used for i18n, and can return the
-     * value of the property given an item served by the {@link GSDataProvider}
+     * value of the property given an item served by the {@link GeoServerDataProvider}
      * 
      * @author Andrea Aime - OpenGeo
      * 

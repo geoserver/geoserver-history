@@ -16,11 +16,11 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.wicket.GSDataProvider;
-import org.geoserver.web.wicket.GSDataProvider.Property;
-import org.geoserver.web.wicket.GSDataProvider.PropertyPlaceholder;
+import org.geoserver.web.wicket.GeoServerDataProvider;
+import org.geoserver.web.wicket.GeoServerDataProvider.Property;
+import org.geoserver.web.wicket.GeoServerDataProvider.PropertyPlaceholder;
 
-public class StoreProvider extends GSDataProvider {
+public class StoreProvider extends GeoServerDataProvider {
     
     static final Property<StoreInfo> TYPE = new Property<StoreInfo>() {
 
