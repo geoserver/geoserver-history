@@ -1,0 +1,19 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<head>
+<title>New layer selector</title>
+</head>
+<body>
+<wicket:extend>
+  <h2>New Layer chooser</h2>
+  <p>Here is a list of resourced contained in the '<span
+    wicket:id="storeName"></span>' store. Click on the layer you wish to
+  configure.</p>
+  <label for="showPublished">Show published resources </label>
+  <input wicket:id="showPublished" id="showPublished" type="checkbox"></input>
+  <div wicket:id="layersContainer">
+    <div wicket:id="layers"></div>
+    <p wicket:id="allPublished">All resources already published?</p>
+  </div>
+</wicket:extend>
+</body>
+</html>
