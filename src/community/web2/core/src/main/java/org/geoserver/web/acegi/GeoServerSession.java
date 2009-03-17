@@ -1,19 +1,10 @@
 package org.geoserver.web.acegi;
 
 import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationException;
-import org.acegisecurity.AuthenticationManager;
-import org.acegisecurity.BadCredentialsException;
 import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
-import org.acegisecurity.ui.rememberme.RememberMeServices;
-
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebSession;
-import org.apache.wicket.protocol.http.WebRequestCycle;
-
-import org.geoserver.web.GeoServerApplication;
 
 @SuppressWarnings("serial")
 public class GeoServerSession extends WebSession{
