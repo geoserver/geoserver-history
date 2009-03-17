@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.Info;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geotools.util.Version;
 
@@ -17,7 +18,7 @@ import org.geotools.util.Version;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface ServiceInfo {
+public interface ServiceInfo extends Info {
 
     /**
      * Identifer.

@@ -17,7 +17,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public interface LayerGroupInfo {
+public interface LayerGroupInfo extends Info {
 
     String getId();
     

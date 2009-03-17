@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.Info;
+
 /**
  * Proxies an object storing any modifications to it.
  * <p>
@@ -91,7 +93,20 @@ public class ModificationProxy implements InvocationHandler, Serializable {
         }
 
         try{
-            return method.invoke( proxyObject, args );
+            Object result = method.invoke( proxyObject, args ); 
+
+            //intercept result and wrap it in a proxy if it is another Info object
+            if ( result != null && result instanceof Info ) {
+                //avoid double proxy
+                Object o = ModificationProxy.unwrap( result );
+                if ( o == result ) {
+                    result = ModificationProxy.create( result, (Class) method.getReturnType() );
+                }
+                else {
+                    //result was already proxied, leave as is
+                }
+            }
+            return result;
         }catch(InvocationTargetException e){
             Throwable targetException = e.getTargetException();
             throw targetException;

@@ -10,7 +10,7 @@ package org.geoserver.catalog;
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-public interface MetadataLinkInfo {
+public interface MetadataLinkInfo extends Info {
 
     /**
      * Identifier.

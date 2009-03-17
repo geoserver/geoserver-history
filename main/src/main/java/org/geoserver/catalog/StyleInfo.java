@@ -14,7 +14,7 @@ import org.geotools.styling.Style;
  * 
  * @author Justin Deoliveira, The Open Planning project
  */
-public interface StyleInfo extends Serializable {
+public interface StyleInfo extends Serializable, Info {
 
     /**
      * Name of the default point style.

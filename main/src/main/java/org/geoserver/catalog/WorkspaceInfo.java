@@ -13,7 +13,7 @@ import java.util.Map;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public interface WorkspaceInfo {
+public interface WorkspaceInfo extends Info {
 
     /**
      * The id of the workspace.

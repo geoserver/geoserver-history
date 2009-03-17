@@ -7,13 +7,15 @@ package org.geoserver.config;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.geoserver.catalog.Info;
+
 /**
  * Global GeoServer configuration.
  * 
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-public interface GeoServerInfo {
+public interface GeoServerInfo extends Info {
 
     /**
      * Identifier.

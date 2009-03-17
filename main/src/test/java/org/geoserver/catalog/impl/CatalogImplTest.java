@@ -1,5 +1,6 @@
 package org.geoserver.catalog.impl;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -865,6 +866,16 @@ public class CatalogImplTest extends TestCase {
         catalog.remove( s2 );
         assertEquals( 1, l.removed.size() );
         assertEquals( s2, l.removed.get(0).getSource());
+    }
+    
+    public void testProxyBehaviour() throws Exception {
+        testAddLayer();
+        
+        LayerInfo l = catalog.getLayerByName( "layerName");
+        assertTrue( l instanceof Proxy );
+        
+        ResourceInfo r = l.getResource();
+        assertTrue( r instanceof Proxy );
     }
     
     static class TestListener implements CatalogListener {
