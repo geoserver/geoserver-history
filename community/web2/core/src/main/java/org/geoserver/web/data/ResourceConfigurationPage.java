@@ -26,6 +26,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.table.LayerPage;
 import org.geoserver.web.publish.LayerConfigurationPanel;
 import org.geoserver.web.publish.LayerConfigurationPanelInfo;
 
@@ -87,6 +88,7 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                     getCatalog().save(getResourceInfo());
                     getCatalog().save(getLayerInfo());
                 }
+                setResponsePage(LayerPage.class);
             }
         });
     }
