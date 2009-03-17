@@ -286,7 +286,7 @@
      <id>validation</id>
      <dependencies>
       <dependency>
-        <groupId>org.geoserver</groupId>
+        <groupId>org.geoserver.extension</groupId>
         <artifactId>validation</artifactId>
         <version>${project.version}</version>
       </dependency>
