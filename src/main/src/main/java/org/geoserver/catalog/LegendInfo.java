@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-public interface LegendInfo extends Serializable, Info {
+public interface LegendInfo extends Info {
 
     /**
      * Identifier.
