@@ -4,13 +4,15 @@
  */
 package org.geoserver.catalog;
 
+import java.io.Serializable;
+
 /**
  * Interface implemented by all catalog and configuration objects.
  * 
  * @author Justin Deoliveira, OpenGeo
  *
  */
-public interface Info {
+public interface Info extends Serializable {
 
     /**
      * Returns the identifier for the object.

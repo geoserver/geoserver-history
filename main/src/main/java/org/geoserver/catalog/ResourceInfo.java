@@ -17,7 +17,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface ResourceInfo extends Serializable, Info {
+public interface ResourceInfo extends Info {
 
     /**
      * @return The identifier of the resource.

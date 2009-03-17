@@ -614,8 +614,7 @@ public class CatalogBuilder {
         }
         else if ( Polygon.class.isAssignableFrom(gtype) || MultiPolygon.class.isAssignableFrom(gtype)) {
             styleName = StyleInfo.DEFAULT_POLYGON;
-        }
-        else {
+        } else {
             //fall back to point
             styleName = StyleInfo.DEFAULT_POINT;
         }

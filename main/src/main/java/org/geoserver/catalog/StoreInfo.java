@@ -12,7 +12,7 @@ import java.util.Map;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface StoreInfo extends Serializable, Info {
+public interface StoreInfo extends Info {
 
     /**
      * The store identifier.
