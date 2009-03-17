@@ -1,19 +1,17 @@
 package org.geoserver.web;
 
-import org.geoserver.web.data.tree.DataPage;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.context.SecurityContextImpl;
+import org.geoserver.web.data.table.LayerPage;
 
 public class GeoServerSecuredPageTest extends GeoServerWicketTestSupport {
     public void testSecuredPageGivesRedirectWhenLoggedOut() {
         logout();
-        tester.startPage(DataPage.class);
+        tester.startPage(LayerPage.class);
         tester.assertRenderedPage(UnauthorizedPage.class);
     }
 
     public void testSecuredPageAllowsAccessWhenLoggedIn() {
         login();
-        tester.startPage(DataPage.class);
-        tester.assertRenderedPage(DataPage.class);
+        tester.startPage(LayerPage.class);
+        tester.assertRenderedPage(LayerPage.class);
     }
 }

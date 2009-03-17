@@ -55,14 +55,6 @@
      <property name="order" value="100"/>
   </bean>
 
-  <!--  main application pages  -->
-  <!-- <bean id="dataPage" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="data"/>
-    <property name="titleKey" value="Data"/>
-    <property name="componentClass" value="org.geoserver.web.data.tree.DataPage"/>
-    <property name="category" ref="dataCategory"/>
-  </bean> -->
-
   <!-- Resource configuration pages -->
   <bean id="basicResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
     <property name="id" value="basic"/>
@@ -123,13 +115,6 @@
     <property name="titleKey" value="demo.title"/>
     <property name="descriptionKey" value="demo.description"/>
     <property name="componentClass" value="org.geoserver.web.DemoPage"/>
-  </bean>
-  <bean id="dataPageMenu" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="data"/>
-    <property name="titleKey" value="data.title"/>
-    <property name="descriptionKey" value="data.description"/>
-    <property name="componentClass" value="org.geoserver.web.data.tree.DataPage"/>
-    <property name="category" ref="dataCategory"/>
   </bean>
   <bean id="JAIPageMenu" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="server.admin.jai"/>

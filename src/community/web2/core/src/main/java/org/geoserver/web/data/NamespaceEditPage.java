@@ -23,7 +23,6 @@ import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.tree.DataPage;
 import org.geoserver.web.util.MapModel;
 
 /**
@@ -137,7 +136,7 @@ public class NamespaceEditPage extends GeoServerSecuredPage {
 
             @Override
             public void onClick() {
-                setResponsePage(DataPage.class);
+//                setResponsePage(DataPage.class);
             }
         };
         nsForm.add(link);
@@ -162,7 +161,7 @@ public class NamespaceEditPage extends GeoServerSecuredPage {
                         workspace.setName(prefix);
                         catalog.save(workspace);
                     }
-                    setResponsePage(DataPage.class);
+//                    setResponsePage(DataPage.class);
                 } catch (Exception e) {
                     nsForm.error("Unexpected error: " + e.getMessage());
                 }
