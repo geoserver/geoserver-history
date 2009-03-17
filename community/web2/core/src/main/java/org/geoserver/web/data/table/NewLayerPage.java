@@ -128,13 +128,12 @@ public class NewLayerPage extends GeoServerSecuredPage {
         StoreInfo store = catalog.getStore(storeId, StoreInfo.class);
 
         // try to build from coverage store or data store
-        CatalogBuilder builder = new CatalogBuilder(catalog);
-        builder.setStore(store);
         try {
+            CatalogBuilder builder = new CatalogBuilder(catalog);
+            builder.setStore(store);
             if (store instanceof CoverageStoreInfo) {
                 CoverageStoreInfo cstore = (CoverageStoreInfo) store;
-                AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) (cstore
-                        .getFormat()).getReader(cstore.getURL());
+                AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) getCatalog().getResourcePool().getGridCoverageReader(cstore, null);
                 CoverageInfo ci = builder.buildCoverage(reader);
                 return builder.buildLayer(ci);
             } else if (store instanceof DataStoreInfo) {

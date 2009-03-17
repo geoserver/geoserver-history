@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.table;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,7 +85,7 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
                 // be hard stuff, let's have the catalog builder to the heavy lifting
                 CatalogBuilder builder = new CatalogBuilder(getCatalog());
                 builder.setStore(store);
-                AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) (cstore.getFormat()).getReader(cstore.getURL());
+                AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) getCatalog().getResourcePool().getGridCoverageReader(cstore, null);
                 CoverageInfo ci = builder.buildCoverage(reader);
                 result = new ArrayList<Resource>();
                 result.add(new Resource(ci.getQualifiedName()));
