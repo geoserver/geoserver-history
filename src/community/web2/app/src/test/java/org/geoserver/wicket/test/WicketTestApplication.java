@@ -8,11 +8,21 @@ import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WicketServlet;
+import org.apache.wicket.resource.Properties;
+import org.apache.wicket.resource.PropertiesFactory;
+import org.geoserver.web.GeoServerApplication;
+import org.geoserver.web.GeoServerApplication.GeoServerLocalizer;
+import org.geoserver.web.GeoServerApplication.GeoServerResourceStreamLocator;
+import org.geoserver.web.wicket.CRSPanel;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeocentricCRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Application object for your web application.
@@ -26,7 +36,31 @@ public class WicketTestApplication extends WebApplication
 	{
 	}
 	
-	/**
+        static String wtapath = WicketTestApplication.class.getPackage().getName().replaceAll( "\\.", "/");
+        static String gsapath = GeoServerApplication.class.getPackage().getName().replaceAll( "\\.", "/");
+        static {
+            wtapath += "/" + WicketTestApplication.class.getSimpleName();
+            gsapath += "/" + GeoServerApplication.class.getSimpleName();
+        }
+
+        @Override
+        protected void init() {
+            //JD: override some resource settings to allow for custom i18n lookups
+            getResourceSettings().setResourceStreamLocator(new GeoServerResourceStreamLocator());
+            getResourceSettings().setLocalizer(new GeoServerLocalizer());
+            getResourceSettings().setPropertiesFactory(new PropertiesFactory(this) {
+                @Override
+                public Properties load(Class clazz, String path) {
+                    if ( clazz == WicketTestApplication.class && path.startsWith(wtapath)) {
+                        String newPath = path.replace( wtapath, gsapath );
+                        return super.load( GeoServerApplication.class, newPath );
+                    }
+                    return super.load(clazz, path);
+                }
+            });
+        }
+
+        /**
 	 * @see wicket.Application#getHomePage()
 	 */
 	public Class<?> getHomePage()
