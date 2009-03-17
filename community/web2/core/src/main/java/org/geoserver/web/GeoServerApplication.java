@@ -177,7 +177,7 @@ public class GeoServerApplication extends SpringWebApplication {
      * A custom resource stream locator which supports loading i18n properties
      * files on a single file per module basis.
      */
-    static class GeoServerResourceStreamLocator extends ResourceStreamLocator {
+    public static class GeoServerResourceStreamLocator extends ResourceStreamLocator {
         @SuppressWarnings({ "unchecked", "serial" })
         public IResourceStream locate(Class clazz, String path) {
             int i = path.lastIndexOf("/");
@@ -234,7 +234,7 @@ public class GeoServerApplication extends SpringWebApplication {
      * look up in the i18n file as 'ExamplePage.page.title'.
      * </p>
      */
-    static class GeoServerLocalizer extends Localizer {
+    public static class GeoServerLocalizer extends Localizer {
         public String getString(String key, Component component, IModel model,
                 String defaultValue) throws MissingResourceException {
             //walk up the component hierarchy
