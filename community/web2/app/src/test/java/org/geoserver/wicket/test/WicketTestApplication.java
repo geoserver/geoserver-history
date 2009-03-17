@@ -13,16 +13,11 @@ import org.apache.wicket.resource.PropertiesFactory;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerApplication.GeoServerLocalizer;
 import org.geoserver.web.GeoServerApplication.GeoServerResourceStreamLocator;
-import org.geoserver.web.wicket.CRSPanel;
-import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.DefaultGeocentricCRS;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Application object for your web application.
