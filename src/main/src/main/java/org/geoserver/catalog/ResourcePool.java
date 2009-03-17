@@ -321,7 +321,7 @@ public class ResourcePool {
                         tb.setName( info.getName() );
                         tb.setNamespaceURI( info.getNamespace().getURI() );
 
-                        if ( info.getAttributes() == null && info.getAttributes().isEmpty() ) {
+                        if ( info.getAttributes() == null || info.getAttributes().isEmpty() ) {
                             //take this to mean just load all native
                             for ( PropertyDescriptor pd : ft.getDescriptors() ) {
                                 if ( !( pd instanceof AttributeDescriptor ) ) {
