@@ -7,6 +7,7 @@ package org.geoserver.web.data.table;
 import static org.geoserver.web.data.table.LayerProvider.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.Component;
@@ -87,9 +88,11 @@ public class LayerPage extends GeoServerSecuredPage {
         
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                String name = stores.getModelObjectAsString();
-                StoreInfo store = getCatalog().getStoreByName(name, StoreInfo.class);
-                setResponsePage(new NewLayerPage(store.getId()));
+                if(stores.getModelObject() != null) {
+                    String name = stores.getModelObjectAsString();
+                    StoreInfo store = getCatalog().getStoreByName(name, StoreInfo.class);
+                    setResponsePage(new NewLayerPage(store.getId()));
+                }
             }
         });
         return stores;
@@ -142,11 +145,12 @@ public class LayerPage extends GeoServerSecuredPage {
     private final class StoreListModel extends LoadableDetachableModel {
         @Override
         protected Object load() {
-            List<DataStoreInfo> stores = getCatalog().getDataStores();
+            List<StoreInfo> stores = getCatalog().getStores(StoreInfo.class);
             List<String> storeNames = new ArrayList<String>();
-            for (DataStoreInfo store : stores) {
+            for (StoreInfo store : stores) {
                 storeNames.add(store.getName());
             }
+            Collections.sort(storeNames);
             return storeNames;
         }
     }
