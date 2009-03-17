@@ -53,6 +53,4 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
 		myNewKeyword = "";
 		mySelectedKeywords = new ArrayList<String>();
 	}
-	
-	private static final long serialVersionUID = 677955476932894110L;
 }
