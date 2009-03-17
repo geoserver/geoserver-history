@@ -49,6 +49,8 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     GeoServerPagingNavigator navigator;
 
     GeoServerDataProvider<T> dataProvider;
+    
+    Form filterForm;
 
     public GeoServerTablePanel(String id, final GeoServerDataProvider<T> dataProvider) {
         super(id);
@@ -58,18 +60,18 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         listContainer = new WebMarkupContainer("listContainer");
 
         // build the filter form
-        Form form = new Form("filterForm");
-        add(form);
-        form.add(filter = new TextField("filter", new Model()));
+        filterForm = new Form("filterForm");
+        add(filterForm);
+        filterForm.add(filter = new TextField("filter", new Model()));
         filter.setOutputMarkupId(true);
         AjaxButton filterSubmit = filterSubmitButton();
-        form.add(filterSubmit);
+        filterForm.add(filterSubmit);
         AjaxButton filterResetButton = filterResetButton();
         AjaxButton filterReset = filterResetButton;
-        form.add(filterReset);
+        filterForm.add(filterReset);
 
         // add the filter match label
-        form.add(matched = new Label("filterMatch", "Showing all records"));
+        filterForm.add(matched = new Label("filterMatch", "Showing all records"));
         matched.setOutputMarkupId(true);
 
         // setup the table
@@ -214,6 +216,10 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         target.addComponent(navigator);
         target.addComponent(matched);
         target.addComponent(filter);
+    }
+    
+    public void setFilterVisible(boolean filterVisible) {
+        filterForm.setVisible(filterVisible);
     }
 
     /**
