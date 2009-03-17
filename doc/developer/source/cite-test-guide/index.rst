@@ -87,6 +87,11 @@ Run WFS 1.0 tests
 Run WFS 1.1 tests
 -----------------
 
+.. note::
+
+   Running the wfs 1.0 test suite requires that GeoServer is running with
+   the H2 extension enabled.
+
 #. Start GeoServer with the ``citewfs-1.1`` data directory.
 
 #. On the setup screen:
