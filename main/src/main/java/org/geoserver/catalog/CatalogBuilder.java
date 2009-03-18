@@ -696,4 +696,69 @@ public class CatalogBuilder {
        
         lg.setBounds( bounds );
     }
+    
+    //
+    //remove methods
+    //
+    
+    /**
+     * Removes a workspace from the catalog.
+     * <p>
+     * The <tt>recursive</tt> flag controls whether objects linked to the workspace such as stores
+     * should also be deleted.
+     * </p>
+     */
+    public void removeWorkspace( WorkspaceInfo workspace, boolean recursive ) {
+         
+        if ( recursive ) {
+            //remove all stores
+            for ( StoreInfo s : catalog.getStoresByWorkspace( workspace, StoreInfo.class ) ) {
+                removeStore( s, recursive );
+            }
+
+            //remove any linked namespaces
+            NamespaceInfo ns = catalog.getNamespaceByPrefix( workspace.getName() );
+            if ( ns != null ) {
+                catalog.remove( ns );
+            }
+        }
+        
+        catalog.remove( workspace );
+    }
+    
+    /**
+     * Removes a store from the catalog.
+     * <p>
+     * The <tt>recursive</tt> flag controls whether objects linked to the store such as resources
+     * should also be deleted.
+     * </p>
+     */
+    public void removeStore( StoreInfo store, boolean recursive ) {
+        if ( recursive ) {
+            //remove all resources
+            for ( ResourceInfo r : catalog.getResourcesByStore(store,ResourceInfo.class)) {
+                removeResource( r, recursive );
+            }
+        }
+        
+        catalog.remove( store );
+    }
+    
+    /**
+     * Removes a resource from the catalog.
+     * <p>
+     * The <tt>recursive</tt> flag controls whether objects linked to the resource such as layers
+     * should also be deleted.
+     * </p>
+     */
+    public void removeResource( ResourceInfo resource, boolean recursive ) {
+        if ( recursive ) {
+            //remove any linked layers
+            for ( LayerInfo l : catalog.getLayers( resource ) ) {
+                catalog.remove( l );
+            }
+        }
+        
+        catalog.remove( resource );
+    }
 }
