@@ -46,6 +46,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
                 myNewKeyword = "";
             }
         });
+        add(new MetadataLinkEditor("metadataLinks", model));
 		add(new TextField("SRS"));
 		add(new TextField("nativeBoundingBox"));
         add(new Label("boundingBox"));

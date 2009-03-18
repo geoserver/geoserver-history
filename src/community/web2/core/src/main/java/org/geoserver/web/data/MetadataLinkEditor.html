@@ -1,0 +1,25 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<head></head>
+<body>
+<wicket:panel>
+  <div wicket:id="container">
+    <table wicket:id="table">
+      <tr>
+        <th>Type</th>
+        <th>Format</th>
+        <th>URL</th>
+        <th></th>
+      </tr>
+      <tr wicket:id="links">
+        <td><select wicket:id="type"></select></td>
+        <td><input wicket:id="format" type="text" class="text"></input></td>
+        <td><span wicket:id="urlBorder"><input wicket:id="metadataLinkURL" type="text" class="text"></input></span></td>
+        <td><a href="#" wicket:id="removeLink">remove</a></td>
+      </tr>
+    </table>
+    <p wicket:id="noLinks">No metadata links defined so far</p>
+  </div>
+  <button wicket:id="addlink">Add link</button>
+</wicket:panel>
+</body>
+</html>
