@@ -1,0 +1,24 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+<h2>New Workspace</h2>
+<form wicket:id="form">
+  <ul>
+    <li>
+      <label for="name">Name</label>
+      <input wicket:id="name" type="text" size="20"/>
+    </li>
+    <li>
+      <label for="uRI">Namespace URI</label>
+      <input wicket:id="uri" type="text" size="60"/>
+      <p class="instruct">The namespace uri associated with this workspace.</p>
+    </li>
+    <li class="button-group selfclear">
+      <a href="#" wicket:id="submit"><wicket:message key="submit">Submit</wicket:message></a>
+      <a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a> 
+    </li>
+  </ul>
+</form>
+</wicket:extend>
+</body>
+</html>
