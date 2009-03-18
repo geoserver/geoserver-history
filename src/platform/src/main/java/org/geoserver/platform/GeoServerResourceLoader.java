@@ -276,6 +276,22 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     }
 
     /**
+     * Creates a new file
+     * <p>
+     * Calls through to {@link #createFile(String)}.
+     * </p>
+     * 
+     * @param location The components of the location.
+     *
+     * @return The file handle of the created file.
+     *
+     * @throws IOException In the event of an I/O error.
+     */
+    public File createFile(String ...location) throws IOException {
+        return createFile( concat(location) );
+    }
+    
+    /**
      * Creates a new file.
      * <p>
      * Relative paths are created relative to {@link #baseDirectory}.
