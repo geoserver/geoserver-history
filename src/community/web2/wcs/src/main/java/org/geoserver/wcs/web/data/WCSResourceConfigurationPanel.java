@@ -10,6 +10,11 @@ import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.web.data.ResourceConfigurationPanel;
 
+/**
+ * A configuration panel for CoverageInfo properties that related to WCS publication
+ * @author Andrea Aime - OpenGeo
+ *
+ */
 @SuppressWarnings("serial")
 public class WCSResourceConfigurationPanel extends ResourceConfigurationPanel {
 
