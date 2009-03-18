@@ -16,6 +16,9 @@ import org.apache.wicket.model.ComponentPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 
+/**
+ * A generic configuration panel for all basic ResourceInfo properties
+ */
 @SuppressWarnings("serial")
 public class BasicResourceConfig extends ResourceConfigurationPanel {
 
