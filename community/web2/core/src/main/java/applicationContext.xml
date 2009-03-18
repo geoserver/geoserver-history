@@ -157,6 +157,13 @@
     <!-- <property name="icon" value="server.png"/> -->
     <property name="order" value="30"/>
   </bean>
+  <bean id="workspacePageMenu" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="workspaces"/>
+    <property name="titleKey" value="WorkspacePage.page.title"/>
+    <property name="descriptionKey" value="WorkspacePage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.data.workspace.WorkspacePage"/>
+    <property name="category" ref="dataCategory"/>
+  </bean>
   <bean id="storePageMenu" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="stores"/>
     <property name="titleKey" value="StorePage.page.title"/>
