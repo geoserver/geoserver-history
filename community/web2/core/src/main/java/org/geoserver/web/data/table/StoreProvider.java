@@ -15,6 +15,7 @@ import org.apache.wicket.model.Model;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
@@ -66,9 +67,20 @@ public class StoreProvider extends GeoServerDataProvider {
     static final List<Property<StoreInfo>> PROPERTIES = Arrays.asList(TYPE,
             WORKSPACE, NAME, ENABLED, REMOVE);
 
+    WorkspaceInfo workspace;
+    
+    public StoreProvider() {
+        this(null);
+    }
+    
+    public StoreProvider(WorkspaceInfo workspace) {
+        this.workspace = workspace;
+    }
+    
     @Override
     protected List<StoreInfo> getItems() {
-        return getCatalog().getStores(StoreInfo.class);
+        return workspace == null ? getCatalog().getStores(StoreInfo.class) 
+            : getCatalog().getStoresByWorkspace( workspace, StoreInfo.class );
     }
 
     @Override
