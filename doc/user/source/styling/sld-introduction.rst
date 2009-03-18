@@ -24,6 +24,19 @@ GeoServer and SLD
 
 Every layer (featuretype) registered with GeoServer needs to have at least one style associated with it.  GeoServer comes bundled with a few basic styles, and any number of new styles can be added.  It is possible to change any layer's associated style at any time in the featuretype edit page.  (From the :ref:`web_admin`: :ref:`web_admin_config` > :ref:`web_admin_config_data`)  When adding a layer and a style to GeoServer at the same time, the style should be added first, so that the new layer can be associated with the style immediately.  You can add a style in the Style menu.  (From the :ref:`web_admin` : :ref:`web_admin_config` > :ref:`web_admin_config_data`)
 
+Definitions
+-----------
+
+Symbolizer
+``````````
+
+Rule
+````
+
+FeatureTypeStyle
+````````````````
+
+
 A basic style
 -------------
 
