@@ -4,8 +4,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 /**
  * A {@link SimpleAjaxLink} that asks a confirmation by using a Javascript confirm
@@ -16,6 +16,10 @@ import org.apache.wicket.model.IModel;
 public abstract class ConfirmationAjaxLink extends SimpleAjaxLink {
     IModel confirm;
 
+    public ConfirmationAjaxLink(String id, IModel linkModel, String label, String confirm) {
+        this( id, linkModel, new Model( label ), new Model( confirm ) );
+    }
+    
     public ConfirmationAjaxLink(String id, IModel linkModel, IModel labelModel,
             IModel confirm) {
         super(id, linkModel, labelModel);
