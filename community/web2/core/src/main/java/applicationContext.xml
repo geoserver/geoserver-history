@@ -61,6 +61,11 @@
     <property name="titleKey" value="data.resource.config.basic"/>
     <property name="componentClass" value="org.geoserver.web.data.BasicResourceConfig"/>
   </bean>
+  <bean id="featureResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
+    <property name="id" value="feature"/>
+    <property name="titleKey" value="data.resource.config.feature"/>
+    <property name="componentClass" value="org.geoserver.web.data.FeatureResourceConfigurationPanel"/>
+  </bean>
 
   <!-- Layer configuration pages -->
   <bean id="basicLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
