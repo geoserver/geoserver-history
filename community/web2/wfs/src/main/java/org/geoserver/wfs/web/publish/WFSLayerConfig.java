@@ -23,7 +23,7 @@ public class WFSLayerConfig extends LayerConfigurationPanel {
         Border mfb = new FormComponentFeedbackBorder("maxFeaturesBorder");
         mfb.add(maxFeatures);
         add(mfb);
-        TextField maxDecimals = new TextField("maxDecimals", new PropertyModel(model, "resource.maxFeatures"));
+        TextField maxDecimals = new TextField("maxDecimals", new PropertyModel(model, "resource.numDecimals"));
         maxFeatures.add(NumberValidator.minimum(0));
         Border mdb = new FormComponentFeedbackBorder("maxDecimalsBorder");
         mdb.add(maxDecimals);
