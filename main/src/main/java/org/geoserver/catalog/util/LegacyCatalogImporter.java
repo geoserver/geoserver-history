@@ -326,8 +326,8 @@ public class LegacyCatalogImporter {
         }
     }
 
-    void importDataStores(CatalogFactory factory, List dataStores) {
-        for (Iterator d = dataStores.iterator(); d.hasNext();) {
+    void importDataStores(CatalogFactory factory, Map dataStores) {
+        for (Iterator d = dataStores.values().iterator(); d.hasNext();) {
             Map map = (Map) d.next();
             DataStoreInfo dataStore = factory.createDataStore();
             dataStore.setName((String) map.get("id"));

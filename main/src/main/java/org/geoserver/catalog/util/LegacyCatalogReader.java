@@ -8,6 +8,9 @@ import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geotools.util.logging.Logging;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import com.sun.tools.jdi.LinkedHashMap;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -91,18 +94,19 @@ public class LegacyCatalogReader {
      *
      * @throws Exception If error processing "datastores" element.
      */
-    public List<Map<String,Object>> dataStores() throws Exception {
+    public Map<String,Map<String,Object>> dataStores() throws Exception {
         Element dataStoresElement = ReaderUtils.getChildElement(catalog, "datastores", true);
 
         NodeList dataStoreElements = dataStoresElement.getElementsByTagName("datastore");
-        ArrayList dataStores = new ArrayList();
+        Map dataStores = new LinkedHashMap();
 
         for (int i = 0; i < dataStoreElements.getLength(); i++) {
             Element dataStoreElement = (Element) dataStoreElements.item(i);
             
             Map dataStore = new HashMap();
             
-            dataStore.put( "id", ReaderUtils.getAttribute(dataStoreElement, "id", true ) );
+            String id = ReaderUtils.getAttribute(dataStoreElement, "id", true );
+            dataStore.put( "id", id );
             dataStore.put( "namespace", ReaderUtils.getAttribute(dataStoreElement, "namespace", false ) );
     		dataStore.put( "enabled", 
     				Boolean.valueOf( ReaderUtils.getBooleanAttribute( dataStoreElement, "enabled", false, true ) ) );
@@ -116,7 +120,7 @@ public class LegacyCatalogReader {
                 continue;
             }
             
-            dataStores.add(dataStore);
+            dataStores.put(id,dataStore);
         }
 
         return dataStores;
