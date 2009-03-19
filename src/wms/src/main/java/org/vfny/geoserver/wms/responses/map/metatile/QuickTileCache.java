@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.geoserver.config.ConfigurationListener;
+import org.geoserver.config.ConfigurationListenerAdapter;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.ServiceInfo;
@@ -57,17 +58,15 @@ public class QuickTileCache implements TransactionListener {
 	private SoftValueHashMap tileCache = new SoftValueHashMap(0);
 	
 	public QuickTileCache(GeoServer geoServer) {
-	    geoServer.addListener(new ConfigurationListener() {
+	    geoServer.addListener(new ConfigurationListenerAdapter() {
             public void handleGlobalChange(GeoServerInfo global, List<String> propertyNames,
                     List<Object> oldValues, List<Object> newValues) {
                 tileCache.clear();
             }
-
             public void handleServiceChange(ServiceInfo service, List<String> propertyNames,
                     List<Object> oldValues, List<Object> newValues) {
                 tileCache.clear();
             }
-
             public void reloaded() {
                 tileCache.clear();
             }        
