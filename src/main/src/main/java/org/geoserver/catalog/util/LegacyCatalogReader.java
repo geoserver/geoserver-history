@@ -9,8 +9,6 @@ import org.geotools.util.logging.Logging;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.sun.tools.jdi.LinkedHashMap;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -18,6 +16,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
