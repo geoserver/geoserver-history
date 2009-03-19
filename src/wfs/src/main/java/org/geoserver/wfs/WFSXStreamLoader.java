@@ -1,6 +1,7 @@
 package org.geoserver.wfs;
 
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerResourceLoader;
 
@@ -17,6 +18,11 @@ public class WFSXStreamLoader extends XStreamServiceLoader<WFSInfo> {
         super(resourceLoader, "wfs");
     }
 
+    @Override
+    protected void initXStreamPersister(XStreamPersister xp, GeoServer gs) {
+        xp.getXStream().alias( "wfs", WFSInfo.class, WFSInfoImpl.class );
+    }
+    
     protected WFSInfo createServiceFromScratch(GeoServer gs) {
         WFSInfoImpl wfs = new WFSInfoImpl();
         wfs.setId( "wfs" );
