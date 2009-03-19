@@ -16,7 +16,6 @@
  */
 
 
-
 package org.geotools.xacml.geoxacml.test;
 
 import java.io.FileInputStream;
@@ -35,19 +34,18 @@ import com.sun.xacml.ctx.Status;
 /**
  * @author Christian Mueller
  *
- * Test for converting untis to metres or square metres
+ * Test for CRS transformations
  */
-public class ConvertTests extends TestCase {
-
+public class TransformTest extends TestCase {
 
 	
-	
-	public ConvertTests() {
+		
+	public TransformTest() {
 		super();
 						
 	}
 
-	public ConvertTests(String arg0) {
+	public TransformTest(String arg0) {
 		super(arg0);
 		
 	}
@@ -61,13 +59,13 @@ public class ConvertTests extends TestCase {
 	
 	
 	
-	public void testConvertToSquareMetre() {
+	public void testEPSG_4326() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("convert","ConvertToSquareMetrePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("transform","EPSG_4326_Policy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("convert","ConvertToSquareMetreRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("transform","EPSG_4326_Request.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -79,13 +77,13 @@ public class ConvertTests extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 	
-	public void testConvertToMetre() {
+	public void testEPSG_4326_1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("convert","ConvertToMetrePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("transform","EPSG_4326_Policy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("convert","ConvertToMetreRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("transform","EPSG_4326_Request1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -93,9 +91,26 @@ public class ConvertTests extends TestCase {
 		
 	    ResponseCtx response= pdp.evaluate(request);
 	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
+	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	
+	public void testEPSG_4326_2() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("transform","EPSG_4326_Policy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("transform","EPSG_4326_Request2.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_INDETERMINATE);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_PROCESSING_ERROR));
+	}
+
 }

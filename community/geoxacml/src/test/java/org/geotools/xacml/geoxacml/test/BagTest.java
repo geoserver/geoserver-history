@@ -37,16 +37,16 @@ import com.sun.xacml.ctx.Status;
  * Tests for bag functions
  *
  */
-public class BagTests extends TestCase {
+public class BagTest extends TestCase {
 
 		
 	
-	public BagTests() {
+	public BagTest() {
 		super();
 						
 	}
 
-	public BagTests(String arg0) {
+	public BagTest(String arg0) {
 		super(arg0);
 		
 	}

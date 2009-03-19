@@ -35,17 +35,17 @@ import com.sun.xacml.ctx.Status;
  *
  * Test for geomtry set functions
  */
-public class SetTests extends TestCase {
+public class SetTest extends TestCase {
 
 
 	
 	
-	public SetTests() {
+	public SetTest() {
 		super();
 						
 	}
 
-	public SetTests(String arg0) {
+	public SetTest(String arg0) {
 		super(arg0);
 		
 	}
