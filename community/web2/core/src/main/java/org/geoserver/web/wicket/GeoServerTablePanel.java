@@ -36,6 +36,10 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  * @param <T>
  */
 public abstract class GeoServerTablePanel<T> extends Panel {
+    
+    
+    private static final int DEFAULT_ITEMS_PER_PAGE = 10;
+
     // filter form components
     TextField filter;
 
@@ -51,6 +55,8 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     GeoServerDataProvider<T> dataProvider;
     
     Form filterForm;
+
+    private WebMarkupContainer navigatorContainer;
 
     public GeoServerTablePanel(String id, final GeoServerDataProvider<T> dataProvider) {
         super(id);
@@ -142,10 +148,13 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         });
 
         // add the paging navigator and set the items per page
-        dataView.setItemsPerPage(10);
+        dataView.setItemsPerPage(DEFAULT_ITEMS_PER_PAGE);
         navigator = new GeoServerPagingNavigator("navigator", dataView);
-        navigator.setOutputMarkupId(true);
-        add(navigator);
+        navigator.setVisible(dataProvider.size() > dataView.getItemsPerPage());
+        navigatorContainer = new WebMarkupContainer("navigatorContainer");
+        navigatorContainer.setOutputMarkupId(true);
+        navigatorContainer.add(navigator);
+        add(navigatorContainer);
     }
     
     public void setItemsPerPage(int items) {
@@ -211,9 +220,10 @@ public abstract class GeoServerTablePanel<T> extends Panel {
             matched.setModelObject("Matched " + dataProvider.size()
                     + " out of " + dataProvider.fullSize());
         }
+        navigator.setVisible(dataProvider.size() > dataView.getItemsPerPage());
 
         target.addComponent(listContainer);
-        target.addComponent(navigator);
+        target.addComponent(navigatorContainer);
         target.addComponent(matched);
         target.addComponent(filter);
     }
