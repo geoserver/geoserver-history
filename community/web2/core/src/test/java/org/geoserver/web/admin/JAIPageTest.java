@@ -1,17 +1,14 @@
 package org.geoserver.web.admin;
 
-import org.geoserver.jai.JAIInfo;
-import org.geoserver.web.GeoServerWicketTestSupport;
-
 import org.apache.wicket.markup.html.form.TextField;
+import org.geoserver.config.JAIInfo;
+import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class JAIPageTest extends GeoServerWicketTestSupport {
     public void testValues() {
         JAIInfo info = (JAIInfo) getGeoServerApplication()
             .getGeoServer()
-            .getGlobal()
-            .getMetadata()
-            .get(JAIInfo.KEY);
+            .getGlobal().getJAI();
 
         login();
 
