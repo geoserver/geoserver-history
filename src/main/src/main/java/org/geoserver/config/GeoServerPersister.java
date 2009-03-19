@@ -321,7 +321,7 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
     
     void modifyStyle( StyleInfo s ) throws IOException {
         persist( s, file( s ) );
-        
+        /*
         //save out sld
         File f = file(s);
         BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( f ) );
@@ -336,6 +336,7 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
         finally {
             out.close();
         }
+        */
     }
     
     void removeStyle( StyleInfo s ) throws IOException {
