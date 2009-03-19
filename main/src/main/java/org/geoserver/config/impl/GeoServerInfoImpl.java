@@ -7,9 +7,10 @@ package org.geoserver.config.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.config.ContactInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.JAIInfo;
 
 public class GeoServerInfoImpl implements GeoServerInfo {
 
@@ -17,6 +18,8 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     ContactInfo contact = new ContactInfoImpl();
 
+    JAIInfo jai = new JAIInfoImpl();
+    
     // Charset charSet = Charset.forName("UTF-8");
     String charset = "UTF-8";
 
@@ -38,17 +41,16 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     Map clientProperties = new HashMap();
 
-    String loggingLevel;
-
-    String loggingLocation;
-
-    boolean stdOutLogging;
-
     int updateSequence;
     
     String adminUsername;
     String adminPassword;
 
+    GeoServer geoServer;
+    public GeoServerInfoImpl(GeoServer geoServer) {
+        this.geoServer = geoServer;
+    }
+    
     public String getId() {
         return id;
     }
@@ -57,14 +59,6 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         this.id = id;
     }
 
-//    public Catalog getCatalog() {
-//        return catalog;
-//    }
-//
-//    public void setCatalog(Catalog catalog) {
-//        this.catalog = catalog;
-//    }
-
     public void setContact(ContactInfo contactInfo) {
         this.contact = contactInfo;
     }
@@ -72,7 +66,15 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     public ContactInfo getContact() {
         return contact;
     }
-
+    
+    public JAIInfo getJAI() {
+        return jai;
+    }
+    
+    public void setJAI(JAIInfo jai) {
+        this.jai = jai;
+    }
+    
     public void setTitle(String title) {
         this.title = title;
     }
@@ -136,35 +138,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     public void setVerboseExceptions(boolean verboseExceptions) {
         this.verboseExceptions = verboseExceptions;
     }
-    
-    public String getLoggingLevel() {
-        return loggingLevel;
-    }
-    
-    public void setLoggingLevel( String loggingLevel ) {
-        this.loggingLevel = loggingLevel;
-    }
-    
-    public String getLoggingLocation() {
-        return loggingLocation;
-    }
-    
-    public void setLoggingLocation( String loggingLocation ) {
-        this.loggingLocation = loggingLocation;
-    }
-    
-    /**
-     * Flag indicating if GeoServer logs to stdout.
-     */
-    public boolean isStdOutLogging() {
-        return stdOutLogging;
-    }
-    
-   
-    public void setStdOutLogging( boolean stdOutLogging ) {
-        this.stdOutLogging = stdOutLogging;
-    }
-    
+
     public int getUpdateSequence() {
         return updateSequence;
     }
@@ -219,10 +193,6 @@ public class GeoServerInfoImpl implements GeoServerInfo {
                 + ((contact == null) ? 0 : contact.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result
-                + ((loggingLevel == null) ? 0 : loggingLevel.hashCode());
-        result = prime * result
-                + ((loggingLocation == null) ? 0 : loggingLocation.hashCode());
-        result = prime * result
                 + ((metadata == null) ? 0 : metadata.hashCode());
         result = prime * result + numDecimals;
         result = prime * result
@@ -231,7 +201,6 @@ public class GeoServerInfoImpl implements GeoServerInfo {
                 + ((proxyBaseUrl == null) ? 0 : proxyBaseUrl.hashCode());
         result = prime * result
                 + ((schemaBaseUrl == null) ? 0 : schemaBaseUrl.hashCode());
-        result = prime * result + (stdOutLogging ? 1231 : 1237);
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + updateSequence;
         result = prime * result + (verbose ? 1231 : 1237);
@@ -273,16 +242,6 @@ public class GeoServerInfoImpl implements GeoServerInfo {
                 return false;
         } else if (!id.equals(other.getId()))
             return false;
-        if (loggingLevel == null) {
-            if (other.getLoggingLevel() != null)
-                return false;
-        } else if (!loggingLevel.equals(other.getLoggingLevel()))
-            return false;
-        if (loggingLocation == null) {
-            if (other.getLoggingLocation() != null)
-                return false;
-        } else if (!loggingLocation.equals(other.getLoggingLocation()))
-            return false;
         if (numDecimals != other.getNumDecimals())
             return false;
         if (onlineResource == null) {
@@ -299,8 +258,6 @@ public class GeoServerInfoImpl implements GeoServerInfo {
             if (other.getSchemaBaseUrl() != null)
                 return false;
         } else if (!schemaBaseUrl.equals(other.getSchemaBaseUrl()))
-            return false;
-        if (stdOutLogging != other.isStdOutLogging())
             return false;
         if (title == null) {
             if (other.getTitle() != null)

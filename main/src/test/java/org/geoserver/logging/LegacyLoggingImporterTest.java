@@ -5,7 +5,6 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.impl.GeoServerFactoryImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 
 public class LegacyLoggingImporterTest extends TestCase {
@@ -15,7 +14,6 @@ public class LegacyLoggingImporterTest extends TestCase {
     
     protected void setUp() throws Exception {
         gs = new GeoServerImpl();
-        gs.setFactory( new GeoServerFactoryImpl() );
         
         importer = new LegacyLoggingImporter();
         importer.imprt( 

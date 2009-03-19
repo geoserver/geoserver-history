@@ -16,7 +16,7 @@ public class LegacyConfigurationImporterTest extends TestCase {
     
     protected void setUp() throws Exception {
         GeoServer gs = new GeoServerImpl();
-        gs.setFactory( new GeoServerFactoryImpl() );
+        gs.setFactory( new GeoServerFactoryImpl(gs) );
         
         importer = new LegacyConfigurationImporter( gs );
         importer.imprt( 
@@ -28,9 +28,12 @@ public class LegacyConfigurationImporterTest extends TestCase {
         GeoServerInfo info = importer.getConfiguration().getGlobal();
         assertNotNull( info );
         
-        assertEquals( "DEFAULT_LOGGING.properties", info.getLoggingLevel() );
-        assertTrue( info.isStdOutLogging() );
-        assertEquals( "logs/geoserver.log", info.getLoggingLocation() );
+        LoggingInfo logging = importer.getConfiguration().getLogging();
+        assertNotNull( logging );
+        
+        assertEquals( "DEFAULT_LOGGING.properties", logging.getLevel() );
+        assertTrue( logging.isStdOutLogging() );
+        assertEquals( "logs/geoserver.log", logging.getLocation() );
         assertFalse( info.isVerbose() );
         assertFalse( info.isVerboseExceptions() );  
         assertEquals( 8, info.getNumDecimals() );

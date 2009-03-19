@@ -27,6 +27,7 @@ import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geotools.referencing.CRS;
@@ -67,13 +68,11 @@ public class XStreamPersisterTest extends TestCase {
         contact.setContactPosition( "hacker" );
         contact.setContactVoice( "+1 250 765 4321" );
         
-        g1.setLoggingLevel( "CRAZY_LOGGING" );
-        g1.setLoggingLocation( "some/place/geoserver.log" );
         g1.setNumDecimals( 2 );
         g1.setOnlineResource( "http://acme.org" );
         g1.setProxyBaseUrl( "http://proxy.acme.org" );
         g1.setSchemaBaseUrl( "http://schemas.acme.org");
-        g1.setStdOutLogging( true );
+        
         g1.setTitle( "Acme's GeoServer" );
         g1.setUpdateSequence( 123 );
         g1.setVerbose( true );
@@ -93,6 +92,23 @@ public class XStreamPersisterTest extends TestCase {
         assertEquals( "global", dom.getDocumentElement().getNodeName() );
     }
     
+    public void testLogging() throws Exception {
+        LoggingInfo logging = factory.createLogging();
+        
+        logging.setLevel( "CRAZY_LOGGING" );
+        logging.setLocation( "some/place/geoserver.log" );
+        logging.setStdOutLogging( true );
+        
+        ByteArrayOutputStream out = out();
+        persister.save( logging, out );
+        
+        LoggingInfo logging2 = persister.load(in(out),LoggingInfo.class);
+        assertEquals( logging, logging2 );
+        
+        Document dom = dom( in( out ) );
+        assertEquals( "logging", dom.getDocumentElement().getNodeName() );
+        
+    }
     public void testGobalContactDefault() throws Exception {
         GeoServerInfo g1 = factory.createGlobal();
         ContactInfo contact = factory.createContact();
