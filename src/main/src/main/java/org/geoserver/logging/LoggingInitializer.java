@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.config.ConfigurationListener;
+import org.geoserver.config.ConfigurationListenerAdapter;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerInitializer;
+import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -37,18 +39,18 @@ public class LoggingInitializer implements GeoServerInitializer, ApplicationCont
     }
     
     public void initialize(GeoServer geoServer) throws Exception {
-        geoServer.addListener( new ConfigurationListener() {
+        geoServer.addListener( new ConfigurationListenerAdapter() {
 
-            public void handleGlobalChange(GeoServerInfo global,
-                    List<String> propertyNames, List<Object> oldValues,
-                    List<Object> newValues) {
-                
+            @Override
+            public void handleLoggingChange(LoggingInfo logging, List<String> propertyNames,
+                List<Object> oldValues, List<Object> newValues) {
+            
                 //TODO: get rid of this hack checking singleton
                 if (!relinquishLoggingControl ) {
                     boolean reload = false;
-                    String loggingLevel = global.getLoggingLevel();
-                    String loggingLocation = global.getLoggingLocation();
-                    Boolean stdOutLogging = global.isStdOutLogging();
+                    String loggingLevel = logging.getLevel();
+                    String loggingLocation = logging.getLocation();
+                    Boolean stdOutLogging = logging.isStdOutLogging();
                     
                     if ( propertyNames.contains( "loggingLevel") ) {
                         loggingLevel = (String) newValues.get( propertyNames.indexOf( "loggingLevel" ) );
@@ -73,14 +75,6 @@ public class LoggingInitializer implements GeoServerInitializer, ApplicationCont
                     }
                     
                 }
-            }
-
-            public void handleServiceChange(ServiceInfo service,
-                    List<String> propertyNames, List<Object> oldValues,
-                    List<Object> newValues) {
-            }
-            
-            public void reloaded() {
             }
         });
     }

@@ -23,23 +23,6 @@ public interface GeoServerInfo extends Info {
     String getId();
 
     /**
-     * The image configuration.
-     * 
-     * @uml.property name="imaging"
-     * @uml.associationEnd inverse="geoServer:org.geoserver.config.ImagingInfo"
-     */
-    //ImagingInfo getImaging();
-
-    /**
-     * Sets the image configuration.
-     * 
-     * @param imaging
-     *                The imaging to set.
-     * @uml.property name="imaging"
-     */
-    //void setImaging(ImagingInfo imaging);
-
-    /**
      * The contact information.
      * 
      * @uml.property name="contactInfo"
@@ -55,6 +38,16 @@ public interface GeoServerInfo extends Info {
      * @uml.property name="contactInfo"
      */
     void setContact(ContactInfo contactInfo);
+
+    /**
+     * The Java Advanced Imaging configuration.
+     */
+    JAIInfo getJAI();
+    
+    /**
+     * Sets the Java Advanced Imaging configuration.
+     */
+    void setJAI( JAIInfo jai );
 
     /**
      * The default character set.
@@ -185,46 +178,6 @@ public interface GeoServerInfo extends Info {
      * @uml.property name="verboseExceptions"
      */
     void setVerboseExceptions(boolean verboseExceptions);
-
-    /**
-     * The GeoServer logging level.
-     * <p>
-     * The name of the level is specific to GeoServer, and independent of the 
-     * actual logging framework.
-     * </p>
-     */
-    String getLoggingLevel();
-    
-    /**
-     * Sets the logging level.
-     */
-    void setLoggingLevel( String loggingLevel );
-    
-    /**
-     * The location where GeoServer logs to.
-     * <p>
-     * This value is intended to be used by adminstrators who require logs to be
-     * written in a particular location.
-     * </p>
-     */
-    String getLoggingLocation();
-    
-    /**
-     * Sets the logging location.
-     * 
-     * @param loggingLocation A file or url to a location to log.
-     */
-    void setLoggingLocation( String loggingLocation );
-    
-    /**
-     * Flag indicating if GeoServer logs to stdout.
-     */
-    boolean isStdOutLogging();
-    
-    /**
-     * Sets stdout logging flag.
-     */
-    void setStdOutLogging( boolean supressStdOutLogging );
     
     /**
      * The update sequence.

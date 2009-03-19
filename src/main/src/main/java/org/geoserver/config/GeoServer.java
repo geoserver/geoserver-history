@@ -36,6 +36,16 @@ public interface GeoServer {
     void setGlobal( GeoServerInfo global );
     
     /**
+     * The logging configuration.
+     */
+    LoggingInfo getLogging();
+    
+    /**
+     * Sets logging configuration.
+     */
+    void setLogging( LoggingInfo logging );
+    
+    /**
      * The catalog.
      */
     Catalog getCatalog();
@@ -50,6 +60,11 @@ public interface GeoServer {
      */
     void save(GeoServerInfo geoServer);
 
+    /**
+     * Saves the logging configuration.
+     */
+    void save(LoggingInfo logging);
+    
     /**
      * Adds a service to the configuration.
      */

@@ -16,12 +16,14 @@ import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.ServiceInfo;
 
 public class GeoServerImpl implements GeoServer {
 
-    GeoServerFactory factory = new GeoServerFactoryImpl();
+    GeoServerFactory factory = new GeoServerFactoryImpl(this);
     GeoServerInfo global = factory.createGlobal();
+    LoggingInfo logging = factory.createLogging();
     Catalog catalog;
     
     List<ServiceInfo> services = new ArrayList<ServiceInfo>();
@@ -53,6 +55,23 @@ public class GeoServerImpl implements GeoServer {
     
     public void setGlobal(GeoServerInfo global) {
         this.global = global;
+        
+        //fire the modification event
+        fireGlobalPostModified();
+    }
+    
+    public LoggingInfo getLogging() {
+        if ( logging == null ) {
+            return null;
+        }
+        
+        return ModificationProxy.create( logging, LoggingInfo.class );
+    }
+    
+    public void setLogging(LoggingInfo logging) {
+        this.logging = logging;
+        
+        fireLoggingPostModified();
     }
     
     public void add(ServiceInfo service) {
@@ -69,6 +88,9 @@ public class GeoServerImpl implements GeoServer {
         service = unwrap(service);
         service.setGeoServer(this);
         services.add( service );
+        
+        //fire post modification event
+        firePostServiceModified(service);
     }
 
     public static <T> T unwrap(T obj) {
@@ -135,8 +157,55 @@ public class GeoServerImpl implements GeoServer {
         }
         
         proxy.commit();
+        
+        //fire post modification event
+        fireGlobalPostModified();
     }
 
+    public void save(LoggingInfo logging) {
+        ModificationProxy proxy = 
+            (ModificationProxy) Proxy.getInvocationHandler( logging );
+        
+        List propertyNames = proxy.getPropertyNames();
+        List oldValues = proxy.getOldValues();
+        List newValues = proxy.getNewValues();
+        
+        for ( ConfigurationListener l : listeners ) {
+            try {
+                l.handleLoggingChange( logging, propertyNames, oldValues, newValues);
+            }
+            catch( Exception e ) {
+                //log this
+            }
+        }
+        
+        proxy.commit();
+        
+        //fire post modification event
+        fireGlobalPostModified();
+    } 
+    void fireGlobalPostModified() {
+        for ( ConfigurationListener l : listeners ) {
+            try {
+                l.handlePostGlobalChange( global );
+            }
+            catch( Exception e ) {
+                //log this
+            }
+        }
+    }
+
+    void fireLoggingPostModified() {
+        for ( ConfigurationListener l : listeners ) {
+            try {
+                l.handlePostLoggingChange( logging );
+            }
+            catch( Exception e ) {
+                //log this
+            }
+        }
+    }
+    
     public void save(ServiceInfo service) {
         ModificationProxy proxy = 
             (ModificationProxy) Proxy.getInvocationHandler( service );
@@ -155,6 +224,20 @@ public class GeoServerImpl implements GeoServer {
         }
         
         proxy.commit();
+        
+        //fire post modification event
+        firePostServiceModified(service);
+    }
+
+    void firePostServiceModified(ServiceInfo service) {
+        for ( ConfigurationListener l : listeners ) {
+            try {
+                l.handlePostServiceChange( service );
+            }
+            catch( Exception e ) {
+                //log this
+            }
+        }
     }
     
     public void addListener(ConfigurationListener listener) {

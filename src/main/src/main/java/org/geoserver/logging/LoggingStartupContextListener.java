@@ -4,7 +4,9 @@
  */
 package org.geoserver.logging;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +14,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.geoserver.config.LoggingInfo;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.logging.LoggingUtils.GeoToolsLoggingRedirection;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -58,10 +62,33 @@ public class LoggingStartupContextListener implements ServletContextListener {
             try {
                 File baseDir = new File(GeoserverDataDirectory.findGeoServerDataDir(context));
                 GeoServerResourceLoader loader = new GeoServerResourceLoader(baseDir);
-                LegacyLoggingImporter loggingImporter = new LegacyLoggingImporter();
-                loggingImporter.imprt(baseDir);
-                LoggingUtils.initLogging(loader, loggingImporter.getConfigFileName(), loggingImporter
-                        .getSuppressStdOutLogging(), loggingImporter.getLogFile());
+                
+                File f= loader.find( "logging.xml" );
+                if ( f != null ) {
+                    XStreamPersister xp = new XStreamPersister.XML();
+                    BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
+                    try {
+                        LoggingInfo loginfo = xp.load(in,LoggingInfo.class);
+                        LoggingUtils.initLogging(loader, loginfo.getLevel(), !loginfo.isStdOutLogging(),
+                            loginfo.getLocation());
+                    }
+                    finally {
+                        in.close();
+                    }
+                }
+                else {
+                    //check for old style data directory
+                    f = loader.find( "services.xml" );
+                    if ( f != null ) {
+                        LegacyLoggingImporter loggingImporter = new LegacyLoggingImporter();
+                        loggingImporter.imprt(baseDir);
+                        LoggingUtils.initLogging(loader, loggingImporter.getConfigFileName(), loggingImporter
+                                .getSuppressStdOutLogging(), loggingImporter.getLogFile());
+                    }
+                    else {
+                        getLogger().log(Level.WARNING, "Could not find configuration file for logging");
+                    }
+                }
             } catch (Exception e) {
                 getLogger().log(Level.SEVERE, "Could not configure log4j overrides", e);
             }
