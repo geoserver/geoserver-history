@@ -23,11 +23,12 @@ import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.NamespaceEditPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.coverage.CoverageStoreConfiguration;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
+import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
@@ -124,7 +125,8 @@ public class LayerPage extends GeoServerSecuredPage {
     private Component workspaceLink(String id, final IModel model) {
         return new SimpleAjaxLink(id, WORKSPACE.getModel(model)) {
             public void onClick(AjaxRequestTarget target) {
-                setResponsePage(new NamespaceEditPage(getModelObjectAsString()));
+                WorkspaceInfo ws = getCatalog().getWorkspace(getModelObjectAsString());
+                setResponsePage(new WorkspaceEditPage(ws));
             }
         };
     }
