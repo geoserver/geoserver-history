@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.jai.JAIInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
@@ -43,10 +42,7 @@ public abstract class ServerAdminPage extends GeoServerSecuredPage {
         return new LoadableDetachableModel(){
             public Object load() {
                 return getGeoServerApplication()
-                    .getGeoServer()
-                    .getGlobal()
-                    .getMetadata()
-                    .get(JAIInfo.KEY);
+                    .getGeoServer().getGlobal().getJAI();
             }
         };
     }
@@ -58,6 +54,15 @@ public abstract class ServerAdminPage extends GeoServerSecuredPage {
                     .getGeoServer()
                     .getGlobal()
                     .getContact();
+            }
+        };
+    }
+    
+    public IModel getLoggingInfoModel() {
+        return new LoadableDetachableModel() {
+            @Override
+            protected Object load() {
+                return getGeoServer().getLogging();
             }
         };
     }
