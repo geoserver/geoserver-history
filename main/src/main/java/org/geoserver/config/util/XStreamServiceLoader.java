@@ -43,8 +43,9 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
             BufferedInputStream in = 
                 new BufferedInputStream( new FileInputStream( file ) );
             try {
-                XStream xstream = new XStream();
-                return (T) xstream.fromXML(in);
+                XStreamPersister xp = new XStreamPersister.XML();
+                initXStreamPersister(xp, gs);
+                return xp.load( in, getServiceClass() );
             }
             finally {
                 in.close();    
@@ -66,14 +67,26 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
         
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
         try {
-            XStream xstream = new XStream();
-            xstream.toXML( service, out );
+            XStreamPersister xp = new XStreamPersister.XML();
+            initXStreamPersister(xp, gs);
+            xp.save( service, out );
             
             out.flush();
         }
         finally {
             out.close();
         }
+    }
+    
+    /**
+     * Hook for subclasses to configure the xstream.
+     * <p>
+     * The most common use is to do some aliasing or omit some fields. 
+     * </p>
+     */
+    protected void initXStreamPersister( XStreamPersister xp, GeoServer gs ) {
+        xp.setGeoServer( gs );
+        xp.getXStream().alias( filenameBase, getServiceClass() );
     }
     
     protected abstract T createServiceFromScratch(GeoServer gs);
