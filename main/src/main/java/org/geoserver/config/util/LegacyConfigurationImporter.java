@@ -14,9 +14,11 @@ import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.JAIInfo;
+import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.ServiceLoader;
-import org.geoserver.jai.JAIInfo;
+import org.geoserver.config.impl.JAIInfoImpl;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;
 
@@ -104,16 +106,7 @@ public class LegacyConfigurationImporter {
         //
         GeoServerInfo info = factory.createGlobal();
         Map<String,Object> global = reader.global(); 
-        info.setLoggingLevel( (String) global.get( "log4jConfigFile") );
-        info.setLoggingLocation( (String) global.get( "logLocation") );
         
-        if ( global.get( "suppressStdOutLogging" ) != null ) {
-            info.setStdOutLogging( ! get( global, "suppressStdOutLogging", Boolean.class) );    
-        }
-        else {
-            info.setStdOutLogging(true);
-        }
-
         //info.setMaxFeatures( get( global, "maxFeatures", Integer.class ) );
         info.setVerbose( get( global, "verbose", boolean.class ) );
         info.setVerboseExceptions( get( global, "verboseExceptions", boolean.class ) );
@@ -143,28 +136,38 @@ public class LegacyConfigurationImporter {
         info.setContact( contactInfo );
         
         //jai
-        JAIInfo jai = new JAIInfo();
-        jai.setMemoryCapacity( (Double) value( global.get( "JaiMemoryCapacity"),JAIInfo.DEFAULT_MemoryCapacity ) );
-        jai.setMemoryThreshold( (Double) value( global.get( "JaiMemoryThreshold"), JAIInfo.DEFAULT_MemoryThreshold) );
-        jai.setTileThreads( (Integer) value( global.get( "JaiTileThreads"), JAIInfo.DEFAULT_TileThreads ) );
-        jai.setTilePriority( (Integer) value( global.get( "JaiTilePriority"), JAIInfo.DEFAULT_TilePriority ) );
-        jai.setImageIOCache( (Boolean) value( global.get( "ImageIOCache" ), JAIInfo.DEFAULT_ImageIOCache) );
-        jai.setJpegAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ),JAIInfo.DEFAULT_JPEGNative ) );
-        jai.setPngAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), JAIInfo.DEFAULT_PNGNative)  );
-        jai.setRecycling( (Boolean) value( global.get( "JaiRecycling" ), JAIInfo.DEFAULT_Recycling)  );
-        jai.setAllowNativeMosaic((Boolean) value( global.get( "JaiMosaicNative" ), JAIInfo.DEFAULT_MosaicNative) );
-        
-        info.getMetadata().put( JAIInfo.KEY, jai );
-        
+        JAIInfo jai = new JAIInfoImpl();
+        jai.setMemoryCapacity( (Double) value( global.get( "JaiMemoryCapacity"),JAIInfoImpl.DEFAULT_MemoryCapacity ) );
+        jai.setMemoryThreshold( (Double) value( global.get( "JaiMemoryThreshold"), JAIInfoImpl.DEFAULT_MemoryThreshold) );
+        jai.setTileThreads( (Integer) value( global.get( "JaiTileThreads"), JAIInfoImpl.DEFAULT_TileThreads ) );
+        jai.setTilePriority( (Integer) value( global.get( "JaiTilePriority"), JAIInfoImpl.DEFAULT_TilePriority ) );
+        jai.setImageIOCache( (Boolean) value( global.get( "ImageIOCache" ), JAIInfoImpl.DEFAULT_ImageIOCache) );
+        jai.setJpegAcceleration( (Boolean) value( global.get( "JaiJPEGNative" ),JAIInfoImpl.DEFAULT_JPEGNative ) );
+        jai.setPngAcceleration( (Boolean) value( global.get( "JaiPNGNative" ), JAIInfoImpl.DEFAULT_PNGNative)  );
+        jai.setRecycling( (Boolean) value( global.get( "JaiRecycling" ), JAIInfoImpl.DEFAULT_Recycling)  );
+        jai.setAllowNativeMosaic((Boolean) value( global.get( "JaiMosaicNative" ), JAIInfoImpl.DEFAULT_MosaicNative) );
+        info.setJAI( jai );
+         
         geoServer.setGlobal( info );
         
+        //logging
+        LoggingInfo logging = factory.createLogging();
+        
+        logging.setLevel( (String) global.get( "log4jConfigFile") );
+        logging.setLocation( (String) global.get( "logLocation") );
+        
+        if ( global.get( "suppressStdOutLogging" ) != null ) {
+            logging.setStdOutLogging( ! get( global, "suppressStdOutLogging", Boolean.class) );    
+        }
+        else {
+            logging.setStdOutLogging(true);
+        }
+        geoServer.setLogging(logging);
+        
         // read services
-        for ( ServiceLoader sl : GeoServerExtensions.extensions( ServiceLoader.class ) ) {
+        for ( LegacyServiceLoader sl : GeoServerExtensions.extensions( LegacyServiceLoader.class ) ) {
             try {
-                //special case for legacy stuff
-                if ( sl instanceof LegacyServiceLoader ) {
-                    ((LegacyServiceLoader)sl).setReader(reader);
-                }
+                sl.setReader(reader);
                 
                 ServiceInfo service = sl.load( geoServer );
                 if ( service != null ) {
