@@ -66,4 +66,9 @@ public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
             return false;
         return true;
     }
+    
+    @Override
+    public String toString() {
+        return name;
+    }
 }
