@@ -7,9 +7,11 @@ import javax.media.jai.JAI;
 import javax.media.jai.RecyclingTileFactory;
 
 import org.geoserver.config.ConfigurationListener;
+import org.geoserver.config.ConfigurationListenerAdapter;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerInitializer;
+import org.geoserver.config.JAIInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geotools.image.jai.Registry;
 
@@ -27,35 +29,20 @@ import com.sun.media.jai.util.SunTileCache;
 public class JAIInitializer implements GeoServerInitializer {
 
     public void initialize(GeoServer geoServer) throws Exception {
-        initJAI( geoServer.getGlobal() );
+        initJAI( geoServer.getGlobal().getJAI() );
         
-        geoServer.addListener( new ConfigurationListener() {
+        geoServer.addListener( new ConfigurationListenerAdapter() {
 
             public void handleGlobalChange(GeoServerInfo global,
                     List<String> propertyNames, List<Object> oldValues,
                     List<Object> newValues) {
                 
-                initJAI( global );
+                initJAI( global.getJAI() );
             }
-
-            public void handleServiceChange(ServiceInfo service,
-                    List<String> propertyNames, List<Object> oldValues,
-                    List<Object> newValues) {
-            }
-            
-            public void reloaded() {
-            }
-            
         });
     }
 
-    void initJAI(GeoServerInfo global) {
-        
-        JAIInfo jai = (JAIInfo) global.getMetadata().get( JAIInfo.KEY );
-        if ( jai == null ) {
-            jai = new JAIInfo();
-            global.getMetadata().put( JAIInfo.KEY, jai );
-        }
+    void initJAI(JAIInfo jai) {
         
         JAI jaiDef = JAI.getDefaultInstance();
         jai.setJAI( jaiDef );
