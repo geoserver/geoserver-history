@@ -105,7 +105,7 @@ public class GeoServerImplTest extends TestCase {
         assertTrue( tl.gPropertyNames.contains( "onlineResource" ) );
     }
     
-    static class TestListener implements ConfigurationListener {
+    static class TestListener extends ConfigurationListenerAdapter {
 
         List<String> gPropertyNames = new ArrayList();
         List<Object> gOldValues = new ArrayList();
@@ -131,9 +131,5 @@ public class GeoServerImplTest extends TestCase {
             sOldValues.addAll( oldValues );
             sNewValues.addAll( newValues );
         }
-        
-        public void reloaded() {
-        }
-        
     }
 }
