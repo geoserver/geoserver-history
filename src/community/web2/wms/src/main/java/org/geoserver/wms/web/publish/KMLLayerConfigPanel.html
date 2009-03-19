@@ -1,4 +1,4 @@
-<html>
+<html xmlns:wicket="http://wicket.apache.org/">
 <head></head>
 <body>
 <form name="theForm">
@@ -10,11 +10,11 @@
         <ul>
           <li>
             <label for="regionateAttribute"><wicket:message key="kml.defaultAttribute">Default Regionating Attribute</wicket:message></label>
-            <input id="regionateAttribute" class="text" type="text" wicket:id="kml.regionateAttribute"></input>
+            <select id="regionateAttribute" class="text" type="text" wicket:id="kml.regionateAttribute"></select>
           </li>
           <li>
             <label for="regionateStrategy"><wicket:message key="kml.defaultStrategy">Default Regionating Method</wicket:message></label>
-            <input id="regionateStrategy" class="text" type="text" wicket:id="kml.regionateStrategy"></input>
+            <select id="regionateStrategy" class="text" type="text" wicket:id="kml.regionateStrategy"></select>
           </li>
           <li>
             <label for="regionateFeatureLimit"><wicket:message key="kml.featureLimit">Features Per Regionated Tile</wicket:message></label>
