@@ -156,6 +156,9 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         System.setProperty(LoggingUtils.RELINQUISH_LOG4J_CONTROL, "true");
         LoggingUtils.configureGeoServerLogging(getClass().getResourceAsStream(getLogConfiguration()), false, true, null);
 
+        //HACK: once we port tests to the new data directory, remove this
+        GeoServerLoader.setLegacy( true );
+        
         // set up test data and, if succeeds, create a mock servlet context and start up the spring configuration
         testData = buildTestData();
         testData.setUp();
