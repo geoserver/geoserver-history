@@ -137,11 +137,11 @@ public class WMSMockData {
         };
         catalog.setResourcePool(resourcePool);
 
-        GeoServerInfoImpl geoserverInfo = new GeoServerInfoImpl();
-        geoserverInfo.setId("geoserver");
-
         mockGeoServer = new GeoServerImpl();
         mockGeoServer.setCatalog(catalog);
+        
+        GeoServerInfoImpl geoserverInfo = new GeoServerInfoImpl(mockGeoServer);
+        geoserverInfo.setId("geoserver");
         mockGeoServer.setGlobal(geoserverInfo);
 
         WMSInfoImpl wmsInfo = new WMSInfoImpl();

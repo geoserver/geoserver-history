@@ -90,7 +90,7 @@ public class WMSCapsTransformerTest extends TestCase {
     protected void setUp() throws Exception {
         geosConfig = new GeoServerImpl();
 
-        geosInfo = new GeoServerInfoImpl();
+        geosInfo = new GeoServerInfoImpl(geosConfig);
         geosInfo.setContact(new ContactInfoImpl());
         geosConfig.setGlobal(geosInfo);
 
