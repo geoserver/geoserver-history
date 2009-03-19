@@ -4,11 +4,13 @@
  */
 package org.geoserver.catalog.impl;
 
+import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1268,11 +1270,19 @@ public class CatalogImpl implements Catalog {
     
     protected void resolve(WorkspaceInfo workspace) {
         syncIdWithName(workspace);
+        
+        WorkspaceInfoImpl w = (WorkspaceInfoImpl) workspace;
+        if(w.getMetadata() == null)
+            w.setMetadata(new HashMap());
     }
     
     protected void resolve(NamespaceInfo namespace) {
         Object prefix = OwsUtils.get( namespace, "prefix");
         OwsUtils.set( namespace, "id", prefix );
+        
+        NamespaceInfoImpl n = (NamespaceInfoImpl) namespace;
+        if(n.getMetadata() == null)
+            n.setMetadata(new HashMap());
     }
     
     protected void resolve(StoreInfo store) {
@@ -1305,23 +1315,42 @@ public class CatalogImpl implements Catalog {
         if ( r.getMetadata() == null ) {
             r.setMetadata(new HashMap());
         }
-        r.setCatalog(this);
-        
+        if ( r.getMetadataLinks() == null ) {
+            r.setMetadataLinks(new ArrayList());
+        }
         if ( resource instanceof FeatureTypeInfo ) {
             resolve( (FeatureTypeInfo) resource );
         }
+        r.setCatalog(this);
     }
     
-    protected void resolve(FeatureTypeInfo featureType) {
+    /**
+     * We don't want the world to be able and call this without 
+     * going trough {@link #resolve(ResourceInfo)}
+     * @param featureType
+     */
+    private void resolve(FeatureTypeInfo featureType) {
         FeatureTypeInfoImpl ft = (FeatureTypeInfoImpl) featureType;
         
         if ( ft.getAttributes() == null ) {
             ft.setAttributes( new ArrayList() );
         }
+        if ( ft.getMetadata() == null) {
+            ft.setMetadata(new HashMap());
+        }
     }
 
     protected void resolve(LayerInfo layer) {
         syncIdWithName(layer);
+        
+        // set empy collections, XStream won't do it for us
+        LayerInfoImpl li = (LayerInfoImpl) layer;
+        if(layer.getMetadata() == null) {
+            li.setMetadata(new HashMap<String, Serializable>());
+        }
+        if(layer.getStyles() == null) {
+            li.setStyles(new HashSet<StyleInfo>());
+        }
     }
     
     protected void resolve(LayerGroupInfo layerGroup) {

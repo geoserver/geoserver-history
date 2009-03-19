@@ -36,6 +36,10 @@ public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
     public Map<String, Serializable> getMetadata() {
         return metadata;
     }
+    
+    public void setMetadata(Map<String, Serializable> metadata) {
+        this.metadata = metadata;
+    }
 
     public int hashCode() {
         final int prime = 31;

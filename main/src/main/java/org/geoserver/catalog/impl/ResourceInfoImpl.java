@@ -222,6 +222,10 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     public void setMetadata(Map<String, Serializable> metaData) {
         this.metadata = metaData;
     }
+    
+    public void setMetadataLinks(List<MetadataLinkInfo> metaDataLinks) {
+        this.metadataLinks = metaDataLinks;
+    }
 
     public StoreInfo getStore() {
         return store;
