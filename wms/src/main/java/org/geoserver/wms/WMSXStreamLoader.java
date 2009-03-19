@@ -1,6 +1,7 @@
 package org.geoserver.wms;
 
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerResourceLoader;
 
@@ -23,5 +24,10 @@ public class WMSXStreamLoader extends XStreamServiceLoader<WMSInfo> {
     
     protected WMSInfo createServiceFromScratch(GeoServer gs) {
         return new WMSInfoImpl();
+    }
+    
+    @Override
+    protected void initXStreamPersister(XStreamPersister xp, GeoServer gs) {
+        xp.getXStream().alias( "wms", WMSInfo.class, WMSInfoImpl.class );
     }
 }
