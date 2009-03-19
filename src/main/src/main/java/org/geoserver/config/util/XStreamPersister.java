@@ -49,9 +49,14 @@ import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.ContactInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.JAIInfo;
+import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
+import org.geoserver.config.impl.JAIInfoImpl;
+import org.geoserver.config.impl.LoggingInfoImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.security.SecureCatalogImpl;
@@ -165,6 +170,11 @@ public class XStreamPersister {
     XStream xs;
 
     /**
+     * GeoServer reference used to resolve references to gloal from services
+     */
+    GeoServer geoserver;
+    
+    /**
      * Catalog reference, used to resolve references to stores, workspaces 
      * + namespaces
      */
@@ -197,6 +207,8 @@ public class XStreamPersister {
         
         // Aliases
         xs.alias("global", GeoServerInfoImpl.class);
+        xs.alias("logging", LoggingInfo.class, LoggingInfoImpl.class);
+        xs.alias("jai", JAIInfo.class, JAIInfoImpl.class);
         xs.alias("catalog", CatalogImpl.class);
         xs.alias("namespace", NamespaceInfo.class, NamespaceInfoImpl.class);
         xs.alias("workspace", WorkspaceInfo.class, WorkspaceInfoImpl.class);
@@ -206,7 +218,7 @@ public class XStreamPersister {
         xs.alias( "featureType", FeatureTypeInfo.class, FeatureTypeInfoImpl.class );
         xs.alias( "coverage", CoverageInfo.class, CoverageInfoImpl.class);
         xs.alias( "coverageDimension", CoverageDimensionImpl.class);
-        xs.alias( "metadataLink", MetadataLinkInfo.class);
+        xs.alias( "metadataLink", MetadataLinkInfo.class, MetadataLinkInfoImpl.class);
         xs.alias( "attribute", AttributeTypeInfoImpl.class );
         xs.alias( "layer", LayerInfo.class, LayerInfoImpl.class);
         xs.alias( "layerGroup", LayerGroupInfo.class, LayerGroupInfoImpl.class );
@@ -228,7 +240,8 @@ public class XStreamPersister {
         
         // GeoServerInfo
         xs.omitField(GeoServerInfoImpl.class, "clientProperties");
-
+        xs.omitField(GeoServerInfoImpl.class, "geoServer");
+        
         // ServiceInfo
         xs.omitField(ServiceInfoImpl.class, "clientProperties");
         xs.omitField(ServiceInfoImpl.class, "geoServer");
@@ -309,6 +322,9 @@ public class XStreamPersister {
         xs.registerLocalConverter( ReferencedEnvelope.class, "crs", new SRSConverter() );
         xs.registerLocalConverter( GeneralEnvelope.class, "crs", new SRSConverter() );
         
+        // ServiceInfo
+        xs.omitField( ServiceInfoImpl.class, "geoServer" );
+        
         // Converters
         xs.registerConverter(new SpaceInfoConverter());
         xs.registerConverter(new StoreInfoConverter());
@@ -334,6 +350,10 @@ public class XStreamPersister {
     public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
     }
+    
+    public void setGeoServer(GeoServer geoserver) {
+        this.geoserver = geoserver;
+    } 
     
     public void setCallback(Callback callback) {
         this.callback = callback;
@@ -824,14 +844,18 @@ public class XStreamPersister {
             if ( Double.isInfinite( ((Double)range.getMinValue()).doubleValue() ) ) {
                 context.convertAnother( "-inf" );
             }
-            //context.convertAnother( range.getMinValue() != null ? range.getMinValue().toString() : "-Infinity" );
+            else {
+                context.convertAnother( range.getMinValue() );  
+            }
             writer.endNode();
             
             writer.startNode("max");
             if ( Double.isInfinite( ((Double)range.getMaxValue()).doubleValue() )) {
                 context.convertAnother( "inf");
             }
-            //context.convertAnother( range.getMaxValue() != null ? range.getMaxValue().toString() : "Infinity" );
+            else {
+                context.convertAnother( range.getMaxValue() );  
+            }
             writer.endNode();
         }
         
@@ -852,6 +876,7 @@ public class XStreamPersister {
                         max = Double.parseDouble( reader.getValue() ); 
                     }
                 }
+                reader.moveUp();
             }
             
             min = min != null ? min : Double.NEGATIVE_INFINITY;
@@ -930,11 +955,9 @@ public class XStreamPersister {
             StoreInfo store = (StoreInfo) result;
             if ( store instanceof DataStoreInfo ) {
                 callback.postEncodeDataStore( (DataStoreInfo) store, writer, context );
-                LOGGER.info( "Persisted data store '" +  store.getName() +  "'");
             }
             else {
                 callback.postEncodeCoverageStore( (CoverageStoreInfo) store, writer, context );
-                LOGGER.info( "Persisted coverage store '" +  store.getName() +  "'");
             }
             
         }
@@ -1013,9 +1036,7 @@ public class XStreamPersister {
 
         public void marshal(Object source, HierarchicalStreamWriter writer,
                 MarshallingContext context) {
-            
-            LOGGER.info( "Persisting " + name + " '" + source + "'" );
-            
+
             Map map = (Map) source;
             
             for (Object o : map.entrySet()) {
@@ -1077,13 +1098,6 @@ public class XStreamPersister {
         
         public ResourceInfoConverter(Class clazz ) {
             super(clazz);
-        }
-        
-        protected void doMarshal(Object source,
-                HierarchicalStreamWriter writer, MarshallingContext context) {
-            
-            LOGGER.info( "Persisting resource '" + source + "'");
-            super.doMarshal(source, writer, context);
         }
         
         public Object doUnmarshal(Object result,
