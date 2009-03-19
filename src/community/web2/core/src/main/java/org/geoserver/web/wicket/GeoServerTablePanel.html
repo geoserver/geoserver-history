@@ -1,4 +1,4 @@
-<html>
+<html xmlns:wicket="http://wicket.apache.org/">
 <head>
 <title>Generic sortable/filterable/pageable table</title>
 </head>
@@ -26,7 +26,9 @@
 			</tr>
 		</tbody>
 	</table>
-	<div wicket:id="navigator">1|2|3|...</div>
+  <span wicket:id="navigatorContainer">
+	 <span wicket:id="navigator">1|2|3|...</span>
+  </span>
 	
 	<!-- Sortable header fragments -->
 	<wicket:fragment wicket:id="sortableHeader">
