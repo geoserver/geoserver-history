@@ -65,6 +65,11 @@
     <property name="id" value="feature"/>
     <property name="titleKey" value="data.resource.config.feature"/>
     <property name="componentClass" value="org.geoserver.web.data.FeatureResourceConfigurationPanel"/>
+    <property name="supportedTypes">
+      <list>
+        <value>org.geoserver.catalog.FeatureTypeInfo</value>
+      </list>
+    </property>
   </bean>
 
   <!-- Layer configuration pages -->
