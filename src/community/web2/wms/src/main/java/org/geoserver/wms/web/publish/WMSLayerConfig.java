@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -22,12 +20,8 @@ import org.geoserver.web.publish.LayerConfigurationPanel;
 @SuppressWarnings("serial")
 public class WMSLayerConfig extends LayerConfigurationPanel {
 
-    @SuppressWarnings("unused")
     private List<String> extraStyles;
     private List<String> availableStyles;
-
-    @SuppressWarnings("unused")
-    private String wmsPath;
 
     public WMSLayerConfig(String id, IModel model){
         super(id, model);
@@ -53,7 +47,7 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
                     )
            );
 
-        add(new TextField("wmsPath", new PropertyModel(this, "wmsPath")));
+        add(new TextField("wmsPath", new PropertyModel(model, "path")));
     }
 
     private List<String> listStyles(){
