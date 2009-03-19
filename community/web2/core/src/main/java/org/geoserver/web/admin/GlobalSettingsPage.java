@@ -37,9 +37,10 @@ public class GlobalSettingsPage extends ServerAdminPage {
         form.add(new TextField("numDecimals"));
         form.add(new TextField("charset"));
         form.add(new TextField("proxyBaseUrl"));
-        logLevelsAppend(form, globalInfoModel);
-        form.add(new CheckBox("stdOutLogging"));
-        form.add(new TextField("loggingLocation"));
+        
+        logLevelsAppend(form, loggingInfoModel);
+        form.add(new CheckBox("stdOutLogging", new PropertyModel( loggingInfoModel, "stdOutLogging")));
+        form.add(new TextField("loggingLocation", new PropertyModel( loggingInfoModel, "location")) );
 
         Button submit = new Button("submit", new StringResourceModel("submit", this, null));
         form.add(submit);
