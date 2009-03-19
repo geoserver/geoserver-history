@@ -132,49 +132,6 @@ public class GeoServerBasePage extends WebPage {
                 }
         );
 
-        //save + load
-        AjaxLink save = new AjaxLink("save") {
-            public void onClick(AjaxRequestTarget target) {
-                GeoServerLoader loader = 
-                    getGeoServerApplication().getBeanOfType( GeoServerLoader.class );
-                try {
-                    loader.persist();
-                    Session.get().info( "Changes saved successfully." );
-                } 
-                catch (Exception e) {
-                    Session.get().error( "Error occured during save: '" + e.getLocalizedMessage() + "'");
-                }
-                
-                setResponsePage(GeoServerHomePage.class);
-            }
-            
-        };
-        add(save);
-        AjaxLink load = new AjaxLink("load"){
-            public void onClick(AjaxRequestTarget target) {
-                GeoServerLoader loader = 
-                    getGeoServerApplication().getBeanOfType( GeoServerLoader.class );
-                try {
-                    loader.reload();
-                    Session.get().info( "All outstanding changes reverted." );
-                } 
-                catch (Exception e) {
-                    Session.get().error( "Error occured reverting changes: '" + e.getLocalizedMessage() + "'");
-                }
-                
-                setResponsePage(GeoServerHomePage.class);
-            }
-            
-        };
-        add(load);
-        
-        // Make sure the user has admin rights before showing these buttons
-        if(!GeoServerSecuredPage.DEFAULT_AUTHORIZER.isAccessAllowed(this.getClass(),
-                getSession().getAuthentication())) {
-            load.setVisible(false);
-            save.setVisible(false);
-        }
-        
         add(new FeedbackPanel("feedback"));
     }
 
