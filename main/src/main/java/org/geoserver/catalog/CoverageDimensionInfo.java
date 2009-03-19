@@ -4,6 +4,7 @@
  */
 package org.geoserver.catalog;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.geotools.util.NumberRange;
@@ -13,7 +14,7 @@ import org.geotools.util.NumberRange;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface CoverageDimensionInfo {
+public interface CoverageDimensionInfo extends Serializable {
 
     /**
      * Id of the dimension.
