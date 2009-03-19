@@ -15,7 +15,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
-import org.geoserver.jai.JAIInfo;
+import org.geoserver.config.JAIInfo;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.styling.Style;
 import org.geotools.util.Version;
@@ -112,12 +112,7 @@ public class WMS {
     private JAIInfo getJaiInfo() {
         GeoServer geoServer = getGeoServer();
         GeoServerInfo global = geoServer.getGlobal();
-        Map<String, Serializable> metadata = global.getMetadata();
-        JAIInfo jaiInfo = (JAIInfo) metadata.get(JAIInfo.KEY);
-        if (jaiInfo == null) {
-            jaiInfo = new JAIInfo();
-        }
-        return jaiInfo;
+        return global.getJAI();
     }
 
     public Charset getCharSet() {
