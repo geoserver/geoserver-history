@@ -10,7 +10,13 @@
         <ul>
           <li>
             <label for="maxFeatures"><wicket:message key="wfs.maxFeatures">Per-Request Feature Limit</wicket:message></label>
-            <input id="maxFeatures" class="text" wicket:id="maxFeatures" type="text"></input>
+            <span wicket:id="maxFeaturesBorder">
+              <input id="maxFeatures" class="text" wicket:id="maxFeatures" type="text"></input>
+            </span>
+            <label for="maxDecimals"><wicket:message key="wfs.maxDecimals">Max decimals</wicket:message></label>
+            <span wicket:id="maxDecimalsBorder">
+              <input id="maxDecimals" class="text" wicket:id="maxDecimals" type="text"></input>
+            </span>
           </li>
         </ul>
       </fieldset>
