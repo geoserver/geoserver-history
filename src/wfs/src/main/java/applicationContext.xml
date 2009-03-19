@@ -5,7 +5,7 @@
 	<!-- factories -->
 	<bean id="filterFactory" class="org.geotools.filter.FilterFactoryImpl"/>
 
-	<!--bean id="wfsLoader" class="org.geoserver.wfs.WFSLoader"/-->
+	<bean id="wfsLegacyLoader" class="org.geoserver.wfs.WFSLoader"/>
 	<bean id="wfsLoader" class="org.geoserver.wfs.WFSXStreamLoader">
 	  <constructor-arg ref="resourceLoader"/>
 	</bean>
