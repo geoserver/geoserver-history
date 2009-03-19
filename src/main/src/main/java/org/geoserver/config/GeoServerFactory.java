@@ -25,6 +25,11 @@ public interface GeoServerFactory {
     ContactInfo createContact();
 
     /**
+     * Creates a new jai.
+     */
+    JAIInfo createJAI();
+
+    /**
      * Creates a new metadata link. 
      */
     MetadataLinkInfo createMetadataLink();
@@ -44,6 +49,11 @@ public interface GeoServerFactory {
      */
     ServiceInfo createService();
 
+    /**
+     * Creates a new logging.
+     */
+    LoggingInfo createLogging();
+    
     /**
      * Extensible factory method.
      * <p>
