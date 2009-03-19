@@ -129,6 +129,8 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                         .getBeansOfType(ResourceConfigurationPanelInfo.class)
                         )
                  );
+            // do this or die on validation (the form element contents will reset, the edit will be lost)
+            setReuseItems(true);
         }
 
         @Override
@@ -157,6 +159,8 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                         .getBeansOfType(LayerConfigurationPanelInfo.class)
                         )
                  );
+            // do this or die on validation (the form element contents will reset, the edit will be lost)
+            setReuseItems(true);
         }
 
         @Override

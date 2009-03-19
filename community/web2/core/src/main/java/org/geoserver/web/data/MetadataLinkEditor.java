@@ -89,6 +89,8 @@ public class MetadataLinkEditor extends Panel {
             }
 
         };
+        // this is necessary to avoid loosing item contents on edit/validation checks
+        links.setReuseItems(true);
         table.add(links);
         
         // the no metadata links label
