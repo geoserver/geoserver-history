@@ -6,14 +6,9 @@ package org.geoserver.catalog.impl;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.catalog.ResourceInfo;
 
 public class NamespaceInfoImpl implements NamespaceInfo {
 
@@ -51,6 +46,10 @@ public class NamespaceInfoImpl implements NamespaceInfo {
 
     public Map<String, Serializable> getMetadata() {
         return metadata;
+    }
+    
+    public void setMetadata(HashMap<String, Serializable> metadata) {
+        this.metadata = metadata;
     }
     
     public String toString() {
