@@ -1,7 +1,7 @@
 package org.geoserver.web.admin;
 
 import org.geoserver.config.GeoServer;
-import org.geoserver.jai.JAIInfo;
+import org.geoserver.config.JAIInfo;
 import org.geoserver.web.GeoServerBasePage;
 
 import org.apache.wicket.model.IModel;
@@ -23,12 +23,7 @@ public class JAIPage extends ServerAdminPage {
         Form form = new Form("form", new CompoundPropertyModel(jaiModel)) {
             protected void onSubmit() {
                 ((GeoServer)geoServerModel.getObject())
-                    .getGlobal()
-                    .getMetadata()
-                    .put(
-                            JAIInfo.KEY,
-                            (JAIInfo)jaiModel.getObject()
-                        );
+                    .getGlobal().setJAI((JAIInfo)jaiModel.getObject());
             }
         };
 

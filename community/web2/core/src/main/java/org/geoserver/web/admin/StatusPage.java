@@ -11,7 +11,6 @@ import javax.media.jai.JAI;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.jai.JAIInfo;
 import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
@@ -85,8 +84,7 @@ public class StatusPage extends ServerAdminPage {
             private static final long serialVersionUID = 1L;
 
             public void onClick() {
-                SunTileCache jaiCache = ((JAIInfo) getGeoServer().getGlobal().getMetadata().get(
-                        JAIInfo.KEY)).getTileCache();
+                SunTileCache jaiCache = getGeoServer().getGlobal().getJAI().getTileCache();
                 final long capacityBefore = jaiCache.getMemoryCapacity();
                 jaiCache.flush();
                 jaiCache.setMemoryCapacity(0); // to be sure we realease all tiles
@@ -110,10 +108,8 @@ public class StatusPage extends ServerAdminPage {
         values.put(KEY_JAI_AVAILABLE, Boolean.toString(ClassLoader.getSystemClassLoader()
                 .getResource("javax/media/jai/buildVersion") != null));
 
-        JAI jai = ((JAIInfo) getGeoServer().getGlobal().getMetadata().get(JAIInfo.KEY)).getJAI();
-
-        SunTileCache jaiCache = ((JAIInfo) getGeoServer().getGlobal().getMetadata()
-                .get(JAIInfo.KEY)).getTileCache();
+        JAI jai =  getGeoServer().getGlobal().getJAI().getJAI();
+        SunTileCache jaiCache = getGeoServer().getGlobal().getJAI().getTileCache();
 
         values.put(KEY_JAI_MAX_MEM, Long.toString(jaiCache.getMemoryCapacity()));
         values.put(KEY_JAI_MEM_USAGE, Long.toString(jaiCache.getCacheMemoryUsed()));
