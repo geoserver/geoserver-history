@@ -49,9 +49,13 @@ import com.sun.xacml.Rule;
 import com.sun.xacml.cond.Apply;
 import com.sun.xacml.finder.AttributeFinder;
 import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.ResourceFinder;
 import com.sun.xacml.finder.impl.CurrentEnvModule;
 import com.sun.xacml.finder.impl.SelectorModule;
 import com.sun.xacml.support.finder.FilePolicyModule;
+import com.sun.xacml.test.TestAttributeFinderModule;
+import com.sun.xacml.test.TestPolicyFinderModule;
+import com.sun.xacml.test.TestResourceFinderModule;
 
 /**
  * @author Christian Mueller
@@ -157,7 +161,7 @@ public class TestSupport  {
     
 	   PDP pdp = new PDP(new PDPConfig(attrFinder, policyFinder, null));
 	   return pdp;
-   }   
+   }
    
    static String getFNFor(String resourceDir,String fn) {
 		String result = "src"+File.separator+ "test"+File.separator+ "resources" + File.separator + "geoxml"

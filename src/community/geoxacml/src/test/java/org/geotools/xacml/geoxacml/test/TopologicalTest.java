@@ -15,6 +15,8 @@
  *    Lesser General Public License for more details.
  */
 
+
+
 package org.geotools.xacml.geoxacml.test;
 
 import java.io.FileInputStream;
@@ -32,19 +34,20 @@ import com.sun.xacml.ctx.Status;
 
 /**
  * @author Christian Mueller
+ * 
+ * Test for topological functions
  *
- * Tests for geomtry construct functions
  */
-public class ConstructTests extends TestCase {
+public class TopologicalTest extends TestCase {
+
 
 		
-	
-	public ConstructTests() {
+	public TopologicalTest() {
 		super();
 						
 	}
 
-	public ConstructTests(String arg0) {
+	public TopologicalTest(String arg0) {
 		super(arg0);
 		
 	}
@@ -58,13 +61,13 @@ public class ConstructTests extends TestCase {
 	
 	
 	
-	public void testBuffer() {
+	public void testContains() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","BufferPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","ContainsPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","BufferRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","ContainsRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -76,13 +79,13 @@ public class ConstructTests extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 	
-	public void testBuffer1() {
+	public void testContains1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","BufferPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","ContainsPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","BufferRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","ContainsRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -94,14 +97,13 @@ public class ConstructTests extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	
-	public void testUnion() {
+	public void testWithin() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","UnionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","WithinPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","UnionRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","WithinRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -112,14 +114,14 @@ public class ConstructTests extends TestCase {
 	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
-	
-	public void testUnion1() {
+
+	public void testWithin1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","UnionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","WithinPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","UnionRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","WithinRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -131,13 +133,14 @@ public class ConstructTests extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 	
-	public void testIntersection() {
+	
+	public void testOverlaps() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","IntersectionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","OverlapsPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","IntersectionRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","OverlapsRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -148,14 +151,51 @@ public class ConstructTests extends TestCase {
 	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
-	
-	public void testIntersection1() {
+
+	public void testOverlaps1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","IntersectionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","OverlapsPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","IntersectionRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","OverlapsRequest1.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+	
+
+	public void testIntersects() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","IntersectsPolicy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","IntersectsRequest.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+
+	public void testIntersects1() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","IntersectsPolicy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","IntersectsRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -167,13 +207,13 @@ public class ConstructTests extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	public void testDifference() {
+	public void testCrosses() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","DifferencePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","CrossesPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","DifferenceRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","CrossesRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -184,14 +224,14 @@ public class ConstructTests extends TestCase {
 	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
-	
-	public void testDifference1() {
+
+	public void testCrosses1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","DifferencePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","CrossesPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","DifferenceRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","CrossesRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -203,13 +243,13 @@ public class ConstructTests extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	public void testSymDifference() {
+	public void testTouches() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","SymDifferencePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","TouchesPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","SymDifferenceRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","TouchesRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -218,52 +258,16 @@ public class ConstructTests extends TestCase {
 	    ResponseCtx response= pdp.evaluate(request);
 	    Result result = (Result)response.getResults().iterator().next();
 	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testSymDifference1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","SymDifferencePolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","SymDifferenceRequest1.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	public void testBoundary() {
+	public void testTouches1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","BoundaryPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","TouchesPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","BoundaryRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testBoundary1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","BoundaryPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","BoundaryRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","TouchesRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -272,34 +276,34 @@ public class ConstructTests extends TestCase {
 	    ResponseCtx response= pdp.evaluate(request);
 	    Result result = (Result)response.getResults().iterator().next();
 	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+	
+	public void testDisjoint() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","DisjointPolicy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","DisjointRequest.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	public void testCentroid() {
+	public void testDisjoint1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","CentroidPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","DisjointPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","CentroidRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testCentroid1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","CentroidPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","CentroidRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","DisjointRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -308,34 +312,34 @@ public class ConstructTests extends TestCase {
 	    ResponseCtx response= pdp.evaluate(request);
 	    Result result = (Result)response.getResults().iterator().next();
 	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+	
+	public void testEquals() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","EqualsPolicy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","EqualsRequest.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	public void testConvexHull() {
+	public void testEquals1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","ConvexHullPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("topology","EqualsPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","ConvexHullRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testConvexHull1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","ConvexHullPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","ConvexHullRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("topology","EqualsRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -346,5 +350,6 @@ public class ConstructTests extends TestCase {
 	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
+	
 	
 }

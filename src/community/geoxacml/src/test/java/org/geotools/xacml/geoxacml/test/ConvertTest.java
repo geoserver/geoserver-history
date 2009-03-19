@@ -16,9 +16,9 @@
  */
 
 
+
 package org.geotools.xacml.geoxacml.test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
 import org.geotools.xacml.geoxacml.config.GeoXACML;
@@ -34,22 +34,20 @@ import com.sun.xacml.ctx.Status;
 
 /**
  * @author Christian Mueller
- * 
- * Tests for bag functions
  *
+ * Test for converting untis to metres or square metres
  */
-public class XPathTests extends TestCase {
-
+public class ConvertTest extends TestCase {
 
 
 	
 	
-	public XPathTests() {
+	public ConvertTest() {
 		super();
 						
 	}
 
-	public XPathTests(String arg0) {
+	public ConvertTest(String arg0) {
 		super(arg0);
 		
 	}
@@ -63,13 +61,13 @@ public class XPathTests extends TestCase {
 	
 	
 	
-	public void testXPath() {
+	public void testConvertToSquareMetre() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("xpath","XPathPolicy.xml"));
-	    	    	    	    	    	    
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("convert","ConvertToSquareMetrePolicy.xml"));
+	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("xpath","XPathRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("convert","ConvertToSquareMetreRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -77,13 +75,27 @@ public class XPathTests extends TestCase {
 		
 	    ResponseCtx response= pdp.evaluate(request);
 	    Result result = (Result)response.getResults().iterator().next();
-	    
-//	    ByteArrayOutputStream out = new ByteArrayOutputStream();	    
-//	    response.encode(out);
-//	    System.out.println(new String(out.toByteArray()));
 	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 	
+	public void testConvertToMetre() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("convert","ConvertToMetrePolicy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("convert","ConvertToMetreRequest.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+
 	
 }

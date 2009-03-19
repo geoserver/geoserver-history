@@ -34,19 +34,18 @@ import com.sun.xacml.ctx.Status;
 /**
  * @author Christian Mueller
  *
- * Test for geomtry scalar functions
+ * Test for gemotry check functions
  */
-public class ScalarTests extends TestCase {
-
+public class CheckTest extends TestCase {
 
 	
-	
-	public ScalarTests() {
+		
+	public CheckTest() {
 		super();
 						
 	}
 
-	public ScalarTests(String arg0) {
+	public CheckTest(String arg0) {
 		super(arg0);
 		
 	}
@@ -60,13 +59,13 @@ public class ScalarTests extends TestCase {
 	
 	
 	
-	public void testArea() {
+	public void testIsClosed() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("scalar","AreaPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsClosedPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("scalar","AreaRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsClosedRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -78,13 +77,86 @@ public class ScalarTests extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 	
-	public void testArea1() {
+	public void testIsClosed1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("scalar","AreaPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsClosedPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("scalar","AreaRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsClosedRequest1.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+	
+	public void testIsSimple() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsSimplePolicy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsSimpleRequest.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+	
+	public void testIsSimple1() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsSimplePolicy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsSimpleRequest1.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+	
+	
+	public void testIsValid() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsValidPolicy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsValidRequest.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+	
+	public void testIsValid1() {
+		
+	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsValidPolicy.xml"));
+	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsValidRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -96,114 +168,4 @@ public class ScalarTests extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	public void testLength() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("scalar","LengthPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("scalar","LengthRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testLength1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("scalar","LengthPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("scalar","LengthRequest1.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-
-	
-	public void testDistance() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("scalar","DistancePolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("scalar","DistanceRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testDistance1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("scalar","DistancePolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("scalar","DistanceRequest1.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testisWithinDistance() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("scalar","IsWithinDistancePolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("scalar","IsWithinDistanceRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testIsWithinDistance1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("scalar","IsWithinDistancePolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("scalar","IsWithinDistanceRequest1.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-
-	
 }
