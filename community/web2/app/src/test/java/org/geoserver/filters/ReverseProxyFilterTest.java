@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 
 import com.mockrunner.mock.web.MockFilterChain;
@@ -57,7 +58,7 @@ public class ReverseProxyFilterTest extends TestCase {
     }
     
     protected GeoServerInfo getGeoServerInfo(final String proxyBaseUrl) {
-        return new GeoServerInfoImpl() {
+        return new GeoServerInfoImpl(new GeoServerImpl()) {
             public String getProxyBaseUrl() {
                 return proxyBaseUrl;
             }
