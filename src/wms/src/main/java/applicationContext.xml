@@ -2,7 +2,10 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-	<bean id="wmsLoader" class="org.geoserver.wms.WMSLoader"/>
+	<bean id="wmsLegacyLoader" class="org.geoserver.wms.WMSLoader"/>
+    <bean id="wmsLoader" class="org.geoserver.wms.WMSXStreamLoader">
+      <constructor-arg ref="resourceLoader"/>
+    </bean>
     
     <!-- wms configuration bean. This is a service level facade to the configuration system -->
     <bean id="wms" class="org.geoserver.wms.WMS">
