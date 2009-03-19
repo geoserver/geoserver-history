@@ -6,19 +6,41 @@ package org.geoserver.config;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.eclipse.xsd.XSDElementDeclaration;
+import org.eclipse.xsd.XSDParticle;
+import org.eclipse.xsd.XSDSchema;
+import org.eclipse.xsd.XSDTypeDefinition;
+import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -26,12 +48,18 @@ import org.geoserver.catalog.Wrapper;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
+import org.geoserver.catalog.util.LegacyCatalogReader;
+import org.geoserver.catalog.util.LegacyFeatureTypeInfoReader;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.gml2.GML;
 import org.geotools.util.logging.Logging;
+import org.geotools.xml.Schemas;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.PropertyDescriptor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -58,6 +86,11 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     GeoServerResourceLoader resourceLoader;
     GeoServer geoserver;
     
+    //JD: this is a hack for the moment, it is used only to maintain tests since the test setup relies
+    // on the old data directory structure, once the tests have been ported to the new structure
+    // this ugly hack can die
+    static boolean legacy = false;
+    
     public GeoServerLoader( GeoServerResourceLoader resourceLoader ) {
         this.resourceLoader = resourceLoader;
     }
@@ -65,6 +98,10 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
         GeoserverDataDirectory.init((WebApplicationContext)applicationContext);
+    }
+    
+    public static void setLegacy(boolean legacy) {
+        GeoServerLoader.legacy = legacy;
     }
     
     public final Object postProcessAfterInitialization(Object bean, String beanName)
@@ -82,7 +119,10 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             
             //load
             try {
-                loadCatalog( (Catalog) bean );
+                Catalog catalog = (Catalog) bean;
+                XStreamPersister xp = new XStreamPersister.XML();
+                xp.setCatalog( catalog );
+                loadCatalog( catalog, xp );
             } 
             catch (Exception e) {
                 throw new RuntimeException( e );
@@ -92,7 +132,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         if ( bean instanceof GeoServer ) {
             geoserver = (GeoServer) bean;
             try {
-                loadGeoServer( geoserver );
+                loadGeoServer( geoserver,  new XStreamPersister.XML() );
             } 
             catch (Exception e) {
                 throw new RuntimeException( e );
@@ -103,96 +143,74 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         return bean;
     }
     
-    protected void loadCatalog(Catalog catalog) throws Exception {
+    protected void loadCatalog(Catalog catalog, XStreamPersister xp) throws Exception {
         catalog.setResourceLoader(resourceLoader);
-        
-        //create an xstream persister
-        XStreamPersister xp = new XStreamPersister.XML();
-        
-        //look for catalog2.xml
-        File f = resourceLoader.find( "catalog2.xml" );
-        if ( f != null ) {
-            //load with xstream
-            CatalogImpl catalog2 = depersist( xp, f, CatalogImpl.class );
+
+        //look for catalog.xml, if it exists assume we are dealing with 
+        // an old data directory
+        File f = resourceLoader.find( "catalog.xml" );
+        if ( f == null ) {
+            //assume 2.x style data directory
+            CatalogImpl catalog2 = (CatalogImpl) readCatalog( xp );
             ((CatalogImpl)catalog).sync( catalog2 );
         } else {
-            // import old style catalog
-            File oldCatalog = resourceLoader.find( "catalog.xml" );
-            if(oldCatalog != null) {
-                CatalogImpl catalog2 = new CatalogImpl();
-                LegacyCatalogImporter importer = new LegacyCatalogImporter(catalog2);
-                importer.setResourceLoader(resourceLoader);
-                importer.imprt(resourceLoader.getBaseDirectory());
-                ((CatalogImpl)catalog).sync( catalog2 );
-            } 
+            // import old style catalog, register the persister now so that we start 
+            // with a new version of the catalog
+            CatalogImpl catalog2 = (CatalogImpl) readLegacyCatalog( f, xp );
+            ((CatalogImpl)catalog).sync( catalog2 );
         }
         
         //initialize styles
         initializeStyles(catalog);
         
-        //set the catalog to resolve references directly
-        xp.setCatalog( catalog );
-        
-        //load feature types and coverage info files
-        File workspaces = resourceLoader.find( "workspaces" );
-        if ( workspaces == null ) {
-            LOGGER.warning( "No workspaces found.");
-            return;
-        }
-        
-        //load resources
-        for ( WorkspaceInfo ws : catalog.getWorkspaces() ) {
-            File workspace = new File( workspaces, ws.getName() );
-            if ( !workspace.exists() || workspace.isFile() ) {
-                LOGGER.warning( "Ignoring workspace '" + ws.getName() + "', no such directory.");
-                continue;
-            }
-            
-            File[] ls = workspace.listFiles();
-            for ( File dir : ls ) {
-                if ( !dir.isDirectory() ) {
-                    continue;
-                }
-                
-                //load the resource
-                File info = new File( dir, "resource.xml" );
-                if ( info.exists() ) {
-                    //read the file
-                    try {
-                        ResourceInfo resource = depersist( xp, info, ResourceInfo.class );
-                        resource.setCatalog( catalog );
-                        
-                        catalog.add( resource );
-                    }
-                    catch (Exception e) {
-                        LOGGER.log( Level.WARNING, "Error occured loading resource '" + info.getAbsolutePath() + "'", e );
-                    }
-                }
-                
-                //load the layer
-                File layerInfo = new File( dir, "layer.xml" );
-                if ( layerInfo.exists() ) {
-                    try {
-                        LayerInfo layer = depersist( xp, layerInfo, LayerInfo.class );
-                        catalog.add( layer );
-                    }
-                    catch( Exception e ) {
-                        LOGGER.log( Level.WARNING, "Error occured loading layer '" + layerInfo.getAbsolutePath() + "'", e );
-                    }
-                }
-            }
+        if ( !legacy ) {
+            //add the listener which will persist changes
+            catalog.addListener( new GeoServerPersister( resourceLoader, xp ) );
         }
     }
     
-    protected void loadGeoServer( GeoServer geoServer ) throws Exception {
-        File f = resourceLoader.find( "global.xml" );
-        if ( f != null ) {
-            BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-            GeoServerInfo global = new XStreamPersister.XML().load( in, GeoServerInfo.class );
-            geoServer.setGlobal( global );
+    protected void loadGeoServer(final GeoServer geoServer, XStreamPersister xp) throws Exception {
+        //add event listener which persists services
+        final List<XStreamServiceLoader> loaders = 
+            GeoServerExtensions.extensions( XStreamServiceLoader.class );
+        geoServer.addListener( 
+            new ConfigurationListenerAdapter() {
+                @Override
+                public void handlePostServiceChange(ServiceInfo service) {
+                    for ( XStreamServiceLoader<ServiceInfo> l : loaders  ) {
+                        if ( l.getServiceClass().isInstance( service ) ) {
+                            try {
+                                l.save( service, geoServer );
+                            } catch (Throwable t) {
+                                //TODO: log this
+                                t.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        );
+        
+        //look for services.xml, if it exists assume we are dealing with 
+        // an old data directory
+        File f = resourceLoader.find( "services.xml" );
+        if ( f == null ) {
+            //assume 2.x style
+            f = resourceLoader.find( "global.xml");
+            if ( f != null ) {
+                BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
+                GeoServerInfo global = new XStreamPersister.XML().load( in, GeoServerInfo.class );
+                geoServer.setGlobal( global );    
+            }
             
+            //load logging
+            f = resourceLoader.find( "logging.xml" );
+            if ( f != null ) {
+                BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
+                LoggingInfo logging = new XStreamPersister.XML().load( in, LoggingInfo.class );
+                geoServer.setLogging( logging );
+            }
             //load services
-            List<XStreamServiceLoader> loaders = GeoServerExtensions.extensions( XStreamServiceLoader.class );
             for ( XStreamServiceLoader<ServiceInfo> l : loaders ) {
                 try {
                     ServiceInfo s = l.load( geoServer );
@@ -204,13 +222,20 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                     //TODO: log this
                     t.printStackTrace();
                 }
-                
             }
         } else {
-            // fall back on the legacy configuration code
-            if(resourceLoader.find("services.xml") != null) {
-                new LegacyConfigurationImporter(geoServer).imprt(resourceLoader.getBaseDirectory());
-            }
+            //add listener now as a converter which will convert from the old style 
+            // data directory to the new
+            GeoServerPersister p = new GeoServerPersister( resourceLoader, xp );
+            geoServer.addListener( p );
+            
+            //import old style services.xml
+            new LegacyConfigurationImporter(geoServer).imprt(resourceLoader.getBaseDirectory());
+            
+            geoServer.removeListener( p );
+            
+            //rename the services.xml file
+            f.renameTo( new File( f.getParentFile(), "services.xml.old" ) );
         }
         
         //load initializer extensions
@@ -224,6 +249,8 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 t.printStackTrace();
             }
         }
+        
+        geoServer.addListener( new GeoServerPersister( resourceLoader, xp ) );
     }
     
     //JD: NOTE! This method is no longer used on trunk
@@ -322,12 +349,16 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         Catalog catalog = geoserver.getCatalog();
         if ( catalog instanceof Wrapper ) {
             catalog = ((Wrapper)geoserver.getCatalog()).unwrap(Catalog.class);
-            
         }
-        loadCatalog( catalog );
-        loadGeoServer(geoserver);
+        
+        XStreamPersister xp = new XStreamPersister.XML();
+        xp.setCatalog( catalog );
+        
+        loadCatalog( catalog, xp );
+        loadGeoServer( geoserver, xp);
     }
     
+    //TODO: kill this method, it is not longer needed since persistance is event based
     public void persist() throws Exception {
         //TODO: make the configuration backend pluggable... or loadable
         // from application context, or web.xml, or env variable, etc...
@@ -410,6 +441,207 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         }
     }
     
+    /**
+     * Reads the catalog from disk.
+     */
+    Catalog readCatalog( XStreamPersister xp ) throws Exception {
+        Catalog catalog = new CatalogImpl();
+        xp.setCatalog( catalog );
+        
+        CatalogFactory factory = catalog.getFactory();
+       
+        //styles
+        File styles = resourceLoader.find( "styles" );
+        for ( File sf : list(styles,new SuffixFileFilter(".xml") ) ) { 
+            StyleInfo s = depersist( xp, sf, StyleInfo.class );
+            catalog.add( s );
+            
+            LOGGER.info( "Loaded style '" + s.getName() + "'" );
+        }
+        
+        //workspaces, stores, and resources
+        File workspaces = resourceLoader.find( "workspaces" );
+        if ( workspaces != null ) {
+            for ( File wsd : list(workspaces, DirectoryFileFilter.INSTANCE ) ) {
+                
+                WorkspaceInfo ws = factory.createWorkspace();
+                ws.setName( wsd.getName() );
+                catalog.add( ws );
+                
+                LOGGER.info( "Loaded workspace '" + ws.getName() +"'");
+                
+                //load the namespace
+                File nsf = new File( wsd, "namespace.xml" );
+                if ( nsf.exists() ) {
+                    NamespaceInfo ns = depersist( xp, nsf, NamespaceInfo.class );
+                    catalog.add( ns );
+                }
+                
+                //load the stores for this workspace
+                for ( File sd : list(wsd, DirectoryFileFilter.INSTANCE) ) {
+                    File f = new File( sd, "datastore.xml");
+                    if ( f.exists() ) {
+                        //load as a datastore
+                        DataStoreInfo ds = depersist( xp, f, DataStoreInfo.class );
+                        catalog.add( ds );
+                        
+                        LOGGER.info( "Loaded data store '" + ds.getName() +"'");
+                        
+                        //load feature types
+                        for ( File ftd : list(sd,DirectoryFileFilter.INSTANCE) ) {
+                            f = new File( ftd, "featuretype.xml" );
+                            if( f.exists() ) {
+                                FeatureTypeInfo ft = depersist(xp,f,FeatureTypeInfo.class);
+                                
+                                //check for a schema override
+                                handleSchemaOverride( ft, ftd );
+                                catalog.add( ft );
+                                
+                                LOGGER.info( "Loaded feature type '" + ds.getName() +"'");
+                                
+                                f = new File( ftd, "layer.xml" );
+                                if ( f.exists() ) {
+                                    LayerInfo l = depersist(xp, f, LayerInfo.class );
+                                    catalog.add( l );
+                                    
+                                    LOGGER.info( "Loaded layer '" + l.getName() + "'" );
+                                }
+                            }
+                            else {
+                                LOGGER.warning( "Ignoring feature type directory " + ftd.getAbsolutePath() );
+                            }
+                        }
+                    }
+                    else {
+                        //look for a coverage store
+                        f = new File( sd, "coveragestore.xml" );
+                        if ( f.exists() ) {
+                            CoverageStoreInfo cs = depersist( xp, f, CoverageStoreInfo.class );
+                            catalog.add( cs );
+                            
+                            LOGGER.info( "Loaded coverage store '" + cs.getName() +"'");
+                            
+                            //load coverages
+                            for ( File cd : list(sd,DirectoryFileFilter.INSTANCE) ) {
+                                f = new File( cd, "coverage.xml" );
+                                if( f.exists() ) {
+                                    CoverageInfo ft = depersist(xp,f,CoverageInfo.class);
+                                    catalog.add( ft );
+                                    
+                                    LOGGER.info( "Loaded coverage '" + cs.getName() +"'");
+                                    
+                                    f = new File( cd, "layer.xml" );
+                                    if ( f.exists() ) {
+                                        LayerInfo l = depersist(xp, f, LayerInfo.class );
+                                        catalog.add( l );
+                                        
+                                        LOGGER.info( "Loaded layer '" + l.getName() + "'" );
+                                    }
+                                }
+                                else {
+                                    LOGGER.warning( "Ignoring coverage directory " + cd.getAbsolutePath() );
+                                }
+                            }
+                        }
+                        else {
+                            LOGGER.warning( "Ignoring store directory '" + sd.getName() +  "'");
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            LOGGER.warning( "No 'workspaces' directory found, unable to load any stores." );
+        }
+
+        //namespaces
+        
+        //layergroups
+        File layergroups = resourceLoader.find( "layergroups" );
+        if ( layergroups != null ) {
+            for ( File lgf : list( layergroups, new SuffixFileFilter( ".xml" ) ) ) {
+                LayerGroupInfo lg = depersist( xp, lgf, LayerGroupInfo.class );
+                catalog.add( lg );
+                
+                LOGGER.info( "Loaded layer group '" + lg.getName() + "'" );
+            }
+        }
+                
+        return catalog;
+    }
+    
+    /**
+     * Reads the legacy (1.x) catalog from disk.
+     */
+    Catalog readLegacyCatalog(File f, XStreamPersister xp) throws Exception {
+        Catalog catalog2 = new CatalogImpl();
+        
+        //add listener now as a converter which will convert from the old style 
+        // data directory to the new
+        GeoServerPersister p = new GeoServerPersister( resourceLoader, xp );
+        if ( !legacy ) {
+            catalog2.addListener( p );
+        }
+        
+        LegacyCatalogImporter importer = new LegacyCatalogImporter(catalog2);
+        importer.setResourceLoader(resourceLoader);
+        importer.imprt(resourceLoader.getBaseDirectory());
+        
+        if ( !legacy ) {
+            catalog2.removeListener( p );
+        }
+        
+        if ( !legacy ) {
+            //copy files from old feature type directories to new
+            File featureTypesDir = resourceLoader.find( "featureTypes" );
+            if ( featureTypesDir != null ) {
+                LegacyCatalogReader creader = new LegacyCatalogReader();
+                creader.read( f );
+                Map<String,Map<String,Object>> dataStores = creader.dataStores();
+                
+                for ( File featureTypeDir : featureTypesDir.listFiles() ) {
+                    if ( !featureTypeDir.isDirectory() ) {
+                        continue;
+                    }
+                    
+                    File featureTypeInfo = new File( featureTypeDir, "info.xml" );
+                    if ( !featureTypeInfo.exists() )  {
+                        continue;
+                    }
+                    
+                    LegacyFeatureTypeInfoReader reader = new LegacyFeatureTypeInfoReader();
+                    reader.read( featureTypeInfo );
+                    
+                    Map<String,Object> dataStore = dataStores.get( reader.dataStore() );
+                    if ( dataStore == null ) {
+                        continue;
+                    }
+                    
+                    String namespace = (String) dataStore.get( "namespace" );
+                    File destFeatureTypeDir = 
+                        resourceLoader.find( "workspaces", namespace, reader.dataStore(), reader.name() );
+                    if ( destFeatureTypeDir != null ) {
+                        //copy all the files over
+                        for ( File file : featureTypeDir.listFiles() ) {
+                            if ( file.isFile() && !featureTypeInfo.equals( file ) ) {
+                                FileUtils.copyFile( file, new File( destFeatureTypeDir, file.getName() ) ) ; 
+                            }
+                        }
+                    }
+                }
+            }
+            
+            //rename catalog.xml
+            f.renameTo( new File( f.getParentFile(), "catalog.xml.old" ) );
+        }
+        
+        return catalog2;
+    }
+    
+    /**
+     * Helper method which uses xstream to persist an object as xml on disk.
+     */
     void persist( XStreamPersister xp, Object obj, File f ) throws Exception {
         BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( f  ) );
         xp.save( obj, out );    
@@ -417,12 +649,108 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         out.close();
     }
     
-    <T> T depersist( XStreamPersister xp, File f, Class<T> type ) throws Exception {
+    /**
+     * Helper method which uses xstream to depersist an object as xml from disk.
+     */
+    <T> T depersist( XStreamPersister xp, File f , Class<T> clazz ) throws IOException {
         BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-        T obj = xp.load( in, type );
+        T obj = xp.load( in, clazz );
 
         in.close();
         return obj;
+    }
+    
+    /**
+     * Handles a schema override of a feature type.
+     * <p>
+     * Reads schema.xml or schema.xsd, and culls the attributes of the resulting feature type.
+     * 
+     * </p>
+     */
+    //JD: this seems a bit out of place here... possibly move somewhere else 
+    void handleSchemaOverride( FeatureTypeInfo ft, File ftd ) throws IOException {
+        //TODO: create a file that abstracts file system access to data directory
+        
+        File schemaFile = new File( ftd, "schema.xsd" );
+        if ( !schemaFile.exists() ) {
+            //check for the old style schema.xml
+            File oldSchemaFile = new File(ftd, "schema.xml");
+            if ( oldSchemaFile.exists() ) {
+                schemaFile = new File( oldSchemaFile.getParentFile(), "schema.xsd");
+                BufferedWriter out = 
+                    new BufferedWriter(new OutputStreamWriter( new FileOutputStream( schemaFile ) ) );
+                out.write( "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>");
+                IOUtils.copy( new FileInputStream( oldSchemaFile ), out );
+                out.write( "</xs:schema>" );
+                out.flush();
+                out.close();
+            }
+        }
+        
+        if ( schemaFile.exists()) {
+            //TODO: farm this schema loading stuff to some utility class
+            //parse the schema + generate attributes from that
+            List locators = Arrays.asList( GML.getInstance().createSchemaLocator() );
+            XSDSchema schema = null;
+            try {
+                schema = Schemas.parse( schemaFile.getAbsolutePath(), locators, null );
+            }
+            catch( Exception e ) {
+                LOGGER.warning( "Unable to parse " + schemaFile.getAbsolutePath() + "." +
+                    " Falling back on native feature type");
+            }
+            if ( schema != null ) {
+                XSDTypeDefinition type = null;
+                for ( Iterator e = schema.getElementDeclarations().iterator(); e.hasNext(); ) {
+                    XSDElementDeclaration element = (XSDElementDeclaration) e.next();
+                    if ( ft.getName().equals( element.getName() ) ) {
+                        type = element.getTypeDefinition();
+                        break;
+                    }
+                }
+                if ( type == null ) {
+                    for ( Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext(); ) {
+                        XSDTypeDefinition typedef = (XSDTypeDefinition) t.next();
+                        if ( (ft.getName() + "_Type").equals( typedef.getName() ) ) {
+                            type = typedef;
+                            break;
+                        }
+                    }
+                }
+                
+                if ( type != null ) {
+                    List children = Schemas.getChildElementDeclarations(type,true);
+                    for ( Iterator<AttributeTypeInfo> i = ft.getAttributes().iterator(); i.hasNext(); ) {
+                        AttributeTypeInfo at = i.next();
+                        boolean found = false;
+                        for ( Iterator c = children.iterator(); c.hasNext(); ) {
+                            XSDElementDeclaration ce = (XSDElementDeclaration) c.next();
+                            if ( at.getName().equals( ce.getName() ) ) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        
+                        if ( !found ) {
+                            i.remove();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Helper method for listing files in a directory.
+     */
+    Collection<File> list( File d, IOFileFilter filter ) {
+        ArrayList<File> files = new ArrayList(); 
+        for ( File f : d.listFiles() ) {
+            if ( filter.accept( f ) ) {
+                files.add( f );
+            }
+        }
+        return files;
     }
     
     public void destroy() throws Exception {
