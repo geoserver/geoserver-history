@@ -1,6 +1,7 @@
 package org.geoserver.wcs;
 
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerResourceLoader;
 
@@ -31,5 +32,9 @@ public class WCSXStreamLoader extends XStreamServiceLoader<WCSInfo> {
         return wcs;
     }
 
+    @Override
+    protected void initXStreamPersister(XStreamPersister xp, GeoServer gs) {
+        xp.getXStream().alias( "wcs", WCSInfo.class, WCSInfoImpl.class );
+    }
 
 }
