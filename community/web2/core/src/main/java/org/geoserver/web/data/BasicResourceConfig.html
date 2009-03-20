@@ -25,18 +25,7 @@
       <li>
         <fieldset>
           <legend><span><wicket:message key="keywords">Keywords</wicket:message></span></legend>
-          <ul>
-            <li>
-              <label for="keywords">Current Keywords</label>
-              <select id="keywords" class="select" wicket:id="keywords" multiple="multiple"></select>
-              <button wicket:id="removeKeywords" type="submit"><wicket:message key="removeSelected">Remove selected</wicket:message></button>
-            </li>   
-            <li>
-              <label for="newKeyword"><wicket:message key="newKeyword">New Keyword</wicket:message></label>
-              <input id="newKeyword" class="text" type="text" wicket:id="newKeyword"></input>
-              <button wicket:id="addKeyword" type="submit"> <wicket:message key="add">Add</wicket:message> </button>
-            </li>
-          </ul>
+          <div wicket:id="keywords"></div>
         </fieldset>
       </li>
       <li>

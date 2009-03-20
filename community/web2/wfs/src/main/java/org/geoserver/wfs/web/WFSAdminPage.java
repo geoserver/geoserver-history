@@ -18,7 +18,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.geoserver.web.services.BaseServiceAdminPage;
+import org.geoserver.web.wicket.KeywordsEditor;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.GMLInfo.SrsNameStyle;
@@ -56,6 +58,7 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
 
         form.add(new GMLPanel("gml2", gml2Model));
         form.add(new GMLPanel("gml3", gml3Model));
+        form.add(new KeywordsEditor("keywords", new PropertyModel(info, "keywords")));
     }
     
     static class GMLPanel extends Panel {

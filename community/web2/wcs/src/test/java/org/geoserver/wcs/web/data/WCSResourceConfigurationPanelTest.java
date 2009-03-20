@@ -4,8 +4,6 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.wcs.web.GeoServerWicketCoverageTestSupport;
 import org.geoserver.web.data.ResourceConfigurationPage;
 
-import org.apache.wicket.model.CompoundPropertyModel;
-
 public class WCSResourceConfigurationPanelTest extends GeoServerWicketCoverageTestSupport{
     public void testValues() {
         CoverageInfo info = 
