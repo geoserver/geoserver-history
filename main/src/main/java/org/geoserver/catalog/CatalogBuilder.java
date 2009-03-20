@@ -28,11 +28,14 @@ import org.geotools.coverage.grid.GridRange2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.FeatureSource;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.coverage.grid.Format;
+import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.opengis.metadata.Identifier;
@@ -376,6 +379,74 @@ public class CatalogBuilder {
         }
         
         return ftinfo;
+    }
+    
+    /**
+     * Initializes a feature type object setting any info that has not been set.
+     * 
+     * TODO: sync this method up with {@link #buildFeatureType(FeatureSource)}.
+     */
+    public void initFeatureType(FeatureTypeInfo featureType) throws Exception {
+        if ( featureType.getNativeName() == null && featureType.getName() != null ) {
+            featureType.setNativeName( featureType.getName() );
+        }
+        if ( featureType.getNativeName() != null && featureType.getName() == null ) {
+            featureType.setName( featureType.getNativeName() );
+        }
+         
+        if ( featureType.getLatLonBoundingBox() == null ) {
+            if ( featureType.getNativeBoundingBox() != null ) {
+                //back project into lat long
+                featureType.setLatLonBoundingBox(
+                    featureType.getNativeBoundingBox().transform( CRS.decode( "EPSG:4326" ), true ));
+            }
+        }
+        else {
+            if ( featureType.getNativeBoundingBox() == null ) {
+                //TODO: try to forward project
+            }
+            
+        }
+        
+        if ( featureType.getNativeBoundingBox() == null ) {
+            //calculate it
+            FeatureSource source = catalog.getResourcePool().getFeatureSource( featureType, null );
+            ReferencedEnvelope bounds = source.getBounds();
+            if ( bounds == null ) {
+                //manually calculate it
+                //TODO: optimize to only load geometric attributes
+                FeatureCollection features = source.getFeatures();
+                FeatureIterator fi = features.features();
+                try {
+                    while( fi.hasNext() ) {
+                        Feature f = (Feature) fi.next();
+                        if ( bounds == null ) {
+                            bounds = new ReferencedEnvelope(f.getBounds());
+                        }
+                        else {
+                            bounds.include( f.getBounds() );
+                        }
+                    }
+                }
+                finally {
+                    features.close( fi );
+                }
+            }
+            
+            featureType.setNativeBoundingBox( bounds );
+            featureType.setLatLonBoundingBox( bounds.transform( CRS.decode( "EPSG:4326"), true ) );
+        }
+
+        if ( featureType.getSRS() == null ) {
+            FeatureType ft = catalog.getResourcePool().getFeatureType( featureType );
+            CoordinateReferenceSystem crs = ft.getCoordinateReferenceSystem();
+            if ( crs != null ) {
+                Integer epsgCode = CRS.lookupEpsgCode( crs, true );
+                if ( epsgCode != null ) {
+                    featureType.setSRS( "EPSG:" + epsgCode );
+                }
+            }
+        }
     }
     
     /**
