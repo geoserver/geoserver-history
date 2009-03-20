@@ -55,6 +55,33 @@ public class FeatureTypeResource extends AbstractCatalogResource {
         String dataStore = getAttribute( "datastore");
 
         FeatureTypeInfo featureType = (FeatureTypeInfo) object;
+         
+        //ensure the store matches up
+        if ( featureType.getStore() != null ) {
+            if ( !dataStore.equals( featureType.getStore().getName() ) ) {
+                throw new RestletException( "Expected datastore " + dataStore +
+                " but client specified " + featureType.getStore().getName(), Status.CLIENT_ERROR_FORBIDDEN );
+            }
+        }
+        else {
+            featureType.setStore( catalog.getDataStoreByName( workspace, dataStore ) );
+        }
+        
+        //ensure workspace/namespace matches up
+        if ( featureType.getNamespace() != null ) {
+            if ( !workspace.equals( featureType.getNamespace().getPrefix() ) ) {
+                throw new RestletException( "Expected workspace " + workspace +
+                    " but client specified " + featureType.getNamespace().getPrefix(), Status.CLIENT_ERROR_FORBIDDEN );
+            }
+        }
+        else {
+            featureType.setNamespace( catalog.getNamespaceByPrefix( workspace ) );
+        }
+        featureType.setEnabled(true);
+        
+        CatalogBuilder cb = new CatalogBuilder(catalog);
+        cb.initFeatureType( featureType );
+        
         if ( featureType.getStore() == null ) {
             //get from requests
             DataStoreInfo ds = catalog.getDataStoreByName( workspace, dataStore );
