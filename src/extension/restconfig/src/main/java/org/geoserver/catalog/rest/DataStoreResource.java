@@ -52,7 +52,22 @@ public class DataStoreResource extends AbstractCatalogResource {
     
     @Override
     protected String handleObjectPost(Object object) throws Exception {
+        String workspace = getAttribute( "workspace" );
+
         DataStoreInfo ds = (DataStoreInfo) object;
+        if ( ds.getWorkspace() != null ) {
+             //ensure the specifried workspace matches the one dictated by the uri
+             WorkspaceInfo ws = (WorkspaceInfo) ds.getWorkspace();
+             if ( !workspace.equals( ws.getName() ) ) {
+                 throw new RestletException( "Expected workspace " + workspace + 
+                     " but client specified " + ws.getName(), Status.CLIENT_ERROR_FORBIDDEN );
+             }
+        }
+        else {
+             ds.setWorkspace( catalog.getWorkspaceByName( workspace ) );
+        } 
+        ds.setEnabled(true);
+
         catalog.add( (DataStoreInfo) object );
         saveCatalog();
         
