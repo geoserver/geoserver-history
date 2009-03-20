@@ -34,6 +34,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.Name;
 import org.opengis.metadata.Identifier;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
@@ -291,6 +292,23 @@ public class CatalogBuilder {
         }
     }
     
+    
+    /**
+     * Builds a {@link FeatureTypeInfo} from the current datastore and the specified type name
+     * <p>
+     * The resulting object is not added to the catalog, it must be done by the calling code
+     * after the fact.
+     * </p>
+     */
+    public FeatureTypeInfo buildFeatureType( Name typeName ) throws Exception {
+        if ( store == null || !( store instanceof DataStoreInfo ) ) {
+            throw new IllegalStateException( "Data store not set.");
+        }
+        
+        DataStoreInfo dstore = (DataStoreInfo) store;
+        return buildFeatureType(dstore.getDataStore(null).getFeatureSource(typeName));
+    }
+    
     /**
      * Builds a feature type from a geotools feature source.
      * <p>
@@ -299,6 +317,10 @@ public class CatalogBuilder {
      * </p>
      */
     public FeatureTypeInfo buildFeatureType( FeatureSource featureSource ) throws Exception {
+        if ( store == null || !( store instanceof DataStoreInfo ) ) {
+            throw new IllegalStateException( "Data store not set.");
+        }
+        
         FeatureType featureType = featureSource.getSchema();
         
         FeatureTypeInfo ftinfo = catalog.getFactory().createFeatureType();
@@ -354,6 +376,21 @@ public class CatalogBuilder {
         }
         
         return ftinfo;
+    }
+    
+    /**
+     * Builds the default coverage contained in the current store 
+     * @return
+     * @throws Exception
+     */
+    public CoverageInfo buildCoverage() throws Exception {
+        if ( store == null || !( store instanceof CoverageStoreInfo ) ) {
+            throw new IllegalStateException( "Coverage store not set.");
+        }
+        
+        CoverageStoreInfo csinfo = (CoverageStoreInfo) store;
+        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, null);
+        return buildCoverage(reader);
     }
     
     /**

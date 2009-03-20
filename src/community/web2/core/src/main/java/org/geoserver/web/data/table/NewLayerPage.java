@@ -132,14 +132,10 @@ public class NewLayerPage extends GeoServerSecuredPage {
             CatalogBuilder builder = new CatalogBuilder(catalog);
             builder.setStore(store);
             if (store instanceof CoverageStoreInfo) {
-                CoverageStoreInfo cstore = (CoverageStoreInfo) store;
-                AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) getCatalog().getResourcePool().getGridCoverageReader(cstore, null);
-                CoverageInfo ci = builder.buildCoverage(reader);
+                CoverageInfo ci = builder.buildCoverage();
                 return builder.buildLayer(ci);
             } else if (store instanceof DataStoreInfo) {
-                DataStoreInfo dstore = (DataStoreInfo) store;
-                FeatureTypeInfo fti = builder.buildFeatureType(dstore.getDataStore(null)
-                        .getFeatureSource(resource.getName()));
+                FeatureTypeInfo fti = builder.buildFeatureType(resource.getName());
                 return builder.buildLayer(fti);
             }
         } catch (Exception e) {
