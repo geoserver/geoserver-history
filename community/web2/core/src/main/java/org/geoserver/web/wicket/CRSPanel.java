@@ -3,6 +3,7 @@ package org.geoserver.web.wicket;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -10,7 +11,6 @@ import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.geotools.referencing.CRS;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
@@ -28,6 +28,9 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  */
 public class CRSPanel extends FormComponentPanel {
 
+    /** the form */
+    Form form;
+    
     /** pop-up window for WKT and SRS list */
     ModalWindow popupWindow;
     
@@ -46,8 +49,11 @@ public class CRSPanel extends FormComponentPanel {
         popupWindow = new ModalWindow("popup");
         add( popupWindow );
         
+        form = new Form("form");
+        add(form);
+        
         srsTextField = new TextField( "srs", new Model() );
-        add( srsTextField );
+        form.add( srsTextField );
         srsTextField.setOutputMarkupId( true );
         
         AjaxLink wktLink = new AjaxLink( "wkt" ) {
@@ -60,7 +66,7 @@ public class CRSPanel extends FormComponentPanel {
                 popupWindow.show(target);
             }
         };
-        add(wktLink);
+        form.add(wktLink);
         
         lookupLink = new AjaxLink( "lookup" ) {
             @Override
@@ -72,7 +78,7 @@ public class CRSPanel extends FormComponentPanel {
                 }
             }
         };
-        add( lookupLink );
+        form.add( lookupLink );
         
         findLink = new AjaxLink( "find" ) {
             @Override
@@ -83,7 +89,7 @@ public class CRSPanel extends FormComponentPanel {
                 popupWindow.show(target);
             }
         };
-        add(findLink);
+        form.add(findLink);
         
         updateInternal(toSRS(crs, false), false);
     }
@@ -111,6 +117,15 @@ public class CRSPanel extends FormComponentPanel {
         return (CoordinateReferenceSystem) getModelObject(); 
     }
     
+    @Override
+    public void updateModel() {
+        form.process();
+        String srs = srsTextField.getValue();
+        if ( !( srs == null || "".equals( srs ) || "UNKNOWN".equals( srs ) ) ) {
+            updateInternal( srs, true );
+        }
+    }
+    
     /*
      * Updates the text field and optionally the internal model. 
      */
@@ -121,7 +136,7 @@ public class CRSPanel extends FormComponentPanel {
         srsTextField.setModelObject( srs );
         
         if ( updateCRS ) {
-            if ( "UNKNOWN".equals( srs ) ) {
+            if ( !"UNKNOWN".equals( srs ) ) {
                 setModelObject(fromSRS( srs ));
             }
             else {
@@ -139,7 +154,7 @@ public class CRSPanel extends FormComponentPanel {
             Integer epsgCode = CRS.lookupEpsgCode(crs, fullScan);
             return epsgCode != null ? "EPSG:" + epsgCode : null;
         } 
-        catch (FactoryException e) {
+        catch (Exception e) {
             return null;
         }
     }
