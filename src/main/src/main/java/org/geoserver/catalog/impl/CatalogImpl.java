@@ -1241,6 +1241,10 @@ public class CatalogImpl implements Catalog {
             r.setMetadata(new HashMap());
         }
         
+        if ( r.getMetadataLinks() == null ) {
+            r.setMetadataLinks(new ArrayList());
+        }
+        
         r.setCatalog(this);
         
         if ( resource instanceof FeatureTypeInfo ) {

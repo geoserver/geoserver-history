@@ -149,6 +149,10 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         return metadataLinks;
     }
 
+    public void setMetadataLinks(List<MetadataLinkInfo> metadataLinks) {
+        this.metadataLinks = metadataLinks;
+    }
+    
     public String getSRS() {
         return srs;
     }
