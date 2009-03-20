@@ -30,7 +30,6 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     	form.add(new TextField("watermark.uRL"));
     	form.add(new TextField("watermark.transparency"));
     	form.add(new DropDownChoice("watermark.position", Arrays.asList(WatermarkInfo.Position.values())));
-    	form.add(new KeywordsEditor("keywords", new PropertyModel(info, "keywords")));
     }
     
     protected String getServiceName(){
