@@ -173,7 +173,7 @@ public class WorkspaceTest extends CatalogRESTTestSupport {
         Document dom = getAsDOM( "/rest/workspaces/gs.xml" );
         
         assertXpathEvaluatesTo("1", "count(//name[text()='gs'])", dom );
-        assertXpathEvaluatesTo("1", "count(//foo/string[text()='bar'])", dom );
+        assertXpathEvaluatesTo("1", "count(//foo[text()='bar'])", dom );
         
     }
     
