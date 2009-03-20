@@ -5,6 +5,7 @@
 package org.vfny.geoserver.form.data;
 
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 
 
 /**
@@ -78,5 +79,27 @@ public class AttributeDisplay {
      */
     public String toString() {
         return name + ":" + type;
+    }
+    
+    public AttributeTypeInfoDTO toDTO() {
+        AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
+        dto.setName(name);
+        dto.setNillable(nillable);
+        dto.setMinOccurs(Integer.parseInt(minOccurs));
+        dto.setMaxOccurs(Integer.parseInt(maxOccurs));
+
+        if (AttributeTypeInfoConfig.TYPE_FRAGMENT.equals(type)) {
+            dto.setComplex(true);
+            dto.setType(fragment);
+        } else {
+            dto.setComplex(false);
+            dto.setType(type);
+        }
+
+        return dto;
+    }
+
+    public AttributeTypeInfoConfig toConfig() {
+        return new AttributeTypeInfoConfig(toDTO());
     }
 }

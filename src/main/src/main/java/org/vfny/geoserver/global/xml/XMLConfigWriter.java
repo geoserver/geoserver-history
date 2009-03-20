@@ -959,7 +959,8 @@ public class XMLConfigWriter {
                                         ft.getSchemaAttributes().size()).toString());
                     }
 
-                    storeFeatureSchema(ft, dir2);
+                    //JD: we don't allow editing of schema from ui, so we never save this out
+                    //storeFeatureSchema(ft, dir2);
                 }
             }
         }

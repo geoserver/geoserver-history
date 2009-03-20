@@ -7,6 +7,7 @@ package org.vfny.geoserver.action.data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -46,6 +47,7 @@ import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.form.data.AttributeDisplay;
 import org.vfny.geoserver.form.data.AttributeForm;
 import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -440,6 +442,23 @@ public class TypesEditorAction extends ConfigAction {
             config.setIndexingEnabled(false);
         }
 
+        if ( config.getSchemaAttributes() == null || config.getSchemaAttributes().isEmpty() ) {
+            //this means that the fetaure type is newly added, so we need to update the config
+            List atts = new ArrayList();
+            List formAtts = form.getAttributes();
+            if ( formAtts != null ) {
+                for ( Iterator i = formAtts.iterator(); i.hasNext(); ) {
+                    Object o = i.next();
+                    if ( o instanceof AttributeForm ) {
+                        atts.add( ((AttributeForm)o).toConfig() );
+                    }
+                    else if ( o instanceof AttributeDisplay ) {
+                        atts.add( ((AttributeDisplay)o).toConfig());
+                    }
+                }
+            }
+            config.setSchemaAttributes(atts);
+        }
         //JD: disabling this because none of the schema attributes are editable, that and this 
         // stuff never worked
 //        String schemaBase = form.getSchemaBase();
