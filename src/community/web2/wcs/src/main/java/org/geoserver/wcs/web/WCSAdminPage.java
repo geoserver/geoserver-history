@@ -6,7 +6,9 @@ package org.geoserver.wcs.web;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.geoserver.web.services.BaseServiceAdminPage;
+import org.geoserver.web.wicket.KeywordsEditor;
 import org.geoserver.wcs.WCSInfo;
 
 public class WCSAdminPage extends BaseServiceAdminPage<WCSInfo> {
@@ -15,7 +17,7 @@ public class WCSAdminPage extends BaseServiceAdminPage<WCSInfo> {
     }
     
     protected void build(IModel info, Form form) {
-        //not much here
+        form.add(new KeywordsEditor("keywords", new PropertyModel(info, "keywords")));
     }
 
     protected String getServiceName(){

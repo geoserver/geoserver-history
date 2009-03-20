@@ -10,7 +10,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.geoserver.web.services.BaseServiceAdminPage;
+import org.geoserver.web.wicket.KeywordsEditor;
 import org.geoserver.wms.web.data.StylesPage;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WatermarkInfo;
@@ -27,8 +29,8 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     	form.add(new CheckBox("watermark.enabled"));
     	form.add(new TextField("watermark.uRL"));
     	form.add(new TextField("watermark.transparency"));
-
     	form.add(new DropDownChoice("watermark.position", Arrays.asList(WatermarkInfo.Position.values())));
+    	form.add(new KeywordsEditor("keywords", new PropertyModel(info, "keywords")));
     }
     
     protected String getServiceName(){
