@@ -71,6 +71,16 @@
       </list>
     </property>
   </bean>
+  <bean id="coverageResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
+    <property name="id" value="coverage"/>
+    <property name="titleKey" value="data.resource.config.coverage"/>
+    <property name="componentClass" value="org.geoserver.web.data.CoverageResourceConfigurationPanel"/>
+    <property name="supportedTypes">
+      <list>
+        <value>org.geoserver.catalog.CoverageInfo</value>
+      </list>
+    </property>
+  </bean>
 
   <!-- Layer configuration pages -->
   <bean id="basicLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
