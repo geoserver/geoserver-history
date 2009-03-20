@@ -67,10 +67,12 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
             getServiceName()
         })));
         form.add(new CheckBox("enabled"));
+        form.add(new CheckBox("citeCompliant"));
         form.add(new TextField("title"));
         form.add(new TextArea("abstract"));
-        
         form.add(new KeywordsEditor("keywords", new PropertyModel(infoModel, "keywords")));
+        form.add(new TextField("fees"));
+        form.add(new TextField("accessConstraints"));
         
         build(infoModel, form);
         
