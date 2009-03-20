@@ -14,11 +14,13 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.web.GeoServerHomePage;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.wicket.KeywordsEditor;
 
 /**
  * Base page for service administration pages.
@@ -67,6 +69,8 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
         form.add(new CheckBox("enabled"));
         form.add(new TextField("title"));
         form.add(new TextArea("abstract"));
+        
+        form.add(new KeywordsEditor("keywords", new PropertyModel(infoModel, "keywords")));
         
         build(infoModel, form);
         
