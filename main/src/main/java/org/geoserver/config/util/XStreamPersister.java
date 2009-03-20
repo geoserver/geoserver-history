@@ -66,6 +66,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.referencing.crs.DefaultProjectedCRS;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
 import org.geotools.util.NumberRange;
@@ -223,6 +224,7 @@ public class XStreamPersister {
         xs.alias( "layer", LayerInfo.class, LayerInfoImpl.class);
         xs.alias( "layerGroup", LayerGroupInfo.class, LayerGroupInfoImpl.class );
         xs.alias( "gridGeometry", GridGeometry2D.class);
+        xs.alias( "projected", DefaultProjectedCRS.class);
         xs.aliasField("abstract", ResourceInfoImpl.class, "_abstract" );
         
         //default implementations
@@ -481,21 +483,44 @@ public class XStreamPersister {
         }
 
         @Override
+        protected void writeItem(Object item, MarshallingContext context,
+                HierarchicalStreamWriter writer) {
+            writer.setValue( item.toString() );
+        }
+
+        @Override
         protected void populateMap(HierarchicalStreamReader reader,
                 UnmarshallingContext context, Map map) {
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
 
                 Object key = reader.getNodeName();
-                reader.moveDown();
+                
+                //we support two syntaxes here:
+                // 1) <key>value</key>
+                // 2) <key><type>value</type></key>
+                boolean old = false;
+                if (reader.hasMoreChildren()) {
+                    old = true;
+                    reader.moveDown();    
+                }
                 
                 Object value = readItem(reader, context, map);
-                reader.moveUp();
+                
+                if ( old ) {
+                    reader.moveUp();    
+                }
 
                 map.put(key, value);
 
                 reader.moveUp();
             }
+        }
+
+        @Override
+        protected Object readItem(HierarchicalStreamReader reader, UnmarshallingContext context,
+                Object current) {
+            return reader.getValue();
         }
     }
     
