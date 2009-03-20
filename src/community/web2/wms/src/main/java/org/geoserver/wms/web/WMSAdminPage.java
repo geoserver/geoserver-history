@@ -4,20 +4,20 @@
  */
 package org.geoserver.wms.web;
 
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import java.util.Arrays;
+
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.validator.NumberValidator;
 import org.geoserver.web.services.BaseServiceAdminPage;
-import org.geoserver.web.wicket.KeywordsEditor;
-import org.geoserver.wms.web.data.StylesPage;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WatermarkInfo;
-
-import java.util.Arrays;
+import org.geoserver.wms.WatermarkInfo.Position;
 
 public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     protected Class<WMSInfo> getServiceClass() {
@@ -28,12 +28,25 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     	form.add(new TextField("interpolation"));
     	form.add(new CheckBox("watermark.enabled"));
     	form.add(new TextField("watermark.uRL"));
-    	form.add(new TextField("watermark.transparency"));
-    	form.add(new DropDownChoice("watermark.position", Arrays.asList(WatermarkInfo.Position.values())));
+    	TextField transparency = new TextField("watermark.transparency");
+    	transparency.add(NumberValidator.range(0, 100));
+        form.add(transparency);
+    	form.add(new DropDownChoice("watermark.position", Arrays.asList(Position.values()), new WatermarkPositionRenderer()));
     }
     
     protected String getServiceName(){
         return "WMS";
     }
-    
+
+    private class WatermarkPositionRenderer implements  IChoiceRenderer {
+
+        public Object getDisplayValue(Object object) {
+            return new StringResourceModel(((Position) object).name(), WMSAdminPage.this, null).getString();
+        }
+
+        public String getIdValue(Object object, int index) {
+            return ((Position) object).name();
+        }
+        
+    }
 }
