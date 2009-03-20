@@ -12,12 +12,24 @@
             <label class="choice"><span wicket:id="service.enabled">Enable</span></label>
           </li>
           <li>
+            <input wicket:id="citeCompliant" type="checkbox" class="field checkbox"></input>
+            <label class="choice"><wicket:message key="citeCompliant">Stict CITE compliance</wicket:message></label>
+          </li>
+          <li>
             <label><wicket:message key="title">Title</wicket:message></label>
             <input wicket:id="title" class="field text"></input>          
           </li>
           <li>
              <label><wicket:message key="abstract">Abstract</wicket:message></label>
              <textarea wicket:id="abstract" class="field textarea"></textarea> 
+          </li>
+          <li>
+             <label><wicket:message key="fees">Fees</wicket:message></label>
+             <input wicket:id="fees" class="field text"></input> 
+          </li>
+          <li>
+             <label><wicket:message key="accessConstraints">Access Constraints</wicket:message></label>
+             <input wicket:id="accessConstraints" class="field text"></input> 
           </li>
           <li>
              <div wicket:id="keywords"></div>
