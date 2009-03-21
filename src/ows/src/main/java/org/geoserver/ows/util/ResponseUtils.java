@@ -297,6 +297,10 @@ public class ResponseUtils {
      * @return The extension, example "txt", or null if it does not exist.
      */
     public static String getExtension(String uri) {
+        int slash = uri.lastIndexOf( '/' );
+        if ( slash != -1 ) {
+            uri = uri.substring( slash+1 ); 
+        }
         int dot = uri.lastIndexOf( '.' );
         if ( dot != -1 ) {
             return uri.substring(dot+1);
