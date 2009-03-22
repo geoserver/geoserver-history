@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.wicket.browser;
 
 import java.io.File;
@@ -18,6 +22,11 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.util.convert.IConverter;
 
+/**
+ * A data view listing files in a certain directory, subject to a file filter
+ * @author Andrea Aime - OpenGeo
+ *
+ */
 @SuppressWarnings("serial")
 public abstract class FileDataView extends Panel {
     private static final IConverter FILE_NAME_CONVERTER = new StringConverter() {
