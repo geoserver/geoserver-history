@@ -144,7 +144,7 @@ public class SRSListPanel extends Panel {
         // setup filter
         Form filterForm = new Form("filterForm");
         filterForm.setOutputMarkupId(true);
-        final Label filterMatch = new Label("filterMatch");
+        final Label filterMatch = new Label("filterMatch", new Model());
         filterMatch.setOutputMarkupId(true);
         add(filterMatch);
         
@@ -166,7 +166,7 @@ public class SRSListPanel extends Panel {
                 List<String> result = filterCodes(allCodes, filters);
                 
                 // report how many matched
-                filterMatch.setModel(new StringResourceModel("SRSListPage.filterMatch", null,
+                filterMatch.setModel(new StringResourceModel("SRSListPanel.filterMatch", null,
                         new Object[] {result.size(), allCodes.size()}));
                 filterMatch.setVisible(true);
                 
