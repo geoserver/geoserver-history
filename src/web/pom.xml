@@ -584,5 +584,15 @@
        </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>wmslayout</id>
+      <dependencies>
+       <dependency>
+        <groupId>org.geoserver</groupId>
+        <artifactId>wmslayout</artifactId>
+        <version>1.7.3-SNAPSHOT</version>
+       </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>
